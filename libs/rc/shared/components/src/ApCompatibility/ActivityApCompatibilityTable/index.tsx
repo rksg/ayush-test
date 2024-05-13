@@ -1,7 +1,8 @@
 /* eslint-disable max-len */
 import { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Row , Col } from 'antd'
+import { useIntl }   from 'react-intl'
 
 import { Loader, Table, TableProps, Button } from '@acx-ui/components'
 import {
@@ -14,7 +15,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
 
-import { TableStyleWrapper } from '../styledComponents'
+import * as UI from '../styledComponents'
 
 interface ActivityApCompatibilityTableProps {
   requestId: string,
@@ -27,6 +28,8 @@ export const ActivityApCompatibilityTable = ({
 }: ActivityApCompatibilityTableProps) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(true)
+  const [hidden, setHidden] = useState(false)
+  const [incompatibleCount, setIncompatibleCount] = useState(0)
   const tableQuery = useTableQuery<ActivityIncompatibleFeatures, RequestPayload<unknown>, ActivityApCompatibilityExtraParams>({
     useQuery: useActivityApCompatibilitiesQuery,
     defaultPayload: { pageSize: 10 },
@@ -34,23 +37,34 @@ export const ActivityApCompatibilityTable = ({
   })
 
   useEffect(() => {
-    setVisible(true)
+    setVisible(false)
+    setHidden(false)
+    setIncompatibleCount(0)
     updateActivityDesc('')
   },[requestId])
 
   useEffect(() => {
     if (tableQuery.data?.data) {
       const count = tableQuery.data?.totalCount ?? 0
-      let incompatibleCount = tableQuery.data?.extra?.incompatibleCount ?? count
-      if (incompatibleCount === 0) {
-        incompatibleCount = count
-      }
+      const impactedCount = tableQuery.data?.extra?.impactedCount ?? count
+      setIncompatibleCount(count)
+
       if (count !== 0) {
-        const percent = Math.round(incompatibleCount / count * 100 )
+        let percent = 0
+        const compatibiliyCount = impactedCount - count
+        if (compatibiliyCount !== 0 && impactedCount !== 0) {
+          percent = Math.round(compatibiliyCount / impactedCount * 100 )
+        }
         setVisible(true)
-        updateActivityDesc(`(${incompatibleCount}/${count} devices, ${percent}%)`)
-      } else if (count === 0) setVisible(false)
-    } else setVisible(false)
+        updateActivityDesc(`(${compatibiliyCount} / ${impactedCount} devices, ${percent}%)`)
+      } else if (count === 0) {
+        setVisible(false)
+        setHidden(true)
+        if (impactedCount !== 0) {
+          updateActivityDesc(`(${impactedCount} / ${impactedCount} devices, 100%)`)
+        }
+      }
+    }
   },[tableQuery.data?.data])
 
   const columns: TableProps<ActivityIncompatibleFeatures>['columns'] = [
@@ -73,16 +87,28 @@ export const ActivityApCompatibilityTable = ({
     }
   ]
 
-  return (<TableStyleWrapper>
-    <Button
-      type='link'
-      data-testid='showBtn'
-      style={{ marginTop: '12px', fontSize: '13px' }}
-      onClick={() => {
-        setVisible(!visible)
-      }}>
-      {visible ? $t({ defaultMessage: 'Hide incompatible report' }) : $t({ defaultMessage: 'See incompatible report' })}
-    </Button>
+  return (<UI.TableStyleWrapper>
+    {!hidden &&
+    <UI.RowStyleWrapper>
+      <Row align='middle' >
+        <Col span={12}>
+          <Button
+            type='link'
+            data-testid='showBtn'
+            style={{ marginTop: '12px', fontSize: '13px' }}
+            onClick={() => {
+              setVisible(!visible)
+            }}>
+            {visible ? $t({ defaultMessage: 'Hide incompatible report' }) : $t({ defaultMessage: 'See incompatible report' })}
+          </Button>
+        </Col>
+        <UI.RowRightStyleWrapper>
+          <UI.TotalStyleWrapper>
+            {$t({ defaultMessage: 'Total' })}: {incompatibleCount}
+          </UI.TotalStyleWrapper>
+        </UI.RowRightStyleWrapper>
+      </Row>
+    </UI.RowStyleWrapper>}
     {visible && <Loader states={[tableQuery]}>
       <Table<ActivityIncompatibleFeatures>
         type='form'
@@ -96,5 +122,5 @@ export const ActivityApCompatibilityTable = ({
         enablePagination
       />
     </Loader>}
-  </TableStyleWrapper>)
+  </UI.TableStyleWrapper>)
 }

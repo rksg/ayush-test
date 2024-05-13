@@ -3,11 +3,12 @@ import { MomentInput } from 'moment-timezone'
 
 import { get }                                                  from '@acx-ui/config'
 import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { useVenueNetworkListV2Query }                           from '@acx-ui/rc/services'
 import { Provider, recommendationUrl }                          from '@acx-ui/store'
 import { mockGraphqlMutation, render, screen, cleanup, within } from '@acx-ui/test-utils'
 
-import { recommendationListResult }               from '../__tests__/fixtures'
-import { Recommendation, RecommendationListItem } from '../services'
+import { recommendationListResult }                                                  from '../__tests__/fixtures'
+import { Recommendation, RecommendationListItem, useScheduleRecommendationMutation } from '../services'
 
 import { RecommendationActions, isCrrmOptimizationMatched } from '.'
 
@@ -28,6 +29,40 @@ const mockedCrrm = {
   statusTrail: [{ status: 'new' }]
 }
 
+jest.mock('../services', () => ({
+
+  ...jest.requireActual<typeof import('../services')>('../services'),
+  useScheduleRecommendationMutation: jest.fn().mockReturnValue([jest.fn()]),
+  useRecommendationWlansQuery: jest.fn().mockReturnValue({ data: [{
+    name: 'n1',
+    ssid: 's1'
+  }, {
+    name: 'n2',
+    ssid: 's2'
+  }, {
+    name: 'n3',
+    ssid: 's3'
+  }] })
+}))
+jest.mock('@acx-ui/rc/services', () => ({
+  useVenueNetworkListV2Query: jest.fn().mockReturnValue({ data: { data: [{
+    id: 'i4',
+    name: 'n4',
+    ssid: 's4',
+    venues: { names: ['zone-1', 'zone-2'] }
+  }, {
+    id: 'i5',
+    name: 'n5',
+    ssid: 's5',
+    venues: { names: ['zone-1'] }
+  }, {
+    id: 'i6',
+    name: 'n6',
+    ssid: 's6',
+    venues: { names: [] }
+  }] } })
+}))
+
 jest.mock('@acx-ui/config')
 jest.mock('moment-timezone', () => {
   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
@@ -43,6 +78,7 @@ jest.mock('moment-timezone', () => {
 describe('RecommendationActions', () => {
   afterEach(() => {
     cleanup()
+    jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
   })
   it('should render active status icons correctly', async () => {
@@ -187,6 +223,108 @@ describe('RecommendationActions', () => {
     await user.click(checkHour[0])
     await user.click((await screen.findAllByText('Apply'))[0])
     expect(inputs[0]).toHaveValue('2023-07-15')
+  })
+  it('allows wlans selection for airflexai in R1 without saved wlans', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g'
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByRole('combobox'))
+    await user.click(await screen.findByText('n4'))
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: false,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Apply',
+      wlans: [{ name: 'i5', ssid: 's5' }]
+    })
+  })
+  it('allows wlans selection for airflexai in R1', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByRole('combobox'))
+    await user.click(await screen.findByText('n4'))
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: false,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Apply',
+      wlans: [{ name: 'i5', ssid: 's5' }]
+    })
+  })
+  it('allows wlans selection for airflexai in RAI', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    jest.mocked(get).mockReturnValue('true')
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: true,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Apply',
+      wlans: [{ name: 'n1', ssid: 's1' }]
+    })
+  })
+  it('handles empty wlans response', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    jest.mocked(useVenueNetworkListV2Query).mockReturnValue({})
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g'
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).not.toHaveBeenCalled()
   })
   it('should handle non-same day apply mutation correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
@@ -338,6 +476,21 @@ describe('RecommendationActions', () => {
     )
     const user = userEvent.setup()
     await user.click(screen.getByTestId('CancelCircleOutlined'))
+    expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
+  })
+  it('should render cancel text correctly', async () => {
+    const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
+    render(
+      <RecommendationActions
+        showTextOnly
+        recommendation={
+        { ...mockedCrrm, statusEnum: 'applyscheduled' } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    expect(await screen.findByText('Cancel')).toBeVisible()
+    const user = userEvent.setup()
+    await user.click(await screen.findByText('Cancel'))
     expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
   })
   it('should show toast if scheduled time is before buffer', async () => {

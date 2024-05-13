@@ -10,7 +10,6 @@ import { mockedEdges } from './__tests__/fixtures'
 import { useEdgeActions } from '.'
 
 const mockedDeleteApi = jest.fn()
-const mockedBuckDeleteApi = jest.fn()
 const mockedSendOtpApi = jest.fn()
 const mockedRebootApi = jest.fn()
 const mockedResetApi = jest.fn()
@@ -23,13 +22,6 @@ describe('useEdgeActions', () => {
         EdgeUrlsInfo.deleteEdge.url,
         (req, res, ctx) => {
           mockedDeleteApi()
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        EdgeUrlsInfo.deleteEdges.url,
-        (req, res, ctx) => {
-          mockedBuckDeleteApi()
           return res(ctx.status(202))
         }
       ),
@@ -55,6 +47,10 @@ describe('useEdgeActions', () => {
         }
       )
     )
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   it('should reboot successfully', async () => {
@@ -124,7 +120,7 @@ describe('useEdgeActions', () => {
     })
   })
 
-  it('should buck delete successfully', async () => {
+  it('should delete two edges successfully', async () => {
     const mockedCallback = jest.fn()
     const { result } = renderHook(() => useEdgeActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -139,7 +135,7 @@ describe('useEdgeActions', () => {
     await userEvent.type(within(dialog).getByRole('textbox'), 'Delete')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }))
     await waitFor(() => {
-      expect(mockedBuckDeleteApi).toBeCalledTimes(1)
+      expect(mockedDeleteApi).toBeCalledTimes(2)
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)

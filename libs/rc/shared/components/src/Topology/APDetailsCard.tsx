@@ -33,7 +33,8 @@ export function APDetailsCard (props: {
       networkNodes: [[
         { type: 'zone', name: apDetail?.venueId },
         { type: 'AP', name: apDetail?.apMac as string }
-      ]]
+      ]],
+      switchNodes: [[]]
     }
   } as AnalyticsFilter
 
@@ -50,7 +51,7 @@ export function APDetailsCard (props: {
       <UI.NodeTitle
         state={{ from: location.pathname }}
         // eslint-disable-next-line max-len
-        to={`/devices/wifi/${apDetail?.apMac}/details/overview`}>
+        to={`/devices/wifi/${apDetail?.serialNumber}/details/overview`}>
         {apDetail?.name
         || apDetail?.apMac
         || $t({ defaultMessage: 'Unknown' }) // for unknown device

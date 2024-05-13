@@ -20,7 +20,8 @@ import {
   useCancelRecommendationMutation,
   useMuteRecommendationMutation,
   useScheduleRecommendationMutation,
-  useSetPreferenceMutation
+  useSetPreferenceMutation,
+  useDeleteRecommendationMutation
 } from './services'
 
 describe('Recommendations utils', () => {
@@ -35,8 +36,12 @@ describe('Recommendations utils', () => {
   })
 
   describe('getCrrmInterferingLinksText', () => {
+    beforeEach(() =>
+      jest.spyOn(require('./utils'), 'isDataRetained')
+        .mockImplementation(() => true)
+    )
     it('returns text when applied', () => {
-      expect(getCrrmInterferingLinksText('applied', {
+      expect(getCrrmInterferingLinksText('applied', '', {
         current: 0,
         previous: 3,
         projected: null
@@ -44,7 +49,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when revertfailed', () => {
-      expect(getCrrmInterferingLinksText('revertfailed', {
+      expect(getCrrmInterferingLinksText('revertfailed', '', {
         current: 0,
         previous: 3,
         projected: null
@@ -52,7 +57,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when reverted', () => {
-      expect(getCrrmInterferingLinksText('reverted', {
+      expect(getCrrmInterferingLinksText('reverted', '', {
         current: 5,
         previous: 5,
         projected: null
@@ -60,7 +65,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when new', () => {
-      expect(getCrrmInterferingLinksText('new', {
+      expect(getCrrmInterferingLinksText('new', '', {
         current: 2,
         previous: null,
         projected: 0
@@ -68,7 +73,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when reverted but no previous (revertedTime < appliedTime+24hours)', () => {
-      expect(getCrrmInterferingLinksText('reverted', {
+      expect(getCrrmInterferingLinksText('reverted', '', {
         current: 2,
         previous: null,
         projected: 0
@@ -76,7 +81,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when applied but no previous (maxIngestedTime < appliedTime+24hours)', () => {
-      expect(getCrrmInterferingLinksText('applied', {
+      expect(getCrrmInterferingLinksText('applied', '', {
         current: 2,
         previous: null,
         projected: 0
@@ -84,7 +89,7 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when applyscheduled', () => {
-      expect(getCrrmInterferingLinksText('applyscheduled', {
+      expect(getCrrmInterferingLinksText('applyscheduled', '', {
         current: 2,
         previous: null,
         projected: 0
@@ -92,11 +97,21 @@ describe('Recommendations utils', () => {
     })
 
     it('returns text when applyfailed', () => {
-      expect(getCrrmInterferingLinksText('applyfailed', {
+      expect(getCrrmInterferingLinksText('applyfailed', '', {
         current: 2,
         previous: null,
         projected: 0
       })).toBe('Failed')
+    })
+
+    it('returns text when data retention period passed', () => {
+      jest.spyOn(require('./utils'), 'isDataRetained')
+        .mockImplementation(() => false)
+      expect(getCrrmInterferingLinksText('reverted', '', {
+        current: 2,
+        previous: null,
+        projected: 0
+      })).toBe('Beyond data retention period')
     })
   })
 })
@@ -111,6 +126,8 @@ describe('Recommendation services', () => {
 
   beforeEach(() => {
     store.dispatch(api.util.resetApiState())
+    jest.spyOn(require('./utils'), 'isDataRetained')
+      .mockImplementation(() => true)
   })
 
   it('should return crrm list', async () => {
@@ -175,6 +192,21 @@ describe('Recommendation services', () => {
       aiOpsCount: 2,
       recommendations: expectedResult
     })
+  })
+
+  it('returns wlans', async () => {
+    const WLANs = [
+      { name: 'wlan1', ssid: 'wlan1' },
+      { name: 'wlan2', ssid: 'wlan2' },
+      { name: 'wlan3', ssid: 'wlan3' }
+    ]
+    mockGraphqlQuery(recommendationUrl, 'Wlans', { data: { recommendation: { WLANs } } })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.recommendationWlans.initiate({ id: 'id1' })
+    )
+    expect(error).toBe(undefined)
+    expect(status).toBe('fulfilled')
+    expect(data).toStrictEqual(WLANs)
   })
 
   it('should return recommendation list', async () => {
@@ -408,6 +440,51 @@ describe('Recommendation services', () => {
           text: 'Non-Optimized'
         },
         toggles: { crrmFullOptimization: true }
+      },
+      {
+        ...recommendationListResult.recommendations[11],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 2.4 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[12],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 5 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
+      },
+      {
+        ...recommendationListResult.recommendations[13],
+        scope: `vsz612 (SZ Cluster)
+> EDU-MeshZone_S12348 (Venue)`,
+        type: 'Venue',
+        priority: {
+          ...priorities.medium,
+          text: 'Medium'
+        },
+        category: 'Wi-Fi Client Experience',
+        summary: 'Enable AirFlexAI for 6 GHz',
+        status: 'New',
+        statusTooltip: 'Schedule a day and time to apply this recommendation.',
+        statusEnum: 'new'
       }
     ]
     expect(error).toBe(undefined)
@@ -447,6 +524,27 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
+  it('should schedule with wlans', async () => {
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+
+    const { result } = renderHook(
+      () => useScheduleRecommendationMutation(),
+      { wrapper: Provider }
+    )
+    act(() => {
+      result.current[0]({
+        id: 'test',
+        type: 'Apply',
+        scheduledAt: '7-15-2023',
+        wlans: [{ ssid: 'test', name: 'test' }]
+      })
+    })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data)
+      .toEqual(resp)
+  })
+
   it('should cancel correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
@@ -463,7 +561,19 @@ describe('Recommendation services', () => {
       .toEqual(resp)
   })
 
+  it('should delete correctly', async () => {
+    const resp = { deleteRecommendation: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'DeleteRecommendation', { data: resp })
+    const { result } = renderHook(
+      () => useDeleteRecommendationMutation(),{ wrapper: Provider })
+    act(() => { result.current[0]({ id: 'test' }) })
+    await waitFor(() => expect(result.current[1].isSuccess).toBe(true))
+    expect(result.current[1].data).toEqual(resp)
+  })
+
   it('should return crrmKpi', async () => {
+    const spy = jest.spyOn(require('./utils'), 'isDataRetained')
+      .mockImplementation(() => true)
     const recommendationPayload = {
       id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
     }
@@ -475,12 +585,14 @@ describe('Recommendation services', () => {
     const { status, data, error } = await store.dispatch(
       api.endpoints.crrmKpi.initiate({
         ...recommendationPayload,
-        code: 'c-crrm-channel24g-auto'
+        code: 'c-crrm-channel24g-auto',
+        status: 'new'
       })
     )
     expect(status).toBe('fulfilled')
     expect(error).toBeUndefined()
     expect(data).toEqual({ text: 'From 2 to 0 interfering links' })
+    expect(spy).toBeCalledWith(mockedRecommendationCRRM.dataEndTime)
   })
 
   it('should setPreferences correctly', async () => {

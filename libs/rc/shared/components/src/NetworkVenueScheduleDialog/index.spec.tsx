@@ -15,7 +15,6 @@ import {
 
 import {
   venueResponse,
-  timezoneResult,
   networkResponse,
   networkVenueResponse,
   networkResponseWithNoSchedule,
@@ -24,24 +23,27 @@ import {
 
 import { NetworkVenueScheduleDialog } from './index'
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useLazyGetTimezoneQuery: () => [jest.fn().mockResolvedValue({
+    dstOffset: 3600,
+    rawOffset: -28800,
+    timeZoneId: 'America/Los_Angeles',
+    timeZoneName: 'Pacific Daylight Time'
+  })
+  ]
+}))
+
 describe('NetworkVenueTabScheduleDialog', () => {
   beforeEach(async () => {
     const env = {
       GOOGLE_MAPS_KEY: 'FAKE_GOOGLE_MAPS_KEY'
     }
 
-    const requestSpy = jest.fn()
     mockServer.use(
       rest.put(
         WifiUrlsInfo.updateNetworkVenue.url.split('?')[0],
         (req, res, ctx) => res(ctx.json({ requestId: 'f229e6d6-f728-4b56-81ce-507877a4f4da' }))
-      ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/json',
-        (req, res, ctx) => {
-          requestSpy()
-          return res(ctx.status(200), ctx.json(timezoneResult))
-        }
       ),
       rest.get('/globalValues.json', (_, r, c) => r(c.json(env)))
     )

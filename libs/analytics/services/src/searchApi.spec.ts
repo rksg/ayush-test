@@ -80,7 +80,7 @@ describe('Search API', () => {
     expect(data).toMatchObject(apListFixture.network.search)
   })
 
-  it('switchtList api should return the data', async () => {
+  it('switchList api should return the data', async () => {
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: switchListFixture
     })
@@ -92,7 +92,7 @@ describe('Search API', () => {
       limit: 100
     }
     const { status, data, error } = await store.dispatch(
-      searchApi.endpoints.switchtList.initiate(payload))
+      searchApi.endpoints.switchList.initiate(payload))
 
     expect(error).toBeUndefined()
     expect(status).toBe('fulfilled')

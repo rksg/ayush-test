@@ -1,10 +1,14 @@
+import { createContext } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }           from '@acx-ui/components'
 import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { OnboardedSystems } from '../OnboardedSystems'
-import { Support }          from '../Support'
+import { useOnboardedSystems } from '../OnboardedSystems'
+import { Support }             from '../Support'
+import { useUsers }            from '../Users'
+import { useWebhooks }         from '../Webhooks'
 
 export enum AccountManagementTabEnum {
   ONBOARDED_SYSTEMS = 'onboarded',
@@ -25,16 +29,22 @@ interface Tab {
   headerExtra?: JSX.Element[]
 }
 
-const useTabs = () : Tab[] => {
+interface CountContextType {
+  usersCount: number,
+  setUsersCount: (count: number) => void
+}
+export const CountContext = createContext({} as CountContextType)
+
+const useTabs = (): Tab[] => {
   const { $t } = useIntl()
+
   const onboardedSystemsTab = {
     key: AccountManagementTabEnum.ONBOARDED_SYSTEMS,
-    title: $t({ defaultMessage: 'Onboarded Systems' }),
-    component: <OnboardedSystems />
+    ...useOnboardedSystems()
   }
   const usersTab = {
     key: AccountManagementTabEnum.USERS,
-    title: $t({ defaultMessage: 'Users' })
+    ...useUsers()
   }
   const labelsTab = {
     key: AccountManagementTabEnum.LABELS,
@@ -49,7 +59,7 @@ const useTabs = () : Tab[] => {
   const supportTab = {
     key: AccountManagementTabEnum.SUPPORT,
     title: $t({ defaultMessage: 'Support' }),
-    component: <Support/>
+    component: <Support />
   }
   const licenseTab = {
     key: AccountManagementTabEnum.LICENSES,
@@ -63,8 +73,7 @@ const useTabs = () : Tab[] => {
   }
   const webhooksTab = {
     key: AccountManagementTabEnum.WEBHOOKS,
-    title: $t({ defaultMessage: 'Webhooks' }),
-    url: '/analytics/admin/webhooks'
+    ...useWebhooks()
   }
   return [
     onboardedSystemsTab, usersTab, labelsTab, resourceGroupsTab, supportTab,
@@ -76,6 +85,7 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('/analytics')
+  const tabs = useTabs()
   const onTabChange = (tabKey: string) => {
     const tab = tabs.find(({ key }) => key === tabKey)
     if (tab?.url) {
@@ -87,7 +97,6 @@ export function AccountManagement ({ tab }:{ tab: AccountManagementTabEnum }) {
       pathname: `${basePath.pathname}/admin/${tab.key}`
     })
   }
-  const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
   return <>
     <PageHeader

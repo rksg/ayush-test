@@ -85,7 +85,7 @@ export const venueApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -295,7 +295,6 @@ export const autocompleteResult = {
 export const timezoneResult = {
   dstOffset: 3600,
   rawOffset: -28800,
-  status: 'OK',
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }
@@ -633,7 +632,7 @@ export const venueNetworkApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -661,7 +660,7 @@ export const venuesApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -939,6 +938,10 @@ export const venueRogueAp = {
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
 }
 
+export const venueApTlsEnhancedKey = {
+  tlsKeyEnhancedModeEnabled: true
+}
+
 export const venueRoguePolicy = [
   {
     venues: [{ id: '3db73a30cd06490aaf4bca01a1eb8894', name: 'My-Venue' }],
@@ -1034,98 +1037,101 @@ export const rogueApPolicyNotDefaultProfile = {
   id: '9700ca95e4be4a22857f0e4b621a685f'
 }
 
-export const venueRoguePolicyList = [
-  {
-    name: 'Default profile',
-    rules: [
-      {
-        name: 'Same Network Rule',
-        type: 'SameNetworkRule',
-        classification: 'Malicious',
-        priority: 1
-      },
-      {
-        name: 'Mac Spoofing Rule',
-        type: 'MacSpoofingRule',
-        classification: 'Malicious',
-        priority: 2
-      },
-      {
-        name: 'SSID Spoofing Rule',
-        type: 'SsidSpoofingRule',
-        classification: 'Malicious',
-        priority: 3
-      },
-      {
-        name: 'RTS Abuse Rule',
-        type: 'RTSAbuseRule',
-        classification: 'Malicious',
-        priority: 4
-      },
-      {
-        name: 'CTS Abuse Rule',
-        type: 'CTSAbuseRule',
-        classification: 'Malicious',
-        priority: 5
-      },
-      {
-        name: 'Deauth Flood Rule',
-        type: 'DeauthFloodRule',
-        classification: 'Malicious',
-        priority: 6
-      },
-      {
-        name: 'Disassoc Flood Rule',
-        type: 'DisassocFloodRule',
-        classification: 'Malicious',
-        priority: 7
-      },
-      {
-        name: 'Excessive Power Rule',
-        type: 'ExcessivePowerRule',
-        classification: 'Malicious',
-        priority: 8
-      },
-      {
-        name: 'Null SSID Rule',
-        type: 'NullSSIDRule',
-        classification: 'Malicious',
-        priority: 9
-      },
-      {
-        name: 'Adhoc',
-        type: 'AdhocRule',
-        classification: 'Unclassified',
-        priority: 10
-      }
-    ],
-    id: 'ebb16f640edf4272bc56aef4b37fb630'
-  },
-  {
-    venues: [
-      {
-        id: '3db73a30cd06490aaf4bca01a1eb8894',
-        name: 'My-Venue'
-      }
-    ],
-    name: 'roguePolicy1',
-    rules: [
-      {
-        name: 'rule1',
-        type: 'AdhocRule',
-        classification: 'Malicious',
-        priority: 1
-      },
-      {
-        name: 'macSpoofing',
-        type: 'MacSpoofingRule',
-        classification: 'Malicious',
-        priority: 2
-      }
-    ],
-    id: '9700ca95e4be4a22857f0e4b621a685f'
-  }
-]
+export const venueRoguePolicyList = {
+  data: [
+    {
+      name: 'Default profile',
+      rules: [
+        {
+          name: 'Same Network Rule',
+          type: 'SameNetworkRule',
+          classification: 'Malicious',
+          priority: 1
+        },
+        {
+          name: 'Mac Spoofing Rule',
+          type: 'MacSpoofingRule',
+          classification: 'Malicious',
+          priority: 2
+        },
+        {
+          name: 'SSID Spoofing Rule',
+          type: 'SsidSpoofingRule',
+          classification: 'Malicious',
+          priority: 3
+        },
+        {
+          name: 'RTS Abuse Rule',
+          type: 'RTSAbuseRule',
+          classification: 'Malicious',
+          priority: 4
+        },
+        {
+          name: 'CTS Abuse Rule',
+          type: 'CTSAbuseRule',
+          classification: 'Malicious',
+          priority: 5
+        },
+        {
+          name: 'Deauth Flood Rule',
+          type: 'DeauthFloodRule',
+          classification: 'Malicious',
+          priority: 6
+        },
+        {
+          name: 'Disassoc Flood Rule',
+          type: 'DisassocFloodRule',
+          classification: 'Malicious',
+          priority: 7
+        },
+        {
+          name: 'Excessive Power Rule',
+          type: 'ExcessivePowerRule',
+          classification: 'Malicious',
+          priority: 8
+        },
+        {
+          name: 'Null SSID Rule',
+          type: 'NullSSIDRule',
+          classification: 'Malicious',
+          priority: 9
+        },
+        {
+          name: 'Adhoc',
+          type: 'AdhocRule',
+          classification: 'Unclassified',
+          priority: 10
+        }
+      ],
+      id: 'ebb16f640edf4272bc56aef4b37fb630'
+    },
+    {
+      venues: [
+        {
+          id: '3db73a30cd06490aaf4bca01a1eb8894',
+          name: 'My-Venue'
+        }
+      ],
+      name: 'roguePolicy1',
+      rules: [
+        {
+          name: 'rule1',
+          type: 'AdhocRule',
+          classification: 'Malicious',
+          priority: 1
+        },
+        {
+          name: 'macSpoofing',
+          type: 'MacSpoofingRule',
+          classification: 'Malicious',
+          priority: 2
+        }
+      ],
+      id: '9700ca95e4be4a22857f0e4b621a685f'
+    }
+  ],
+  totalCount: 2
+}
 
 export const configProfiles = [
   {

@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from 'react'
+import React, { useContext } from 'react'
 
 import * as d3 from 'd3'
 
@@ -7,32 +6,44 @@ import { ConnectionStatus } from '@acx-ui/rc/utils'
 
 import { getDeviceColor } from '../utils'
 
-export interface Link {
+import { TopologyTreeContext } from './TopologyTreeContext'
+
+export interface Edge {
   source: {
     data: {
       id: string;
+      status: string;
     };
     depth: number;
+    x: number;
+    y: number;
   };
   target: {
     data: {
       id: string;
+      status: string;
     };
+    x: number;
+    y: number;
   };
+  connectionStatus: ConnectionStatus
+  connectionType: string
 }
 
 interface LinksProps {
-  links: any[];
-  linksInfo: any;
-  sourceNode?: any;
-  targetNode?: any;
-  onClick: (node: Link, event: MouseEvent) => void;
+  links: Edge[];
+  linksInfo: { [key: string]: Edge };
+  sourceNode?: string;
+  targetNode?: string;
+  onClick: (node: Edge, event: MouseEvent) => void;
+  onMouseLeave: () => void;
 }
 
 // eslint-disable-next-line max-len
 
 export const Links: React.FC<LinksProps> = (props) => {
   const { links, linksInfo, onClick } = props
+  const { selectedVlanPortList } = useContext(TopologyTreeContext)
   let delayHandler: NodeJS.Timeout
 
   const linkColor: { [key in ConnectionStatus]: string } = {
@@ -63,8 +74,7 @@ export const Links: React.FC<LinksProps> = (props) => {
     'var(--acx-neutrals-50)': 'degradedMarker'
   }
 
-  const linkCustom = ({ source, target }: any,
-    linksInfo: { [key: string]: any }) => {
+  const linkCustom = ({ source, target }: Edge, linksInfo: { [key: string]: Edge }) => {
     const linkInfo = linksInfo[`${source.data.id}_${target.data.id}`]
     const sourceX = linkInfo?.source?.x
     const sourceY = linkInfo?.source?.y
@@ -88,8 +98,8 @@ export const Links: React.FC<LinksProps> = (props) => {
       return path.toString()
     }
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleMouseEnter = (link: any , event: any) => {
+
+  const handleMouseEnter = (link: Edge , event: MouseEvent) => {
     delayHandler = setTimeout(() => {
       onClick(link, event)
     }, 1000)
@@ -150,21 +160,22 @@ export const Links: React.FC<LinksProps> = (props) => {
         const targetNodeMarker = targetNodeMarkerColor[getDeviceColor(link.target.data.status)]
         const linkClass = linkInfo?.connectionStatus ?
           linkColor[linkInfo?.connectionStatus as ConnectionStatus] :
-          (Object.values(ConnectionStatus).includes(link.target.data.status) ?
+          (Object.values(ConnectionStatus).includes(link.target.data.status as ConnectionStatus) ?
             linkColor[link.target.data.status as ConnectionStatus] :
             targetNodeStatusColor)
 
         const markerClass = linkInfo?.connectionStatus ?
           markerColor[linkInfo?.connectionStatus as ConnectionStatus] :
-          (Object.values(ConnectionStatus).includes(link.target.data.status) ?
+          (Object.values(ConnectionStatus).includes(link.target.data.status as ConnectionStatus) ?
             markerColor[link.target.data.status as ConnectionStatus] :
             targetNodeMarker)
 
         return (
           <g
             transform={`translate(0, -${40 + 65 * link.source.depth})`}
-            className={`edgePath ${linkClass} ${link.source.data.id}`}
-            onMouseEnter={(e) => handleMouseEnter(link, e)}
+            // eslint-disable-next-line max-len
+            className={`edgePath ${linkClass} ${link.source.data.id} ${selectedVlanPortList && selectedVlanPortList.includes('link_'+link.source.data.id+'_'+link.target.data.id) && 'focusNode'}`}
+            onMouseEnter={(e) => handleMouseEnter(link, e as unknown as MouseEvent)}
             onMouseLeave={handleMouseLeave}
             data-testid={`link_${link.source.data.id}_${link.target.data.id}`}
             id={`link_${link.source.data.id}_${link.target.data.id}`}

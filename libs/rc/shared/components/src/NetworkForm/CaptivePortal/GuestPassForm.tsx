@@ -83,10 +83,8 @@ export function GuestPassForm () {
           />
         </Form.Item>}
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass}
           enableDefaultWalledGarden={false} />
       </GridCol>
       <GridCol col={{ span: 14 }}>

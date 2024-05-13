@@ -27,7 +27,8 @@ import {
   AdminGroup,
   AdminGroupLastLogins,
   CustomRole,
-  PrivilegeGroup
+  PrivilegeGroup,
+  EntitlementPendingActivations
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -41,7 +42,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return {
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
@@ -487,6 +489,26 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return result
       }
     }),
+    getEntitlementActivations: build.query<EntitlementPendingActivations, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+          createHttpRequest(AdministrationUrlsInfo.getEntitlementsActivations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
+    }),
+    patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.patchEntitlementsActivations, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
     refreshEntitlements: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.refreshLicensesData, params)
@@ -701,6 +723,19 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       }
     }),
+    getMspEcPrivilegeGroups: build.query<PrivilegeGroup[], RequestPayload>({
+      query: ({ params }) => {
+        const CUSTOM_HEADER = {
+          'x-rks-tenantid': params?.mspEcTenantId
+        }
+        const req = createHttpRequest(
+          AdministrationUrlsInfo.getPrivilegeGroups, params, CUSTOM_HEADER, true)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'PRIVILEGEGROUP_LIST' }]
+    }),
     getOnePrivilegeGroup: build.query<PrivilegeGroup, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getOnePrivilegeGroup, params)
@@ -806,6 +841,8 @@ export const {
   useDeleteNotificationRecipientMutation,
   useGetEntitlementSummaryQuery,
   useGetEntitlementsListQuery,
+  useGetEntitlementActivationsQuery,
+  usePatchEntitlementsActivationsMutation,
   useRefreshEntitlementsMutation,
   useInternalRefreshEntitlementsMutation,
   useConvertNonVARToMSPMutation,
@@ -826,6 +863,7 @@ export const {
   useAddCustomRoleMutation,
   useUpdateCustomRoleMutation,
   useDeleteCustomRoleMutation,
+  useGetMspEcPrivilegeGroupsQuery,
   useGetOnePrivilegeGroupQuery,
   useGetPrivilegeGroupsQuery,
   useAddPrivilegeGroupMutation,

@@ -8,14 +8,18 @@ import { useNavigate } from 'react-router-dom'
 import { Loader, StepsForm, Table, TableProps } from '@acx-ui/components'
 import { useClusterInterfaceActions }           from '@acx-ui/rc/components'
 import {
+  EdgeCluster,
   EdgeClusterStatus,
   EdgePortInfo,
   EdgePortTypeEnum,
+  VirtualIpSetting,
+  getEdgePortIpFromStatusIp,
   validateClusterInterface,
   validateSubnetIsConsistent
 } from '@acx-ui/rc/utils'
-import { useTenantLink }             from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useTenantLink }                 from '@acx-ui/react-router-dom'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import * as CommUI from '../styledComponents'
 
@@ -23,6 +27,7 @@ import { EditClusterInterfaceDrawer } from './EditClusterInterfaceDrawer'
 
 interface ClusterInterfaceProps {
   currentClusterStatus?: EdgeClusterStatus
+  currentVipConfig?: EdgeCluster['virtualIpSettings']
 }
 
 export interface ClusterInterfaceTableType {
@@ -38,31 +43,30 @@ interface ClusterInterfaceFormType {
 }
 
 export const ClusterInterface = (props: ClusterInterfaceProps) => {
-  const { currentClusterStatus } = props
+  const { currentClusterStatus, currentVipConfig } = props
   const edgeNodeList = currentClusterStatus?.edgeList
   const { $t } = useIntl()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
   const [form] = Form.useForm()
-  const clusterData = Form.useWatch('clusterData', form) as ClusterInterfaceTableType[]
   const {
     allInterfaceData,
     isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   } = useClusterInterfaceActions(currentClusterStatus)
 
   useEffect(() => {
     if(!edgeNodeList || (isInterfaceDataLoading && !allInterfaceData)) return
-    if(clusterData) return
     form.setFieldValue('clusterData', edgeNodeList.map(item => {
-      const currentcClusterInterface = getTargetInterfaceConfig(item.serialNumber)
+      const currentClusterInterface = getTargetInterfaceConfig(item.serialNumber)
       return {
         nodeName: item.name,
         serialNumber: item.serialNumber,
-        interfaceName: currentcClusterInterface?.portName,
-        ipMode: currentcClusterInterface?.ipMode,
-        ip: currentcClusterInterface?.ip,
-        subnet: currentcClusterInterface?.subnet
+        interfaceName: currentClusterInterface?.portName,
+        ipMode: currentClusterInterface?.ipMode,
+        ip: getEdgePortIpFromStatusIp(currentClusterInterface?.ip),
+        subnet: currentClusterInterface?.subnet
       }
     }))
   }, [edgeNodeList, allInterfaceData, isInterfaceDataLoading])
@@ -90,7 +94,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
   }
 
   return (
-    <Loader states={[{ isLoading: isInterfaceDataLoading }]}>
+    <Loader states={[{ isLoading: isInterfaceDataLoading, isFetching: isInterfaceDataFetching }]}>
       <CommUI.Mt15>
         {
           // eslint-disable-next-line max-len
@@ -124,6 +128,7 @@ export const ClusterInterface = (props: ClusterInterfaceProps) => {
             children={
               <ClusterInterfaceTable
                 allInterfaceData={allInterfaceData}
+                vipConfig={currentVipConfig?.virtualIps}
               />
             }
             validateFirst
@@ -140,10 +145,11 @@ type ClusterInterfaceTableProps = {
   allInterfaceData?: {
     [key: string]: EdgePortInfo[];
   }
+  vipConfig?: VirtualIpSetting[]
 }
 
 const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
-  const { value, onChange, allInterfaceData } = props
+  const { value, onChange, allInterfaceData, vipConfig } = props
   const { $t } = useIntl()
   const valueMap = useRef<Record<string, unknown>>({})
   const [editDrawerVisible, setEditDrawerVisible] = useState(false)
@@ -168,13 +174,13 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
       title: $t({ defaultMessage: 'Cluster Interface' }),
       key: 'interfaceName',
       dataIndex: 'interfaceName',
-      render: (data, row) => _.capitalize(row.interfaceName)
+      render: (_data, row) => _.capitalize(row.interfaceName)
     },
     {
       title: $t({ defaultMessage: 'IP Address' }),
       key: 'ip',
       dataIndex: 'ip',
-      render: (data, row) => row.ip?.split('/')[0]
+      render: (_data, row) => row.ip
     },
     {
       title: $t({ defaultMessage: 'Subnet Mask' }),
@@ -194,6 +200,10 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE]
+  })
+
   return (
     <>
       <Table
@@ -201,7 +211,7 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
         columns={columns}
         dataSource={value}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={isSelectionVisible && { type: 'radio' }}
       />
       <EditClusterInterfaceDrawer
         visible={editDrawerVisible}
@@ -210,6 +220,7 @@ const ClusterInterfaceTable = (props: ClusterInterfaceTableProps) => {
         interfaceList={allInterfaceData?.[currentEditData?.serialNumber ?? '']}
         editData={currentEditData}
         allNodeData={value}
+        vipConfig={vipConfig}
       />
     </>
   )

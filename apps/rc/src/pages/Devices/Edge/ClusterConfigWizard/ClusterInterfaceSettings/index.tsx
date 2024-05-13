@@ -11,8 +11,8 @@ import {
   TypeForm,
   useClusterInterfaceActions
 } from '@acx-ui/rc/components'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
-import { useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeSerialNumber, getEdgePortIpFromStatusIp } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                 from '@acx-ui/react-router-dom'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -30,10 +30,10 @@ export const ClusterInterfaceSettings = () => {
   const clusterListPage = useTenantLink('/devices/edge')
   const selectTypePage = useTenantLink(`/devices/edge/cluster/${clusterId}/configure`)
   const [form] = Form.useForm()
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
+  const { clusterInfo, clusterNetworkSettings } = useContext(ClusterConfigWizardContext)
   const {
     allInterfaceData,
-    isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   } = useClusterInterfaceActions(clusterInfo)
 
@@ -46,12 +46,12 @@ export const ClusterInterfaceSettings = () => {
 
   const clusterInterfaceSettings = _.reduce(clusterInfo?.edgeList,
     (result, edgeNode) => {
-      const currentcClusterInterface = getTargetInterfaceConfig(edgeNode.serialNumber)
+      const currentClusterInterface = getTargetInterfaceConfig(edgeNode.serialNumber)
       result[edgeNode.serialNumber] = {
-        interfaceName: currentcClusterInterface?.portName ?? '',
-        ipMode: currentcClusterInterface?.ipMode ?? EdgeIpModeEnum.STATIC,
-        ip: currentcClusterInterface?.ip?.split('/')[0] ?? '',
-        subnet: currentcClusterInterface?.subnet ?? ''
+        interfaceName: currentClusterInterface?.portName ?? '',
+        ipMode: currentClusterInterface?.ipMode ?? EdgeIpModeEnum.STATIC,
+        ip: getEdgePortIpFromStatusIp(currentClusterInterface?.ip) ?? '',
+        subnet: currentClusterInterface?.subnet ?? ''
       }
       return result
     }, {} as ClusterInterfaceSettingsFormType)
@@ -78,6 +78,8 @@ export const ClusterInterfaceSettings = () => {
               form={form}
               interfaceList={allInterfaceData?.[serialNumber]}
               rootNamePath={[serialNumber]}
+              serialNumber={serialNumber}
+              vipConfig={clusterNetworkSettings?.virtualIpSettings}
             />
           </Col>
         </Row>
@@ -126,7 +128,7 @@ export const ClusterInterfaceSettings = () => {
   }
 
   return (
-    <Loader states={[{ isLoading: isInterfaceDataLoading }]}>
+    <Loader states={[{ isLoading: isInterfaceDataFetching }]}>
       <StepsForm<ClusterInterfaceSettingsFormType>
         form={form}
         onFinish={applyAndFinish}

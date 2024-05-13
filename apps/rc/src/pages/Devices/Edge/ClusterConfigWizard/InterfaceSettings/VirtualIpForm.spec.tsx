@@ -1,13 +1,13 @@
-import { StepsForm }                              from '@acx-ui/components'
-import { EdgeClusterStatus, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
-import { render, screen }                         from '@acx-ui/test-utils'
+import { Form } from 'antd'
 
-import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
+import { StepsForm }                  from '@acx-ui/components'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
+
+import { defaultCxtData, mockClusterConfigWizardData } from '../__tests__/fixtures'
+import { ClusterConfigWizardContext }                  from '../ClusterConfigWizardDataProvider'
 
 import { VirtualIpForm } from './VirtualIpForm'
 
-
-const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -25,12 +25,14 @@ describe('InterfaceSettings - VirtualIpForm', () => {
   })
 
   it('should correctly render', async () => {
-
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      form.setFieldsValue(mockClusterConfigWizardData)
+      return form
+    })
     render(
-      <ClusterConfigWizardContext.Provider value={{
-        clusterInfo: mockEdgeClusterList.data[0] as EdgeClusterStatus
-      }}>
-        <StepsForm>
+      <ClusterConfigWizardContext.Provider value={defaultCxtData}>
+        <StepsForm form={formRef.current}>
           <StepsForm.StepForm>
             <VirtualIpForm />
           </StepsForm.StepForm>

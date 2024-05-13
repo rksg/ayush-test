@@ -1,26 +1,54 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useRef, useMemo, useContext } from 'react'
+import { useState, useEffect, useRef, useMemo, useContext } from 'react'
 
-import { drag, select, tree } from 'd3'
-import _                      from 'lodash'
+import { HierarchyPointNode, drag, select, tree } from 'd3'
+import _                                          from 'lodash'
 
+import { NodeData, Link } from '@acx-ui/rc/utils'
+
+import { TreeData }      from '..'
 import { transformData } from '../utils'
 
-import { Links }               from './Links'
+import { Edge, Links }         from './Links'
 import Nodes                   from './Nodes'
 import { TopologyTreeContext } from './TopologyTreeContext'
 
 const NODE_SIZE: [number, number] = [45, 150]
 
-const Svg: any = (props: any) => {
-  const { width, height, data, edges, onNodeHover, onNodeClick, onLinkClick } = props
+interface TopologyProps {
+  ref: SVGSVGElement
+  data: TreeData
+  edges: Link[]
+  onNodeHover: (node: NodeData, event: React.MouseEvent<Element, globalThis.MouseEvent> |
+    React.MouseEvent<SVGGElement, globalThis.MouseEvent>) => void
+  onNodeClick: () => void
+  onLinkClick: (node: Edge, event: MouseEvent) => void
+  onNodeMouseLeave: () => void
+  onLinkMouseLeave: () => void
+  closeTooltipHandler: () => void
+  closeLinkTooltipHandler: () => void
+  width: number
+  height: number
+}
+
+interface nodeCoordinateProps {
+  [key: string]: { x: number, y: number }
+}
+interface linkCoordinateProps {
+  [key: string]: any
+}
+
+const Svg = (props: TopologyProps) => {
+  const { width, height, data, edges, onNodeHover,
+    onNodeClick, onLinkClick, onNodeMouseLeave, onLinkMouseLeave,
+    closeTooltipHandler, closeLinkTooltipHandler
+  } = props
   const refSvg = useRef<any>(null)
-  const refMain = useRef<any>(null)
-  const [treeData, setTreeData] = useState<any>(null) // Replace 'any' with the actual data type
-  const [nodesCoordinate, setNodesCoordinate] = useState<any>({})
-  const [linksInfo, setLinksInfo] = useState<any>({})
-  const { scale, translate, setTranslate, setOnDrag } =
-    useContext(TopologyTreeContext)
+  const refMain = useRef<SVGGElement>(null)
+  const [treeData, setTreeData] = useState<d3.HierarchyNode<TreeData> | null>(null)
+  const [nodesCoordinate, setNodesCoordinate] = useState<nodeCoordinateProps>({})
+  const [linksInfo, setLinksInfo] = useState<linkCoordinateProps>({})
+  const { scale, translate, setTranslate, setOnDrag } = useContext(TopologyTreeContext)
 
   const handleDrag = drag()
     .on('start', (event) => {
@@ -33,7 +61,21 @@ const Svg: any = (props: any) => {
       const { startX, startY } = event.subject
       const dx = event.sourceEvent.layerX - startX
       const dy = event.sourceEvent.layerY - startY
-      setTranslate([translate[0] + dx, translate[1] + dy])
+
+      const treeContainer = document.querySelector('#treeContainer')
+      const containerWidth = treeContainer?.clientWidth || 0
+      const containerHeight = treeContainer?.clientHeight || 0
+
+      let boundaryDx = translate[0] + dx >= containerWidth ?
+        containerWidth : (translate[0] + dx <= 0 ?
+          0 : translate[0] + dx)
+      let boundaryDy = translate[1] + dy >= containerHeight ?
+        containerHeight : (translate[1] + dy <= -200 ?
+          -200 : translate[1] + dy)
+
+      setTranslate([boundaryDx, boundaryDy])
+      closeTooltipHandler()
+      closeLinkTooltipHandler()
     })
     .on('end', () => {
       setOnDrag(false)
@@ -54,13 +96,13 @@ const Svg: any = (props: any) => {
     if (treeData && edges) {
       const treeLayout = tree()
         .size([height, width]) // Swap height and width for vertical layout
-        .nodeSize(NODE_SIZE)(treeData)
+        .nodeSize(NODE_SIZE)(treeData as any)
 
       const nodes = treeLayout.descendants()
       const links = treeLayout.links()
 
       // Update linkPositions state
-      let linkPositionData: any = {}
+      let linkPositionData: linkCoordinateProps = {}
       links.forEach((link) => {
         linkPositionData[`${_.get(link, 'source.data.id')}_${_.get(link, 'target.data.id')}`] =
         { ...link,
@@ -75,7 +117,7 @@ const Svg: any = (props: any) => {
         setLinksInfo(linkPositionData)
       }
 
-      const nodePositionData: any = {}
+      const nodePositionData: nodeCoordinateProps = {}
       // Swap x and y coordinates for vertical layout
       nodes.forEach((node) => {
         const x = node.x
@@ -129,17 +171,19 @@ const Svg: any = (props: any) => {
         <g transform={`translate(${translate}) scale(${scale})`}>
           {nodes &&
             <Links
-              links={links as any}
+              links={links as unknown as Edge[]}
               linksInfo={linksInfo}
               onClick={onLinkClick}
+              onMouseLeave={onLinkMouseLeave}
             />
           }
           {links && (
             <Nodes
-              nodes={nodes}
+              nodes={nodes as HierarchyPointNode<NodeData>[]}
               expColEvent={expColEvent}
               onHover={onNodeHover}
               onClick={onNodeClick}
+              onMouseLeave={onNodeMouseLeave}
               nodesCoordinate={nodesCoordinate}
             />
           )}

@@ -1,5 +1,6 @@
 import { useIntl } from 'react-intl'
 
+import { useWebhooks } from '@acx-ui/analytics/components'
 import { Tabs,
   PageHeader
 } from '@acx-ui/components'
@@ -24,12 +25,10 @@ import OnpremMigration   from './OnpremMigration'
 import Subscriptions     from './Subscriptions'
 import UserPrivileges    from './UserPrivileges'
 
-const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: boolean }) => {
+const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boolean }) => {
   const { $t } = useIntl()
   const params = useParams()
-  const { activeTab, tenantId, venueId, serialNumber } = params
-  const basePath = useTenantLink('/administration')
-  const navigate = useNavigate()
+  const { tenantId, venueId, serialNumber } = params
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGroupBasedLoginEnabled = useIsSplitOn(Features.GROUP_BASED_LOGIN_TOGGLE)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
@@ -38,14 +37,8 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
     filters: venueId ? { venueId: [venueId] } :
       serialNumber ? { serialNumber: [serialNumber] } : {}
   }
-  const onTabChange = (tab: string) => {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/${tab}`
-    })
-  }
   const adminList = useGetAdminListQuery({ params: { tenantId }, payload: defaultPayload }, {
-    skip: !hasAdministratorTab,
+    skip: !isAdministratorAccessible,
     pollingInterval: 30_000
   })
   const notificationList = useGetNotificationRecipientsQuery({
@@ -56,68 +49,87 @@ const AdministrationTabs = ({ hasAdministratorTab }: { hasAdministratorTab: bool
   })
   const thirdPartyAdminList = useGetDelegationsQuery(
     { params },
-    { skip: !hasAdministratorTab }
+    { skip: !isAdministratorAccessible }
   )
 
   const adminCount = adminList?.data?.length! + thirdPartyAdminList.data?.length! || 0
   const notificationCount = notificationList?.data?.length || 0
 
-  return (
-    <Tabs
-      defaultActiveKey='accountSettings'
-      activeKey={activeTab}
-      onChange={onTabChange}
-    >
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Settings' })} key='accountSettings' />
-      { hasAdministratorTab && (
-        isAbacToggleEnabled
-          ? ( <Tabs.TabPane
-            tab={$t({ defaultMessage: 'Users & Privileges' })}
-            key='userPrivileges' /> )
-          : ( <Tabs.TabPane
-            tab={isGroupBasedLoginEnabled ? $t({ defaultMessage: 'Administrators' })
-              : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount })}
-            key='administrators' /> ) )
-      }
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount })}
-        key='notifications'
-      />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Subscriptions' })} key='subscriptions' />
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Version Management' })}
-        key='fwVersionMgmt'
-      />
-      <Tabs.TabPane tab={$t({ defaultMessage: 'ZD Migration' })} key='onpremMigration' />
-      { isRadiusClientEnabled &&
-        <Tabs.TabPane tab={$t({ defaultMessage: 'Local RADIUS Server' })} key='localRadiusServer' />
-      }
-    </Tabs>
-  )
-}
-
-const tabPanes = {
-  accountSettings: AccountSettings,
-  administrators: Administrators,
-  userPrivileges: UserPrivileges,
-  onpremMigration: OnpremMigration,
-  notifications: Notifications,
-  subscriptions: Subscriptions,
-  fwVersionMgmt: FWVersionMgmt,
-  localRadiusServer: LocalRadiusServer
+  return [
+    {
+      key: 'accountSettings',
+      title: $t({ defaultMessage: 'Settings' }),
+      component: <AccountSettings />
+    },
+    ...(isAdministratorAccessible
+      ? isAbacToggleEnabled
+        ? [{
+          key: 'userPrivileges',
+          title: $t({ defaultMessage: 'Users & Privileges' }),
+          component: <UserPrivileges />
+        }]
+        : [{
+          key: 'administrators',
+          title: isGroupBasedLoginEnabled
+            ? $t({ defaultMessage: 'Administrators' })
+            : $t({ defaultMessage: 'Administrators ({adminCount})' }, { adminCount }),
+          component: <Administrators />
+        }]
+      : []),
+    {
+      key: 'notifications',
+      title: $t({ defaultMessage: 'Notifications ({notificationCount})' }, { notificationCount }),
+      component: <Notifications />
+    },
+    {
+      key: 'subscriptions',
+      title: $t({ defaultMessage: 'Subscriptions' }),
+      component: <Subscriptions />
+    },
+    {
+      key: 'fwVersionMgmt',
+      title: $t({ defaultMessage: 'Version Management' }),
+      component: <FWVersionMgmt />
+    },
+    {
+      key: 'webhooks',
+      ...useWebhooks()
+    },
+    {
+      key: 'onpremMigration',
+      title: $t({ defaultMessage: 'ZD Migration' }),
+      component: <OnpremMigration />
+    },
+    ...(isRadiusClientEnabled
+      ? [{
+        key: 'localRadiusServer',
+        title: $t({ defaultMessage: 'Local RADIUS Server' }),
+        component: <LocalRadiusServer />
+      }]
+      : [])
+  ]
 }
 
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
   const { data: userProfileData } = useUserProfileContext()
+  const basePath = useTenantLink('/administration')
+  const navigate = useNavigate()
 
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantId)
+  const tabs = useTabs({ isAdministratorAccessible })
   if (isAdministratorAccessible === false && activeTab === 'administrators') {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }
 
-  const ActiveTabPane = tabPanes[activeTab as keyof typeof tabPanes]
+  const ActiveTabPane = tabs.find(({ key }) => key === activeTab)?.component
+  const onTabChange = (tab: string) => {
+    navigate({
+      ...basePath,
+      pathname: `${basePath.pathname}/${tab}`
+    })
+  }
 
   return (<>
     <PageHeader
@@ -125,8 +137,14 @@ export default function Administration () {
       breadcrumb={[
         { text: $t({ defaultMessage: 'Administration' }) }
       ]}
-      footer={<AdministrationTabs hasAdministratorTab={isAdministratorAccessible} />}
+      footer={tabs.length > 1 && <Tabs
+        defaultActiveKey='accountSettings'
+        activeKey={activeTab}
+        onChange={onTabChange}
+      >
+        {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
+      </Tabs>}
     />
-    { ActiveTabPane && <ActiveTabPane /> }
+    {ActiveTabPane}
   </>)
 }

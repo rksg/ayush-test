@@ -71,6 +71,8 @@ describe('UserProfileContext', () => {
         (_req, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.upgradeAllowedOperations.url.replace('?service=upgradeConfig', ''),
         (_req, res, ctx) => res(ctx.json([]))),
+      rest.get(UserUrlsInfo.rcgAllowedOperations.url,
+        (_req, res, ctx) => res(ctx.json(['some-operation', 'venueOps']))),
       rest.get(UserUrlsInfo.getAccountTier.url as string,
         (_req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
@@ -78,7 +80,8 @@ describe('UserProfileContext', () => {
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
         (_req, res, ctx) => res(ctx.json({}))),
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false })))
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
+          'allowed-operations-toggle': false })))
     )
   })
 
@@ -182,7 +185,8 @@ describe('UserProfileContext', () => {
         }))
       ),
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': true })))
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': true,
+          'allowed-operations-toggle': false })))
     )
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
@@ -205,12 +209,46 @@ describe('UserProfileContext', () => {
         UserUrlsInfo.getUserProfile.url,
         (_req, res, ctx) => res(ctx.json({
           ...mockedUserProfile,
+          role: 'CUSTOM_ROLE',
+          roles: ['CUSTOM_ROLE'],
           scope: ['switch-r'],
           customRoleName: 'CUSTOM_USER'
         }))
       ),
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false })))
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
+          'allowed-operations-toggle': false })))
+    )
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled, isCustomRole } = props.userProfileCtx
+      return <>
+        <div>{`abacEnabled:${abacEnabled}`}</div>
+        <div>{`isCustomRole:${isCustomRole}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+    expect(screen.queryByText('isCustomRole:false')).toBeVisible()
+  })
+
+  it('user profile special abac disabled case with default role', async () => {
+    mockServer.use(
+      rest.get(
+        UserUrlsInfo.getUserProfile.url,
+        (_req, res, ctx) => res(ctx.json({
+          ...mockedUserProfile,
+          role: 'READ_ONLY',
+          roles: ['READ_ONLY'],
+          scope: ['switch-r'],
+          customRoleName: 'READ_ONLY'
+        }))
+      ),
+      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
+        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
+          'allowed-operations-toggle': false })))
     )
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
@@ -230,7 +268,7 @@ describe('UserProfileContext', () => {
   it('should handle abacEnabled value correctly', async () => {
     mockServer.use(
       rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({})))
+        (_req, res, ctx) => res(ctx.json({ 'allowed-operations-toggle': false })))
     )
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
@@ -242,6 +280,23 @@ describe('UserProfileContext', () => {
     await checkDataRendered()
     expect(screen.queryByText('abacEnabled:false')).toBeVisible()
   })
+
+  it('should handle rcgAllowedOperationsEnabled value correctly', async () => {
+    mockServer.use(
+      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
+        (_req, res, ctx) => res(ctx.json({ 'allowed-operations-toggle': true })))
+    )
+
+    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
+      const { abacEnabled } = props.userProfileCtx
+      return <div>{`abacEnabled:${abacEnabled}`}</div>
+    }
+
+    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
+    await checkDataRendered()
+    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
+  })
+
 })
 
 const checkDataRendered = async () => {

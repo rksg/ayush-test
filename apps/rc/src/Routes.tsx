@@ -6,6 +6,9 @@ import {
   AccessControlForm,
   AccessControlTable,
   AdaptivePolicySetForm,
+  ApGroupEdit,
+  CertificateAuthorityForm,
+  CertificateTemplateForm,
   ClientIsolationForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
@@ -20,9 +23,14 @@ import {
   RogueAPDetectionTable,
   SyslogDetailView, SyslogForm,
   VLANPoolForm,
+  VLANPoolDetail,
   WifiCallingConfigureForm, WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm
+  WifiOperatorForm,
+  ConfigurationProfileForm,
+  CliTemplateForm,
+  CliProfileForm,
+  IdentityProviderForm
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -36,10 +44,13 @@ import {
   getSelectServiceRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  CertificateCategoryType
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
+import { EdgeScopes, WifiScopes }                      from '@acx-ui/types'
+import { AuthRoute }                                   from '@acx-ui/user'
 
 import Edges                                        from './pages/Devices/Edge'
 import AddEdge                                      from './pages/Devices/Edge/AddEdge'
@@ -58,11 +69,7 @@ import ApDetails                                    from './pages/Devices/Wifi/A
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
 import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
-import { ApGroupEdit }                              from './pages/Devices/Wifi/ApGroupEdit'
 import Wired                                        from './pages/Networks/wired'
-import CliTemplateForm                              from './pages/Networks/wired/onDemandCli/CliTemplateForm'
-import CliProfileForm                               from './pages/Networks/wired/profiles/CliProfileForm'
-import { ConfigurationProfileForm }                 from './pages/Networks/wired/profiles/ConfigurationProfileForm'
 import { NetworkTabsEnum, NetworksList }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
 import AAATable                                     from './pages/Policies/AAA/AAATable/AAATable'
@@ -76,11 +83,15 @@ import RadiusAttributeGroupDetail
 import RadiusAttributeGroupForm
   // eslint-disable-next-line max-len
   from './pages/Policies/AdaptivePolicy/RadiusAttributeGroup/RadiusAttributeGroupForm/RadiusAttributeGroupForm'
+import CertificateForm                      from './pages/Policies/CertificateTemplate/CertificateForm/CertificateForm'
+import CertificateTemplateDetail            from './pages/Policies/CertificateTemplate/CertificateTemplateDetail/CertificateTemplateDetail'
+import CertificateTemplateList              from './pages/Policies/CertificateTemplate/CertificateTemplateList/CertificateTemplateList'
 import ClientIsolationDetail                from './pages/Policies/ClientIsolation/ClientIsolationDetail/ClientIsolationDetail'
 import ClientIsolationTable                 from './pages/Policies/ClientIsolation/ClientIsolationTable/ClientIsolationTable'
 import ConnectionMeteringDetail             from './pages/Policies/ConnectionMetering/ConnectionMeteringDetail'
 import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMetering/ConnectionMeteringPageForm'
 import ConnectionMeteringTable              from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
+import IdentityProviderDetail               from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
 import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
@@ -94,7 +105,6 @@ import AddTunnelProfile                     from './pages/Policies/TunnelProfile
 import EditTunnelProfile                    from './pages/Policies/TunnelProfile/EditTunnelProfile'
 import TunnelProfileDetail                  from './pages/Policies/TunnelProfile/TunnelProfileDetail'
 import TunnelProfileTable                   from './pages/Policies/TunnelProfile/TunnelProfileTable'
-import VLANPoolDetail                       from './pages/Policies/VLANPool/VLANPoolDetail'
 import VLANPoolTable                        from './pages/Policies/VLANPool/VLANPoolTable/VLANPoolTable'
 import { WifiOperatorDetailView }           from './pages/Policies/WifiOperator/WifiOperatorDetail/WifiOperatorDetailView'
 import WifiOperatorTable                    from './pages/Policies/WifiOperator/WifiOperatorTable/WifiOperatorTable'
@@ -143,6 +153,7 @@ import SwitchClientList                     from './pages/Users/Switch/ClientLis
 import WifiClientDetails                    from './pages/Users/Wifi/ClientDetails'
 import { WifiClientList, WirelessTabsEnum } from './pages/Users/Wifi/ClientList'
 import GuestManagerPage                     from './pages/Users/Wifi/GuestManagerPage'
+
 
 export default function RcRoutes () {
   const routes = rootRoutes(
@@ -206,24 +217,44 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
-      <Route path='devices/edge/add' element={<AddEdge />} />
-      <Route path='devices/edge/cluster/add' element={<AddEdgeCluster />} />
+      <Route path='devices/edge' element={<Edges />} />
+      <Route
+        path='devices/edge/add'
+        element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+          <AddEdge />
+        </AuthRoute>}/>
+      <Route
+        path='devices/edge/cluster/add'
+        element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+          <AddEdgeCluster />
+        </AuthRoute>}/>
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab'
-        element={<EditEdge />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EditEdge />
+        </AuthRoute>}/>
       <Route
         path='devices/edge/:serialNumber/edit/:activeTab/:activeSubTab'
-        element={<EditEdge />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EditEdge />
+        </AuthRoute>} />
       <Route path='devices/edge/:serialNumber/details/:activeTab'
         element={<EdgeDetails />} />
       <Route path='devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
         element={<EdgeDetails />} />
       <Route path='devices/edge/cluster/:clusterId/edit/:activeTab'
-        element={<EditEdgeCluster />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EditEdgeCluster />
+        </AuthRoute>} />
       <Route path='devices/edge/cluster/:clusterId/configure'
-        element={<EdgeClusterConfigWizard />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EdgeClusterConfigWizard />
+        </AuthRoute>} />
       <Route path='devices/edge/cluster/:clusterId/configure/:settingType'
-        element={<EdgeClusterConfigWizard />} />
+        element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+          <EdgeClusterConfigWizard />
+        </AuthRoute>} />
+
       <Route path='devices/switch' element={<SwitchList tab={SwitchTabsEnum.LIST} />} />
       <Route path='devices/switch/reports/wired'
         element={<SwitchList tab={SwitchTabsEnum.WIRED_REPORT} />} />
@@ -231,8 +262,8 @@ function DeviceRoutes () {
       <Route path='devices/switch/:switchId/:serialNumber/:action' element={<SwitchForm />} />
       <Route path='devices/switch/stack/:action' element={<StackForm />} />
       <Route path='devices/switch/stack/:venueId/:stackList/:action' element={<StackForm />} />
-      <Route path='devices/switch/:switchId/:serialNumber/stack/:action' element={<StackForm />} />
-      <Route path='devices/edge' element={<Edges />} />
+      <Route path='devices/switch/:switchId/:serialNumber/stack/:action'
+        element={<StackForm />} />
     </Route>
   )
 }
@@ -296,12 +327,16 @@ const edgeSdLanRoutes = (isP2Enabled: boolean) => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.CREATE })}
-      element={isP2Enabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLan />}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        {isP2Enabled ? <AddEdgeSdLanP2 /> : <AddEdgeSdLan />}
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
         oper: ServiceOperation.EDIT })}
-      element={isP2Enabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLan />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        {isP2Enabled ? <EditEdgeSdLanP2 /> : <EditEdgeSdLan />}
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.EDGE_SD_LAN,
@@ -318,7 +353,9 @@ const edgeDhcpRoutes = () => {
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.CREATE
       })}
-      element={<AddDHCP/>}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        <AddDHCP/>
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({
@@ -339,7 +376,9 @@ const edgeDhcpRoutes = () => {
         type: ServiceType.EDGE_DHCP,
         oper: ServiceOperation.EDIT
       })}
-      element={<EditDhcp />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EditDhcp />
+      </AuthRoute>}
     />
   </>
 }
@@ -365,14 +404,18 @@ const edgeFirewallRoutes = () => {
         type: ServiceType.EDGE_FIREWALL,
         oper: ServiceOperation.CREATE
       })}
-      element={<AddFirewall />}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        <AddFirewall />
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({
         type: ServiceType.EDGE_FIREWALL,
         oper: ServiceOperation.EDIT
       })}
-      element={<EditFirewall />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EditFirewall />
+      </AuthRoute>}
     />
   </>
 }
@@ -382,7 +425,9 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.CREATE })}
-      element={<AddPersonalIdentitNetwork />}
+      element={<AuthRoute scopes={[EdgeScopes.CREATE]}>
+        <AddPersonalIdentitNetwork />
+      </AuthRoute>}
     />
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
@@ -397,7 +442,9 @@ const edgePinRoutes = () => {
     <Route
       path={getServiceRoutePath({ type: ServiceType.NETWORK_SEGMENTATION,
         oper: ServiceOperation.EDIT })}
-      element={<EditPersonalIdentityNetwork />}
+      element={<AuthRoute scopes={[EdgeScopes.UPDATE]}>
+        <EditPersonalIdentityNetwork />
+      </AuthRoute>}
     />
   </>
 }
@@ -564,6 +611,7 @@ function ServiceRoutes () {
 function PolicyRoutes () {
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>
@@ -696,11 +744,11 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.CREATE })}
-        element={<WifiOperatorForm edit={false}/>}
+        element={<WifiOperatorForm editMode={false}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.EDIT })}
-        element={<WifiOperatorForm edit={true}/>}
+        element={<WifiOperatorForm editMode={true}/>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.DETAIL })}
@@ -708,8 +756,23 @@ function PolicyRoutes () {
       />
       <Route
         // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}
+        element={<IdentityProviderForm editMode={false} />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.EDIT })}
+        element={<IdentityProviderForm editMode={true} />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })}
         element={<IdentityProviderTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.DETAIL })}
+        element={<IdentityProviderDetail />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
@@ -729,7 +792,9 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
-        element={<AddTunnelProfile />} />
+        element={<AuthRoute scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+          <AddTunnelProfile />
+        </AuthRoute>} />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })}
         element={<TunnelProfileTable />}
@@ -740,7 +805,9 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.EDIT })}
-        element={<EditTunnelProfile />}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}>
+          <EditTunnelProfile />
+        </AuthRoute>}
       />
       {isConnectionMeteringEnabled && <>
         <Route
@@ -822,6 +889,72 @@ function PolicyRoutes () {
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
           element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
         /> </>
+      }
+      {isCertificateTemplateEnabled && <>
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.LIST })}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_TEMPLATE}/>
+            </AuthRoute>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.LIST })}
+          // eslint-disable-next-line max-len
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE_AUTHORITY}/>
+            </AuthRoute>}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateList tabKey={CertificateCategoryType.CERTIFICATE}/>
+            </AuthRoute>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <CertificateTemplateForm editMode={false}/>
+            </AuthRoute>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.EDIT })}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <CertificateTemplateForm editMode={true}/>
+            </AuthRoute>}
+        />
+        <Route
+          // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_AUTHORITY, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <CertificateAuthorityForm/>
+            </AuthRoute>}
+        />
+        <Route
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.CREATE })}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <CertificateForm/>
+            </AuthRoute>}
+        />
+        <Route
+        // eslint-disable-next-line max-len
+          path={getPolicyRoutePath({ type: PolicyType.CERTIFICATE_TEMPLATE, oper: PolicyOperation.DETAIL })}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <CertificateTemplateDetail/>
+            </AuthRoute>}
+        />
+      </>
       }
     </Route>
   )

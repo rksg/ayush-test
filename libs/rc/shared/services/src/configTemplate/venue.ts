@@ -1,6 +1,6 @@
 import {
   AAASetting,
-  CapabilitiesApModel, CommonResult, ExternalAntenna,
+  CapabilitiesApModel, CommonResult, ConfigTemplateUrlsInfo, ExternalAntenna,
   LocalUser, RadiusServer, TableResult, TacacsServer,
   TriBandSettings, Venue, VenueBssColoring,
   VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
@@ -15,7 +15,8 @@ import { RequestPayload }        from '@acx-ui/types'
 
 import { handleCallbackWhenActivitySuccess } from '../utils'
 
-import { commonQueryFn, configTemplateApi } from './common'
+import { commonQueryFn, configTemplateApi }   from './common'
+import { useCasesToRefreshVenueTemplateList } from './constants'
 
 export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -39,17 +40,12 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     getVenuesTemplateList: build.query<TableResult<Venue>, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenuesTemplateList),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddVenueTemplateRecord',
-            'UpdateVenueTemplateRecord',
-            'DeleteVenueTemplateRecord'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshVenueTemplateList, () => {
             // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
           })

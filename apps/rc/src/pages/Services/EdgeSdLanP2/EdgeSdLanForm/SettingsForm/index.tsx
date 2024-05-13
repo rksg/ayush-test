@@ -14,7 +14,8 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  useHelpPageLink
 } from '@acx-ui/rc/utils'
 
 import { EdgeSdLanFormModelP2 } from '..'
@@ -28,6 +29,7 @@ export const SettingsForm = () => {
   const { form, editMode, initialValues } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
+  const helpUrl = useHelpPageLink()
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
@@ -119,7 +121,7 @@ export const SettingsForm = () => {
       return Promise.reject(<UI.ClusterSelectorHelper>
         <InformationSolid />
         {$t(messageMappings.setting_cluster_helper, {
-          infoLink: <a href='/'>
+          infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
             {$t({ defaultMessage: 'See more information' })}
           </a>
         })}
@@ -152,16 +154,19 @@ export const SettingsForm = () => {
           <Row>
             <Col span={24}>
               <UI.VenueSelectorText>
-                {$t({ defaultMessage: 'Select the venue where you want to apply the SD-LAN:' })}
+                { // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Select the <venueSingular></venueSingular> where you want to apply the SD-LAN:' })
+                }
               </UI.VenueSelectorText>
               <Row>
                 <Col span={18}>
                   <Form.Item
                     name='venueId'
-                    label={$t({ defaultMessage: 'Venue' })}
+                    label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                     rules={[{
                       required: true,
-                      message: $t({ defaultMessage: 'Please select a Venue' })
+                      // eslint-disable-next-line max-len
+                      message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
                     }]}
                   >
                     <Select
@@ -211,7 +216,7 @@ export const SettingsForm = () => {
                 {$t({ defaultMessage: 'Tunnel guest traffic to another cluster (DMZ)' })}
               </UI.FieldText>
             </Col>
-            <Col span={3}>
+            <UI.FlexEndCol span={3}>
               <Form.Item
                 name='isGuestTunnelEnabled'
                 valuePropName='checked'
@@ -219,7 +224,7 @@ export const SettingsForm = () => {
               >
                 <Switch aria-label='dmzEnabled' />
               </Form.Item>
-            </Col>
+            </UI.FlexEndCol>
           </Row>
 
           <Row>

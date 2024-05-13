@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
@@ -13,8 +13,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
@@ -27,23 +27,29 @@ import {
   VarCustomer
 } from '@acx-ui/msp/utils'
 import {
+  EntitlementNetworkDeviceType,
   EntitlementUtil,
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { isDelegationMode }                from '@acx-ui/utils'
+import { isDelegationMode, noDataDisplay } from '@acx-ui/utils'
+
+import HspContext from '../../HspContext'
 
 const transformNextExpirationDate = (row: VarCustomer) => {
-  let expirationDate = '--'
+  let expirationDate = ''
   let toBeRemoved = ''
-  if (row.entitlements) {
-    const entitlements = row.entitlements
+  const apswEntitlement = row.entitlements?.filter((en:DelegationEntitlementRecord) =>
+    en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+
+  if (apswEntitlement) {
+    // const entitlements = row.entitlements
     let target: DelegationEntitlementRecord
-    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+    apswEntitlement.forEach((entitlement:DelegationEntitlementRecord) => {
       target = entitlement
-      const consumed = parseInt(entitlement.quantity, 10)
+      const consumed = parseInt(entitlement.consumed, 10)
       const quantity = parseInt(entitlement.quantity, 10)
       if (consumed > 0 || quantity > 0) {
         if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
@@ -51,23 +57,26 @@ const transformNextExpirationDate = (row: VarCustomer) => {
         }
       }
       expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
-      toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
-        parseInt(target.toBeRemovedQuantity, 10))
+      toBeRemoved = target.toBeRemovedQuantity > 0
+        ? EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
+          target.toBeRemovedQuantity) : ''
     })
   }
 
-  return `${expirationDate} (${toBeRemoved})`
+  return toBeRemoved === '' ? `${expirationDate}`: `${expirationDate} (${toBeRemoved})`
 }
 
 export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const mspUtils = MSPUtils()
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -256,7 +265,7 @@ export function VarCustomers () {
       key: 'expirationDate',
       sorter: true,
       render: function (_, row) {
-        return transformNextExpirationDate(row)
+        return row.entitlements ? transformNextExpirationDate(row) : noDataDisplay
       }
     }
   ]

@@ -44,8 +44,9 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockedGetTimezone = jest.fn().mockResolvedValue({ data: timezoneResult })
 
-describe('Venues Form', () => {
+describe('MigrationSettingForm', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     params = {
@@ -57,10 +58,6 @@ describe('Venues Form', () => {
       ),
       rest.get(CommonUrlsInfo.getVenue.url,
         (req, res, ctx) => res(ctx.json(venueResponse))
-      ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/*',
-        (req, res, ctx) => res(ctx.json(timezoneResult))
       ),
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
@@ -102,7 +99,7 @@ describe('Venues Form', () => {
     // fireEvent.click(screen.getByText('Add'))
   })
   it('should call address parser', async () => {
-    const { address } = await addressParser(autocompleteResult)
+    const { address } = await addressParser(autocompleteResult, mockedGetTimezone)
 
     const addressResult = {
       addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',

@@ -1,21 +1,26 @@
 
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
 import { SwitchesTrafficByVolume }                                                                                                            from '@acx-ui/analytics/components'
 import { SwitchStatusByTime }                                                                                                                 from '@acx-ui/analytics/components'
-import { GridCol, GridRow }                                                                                                                   from '@acx-ui/components'
 import { TopologyFloorPlanWidget, isLAGMemberPort }                                                                                           from '@acx-ui/rc/components'
 import { useSwitchPortlistQuery }                                                                                                             from '@acx-ui/rc/services'
-import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchPortViewModel, SwitchViewModel, sortPortFunction } from '@acx-ui/rc/utils'
+import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchPortViewModel, SwitchViewModel, sortPortFunction, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                          from '@acx-ui/react-router-dom'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                                                  from '@acx-ui/utils'
 import type { AnalyticsFilter }                                                                                                               from '@acx-ui/utils'
 
-import { SwitchDetailsContext } from '../..'
-
+import { Button, GridCol, GridRow } from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import {
+  SwitchBlinkLEDsDrawer,
+  SwitchInfo
+}
+  from '@acx-ui/rc/components'
+import { hasPermission }                     from '@acx-ui/user'
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
 import { TopPorts }            from './TopPorts'
@@ -28,26 +33,61 @@ export function SwitchOverviewPanel (props:{
   stackMember: StackMember[]
 }) {
   const { filters, switchDetail, currentSwitchDevice, stackMember } = props
-  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader } = switchDetailsContextData
-  return <><GridRow>
-    <GridCol col={{ span: 24 }}>
-      <SwitchFrontRearView stackMember={stackMember} />
-    </GridCol>
-  </GridRow>
-  <GridRow>
-    <GridCol col={{ span: 24 }} style={{ height: '380px' }}>
-      { switchDetail && <TopologyFloorPlanWidget
-        showTopologyFloorplanOn={ShowTopologyFloorplanOn.SWITCH_OVERVIEW}
-        currentDevice={currentSwitchDevice}
-        venueId={switchDetail?.venueId}
-        devicePosition={switchDetail?.position as NetworkDevicePosition}/>
-      }
-    </GridCol>
-  </GridRow>
-  <GridRow>
-    { filters && <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetailHeader}/> }
-  </GridRow>
+  const { $t } = useIntl()
+  const [blinkDrawerVisible, setBlinkDrawerVisible] = useState(false)
+  const [blinkData, setBlinkData] = useState([] as SwitchInfo[])
+  const enableSwitchBlinkLed = useIsSplitOn(Features.SWITCH_BLINK_LED)
+
+  return <>
+    {enableSwitchBlinkLed && hasPermission() &&
+      <div style={{ textAlign: 'right' }}>
+        <Button
+          style={{ marginLeft: '20px' }}
+          type='link'
+          size='small'
+          disabled={switchDetail?.deviceStatus!== SwitchStatusEnum.OPERATIONAL}
+          onClick={() => {
+
+            const transformedSwitchRows: SwitchInfo[] = [{
+              switchId: switchDetail.id,
+              venueId: switchDetail.venueId,
+              stackMembers: stackMember
+            }]
+            setBlinkData(transformedSwitchRows)
+            setBlinkDrawerVisible(true)
+
+          }}>
+          {$t({ defaultMessage: 'Blink LEDs' })}
+        </Button>
+      </div>
+    }
+
+    <GridRow>
+      <GridCol col={{ span: 24 }}>
+        <SwitchFrontRearView stackMember={stackMember} />
+      </GridCol>
+    </GridRow>
+    <GridRow>
+      <GridCol col={{ span: 24 }} style={{ height: '380px' }}>
+        { switchDetail && <TopologyFloorPlanWidget
+          showTopologyFloorplanOn={ShowTopologyFloorplanOn.SWITCH_OVERVIEW}
+          currentDevice={currentSwitchDevice}
+          venueId={switchDetail?.venueId}
+          devicePosition={switchDetail?.position as NetworkDevicePosition}/>
+        }
+      </GridCol>
+    </GridRow>
+    <GridRow>
+      { filters && <SwitchWidgets filters={{ ...filters }} switchDetailHeader={switchDetail} /> }
+    </GridRow>
+
+    {enableSwitchBlinkLed &&
+      <SwitchBlinkLEDsDrawer
+        visible={blinkDrawerVisible}
+        setVisible={setBlinkDrawerVisible}
+        switches={blinkData}
+        isStack={stackMember.length > 0}
+      />}
   </>
 }
 

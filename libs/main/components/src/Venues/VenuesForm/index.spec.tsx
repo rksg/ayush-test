@@ -5,6 +5,7 @@ import { rest }       from 'msw'
 import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import {
   AdministrationUrlsInfo, CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
   VenueConfigTemplateUrlsInfo,
   useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -67,6 +68,8 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
+const mockedGetTimezone = jest.fn().mockResolvedValue({ data: timezoneResult })
+
 describe('Venues Form', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -85,9 +88,6 @@ describe('Venues Form', () => {
       ),
       rest.put(CommonUrlsInfo.updateVenue.url,
         (req, res, ctx) => res(ctx.json(successResponse))
-      ),
-      rest.get('https://maps.googleapis.com/maps/api/timezone/*',
-        (req, res, ctx) => res(ctx.json(timezoneResult))
       ),
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
@@ -154,7 +154,7 @@ describe('Venues Form', () => {
   })
 
   it('should call address parser', async () => {
-    const { address } = await addressParser(autocompleteResult)
+    const { address } = await addressParser(autocompleteResult, mockedGetTimezone)
 
     const addressResult = {
       addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
@@ -247,7 +247,7 @@ describe('Venues Form', () => {
         }
       ),
       rest.post(
-        VenueConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockVenueConfigTemplates))
       )
     )

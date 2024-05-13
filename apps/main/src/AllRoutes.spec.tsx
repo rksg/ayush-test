@@ -12,6 +12,12 @@ import AllRoutes from './AllRoutes'
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useStreamActivityMessagesQuery: jest.fn(),
+  useGetPreferencesQuery: () => ({ data: {} }),
+  useGetTenantDetailsQuery: () => ({ data: {} })
+}))
+jest.mock('@acx-ui/msp/services', () => ({
+  ...jest.requireActual('@acx-ui/msp/services'),
+  useStreamActivityMessagesQuery: jest.fn(),
   useGetMspEcProfileQuery: () => ({ data: {
     msp_label: '',
     name: '',
@@ -19,8 +25,10 @@ jest.mock('@acx-ui/rc/services', () => ({
     service_expiration_date: '',
     is_active: 'false'
   } }),
-  useGetPreferencesQuery: () => ({ data: {} }),
-  useGetTenantDetailsQuery: () => ({ data: {} })
+  useGetBrandingDataQuery: () => ({ data: {
+    msp_label: '',
+    name: ''
+  } })
 }))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
@@ -240,7 +248,7 @@ describe('AllRoutes', () => {
     await screen.findByTestId('timeline')
   })
 
-  test('should not see anayltics & service validation if not admin', async () => {
+  test('should not see AI Assurance if guest manager', async () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     const { rerender } = render(<AllRoutes />, {
@@ -249,25 +257,43 @@ describe('AllRoutes', () => {
         path: '/tenantId/t/dashboard'
       }
     })
-
-    const menuItem = await screen.findByRole('menuitem', { name: 'AI Assurance' })
-    expect(menuItem).toBeVisible()
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
 
     setUserProfile({
       allowedOperations: [],
       profile: {
         ...getUserProfile().profile,
-        roles: [RolesEnum.READ_ONLY]
+        roles: [RolesEnum.GUEST_MANAGER]
       },
       accountTier: 'Gold',
       betaEnabled: false
     })
-
     rerender(<AllRoutes />)
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
+  })
 
-    await screen.findAllByRole('menuitem')
+  test('should not see AI Assurance if DPSK admin', async () => {
+    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
-    expect(menuItem).not.toBeInTheDocument()
+    const { rerender } = render(<AllRoutes />, {
+      wrapper: Provider,
+      route: {
+        path: '/tenantId/t/dashboard'
+      }
+    })
+    expect(await screen.findByRole('menuitem', { name: 'AI Assurance' })).toBeVisible()
+
+    setUserProfile({
+      allowedOperations: [],
+      profile: {
+        ...getUserProfile().profile,
+        roles: [RolesEnum.DPSK_ADMIN]
+      },
+      accountTier: 'Gold',
+      betaEnabled: false
+    })
+    rerender(<AllRoutes />)
+    expect(screen.queryByRole('menuitem', { name: 'AI Assurance' })).not.toBeInTheDocument()
   })
 
   test('should navigate to ruckus-wan-gateway/*', async () => {

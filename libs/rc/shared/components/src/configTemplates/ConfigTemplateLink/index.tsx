@@ -119,7 +119,7 @@ export function ServiceConfigTemplateLinkSwitcher (props: React.PropsWithChildre
 }
 
 // eslint-disable-next-line max-len
-export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string | number, activeTab?: string) {
+export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, id: string, name: string | number | ReactNode, activeTab?: string) {
   const targetTab = activeTab ?? configTemplateDefaultDetailsTab[type]
   const policyType = configTemplatePolicyTypeMap[type]
   const serviceType = configTemplateServiceTypeMap[type]

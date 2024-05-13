@@ -161,7 +161,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
     width={580}
     children={<>
       <Typography.Text>
-        <b>  {$t({ defaultMessage: 'Venue:' })}</b> {props.data.name}
+        <b>  {$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}</b> {props.data.name}
       </Typography.Text>
       <Table
         columns={columns}

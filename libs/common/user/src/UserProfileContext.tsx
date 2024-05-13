@@ -8,7 +8,8 @@ import {
   useGetAccountTierQuery,
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
-  useFeatureFlagStatesQuery
+  useFeatureFlagStatesQuery,
+  useRcgAllowedOperationsQuery
 } from './services'
 import { UserProfile }                         from './types'
 import { setUserProfile, hasRoles, hasAccess } from './userProfile'
@@ -39,8 +40,6 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     data: profile,
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
-  const { data: allowedOperations } = useAllowedOperationsQuery(tenantId!,
-    { skip: !Boolean(profile) })
   const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } },
     { skip: !Boolean(profile) })
   const betaEnabled = (beta?.enabled === 'true')? true : false
@@ -48,12 +47,24 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
 
+  const allowedOperationsFF = 'allowed-operations-toggle'
+
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF] }, { skip: !Boolean(profile) }
+      { params: { tenantId }, payload: [abacFF, allowedOperationsFF] }, { skip: !Boolean(profile) }
     )
+
+  const rcgAllowedOperationsEnabled = featureFlagStates?.[allowedOperationsFF]
+  const { data: allAllowedOperations } = useAllowedOperationsQuery(tenantId!,
+    { skip: !Boolean(profile) || rcgAllowedOperationsEnabled !== false })
+
+  const { data: rcgAllowedOperations } = useRcgAllowedOperationsQuery(tenantId!,
+    { skip: !Boolean(profile) || rcgAllowedOperationsEnabled !== true })
+
+  const allowedOperations =
+      rcgAllowedOperationsEnabled ? rcgAllowedOperations : allAllowedOperations
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = !!profile?.customRoleName
@@ -61,8 +72,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {
       // TODO: Will remove this after RBAC feature release
-      userProfile.role = Role.PRIME_ADMIN
-      userProfile.roles = [Role.PRIME_ADMIN]
+      userProfile.role = userProfile.role in Role ? userProfile.role : Role.PRIME_ADMIN
+      userProfile.roles = userProfile.roles
+        .every(r => r in Role) ? userProfile.roles : [Role.PRIME_ADMIN]
       isCustomRole = false
     }
     setUserProfile({

@@ -27,6 +27,8 @@ export interface ClusterInterfaceInfo {
 }
 
 export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterStatus) => {
+  const venueId = currentClusterStatus?.venueId
+  const clusterId = currentClusterStatus?.clusterId
   const edgeNodeList = currentClusterStatus?.edgeList
   const { $t } = useIntl()
   const [getPortConfig] = useLazyGetPortConfigQuery()
@@ -34,7 +36,8 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
   const [updateNetworkConfig] = usePatchEdgeClusterNetworkSettingsMutation()
   const {
     data: allInterfaceData,
-    isLoading: isInterfaceDataLoading
+    isLoading: isInterfaceDataLoading,
+    isFetching: isInterfaceDataFetching
   } = useGetAllInterfacesByTypeQuery({
     payload: {
       edgeIds: edgeNodeList?.map(item => item.serialNumber),
@@ -183,7 +186,11 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
     oldInterfaceData?: EdgePortInfo
   ) => {
     const portData = await getPortConfig({
-      params: { serialNumber: newInterfaceData.serialNumber }
+      params: {
+        venueId: venueId,
+        edgeClusterId: clusterId,
+        serialNumber: newInterfaceData.serialNumber
+      }
     })
     let ports: EdgePortWithStatus[] = portData.data?.ports as EdgePortWithStatus[]
     ports = ports?.map(item =>{
@@ -224,6 +231,7 @@ export const useClusterInterfaceActions = (currentClusterStatus?: EdgeClusterSta
   return {
     allInterfaceData,
     isInterfaceDataLoading,
+    isInterfaceDataFetching,
     updateClusterInterface
   }
 }

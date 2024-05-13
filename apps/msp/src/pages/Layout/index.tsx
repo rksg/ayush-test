@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -7,8 +7,7 @@ import {
   LayoutUI
 } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { AdminSolid }                               from '@acx-ui/icons'
-import { HomeSolid }                                from '@acx-ui/icons'
+import { AdminSolid, HomeSolid }                    from '@acx-ui/icons'
 import {
   ActivityButton,
   AlarmsButton,
@@ -28,6 +27,8 @@ import { RolesEnum }                                                            
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
 import { getJwtTokenPayload, isDelegationMode, AccountType }                        from '@acx-ui/utils'
 
+import HspContext from '../../HspContext'
+
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
 
@@ -42,9 +43,8 @@ function Layout () {
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
   const navigate = useNavigate()
   const params = useParams()
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
   const { data } = useGetTenantDetailQuery({ params: { tenantId } })
   const { data: userProfile } = useUserProfileContext()
   const companyName = userProfile?.companyName
@@ -56,6 +56,11 @@ function Layout () {
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const nonVarDelegation = useIsSplitOn(Features.ANY_3RDPARTY_INVITE_TOGGLE)
   const showSupportHomeButton = isSupportToMspDashboardAllowed && isDelegationMode()
+
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const isShowBrand360 =
     isBrand360Enabled &&
@@ -102,7 +107,7 @@ function Layout () {
   return (
     <LayoutComponent
       logo={<TenantNavLink to={indexPath} tenantType={'v'} children={<Logo />} />}
-      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood, data?.mspEc?.parentMspId)}
+      menuConfig={useMenuConfig(tenantType, hasLicense, isDogfood)}
       content={
         <>
           <CloudMessageBanner />

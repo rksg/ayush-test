@@ -22,15 +22,16 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { useInviteCustomerListQuery }                                       from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                               from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                         from '@acx-ui/rc/services'
-import { useTableQuery }                                                    from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink } from '@acx-ui/react-router-dom'
-import { useParams }                                                        from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                        from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                  from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId }   from '@acx-ui/utils'
+import { useGetBrandingDataQuery, useGetMspEcProfileQuery, useInviteCustomerListQuery } from '@acx-ui/msp/services'
+import { MSPUtils }                                                                     from '@acx-ui/msp/utils'
+import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                                     from '@acx-ui/rc/services'
+import { useTableQuery, dpskAdminRoutePathKeeper }                                      from '@acx-ui/rc/utils'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }             from '@acx-ui/react-router-dom'
+import { useParams }                                                                    from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                    from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
+import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId }               from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -48,6 +49,9 @@ function Layout () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
+  const { data: mspEcProfile } = useGetMspEcProfileQuery({ params })
+  const isMspEc = MSPUtils().isMspEc(mspEcProfile)
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isMspEc })
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType
@@ -94,18 +98,24 @@ function Layout () {
           pathname: `${basePath.pathname}`
         })
     }
-    if (isDPSKAdmin && !(params['*'] as string).includes('dpsk')) {
-      (params['*'] === 'userprofile')
-        ? navigate({
-          ...userProfileBasePath,
-          pathname: `${userProfileBasePath.pathname}`
-        })
-        : navigate({
-          ...dpskBasePath,
-          pathname: `${dpskBasePath.pathname}`
-        })
-    }
-  }, [isGuestManager, isDPSKAdmin, params['*']])
+  }, [isGuestManager, params['*']])
+
+  useEffect(() => {
+    const currentPath = params['*'] as string
+    const isAllowed = dpskAdminRoutePathKeeper(currentPath)
+
+    if (!isDPSKAdmin || isAllowed) return
+
+    currentPath === 'userprofile'
+      ? navigate({
+        ...userProfileBasePath,
+        pathname: `${userProfileBasePath.pathname}`
+      })
+      : navigate({
+        ...dpskBasePath,
+        pathname: `${dpskBasePath.pathname}`
+      })
+  }, [isDPSKAdmin, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
@@ -161,7 +171,10 @@ function Layout () {
             <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton
+          isMspEc={isMspEc}
+          mspBrandData={mspBrandData}
+          supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />

@@ -58,7 +58,7 @@ export function ClientAdmissionControlForm (props: {
           {$t(enableSwitchLabel[type])}
           {(!readOnly && level === ClientAdmissionControlLevelEnum.AP_LEVEL) &&
             <Tooltip
-              title={$t({ defaultMessage: `Note that enabling it will disable the band 
+              title={$t({ defaultMessage: `Note that enabling it will disable the band
               balancing and load balancing on this AP.` })}
               placement='right'>
               <QuestionMarkCircleOutlined style={{ height: '16px', marginBottom: -3 }} />
@@ -67,8 +67,9 @@ export function ClientAdmissionControlForm (props: {
         </div>
         <Tooltip
           title={(isMutuallyExclusive && level === ClientAdmissionControlLevelEnum.VENUE_LEVEL)?
-            $t({ defaultMessage: `To enable the client admission control, please make sure 
-              the band balancing or load balancing in the venue is disabled.` }): null}
+            // eslint-disable-next-line max-len
+            $t({ defaultMessage: 'To enable the client admission control, please make sure the band balancing or load balancing in the <venueSingular></venueSingular> is disabled.' })
+            : null}
           placement='right'>
           <Form.Item
             name={enabledFieldName}

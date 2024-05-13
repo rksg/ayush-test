@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl'
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Tabs }                        from '@acx-ui/components'
 import { get }                                           from '@acx-ui/config'
-import {  useIsTierAllowed }                             from '@acx-ui/feature-toggle'
+import { useIsTierAllowed, useIsSplitOn, Features }      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
@@ -27,8 +27,16 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
-  const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
-  const { filters } = useAnalyticsFilter()
+  const basePath = useTenantLink(props.path ?? '/analytics/health/wireless/tab/')
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+  const { filters } = useAnalyticsFilter({
+    revertToDefaultURLs: {
+      noSwitchSupportURLs: isSwitchHealthEnabled ? [] : ['/ai/health', '/analytics/health']
+    }
+  })
   const healthPageFilters = widgetFilters ? widgetFilters : filters
   const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>(null)
 

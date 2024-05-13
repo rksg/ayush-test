@@ -24,25 +24,37 @@ describe('ActivityApCompatibilityTable', () => {
   it('should visible render correctly', async () => {
     const requestId = 'requestId'
     const mockUpdateStatus = jest.fn()
+    let desc = ''
     render(
       <Provider>
         <ActivityApCompatibilityTable
           requestId={requestId}
-          updateActivityDesc={mockUpdateStatus} />
+          updateActivityDesc={(description) => {
+            mockUpdateStatus()
+            desc = description
+          }} />
       </Provider>,
       { route: { params } })
 
-    await waitFor(() => {
-      expect(mockUpdateStatus).toBeCalledTimes(1)
-    })
+    const { totalCount, impactedCount } = mockActivityApCompatibilityTable
+    const compatibiliyCount = impactedCount - totalCount
+    const percent = Math.round(compatibiliyCount / impactedCount * 100 )
+    const expectDesc = `(${compatibiliyCount} / ${impactedCount} devices, ${percent}%)`
     const element = await screen.findByText('AP-1')
     expect(element).toBeInTheDocument()
     expect(await screen.findByText('AP-10')).toBeInTheDocument()
+    expect(await screen.findByText(`Total: ${totalCount}`)).toBeInTheDocument()
     const showBtn = await screen.findByTestId('showBtn')
     expect(showBtn).toBeVisible()
     await userEvent.click(showBtn)
     expect(element).not.toBeInTheDocument()
     await userEvent.click(showBtn)
     expect(await screen.findByText('AP-1')).toBeInTheDocument()
+    await waitFor(() => {
+      expect(mockUpdateStatus).toBeCalled()
+    })
+    await waitFor(() => {
+      expect(desc).toEqual(expectDesc)
+    })
   })
 })

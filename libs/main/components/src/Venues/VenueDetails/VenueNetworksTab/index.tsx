@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import React, { ReactNode, useEffect, useState } from 'react'
 
-import { Form, Switch } from 'antd'
-import _                from 'lodash'
-import { useIntl }      from 'react-intl'
+import { Form, Switch }           from 'antd'
+import { assign, cloneDeep, get } from 'lodash'
+import { useIntl }                from 'react-intl'
 
 import {
   Loader,
@@ -36,7 +36,9 @@ import {
   useVenueNetworkListV2Query,
   useAddNetworkVenueTemplateMutation,
   useUpdateNetworkVenueTemplateMutation,
-  useDeleteNetworkVenueTemplateMutation
+  useDeleteNetworkVenueTemplateMutation,
+  useScheduleSlotIndexMap,
+  useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -44,7 +46,6 @@ import {
   NetworkTypeEnum,
   RadioTypeEnum,
   generateDefaultNetworkVenue,
-  useScheduleSlotIndexMap,
   aggregateApGroupPayload,
   Network,
   IsNetworkSupport6g,
@@ -52,7 +53,8 @@ import {
   NetworkExtended,
   SchedulerTypeEnum,
   SchedulingModalState, ConfigTemplateType, useConfigTemplate,
-  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink
+  useConfigTemplateMutationFnSwitcher, useConfigTemplateTenantLink,
+  KeyValue, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                    from '@acx-ui/user'
@@ -133,6 +135,24 @@ export function VenueNetworksTab () {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
+
+  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -267,7 +287,7 @@ export function VenueNetworksTab () {
         if (Boolean(row.activated?.isActivated)) {
           const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
             sdlan.networkIds.includes(row.id))
-          return getNetworkTunnelInfo(destinationsInfo)
+          return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
         } else {
           return ''
         }
@@ -282,12 +302,12 @@ export function VenueNetworksTab () {
       render: function (__, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
-        if((_.get(row,'deepNetwork.enableDhcp') && _.get(venueDetailsQuery.data,'venue.mesh.enabled'))){
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+        if((get(row,'deepNetwork.enableDhcp') && get(venueDetailsQuery.data,'venue.mesh.enabled'))){
           disabled = true
         } else if (row?.isOnBoarded) {
           disabled = true
-          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
+          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this <venueSingular></venueSingular> is tied to the Service network exclusively.' })
         } else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
@@ -318,7 +338,12 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
-        return transformVLAN(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
+        return transformVLAN(
+          getCurrentVenue(row),
+          row.deepNetwork,
+          vlanPoolingNameMap,
+          (e) => handleClickApGroups(row, e),
+          isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
       }
     },
     {
@@ -380,7 +405,7 @@ export function VenueNetworksTab () {
 
 
   const handleScheduleFormFinish = (name: string, info: FormFinishInfo) => {
-    let data = _.cloneDeep(scheduleModalState.networkVenue)
+    let data = cloneDeep(scheduleModalState.networkVenue)
 
     const scheduler = info.values?.scheduler
     const { type, ...weekdaysData } = scheduler || {}
@@ -411,7 +436,7 @@ export function VenueNetworksTab () {
       }
     }
 
-    const payload = _.assign(data, { scheduler: tmpScheduleList })
+    const payload = assign(data, { scheduler: tmpScheduleList })
 
     updateNetworkVenue({ params: {
       tenantId: params.tenantId,
@@ -425,7 +450,7 @@ export function VenueNetworksTab () {
 
   const handleFormFinish = (name: string, newData: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
-      let oldData = _.cloneDeep(apGroupModalState.networkVenue)
+      let oldData = cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
 
       updateNetworkVenue({ params: {

@@ -141,6 +141,10 @@ describe('VenueNetworksTab', () => {
       rest.get(
         CommonUrlsInfo.getVenueDetailsHeader.url,
         (req, res, ctx) => res(ctx.json({ venue: venueData }))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
   })
@@ -311,7 +315,8 @@ describe('VenueNetworksTab', () => {
         ...mockedSdLanDataListP2[0],
         networkIds: ['d556bb683e4248b7a911fdb40c307aa5']
       }],
-      scopedNetworkIds: ['d556bb683e4248b7a911fdb40c307aa5']
+      scopedNetworkIds: ['d556bb683e4248b7a911fdb40c307aa5'],
+      scopedGuestNetworkIds: []
     }
 
     it('confirm deactivate when SD-LAN is scoped in the selected network', async () => {
@@ -344,7 +349,8 @@ describe('VenueNetworksTab', () => {
     it('should correctly display tunnel column when SD-LAN is not running on it', async () => {
       jest.mocked(useSdLanScopedVenueNetworks).mockReturnValue({
         sdLans: [],
-        scopedNetworkIds: []
+        scopedNetworkIds: [],
+        scopedGuestNetworkIds: []
       })
 
       render(<Provider><VenueNetworksTab /></Provider>, {
@@ -353,7 +359,7 @@ describe('VenueNetworksTab', () => {
 
       const activatedRow = await screen.findByRole('row', { name: /test_1/i })
       screen.getByRole('columnheader', { name: 'Tunnel' })
-      expect(activatedRow).toHaveTextContent('Local breakout')
+      expect(activatedRow).toHaveTextContent('Local Breakout')
     })
   })
 })

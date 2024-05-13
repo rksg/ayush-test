@@ -4,8 +4,8 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }                                                              from '@acx-ui/components'
-import { EdgeEditContext, EdgePortTabEnum }                                                      from '@acx-ui/rc/components'
-import { useEdgeBySerialNumberQuery, useGetEdgeQuery }                                           from '@acx-ui/rc/services'
+import { EdgeEditContext }                                                                       from '@acx-ui/rc/components'
+import { useEdgeBySerialNumberQuery }                                                            from '@acx-ui/rc/services'
 import { isEdgeConfigurable }                                                                    from '@acx-ui/rc/utils'
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                        from '@acx-ui/user'
@@ -113,7 +113,6 @@ export const EditEdgeTabs = () => {
   }, [editEdgeContext])
 
   const onTabChange = (activeKey: string) => {
-    if(activeKey === 'ports') activeKey = `${activeKey}/${EdgePortTabEnum.PORTS_GENERAL}`
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${activeKey}`
@@ -131,8 +130,16 @@ export const EditEdgeTabs = () => {
 const EditEdge = () => {
 
   const { $t } = useIntl()
-  const { serialNumber = '', activeTab } = useParams()
-  const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: serialNumber } })
+  const params = useParams()
+  const { serialNumber = '', activeTab } = params
+  const { data: currentEdge } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: {
+      fields: ['name'],
+      filters: { serialNumber: [serialNumber] } }
+  }, {
+    skip: !serialNumber
+  })
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
   const [formControl, setFormControl] = useState({} as EdgeEditContext.EditEdgeFormControlType)
   const tabs = useTabs()
@@ -145,7 +152,7 @@ const EditEdge = () => {
       setFormControl
     }}>
       <PageHeader
-        title={edgeInfoData?.name}
+        title={currentEdge?.name}
         breadcrumb={[
           {
             text: $t({ defaultMessage: 'SmartEdges' }),

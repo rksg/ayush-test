@@ -94,7 +94,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     (isRrm && {
       label: get('IS_MLISA_SA')
         ? $t({ defaultMessage: 'Zone RRM Health' })
-        : $t({ defaultMessage: 'Venue RRM Health' }),
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular> RRM Health' }),
       children: <OptimizedIcon
         value={crrmOptimizedState!.order}
         text={$t(crrmOptimizedState!.label)}
@@ -113,7 +113,8 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       children: $t(category)
     }),
     (!isRrm && {
-      label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' }),
+      // eslint-disable-next-line max-len
+      label: get('IS_MLISA_SA') ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       children: sliceValue
     }),
     (isRrm && {

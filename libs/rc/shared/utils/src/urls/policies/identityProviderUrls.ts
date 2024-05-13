@@ -6,19 +6,56 @@ export const IdentityProviderUrls: { [key: string]: ApiInfo } = {
     url: '/hotspot20IdentityProviders',
     newApi: true
   },
+  getIdentityProvider: {
+    method: 'get',
+    url: '/hotspot20IdentityProviders/:policyId',
+    newApi: true
+  },
   updateIdentityProvider: {
     method: 'put',
     url: '/hotspot20IdentityProviders/:policyId',
     newApi: true
   },
+  deleteIdentityProvider: {
+    method: 'delete',
+    url: '/hotspot20IdentityProviders/:policyId',
+    newApi: true
+  },
+  /*
   deleteIdentityProviderList: {
     method: 'delete',
     url: '/hotspot20IdentityProviders',
     newApi: true
   },
-  getEnhancedIdentityProviderList: {
+  */
+  getIdentityProviderList: {
     method: 'post',
-    url: '/enhancedHotspot20IdentityProviders/query',
+    url: '/hotspot20IdentityProviders/query',
+    newApi: true
+  },
+  getRadiusServers: {
+    method: 'post',
+    url: '/radiusServerProfiles/query',
+    newApi: true
+  },
+  activateIdentityProviderRadius: {
+    method: 'put',
+    url: '/hotspot20IdentityProviders/:providerId/radiusServerProfiles/:radiusId',
+    newApi: true
+  },
+  deactivateIdentityProviderRadius: {
+    method: 'delete',
+    url: '/hotspot20IdentityProviders/:providerId/radiusServerProfiles/:radiusId',
+    newApi: true
+  },
+  activateIdentityProviderOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:wifiNetworkId/hotspot20IdentityProviders/:providerId',
+    newApi: true
+  },
+  deactivateIdentityProviderOnWifiNetwork: {
+    method: 'delete',
+    url: '/wifiNetworks/:wifiNetworkId/hotspot20IdentityProviders/:providerId',
     newApi: true
   }
 }

@@ -160,7 +160,10 @@ describe('EdgeClusterSettingForm', () => {
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
-    await userEvent.type(screen.getByRole('textbox', { name: 'Serial Number' }), '96123')
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Serial Number' }),
+      '9612345678901234567890123456789012'
+    )
     expect(await screen.findByText(/The one-time-password \(OTP\) will be/i)).toBeVisible()
   })
 

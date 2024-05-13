@@ -38,7 +38,7 @@ const Ports = () => {
   const editEdgeContext = useContext(EditContext)
   const {
     clusterInfo, portData, portStatus,
-    lagData, isFetching, isCluster
+    lagData, isFetching, isCluster, clusterConfig
   } = useContext(EditEdgeDataContext)
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
@@ -125,7 +125,11 @@ const Ports = () => {
 
     try {
       await updatePortConfig({
-        params: { serialNumber },
+        params: {
+          venueId: clusterInfo?.venueId,
+          edgeClusterId: clusterInfo?.clusterId,
+          serialNumber
+        },
         payload: { ports: formData } }).unwrap()
       handleFinishPostProcess()
     } catch (error) {
@@ -172,6 +176,7 @@ const Ports = () => {
               activeTab={activeTab}
               onTabChange={handleTabChange}
               isCluster={isCluster}
+              vipConfig={clusterConfig?.virtualIpSettings?.virtualIps}
             />
           </StepsForm.StepForm>
         </StepsForm>

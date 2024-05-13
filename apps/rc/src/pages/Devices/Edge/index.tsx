@@ -5,7 +5,8 @@ import { Button, Dropdown, PageHeader }                           from '@acx-ui/
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { CommonOperation, Device, getUrl }                        from '@acx-ui/rc/utils'
 import { TenantLink }                                             from '@acx-ui/react-router-dom'
-import { filterByAccess }                                         from '@acx-ui/user'
+import { EdgeScopes }                                             from '@acx-ui/types'
+import { hasPermission }                                          from '@acx-ui/user'
 
 import { EdgeClusterTable } from './EdgeClusterTable'
 import { OldEdgeListPage }  from './OldEdgeListPage'
@@ -24,7 +25,7 @@ const Edges = () => {
     <>
       <PageHeader
         title={$t({ defaultMessage: 'SmartEdge' })}
-        extra={filterByAccess([<AddMenu />])}
+        extra={hasPermission({ scopes: [EdgeScopes.CREATE] }) && <AddMenu />}
       />
       <EdgeClusterTable />
     </>

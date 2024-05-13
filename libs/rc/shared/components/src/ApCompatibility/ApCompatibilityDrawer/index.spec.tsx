@@ -89,6 +89,7 @@ describe('ApCompatibilityDrawer', () => {
         route: { params: { tenantId, networkId }, path: '/:tenantId' }
       })
     expect(await screen.findByText('6.2.3.103.251')).toBeInTheDocument()
+    expect(await screen.findByText('Wi-Fi 6')).toBeInTheDocument()
     const icon = await screen.findByTestId('CloseSymbol')
     expect(icon).toBeVisible()
   })

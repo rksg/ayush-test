@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
+import { CertificateAcceptType } from './certificateTemplate'
+
 export enum PolicyType {
   ACCESS_CONTROL = 'Access Control',
   VLAN_POOL = 'VLAN Pools',
@@ -20,7 +22,10 @@ export enum PolicyType {
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
   TUNNEL_PROFILE = 'Tunnel Profile',
   CONNECTION_METERING = 'Data Usage Metering',
-  WIFI_OPERATOR = 'Wi-Fi Operator'
+  WIFI_OPERATOR = 'Wi-Fi Operator',
+  CERTIFICATE_TEMPLATE = 'Certificate Template',
+  CERTIFICATE_AUTHORITY = 'Certificate Authority',
+  CERTIFICATE = 'Certificate'
 }
 
 export enum PolicyTechnology {
@@ -56,10 +61,16 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.TUNNEL_PROFILE]: defineMessage({ defaultMessage: 'Provides IP address to end devices' }),
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Create adaptive policies for user and device connectivity on wired or wireless networks' }),
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set' }),
-  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' })
+  [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' }),
+  [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Create certificates to establish secure communication and verify the identity of entities in a network' }),
+  [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
+  [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' })
 }
 
-export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {
-  [PolicyTechnology.WIFI]: defineMessage({ defaultMessage: 'Wi-Fi' }),
-  [PolicyTechnology.SWITCH]: defineMessage({ defaultMessage: 'Switch' })
+export const downloadCertExtension: Record<CertificateAcceptType, String> = {
+  [CertificateAcceptType.PEM]: 'pem',
+  [CertificateAcceptType.DER]: 'der',
+  [CertificateAcceptType.PKCS7]: 'p7b',
+  [CertificateAcceptType.PKCS8]: 'key',
+  [CertificateAcceptType.PKCS12]: 'p12'
 }

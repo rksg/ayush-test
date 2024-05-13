@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {  useIntl } from 'react-intl'
 
 import { useUpdateInvitationMutation }                                           from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, Tenant, Invitation, UserProfile }                from '@acx-ui/analytics/utils'
+import { defaultSort, sortProp, Tenant, Invitation, UserProfile, useRoles }      from '@acx-ui/analytics/utils'
 import { LayoutUI as UI, Drawer, Table, TableProps, ColorPill, showActionModal } from '@acx-ui/components'
 import { CaretDownSolid, HomeSolid }                                             from '@acx-ui/icons'
 import { Link, useTenantLink }                                                   from '@acx-ui/react-router-dom'
@@ -87,13 +87,9 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
     : ''
   const varInvitations = (invitations as Invitation[])
     .filter(invitation => invitation.type !== 'super-tenant')
-  const roles = {
-    'admin': $t({ defaultMessage: 'Admin' }),
-    'network-admin': $t({ defaultMessage: 'Network Admin' }),
-    'report-only': $t({ defaultMessage: 'Report Only' })
-  }
   const [visible, setVisible] = useState(false)
   const basePath = useTenantLink('')
+  const roles = useRoles()
   const columns: TableProps<Tenant>['columns'] = [
     {
       width: 200,
@@ -115,7 +111,7 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
     {
       title: $t({ defaultMessage: 'Role' }),
       sorter: { compare: sortProp('role', defaultSort) },
-      render: (_, { role }) => roles[role],
+      render: (_, { role }) => $t(roles[role]),
       searchable: true,
       dataIndex: 'role',
       key: 'role'
@@ -155,13 +151,13 @@ export function AccountsDrawer ({ user }: { user: UserProfile }) {
           (invitation : Invitation, ind) => <InviteUI.ListItem key={`${invitation.accountName}-${ind}`}>
             {$t({
               defaultMessage: `You have been invited by {first} {last} to {accountName} as {role}.
-            Please {accept} or {reject} the invitation`
+            Please {accept} or {reject} the invitation.`
             }, {
               accountName: <InviteUI.Highlight>{invitation.accountName}</InviteUI.Highlight>,
               first: invitation.firstName,
               last: invitation.lastName,
               role: <InviteUI.Highlight>
-                {roles[invitation.role as keyof typeof roles]}
+                {$t(roles[invitation.role])}
               </InviteUI.Highlight>,
               accept: <ActionLink type='accept' invitation={invitation} userId={userId} />,
               reject: <ActionLink type='reject' invitation={invitation} userId={userId} />

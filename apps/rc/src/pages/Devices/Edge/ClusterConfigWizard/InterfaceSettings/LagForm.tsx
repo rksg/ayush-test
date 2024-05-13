@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 
 import { Form, Space, Typography } from 'antd'
 import _                           from 'lodash'
@@ -10,10 +10,10 @@ import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs, validateEdge
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
-import * as UI                       from './styledComponents'
-import { InterfaceSettingsFormType } from './types'
+import * as UI                                                            from './styledComponents'
+import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from './types'
 
-export const LagForm = () => {
+export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
   const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
@@ -32,6 +32,8 @@ export const LagForm = () => {
     name='lagSettings'
     children={<LagSettingView />}
   />
+
+  useEffect(() => onInit?.(), [onInit])
 
   return (
     <TypeForm
@@ -52,6 +54,13 @@ const LagSettingView = (props: LagSettingViewProps) => {
   const { form } = useStepFormContext()
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as (InterfaceSettingsFormType['portSettings'] | undefined)
+  const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
+  const timeout = form.getFieldValue('timeout')
+  const vipConfigArr = vipConfig?.map(item => ({
+    virtualIp: item.vip,
+    ports: item.interfaces,
+    timeoutSeconds: timeout
+  }))
 
   const cleanupLagMemberPortConfig = (lagData: EdgeLag, serialNumber: string) => {
     // reset physical port config when it is selected as LAG member
@@ -142,6 +151,7 @@ const LagSettingView = (props: LagSettingViewProps) => {
               serialNumber={serialNumber}
               lagList={lagList}
               portList={portList}
+              vipConfig={vipConfigArr}
               onAdd={handleAdd}
               onEdit={handleEdit}
               onDelete={handleDelete}

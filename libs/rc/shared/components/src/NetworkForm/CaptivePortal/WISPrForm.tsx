@@ -610,10 +610,8 @@ export function WISPrForm () {
           }
         />}
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr} />
+        <BypassCaptiveNetworkAssistantCheckbox />
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr}
           enableDefaultWalledGarden={false} />
         {!regionOption &&
          isOtherProvider &&

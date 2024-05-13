@@ -4,12 +4,14 @@ import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                                                from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                       from '../../models/EdgeEnum'
-import { EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
-import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                      from '../../validator'
+import { IpUtilsService }                                                                                                                               from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                                      from '../../models/EdgeEnum'
+import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeSerialNumber, EdgeStatus } from '../../types'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                     from '../../validator'
 
 const Netmask = require('netmask').Netmask
+const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
+const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-2])\\d{10}'
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -201,34 +203,25 @@ export const getSuggestedIpRange = (ipAddress?: string, subnetMask?: string) => 
 
 export const edgeSerialNumberValidator = async (value: string) => {
   const { $t } = getIntl()
-  if (value.startsWith(PRODUCT_CODE_VIRTUAL_EDGE)) {
-    return validateVirtualEdgeSerialNumber(value)
-  }
-  return Promise.reject($t(validationMessages.invalid))
-}
-
-const validateVirtualEdgeSerialNumber = (value: string) => {
-  const { $t } = getIntl()
-
-  if (!new RegExp(/^[0-9a-z]+$/i).test(value)) {
+  if (!new RegExp(`^(${vSmartEdgeSerialRegex}|${physicalSmartEdgeSerialRegex})$`,'i').test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
-
-  if (value.length !== 34) {
-    return Promise.reject($t({
-      defaultMessage: 'Field must be exactly 34 characters'
-    }))
-  }
-
   return Promise.resolve()
 }
 
-const isVirtualEdgeSerial = (value: string) => {
+export const isVirtualEdgeSerial = (value: string) => {
   return new RegExp(/^96[0-9A-Z]{32}$/i).test(value)
 }
 
 export const deriveEdgeModel = (serial: string) => {
   return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const isOtpEnrollmentRequired = (serial: string) => {
+  // Currently always return true since physical SmartEdge144 leverages the OTP enrollment instead of TPM due to
+  // tight schedule.
+  return true
 }
 
 export const optionSorter = (
@@ -338,7 +331,7 @@ export const validateEdgeAllPortsEmptyLag = (portsData: EdgePort[], lagData: Edg
 
   if (allPortsLagMember && lagWithGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to form a cluster.' }))
+    return Promise.reject($t({ defaultMessage: 'At least one LAG must be enabled and configured to WAN or core port to form a cluster.' }))
   } else {
     return Promise.resolve()
   }
@@ -355,12 +348,12 @@ export const validateEdgeGateway = (portsData: EdgePort[], lagData: EdgeLag[]) =
 
   const lagWithGateway = getLagGatewayCount(lagData)
 
-  const totoalGateway = portWithGateway + lagWithGateway
+  const totalGateway = portWithGateway + lagWithGateway
 
-  if (totoalGateway === 0) {
+  if (totalGateway === 0) {
     // eslint-disable-next-line max-len
-    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to form a cluster.' }))
-  } else if (totoalGateway > 1) {
+    return Promise.reject($t({ defaultMessage: 'At least one port must be enabled and configured to WAN or core port to form a cluster.' }))
+  } else if (totalGateway > 1) {
     return Promise.reject($t({ defaultMessage: 'Please configure exactly one gateway.' }))
   } else {
     return Promise.resolve()
@@ -371,8 +364,24 @@ export const getEdgePortIpModeEnumValue = (type: string) => {
     case EdgeIpModeEnum.DHCP:
       return EdgeIpModeEnum.DHCP
     case 'Static':
+    case EdgeIpModeEnum.STATIC:
       return EdgeIpModeEnum.STATIC
     default:
       return ''
   }
+}
+
+export const getEdgePortIpFromStatusIp = (statusIp?: string) => {
+  return statusIp?.split('/')[0]
+}
+
+export const isInterfaceInVRRPSetting = (
+  serialNumber: EdgeSerialNumber,
+  interfaceName: string,
+  vrrpSettings: ClusterNetworkSettings['virtualIpSettings']
+) => {
+  return Boolean(vrrpSettings?.some(item =>
+    item.ports?.some(port =>
+      port.serialNumber === serialNumber &&
+      port.portName.toLowerCase() === interfaceName.toLowerCase())))
 }

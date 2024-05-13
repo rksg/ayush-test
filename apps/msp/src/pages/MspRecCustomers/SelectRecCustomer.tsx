@@ -10,7 +10,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useGetAvailableMspRecCustomersQuery
 } from '@acx-ui/msp/services'
@@ -25,18 +24,16 @@ interface SelectRecCustomerDrawerProps {
   tenantId?: string
   setVisible: (visible: boolean) => void
   setSelected: (selected: MspRecCustomer[]) => void
+  multiSelectionEnabled: boolean
 }
 
 export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => {
   const { $t } = useIntl()
   const mspUtils = MSPUtils()
 
-  const { visible, setVisible, setSelected } = props
+  const { visible, setVisible, setSelected, multiSelectionEnabled } = props
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspRecCustomer[]>([])
-
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
 
   const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams() })
 
@@ -86,7 +83,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
           dataSource={queryResults?.data?.child_accounts}
           rowKey='account_name'
           rowSelection={{
-            type: 'radio',
+            type: multiSelectionEnabled ? 'checkbox' : 'radio',
             onChange (selectedRowKeys, selRows) {
               setSelectedRows(selRows)
             }
@@ -113,8 +110,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
 
   return (
     <Drawer
-      title={isHspSupportEnabled ? $t({ defaultMessage: 'Manage Brand Property' })
-        : $t({ defaultMessage: 'Manage RUCKUS End Customer' })}
+      title={$t({ defaultMessage: 'Manage Brand Property' })}
       subTitle={$t({ defaultMessage: 'Properties for {propertyOowner}' },
         { propertyOowner: queryResults?.data?.parent_account_name })}
       visible={visible}

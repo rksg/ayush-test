@@ -1,7 +1,9 @@
 import jwtDecode from 'jwt-decode'
 
-import { isDelegationMode } from './apiService'
-import { getTenantId }      from './getTenantId'
+import { get } from '@acx-ui/config'
+
+import { isDelegationMode, isLocalHost } from './apiService'
+import { getTenantId }                   from './getTenantId'
 
 export enum AccountTier {
   GOLD = 'Gold',
@@ -65,6 +67,7 @@ interface JwtToken {
   acx_account_vertical?: AccountVertical
   acx_trial_in_progress?: boolean
   isBetaFlag?: boolean
+  isAlphaFlag?: boolean
 }
 
 const cache = new Map<string, JwtToken>()
@@ -117,14 +120,30 @@ export function updateJwtCache (newJwt: string) {
   }
 }
 
-export async function loadImageWithJWT (imageId: string) {
-  const headers = { mode: 'no-cors', ...getJwtHeaders() }
-  const url = `/api/file/tenant/${getTenantId()}/${imageId}/url`
+export async function loadImageWithJWT (imageId: string, requestUrl?: string) {
+  const headers = { 'mode': 'no-cors', 'Content-Type': 'application/json',
+    'Accept': 'application/json', ...getJwtHeaders() }
+  const url = getUrlWithNewDomain(requestUrl) || `/api/file/tenant/${getTenantId()}/${imageId}/url`
   const response = await fetch(url, { headers })
   if (!response.ok) {
     throw new Error(`Error! status: ${response.status}`)
   } else {
     const result = await response.json()
     return result.signedUrl
+  }
+}
+
+function getUrlWithNewDomain (requestUrl?: string) {
+  if (requestUrl) {
+    const origin = window.location.origin
+    const newApiHostName = origin.replace(
+      window.location.hostname, get('NEW_API_DOMAIN_NAME'))
+    const domain = !isLocalHost()
+      ? newApiHostName
+      : origin
+
+    return `${domain}${requestUrl}`
+  } else {
+    return null
   }
 }

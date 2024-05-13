@@ -14,7 +14,7 @@ import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@a
 import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
 import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                        from '@acx-ui/user'
+import { useUserProfileContext, filterByAccess, hasPermission }         from '@acx-ui/user'
 import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import { CountContext }  from '..'
@@ -100,7 +100,10 @@ export function ServiceGuardTable () {
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
       onClick: (selectedRows) => {
-        navigate(`${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`)
+        navigate({
+          ...serviceGuardPath,
+          pathname: `${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`
+        })
       },
       disabled: ([selectedRow]) => {
         const id = get('IS_MLISA_SA') ? userId : r1UserProfile?.externalId
@@ -245,8 +248,8 @@ export function ServiceGuardTable () {
         type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
-        rowSelection={{ type: 'radio' }}
-        rowActions={rowActions}
+        rowSelection={hasPermission() && { type: 'radio' }}
+        rowActions={filterByAccess(rowActions)}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}

@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AccessControlUrls,
   CommonUrlsInfo,
@@ -16,8 +17,15 @@ import {
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { mockedTunnelProfileViewData, devicePolicyListResponse, externalProviders, mockGuestMoreData, policyListResponse } from '../__tests__/fixtures'
-import NetworkFormContext, { NetworkFormContextType }                                                                      from '../NetworkFormContext'
+import {
+  mockedTunnelProfileViewData,
+  devicePolicyListResponse,
+  externalProviders,
+  mockGuestMoreData,
+  policyListResponse,
+  mockHotspot20MoreData
+} from '../__tests__/fixtures'
+import NetworkFormContext, { NetworkFormContextType } from '../NetworkFormContext'
 
 import { NetworkMoreSettingsForm } from './NetworkMoreSettingsForm'
 
@@ -79,7 +87,7 @@ describe('NetworkMoreSettingsForm', () => {
     const tabs = await screen.findAllByRole('tab')
     // The User Connection tab is hidden when the nwtwork type is not Captive Portal
     // The Advanced tab is hidden when the QoS feature flag are turned Off
-    expect(tabs.length).toBe(4)
+    expect(tabs.length).toBe(5)
     const networkControlTab = tabs[1]
     await userEvent.click(networkControlTab)
 
@@ -93,9 +101,29 @@ describe('NetworkMoreSettingsForm', () => {
     render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
 
     const tabs = await screen.findAllByRole('tab')
-    expect(tabs.length).toBe(5)
+    expect(tabs.length).toBe(6)
   })
 
+  it('should render More settings form with Hotspot2.0 tab successfully', async () => {
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    const mockContextData = {
+      editMode: true,
+      data: mockHotspot20MoreData } as NetworkFormContextType
+
+    render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
+
+    const tabs = await screen.findAllByRole('tab')
+    // Hotspot 2.0 tab will be shown when network type is hotspot20
+    expect(tabs.length).toBe(6)
+    const hotspot20Tab = tabs[1]
+    await userEvent.click(hotspot20Tab)
+    expect(hotspot20Tab.textContent).toBe('Hotspot 2.0')
+    await userEvent.click(hotspot20Tab)
+
+    expect(hotspot20Tab.getAttribute('aria-selected')).toBeTruthy()
+  })
 })
 
 // eslint-disable-next-line max-len

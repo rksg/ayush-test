@@ -70,14 +70,16 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
   const getPrivilegeScopes = (data: PrivilegeGroup) => {
     // const hasEc = data.delegation === true
     const OwnVenues = data?.policies?.length ?? 0
+    // eslint-disable-next-line max-len
+    const venueCount = OwnVenues === 0 ?
+      $t({ defaultMessage: 'All <VenuePlural></VenuePlural>' }) :
+      $t({ defaultMessage: '{OwnVenues} <venuePlural></venuePlural>' }, { OwnVenues })
     const allCustomers = data?.policyEntityDTOS?.length ?? 0
     return isOnboardedMsp ? <>
-      <div>{$t({ defaultMessage: 'Own Account: {venueCount}' }, { venueCount:
-            OwnVenues === 0 ? 'All Venues' : OwnVenues+' venues' })} </div>
-      <div>{$t({ defaultMessage: 'MSP Account: {mspEcCount}' }, { mspEcCount:
+      <div>{$t({ defaultMessage: 'Own Account: {venueCount}' }, { venueCount })} </div>
+      <div>{$t({ defaultMessage: 'MSP Customers: {mspEcCount}' }, { mspEcCount:
             allCustomers === 0 ? 'All Customers' : allCustomers+' customers' })} </div>
-    </> : $t({ defaultMessage: '{venueCount}' }, { venueCount:
-            OwnVenues === 0 ? 'All Venues' : OwnVenues+' venues' })
+    </> : $t({ defaultMessage: '{venueCount}' }, { venueCount })
   }
 
   const columns:TableProps<PrivilegeGroup>['columns'] = [
@@ -126,8 +128,9 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     },
     {
       title: $t({ defaultMessage: 'Members' }),
-      key: 'members',
-      dataIndex: 'members'
+      key: 'memberCount',
+      dataIndex: 'memberCount',
+      align: 'center'
     }
   ]
 
@@ -159,7 +162,7 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       label: $t({ defaultMessage: 'Clone' }),
       visible: (selectedRows) => {
-        return selectedRows.length === 1
+        return (selectedRows.length === 1 && selectedRows[0].name !== RolesEnum.PRIME_ADMIN)
       },
       onClick: (selectedRows) => {
         navigate({
