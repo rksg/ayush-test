@@ -403,7 +403,7 @@ export function EditPortDrawer ({
       voiceVlan: (portSetting.revert ? voice
         : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan))
     })
-    checkIsVoiceVlanInvalid()
+    checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
 
   const getMultiplePortsValue = async (vlansByVenue: Vlan[], defaultVlan: string) => {
@@ -798,12 +798,13 @@ export function EditPortDrawer ({
     checkIsVoiceVlanInvalid()
   }
 
-  const checkIsVoiceVlanInvalid = () => {
+  const checkIsVoiceVlanInvalid = (init?:boolean, revert?:boolean) => {
+    const applyVenueSetting = init ? revert : useVenueSettings
     const voiceVlanField = form?.getFieldValue('voiceVlan')
     const taggedVlansField = form?.getFieldValue('taggedVlans')
     let isInvalid = voiceVlanField &&
     taggedVlansField.split(',').indexOf(String(voiceVlanField)) === -1
-    if (useVenueSettings && voiceVlanField && !taggedVlansField) {
+    if (applyVenueSetting && voiceVlanField && !taggedVlansField) {
       isInvalid = false
     }
     setIsVoiceVlanInvalid(isInvalid)

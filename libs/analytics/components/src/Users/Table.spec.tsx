@@ -2,7 +2,7 @@ import '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { RolesEnum }                                                from '@acx-ui/analytics/utils'
+import { Roles }                                                    from '@acx-ui/analytics/utils'
 import { Provider, rbacApiURL }                                     from '@acx-ui/store'
 import { findTBody, fireEvent, mockServer, render, screen, within } from '@acx-ui/test-utils'
 import { noDataDisplay }                                            from '@acx-ui/utils'
@@ -203,14 +203,13 @@ describe('UsersTable', () => {
       email: 'dog1@ruckuswireless.com.uat',
       accountId: '1234',
       accountName: 'RUCKUS NETWORKS, INC',
-      role: RolesEnum.ADMIN,
+      role: Roles.PRIME_ADMINISTRATOR,
       tenantId: '0015000000GlI7SAAV',
       resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
       resourceGroupName: 'default',
       updatedAt: '2023-09-22T07:31:11.844Z',
       type: null,
       invitation: null,
-      displayRole: 'Admin',
       displayType: 'Internal',
       displayInvitationState: '--',
       displayInvitor: '--'

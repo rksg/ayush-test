@@ -8,7 +8,7 @@ import { SystemMap, useSystems }   from '@acx-ui/analytics/services'
 import {
   getUserProfile as getUserProfileRA,
   useAnalyticsFilter,
-  RolesEnum as RolesEnumRA
+  Roles as RolesEnumRA
 } from '@acx-ui/analytics/utils'
 import type { UserProfile as UserProfileRA } from '@acx-ui/analytics/utils'
 import { RadioBand, Loader }                 from '@acx-ui/components'
@@ -393,7 +393,7 @@ export function EmbeddedReport (props: ReportProps) {
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
       username: isRA ? userId : externalId,
       isReadOnly: isRA
-        ? selectedTenant.role === RolesEnumRA.REPORT_ONLY
+        ? selectedTenant.role === RolesEnumRA.BUSINESS_INSIGHTS_USER
         : !(roles.includes(RolesEnumR1.PRIME_ADMIN) || roles.includes(RolesEnumR1.ADMINISTRATOR)),
       locale // i18n locale from R1
     })
