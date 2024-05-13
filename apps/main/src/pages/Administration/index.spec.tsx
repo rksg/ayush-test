@@ -87,7 +87,6 @@ jest.mock('@acx-ui/analytics/components', () => {
     .map(key => [key, () => <div data-testid={key} />])
   return Object.fromEntries(sets)
 })
-jest.mock('')
 describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }
