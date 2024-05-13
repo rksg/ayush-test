@@ -5,11 +5,11 @@ import { useWatch }                      from 'antd/lib/form/Form'
 import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 
-import { Alert, Loader, useStepFormContext }              from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { useGetEdgeClusterListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { EdgeGeneralSetting, edgeSerialNumberValidator }  from '@acx-ui/rc/utils'
-import { useParams }                                      from '@acx-ui/react-router-dom'
+import { Alert, Loader, useStepFormContext }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { useGetEdgeClusterListQuery, useVenuesListQuery }                         from '@acx-ui/rc/services'
+import { EdgeGeneralSetting, edgeSerialNumberValidator, isOtpEnrollmentRequired } from '@acx-ui/rc/utils'
+import { useParams }                                                              from '@acx-ui/react-router-dom'
 
 
 interface EdgeSettingFormProps {
@@ -70,7 +70,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
     })
 
   useEffect(() => {
-    setShowOtpMessage(!!serialNumber?.startsWith('96') && !!!props.isEdit)
+    setShowOtpMessage(isOtpEnrollmentRequired(serialNumber ?? '') && !!!props.isEdit)
   }, [serialNumber])
 
   return (
@@ -82,7 +82,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
         <Col span={23}>
           <Form.Item
             name='venueId'
-            label={$t({ defaultMessage: 'Venue' })}
+            label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{
               required: true
             }]}

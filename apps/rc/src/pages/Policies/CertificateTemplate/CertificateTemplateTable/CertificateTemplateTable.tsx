@@ -8,7 +8,8 @@ import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel }      
 import { getDisabledActionMessage, showAppliedInstanceMessage, useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, useTableQuery }                                                                                                                                 from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                                                                                                                             from '@acx-ui/user'
+import { WifiScopes }                                                                                                                                                                                                            from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                                                                                                         from '@acx-ui/user'
 import { noDataDisplay }                                                                                                                                                                                                         from '@acx-ui/utils'
 
 import { deleteDescription } from '../contentsMap'
@@ -105,6 +106,7 @@ export default function CertificateTemplateTable () {
       title: $t({ defaultMessage: 'CA Type' }),
       dataIndex: 'caType',
       key: 'caType',
+      sorter: true,
       render: function (_, row) {
         return $t(caTypeShortLabel[row.caType as keyof typeof caTypeShortLabel])
       }
@@ -146,7 +148,8 @@ export default function CertificateTemplateTable () {
     {
       title: $t({ defaultMessage: 'Common Name' }),
       dataIndex: ['onboard', 'commonNamePattern'],
-      key: 'commonName',
+      key: 'certificateTemplateOnboard.commonNamePattern',
+      sorter: true,
       searchable: true
     },
     {
@@ -189,11 +192,13 @@ export default function CertificateTemplateTable () {
             policyId: selectedRows[0].id
           })
         })
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([selectedRow], clearSelection) => showDeleteModal(selectedRow, clearSelection)
+      onClick: ([selectedRow], clearSelection) => showDeleteModal(selectedRow, clearSelection),
+      scopeKey: [WifiScopes.DELETE]
     }
   ]
 
@@ -248,7 +253,8 @@ export default function CertificateTemplateTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

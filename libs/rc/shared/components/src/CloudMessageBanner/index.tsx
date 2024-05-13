@@ -49,6 +49,7 @@ export function CloudMessageBanner () {
 
   const hidePlmMessage = !!sessionStorage.getItem('hidePlmMessage')
   const plmMessageExists = !!(data && data.description) && !hidePlmMessage
+  const isDpskOrGuestAdmin = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
 
   useEffect(() => {
     if (cloudVersion && userSettings) {
@@ -56,7 +57,7 @@ export function CloudMessageBanner () {
       checkWifiScheduleExists()
       if (!hasRoles(RolesEnum.DPSK_ADMIN))
         checkSwitchScheduleExists()
-      if(isEdgeEnabled && isScheduleUpdateReady)
+      if(isEdgeEnabled && isScheduleUpdateReady && !isDpskOrGuestAdmin)
         checkEdgeScheduleExists()
     }
   }, [cloudVersion, userSettings])

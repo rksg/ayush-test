@@ -8,7 +8,13 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
-import { useVenuesLeasesListQuery, useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery, useGetDhcpTemplateQuery } from '@acx-ui/rc/services'
+import {
+  useVenuesLeasesListQuery,
+  useGetDHCPProfileQuery,
+  useVenueDHCPProfileQuery,
+  useGetVenueTemplateDhcpProfileQuery,
+  useGetDhcpTemplateQuery
+} from '@acx-ui/rc/services'
 import {
   DHCPLeasesStatusEnum,
   DHCPConfigTypeEnum,

@@ -90,7 +90,7 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
       </Col>
       <Col span={3} style={{ paddingLeft: '8px' }}>
         <Button type='link' onClick={onClickUseVenueSettings}>
-          { currentApBandModeData.useVenueSettings ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
+          { currentApBandModeData.useVenueSettings ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' }) }
         </Button>
       </Col>
     </Row>

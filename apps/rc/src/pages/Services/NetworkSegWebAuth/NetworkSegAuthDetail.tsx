@@ -96,7 +96,7 @@ export default function NetworkSegAuthDetail () {
       sorter: true
     }, {
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       sorter: true,
       render: (data, row) => (

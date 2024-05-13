@@ -21,7 +21,9 @@ import {
   MspEcDelegatedAdmins
 } from '@acx-ui/msp/utils'
 import {
-  roleDisplayText
+  defaultSort,
+  roleDisplayText,
+  sortProp
 } from '@acx-ui/rc/utils'
 import { useParams }   from '@acx-ui/react-router-dom'
 import { RolesEnum }   from '@acx-ui/types'
@@ -132,14 +134,14 @@ export const ManageAdminsDrawer = (props: ManageAdminsDrawerProps) => {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
-      sorter: true,
+      sorter: { compare: sortProp('name', defaultSort) },
       defaultSortOrder: 'ascend'
     },
     {
       title: $t({ defaultMessage: 'Email' }),
       dataIndex: 'email',
       key: 'email',
-      sorter: true,
+      sorter: { compare: sortProp('email', defaultSort) },
       searchable: true
     },
     {

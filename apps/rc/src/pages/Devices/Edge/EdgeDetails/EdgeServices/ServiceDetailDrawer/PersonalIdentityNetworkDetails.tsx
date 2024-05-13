@@ -86,7 +86,7 @@ export const PersonalIdentityNetworkDetails = (props: PersonalIdentityNetworkDet
         { $t({ defaultMessage: 'Personal Identity Network Settings' }) }
       </Subtitle>
       <Form.Item
-        label={$t({ defaultMessage: 'Venue' })}
+        label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         children={
           <TenantLink
             to={`/venues/${venueInfo?.venueId}/venue-details/overview`}

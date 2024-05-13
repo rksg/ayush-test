@@ -95,12 +95,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     newApi: true
   },
-  clearAllAlarm: {
-    method: 'delete',
-    url: '/alarms',
-    oldUrl: '/api/eventalarmapi/:tenantId/alarm',
-    newApi: true
-  },
   getApsList: {
     method: 'post',
     url: '/aps/query',
@@ -520,8 +514,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getRwgList: {
-    method: 'get',
-    url: '/rwgs',
+    method: 'post',
+    url: '/rwgs/query',
     newApi: true
   },
   deleteGateways: {
@@ -536,17 +530,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGateway: {
     method: 'get',
-    url: '/rwgs/:gatewayId',
+    url: '/venues/:venueId/rwgs/:gatewayId',
     newApi: true
   },
   updateGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   addGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   getGatewayAlarms: {

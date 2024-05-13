@@ -5,12 +5,14 @@ async function initialize () {
     React,
     { createRoot },
     { SuspenseBoundary },
-    config
+    config,
+    utils
   ] = await Promise.all([
     import('react'),
     import('react-dom/client'),
     import('@acx-ui/components'),
-    import('@acx-ui/config')
+    import('@acx-ui/config'),
+    import('@acx-ui/utils')
   ])
 
   const container = document.getElementById('root')
@@ -18,7 +20,15 @@ async function initialize () {
 
   root.render(React.createElement(SuspenseBoundary.DefaultFallback, { absoluteCenter: true }))
 
-  await config.initialize('r1')
+  try {
+    await config.initialize()
+  } catch (error) {
+    if (error instanceof config.CommonConfigGetError) {
+      utils.userLogout()
+    } else {
+      throw error
+    }
+  }
 
   const bootstrap = await import('./bootstrap')
   await bootstrap.init(root)
