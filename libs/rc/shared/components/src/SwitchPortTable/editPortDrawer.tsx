@@ -47,8 +47,8 @@ import { useParams } from '@acx-ui/react-router-dom'
 import { store }     from '@acx-ui/store'
 import { getIntl }   from '@acx-ui/utils'
 
-import { ACLSettingDrawer } from './ACLSettingDrawer'
-import { EditLldpModal }    from './editLldpModal'
+import { ACLSettingDrawer }       from './ACLSettingDrawer'
+import { EditLldpModal }          from './editLldpModal'
 import {
   checkVlanOptions,
   checkLldpListEqual,
@@ -72,7 +72,8 @@ import {
   MultipleText,
   getPoeClass,
   updateSwitchVlans,
-  getPortVenueVlans
+  getPortVenueVlans,
+  getMultiPoeCapabilityDisabled
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -182,6 +183,7 @@ export function EditPortDrawer ({
   const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
   const [disabledUseVenueSetting, setDisabledUseVenueSetting] = useState(false)
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
+  const [disableCyclePoeCapability, setDisableCyclePoeCapability] = useState(false)
   const [disableSaveButton, setDisableSaveButton] = useState(false)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
@@ -336,6 +338,7 @@ export function EditPortDrawer ({
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
+    setDisableCyclePoeCapability(getPoeCapabilityDisabled([portSetting]))
     setUseVenueSettings(portSetting?.revert)
     setLldpQosList(portSetting?.lldpQos || [])
     setCyclePoeEnable(portSetting.poeEnable)
@@ -367,6 +370,7 @@ export function EditPortDrawer ({
       selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
     )
     const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting?.response)
+    const cyclePoeMultiPortsDisabled = getMultiPoeCapabilityDisabled(portsSetting?.response)
     const hasMultipleValueFields = allMultipleEditableFields?.filter(field => {
       const isEqual = field === 'lldpQos'
         ? checkLldpListEqual(portsSetting?.response?.map(s => s[field]))
@@ -381,6 +385,7 @@ export function EditPortDrawer ({
     const portSetting = _.pick(portsSetting?.response?.[0], [...hasEqualValueFields, 'profileName'])
 
     setDisablePoeCapability(poeCapabilityDisabled)
+    setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
     setCyclePoeEnable(portsSetting?.response?.filter(s => s?.poeEnable)?.length > 0)
     setHasMultipleValue(_.uniq([
       ...hasMultipleValueFields,
@@ -446,7 +451,7 @@ export function EditPortDrawer ({
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
-      case 'cyclePoe': return disablePoeCapability || !cyclePoeEnable
+      case 'cyclePoe': return disableCyclePoeCapability || !cyclePoeEnable
       default:
         const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
         return isMultipleEdit && !checkboxEnabled

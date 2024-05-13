@@ -247,6 +247,10 @@ export const getPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
   return portSettings?.filter(s => !s?.poeCapability)?.length > 0
 }
 
+export const getMultiPoeCapabilityDisabled = (portSettings: PortSettingModel[]) => {
+  return portSettings?.filter(s => !s?.poeCapability)?.length == portSettings.length
+}
+
 export const getOverrideFields = (fieldsValue: PortSettingModel) => {
   return Object.entries(fieldsValue)
     .filter(v => v?.[1] && v?.[0].includes('Checkbox'))
