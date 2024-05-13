@@ -81,14 +81,6 @@ jest.mock('./Subscriptions', () => ({
     return <div data-testid='mocked-Subscriptions'></div>
   }
 }))
-
-jest.mock('./Subscriptions', () => ({
-  ...jest.requireActual('./Subscriptions'),
-  __esModule: true,
-  default: () => {
-    return <div data-testid='mocked-Subscriptions'></div>
-  }
-}))
 jest.mock('@acx-ui/analytics/components', () => {
   const sets = Object
     .keys(jest.requireActual('@acx-ui/analytics/components'))
