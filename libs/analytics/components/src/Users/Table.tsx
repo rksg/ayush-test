@@ -4,6 +4,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { DisplayUser } from '@acx-ui/analytics/services'
 import {
+  useRoles,
   defaultSort,
   getUserProfile,
   sortProp
@@ -128,6 +129,7 @@ export const UsersTable = ({
   }, [openDrawer, setSelectedRow])
 
   const { $t } = useIntl()
+  const roles = useRoles()
 
   const actions = [
     {
@@ -188,6 +190,7 @@ export const UsersTable = ({
       title: $t({ defaultMessage: 'Role' }),
       dataIndex: 'displayRole',
       key: 'displayRole',
+      render: (_, { role }) => $t(roles[role]),
       sorter: { compare: sortProp('role', defaultSort) }
     },
     {
