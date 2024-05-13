@@ -50,7 +50,13 @@ import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react
 import { RequestPayload }                                    from '@acx-ui/types'
 import { SwitchScopes }                                      from '@acx-ui/types'
 import { filterByAccess }                                    from '@acx-ui/user'
-import { exportMessageMapping, getIntl, noDataDisplay }      from '@acx-ui/utils'
+import {
+  exportMessageMapping,
+  getIntl,
+  noDataDisplay,
+  getJwtTokenPayload,
+  AccountVertical
+} from '@acx-ui/utils'
 
 import { seriesSwitchStatusMapping }                       from '../DevicesWidget/helper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../ImportFileDrawer'
@@ -129,10 +135,14 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
   const { showAllColumns, searchable, filterableKeys, settingsId = 'switch-table' } = props
   const linkToEditSwitch = useTenantLink('/devices/switch/')
 
+  const { acx_account_vertical } = getJwtTokenPayload()
   const { setSwitchCount } = useContext(SwitchTabContext)
   const [ importVisible, setImportVisible] = useState(false)
   const [ importCsv, importResult ] = useImportSwitchesMutation()
-  const importTemplateLink = 'assets/templates/switches_import_template.csv'
+  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ?
+    AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
+  const importTemplateLink = `assets/templates/${isHospitality}switches_import_template.csv`
 
   useImperativeHandle(ref, () => ({
     openImportDrawer: () => {
