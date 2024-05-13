@@ -35,7 +35,7 @@ export const RssDistributionChart: React.FC<ChartProps> = (props) => {
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
       {druidRolledup
-        ? NoGranularityText()
+        ? <NoGranularityText />
         : <AutoSizer>
           {({ height, width }) => (
             <VerticalBarChart

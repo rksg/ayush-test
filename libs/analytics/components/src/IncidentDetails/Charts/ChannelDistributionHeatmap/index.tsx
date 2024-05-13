@@ -110,7 +110,7 @@ export const ChannelDistributionHeatMap: React.FC<ChannelDistributionHeatMapProp
             ? <Tooltip.Info title={infoIconText}/>
             : null }}>
           {druidRolledup
-            ? NoGranularityText()
+            ? <NoGranularityText />
             : <AutoSizer>
               {({ height, width }) => (
                 backfilledHeatmapData.length > 0

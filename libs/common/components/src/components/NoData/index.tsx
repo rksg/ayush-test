@@ -67,6 +67,6 @@ export function NoDataIcon ({ iconText, text }: NoDataIconWrapperProps) {
 export function NoGranularityText () {
   const { $t } = useIntl()
   return <UI.RollupText>
-    {$t({ defaultMessage: 'Data granularity at this level is not available.' })}
+    {$t({ defaultMessage: 'Data granularity at this level is not available' })}
   </UI.RollupText>
 }

@@ -43,7 +43,7 @@ export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
       {druidRolledup
-        ? NoGranularityText()
+        ? <NoGranularityText />
         : <>
           <VLANsTable data={response.data!} {...{ selected, onChange: setSelected }} />
           <MismatchConnectionCarousel

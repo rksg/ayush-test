@@ -90,7 +90,7 @@ export const RssQualityByClientsChart = ({ data, incident }: TimeSeriesChartProp
 
   return <Card title={$t({ defaultMessage: 'RSS Quality by Clients' })} type='no-border'>
     {overlapsRollup(incident.startTime)
-      ? NoGranularityText()
+      ? <NoGranularityText />
       : <AutoSizer>
         {({ height, width }) => (
           <StackedAreaChart

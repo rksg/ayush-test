@@ -100,7 +100,7 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
       {druidRolledup
-        ? NoGranularityText()
+        ? <NoGranularityText />
         : <UI.SummaryWrapper>
           {impactedSwitches && impactedTypes.map((type, index) => {
             const items = type.data.slice(0, type.max)

@@ -136,7 +136,7 @@ describe('ImpactedSwitchVLANDetails', () => {
       incident={fakeIncidentVlan}
     />, { wrapper: Provider })
 
-    await screen.findByText('Data granularity at this level is not available.')
+    await screen.findByText('Data granularity at this level is not available')
     jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
 })
