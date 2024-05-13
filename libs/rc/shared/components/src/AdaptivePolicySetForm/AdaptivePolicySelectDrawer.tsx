@@ -6,7 +6,7 @@ import { useIntl }      from 'react-intl'
 import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import {
   useAdaptivePolicyListByQueryQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy, FILTER,
@@ -35,8 +35,8 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
   const [selectedPolicies, setSelectedPolicies] = useState(new Map())
 
-  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
-    { payload: { page: '1', pageSize: '2147483647' } }, {
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListByQueryQuery(
+    { payload: { page: '1', pageSize: '1000' } }, {
       selectFromResult: ({ data, isLoading }) => {
         const templateIds = new Map(data?.data.map((template) =>
           [template.ruleType.toString(), template.id]))

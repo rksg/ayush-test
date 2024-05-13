@@ -46,8 +46,8 @@ describe('AdaptivePolicyForm', () => {
         RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(attributeList))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicyTemplateListByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.post(

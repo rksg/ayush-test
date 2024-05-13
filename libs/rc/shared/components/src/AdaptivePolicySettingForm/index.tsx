@@ -10,7 +10,7 @@ import { Button, Descriptions, GridCol, GridRow, Loader, showActionModal, Table,
 import {
   useLazyAdaptivePolicyListByQueryQuery,
   useLazyGetRadiusAttributeGroupQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AccessCondition,
@@ -52,12 +52,11 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
 
-  const { data: templateList, isLoading } = usePolicyTemplateListQuery({
+  const { data: templateList, isLoading } = usePolicyTemplateListByQueryQuery({
     payload: {
       page: '1',
       pageSize: '1000',
-      sortField: 'name',
-      sortOrder: 'desc' }
+      sort: 'name,asc' }
   })
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()

@@ -13,7 +13,7 @@ import {
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
-  doProfileDelete, useAdaptivePolicySetListQuery,
+  doProfileDelete, useAdaptivePolicySetListByQueryQuery,
   useDeleteMacRegListMutation,
   useLazyNetworkListQuery,
   useSearchMacRegListsQuery
@@ -70,8 +70,8 @@ export default function MacRegistrationListsTable () {
 
   const [getNetworkList] = useLazyNetworkListQuery()
 
-  const { policySetMap, getPolicySetsLoading } = useAdaptivePolicySetListQuery(
-    { payload: { page: 1, pageSize: '2147483647' } }, {
+  const { policySetMap, getPolicySetsLoading } = useAdaptivePolicySetListByQueryQuery(
+    { payload: { page: 1, pageSize: '2000' } }, {
       selectFromResult: ({ data, isLoading }) => {
         const policySetMap = new Map(data?.data.map((policySet) =>
           [policySet.id, policySet.name]))

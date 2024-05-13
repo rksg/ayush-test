@@ -6,7 +6,7 @@ import {
   doProfileDelete,
   useAdaptivePolicyListByQueryQuery,
   useDeleteAdaptivePolicyMutation,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy, FILTER,
@@ -33,8 +33,8 @@ export default function AdaptivePolicyTable () {
   })
 
   // eslint-disable-next-line max-len
-  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
-    { payload: { page: '1', pageSize: '2147483647' } }, {
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListByQueryQuery(
+    { payload: { page: '1', pageSize: '1000' } }, {
       selectFromResult: ({ data, isLoading }) => {
         const templateIds = new Map(data?.data.map((template) =>
           [template.ruleType.toString(), template.id]))

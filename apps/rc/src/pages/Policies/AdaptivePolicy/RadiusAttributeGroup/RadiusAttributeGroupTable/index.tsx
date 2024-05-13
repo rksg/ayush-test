@@ -4,7 +4,7 @@ import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
 import { SimpleListTooltip }                    from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useAdaptivePolicyListQuery,
+  useAdaptivePolicyListByQueryQuery,
   useDeleteRadiusAttributeGroupMutation,
   useRadiusAttributeGroupListByQueryQuery
 } from '@acx-ui/rc/services'
@@ -32,8 +32,8 @@ export default function RadiusAttributeGroupTable () {
       pagination: { settingsId }
     })
 
-    const { policyListMap, getPolicyIsLoading } = useAdaptivePolicyListQuery(
-      { payload: { page: 1, pageSize: '2147483647', sort: 'name,ASC' } },
+    const { policyListMap, getPolicyIsLoading } = useAdaptivePolicyListByQueryQuery(
+      { payload: { page: 1, pageSize: '2000', sort: 'name,ASC' } },
       {
         selectFromResult ({ data, isLoading }) {
           return {

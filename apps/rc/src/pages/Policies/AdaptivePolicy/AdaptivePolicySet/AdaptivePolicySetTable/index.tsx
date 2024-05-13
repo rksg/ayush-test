@@ -5,7 +5,7 @@ import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle
 import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useAdaptivePolicySetLisByQueryQuery,
+  useAdaptivePolicySetListByQueryQuery,
   useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetDpskListQuery,
   useMacRegListsQuery
 } from '@acx-ui/rc/services'
@@ -28,7 +28,7 @@ export default function AdaptivePolicySetTable () {
 
   const settingsId = 'adaptive-policy-set-list-table'
   const tableQuery = useTableQuery({
-    useQuery: useAdaptivePolicySetLisByQueryQuery,
+    useQuery: useAdaptivePolicySetListByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
     defaultPayload: {},
     pagination: { settingsId }

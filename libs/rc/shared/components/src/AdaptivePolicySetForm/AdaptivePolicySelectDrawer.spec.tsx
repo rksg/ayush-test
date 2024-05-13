@@ -29,8 +29,8 @@ describe('AdaptivePolicySelectDrawer', () => {
     mockedSetAccessPolicies.mockClear()
 
     mockServer.use(
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicyTemplateListByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.post(

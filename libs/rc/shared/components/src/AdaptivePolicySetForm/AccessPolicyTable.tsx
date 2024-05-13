@@ -5,12 +5,12 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { Drag }                      from '@acx-ui/icons'
+import { Loader, Table, TableProps }  from '@acx-ui/components'
+import { Drag }                       from '@acx-ui/icons'
 import {
-  useAdaptivePolicyListQuery,
+  useAdaptivePolicyListByQueryQuery,
   useGetPrioritizedPoliciesQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
@@ -44,8 +44,8 @@ export const AccessPolicyTable = (props: AccessPolicyTableProps) => {
   // eslint-disable-next-line max-len
   const [adaptivePoliciesSelectDrawerVisible, setAdaptivePoliciesSelectDrawerVisible] = useState(false)
 
-  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
-    { payload: { page: '1', pageSize: '2147483647' } }, {
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListByQueryQuery(
+    { payload: { page: '1', pageSize: '1000' } }, {
       selectFromResult: ({ data, isLoading }) => {
         const templateIds = new Map(data?.data.map((template) =>
           [template.ruleType.toString(), template.id]))
@@ -61,10 +61,10 @@ export const AccessPolicyTable = (props: AccessPolicyTableProps) => {
     params: { policySetId: policyId } }, { skip: !editMode })
 
   const adaptivePolicyListTableQuery = useTableQuery({
-    useQuery: useAdaptivePolicyListQuery,
+    useQuery: useAdaptivePolicyListByQueryQuery,
     defaultPayload: {},
     pagination: {
-      pageSize: 10000,
+      pageSize: 2000,
       page: 1
     }
   })

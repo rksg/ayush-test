@@ -7,7 +7,7 @@ import { SimpleListTooltip }                                   from '@acx-ui/rc/
 import {
   useAdaptivePolicyListByQueryQuery,
   useGetRadiusAttributeGroupQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
@@ -36,7 +36,7 @@ export default function RadiusAttributeGroupDetail () {
   })
 
   // eslint-disable-next-line max-len
-  const { templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } }, {
+  const { templateList } = usePolicyTemplateListByQueryQuery({ payload: { page: '1', pageSize: '1000' } }, {
     selectFromResult ({ data }) {
       const templateIds = new Map()
       data?.data.forEach( template => {
