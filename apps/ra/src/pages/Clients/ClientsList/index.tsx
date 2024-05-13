@@ -10,7 +10,7 @@ import {
   QueryParamsForZone,
   dateSort,
   getUserProfile,
-  Roles
+  RolesEnum
 } from '@acx-ui/analytics/utils'
 import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
@@ -51,7 +51,7 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
   }
 
   const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === Roles.BUSINESS_INSIGHTS_USER
+  const isReportOnly = role === RolesEnum.REPORT_ONLY
 
   const clientTablecolumnHeaders: TableProps<ClientByTraffic>['columns'] = [
     {

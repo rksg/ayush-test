@@ -96,26 +96,31 @@ export const mockManagedUsers: ManagedUser[] = [
 
 const mockPartialDisplayUsers: Partial<DisplayUser>[] = [
   {
+    displayRole: 'Admin',
     displayType: 'Internal',
     displayInvitationState: '--',
     displayInvitor: '--'
   },
   {
+    displayRole: 'Network Admin',
     displayType: '3rd Party',
     displayInvitationState: 'Accepted',
     displayInvitor: 'userFirst userSecond'
   },
   {
+    displayRole: 'Report Only',
     displayType: 'Brand 360',
     displayInvitationState: 'Pending',
     displayInvitor: 'userThird userFourth'
   },
   {
+    displayRole: 'Report Only',
     displayType: 'Brand 360',
     displayInvitationState: 'Rejected',
     displayInvitor: 'userRej userRej'
   },
   {
+    displayRole: 'Admin',
     displayType: 'Internal',
     displayInvitationState: '--',
     displayInvitor: '--'

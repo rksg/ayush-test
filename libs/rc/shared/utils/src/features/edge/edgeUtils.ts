@@ -217,6 +217,13 @@ export const deriveEdgeModel = (serial: string) => {
   return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const isOtpEnrollmentRequired = (serial: string) => {
+  // Currently always return true since physical SmartEdge144 leverages the OTP enrollment instead of TPM due to
+  // tight schedule.
+  return true
+}
+
 export const optionSorter = (
   a: DefaultOptionType,
   b: DefaultOptionType
