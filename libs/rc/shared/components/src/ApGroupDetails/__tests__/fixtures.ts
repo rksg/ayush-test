@@ -356,3 +356,18 @@ export const ApGroupNetworkTableData = [{
   ssid: 'joe-open',
   vlan: 1
 }]
+
+export const vlanPoolProfilesData = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '159b156f559749fcb0d8bbfe76a54934',
+      name: 'pool1'
+    }
+  ]
+}

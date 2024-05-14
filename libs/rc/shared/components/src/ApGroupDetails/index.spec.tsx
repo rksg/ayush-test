@@ -6,9 +6,16 @@ import { Provider, store }                          from '@acx-ui/store'
 import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 import { AnalyticsFilter }                          from '@acx-ui/utils'
 
-import { apGroupMembers, apGroupNetworkLinks, networkApGroup, networkDeepList, oneApGroupList } from './__tests__/fixtures'
+import {
+  apGroupMembers,
+  apGroupNetworkLinks,
+  networkApGroup,
+  networkDeepList,
+  oneApGroupList,
+  vlanPoolProfilesData
+} from './__tests__/fixtures'
 
-import ApGroupDetails from './index'
+import { ApGroupDetails } from './index'
 
 
 jest.mock('@acx-ui/analytics/components', () => ({
@@ -50,6 +57,10 @@ describe('ApGroupDetails', () => {
       rest.post(
         CommonUrlsInfo.getNetworkDeepList.url,
         (req, res, ctx) => res(ctx.json(networkDeepList))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolProfilesData))
       )
     )
   })
