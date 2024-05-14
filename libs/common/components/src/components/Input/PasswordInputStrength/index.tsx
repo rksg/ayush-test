@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react'
 import { Col, InputProps, Row, Typography } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { InformationOutlined, SuccessSolid } from '@acx-ui/icons'
+import { SuccessSolid } from '@acx-ui/icons'
 
 import { PasswordInput }   from '..'
 import { cssStr }          from '../../../theme/helper'
 import { StackedBarChart } from '../../StackedBarChart'
 import { Tooltip }         from '../../Tooltip'
 
+import * as UI from './styledComponents'
 interface PasswordStrengthProps extends InputProps {
   regExRules: RegExp[]
   regExErrorMessages: string[]
@@ -186,7 +187,7 @@ export const PasswordStrengthIndicator = ({
       placement={'bottom'}
       data-testid={'tooltipInfo'}
     >
-      <InformationOutlined
+      <UI.InformationOutlinedIcon
         style={{ paddingTop: '2px' }}
         onMouseEnter={() => setMouseEnterTooltip(true)}
         onMouseLeave={() => setMouseEnterTooltip(false)}
