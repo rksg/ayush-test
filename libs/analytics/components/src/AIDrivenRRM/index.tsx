@@ -114,7 +114,7 @@ function AIDrivenRRMWidget ({
                       title={sliceValue}
                       description={code === 'unknown'
                         ? $t(states[status].text)
-                        : <CrrmKpi id={id} code={code} status={status} />}
+                        : <CrrmKpi id={id} code={code} />}
                     />
                   </Tooltip>
                 </TenantLink>
