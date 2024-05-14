@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { identity, flow } from 'lodash'
 import moment             from 'moment-timezone'
-import { defineMessage }  from 'react-intl'
+import { MessageDescriptor, defineMessage }  from 'react-intl'
 
 import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
@@ -13,11 +13,12 @@ const pillSuffix = {
   meetGoal: defineMessage({ defaultMessage: 'meets goal' })
 }
 
-const createBarChartConfig = (apiMetric: string) => ({
+const createBarChartConfig = (apiMetric: string, title: MessageDescriptor = {}) => ({
   apiMetric,
   shortXFormat: (date: string) => moment(date).format('DD'),
   longYFormat: (val: number) => formatter('percentFormat')(val / 100),
-  shortYFormat: (val: number) => formatter('percentFormat')(val / 100)
+  shortYFormat: (val: number) => formatter('percentFormat')(val / 100),
+  title
 })
 
 const divideBy1000 = (ms: number) => ms / 1000
@@ -544,6 +545,23 @@ export const kpiConfig = {
       thresholdFormatter: null,
       tooltip: defineMessage({ defaultMessage: 'Switch Temperature' })
     }
+  },
+  switchInterfaceAnomalies: {
+    text: defineMessage({ defaultMessage: 'Interface Anomalies' }),
+    timeseries: {
+      apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount', 
+    defineMessage({ defaultMessage: 'Anomaly Type' })),
+    pill: {
+      hideProgressBar: true,
+      description: '',
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Switch Interface Anomalies' })
+    }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -611,6 +629,7 @@ export const wiredKPIsForTab = () => {
     },
     infrastructure: {
       kpis: [
+        'switchInterfaceAnomalies',
         'onlineSwitches',
         'switchMemoryUtilization',
         'switchCpuUtilization',

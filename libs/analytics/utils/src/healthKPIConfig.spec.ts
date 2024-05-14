@@ -77,6 +77,7 @@ describe('Health KPI', () => {
       },
       infrastructure: {
         kpis: [
+          'switchInterfaceAnomalies',
           'onlineSwitches',
           'switchMemoryUtilization',
           'switchCpuUtilization',

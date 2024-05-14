@@ -1,3 +1,4 @@
+import { isEmpty }       from 'lodash'
 import moment            from 'moment-timezone'
 import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
@@ -38,7 +39,7 @@ function BarChart ({
   threshold: number;
 }) {
   const { $t } = useIntl()
-  const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { barChart, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').format()
   const queryResults = healthApi.useKpiTimeseriesQuery(
@@ -71,6 +72,7 @@ function BarChart ({
       }
     ]
   }
+  const xName = isEmpty(barChart?.title) ? barChartText.title : barChart?.title
 
   return (
     <Loader states={[queryResults]} key={kpi} errorFallback={<GenericError />}>
@@ -81,7 +83,7 @@ function BarChart ({
               <VerticalBarChart
                 style={{ height, width }}
                 data={data}
-                xAxisName={`(${$t(barChartText.title)})`}
+                xAxisName={`(${$t(xName)})`}
                 barWidth={20}
                 dataFormatter={formatYDataPoint}
                 showTooltipName={false}

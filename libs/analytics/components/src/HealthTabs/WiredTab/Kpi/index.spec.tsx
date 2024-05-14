@@ -99,7 +99,7 @@ describe('Kpi Section', () => {
         />
       </HealthPageContext.Provider>
     </Provider></Router>)
-    expect(await screen.findAllByText(/Switch Reachability/i)).toHaveLength(1)
+    expect(await screen.findAllByText(/Interface Anomalies/i)).toHaveLength(1)
 
     const viewMore = await screen.findByRole('button', { name: 'View more' })
     await userEvent.click(viewMore)

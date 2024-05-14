@@ -103,7 +103,8 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   })
   const { success, total, length } = queryResults.data as PillData
 
-  const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
+  const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip,
+    hideProgressBar } = pill
   const countFormat = formatter('countFormat')
   const translatedDesc = description
     ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total),
@@ -131,12 +132,14 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
         </Tooltip>
       </span>
     </UI.PillTitle>
-    <UI.PillWrap>
-      <ProgressPill
-        percent={percent * 100}
-        formatter={value => formatPillText(value, pillSuffix && $t(pillSuffix))}
-      />
-    </UI.PillWrap>
+    {!hideProgressBar ? (
+      <UI.PillWrap>
+        <ProgressPill
+          percent={percent * 100}
+          formatter={(value) => formatPillText(value, pillSuffix && $t(pillSuffix))}
+        />
+      </UI.PillWrap>
+    ) : null}
     <UI.PillDesc>{translatedDesc}</UI.PillDesc>
     {translatedThresholdDesc.length > 0 &&
       <UI.PillThresholdDesc>
