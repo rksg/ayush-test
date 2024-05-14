@@ -422,14 +422,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueConfigHistory: {
     method: 'post',
     url: '/venues/:venueId/configHistories/query',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/query',
     newApi: true
   },
   getVenueConfigHistoryDetail: {
     method: 'post',
     url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/' +
-      'configurationHistory/detail/:transactionId',
     newApi: true
   },
   getApDetailHeader: {

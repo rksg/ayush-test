@@ -3,6 +3,7 @@ import { useContext, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetDhcpPoolsQuery,
   useDeleteDhcpServersMutation,
@@ -25,6 +26,8 @@ import { AddPoolDrawer } from './AddPoolDrawer'
 export function SwitchDhcpPoolTable () {
   const { $t } = useIntl()
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [ createDhcpServer, { isLoading: isCreating } ] = useCreateDhcpServerMutation()
   const [ updateDhcpServer, { isLoading: isUpdating } ] = useUpdateDhcpServerMutation()
   const [ deleteDhcpServers ] = useDeleteDhcpServersMutation()
@@ -35,9 +38,14 @@ export function SwitchDhcpPoolTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpPoolsQuery,
     defaultPayload: {},
+    apiParams: { venueId: switchDetail?.venueId },
     sorter: {
       sortField: 'poolName',
       sortOrder: 'DESC'
+    },
+    enableRbac: isSwitchRbacEnabled,
+    option: {
+      skip: !switchDetail?.venueId
     }
   })
 
@@ -50,9 +58,24 @@ export function SwitchDhcpPoolTable () {
   const handleSavePool = async (values: SwitchDhcp) => {
     try {
       if (selected) { // Edit
-        await updateDhcpServer({ params, payload: values }).unwrap()
+        await updateDhcpServer({
+          params: {
+            ...params,
+            venueId: switchDetail?.venueId,
+            dhcpServerId: selected
+          },
+          payload: values,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       } else { // Add
-        await createDhcpServer({ params, payload: values }).unwrap()
+        await createDhcpServer({
+          params: {
+            ...params,
+            venueId: switchDetail?.venueId
+          },
+          payload: values,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       }
       setSelected(undefined)
       setDrawerVisible(false)
@@ -121,7 +144,14 @@ export function SwitchDhcpPoolTable () {
           numOfEntities: selectedRows.length
         },
         onOk: () => {
-          deleteDhcpServers({ params, payload: selectedRows.map(r => r.id) })
+          deleteDhcpServers({
+            params: {
+              ...params,
+              venueId: switchDetail?.venueId
+            },
+            payload: selectedRows.map(r => r.id),
+            enableRbac: isSwitchRbacEnabled
+          })
           clearSelection()
         }
       })
@@ -153,6 +183,7 @@ export function SwitchDhcpPoolTable () {
         visible={drawerVisible}
         isLoading={isCreating || isUpdating}
         editPoolId={selected}
+        venueId={switchDetail?.venueId}
         onSavePool={handleSavePool}
         onClose={()=>setDrawerVisible(false)}
       />
