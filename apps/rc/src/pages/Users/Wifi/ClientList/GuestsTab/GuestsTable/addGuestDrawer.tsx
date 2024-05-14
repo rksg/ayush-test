@@ -23,8 +23,7 @@ import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import { PhoneInput }                              from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
-  useAddGuestPassMutation,
-  useLazyGetNetworkQuery
+  useAddGuestPassMutation
 } from '@acx-ui/rc/services'
 import {
   phoneRegExp,
@@ -484,7 +483,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   const [form] = Form.useForm()
   const { visible, setVisible } = props
   const params = useParams()
-  const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+  const { handleGuestPassResponse } = useHandleGuestPassResponse()
 
   const [
     addGuestPass
@@ -599,9 +598,7 @@ export function showGuestErrorModal (errorRes: GuestErrorRes) {
   }
 }
 
-export function useHandleGuestPassResponse (params: { tenantId: string }) {
-  const [getNetwork] = useLazyGetNetworkQuery()
-
+export function useHandleGuestPassResponse () {
   const getGuestPrintTemplate =
   (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
     const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
@@ -682,9 +679,7 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
     }
 
     if (printCondition) {
-      const networkData = await getNetwork({
-        params: { tenantId: params.tenantId, networkId: jsonGuestData[0].wifiNetworkId } })
-      const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
+      const langCode = jsonGuestData[0].locale || ''
       for (let i = 0; i < guestsArr.length; i++) {
         guestsArr[i].langCode = langCode
       }

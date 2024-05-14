@@ -31,6 +31,7 @@ import {
   histClientList,
   GuestList,
   GuestClients,
+  VenueList,
   dpskPassphraseClient
 } from '../../__tests__/fixtures'
 
@@ -63,7 +64,7 @@ const params = {
 }
 const mockReqEventMeta = jest.fn()
 
-describe('ClientOverviewTab', () => {
+describe('ClientOverviewTab root', () => {
   beforeEach(() => {
     mockReqEventMeta.mockClear()
     store.dispatch(dataApi.util.resetApiState())
@@ -89,7 +90,10 @@ describe('ClientOverviewTab', () => {
       rest.post(CommonUrlsInfo.getHistoricalClientList.url,
         (_, res, ctx) => res(ctx.json(histClientList))),
       rest.post(ClientUrlsInfo.getClientList.url,
-        (req, res, ctx) => res(ctx.json(GuestClients))
+        (_, res, ctx) => res(ctx.json(GuestClients))
+      ),
+      rest.post(CommonUrlsInfo.getVenues.url,
+        (_, res, ctx) => res(ctx.json(VenueList))
       ),
       graphql.link(dataApiURL).query('ClientStatisics', (_, res, ctx) =>
         res(ctx.data({ client: clientReportList[0] })))
@@ -193,7 +197,10 @@ describe('ClientOverviewTab - ClientProperties', () => {
       rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(clientVenueList[0]))),
       rest.post(ClientUrlsInfo.getClientList.url,
-        (req, res, ctx) => res(ctx.json(GuestClients))
+        (_, res, ctx) => res(ctx.json(GuestClients))
+      ),
+      rest.post(CommonUrlsInfo.getVenues.url,
+        (_, res, ctx) => res(ctx.json(VenueList))
       )
     )
   })
@@ -311,8 +318,11 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
             res(ctx.json(GuestClients))
+          ),
+          rest.post(CommonUrlsInfo.getVenues.url, (_eq, res, ctx) =>
+            res(ctx.json(VenueList))
           )
         )
         render(<Provider>
@@ -491,8 +501,11 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
             res(ctx.json(GuestClients))
+          ),
+          rest.post(CommonUrlsInfo.getVenues.url, (_, res, ctx) =>
+            res(ctx.json(VenueList))
           )
         )
         render(<Provider>
@@ -538,8 +551,11 @@ describe('ClientOverviewTab - ClientProperties', () => {
                 clients: GuestClients.data
               }]
             }))),
-          rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+          rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
             res(ctx.json(GuestClients))
+          ),
+          rest.post(CommonUrlsInfo.getVenues.url, (_, res, ctx) =>
+            res(ctx.json(VenueList))
           ),
           rest.get(DpskUrls.getPassphraseClient.url.replace('?mac=:mac&networkId=:networkId', ''),
             (_, res, ctx) => res(ctx.json({ ...dpskPassphraseClient }))

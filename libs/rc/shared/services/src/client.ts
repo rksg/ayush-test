@@ -47,7 +47,15 @@ const defaultClientPayload = {
   fields: ['apMac','ssid','clientMac','connectSince','healthCheckStatus','hostname','ipAddress',
     'networkId','networkType','noiseFloor_dBm','osType','radioChannel','receiveSignalStrength_dBm',
     'rxBytes','rxPackets','serialNumber','snr_dB','ssid','txBytes','txDropDataPacket','txPackets',
-    'username','venueId','venueName','vlan','vni'],
+    'username','venueId','vlan','vni'],
+  page: 1,
+  pageSize: 10000
+}
+
+const defaultVenuePayload = {
+  searchString: '',
+  searchTargetFields: ['name'],
+  fields: ['id', 'name'],
   page: 1,
   pageSize: 10000
 }
@@ -148,18 +156,17 @@ export const clientApi = baseClientApi.injectEndpoints({
         const guestsList = guestsListQuery.data as TableResult<Guest>
         const guestIdWithMacMaps: Map<string, string[]> = new Map()
         const uniqueDeviceMacs: Set<string> = new Set()
+        const uniqueVenueIds: Set<string> = new Set()
         guestsList?.data?.filter(g =>
-          // g.guestStatus?.indexOf('Online') > -1 &&
+          g.guestStatus?.indexOf('Online') > -1 &&
           g.devicesMac && g.devicesMac.length > 0)
           .forEach(g => {
-            const devicesMac = g.devicesMac?.map((mac:string) => mac.toLowerCase()) ?? []
-            guestIdWithMacMaps.set(g.id, devicesMac)
+            const devicesMacs = g.devicesMac?.map((mac:string) => mac.toLowerCase()) ?? []
+            guestIdWithMacMaps.set(g.id, devicesMacs)
+            devicesMacs.forEach(mac => {
+              uniqueDeviceMacs.add(mac)
+            })
           })
-        guestIdWithMacMaps.forEach((macs:string[]) => {
-          macs.forEach(mac => {
-            uniqueDeviceMacs.add(mac)
-          })
-        })
         const distinctMacs: string[] = Array.from(uniqueDeviceMacs)
         // no online client
         if (distinctMacs && distinctMacs.length === 0) {
@@ -173,8 +180,26 @@ export const clientApi = baseClientApi.injectEndpoints({
           body: JSON.stringify(clientPayload)
         })
         const clientList = clientListQuery.data as TableResult<GuestClient>
+        // retireve venueName
+        const clientData = clientList.data as GuestClient[]
+        clientData.forEach(client => {
+          uniqueVenueIds.add(client.venueId)
+        })
+        const venuePayload = { ...defaultVenuePayload,
+          filters: { id: Array.from(uniqueVenueIds) }
+        }
+        const venueListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonUrlsInfo.getVenues, arg.params, v1Header),
+          body: JSON.stringify(venuePayload)
+        })
+        const venueList = venueListQuery.data as TableResult<{ id:string, name:string }>
+        const venueMap = new Map(venueList.data.map(venue => [venue.id, venue.name]))
+        const clientResult = clientData.map(client => {
+          client.venueName = venueMap.get(client.venueId) ?? ''
+          return client
+        })
         const aggregatedList = aggregatedGuestClientData(
-          guestsList, guestIdWithMacMaps, clientList.data)
+          guestsList, guestIdWithMacMaps, clientResult)
 
         return guestsListQuery.data
           ? { data: aggregatedList }
@@ -331,7 +356,7 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
         return {
           ...networkListReq,
           body: payload
@@ -466,7 +491,8 @@ export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
   guestIdWithMacMaps: Map<string, string[]>, clientList:GuestClient[]) => {
   const guestIdWithClientMaps: Map<string, GuestClient[]> = new Map()
   guestIdWithMacMaps.forEach((macs: string[], guestId: string) => {
-    const matchingClients = clientList.filter(client => macs.includes(client.clientMac))
+    const matchingClients = clientList
+      .filter(client => macs.includes(client.clientMac.toLowerCase()))
     if (matchingClients.length > 0) {
       guestIdWithClientMaps.set(guestId, matchingClients)
     }

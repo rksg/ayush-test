@@ -18,15 +18,13 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ClientHealthIcon }          from '@acx-ui/rc/components'
-import { useGetGuestsListQuery }     from '@acx-ui/rc/services'
 import {
   getOsTypeIcon,
   Guest,
   GuestClient,
   GuestStatusEnum,
   GuestTypesEnum,
-  transformDisplayText,
-  useTableQuery
+  transformDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload } from '@acx-ui/types'
@@ -84,38 +82,13 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const [generateModalVisible, setGenerateModalVisible] = useState(false)
   const guestAction = useGuestActions()
 
-  const tableQuery = useTableQuery({
-    useQuery: useGetGuestsListQuery,
-    defaultPayload: {
-      ...defaultGuestPayload,
-      filters: {
-        id: [currentGuest.id]
-      }
-    }
-  })
-
   const hasOnlineClient = function (row: Guest) {
     return row.guestStatus.indexOf(GuestStatusEnum.ONLINE) !== -1
   }
 
   useEffect(() => {
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      filters: {
-        id: [currentGuest.id]
-      }
-    })
+    setGuestDetail(currentGuest)
   }, [currentGuest.id])
-
-  useEffect(() => {
-    const result = tableQuery.data?.data
-    const guest = result && result.length > 0 ? result[0] : null
-    if (guest) {
-      setGuestDetail({ ...guest, ssid: currentGuest.ssid, clients: currentGuest.clients })
-    } else {
-      setGuestDetail(currentGuest)
-    }
-  }, [tableQuery?.data])
 
   const renderStatus = function (row: Guest) {
     if(Object.keys(row).length === 0) {

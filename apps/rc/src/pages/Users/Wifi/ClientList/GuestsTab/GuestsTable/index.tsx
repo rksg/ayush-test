@@ -21,8 +21,7 @@ import { DateFormatEnum, formatter }                                    from '@a
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType, NetworkForm } from '@acx-ui/rc/components'
 import {
   useGetGuestsListQuery,
-  useNetworkListQuery,
-  // useWifiNetworkListQuery,
+  useWifiNetworkListQuery,
   useImportGuestPassMutation
 } from '@acx-ui/rc/services'
 import {
@@ -58,11 +57,13 @@ import {
 import { GuestTabContext } from './context'
 
 const defaultGuestNetworkPayload = {
-  fields: ['name', 'defaultGuestCountry', 'id', 'venues', 'nwSubType', 'captiveType'],
+  fields: ['name', 'defaultGuestCountry', 'id', 'captiveType'],
   sortField: 'name',
   sortOrder: 'ASC',
+  filters: {
+    nwSubType: [NetworkTypeEnum.CAPTIVEPORTAL]
+  },
   pageSize: 10000
-  // url: '/api/viewmodel/tenant/{tenantId}/network'
 }
 
 export const GuestsTable = () => {
@@ -91,9 +92,8 @@ export const GuestsTable = () => {
   })
 
   const networkListQuery = useTableQuery<Network, RequestPayload<unknown>, unknown>({
-    useQuery: useNetworkListQuery,
-    defaultPayload: defaultGuestNetworkPayload,
-    pagination: { defaultPageSize: 10000, pageSize: 10000 }
+    useQuery: useWifiNetworkListQuery,
+    defaultPayload: defaultGuestNetworkPayload
   })
   const [networkModalVisible, setNetworkModalVisible] = useState(false)
   const notificationMessage =
@@ -125,14 +125,13 @@ export const GuestsTable = () => {
   const [currentGuest, setCurrentGuest] = useState({} as Guest)
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>([])
-  const [venues, setVenues] = useState<{ [name: string]: string }>({})
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [guestNetworkList, setGuestNetworkList] = useState<Network[]>([])
 
   const [importVisible, setImportVisible] = useState(false)
   const [importCsv, importResult] = useImportGuestPassMutation()
 
-  const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+  const { handleGuestPassResponse } = useHandleGuestPassResponse()
   const HAEmailList_FeatureFlag = useIsSplitOn(Features.HOST_APPROVAL_EMAIL_LIST_TOGGLE)
 
   const guestTypeFilterOptions = Object.values(GuestTypesEnum)
@@ -157,23 +156,10 @@ export const GuestsTable = () => {
   useEffect(() => {
     if (networkListQuery.data?.data) {
       const networks = networkListQuery.data?.data ?? []
-      const networksWithPortal = networks.filter(network =>
-        network.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL)
-      const networksWithGuestPass = networksWithPortal.filter(network =>
+      const networksWithGuestPass = networks.filter(network =>
         network.captiveType === GuestNetworkTypeEnum.GuestPass)
-      setGuestNetworkList(networksWithPortal)
+      setGuestNetworkList(networks)
       setAllowedNetworkList(networksWithGuestPass)
-      const currentVenues:{ [name: string]: string } = {}
-      networksWithGuestPass.forEach(network => {
-        if (network.venues && network.venues.count > 0) {
-          network.venues.ids.forEach((venueId:string, index) => {
-            if (!currentVenues[venueId]) {
-              currentVenues[venueId] = network.venues.names[index]
-            }
-          })
-        }
-      })
-      setVenues(currentVenues)
     }
   }, [networkListQuery.data])
 
@@ -210,8 +196,7 @@ export const GuestsTable = () => {
       .filter(network => network.id === guest.wifiNetworkId)[0]?.name ?? ''
     const clients: GuestClient[] = []
     guest.clients?.forEach(client => {
-      const venueName = venues[client.venueId] || ''
-      clients.push({ ...client, venueName })
+      clients.push({ ...client })
     })
     setCurrentGuest({ ...guest,
       ssid: networkName,
@@ -247,13 +232,9 @@ export const GuestsTable = () => {
       sorter: true,
       defaultSortOrder: 'ascend',
       render: (_, row, __, highlightFn) =>
-      // TODO: fix warn
-      // Warning: A future version of React will block javascript: URLs as a security precaution.
-
-        // eslint-disable-next-line jsx-a11y/anchor-is-valid
-        <a
-          // eslint-disable-next-line no-script-url
-          href='javascript: void(0)'
+        <Button
+          size='small'
+          type='link'
           onClick={() => onClickGuest(row)}
           children={highlightFn(row.name as string)}
         />

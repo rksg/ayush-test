@@ -165,27 +165,6 @@ export const UserProfile = {
   dogfood: false
 }
 
-export const GuestNetworkList = {
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      name: 'NMS-app6-GUEST',
-      id: '0189575828434f94a7c0b0e611379d26',
-      vlan: 1,
-      nwSubType: 'guest',
-      captiveType: 'GuestPass',
-      ssid: 'NMS-app6-GUEST',
-      venues: {
-        count: 1,
-        names: ['UI-TEST-VENUE']
-      },
-      aps: 3,
-      clients: 0
-    }
-  ]
-}
-
 export const RegenerateGuestPassword = {
   requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
   response: {
@@ -212,8 +191,20 @@ export const RegenerateGuestPassword = {
   }
 }
 
+export const VenueList = {
+  fields: ['name', 'id'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '0004e252a9d04180855813131d007aca',
+      name: 'testVenue'
+    }
+  ]
+}
+
 export const AllowedNetworkList = {
-  fields: ['name', 'id', 'defaultGuestCountry', 'nwSubType', 'captiveType','venues'],
+  fields: ['name', 'id', 'defaultGuestCountry', 'captiveType'],
   totalCount: 2,
   page: 1,
   data: [
@@ -221,17 +212,27 @@ export const AllowedNetworkList = {
       name: 'guest pass wlan1',
       id: 'tenant-id',
       defaultGuestCountry: 'United States',
-      nwSubType: 'guest',
-      captiveType: 'GuestPass',
-      venues: { count: 1, ids: ['0004e252a9d04180855813131d007aca'], names: ['testVenue'] }
+      captiveType: 'GuestPass'
     },
     {
       name: 'guest pass wlan2',
       id: 'dasjk12359552a9d041813131d007aca',
       defaultGuestCountry: 'United States',
-      nwSubType: 'guest',
-      captiveType: 'GuestPass',
-      venues: { count: 1, ids: ['0004e252a9d04180855813131d007aca'], names: ['testVenue'] }
+      captiveType: 'GuestPass'
+    }
+  ]
+}
+
+export const AllowedNetworkSingleList = {
+  fields: ['name', 'id', 'defaultGuestCountry', 'captiveType'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'guest pass wlan1',
+      id: 'tenant-id',
+      defaultGuestCountry: 'United States',
+      captiveType: 'GuestPass'
     }
   ]
 }
@@ -273,19 +274,6 @@ export const userProfile =
   username: 'msp.eleu1658@rwbigdog.com',
   var: true,
   varTenantId: '3061bd56e37445a8993ac834c01e2710'
-}
-
-export const AllowedNetworkSingleList = {
-  fields: ['name', 'id', 'defaultGuestCountry'],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      name: 'guest pass wlan1',
-      id: 'tenant-id',
-      defaultGuestCountry: 'United States'
-    }
-  ]
 }
 
 export const AddGuestPassResponse = {
