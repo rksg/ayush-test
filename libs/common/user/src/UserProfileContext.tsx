@@ -67,7 +67,7 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       rcgAllowedOperationsEnabled ? rcgAllowedOperations : allAllowedOperations
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
-    isCustomRole = !!profile?.customRoleName
+    isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false
     abacEnabled = featureFlagStates?.[abacFF] ?? false
     const userProfile = { ...profile } as UserProfile
     if(!abacEnabled && isCustomRole) {

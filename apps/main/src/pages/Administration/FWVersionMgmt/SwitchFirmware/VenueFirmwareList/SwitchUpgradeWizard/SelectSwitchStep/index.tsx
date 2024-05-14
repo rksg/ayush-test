@@ -11,6 +11,7 @@ import {
   cssStr,
   useStepFormContext
 } from '@acx-ui/components'
+import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggle'
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
@@ -122,12 +123,13 @@ export const SelectSwitchStep = (
 
   const columns = useColumns()
   const intl = useIntl()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { form, current } = useStepFormContext()
   const { tenantId } = useParams()
   const { parseSwitchVersion, getSwitchScheduleTpl } = useSwitchFirmwareUtils()
 
-  const [ getSwitchList ] = useLazyGetSwitchFirmwareListQuery()
+  const [ getSwitchFirmwareList ] = useLazyGetSwitchFirmwareListQuery()
 
   const [searchText, setSearchText] = useState('' as string)
   const [selectedVenueRowKeys, setSelectedVenueRowKeys] = useState([] as Key[])
@@ -220,8 +222,10 @@ export const SelectSwitchStep = (
         venueIdList: [record.id]
       }
       const switchList = record.id
-        ? (await getSwitchList({
-          params: { tenantId: tenantId }, payload: switchListPayload
+        ? (await getSwitchFirmwareList({
+          params: { tenantId: tenantId },
+          payload: switchListPayload,
+          enableRbac: isSwitchRbacEnabled
         }, false)).data?.data
         : []
 
@@ -333,8 +337,10 @@ export const SelectSwitchStep = (
       venueIdList: data.map(d => d.id),
       search: searchText
     }
-    const searchSwitchList = (await getSwitchList({
-      params: { tenantId: tenantId }, payload: switchListPayload
+    const searchSwitchList = (await getSwitchFirmwareList({
+      params: { tenantId: tenantId },
+      payload: switchListPayload,
+      enableRbac: isSwitchRbacEnabled
     }, true)).data?.data || []
     setSearchSwitchList(searchSwitchList)
 
@@ -575,8 +581,10 @@ export const SelectSwitchStep = (
                         const switchListPayload = {
                           venueIdList: [venue]
                         }
-                        const switchList = (await getSwitchList({
-                          params: { tenantId: tenantId }, payload: switchListPayload
+                        const switchList = (await getSwitchFirmwareList({
+                          params: { tenantId: tenantId },
+                          payload: switchListPayload,
+                          enableRbac: isSwitchRbacEnabled
                         }, false)).data?.data
                         if (switchList) {
                           initialData = switchList

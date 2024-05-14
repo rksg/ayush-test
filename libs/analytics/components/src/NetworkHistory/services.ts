@@ -1,8 +1,14 @@
 import { gql } from 'graphql-request'
-import moment  from 'moment-timezone'
 
-import { getFilterPayload, IncidentFilter, calculateGranularity, IncidentsToggleFilter, incidentsToggle } from '@acx-ui/analytics/utils'
-import { dataApi }                                                                                        from '@acx-ui/store'
+import {
+  calculateGranularity,
+  getFilterPayload,
+  granularityToHours,
+  IncidentFilter,
+  IncidentsToggleFilter,
+  incidentsToggle
+} from '@acx-ui/analytics/utils'
+import { dataApi } from '@acx-ui/store'
 
 export type NetworkHistoryData = {
   connectedClientCount: number[]
@@ -17,12 +23,11 @@ interface Response <TimeSeriesData> {
     }
   }
 }
-export const calcGranularity = (start: string, end: string): string => {
-  const duration = moment.duration(moment(end).diff(moment(start))).asHours()
-  if (duration > 24 * 7) return calculateGranularity(start, end)
-  if (duration > 1) return 'PT30M'
-  return 'PT180S'
-}
+
+// https://github.com/rksg/rsa-mlisa-ui/pull/279
+const customGranularity = granularityToHours
+  .filter(v => v.granularity !== 'PT1H')
+  .concat({ granularity: 'PT30M', hours: 1 })
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
@@ -61,9 +66,14 @@ export const api = dataApi.injectEndpoints({
           end: payload.endDate,
           granularity: payload.hideIncidents
             ? calculateGranularity(
-              payload.startDate, payload.endDate, undefined
+              payload.startDate,
+              payload.endDate,
+              undefined
             )
-            : calcGranularity(payload.startDate, payload.endDate),
+            : calculateGranularity(
+              payload.startDate,
+              payload.endDate,
+              undefined, customGranularity),
           severity: [{ gt: 0, lte: 1 }], // all severities
           code: incidentsToggle(payload),
           ...getFilterPayload(payload)

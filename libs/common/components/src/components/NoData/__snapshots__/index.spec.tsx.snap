@@ -347,3 +347,13 @@ exports[`NoDataIcon should render correctly with custom text 1`] = `
   </div>
 </DocumentFragment>
 `;
+
+exports[`NoGranularityText should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__RollupText-sc-m7jeli-4 cMVkAo"
+  >
+    Data granularity at this level is not available
+  </div>
+</DocumentFragment>
+`;
