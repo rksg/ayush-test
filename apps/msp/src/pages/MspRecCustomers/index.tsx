@@ -61,6 +61,7 @@ export function MspRecCustomers () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { data: userProfile } = useUserProfileContext()
   const { data: mspLabel } = useGetMspLabelQuery({ params })
@@ -422,7 +423,9 @@ export function MspRecCustomers () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deleteMspEc({
+              params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: id }
+                : { mspEcTenantId: id } })
               .then(clearSelection)
           })
         }

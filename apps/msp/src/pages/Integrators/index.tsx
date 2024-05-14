@@ -68,6 +68,7 @@ export function Integrators () {
 
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
@@ -212,7 +213,9 @@ export function Integrators () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deleteMspEc({
+              params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: id }
+                : { mspEcTenantId: id } })
               .then(clearSelection)
           })
         }

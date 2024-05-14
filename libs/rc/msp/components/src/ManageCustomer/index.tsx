@@ -415,7 +415,9 @@ export function ManageCustomer () {
 
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
-      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      enableMspEcSupport({
+        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
+          : { mspEcTenantId: mspEcTenantId } })
         .then(() => {
           showToast({
             type: 'success',
@@ -424,7 +426,9 @@ export function ManageCustomer () {
           setEcSupport(true)
         })
     } else {
-      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      disableMspEcSupport({
+        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
+          : { mspEcTenantId: mspEcTenantId } })
         .then(() => {
           showToast({
             type: 'success',
@@ -515,7 +519,8 @@ export function ManageCustomer () {
       }
 
       const result =
-      await addCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addCustomer({ params: isRbacEnabled ? { isRbacApi: 'true', tenantId: tenantId }
+        : { tenantId: tenantId }, payload: customer }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -625,7 +630,9 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
-      await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+      await updateCustomer({
+        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
+          : { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
 
       if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
         const patchTier: MspEcTierPayload = {

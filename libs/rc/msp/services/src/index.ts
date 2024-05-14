@@ -146,7 +146,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     deleteMspEc: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.deleteMspEcAccount, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.deleteMspEcAccount : MspUrlsInfo.deleteMspEcAccount, params)
         return {
           ...req
         }
@@ -434,7 +436,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     addCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.addMspEcAccount, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.addMspEcAccount : MspUrlsInfo.addMspEcAccount, params)
         return {
           ...req,
           body: payload
@@ -444,7 +448,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     updateCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspEcAccount, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.updateMspEcAccount : MspUrlsInfo.updateMspEcAccount, params)
         return {
           ...req,
           body: payload
@@ -474,7 +480,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspEc: build.query<MspEcData, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.getMspEcAccount, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.getMspEcAccount : MspUrlsInfo.getMspEcAccount, params)
         return{
           ...req
         }
@@ -819,7 +827,10 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getRecommandFirmwareUpgrade: build.query<RecommendFirmwareUpgrade, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.getRecommandFirmwareUpgrade, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.getRecommandFirmwareUpgrade
+          : MspUrlsInfo.getRecommandFirmwareUpgrade, params)
         return {
           ...req,
           body: payload

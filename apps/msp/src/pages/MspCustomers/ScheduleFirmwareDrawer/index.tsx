@@ -11,6 +11,7 @@ import {
   DatePicker,
   Drawer
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useMspEcFirmwareUpgradeSchedulesMutation
 } from '@acx-ui/msp/services'
@@ -55,6 +56,7 @@ enum ScheduleMode {
 
 export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
   const { $t } = useIntl()
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { visible, tenantIds, setVisible } = props
   const [resetField, setResetField] = useState(false)
@@ -138,7 +140,8 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
       }
     }
 
-    updateFirmwareUpgradeSchedules({ params, payload })
+    updateFirmwareUpgradeSchedules({ params: isRbacEnabled ? { isRbacApi: 'true' } : params,
+      payload })
       .then(() => {
         setVisible(false)
         resetFields()

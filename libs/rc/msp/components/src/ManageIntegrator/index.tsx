@@ -161,6 +161,7 @@ export function ManageIntegrator () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -420,7 +421,8 @@ export function ManageIntegrator () {
       }
 
       const result =
-      await addIntegrator({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addIntegrator({ params: isRbacEnabled ? { isRbacApi: 'true', tenantId: tenantId }
+        : { tenantId: tenantId }, payload: customer }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -494,7 +496,9 @@ export function ManageIntegrator () {
         }
         customer.licenses = assignLicense
       }
-      await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
+      await updateIntegrator({
+        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
+          : { mspEcTenantId: mspEcTenantId },
         payload: customer }).unwrap()
       navigate(linkToIntegrators, { replace: true })
       return true
