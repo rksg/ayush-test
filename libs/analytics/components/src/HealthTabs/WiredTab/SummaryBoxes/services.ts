@@ -19,6 +19,7 @@ export interface WiredSummaryResult {
   switchCpuUtilizationPct: number
   stormPortCount: number
   portCount: number
+  congestedPortCount: number
 }
 
 export const api = dataApi.injectEndpoints({
@@ -44,6 +45,7 @@ export const api = dataApi.injectEndpoints({
                 }
                 switchCpuUtilizationPct
                 portCount
+                congestedPortCount
               }
             }
           }`,

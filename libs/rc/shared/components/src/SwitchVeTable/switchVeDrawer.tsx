@@ -6,7 +6,8 @@ import { DefaultOptionType } from 'antd/lib/select'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { Alert, Button, Drawer } from '@acx-ui/components'
+import { Alert, Button, Drawer }  from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddVePortMutation,
   useLazyGetFreeVePortVlansQuery,
@@ -34,7 +35,8 @@ interface SwitchVeProps {
   isEditMode: boolean
   isVenueLevel: boolean
   editData: VeViewModel,
-  readOnly: boolean
+  readOnly: boolean,
+  switchInfo?: SwitchViewModel
 }
 
 export const SwitchVeDrawer = (props: SwitchVeProps) => {
@@ -45,7 +47,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const { switchId: sid, tenantId, venueId: vid } = useParams()
 
   const [loading, setLoading] = useState<boolean>(false)
-  const [venueId, setVenueId] = useState(vid ?? '')
+  const [venueId, setVenueId] = useState(vid || props.switchInfo?.venueId || '')
   const [switchId, setSwitchId] = useState(isVenueLevel ? editData?.switchId : sid)
 
   const [switchDetailHeaderData, setSwitchDetailHeaderData]
@@ -74,23 +76,38 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   const [ipAddressFromDH, setIpAddressFromDH] = useState('')
   const [ipSubnetFromDH, setIpSubnetFromDH] = useState('')
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const getSwitches = async () => {
     const payload = { filters: { venueId: [venueId] } }
-    const switches =(await getSwitchList({ params: { tenantId: tenantId }, payload }, true))
+    const switches = (await getSwitchList({
+      params: { tenantId, venueId },
+      payload,
+      enableRbac: isSwitchRbacEnabled
+    }, true))
       .data?.data?.filter(s => s.deviceStatus === 'ONLINE' && s.switchType === 'router')
     setSwitchOption(switches?.map(s => ({ label: s.name, key: s.id, value: s.id })) ?? [])
   }
 
   const getSwitchDetailHeader = async (switchId: string) => {
-    const { data } = await switchDetailHeader({ params: { tenantId, switchId } })
+    const { data } = await switchDetailHeader({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     setSwitchDetailHeaderData(data as SwitchViewModel)
   }
   const getAclUnionData = async (switchId: string) => {
-    const { data } = await getAclUnion({ params: { tenantId, switchId } })
+    const { data } = await getAclUnion({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     setAclUnionList(data as AclUnion)
   }
   const getSwitchData = async (switchId: string) => {
-    const { data } = await getSwitch({ params: { tenantId, switchId } })
+    const { data } = await getSwitch({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     setSwitchData(data as Switch)
   }
 
@@ -164,13 +181,15 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
 
   const handleVlanVePortOption = async () => {
     const option =
-      (await getVePortVlansList({ params: { tenantId, venueId, switchId } })).data
-        ?.map((item: VlanVePort) => ({
-          label: `VLAN-${item.vlanId}`,
-          key: item.vlanId,
-          value: item.vlanId,
-          disabled: item.usedByVePort && String(editData?.vlanId) !== item.vlanId
-        })) ?? []
+      (await getVePortVlansList({
+        params: { tenantId, venueId, switchId },
+        enableRbac: isSwitchRbacEnabled
+      })).data?.map((item: VlanVePort) => ({
+        label: `VLAN-${item.vlanId}`,
+        key: item.vlanId,
+        value: item.vlanId,
+        disabled: item.usedByVePort && String(editData?.vlanId) !== item.vlanId
+      })) ?? []
 
     setVlanVePortOption(option as DefaultOptionType[])
   }
@@ -185,7 +204,7 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
   }
 
   const onSubmit = async (data: VeForm) => {
-    const params = { switchId, tenantId, vePortId: editData.id || '' }
+    const params = { switchId, tenantId, vePortId: editData.id || '', venueId }
     setLoading(true)
     try {
       if (!isEditMode) {
@@ -195,7 +214,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
         }
         await addVePort({
           params,
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       } else {
         let payload = {
@@ -215,7 +235,8 @@ export const SwitchVeDrawer = (props: SwitchVeProps) => {
 
         await updateVePort({
           params,
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       }
     }
