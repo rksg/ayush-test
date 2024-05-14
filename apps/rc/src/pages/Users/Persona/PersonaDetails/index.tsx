@@ -29,8 +29,8 @@ import {
   useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
-import { EdgeScopes, WifiScopes }           from '@acx-ui/types'
-import { filterByAccess, hasPermission }    from '@acx-ui/user'
+import { WifiScopes }                       from '@acx-ui/types'
+import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
 import { blockedTagStyle, PersonaBlockedIcon } from '../styledComponents'
@@ -41,8 +41,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isNetworkSegmentationAvailable
-    = useIsTierAllowed(TierFeatures.SMART_EDGES) && hasPermission({ scopes: [EdgeScopes.READ] })
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
@@ -64,8 +63,7 @@ function PersonaDetails () {
   const personaDetailsQuery = useGetPersonaByIdQuery({
     params: { groupId: personaGroupId, id: personaId }
   })
-  const isConnectionMeteringAvailable
-    = useIsSplitOn(Features.CONNECTION_METERING) && hasPermission({ scopes: [EdgeScopes.READ] })
+  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const [vniRetryable, setVniRetryable] = useState<boolean>(false)
   const { customHeaders } = usePersonaAsyncHeaders()
@@ -79,7 +77,7 @@ function PersonaDetails () {
         if (!result.data) return
         setPersonaGroupData(result.data)
       })
-    if (isConnectionMeteringAvailable && personaDetailsQuery.data?.meteringProfileId) {
+    if (isConnectionMeteringEnabled && personaDetailsQuery.data?.meteringProfileId) {
       getConnectionMeteringById({ params: { id: personaDetailsQuery.data.meteringProfileId } })
         .then(result => {
           if (result.data) {
@@ -110,7 +108,7 @@ function PersonaDetails () {
         .finally(() => setDpskPoolData({ id: personaGroupData.dpskPoolId, name }))
     }
 
-    if (personaGroupData.personalIdentityNetworkId && isNetworkSegmentationAvailable) {
+    if (personaGroupData.personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
       getNsgById({ params: { tenantId, serviceId: personaGroupData.personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
@@ -256,7 +254,7 @@ function PersonaDetails () {
             </Subtitle>
           </Col>
           <Col span={12}>
-            {(isNetworkSegmentationAvailable && personaGroupData?.personalIdentityNetworkId) &&
+            {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
               <Subtitle level={4}>
                 {$t({ defaultMessage: 'Personal Identity Network' })}
               </Subtitle>
@@ -278,7 +276,7 @@ function PersonaDetails () {
               )}
             </Loader>
           </Col>
-          {(isNetworkSegmentationAvailable && personaGroupData?.personalIdentityNetworkId) &&
+          {(networkSegmentationEnabled && personaGroupData?.personalIdentityNetworkId) &&
             <Col span={12}>
               {netSeg.map(item =>
                 <Row key={item.label} align={'middle'}>
@@ -293,7 +291,7 @@ function PersonaDetails () {
                 </Row>
               )}
               {
-                isConnectionMeteringAvailable &&
+                isConnectionMeteringEnabled &&
                 <Row key={'Data Usage Metering'} align={'middle'}>
                   <Col span={7}>
                     <Typography.Paragraph

@@ -282,7 +282,6 @@ export function VenuePropertyTab () {
     // console.log('Fetch switches : ', switchMac)
 
     if (!switchMac || switchMac.length === 0) return
-    if (!hasPermission({ scopes: [SwitchScopes.READ] })) return
 
     setSwitchMap(new Map())
     getSwitchList({
@@ -396,7 +395,6 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'View Portal' }),
-      scopeKey: [WifiScopes.READ],
       visible: (selectedItems => (selectedItems.length <= 1 && hasResidentPortalAssignment)),
       onClick: ([{ id }], clearSelection) => {
         directToPortal(id)
@@ -479,26 +477,25 @@ export function VenuePropertyTab () {
             : undefined
         }
       },
-      ...hasPermission({ scopes: [SwitchScopes.READ] }) ?
-        [{
-          key: 'switchPorts',
-          title: $t({ defaultMessage: 'Switch Ports' }),
-          dataIndex: 'switchPorts',
-          render: (_: ReactNode, row: PropertyUnit) => {
-            const switchList: string[] = []
+      {
+        key: 'switchPorts',
+        title: $t({ defaultMessage: 'Switch Ports' }),
+        dataIndex: 'switchPorts',
+        render: (_: ReactNode, row: PropertyUnit) => {
+          const switchList: string[] = []
 
-            personaMap.get(row.personaId)?.switches?.forEach(s => {
-              const switchMac = s.macAddress
-              const switchName = (switchMap.get(switchMac) as SwitchViewModel)?.name
+          personaMap.get(row.personaId)?.switches?.forEach(s => {
+            const switchMac = s.macAddress
+            const switchName = (switchMap.get(switchMac) as SwitchViewModel)?.name
 
-              if (switchName) {
-                switchList.push(`${switchName} ${s.portId}`)
-              }
-            })
+            if (switchName) {
+              switchList.push(`${switchName} ${s.portId}`)
+            }
+          })
 
-            return switchList.map((s, index) => <div key={index}>{s}</div>)
-          }
-        }] : []
+          return switchList.map((s, index) => <div key={index}>{s}</div>)
+        }
+      }
     ] : [],
     {
       show: isConnectionMeteringEnabled,

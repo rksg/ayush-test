@@ -992,27 +992,15 @@ function UserRoutes () {
           />
           <Route
             path='users/identity-management/:activeTab'
-            element={
-              <AuthRoute scopes={[WifiScopes.READ]}>
-                <PersonaPortal/>
-              </AuthRoute>
-            }
+            element={<PersonaPortal/>}
           />
           <Route
             path='users/identity-management/identity-group/:personaGroupId'
-            element={
-              <AuthRoute scopes={[WifiScopes.READ]}>
-                <PersonaGroupDetails/>
-              </AuthRoute>
-            }
+            element={<PersonaGroupDetails/>}
           />
           <Route
             path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-            element={
-              <AuthRoute scopes={[WifiScopes.READ]}>
-                <PersonaDetails/>
-              </AuthRoute>
-            }
+            element={<PersonaDetails/>}
           />
         </> : <></>}
     </Route>

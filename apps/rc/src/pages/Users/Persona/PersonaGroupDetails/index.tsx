@@ -62,8 +62,7 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationAvailable
-    = useIsTierAllowed(TierFeatures.SMART_EDGES) && hasPermission({ scopes: [EdgeScopes.READ] })
+  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()
@@ -103,7 +102,7 @@ function PersonaGroupDetails () {
         })
     }
 
-    if (personalIdentityNetworkId && networkSegmentationAvailable) {
+    if (personalIdentityNetworkId && networkSegmentationEnabled) {
       let name: string | undefined
       getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
         .then(result => name = result.data?.name)
@@ -152,7 +151,7 @@ function PersonaGroupDetails () {
           macRegistrationPoolId={detailsQuery.data?.macRegistrationPoolId}
         />
     },
-    ...(networkSegmentationAvailable ? [{
+    ...(networkSegmentationEnabled ? [{
       title: $t({ defaultMessage: 'Personal Identity Network' }),
       content:
         <NetworkSegmentationLink
