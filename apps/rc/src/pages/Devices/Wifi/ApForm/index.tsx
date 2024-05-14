@@ -444,7 +444,7 @@ export function ApForm () {
         setChangeMgmtVlan(false)
       } else {
         const apMgmtVlan = (await getApMgmtVlan(
-          { params: { serialNumber } })).data
+          { params: { venueId: apDetails?.venueId, serialNumber } })).data
         setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId)
       }
     }
