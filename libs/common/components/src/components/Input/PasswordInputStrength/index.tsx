@@ -1,8 +1,8 @@
 /* minLevel: 1-4 */
 import { useEffect, useState } from 'react'
 
-import { Col, InputProps, Row, Typography } from 'antd'
-import { useIntl }                          from 'react-intl'
+import { Col, InputProps, Row } from 'antd'
+import { useIntl }              from 'react-intl'
 
 import { SuccessSolid } from '@acx-ui/icons'
 
@@ -166,14 +166,14 @@ export const PasswordStrengthIndicator = ({
       barColors={usedBarColors}
       total={4}
     />
-    <span style={{ minWidth: 50, textAlign: 'center' }}>{strengthStatus}</span>
+    <UI.StrengthStatus>{strengthStatus}</UI.StrengthStatus>
 
     {showTooltip && <Tooltip
       title={<div>
         <Row gutter={[8, 16]}>
           <Col span={24}>
-            <Typography style={{ fontWeight: 700, color: cssStr('--acx-primary-white') }}>
-              {$t({ defaultMessage: 'Password must contain at least:' })}</Typography>
+            <UI.TooltipTitle>
+              {$t({ defaultMessage: 'Password must contain at least:' })}</UI.TooltipTitle>
           </Col>
         </Row>
         {regExErrorMessages.map((item, index) => (
