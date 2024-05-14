@@ -4,13 +4,15 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import {
   incidentSeverities,
   calculateSeverity,
-  Incident
+  Incident,
+  overlapsRollup
 } from '@acx-ui/analytics/utils'
 import {
   cssStr,
   Card,
   Loader,
-  VerticalBarChart
+  VerticalBarChart,
+  NoGranularityText
 } from '@acx-ui/components'
 
 import { useRssDistributionChartQuery } from './services'
@@ -26,24 +28,28 @@ const barColors = (severity: Incident['severity'], rssBuckets: number[]) => {
 
 export const RssDistributionChart: React.FC<ChartProps> = (props) => {
   const { $t } = useIntl()
+  const druidRolledup = overlapsRollup(props.incident.startTime)
 
-  const queryResults = useRssDistributionChartQuery(props.incident)
+  const queryResults = useRssDistributionChartQuery(props.incident, { skip: druidRolledup })
 
   return <Loader states={[queryResults]}>
     <Card title={$t({ defaultMessage: 'RSS Distribution' })} type='no-border'>
-      <AutoSizer>
-        {({ height, width }) => (
-          <VerticalBarChart
-            data={queryResults.data!}
-            style={{ height, width }}
-            xAxisName={$t({ defaultMessage: '(dBm)' })}
-            barColors={barColors(
-              props.incident.severity,
-              queryResults.data!.source.map(([rss]) => rss as number)
-            )}
-          />
-        )}
-      </AutoSizer>
+      {druidRolledup
+        ? <NoGranularityText />
+        : <AutoSizer>
+          {({ height, width }) => (
+            <VerticalBarChart
+              data={queryResults.data!}
+              style={{ height, width }}
+              xAxisName={$t({ defaultMessage: '(dBm)' })}
+              barColors={barColors(
+                props.incident.severity,
+                queryResults.data!.source.map(([rss]) => rss as number)
+              )}
+            />
+          )}
+        </AutoSizer>
+      }
     </Card>
   </Loader>
 }

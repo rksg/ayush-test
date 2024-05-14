@@ -1,6 +1,6 @@
 import { render } from '@acx-ui/test-utils'
 
-import { NoActiveContent, NoActiveData, NoData, NoDataIcon } from '.'
+import { NoActiveContent, NoActiveData, NoData, NoDataIcon, NoGranularityText } from '.'
 
 describe('NoData', () => {
   it('should render correctly', () => {
@@ -50,6 +50,13 @@ describe('NoDataIcon', () => {
   })
   it('should render correctly with custom text', () => {
     const { asFragment } = render(<NoDataIcon iconText='Empty' text='No data available'/>)
+    expect(asFragment()).toMatchSnapshot()
+  })
+})
+
+describe('NoGranularityText', () => {
+  it('should render correctly', () => {
+    const { asFragment } = render(<NoGranularityText/>)
     expect(asFragment()).toMatchSnapshot()
   })
 })
