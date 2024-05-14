@@ -173,6 +173,7 @@ export function ManageCustomer () {
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -228,7 +229,9 @@ export function ManageCustomer () {
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
-      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcSupportQuery({
+        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
+          : { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {

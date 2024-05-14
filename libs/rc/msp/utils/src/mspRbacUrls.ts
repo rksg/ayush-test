@@ -125,12 +125,12 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/mspLabels',
     newApi: true
   },
-  getMspEcProfile: {
-    method: 'get',
-    url: '/tenants/:tenantId',
-    oldUrl: '/mspCustomers/:tenantId',
-    newApi: true
-  },
+  // getMspEcProfile: {
+  //   method: 'get',
+  //   url: '/tenants/:tenantId',
+  //   oldUrl: '/mspCustomers/:tenantId',
+  //   newApi: true
+  // },
   getMspEcAdmin: {
     method: 'get',
     url: '/tenants/:mspEcTenantId/admins/:mspEcAdminId',

@@ -535,7 +535,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspEcSupport: build.query<SupportDelegation[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.getMspEcSupport, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.getMspEcSupport : MspUrlsInfo.getMspEcSupport, params)
         return{
           ...req
         }
@@ -544,7 +546,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     enableMspEcSupport: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.enableMspEcSupport, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.enableMspEcSupport : MspUrlsInfo.enableMspEcSupport, params)
         return {
           ...req
         }
@@ -553,7 +557,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     disableMspEcSupport: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.disableMspEcSupport, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.disableMspEcSupport : MspUrlsInfo.disableMspEcSupport, params)
         return {
           ...req
         }

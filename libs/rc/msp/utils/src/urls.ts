@@ -127,8 +127,8 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcProfile: {
     method: 'get',
-    url: '/mspCustomers/:tenantId',
-    oldUrl: '/api/mspservice/tenant/:tenantId',
+    url: '/tenants/:tenantId',
+    oldUrl: '/mspCustomers/:tenantId',
     newApi: true
   },
   getMspEcAdmin: {

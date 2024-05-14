@@ -72,6 +72,7 @@ export function AddRecCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
@@ -82,7 +83,9 @@ export function AddRecCustomer () {
   const { data: delegatedAdmins } =
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
   const { data: ecSupport } =
-      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+      useGetMspEcSupportQuery({
+        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
+          : { mspEcTenantId } }, { skip: !isEditMode })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {

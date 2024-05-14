@@ -81,7 +81,7 @@ export function PortalSettings () {
   const [form] = Form.useForm()
   const params = useParams()
 
-  const isRbacEnabled = true//useIsSplitOn(Features.MSP_RBAC_API)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
   const [selectedLogo, setSelectedLogo] = useState('defaultLogo')
