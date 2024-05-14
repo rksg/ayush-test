@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
@@ -84,11 +84,15 @@ export function CliTemplateForm () {
       enableRbac: isSwitchRbacEnabled
     }, { skip: !editMode })
 
+  const [orinVenueSwitches, setOrinVenueSwitches] = useState({} as unknown as VenueSwitches)
+
   const handleEditCli = async (data: CliConfiguration) => {
     try {
       const venueSwitches = data.venueSwitches as unknown as VenueSwitches
-      const disassociateSwitch = getDisassociatedSwitch(cliTemplate, venueSwitches)
-      // update in order: disassociate -> update -> associate
+      const disassociateSwitch = getDiffAssociatedSwitch(venueSwitches, orinVenueSwitches)
+      const diffAssociatedSwitch = getDiffAssociatedSwitch(orinVenueSwitches, venueSwitches)
+      // should update in order:
+      // disassociate -> update -> associate(exclude already associated)
       await disassociateWithCliTemplate(disassociateSwitch)
 
       await updateCliTemplate({
@@ -102,7 +106,7 @@ export function CliTemplateForm () {
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
 
-      await associateWithCliTemplate(venueSwitches)
+      await associateWithCliTemplate(diffAssociatedSwitch)
       navigate(linkToNetworks, { replace: true })
 
     } catch (error) {
@@ -183,17 +187,19 @@ export function CliTemplateForm () {
 
   useEffect(() => {
     if (!isCliTemplateLoading) {
+      const venueSwitches = cliTemplate?.venueSwitches?.reduce((result, v) => ({
+        ...result,
+        [v.venueId as string]: v.switches ?? []
+      }), {}) as VenueSwitches
       const data = {
         ...cliTemplate,
         applyNow: editMode && cliTemplate ? !cliTemplate?.applyLater : false,
         ...(cliTemplate?.venueSwitches && {
-          venueSwitches: cliTemplate?.venueSwitches?.reduce((result, v) => ({
-            ...result,
-            [v.venueId as string]: v.switches ?? []
-          }), {})
+          venueSwitches: venueSwitches
         })
       }
 
+      setOrinVenueSwitches(venueSwitches)
       form?.setFieldsValue(data)
     }
   }, [cliTemplate])
@@ -289,18 +295,13 @@ function transformVariables (isSwitchRbacEnabled: boolean, data: CliConfiguratio
   }
 }
 
-function getDisassociatedSwitch (
-  data?: CliConfiguration,
-  venueSwitches?: VenueSwitches
+function getDiffAssociatedSwitch (
+  sourceSwitches?: VenueSwitches,
+  compareSwitches?: VenueSwitches
 ) {
-  const orinVenueSwitches = data?.venueSwitches?.reduce((result, v) => ({
-    ...result,
-    [v.venueId as string]: v.switches
-  }), {}) as VenueSwitches
-
-  return Object.keys(orinVenueSwitches ?? {}).reduce((result, key) => {
-    const diff = orinVenueSwitches?.[key]?.filter(
-      item => !venueSwitches?.[key]?.includes(item)
+  return Object.keys(compareSwitches ?? {}).reduce((result, key) => {
+    const diff = compareSwitches?.[key]?.filter(
+      item => !sourceSwitches?.[key]?.includes(item)
     )
     return {
       ...result,
