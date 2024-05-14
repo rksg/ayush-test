@@ -91,6 +91,7 @@ export const PasswordStrengthIndicator = ({
   input, regExRules, regExErrorMessages, minlevel }:
     PasswordStrengthIndicatorProps) => {
   const { $t } = useIntl()
+  const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const [mouseEnterTooltip, setMouseEnterTooltip] = useState(true)
   const [currentLevel, setCurrentLevel] = useState(0)
   const [usedBarColors, setUsedBarColors] = useState([
@@ -144,6 +145,10 @@ export const PasswordStrengthIndicator = ({
       PASSWORD_STRENGTH_CODE[passedRulesRatio])
 
     setCurrentLevel(passedRulesRatio)
+
+    setTimeout(() => {
+      setShowTooltip(true)
+    }, 500)
   },[input])
 
   return (<div style={{ display: 'flex', gap: '8px', marginTop: 5 }}>
@@ -162,7 +167,7 @@ export const PasswordStrengthIndicator = ({
     />
     <span style={{ minWidth: 50, textAlign: 'center' }}>{strengthStatus}</span>
 
-    <Tooltip
+    {showTooltip && <Tooltip
       title={<div>
         <Row gutter={[8, 16]}>
           <Col span={24}>
@@ -179,13 +184,16 @@ export const PasswordStrengthIndicator = ({
       </div>}
       visible={currentLevel < minlevel || mouseEnterTooltip}
       placement={'bottom'}
+      data-testid={'tooltipInfo'}
     >
       <InformationOutlined
         style={{ paddingTop: '2px' }}
         onMouseEnter={() => setMouseEnterTooltip(true)}
         onMouseLeave={() => setMouseEnterTooltip(false)}
+        data-testid={'tooltipIcon'}
       />
     </Tooltip>
+    }
   </div>)
 
 }

@@ -60,7 +60,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
 
       form.setFieldsValue(snmpV3Agent)
     }
-
   }, [editIndex, visible, form, isEditMode, state])
 
   const userNameValidator = async (value: string) => {
