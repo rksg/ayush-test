@@ -690,7 +690,7 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
           element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
               <MacRegistrationListForm />
             </AuthRoute>
           } />
@@ -698,7 +698,7 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
           element={
-            <AuthRoute scopes={[WifiScopes.READ]}>
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
               <MacRegistrationListForm editMode={true}/>
             </AuthRoute>
           }
