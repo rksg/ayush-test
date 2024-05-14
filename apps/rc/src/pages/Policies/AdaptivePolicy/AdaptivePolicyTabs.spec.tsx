@@ -89,7 +89,7 @@ describe('AdaptivePolicyTabs', () =>{
     await screen.findByText('Adaptive Policy (0)')
     const setTab = await screen.findByText('Adaptive Policy Sets (0)')
     // eslint-disable-next-line max-len
-    const attributeTab = await screen.findByText('RADIUS Attribute Groups (' + groupList.content.length + ')')
+    const attributeTab = await screen.findByText('RADIUS Attribute Groups (' + groupList.totalCount + ')')
 
     await userEvent.click(setTab)
     expect(mockedUsedNavigate).toHaveBeenCalledWith({

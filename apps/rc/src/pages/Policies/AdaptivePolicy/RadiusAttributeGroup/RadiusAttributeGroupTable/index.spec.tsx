@@ -96,7 +96,7 @@ describe.skip('RadiusAttributeGroupTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
-    expect(await screen.findByText('Delete "' + groupList.content[1].name + '"?')).toBeVisible()
+    expect(await screen.findByText('Delete "' + groupList.data[1].name + '"?')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: /Delete group/i }))
 
@@ -148,7 +148,7 @@ describe.skip('RadiusAttributeGroupTable', () => {
     const editPath = getPolicyDetailsLink({
       type: PolicyType.RADIUS_ATTRIBUTE_GROUP,
       oper: PolicyOperation.EDIT,
-      policyId: groupList.content[0].id!
+      policyId: groupList.data[0].id!
     })
 
     expect(mockedUseNavigate).toHaveBeenCalledWith({

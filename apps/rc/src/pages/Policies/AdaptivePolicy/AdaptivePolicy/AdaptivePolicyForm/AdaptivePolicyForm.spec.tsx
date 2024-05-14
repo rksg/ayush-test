@@ -122,7 +122,7 @@ describe('AdaptivePolicyForm', () => {
       ),
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
-        (req, res, ctx) => res(ctx.json(groupList.content[0]))
+        (req, res, ctx) => res(ctx.json(groupList.data[0]))
       )
     )
 
@@ -162,7 +162,7 @@ describe('AdaptivePolicyForm', () => {
     await userEvent.click(screen.getByText('Select Group'))
     await screen.findByText('Select RADIUS Attribute Group')
 
-    const row = await screen.findByRole('row', { name: new RegExp(groupList.content[0].name) })
+    const row = await screen.findByRole('row', { name: new RegExp(groupList.data[0].name) })
     fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByText('Select'))
 
@@ -205,7 +205,7 @@ describe('AdaptivePolicyForm', () => {
       ),
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
-        (req, res, ctx) => res(ctx.json(groupList.content[0]))
+        (req, res, ctx) => res(ctx.json(groupList.data[0]))
       ),
       rest.delete(
         RulesManagementUrlsInfo.deleteConditions.url,
