@@ -927,19 +927,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
     }),
     getDenialOfServiceProtection: build.query<VenueDosProtection, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getDenialOfServiceProtection, params)
-        return{
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(apiInfo.getDenialOfServiceProtection, params, apiCustomHeader)
+        return {
           ...req
         }
       }
     }),
     updateDenialOfServiceProtection: build.mutation<VenueDosProtection, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateDenialOfServiceProtection, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueDosProtection)
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(apiInfo.updateDenialOfServiceProtection, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]

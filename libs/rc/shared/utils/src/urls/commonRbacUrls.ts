@@ -356,18 +356,20 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
+  */
   getDenialOfServiceProtection: {
     method: 'get',
-    url: '/venues/:venueId/dosProtectionSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection',
+    // url: '/venues/:venueId/dosProtectionSettings',
+    url: '/venues/:venueId/apDosProtectionSettings',
     newApi: true
   },
   updateDenialOfServiceProtection: {
     method: 'put',
-    url: '/venues/:venueId/dosProtectionSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection',
+    // url: '/venues/:venueId/dosProtectionSettings',
+    url: '/venues/:venueId/apDosProtectionSettings',
     newApi: true
   },
+  /*
   getVenueRogueAp: {
     method: 'get',
     url: '/venues/:venueId/rogueApSettings',
