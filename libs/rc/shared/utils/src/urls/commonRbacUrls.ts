@@ -499,19 +499,19 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
+  */
   getVenueMdnsFencingPolicy: {
     method: 'get',
-    url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
+    //url: '/venues/:venueId/mDnsFencingSettings',
+    url: '/venues/:venueId/apMulticastDnsFencingSettings',
     newApi: true
   },
   updateVenueMdnsFencingPolicy: {
     method: 'put',
-    url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
+    //url: '/venues/:venueId/mDnsFencingSettings',
+    url: '/venues/:venueId/apMulticastDnsFencingSettings',
     newApi: true
   },
-  */
   getVenueRadiusOptions: {
     method: 'get',
     //url: '/venues/:venueId/radiusOptions',
