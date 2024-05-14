@@ -457,7 +457,7 @@ export const kpiConfig = {
       deltaSign: '+'
     }
   },
-  onlineSwitches: {
+  switchReachability: {
     text: defineMessage({ defaultMessage: 'Switch Reachability' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -560,7 +560,7 @@ export const kpisForTab = (isMLISA? : string) => {
         'apCapacity',
         'apServiceUptime',
         'onlineAPs',
-        'onlineSwitches'
+        'switchReachability'
       ]
     },
     connection: {
@@ -596,7 +596,8 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        'onlineSwitches'
+        // 'uplinkPortUtilization',
+        'switchReachability'
       ]
     },
     connection: {
@@ -615,7 +616,7 @@ export const wiredKPIsForTab = () => {
     },
     infrastructure: {
       kpis: [
-        'onlineSwitches',
+        'switchReachability',
         'switchMemoryUtilization',
         'switchCpuUtilization',
         'switchesTemperature',
