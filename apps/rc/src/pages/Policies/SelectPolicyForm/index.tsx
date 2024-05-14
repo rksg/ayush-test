@@ -120,7 +120,7 @@ export default function SelectPolicyForm () {
     })
   }
 
-  if(macRegistrationEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
+  if(macRegistrationEnabled) {
     // eslint-disable-next-line max-len
     sets.push({ type: PolicyType.MAC_REGISTRATION_LIST, categories: [RadioCardCategory.WIFI] })
   }
