@@ -102,7 +102,7 @@ export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
       title={isEditMode
         ? $t({ defaultMessage: 'Edit Service' })
         : $t({ defaultMessage: 'Add Service' })}
-      width={'550px'}
+      width={'650px'}
       visible={visible}
       onClose={onClose}
       destroyOnClose={true}

@@ -1,21 +1,30 @@
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Row, Switch } from 'antd'
-import _                          from 'lodash'
+import { omit }                   from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { AnchorContext, Loader, showActionModal, StepsFormLegacy } from '@acx-ui/components'
+import {
+  AnchorContext,
+  Loader,
+  showActionModal,
+  StepsFormLegacy
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useGetVenueMdnsFencingQuery,
   useGetVenueTemplateMdnsFencingQuery,
   useUpdateVenueMdnsFencingMutation,
   useUpdateVenueTemplateMdnsFencingMutation
 } from '@acx-ui/rc/services'
-import { MdnsFencingService, VenueMdnsFencingPolicy } from '@acx-ui/rc/utils'
+import { ApiVersionEnum, MdnsFencingService, VenueMdnsFencingPolicy } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }                                                                from '../../..'
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }               from '../../..'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
 
 import { MdnsFencingServiceTable } from './MdnsFencingServiceTable'
 import { updateRowIds }            from './utils'
@@ -33,6 +42,8 @@ export const MdnsFencingContext = createContext({} as MdnsFencingContextType)
 export function MdnsFencing () {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -44,7 +55,8 @@ export function MdnsFencing () {
 
   const getVenueMdnsFencing = useVenueConfigTemplateQueryFnSwitcher<VenueMdnsFencingPolicy>(
     useGetVenueMdnsFencingQuery,
-    useGetVenueTemplateMdnsFencingQuery
+    useGetVenueTemplateMdnsFencingQuery,
+    rbacApiVersion
   )
 
   const [updateVenueMdnsFencing, { isLoading: isUpdatingVenueMdnsFencing }] =
@@ -59,8 +71,11 @@ export function MdnsFencing () {
   const [initData, setInitData] = useState<VenueMdnsFencingPolicy>()
 
   const onInit = (data?: VenueMdnsFencingPolicy, needToSetInitData=false) => {
-    const { enabled=false, services = [] } = data || {}
+    const { enabled=false } = data || {}
+
+    const services = ((isUseRbacApi)? data?.rules : data?.services) ?? []
     setEnableMdnsFencing(enabled)
+
     const newData = updateRowIds(services).sort((a, b) => {
       const serviceA = a.service
       const serviceB = b.service
@@ -107,7 +122,6 @@ export function MdnsFencing () {
   }
 
   const updateMdnsFencingSettings = async () => {
-
     try {
 
       if (enableMdnsFencing === true && mdnsFencingServices.length === 0) {
@@ -136,12 +150,17 @@ export function MdnsFencing () {
       const newServices = mdnsFencingServices.map((service) => {
         if (!service.wiredRules) service.wiredRules = []
         if (!service.customStrings) service.customStrings = []
-        return _.omit(service, ['rowId'])
+        return omit(service, ['rowId'])
       })
 
-      const payload = {
+      const payload = (isUseRbacApi)? {
         enabled: enableMdnsFencing,
-        services: newServices
+        rules: newServices,
+        rbacApiVersion
+      } : {
+        enabled: enableMdnsFencing,
+        services: newServices,
+        rbacApiVersion
       }
 
       await updateVenueMdnsFencing({
