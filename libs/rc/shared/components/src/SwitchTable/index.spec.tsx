@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { switchApi }              from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider, store }        from '@acx-ui/store'
 import {
   cleanup,
   mockServer,
@@ -242,7 +242,7 @@ describe('SwitchTable', () => {
 
   it(`should disable Match Admin Password button
     when switch firmware does not support Admin Password feature`, async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
@@ -269,7 +269,7 @@ describe('SwitchTable', () => {
 
   it('should render correctly when feature flag is on', async () => {
     const switchData = switchList.data.slice(3, 4)?.[0]
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
@@ -420,7 +420,7 @@ describe('SwitchTable', () => {
 
   it('should redirect to edit switch page correctly', async () => {
     const switchData = switchList.data.slice(3, 4)?.[0]
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
@@ -449,7 +449,7 @@ describe('SwitchTable', () => {
 
   it('should redirect to edit stack page correctly', async () => {
     const switchData = switchList.data.slice(3, 4)?.[0]
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
@@ -480,7 +480,7 @@ describe('SwitchTable', () => {
   })
 
   it('should open CLI session modal correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
@@ -509,7 +509,7 @@ describe('SwitchTable', () => {
   })
 
   it('should sync password with venue correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
@@ -553,7 +553,7 @@ describe('SwitchTable', () => {
   })
 
   it('should retry firmware update correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     mockServer.use(
       rest.post(
         SwitchUrlsInfo.getSwitchList.url,
@@ -587,7 +587,7 @@ describe('SwitchTable', () => {
   })
 
   it('should search correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     render(<Provider><SwitchTable showAllColumns={true} searchable={true}/></Provider>, {
       route: { params, path: '/:tenantId/t' }
     })

@@ -4,6 +4,7 @@ import { Col, Divider, Form, Input, Space, Switch, Tooltip } from 'antd'
 import { isEqual }                                           from 'lodash'
 
 import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConfigurationOutlined }                                        from '@acx-ui/icons'
 import { useConfigTemplateVisibilityMap, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
@@ -67,12 +68,14 @@ export function GeneralSettingForm () {
   const navigate = useNavigate()
   const { tenantId, venueId, activeSubTab } = useParams()
   const isProfileDisabled = useSwitchProfileDisabled()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
-    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery
+    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
+    undefined, undefined, isSwitchRbacEnabled
   )
 
   const configProfiles = useConfigTemplateQueryFnSwitcher<ConfigurationProfile[]>(
@@ -167,14 +170,17 @@ export function GeneralSettingForm () {
         oldData: editContextData?.newData,
         isDirty: false
       })
-      await updateVenueSwitchSetting({ params: { tenantId, venueId }, payload: {
-        ...formRef?.current?.getFieldsValue(),
-        id: venueId,
-        profileId: formData?.profileId,
-        syslogEnabled: formData?.syslogEnabled,
-        syslogPrimaryServer: formData?.syslogPrimaryServer,
-        syslogSecondaryServer: formData?.syslogSecondaryServer
-      } })
+      await updateVenueSwitchSetting({
+        params: { tenantId, venueId },
+        payload: {
+          ...formRef?.current?.getFieldsValue(),
+          id: venueId,
+          profileId: formData?.profileId,
+          syslogEnabled: formData?.syslogEnabled,
+          syslogPrimaryServer: formData?.syslogPrimaryServer,
+          syslogSecondaryServer: formData?.syslogSecondaryServer
+        },
+        enableRbac: isSwitchRbacEnabled })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
