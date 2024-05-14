@@ -1234,6 +1234,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
+    deactivateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiOperatorUrls.deactivateWifiOperatorOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params)
@@ -2250,6 +2259,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
     }),
+    bindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.bindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    unbindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.unbindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
     deleteCertificateTemplate: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
@@ -2626,6 +2655,7 @@ export const {
   useGetWifiOperatorQuery,
   useGetWifiOperatorListQuery,
   useActivateWifiOperatorOnWifiNetworkMutation,
+  useDeactivateWifiOperatorOnWifiNetworkMutation,
   // HS2.0 Identity Provider
   useGetIdentityProviderListQuery,
   useLazyGetIdentityProviderListQuery,
@@ -2727,6 +2757,8 @@ export const {
   useDeleteCertificateTemplateMutation,
   useGetCertificateTemplateQuery,
   useEditCertificateTemplateMutation,
+  useBindCertificateTemplateWithPolicySetMutation,
+  useUnbindCertificateTemplateWithPolicySetMutation,
   useGetCertificatesQuery,
   useGetSpecificTemplateCertificatesQuery,
   useAddCertificateAuthorityMutation,

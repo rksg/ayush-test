@@ -46,7 +46,8 @@ let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
   'clientInfo',
-  'clientPcap'
+  'clientPcap',
+  'clientConnectionQualities'
 ]
 
 const isIntDevMode =

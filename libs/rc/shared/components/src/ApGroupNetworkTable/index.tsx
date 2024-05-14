@@ -3,9 +3,8 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { transformApGroupRadios, transformApGroupVlan } from '@acx-ui/rc/components'
+import { Loader, Table, TableProps }       from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useApGroupNetworkListQuery,
   useApGroupNetworkListV2Query,
@@ -21,6 +20,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+
+import { transformApGroupRadios, transformApGroupVlan } from '../pipes/apGroupPipes'
 
 export const defaultApGroupNetworkPayload = {
   searchString: '',
@@ -53,7 +54,7 @@ export interface ApGroupNetworksTableProps {
   apGroupId?: string
 }
 
-export default function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
+export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const { venueId, apGroupId } = props
   const { tenantId } = useParams()

@@ -15,8 +15,8 @@ import {
 import { KeyValue, Network, NetworkVenue, VLANPoolViewModelType } from '@acx-ui/rc/utils'
 import { useTenantLink }                                          from '@acx-ui/react-router-dom'
 
-import { ApGroupEditContext }                            from '..'
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
+import { ApGroupEditContext }                            from '../index'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'

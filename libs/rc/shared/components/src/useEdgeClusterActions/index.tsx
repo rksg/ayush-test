@@ -50,7 +50,13 @@ export const useEdgeClusterActions = () => {
           closeAfterAction: true,
           handler: () => {
             const requests = data.map(item =>
-              invokeRebootEdge({ params: { serialNumber: item.serialNumber } }))
+              invokeRebootEdge({
+                params: {
+                  venueId: item.venueId,
+                  edgeClusterId: item.clusterId,
+                  serialNumber: item.serialNumber
+                }
+              }))
             Promise.all(requests).then(() => callback?.())
           }
         }]
@@ -98,7 +104,13 @@ export const useEdgeClusterActions = () => {
         const requests = []
         for(let item of data) {
           if(!item.isFirstLevel) {
-            requests.push(invokeSendOtp({ params: { serialNumber: item.serialNumber } }))
+            requests.push(invokeSendOtp({
+              params: {
+                venueId: item.venueId,
+                edgeClusterId: item.clusterId,
+                serialNumber: item.serialNumber
+              }
+            }))
           }
         }
         Promise.all(requests).then(() => callback?.())
@@ -147,7 +159,13 @@ export const useEdgeClusterActions = () => {
             const requests = []
             for(let item of data) {
               if(!item.isFirstLevel) {
-                requests.push(invokeFactoryReset({ params: { serialNumber: item.serialNumber } }))
+                requests.push(invokeFactoryReset({
+                  params: {
+                    venueId: item.venueId,
+                    edgeClusterId: item.clusterId,
+                    serialNumber: item.serialNumber
+                  }
+                }))
               }
             }
             Promise.all(requests).then(() => callback?.())

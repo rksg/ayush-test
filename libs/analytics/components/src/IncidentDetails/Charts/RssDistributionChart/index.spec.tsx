@@ -1,10 +1,16 @@
-import { fakeIncidentRss }                  from '@acx-ui/analytics/utils'
+import { fakeIncidentRss, overlapsRollup }  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }      from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen } from '@acx-ui/test-utils'
 
 import { rssDistributionChartApi, Response } from './services'
 
 import { RssDistributionChart } from '.'
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 const response = {
   network: {
@@ -32,9 +38,7 @@ const response = {
 } as Response
 
 describe('RssQualityByClientsChart', () => {
-  beforeEach(() => {
-    store.dispatch(rssDistributionChartApi.util.resetApiState())
-  })
+  beforeEach(() => store.dispatch(rssDistributionChartApi.util.resetApiState()))
 
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'RssDistribution', { data: response })
@@ -47,5 +51,18 @@ describe('RssQualityByClientsChart', () => {
     await screen.findByText('RSS Distribution')
     expect(asFragment().querySelector('div[_echarts_instance_^="ec_"]')).not.toBeNull()
     expect(asFragment().querySelector('svg')).toBeDefined()
+  })
+
+  it('should hide chart when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    mockGraphqlQuery(dataApiURL, 'RssDistribution', { data: response })
+    render(
+      <Provider>
+        <RssDistributionChart incident={fakeIncidentRss} />
+      </Provider>
+    )
+    await screen.findByText('RSS Distribution')
+    await screen.findByText('Data granularity at this level is not available')
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
 })
