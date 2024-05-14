@@ -5,6 +5,7 @@ import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
 import { GridCol, GridRow }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { useLazyGetApSnmpPolicyListQuery }        from '@acx-ui/rc/services'
 import { ApSnmpActionType, checkObjectNotExists } from '@acx-ui/rc/utils'
 
@@ -17,6 +18,7 @@ const SnmpAgentSettingForm = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { dispatch } = useContext(SnmpAgentFormContext)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [ getApSnmpPolicyList ] = useLazyGetApSnmpPolicyListQuery()
 
@@ -32,7 +34,8 @@ const SnmpAgentSettingForm = () => {
     dispatch({
       type: ApSnmpActionType.NAME,
       payload: {
-        name: name
+        name: name,
+        isUseRbacApi
       }
     })
   }
@@ -42,7 +45,7 @@ const SnmpAgentSettingForm = () => {
       <GridRow >
         <GridCol col={{ span: 8 }}>
           <Form.Item
-            name='policyName'
+            name={isUseRbacApi ? 'name' : 'policyName'}
             label={$t({ defaultMessage: 'Profile Name' })}
             rules={[
               { required: true },
