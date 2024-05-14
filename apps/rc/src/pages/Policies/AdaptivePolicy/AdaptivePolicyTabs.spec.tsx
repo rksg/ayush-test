@@ -60,7 +60,7 @@ describe('AdaptivePolicyTabs', () =>{
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
+      rest.post(
         RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),

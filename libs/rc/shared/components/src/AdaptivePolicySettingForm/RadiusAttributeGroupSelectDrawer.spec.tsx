@@ -12,7 +12,7 @@ import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDr
 describe('RadiusAttributeGroupDrawer', () => {
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
+      rest.post(
         RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       )

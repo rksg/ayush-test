@@ -55,8 +55,8 @@ describe('RadiusAttributeGroupForm', () => {
   beforeEach(async () => {
     store.dispatch(policyApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(

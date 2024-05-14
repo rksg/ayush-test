@@ -54,8 +54,8 @@ describe('AdaptivePolicyForm', () => {
         RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       )
     )
@@ -100,8 +100,8 @@ describe('AdaptivePolicyForm', () => {
 
   it('should submit list successfully', async () => {
     mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.post(
@@ -183,8 +183,8 @@ describe('AdaptivePolicyForm', () => {
 
   it.skip('should edit giving data successfully', async () => {
     mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(
