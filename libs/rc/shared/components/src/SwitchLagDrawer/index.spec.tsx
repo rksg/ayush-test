@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { switchApi }                                                        from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }                                                   from '@acx-ui/rc/utils'
-import { Provider, store }                                                  from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { switchApi }                                                                 from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }                                                            from '@acx-ui/rc/utils'
+import { Provider, store }                                                           from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import {
   lagList, switchDetailData
@@ -24,7 +24,7 @@ jest.mock('./SwitchLagModal', () => ({
 
 describe('SwitchLagDrawer', () => {
   const mockedSetVisible = jest.fn()
-
+  const mockedGetSwitchDetail = jest.fn()
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockServer.use(
@@ -34,7 +34,10 @@ describe('SwitchLagDrawer', () => {
       ),
       rest.get(
         SwitchUrlsInfo.getSwitchDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(switchDetailData)))
+        (_, res, ctx) => {
+          mockedGetSwitchDetail()
+          return res(ctx.json(switchDetailData))
+        })
     )
   })
 
@@ -47,6 +50,7 @@ describe('SwitchLagDrawer', () => {
       route: { params, path: '/:tenantId/:switchId' }
     })
 
+    await waitFor(() => expect(mockedGetSwitchDetail).toBeCalled())
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
 
     await screen.findByText('test-lag')

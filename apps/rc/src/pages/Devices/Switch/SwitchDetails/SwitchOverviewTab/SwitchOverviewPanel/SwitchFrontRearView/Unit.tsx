@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, Descriptions, Drawer, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useAcknowledgeSwitchMutation,
   useDeleteStackMemberMutation,
   useLazySwitchPortlistQuery,
@@ -23,8 +24,6 @@ import { getPoeUsage,
   SwitchViewModel,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
-import { SwitchScopes }                      from '@acx-ui/types'
-import { hasPermission }                     from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'
@@ -98,6 +97,7 @@ export function Unit (props:{
   isOnline: boolean
 }) {
   const { member, isStack, isOnline } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const {
     switchDetailsContextData
   } = useContext(SwitchDetailsContext)
@@ -107,7 +107,7 @@ export function Unit (props:{
   const [ deleteStackMember ] = useDeleteStackMemberMutation()
   const [ acknowledgeSwitch ] = useAcknowledgeSwitchMutation()
   const { switchDetailHeader: switchDetail, switchDetailViewModelQuery, switchQuery } = switchDetailsContextData
-  const { serialNumber, switchMac } = switchDetail
+  const { serialNumber, switchMac, venueId } = switchDetail
 
   const { $t } = useIntl()
   const [ visible, setVisible ] = useState(false)
@@ -164,7 +164,11 @@ export function Unit (props:{
   }
 
   const getSwitchPortDetail = async (switchMac: string, serialNumber: string, unitId: string) => {
-    const { data: rearStatus } = await switchRearView({ params: { tenantId, switchId: serialNumber, unitId } })
+    const { data: rearStatusData } = await switchRearView({
+      params: { tenantId, switchId: serialNumber, unitId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
+    const rearStatus = isSwitchRbacEnabled ? rearStatusData?.data?.[0] : rearStatusData
     const { data: portsData } = await switchPortlist({
       params: { tenantId },
       payload: {
@@ -174,7 +178,8 @@ export function Unit (props:{
         page: 1,
         pageSize: 10000,
         fields: SwitchPortViewModelQueryFields
-      }
+      },
+      enableRbac: isSwitchRbacEnabled
     })
     const portStatusData = {
       slots: [] as SwitchSlot[]
@@ -419,7 +424,7 @@ export function Unit (props:{
       }
       <div className='view-button'>
         {
-          enableDeleteStackMember && hasPermission({ scopes: [SwitchScopes.DELETE] }) &&
+          enableDeleteStackMember &&
           <Button
             type='link'
             size='small'

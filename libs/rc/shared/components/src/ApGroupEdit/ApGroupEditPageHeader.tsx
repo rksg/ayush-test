@@ -6,7 +6,7 @@ import { PageHeader } from '@acx-ui/components'
 
 import { ApGroupEditTabs } from './ApGroupEditTabs'
 
-import { ApGroupEditContext } from '.'
+import { ApGroupEditContext } from './index'
 
 
 

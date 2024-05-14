@@ -27,10 +27,10 @@ import {
   TableQuery,
   usePollingTableQuery, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }       from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }             from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasPermission } from '@acx-ui/user'
-import { transformToCityListOptions }               from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { RequestPayload }                     from '@acx-ui/types'
+import { filterByAccess, hasAccess }          from '@acx-ui/user'
+import { transformToCityListOptions }         from '@acx-ui/utils'
 
 function useColumns (
   searchable?: boolean,
@@ -145,7 +145,7 @@ function useColumns (
         )
       }
     },
-    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
+    {
       title: $t({ defaultMessage: 'Switches' }),
       key: 'switches',
       dataIndex: 'switches',
@@ -160,8 +160,8 @@ function useColumns (
           />
         )
       }
-    }] : []) as TableProps<Venue>['columns'],
-    ...( hasPermission({ scopes: [SwitchScopes.READ] }) ? [{
+    },
+    {
       title: $t({ defaultMessage: 'Switch Clients' }),
       key: 'switchClients',
       dataIndex: 'switchClients',
@@ -176,7 +176,7 @@ function useColumns (
           />
         )
       }
-    }] : []) as TableProps<Venue>['columns'],
+    },
     {
       title: $t({ defaultMessage: 'SmartEdges' }),
       key: 'edges',
@@ -353,6 +353,7 @@ function shouldShowConfirmation (selectedVenues: Venue[]) {
 function useGetVenueCityList () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
     selectFromResult: ({ data }) => ({
@@ -361,7 +362,10 @@ function useGetVenueCityList () {
     skip: !isTemplate
   })
 
-  const venueCityList = useGetVenueCityListQuery({ params }, {
+  const venueCityList = useGetVenueCityListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
     }),

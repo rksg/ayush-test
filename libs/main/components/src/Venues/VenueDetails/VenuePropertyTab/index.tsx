@@ -144,6 +144,7 @@ export function VenuePropertyTab () {
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
 
@@ -286,7 +287,8 @@ export function VenuePropertyTab () {
     setSwitchMap(new Map())
     getSwitchList({
       params: { tenantId },
-      payload: { ...switchViewModelPayload, filters: { switchMac } }
+      payload: { ...switchViewModelPayload, filters: { switchMac } },
+      enableRbac: isSwitchRbacEnabled
     })
       .then(result => {
         if (result.data) {

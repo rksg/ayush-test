@@ -95,12 +95,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     newApi: true
   },
-  clearAllAlarm: {
-    method: 'delete',
-    url: '/alarms',
-    oldUrl: '/api/eventalarmapi/:tenantId/alarm',
-    newApi: true
-  },
   getApsList: {
     method: 'post',
     url: '/aps/query',
@@ -428,14 +422,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueConfigHistory: {
     method: 'post',
     url: '/venues/:venueId/configHistories/query',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/query',
     newApi: true
   },
   getVenueConfigHistoryDetail: {
     method: 'post',
     url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/' +
-      'configurationHistory/detail/:transactionId',
     newApi: true
   },
   getApDetailHeader: {
