@@ -8,7 +8,7 @@ import { AnalyticsFilter }                          from '@acx-ui/utils'
 
 import { apGroupMembers, apGroupNetworkLinks, networkApGroup, networkDeepList, oneApGroupList } from './__tests__/fixtures'
 
-import ApGroupDetails from '.'
+import ApGroupDetails from './index'
 
 
 jest.mock('@acx-ui/analytics/components', () => ({

@@ -22,7 +22,7 @@ import {
   ApCompatibilityResponse,
   transformNetwork,
   WifiNetwork,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -876,7 +876,9 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
 
 export const fetchApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   const apGroupNetworkListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getApGroupNetworkList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList
+      : CommonUrlsInfo.getApGroupNetworkList, arg.params),
     body: arg.payload
   }
   const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
@@ -1058,7 +1060,9 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
 
 export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const apGroupNetworkListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getApGroupNetworkList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList
+      : CommonUrlsInfo.getApGroupNetworkList, arg.params),
     body: arg.payload
   }
   const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
@@ -1081,7 +1085,7 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
 
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
   }
 
   return { apGroupNetworkListQuery,

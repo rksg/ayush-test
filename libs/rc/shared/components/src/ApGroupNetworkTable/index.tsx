@@ -3,12 +3,12 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }       from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps }                                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import {
   useApGroupNetworkListQuery,
   useApGroupNetworkListV2Query,
-  useGetVLANPoolPolicyViewModelListQuery
+  useGetVLANPoolPolicyViewModelListQuery, useGetVLANPoolPolicyViewModeTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -17,10 +17,11 @@ import {
   NetworkType,
   NetworkTypeEnum,
   VLANPoolViewModelType,
-  useTableQuery
+  useTableQuery, useConfigTemplate, ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
+import { renderConfigTemplateDetailsComponent }         from '../configTemplates'
 import { transformApGroupRadios, transformApGroupVlan } from '../pipes/apGroupPipes'
 
 export const defaultApGroupNetworkPayload = {
@@ -56,8 +57,8 @@ export interface ApGroupNetworksTableProps {
 
 export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
   const { venueId, apGroupId } = props
-  const { tenantId } = useParams()
 
   const [tableData, setTableData] = useState(defaultArray)
 
@@ -65,27 +66,14 @@ export function ApGroupNetworksTable (props: ApGroupNetworksTableProps) {
   const tableQuery = useTableQuery({
     useQuery: isUseWifiApiV2? useApGroupNetworkListV2Query : useApGroupNetworkListQuery,
     apiParams: { venueId: venueId || '' },
-    defaultPayload: defaultApGroupNetworkPayload,
+    defaultPayload: {
+      ...defaultApGroupNetworkPayload,
+      isTemplate: isTemplate
+    },
     pagination: { settingsId }
   })
 
-  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
-    params: { tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
-    }
-  }, {
-    skip: !tableData.length,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
-  })
+  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = GetGetVLANPoolPolicyInstance(tableData)
 
   useEffect(()=>{
     if (tableQuery.data) {
@@ -141,6 +129,7 @@ export function useApGroupNetworkColumns (
 ) {
 
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
 
   const columns: TableProps<Network>['columns'] = [
     {
@@ -151,6 +140,10 @@ export function useApGroupNetworkColumns (
       defaultSortOrder: 'ascend',
       fixed: 'left',
       render: function (_, row) {
+        if (isTemplate) {
+          return renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
+        }
+
         const redirectUrl = `/networks/wireless/${row.id}/network-details/overview`
         return (!!row?.isOnBoarded ? <span>{row.name}</span>
           : <TenantLink to={redirectUrl}>{row.name}</TenantLink>
@@ -196,7 +189,7 @@ export function useApGroupNetworkColumns (
         return transformApGroupRadios(getCurrentVenue(row, venueId), row.deepNetwork, apGroupId)
       }
     },
-    ...(isEditable? [] : [{
+    ...((isEditable || isTemplate) ? [] : [{
       key: 'clients',
       title: $t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
@@ -209,4 +202,47 @@ export function useApGroupNetworkColumns (
   ]
 
   return columns
+}
+
+const GetGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
+  const { tenantId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const vlanPoolingNonTemplate: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length && isTemplate,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
+  const vlanPoolingTemplate: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModeTemplateListQuery({
+    params: { tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length && !isTemplate,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
+  return isTemplate ? vlanPoolingTemplate : vlanPoolingNonTemplate
 }

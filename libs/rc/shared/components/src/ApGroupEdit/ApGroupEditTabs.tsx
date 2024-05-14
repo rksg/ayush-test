@@ -8,9 +8,10 @@ import {
   useLocation,
   useNavigate,
   useParams,
-  useTenantLink,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
+
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { ApGroupEditContext, showUnsavedModal } from './index'
 
@@ -22,7 +23,7 @@ export function ApGroupEditTabs () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/devices/apgroups/${params.apGroupId}/edit/`)
+  const basePath = usePathBasedOnConfigTemplate(`/devices/apgroups/${params.apGroupId}/edit/`)
 
   const { editContextData, setEditContextData, setPreviousPath } = useContext(ApGroupEditContext)
 

@@ -4,18 +4,25 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }         from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import {
-  useGetApGroupQuery,
-  useGetVLANPoolPolicyViewModelListQuery,
+  useGetApGroupQuery, useGetApGroupTemplateQuery,
+  useGetVLANPoolPolicyViewModelListQuery, useGetVLANPoolPolicyViewModeTemplateListQuery,
   useLazyApGroupNetworkListQuery,
   useLazyApGroupNetworkListV2Query,
-  useUpdateNetworkVenuesMutation } from '@acx-ui/rc/services'
-import { KeyValue, Network, NetworkVenue, VLANPoolViewModelType } from '@acx-ui/rc/utils'
-import { useTenantLink }                                          from '@acx-ui/react-router-dom'
+  useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
+} from '@acx-ui/rc/services'
+import {
+  KeyValue,
+  Network, NetworkExtended,
+  NetworkVenue, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  VLANPoolViewModelType
+} from '@acx-ui/rc/utils'
 
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
+import { usePathBasedOnConfigTemplate }                  from '../../configTemplates'
 import { ApGroupEditContext }                            from '../index'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
@@ -41,6 +48,7 @@ export const ApGroupVlanRadioContext = createContext({} as {
 
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const {
     isEditMode,
@@ -53,47 +61,38 @@ export function ApGroupVlanRadioTab () {
   const updateDataRef = useRef<NetworkVenue[]>([])
 
   const navigate = useNavigate()
-  const basePath = useTenantLink('/devices/')
+  const basePath = usePathBasedOnConfigTemplate('/devices/')
 
   const navigatePathName = (isApGroupTableFlag)?
     `${basePath.pathname}/wifi/apgroups` :
     `${basePath.pathname}/wifi`
 
-  const { data: apGroupData, isLoading: isApGroupDataLoading } = useGetApGroupQuery(
-    { params: { tenantId, apGroupId } },
-    { skip: !(isApGroupTableFlag && isEditMode) })
+  const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher(
+    useGetApGroupQuery,
+    useGetApGroupTemplateQuery,
+    !(isApGroupTableFlag && isEditMode),
+    null,
+    { tenantId, apGroupId }
+  )
 
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
   const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
-  const [updateNetworkVenues] = useUpdateNetworkVenuesMutation()
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
+    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
+  )
 
   const [venueId, setVenueId] = useState('')
   const [tableData, setTableData] = useState(defaultTableData)
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   // eslint-disable-next-line max-len
-  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
-    params: { tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
-    }
-  }, {
-    skip: !tableData.length,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
-  })
+  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = GetGetVLANPoolPolicyInstance(tableData)
 
   useEffect(() => {
     if (apGroupData && !isApGroupDataLoading) {
       const payload = cloneDeep({
         ...defaultApGroupNetworkPayload,
+        isTemplate: isTemplate,
         filters: { isAllApGroups: [false] }
       })
 
@@ -207,4 +206,49 @@ export function ApGroupVlanRadioTab () {
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )
+}
+
+const GetGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
+  const { tenantId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  // eslint-disable-next-line max-len
+  const vlanPoolingNonTemplate: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length && isTemplate,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
+  // eslint-disable-next-line max-len
+  const vlanPoolingTemplate: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModeTemplateListQuery({
+    params: { tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    }
+  }, {
+    skip: !tableData.length && !isTemplate,
+    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+      vlanPoolingNameMap: data?.data
+        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+        : [] as KeyValue<string, string>[]
+    })
+  })
+
+  return isTemplate ? vlanPoolingTemplate : vlanPoolingNonTemplate
 }
