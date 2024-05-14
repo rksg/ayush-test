@@ -14,21 +14,18 @@ import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { SpaceWrapper }               from '@acx-ui/rc/components'
 import {
-  useRefreshEntitlementsMutation,
   useGetEntitlementActivationsQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementActivations
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { noDataDisplay } from '@acx-ui/utils'
 
 import { ActivatePurchaseDrawer } from '../ActivatePurchaseDrawer'
 
 const PendingActivationsTable = () => {
   const { $t } = useIntl()
-  const params = useParams()
   const [activationData, setActivationData] = useState<EntitlementActivations>()
   const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
   const isActivatePendingActivationEnabled =
@@ -39,8 +36,6 @@ const PendingActivationsTable = () => {
   }
   const pendingActivationResults
     = useGetEntitlementActivationsQuery({ params: useParams(), payload: pendingActivationPayload })
-
-  const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
 
   const columns: TableProps<EntitlementActivations>['columns'] = [
     {
@@ -115,28 +110,6 @@ const PendingActivationsTable = () => {
     }
   ]
 
-  const refreshFunc = async () => {
-    try {
-      await (refreshEntitlement)({ params }).unwrap()
-    } catch (error) {
-      console.log(error) // eslint-disable-line no-console
-    }
-  }
-
-  const actions: TableProps<EntitlementActivations>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Manage Subscriptions' }),
-      onClick: () => {
-        const licenseUrl = get('MANAGE_LICENSES')
-        window.open(licenseUrl, '_blank')
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Refresh' }),
-      onClick: refreshFunc
-    }
-  ]
-
   let spaActivationCodes:string[] = []
   const GetChildStatus = (spaCode: string) => {
     if (spaActivationCodes.includes(spaCode)) {
@@ -159,7 +132,6 @@ const PendingActivationsTable = () => {
     ]}>
       <Table
         columns={columns}
-        actions={filterByAccess(actions)}
         dataSource={subscriptionData}
         rowKey='orderId'
       />
