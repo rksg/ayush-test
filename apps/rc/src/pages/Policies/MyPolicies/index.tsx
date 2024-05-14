@@ -32,8 +32,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { WifiScopes }                    from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 interface CardDataProps {
   type: PolicyType
@@ -155,7 +154,7 @@ function useCardData (): CardDataProps[] {
       totalCount: useMacRegListsQuery({ params }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })),
-      disabled: !cloudpathBetaEnabled || !hasPermission({ scopes: [WifiScopes.READ] })
+      disabled: !cloudpathBetaEnabled
     },
     {
       type: PolicyType.ROGUE_AP_DETECTION,
