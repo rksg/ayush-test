@@ -89,6 +89,9 @@ export function filterByAccess <Item> (items: Item[]) {
   })
 }
 
+/**
+* IMPORTANT: Suggest using hasPermission for action items, as it will always return FALSE for Role.READ_ONLY.
+*/
 export function hasPermission (props?: {
     scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[],
     allowedOperations?:string

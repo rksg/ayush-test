@@ -57,11 +57,17 @@ describe('User Profile', () => {
     })
   })
   it('should set user profile', () => {
+    const value = { search: '' }
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value
+    })
     setUserProfile(defaultMockUserProfile.data)
     expect(getUserProfile()).toEqual({
       ...defaultMockUserProfile.data,
       selectedTenant: { ...defaultMockUserProfile.data.tenants[0] }
     })
+    expect(value.search).toEqual('?selectedTenants=WyIxIl0=')
   })
   it('should set selected tenant from url', () => {
     setUserProfile(defaultMockUserProfile.data)

@@ -8,11 +8,14 @@ import { useParams }                  from '@acx-ui/react-router-dom'
 import { getIntl }                    from '@acx-ui/utils'
 
 export function BackupModal (props:{
+  venueId: string,
+  enableRbac: boolean,
   visible: boolean,
   handleCancel: () => void
 }) {
   const { $t } = getIntl()
   const params = useParams()
+  const { venueId, enableRbac } = props
   const { visible, handleCancel } = props
   const [form] = Form.useForm()
   const [addConfigBackup] = useAddConfigBackupMutation()
@@ -23,7 +26,11 @@ export function BackupModal (props:{
   }
 
   const onFinish = async (value: { name:string }) => {
-    await addConfigBackup({ params, payload: value }).unwrap()
+    await addConfigBackup({
+      params: { ...params, venueId },
+      payload: value,
+      enableRbac
+    }).unwrap()
     handleCancel()
   }
 
