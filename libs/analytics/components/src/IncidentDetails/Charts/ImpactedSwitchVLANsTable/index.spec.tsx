@@ -3,7 +3,7 @@ import React from 'react'
 import userEvent         from '@testing-library/user-event'
 import { CarouselProps } from 'antd'
 
-import { fakeIncidentVlan }                                             from '@acx-ui/analytics/utils'
+import { fakeIncidentVlan, overlapsRollup }                             from '@acx-ui/analytics/utils'
 import { Provider, dataApi, dataApiURL, store }                         from '@acx-ui/store'
 import { findTBody, mockGraphqlQuery, render, within, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -41,6 +41,12 @@ jest.mock('antd', () => {
     })
   }
 })
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 // mac and portmac the same
 const sample1: ImpactedSwitch[] = [{
@@ -349,6 +355,15 @@ describe('ImpactedSwitchVLANsTable', () => {
     const rows = await body.findAllByRole('row')
     expect(rows).toHaveLength(4)
     expect(within(rows[2]).getAllByRole('cell')[1].textContent).toMatch('Sol-DBlade-System')
+  })
+
+  it('should hide chart when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    mockGraphqlQuery(dataApiURL, 'ImpactedSwitchVLANs', { data: response() })
+    render(<ImpactedSwitchVLANsTable incident={fakeIncidentVlan} />, { wrapper: Provider })
+
+    await screen.findByText('Data granularity at this level is not available')
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
 
   it('click row on table navigate to correct slide', async () => {
