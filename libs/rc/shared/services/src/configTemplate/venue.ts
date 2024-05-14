@@ -372,7 +372,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         { type: 'ApGroupTemplate', id: 'LIST' }
       ]
     }),
-    deleteApGroups: build.mutation<ApGroup[], RequestPayload>({
+    deleteApGroupsTemplate: build.mutation<ApGroup[], RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.deleteApGroups),
       invalidatesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
     }),
@@ -447,6 +447,6 @@ export const {
   useLazyGetVenueTemplateDefaultApGroupQuery,
   useAddApGroupTemplateMutation,
   useUpdateApGroupTemplateMutation,
-  useDeleteApGroupsMutation,
+  useDeleteApGroupsTemplateMutation,
   useGetVLANPoolPolicyViewModeTemplateListQuery
 } = venueConfigTemplateApi

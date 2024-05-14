@@ -32,7 +32,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.WIFI_CALLING]: isGA,
     [ConfigTemplateType.SYSLOG]: isGA,
     [ConfigTemplateType.CLIENT_ISOLATION]: false, // Not supported in the current scope
-    [ConfigTemplateType.ROGUE_AP_DETECTION]: isGA
+    [ConfigTemplateType.ROGUE_AP_DETECTION]: isGA,
+    [ConfigTemplateType.AP_GROUP]: false // update this when FF is ready
   }
 
   return visibilityMap
