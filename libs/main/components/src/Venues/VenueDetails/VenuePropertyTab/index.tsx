@@ -61,9 +61,8 @@ import {
 import {
   TenantLink
 } from '@acx-ui/react-router-dom'
-
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }                     from '@acx-ui/utils'
+import { exportMessageMapping }      from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }     from './PropertyUnitDrawer'

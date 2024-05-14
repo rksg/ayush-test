@@ -32,7 +32,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
+import { EdgeScopes, WifiScopes }   from '@acx-ui/types'
 import { filterByAccess, hasScope } from '@acx-ui/user'
 
 interface CardDataProps {
