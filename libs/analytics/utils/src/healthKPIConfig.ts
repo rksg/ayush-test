@@ -483,14 +483,14 @@ export const kpiConfig = {
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 0.8,
+      initialThreshold: 80,
       apiMetric: 'switchMemoryUtilization',
-      splits: [0.1, 0.25, 0.5, 0.6, 0.7, 0.8, 0.9],
+      splits: [10,25,50,60,70,80,90],
       xUnit: '%',
       yUnit: 'switches',
-      shortXFormat: multipleBy100,
-      longXFormat: formatter('percentFormat'),
-      reFormatFromBarChart: divideBy100
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
@@ -499,7 +499,7 @@ export const kpiConfig = {
         defineMessage({ defaultMessage: '{threshold} Memory' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: formatter('percentFormat'),
+      thresholdFormatter: (x: number) => `${x}%`,
       tooltip: defineMessage({ defaultMessage: 'The memory Utilization measures the percentage of the switches that utilize less memory percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of Memory Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
@@ -513,14 +513,14 @@ export const kpiConfig = {
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 0.8,
+      initialThreshold: 80,
       apiMetric: 'switchCpuUtilization',
-      splits: [0.1, 0.25, 0.5, 0.6, 0.7, 0.8, 0.9],
+      splits: [10,25,50,60,70,80,90],
       xUnit: '%',
       yUnit: 'switches',
-      shortXFormat: multipleBy100,
-      longXFormat: formatter('percentFormat'),
-      reFormatFromBarChart: divideBy100
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
     },
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
@@ -529,7 +529,7 @@ export const kpiConfig = {
         defineMessage({ defaultMessage: '{threshold} CPU' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: formatter('percentFormat'),
+      thresholdFormatter: (x: number) => `${x}%`,
       tooltip: defineMessage({ defaultMessage: 'The CPU Utilization measures the percentage of the switches that utilize less CPU percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of CPU Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
