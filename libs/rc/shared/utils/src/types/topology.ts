@@ -15,6 +15,7 @@ export interface Node {
 	cloudPort?: string;
 	isConnectedCloud?: boolean;
 	ipAddress?: string;
+	meshRole?: string;
 }
 
 export interface NodeData extends Node {

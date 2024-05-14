@@ -80,6 +80,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
             `(${node.data.children.length})` :
             (node.data?._children && node.data._children?.length > 0 ?
               `(${node.data._children.length})` : '')
+          const deviceType = node.data.meshRole === 'EMAP' ? DeviceTypes.ApWired : node.data.type
           return (
             <g
               transform={coordinateTransform(node)}
@@ -101,7 +102,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />
                 <g className={`${node.data.status}-icon`}>
                   {node.parent ? (
-                    getDeviceIcon(node.data.type as DeviceTypes,
+                    getDeviceIcon(deviceType as DeviceTypes,
                       node.data.status as TopologyDeviceStatus)
                   ) : (
                     <R1Cloud width={24} height={24} x={-12} y={-12} />
