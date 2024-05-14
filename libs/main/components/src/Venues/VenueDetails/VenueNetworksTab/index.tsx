@@ -287,7 +287,7 @@ export function VenueNetworksTab () {
         if (Boolean(row.activated?.isActivated)) {
           const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
             sdlan.networkIds.includes(row.id))
-          return getNetworkTunnelInfo(destinationsInfo)
+          return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
         } else {
           return ''
         }
@@ -302,12 +302,12 @@ export function VenueNetworksTab () {
       render: function (__, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting' })
         if((get(row,'deepNetwork.enableDhcp') && get(venueDetailsQuery.data,'venue.mesh.enabled'))){
           disabled = true
         } else if (row?.isOnBoarded) {
           disabled = true
-          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
+          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this <venueSingular></venueSingular> is tied to the Service network exclusively.' })
         } else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })

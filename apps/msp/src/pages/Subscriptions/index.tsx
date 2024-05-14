@@ -395,7 +395,6 @@ export function Subscriptions () {
       />
       <Tabs
         defaultActiveKey='mspSubscriptions'
-        type='card'
         onChange={onTabChange}
       >
         {

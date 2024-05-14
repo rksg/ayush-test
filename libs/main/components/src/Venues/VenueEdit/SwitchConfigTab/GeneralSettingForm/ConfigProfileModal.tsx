@@ -83,7 +83,7 @@ export function ConfigProfileModal (props: {
       return <Tooltip title={title} placement='bottom'>{ content }</Tooltip>
     }
   }, {
-    title: $t({ defaultMessage: 'Venues' }),
+    title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
     dataIndex: 'venues',
     key: 'venues',
     render: (_, { venues }) => {

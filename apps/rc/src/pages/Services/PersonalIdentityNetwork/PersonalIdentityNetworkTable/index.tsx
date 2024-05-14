@@ -9,6 +9,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { EdgeServiceStatusLight } from '@acx-ui/rc/components'
 import {
   useDeleteNetworkSegmentationGroupMutation,
@@ -75,6 +76,7 @@ const switchDefaultPayload = {
 const PersonalIdentityNetworkTable = () => {
 
   const { $t } = useIntl()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
@@ -124,7 +126,9 @@ const PersonalIdentityNetworkTable = () => {
     })
 
   const { switchOptions = [] } = useSwitchListQuery(
-    { payload: switchDefaultPayload },
+    { payload: switchDefaultPayload,
+      enableRbac: isSwitchRbacEnabled
+    },
     {
       selectFromResult: ({ data }) => ({
         switchOptions: data?.data.map(item => ({ key: item.switchMac, value: item.name }))
@@ -154,7 +158,7 @@ const PersonalIdentityNetworkTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venue',
       dataIndex: 'venueInfos',
       sorter: true,

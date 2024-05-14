@@ -11,9 +11,9 @@ import { useVenuesListQuery }                                  from '@acx-ui/rc/
 import {
   EdgeClusterStatus,
   EdgeStatusEnum,
-  PRODUCT_CODE_VIRTUAL_EDGE,
   deriveEdgeModel,
-  edgeSerialNumberValidator
+  edgeSerialNumberValidator,
+  isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../../useEdgeActions'
@@ -82,9 +82,9 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   when there are at least two nodes present. Please add more nodes to establish
   a complete cluster.` })
 
-  const otpWarningMsg = $t({ defaultMessage: `The one-time-password (OTP) will be 
+  const otpWarningMsg = $t({ defaultMessage: `The one-time-password (OTP) will be
   automatically sent to your email address or via SMS for verification when you add
-  a virtual SmartEdge node. The password will expire in 10 minutes and you must 
+  a virtual SmartEdge node. The password will expire in 10 minutes and you must
   complete the authentication process before using it.` })
 
   const showClusterWarning = (editData?.edgeList?.filter(item =>
@@ -92,7 +92,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
 
   const showOtpMessage = smartEdges?.some(item =>
     !item?.isEdit &&
-    item?.serialNumber?.startsWith(PRODUCT_CODE_VIRTUAL_EDGE))
+    isOtpEnrollmentRequired(item?.serialNumber ?? ''))
 
   const deleteNode = (fieldName: number, serialNumber?: string) => {
     if(!smartEdges?.[fieldName]?.isEdit) {
@@ -111,7 +111,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         <Col span={6}>
           <Form.Item
             name='venueId'
-            label={$t({ defaultMessage: 'Venue' })}
+            label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{
               required: true
             }]}

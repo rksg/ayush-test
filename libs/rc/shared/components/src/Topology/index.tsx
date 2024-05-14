@@ -9,23 +9,14 @@ import { useParams }                                                from 'react-
 
 import { Loader, Select } from '@acx-ui/components'
 import {
-  CloudSolid,
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
-  AccessPointWifiMesh,
-  AccessPointWifiMeshRoot,
+  ArrowsOut,
   SearchFitOutlined,
-  StackDevice,
-  AccessPointWifi,
-  Switch, Unknown,
-  AccessPointWifiPort,
-  SearchOutlined,
-  ArrowsOut
+  SearchOutlined
 } from '@acx-ui/icons'
 import { useGetTopologyQuery, useLazyGetSwitchVlanUnionByVenueQuery } from '@acx-ui/rc/services'
 import {
-  TopologyDeviceStatus,
-  DeviceTypes,
   Link,
   Node,
   NodeData,
@@ -594,7 +585,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         }}>
           {
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
-              ? <Empty description={$t({ defaultMessage: 'No devices added yet to this venue' })}>
+              // eslint-disable-next-line max-len
+              ? <Empty description={$t({ defaultMessage: 'No devices added yet to this <venueSingular></venueSingular>' })}>
                 { hasAccess() && <Row>
                   <Col span={12}>
                     <TenantLink to='devices/wifi/add'>
@@ -608,7 +600,8 @@ export function TopologyGraphComponent (props:{ venueId?: string,
                   </Col>
                 </Row>}
               </Empty>
-              : <Empty description={$t({ defaultMessage: 'This device not added to any venue' })} />
+              // eslint-disable-next-line max-len
+              : <Empty description={$t({ defaultMessage: 'This device not added to any <venueSingular></venueSingular>' })} />
           }
         </div>
       }
@@ -695,39 +688,5 @@ export function TopologyGraph (props:{ venueId?: string,
         />
       }
     </>
-  )
-}
-
-export function DeviceIcon (props: { deviceType: DeviceTypes,
-  deviceStatus: TopologyDeviceStatus }) {
-  const { deviceType, deviceStatus } = props
-
-  function getDeviceIcon () {
-    switch (deviceType) {
-      case DeviceTypes.Switch:
-        return <Switch width={24} height={24} x={-12} y={-12} />
-      case DeviceTypes.SwitchStack:
-        return <StackDevice />
-      case DeviceTypes.Ap:
-        return <AccessPointWifi width={24} height={24} x={-12} y={-12} />
-      case DeviceTypes.Cloud:
-        return <CloudSolid />
-      case DeviceTypes.ApMesh:
-        return <AccessPointWifiMesh />
-      case DeviceTypes.ApMeshRoot:
-        return <AccessPointWifiMeshRoot />
-      case DeviceTypes.ApWired:
-        return <AccessPointWifiPort />
-      default:
-        return <Unknown />
-    }
-  }
-
-  return (
-    <UI.Device deviceStatus={deviceStatus}>
-      {
-        getDeviceIcon()
-      }
-    </UI.Device>
   )
 }

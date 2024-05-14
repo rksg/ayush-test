@@ -5,7 +5,8 @@ import { Button, Loader, NoData, Tabs }                          from '@acx-ui/c
 import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { EdgeLagStatus, EdgePortStatus, getEdgePortDisplayName } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }                 from '@acx-ui/react-router-dom'
-import { hasAccess }                                             from '@acx-ui/user'
+import { EdgeScopes }                                            from '@acx-ui/types'
+import { hasPermission }                                         from '@acx-ui/user'
 
 import { EdgeSubInterfacesTable } from './EdgeSubInterfacesTable'
 import { LagSubInterfaceTable }   from './LagSubInterfaceTable'
@@ -65,7 +66,7 @@ export const EdgeSubInterfacesTab = (props: EdgeSubInterfacesTabProps) => {
   }
 
   return <Row justify='end'>
-    {hasAccess() && isConfigurable &&
+    {hasPermission({ scopes: [EdgeScopes.UPDATE] }) && isConfigurable &&
       <Button
         size='small'
         type='link'

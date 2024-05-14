@@ -205,7 +205,7 @@ export function RadioSettingsForm (props:{
             type='error'
             message={<>
               <span style={{ marginRight: '30px' }}>
-                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a venue height to be set for standard power operation.' })}
+                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
               </span>
               <Button type='link'
                 data-testid='set-it-up-button'
@@ -232,7 +232,7 @@ export function RadioSettingsForm (props:{
       { AFC_Featureflag && context === 'venue' && ApRadioTypeEnum.Radio6G === radioType &&
               <FieldLabel width='180px'>
                 <div style={{ float: 'left' }}>
-                  <p style={{ width: '180px' }}>{$t({ defaultMessage: 'AFC Venue Height:' })}</p>
+                  <p style={{ width: '180px' }}>{$t({ defaultMessage: 'AFC <VenueSingular></VenueSingular> Height:' })}</p>
                 </div>
                 <Form.Item>
                   <Input.Group
@@ -263,7 +263,7 @@ export function RadioSettingsForm (props:{
                       style={{ width: '160px' }}
                       rules={[
                         ...(enableAfc ? [{ required: true , message: $t({ defaultMessage: 'Maximum floor can not be empty' }) }] : []),
-                        { validator: (_, value) => (value && value < minFloor) ? Promise.reject($t(validationMessages.VenueMinFloorGreaterThanMaxFloor)) : Promise.resolve() }
+                        { validator: (_, value) => (value && value < minFloor) ? Promise.reject($t(validationMessages.VenueMaxFloorLessThanMinFloor)) : Promise.resolve() }
                       ]}>
                       <InputNumber
                         style={{ width: '160px' }}
@@ -409,7 +409,7 @@ export function RadioSettingsForm (props:{
             <Space>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
               <Tooltip.Question
-                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
               />

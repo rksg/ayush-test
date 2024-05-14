@@ -61,5 +61,8 @@ data:
         key: mib.files
         name: MIB_FILES
       - configmap: configmap-acx-ui
+        key: druid.rollup.period.days
+        name: DRUID_ROLLUP_DAYS
+      - configmap: configmap-acx-ui
         key: druid.retain.period.days
         name: DRUID_RETAIN_PERIOD_DAYS

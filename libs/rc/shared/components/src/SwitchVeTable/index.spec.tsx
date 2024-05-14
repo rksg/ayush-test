@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { switchApi, venueApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -15,6 +15,8 @@ import {
   fireEvent,
   waitFor
 } from '@acx-ui/test-utils'
+
+import { switchDetailData } from '../SwitchLagDrawer/__tests__/fixtures'
 
 import { aclList, freeVePortVlans, routedList, successResponse, switchDetailHeader, switchList, switchesList, venueRoutedList } from './__tests__/fixtures'
 
@@ -80,7 +82,12 @@ describe('Switch VE Table', () => {
   afterEach(() => Modal.destroyAll())
 
   it('should render VE table correctly', async () => {
-    render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    render(<Provider>
+      <SwitchVeTable
+        isVenueLevel={false}
+        switchInfo={switchDetailData} />
+    </Provider>, {
       route: {
         params,
         path: '/:tenantId/t/:switchId'
@@ -93,7 +100,7 @@ describe('Switch VE Table', () => {
   })
 
   it('should render VE table correctly when FF enable', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     render(<Provider><SwitchVeTable isVenueLevel={false} /></Provider>, {
       route: {
         params,

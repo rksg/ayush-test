@@ -9,19 +9,33 @@ import {
   Drawer,
   Table
 } from '@acx-ui/components'
-import { useGetVlanListBySwitchLevelQuery }                                                         from '@acx-ui/rc/services'
-import { Vlan, transformTitleCase, useTableQuery, transformDisplayOnOff, SpanningTreeProtocolName } from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { useGetVlanListBySwitchLevelQuery } from '@acx-ui/rc/services'
+import {
+  Vlan,
+  transformTitleCase,
+  useTableQuery,
+  transformDisplayOnOff,
+  SpanningTreeProtocolName,
+  SwitchViewModel
+} from '@acx-ui/rc/utils'
 
 import { VlanDetail } from './vlanDetail'
 
 
-export function SwitchOverviewVLANs () {
+export function SwitchOverviewVLANs (props: {
+  switchDetail?: SwitchViewModel
+}) {
   const { $t } = useIntl()
+  const { switchDetail } = props
   const [currentRow, setCurrentRow] = useState({} as Vlan)
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = useTableQuery({
     useQuery: useGetVlanListBySwitchLevelQuery,
+    enableRbac: isSwitchRbacEnabled,
+    apiParams: { venueId: (switchDetail?.venueId || '') as string },
     defaultPayload: {},
     sorter: {
       sortField: 'vlanId',

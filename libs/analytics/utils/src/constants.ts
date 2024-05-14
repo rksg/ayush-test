@@ -1,6 +1,7 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { get } from '@acx-ui/config'
+import { get }                    from '@acx-ui/config'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const productNames = get('IS_MLISA_SA')
   ? { smartZone: 'SmartZone' }
@@ -172,14 +173,30 @@ export const PERMISSION_MANAGE_TENANT_SETTINGS = 'manage-tenant-settings'
 
 export const PERMISSION_FRANCHISOR = 'franchisor'
 
-export enum RolesEnum {
-  ADMIN = 'admin',
-  NETWORK_ADMIN = 'network-admin',
-  REPORT_ONLY = 'report-only'
+export enum Roles {
+  PRIME_ADMINISTRATOR = 'admin',
+  ADMINISTRATOR = 'network-admin',
+  BUSINESS_INSIGHTS_USER = 'report-only',
+  IT_HELPDESK = 'it-helpdesk',
+  READ_ONLY = 'read-only',
+  REPORTS_USER = 'reports-user',
+  DATA_STUDIO_USER = 'data-studio-user',
 }
 
-export const roleStringMap: Record<RolesEnum, MessageDescriptor> = {
-  [RolesEnum.ADMIN]: defineMessage({ defaultMessage: 'Admin' }),
-  [RolesEnum.NETWORK_ADMIN]: defineMessage({ defaultMessage: 'Network Admin' }),
-  [RolesEnum.REPORT_ONLY]: defineMessage({ defaultMessage: 'Report Only' })
+export const useRoles = (forceAllRoles = true): Record<string, MessageDescriptor> => {
+  const newRoles = {
+    [Roles.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Prime Administrator' }),
+    [Roles.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
+    [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Bussiness Insights User' }),
+    [Roles.IT_HELPDESK]: defineMessage({ defaultMessage: 'IT Helpdesk' }),
+    [Roles.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
+    [Roles.REPORTS_USER]: defineMessage({ defaultMessage: 'Reports User' }),
+    [Roles.DATA_STUDIO_USER]: defineMessage({ defaultMessage: 'Data Studio User' })
+  }
+  return useIsSplitOn(Features.RUCKUS_AI_NEW_ROLES_TOGGLE) ? newRoles : {
+    ...(forceAllRoles ? newRoles : {}),
+    [Roles.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Admin' }),
+    [Roles.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Network Admin' }),
+    [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Report Only' })
+  }
 }

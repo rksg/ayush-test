@@ -56,7 +56,7 @@ import {
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
-import { exportMessageMapping }                                           from '@acx-ui/utils'
+import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
 
 import { ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
@@ -342,7 +342,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     // },
     ...((params.venueId || params.apGroupId) ? [] : [{
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
@@ -524,7 +524,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     ]: []),
     ...(enableApCompatibleCheck ? [{
       key: 'incompatible',
-      tooltip: $t({ defaultMessage: 'Check for the venue’s Wi-Fi features not supported by earlier versions or AP models.' }),
+      tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
       filterValueArray: true,
@@ -618,9 +618,13 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
   const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
+  const { acx_account_vertical } = getJwtTokenPayload()
+  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ?
+    AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = apGpsFlag ?
-    'assets/templates/aps_import_template_with_gps.csv' :
-    'assets/templates/aps_import_template.csv'
+    `assets/templates/${isHospitality}aps_import_template_with_gps.csv` :
+    `assets/templates/${isHospitality}aps_import_template.csv`
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
