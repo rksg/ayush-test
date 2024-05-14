@@ -459,6 +459,7 @@ export const kpiConfig = {
   },
   onlineSwitches: {
     text: defineMessage({ defaultMessage: 'Switch Reachability' }),
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchStatusCountAndSwitchCount',
       minGranularity: 'PT15M'
@@ -475,6 +476,7 @@ export const kpiConfig = {
   switchMemoryUtilization: {
     text: defineMessage({ defaultMessage: 'Memory' }),
     isBeta: false,
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
       minGranularity: 'PT15M'
@@ -504,6 +506,7 @@ export const kpiConfig = {
   switchCpuUtilization: {
     text: defineMessage({ defaultMessage: 'CPU' }),
     isBeta: false,
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
       minGranularity: 'PT15M'
@@ -532,6 +535,7 @@ export const kpiConfig = {
   },
   switchesTemperature: {
     text: defineMessage({ defaultMessage: 'Switch Temperature' }),
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
       minGranularity: 'PT15M'
