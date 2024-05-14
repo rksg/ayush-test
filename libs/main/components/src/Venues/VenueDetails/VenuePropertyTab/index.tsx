@@ -160,12 +160,8 @@ export function VenuePropertyTab () {
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
-<<<<<<< HEAD
   const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
-=======
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
->>>>>>> master
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
 
