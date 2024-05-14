@@ -3,7 +3,6 @@ import { rest }  from 'msw'
 
 import {
   MacRegListUrlsInfo,
-  NewPersonaBaseUrl,
   PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
