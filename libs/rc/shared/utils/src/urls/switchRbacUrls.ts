@@ -343,12 +343,12 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   associateSwitchProfile: {
     method: 'put',
-    url: '/venues/:venueId/switchProfiles/:switchProfileId',
+    url: '/venues/:venueId/switchProfiles/:profileId',
     newApi: true
   },
-  dissociateSwitchProfile: {
+  disassociateSwitchProfile: {
     method: 'delete',
-    url: '/venues/:venueId/switchProfiles/:switchProfileId',
+    url: '/venues/:venueId/switchProfiles/:profileId',
     newApi: true
   },
   associateCliTemplate: {

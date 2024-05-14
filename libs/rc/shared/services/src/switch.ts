@@ -1359,8 +1359,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigProfile, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchConfigProfile, params, headers)
         return {
           ...req,
           body: payload
@@ -1369,27 +1371,65 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitchConfigProfile, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addSwitchConfigProfile, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
     updateSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateSwitchConfigProfile, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateSwitchConfigProfile, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
         { type: 'SwitchProfiles', id: 'LIST' },
         { type: 'SwitchProfiles', id: 'DETAIL' }
       ]
+    }),
+    associateSwitchProfile: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchRbacUrlsInfo.associateSwitchProfile, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    batchAssociateSwitchProfile: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          SwitchRbacUrlsInfo.associateSwitchProfile, requests, fetchWithBQ, customHeaders.v1
+        )
+      }
+    }),
+    disassociateSwitchProfile: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchRbacUrlsInfo.disassociateSwitchProfile, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    batchDisassociateSwitchProfile: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          SwitchRbacUrlsInfo.disassociateSwitchProfile, requests, fetchWithBQ, customHeaders.v1
+        )
+      }
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1672,6 +1712,8 @@ export const {
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
+  useBatchAssociateSwitchProfileMutation,
+  useBatchDisassociateSwitchProfileMutation,
   useGetSwitchModelListQuery,
   useDownloadSwitchsCSVMutation
 } = switchApi
