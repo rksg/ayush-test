@@ -50,8 +50,8 @@ describe('Persona Group Drawer', () => {
           return res(ctx.json(mockPersonaGroup))
         }
       ),
-      rest.get(
-        replacePagination(MacRegListUrlsInfo.getMacRegistrationPools.url),
+      rest.post(
+        replacePagination(MacRegListUrlsInfo.searchMacRegistrationPools.url),
         (req, res, ctx) => res(ctx.json(mockMacRegistrationList))
       ),
       rest.post(
