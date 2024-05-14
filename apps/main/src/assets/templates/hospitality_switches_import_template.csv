@@ -1,0 +1,9 @@
+# Space is mandatory,,,
+"# Serial number is mandatory	",,,
+# Status - leave empty,,,
+# Reason - leave empty,,,
+,,,
+Space,Switch Name,Serial Number,Status,Reason
+My-Space,Switch-01,FEK3204N001,,
+My-Space,Switch-02,FEK3204N002,,
+My-Space,Switch-03,FEK3204N003,,
