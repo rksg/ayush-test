@@ -152,7 +152,7 @@ export const PasswordStrengthIndicator = ({
     }, 500)
   },[input])
 
-  return (<div style={{ display: 'flex', gap: '8px', marginTop: 5 }}>
+  return (<UI.PasswordBarContainer>
     <StackedBarChart
       style={{ height: 8, width: 270, marginTop: 5 }}
       showLabels={false}
@@ -188,14 +188,13 @@ export const PasswordStrengthIndicator = ({
       data-testid={'tooltipInfo'}
     >
       <UI.InformationOutlinedIcon
-        style={{ paddingTop: '2px' }}
         onMouseEnter={() => setMouseEnterTooltip(true)}
         onMouseLeave={() => setMouseEnterTooltip(false)}
         data-testid={'tooltipIcon'}
       />
     </Tooltip>
     }
-  </div>)
+  </UI.PasswordBarContainer>)
 
 }
 
