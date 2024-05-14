@@ -1707,8 +1707,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // TODO: Change RBAC API
     deleteApSnmpPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicy, params, RKS_NEW_UI)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        let url = rbacApiVersion ? ApSnmpRbacUrls.deleteApSnmpPolicy : ApSnmpUrls.deleteApSnmpPolicy
+        const req = createHttpRequest(url, params, RKS_NEW_UI)
         return {
           ...req
         }
