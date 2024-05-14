@@ -88,7 +88,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
 
   useEffect(() => {
     setGuestDetail(currentGuest)
-  }, [currentGuest.id])
+  }, [currentGuest])
 
   const renderStatus = function (row: Guest) {
     if(Object.keys(row).length === 0) {

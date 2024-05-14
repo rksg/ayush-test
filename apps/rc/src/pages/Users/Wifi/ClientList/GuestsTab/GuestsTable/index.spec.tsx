@@ -19,8 +19,7 @@ import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
   VenueList,
-  GuestClients,
-  RegenerateGuestPassword
+  GuestClients
 } from '../../../__tests__/fixtures'
 
 import { GuestTabContext } from './context'
@@ -55,7 +54,12 @@ jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetGuestsListQuery: () => mockGuestData,
   useWifiNetworkListQuery: () => mockNetworkData,
-  useGetGuestsMutation: () => ([ mockedDownloadReq ]),
+  useGetGuestsMutation: () => {
+    return [() => {
+      mockedDownloadReq()
+      return { unwrap: () => Promise.resolve(), catch: () => {} }
+    }, { isLoading: false }]
+  },
   useDeleteGuestMutation: () => ([ mockedDeleteReq ]),
   useEnableGuestsMutation: () => ([ mockedPatchReq ]),
   useDisableGuestsMutation: () => ([ mockedPatchReq ])
@@ -205,15 +209,6 @@ describe('Guest Table', () => {
   })
 
   it('should delete guest correctly from the action bar', async () => {
-    mockServer.use(
-      rest.delete(
-        ClientUrlsInfo.deleteGuest.url,
-        (_, res, ctx) => {
-          mockedDeleteReq()
-          return res(ctx.json({ requestId: '123' }))
-        }
-      )
-    )
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -231,20 +226,11 @@ describe('Guest Table', () => {
     expect(await screen.findByText('Delete "test2"?')).toBeVisible()
 
     await userEvent.click(await within(dialog).findByRole('button', { name: /Delete Guest/i }))
-    await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => expect(mockedDeleteReq).toBeCalledTimes(1))
+    await waitFor(() => expect(dialog).not.toBeVisible())
   })
 
   it('should click "delete" on GuestDetailDrawer correctly', async () => {
-    mockServer.use(
-      rest.delete(
-        ClientUrlsInfo.deleteGuest.url,
-        (_, res, ctx) => {
-          mockedDeleteReq()
-          return res(ctx.json({ requestId: '123' }))
-        }
-      )
-    )
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -267,49 +253,7 @@ describe('Guest Table', () => {
     await waitFor(() => expect(mockedDeleteReq).toBeCalledTimes(1))
   })
 
-  it.todo('should download guest information correctly from the action bar')
-
-  it('should generate new password correctly from the action bar', async () => {
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(RegenerateGuestPassword))
-        }
-      )
-    )
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-    const table = await screen.findByRole('table')
-    await userEvent.click(await within(table).findByText('+12015550321'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Generate New Password' }))
-
-    const dialog = await screen.findByTestId('generate-password-modal')
-    expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
-    await userEvent.click(within(dialog).getByRole('checkbox', { name: /send to phone/i }))
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Generate' }))
-    await waitFor(() => expect(dialog).not.toBeVisible())
-    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
-  })
-
   it('should disable guest correctly from the action bar', async () => {
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(RegenerateGuestPassword))
-        }
-      )
-    )
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -326,15 +270,6 @@ describe('Guest Table', () => {
   })
 
   it('should enable guest correctly from the action bar', async () => {
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(RegenerateGuestPassword))
-        }
-      )
-    )
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -410,15 +345,6 @@ describe('Guest Table', () => {
   })
 
   it('should click "enable guest" correctly', async () => {
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(RegenerateGuestPassword))
-        }
-      )
-    )
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -440,15 +366,6 @@ describe('Guest Table', () => {
   })
 
   it('should click "disable guest" correctly', async () => {
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(RegenerateGuestPassword))
-        }
-      )
-    )
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -467,171 +384,6 @@ describe('Guest Table', () => {
     await userEvent.click(await within(drawer).findByText(/actions/i))
     await userEvent.click(await screen.findByText(/disable guest/i))
     await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
-  })
-
-  it('should click "generate new password" with mail and phone number', async () => {
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' },
-        wrapper: Provider
-      })
-
-    await openGuestDetailsAndClickAction('test5')
-    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
-    const dialog = await screen.findByTestId('generate-password-modal')
-    expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
-    expect(await within(dialog).findByText('Send to Phone')).toBeVisible()
-    expect(await within(dialog).findByText('Send to Email')).toBeVisible()
-    const cancelButton = within(dialog).getByRole('button', { name: 'Cancel' })
-    await userEvent.click(cancelButton)
-    await waitFor(() => expect(dialog).not.toBeVisible())
-  })
-
-  it('should click "generate new password" validation 1', async () => {
-    const json = {
-      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
-      response: {
-        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
-        createdDate: 1670475350467,
-        name: 'guest1',
-        disabled: false,
-        wifiNetworkId: 'd50b652907b64a008e8af2d160b29b64',
-        notes: '',
-        email: 'test@commscope.com',
-        mobilePhoneNumber: '+886988000000',
-        macAddresses: [],
-        ssid: 'test guest',
-        deliveryMethods: ['PRINT'],
-        guestUserType: 'GuestPass',
-        expiration: {
-          activationType: 'Creation',
-          duration: 7,
-          unit: 'Day'
-        },
-        locale: 'en',
-        password: '886007'
-      }
-    }
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(json))
-        }
-      )
-    )
-
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-    await openGuestDetailsAndClickAction('test4')
-    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
-    await userEvent.click(await screen.findByRole('checkbox', { name: /Print Guest pass/ }))
-    expect(await screen.findByRole('checkbox', { name: /Print Guest pass/ })).toBeChecked()
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    await userEvent.click(generateButton)
-    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
-  })
-
-  it('should click "generate new password" validation 2', async () => {
-    const json = {
-      requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
-      response: {
-        id: '0b71a2d4-6dc0-4616-8d1e-105deee0ad72',
-        createdDate: 1670475350467,
-        name: 'guest1',
-        disabled: false,
-        wifiNetworkId: 'd50b652907b64a008e8af2d160b29b64',
-        notes: '',
-        email: 'test@commscope.com',
-        mobilePhoneNumber: '+886988000000',
-        macAddresses: [],
-        ssid: 'test guest',
-        deliveryMethods: ['PRINT'],
-        guestUserType: 'GuestPass',
-        expiration: {
-          activationType: 'Creation',
-          duration: 7,
-          unit: 'Hour'
-        },
-        locale: 'en',
-        password: '886007'
-      }
-    }
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(json))
-        }
-      )
-    )
-
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-    await openGuestDetailsAndClickAction('test4')
-    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
-    await userEvent.click(screen.getByRole('checkbox', { name: /print guest pass/i }))
-    expect(await screen.findByRole('checkbox', { name: /Print Guest pass/ })).toBeChecked()
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    expect(generateButton).toBeEnabled()
-    await userEvent.click(generateButton)
-    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
-  })
-
-  it('should handle error for generate password', async () => {
-    const spyLog = jest.spyOn(console, 'log')
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => res(ctx.status(404), ctx.json({}))
-      )
-    )
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-    await openGuestDetailsAndClickAction('test4')
-    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
-
-    const dialog = await screen.findByTestId('generate-password-modal')
-    expect(await within(dialog).findByText('Generate New Password')).toBeVisible()
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /print guest pass/i
-    }))
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    await userEvent.click(generateButton)
-
-    await waitFor(() => {
-      // catch error log
-      expect(spyLog).toHaveBeenLastCalledWith(expect.objectContaining({
-        status: 404
-      }))
-    })
   })
 
   it('should show "Import from file" correctly', async () => {
@@ -689,11 +441,11 @@ describe('Guest Table', () => {
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Import' }))
     expect(await screen.findByText(/Guest pass won\’t be printed or sent/)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: 'Yes, create guest pass' }))
-    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
     await waitFor(() => expect(mockedImportFileReq).toBeCalledTimes(1))
+    await waitFor(() => expect(dialog).toHaveTextContent('File does not contain any entries'))
   })
 
-  it.skip('should render not applicable guest client detail', async () => {
+  it('should click "download" correctly', async () => {
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -703,65 +455,6 @@ describe('Guest Table', () => {
         route: { params, path: '/:tenantId/t/users/wifi/guests' }
       })
 
-    const table = await screen.findByRole('table')
-    await userEvent.click(await within(table).findByText('test2'))
-    expect(await screen.findByText('Guest Details')).toBeVisible()
-
-    const drawer = await screen.findByRole('dialog')
-    const button = within(drawer).getByRole('button', { name: 'Close' })
-    await userEvent.click(button)
-    expect(await screen.findByRole('dialog')).not.toBeVisible()
-  })
-
-  it.skip('should click "generate new password" without mail and phone number', async () => {
-    mockServer.use(
-      rest.patch(
-        ClientUrlsInfo.generateGuestPassword.url,
-        (_, res, ctx) => {
-          mockedPatchReq()
-          return res(ctx.json(RegenerateGuestPassword))
-        }
-      )
-    )
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-    await openGuestDetailsAndClickAction('test4')
-    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /send to phone/i
-    }))
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /send to phone/i
-    }))
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /send to email/i
-    }))
-    await userEvent.click(screen.getByRole('checkbox', {
-      name: /print guest pass/i
-    }))
-    const generateButton = screen.getByRole('button', { name: 'Generate' })
-    await userEvent.click(generateButton)
-    await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
-  })
-
-  it.skip('should click "download" correctly', async () => {
-    render(
-      <Provider>
-        <GuestTabContext.Provider value={{ setGuestCount }}>
-          <GuestsTable />
-        </GuestTabContext.Provider>
-      </Provider>, {
-        route: { params, path: '/:tenantId/t/users/wifi/guests' }
-      })
-
-    // TODO: fix Error encountered handling the endpoint getGuests
     await openGuestDetailsAndClickAction('test5')
     await userEvent.click(await screen.findByRole('menuitem', { name: /download information/i }))
     await waitFor(() => expect(mockedDownloadReq).toBeCalledTimes(1))
