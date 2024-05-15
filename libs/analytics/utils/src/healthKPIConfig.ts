@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { identity, flow } from 'lodash'
-import moment             from 'moment-timezone'
-import { MessageDescriptor, defineMessage }  from 'react-intl'
+import { identity, flow }                   from 'lodash'
+import moment                               from 'moment-timezone'
+import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
@@ -557,8 +557,8 @@ export const kpiConfig = {
       apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
       minGranularity: 'PT15M'
     },
-    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount', 
-    defineMessage({ defaultMessage: 'Anomaly Type' })),
+    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount',
+      defineMessage({ defaultMessage: 'Anomaly Type' })),
     pill: {
       hideProgressBar: true,
       description: '',
