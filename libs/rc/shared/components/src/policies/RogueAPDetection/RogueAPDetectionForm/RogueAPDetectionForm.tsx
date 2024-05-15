@@ -20,8 +20,7 @@ import {
   PolicyOperation,
   CommonResult,
   usePolicyListBreadcrumb,
-  generatePolicyPageHeaderTitle,
-  useConfigTemplate,
+  usePolicyPageHeaderTitle,
   useConfigTemplateMutationFnSwitcher, usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -40,7 +39,6 @@ type RogueAPDetectionFormProps = {
 
 export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   const { $t } = useIntl()
-  const { isTemplate } = useConfigTemplate()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.LIST)
@@ -100,11 +98,12 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   }
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ROGUE_AP_DETECTION)
+  const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.ROGUE_AP_DETECTION)
 
   return (
     <RogueAPDetectionContext.Provider value={{ state, dispatch }}>
       {!modalMode && <PageHeader
-        title={generatePolicyPageHeaderTitle(edit, isTemplate, PolicyType.ROGUE_AP_DETECTION)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <StepsForm<RogueAPDetectionContextType>

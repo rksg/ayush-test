@@ -4,11 +4,11 @@ import { Col, Checkbox, Form, Input, Row, Space, Typography } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
-import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
-import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'
-import { useParams }                                     from '@acx-ui/react-router-dom'
+import { Button, cssStr, StepsForm, useStepFormContext }                                                                 from '@acx-ui/components'
+import { useGetProfilesQuery, useGetSwitchConfigProfileTemplateListQuery }                                               from '@acx-ui/rc/services'
+import { checkObjectNotExists, SwitchProfileModel, TableResult, useConfigTemplateQueryFnSwitcher, whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
+import { ICX_MODELS_MODULES }                                                                                            from '@acx-ui/rc/utils'
+import { useParams }                                                                                                     from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -39,7 +39,12 @@ export function CliStepModels () {
   const params = useParams()
 
   const { form, editMode } = useStepFormContext()
-  const { data: profiles } = useGetProfilesQuery({ params, payload: profilesPayload })
+  const { data: profiles } = useConfigTemplateQueryFnSwitcher<TableResult<SwitchProfileModel>>(
+    useGetProfilesQuery,
+    useGetSwitchConfigProfileTemplateListQuery,
+    false,
+    profilesPayload
+  )
 
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])
