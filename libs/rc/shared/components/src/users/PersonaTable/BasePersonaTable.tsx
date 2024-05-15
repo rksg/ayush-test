@@ -15,7 +15,7 @@ import {
   useLazyGetPropertyUnitByIdQuery
 } from '@acx-ui/rc/services'
 import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
-import { EdgeScopes, WifiScopes }                                      from '@acx-ui/types'
+import { WifiScopes }                                                  from '@acx-ui/types'
 import { filterByAccess, hasPermission }                               from '@acx-ui/user'
 import { exportMessageMapping }                                        from '@acx-ui/utils'
 

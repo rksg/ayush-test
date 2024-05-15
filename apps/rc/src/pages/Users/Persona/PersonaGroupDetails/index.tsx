@@ -20,10 +20,10 @@ import {
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
-import { PersonaGroup }                  from '@acx-ui/rc/utils'
-import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { PersonaGroup }   from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
+import { filterByAccess } from '@acx-ui/user'
+import { noDataDisplay }  from '@acx-ui/utils'
 
 
 function PersonaGroupDetailsPageHeader (props: {

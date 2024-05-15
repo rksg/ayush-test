@@ -43,7 +43,7 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }                    from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
+import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { exportMessageMapping }          from '@acx-ui/utils'
 
