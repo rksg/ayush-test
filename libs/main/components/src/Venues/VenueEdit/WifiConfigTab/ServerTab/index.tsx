@@ -38,7 +38,6 @@ export function ServerTab () {
   } = useContext(VenueEditContext)
 
   const supportMdnsFencing = useIsSplitOn(Features.MDNS_FENCING)
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
   const items = []
 
@@ -52,7 +51,7 @@ export function ServerTab () {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing />))
   }
 
-  if (supportApSnmp && !isTemplate) {
+  if (!isTemplate) {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
 
