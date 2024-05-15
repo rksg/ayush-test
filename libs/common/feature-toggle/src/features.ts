@@ -130,7 +130,6 @@ export enum Features {
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
-  TRI_RADIO = 'tri-band-radio-toggle',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
   VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
   VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',

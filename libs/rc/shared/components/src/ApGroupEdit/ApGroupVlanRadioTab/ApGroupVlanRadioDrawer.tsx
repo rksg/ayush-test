@@ -86,7 +86,6 @@ const IsSupport6g = (editData: Network) => {
 
 export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Network) => void }) {
   const { $t } = useIntl()
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
 
   const { venueId, apGroupId,
     drawerStatus, setDrawerStatus, vlanPoolingNameMap } = useContext(ApGroupVlanRadioContext)
@@ -179,14 +178,13 @@ export function ApGroupVlanRadioDrawer ({ updateData }: { updateData: (data: Net
             <Select.Option value={RadioTypeEnum._5_GHz}>
               {radioTypeEnumToString(RadioTypeEnum._5_GHz)}
             </Select.Option>
-            { triBandRadioFeatureFlag && (
-              <Select.Option
-                value={RadioTypeEnum._6_GHz}
-                disabled={!isSupport6G}
-                title={!isSupport6G ? disabledBandTooltip : ''}
-              >{radioTypeEnumToString(RadioTypeEnum._6_GHz)}
-              </Select.Option>
-            )}
+            <Select.Option
+              value={RadioTypeEnum._6_GHz}
+              disabled={!isSupport6G}
+              title={!isSupport6G ? disabledBandTooltip : ''}
+            >
+              {radioTypeEnumToString(RadioTypeEnum._6_GHz)}
+            </Select.Option>
           </Select>
         }
       />
