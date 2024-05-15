@@ -779,9 +779,10 @@ export interface MdnsFencingService {
   rowId?: string
 }
 
-export interface VenueMdnsFencingPolicy {
+export type VenueMdnsFencingPolicy = {
   enabled: boolean,
-  services?: MdnsFencingService[]
+  services?: MdnsFencingService[] // for old API
+  rules?: MdnsFencingService[] // for rbac API
 }
 
 export enum ShowTopologyFloorplanOn {

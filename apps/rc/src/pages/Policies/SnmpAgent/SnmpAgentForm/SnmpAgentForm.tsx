@@ -6,6 +6,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, showActionModal, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useAddApSnmpPolicyMutation,
   useGetApSnmpPolicyQuery,
@@ -18,7 +19,9 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  usePolicyListBreadcrumb
+  ApiVersionEnum,
+  usePolicyListBreadcrumb,
+  RbacApSnmpPolicy
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -30,34 +33,55 @@ type SnmpAgentFormProps = {
   editMode: boolean
 }
 
+const oldApSnmp: ApSnmpPolicy = {
+  policyName: '',
+  snmpV2Agents: [],
+  snmpV3Agents: []
+}
+
+const rbacApSnmp: RbacApSnmpPolicy = {
+  name: '',
+  snmpV2Agents: [],
+  snmpV3Agents: []
+}
+
 const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
-
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = isUseRbacApi ? ApiVersionEnum.v1 : undefined
   const params = useParams()
   const { editMode } = props
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
   const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.SNMP_AGENT)
-
-  const { data } = useGetApSnmpPolicyQuery({ params }, { skip: !editMode })
+  //eslint-disable-next-line
+  const { data } = useGetApSnmpPolicyQuery({ params, payload: { rbacApiVersion } }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 
 
   const [form] = Form.useForm()
-  const [state, dispatch] = useReducer(mainReducer, {
-    policyName: '',
-    snmpV2Agents: [],
-    snmpV3Agents: []
-  })
+  const [state, dispatch] = useReducer(mainReducer, (isUseRbacApi? rbacApSnmp : oldApSnmp))
+
+  // eslint-disable-next-line
+  function retrieveNameFromState (object: ApSnmpPolicy | RbacApSnmpPolicy): string {
+    if('policyName' in object) {
+      object as ApSnmpPolicy
+      return object.policyName
+    }
+    else {
+      object as RbacApSnmpPolicy
+      return object.name
+    }
+  }
 
   useEffect(() => {
     if (editMode && data) {
       // update state from API data
-      if (state.policyName === '') {
+      if (retrieveNameFromState(state) === '') {
         const newData = cloneDeep(data)
         const payload = {
           state: {
@@ -77,7 +101,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
     }
   }, [form, editMode, data])
 
-  const isDataValid = (data: ApSnmpPolicy) => {
+  const isDataValid = (data: ApSnmpPolicy | RbacApSnmpPolicy) => {
     const { snmpV2Agents, snmpV3Agents } = data
     if (snmpV2Agents.length === 0 && snmpV3Agents.length === 0) {
       showActionModal({
@@ -95,7 +119,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   const handleSaveApSnmpAgentPolicy = async () => {
     try {
-      const payload = cloneDeep(state)
+      const payload = { ...cloneDeep(state), ...(isUseRbacApi && { rbacApiVersion }) }
       if (isDataValid(payload)) {
         if (!editMode) {
           await createApSnmpPolicy({ params, payload }).unwrap()

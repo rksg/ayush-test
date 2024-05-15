@@ -1239,8 +1239,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueMdnsFencingPolicy, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(apiInfo.getVenueMdnsFencingPolicy, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1259,10 +1262,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueMdnsFencing: build.mutation<VenueMdnsFencingPolicy, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueMdnsFencingPolicy, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueMdnsFencingPolicy)
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(apiInfo.updateVenueMdnsFencingPolicy, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'MDNS_FENCING' }]
