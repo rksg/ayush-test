@@ -115,6 +115,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
       />
       <Form.Item
         name='authPassword'
+        className='password-input-strength'
         label={$t({ defaultMessage: 'Authentication Password' })}
         style={{ width: '350px' }}
         rules={[
