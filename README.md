@@ -81,8 +81,7 @@ merged.
 
 ### Deleting a branch
 
-After a PR is merged, you should delete the branch. Do this on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V)
-Slack channel.
+After a PR is merged, you should delete the branch. Do this on the [#ruckus-alto-cicd](https://arris.slack.com/archives/CC04J4E3V) Slack channel.
 
 ```
 /alto-ci closefb ACX-5449 acx-ui

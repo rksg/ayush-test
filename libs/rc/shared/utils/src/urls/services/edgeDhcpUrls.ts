@@ -31,18 +31,6 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/edgeDhcpServices/:id',
     newApi: true
   },
-  getDhcpList: {
-    method: 'get',
-    url: '/edgeDhcpServices/dhcps',
-    oldUrl: '/api/edgeDhcpServices/dhcps',
-    newApi: true
-  },
-  getDhcpByEdgeId: {
-    method: 'get',
-    url: '/edgeDhcpServices/edgeDhcpRelationships/:edgeId',
-    oldUrl: '/api/edgeDhcpServices/edgeDhcpRelationships/:edgeId',
-    newApi: true
-  },
   getDhcpPoolStats: {
     method: 'post',
     url: '/edgeDhcpServices/dhcpPools/query',
