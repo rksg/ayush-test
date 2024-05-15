@@ -3,10 +3,9 @@ import { useRef } from 'react'
 import { Col, Divider, Row, Typography } from 'antd'
 import { useIntl }                       from 'react-intl'
 
-import { Descriptions, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { useVenuesListQuery }                          from '@acx-ui/rc/services'
-import { CliConfiguration }                            from '@acx-ui/rc/utils'
-import { useParams }                                   from '@acx-ui/react-router-dom'
+import { Descriptions, StepsForm, useStepFormContext }                            from '@acx-ui/components'
+import { useGetVenuesTemplateListQuery, useVenuesListQuery }                      from '@acx-ui/rc/services'
+import { CliConfiguration, TableResult, Venue, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
 import { CodeMirrorWidget } from '../../CodeMirrorWidget'
 
@@ -22,15 +21,19 @@ const venuesListPayload = {
 export function CliStepSummary () {
   const { $t } = useIntl()
   const { form } = useStepFormContext()
-  const { tenantId } = useParams()
 
   const data = (form?.getFieldsValue(true) as CliConfiguration)
   const codeMirrorEl = useRef(null as unknown as {
     setValue: Function,
   })
 
-  const { data: venuesList }
-  = useVenuesListQuery({ params: { tenantId }, payload: venuesListPayload })
+  // eslint-disable-next-line max-len
+  const { data: venuesList } = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
+    useVenuesListQuery,
+    useGetVenuesTemplateListQuery,
+    false,
+    venuesListPayload
+  )
 
   return <>
     <Row gutter={24}>

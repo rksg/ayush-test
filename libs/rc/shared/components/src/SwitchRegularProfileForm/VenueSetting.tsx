@@ -12,12 +12,16 @@ import {
 } from '@acx-ui/components'
 import {
   useGetCliFamilyModelsQuery,
+  useGetSwitchTemplateCliFamilyModelsQuery,
+  useGetVenuesTemplateListQuery,
   useVenuesListQuery } from '@acx-ui/rc/services'
 import {
+  CliFamilyModels,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
@@ -36,15 +40,17 @@ const defaultArray: Venue[] = []
 
 export function VenueSetting () {
   const { $t } = useIntl()
-  const params = useParams()
   const form = Form.useFormInstance()
   const { currentData } = useContext(ConfigurationProfileFormContext)
+  const { isTemplate } = useConfigTemplate()
   const tableQuery = useTableQuery({
-    useQuery: useVenuesListQuery,
+    useQuery: isTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
     defaultPayload
   })
 
-  const { data: venueAppliedToCli } = useGetCliFamilyModelsQuery({ params })
+  const { data: venueAppliedToCli } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>(
+    useGetCliFamilyModelsQuery, useGetSwitchTemplateCliFamilyModelsQuery
+  )
   const [tableData, setTableData] = useState(defaultArray)
   const [venueList, setVenueList] = useState<string[]>([])
 

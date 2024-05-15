@@ -25,5 +25,17 @@ describe('configTemplateRouteUtils', () => {
 
     // eslint-disable-next-line max-len
     expect(getConfigTemplateEditPath(ConfigTemplateType.NETWORK, templateId)).toBe(`configTemplates/networks/wireless/${templateId}/edit`)
+
+    // eslint-disable-next-line max-len
+    expect(getConfigTemplateEditPath(ConfigTemplateType.VENUE, templateId)).toBe(`configTemplates/venues/${templateId}/edit/details`)
+
+    // eslint-disable-next-line max-len
+    expect(getConfigTemplateEditPath(ConfigTemplateType.DPSK, templateId)).toBe(`configTemplates/services/dpsk/${templateId}/edit`)
+
+    // eslint-disable-next-line max-len
+    expect(getConfigTemplateEditPath(ConfigTemplateType.SWITCH_CLI, templateId)).toBe(`configTemplates/networks/wired/profiles/cli/${templateId}/edit`)
+
+    // eslint-disable-next-line max-len
+    expect(getConfigTemplateEditPath(ConfigTemplateType.SWITCH_REGULAR, templateId)).toBe(`configTemplates/networks/wired/profiles/regular/${templateId}/edit`)
   })
 })
