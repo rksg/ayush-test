@@ -14,16 +14,16 @@ import {
   AccessControlFormFields,
   AccessControlInfoType,
   AccessControlProfile,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  useConfigTemplateTenantLink,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
+
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
 
 import { AccessControlSettingForm } from './AccessControlSettingForm'
 
@@ -132,13 +132,11 @@ export const convertToPayload = (
 
 export const AccessControlForm = (props: AccessControlFormProps) => {
   const { $t } = useIntl()
-  const { isTemplate } = useConfigTemplate()
   const params = useParams()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
-  const templateBasePath = useConfigTemplateTenantLink('')
+  const linkToInstanceList = usePathBasedOnConfigTemplate(tablePath, '')
   const { editMode } = props
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
@@ -166,24 +164,25 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
         }).unwrap()
       }
 
-      navigate(isTemplate ? templateBasePath : linkToPolicies, { replace: true })
+      navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.ACCESS_CONTROL)
 
   return (
     <>
       <PageHeader
-        title={generatePolicyPageHeaderTitle(editMode, isTemplate, PolicyType.ACCESS_CONTROL)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
       <StepsFormLegacy<AccessControlProfile>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => navigate(isTemplate ? templateBasePath : linkToPolicies, { replace: true })}
+        onCancel={() => navigate(linkToInstanceList, { replace: true })}
         onFinish={() => handleAccessControlPolicy(editMode)}
       >
         <StepsFormLegacy.StepForm<AccessControlProfile>
