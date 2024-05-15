@@ -214,7 +214,7 @@ export function LicenseBanner (props: BannerProps) {
     return multipleRender()
   }
 
-  return <UI.LicenseWrapper>
-    {!_.isEmpty(expireList) && isFFEnabled && licenseRender()}
-  </UI.LicenseWrapper>
+  return !_.isEmpty(expireList) && isFFEnabled ? <UI.LicenseWrapper>
+    {licenseRender()}
+  </UI.LicenseWrapper> : <UI.ContentWrapper />
 }
