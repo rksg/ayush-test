@@ -145,7 +145,9 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
-          !(value === RolesEnum.DPSK_ADMIN)
+          !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.TEMPLATES_ADMIN
+            || value === RolesEnum.REPORTS_ADMIN
+          )
           && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}

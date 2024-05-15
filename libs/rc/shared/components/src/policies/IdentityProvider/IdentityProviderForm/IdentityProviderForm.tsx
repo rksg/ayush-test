@@ -18,7 +18,7 @@ import {
   IdentityProviderActionType,
   PolicyOperation,
   PolicyType,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
@@ -61,7 +61,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   const [ deactivateRadius ] = useDeactivateIdentityProviderRadiusMutation()
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.IDENTITY_PROVIDER)
-  const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.IDENTITY_PROVIDER)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.IDENTITY_PROVIDER)
 
   const [form] = Form.useForm()
 
