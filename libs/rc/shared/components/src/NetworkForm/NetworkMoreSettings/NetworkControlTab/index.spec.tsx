@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                                                                                                          from '@acx-ui/feature-toggle'
-import { AccessControlUrls, BasicServiceSetPriorityEnum, MtuTypeEnum, NetworkSaveData, OpenWlanAdvancedCustomization, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { AccessControlUrls, MtuTypeEnum, NetworkSaveData, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                                        from '@acx-ui/store'
 import { mockServer, render, screen, within }                                                                                                                              from '@acx-ui/test-utils'
 
@@ -14,25 +14,6 @@ import { useNetworkVxLanTunnelProfileInfo }                                     
 import { NetworkControlTab } from '.'
 
 
-
-const mockWlanData = {
-  name: 'test',
-  type: 'open',
-  isCloudpathEnabled: false,
-  venues: [],
-  wlan: {
-    advancedCustomization: {
-      dnsProxyEnabled: true,
-      dnsProxy: {
-        dnsProxyRules: [{
-          domainName: 'test.com',
-          ipList: ['192.168.0.100']
-        }]
-      },
-      bssPriority: BasicServiceSetPriorityEnum.LOW
-    } as OpenWlanAdvancedCustomization
-  }
-} as NetworkSaveData
 
 const mockWifiCallingList = [
   {
@@ -86,7 +67,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <Form>
-          <NetworkControlTab wlanData={mockWlanData} />
+          <NetworkControlTab/>
         </Form>
       </Provider>,
       { route: { params } })
@@ -124,7 +105,7 @@ describe('Network More settings - Network Control Tab', () => {
           data: data, editMode: false, cloneMode: false, setData: () => {}
         }} >
           <Form>
-            <NetworkControlTab wlanData={mockWlanData} />
+            <NetworkControlTab/>
           </Form>
         </NetworkFormContext.Provider>
       </Provider>,
@@ -144,7 +125,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <Form>
-          <NetworkControlTab wlanData={mockWlanData} />
+          <NetworkControlTab/>
         </Form>
       </Provider>,
       { route: { params } })
@@ -187,7 +168,7 @@ describe('Network More settings - Network Control Tab', () => {
           data: data, editMode: false, cloneMode: false, setData: () => {}
         }} >
           <Form>
-            <NetworkControlTab wlanData={mockWlanData} />
+            <NetworkControlTab/>
           </Form>
         </NetworkFormContext.Provider>
       </Provider>,
@@ -215,7 +196,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <Form>
-          <NetworkControlTab wlanData={mockWlanData} />
+          <NetworkControlTab/>
         </Form>
       </Provider>,
       { route: { params } })
@@ -231,7 +212,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <Form>
-          <NetworkControlTab wlanData={mockWlanData} />
+          <NetworkControlTab/>
         </Form>
       </Provider>,
       { route: { params } })
@@ -248,7 +229,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <Form>
-          <NetworkControlTab wlanData={mockWlanData} />
+          <NetworkControlTab/>
         </Form>
       </Provider>,
       { route: { params } })
@@ -319,7 +300,7 @@ describe('Network More settings - Network Control Tab', () => {
     render(
       <Provider>
         <Form>
-          <NetworkControlTab wlanData={mockWlanData} />
+          <NetworkControlTab/>
         </Form>
       </Provider>,
       { route: { params } })

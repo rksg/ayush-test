@@ -96,7 +96,6 @@ export enum Features {
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
   RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
-  RADIUS_OPTIONS = 'wifi-eda-wlan-radius-options-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',

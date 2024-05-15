@@ -39,19 +39,14 @@ export const WifiCallingSettingContext = createContext({} as WifiCallingSettingC
 const { useWatch } = Form
 
 // move from ServicesForm.tsx
-export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) {
+export function NetworkControlTab () {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
-  const { wlanData } = props
 
   const labelWidth = '250px'
 
-  const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
-
-  const showSingleSessionIdAccounting = !isRadiusOptionsSupport
-    && hasAccountingRadius(data, wlanData)
 
   const form = Form.useFormInstance()
   const [
@@ -263,26 +258,6 @@ export function NetworkControlTab (props: { wlanData: NetworkSaveData | null }) 
         </>
         }
       </>
-
-      {showSingleSessionIdAccounting && // For the older GUI, this is moved to RADIUS options form
-        <UI.FormItemNoLabel
-          name={['wlan', 'advancedCustomization', 'radiusOptions', 'singleSessionIdAccounting']}
-          valuePropName='checked'
-          children={
-            <Checkbox
-              children={
-                <>
-                  {$t({ defaultMessage: 'Single Session ID Accounting' })}
-                  <Tooltip
-                    // eslint-disable-next-line max-len
-                    title={$t({ defaultMessage: 'APs will maintain one accounting session for client roaming' })}
-                    placement='bottom'>
-                    <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
-                  </Tooltip>
-                </>
-              } />}
-        />
-      }
 
       <UI.FieldLabel width={labelWidth}>
         {$t({ defaultMessage: 'Logging client data to external syslog' })}
