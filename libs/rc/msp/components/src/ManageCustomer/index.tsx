@@ -172,6 +172,7 @@ export function ManageCustomer () {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -610,7 +611,8 @@ export function ManageCustomer () {
         city: address.city,
         country: address.country,
         service_effective_date: today,
-        service_expiration_date: expirationDate
+        service_expiration_date: expirationDate,
+        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -622,7 +624,7 @@ export function ManageCustomer () {
       }
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
 
-      if (originalTier !== ecFormData.tier) {
+      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
         const patchTier: MspEcTierPayload = {
           type: 'serviceTierStatus',
           serviceTierStatus: ecFormData.tier
@@ -913,7 +915,9 @@ export function ManageCustomer () {
             <Select>
               {
                 Object.entries(RolesEnum).map(([label, value]) => (
-                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER )
+                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER ||
+                    value === RolesEnum.TEMPLATES_ADMIN || value === RolesEnum.REPORTS_ADMIN
+                  )
                   && <Option
                     key={label}
                     value={value}>

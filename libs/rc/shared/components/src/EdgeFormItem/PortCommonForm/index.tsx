@@ -23,11 +23,12 @@ import * as UI from './styledComponents'
 
 interface formFieldsPropsType {
   [key: string]: FormItemProps & {
-    title?: string,
+    title?: string
     options?: {
       label: string,
       value: EdgePortTypeEnum
-    }[],
+    }[]
+    disabled?: boolean
   }
 }
 export interface EdgePortCommonFormProps {
@@ -275,7 +276,7 @@ export const EdgePortCommonForm = (props: EdgePortCommonFormProps) => {
         } }
       ]}
     >
-      <Select>
+      <Select disabled={_.get(formFieldsProps, 'portType')?.disabled}>
         {(_.get(formFieldsProps, 'portType')?.options ?? portTypeOptions).map((item) => {
           return <Select.Option
             key={item.value}

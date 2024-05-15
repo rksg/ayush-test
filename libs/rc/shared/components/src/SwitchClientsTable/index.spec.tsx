@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { clientApi, switchApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -163,7 +163,7 @@ jest.mock('../SwitchPortTable/editPortDrawer', () => ({
 describe('SwitchClientsTable - Port link', () => {
   beforeEach(() => {
     mockExportCsv.mockClear()
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
@@ -472,7 +472,7 @@ describe('SwitchClientsTable', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>
@@ -514,7 +514,7 @@ describe('SwitchClientsTable', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>

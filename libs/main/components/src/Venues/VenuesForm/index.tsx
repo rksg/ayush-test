@@ -29,7 +29,6 @@ import {
   LocationExtended,
   VenueExtended,
   checkObjectNotExists,
-  generatePageHeaderTitle,
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
@@ -37,7 +36,8 @@ import {
   useConfigTemplateLazyQueryFnSwitcher,
   Venue,
   TableResult,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -170,14 +170,12 @@ export function VenuesForm () {
   const previousPath = usePreviousPath()
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useConfigTemplateBreadcrumb([
-    { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
+    { text: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: action === 'edit',
-    isTemplate,
-    instanceLabel: intl.$t({ defaultMessage: 'Venue' }),
+    instanceLabel: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
 
@@ -248,7 +246,8 @@ export function VenuesForm () {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
+    return checkObjectNotExists(list, { name: value },
+      intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
   }
 
   const addressValidator = async (value: string) => {
@@ -343,7 +342,7 @@ export function VenuesForm () {
               <Col span={8}>
                 <Form.Item
                   name='name'
-                  label={intl.$t({ defaultMessage: 'Venue Name' })}
+                  label={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },

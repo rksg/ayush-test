@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { clientApi, networkApi }                                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
-import { store, Provider }                                            from '@acx-ui/store'
+import { clientApi, networkApi }                                        from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ClientUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
+import { store, Provider }                                              from '@acx-ui/store'
 import {
   act,
   fireEvent,
@@ -17,11 +17,12 @@ import {
 import { UserUrlsInfo } from '@acx-ui/user'
 
 import {
-  GuestClient,
+  GuestList,
+  GuestClients,
   AllowedNetworkList,
+  VenueList,
   UserProfile,
   AddGuestPassResponse,
-  wifiNetworkDetail,
   AddGuestPassErrorResponse,
   AllowedNetworkSingleList,
   AddGuestPassWihtoutExpirationResponse
@@ -54,32 +55,33 @@ async function selectAllowedNetwork (optionName: string) {
 }
 
 const mockedAddGuestReq = jest.fn()
-const mockedGetNetworkReq = jest.fn()
 
 describe('Add Guest Drawer', () => {
   let params: { tenantId: string, networkId: string }
 
   beforeEach(() => {
+    mockedAddGuestReq.mockClear()
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
-    mockedAddGuestReq.mockClear()
-    mockedGetNetworkReq.mockClear()
+
     mockServer.use(
-      rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
-        res(ctx.json(GuestClient))
+      rest.post(CommonUrlsInfo.getGuestsList.url, (_, res, ctx) =>
+        res(ctx.json(GuestList))
       ),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
+      rest.post(ClientUrlsInfo.getClientList.url, (_, res, ctx) =>
+        res(ctx.json(GuestClients))
+      ),
+      rest.post(CommonUrlsInfo.getVenues.url, (_, res, ctx) =>
+        res(ctx.json(VenueList))
+      ),
+      rest.post(CommonUrlsInfo.getWifiNetworksList.url, (_, res, ctx) =>
         res(ctx.json(AllowedNetworkList))
       ),
-      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) => {
+      rest.post(CommonUrlsInfo.addGuestPass.url, (_, res, ctx) => {
         mockedAddGuestReq()
         return res(ctx.json(AddGuestPassResponse))
       }),
-      rest.get(WifiUrlsInfo.getNetwork.url, (req, res, ctx) => {
-        mockedGetNetworkReq()
-        return res(ctx.json(wifiNetworkDetail))
-      }),
-      rest.get(UserUrlsInfo.getUserProfile.url, (req, res, ctx) =>
+      rest.get(UserUrlsInfo.getUserProfile.url, (_, res, ctx) =>
         res(ctx.json(UserProfile))
       )
     )
@@ -103,8 +105,9 @@ describe('Add Guest Drawer', () => {
     await fillInfo()
     await selectAllowedNetwork('guest pass wlan1')
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
-    expect(mockedAddGuestReq).toBeCalledTimes(1)
+    await waitFor(()=>{
+      expect(mockedAddGuestReq).toBeCalledTimes(1)
+    })
   })
   it('should created guest without delivery methods correctly', async () => {
     render(
@@ -131,12 +134,14 @@ describe('Add Guest Drawer', () => {
     await userEvent.click(
       await within(dialog).findByRole('button', { name: 'Yes, create guest pass' })
     )
-    await waitFor(async ()=> expect(dialog).not.toBeVisible())
-    expect(mockedAddGuestReq).toBeCalled()
+    await waitFor(()=> expect(dialog).not.toBeVisible())
+    await waitFor(()=>{
+      expect(mockedAddGuestReq).toBeCalled()
+    })
   })
   it('should created guest without expiration period correctly', async () => {
     mockServer.use(
-      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+      rest.post(CommonUrlsInfo.addGuestPass.url, (_, res, ctx) =>{
         mockedAddGuestReq()
         return res(ctx.json(AddGuestPassWihtoutExpirationResponse))
       })
@@ -152,13 +157,14 @@ describe('Add Guest Drawer', () => {
     await selectAllowedNetwork('guest pass wlan1')
 
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
-    expect(mockedAddGuestReq).toBeCalled()
+    await waitFor(()=>{
+      expect(mockedAddGuestReq).toBeCalled()
+    })
   })
   it('should created guest without expiration and unit day period correctly', async () => {
-    AddGuestPassWihtoutExpirationResponse.response[0].expiration.unit = 'Day'
+    AddGuestPassWihtoutExpirationResponse.response.expiration.unit = 'Day'
     mockServer.use(
-      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+      rest.post(CommonUrlsInfo.addGuestPass.url, (_, res, ctx) =>{
         mockedAddGuestReq()
         return res(ctx.json(AddGuestPassWihtoutExpirationResponse))
       })
@@ -173,12 +179,13 @@ describe('Add Guest Drawer', () => {
     await selectAllowedNetwork('guest pass wlan1')
 
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
-    expect(mockedAddGuestReq).toBeCalled()
+    await waitFor(()=>{
+      expect(mockedAddGuestReq).toBeCalled()
+    })
   })
   it('should handle error correctly', async () => {
     mockServer.use(
-      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+      rest.post(CommonUrlsInfo.addGuestPass.url, (_, res, ctx) =>{
         mockedAddGuestReq()
         return res(
           // Send a valid HTTP status code
@@ -199,11 +206,13 @@ describe('Add Guest Drawer', () => {
     await selectAllowedNetwork('guest pass wlan1')
 
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    expect(mockedAddGuestReq).toBeCalled()
+    await waitFor(()=>{
+      expect(mockedAddGuestReq).toBeCalledTimes(1)
+    })
   })
   it('should handle error 400 correctly', async () => {
     mockServer.use(
-      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+      rest.post(CommonUrlsInfo.addGuestPass.url, (_, res, ctx) =>{
         return res(
           // Send a valid HTTP status code
           ctx.status(400),
@@ -226,7 +235,7 @@ describe('Add Guest Drawer', () => {
   })
   it('should handle error 409 correctly', async () => {
     mockServer.use(
-      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+      rest.post(CommonUrlsInfo.addGuestPass.url, (_, res, ctx) =>{
         return res(
           // Send a valid HTTP status code
           ctx.status(409),
@@ -249,7 +258,7 @@ describe('Add Guest Drawer', () => {
   it('should handle error 422 correctly', async () => {
     AddGuestPassErrorResponse.error.rootCauseErrors[0].code = 'GUEST-422006'
     mockServer.use(
-      rest.post(CommonUrlsInfo.addGuestPass.url, (req, res, ctx) =>{
+      rest.post(CommonUrlsInfo.addGuestPass.url, (_, res, ctx) =>{
         return res(
           // Send a valid HTTP status code
           ctx.status(422),
@@ -285,7 +294,7 @@ describe('Add Guest Drawer', () => {
   })
   it('should create guest with single network options correctly', async () => {
     mockServer.use(
-      rest.post(CommonUrlsInfo.getVMNetworksList.url, (req, res, ctx) =>
+      rest.post(CommonUrlsInfo.getWifiNetworksList.url, (_, res, ctx) =>
         res(ctx.json(AllowedNetworkSingleList))
       )
     )
@@ -297,8 +306,9 @@ describe('Add Guest Drawer', () => {
 
     await fillInfo()
     await userEvent.click(await screen.findByTestId('saveBtn'))
-    await waitFor(async ()=> expect(mockedGetNetworkReq).toBeCalledTimes(1))
-    expect(mockedAddGuestReq).toBeCalledTimes(1)
+    await waitFor(()=>{
+      expect(mockedAddGuestReq).toBeCalledTimes(1)
+    })
   })
   it('test getMomentLocale', async () => {
     getMomentLocale()

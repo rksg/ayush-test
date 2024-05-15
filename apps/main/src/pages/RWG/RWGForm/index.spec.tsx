@@ -59,34 +59,30 @@ const gatewayResponse = {
   requestId: 'request-id',
   response: {
     rwgId: 'bbc41563473348d29a36b76e95c50381',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: 'Operational',
-    id: 'bbc41563473348d29a36b76e95c50381',
-    new: false
+    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    apiKey: 'xxxxxxxxxxxxxxxxxxx',
+    status: null
   }
 }
 
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
-  response: [{
-    rwgId: 'bbc41563473348d29a36b76e95c50381',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
-    venueId: '3f10af1401b44902a88723cb68c4bc77',
-    venueName: 'My-Venue',
-    name: 'ruckusdemos',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: null,
-    id: 'bbc41563473348d29a36b76e95c50381',
-    new: false
-  }]
+  response: {
+    totalSizes: 1,
+    totalPages: 1,
+    items: [{
+      rwgId: 'bbc41563473348d29a36b76e95c50381',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
+      venueName: 'My-Venue',
+      name: 'ruckusdemos',
+      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      status: null
+    }]
+  }
 }
 
 const mockedUsedNavigate = jest.fn()
@@ -106,7 +102,7 @@ describe('Gateway Form', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
-      rest.get(CommonUrlsInfo.getRwgList.url,
+      rest.post(CommonUrlsInfo.getRwgList.url,
         (req, res, ctx) => res(ctx.json(rwgList))),
       rest.post(CommonUrlsInfo.addGateway.url,
         (_, res, ctx) => {
@@ -145,13 +141,10 @@ describe('Gateway Form', () => {
     fireEvent.change(gatewayInput, { target: { value: 'ruckusdemos1' } })
     fireEvent.blur(gatewayInput)
 
-    const URLInput = screen.getByLabelText('URL')
+    const URLInput = screen.getByLabelText('FQDN / IP')
     await fireEvent.change(URLInput, { target: { value: 'https://test.com' } })
 
-    const usernameInput = screen.getByLabelText('Username')
-    await fireEvent.change(usernameInput, { target: { value: 'newUser' } })
-
-    const passwordInput = screen.getByLabelText('Password')
+    const passwordInput = screen.getByLabelText('API Key')
     await fireEvent.change(passwordInput, { target: { value: 'Temp!2345' } })
 
     await userEvent.click(actions.getByRole('button', { name: 'Add' }))
@@ -174,8 +167,9 @@ describe('Gateway Form', () => {
 
     const params = {
       tenantId: 'tenant-id',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
       action: 'edit',
-      gatewayId: gatewayResponse.response.id
+      gatewayId: gatewayResponse.response.rwgId
     }
 
     render(
@@ -221,11 +215,11 @@ describe('Gateway Form', () => {
     expect(await screen.findByText('Please enter a valid Name')).toBeVisible()
 
 
-    const password = screen.getByLabelText('Password')
-    fireEvent.change(password, { target: { value: 'temp' } })
+    const password = screen.getByLabelText('FQDN / IP')
+    fireEvent.change(password, { target: { value: 'x' } })
     fireEvent.blur(password)
 
-    expect(await screen.findByText('Password must be more 8 or more characters long')).toBeVisible()
+    expect(await screen.findByText('Please enter a valid URL')).toBeVisible()
 
   })
 
@@ -252,8 +246,9 @@ describe('Gateway Form', () => {
 
     const params = {
       tenantId: 'tenant-id',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
       action: 'edit',
-      gatewayId: gatewayResponse.response.id
+      gatewayId: gatewayResponse.response.rwgId
     }
 
     mockServer.use(
@@ -277,7 +272,7 @@ describe('Gateway Form', () => {
     await userEvent.click(await screen.findByText('Back to Gateway details'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.gatewayId}/gateway-details/overview`,
+      pathname: `/${params.tenantId}/t/ruckus-wan-gateway/${params.venueId}/${params.gatewayId}/gateway-details/overview`,
       hash: '',
       search: ''
     })

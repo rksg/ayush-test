@@ -2,11 +2,11 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }            from '@acx-ui/rc/components'
-import { redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useNavigate }                             from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { ConfigTemplateType, redirectPreviousPage, useConfigTemplate }    from '@acx-ui/rc/utils'
+import { useNavigate }                                                    from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, createAnchorSectionItem } from '../..'
 
@@ -28,6 +28,7 @@ export function ServerTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
 
   const {
     previousPath,
@@ -41,7 +42,7 @@ export function ServerTab () {
 
   const items = []
 
-  if (!isTemplate) {
+  if (!isTemplate || isSyslogTemplateEnabled) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }), 'syslog-server', <Syslog />))
   }

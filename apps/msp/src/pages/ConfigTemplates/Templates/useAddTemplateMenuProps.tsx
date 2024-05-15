@@ -26,6 +26,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
   const visibilityMap = useConfigTemplateVisibilityMap()
   const policyMenuItems = usePolicyMenuItems()
   const serviceMenuItems = useServiceMenuItems()
+  const switchMenuItems = useSwitchMenuItems()
   const items: ItemType[] = [
     (visibilityMap[ConfigTemplateType.NETWORK] ? {
       key: 'add-wifi-network',
@@ -36,19 +37,12 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     (visibilityMap[ConfigTemplateType.VENUE] ? {
       key: 'add-venue',
       label: <ConfigTemplateLink to='venues/add'>
-        {$t({ defaultMessage: 'Venue' })}
+        {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
       </ConfigTemplateLink>
     } : null),
-    {
-      key: 'add-policy',
-      label: $t({ defaultMessage: 'Policies' }),
-      children: policyMenuItems
-    },
-    {
-      key: 'add-service',
-      label: $t({ defaultMessage: 'Services' }),
-      children: serviceMenuItems
-    }
+    switchMenuItems,
+    policyMenuItems,
+    serviceMenuItems
   ]
 
   return {
@@ -58,15 +52,20 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
   }
 }
 
-function usePolicyMenuItems (): ItemType[] {
+function usePolicyMenuItems (): ItemType {
   const visibilityMap = useConfigTemplateVisibilityMap()
+  const { $t } = useIntl()
 
-  return [
-    createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap),
-    createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
-    createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap),
-    createPolicyMenuItem(ConfigTemplateType.ROGUE_AP_DETECTION, visibilityMap)
-  ]
+  return {
+    key: 'add-policy',
+    label: $t({ defaultMessage: 'Policies' }),
+    children: [
+      createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
+      createPolicyMenuItem(ConfigTemplateType.ROGUE_AP_DETECTION, visibilityMap),
+      createPolicyMenuItem(ConfigTemplateType.SYSLOG, visibilityMap),
+      createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap)
+    ]
+  }
 }
 
 // eslint-disable-next-line max-len
@@ -86,15 +85,20 @@ export function createPolicyMenuItem (configTemplateType: ConfigTemplateType, vi
   }
 }
 
-function useServiceMenuItems (): ItemType[] {
+function useServiceMenuItems (): ItemType {
   const visibilityMap = useConfigTemplateVisibilityMap()
+  const { $t } = useIntl()
 
-  return [
-    createServiceMenuItem(ConfigTemplateType.DPSK, visibilityMap),
-    createServiceMenuItem(ConfigTemplateType.DHCP, visibilityMap),
-    createServiceMenuItem(ConfigTemplateType.PORTAL, visibilityMap),
-    createServiceMenuItem(ConfigTemplateType.WIFI_CALLING, visibilityMap)
-  ]
+  return {
+    key: 'add-service',
+    label: $t({ defaultMessage: 'Services' }),
+    children: [
+      createServiceMenuItem(ConfigTemplateType.DPSK, visibilityMap),
+      createServiceMenuItem(ConfigTemplateType.DHCP, visibilityMap),
+      createServiceMenuItem(ConfigTemplateType.PORTAL, visibilityMap),
+      createServiceMenuItem(ConfigTemplateType.WIFI_CALLING, visibilityMap)
+    ]
+  }
 }
 
 // eslint-disable-next-line max-len
@@ -111,5 +115,32 @@ export function createServiceMenuItem (configTemplateType: ConfigTemplateType, v
   return {
     key: `add-${configTemplateType}`,
     label: labelNode
+  }
+}
+
+export function useSwitchMenuItems (): ItemType | null {
+  const visibilityMap = useConfigTemplateVisibilityMap()
+  const { $t } = getIntl()
+
+  // eslint-disable-next-line max-len
+  if (!visibilityMap[ConfigTemplateType.SWITCH_REGULAR] && !visibilityMap[ConfigTemplateType.SWITCH_CLI]) return null
+
+  return {
+    key: 'add-switch-profile',
+    label: $t({ defaultMessage: 'Wired' }),
+    children: [
+      (visibilityMap[ConfigTemplateType.SWITCH_REGULAR] ? {
+        key: 'add-switch-regular-profile',
+        label: <ConfigTemplateLink to='networks/wired/profiles/add'>
+          {$t({ defaultMessage: 'Regular Profile' })}
+        </ConfigTemplateLink>
+      } : null),
+      (visibilityMap[ConfigTemplateType.SWITCH_CLI] ? {
+        key: 'add-switch-cli-profile',
+        label: <ConfigTemplateLink to='networks/wired/profiles/cli/add'>
+          {$t({ defaultMessage: 'CLI Profile' })}
+        </ConfigTemplateLink>
+      } : null)
+    ]
   }
 }

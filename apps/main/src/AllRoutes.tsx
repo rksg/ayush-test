@@ -145,8 +145,8 @@ function RWGRoutes () {
       <Route index element={<RWGTable />} />
       <Route path='*' element={<PageNotFound />} />
       <Route path='add' element={<RWGForm />} />
-      <Route path=':gatewayId/:action' element={<RWGForm />} />
-      <Route path=':gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
+      <Route path=':venueId/:gatewayId/:action' element={<RWGForm />} />
+      <Route path=':venueId/:gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
     </Route>
   )
 }

@@ -1,7 +1,8 @@
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Card, Loader } from '@acx-ui/components'
+import { overlapsRollup }                  from '@acx-ui/analytics/utils'
+import { Card, Loader, NoGranularityText } from '@acx-ui/components'
 import {
   Switch,
   VLANIcon
@@ -34,17 +35,21 @@ export function concatMismatchedVlans (item: ImpactedSwitchPortRow) {
 export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
   const { $t } = useIntl()
   const { id, switchCount, vlanCount } = incident
-  const response = useImpactedSwitchVLANsQuery({ id }, { selectFromResult: (response) => {
-    const rows = response.data?.map(concatMismatchedVlans)
-    return { ...response, rows }
-  } })
+  const druidRolledup = overlapsRollup(incident.endTime)
+
+  const response = useImpactedSwitchVLANsQuery({ id },
+    { skip: druidRolledup, selectFromResult: (response) => {
+      const rows = response.data?.map(concatMismatchedVlans)
+      return { ...response, rows }
+    } })
 
   const impactedSwitches = response.data!
 
   const removeDuplicateMismatchVLANs = (impactedSwitches: ImpactedSwitchPortRow[]) =>
     _.isEmpty(impactedSwitches)
       ? []
-      : _.uniqBy(impactedSwitches, (item) => item.mismatchedVlans[0].id)
+      : _.uniqBy(impactedSwitches, (item) =>
+        item.mismatchedVlans ? item.mismatchedVlans[0]?.id : [])
 
   const impactedVlans: ImpactedVlans[] = removeDuplicateMismatchVLANs(impactedSwitches)
     ?.flatMap(({ mac, mismatchedVlans }) => mismatchedVlans
@@ -94,28 +99,31 @@ export function ImpactedSwitchVLANsDetails ({ incident }: ChartProps) {
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Details' })} type='no-border'>
-      <UI.SummaryWrapper>
-        {impactedSwitches && impactedTypes.map((type, index) => {
-          const items = type.data.slice(0, type.max)
-          const remaining = type.data.length - items?.length
-          return <UI.SummaryType key={index}>
-            <UI.Summary>
-              <UI.SummaryCount>{type.count}</UI.SummaryCount>
-              <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
-              <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
-            </UI.Summary>
-            <UI.SummaryList>
-              {items.map((d, i) => <div key={i} title={d.title}>
-                {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
-                <span>{d.name}</span>
-              </div>)}
-              {remaining > 0 && <span>
-                {$t({ defaultMessage: 'and {remaining} more…' }, { remaining } )}
-              </span>}
-            </UI.SummaryList>
-          </UI.SummaryType>
-        })}
-      </UI.SummaryWrapper>
+      {druidRolledup
+        ? <NoGranularityText />
+        : <UI.SummaryWrapper>
+          {impactedSwitches && impactedTypes.map((type, index) => {
+            const items = type.data.slice(0, type.max)
+            const remaining = type.data.length - items?.length
+            return <UI.SummaryType key={index}>
+              <UI.Summary>
+                <UI.SummaryCount>{type.count}</UI.SummaryCount>
+                <UI.SummaryTitle>{type.title}</UI.SummaryTitle>
+                <UI.SummaryDetails>{type.details}</UI.SummaryDetails>
+              </UI.Summary>
+              <UI.SummaryList>
+                {items.map((d, i) => <div key={i} title={d.title}>
+                  {type.icon === 'vlan' ? <VLANIcon /> : <Switch />}
+                  <span>{d.name}</span>
+                </div>)}
+                {remaining > 0 && <span>
+                  {$t({ defaultMessage: 'and {remaining} more…' }, { remaining } )}
+                </span>}
+              </UI.SummaryList>
+            </UI.SummaryType>
+          })}
+        </UI.SummaryWrapper>
+      }
     </Card>
   </Loader>
 }

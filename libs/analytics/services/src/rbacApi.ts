@@ -2,9 +2,13 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 import { QueryReturnValue }                        from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
 import { groupBy }                                 from 'lodash'
 
-import type { Settings, ManagedUser } from '@acx-ui/analytics/utils'
-import { get }                        from '@acx-ui/config'
-import { rbacApi as baseRbacApi }     from '@acx-ui/store'
+import {
+  Settings,
+  ManagedUser
+} from '@acx-ui/analytics/utils'
+import { get }                    from '@acx-ui/config'
+import { rbacApi as baseRbacApi } from '@acx-ui/store'
+import { noDataDisplay, getIntl } from '@acx-ui/utils'
 
 export type System = {
   deviceId: string
@@ -25,6 +29,12 @@ type ResourceGroup = {
   isDefault: false,
   description: string,
   updatedAt: string
+}
+
+export type DisplayUser = ManagedUser & {
+  displayInvitationState: string
+  displayInvitor: string
+  displayType: string
 }
 
 export type AvailableUser = {
@@ -58,6 +68,34 @@ export const getDefaultSettings = (): Partial<Settings> => ({
   'sla-guest-experience': '100',
   'sla-brand-ssid-compliance': '100'
 })
+
+const getDisplayType = (type: ManagedUser['type'], brand: string) => {
+  const { $t } = getIntl()
+  switch (type) {
+    case 'tenant':
+      return $t({ defaultMessage: '3rd Party' })
+    case 'super-tenant':
+      return brand
+    default:
+      return $t({ defaultMessage: 'Internal' })
+  }
+}
+
+const getDisplayState = (
+  state: NonNullable<ManagedUser['invitation']>['state'] | undefined
+) => {
+  const { $t } = getIntl()
+  switch (state) {
+    case 'accepted':
+      return $t({ defaultMessage: 'Accepted' })
+    case 'rejected':
+      return $t({ defaultMessage: 'Rejected' })
+    case 'pending':
+      return $t({ defaultMessage: 'Pending' })
+    default:
+      return noDataDisplay
+  }
+}
 
 export const rbacApi = baseRbacApi.injectEndpoints({
   endpoints: (build) => ({
@@ -125,17 +163,35 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           headers: {
             'x-mlisa-user-id': userId
           },
-          body: { resourceGroupId, invitedUserId: userId }
+          body: { resourceGroupId, invitedUserId: userId },
+          responseHandler: 'text'
         }
-      }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' }
+      ]
     }),
-    getUsers: build.query<ManagedUser[], void>({
+    getUsers: build.query<DisplayUser[], string>({
       query: () => ({
         url: '/users',
         method: 'get',
         credentials: 'include'
       }),
-      providesTags: [{ type: 'RBAC', id: 'GET_USERS' }]
+      providesTags: [{ type: 'RBAC', id: 'GET_USERS' }],
+      transformResponse: (response: ManagedUser[] | undefined, _, brand) => {
+        return response?.map(user => ({
+          ...user,
+          displayType: getDisplayType(user.type, brand),
+          displayInvitationState: getDisplayState(user.invitation?.state),
+          displayInvitor: user.invitation
+            ? [
+              user.invitation.inviterUser.firstName,
+              '',
+              user.invitation.inviterUser.lastName
+            ].join(' ')
+            : noDataDisplay
+        })) || []
+      }
     }),
     getAvailableUsers: build.query<AvailableUser[], void>({
       query: () => ({
@@ -218,7 +274,10 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           },
           responseHandler: 'text'
         }
-      }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' }
+      ]
     }),
     deleteUserResourceGroup: build.mutation<string, { userId: string }>({
       query: ({ userId }) => {
@@ -229,7 +288,10 @@ export const rbacApi = baseRbacApi.injectEndpoints({
           body: { users: [userId] },
           responseHandler: 'text'
         }
-      }
+      },
+      invalidatesTags: [
+        { type: 'RBAC', id: 'GET_USERS' }
+      ]
     }),
     updatePreferences: build.mutation<string, UpdatePreferencesPayload>({
       query: ({ userId, preferences }) => {
