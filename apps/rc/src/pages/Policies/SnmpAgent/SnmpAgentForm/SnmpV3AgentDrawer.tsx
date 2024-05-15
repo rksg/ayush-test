@@ -4,7 +4,7 @@ import { Form, Input, Select } from 'antd'
 import { cloneDeep }           from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Tooltip, PasswordInput, PasswordInputStrength }                        from '@acx-ui/components'
+import { Drawer, Tooltip, PasswordInput }                                               from '@acx-ui/components'
 import { ApSnmpActionType, SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
@@ -32,7 +32,6 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { state, dispatch } = useContext(SnmpAgentFormContext)
 
   const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
-  const [level, setLevel] = useState<boolean>()
   const usedUserName = othersData.map(d => d.userName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
   const hasOtherTrapPrivilegeEnabled = HasTrapPrivilegeEnabled(othersData)
@@ -77,6 +76,7 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
       : Promise.resolve()
   }
 
+
   const content = (
     <Form layout='vertical' form={form} >
       <Form.Item
@@ -115,18 +115,14 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
       />
       <Form.Item
         name='authPassword'
-        className='password-input-strength'
         label={$t({ defaultMessage: 'Authentication Password' })}
         style={{ width: '350px' }}
         rules={[
-          { validator: () => level ? Promise.resolve() : Promise.reject() }
+          { required: true },
+          { min: 8 },
+          { max: 32 }
         ]}
-        children={<PasswordInputStrength
-          name={'authPassword'}
-          minlevel={4}
-          onLevelChange={setLevel}
-          value={form.getFieldValue('authPassword')} />
-        }
+        children={<PasswordInput />}
       />
       <Form.Item
         name='privacyProtocol'

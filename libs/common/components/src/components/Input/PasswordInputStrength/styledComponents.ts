@@ -1,7 +1,7 @@
 import { Typography } from 'antd'
 import styled         from 'styled-components/macro'
 
-import { InformationOutlined } from '@acx-ui/icons'
+import { InformationOutlined, QuestionMarkCircleSolid } from '@acx-ui/icons'
 
 export const InformationOutlinedIcon = styled(InformationOutlined)`
   width: 16px;
@@ -11,10 +11,17 @@ export const InformationOutlinedIcon = styled(InformationOutlined)`
     stroke: var(--acx-accents-blue-50);
   }
 `
+export const QuestionMarkCircleSolidIcon = styled(QuestionMarkCircleSolid)`
+    width: 6px;
+    height: 6px;
+    vertical-align: top;
+    margin-top: 5px;
+    margin-left: 2px;
+`
 
 export const TooltipTitle = styled(Typography)`
   font-weight: 700;
-  color: var(--acx-neutrals-30);
+  color: var(--acx-primary-white);
 `
 
 export const StrengthStatus = styled.span`

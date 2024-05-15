@@ -15,7 +15,7 @@ describe('Input', () => {
       .not.toBeNull()
     const passwordInput = await screen.findByPlaceholderText('Password')
     await userEvent.type(passwordInput, '1234abC!')
-    expect(await screen.findByRole('tooltip')).not.toBeVisible()
+    expect(screen.queryByTestId('tooltipInfo')).toBeNull()
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector(`path[fill="${cssStr('--acx-semantics-green-50')}"]`))
       .not.toBeNull()
@@ -41,23 +41,23 @@ describe('Input', () => {
         'One uppercase and one lowercase letters',
         'One number'
       ]}
-      minlevel={3}
+      isAllConditionsMet={3}
     />)
-    const tooltip = await screen.findByRole('tooltip')
+    const tooltipIcon = await screen.findByTestId('tooltipIcon')
     const passwordInput = await screen.findByPlaceholderText('Password')
     await userEvent.type(passwordInput, '1234abC')
-    expect(tooltip).not.toBeVisible()
+    expect(screen.queryByTestId('tooltipInfo')).toBeNull()
     debounce(async () => {
-      fireEvent.mouseEnter(tooltip)
-      expect(tooltip).toBeVisible()
+      fireEvent.mouseEnter(tooltipIcon)
+      expect(await screen.findByTestId('tooltipInfo')).toBeVisible()
     }, 1000)
   })
   it('should render the PasswordInputStrength with value correctly', async () => {
     const { asFragment } = render(
       <PasswordInputStrength
         name={'authPassword'}
-        minlevel={4}
-        onLevelChange={jest.fn()}
+        isAllConditionsMet={4}
+        onConditionCountMet={jest.fn()}
         value='1234abC!'/>)
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector(`path[fill="${cssStr('--acx-semantics-green-50')}"]`))
@@ -73,8 +73,8 @@ describe('Input', () => {
     const { asFragment } = render(
       <PasswordInputStrength
         name={'authPassword'}
-        minlevel={4}
-        onLevelChange={jest.fn()}
+        isAllConditionsMet={4}
+        onChange={jest.fn()}
         value='1234abC!'/>)
     // eslint-disable-next-line testing-library/no-node-access
     expect(asFragment().querySelector(`path[fill="${cssStr('--acx-semantics-green-50')}"]`))
