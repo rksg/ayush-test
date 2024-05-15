@@ -77,7 +77,7 @@ export function ClientProperties ({ clientStatus, clientDetails }: {
         if (list.length > 0) {
           const name = getClientUsername(clientDetails)
           setGuestDetail(list.filter(item => (
-            item.networkId === clientDetails.networkId
+            item.wifiNetworkId === clientDetails.networkId
             && item.name === name
           ))[0])
         }

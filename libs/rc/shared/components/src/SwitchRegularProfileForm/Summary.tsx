@@ -4,10 +4,9 @@ import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
 
-import { StepsFormLegacy }    from '@acx-ui/components'
-import { useVenuesListQuery } from '@acx-ui/rc/services'
-import { Venue }              from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }                                      from '@acx-ui/components'
+import { useGetVenuesTemplateListQuery, useVenuesListQuery }    from '@acx-ui/rc/services'
+import { TableResult, Venue, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
@@ -23,10 +22,14 @@ const defaultPayload = {
 
 export function Summary () {
   const { $t } = useIntl()
-  const params = useParams()
   const { currentData } = useContext(ConfigurationProfileFormContext)
 
-  const { data } = useVenuesListQuery({ params, payload: defaultPayload })
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
+    useVenuesListQuery,
+    useGetVenuesTemplateListQuery,
+    false,
+    defaultPayload
+  )
 
   const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
     map[obj.id] = obj
