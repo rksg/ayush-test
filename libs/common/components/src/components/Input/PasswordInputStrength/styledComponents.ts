@@ -16,7 +16,7 @@ export const QuestionMarkCircleSolidIcon = styled(QuestionMarkCircleSolid)`
     height: 6px;
     vertical-align: top;
     margin-top: 5px;
-    margin-left: 2px;
+    margin-left: 3px;
 `
 
 export const TooltipTitle = styled(Typography)`
