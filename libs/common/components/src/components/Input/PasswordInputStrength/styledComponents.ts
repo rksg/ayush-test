@@ -23,7 +23,7 @@ export const StrengthStatus = styled.span`
 `
 
 export const PasswordBarContainer = styled.div`
-display: flex;
-gap: 8px;
-margin-top: 5px;
+  display: flex;
+  gap: 8px;
+  margin-top: 5px;
 `

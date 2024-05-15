@@ -25,6 +25,7 @@ interface PasswordStrengthIndicatorProps {
   regExRules: RegExp[]
   regExErrorMessages: string[]
   minlevel: number
+  barWidth?: number
 }
 
 
@@ -42,6 +43,7 @@ export const PasswordInputStrength = ({
   const { regExRules, regExErrorMessages, minlevel, onLevelChange, value } = props
   const { $t } = useIntl()
   const [input, setInput] = useState('')
+  const minlevelValue = (minlevel && minlevel > 4 ? 4 : minlevel) || 4
 
   const RULE_REGEX = regExRules || [
     /^.{8,}$/,
@@ -73,8 +75,8 @@ export const PasswordInputStrength = ({
         onChange={(e) => {
           setInput(e.target.value)
           const passedRulesRatio = calculatePassedRulesRatio(e.target.value, RULE_REGEX)
-          setLevel(passedRulesRatio >= (minlevel || 4))
-          minlevel && onLevelChange?.(passedRulesRatio >= minlevel)
+          setLevel(passedRulesRatio >= minlevelValue)
+          onLevelChange?.(passedRulesRatio >= minlevelValue)
           props?.onChange?.(e)
         }}
       />
@@ -82,14 +84,14 @@ export const PasswordInputStrength = ({
         input={input}
         regExRules={RULE_REGEX}
         regExErrorMessages={RULE_MESSAGES}
-        minlevel={minlevel || 4}
+        minlevel={minlevelValue}
       />
     </>
   )
 }
 
 export const PasswordStrengthIndicator = ({
-  input, regExRules, regExErrorMessages, minlevel }:
+  input, regExRules, regExErrorMessages, minlevel, barWidth }:
     PasswordStrengthIndicatorProps) => {
   const { $t } = useIntl()
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
@@ -154,11 +156,11 @@ export const PasswordStrengthIndicator = ({
 
   return (<UI.PasswordBarContainer>
     <StackedBarChart
-      style={{ height: 8, width: 270, marginTop: 5 }}
+      style={{ height: 8, width: barWidth || 270, marginTop: 5 }}
       showLabels={false}
       showTotal={false}
       showTooltip={false}
-      barWidth={270}
+      barWidth={barWidth || 270}
       data={[{
         series,
         category: 'password strength'
