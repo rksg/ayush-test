@@ -23,10 +23,10 @@ import {
   UpdateFirmwareSchedulePerApModelPayload,
   FirmwareRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { baseFirmwareApi }   from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { CloudVersion }      from '@acx-ui/user'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseFirmwareApi }             from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { CloudVersion }                from '@acx-ui/user'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 const v1Header = {
   'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -467,7 +467,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     // eslint-disable-next-line max-len
     getVenueApModelFirmwareList: build.query<TableResult<FirmwareVenuePerApModel>, RequestPayload>({
       query: ({ payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList)
+        const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, {}, v1Header)
         return {
           ...req,
           body: covertVenueApModelFirmwareListPayload(payload)
@@ -482,7 +482,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, ['UpdateNow', 'DowngradeVenueAbf'], () => {
+          // eslint-disable-next-line max-len
+          onActivityMessageReceived(msg, ['UpdateNowByApModel', 'ChangeUpgradeScheduleByApMode', 'SkipUpgradeSchedule'], () => {
             api.dispatch(firmwareApi.util.invalidateTags([
               { type: 'Firmware', id: 'LIST' }
             ]))
@@ -494,14 +495,14 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     getAllApModelFirmwareList: build.query<ApModelFirmware[], RequestPayload>({
       query: () => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList)
+        const req = createHttpRequest(FirmwareUrlsInfo.getAllApModelFirmwareList, {}, v1Header)
         return { ...req }
       }
     }),
     // eslint-disable-next-line max-len
     patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<UpdateFirmwarePerApModelPayload>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.patchVenueApModelFirmwares, params)
+        const req = createHttpRequest(FirmwareUrlsInfo.patchVenueApModelFirmwares, params, v1Header)
         return {
           ...req,
           body: payload
@@ -512,11 +513,22 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     // eslint-disable-next-line max-len
     updateVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<UpdateFirmwareSchedulePerApModelPayload>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.updateVenueSchedulesPerApModel, params)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(FirmwareUrlsInfo.updateVenueSchedulesPerApModel, params, v1Header)
         return {
           ...req,
           body: payload
         }
+      },
+      invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    skipVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<{ venueIds: string[] }>>({
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        const requests = args.payload!.venueIds.map(venueId => ({ params: { venueId } }))
+        return batchApi(
+          FirmwareUrlsInfo.skipVenueSchedulesPerApModel, requests, fetchWithBQ, v1Header
+        )
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     })
@@ -567,7 +579,8 @@ export const {
   useGetVenueApModelFirmwareListQuery,
   useGetAllApModelFirmwareListQuery,
   usePatchVenueApModelFirmwaresMutation,
-  useUpdateVenueSchedulesPerApModelMutation
+  useUpdateVenueSchedulesPerApModelMutation,
+  useSkipVenueSchedulesPerApModelMutation
 } = firmwareApi
 
 

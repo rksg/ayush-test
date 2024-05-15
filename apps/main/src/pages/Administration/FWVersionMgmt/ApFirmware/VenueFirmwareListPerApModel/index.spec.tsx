@@ -177,4 +177,47 @@ describe('Firmware Venues Table Per AP Model', () => {
     }))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
+
+  it('shoulde execute Skip Update action', async () => {
+    const skipUpdateFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        FirmwareUrlsInfo.skipVenueSchedulesPerApModel.url,
+        (req, res, ctx) => {
+          skipUpdateFn()
+          return res(ctx.json({ requestId: '123456' }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <VenueFirmwareListPerApModel />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const testingRecord1 = mockedFirmwareVenuesPerApModel[0]
+    const targetRow1 = screen.getByRole('row', { name: new RegExp(testingRecord1.name) })
+    await userEvent.click(within(targetRow1).getByRole('checkbox'))
+
+    const testingRecord2 = mockedFirmwareVenuesPerApModel[1]
+    const targetRow2 = screen.getByRole('row', { name: new RegExp(testingRecord2.name) })
+    await userEvent.click(within(targetRow2).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Skip Update/i }))
+
+    const dialog = await screen.findByRole('dialog')
+
+    expect(within(dialog).getByText('Skip This Update?')).toBeVisible()
+
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Skip' }))
+
+    await waitFor(() => expect(skipUpdateFn).toHaveBeenCalledTimes(2))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
 })

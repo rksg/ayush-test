@@ -18,15 +18,7 @@ export const mockedFirmwareVenuesPerApModel = [
       {
         startDateTime: '2024-03-04T14:00:00-08:00',
         versionInfo: {
-          version: '7.0.0.104.1220',
-          type: FirmwareType.AP_FIRMWARE_UPGRADE,
-          category: FirmwareCategory.RECOMMENDED
-        }
-      },
-      {
-        startDateTime: '2024-03-04T14:00:00-08:00',
-        versionInfo: {
-          version: '6.2.0.103.554',
+          version: '7.0.0.104.1242',
           type: FirmwareType.AP_FIRMWARE_UPGRADE,
           category: FirmwareCategory.RECOMMENDED
         }
@@ -40,7 +32,17 @@ export const mockedFirmwareVenuesPerApModel = [
     currentApFirmwares: [
       { apModel: 'R550', firmware: '7.0.0.104.1220' }
     ],
-    lastScheduleUpdate: '2024-02-22T14:00:01.099-08:00'
+    lastScheduleUpdate: '2024-02-22T14:00:01.099-08:00',
+    nextSchedules: [
+      {
+        startDateTime: '2024-03-04T14:00:00-08:00',
+        versionInfo: {
+          version: '7.0.0.104.1242',
+          type: FirmwareType.AP_FIRMWARE_UPGRADE,
+          category: FirmwareCategory.RECOMMENDED
+        }
+      }
+    ]
   },
   {
     id: '10b0b0cd6c3a44a894fe73e210b12345',

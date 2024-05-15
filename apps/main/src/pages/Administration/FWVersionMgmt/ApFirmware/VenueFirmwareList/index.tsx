@@ -517,8 +517,8 @@ const VenueFirmwareTable = () => {
 // eslint-disable-next-line max-len
 const scheduleTypeIsApFunc = (value: Schedule) => value && value.versionInfo && value.versionInfo.type && value.versionInfo.type === FirmwareType.AP_FIRMWARE_UPGRADE
 
-function hasApSchedule (venue: FirmwareVenue): boolean {
-  return venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc).length > 0
+function hasApSchedule (venue: { nextSchedules?: Schedule[] }): boolean {
+  return !!venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc).length > 0
 }
 
 export function VenueFirmwareList () {

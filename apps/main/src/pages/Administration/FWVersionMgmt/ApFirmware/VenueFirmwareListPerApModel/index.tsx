@@ -4,11 +4,11 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps, Tooltip }                                      from '@acx-ui/components'
-import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery }   from '@acx-ui/rc/services'
-import { FirmwareVenuePerApModel, dateSort, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                               from '@acx-ui/user'
-import { noDataDisplay }                                                           from '@acx-ui/utils'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                                                            from '@acx-ui/components'
+import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
+import { FirmwareType, FirmwareVenuePerApModel, Schedule, dateSort, defaultSort, sortProp, useTableQuery }                from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                                      from '@acx-ui/user'
+import { noDataDisplay }                                                                                                  from '@acx-ui/utils'
 
 import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
 import { PreferencesDialog }                                                                          from '../../PreferencesDialog'
@@ -33,6 +33,7 @@ export function VenueFirmwareListPerApModel () {
     preferencesModalVisible, setPreferencesModalVisible, preferences,
     handlePreferencesModalCancel, handlePreferencesModalSubmit
   } = useUpgradePerferences()
+  const [ skipVenueSchedulesUpgrade ] = useSkipVenueSchedulesPerApModelMutation()
 
   const clearSelection = () => {
     setSelectedRowKeys([])
@@ -40,6 +41,23 @@ export function VenueFirmwareListPerApModel () {
 
   const afterUpdateModalSubmit = () => {
     clearSelection()
+  }
+
+  const doSkipSchedules = (selectedRows: FirmwareVenuePerApModel[], callback: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      width: 460,
+      title: $t({ defaultMessage: 'Skip This Update?' }),
+      // eslint-disable-next-line max-len
+      content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
+      okText: $t({ defaultMessage: 'Skip' }),
+      cancelText: $t({ defaultMessage: 'Cancel' }),
+      onOk () {
+        skipVenueSchedulesUpgrade({
+          payload: { venueIds: selectedRows.map((row) => row.id) }
+        }).then(callback)
+      }
+    })
   }
 
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
@@ -57,6 +75,13 @@ export function VenueFirmwareListPerApModel () {
       onClick: (rows) => {
         setSelectedRows(rows)
         setChangeScheduleVisible(true)
+      }
+    },
+    {
+      visible: (rows) => rows.every(row => hasApSchedule(row)),
+      label: $t({ defaultMessage: 'Skip Update' }),
+      onClick: (rows, clearSelection) => {
+        doSkipSchedules(rows, clearSelection)
       }
     }
   ]
@@ -176,4 +201,10 @@ function useVersionFilterOptions () {
   })
 
   return versionFilterOptions
+}
+
+function hasApSchedule (venue: { nextSchedules?: Schedule[] }): boolean {
+  return !!venue.nextSchedules &&
+    // eslint-disable-next-line max-len
+    venue.nextSchedules.some(schedule => schedule?.versionInfo?.type === FirmwareType.AP_FIRMWARE_UPGRADE)
 }

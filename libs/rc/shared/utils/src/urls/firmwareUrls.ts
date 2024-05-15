@@ -240,5 +240,10 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/apModelFirmwareSchedules',
     newApi: true
+  },
+  skipVenueSchedulesPerApModel: {
+    method: 'delete',
+    url: '/venues/:venueId/apModelFirmwareSchedules',
+    newApi: true
   }
 }
