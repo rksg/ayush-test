@@ -10,7 +10,9 @@ import {
   transformDpskNetwork,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { getIntl } from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import { hasRoles }  from '@acx-ui/user'
+import { getIntl }   from '@acx-ui/utils'
 
 import DpskInstancesTable from './DpskInstancesTable'
 
@@ -22,6 +24,7 @@ export function DpskOverview (props: DpskOverviewProps) {
   const intl = getIntl()
   const { isTemplate } = useConfigTemplate()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
+  const isTableBlocked = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
   const { data } = props
 
   const dpskInfo = [
@@ -61,11 +64,13 @@ export function DpskOverview (props: DpskOverviewProps) {
       <GridCol col={{ span: 24 }}>
         <SummaryCard data={dpskInfo} />
       </GridCol>
-      <GridCol col={{ span: 24 }}>
-        <Card>
-          <DpskInstancesTable networkIds={data?.networkIds} />
-        </Card>
-      </GridCol>
+      {isTableBlocked
+        ? null
+        : <GridCol col={{ span: 24 }}>
+          <Card>
+            <DpskInstancesTable networkIds={data?.networkIds} />
+          </Card>
+        </GridCol>}
     </GridRow>
   )
 }
