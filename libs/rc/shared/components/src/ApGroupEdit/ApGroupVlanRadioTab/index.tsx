@@ -45,6 +45,8 @@ export const ApGroupVlanRadioContext = createContext({} as {
   vlanPoolingNameMap: KeyValue<string, string>[]
 })
 
+type VlanPoolNameMapType = { vlanPoolingNameMap: KeyValue<string, string>[] }
+
 
 export function ApGroupVlanRadioTab () {
   const { $t } = useIntl()
@@ -86,7 +88,7 @@ export function ApGroupVlanRadioTab () {
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   // eslint-disable-next-line max-len
-  const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = GetGetVLANPoolPolicyInstance(tableData)
+  const { vlanPoolingNameMap }: VlanPoolNameMapType = useGetVLANPoolPolicyInstance(tableData)
 
   useEffect(() => {
     if (apGroupData && !isApGroupDataLoading) {
@@ -208,46 +210,40 @@ export function ApGroupVlanRadioTab () {
   )
 }
 
-const GetGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
+const useGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
   const { tenantId } = useParams()
   const { isTemplate } = useConfigTemplate()
 
+  const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
+    vlanPoolingNameMap: data?.data
+      ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
+      : [] as KeyValue<string, string>[]
+  })
+
+  const vlanPoolPayload = {
+    fields: ['name', 'id'],
+    sortField: 'name',
+    sortOrder: 'ASC',
+    page: 1,
+    pageSize: 10000
+  }
+
   // eslint-disable-next-line max-len
-  const vlanPoolingNonTemplate: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
+  const vlanPoolingNonTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
-    }
+    payload: vlanPoolPayload
   }, {
     skip: !tableData.length && isTemplate,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
+    selectFromResult: transformVlanPoolData
   })
 
   // eslint-disable-next-line max-len
-  const vlanPoolingTemplate: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModeTemplateListQuery({
+  const vlanPoolingTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModeTemplateListQuery({
     params: { tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
-    }
+    payload: vlanPoolPayload
   }, {
     skip: !tableData.length && !isTemplate,
-    selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
-      vlanPoolingNameMap: data?.data
-        ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
-        : [] as KeyValue<string, string>[]
-    })
+    selectFromResult: transformVlanPoolData
   })
 
   return isTemplate ? vlanPoolingTemplate : vlanPoolingNonTemplate

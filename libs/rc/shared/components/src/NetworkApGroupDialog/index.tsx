@@ -13,9 +13,8 @@ import {
   Space,
   Spin
 } from 'antd'
-import _             from 'lodash'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Modal,
@@ -26,6 +25,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
+  useGetVlanPoolPolicyTemplateListQuery,
   useVlanPoolListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -39,7 +39,7 @@ import {
   NetworkSaveData,
   IsNetworkSupport6g,
   WlanSecurityEnum, NetworkTypeEnum,
-  useConfigTemplate
+  useConfigTemplate, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -125,7 +125,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const networkApGroupsV2Query = useGetNetworkApGroupsV2Query({ params: { tenantId },
     payload: [{
       networkId: networkVenue?.networkId,
-      venueId: networkVenue?.venueId
+      venueId: networkVenue?.venueId,
+      isTemplate: isTemplate
     }]
   }, { skip: !isUseWifiApiV2 || !networkVenue || !wlan })
 
@@ -158,14 +159,15 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const [loading, setLoading] = useState(false)
 
-  const { vlanPoolSelectOptions } = useVlanPoolListQuery({ params: useParams() }, {
-    selectFromResult ({ data }) {
-      return {
-        vlanPoolSelectOptions: data
-      }
+  const { data: vlanPoolSelectOptions } = useConfigTemplateQueryFnSwitcher(
+    useVlanPoolListQuery,
+    useGetVlanPoolPolicyTemplateListQuery,
+    false,
+    {
+      fields: ['name', 'id'], sortField: 'name',
+      sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  })
-
+  )
 
   const RadioSelect = (props: SelectProps) => {
     const isSupport6G = IsNetworkSupport6g(network)

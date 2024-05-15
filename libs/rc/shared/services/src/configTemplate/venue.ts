@@ -28,9 +28,6 @@ import {
   VenueSwitchConfiguration,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  VenueDefaultApGroup,
-  AddApGroup,
-  ApGroup,
   VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
@@ -347,35 +344,6 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServer),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
     }),
-    getVenueTemplateDefaultApGroup: build.query<VenueDefaultApGroup[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDefaultApGroup),
-      transformResponse (result: VenueDefaultApGroup) {
-        return Array.isArray(result) ? result : [result]
-      },
-      providesTags: [{ type: 'VenueTemplateApGroup', id: 'LIST' }]
-    }),
-    getApGroupTemplate: build.query<ApGroup, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getApGroup),
-      providesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
-    }),
-    addApGroupTemplate: build.mutation<AddApGroup, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.addApGroup),
-      invalidatesTags: [
-        { type: 'VenueTemplateApGroup', id: 'LIST' },
-        { type: 'ApGroupTemplate', id: 'LIST' }
-      ]
-    }),
-    updateApGroupTemplate: build.mutation<ApGroup, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateApGroup),
-      invalidatesTags: [
-        { type: 'VenueTemplateApGroup', id: 'LIST' },
-        { type: 'ApGroupTemplate', id: 'LIST' }
-      ]
-    }),
-    deleteApGroupsTemplate: build.mutation<ApGroup[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deleteApGroups),
-      invalidatesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
-    }),
     // eslint-disable-next-line max-len
     getVLANPoolPolicyViewModeTemplateList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVlanPoolViewModelList),
@@ -442,11 +410,5 @@ export const {
   useBulkDeleteVenueTemplateSwitchAAAServerMutation,
   useAddVenueTemplateSwitchAAAServerMutation,
   useUpdateVenueTemplateSwitchAAAServerMutation,
-  useGetVenueTemplateDefaultApGroupQuery,
-  useGetApGroupTemplateQuery,
-  useLazyGetVenueTemplateDefaultApGroupQuery,
-  useAddApGroupTemplateMutation,
-  useUpdateApGroupTemplateMutation,
-  useDeleteApGroupsTemplateMutation,
   useGetVLANPoolPolicyViewModeTemplateListQuery
 } = venueConfigTemplateApi

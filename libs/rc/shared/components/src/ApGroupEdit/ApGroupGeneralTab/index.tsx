@@ -11,7 +11,8 @@ import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
   useGetApGroupQuery, useGetApGroupTemplateQuery, useGetVenuesTemplateListQuery,
-  useLazyApGroupsListQuery, useLazyGetVenueTemplateDefaultApGroupQuery,
+  useLazyApGroupsListQuery, useLazyGetApGroupsTemplateListQuery,
+  useLazyGetVenueTemplateDefaultApGroupQuery,
   useLazyVenueDefaultApGroupQuery,
   useUpdateApGroupMutation, useUpdateApGroupTemplateMutation,
   useVenuesListQuery
@@ -73,7 +74,10 @@ export function ApGroupGeneralTab () {
     useLazyVenueDefaultApGroupQuery,
     useLazyGetVenueTemplateDefaultApGroupQuery
   )
-  const [apGroupsList] = useLazyApGroupsListQuery()
+  const [apGroupsList] = useConfigTemplateLazyQueryFnSwitcher(
+    useLazyApGroupsListQuery,
+    useLazyGetApGroupsTemplateListQuery
+  )
   const [addApGroup] = useConfigTemplateMutationFnSwitcher(
     useAddApGroupMutation,
     useAddApGroupTemplateMutation

@@ -6,7 +6,8 @@ import { rest }  from 'msw'
 import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
-  CommonUrlsInfo,
+  ApGroupConfigTemplateUrlsInfo,
+  CommonUrlsInfo, PoliciesConfigTemplateUrlsInfo,
   RadioTypeEnum,
   WifiUrlsInfo,
   WlanSecurityEnum
@@ -52,8 +53,16 @@ describe('NetworkApGroupDialog', () => {
         WifiUrlsInfo.getApGroupsList.url,
         (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
       ),
+      rest.post(
+        ApGroupConfigTemplateUrlsInfo.getApGroupsList.url,
+        (req, res, ctx) => res(ctx.json({ data: [{ id: 'fake_apg_id', name: 'fake_apg_name' }] }))
+      ),
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      ),
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getVlanPools.url,
         (req, res, ctx) => res(ctx.json(vlanPoolList))
       )
     )
