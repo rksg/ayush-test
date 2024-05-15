@@ -91,7 +91,7 @@ export const PasswordStrengthIndicator = ({
     PasswordStrengthIndicatorProps) => {
   const { $t } = useIntl()
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
-  const [mouseEnterTooltip, setMouseEnterTooltip] = useState(true)
+  const [mouseEnterTooltip, setMouseEnterTooltip] = useState(false)
   const [currentLevel, setCurrentLevel] = useState(0)
   const [usedBarColors, setUsedBarColors] = useState([
     usedBarColor[0],
