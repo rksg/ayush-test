@@ -13,9 +13,16 @@ export function useIsConfigTemplateGA (): boolean {
   return isBeta && isGA
 }
 
+export function useIsConfigTemplateExtra (): boolean {
+  const isBeta = useIsConfigTemplateBeta()
+  const isExtraScope = useIsSplitOn(Features.CONFIG_TEMPLATE_EXTRA)
+  return isBeta && isExtraScope
+}
+
 export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, boolean> {
   const isBeta = useIsConfigTemplateBeta()
   const isGA = useIsConfigTemplateGA()
+  const isExtraScope = useIsConfigTemplateExtra()
   const visibilityMap: Record<ConfigTemplateType, boolean> = {
     [ConfigTemplateType.NETWORK]: isBeta,
     [ConfigTemplateType.VENUE]: isBeta,
@@ -33,7 +40,9 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.SYSLOG]: isGA,
     [ConfigTemplateType.CLIENT_ISOLATION]: false, // Not supported in the current scope
     [ConfigTemplateType.ROGUE_AP_DETECTION]: isGA,
-    [ConfigTemplateType.AP_GROUP]: false // update this when FF is ready
+    [ConfigTemplateType.SWITCH_REGULAR]: isExtraScope,
+    [ConfigTemplateType.SWITCH_CLI]: isExtraScope,
+    [ConfigTemplateType.AP_GROUP]: isExtraScope
   }
 
   return visibilityMap

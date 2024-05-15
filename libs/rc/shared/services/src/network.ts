@@ -1125,6 +1125,7 @@ export const {
   useLazyNetworkListQuery,
   useNetworkTableQuery,
   useWifiNetworkListQuery,
+  useLazyWifiNetworkListQuery,
   useGetNetworkQuery,
   useLazyGetNetworkQuery,
   useGetVenueNetworkApGroupQuery,

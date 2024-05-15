@@ -39,6 +39,7 @@ import {
   useDelVlanPoolPolicyTemplateMutation,
   useDelSyslogPolicyTemplateMutation,
   useDelRoguePolicyTemplateMutation,
+  useDeleteSwitchConfigProfileTemplateMutation,
   useDeleteApGroupsTemplateMutation
 } from '@acx-ui/rc/services'
 import {
@@ -169,14 +170,14 @@ export function ConfigTemplateList () {
   )
 }
 
-interface templateColumnProps {
+interface TemplateColumnProps {
   setAppliedToTenantDrawerVisible: (visible: boolean) => void,
   setSelectedTemplates: (row: ConfigTemplate[]) => void,
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
 }
 
-function useColumns (props: templateColumnProps) {
+function useColumns (props: TemplateColumnProps) {
   const { $t } = useIntl()
   const {
     setAppliedToTenantDrawerVisible,
@@ -299,7 +300,8 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
   const [ deleteWifiCalling ] = useDeleteWifiCallingServiceTemplateMutation()
   const [ deleteVlanPoolTemplate ] = useDelVlanPoolPolicyTemplateMutation()
   const [ deleteSyslogTemplate ] = useDelSyslogPolicyTemplateMutation()
-  const [ deleteRogueAP ] = useDelRoguePolicyTemplateMutation()
+  const [ deleteRogueAPTemplate ] = useDelRoguePolicyTemplateMutation()
+  const [ deleteSwitchConfigProfileTemplate ] = useDeleteSwitchConfigProfileTemplateMutation()
   const [ deleteApGroupTemplate ] = useDeleteApGroupsTemplateMutation()
 
   return {
@@ -317,7 +319,9 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
     [ConfigTemplateType.WIFI_CALLING]: deleteWifiCalling,
     [ConfigTemplateType.VLAN_POOL]: deleteVlanPoolTemplate,
     [ConfigTemplateType.SYSLOG]: deleteSyslogTemplate,
-    [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAP,
+    [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAPTemplate,
+    [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate,
+    [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate,
     [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate
   }
 }

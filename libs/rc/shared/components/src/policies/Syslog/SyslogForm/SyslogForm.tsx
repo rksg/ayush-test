@@ -20,8 +20,7 @@ import {
   ProtocolEnum,
   SyslogContextType,
   usePolicyListBreadcrumb,
-  generatePolicyPageHeaderTitle,
-  useConfigTemplate,
+  usePolicyPageHeaderTitle,
   usePolicyPreviousPath,
   useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -56,8 +55,8 @@ export const SyslogForm = (props: SyslogFormProps) => {
   const navigate = useNavigate()
   const params = useParams()
   const { edit } = props
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SYSLOG)
+  const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.SYSLOG)
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.SYSLOG, PolicyOperation.LIST)
   const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, initialValues)
@@ -124,7 +123,7 @@ export const SyslogForm = (props: SyslogFormProps) => {
   return (
     <SyslogContext.Provider value={{ state, dispatch }}>
       <PageHeader
-        title={generatePolicyPageHeaderTitle(edit, isTemplate, PolicyType.SYSLOG)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
       <StepsForm<SyslogContextType>

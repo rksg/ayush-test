@@ -29,6 +29,7 @@ import {
   useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
@@ -47,6 +48,7 @@ export function Syslog () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const toPolicyPath = usePathBasedOnConfigTemplate('')
   const {
     editContextData,
@@ -211,7 +213,8 @@ export function Syslog () {
                   type: PolicyType.SYSLOG,
                   oper: PolicyOperation.CREATE
                 })
-                await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`)
+                // eslint-disable-next-line max-len
+                await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`, { state: { from: location } })
               }}
             >
               {$t({ defaultMessage: 'Add Server Profile' })}
