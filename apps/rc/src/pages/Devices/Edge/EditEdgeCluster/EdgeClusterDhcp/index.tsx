@@ -3,12 +3,11 @@ import { useEffect, useState } from 'react'
 import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { StepsForm }                                       from '@acx-ui/components'
-import { EdgeDhcpSelectionForm, useEdgeDhcpActions }       from '@acx-ui/rc/components'
-import { useGetDhcpPoolStatsQuery }                        from '@acx-ui/rc/services'
-import { DhcpPoolStats, EdgeClusterStatus, useTableQuery } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }           from '@acx-ui/react-router-dom'
-import { RequestPayload }                                  from '@acx-ui/types'
+import { StepsForm }                                 from '@acx-ui/components'
+import { EdgeDhcpSelectionForm, useEdgeDhcpActions } from '@acx-ui/rc/components'
+import { useGetDhcpStatsQuery }                      from '@acx-ui/rc/services'
+import { EdgeClusterStatus }                         from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }     from '@acx-ui/react-router-dom'
 
 interface EdgeClusterDhcpProps {
   currentClusterStatus?: EdgeClusterStatus
@@ -26,45 +25,37 @@ export const EdgeClusterDhcp = (props: EdgeClusterDhcpProps) => {
   const { activateEdgeDhcp, deactivateEdgeDhcp } = useEdgeDhcpActions()
   const { $t } = useIntl()
 
-  const getDhcpPoolStatsPayload = {
-    fields: [
-      'id',
-      'dhcpId',
-      'poolId',
-      'poolName',
-      'subnetMask',
-      'poolRange',
-      'gateway',
-      'edgeId',
-      'utilization'
-    ],
-    filters: { edgeId: [clusterId] },
-    sortField: 'name',
-    sortOrder: 'ASC'
-  }
-  const poolTableQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
-    useQuery: useGetDhcpPoolStatsQuery,
-    defaultPayload: getDhcpPoolStatsPayload
+  const { currentDhcp } = useGetDhcpStatsQuery({
+    payload: {
+      fields: [
+        'id'
+      ],
+      filters: { edgeClusterIds: [clusterId] }
+    }
+  },
+  {
+    skip: !Boolean(clusterId),
+    selectFromResult: ({ data }) => ({
+      currentDhcp: data?.data[0]
+    })
   })
 
   useEffect(() => {
-    const isActive = (poolTableQuery.data?.totalCount || 0) > 0
-    setIsDhcpServiceActive(isActive)
+    setIsDhcpServiceActive(Boolean(currentDhcp))
 
-    const dhcpId = poolTableQuery.data?.data[0]?.dhcpId
-    if (dhcpId) {
-      setCurrentDhcpId(dhcpId)
-      form.setFieldValue('dhcpId', dhcpId)
+    if (currentDhcp) {
+      setCurrentDhcpId(currentDhcp.id)
+      form.setFieldValue('dhcpId', currentDhcp.id)
     }
-  }, [poolTableQuery.data?.totalCount])
+  }, [currentDhcp])
 
   const handleApplyDhcp = async () => {
     const selectedDhcpId = form.getFieldValue('dhcpId') || null
 
     if (!isDhcpServiceActive) {
-      removeDhcpService()
+      await removeDhcpService()
     } else if (selectedDhcpId) {
-      applyDhcpService(selectedDhcpId)
+      await applyDhcpService(selectedDhcpId)
     }
   }
 
