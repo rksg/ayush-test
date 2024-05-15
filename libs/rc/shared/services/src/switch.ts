@@ -353,14 +353,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getProfiles: build.query<TableResult<SwitchProfileModel>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(
-          SwitchUrlsInfo.getProfiles,
-          params
+          switchUrls.getProfiles, params, headers
         )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }],
@@ -389,6 +390,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
+    }),
+    batchDeleteProfiles: build.mutation<void, RequestPayload[]>({ // RBAC only
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(SwitchRbacUrlsInfo.deleteSwitchProfile, requests, fetchWithBQ)
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     getSwitchConfigProfileDetail: build.query<ConfigurationProfile, RequestPayload>({
       query: ({ params }) => {
@@ -1715,5 +1722,6 @@ export const {
   useBatchAssociateSwitchProfileMutation,
   useBatchDisassociateSwitchProfileMutation,
   useGetSwitchModelListQuery,
-  useDownloadSwitchsCSVMutation
+  useDownloadSwitchsCSVMutation,
+  useBatchDeleteProfilesMutation
 } = switchApi
