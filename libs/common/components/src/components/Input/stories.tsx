@@ -19,7 +19,8 @@ storiesOf('Input', module).add('Password Input', () => (
 storiesOf('Input', module).add('Password Input Strength', () => (
   <Wrapper>
     <Form.Item
-      className='password-input-strength'>
+      className='password-input-strength'
+      style={{ width: '350px' }}>
       <PasswordInputStrength />
     </Form.Item>
   </Wrapper>
@@ -29,7 +30,8 @@ storiesOf('Input', module).add('Password Input Strength', () => (
 storiesOf('Input', module).add('Password Input Strength - Custom rules', () => (
   <Wrapper>
     <Form.Item
-      className='password-input-strength'>
+      className='password-input-strength'
+      style={{ width: '350px' }}>
       <PasswordInputStrength
         regExRules={[
           /^.{8,}$/,
