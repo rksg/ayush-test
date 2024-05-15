@@ -307,6 +307,9 @@ export const isCrrmOptimizationMatched = (
   _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
     === _.get(preferences, 'crrmFullOptimization', true)
 
+const isContinuosRecommendation = (code: Recommendation['code']) =>
+  code.startsWith('c-crrm-') || code.startsWith('c-probeflex-')
+
 export const getAvailableActions = (
   recommendation: RecommendationActionType,
   isRecommendationRevertEnabled: boolean,
@@ -359,7 +362,7 @@ export const getAvailableActions = (
             ...props,
             disabled: !(isRecommendationRevertEnabled &&
               appliedOnce &&
-              recommendation.code.startsWith('c-crrm')
+              isContinuosRecommendation(recommendation.code)
             ),
             type: 'Revert',
             initialDate: 'futureDate'
@@ -406,7 +409,9 @@ export const getAvailableActions = (
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(isRecommendationRevertEnabled && recommendation.code.startsWith('c-crrm')),
+            disabled: !(isRecommendationRevertEnabled &&
+              isContinuosRecommendation(recommendation.code)
+            ),
             type: 'Revert',
             initialDate: 'futureDate'
           })
