@@ -559,8 +559,7 @@ export const kpisForTab = (isMLISA? : string) => {
         'clientThroughput',
         'apCapacity',
         'apServiceUptime',
-        'onlineAPs',
-        'switchReachability'
+        'onlineAPs'
       ]
     },
     connection: {
