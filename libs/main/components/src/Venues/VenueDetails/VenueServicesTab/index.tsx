@@ -2,10 +2,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Tabs }                                                                                                                 from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                       from '@acx-ui/feature-toggle'
-import { useGetDhcpByEdgeIdQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
-import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                       from '@acx-ui/rc/utils'
+import { Loader, Tabs }                                                                                                              from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                    from '@acx-ui/feature-toggle'
+import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
+import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                    from '@acx-ui/rc/utils'
 
 
 import ClientIsolationAllowList from './ClientIsolationAllowList'
@@ -32,7 +32,7 @@ export function VenueServicesTab () {
   const { $t } = useIntl()
 
   // get edge by venueId, use 'firewallId' in edge data
-  const edgeListFields = ['name', 'serialNumber', 'venueId']
+  const edgeListFields = ['name', 'serialNumber', 'venueId', 'clusterId']
   const { edgeData, isEdgeLoading } = useGetEdgeListQuery(
     { payload: {
       // Before Edge GA, no need to query firewallId
@@ -48,14 +48,21 @@ export function VenueServicesTab () {
       })
     }
   )
-  const { hasEdgeDhcp, isEdgeDhcpLoading } = useGetDhcpByEdgeIdQuery(
-    { params: { edgeId: edgeData?.serialNumber } },
+  const { hasEdgeDhcp, isEdgeDhcpLoading } = useGetDhcpStatsQuery(
+    {
+      payload: {
+        fields: [
+          'id'
+        ],
+        filters: { edgeClusterIds: [edgeData?.clusterId] }
+      }
+    },
     {
       // Before Edge GA, need to hide the service not support HA
       // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
-      skip: !!!edgeData?.serialNumber || !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: !Boolean(edgeData?.clusterId) || !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
-        hasEdgeDhcp: !!data?.id,
+        hasEdgeDhcp: Boolean(data?.data?.[0]?.id),
         isEdgeDhcpLoading: isLoading
       })
     })

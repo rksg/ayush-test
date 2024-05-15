@@ -90,6 +90,7 @@ export interface TaskContextType {
   errorMessage?: string,
   tenantId: string,
   fileName: string,
+  systemName: string,
   venueName?: string,
   description?: string,
   countryCode?: string,
