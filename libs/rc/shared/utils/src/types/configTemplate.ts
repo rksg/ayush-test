@@ -14,7 +14,9 @@ export enum ConfigTemplateType {
   DEVICE_POLICY = 'DEVICE_POLICY',
   APPLICATION_POLICY = 'APPLICATION_POLICY',
   SYSLOG = 'SYSLOG',
-  ROGUE_AP_DETECTION = 'ROGUE_AP'
+  ROGUE_AP_DETECTION = 'ROGUE_AP',
+  SWITCH_REGULAR = 'SWITCH_REGULAR',
+  SWITCH_CLI = 'SWITCH_CLI'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {
