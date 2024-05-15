@@ -1506,8 +1506,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
     }),
     getVenueClientAdmissionControl: build.query<VenueClientAdmissionControl, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueClientAdmissionControl, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueClientAdmissionControl, params, apiCustomHeader)
         return {
           ...req
         }
@@ -1516,10 +1519,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueClientAdmissionControl: build.mutation<VenueClientAdmissionControl, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueClientAdmissionControl, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueClientAdmissionControl)
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(urlsInfo.updateVenueClientAdmissionControl, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],

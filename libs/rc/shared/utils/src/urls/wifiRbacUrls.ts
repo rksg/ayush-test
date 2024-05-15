@@ -439,7 +439,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //url: '/venues/aps/:serialNumber/directedMulticastSettings',
     url: '/venues/:venueId/aps/:serialNumber/directedMulticastSettings',
     newApi: true
-  }
+  },
   /*
   // deprecated. use the updateApDirectedMulticast to replace
   resetApDirectedMulticast: {
@@ -470,16 +470,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/bssColoringSettings',
     newApi: true
   },
+  */
   getVenueClientAdmissionControl: {
     method: 'get',
-    url: '/venues/:venueId/clientAdmissionControlSettings',
+    // url: '/venues/:venueId/clientAdmissionControlSettings',
+    url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
   },
   updateVenueClientAdmissionControl: {
     method: 'put',
-    url: '/venues/:venueId/clientAdmissionControlSettings',
+    // url: '/venues/:venueId/clientAdmissionControlSettings',
+    url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
   },
+  /*
   getApClientAdmissionControl: {
     method: 'get',
     url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',

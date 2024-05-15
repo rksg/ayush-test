@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
@@ -16,11 +17,10 @@ import {
   useUpdateVenueClientAdmissionControlMutation,
   useUpdateVenueTemplateClientAdmissionControlMutation
 } from '@acx-ui/rc/services'
-import { VenueClientAdmissionControl } from '@acx-ui/rc/utils'
+import { ApiVersionEnum, ApiVersionType, VenueClientAdmissionControl } from '@acx-ui/rc/utils'
 
 import { VenueEditContext }                                                                from '../..'
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
-
 
 
 const { useWatch } = Form
@@ -40,6 +40,9 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   const minClientThroughput24GFieldName = 'clientAdmissionControlMinClientThroughput24G'
   const minClientThroughput50GFieldName = 'clientAdmissionControlMinClientThroughput50G'
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
+
   const [ enable24G, enable50G ] = [
     useWatch<boolean>(enable24GFieldName),
     useWatch<boolean>(enable50GFieldName)
@@ -57,7 +60,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   // eslint-disable-next-line max-len
   const getClientAdmissionControl = useVenueConfigTemplateQueryFnSwitcher<VenueClientAdmissionControl>(
     useGetVenueClientAdmissionControlQuery,
-    useGetVenueTemplateClientAdmissionControlQuery
+    useGetVenueTemplateClientAdmissionControlQuery,
+    rbacApiVersion
   )
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -102,7 +106,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
 
   const handleUpdateClientAdmissionControl = async (callback?: () => void) => {
     try {
-      const payload: VenueClientAdmissionControl = {
+      const payload: (ApiVersionType & VenueClientAdmissionControl) = {
         enable24G: form.getFieldValue(enable24GFieldName),
         enable50G: form.getFieldValue(enable50GFieldName),
         minClientCount24G: form.getFieldValue(minClientCount24GFieldName),
@@ -110,7 +114,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
         maxRadioLoad24G: form.getFieldValue(maxRadioLoad24GFieldName),
         maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
         minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
-        minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName)
+        minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
+        rbacApiVersion
       }
       await updateClientAdmissionControl({
         params: { venueId },
