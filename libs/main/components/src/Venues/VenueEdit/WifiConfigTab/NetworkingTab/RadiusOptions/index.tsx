@@ -13,7 +13,12 @@ import {
   useGetVenueTemplateRadiusOptionsQuery,
   useUpdateVenueTemplateRadiusOptionsMutation
 } from '@acx-ui/rc/services'
-import { ApiVersionEnum, ApiVersionType, VenueRadiusOptions } from '@acx-ui/rc/utils'
+import {
+  ApiVersionEnum,
+  ApiVersionType,
+  VenueRadiusOptions,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 
 import { VenueEditContext }               from '../../..'
 import {
@@ -26,7 +31,8 @@ const { useWatch } = Form
 export function RadiusOptions () {
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
   const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const {
