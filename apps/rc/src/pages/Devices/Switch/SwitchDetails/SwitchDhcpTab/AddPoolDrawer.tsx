@@ -4,6 +4,7 @@ import { Col, Divider, Form, Input, InputNumber, Row, Space } from 'antd'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, Drawer, Subtitle, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useLazyGetDhcpServerQuery }                   from '@acx-ui/rc/services'
 import {
   getDhcpOptionList,
@@ -22,12 +23,15 @@ export function AddPoolDrawer (props: {
   visible: boolean,
   isLoading?: boolean,
   editPoolId?: SwitchDhcp['id'],
+  venueId?: string,
   onSavePool?: (values: SwitchDhcp)=>void,
   onClose?: ()=>void
 }) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [openModal, setOpenModal] = useState(false)
   const [selected, setSelected] = useState<SwitchDhcpOption>()
   const [dhcpOptionList, setDhcpOptionList] = useState<SwitchDhcpOption[]>()
@@ -43,9 +47,11 @@ export function AddPoolDrawer (props: {
     if(props.visible && props.editPoolId) {
       getDhcpServer({
         params: {
-          tenantId: params.tenantId,
+          ...params,
+          venueId: props.venueId,
           dhcpServerId: props.editPoolId
-        }
+        },
+        enableRbac: isSwitchRbacEnabled
       }).unwrap().then(value => {
         form.setFieldsValue(value)
         setDhcpOptionList(value.dhcpOptions)

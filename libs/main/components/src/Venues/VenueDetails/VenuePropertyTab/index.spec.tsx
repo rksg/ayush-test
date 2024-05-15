@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   ConnectionMeteringUrls,
@@ -95,7 +95,7 @@ const updateUnitFn = jest.fn()
 const getPersonaGroupSpy = jest.fn()
 const getApSpy = jest.fn()
 const getSwitchSpy = jest.fn()
-jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 describe('Property Unit Page', () => {
   beforeEach(async () => {
     updateUnitFn.mockClear()

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
@@ -16,9 +17,12 @@ export function OnDemandCliTab () {
   const navigate = useNavigate()
   const [deleteCliTemplates] = useDeleteCliTemplatesMutation()
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    enableRbac: isSwitchRbacEnabled
   })
 
   const columns: TableProps<SwitchCliTemplateModel>['columns'] = [{
@@ -75,7 +79,8 @@ export function OnDemandCliTab () {
           onOk: () => {
             deleteCliTemplates({
               params: { tenantId },
-              payload: selectedRows.map(r => r.id)
+              payload: selectedRows.map(r => r.id),
+              enableRbac: isSwitchRbacEnabled
             }).then(clearSelection)
           }
         })

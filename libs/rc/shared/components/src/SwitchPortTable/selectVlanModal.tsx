@@ -4,6 +4,7 @@ import { Checkbox, FormInstance, Input, Radio, Space, Switch, Typography } from 
 import _                                                                   from 'lodash'
 
 import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { InformationSolid }             from '@acx-ui/icons'
 import { useAddVlanMutation }           from '@acx-ui/rc/services'
 import {
@@ -52,6 +53,8 @@ export function SelectVlanModal (props: {
     vlanUsedByVe = [], taggedVlans = '', untaggedVlan, showVoiceVlan,
     voiceVlan, isVoiceVlanInvalid
   } = props
+
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
   const [selectUntaggedVlan, setSelectUntaggedVlan] = useState<Number | ''>(Number(untaggedVlan))
@@ -361,7 +364,8 @@ export function SelectVlanModal (props: {
         try {
           await addVlan({
             params: { tenantId: params.tenantId, profileId: props.profileId },
-            payload
+            payload,
+            enableRbac: isSwitchRbacEnabled
           }).unwrap()
           await props.updateSwitchVlans?.(values)
 

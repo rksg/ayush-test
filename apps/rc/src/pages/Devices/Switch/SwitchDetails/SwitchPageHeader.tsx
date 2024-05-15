@@ -8,6 +8,7 @@ import moment                     from 'moment-timezone'
 import { useIntl }                from 'react-intl'
 
 import { Dropdown, Button, CaretDownSolidIcon, PageHeader, RangePicker, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                              from '@acx-ui/formatter'
 import { SwitchCliSession, SwitchStatus, useSwitchActions }                       from '@acx-ui/rc/components'
 import {
@@ -80,19 +81,21 @@ function SwitchPageHeader () {
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {
       case MoreActions.CLI_SESSION:
         setCliModalOpen(true)
         break
       case MoreActions.REBOOT:
-        switchAction.showRebootSwitch(switchId || '', tenantId || '', isStack)
+        switchAction.showRebootSwitch(switchId || '', switchDetailHeader.venueId || '', tenantId || '', isStack)
         break
       case MoreActions.DELETE:
         switchAction.showDeleteSwitch(switchDetailHeader, tenantId, () => navigate(linkToSwitch))
         break
       case MoreActions.SYNC_DATA:
-        switchAction.doSyncData(switchId || '', tenantId || '', handleSyncData)
+        switchAction.doSyncData(switchId || '', switchDetailHeader.venueId || '', tenantId || '', handleSyncData)
         setIsSyncing(true)
         break
       case MoreActions.ADD_MEMBER:
@@ -110,8 +113,10 @@ function SwitchPageHeader () {
       }
     }
     const list =
-      (await getSwitchList({ params: { tenantId: tenantId }, payload }, false))
-        .data?.data || []
+      (await getSwitchList({
+        params: { tenantId: tenantId },
+        payload,
+        enableRbac: isSwitchRbacEnabled }, false)).data?.data || []
     if (list.length > 0) {
       handleSyncButton(list[0].syncDataEndTime || '', !_.isEmpty(list[0].syncDataId))
     }
@@ -150,18 +155,21 @@ function SwitchPageHeader () {
   const setVenueVersion = async (switchDetail: SwitchViewModel) => {
     return switchDetail.venueName ?
       await getSwitchVenueVersionList({
-        params: { tenantId }, payload: {
+        params: { tenantId },
+        payload: {
           firmwareType: '',
           firmwareVersion: '',
           searchString: switchDetail.venueName,
           updateAvailable: ''
-        }
+        },
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
         .then(result => {
+          const venueId = isSwitchRbacEnabled? 'venueId' : 'id'
           const venueFw = result?.data?.find(
-            venue => venue.id === switchDetail.venueId)?.switchFirmwareVersion?.id || ''
+            venue => venue[venueId] === switchDetail.venueId)?.switchFirmwareVersion?.id || ''
           const venueAboveTenFw = result?.data?.find(
-            venue => venue.id === switchDetail?.venueId)?.switchFirmwareVersionAboveTen?.id || ''
+            venue => venue[venueId] === switchDetail?.venueId)?.switchFirmwareVersionAboveTen?.id || ''
 
           setVenueFW(venueFw)
           setVenueAboveTenFw(venueAboveTenFw)

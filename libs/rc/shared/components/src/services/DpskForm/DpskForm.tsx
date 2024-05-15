@@ -28,9 +28,8 @@ import {
   DeviceNumberType,
   DpskMutationResult,
   DpskNewFlowMutationResult,
-  useConfigTemplate,
   useServiceListBreadcrumb,
-  generateServicePageHeaderTitle,
+  useServicePageHeaderTitle,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   TableResult,
@@ -80,8 +79,8 @@ export function DpskForm (props: DpskFormProps) {
     passphraseLength: 18,
     deviceNumberType: DeviceNumberType.UNLIMITED
   }
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
+  const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
 
   function isModalMode (): boolean {
     return modalMode && !editMode
@@ -134,7 +133,7 @@ export function DpskForm (props: DpskFormProps) {
   return (
     <>
       {!modalMode && <PageHeader
-        title={generateServicePageHeaderTitle(editMode, isTemplate, ServiceType.DPSK)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <Loader states={[{ isLoading, isFetching }]}>

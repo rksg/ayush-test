@@ -14,7 +14,7 @@ import {
 import {
   ApSnmpActionType,
   ApSnmpPolicy,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
@@ -40,7 +40,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const { editMode } = props
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
-  const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.SNMP_AGENT)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.SNMP_AGENT)
 
   const { data } = useGetApSnmpPolicyQuery({ params }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()

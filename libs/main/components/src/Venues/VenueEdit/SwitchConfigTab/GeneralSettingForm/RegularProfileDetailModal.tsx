@@ -1,17 +1,18 @@
 import { Typography } from 'antd'
 
-import { Modal, Table, TableProps }       from '@acx-ui/components'
-import { useGetSwitchConfigProfileQuery } from '@acx-ui/rc/services'
+import { Modal, Table, TableProps }                                               from '@acx-ui/components'
+import { useGetSwitchConfigProfileQuery, useGetSwitchConfigProfileTemplateQuery } from '@acx-ui/rc/services'
 import {
   Acl,
   Vlan,
   SwitchModel,
   VenueSwitchConfiguration,
   SpanningTreeProtocolName,
-  transformTitleCase
+  transformTitleCase,
+  useConfigTemplateQueryFnSwitcher,
+  ConfigurationProfile
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { getIntl } from '@acx-ui/utils'
 
 import { FormState } from './index'
 
@@ -21,11 +22,14 @@ export function RegularProfileDetailModal (props: {
   setFormState: (data: FormState) => void
 }) {
   const { $t } = getIntl()
-  const { tenantId } = useParams()
   const { formState, setFormState, formData } = props
-  const { data } = useGetSwitchConfigProfileQuery({
-    params: { tenantId, profileId: formData?.profileId?.[0] as string }
-  })
+  const { data } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
+    useGetSwitchConfigProfileQuery,
+    useGetSwitchConfigProfileTemplateQuery,
+    false,
+    undefined,
+    { profileId: formData?.profileId?.[0] as string }
+  )
 
   const vlansColumns: TableProps<Vlan>['columns']= [{
     title: $t({ defaultMessage: 'VLAN ID' }),
