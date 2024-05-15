@@ -702,13 +702,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       , arg: { payload:{ page:number } }) => {
         const result = res.response?.list || res.list
         const totalCount = res.response?.totalCount || res.totalCount
-        const configType = result ? (res.list ? 'historyConfigTypeV1001' : 'configType' )
-          : 'configType'
         return {
           data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
-            configType: transformConfigType(item[configType]),
+            configType: transformConfigType(item.configType),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],
           totalCount: totalCount,

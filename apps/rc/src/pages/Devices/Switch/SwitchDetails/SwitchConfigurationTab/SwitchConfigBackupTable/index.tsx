@@ -9,7 +9,8 @@ import { Features, useIsSplitOn }                                               
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, RESTORE_IN_PROGRESS_TOOLTIP, SwitchViewModel, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission }                                                                                       from '@acx-ui/user'
+import { SwitchScopes }                                                                                                                                from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission }                                                                                   from '@acx-ui/user'
 import { handleBlobDownloadFile }                                                                                                                      from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../..'
@@ -17,7 +18,6 @@ import { SwitchDetailsContext } from '../..'
 import { BackupModal }               from './BackupModal'
 import { CompareConfigurationModal } from './CompareConfigurationModal'
 import { ViewConfigurationModal }    from './ViewConfigurationModal'
-import { SwitchScopes } from '@acx-ui/types'
 
 interface clearTableSelection {
   clearSelection: () => void
