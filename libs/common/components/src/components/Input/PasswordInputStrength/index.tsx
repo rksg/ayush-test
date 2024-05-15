@@ -17,7 +17,7 @@ interface PasswordStrengthProps extends InputProps {
   regExErrorMessages: string[]
   minlevel: number
   onLevelChange: (newLevel: boolean) => void
-  callback?: (value: string) => void
+  value: string
 }
 
 interface PasswordStrengthIndicatorProps {
@@ -58,15 +58,12 @@ export const PasswordInputStrength = ({
     $t({ defaultMessage: 'One number' }),
     $t({ defaultMessage: 'One special symbol' })
   ]
-  const [level, setLevel] = useState(false)
 
   useEffect(() => {
-    onLevelChange?.(level)
-
     if(value){
       setInput(value.toString())
     }
-  }, [level, value])
+  }, [value])
 
   return (
     <>
@@ -75,7 +72,6 @@ export const PasswordInputStrength = ({
         onChange={(e) => {
           setInput(e.target.value)
           const passedRulesRatio = calculatePassedRulesRatio(e.target.value, RULE_REGEX)
-          setLevel(passedRulesRatio >= minlevelValue)
           onLevelChange?.(passedRulesRatio >= minlevelValue)
           props?.onChange?.(e)
         }}
