@@ -73,7 +73,7 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
       }
     },
     {
-      skip: !isShowEdgePassword || !isEdgeReady
+      skip: !isShowEdgePassword || !isEdgeReady || !currentEdge
     }
   )
 
