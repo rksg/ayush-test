@@ -4,12 +4,18 @@ import { Col, Checkbox, Form, Input, Row, Space, Typography } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
-import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
-import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'
-import { useParams }                                     from '@acx-ui/react-router-dom'
+import { Button, cssStr, StepsForm, useStepFormContext }                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { useGetProfilesQuery, useGetSwitchConfigProfileTemplateListQuery } from '@acx-ui/rc/services'
+import {
+  checkObjectNotExists,
+  SwitchProfileModel,
+  TableResult,
+  useConfigTemplateQueryFnSwitcher,
+  whitespaceOnlyRegExp,
+  ICX_MODELS_MODULES
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
 
@@ -36,8 +42,16 @@ export function CliStepModels () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { form, editMode } = useStepFormContext()
-  const { data: profiles }
-    = useGetProfilesQuery({ params, payload: profilesPayload, enableRbac: isSwitchRbacEnabled })
+
+  const { data: profiles } = useConfigTemplateQueryFnSwitcher<TableResult<SwitchProfileModel>>(
+    useGetProfilesQuery,
+    useGetSwitchConfigProfileTemplateListQuery,
+    false,
+    profilesPayload,
+    undefined,
+    undefined,
+    isSwitchRbacEnabled
+  )
 
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])

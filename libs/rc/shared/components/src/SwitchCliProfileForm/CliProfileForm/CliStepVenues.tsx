@@ -6,9 +6,20 @@ import { useIntl }                           from 'react-intl'
 
 import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
-import { useVenuesListQuery, useGetCliFamilyModelsQuery }                            from '@acx-ui/rc/services'
-import { CliConfiguration, Venue, useTableQuery }                                    from '@acx-ui/rc/utils'
-import { useParams }                                                                 from '@acx-ui/react-router-dom'
+import {
+  useVenuesListQuery,
+  useGetCliFamilyModelsQuery,
+  useGetVenuesTemplateListQuery,
+  useGetSwitchTemplateCliFamilyModelsQuery
+} from '@acx-ui/rc/services'
+import {
+  CliConfiguration,
+  CliFamilyModels,
+  Venue,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
+  useTableQuery
+}            from '@acx-ui/rc/utils'
 
 import { cliFormMessages } from './'
 
@@ -20,16 +31,23 @@ interface VenueExtend extends Venue {
 
 export function CliStepVenues () {
   const { $t } = useIntl()
-  const params = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
 
-  const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({
-    params, enableRbac: isSwitchRbacEnabled
-  })
+  const { data: cliFamilyModels } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>(
+    useGetCliFamilyModelsQuery,
+    useGetSwitchTemplateCliFamilyModelsQuery,
+    false,
+    undefined,
+    undefined,
+    undefined,
+    isSwitchRbacEnabled
+  )
+
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
+  const { isTemplate } = useConfigTemplate()
 
   const columns: TableProps<Venue>['columns'] = [{
     title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -69,7 +87,7 @@ export function CliStepVenues () {
   }]
 
   const tableQuery = useTableQuery<Venue>({
-    useQuery: useVenuesListQuery,
+    useQuery: isTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
     defaultPayload: {
       pageSize: 10,
       sortField: 'name',

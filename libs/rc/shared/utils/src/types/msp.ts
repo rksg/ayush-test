@@ -50,7 +50,9 @@ export const roleDisplayText = {
   [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
   [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
   [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
-  [RolesEnum.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
+  [RolesEnum.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' }),
+  [RolesEnum.TEMPLATES_ADMIN]: defineMessage({ defaultMessage: 'Templates Management' }),
+  [RolesEnum.REPORTS_ADMIN]: defineMessage({ defaultMessage: 'Reports Admin' })
 }
 
 // MSP Entitlement and assignment
