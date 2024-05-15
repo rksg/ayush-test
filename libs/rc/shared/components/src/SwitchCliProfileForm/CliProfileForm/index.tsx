@@ -67,8 +67,6 @@ export function CliProfileForm () {
 
   const [form] = Form.useForm()
   const [getProfiles] = useLazyGetProfilesQuery()
-  // const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
-  // const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
   const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
   const [batchDisassociateSwitchProfile] = useBatchDisassociateSwitchProfileMutation()
 

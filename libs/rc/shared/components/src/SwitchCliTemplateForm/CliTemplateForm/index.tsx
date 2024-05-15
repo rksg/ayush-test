@@ -100,8 +100,7 @@ export function CliTemplateForm () {
           ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
           id: params.templateId,
           applyLater: !data.applyNow,
-          venueSwitches: transformVenueSwitches(venueSwitches),
-          ...transformVariables(isSwitchRbacEnabled, data)
+          venueSwitches: transformVenueSwitches(venueSwitches)
         },
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
@@ -122,8 +121,7 @@ export function CliTemplateForm () {
         params, payload: {
           ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
           applyLater: !data.applyNow,
-          venueSwitches: transformVenueSwitches(venueSwitches),
-          ...transformVariables(isSwitchRbacEnabled, data)
+          venueSwitches: transformVenueSwitches(venueSwitches)
         },
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
@@ -274,25 +272,6 @@ export function CliTemplateForm () {
 function transformVenueSwitches (venueSwitches?: VenueSwitches) {
   return Object.entries(venueSwitches ?? {})
     .map(v => ({ venueId: v[0], switches: v[1] }))
-}
-
-function transformVariables (isSwitchRbacEnabled: boolean, data: CliConfiguration) {
-  if (isSwitchRbacEnabled) {
-    return {
-      variables: data.variables?.map(variable => {
-        const type = variable.type
-        const separator = getVariableSeparator(type)
-        const values = variable.value?.split(separator)
-        return {
-          ...variable,
-          value: values?.[0]
-        }
-      })
-    }
-  }
-  return {
-    variables: data.variables
-  }
 }
 
 function getDiffAssociatedSwitch (
