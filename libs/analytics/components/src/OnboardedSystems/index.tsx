@@ -4,7 +4,7 @@ import { Badge }                  from 'antd'
 import { get, isEmpty }           from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
-import { defaultSort, getUserProfile, sortProp, permissions }             from '@acx-ui/analytics/utils'
+import { defaultSort, getUserProfile, sortProp }                          from '@acx-ui/analytics/utils'
 import { Loader, Table, TableProps, showActionModal, showToast, Tooltip } from '@acx-ui/components'
 import { getIntl }                                                        from '@acx-ui/utils'
 
@@ -74,7 +74,7 @@ export const useOnboardedSystems = () => {
 
   const queryResults = useFetchSmartZoneListQuery({
     tenantId,
-    tenants: tenant.tenants.filter(t => Boolean(t.permissions[permissions.READ_ONBOARDED_SYSTEMS]))
+    tenants: tenant.tenants.filter(t => Boolean(t.permissions['READ_ONBOARDED_SYSTEMS']))
   })
 
   const [count, setCount] = useState(queryResults.data?.length || 0)

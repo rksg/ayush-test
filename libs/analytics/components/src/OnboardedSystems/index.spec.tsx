@@ -2,7 +2,7 @@ import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import { rest }    from 'msw'
 
-import { permissions, UserProfile, setUserProfile }                                         from '@acx-ui/analytics/utils'
+import { UserProfile, setUserProfile }                                                      from '@acx-ui/analytics/utils'
 import { Provider, smartZoneURL }                                                           from '@acx-ui/store'
 import { screen, render, mockServer, waitForElementToBeRemoved, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
@@ -172,7 +172,7 @@ describe('OnboardedSystems', () => {
   it('should query only Roles.PRIME_ADMINISTRATOR tenants', () => {
     setUserProfile({ accountId: tenants[0].id, tenants: [
       ...tenants,
-      { id: 'id3', name: 'account3', permissions: { [permissions.READ_ONBOARDED_SYSTEMS]: false } }
+      { id: 'id3', name: 'account3', permissions: { READ_ONBOARDED_SYSTEMS: false } }
     ] } as UserProfile)
     jest.spyOn(services, 'useFetchSmartZoneListQuery')
     const Component = () => {

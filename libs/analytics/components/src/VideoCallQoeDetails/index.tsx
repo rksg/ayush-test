@@ -126,7 +126,7 @@ export function VideoCallQoeDetails (){
                   : (
                     <div style={{ width: '100px' }}>-</div>
                   )}
-              {hasPermission() &&
+              {hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE' }) &&
               <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
                 <EditOutlinedIcon
                   style={{ height: '16px', width: '16px', cursor: 'pointer' }}
@@ -144,7 +144,7 @@ export function VideoCallQoeDetails (){
         return (
           <Space>
             <div style={{ width: '100px' }}>-</div>
-            {hasPermission() &&
+            {hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE' }) &&
             <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on Wi-Fi' })}>
               <EditOutlinedDisabledIcon
                 style={{ height: '16px', width: '16px', cursor: 'not-allowed' }}

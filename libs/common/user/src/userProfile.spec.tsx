@@ -15,9 +15,12 @@ import {
   hasAccess,
   hasRoles,
   hasPermission,
+  setRaiPermissions,
   setUserProfile,
   WrapIfAccessible
 } from './userProfile'
+
+import type { RaiPermissions } from './types'
 
 function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
   scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[]) {
@@ -60,6 +63,10 @@ describe('hasAccess', () => {
       expect(hasAccess()).toBe(false)
       setRole(RolesEnum.READ_ONLY)
       expect(hasAccess()).toBe(false)
+    })
+    it('returns true for IS_MLISA_SA', () => {
+      jest.mocked(get).mockReturnValue('true')
+      expect(hasAccess()).toBe(true)
     })
   })
 
@@ -202,6 +209,13 @@ describe('hasPermission', () => {
         hasPermission({ scopes: [SwitchScopes.DELETE], allowedOperations: 'GET:/switches' })
       ).toBe(false)
     })
+  })
+  it('checks RAI permissions', () => {
+    jest.mocked(get).mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: true } as RaiPermissions)
+    expect(hasPermission()).toBe(false)
+    expect(hasPermission({ permission: 'READ_INCIDENTS' })).toBe(true)
+    expect(hasPermission({ permission: 'WRITE_INCIDENTS' })).toBe(false)
   })
 })
 

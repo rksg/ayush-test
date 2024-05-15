@@ -1,4 +1,6 @@
-import { Roles, permissions } from '../constants'
+import type { RaiPermission } from '@acx-ui/user'
+
+import { Roles } from '../constants'
 
 export type UserProfile = {
   firstName: string
@@ -32,11 +34,9 @@ export type Tenant = {
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
-  permissions: Permissions
+  permissions: Record<RaiPermission, boolean>
   settings: Settings
 }
-
-export type Permissions = Record<keyof typeof permissions, boolean>
 
 export type Settings = {
   'sla-p1-incidents-count': string

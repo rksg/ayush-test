@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 
-import { getUserProfile }          from '@acx-ui/analytics/utils'
-import { get }                     from '@acx-ui/config'
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, waitFor } from '@acx-ui/test-utils'
+import { get }                               from '@acx-ui/config'
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { Provider }                          from '@acx-ui/store'
+import { render, screen, waitFor }           from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import { AIAnalytics, AIAnalyticsTabEnum } from '.'
 
@@ -17,12 +17,6 @@ jest.mock('react-router-dom', () => ({
 const mockGet = get as jest.Mock
 jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
-}))
-
-const mockGetUserProfile = getUserProfile as jest.Mock
-jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/analytics/utils'),
-  getUserProfile: jest.fn()
 }))
 
 jest.mock('../Header', () => ({
@@ -42,12 +36,11 @@ jest.mock('../Recommendations', () => ({
 
 describe('NetworkAssurance', () => {
   beforeEach(() => {
-    mockGetUserProfile.mockReturnValue({
-      selectedTenant: { permissions: {
-        READ_AI_DRIVEN_RRM: true,
-        READ_AI_OPERATIONS: true
-      } }
-    })
+    setRaiPermissions({
+      READ_INCIDENTS: true,
+      READ_AI_OPERATIONS: true,
+      READ_AI_DRIVEN_RRM: true
+    } as RaiPermissions)
   })
   afterEach(() => {
     jest.resetAllMocks()
@@ -81,12 +74,10 @@ describe('NetworkAssurance', () => {
   })
   it('should not render config recommendation tabs for RA SA when not admin', async () => {
     jest.mocked(mockGet).mockReturnValue(true)
-    mockGetUserProfile.mockReturnValue({
-      selectedTenant: { permissions: {
-        READ_AI_DRIVEN_RRM: false,
-        READ_AI_OPERATIONS: false
-      } }
-    })
+    setRaiPermissions({
+      READ_AI_OPERATIONS: false,
+      READ_AI_DRIVEN_RRM: false
+    } as RaiPermissions)
     render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('AI Assurance')).toBeVisible()

@@ -1,5 +1,6 @@
 /* Provide profile outside component */
 import { get }                         from '@acx-ui/config'
+import { setRaiPermissions }           from '@acx-ui/user'
 import type { PendoParameters }        from '@acx-ui/utils'
 import { updatePendo, decodeTenantId } from '@acx-ui/utils'
 
@@ -43,12 +44,15 @@ const getSelectedTenant = (profile: UserProfile): Tenant => {
 }
 export const getUserProfile = () => user.profile
 export const setUserProfile = (profile: UserProfile) => {
-  user.profile = { ...profile, selectedTenant: getSelectedTenant(profile) }
+  const selectedTenant = getSelectedTenant(profile)
+  setRaiPermissions(selectedTenant.permissions)
+  user.profile = { ...profile, selectedTenant }
 }
 export const updateSelectedTenant = () => {
   const currentProfile = getUserProfile()
   const selectedTenant = getSelectedTenant(currentProfile)
   if (selectedTenant.id === currentProfile.selectedTenant.id) return
+  setRaiPermissions(selectedTenant.permissions)
   user.profile.selectedTenant = selectedTenant
   updatePendo(
     /* istanbul ignore next */

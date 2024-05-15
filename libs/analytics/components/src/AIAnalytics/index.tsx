@@ -1,13 +1,10 @@
 import { useIntl } from 'react-intl'
 
-import {
-  getUserProfile,
-  permissions
-} from '@acx-ui/analytics/utils'
 import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
 import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { hasPermission }                               from '@acx-ui/user'
 import { DateRange }                                   from '@acx-ui/utils'
 
 import { useHeaderExtra }           from '../Header'
@@ -31,7 +28,6 @@ const useTabs = () : Tab[] => {
   const { $t } = useIntl()
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
-  const userProfile = getUserProfile()
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
@@ -55,11 +51,10 @@ const useTabs = () : Tab[] => {
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
     if (get('IS_MLISA_SA')) { // RAI
-      const { selectedTenant } = userProfile
-      if (selectedTenant.permissions?.[permissions.READ_AI_DRIVEN_RRM]) {
+      if (hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })) {
         recommendationTabs.push(crrmTab as Tab)
       }
-      if (selectedTenant.permissions?.[permissions.READ_AI_OPERATIONS]) {
+      if (hasPermission({ permission: 'READ_AI_OPERATIONS' })) {
         recommendationTabs.push(aiOpsTab as Tab)
       }
     } else { // R1

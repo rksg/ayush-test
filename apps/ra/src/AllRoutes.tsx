@@ -17,8 +17,9 @@ import {
   ServiceGuardDetails,
   Profile
 } from '@acx-ui/analytics/components'
-import { updateSelectedTenant, permissions, getUserProfile }             from '@acx-ui/analytics/utils'
+import { updateSelectedTenant, getUserProfile }                          from '@acx-ui/analytics/utils'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
+import { hasPermission }                                                 from '@acx-ui/user'
 
 import ClientDetails                         from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum }         from './pages/Clients'
@@ -54,7 +55,7 @@ function Init () {
       replace
       to={{
         search: `?selectedTenants=${selectedTenants}`,
-        pathname: selectedTenant.permissions[permissions.READ_DASHBOARD]
+        pathname: hasPermission({ permission: 'READ_DASHBOARD' })
           ? `${MLISA_BASE_PATH}/dashboard`
           : `${MLISA_BASE_PATH}/reports`
       }}

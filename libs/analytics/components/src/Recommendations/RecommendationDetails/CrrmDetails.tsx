@@ -45,7 +45,10 @@ export const CrrmDetails = () => {
         { text: $t(recommendationTypeMapping.crrm.title),
           link: recommendationTypeMapping.crrm.link }
       ]}
-      extra={hasPermission() ? [<RecommendationSetting recommendationDetails={details} />] : []}
+      extra={hasPermission({ permission: 'WRITE_AI_DRIVEN_RRM' })
+        ? [<RecommendationSetting recommendationDetails={details} />]
+        : []
+      }
     />}
     <GridRow>
       <GridCol col={{ span: 4 }}>

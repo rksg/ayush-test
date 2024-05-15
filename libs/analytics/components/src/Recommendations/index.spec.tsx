@@ -17,9 +17,9 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
-import { RolesEnum }                         from '@acx-ui/types'
-import { getUserProfile, setUserProfile }    from '@acx-ui/user'
-import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
+import { RolesEnum }                                                         from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
+import { setUpIntl, DateRange, NetworkPath }                                 from '@acx-ui/utils'
 
 import { recommendationListResult } from './__tests__/fixtures'
 import {
@@ -64,6 +64,7 @@ describe('RecommendationTabContent', () => {
   }
 
   beforeEach(() => {
+    setRaiPermissions({ WRITE_AI_OPERATIONS: true } as RaiPermissions)
     setUpIntl({
       locale: 'en-US',
       messages: {}

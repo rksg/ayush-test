@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
 
-import { defaultNetworkPath, getUserProfile, permissions } from '@acx-ui/analytics/utils'
-import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { BrowserRouter }                                   from '@acx-ui/react-router-dom'
-import { act, render, renderHook, screen }                 from '@acx-ui/test-utils'
-import { DateRange }                                       from '@acx-ui/utils'
+import { defaultNetworkPath, getUserProfile }                    from '@acx-ui/analytics/utils'
+import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { BrowserRouter }                                         from '@acx-ui/react-router-dom'
+import { act, render, renderHook, screen }                       from '@acx-ui/test-utils'
+import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
+import { DateRange }                                             from '@acx-ui/utils'
 
 import Dashboard, { useMonitorHeight, useDashBoardUpdatedFilters, getFiltersForRecommendationWidgets } from '.'
 
@@ -28,7 +29,7 @@ jest.mock('@acx-ui/analytics/utils', () => (
     ...jest.requireActual('@acx-ui/analytics/utils'),
     getUserProfile: jest.fn()
   }))
-const defaultMockPermissions = Object.keys(permissions)
+const defaultMockPermissions = Object.keys(raiPermissionsList)
   .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
 const defaultMockUserProfile = {
   accountId: 'accountId',
@@ -51,12 +52,16 @@ const defaultMockUserProfile = {
 describe('Dashboard', () => {
   beforeEach(() => {
     mockedUseLayoutContext.mockReturnValue({ pageHeaderY: 100 })
+    const mockUseUserProfileContext = getUserProfile as jest.Mock
+    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
   })
   afterEach(() => jest.restoreAllMocks())
 
   it('renders correct components for admin', async () => {
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
+    setRaiPermissions({
+      READ_AI_DRIVEN_RRM: true,
+      READ_AI_OPERATIONS: true
+    } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -69,24 +74,10 @@ describe('Dashboard', () => {
   })
 
   it('renders correct components for network admin', async () => {
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    const mockPermissions = {
-      ...defaultMockPermissions,
+    setRaiPermissions({
       READ_AI_DRIVEN_RRM: false,
       READ_AI_OPERATIONS: false
-    }
-    const mockUserProfile = {
-      accountId: 'accountId',
-      selectedTenant: { permissions: mockPermissions },
-      tenants: [
-        {
-          id: 'accountId',
-          permissions: mockPermissions
-        }
-      ]
-    }
-
-    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
+    } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()
@@ -100,8 +91,7 @@ describe('Dashboard', () => {
 
   it('renders correct component when appInsight FF is on', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    mockUseUserProfileContext.mockReturnValue(defaultMockUserProfile)
+    setRaiPermissions({ READ_AI_OPERATIONS: true } as RaiPermissions)
     render(<Dashboard />, { route: true })
 
     expect(await screen.findByTestId('DidYouKnow')).toBeVisible()

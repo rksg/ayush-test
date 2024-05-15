@@ -10,7 +10,7 @@ import {
   SwitchScopes,
   WifiScopes } from '@acx-ui/types'
 
-import { UserProfile } from './types'
+import type { UserProfile, RaiPermission, RaiPermissions } from './types'
 
 type Profile = {
   profile: UserProfile
@@ -81,29 +81,46 @@ function hasAllowedOperations (id:string) {
 }
 
 export function filterByAccess <Item> (items: Item[]) {
-  return items.filter(item => {
-    const filterItem = item as FilterItemType
-    const allowedOperations = filterItem?.key
-    const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
-    return hasPermission({ scopes, allowedOperations })
-  })
+  if (get('IS_MLISA_SA')) {
+    return items
+  } else {
+    return items.filter(item => {
+      const filterItem = item as FilterItemType
+      const allowedOperations = filterItem?.key
+      const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
+      return hasPermission({ scopes, allowedOperations })
+    })
+  }
 }
 
+let permissions: RaiPermissions = {} as RaiPermissions
+export const setRaiPermissions = (perms: RaiPermissions) => {
+  permissions = perms
+}
+
+// use hasPermission when enforcing for both R1 and RAI at the same time
 export function hasPermission (props?: {
+    // RAI
+    permission?: RaiPermission,
+    // R1
     scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[],
     allowedOperations?:string
-  }) {
-  const { abacEnabled, isCustomRole } = getUserProfile()
-  const { scopes = [], allowedOperations } = props || {}
-  if(!abacEnabled) {
-    return hasAccess(allowedOperations)
-  }else {
-    if(isCustomRole){
-      const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
-      const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
-      return isScopesValid && isOperationsValid
-    } else {
+}): boolean {
+  const { scopes = [], allowedOperations, permission } = props || {}
+  if (get('IS_MLISA_SA')) {
+    return !!(permission && permissions[permission])
+  } else {
+    const { abacEnabled, isCustomRole } = getUserProfile()
+    if(!abacEnabled) {
       return hasAccess(allowedOperations)
+    }else {
+      if(isCustomRole){
+        const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
+        const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
+        return !!(isScopesValid && isOperationsValid)
+      } else {
+        return hasAccess(allowedOperations)
+      }
     }
   }
 }

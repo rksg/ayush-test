@@ -18,7 +18,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 const userProfile = getUserProfile as jest.Mock
 
 const params = { searchVal: 'test%3F' }
-describe.only('Search Results', () => {
+describe('Search Results', () => {
   const defaultUserProfile = {
     accountId: 'aid',
     tenants: [],

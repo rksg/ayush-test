@@ -16,9 +16,7 @@ import {
   AppInsights
 } from '@acx-ui/analytics/components'
 import {
-  permissions,
-  useAnalyticsFilter,
-  getUserProfile
+  useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
@@ -27,6 +25,7 @@ import {
   useLayoutContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { hasPermission }                                                                               from '@acx-ui/user'
 import { AnalyticsFilter, DateFilter, DateRange, getDatePickerValues, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -79,11 +78,10 @@ type DashboardViewProps = {
 
 const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
-  const { selectedTenant } = getUserProfile()
   const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
   const hasRecommendation = (
-    selectedTenant.permissions[permissions.READ_AI_OPERATIONS] ||
-    selectedTenant.permissions[permissions.READ_AI_DRIVEN_RRM]
+    hasPermission({ permission: 'READ_AI_OPERATIONS' }) ||
+    hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })
   )
   if (!hasRecommendation) {
     return (

@@ -1,9 +1,5 @@
 import { useIntl } from 'react-intl'
 
-import {
-  getUserProfile,
-  permissions
-} from '@acx-ui/analytics/utils'
 import { LayoutProps } from '@acx-ui/components'
 import {
   Features,
@@ -29,6 +25,7 @@ import {
   WiFi
 } from '@acx-ui/icons'
 import { useSearchParams } from '@acx-ui/react-router-dom'
+import { hasPermission }   from '@acx-ui/user'
 
 const legacyLink = (uri: string, search: URLSearchParams) => {
   const selectedTenants = search.get('selectedTenants')
@@ -39,15 +36,13 @@ const legacyLink = (uri: string, search: URLSearchParams) => {
 export function useMenuConfig () {
   const { $t } = useIntl()
   const [search] = useSearchParams()
-  const userProfile = getUserProfile()
   const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
-  const accountPermissions = userProfile.selectedTenant.permissions
   const config: LayoutProps['menuConfig'] = [
-    ...(accountPermissions[permissions.READ_DASHBOARD] ? [
+    ...(hasPermission({ permission: 'READ_DASHBOARD' }) ? [
       {
         uri: '/dashboard',
         label: $t({ defaultMessage: 'Dashboard' }),
@@ -55,7 +50,7 @@ export function useMenuConfig () {
         activeIcon: SpeedIndicatorSolid
       }
     ] : []),
-    ...(accountPermissions[permissions.READ_INCIDENTS] ? [
+    ...(hasPermission({ permission: 'READ_INCIDENTS' }) ? [
       {
         label: $t({ defaultMessage: 'AI Assurance' }),
         inactiveIcon: AIOutlined,
@@ -69,13 +64,13 @@ export function useMenuConfig () {
                 uri: '/incidents',
                 label: $t({ defaultMessage: 'Incidents' })
               },
-              ...(accountPermissions[permissions.READ_AI_DRIVEN_RRM] ? [
+              ...(hasPermission({ permission: 'READ_AI_DRIVEN_RRM' }) ? [
                 {
                   uri: '/recommendations/crrm',
                   label: $t({ defaultMessage: 'AI-Driven RRM' })
                 }
               ] : []),
-              ...(accountPermissions[permissions.READ_AI_OPERATIONS] ? [
+              ...(hasPermission({ permission: 'READ_AI_OPERATIONS' }) ? [
                 {
                   uri: '/recommendations/aiOps',
                   label: $t({ defaultMessage: 'AI Operations' })
@@ -91,7 +86,7 @@ export function useMenuConfig () {
                 uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
                 label: $t({ defaultMessage: 'Health' })
               },
-              ...(accountPermissions[permissions.READ_SERVICE_VALIDATION] ? [
+              ...(hasPermission({ permission: 'READ_SERVICE_VALIDATION' }) ? [
                 {
                   uri: '/serviceValidation',
                   label: $t({ defaultMessage: 'Service Validation' })
@@ -113,7 +108,7 @@ export function useMenuConfig () {
           {
             label: $t({ defaultMessage: 'AppInsights (coming soon)' })
           },
-          ...(accountPermissions[permissions.READ_VIDEO_CALL_QOE] ? [
+          ...(hasPermission({ permission: 'READ_VIDEO_CALL_QOE' }) ? [
             {
               uri: '/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
@@ -122,7 +117,7 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    ...(accountPermissions[permissions.READ_ZONES] && isZonesPageEnabled
+    ...(hasPermission({ permission: 'READ_ZONES' }) && isZonesPageEnabled
       ? [
         {
           uri: '/zones',
@@ -153,7 +148,7 @@ export function useMenuConfig () {
         }
       ]
     },
-    ...(accountPermissions[permissions.READ_ACCESS_POINTS_LIST] ? [
+    ...(hasPermission({ permission: 'READ_ACCESS_POINTS_LIST' }) ? [
       {
         label: $t({ defaultMessage: 'Wi-Fi' }),
         inactiveIcon: WiFi,
@@ -203,7 +198,7 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    ...(accountPermissions[permissions.READ_SWITCH_LIST] ? [
+    ...(hasPermission({ permission: 'READ_SWITCH_LIST' }) ? [
       {
         label: $t({ defaultMessage: 'Wired' }),
         inactiveIcon: SwitchOutlined,
@@ -227,7 +222,7 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    ...(accountPermissions[permissions.READ_DATA_STUDIO] ? [
+    ...(hasPermission({ permission: 'READ_DATA_STUDIO' }) ? [
       {
         label: $t({ defaultMessage: 'Business Insights' }),
         inactiveIcon: BulbOutlined,
@@ -238,7 +233,7 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Data Studio' })
           },
           { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
-          ...(accountPermissions[permissions.READ_OCCUPANCY] ? [
+          ...(hasPermission({ permission: 'READ_OCCUPANCY' }) ? [
             {
               uri: legacyLink('/analytics/occupancy', search),
               label: $t({ defaultMessage: 'Occupancy' }),
@@ -258,7 +253,7 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Account Management' }),
           children: [
-            ...(accountPermissions[permissions.READ_ONBOARDED_SYSTEMS] ? [
+            ...(hasPermission({ permission: 'READ_ONBOARDED_SYSTEMS' }) ? [
               {
                 uri: '/admin/onboarded',
                 label: $t({ defaultMessage: 'Onboarded Systems' })
@@ -268,14 +263,14 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Users' })
               }
             ] : []),
-            ...(accountPermissions[permissions.READ_LABELS] ? [
+            ...(hasPermission({ permission: 'READ_LABELS' }) ? [
               {
                 uri: legacyLink('/analytics/admin/labels', search),
                 label: $t({ defaultMessage: 'Labels' }),
                 openNewTab: true
               }
             ] : []),
-            ...(accountPermissions[permissions.READ_RESOURCE_GROUPS] ? [
+            ...(hasPermission({ permission: 'READ_RESOURCE_GROUPS' }) ? [
               {
                 uri: legacyLink('/analytics/admin/resourceGroups', search),
                 label: $t({ defaultMessage: 'Resource Groups' }),
@@ -296,7 +291,7 @@ export function useMenuConfig () {
               label: $t({ defaultMessage: 'Schedules' }),
               openNewTab: true
             },
-            ...(accountPermissions[permissions.READ_WEBHOOKS] ? [
+            ...(hasPermission({ permission: 'READ_WEBHOOKS' }) ? [
               {
                 uri: '/admin/webhooks',
                 label: $t({ defaultMessage: 'Webhooks' })

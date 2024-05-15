@@ -1,8 +1,9 @@
 import { Navigate, useSearchParams } from 'react-router-dom'
 
-import { getUserProfile } from '@acx-ui/analytics/utils'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { getUserProfile }                    from '@acx-ui/analytics/utils'
+import { Provider }                          from '@acx-ui/store'
+import { render, screen }                    from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
 
@@ -42,10 +43,11 @@ describe('AllRoutes', () => {
     invitations: [],
     selectedTenant: {
       id: 'aid',
-      permissions: { READ_DASHBOARD: true }
+      permissions: {}
     }
   }
   beforeEach(() => {
+    setRaiPermissions({ READ_DASHBOARD: true } as RaiPermissions)
     userProfile.mockReturnValue(defaultUserProfile)
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
@@ -60,15 +62,7 @@ describe('AllRoutes', () => {
   })
 
   it('redirects report users to reports', async () => {
-    userProfile.mockReturnValue({
-      accountId: 'aid',
-      tenants: [],
-      invitations: [],
-      selectedTenant: {
-        id: 'aid',
-        permissions: { READ_DASHBOARD: false }
-      }
-    })
+    setRaiPermissions({ READ_DASHBOARD: false } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,

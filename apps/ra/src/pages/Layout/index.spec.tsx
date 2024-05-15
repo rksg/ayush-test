@@ -1,6 +1,6 @@
-import { permissions as allPermissions } from '@acx-ui/analytics/utils'
-import { Provider }                      from '@acx-ui/store'
-import { screen, render }                from '@acx-ui/test-utils'
+import { Provider }           from '@acx-ui/store'
+import { screen, render }     from '@acx-ui/test-utils'
+import { raiPermissionsList } from '@acx-ui/user'
 
 import Layout from '.'
 
@@ -14,7 +14,7 @@ describe('Layout', () => {
   beforeEach(() => {
     jest.restoreAllMocks()
   })
-  const permissions = Object.keys(allPermissions)
+  const permissions = Object.keys(raiPermissionsList)
     .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
   it('should render layout correctly with multiple accounts', async () => {
     mockedProfile.mockImplementation(() => ({

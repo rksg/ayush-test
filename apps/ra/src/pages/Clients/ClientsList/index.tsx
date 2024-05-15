@@ -8,13 +8,12 @@ import {
   defaultSort,
   sortProp,
   QueryParamsForZone,
-  dateSort,
-  getUserProfile,
-  Roles
+  dateSort
 } from '@acx-ui/analytics/utils'
 import { Filter, Loader, Table, TableProps, useDateRange }       from '@acx-ui/components'
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { TenantLink }                                            from '@acx-ui/react-router-dom'
+import { hasPermission }                                         from '@acx-ui/user'
 import { encodeParameter, DateFilter, DateRange, useDateFilter } from '@acx-ui/utils'
 
 const pagination = { pageSize: 10, defaultPageSize: 10 }
@@ -50,9 +49,6 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
     setSearchString(search.searchString!)
   }
 
-  const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === Roles.BUSINESS_INSIGHTS_USER
-
   const clientTablecolumnHeaders: TableProps<ClientByTraffic>['columns'] = [
     {
       title: $t({ defaultMessage: 'Hostname' }),
@@ -68,9 +64,9 @@ export function ClientsList ({ searchVal='', queryParmsForZone }:
           endDate: moment(lastSeen).format(),
           range: DateRange.custom
         })
-        const link = isReportOnly
-          ? `/users/wifi/clients/${mac}/details/reports`
-          : `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+        const link = hasPermission({ permission: 'READ_CLIENT_TROUBLESHOOTING' })
+          ? `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+          : `/users/wifi/clients/${mac}/details/reports`
         return <TenantLink to={link}>
           {highlightFn(hostname)}
         </TenantLink>
