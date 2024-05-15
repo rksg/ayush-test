@@ -66,6 +66,10 @@ describe('WifiClientList', () => {
       ),
       rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
         res(ctx.json(GuestClient))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVenues.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
