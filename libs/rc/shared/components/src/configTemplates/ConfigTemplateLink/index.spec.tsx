@@ -96,39 +96,52 @@ describe('ConfigTemplateLink', () => {
   })
 
   it('shoulde render renderConfigTemplateDetailsComponent correctly', () => {
+    // The link for the Venue details page
     const { rerender } = render(
       renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, 'venue_id', 'venue_name')
     )
+    expect(screen.getByText(
+      getConfigTemplatePath('venues/venue_id/venue-details/networks')
+    )).toBeInTheDocument()
 
-    // default activeTab : networks
-    // eslint-disable-next-line max-len
-    expect(screen.getByText(getConfigTemplatePath('venues/venue_id/venue-details/networks'))).toBeInTheDocument()
-
+    // The link for the Policy details page
     rerender(
       renderConfigTemplateDetailsComponent(ConfigTemplateType.RADIUS, 'radius_id', 'radius_name')
     )
-    // eslint-disable-next-line max-len
-    expect(screen.getByText(getConfigTemplatePath('policies/aaa/radius_id/detail'))).toBeInTheDocument()
+    expect(screen.getByText(
+      getConfigTemplatePath('policies/aaa/radius_id/detail')
+    )).toBeInTheDocument()
 
+    // The link for the Service details page
     rerender(
       renderConfigTemplateDetailsComponent(ConfigTemplateType.DPSK, 'dpsk_id', 'dpsk_name')
     )
-    // eslint-disable-next-line max-len
-    expect(screen.getByText(getConfigTemplatePath('services/dpsk/dpsk_id/detail/overview'))).toBeInTheDocument()
+    expect(screen.getByText(
+      getConfigTemplatePath('services/dpsk/dpsk_id/detail/overview')
+    )).toBeInTheDocument()
 
+    // The link for the Network details page
     rerender(
       renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, 'network_id', 'network_name')
     )
-    // eslint-disable-next-line max-len
-    expect(screen.getByText(getConfigTemplatePath('networks/wireless/network_id/network-details/venues'))).toBeInTheDocument()
+    expect(screen.getByText(
+      getConfigTemplatePath('networks/wireless/network_id/network-details/venues')
+    )).toBeInTheDocument()
 
-    // Specific activeTab : venues
+    // The link for the Network details page with the specific activeTab : venues
     rerender(
-      // eslint-disable-next-line max-len
-      renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, 'network_id', 'network_name', 'tests')
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, 'network_id', 'net', 'tests')
     )
-    // eslint-disable-next-line max-len
-    expect(screen.getByText(getConfigTemplatePath('networks/wireless/network_id/network-details/tests'))).toBeInTheDocument()
+    expect(screen.getByText(
+      getConfigTemplatePath('networks/wireless/network_id/network-details/tests')
+    )).toBeInTheDocument()
+
+
+    // The link for the Switch Profile details page
+    rerender(
+      renderConfigTemplateDetailsComponent(ConfigTemplateType.SWITCH_REGULAR, 'r_id', 'regular')
+    )
+    expect(screen.getByText('regular')).toBeInTheDocument()
   })
 
   it('should render the correct service link with the config template flag', () => {
