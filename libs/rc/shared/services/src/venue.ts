@@ -823,8 +823,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     getVenueExternalAntenna: build.query<ExternalAntenna[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueExternalAntenna, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueExternalAntenna, params, apiCustomHeader)
         return {
           ...req
         }
@@ -917,11 +920,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         providesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
       }),
     updateVenueExternalAntenna: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueExternalAntenna, params)
+      query: ({ params, payload, rbacApiVersionPayload }) => {
+        const { rbacApiVersion } = rbacApiVersionPayload as (ApiVersionType)
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(payload) : payload
+
+        const req = createHttpRequest(urlsInfo.updateVenueExternalAntenna, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]

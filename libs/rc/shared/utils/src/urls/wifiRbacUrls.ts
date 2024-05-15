@@ -70,16 +70,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/capabilities',
     newApi: true
   },
+  */
   getVenueExternalAntenna: {
     method: 'get',
-    url: '/venues/:venueId/externalAntennaSettings',
+    // url: '/venues/:venueId/externalAntennaSettings',
+    url: '/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
   updateVenueExternalAntenna: {
     method: 'put',
-    url: '/venues/:venueId/externalAntennaSettings',
+    // url: '/venues/:venueId/externalAntennaSettings',
+    url: '/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
+  /*
   getVenueAntennaType: {
     method: 'get',
     url: '/venues/:venueId/apModelAntennaTypeSettings',
