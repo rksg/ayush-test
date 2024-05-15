@@ -16,7 +16,7 @@ import {
   Alert,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   switchApi,
   useGetSwitchQuery,
@@ -26,7 +26,8 @@ import {
   useLazyGetSwitchListQuery,
   useSwitchDetailHeaderQuery,
   useLazyGetVlansByVenueQuery,
-  useGetSwitchVenueVersionListQuery
+  useGetSwitchVenueVersionListQuery,
+  useGetSwitchListQuery
 } from '@acx-ui/rc/services'
 import {
   SwitchMessages,
@@ -88,10 +89,6 @@ export function SwitchForm () {
       search: '', updateAvailable: ''
     }
   })
-  const { data: switchData, isLoading: isSwitchDataLoading } =
-    useGetSwitchQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
-  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
-    useSwitchDetailHeaderQuery({ params: { tenantId, switchId } }, { skip: action === 'add' })
 
   const [addSwitch] = useAddSwitchMutation()
   const [updateSwitch] = useUpdateSwitchMutation()
@@ -118,6 +115,27 @@ export function SwitchForm () {
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const getSwitchInfo = useGetSwitchListQuery({ params: { tenantId },
+    payload: { filters: { id: [switchId || serialNumber] } }, enableRbac: isSwitchRbacEnabled }, {
+    skip: action === 'add' || !isSwitchRbacEnabled
+  })
+
+  const { data: switchData, isLoading: isSwitchDataLoading } =
+    useGetSwitchQuery({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: action === 'add' || (isSwitchRbacEnabled && _.isEmpty(venueId))
+    })
+  const { data: switchDetail, isLoading: isSwitchDetailLoading } =
+    useSwitchDetailHeaderQuery({
+      params: { tenantId, switchId, venueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: action === 'add' || (isSwitchRbacEnabled && _.isEmpty(venueId))
+    })
 
   const switchListPayload = {
     searchString: '',
@@ -126,6 +144,12 @@ export function SwitchForm () {
     searchTargetFields: ['model'],
     pageSize: 10000
   }
+
+  useEffect(() => {
+    if(getSwitchInfo.data) {
+      setVenueId(getSwitchInfo.data.data[0].venueId)
+    }
+  }, [getSwitchInfo])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -161,7 +185,12 @@ export function SwitchForm () {
       filters: { isStack: [true], venueId: [venueId] }
     }
     const memberList =
-      (await getSwitchList({ params: { tenantId: tenantId }, payload }, true))
+      (await getSwitchList({
+        params: {
+          tenantId: tenantId, venueId
+        },
+        payload, enableRbac: isSwitchRbacEnabled
+      }, true))
         .data?.data
         .filter((item: SwitchViewModel) => item.serialNumber !== serialNumber)
         .map((item: SwitchViewModel) => (
@@ -199,7 +228,10 @@ export function SwitchForm () {
     }
 
     const vlansByVenue = value ?
-      (await getVlansByVenue({ params: { tenantId: tenantId, venueId: value } })).data
+      (await getVlansByVenue({
+        params: { tenantId: tenantId, venueId: value },
+        enableRbac: isSwitchRbacEnabled
+      })).data
         ?.map((item: Vlan) => ({
           label: item.vlanId, value: item.vlanId
         })) : []
@@ -238,7 +270,11 @@ export function SwitchForm () {
           ...defaultAddSwitchPayload,
           ...values
         }
-        await addSwitch({ params: { tenantId: tenantId }, payload }).unwrap()
+        await addSwitch({
+          params: { tenantId, venueId: values.venueId },
+          payload,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
         navigate(`${basePath.pathname}/switch`, { replace: true })
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
@@ -278,8 +314,11 @@ export function SwitchForm () {
 
       payload.rearModule = _.get(payload, 'rearModuleOption') === true ? 'stack-40g' : 'none'
 
-      await updateSwitch({ params: { tenantId, switchId } , payload })
-        .unwrap()
+      await updateSwitch({
+        params: { tenantId, switchId, venueId: values.venueId },
+        payload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
         .then(() => {
           const updatedFields = checkSwitchUpdateFields(values, switchDetail, switchData)
           const noChange = updatedFields.length === 0
@@ -610,12 +649,13 @@ export function SwitchForm () {
               {editMode &&
                 <div style={{ display: currentTab === 'settings' ? 'block' : 'none' }}>
                   {readOnly && <Alert type='info' message={$t(VenueMessages.CLI_APPLIED)} />}
-                  <SwitchStackSetting
+                  {switchDetail && <SwitchStackSetting
+                    switchDetail={switchDetail}
                     apGroupOption={dhcpClientOption}
                     readOnly={readOnly}
                     deviceOnline={deviceOnline}
                     disableIpSetting={disableIpSetting}
-                  />
+                  />}
                 </div>
               }
             </Col>
