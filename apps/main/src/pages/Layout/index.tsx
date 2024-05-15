@@ -27,7 +27,7 @@ import { MSPUtils }                                                             
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery }                                                     from '@acx-ui/rc/services'
 import { useTableQuery, dpskAdminRoutePathKeeper }                                      from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }             from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink, MspTenantLink }                            from '@acx-ui/react-router-dom'
 import { useParams }                                                                    from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
