@@ -18,15 +18,13 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ClientHealthIcon }          from '@acx-ui/rc/components'
-import { useGetGuestsListQuery }     from '@acx-ui/rc/services'
 import {
   getOsTypeIcon,
   Guest,
   GuestClient,
   GuestStatusEnum,
   GuestTypesEnum,
-  transformDisplayText,
-  useTableQuery
+  transformDisplayText
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum, RequestPayload } from '@acx-ui/types'
@@ -59,7 +57,7 @@ export const defaultGuestPayload = {
     'name',
     'passDurationHours',
     'id',
-    'networkId',
+    'wifiNetworkId',
     'maxNumberOfClients',
     'notes',
     'clients',
@@ -78,37 +76,19 @@ export const defaultGuestPayload = {
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { currentGuest, queryPayload = {} } = props
+  const { currentGuest } = props
   const { tenantId } = useParams()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [generateModalVisible, setGenerateModalVisible] = useState(false)
   const guestAction = useGuestActions()
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetGuestsListQuery,
-    defaultPayload: {
-      ...defaultGuestPayload,
-      ...queryPayload
-    }
-  })
 
   const hasOnlineClient = function (row: Guest) {
     return row.guestStatus.indexOf(GuestStatusEnum.ONLINE) !== -1
   }
 
   useEffect(() => {
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      ...queryPayload
-    })
-  }, [queryPayload])
-
-  useEffect(() => {
-    const guest = tableQuery?.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
-    if (guest) {
-      setGuestDetail(guest)
-    }
-  }, [currentGuest.id, tableQuery])
+    setGuestDetail(currentGuest)
+  }, [currentGuest])
 
   const renderStatus = function (row: Guest) {
     if(Object.keys(row).length === 0) {
@@ -261,7 +241,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
           guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
         ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId ))
+          guestDetail.wifiNetworkId ))
         }
 
         return true
