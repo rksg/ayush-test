@@ -50,7 +50,8 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
     {
       payload: {
         fields: [
-          'leaseTime'
+          'id',
+          'dhcpRelay'
         ],
         filters: { edgeClusterIds: [edgeId] }
       }
