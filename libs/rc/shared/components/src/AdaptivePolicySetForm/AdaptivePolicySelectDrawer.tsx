@@ -14,8 +14,9 @@ import {
   PolicyOperation, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { WifiScopes } from '@acx-ui/types'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
+import { filterByAccess } from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 
@@ -175,13 +176,13 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
             pagination={adaptivePolicyListTableQuery.pagination}
             onChange={adaptivePolicyListTableQuery.handleTableChange}
             onFilterChange={handleFilterChange}
-            actions={[{
+            actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Policy' }),
               onClick: () => {
                 setAdaptivePolicyDrawerVisible(true)
               },
               scopeKey: [WifiScopes.CREATE]
-            }]}
+            }])}
           />
         </Form.Item>
       </Loader>
