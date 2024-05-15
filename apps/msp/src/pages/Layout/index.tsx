@@ -27,7 +27,7 @@ import { ConfigTemplateContext }                                                
 import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { getJwtTokenPayload, isDelegationMode, AccountType }                        from '@acx-ui/utils'
+import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }       from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
