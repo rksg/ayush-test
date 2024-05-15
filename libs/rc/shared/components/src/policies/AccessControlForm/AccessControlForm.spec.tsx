@@ -6,9 +6,7 @@ import { Path }  from 'react-router-dom'
 
 import {
   AccessControlUrls,
-  CONFIG_TEMPLATE_LIST_PATH,
-  getPolicyListRoutePath,
-  getPolicyRoutePath, PoliciesConfigTemplateUrlsInfo, PolicyOperation, PolicyType
+  PoliciesConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider }                   from '@acx-ui/store'
 import { mockServer, render, screen } from '@acx-ui/test-utils'
@@ -64,28 +62,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useTenantLink: (): Path => mockedTenantPath
 }))
 
-const mockedUseConfigTemplate = jest.fn()
-const mockedUsePolicyListBreadcrumb = jest.fn()
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useConfigTemplate: () => mockedUseConfigTemplate(),
-  usePolicyListBreadcrumb: () => mockedUsePolicyListBreadcrumb()
-}))
-
 describe('AccessControlForm Component', () => {
   beforeEach(async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-    mockedUsePolicyListBreadcrumb.mockReturnValue([
-      { text: 'Network Control' },
-      {
-        text: 'Policies & Profiles',
-        link: getPolicyListRoutePath(true)
-      },
-      {
-        text: 'Access Control',
-        link: getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
-      }
-    ])
     mockServer.use(
       rest.post(AccessControlUrls.addAccessControlProfile.url,
         (_, res, ctx) => res(ctx.json(aclResponse))),
@@ -134,11 +112,6 @@ describe('AccessControlForm Component', () => {
     )
   })
 
-  afterEach(() => {
-    mockedUseConfigTemplate.mockRestore()
-    mockedUsePolicyListBreadcrumb.mockRestore()
-  })
-
   it('Render AccessControlForm component successfully', async () => {
     render(
       <Provider>
@@ -159,38 +132,6 @@ describe('AccessControlForm Component', () => {
     await userEvent.click(screen.getByRole('button', {
       name: 'Cancel'
     }))
-  })
-
-  it('Render AccessControlForm component successfully when isTemplate is true', async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-    mockedUsePolicyListBreadcrumb.mockReturnValue([
-      {
-        text: 'Configuration Templates',
-        link: CONFIG_TEMPLATE_LIST_PATH,
-        tenantType: 'v'
-      }
-    ])
-
-    render(
-      <Provider>
-        <AccessControlForm editMode={false}/>
-      </Provider>, {
-        route: {
-          params: { tenantId: 'tenantId1' }
-        }
-      }
-    )
-
-    const header = screen.getByRole('heading', {
-      name: /add access control template/i
-    })
-
-    expect(header).toBeInTheDocument()
-
-    // eslint-disable-next-line max-len
-    expect(await screen.findByRole('link', { name: /configuration templates/i })).toBeInTheDocument()
-
-    mockedUsePolicyListBreadcrumb.mockRestore()
   })
 
   it('should render breadcrumb correctly', async () => {

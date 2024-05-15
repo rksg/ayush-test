@@ -12,7 +12,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { GuestClient } from '../__tests__/fixtures'
+import { GuestList, GuestClients } from '../__tests__/fixtures'
 
 import { WifiClientList, WirelessTabsEnum } from '.'
 
@@ -65,11 +65,10 @@ describe('WifiClientList', () => {
         }
       ),
       rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
-        res(ctx.json(GuestClient))
+        res(ctx.json(GuestList))
       ),
-      rest.post(
-        CommonUrlsInfo.getVenues.url,
-        (req, res, ctx) => res(ctx.json([]))
+      rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+        res(ctx.json(GuestClients))
       )
     )
   })
