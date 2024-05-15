@@ -10,10 +10,12 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   useGetCliTemplateQuery,
   useAddCliTemplateMutation,
-  useUpdateCliTemplateMutation
+  useUpdateCliTemplateMutation,
+  useBatchAssociateCliTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   CliConfiguration
@@ -51,25 +53,31 @@ export function CliTemplateForm () {
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks/wired/onDemandCli')
   const editMode = params.action === 'edit'
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [form] = Form.useForm()
   const [addCliTemplate] = useAddCliTemplateMutation()
   const [updateCliTemplate] = useUpdateCliTemplateMutation()
+  const [batchAssociateCliTemplate] = useBatchAssociateCliTemplateMutation()
   const { data: cliTemplate, isLoading: isCliTemplateLoading }
-    = useGetCliTemplateQuery({ params }, { skip: !editMode })
+    = useGetCliTemplateQuery({
+      params,
+      enableRbac: isSwitchRbacEnabled
+    }, { skip: !editMode })
 
   const handleEditCli = async (data: CliConfiguration) => {
     try {
+      const venueSwitches = data.venueSwitches as unknown as Map<string, string[]>[]
       await updateCliTemplate({
         params, payload: {
           ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
           id: params.templateId,
           applyLater: !data.applyNow,
-          venueSwitches: transformVenueSwitches(
-            data.venueSwitches as unknown as Map<string, string[]>[]
-          )
-        }
+          venueSwitches: transformVenueSwitches(venueSwitches)
+        },
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
+      await associateWithCliTemplate(venueSwitches)
       navigate(linkToNetworks, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -85,12 +93,29 @@ export function CliTemplateForm () {
           venueSwitches: transformVenueSwitches(
             data.venueSwitches as unknown as Map<string, string[]>[]
           )
-        }
+        },
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
       navigate(linkToNetworks, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const associateWithCliTemplate = async (
+    venueSwitches: Map<string, string[]>[],
+    callBack?: () => void
+  ) => {
+    // TODO: waiting for BE support API
+    if (false && isSwitchRbacEnabled && venueSwitches && Object.keys(venueSwitches)?.length) {
+      const requests = Object.keys(venueSwitches).map((key: string)=> ({
+        params: { venueId: key, templateId: params.templateId },
+        payload: venueSwitches?.[key as keyof typeof venueSwitches]
+      }))
+
+      await batchAssociateCliTemplate(requests).then(callBack)
+    }
+    return Promise.resolve()
   }
 
   useEffect(() => {

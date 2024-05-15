@@ -36,3 +36,9 @@ export function useConfigTemplateBreadcrumb (fallbackPath: { text: string, link?
 
   return breadcrumb
 }
+
+// eslint-disable-next-line max-len
+export function useConfigTemplatePageHeaderTitle (props: Omit<TitleGenerationProps, 'isTemplate'>) {
+  const { isTemplate } = useConfigTemplate()
+  return generatePageHeaderTitle({ ...props, isTemplate })
+}

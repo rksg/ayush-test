@@ -103,8 +103,10 @@ export function getJwtTokenPayload () {
 
 export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?: boolean } = {}) {
   return {
-    ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` }),
-    ...(!ignoreDelegation && isDelegationMode() && { 'x-rks-tenantid': getTenantId() })
+    ...(getJwtToken() &&
+      { Authorization: `Bearer ${getJwtToken()}` }),
+    ...(!get('IS_MLISA_SA') && !ignoreDelegation && isDelegationMode() &&
+      { 'x-rks-tenantid': getTenantId() })
   }
 }
 

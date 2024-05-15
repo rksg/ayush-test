@@ -648,6 +648,7 @@ export function NetworkVenuesTab () {
 function useGetVenueCityList () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
     selectFromResult: ({ data }) => ({
@@ -656,7 +657,10 @@ function useGetVenueCityList () {
     skip: !isTemplate
   })
 
-  const venueCityList = useGetVenueCityListQuery({ params }, {
+  const venueCityList = useGetVenueCityListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
     }),

@@ -11,9 +11,9 @@ import { useVenuesListQuery }                                  from '@acx-ui/rc/
 import {
   EdgeClusterStatus,
   EdgeStatusEnum,
-  PRODUCT_CODE_VIRTUAL_EDGE,
   deriveEdgeModel,
-  edgeSerialNumberValidator
+  edgeSerialNumberValidator,
+  isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../../useEdgeActions'
@@ -92,7 +92,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
 
   const showOtpMessage = smartEdges?.some(item =>
     !item?.isEdit &&
-    item?.serialNumber?.startsWith(PRODUCT_CODE_VIRTUAL_EDGE))
+    isOtpEnrollmentRequired(item?.serialNumber ?? ''))
 
   const deleteNode = (fieldName: number, serialNumber?: string) => {
     if(!smartEdges?.[fieldName]?.isEdit) {

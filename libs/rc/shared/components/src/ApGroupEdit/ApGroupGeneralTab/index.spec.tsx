@@ -15,15 +15,15 @@ import {
   act
 } from '@acx-ui/test-utils'
 
-import { ApGroupEditContext } from '..'
 import {
   apGroupsList,
   getApGroup,
   venueDefaultApGroup,
   venuelist
-} from '../../../__tests__/fixtures'
+} from '../__tests__/fixtures'
+import { ApGroupEditContext } from '../index'
 
-import { ApGroupGeneralTab } from '.'
+import { ApGroupGeneralTab } from './index'
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
