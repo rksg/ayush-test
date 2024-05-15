@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Form }                   from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -9,10 +10,14 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
+  useLazyGetProfilesQuery,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useBatchAssociateSwitchProfileMutation,
+  useBatchDisassociateSwitchProfileMutation
 } from '@acx-ui/rc/services'
 import {
   CliConfiguration
@@ -37,18 +42,32 @@ export const cliFormMessages = {
 }
 /* eslint-enable max-len */
 
+export const profilesPayload = {
+  filterType: null,
+  pageSize: 9999,
+  sortField: 'name',
+  sortOrder: 'DESC'
+}
+
 export function CliProfileForm () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const linkToNetworks = useTenantLink('/networks/wired/profiles')
   const editMode = params.action === 'edit'
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [form] = Form.useForm()
+  const [getProfiles] = useLazyGetProfilesQuery()
   const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
   const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
+  const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
+  const [batchDisassociateSwitchProfile] = useBatchDisassociateSwitchProfileMutation()
+
   const { data: cliProfile, isLoading: isProfileLoading }
-    = useGetSwitchConfigProfileQuery({ params }, { skip: !editMode })
+    = useGetSwitchConfigProfileQuery({
+      params, enableRbac: isSwitchRbacEnabled
+    }, { skip: !editMode })
 
   const transformSaveData = (data: CliConfiguration) => {
     const { name, cli, overwrite, variables } = data
@@ -69,13 +88,22 @@ export function CliProfileForm () {
 
   const handleEditCliProfile = async (data: CliConfiguration) => {
     try {
+      const orinAppliedVenues = cliProfile?.venues as string[]
+      const appliedVenues = data.venues as string[]
+      const disassociateSwitch = _.difference(orinAppliedVenues, appliedVenues)
+      const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
+
+      await disassociateWithCliProfile(disassociateSwitch)
       await updateSwitchConfigProfile({
         params, payload: {
           id: params.profileId,
           ...transformSaveData(data)
-        }
+        },
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
+      await associateWithCliProfile(diffAssociatedSwitch)
       navigate(linkToNetworks, { replace: true })
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -83,13 +111,56 @@ export function CliProfileForm () {
 
   const handleAddCliProfile = async (data: CliConfiguration) => {
     try {
+      const hasAssociatedVenues = (data?.venues ?? [])?.length > 0
       await addSwitchConfigProfile({
-        params, payload: transformSaveData(data)
+        params, payload: transformSaveData(data),
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
+
+      if (isSwitchRbacEnabled && hasAssociatedVenues) {
+        const { data: cliProfiles } = await getProfiles({
+          params, payload: profilesPayload, enableRbac: isSwitchRbacEnabled
+        }).unwrap()
+        const profileId = cliProfiles?.filter(t => t.name === data.name)?.map(t => t.id)?.[0]
+        await associateWithCliProfile(data?.venues ?? [], profileId)
+      }
       navigate(linkToNetworks, { replace: true })
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const associateWithCliProfile = async (
+    venues: string[],
+    cliProfileId?: string,
+    callBack?: () => void
+  ) => {
+    const profileId = params.profileId || cliProfileId
+    const hasAssociatedVenues = venues.length > 0
+
+    if (isSwitchRbacEnabled && hasAssociatedVenues && profileId) {
+      const requests = venues.map((key: string)=> ({
+        params: { venueId: key, profileId }
+      }))
+
+      await batchAssociateSwitchProfile(requests).then(callBack)
+    }
+    return Promise.resolve()
+  }
+
+  const disassociateWithCliProfile = async (
+    venues: string[],
+    callBack?: () => void
+  ) => {
+    const hasDisassociatedVenues = venues.length > 0
+    if (isSwitchRbacEnabled && hasDisassociatedVenues) {
+      const requests = venues.map((key: string)=> ({
+        params: { venueId: key, profileId: params.profileId }
+      }))
+      await batchDisassociateSwitchProfile(requests).then(callBack)
+    }
+    return Promise.resolve()
   }
 
   useEffect(() => {

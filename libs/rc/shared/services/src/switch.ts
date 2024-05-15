@@ -353,14 +353,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getProfiles: build.query<TableResult<SwitchProfileModel>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(
-          SwitchUrlsInfo.getProfiles,
-          params
+          switchUrls.getProfiles, params, headers
         )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }],
@@ -1367,8 +1368,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getCliFamilyModels: build.query<CliFamilyModels[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getCliFamilyModels, params, headers)
         return {
           ...req,
           body: payload
@@ -1483,15 +1486,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           }
         }
       })
-    // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
-    //   query: ({ params, payload }) => {
-    //     const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
-    //     return {
-    //       ...req,
-    //       body: payload
-    //     }
-    //   }
-    // })
   })
 })
 
@@ -1715,6 +1709,7 @@ export const {
   useGetCliTemplatesQuery,
   useLazyGetCliTemplatesQuery,
   useGetProfilesQuery,
+  useLazyGetProfilesQuery,
   useGetCliFamilyModelsQuery,
   useAddCliTemplateMutation,
   useDeleteCliTemplatesMutation,

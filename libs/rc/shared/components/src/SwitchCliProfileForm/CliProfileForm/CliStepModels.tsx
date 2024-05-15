@@ -5,12 +5,15 @@ import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
 import { Button, cssStr, StepsForm, useStepFormContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { useGetProfilesQuery }                           from '@acx-ui/rc/services'
 import { checkObjectNotExists, whitespaceOnlyRegExp }    from '@acx-ui/rc/utils'
 import { ICX_MODELS_MODULES }                            from '@acx-ui/rc/utils'
 import { useParams }                                     from '@acx-ui/react-router-dom'
 
 import * as UI from './styledComponents'
+
+import { profilesPayload } from './'
 
 import type { CheckboxValueType } from 'antd/es/checkbox/Group'
 
@@ -27,19 +30,14 @@ interface IcxModelFamily {
   models: string[]
 }
 
-const profilesPayload = {
-  filterType: null,
-  pageSize: 9999,
-  sortField: 'name',
-  sortOrder: 'DESC'
-}
-
 export function CliStepModels () {
   const { $t } = useIntl()
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { form, editMode } = useStepFormContext()
-  const { data: profiles } = useGetProfilesQuery({ params, payload: profilesPayload })
+  const { data: profiles }
+    = useGetProfilesQuery({ params, payload: profilesPayload, enableRbac: isSwitchRbacEnabled })
 
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])

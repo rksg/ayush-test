@@ -5,6 +5,7 @@ import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
 import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { useVenuesListQuery, useGetCliFamilyModelsQuery }                            from '@acx-ui/rc/services'
 import { CliConfiguration, Venue, useTableQuery }                                    from '@acx-ui/rc/utils'
 import { useParams }                                                                 from '@acx-ui/react-router-dom'
@@ -20,10 +21,14 @@ interface VenueExtend extends Venue {
 export function CliStepVenues () {
   const { $t } = useIntl()
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
-  const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({ params })
+
+  const { data: cliFamilyModels } = useGetCliFamilyModelsQuery({
+    params, enableRbac: isSwitchRbacEnabled
+  })
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
 
   const columns: TableProps<Venue>['columns'] = [{
