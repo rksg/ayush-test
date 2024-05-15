@@ -39,7 +39,8 @@ function BarChart ({
   threshold: number;
 }) {
   const { $t } = useIntl()
-  const { barChart, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { text, enableSwitchFirmwareFilter, barChart } = Object(
+    kpiConfig[kpi as keyof typeof kpiConfig])
   const { endDate } = filters
   const startDate = moment(endDate).subtract(6, 'd').format()
   const queryResults = healthApi.useKpiTimeseriesQuery(
@@ -48,7 +49,8 @@ function BarChart ({
       kpi,
       threshold: threshold as unknown as string,
       granularity: 'PT24H',
-      startDate
+      startDate,
+      enableSwitchFirmwareFilter
     },
     {
       selectFromResult: ({ data, ...rest }) => ({
