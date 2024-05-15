@@ -24,8 +24,8 @@ import {
 } from './styledComponents'
 
 const getKpis = (details: EnhancedRecommendation) => {
-  const { code } = details
-  const configs = codes[code].kpis
+  const { code, statusTrail } = details
+  const configs = codes[code].kpis.filter(kpi => kpi.filter ? kpi.filter(statusTrail) : true)
   const kpis = configs.map((config) => {
     const { current, previous } = get(
       details,
@@ -95,8 +95,7 @@ const Kpi = ({ kpi }: { kpi: ReturnType<typeof getKpis>['kpis'][0] }) => {
 
 export const Kpis = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const { kpis } = getKpis(details)
-  const { monitoring } = details
+  const { kpis, monitoring } = getKpis(details)
 
   return <>
     <DetailsHeader>{$t({ defaultMessage: 'Key Performance Indicators' })}</DetailsHeader>

@@ -15,6 +15,16 @@ export interface Node {
 	cloudPort?: string;
 	isConnectedCloud?: boolean;
 	ipAddress?: string;
+	meshRole?: string;
+}
+
+export interface NodeData extends Node {
+	id: string
+	name: string
+	untaggedVlan?: string
+	taggedVlan?: string
+	children: NodeData[]
+	_children?: NodeData[]
 }
 
 export interface UINode {
@@ -39,7 +49,7 @@ export interface Link extends LinkConnectionInfo {
 	toMac?: string;
 	fromSerial?: string;
 	toSerial?: string;
-	extraEdges?: LinkConnectionInfo[]
+	extraEdges?: LinkConnectionInfo[];
 }
 
 export interface LinkConnectionInfo {
@@ -66,7 +76,7 @@ export interface GraphData {
 }
 
 export interface TopologyData {
-	nodes: Array<Node>;
+	nodes: Array<NodeData>;
     edges: Array<Link>;
 }
 

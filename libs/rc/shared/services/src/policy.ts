@@ -4,8 +4,6 @@ import {
   MacRegistration,
   MacRegistrationPool,
   MacRegListUrlsInfo,
-  CommonUrlsInfo,
-  Policy,
   RogueApUrls,
   RogueAPDetectionContextType,
   RogueAPDetectionTempType,
@@ -73,7 +71,9 @@ import {
   CertificateAuthority,
   Certificate,
   downloadFile,
-  CertificateTemplateMutationResult
+  CertificateTemplateMutationResult,
+  downloadCertExtension,
+  CertificateAcceptType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -98,7 +98,7 @@ const WifiOperatorMutationUseCases = [
 const IdentityProviderMutationUseCases = [
   'AddHotspot20IdentityProvider',
   'UpdateHotspot20IdentityProvider',
-  'DeleteHotspot20IdentityProviders'
+  'DeleteHotspot20IdentityProvider'
 ]
 
 const L2AclUseCases = [
@@ -712,34 +712,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    policyList: build.query<TableResult<Policy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const policyListReq = createHttpRequest(CommonUrlsInfo.getPoliciesList, params)
-        return {
-          ...policyListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Policy', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddRogueApPolicyProfile',
-            'UpdateRogueApPolicyProfile',
-            'DeleteRogueApPolicyProfile',
-            'AddVlanPool',
-            'UpdateVlanPool',
-            'DeleteVlanPool',
-            'PatchVlanPool',
-            'DeleteVlanPools',
-            ...clientIsolationMutationUseCases
-          ], () => {
-            api.dispatch(policyApi.util.invalidateTags([{ type: 'Policy', id: 'LIST' }]))
-          })
-        })
-      },
-      extraOptions: { maxRetries: 5 }
-    }),
     addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
@@ -814,7 +786,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
       query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAProfileDetail, params)
+        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAPolicy, params)
         return {
           ...aaaDetailReq
         }
@@ -1253,6 +1225,24 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    activateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiOperatorUrls.activateWifiOperatorOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          WifiOperatorUrls.deactivateWifiOperatorOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params)
@@ -1312,18 +1302,63 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
-    /*
-    deleteIdentityProviderList: build.mutation<CommonResult, RequestPayload>({
+    getRadiusServers: build.query<TableResult<AAAViewModalType>,RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProviderList, params)
+        const req = createHttpRequest(IdentityProviderUrls.getRadiusServers, params)
         return {
           ...req,
           body: payload
         }
+      }/*,
+      providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, IdentityProviderMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'IdentityProvider', id: 'LIST' }
+            ]))
+          })
+        })
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+      extraOptions: { maxRetries: 5 }
+      */
     }),
-    */
+
+    activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.activateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(IdentityProviderUrls.deactivateIdentityProviderRadius, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    activateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.activateIdentityProviderOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          IdentityProviderUrls.deactivateIdentityProviderOnWifiNetwork, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
@@ -2182,7 +2217,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
           onActivityMessageReceived(msg, [
             'DELETE_TEMPLATE',
             'ADD_TEMPLATE',
-            'UPDATE_TEMPLATE'
+            'UPDATE_TEMPLATE',
+            'DELETE_CA'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'CertificateTemplate', id: 'LIST' }
@@ -2219,6 +2255,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return{
           ...req,
           body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    bindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.bindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
+    }),
+    unbindCertificateTemplateWithPolicySet: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(CertificateUrls.unbindCertificateTemplateWithPolicySet, params, defaultCertTempVersioningHeaders)
+        return{
+          ...req
         }
       },
       invalidatesTags: [{ type: 'CertificateTemplate', id: 'LIST' }]
@@ -2369,10 +2425,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthority.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2384,10 +2441,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `CertificateAuthorityChain.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2410,7 +2468,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UPDATE_CERT',
-            'GENERATE_CERT'
+            'GENERATE_CERT',
+            'DELETE_CA',
+            'DELETE_TEMPLATE'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([
               { type: 'Certificate', id: 'LIST' }
@@ -2475,10 +2535,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            let extension = downloadCertExtension[customHeaders?.Accept as CertificateAcceptType]
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent
+              ? headerContent.split('filename=')[1] : `Certificate.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2490,10 +2551,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           responseHandler: async (response) => {
+            const extension = customHeaders?.Accept === CertificateAcceptType.PEM ? 'chain' : 'p7b'
             const headerContent = response.headers.get('content-disposition')
-            if (headerContent) {
-              downloadFile(response, headerContent.split('filename=')[1])
-            }
+            const fileName = headerContent ?
+              headerContent.split('filename=')[1] : `CertificateChain.${extension}`
+            downloadFile(response, fileName)
           }
         }
       }
@@ -2502,7 +2564,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
 })
 
 export const {
-  usePolicyListQuery,
   useMacRegListsQuery,
   useSearchMacRegListsQuery,
   useLazySearchMacRegListsQuery,
@@ -2587,11 +2648,14 @@ export const {
   useUpdateClientIsolationMutation,
   useGetClientIsolationUsageByVenueQuery,
   useGetVenueUsageByClientIsolationQuery,
+  // HS2.0 Wi-Fi Operator
   useAddWifiOperatorMutation,
   useUpdateWifiOperatorMutation,
   useDeleteWifiOperatorMutation,
   useGetWifiOperatorQuery,
   useGetWifiOperatorListQuery,
+  useActivateWifiOperatorOnWifiNetworkMutation,
+  useDeactivateWifiOperatorOnWifiNetworkMutation,
   // HS2.0 Identity Provider
   useGetIdentityProviderListQuery,
   useLazyGetIdentityProviderListQuery,
@@ -2599,6 +2663,11 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
+  useGetRadiusServersQuery,
+  useActivateIdentityProviderRadiusMutation,
+  useDeactivateIdentityProviderRadiusMutation,
+  useActivateIdentityProviderOnWifiNetworkMutation,
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
@@ -2688,6 +2757,8 @@ export const {
   useDeleteCertificateTemplateMutation,
   useGetCertificateTemplateQuery,
   useEditCertificateTemplateMutation,
+  useBindCertificateTemplateWithPolicySetMutation,
+  useUnbindCertificateTemplateWithPolicySetMutation,
   useGetCertificatesQuery,
   useGetSpecificTemplateCertificatesQuery,
   useAddCertificateAuthorityMutation,

@@ -309,7 +309,7 @@ describe('MspRecCustomers', () => {
     fireEvent.click(deleteButton)
 
     expect(await screen.findByRole('dialog')).toBeVisible()
-    const deleteEcButton = screen.getByRole('button', { name: 'Delete EC' })
+    const deleteEcButton = screen.getByRole('button', { name: 'Delete Property' })
     await userEvent.type(screen.getByRole('textbox',
       { name: 'Type the word "Delete" to confirm:' }), 'Delete')
     await waitFor(() =>
@@ -462,6 +462,7 @@ describe('MspRecCustomers', () => {
     expect(services.useDelegateToMspEcPath).toHaveBeenCalled()
   })
   it('should render table for integrator', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -526,6 +527,7 @@ describe('MspRecCustomers', () => {
     expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

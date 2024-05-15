@@ -153,14 +153,15 @@ export const ConnectedClientsTable = (props: {
     option: { skip: !!props.tableQuery },
     pagination: { settingsId }
   })
-  const tableQuery = props.tableQuery || inlineTableQuery
 
+  // Backend API will send Client Mac by uppercase, that will make Ant Table
+  // treats same UE as two different UE and cause sending duplicate mac in
+  // disconnect/revoke request. The API should be fixed in near future.
+  const tableQuery = props.tableQuery || inlineTableQuery
   useEffect(() => {
-    if (tableQuery.data?.data && setConnectedClientCount) {
-      setConnectedClientCount(tableQuery.data?.totalCount)
-    }
     // Remove selection when UE is disconnected.
     const connectedClientList = tableQuery.data?.data
+
     if (!connectedClientList) {
       setTableSelected({
         ...tableSelected,
@@ -169,12 +170,15 @@ export const ConnectedClientsTable = (props: {
       })
     }
     else {
+      if (setConnectedClientCount) {
+        setConnectedClientCount(tableQuery.data?.totalCount ?? 0)
+      }
       const clonedSelection = _.cloneDeep(tableSelected)
       const newSelectRows = clonedSelection.selectRows.filter((row) => {
-        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === row.clientMac.toLocaleLowerCase())
+        return connectedClientList?.find((client) => client.clientMac === row.clientMac)
       })
       const newSelectRowkeys = clonedSelection.selectedRowKeys.filter((key) => {
-        return connectedClientList?.find((client) => client.clientMac.toLocaleLowerCase() === key.toLocaleLowerCase())
+        return connectedClientList?.find((client) => client.clientMac === key)
       })
       setTableSelected({
         ...tableSelected,
@@ -312,7 +316,7 @@ export const ConnectedClientsTable = (props: {
       },
       ...(venueId ? [] : [{
         key: 'venueId',
-        title: intl.$t({ defaultMessage: 'Venue' }),
+        title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
         dataIndex: 'venueName',
         sorter: true,
         filterKey: 'venueId',

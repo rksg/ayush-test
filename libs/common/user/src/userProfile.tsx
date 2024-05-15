@@ -2,10 +2,15 @@ import { ReactElement } from 'react'
 
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { TenantNavigate }    from '@acx-ui/react-router-dom'
-import { RolesEnum as Role } from '@acx-ui/types'
+import { get }            from '@acx-ui/config'
+import { TenantNavigate } from '@acx-ui/react-router-dom'
+import {
+  RolesEnum as Role,
+  EdgeScopes,
+  SwitchScopes,
+  WifiScopes } from '@acx-ui/types'
 
-import { UserProfile, WifiScopes, SwitchScopes, EdgeScopes } from './types'
+import { UserProfile } from './types'
 
 type Profile = {
   profile: UserProfile
@@ -62,6 +67,7 @@ export const getShowWithoutRbacCheckKey = (id:string) => {
  */
 
 export function hasAccess (id?: string) {
+  if (get('IS_MLISA_SA')) return true
   // measure to permit all undefined id for admins
   if (!id) return hasRoles([Role.PRIME_ADMIN, Role.ADMINISTRATOR, Role.DPSK_ADMIN])
   return hasAllowedOperations(id)
@@ -83,6 +89,9 @@ export function filterByAccess <Item> (items: Item[]) {
   })
 }
 
+/**
+* IMPORTANT: Suggest using hasPermission for action items, as it will always return FALSE for Role.READ_ONLY.
+*/
 export function hasPermission (props?: {
     scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[],
     allowedOperations?:string
@@ -143,5 +152,7 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
   [Role.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
   [Role.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
-  [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
+  [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' }),
+  [Role.TEMPLATES_ADMIN]: defineMessage({ defaultMessage: 'Templates Management' }),
+  [Role.REPORTS_ADMIN]: defineMessage({ defaultMessage: 'Reports Admin' })
 }

@@ -8,7 +8,9 @@ import {
   render,
   screen,
   waitForElementToBeRemoved
-}                              from '@acx-ui/test-utils'
+} from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import * as fixtures         from './__tests__/fixtures'
 import { VideoCallQoeTable } from './VideoCallQoeTable'
@@ -112,5 +114,25 @@ describe('VideoCallQoe Table', () => {
     await userEvent.click(await screen.findByText(/delete test call/i))
     expect(await screen.findByText('Unable to delete test call. Try again later'))
       .toBeVisible()
+  })
+
+  it('should not allow row selection when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTests',
+      { data: fixtures.getAllCallQoeTests })
+    render(
+      <Provider>
+        <VideoCallQoeTable />
+      </Provider>, {
+        route: { params }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
   })
 })

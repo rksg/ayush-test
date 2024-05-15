@@ -7,6 +7,7 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { SwitchTable, SwitchTabContext, defaultSwitchPayload, SwitchTableRefType } from '@acx-ui/rc/components'
 import {
   useGetSwitchModelListQuery,
@@ -16,17 +17,20 @@ import {
 import {
   usePollingTableQuery
 }      from '@acx-ui/rc/utils'
-import { TenantLink, useParams }        from '@acx-ui/react-router-dom'
-import { filterByAccess, SwitchScopes } from '@acx-ui/user'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { SwitchScopes }          from '@acx-ui/types'
+import { filterByAccess }        from '@acx-ui/user'
 
 export default function useSwitchesTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ switchCount, setSwitchCount ] = useState(0)
   const switchTableRef = useRef<SwitchTableRefType>(null)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = usePollingTableQuery({
     useQuery: useSwitchListQuery,
+    enableRbac: isSwitchRbacEnabled,
     defaultPayload: {
       ...defaultSwitchPayload
     },
@@ -74,7 +78,9 @@ export default function useSwitchesTable () {
   })
 
   const { getSwitchModelList } = useGetSwitchModelListQuery({
-    params: { tenantId }, payload: {
+    params: { tenantId },
+    enableRbac: isSwitchRbacEnabled,
+    payload: {
       fields: ['name', 'id'],
       pageSize: 10000,
       sortField: 'name',

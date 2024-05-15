@@ -4,8 +4,10 @@ import { rest }  from 'msw'
 import { CertificateUrls }                                                        from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { WifiScopes }                                                             from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                                         from '@acx-ui/user'
 
-import { certificateAuthorityList } from '../__test__/fixtures'
+import { certificateAuthorityList, certificateTemplateList } from '../__test__/fixtures'
 
 import CertificateAuthorityTable from './CertificateAuthorityTable'
 
@@ -22,6 +24,10 @@ describe('CertificateAuthorityTable', () => {
       rest.post(
         CertificateUrls.getSubCAs.url,
         (req, res, ctx) => res(ctx.json(certificateAuthorityList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url,
+        (req, res, ctx) => res(ctx.json(certificateTemplateList))
       )
     )
   })
@@ -78,7 +84,7 @@ describe('CertificateAuthorityTable', () => {
     expect(screen.getByText('Certificate Templates (3)')).toBeVisible()
   })
 
-  it('should delete selected row', async () => {
+  it('should handle delete correctly', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
@@ -98,8 +104,17 @@ describe('CertificateAuthorityTable', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /onboard2/ })
-    await userEvent.click(within(row).getByRole('radio'))
+    // block in-used CA from delete
+    const row1 = await screen.findByRole('row', { name: /onboard1/ })
+    await userEvent.click(within(row1).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in network')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
+
+    // should delete selected row
+    const row2 = await screen.findByRole('row', { name: /onboard2/ })
+    await userEvent.click(within(row2).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
     expect(await screen.findByText('Delete "onboard2"?')).toBeVisible()
     const deleteInput = screen.getByLabelText('Type the word "Delete" to confirm')
@@ -107,7 +122,7 @@ describe('CertificateAuthorityTable', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Delete CA' }))
 
     await waitFor(() => {
-      expect(deleteFn).toHaveBeenCalled()
+      expect(deleteFn).toBeCalledTimes(1)
     })
   })
 
@@ -143,5 +158,49 @@ describe('CertificateAuthorityTable', () => {
     await waitFor(() => {
       expect(editFn).toHaveBeenCalled()
     })
+  })
+
+  it('should render correctly with wifi-u wifi-d permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+    })
+
+    render(<Provider><CertificateAuthorityTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateAuthority/list'
+      }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /onboard2/ })
+    await userEvent.click(row)
+    expect(await screen.findByRole('button', { name: 'Edit' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
+  })
+
+  it('should render correctly with wifi-r permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+    render(<Provider><CertificateAuthorityTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateAuthority/list'
+      }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /onboard2/ })
+    await userEvent.click(row)
+    expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
   })
 })

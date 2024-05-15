@@ -369,7 +369,7 @@ export interface AclRule {
 	destination?: string,
 	sequence: number
 	action: 'permit' | 'deny',
-	protocol: 'ip' | 'tcp' | 'udp'
+	protocol: 'ip' | 'tcp' | 'udp' | 'ipv6'
 	specificSrcNetwork?: string
 	specificDestNetwork?: string
 	sourcePort?: string | null
@@ -377,7 +377,7 @@ export interface AclRule {
 }
 
 export interface Acl {
-	aclType: 'standard' | 'extended'
+	aclType: 'standard' | 'extended' | 'IPv6'
 	id: string,
 	name: string,
 	aclRules: AclRule[]
@@ -708,9 +708,9 @@ export interface LocalUser {
 	syncedPasswordSwitchCount?: number
 }
 
-export interface VenueDirectedMulticast {
-  wiredEnabled: boolean,
-  wirelessEnabled: boolean,
+export type VenueDirectedMulticast = {
+  wiredEnabled: boolean
+  wirelessEnabled: boolean
   networkEnabled: boolean
 }
 
@@ -718,6 +718,7 @@ export interface VenueConfigHistoryDetailResp {
 	response: {
 		list: ConfigurationHistory[]
 	}
+	list?: ConfigurationHistory[]
 }
 
 export enum LoadBalancingMethodEnum {
@@ -743,10 +744,15 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
+export interface ApEnhancedKey {
+  tlsKeyEnhancedModeEnabled: boolean
+}
+
 export interface ApManagementVlan {
 	vlanOverrideEnabled: boolean
 	vlanId: number
-	useVenueSettings: boolean
+	useVenueSettings: boolean,
+	keepAp?: boolean
 }
 
 export interface MdnsFencingWirelessRule {
@@ -815,7 +821,7 @@ export enum SignalStrengthLevel {
 export interface ApFeatureSet {
   featureName: string,
   requiredFw?: string,
-  requiredModel?: string[]
+  supportedModelFamilies?: string[]
 }
 
 export interface ApCompatibilityFeatureResponse {

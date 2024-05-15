@@ -13,6 +13,7 @@ import {
   EventMeta,
   getClientHealthClass,
   Guest,
+  GuestClient,
   Network,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -39,6 +40,36 @@ const historicalPayload = {
   page: 1,
   pageSize: 10
 }
+
+const defaultClientPayload = {
+  searchString: '',
+  searchTargetFields: ['clientMac'],
+  fields: ['apMac','ssid','clientMac','connectSince','healthCheckStatus','hostname','ipAddress',
+    'networkId','networkType','noiseFloor_dBm','osType','radioChannel','receiveSignalStrength_dBm',
+    'rxBytes','rxPackets','serialNumber','snr_dB','ssid','txBytes','txDropDataPacket','txPackets',
+    'username','venueId','vlan','vni'],
+  page: 1,
+  pageSize: 10000
+}
+
+const defaultVenuePayload = {
+  searchString: '',
+  searchTargetFields: ['name'],
+  fields: ['id', 'name'],
+  page: 1,
+  pageSize: 10000
+}
+
+const v1Header = {
+  'Content-Type': 'application/vnd.ruckus.v1+json',
+  'Accept': 'application/vnd.ruckus.v1+json'
+}
+
+const v1_1Header = {
+  'Content-Type': 'application/vnd.ruckus.v1.1+json',
+  'Accept': 'application/vnd.ruckus.v1.1+json'
+}
+
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
@@ -107,8 +138,8 @@ export const clientApi = baseClientApi.injectEndpoints({
       }
     }),
     getGuestsList: build.query<TableResult<Guest>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const body = latestTimeFilter(payload)
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const body = latestTimeFilter(arg.payload)
         const filters = body.filters?.fromTime && body.filters?.toTime
           ? {
             ...body.filters,
@@ -116,10 +147,63 @@ export const clientApi = baseClientApi.injectEndpoints({
             toTime: [body.filters.toTime]
           }
           : body.filters
-        return {
-          ...createHttpRequest(CommonUrlsInfo.getGuestsList, params),
-          body: { ...body, filters }
+
+        const fields = [ ...(arg.payload as { fields: string[] }).fields, 'devicesMac' ]
+        const guestsListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonUrlsInfo.getGuestsList, arg.params, v1_1Header),
+          body: JSON.stringify({ ...body, filters, fields })
+        })
+        const guestsList = guestsListQuery.data as TableResult<Guest>
+        const guestIdWithMacMaps: Map<string, string[]> = new Map()
+        const uniqueDeviceMacs: Set<string> = new Set()
+        const uniqueVenueIds: Set<string> = new Set()
+        guestsList?.data?.filter(g =>
+          g.guestStatus?.indexOf('Online') > -1 &&
+          g.devicesMac && g.devicesMac.length > 0)
+          .forEach(g => {
+            const devicesMacs = g.devicesMac?.map((mac:string) => mac.toLowerCase()) ?? []
+            guestIdWithMacMaps.set(g.id, devicesMacs)
+            devicesMacs.forEach(mac => {
+              uniqueDeviceMacs.add(mac)
+            })
+          })
+        const distinctMacs: string[] = Array.from(uniqueDeviceMacs)
+        // no online client
+        if (distinctMacs && distinctMacs.length === 0) {
+          return { data: guestsList }
         }
+        // aggregated online clients
+        const filter = { clientMac: distinctMacs }
+        const clientPayload = { ...defaultClientPayload, filter }
+        const clientListQuery = await fetchWithBQ({
+          ...createHttpRequest(ClientUrlsInfo.getClientList, arg.params, v1Header),
+          body: JSON.stringify(clientPayload)
+        })
+        const clientList = clientListQuery.data as TableResult<GuestClient>
+        // retireve venueName
+        const clientData = clientList.data as GuestClient[]
+        clientData.forEach(client => {
+          uniqueVenueIds.add(client.venueId)
+        })
+        const venuePayload = { ...defaultVenuePayload,
+          filters: { id: Array.from(uniqueVenueIds) }
+        }
+        const venueListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonUrlsInfo.getVenues, arg.params, v1Header),
+          body: JSON.stringify(venuePayload)
+        })
+        const venueList = venueListQuery.data as TableResult<{ id:string, name:string }>
+        const venueMap = new Map(venueList.data.map(venue => [venue.id, venue.name]))
+        const clientResult = clientData.map(client => {
+          client.venueName = venueMap.get(client.venueId) ?? ''
+          return client
+        })
+        const aggregatedList = aggregatedGuestClientData(
+          guestsList, guestIdWithMacMaps, clientResult)
+
+        return guestsListQuery.data
+          ? { data: aggregatedList }
+          : { error: guestsListQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Guest', id: 'LIST' }],
       keepUnusedDataFor: 0,
@@ -132,7 +216,8 @@ export const clientApi = baseClientApi.injectEndpoints({
               'EnableGuest',
               'AddGuest',
               'DeleteGuest',
-              'DeleteBulk'
+              'DeleteBulk',
+              'ImportGuests'
             ], () => {
               api.dispatch(clientApi.util.invalidateTags([{ type: 'Guest', id: 'LIST' }]))
             })
@@ -140,39 +225,38 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    deleteGuests: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.deleteGuests, params)
-        return {
-          ...req,
-          body: payload
-        }
+    deleteGuest: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(ClientUrlsInfo.deleteGuest, params, v1Header)
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     disableGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.disableGuests, params)
+        const req = createHttpRequest(ClientUrlsInfo.disableGuests, params, v1Header)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     enableGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.enableGuests, params)
+        const req = createHttpRequest(ClientUrlsInfo.enableGuests, params, v1Header)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.getGuests, params)
+        const req = createHttpRequest(ClientUrlsInfo.getGuests, params, {
+          'Accept': 'text/vnd.ruckus.v1.1+csv',
+          'Content-Type': 'application/vnd.ruckus.v1.1+json'
+        })
         return {
           ...req,
           responseHandler: async (response) => {
@@ -181,20 +265,19 @@ export const clientApi = baseClientApi.injectEndpoints({
               headerContent.split('filename=')[1]) : 'Guests Information.csv'
             downloadFile(response, fileName)
           },
-          body: payload,
+          body: JSON.stringify(payload),
           headers: {
-            ...req.headers,
-            Accept: 'application/json,text/plain,*/*'
+            ...req.headers
           }
         }
       }
     }),
     generateGuestPassword: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword, params)
+        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword, params, v1Header)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -263,17 +346,17 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params)
+        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params, v1Header)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     getGuestNetworkList: build.query<TableResult<Network>, RequestPayload>({
       query: ({ params, payload }) => {
-        const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params)
         return {
           ...networkListReq,
           body: payload
@@ -284,8 +367,8 @@ export const clientApi = baseClientApi.injectEndpoints({
     importGuestPass: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.importGuestPass, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
+          ...v1Header,
+          'Content-Type': undefined
         })
         return {
           ...req,
@@ -387,7 +470,8 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
       healthClass: getClientHealthClass(client.healthCheckStatus),
       totalTraffic: transformByte(client.totalTraffic),
       trafficToClient: transformByte(client.trafficToClient),
-      trafficFromClient: transformByte(client.trafficFromClient)
+      trafficFromClient: transformByte(client.trafficFromClient),
+      clientMac: client.clientMac.toLowerCase()
     }
     if (tmp.sessStartTime && tmp.sessStartTime > 0 && !tmp.sessStartTimeParssed) {
       tmp.sessStartTimeString =
@@ -402,6 +486,28 @@ export const aggregatedClientListData = (clientList: TableResult<ClientList>,
     data
   }
 }
+
+export const aggregatedGuestClientData = (guestsListResult: TableResult<Guest>,
+  guestIdWithMacMaps: Map<string, string[]>, clientList:GuestClient[]) => {
+  const guestIdWithClientMaps: Map<string, GuestClient[]> = new Map()
+  guestIdWithMacMaps.forEach((macs: string[], guestId: string) => {
+    const matchingClients = clientList
+      .filter(client => macs.includes(client.clientMac.toLowerCase()))
+    if (matchingClients.length > 0) {
+      guestIdWithClientMaps.set(guestId, matchingClients)
+    }
+  })
+  const guestsList = guestsListResult.data
+  guestsList.forEach((guest: Guest) => {
+    if (guestIdWithClientMaps.has(guest.id)) {
+      guest.clients = guestIdWithClientMaps.get(guest.id)!
+    }
+  })
+
+  return { ...guestsListResult, data: guestsList }
+}
+
+
 export const {
   useGetGuestsListQuery,
   useDisconnectClientMutation,
@@ -416,7 +522,7 @@ export const {
   useGetClientListQuery,
   useLazyGetClientListQuery,
   useGetGuestsMutation,
-  useDeleteGuestsMutation,
+  useDeleteGuestMutation,
   useEnableGuestsMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,

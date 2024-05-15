@@ -1,3 +1,4 @@
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetAAAPolicyViewModelListQuery,
   useLazyAaaPolicyQuery,
@@ -15,8 +16,11 @@ export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListP
   const { customPayload = {}, queryOptions = {} } = props
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
+  const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
+    ? 1024
+    : AAA_LIMIT_NUMBER
   const requestPayload = {
-    params, payload: { page: 1, pageSize: AAA_LIMIT_NUMBER, ...customPayload }
+    params, payload: { page: 1, pageSize: radiusMaxiumnNumber, ...customPayload }
   }
   const aaaPolicyListResult = useGetAAAPolicyViewModelListQuery(requestPayload, {
     ...queryOptions,

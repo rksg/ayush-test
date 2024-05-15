@@ -184,7 +184,8 @@ export const certificateTemplateList = {
       certificateNames: [
         'testCertificate1',
         'testCertificate2'
-      ]
+      ],
+      variables: ['var1', 'var2']
     },
     {
       id: 'e86204218568452db9e1cb935c38f644',
@@ -218,7 +219,7 @@ export const certificateTemplateList = {
         titlePattern: null,
         keyUsageList: null,
         certificateType: 'CLIENT',
-        certificateAuthorityId: '8a3e945a0f83446f98025579b7b570a5',
+        certificateAuthorityId: '109df36cd9464586b7d37271a1bc3cc5',
         certificateAuthorityName: 'subcaupdated1111'
       },
       microsoftCa: null,
@@ -265,6 +266,10 @@ export const certificateTemplateList = {
         'testCertificate25',
         'testCertificate26',
         'testCertificate27'
+      ],
+      networkIds: [
+        'testNetworkId1',
+        'testNetworkId2'
       ]
     },
     {
@@ -299,7 +304,7 @@ export const certificateTemplateList = {
         titlePattern: '',
         keyUsageList: null,
         certificateType: 'CLIENT',
-        certificateAuthorityId: 'cff3a51429fa4e6bb0c5258d07098db9',
+        certificateAuthorityId: 'ca7b5078b323448f9d6e5179c0178f65',
         certificateAuthorityName: 'subCa1'
       },
       microsoftCa: null,
@@ -479,7 +484,7 @@ export const certificate = {
     KeyUsageType.DIGITAL_SIGNATURE,
     KeyUsageType.KEY_ENCIPHERMENT
   ],
-  privateKeyBase64: '',
+  privateKeyBase64: '-----BEGIN CERTIFICATE-----\nMIIDbzCCAlegAwIBAgIVAMTVgJsTDczVdQYkON6HpSDuAWs1MA0GCSqGSIb3DQEB\nCwUAMBMxETAPBgNVBAMMCGFzZGZhc2RmMB4XDTI0MDIyMTA5NTYzOFoXDTI1MDMy\nMTA5NTYzOFowDzENMAsGA1UEAwwEZGdmaDCCASIwDQYJKoZIhvcNAQEBBQADggEP\nADCCAQoCggEBAMyVxpnCOLbgXQt5nBCYmRQAtqqq7EnhslB2/yFNTpXpejk1Y+mp\nCPwR6Q1WlC6g6gfzRZ5b23CXi6VClrJeCz561Od2/SHeL2eY2JrTUlE9sPeWcJCQ\n39vS56dLGN4ODF9x3MYolu0UQ7j/TyvYJ9NbJlHHZ4EbgX502bsBivnt/S51GpfN\nbgoEG7sNOE/8iKhh0x2uanNvGAprOEv5mx85Ogi+QicRfPV5AhL01cu/71C90Rn0\ngrgatdXNfijoNJ3vbujXQLx4b5jOmFvQTP9ImzIq5o0qWoy35D3LU34+X9RGJ2H4\n7vMf13vQ6CCmcmwESlus3uMXyrxRznMMVRcCAwEAAaOBvTCBujAdBgNVHQ4EFgQU\ndjOGrJFKguipRZUvq/wVIIYYHVcwTgYDVR0jBEcwRYAUK+h7zbmBLL0AhPBjh60D\nj+b6+FChF6QVMBMxETAPBgNVBAMMCGFzZGZhc2RmghRWVvbMN3p9sQrvg2risLJ1\n3CND2DAXBgkrBgEEAYI3FAIEChYIc2dkZmdmc2QwIAYDVR0lBBkwFwYIKwYBBQUH\nAwIGCysGAQQBgr5oAQECMA4GA1UdDwEB/wQEAwIFoDANBgkqhkiG9w0BAQsFAAOC\nAQEAgnlgYtn8DQDVeyGkeqBR/1I56Bm40bgI/jUevYE2+5uGie0qKGsUfV95WtMb\nIIvPBV/h7LoHnzIf+IPRT5P9aIxc7U4E0oqyL4cHdEKhTNgERwjqLkzGuSJUcj8J\nap0VSNE25+O66uX7Sjdc2tLNN6D4hLBk/xEtyGbQ91qSO0t6aob2TMzAin4XwLK5\nCLeZuvZmL7GHsn/fR68QWy2miSavbQs4XSCwS0XuNXSezk4wivZmgVrdckvXke7k\na1agVQiB8yf15/kJf7XmgWKeltDDt+Fviz2MtvBqfzv4gaoIrYo0MV/wGOlCpyjR\nCg1V7vMzvYC5/dKb6gh/WgmxHw==\n-----END CERTIFICATE-----\n',
   chain: '-----BEGIN CERTIFICATE-----\nMIIECjCCAvKgAwIBAgIVAKlZjOPE+6XJQxJkLd4iQ5LkZJGAMA0GCSqGSIb3DQEB\nCwUAMHYxGjAYBgNVBAMMEW15cm9vdENhQHRlc3QuY29tMQ0wCwYDVQQKDAR0ZXN0\nMQ0wCwYDVQQLDAR0ZXN0MQ0wCwYDVQQHDAR0ZXN0MQ0wCwYDVQQIDAR0ZXN0MQ0w\nCwYDVQQGEwR0ZXN0MQ0wCwYDVQQMDAR0ZXN0MB4XDTIyMTEzMDIwMDAwMFoXDTMz\nMTIzMTIwMDAwMFowdjEaMBgGA1UEAwwRbXlyb290Q2FAdGVzdC5jb20xDTALBgNV\nBAoMBHRlc3QxDTALBgNVBAsMBHRlc3QxDTALBgNVBAcMBHRlc3QxDTALBgNVBAgM\nBHRlc3QxDTALBgNVBAYTBHRlc3QxDTALBgNVBAwMBHRlc3QwggEiMA0GCSqGSIb3\nDQEBAQUAA4IBDwAwggEKAoIBAQDGzjw2qYcJj9Y3gs3L/aOx09tj+OeKFDxDuoPN\n0urjOoCCYmfIQrdxjgPr+BGKCNeXjuAs4CPm/mOuvYUtIratqfbkQurRs0nXRhIY\nKHD5I006AzbJOpTbtj95AGbfCXAmtutdjXH3qDwj+qyYSqMoVnPaTNey1cJPI6qM\nWDlbabeHLsjeqBifFsb5+OCxfDRXInzD5z9rvXc7z9tQl4tK6T4DlX3Ts/+Co4Uy\nsv1QcdEUUbgxK4ROP8QvHm7zUbv9ygheOE4MFFECMhXYOXo4r6e9ya9fb0PVSq67\nu7POPCQetOMY7qJvyPzuYrxRqzP68dh4HoSJzoU+j2DfDgY3AgMBAAGjgY4wgYsw\nJwYDVR0lBCAwHgYIKwYBBQUHAwIGCCsGAQUFBwMBBggrBgEFBQcDCTAgBggrBgEF\nBQcBAQQUMBIwEAYIKwYBBQUHMAGGBHRlc3QwHQYDVR0OBBYEFENEKAmmeewkHQxJ\nunQHwE+rpJ4MMA4GA1UdDwEB/wQEAwIBtjAPBgNVHRMBAf8EBTADAQH/MA0GCSqG\nSIb3DQEBCwUAA4IBAQBDZe4fYXz1GOU0cfmO5KGhVRoUG7gkRiqxElf3mDBrJCOf\nZVaIXq5dmH3XeQxJcfBpARIk1m705DCcDvXajORRDWJ50Kk0CvyXvW6XM5pq3Tai\nmBP3IcwLrxs/oErHyE56K+sXEpe9253WQuTFXrVph3j3jqUbr6w+mva86hfqBlXT\n1cakK4q2DAcVdjK9vw9wSaxVEEYAKATW6xV2YuXWm7Ug2RU9g5c9bI/HvObYpCeO\ntr8pbZWvleD8nbVKINR6YLVMamXxqEk1YkdTgCcJ2PBOx3w3O7FGnkWIrL3grzMm\nll5OvaZF9jgJd2kJ5c6zrFvWbT8vkU5mpVdUpftW\n-----END CERTIFICATE-----\n',
   details: '  [0]         Version: 3\n         SerialNumber: 1449216585246122075785627832691539938494567915812\n             IssuerDN: CN=myrootCa@test.com,O=test,OU=test,L=test,ST=test,C=test,T=test\n           Start Date: Wed Jan 24 16:00:00 GMT 2024\n           Final Date: Thu Jan 24 23:59:59 GMT 2030\n            SubjectDN: CN=test,O=test,OU=test,L=test,ST=test,C=test\n           Public Key: RSA Public Key [05:c4:31:47:e4:21:1e:da:6d:b2:97:b0:a4:2a:ce:0c:73:6d:b7:26],[56:66:d1:a4]\n        modulus: a314b8b9415fd4641d6c61130284227fd305d4555cbe0ecc16c7aa2c7f4278666434f4425f9cd9d3fd4983b89e37f204073ce611ba6817f306012cb62883bdf874aefda8793da4c80bd58915bbb233da150f251e8fe332b84bd439f6038d854b171ccf88fc15249b74bc7487756bc875c8613e09be34cf1a7cc5e1e91f2480dbdf31429ab0d73364412a468c393c09af7f8cb5d56efc4d242751c48909712dbbc33ccc310e31a82cbf6d95b644d3c59b079ea1a3c50d818a1a714625918882647dee43f6ce885b2334e25cf653df3bd678a3fa8e4004fb82051ee5f767ffc476699b9b3151e54c685628cc831215a72266802ffaa4f45e6b855314b3b19b9473a43f4d1bb8bd8f72819c42bba6790f8c02f1338492f8122164923e70a2f2bda1e8b27137f3dcb435ddb7125aab60fe9b407033bf86172ccdef1af640cb40d59c3e63ade6bac67469ecd5d644d161660511c82c288b09f5ed7f4fe90419e6faee97058e10f846004d45b979f2e5d061f8b9a6973f45af2b0edf2e2aee508fadfa7f8b8feb265e92bc816d8bbff9eba75ac41bffdff22f75e0ad8bf9e70c75a2be808574380bd80da4baf754bf9bda17610d64486ab633743be14794c25c2c76b7981d741ca92078b6c247ff00aee83c110daa18f77ce4ba8a9e10a88cb082e34c575b4b6bf8ffbace57f83b3adc0d60a8157ef254073e48bdeefd321d9062a237\npublic exponent: 10001\n\n  Signature Algorithm: SHA512WITHRSA\n            Signature: 4085275c59a4de20ef05b0411dcc64f0fbfa699d\n                       96a6f5f2ebc4cd8ff74f189ebbb594dd475f4adb\n                       8d7378e24dd7b15cc4db20f7c8d5f0f3a48d158c\n                       736e6c6afac36bfa0775e30f8418f4a66d7558f4\n                       8bf9a323905677252888ecc22336ad2d097a26f6\n                       8b77c35a01d8fa8ba891ea3086daf4986ccf866f\n                       8a9752a047614da0c335d3afb3c685e549c517f6\n                       b8fd494412748aed972f5c6b1612c80b306b4de8\n                       b2fd30dbddebff1889b7f3f0c49610df2a37ae91\n                       5a1592e9ff07338592c1c9bd6175fa0af87252ed\n                       cad7e49f7cb40d42779d0860d5b34e5ea8935d40\n                       9b3d0910f7ce0ff989dfb4e1a90d2ec1d333b519\n                       1cf44a2e768174846554a1c3b2290fc0\n       Extensions: \n                       critical(false) 2.5.29.14 value = DER Octet String[20] \n\n                       critical(false) 2.5.29.35 value = Sequence\n    Tagged [CONTEXT 0] IMPLICIT \n        DER Octet String[20] \n    Tagged [CONTEXT 1]\n        Tagged [CONTEXT 4]\n            Sequence\n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.3)\n                        UTF8String(myrootCa@test.com) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.10)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.11)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.7)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.8)\n                        UTF8String(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.6)\n                        PrintableString(test) \n                Set\n                    Sequence\n                        ObjectIdentifier(2.5.4.12)\n                        UTF8String(test) \n    Tagged [CONTEXT 2] IMPLICIT \n        DER Octet String[21] \n\n                       critical(false) 1.3.6.1.4.1.311.20.2 value = IA5String(forIT11) \n\n                       critical(false) 2.5.29.37 value = Sequence\n    ObjectIdentifier(1.3.6.1.5.5.7.3.2)\n    ObjectIdentifier(1.3.6.1.4.1.40808.1.1.2)\n\n                       critical(false) 1.3.6.1.5.5.7.1.1 value = Sequence\n    Sequence\n        ObjectIdentifier(1.3.6.1.5.5.7.48.1)\n        Tagged [CONTEXT 6] IMPLICIT \n            DER Octet String[4] \n\n                       critical(true) KeyUsage: 0xa0\n',
   description: 'test',

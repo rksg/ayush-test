@@ -4,11 +4,13 @@ import { rest }  from 'msw'
 import { get }                                                                      from '@acx-ui/config'
 import { notificationApi, Provider, rbacApi, store }                                from '@acx-ui/store'
 import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { RolesEnum }                                                                from '@acx-ui/types'
+import { getUserProfile, setUserProfile }                                           from '@acx-ui/user'
 
 import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
 import { Webhook }                                   from './services'
 
-import { WebhooksTable } from '.'
+import { useWebhooks } from '.'
 
 const { click } = userEvent
 
@@ -30,7 +32,7 @@ const mockWebhooks = (data = webhooks, success = true) => rest.get(
 )
 
 describe('WebhooksTable', () => {
-  describe('R1', () => {
+  describe('RAI', () => {
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('true')
@@ -45,15 +47,34 @@ describe('WebhooksTable', () => {
       store.dispatch(notificationApi.util.resetApiState())
     })
     it('renders table with data and correct columns', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
       expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
       expect(await screen
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(4)
+      const firstRow = (await tbody.findAllByRole('row'))[0]
+      const firstRowText = within(firstRow).getAllByRole('cell').map(cell =>
+        cell.title)
+      expect(firstRowText).toEqual([
+        '', // radio
+        webhooks[0].name,
+        webhooks[0].callbackUrl,
+        'rg-1',
+        'Disabled',
+        '' // settings
+      ])
     })
     it('handle edit', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       const element = await findTBody()
       expect(element).toBeVisible()
@@ -74,7 +95,11 @@ describe('WebhooksTable', () => {
       expect(form).not.toBeInTheDocument()
     })
     it('handle create', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       expect(await findTBody()).toBeVisible()
 
@@ -92,7 +117,11 @@ describe('WebhooksTable', () => {
     describe('delete', () => {
       const webhook = webhooks[4]
       const renderElements = async () => {
-        render(<WebhooksTable />, { wrapper: Provider })
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
 
         const element = await findTBody()
         expect(element).toBeVisible()
@@ -155,7 +184,7 @@ describe('WebhooksTable', () => {
       })
     })
   })
-  describe('RAI', () => {
+  describe('R1', () => {
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('')
@@ -170,12 +199,42 @@ describe('WebhooksTable', () => {
       store.dispatch(notificationApi.util.resetApiState())
     })
     it('renders table with data and correct columns', async () => {
-      render(<WebhooksTable />, { wrapper: Provider })
+      const Component = () => {
+        const { component } = useWebhooks()
+        return component
+      }
+      render(<Component />, { wrapper: Provider, route: {} })
 
       const tbody = within(await findTBody())
       expect(await tbody.findAllByRole('row')).toHaveLength(webhooks.length)
       expect(await screen
         .findAllByRole('columnheader', { name: name => Boolean(name) })).toHaveLength(3)
+    })
+    describe('when role = READ_ONLY', () => {
+      beforeEach(() => {
+        const profile = getUserProfile()
+        setUserProfile({ ...profile, profile: {
+          ...profile.profile, roles: [RolesEnum.READ_ONLY]
+        } })
+      })
+      it('should hide actions', async () => {
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('button', { name: 'Create Webhook' })).not.toBeInTheDocument()
+      })
+      it('should hide row actions', async () => {
+        const Component = () => {
+          const { component } = useWebhooks()
+          return component
+        }
+        render(<Component />, { wrapper: Provider, route: {} })
+        expect(await findTBody()).toBeVisible()
+        expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+      })
     })
   })
 })

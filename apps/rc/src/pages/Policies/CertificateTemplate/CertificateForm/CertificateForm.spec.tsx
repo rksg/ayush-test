@@ -6,7 +6,7 @@ import { Path, To, useTenantLink }                                          from
 import { Provider }                                                         from '@acx-ui/store'
 import { mockServer, render, renderHook, screen, waitFor }                  from '@acx-ui/test-utils'
 
-import { certificateTemplateList } from '../__test__/fixtures'
+import { certificateAuthorityList, certificateTemplateList } from '../__test__/fixtures'
 
 import CertificateForm from './CertificateForm'
 
@@ -34,6 +34,10 @@ describe('CertificateForm', () => {
       rest.post(
         CertificateUrls.generateCertificate.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        CertificateUrls.getCAs.url,
+        (req, res, ctx) => res(ctx.json(certificateAuthorityList))
       )
     )
   })
@@ -53,7 +57,8 @@ describe('CertificateForm', () => {
     await userEvent.click(screen.getByRole('combobox', { name: 'CSR Source' }))
     await userEvent.click(await screen.findByText('Copy & Paste CSR'))
     await userEvent.type(screen.getByLabelText('Certificate Signing Request'), 'testCSR')
-    await userEvent.type(screen.getByLabelText('Username'), 'testUsername')
+    await userEvent.type(screen.getByLabelText('var1'), 'testVar1')
+    await userEvent.type(screen.getByLabelText('var2'), 'testVar2')
 
     await userEvent.click(screen.getByRole('button', { name: 'Generate' }))
     await waitFor(() => expect(mockedUsedNavigate).toBeCalled())

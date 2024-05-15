@@ -28,9 +28,9 @@ import {
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
-jest.mock('../useEdgeActions', () => ({
-  ...jest.requireActual('../useEdgeActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({})
 }))
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -205,9 +205,7 @@ describe('NetworkForm', () => {
         res(ctx.json([]))
       ),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
-        (_, res, ctx) => res(ctx.json(externalProviders))),
-      rest.get('https://maps.googleapis.com/maps/api/timezone/json',
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json(externalProviders)))
 
     )
   })

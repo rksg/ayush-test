@@ -1,7 +1,7 @@
 import { Space, Typography } from 'antd'
 import _                     from 'lodash'
 
-import type { CompatibilityNodeError, SingleNodeDetailsField } from '@acx-ui/rc/components'
+import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType } from '@acx-ui/rc/components'
 import {
   ClusterNetworkSettings,
   EdgeClusterStatus,
@@ -11,11 +11,7 @@ import {
   VirtualIpSetting
 } from '@acx-ui/rc/utils'
 
-import {
-  VirtualIpConfigFormType,
-  VirtualIpFormType,
-  defaultHaTimeoutValue
-} from '../../EditEdgeCluster/VirtualIp'
+import { defaultHaTimeoutValue } from '../../EditEdgeCluster/VirtualIp'
 
 import { CompatibilityCheckResult, InterfacePortFormCompatibility, InterfaceSettingsFormType } from './types'
 
@@ -29,7 +25,7 @@ const initialNodeCompatibleResult = {
 } as CompatibilityNodeError<InterfacePortFormCompatibility>
 
 export const transformFromApiToFormData =
- (apiData?: ClusterNetworkSettings, clusterInfo?: EdgeClusterStatus):InterfaceSettingsFormType => {
+ (apiData?: ClusterNetworkSettings):InterfaceSettingsFormType => {
    const portSettings = _.reduce(apiData?.portSettings,
      (result, port) => {
        result[port.serialNumber] = _.groupBy(port.ports, 'interfaceName')
@@ -38,32 +34,18 @@ export const transformFromApiToFormData =
 
    const virtualIpSettings = apiData?.virtualIpSettings
    const timeout = apiData?.virtualIpSettings?.[0]?.timeoutSeconds ?? defaultHaTimeoutValue
-   const editVipConfig = [] as VirtualIpFormType['vipConfig']
-   const lanInterfaces = getLanInterfaces(apiData?.lagSettings, portSettings, clusterInfo)
-   if(virtualIpSettings && lanInterfaces) {
-     for(let i=0; i<virtualIpSettings.length; i++) {
-       const currentConfig = virtualIpSettings[i]
-       const interfaces = {} as { [key: string]: EdgePortInfo }
-       for(let config of currentConfig.ports) {
-         const tmp = lanInterfaces?.[config.serialNumber].find(item =>
-           item.portName === config.portName)
-         interfaces[config.serialNumber] = tmp || {} as EdgePortInfo
-       }
-       editVipConfig.push({
-         vip: currentConfig.virtualIp,
-         interfaces
-       })
-     }
-   }
+   const vipConfig = virtualIpSettings?.map(item => ({
+     vip: item.virtualIp,
+     interfaces: item.ports
+   })) ?? []
 
-   // initialized empty data
-   if(editVipConfig.length === 0) editVipConfig.push({} as VirtualIpConfigFormType)
+   if(vipConfig.length === 0) vipConfig.push({} as VipConfigType)
 
    return {
      portSettings,
      lagSettings: apiData?.lagSettings,
      timeout,
-     vipConfig: editVipConfig
+     vipConfig
    } as InterfaceSettingsFormType
  }
 
@@ -231,7 +213,7 @@ const getCompatibleCheckResult = (
     }
   })
   const portTypesCheck = _.every(results, (res) => {
-    // cehck no error
+    // check no error
     return _.values(res.errors.portTypes).some(i => i.isError) === false
   })
 
@@ -344,16 +326,10 @@ export const transformFromFormToApiData =
   }
   const virtualIpSettings = data.vipConfig.map(item => {
     if(!Boolean(item.interfaces) || Object.keys(item.interfaces).length === 0) return undefined
-    const ports = Object.entries(item.interfaces).map(([, v2]) => {
-      return {
-        serialNumber: v2.serialNumber,
-        portName: v2.portName
-      }
-    })
     return {
       virtualIp: item.vip,
       timeoutSeconds: data.timeout,
-      ports
+      ports: item.interfaces
     }
   }).filter(item => Boolean(item)) as VirtualIpSetting[]
   return {

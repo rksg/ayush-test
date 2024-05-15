@@ -178,7 +178,8 @@ export const AAAServerTable = (props: {
   const [editData, setEditData] = useState({} as RadiusServer | TacacsServer | LocalUser)
   const [disabledDelete, setDisabledDelete] = useState(false)
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
-  const { tenantId } = useParams()
+  const { tenantId, venueId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [ deleteAAAServer, { isLoading: isDeleting } ] = useConfigTemplateMutationFnSwitcher(
     useDeleteAAAServerMutation, useDeleteVenueTemplateSwitchAAAServerMutation
   )
@@ -303,10 +304,15 @@ export const AAAServerTable = (props: {
               numOfEntities: rows.length
             },
             onOk: () => { rows.length === 1 ?
-              deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id } })
-                .then(clearSelection) :
-              bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id) })
-                .then(clearSelection)
+              deleteAAAServer({
+                params: { tenantId, venueId, aaaServerId: rows[0].id },
+                enableRbac: isSwitchRbacEnabled
+              }).then(clearSelection) :
+              bulkDeleteAAAServer({
+                params: { tenantId, venueId },
+                payload: rows.map(item => item.id),
+                enableRbac: isSwitchRbacEnabled
+              }).then(clearSelection)
             }
           })
         }

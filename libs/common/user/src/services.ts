@@ -74,6 +74,11 @@ export const UserUrlsInfo = {
     oldUrl: '/api/switch/tenant/:tenantId/allowed-operations',
     newApi: true
   },
+  edgeAllowedOperations: {
+    method: 'get',
+    url: '/tenants/allowedOperations?service=edge',
+    newApi: true
+  },
   tenantAllowedOperations: {
     method: 'get',
     url: '/tenants/allowed-operations',
@@ -94,6 +99,11 @@ export const UserUrlsInfo = {
     method: 'get',
     url: '/tenants/allowedOperations?service=upgradeConfig',
     oldUrl: '/api/upgrade/tenant/:tenantId/allowed-operations',
+    newApi: true
+  },
+  rcgAllowedOperations: {
+    method: 'get',
+    url: '/rcg/api/allowedOperations',
     newApi: true
   },
   getMfaTenantDetails: {
@@ -151,6 +161,7 @@ export const UserUrlsInfo = {
 
 export const {
   useAllowedOperationsQuery,
+  useRcgAllowedOperationsQuery,
   useGetAllUserSettingsQuery,
   useLazyGetAllUserSettingsQuery,
   useSaveUserSettingsMutation,
@@ -241,7 +252,18 @@ export const {
           createHttpRequest(UserUrlsInfo.tenantAllowedOperations, params),
           createHttpRequest(UserUrlsInfo.venueAllowedOperations, params),
           createHttpRequest(UserUrlsInfo.guestAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params)
+          createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params),
+          createHttpRequest(UserUrlsInfo.edgeAllowedOperations, params)
+        ].map(query))
+
+        return { data: responses.flatMap(response => (response.data as string[])) }
+      }
+    }),
+    rcgAllowedOperations: build.query<string[], string>({
+      async queryFn (tenantId, _api, _extraOptions, query) {
+        const params = { tenantId }
+        const responses = await Promise.all([
+          createHttpRequest(UserUrlsInfo.rcgAllowedOperations, params)
         ].map(query))
 
         return { data: responses.flatMap(response => (response.data as string[])) }

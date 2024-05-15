@@ -16,3 +16,8 @@ export * from './migrationUrls'
 export * from './propertyUrl'
 export * from './sigPackUrls'
 export * from './configTemplates'
+
+export * from './commonRbacUrls'
+export * from './firmwareRbacUrls'
+export * from './switchRbacUrls'
+export * from './wifiRbacUrls'

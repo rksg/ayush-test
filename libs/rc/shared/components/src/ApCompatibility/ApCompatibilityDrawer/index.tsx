@@ -93,7 +93,7 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
 
   const multipleFromVenue = $t({
     defaultMessage:
-    'Some features are not enabled on specific access points in this venue due to ' +
+    'Some features are not enabled on specific access points in this <venueSingular></venueSingular> due to ' +
     'firmware or device incompatibility. Please see the minimum firmware versions required below. ' +
     'Also note that not all features are available on all access points. You may upgrade your firmware from '
   })
@@ -109,7 +109,7 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
   const singleFromVenue = $t(
     {
       defaultMessage:
-              'To utilize the {featureName}, ensure that the access points on the venue ' +
+              'To utilize the {featureName}, ensure that the access points on the <venueSingular></venueSingular> ' +
               '({venueName}) meet the minimum required version and AP model support list below. You may upgrade your firmware from '
     },
     { featureName: featureName?.valueOf() ?? '', venueName: venueData?.name ?? venueName })
@@ -191,14 +191,14 @@ export const ApCompatibilityDrawer = (props: ApCompatibilityDrawerProps) => {
             {itemDetail?.requiredFw}
           </Form.Item>
         }
-        {itemDetail?.requiredModel &&
+        {itemDetail?.supportedModelFamilies &&
           <Form.Item
             key={`model_${index}`}
             label={$t({ defaultMessage: 'Supported AP Model Family' })}
             style={detailStyle}
             className='ApCompatibilityDrawerFormItem'
           >
-            {itemDetail?.requiredModel?.join(',')}
+            {itemDetail?.supportedModelFamilies?.join(', ')}
           </Form.Item>
         }
         {!apName && type !== ApCompatibilityType.ALONE &&

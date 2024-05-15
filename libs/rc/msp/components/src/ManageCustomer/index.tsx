@@ -28,8 +28,6 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
-} from '@acx-ui/msp/services'
-import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
@@ -41,7 +39,8 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  usePatchCustomerMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -54,7 +53,8 @@ import {
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
   AssignActionEnum,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
@@ -76,7 +76,8 @@ import { RolesEnum }             from '@acx-ui/types'
 import { useUserProfileContext } from '@acx-ui/user'
 import { AccountType }           from '@acx-ui/utils'
 
-import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
 import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
 import { StartSubscriptionModal } from '../StartSubscriptionModal'
@@ -170,6 +171,8 @@ export function ManageCustomer () {
   const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -206,6 +209,7 @@ export function ManageCustomer () {
   const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
+  const [patchCustomer] = usePatchCustomerMutation()
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -608,7 +612,7 @@ export function ManageCustomer () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
+        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -618,8 +622,15 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
-
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+
+      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
+        const patchTier: MspEcTierPayload = {
+          type: 'serviceTierStatus',
+          serviceTierStatus: ecFormData.tier
+        }
+        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
+      }
       navigate(linkToCustomers, { replace: true })
       return true
     } catch (error) {
@@ -642,7 +653,8 @@ export function ManageCustomer () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
         </UI.AdminList>
       )}
     </>
@@ -686,16 +698,22 @@ export function ManageCustomer () {
           <Paragraph>{mspEcAdmins[0].email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} {intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -887,7 +905,9 @@ export function ManageCustomer () {
         />
         <Form.Item
           name='admin_role'
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
           style={{ width: '300px' }}
           rules={[{ required: true }]}
           initialValue={RolesEnum.PRIME_ADMIN}
@@ -895,10 +915,13 @@ export function ManageCustomer () {
             <Select>
               {
                 Object.entries(RolesEnum).map(([label, value]) => (
-                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER )
+                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER ||
+                    value === RolesEnum.TEMPLATES_ADMIN || value === RolesEnum.REPORTS_ADMIN
+                  )
                   && <Option
                     key={label}
-                    value={value}>{intl.$t(roleDisplayText[value])}
+                    value={value}>
+                    {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                   </Option>
                 ))
               }
@@ -1282,10 +1305,15 @@ export function ManageCustomer () {
           <Paragraph>{formData?.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
@@ -1494,12 +1522,18 @@ export function ManageCustomer () {
 
       </StepsFormLegacy>
 
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={selectedMspAdmins}
-        tenantId={mspEcTenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+      )}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantType={AccountType.MSP_INTEGRATOR}

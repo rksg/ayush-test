@@ -11,8 +11,8 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
   useUpdateSwitchUpgradePreferencesMutation,
@@ -22,7 +22,7 @@ import {
   useSkipSwitchUpgradeSchedulesMutation,
   useUpdateSwitchVenueSchedulesMutation,
   useGetSwitchFirmwarePredownloadQuery,
-  useGetSwitchLatestFirmwareListQuery
+  useGetSwitchDefaultFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -34,12 +34,13 @@ import {
   sortProp,
   defaultSort,
   FirmwareCategory,
-  switchSchedule
+  switchSchedule,
+  compareSwitchVersion
 } from '@acx-ui/rc/utils'
-import { useParams }      from '@acx-ui/react-router-dom'
-import { RequestPayload } from '@acx-ui/types'
-import { hasAccess }      from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { RequestPayload }            from '@acx-ui/types'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { noDataDisplay }             from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -62,7 +63,7 @@ function useColumns (
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
@@ -162,15 +163,15 @@ export const VenueFirmwareTable = (
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
 
 
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({ params })
 
   const isLatestVersion = function (currentVersion: FirmwareVersion) {
     if(_.isEmpty(currentVersion?.id)) return false
-    const latestVersions = getReleaseFirmware(latestReleaseVersions)
-    const latestFirmware = latestVersions.filter(v => v.id.startsWith('090'))[0]
-    const latestRodanFirmware = latestVersions.filter(v => v.id.startsWith('100'))[0]
-    return (currentVersion.id === latestFirmware?.id ||
-      currentVersion.id === latestRodanFirmware?.id)
+    const defaultVersions = getReleaseFirmware(defaultReleaseVersions)
+    const defaultFirmware = defaultVersions.filter(v => v.id.startsWith('090'))[0]
+    const defaultRodanFirmware = defaultVersions.filter(v => v.id.startsWith('100'))[0]
+    return (currentVersion.id === defaultFirmware?.id ||
+      currentVersion.id === defaultRodanFirmware?.id)
   }
 
 
@@ -361,7 +362,7 @@ export const VenueFirmwareTable = (
         width: 460,
         title: $t({ defaultMessage: 'Skip This Update?' }),
         // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
         okText: $t({ defaultMessage: 'Skip' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk () {
@@ -390,10 +391,10 @@ export const VenueFirmwareTable = (
         rowKey='id'
         rowActions={rowActions}
         rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={[{
+        actions={filterByAccess([{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-        }]}
+        }])}
       />
       <UpdateNowDialog
         visible={updateModelVisible}
@@ -484,8 +485,20 @@ function checkCurrentVersions (version: string,
   filterVersions.forEach((v: FirmwareVersion) => {
     if (v.id === version || v.id === rodanVersion) {
       v = { ...v, inUse: true }
+    } else if (isDowngradeVersion(v.id, version, rodanVersion)) {
+      v = { ...v, isDowngradeVersion: true }
     }
     inUseVersions.push(v)
   })
   return inUseVersions
+}
+
+function isDowngradeVersion (inUseVersion: string, version: string, rodanVersion: string) {
+
+  if(inUseVersion.includes('090')){
+    return compareSwitchVersion(version, inUseVersion) > 0
+  } else if (inUseVersion.includes('100')){
+    return compareSwitchVersion(rodanVersion, inUseVersion) > 0
+  }
+  return false
 }

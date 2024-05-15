@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import { Col, Row, Typography } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Button, Loader, Table, TableProps, showActionModal }                                                                                         from '@acx-ui/components'
-import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel }                                                                            from '@acx-ui/rc/components'
-import { useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery } from '@acx-ui/rc/services'
-import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, useTableQuery }                                                      from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                               from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                                                  from '@acx-ui/user'
-import { noDataDisplay }                                                                                                                              from '@acx-ui/utils'
+import { Button, Loader, Table, TableProps, showActionModal }                                                                                                                                                                    from '@acx-ui/components'
+import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip, caTypeShortLabel }                                                                                                                                                       from '@acx-ui/rc/components'
+import { getDisabledActionMessage, showAppliedInstanceMessage, useDeleteCertificateTemplateMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery, useLazyGetAdaptivePolicySetQuery, useNetworkListQuery } from '@acx-ui/rc/services'
+import { CertificateTemplate, PolicyOperation, PolicyType, getPolicyDetailsLink, useTableQuery }                                                                                                                                 from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                                                                          from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                                                                                                                                                            from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                                                                                                         from '@acx-ui/user'
+import { noDataDisplay }                                                                                                                                                                                                         from '@acx-ui/utils'
 
 import { deleteDescription } from '../contentsMap'
 
@@ -29,6 +30,21 @@ export default function CertificateTemplateTable () {
       searchTargetFields: ['name', 'commonNamePattern'],
       searchString: ''
     }
+  })
+
+  const { networkMap } = useNetworkListQuery({
+    payload: {
+      fields: ['name', 'id'],
+      filters: { id: tableQuery?.data?.data.map((item) => item.networkIds).flat() }
+    }
+  }, {
+    skip: !tableQuery.data?.data,
+    selectFromResult: ({ data }) => ({
+      networkMap: data?.data.reduce((acc, item) => {
+        acc[item.id] = item.name
+        return acc
+      }, {} as { [key: string]: string }) || {}
+    })
   })
 
   const { caFilterOptions } = useGetCertificateAuthoritiesQuery(
@@ -90,6 +106,7 @@ export default function CertificateTemplateTable () {
       title: $t({ defaultMessage: 'CA Type' }),
       dataIndex: 'caType',
       key: 'caType',
+      sorter: true,
       render: function (_, row) {
         return $t(caTypeShortLabel[row.caType as keyof typeof caTypeShortLabel])
       }
@@ -112,9 +129,27 @@ export default function CertificateTemplateTable () {
       }
     },
     {
+      title: $t({ defaultMessage: 'Networks' }),
+      dataIndex: 'networks',
+      key: 'networks',
+      render: function (_, row) {
+        const displayText = row.networkIds?.length || 0
+        const items = row.networkIds?.map((id) => networkMap[id] || id)
+        return (
+          row.networkIds?.length === 0 ? 0 :
+            <SimpleListTooltip
+              title={$t({ defaultMessage: 'Networks' })}
+              displayText={displayText}
+              items={items || []}
+              maximum={26}
+            />)
+      }
+    },
+    {
       title: $t({ defaultMessage: 'Common Name' }),
       dataIndex: ['onboard', 'commonNamePattern'],
-      key: 'commonName',
+      key: 'certificateTemplateOnboard.commonNamePattern',
+      sorter: true,
       searchable: true
     },
     {
@@ -157,46 +192,56 @@ export default function CertificateTemplateTable () {
             policyId: selectedRows[0].id
           })
         })
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: ([selectedRow], clearSelection) => showDeleteModal(selectedRow, clearSelection)
+      onClick: ([selectedRow], clearSelection) => showDeleteModal(selectedRow, clearSelection),
+      scopeKey: [WifiScopes.DELETE]
     }
   ]
 
   const showDeleteModal = (selectedRow: CertificateTemplate, clearSelection: () => void) => {
-    showActionModal({
-      type: 'confirm',
-      customContent: {
-        action: 'DELETE',
-        entityName: $t({ defaultMessage: 'template' }),
-        entityValue: selectedRow.name,
-        numOfEntities: 1,
-        confirmationText: $t({ defaultMessage: 'Delete' }),
-        extraContent: <>
-          <Row style={{ marginTop: 10 }}>
-            <Col>
-              <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
-              <Text> {$t(deleteDescription.TEMPLATE_DETAIL)} </Text>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
-              <Text> {$t(deleteDescription.UNDONE)} </Text>
-            </Col>
-          </Row>
-        </>
-      },
-      onOk: () => {
-        deleteCertificateTemplate({
-          params: { templateId: selectedRow.id }
-        }).then(() => {
-          clearSelection()
-        })
-      }
-    })
+    const disabledActionMessage =
+      getDisabledActionMessage([selectedRow],
+        [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'network' }) }],
+        $t({ defaultMessage: 'delete' }))
+    if (disabledActionMessage) {
+      showAppliedInstanceMessage(disabledActionMessage)
+    } else {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'template' }),
+          entityValue: selectedRow.name,
+          numOfEntities: 1,
+          confirmationText: $t({ defaultMessage: 'Delete' }),
+          extraContent: <>
+            <Row style={{ marginTop: 10 }}>
+              <Col>
+                <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
+                <Text> {$t(deleteDescription.TEMPLATE_DETAIL)} </Text>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
+                <Text> {$t(deleteDescription.UNDONE)} </Text>
+              </Col>
+            </Row>
+          </>
+        },
+        onOk: () => {
+          deleteCertificateTemplate({
+            params: { templateId: selectedRow.id }
+          }).then(() => {
+            clearSelection()
+          })
+        }
+      })
+    }
   }
 
   return (
@@ -208,7 +253,8 @@ export default function CertificateTemplateTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}

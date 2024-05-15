@@ -2,9 +2,11 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
-import { CertificateUrls, PolicyOperation, PolicyType, getPolicyDetailsLink }     from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { CertificateUrls, CommonUrlsInfo, PolicyOperation, PolicyType, getPolicyDetailsLink } from '@acx-ui/rc/utils'
+import { Provider }                                                                           from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }             from '@acx-ui/test-utils'
+import { WifiScopes }                                                                         from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                                                     from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplate, certificateTemplateList } from '../__test__/fixtures'
 
@@ -35,6 +37,14 @@ describe('CertificateTemplateTable', () => {
       rest.post(
         CertificateUrls.getCAs.url,
         (req, res, ctx) => res(ctx.json(certificateAuthorityList))
+      ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [
+            { name: 'testAAA-ct', id: 'testNetworkId1' },
+            { name: 'testAAA-ct2', id: 'testNetworkId2' }]
+        }))
       )
     )
   })
@@ -52,6 +62,7 @@ describe('CertificateTemplateTable', () => {
     expect(within(row[0]).getByText('Name')).toBeInTheDocument()
     expect(within(row[0]).getByText('CA Type')).toBeInTheDocument()
     expect(within(row[0]).getByText('Certificates')).toBeInTheDocument()
+    expect(within(row[0]).getByText('Networks')).toBeInTheDocument()
     expect(within(row[0]).getByText('Common Name')).toBeInTheDocument()
     expect(within(row[0]).getByText('Certificate Authority')).toBeInTheDocument()
     expect(within(row[0]).getByText('Adaptive Policy Set')).toBeInTheDocument()
@@ -85,7 +96,21 @@ describe('CertificateTemplateTable', () => {
     expect(await screen.findByRole('tooltip')).toHaveTextContent(/And 1 More.../)
   })
 
-  it('should delete selected row', async () => {
+  it('should show tooltip when hover over network', async () => {
+    render(<Provider><CertificateTemplateTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateTemplate/list'
+      }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /certificateTemplate2/ })
+    await userEvent.hover(within(row).getByText('2'))
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(/testAAA-ct/)
+  })
+
+  it('should handle delete correctly', async () => {
     const deleteFn = jest.fn()
 
     mockServer.use(
@@ -105,16 +130,25 @@ describe('CertificateTemplateTable', () => {
     })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const row = await screen.findByRole('row', { name: /certificateTemplate2/ })
-    await userEvent.click(within(row).getByRole('radio'))
+    // block in-used template from delete
+    const row1 = await screen.findByRole('row', { name: /certificateTemplate2/ })
+    await userEvent.click(within(row1).getByRole('radio'))
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
-    expect(await screen.findByText('Delete "certificateTemplate2"?')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('You are unable to delete this record due to its usage in network')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'OK' }))
+
+    // should delete selected row
+    const row2 = await screen.findByRole('row', { name: /certificateTemplate1/ })
+    await userEvent.click(within(row2).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    expect(await screen.findByText('Delete "certificateTemplate1"?')).toBeVisible()
     const deleteInput = await screen.findByLabelText('Type the word "Delete" to confirm')
     await userEvent.type(deleteInput, 'Delete')
     await userEvent.click(await screen.findByRole('button', { name: 'Delete template' }))
 
     await waitFor(() => {
-      expect(deleteFn).toHaveBeenCalled()
+      expect(deleteFn).toBeCalledTimes(1)
     })
   })
 
@@ -151,5 +185,47 @@ describe('CertificateTemplateTable', () => {
         search: ''
       })
     })
+  })
+
+  it('should render correctly with wifi-u wifi-d permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+    })
+
+    render(<Provider><CertificateTemplateTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateTemplate/list'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /certificateTemplate1/ })
+    await userEvent.click(row)
+    expect(await screen.findByRole('button', { name: 'Edit' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
+  })
+
+  it('should render correctly with wifi-r permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+    render(<Provider><CertificateTemplateTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateTemplate/list'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /certificateTemplate1/ })
+    await userEvent.click(row)
+    expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
   })
 })

@@ -5,11 +5,12 @@ import { Modal as AntModal }    from 'antd'
 import moment                   from 'moment'
 import { useIntl }              from 'react-intl'
 
-import { Loader, TableProps, Table, Button, showActionModal }                                   from '@acx-ui/components'
-import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
-import { useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery }             from '@acx-ui/rc/services'
-import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                            from '@acx-ui/user'
+import { Loader, TableProps, Table, Button, showActionModal }                                                                                    from '@acx-ui/components'
+import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                         from '@acx-ui/rc/components'
+import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, useTableQuery }                                                  from '@acx-ui/rc/utils'
+import { WifiScopes }                                                                                                                            from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                         from '@acx-ui/user'
 
 import { deleteDescription } from '../contentsMap'
 
@@ -40,9 +41,18 @@ export default function CertificateAuthorityTable () {
     pagination: { settingsId }
   })
 
+  const { inUsedCAs } = useGetCertificateTemplatesQuery({
+    payload: { pageSize: MAX_CERTIFICATE_PER_TENANT, page: 1 }
+  }, {
+    selectFromResult: ({ data }) => ({
+      inUsedCAs: data?.data.filter((template) => (template.networkIds ?? []).length > 0)
+        .map((template) => (template.onboard?.certificateAuthorityId)) || []
+    })
+  })
+
   useEffect(() => {
     tableQuery.data?.data?.filter((item) => item.id === detailId).map((item) => setDetailData(item))
-  }, [tableQuery])
+  }, [tableQuery.data?.data])
 
   const columns: TableProps<CertificateAuthority>['columns'] = [
     {
@@ -87,18 +97,21 @@ export default function CertificateAuthorityTable () {
       title: $t({ defaultMessage: 'Common Name' }),
       dataIndex: 'commonName',
       searchable: true,
+      sorter: true,
       key: 'commonName'
     },
     {
       title: $t({ defaultMessage: 'SHA Fingerprint' }),
       dataIndex: 'publicKeyShaThumbprint',
       searchable: true,
+      sorter: true,
       key: 'publicKeyShaThumbprint'
     },
     {
       title: $t({ defaultMessage: 'Expires' }),
       dataIndex: 'expireDate',
       key: 'expireDate',
+      sorter: true,
       render: (_, { expireDate }) => {
         return moment(expireDate).format(EXPIRATION_DATE_FORMAT)
       }
@@ -120,38 +133,42 @@ export default function CertificateAuthorityTable () {
   }
 
   const showDeleteModal = (selectedRow: CertificateAuthority, clearSelection: () => void) => {
-    showActionModal({
-      type: 'confirm',
-      customContent: {
-        action: 'DELETE',
-        entityName: $t({ defaultMessage: 'CA' }),
-        entityValue: selectedRow.name,
-        numOfEntities: 1,
-        confirmationText: $t({ defaultMessage: 'Delete' }),
-        extraContent: <>
-          <Row style={{ marginTop: 10 }}>
-            <Col>
-              <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
-              <Text> {$t(deleteDescription.CA_DETAIL)} </Text>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
-              <Text> {$t(deleteDescription.UNDONE)} </Text>
-            </Col>
-          </Row>
-        </>
-      },
-      onOk: () => {
-        deleteCertificateAuthority({
-          params: { caId: selectedRow.id }
-        }).then(() => {
-          clearSelection()
-          setDetailDrawerOpen(false)
-        })
-      }
-    })
+    if (inUsedCAs.includes(selectedRow.id)) {
+      showAppliedInstanceMessage($t(deleteDescription.CA_IN_USE))
+    } else {
+      showActionModal({
+        type: 'confirm',
+        customContent: {
+          action: 'DELETE',
+          entityName: $t({ defaultMessage: 'CA' }),
+          entityValue: selectedRow.name,
+          numOfEntities: 1,
+          confirmationText: $t({ defaultMessage: 'Delete' }),
+          extraContent: <>
+            <Row style={{ marginTop: 10 }}>
+              <Col>
+                <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
+                <Text> {$t(deleteDescription.CA_DETAIL)} </Text>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Text type='danger' strong> {$t({ defaultMessage: 'IMPORTANT' })}: </Text>
+                <Text> {$t(deleteDescription.UNDONE)} </Text>
+              </Col>
+            </Row>
+          </>
+        },
+        onOk: () => {
+          deleteCertificateAuthority({
+            params: { caId: selectedRow.id }
+          }).then(() => {
+            clearSelection()
+            setDetailDrawerOpen(false)
+          })
+        }
+      })
+    }
   }
 
   const rowActions: TableProps<CertificateAuthority>['rowActions'] = [
@@ -159,13 +176,15 @@ export default function CertificateAuthorityTable () {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([selectedRow]) => {
         showEditModal(selectedRow)
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => {
         showDeleteModal(selectedRow, clearSelection)
-      }
+      },
+      scopeKey: [WifiScopes.DELETE]
     }
   ]
 
@@ -179,7 +198,8 @@ export default function CertificateAuthorityTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
           rowKey='id'
           searchableWidth={430}
           enableApiFilter={true}

@@ -3,15 +3,18 @@ import { Form }  from 'antd'
 import _         from 'lodash'
 
 import {
+  ClusterNetworkSettings,
   EdgePortConfigFixtures,
   EdgePortInfo,
   EdgePortTypeEnum,
+  VirtualIpSetting,
   getEdgePortDisplayName
 } from '@acx-ui/rc/utils'
 import {
   render,
   screen,
-  waitFor
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
 
 
@@ -70,10 +73,11 @@ describe('EditEdge ports - ports general', () => {
   describe('WAN port exist and no core port configured', () => {
     beforeEach(() => {})
 
-    const MockedComponent = ()=> <Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
-      <EdgePortsGeneralBase {...mockedProps} />
-      <button data-testid='rc-submit'>Submit</button>
-    </Form>
+    const MockedComponent = (props: { vipConfig?: ClusterNetworkSettings['virtualIpSettings'] })=>
+      <Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
+        <EdgePortsGeneralBase {...mockedProps} {...props} />
+        <button data-testid='rc-submit'>Submit</button>
+      </Form>
 
     it ('IP status on each port tab should be displayed correctly', async () => {
       render(<MockedComponent />)
@@ -247,6 +251,20 @@ describe('EditEdge ports - ports general', () => {
       expect(screen.queryAllByRole('tab').length).toBe(0)
     })
 
+    it('should show IP is N/A and MAC empty when port status data is undefined', async () => {
+      render(<Form initialValues={formPortConfigWithStatusIpWithoutCorePort}>
+        <EdgePortsGeneralBase {...mockedProps} statusData={undefined} />
+        <button data-testid='rc-submit'>Submit</button>
+      </Form>)
+
+      for (let i = 0; i < mockEdgePortConfig.ports.length; ++i) {
+        await userEvent.click(await screen.findByRole('tab',
+          { name: getEdgePortDisplayName(mockEdgePortConfig.ports[i]) }))
+        const activePane = screen.getByRole('tabpanel', { hidden: false })
+        await within(activePane).findByText('IP Address: N/A | MAC Address:')
+      }
+    })
+
     it('cannot set LAN core port while a valid WAN port exist', async () => {
       render(<MockedComponent />)
 
@@ -309,6 +327,18 @@ describe('EditEdge ports - ports general', () => {
       await userEvent.selectOptions(await screen.findByRole('combobox', { name: 'Port Type' }),
         await screen.findByRole('option', { name: 'LAN' }))
       await waitFor(() => expect(gw).not.toBeVisible())
+    })
+
+    it('should disable portType dropdown when the interface set as a VRRP interface', async () => {
+      render(<MockedComponent vipConfig={[{
+        ports: [{
+          serialNumber: 'serialNumber-1',
+          portName: 'port2'
+        }]
+      }] as VirtualIpSetting[]} />)
+
+      await userEvent.click(screen.getByRole('tab', { name: 'Port2' }))
+      expect(await screen.findByRole('combobox', { name: 'Port Type' })).toBeDisabled()
     })
   })
 })

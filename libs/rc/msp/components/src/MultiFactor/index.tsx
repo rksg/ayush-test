@@ -12,7 +12,7 @@ import {
   useGetMfaAdminDetailsQuery,
   useGetMfaTenantDetailsQuery
 } from '@acx-ui/user'
-import { isDelegationMode } from '@acx-ui/utils'
+import { AccountType, isDelegationMode } from '@acx-ui/utils'
 
 import { AuthenticationMethod }       from './AuthenticationMethod'
 import { BackupAuthenticationMethod } from './BackupAuthenticationMethod'
@@ -48,6 +48,9 @@ export const MultiFactor = () => {
   }, [form, data, details])
 
   const configurable = mfaStatus && !isMasqueraded
+  const tenantType = tenantDetailsData.data?.tenantType
+  const hideRecoveryCode = tenantType === AccountType.MSP_EC ||
+    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
 
   return (
     <Form
@@ -79,7 +82,7 @@ export const MultiFactor = () => {
           </Col>
         </Row>
       )}
-      {configurable && (
+      {configurable && !hideRecoveryCode && (
         <Row gutter={20}>
           <Col span={8}>
             <BackupAuthenticationMethod

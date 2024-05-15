@@ -20,3 +20,5 @@ data:
   static.assets: "https://storage.googleapis.com/ruckus-web-1"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"
   mib.files: "https://docs.ruckus.cloud/mib/"
+  druid.rollup.period.days: "36500"
+  druid.retain.period.days: "90"

@@ -8,11 +8,11 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { SplitProvider }          from '@acx-ui/feature-toggle'
-import { useGetPreferencesQuery } from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { BrowserRouter }          from '@acx-ui/react-router-dom'
-import { Provider }               from '@acx-ui/store'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useGetPreferencesQuery }                from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                from '@acx-ui/rc/utils'
+import { BrowserRouter }                         from '@acx-ui/react-router-dom'
+import { Provider }                              from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
@@ -83,6 +83,9 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   const [langLoading, setLangLoading] = useState(true)
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
 
+  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
+  const propsWithFF = { supportReSkinning, ...props }
+
   useEffect(() => {
     if (userProfile) {
       const userLang = userProfile?.preferredLanguage
@@ -133,19 +136,20 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
     states={[{
       isLoading: isUserProfileLoading || request.isFetching || langLoading
     }]}
-    children={<ConfigProvider {...props} lang={lang as unknown as LangKey}/>}
+    children={<ConfigProvider {...propsWithFF} lang={lang as unknown as LangKey}/>}
   />
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
+  const isCustomeRole = userProfile.abacEnabled && userProfile.isCustomRole
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        !Boolean(userProfile.allowedOperations.length) ||
+        (isCustomeRole ? false : !Boolean(userProfile.allowedOperations.length)) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}

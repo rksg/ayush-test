@@ -6,36 +6,13 @@ import { rest }  from 'msw'
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
 import { Provider, store }                                                   from '@acx-ui/store'
-import { act, fireEvent, mockServer, render, screen, within }                from '@acx-ui/test-utils'
+import { act, mockServer, render, screen, within }                           from '@acx-ui/test-utils'
 
+import { detailContent }       from '../__tests__/fixtures'
 import RogueAPDetectionContext from '../RogueAPDetectionContext'
 
 import RuleTable from './RuleTable'
 
-const detailContent = {
-  venues: [
-    {
-      id: '4ca20c8311024ac5956d366f15d96e0c',
-      name: 'test-venue'
-    }
-  ],
-  name: 'Default profile',
-  rules: [
-    {
-      name: 'SameNetworkRuleName1',
-      type: 'SameNetworkRule',
-      classification: 'Malicious',
-      priority: 1
-    },
-    {
-      name: 'SameNetworkRuleName2',
-      type: 'SameNetworkRule',
-      classification: 'Malicious',
-      priority: 2
-    }
-  ],
-  id: 'policyId1'
-}
 
 const wrapper = ({ children }: { children: React.ReactElement }) => {
   return <Provider>
@@ -80,12 +57,10 @@ describe('RuleTable', () => {
   })
 
   it('should render RuleTable successfully', async () => {
-    mockServer.use(rest.get(
-      RogueApUrls.getRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(detailContent)
-      )
-    ))
+    mockServer.use(
+      rest.get(RogueApUrls.getRoguePolicy.url,
+        (_, res, ctx) => res(ctx.json(detailContent))
+      ))
 
     render(
       <RogueAPDetectionContext.Provider value={{
@@ -117,12 +92,10 @@ describe('RuleTable', () => {
   })
 
   it('should render RuleTable with editMode successfully', async () => {
-    mockServer.use(rest.get(
-      RogueApUrls.getRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(detailContent)
-      )
-    ))
+    mockServer.use(
+      rest.get(RogueApUrls.getRoguePolicy.url,
+        (_, res, ctx) => res(ctx.json(detailContent))
+      ))
 
     render(
       <RogueAPDetectionContext.Provider value={{
@@ -158,25 +131,23 @@ describe('RuleTable', () => {
 
     await userEvent.click(screen.getByText(/sameNetworkRuleName1/i))
 
-    fireEvent.click(screen.getByRole('button', {
+    await userEvent.click(screen.getByRole('button', {
       name: /edit/i
     }))
 
     const dialog = screen.getByRole('dialog')
 
-    fireEvent.click(within(dialog).getByText(/cancel/i))
+    await userEvent.click(within(dialog).getByText(/cancel/i))
 
     expect(dialog).not.toBeVisible()
 
   })
 
   it('should render RuleTable with editMode delete successfully', async () => {
-    mockServer.use(rest.get(
-      RogueApUrls.getRoguePolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(detailContent)
-      )
-    ))
+    mockServer.use(
+      rest.get(RogueApUrls.getRoguePolicy.url,
+        (_, res, ctx) => res(ctx.json(detailContent))
+      ))
 
     render(
       <RogueAPDetectionContext.Provider value={{
@@ -201,12 +172,14 @@ describe('RuleTable', () => {
 
     await screen.findByText(/1 selected/i)
 
-    fireEvent.click(screen.getByRole('button', {
+    await userEvent.click(screen.getByRole('button', {
       name: /delete/i
     }))
 
     await screen.findByText(/delete \"samenetworkrulename1\"?/i)
 
-    fireEvent.click(screen.getByText(/delete \"samenetworkrulename1\"?/i))
+    await userEvent.click(screen.getByText(/delete \"samenetworkrulename1\"?/i))
+
+    expect(await screen.findByText(/are you sure you want to delete this rule\?/i)).toBeVisible()
   })
 })

@@ -1,16 +1,16 @@
 /* eslint-disable max-len */
 import {
-  TableResult,
-  CommonResult,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
   AAAPolicyType,
-  CommonResultWithEntityResponse,
-  NetworkSaveData,
   AAAViewModalType,
-  Network,
+  CommonResult,
+  CommonResultWithEntityResponse,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
+  Network,
+  NetworkSaveData,
+  TableResult,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
   transformNetwork
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
@@ -20,11 +20,9 @@ import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 import { networkApi } from '../network'
 
 import {
-  ApplicationTemplateUseCases,
-  DeviceTemplateUseCases,
-  L2AclTemplateUseCases,
-  L3AclTemplateUseCases
-} from './policies'
+  useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
+  useCasesToRefreshNetworkTemplateList
+} from './constants'
 
 export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -76,12 +74,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       keepUnusedDataFor: 0,
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddNetworkTemplateRecord',
-            'UpdateNetworkTemplateRecord',
-            'DeleteNetworkTemplateRecord'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshNetworkTemplateList, () => {
             // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'NetworkTemplate', id: 'LIST' }]))
           })
@@ -111,12 +104,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'AAATemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddRadiusServerProfileTemplateRecord',
-            'UpdateRadiusServerProfileTemplateRecord',
-            'DeleteRadiusServerProfileTemplateRecord'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshRadiusServerTemplateList, () => {
             // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'AAATemplate', id: 'LIST' }]))
           })
@@ -260,36 +248,3 @@ export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
     }
   }
 }
-
-
-export const useCasesToRefreshDhcpTemplateList = ['AddDhcpConfigServiceProfileTemplate', 'UpdateDhcpConfigServiceProfileTemplate', 'DeleteDhcpConfigServiceProfileTemplate']
-
-export const useCasesToRefreshDpskTemplateList = ['CREATE_POOL_TEMPLATE_RECORD', 'UPDATE_POOL_TEMPLATE_RECORD', 'DELETE_POOL_TEMPLATE_RECORD']
-export const useCasesToRefreshAccessControlTemplateList = [
-  'AddAccessControlProfileTemplateRecord',
-  'UpdateAccessControlProfileTemplateRecord',
-  'DeleteAccessControlProfileTemplateRecord',
-  ...L2AclTemplateUseCases,
-  ...L3AclTemplateUseCases,
-  ...DeviceTemplateUseCases,
-  ...ApplicationTemplateUseCases
-]
-
-export const useCasesToRefreshPortalTemplateList = ['Add Portal Service Profile by Template	', 'Update Portal Service Profile by Template	', 'Delete Portal Service Profile by Template']
-
-const useCasesToRefreshTemplateList = [
-  'AddRadiusServerProfileTemplateRecord',
-  'UpdateRadiusServerProfileTemplateRecord',
-  'DeleteRadiusServerProfileTemplateRecord',
-  'AddNetworkTemplateRecord',
-  'UpdateNetworkTemplateRecord',
-  'DeleteNetworkTemplateRecord',
-  'ApplyTemplate',
-  'AddVenueTemplateRecord',
-  'UpdateVenueTemplateRecord',
-  'DeleteVenueTemplateRecord',
-  ...useCasesToRefreshDpskTemplateList,
-  ...useCasesToRefreshDhcpTemplateList,
-  ...useCasesToRefreshAccessControlTemplateList,
-  ...useCasesToRefreshPortalTemplateList
-]

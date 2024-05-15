@@ -7,7 +7,7 @@ import {
 }                    from '@ant-design/pro-utils/'
 import { DataIndex } from 'rc-table/lib/interface'
 
-import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/user'
+import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/types'
 
 import type {
   ProColumnType,
@@ -162,6 +162,7 @@ export type RecordWithChildren <RecordType> = RecordType & {
 
 export type TableAction = {
   key?: string
+  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[]
   label: string
   disabled?: boolean
   tooltip?: string

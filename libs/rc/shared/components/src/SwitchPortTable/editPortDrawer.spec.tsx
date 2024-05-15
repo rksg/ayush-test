@@ -3,9 +3,10 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { switchApi }              from '@acx-ui/rc/services'
+import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider, store }        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -73,10 +74,16 @@ const editPortVlans = async (
 const mockedSavePortsSetting = jest.fn().mockImplementation(() => ({
   unwrap: jest.fn()
 }))
+const mockedCyclePoe = jest.fn().mockImplementation(() => ({
+  unwrap: jest.fn()
+}))
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useSavePortsSettingMutation: () => [
     mockedSavePortsSetting, { reset: jest.fn() }
+  ],
+  useCyclePoeMutation: () => [
+    mockedCyclePoe, { reset: jest.fn() }
   ]
 }))
 
@@ -109,7 +116,12 @@ const initPortValue = {
 
 const transformSubmitValue = (updateValue?: object) => {
   return {
-    params: { tenantId: 'tenant-id' },
+    enableRbac: false,
+    option: { skip: false },
+    params: {
+      tenantId: 'tenant-id',
+      venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+    },
     payload: [{
       switchId: 'c0:c5:20:aa:32:79',
       port: {
@@ -124,10 +136,14 @@ describe('EditPortDrawer', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockedSavePortsSetting.mockClear()
+    mockedCyclePoe.mockClear()
     setDrawerVisible.mockClear()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailHeader))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({ id: 'c0:c5:20:aa:32:79' }))
       ),
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
@@ -169,6 +185,8 @@ describe('EditPortDrawer', () => {
         (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(SwitchUrlsInfo.portsPowerCycle.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -178,6 +196,7 @@ describe('EditPortDrawer', () => {
 
   describe('single edit', () => {
     it('should apply edit data correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -217,6 +236,35 @@ describe('EditPortDrawer', () => {
           poeClass: 'UNSET'
         })
       )
+    })
+
+    it('should cycle PoE correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_CYCLE_POE)
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Selected Port')
+
+      const poeEnableButton = await screen.findAllByTestId('poeEnable')
+      expect(poeEnableButton[0]).toBeChecked()
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Cycle PoE' }))
+      expect(mockedCyclePoe).toHaveBeenCalled()
     })
 
     it('should customized VLAN correctly', async () => {
@@ -415,7 +463,12 @@ describe('EditPortDrawer', () => {
       await editPortVlans('VLAN-ID-66', '', 'venue')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: '58:fb:96:0e:82:8a',
           port: {
@@ -552,7 +605,12 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -805,7 +863,12 @@ describe('EditPortDrawer', () => {
       await waitFor(() => expect(dialog).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -1065,7 +1128,12 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByText('Applied at venue')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {

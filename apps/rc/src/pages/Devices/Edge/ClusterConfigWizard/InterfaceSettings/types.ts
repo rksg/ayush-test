@@ -24,3 +24,7 @@ export interface CompatibilityCheckResult {
   corePorts: boolean,
   portTypes: boolean
 }
+
+export interface InterfaceSettingFormStepCommonProps {
+  onInit?: () => void
+}

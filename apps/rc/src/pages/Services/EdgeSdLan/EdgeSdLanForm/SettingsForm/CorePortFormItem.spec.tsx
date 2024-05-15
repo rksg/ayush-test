@@ -53,11 +53,11 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
         (_, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
       ),
       rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
+        EdgeUrlsInfo.getPortConfigDeprecated.url,
         (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
       ),
       rest.patch(
-        EdgeUrlsInfo.updatePortConfig.url,
+        EdgeUrlsInfo.updatePortConfigDeprecated.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(

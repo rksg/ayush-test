@@ -1,40 +1,35 @@
-import React, { useState, useEffect, MouseEvent } from 'react'
+import React, { useState, useEffect, MouseEvent, useContext } from 'react'
 
-import { useParams } from 'react-router-dom'
+import { HierarchyPointNode } from 'd3'
+import { useParams }          from 'react-router-dom'
 
 import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud } from '@acx-ui/icons'
-import { Node }                                             from '@acx-ui/rc/utils'
+import { DeviceTypes, NodeData, TopologyDeviceStatus }      from '@acx-ui/rc/utils'
 
 import { getDeviceIcon, getDeviceColor, truncateLabel } from '../utils'
 
-interface NodeData extends Node {
-  children?: NodeData[]
-  _children?: NodeData[]
-}
+import { TopologyTreeContext } from './TopologyTreeContext'
 
 interface NodeProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nodes: any;
+  nodes: HierarchyPointNode<NodeData>[];
   expColEvent: (nodeId: string) => void;
   onHover: (node: NodeData, event: MouseEvent) => void;
   onClick: (node: NodeData, event: MouseEvent) => void;
   onMouseLeave: () => void;
   nodesCoordinate: { [id: string]: { x: number; y: number } };
-  selectedVlanPortList: string[];
 }
 
 const Nodes: React.FC<NodeProps> = (props) => {
   const params = useParams()
   const [color, setColor] = useState<{ [id: string]: string }>({})
   let delayHandler: NodeJS.Timeout
-  const { nodes, expColEvent, onHover, onClick, nodesCoordinate, selectedVlanPortList } = props
+  const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
+  const { selectedNode, selectedVlanPortList } = useContext(TopologyTreeContext)
 
   useEffect(() => {
     nodes
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .filter((node: any) => node.ancestors().length === 2)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .forEach((node: any) => {
+      .filter((node: HierarchyPointNode<NodeData>) => node.ancestors().length === 2)
+      .forEach((node: HierarchyPointNode<NodeData>) => {
         const r = Math.floor(Math.random() * 255)
         const g = Math.floor(Math.random() * 255)
         const b = Math.floor(Math.random() * 255)
@@ -45,18 +40,18 @@ const Nodes: React.FC<NodeProps> = (props) => {
       })
   }, [nodes])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function coordinateTransform (node: any) {
+  function coordinateTransform (node: HierarchyPointNode<NodeData>) {
     return `translate(${nodesCoordinate[node.data.id].y},
       ${nodesCoordinate[node.data.id].x - 65 * node.ancestors().length})`
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleMouseEnter = (node: any , event: any) => {
+  const handleMouseEnter = (node: HierarchyPointNode<NodeData>,
+    event: React.MouseEvent<Element, globalThis.MouseEvent> |
+    React.MouseEvent<SVGGElement, globalThis.MouseEvent>) => {
     if(node.data.id === 'Cloud'){
       return
     }
     delayHandler = setTimeout(() => {
-      onHover(node, event)
+      onHover(node as unknown as NodeData, event)
     }, 1000)
   }
 
@@ -64,26 +59,28 @@ const Nodes: React.FC<NodeProps> = (props) => {
     clearTimeout(delayHandler)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleClick = (node: any , event: any) => {
-    onClick(node, event)
+  const handleClick = (node: HierarchyPointNode<NodeData> ,
+    event: React.MouseEvent<Element, globalThis.MouseEvent> |
+    React.MouseEvent<SVGGElement, globalThis.MouseEvent>) => {
+    onClick(node as unknown as NodeData, event)
     clearTimeout(delayHandler)
   }
 
   return (
     <g className='output d3-tree-nodes'>
       {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        nodes.map((node: any) => {
+        nodes.map((node: HierarchyPointNode<NodeData>) => {
           const ancestorName = node.parent
             ? node
               .ancestors()
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              .filter((ancestor: any) => ancestor.ancestors().length === 2)[0].data
+              .filter((ancestor) => ancestor.ancestors().length === 2)[0].data
               .id
             : ''
-          const children = node.data.children?.length > 0 ? `(${node.data.children.length})` :
-            (node.data._children?.length > 0 ? `(${node.data._children.length})` : '')
+          const children = node.data?.children && node.data.children?.length > 0 ?
+            `(${node.data.children.length})` :
+            (node.data?._children && node.data._children?.length > 0 ?
+              `(${node.data._children.length})` : '')
+          const deviceType = node.data.meshRole === 'EMAP' ? DeviceTypes.ApWired : node.data.type
           return (
             <g
               transform={coordinateTransform(node)}
@@ -92,7 +89,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 cursor: node.data.id !== 'Cloud' ? 'pointer' : 'default'
               }}
               // eslint-disable-next-line max-len
-              className={`node tree-node ${params?.switchId === node.data.id ? 'focusNode' : ''} ${params?.apId === node.data.id ? 'focusNode' : ''} ${selectedVlanPortList && selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
+              className={`node tree-node ${(params?.switchId === node.data.id || params?.apId === node.data.id || selectedNode === node.data.id) && 'focusNode'} ${selectedVlanPortList && selectedVlanPortList.includes(node.data.id) && 'focusNode'}`
               }
               id={node.data.id}
             >
@@ -105,7 +102,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
                 <circle cx='0' cy='0' r='15' className={`${node.data.status}-circle`} />
                 <g className={`${node.data.status}-icon`}>
                   {node.parent ? (
-                    getDeviceIcon(node.data.type, node.data.status)
+                    getDeviceIcon(deviceType as DeviceTypes,
+                      node.data.status as TopologyDeviceStatus)
                   ) : (
                     <R1Cloud width={24} height={24} x={-12} y={-12} />
                   )}
@@ -144,7 +142,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   />
                 </g>
               )}
-              {node.data._children?.length > 0 && (
+              {node.data?._children && node.data._children?.length > 0 && (
                 <g onClick={(e) => {
                   e.preventDefault()
                   expColEvent(node.data.id)

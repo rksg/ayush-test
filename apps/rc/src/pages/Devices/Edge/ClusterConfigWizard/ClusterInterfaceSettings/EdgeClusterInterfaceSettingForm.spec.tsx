@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { EdgeIpModeEnum, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { render, renderHook, screen }             from '@acx-ui/test-utils'
+import { EdgeIpModeEnum, EdgePortConfigFixtures, VirtualIpSetting } from '@acx-ui/rc/utils'
+import { render, renderHook, screen }                               from '@acx-ui/test-utils'
 
 import { EdgeClusterInterfaceSettingForm } from './EdgeClusterInterfaceSettingForm'
 
@@ -19,8 +19,7 @@ jest.mock('antd', () => {
   const Select = ({ loading, children, onChange, options,
     dropdownClassName, ...props }: MockSelectProps) => (
     <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
-      {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={undefined}></option>{children}</> : null}
+      {children ? children : null}
       {options?.map((option) => (
         <option
           key={`option-${option.value}`}
@@ -64,6 +63,7 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
+          serialNumber='serialNumber-1'
           form={formRef.current}
         />
       </Form>
@@ -85,6 +85,7 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
+          serialNumber='serialNumber-1'
           form={formRef.current}
           interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
         />
@@ -96,8 +97,9 @@ describe('EdgeClusterInterfaceSettingForm', () => {
       mockClusterInterfaceOptionData['serialNumber-1'][0].portName
     )
     await userEvent.click(screen.getByRole('radio', { name: 'Static/Manual' }))
-    expect(await screen.findByRole('textbox', { name: 'IP Address' }))
-      .toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].ip)
+    const ip = await screen.findByRole('textbox', { name: 'IP Address' })
+    expect(ip).not.toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].ip)
+    expect(ip).toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].ip.split('/')[0])
     expect(screen.getByRole('textbox', { name: 'Subnet Mask' }))
       .toHaveValue(mockClusterInterfaceOptionData['serialNumber-1'][0].subnet)
   })
@@ -111,6 +113,7 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
+          serialNumber='serialNumber-1'
           form={formRef.current}
           interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
         />
@@ -135,6 +138,7 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
+          serialNumber='serialNumber-1'
           form={formRef.current}
           interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
           rootNamePath={['serialNumber-1']}
@@ -164,6 +168,7 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
+          serialNumber='serialNumber-1'
           form={formRef.current}
           interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
           rootNamePath={['serialNumber-1']}
@@ -199,6 +204,7 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     render(
       <Form form={formRef.current}>
         <EdgeClusterInterfaceSettingForm
+          serialNumber='serialNumber-1'
           form={formRef.current}
           interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
           rootNamePath={['serialNumber-1']}
@@ -209,5 +215,40 @@ describe('EdgeClusterInterfaceSettingForm', () => {
     formRef.current.submit()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster.')).toBeVisible()
+  })
+
+  it('should disable the interface option which set as a VRRP interface', async () => {
+    const { result: formRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      return form
+    })
+
+    formRef.current.setFieldsValue({
+      'serialNumber-1': mockedAllNodeData['serialNumber-1'],
+      'serialNumber-2': mockedAllNodeData['serialNumber-2']
+    })
+
+    render(
+      <Form form={formRef.current}>
+        <EdgeClusterInterfaceSettingForm
+          serialNumber='serialNumber-1'
+          form={formRef.current}
+          interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
+          rootNamePath={['serialNumber-1']}
+          vipConfig={[{
+            ports: [{
+              serialNumber: 'serialNumber-1',
+              portName: 'port3'
+            }]
+          }] as VirtualIpSetting[]}
+        />
+      </Form>
+    )
+
+    const options = await screen.findAllByRole('option')
+    expect(options[0].innerHTML).toBe('Lag0')
+    expect(options[0]).not.toBeDisabled()
+    expect(options[1].innerHTML).toBe('Port3')
+    expect(options[1]).toBeDisabled()
   })
 })

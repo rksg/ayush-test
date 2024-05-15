@@ -206,12 +206,12 @@ export const edgePortsSetting:EdgePortStatus[] = [{
 }]
 
 export const mockLanInterfaces = {
-  'serialNumber-1': [
+  [mockEdgeClusterList.data[0].edgeList[0].serialNumber]: [
     {
       id: 'se1-port3',
       mac: '00:00:00:00',
       ipMode: EdgeIpModeEnum.STATIC,
-      serialNumber: 'serialNumber-1',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
       portName: 'port3',
       ip: '192.168.14.135',
       subnet: '255.255.255.0',
@@ -225,7 +225,7 @@ export const mockLanInterfaces = {
       id: 'se1-port2',
       mac: '00:00:00:01',
       ipMode: EdgeIpModeEnum.STATIC,
-      serialNumber: 'serialNumber-1',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
       portName: 'port2',
       ip: '192.168.13.136',
       subnet: '255.255.255.0',
@@ -239,7 +239,7 @@ export const mockLanInterfaces = {
       id: 'se1-lag0',
       mac: '00:00:00:04',
       ipMode: EdgeIpModeEnum.DHCP,
-      serialNumber: 'serialNumber-1',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
       portName: 'lag0',
       ip: '',
       subnet: '',
@@ -250,12 +250,12 @@ export const mockLanInterfaces = {
       isLag: true
     }
   ],
-  'serialNumber-2': [
+  [mockEdgeClusterList.data[0].edgeList[1].serialNumber]: [
     {
       id: 'se2-port3',
       mac: '00:00:00:02',
       ipMode: EdgeIpModeEnum.STATIC,
-      serialNumber: 'serialNumber-2',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
       portName: 'port3',
       ip: '192.168.14.135',
       subnet: '255.255.255.0',
@@ -269,7 +269,7 @@ export const mockLanInterfaces = {
       id: 'se2-port2',
       mac: '00:00:00:03',
       ipMode: EdgeIpModeEnum.STATIC,
-      serialNumber: 'serialNumber-2',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
       portName: 'port2',
       ip: '192.168.13.134',
       subnet: '255.255.255.0',
@@ -283,7 +283,7 @@ export const mockLanInterfaces = {
       id: 'se2-lag0',
       mac: '00:00:00:05',
       ipMode: EdgeIpModeEnum.DHCP,
-      serialNumber: 'serialNumber-2',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
       portName: 'lag0',
       ip: '',
       subnet: '',
@@ -297,12 +297,12 @@ export const mockLanInterfaces = {
 }
 
 export const mockClusterInterfaceOptionData = {
-  'serialNumber-1': [
+  [mockEdgeClusterList.data[0].edgeList[0].serialNumber]: [
     {
-      serialNumber: 'serialNumber-1',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
       portName: 'port3',
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '192.168.14.135',
+      ip: '192.168.14.135/24',
       subnet: '255.255.255.0',
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
@@ -311,7 +311,7 @@ export const mockClusterInterfaceOptionData = {
       mac: 'F6:C9:AE:00:DD:B5'
     },
     {
-      serialNumber: 'serialNumber-1',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
       portName: 'port2',
       ipMode: EdgeIpModeEnum.DHCP,
       ip: '',
@@ -323,10 +323,10 @@ export const mockClusterInterfaceOptionData = {
       mac: 'BE:B9:DD:95:1B:DF'
     },
     {
-      serialNumber: 'serialNumber-1',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
       portName: 'lag0',
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '192.168.11.136',
+      ip: '192.168.11.136/24',
       subnet: '255.255.255.0',
       portType: EdgePortTypeEnum.CLUSTER,
       isCorePort: false,
@@ -335,12 +335,12 @@ export const mockClusterInterfaceOptionData = {
       mac: 'C1:8E:2D:38:E1:3E'
     }
   ],
-  'serialNumber-2': [
+  [mockEdgeClusterList.data[0].edgeList[1].serialNumber]: [
     {
-      serialNumber: 'serialNumber-2',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
       portName: 'port3',
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '192.168.9.135',
+      ip: '192.168.9.135/24',
       subnet: '255.255.255.0',
       portType: EdgePortTypeEnum.LAN,
       isCorePort: false,
@@ -349,7 +349,7 @@ export const mockClusterInterfaceOptionData = {
       mac: '0E:4E:BF:EF:DF:0E'
     },
     {
-      serialNumber: 'serialNumber-2',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
       portName: 'port2',
       ipMode: EdgeIpModeEnum.DHCP,
       ip: '',
@@ -361,10 +361,10 @@ export const mockClusterInterfaceOptionData = {
       mac: '63:0C:EE:F6:EB:10'
     },
     {
-      serialNumber: 'serialNumber-2',
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
       portName: 'lag0',
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '192.168.12.136',
+      ip: '192.168.12.136/24',
       subnet: '255.255.255.0',
       portType: EdgePortTypeEnum.CLUSTER,
       isCorePort: false,

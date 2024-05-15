@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import moment         from 'moment'
 import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
@@ -28,7 +29,7 @@ const entitlement =
       deviceSubType: 'MSP_WIFI',
       deviceType: 'MSP_WIFI',
       effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
-      expirationDate: 'Tue Dec 01 23:59:59 UTC 2026',
+      expirationDate: moment().add(30, 'days'),
       id: '373419142-1',
       isTrial: false,
       lastNotificationDate: null,
@@ -154,27 +155,6 @@ describe('Subscriptions', () => {
   })
   it('should render correctly DEVICE_AGNOSTIC feature flag on', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
-    render(
-      <Provider>
-        <Subscriptions />
-      </Provider>, {
-        route: { params, path: '/:tenantId/mspLicenses' }
-      })
-
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect(screen.getAllByText('Active')).toHaveLength(2)
-    expect(screen.getAllByText('Expired')).toHaveLength(2)
-    const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
-    fireEvent.click(generateUsageButton)
-    const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subscriptions' })
-    fireEvent.click(licenseManagementButton)
-    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    fireEvent.click(refreshButton)
-  })
-
-  it('should render correctly MSP_SELF_ASSIGNMENT feature flag on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.MSP_SELF_ASSIGNMENT)
     render(
       <Provider>
         <Subscriptions />

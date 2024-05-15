@@ -128,7 +128,8 @@ export const mockEdgeData = {
   description: 'This is description rr',
   edgeName: 'edgeName',
   name: 'edgeName',
-  tags: ['tag1', 'tag2']
+  tags: ['tag1', 'tag2'],
+  clusterId: 'clusterId_1'
 }
 
 
@@ -413,7 +414,7 @@ export const mockedHaNetworkSettings = {
       ip: '',
       subnet: '',
       gateway: '',
-      corePortEnabled: true,
+      corePortEnabled: false,
       natEnabled: true,
       lagEnabled: true
     }]
@@ -425,16 +426,13 @@ export const mockedHaNetworkSettings = {
       lagType: EdgeLagTypeEnum.LACP,
       lacpMode: EdgeLagLacpModeEnum.ACTIVE,
       lacpTimeout: EdgeLagTimeoutEnum.SHORT,
-      lagMembers: [{
-        portId: 'port1',
-        portEnabled: true
-      }],
+      lagMembers: [],
       portType: EdgePortTypeEnum.LAN,
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '1.10.10.1',
       subnet: '255.255.0.0',
       gateway: '127.1.1.0',
-      corePortEnabled: true,
+      corePortEnabled: false,
       natEnabled: false,
       lagEnabled: true
     }]
@@ -445,7 +443,7 @@ export const mockedHaNetworkSettings = {
       id: 'port_id_0',
       name: '',
       mac: '00:0c:29:b6:ad:00',
-      enabled: true,
+      enabled: false,
       portType: EdgePortTypeEnum.WAN,
       natEnabled: false,
       ipMode: EdgeIpModeEnum.STATIC,
@@ -463,10 +461,10 @@ export const mockedHaNetworkSettings = {
       portType: EdgePortTypeEnum.LAN,
       natEnabled: false,
       ipMode: EdgeIpModeEnum.STATIC,
-      ip: '2.2.2.2',
+      ip: '2.2.2.3',
       subnet: '255.255.255.0',
-      gateway: '',
-      corePortEnabled: false,
+      gateway: '2.2.2.1',
+      corePortEnabled: true,
       interfaceName: 'port2'
     }]
   }, {
@@ -475,10 +473,10 @@ export const mockedHaNetworkSettings = {
       id: 'port_id_0',
       name: '',
       mac: '00:0c:29:b6:ad:02',
-      enabled: true,
-      portType: EdgePortTypeEnum.UNCONFIGURED,
+      enabled: false,
+      portType: EdgePortTypeEnum.WAN,
       natEnabled: false,
-      ipMode: EdgeIpModeEnum.STATIC,
+      ipMode: EdgeIpModeEnum.DHCP,
       ip: '',
       subnet: '',
       gateway: '',
@@ -495,8 +493,8 @@ export const mockedHaNetworkSettings = {
       ipMode: EdgeIpModeEnum.STATIC,
       ip: '2.2.2.2',
       subnet: '255.255.255.0',
-      gateway: '',
-      corePortEnabled: false,
+      gateway: '2.2.2.1',
+      corePortEnabled: true,
       interfaceName: 'port2'
     }]
   }],
@@ -507,7 +505,7 @@ export const mockedHaNetworkSettings = {
       portName: 'port2'
     }, {
       serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
-      portName: 'lag1'
+      portName: 'port2'
     }],
     timeoutSeconds: 6
   }]

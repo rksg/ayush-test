@@ -19,7 +19,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
 
-  const labelWidth = '230px'
+  const labelWidth = '250px'
 
   const [
     enableDhcp,
@@ -78,10 +78,12 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           label={$t({ defaultMessage: 'VLAN ID' })}
           initialValue={1}
           rules={[
-            { required: true }, {
+            { required: true },
+            {
               type: 'number', max: 4094, min: 1,
               message: $t(validationMessages.vlanRange)
-            }]}
+            }
+          ]}
           style={{ marginBottom: '15px' }}
           children={<InputNumber style={{ width: '80px' }}
             disabled={isPortalDefaultVLANId || pureVxLanEnabled}/>}
@@ -107,12 +109,10 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
         <Space size={1}>
           <UI.InfoIcon />
           <UI.Description>
-            {
-              $t({
-                defaultMessage: `Not able to modify when the network
+            {$t({
+              defaultMessage: `Not able to modify when the network
                     enables personal identify network`
-              })
-            }
+            })}
           </UI.Description>
         </Space>
       }
