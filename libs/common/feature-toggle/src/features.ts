@@ -152,7 +152,6 @@ export enum Features {
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
   WIFI_EDA_WIFI7_320MHZ = 'wifi-eda-wifi7-320mhz-toggle',
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
-  WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
   WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE = 'wifi-eda-tls-key-enhance-mode-config-toggle',
   WIFI_FR_6029_FG1_TOGGLE = 'wifi-fr-6029-fg1-toggle',
