@@ -27,7 +27,7 @@ import { MSPUtils }                                                             
 import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery }                                                     from '@acx-ui/rc/services'
 import { useTableQuery, dpskAdminRoutePathKeeper }                                      from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, MspTenantLink }                            from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink, MspTenantLink, TenantNavLink }             from '@acx-ui/react-router-dom'
 import { useParams }                                                                    from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                    from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
@@ -79,6 +79,7 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
@@ -124,7 +125,7 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={logo}
+      logo={isDPSKAdmin ? logo : <TenantNavLink to={indexPath} children={logo} />}
       menuConfig={useMenuConfig()}
       content={
         <>
