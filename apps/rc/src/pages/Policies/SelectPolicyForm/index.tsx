@@ -89,7 +89,11 @@ export default function SelectPolicyForm () {
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.SNMP_AGENT, categories: [RadioCardCategory.WIFI], disabled: (ApSnmpPolicyTotalCount >= 64) }
+    {
+      type: PolicyType.SNMP_AGENT,
+      categories: [RadioCardCategory.WIFI],
+      disabled: (ApSnmpPolicyTotalCount >= 64)
+    }
   ]
 
   if (supportHotspot20R1) {

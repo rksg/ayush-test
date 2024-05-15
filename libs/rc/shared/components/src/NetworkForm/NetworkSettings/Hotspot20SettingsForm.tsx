@@ -14,7 +14,7 @@ import {
   Select,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { InformationSolid }       from '@acx-ui/icons'
+import { InformationSolid }     from '@acx-ui/icons'
 import {
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery

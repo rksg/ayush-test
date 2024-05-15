@@ -1,17 +1,15 @@
 /* eslint-disable max-len */
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Checkbox, Form, InputNumber, Select, Space, Switch, Tooltip } from 'antd'
-import _                                                               from 'lodash'
-import { useIntl }                                                     from 'react-intl'
+import { Checkbox, Form, InputNumber, Select, Space, Switch } from 'antd'
+import _                                                      from 'lodash'
+import { useIntl }                                            from 'react-intl'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                       from '@acx-ui/icons'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
   DnsProxyContextType,
   DnsProxyRule,
-  NetworkSaveData,
   ServiceOperation,
   ServiceType,
   WifiCallingSetting,
@@ -21,15 +19,15 @@ import {
   ConfigTemplateType } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
-import NetworkFormContext                                                                                   from '../../NetworkFormContext'
-import { hasAccountingRadius, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
-import { AccessControlForm }                                                                                from '../AccessControlForm'
-import ClientIsolationForm                                                                                  from '../ClientIsolation/ClientIsolationForm'
-import { DhcpOption82Form }                                                                                 from '../DhcpOption82Form'
-import { DnsProxyModal }                                                                                    from '../DnsProxyModal'
-import * as UI                                                                                              from '../styledComponents'
-import { WifiCallingSettingModal }                                                                          from '../WifiCallingSettingModal'
-import WifiCallingSettingTable                                                                              from '../WifiCallingSettingTable'
+import NetworkFormContext                                                              from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
+import { AccessControlForm }                                                           from '../AccessControlForm'
+import ClientIsolationForm                                                             from '../ClientIsolation/ClientIsolationForm'
+import { DhcpOption82Form }                                                            from '../DhcpOption82Form'
+import { DnsProxyModal }                                                               from '../DnsProxyModal'
+import * as UI                                                                         from '../styledComponents'
+import { WifiCallingSettingModal }                                                     from '../WifiCallingSettingModal'
+import WifiCallingSettingTable                                                         from '../WifiCallingSettingTable'
 
 
 export const DnsProxyContext = createContext({} as DnsProxyContextType)
