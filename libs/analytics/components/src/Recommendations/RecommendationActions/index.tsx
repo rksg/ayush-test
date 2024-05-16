@@ -314,7 +314,7 @@ export const getAvailableActions = (
   isRecommendationRevertEnabled: boolean,
   showTextOnly?: boolean) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
-  const isContinuos = codes[code].continuos
+  const isContinuous = codes[code].continuous
   const props = { ...recommendation, showTextOnly }
   if (isMuted) {
     return [
@@ -360,7 +360,7 @@ export const getAvailableActions = (
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(isRecommendationRevertEnabled && appliedOnce && isContinuos),
+            disabled: !(isRecommendationRevertEnabled && appliedOnce && isContinuous),
             type: 'Revert',
             initialDate: 'futureDate'
           })
@@ -406,7 +406,7 @@ export const getAvailableActions = (
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(isRecommendationRevertEnabled && isContinuos),
+            disabled: !(isRecommendationRevertEnabled && isContinuous),
             type: 'Revert',
             initialDate: 'futureDate'
           })
