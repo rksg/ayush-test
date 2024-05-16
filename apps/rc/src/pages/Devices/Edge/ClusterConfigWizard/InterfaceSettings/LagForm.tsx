@@ -7,6 +7,7 @@ import { useIntl }                 from 'react-intl'
 import { useStepFormContext }                                                                      from '@acx-ui/components'
 import { EdgeLagTable, NodesTabs, TypeForm }                                                       from '@acx-ui/rc/components'
 import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs, validateEdgeAllPortsEmptyLag } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                              from '@acx-ui/types'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -155,6 +156,11 @@ const LagSettingView = (props: LagSettingViewProps) => {
               onAdd={handleAdd}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              actionScopes={{
+                add: [EdgeScopes.UPDATE],
+                edit: [EdgeScopes.UPDATE],
+                delete: [EdgeScopes.UPDATE]
+              }}
             />
           </>
         }
