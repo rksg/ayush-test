@@ -549,6 +549,36 @@ export const kpiConfig = {
       thresholdFormatter: null,
       tooltip: defineMessage({ defaultMessage: 'Switch Temperature' })
     }
+  },
+  switchStormControl: {
+    text: defineMessage({ defaultMessage: 'BC/MC traffic' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchPortStormCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 2000,
+      apiMetric: 'switchPortStormCount',
+      splits: [0, 1000, 2000, 3000, 4000, 5000, 6000],
+      xUnit: defineMessage({ defaultMessage: ' packets/sec' }),
+      yUnit: 'Number of Ports',
+      shortXFormat: formatter('countFormat'),
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports do not experiment Storm' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'above' }),
+        defineMessage({ defaultMessage: '{threshold} packets/sec' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: noFormat,
+      tooltip: defineMessage({ defaultMessage: 'BC/MC traffic' })
+    }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -611,7 +641,7 @@ export const wiredKPIsForTab = () => {
         // 'portUtilization',
         // 'uplinkPortUtilization',
         // 'interfaceAnamolies',
-        // 'bcmcTraffic'
+        'switchStormControl'
       ]
     },
     infrastructure: {

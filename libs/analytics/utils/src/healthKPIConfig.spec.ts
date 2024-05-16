@@ -75,7 +75,9 @@ describe('Health KPI', () => {
         kpis: []
       },
       performance: {
-        kpis: []
+        kpis: [
+          'switchStormControl'
+        ]
       },
       infrastructure: {
         kpis: [

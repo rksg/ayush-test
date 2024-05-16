@@ -20,6 +20,7 @@ export interface KpiThresholdType {
   switchPoeUtilization: number
   switchMemoryUtilization: number
   switchCpuUtilization: number
+  switchStormControl: number
   clusterLatency: number
 }
 
@@ -116,6 +117,7 @@ interface ThresholdsApiResponse {
   switchPoeUtilizationThreshold?: ThresholdData
   switchMemoryUtilizationThreshold?: ThresholdData
   switchCpuUtilizationThreshold?: ThresholdData
+  switchStormControlThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
 }
 
