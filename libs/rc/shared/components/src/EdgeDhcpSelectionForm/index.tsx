@@ -1,11 +1,10 @@
 
 import { Form, Select, Space } from 'antd'
 import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
 
-import { Loader, Table, TableProps }     from '@acx-ui/components'
-import { useGetEdgeDhcpListQuery }       from '@acx-ui/rc/services'
-import { EdgeDhcpPool, EdgeDhcpSetting } from '@acx-ui/rc/utils'
+import { Loader, Table, TableProps, useStepFormContext }    from '@acx-ui/components'
+import { useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
+import { EdgeDhcpPool }                                     from '@acx-ui/rc/utils'
 
 import { AddEdgeDhcpServiceModal } from '../AddEdgeDhcpServiceModal'
 
@@ -15,28 +14,39 @@ interface EdgeDhcpSelectionFormProps {
 
 export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
 
-  const params = useParams()
   const { hasNsg } = props
   const { $t } = useIntl()
+  const { form } = useStepFormContext()
+  const dhcpId = Form.useWatch('dhcpId', form)
 
   const {
-    data: edgeDhcpData,
-    edgeDhcpOptions,
-    isLoading: isEdgeDhcpDataFetching
-  } = useGetEdgeDhcpListQuery(
-    { params, payload: { page: 1, pageSize: 10000 } },
-    {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          data: data?.content.reduce((acc, item) => ({
-            ...acc,
-            [item.id]: item
-          }), {}) as { [key: string]: EdgeDhcpSetting },
-          edgeDhcpOptions: data?.content.map(item => ({ label: item.serviceName, value: item.id })),
-          isLoading
-        }
+    edgeDhcpOptions, isEdgeDhcpOptionsLoading
+  } = useGetDhcpStatsQuery({
+    payload: {
+      fields: ['id', 'serviceName'],
+      pageSize: 10000,
+      sortField: 'serviceName',
+      sortOrder: 'ASC'
+    }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        edgeDhcpOptions: data?.data.map(item => ({ label: item.serviceName, value: item.id })),
+        isEdgeDhcpOptionsLoading: isLoading
       }
-    })
+    }
+  })
+
+  const { currentDhcp, isCurrentDhcpFetching } = useGetEdgeDhcpServiceQuery(
+    { params: { id: dhcpId } },
+    {
+      skip: !Boolean(dhcpId),
+      selectFromResult: ({ data, isFetching }) => ({
+        currentDhcp: data,
+        isCurrentDhcpFetching: isFetching
+      })
+    }
+  )
 
   const columns: TableProps<EdgeDhcpPool>['columns'] = [
     {
@@ -86,35 +96,26 @@ export const EdgeDhcpSelectionForm = (props: EdgeDhcpSelectionFormProps) => {
               { label: $t({ defaultMessage: 'Select...' }), value: null },
               ...(edgeDhcpOptions || [])
             ]}
-            loading={isEdgeDhcpDataFetching}
+            loading={isEdgeDhcpOptionsLoading}
             disabled={hasNsg}
           />
         </Form.Item>
         <AddEdgeDhcpServiceModal />
       </Space>
     </Form.Item>
-    <Loader states={[
-      { isFetching: isEdgeDhcpDataFetching, isLoading: false }
-    ]}>
-      <Form.Item
-        noStyle
-        shouldUpdate={(prevValues, currentValues) => {
-          return prevValues.dhcpId !== currentValues.dhcpId
-        }}
-      >
-        {({ getFieldValue }) => {
-          const dhcpId = getFieldValue('dhcpId')
-
-          return (dhcpId &&
-              <Table
-                rowKey='id'
-                type='form'
-                columns={columns}
-                dataSource={edgeDhcpData && edgeDhcpData[dhcpId]?.dhcpPools}
-              />)
-        }}
-      </Form.Item>
-    </Loader>
+    {
+      dhcpId &&
+      <Loader states={[
+        { isFetching: isCurrentDhcpFetching, isLoading: false }
+      ]}>
+        <Table
+          rowKey='id'
+          type='form'
+          columns={columns}
+          dataSource={currentDhcp?.dhcpPools}
+        />
+      </Loader>
+    }
   </>
 
   return content
