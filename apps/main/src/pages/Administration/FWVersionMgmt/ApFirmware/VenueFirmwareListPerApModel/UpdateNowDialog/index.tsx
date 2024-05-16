@@ -60,7 +60,7 @@ export function UpdateNowPerApModelDialog (props: UpdateNowPerApModelDialogProps
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
       visible={true}
-      width={560}
+      width={580}
       okText={$t({ defaultMessage: 'Update Firmware' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}

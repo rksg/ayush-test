@@ -470,7 +470,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         const req = createHttpRequest(FirmwareUrlsInfo.getVenueApModelFirmwareList, {}, v1Header)
         return {
           ...req,
-          body: covertVenueApModelFirmwareListPayload(payload)
+          body: JSON.stringify(covertVenueApModelFirmwareListPayload(payload))
         }
       },
       transformResponse (result: FirmwareVenuePerApModel[] ) {
@@ -505,7 +505,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         const req = createHttpRequest(FirmwareUrlsInfo.patchVenueApModelFirmwares, params, v1Header)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
@@ -517,7 +517,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         const req = createHttpRequest(FirmwareUrlsInfo.updateVenueSchedulesPerApModel, params, v1Header)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]

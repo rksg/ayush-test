@@ -35,6 +35,7 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
   const updatePayloadRef = useRef<UpdateFirmwarePerApModelFirmware>()
   const [ showAvailableFirmwareOnly, setShowAvailableFirmwareOnly ] = useState(true)
   const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
+  const [ labelSize, setLabelSize ] = useState<'small' | 'large'>()
 
   useEffect(() => {
     if (!apModelFirmwares) return
@@ -48,6 +49,7 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
     }
 
     setDisplayData(updatedDisplayData)
+    setLabelSize(updatedDisplayData.some(item => item.apModel.length > 6) ? 'large' : 'small')
   }, [apModelFirmwares])
 
   const update = (apModel: string, version: string) => {
@@ -78,6 +80,7 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
               versionOptions={item.versionOptions}
               update={update}
               defaultVersion={item.defaultVersion}
+              labelSize={labelSize}
             />
           </div>
         })}
