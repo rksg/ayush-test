@@ -26,6 +26,7 @@ interface PasswordStrengthIndicatorProps {
   regExErrorMessages: string[]
   isAllConditionsMet: number
   barWidth?: number
+  focus: boolean
 }
 
 
@@ -43,6 +44,7 @@ export const PasswordInputStrength = ({
   const { regExRules, regExErrorMessages, isAllConditionsMet, onConditionCountMet, value } = props
   const { $t } = useIntl()
   const [input, setInput] = useState('')
+  const [focus, setFocus] = useState(false)
   const isAllConditionsCountMet =
     (isAllConditionsMet && isAllConditionsMet > 4 ? 4 : isAllConditionsMet) || 4
 
@@ -76,19 +78,22 @@ export const PasswordInputStrength = ({
           onConditionCountMet?.(passedRulesRatio >= isAllConditionsCountMet)
           props?.onChange?.(e)
         }}
+        onFocus={() => setFocus(true)}
+        onBlur={() => setFocus(false)}
       />
       <PasswordStrengthIndicator
         input={input}
         regExRules={RULE_REGEX}
         regExErrorMessages={RULE_MESSAGES}
         isAllConditionsMet={isAllConditionsCountMet}
+        focus={focus}
       />
     </>
   )
 }
 
 export const PasswordStrengthIndicator = ({
-  input, regExRules, regExErrorMessages, isAllConditionsMet, barWidth }:
+  input, regExRules, regExErrorMessages, isAllConditionsMet, barWidth, focus }:
     PasswordStrengthIndicatorProps) => {
   const { $t } = useIntl()
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
@@ -195,7 +200,7 @@ export const PasswordStrengthIndicator = ({
           </Row>
         ))}
       </div>}
-      visible={currentConditionCount < isAllConditionsMet || mouseEnterTooltip}
+      visible={(focus && currentConditionCount < isAllConditionsMet) || mouseEnterTooltip}
       placement={'bottom'}
       data-testid={'tooltipInfo'}
     >
