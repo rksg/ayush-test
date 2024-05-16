@@ -173,11 +173,11 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP attempts' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP sucessful bindings' }),
       thresholdDesc: [],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
-      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Wifi client has received an IP address from the DHCP server. Do note that a single Wifi client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Switch client has received an IP address from the DHCP server. Do note that a single Switch client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
   radius: {
