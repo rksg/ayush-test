@@ -332,7 +332,7 @@ export function ConfigurationProfileForm () {
       if (checkTrustedPortEmpty(formData)) {
         return false
       }
-      const orinAppliedVenues = formData?.venues as string[]
+      const orinAppliedVenues = currentData?.venues as string[]
       const appliedVenues = formData?.venues as string[]
       const disassociateSwitch = _.difference(orinAppliedVenues, appliedVenues)
       const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
