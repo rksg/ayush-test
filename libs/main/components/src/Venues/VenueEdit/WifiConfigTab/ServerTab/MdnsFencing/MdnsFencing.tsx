@@ -18,7 +18,12 @@ import {
   useUpdateVenueMdnsFencingMutation,
   useUpdateVenueTemplateMdnsFencingMutation
 } from '@acx-ui/rc/services'
-import { ApiVersionEnum, MdnsFencingService, VenueMdnsFencingPolicy } from '@acx-ui/rc/utils'
+import {
+  ApiVersionEnum,
+  MdnsFencingService,
+  useConfigTemplate,
+  VenueMdnsFencingPolicy
+} from '@acx-ui/rc/utils'
 
 import { VenueEditContext }               from '../../..'
 import {
@@ -38,11 +43,11 @@ export interface MdnsFencingContextType {
 export const MdnsFencingContext = createContext({} as MdnsFencingContextType)
 
 
-
 export function MdnsFencing () {
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
   const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const {

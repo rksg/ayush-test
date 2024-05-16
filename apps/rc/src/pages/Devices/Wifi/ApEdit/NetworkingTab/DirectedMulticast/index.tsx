@@ -25,7 +25,6 @@ import { FieldLabel }                   from '../../styledComponents'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 
-
 export function DirectedMulticast () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()

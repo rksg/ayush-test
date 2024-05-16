@@ -4,15 +4,15 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                         from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo }                               from '@acx-ui/rc/utils'
 import { Provider, store }                                                  from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
 import { ServerSettingContext }          from '..'
 import { EditContext, VenueEditContext } from '../../..'
 
-import { mockMdnsFencing } from './__tests__/fixtures'
-import { MdnsFencing }     from './MdnsFencing'
+import { mockMdnsFencing, mockRbacMdnsFencing } from './__tests__/fixtures'
+import { MdnsFencing }                          from './MdnsFencing'
 
 const params = {
   tenantId: 'tenant-id',
@@ -56,7 +56,12 @@ describe('Venue mDNS Fencing', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] })))
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      // rbac API
+      rest.get(CommonRbacUrlsInfo.getVenueMdnsFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json(mockRbacMdnsFencing))),
+      rest.post(CommonRbacUrlsInfo.updateVenueMdnsFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
