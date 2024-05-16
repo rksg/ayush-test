@@ -639,19 +639,27 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueLedOn: build.query<VenueLed[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueLedOn, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(apiInfo.getVenueLedOn, params, apiCustomHeader)
         return{
           ...req
         }
       }
     }),
     updateVenueLedOn: build.mutation<VenueLed[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueLedOn, params)
+      query: ({ params, payload, rbacApiVersionPayload }) => {
+        const { rbacApiVersion } = rbacApiVersionPayload as (ApiVersionType)
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(payload) : payload
+
+        const req = createHttpRequest(apiInfo.updateVenueLedOn, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: configPayload
         }
       }
     }),

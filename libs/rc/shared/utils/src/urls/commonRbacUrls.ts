@@ -282,18 +282,20 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models',
     newApi: true
   },
+  */
   getVenueLedOn: {
     method: 'get',
-    url: '/venues/:venueId/ledSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
+    // url: '/venues/:venueId/ledSettings',
+    url: '/venues/:venueId/apModelLedSettings',
     newApi: true
   },
   updateVenueLedOn: {
     method: 'put',
-    url: '/venues/:venueId/ledSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
+    // url: '/venues/:venueId/ledSettings',
+    url: '/venues/:venueId/apModelLedSettings',
     newApi: true
   },
+  /*
   getVenueApModelBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/apModelBandModeSettings',
