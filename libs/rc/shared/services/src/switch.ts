@@ -425,10 +425,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           SwitchUrlsInfo.getDefaultVlan,
           params
         )
-        payload = { isDefault: true, switchIds: payload }
+        // payload = { isDefault: true, switchIds: payload }
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       keepUnusedDataFor: 5,

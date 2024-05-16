@@ -36,13 +36,13 @@ export interface VlanSettingDrawerProps {
   setVisible: (v: boolean) => void
   vlansList: Vlan[]
   enablePortModelConfigure?: boolean
-  // switchFamilyModel?: string
+  switchFamilyModel?: string
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
-    vlansList, enablePortModelConfigure = true } = props
+    vlansList, switchFamilyModel, enablePortModelConfigure = true } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -67,7 +67,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           setVlan={setVlan}
           vlansList={vlansList || []}
           enablePortModelConfigure={enablePortModelConfigure}
-          // switchFamilyModel={switchFamilyModel}
+          switchFamilyModel={switchFamilyModel}
         />
       }
       footer={
@@ -100,7 +100,7 @@ interface VlanSettingFormProps {
   vlan?: Vlan
   setVlan: (r: Vlan) => void
   vlansList: Vlan[]
-  // switchFamilyModel?: string
+  switchFamilyModel?: string
   enablePortModelConfigure?: boolean
 }
 
@@ -113,8 +113,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, vlan, setVlan, vlansList, editMode, enablePortModelConfigure = true } = props
-  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const { form, vlan, setVlan, vlansList, editMode, switchFamilyModel, enablePortModelConfigure = true } = props
+  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   useEffect(() => {
     if(vlan && editMode){
@@ -386,7 +386,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           onCancel={onCancel}
           onSave={onSaveVlan}
           vlanList={vlansList}
-          // switchFamilyModel={enableSwitchLevelVlan ? switchFamilyModel : undefined}
+          switchFamilyModel={enableSwitchLevelVlan ? switchFamilyModel : undefined}
         /></>}
     </div>
   )

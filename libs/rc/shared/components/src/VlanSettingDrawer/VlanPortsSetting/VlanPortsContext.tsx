@@ -10,8 +10,8 @@ export interface VlanPortsType {
   vlanSettingValues: VlanSettingInterface
   setVlanSettingValues: (data: VlanSettingInterface) => void
   vlanList: Vlan[]
-  // isSwitchLevel?: boolean
-  // switchFamilyModel?: string
+  isSwitchLevel?: boolean
+  switchFamilyModel?: string
   portsUsedByLag?: string[]
 }
 const VlanPortsContext = createContext({} as VlanPortsType)

@@ -52,13 +52,20 @@ export function SwitchOverviewVLANs () {
   const [vlanList, setVlanList] = useState([] as Vlan[])
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
-  // const [switchFamilyModel, setSwitchFamilyModel] = useState('')
+  const [switchFamilyModel, setSwitchFamilyModel] = useState('')
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader: switchDetail } = switchDetailsContextData
 
-  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  console.log('switchDetailsContextData: ', switchDetailsContextData)
+
+  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const [deleteSwitchVlan] = useDeleteSwitchVlanMutation()
+
+  useEffect(() => {
+    setSwitchFamilyModel(switchDetail?.model || '')
+  }, [ switchDetail ])
 
   const tableQuery = useTableQuery({
     useQuery: useGetVlanListBySwitchLevelQuery,
@@ -268,7 +275,7 @@ export function SwitchOverviewVLANs () {
         visible={vlanDrawerVisible}
         setVisible={setVlanDrawerVisible}
         vlan={editVlan as Vlan}
-        // switchFamilyModel={switchFamilyModel}
+        switchFamilyModel={switchFamilyModel}
         enablePortModelConfigure={true}
         setVlan={setVlan}
         vlansList={tableQuery.data?.data as Vlan[]}

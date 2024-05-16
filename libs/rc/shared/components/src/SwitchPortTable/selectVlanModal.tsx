@@ -32,7 +32,7 @@ export function SelectVlanModal (props: {
   onValuesChange: (values: Partial<PortSettingModel>) => void,
   defaultVlan: string,
   switchVlans: SwitchVlan[],
-  // switchFamilyModel?: string,
+  switchFamilyModel?: string,
   venueVlans: Vlan[],
   vlanUsedByVe?: string,
   taggedVlans: string,
@@ -51,12 +51,12 @@ export function SelectVlanModal (props: {
   const params = useParams()
   const { form, selectModalvisible, setSelectModalvisible,
     setUseVenueSettings, onValuesChange, hasSwitchProfile, cliApplied,
-    vlanDisabledTooltip, defaultVlan, switchVlans, switchIds,
+    vlanDisabledTooltip, defaultVlan, switchVlans, switchIds, switchFamilyModel,
     vlanUsedByVe = [], taggedVlans = '', untaggedVlan,
     showVoiceVlan, voiceVlan, isVoiceVlanInvalid
   } = props
 
-  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
   const [selectUntaggedVlan, setSelectUntaggedVlan] = useState(Number(untaggedVlan))
   const [disableButton, setDisableButton] = useState(false)
@@ -397,7 +397,7 @@ export function SelectVlanModal (props: {
       visible={vlanDrawerVisible}
       setVisible={setVlanDrawerVisible}
       vlan={{} as Vlan}
-      // switchFamilyModel={switchFamilyModel}
+      switchFamilyModel={switchFamilyModel}
       enablePortModelConfigure={false}
       setVlan={setVlan}
       vlansList={(enableSwitchLevelVlan

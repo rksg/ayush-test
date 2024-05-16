@@ -151,7 +151,7 @@ export function EditPortDrawer ({
   const { tenantId, venueId, serialNumber } = useParams()
   const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const [loading, setLoading] = useState<boolean>(true)
-  const enableSwitchLevelVlan = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))

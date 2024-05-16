@@ -156,8 +156,6 @@ export enum Features {
   WIFI_EDA_WIFI7_MLO_TOGGLE = 'wifi-eda-wifi7-mlo-toggle',
   WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE = 'wifi-eda-wispr-always-accept-toggle',
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
-  SWITCH_VOICE_VLAN = 'switch-consumer-support-voice-vlan-in-profile-toggle',
-  DPSK_NEW_CONFIG_FLOW_TOGGLE = 'dpsk-new-auth-flow-toggle',
   WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE = 'wifi-eda-tls-key-enhance-mode-config-toggle',
   WIFI_FR_6029_FG1_TOGGLE = 'wifi-fr-6029-fg1-toggle',
   WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
