@@ -482,7 +482,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/venues/:venueId/clientAdmissionControlSettings',
     url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
-  },
+  }
   /*
   getApClientAdmissionControl: {
     method: 'get',
