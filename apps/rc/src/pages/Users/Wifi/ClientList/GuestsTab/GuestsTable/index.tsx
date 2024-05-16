@@ -269,7 +269,7 @@ export const GuestsTable = () => {
       title: $t({ defaultMessage: 'Allowed Network' }),
       dataIndex: 'wifiNetworkId',
       filterKey: 'wifiNetworkId',
-      filterable: networkFilterOptions || true,
+      filterable: networkFilterOptions,
       sorter: true,
       render: function (_, row) {
         return renderAllowedNetwork(row, networkOptions)
