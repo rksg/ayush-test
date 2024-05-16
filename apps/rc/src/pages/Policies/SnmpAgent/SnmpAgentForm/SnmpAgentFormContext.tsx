@@ -1,22 +1,22 @@
 import { createContext } from 'react'
 
-import { ApSnmpActionPayload, ApSnmpPolicy, RbacApSnmpPolicy } from '@acx-ui/rc/utils'
+import { ApSnmpActionPayload, ApSnmpPolicy } from '@acx-ui/rc/utils'
 
 import { SnmpAgentFormReducer } from './SnmpAgentFormReducer'
 
 
 const SnmpAgentFormContext = createContext<{
-  state: ApSnmpPolicy | RbacApSnmpPolicy,
+  state: ApSnmpPolicy,
   dispatch: React.Dispatch<ApSnmpActionPayload>
 }>({
-  state: {} as ApSnmpPolicy | RbacApSnmpPolicy,
+  state: {} as ApSnmpPolicy,
   dispatch: () => {}
 })
 
 export const mainReducer = (
-  state: ApSnmpPolicy | RbacApSnmpPolicy,
+  state: ApSnmpPolicy,
   action: ApSnmpActionPayload
-): ApSnmpPolicy | RbacApSnmpPolicy => {
+): ApSnmpPolicy => {
   return SnmpAgentFormReducer(state, action)
 }
 
