@@ -12,19 +12,27 @@ import {
 import {
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useGetSwitchConfigProfileTemplateQuery,
+  useAddSwitchConfigProfileTemplateMutation,
+  useUpdateSwitchConfigProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  CliConfiguration
+  CliConfiguration,
+  useConfigTemplatePageHeaderTitle,
+  useConfigTemplateBreadcrumb,
+  useConfigTemplateQueryFnSwitcher,
+  ConfigurationProfile,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CliStepConfiguration } from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
-import { CliStepNotice }        from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
+import { CliStepConfiguration }         from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
+import { CliStepNotice }                from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
@@ -41,14 +49,33 @@ export function CliProfileForm () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToNetworks = useTenantLink('/networks/wired/profiles')
+  const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const editMode = params.action === 'edit'
 
   const [form] = Form.useForm()
-  const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
-  const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
+  const [addSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher(
+    useAddSwitchConfigProfileMutation, useAddSwitchConfigProfileTemplateMutation
+  )
+  const [updateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher(
+    useUpdateSwitchConfigProfileMutation, useUpdateSwitchConfigProfileTemplateMutation
+  )
   const { data: cliProfile, isLoading: isProfileLoading }
-    = useGetSwitchConfigProfileQuery({ params }, { skip: !editMode })
+    = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
+      useGetSwitchConfigProfileQuery,
+      useGetSwitchConfigProfileTemplateQuery,
+      !editMode
+    )
+
+  // Config Template related states
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: 'Wired' }) },
+    { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
+    { text: $t({ defaultMessage: 'Configuration Profiles' }), link: '/networks/wired/profiles' }
+  ])
+  const pageTitle = useConfigTemplatePageHeaderTitle({
+    isEdit: editMode,
+    instanceLabel: $t({ defaultMessage: 'CLI Configuration Profile' })
+  })
 
   const transformSaveData = (data: CliConfiguration) => {
     const { name, cli, overwrite, variables } = data
@@ -75,7 +102,7 @@ export function CliProfileForm () {
           ...transformSaveData(data)
         }
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      navigate(linkToProfiles, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -86,7 +113,7 @@ export function CliProfileForm () {
       await addSwitchConfigProfile({
         params, payload: transformSaveData(data)
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      navigate(linkToProfiles, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -109,17 +136,8 @@ export function CliProfileForm () {
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit CLI Configuration Profile' })
-          : $t({ defaultMessage: 'Add CLI Configuration Profile' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Wired' }) },
-          { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
-          {
-            text: $t({ defaultMessage: 'Configuration Profiles' }),
-            link: '/networks/wired/profiles'
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
 
       <Loader states={[{ isLoading: editMode && isProfileLoading }]}>
@@ -129,7 +147,7 @@ export function CliProfileForm () {
           initialValues={{
             venues: cliProfile?.venues
           }}
-          onCancel={() => navigate(linkToNetworks)}
+          onCancel={() => navigate(linkToProfiles)}
           onFinish={editMode ? handleEditCliProfile : handleAddCliProfile}
         >
           <StepsForm.StepForm

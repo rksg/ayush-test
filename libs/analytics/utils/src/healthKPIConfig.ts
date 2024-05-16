@@ -26,6 +26,7 @@ const multipleBy100 = (ms: number) => ms * 100
 export const multipleBy1000 = (ms: number) => ms * 1000
 export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
+export const numberWithPercentSymbol = (x: number) => `${x}%`
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -500,7 +501,7 @@ export const kpiConfig = {
         defineMessage({ defaultMessage: '{threshold} Memory' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: (x: number) => `${x}%`,
+      thresholdFormatter: numberWithPercentSymbol,
       tooltip: defineMessage({ defaultMessage: 'The memory Utilization measures the percentage of the switches that utilize less memory percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of Memory Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
@@ -530,7 +531,7 @@ export const kpiConfig = {
         defineMessage({ defaultMessage: '{threshold} CPU' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: (x: number) => `${x}%`,
+      thresholdFormatter: numberWithPercentSymbol,
       tooltip: defineMessage({ defaultMessage: 'The CPU Utilization measures the percentage of the switches that utilize less CPU percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of CPU Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
@@ -578,8 +579,7 @@ export const kpisForTab = (isMLISA? : string) => {
         'clientThroughput',
         'apCapacity',
         'apServiceUptime',
-        'onlineAPs',
-        'switchReachability'
+        'onlineAPs'
       ]
     },
     connection: {

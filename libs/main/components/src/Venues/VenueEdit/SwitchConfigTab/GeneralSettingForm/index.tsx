@@ -3,15 +3,17 @@ import { useContext, useState, useRef, useEffect, Key } from 'react'
 import { Col, Divider, Form, Input, Space, Switch, Tooltip } from 'antd'
 import { isEqual }                                           from 'lodash'
 
-import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { ConfigurationOutlined }                                    from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }                             from '@acx-ui/rc/components'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { ConfigurationOutlined }                                        from '@acx-ui/icons'
+import { useConfigTemplateVisibilityMap, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
   useUpdateVenueSwitchSettingMutation,
   useGetVenueTemplateSwitchSettingQuery,
-  useUpdateVenueTemplateSwitchSettingMutation
+  useUpdateVenueTemplateSwitchSettingMutation,
+  useGetSwitchConfigProfileTemplatesQuery
 } from '@acx-ui/rc/services'
 import {
   ConfigurationProfile,
@@ -22,7 +24,8 @@ import {
   redirectPreviousPage,
   useConfigTemplate,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 import { getIntl }                from '@acx-ui/utils'
@@ -63,18 +66,22 @@ const defaultFormData = {
 export function GeneralSettingForm () {
   const { $t } = getIntl()
   const navigate = useNavigate()
-  const { isTemplate } = useConfigTemplate()
   const { tenantId, venueId, activeSubTab } = useParams()
+  const isProfileDisabled = useSwitchProfileDisabled()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
-    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery
+    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
+    undefined, undefined, isSwitchRbacEnabled
   )
 
-  // eslint-disable-next-line max-len
-  const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} }, { skip: isTemplate })
+  const configProfiles = useConfigTemplateQueryFnSwitcher<ConfigurationProfile[]>(
+    useConfigProfilesQuery, useGetSwitchConfigProfileTemplatesQuery, isProfileDisabled, {}
+  )
+
   const [updateVenueSwitchSetting, {
     isLoading: isUpdatingVenueSwitchSetting }] = useConfigTemplateMutationFnSwitcher(
     useUpdateVenueSwitchSettingMutation, useUpdateVenueTemplateSwitchSettingMutation
@@ -163,14 +170,17 @@ export function GeneralSettingForm () {
         oldData: editContextData?.newData,
         isDirty: false
       })
-      await updateVenueSwitchSetting({ params: { tenantId, venueId }, payload: {
-        ...formRef?.current?.getFieldsValue(),
-        id: venueId,
-        profileId: formData?.profileId,
-        syslogEnabled: formData?.syslogEnabled,
-        syslogPrimaryServer: formData?.syslogPrimaryServer,
-        syslogSecondaryServer: formData?.syslogSecondaryServer
-      } })
+      await updateVenueSwitchSetting({
+        params: { tenantId, venueId },
+        payload: {
+          ...formRef?.current?.getFieldsValue(),
+          id: venueId,
+          profileId: formData?.profileId,
+          syslogEnabled: formData?.syslogEnabled,
+          syslogPrimaryServer: formData?.syslogPrimaryServer,
+          syslogSecondaryServer: formData?.syslogSecondaryServer
+        },
+        enableRbac: isSwitchRbacEnabled })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -214,7 +224,7 @@ export function GeneralSettingForm () {
               <Form.Item
                 label={$t({ defaultMessage: 'Configuration Profile' })}
                 validateFirst
-                hidden={isTemplate}
+                hidden={isProfileDisabled}
                 children={
                   <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '12px', display: 'flex' }} >
@@ -359,4 +369,13 @@ export function getProfilesByType (profiles: ConfigurationProfile[], type: strin
 
 export function getProfileKeysByType (profiles: ConfigurationProfile[], type: string) {
   return profiles.filter(p => p.profileType === type).map(p => p.id)
+}
+
+export function useSwitchProfileDisabled (): boolean {
+  const { isTemplate } = useConfigTemplate()
+  const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
+  // eslint-disable-next-line max-len
+  const isRegularProfileTemplateEnabled = configTemplateVisibilityMap[ConfigTemplateType.SWITCH_REGULAR]
+
+  return isTemplate && !isRegularProfileTemplateEnabled
 }

@@ -6,6 +6,7 @@ import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
 import { Drawer }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAddSwitchStaticRouteMutation,
   useUpdateSwitchStaticRouteMutation
@@ -17,12 +18,14 @@ import {
   validateSwitchStaticRouteNextHop,
   validateSwitchStaticRouteAdminDistance,
   IpCalculatorUtilsService,
-  Ipv4Format
+  Ipv4Format,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 
 interface StaticRoutesDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
+  switchDetail?: SwitchViewModel
   data?: StaticRoute
 }
 
@@ -30,8 +33,10 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
-  const { visible, setVisible, data } = props
+  const { visible, setVisible, data, switchDetail } = props
   const [formRef] = Form.useForm()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [addSwitchStaticRoute] = useAddSwitchStaticRouteMutation()
   const [updateSwitchStaticRoute] = useUpdateSwitchStaticRouteMutation()
 
@@ -77,14 +82,19 @@ const StaticRoutesDrawer = (props: StaticRoutesDrawerProps) => {
 
   const handleFinish = (formData: StaticRoute) => {
     const payload = formData
-    const params = { tenantId, switchId, staticRouteId: formData.id }
+    const params = {
+      tenantId,
+      switchId,
+      staticRouteId: formData.id,
+      venueId: switchDetail?.venueId
+    }
     if(data) {
-      updateSwitchStaticRoute({ params, payload }).unwrap()
+      updateSwitchStaticRoute({ params, payload, enableRbac: isSwitchRbacEnabled }).unwrap()
         .catch((error) => {
           console.log(error) // eslint-disable-line no-console
         })
     } else {
-      addSwitchStaticRoute({ params, payload }).unwrap()
+      addSwitchStaticRoute({ params, payload, enableRbac: isSwitchRbacEnabled }).unwrap()
         .catch((error) => {
           console.log(error) // eslint-disable-line no-console
         })
