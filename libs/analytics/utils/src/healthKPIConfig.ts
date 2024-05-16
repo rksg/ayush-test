@@ -594,7 +594,7 @@ export const kpiConfig = {
       apiMetric: 'switchPortUtilization',
       splits: [0, 20, 40, 60, 80, 100],
       xUnit: '%',
-      yUnit: 'Ports:',
+      yUnit: 'Ports',
       shortXFormat: noFormat,
       longXFormat: noFormat,
       reFormatFromBarChart: noFormat
