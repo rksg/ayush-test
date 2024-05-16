@@ -142,6 +142,10 @@ export const GuestsTable = () => {
     key: network.id, value: network.name
   }))
 
+  const networkOptions = guestNetworkList.map(network=>({
+    key: network.id, value: network.name
+  }))
+
   const navigate = useNavigate()
   const linkToUser = useTenantLink('/users/wifi/guests')
   const getNetworkForm = <NetworkForm modalMode={true}
@@ -268,7 +272,7 @@ export const GuestsTable = () => {
       filterable: networkFilterOptions || true,
       sorter: true,
       render: function (_, row) {
-        return renderAllowedNetwork(row, networkFilterOptions)
+        return renderAllowedNetwork(row, networkOptions)
       }
     }, {
       key: 'expiryDate',
