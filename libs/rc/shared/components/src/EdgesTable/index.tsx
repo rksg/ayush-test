@@ -241,7 +241,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },
     {
-      scopeKey: [EdgeScopes.UPDATE],
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         allowRebootForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
@@ -250,6 +250,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Send OTP' }),
@@ -257,6 +258,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         sendOtp(rows[0], clearSelection)
       }
     },{
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (
         selectedRows.length === 1 &&
         allowResetForStatus(selectedRows[0]?.deviceStatus)
