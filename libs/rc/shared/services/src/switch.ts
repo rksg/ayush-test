@@ -1704,6 +1704,7 @@ export const {
   useLazyValidateUniqueProfileNameQuery,
   useGetCliTemplatesQuery,
   useGetProfilesQuery,
+  useLazyGetProfilesQuery,
   useGetCliFamilyModelsQuery,
   useAddCliTemplateMutation,
   useDeleteCliTemplatesMutation,

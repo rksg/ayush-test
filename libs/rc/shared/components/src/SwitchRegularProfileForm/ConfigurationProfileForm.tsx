@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react'
 
 import { Form }    from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import {
-  useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation,
+  useAddSwitchConfigProfileMutation, // wait
+  useUpdateSwitchConfigProfileMutation, //wait
   useGetSwitchConfigProfileQuery,
   useGetSwitchConfigProfileTemplateQuery,
   useAddSwitchConfigProfileTemplateMutation,
-  useUpdateSwitchConfigProfileTemplateMutation
+  useUpdateSwitchConfigProfileTemplateMutation,
+  useLazyGetProfilesQuery,
+  useBatchAssociateSwitchProfileMutation,
+  useBatchDisassociateSwitchProfileMutation
 }                   from '@acx-ui/rc/services'
 import {
   ConfigurationProfile,
@@ -33,6 +38,13 @@ import { VenueSetting }                             from './VenueSetting'
 import { VlanSetting }                              from './VlanSetting'
 import { VoiceVlan }                                from './VoiceVlan'
 
+export const profilesPayload = {
+  filterType: null,
+  pageSize: 9999,
+  sortField: 'name',
+  sortOrder: 'DESC'
+}
+
 export function ConfigurationProfileForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -40,10 +52,20 @@ export function ConfigurationProfileForm () {
   const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const [form] = Form.useForm()
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const [getProfiles] = useLazyGetProfilesQuery()
+  const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
+  const [batchDisassociateSwitchProfile] = useBatchDisassociateSwitchProfileMutation()
+
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
     useGetSwitchConfigProfileQuery,
     useGetSwitchConfigProfileTemplateQuery,
-    !params.profileId
+    !params.profileId,
+    undefined,
+    undefined,
+    undefined,
+    isSwitchRbacEnabled
   )
 
   const [addSwitchConfigProfile, {
@@ -243,12 +265,61 @@ export function ConfigurationProfileForm () {
     return data
   }
 
+  const associateWithCliProfile = async (
+    venues: string[],
+    cliProfileId?: string,
+    callBack?: () => void
+  ) => {
+    const profileId = params.profileId || cliProfileId
+    const hasAssociatedVenues = venues.length > 0
+
+    if (isSwitchRbacEnabled && hasAssociatedVenues && profileId) {
+      const requests = venues.map((key: string)=> ({
+        params: { venueId: key, profileId }
+      }))
+
+      await batchAssociateSwitchProfile(requests).then(callBack)
+    }
+    return Promise.resolve()
+  }
+
+  const disassociateWithCliProfile = async (
+    venues: string[],
+    callBack?: () => void
+  ) => {
+    const hasDisassociatedVenues = venues.length > 0
+    if (isSwitchRbacEnabled && hasDisassociatedVenues) {
+      const requests = venues.map((key: string)=> ({
+        params: { venueId: key, profileId: params.profileId }
+      }))
+      await batchDisassociateSwitchProfile(requests).then(callBack)
+    }
+    return Promise.resolve()
+  }
+
   const handleAddProfile = async () => {
     try {
       if(checkTrustedPortEmpty(currentData)){
         return false
       }
-      await addSwitchConfigProfile({ params, payload: proceedData(currentData) }).unwrap()
+      const hasAssociatedVenues = (currentData.venues ?? [])?.length > 0
+
+
+      if (isSwitchRbacEnabled && hasAssociatedVenues) {
+        const { data: profileList } = await getProfiles({
+          params, payload: profilesPayload, enableRbac: isSwitchRbacEnabled
+        }).unwrap()
+        const profileId = profileList?.filter(t =>
+          t.name === currentData?.name)?.map(t => t.id)?.[0]
+        await associateWithCliProfile(currentData?.venues ?? [], profileId)
+      }
+
+      await addSwitchConfigProfile({
+        params,
+        payload: proceedData(currentData),
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
+
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles, { replace: true })
     } catch(err) {
@@ -259,11 +330,21 @@ export function ConfigurationProfileForm () {
 
   const handleEditProfile = async (formData: SwitchConfigurationProfile) => {
     try {
-      if(checkTrustedPortEmpty(formData)){
+      if (checkTrustedPortEmpty(formData)) {
         return false
       }
+      const orinAppliedVenues = formData?.venues as string[]
+      const appliedVenues = formData?.venues as string[]
+      const disassociateSwitch = _.difference(orinAppliedVenues, appliedVenues)
+      const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
+
+      await disassociateWithCliProfile(disassociateSwitch)
       await updateSwitchConfigProfile({
-        params, payload: proceedData(formData) }).unwrap()
+        params,
+        payload: proceedData(formData),
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
+      await associateWithCliProfile(diffAssociatedSwitch)
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles)
       return true
