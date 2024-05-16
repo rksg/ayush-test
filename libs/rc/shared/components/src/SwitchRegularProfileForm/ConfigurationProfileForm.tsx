@@ -304,6 +304,11 @@ export function ConfigurationProfileForm () {
       }
       const hasAssociatedVenues = (currentData.venues ?? [])?.length > 0
 
+      await addSwitchConfigProfile({
+        params,
+        payload: proceedData(currentData),
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
 
       if (isSwitchRbacEnabled && hasAssociatedVenues) {
         const { data: profileList } = await getProfiles({
@@ -313,12 +318,6 @@ export function ConfigurationProfileForm () {
           t.name === currentData?.name)?.map(t => t.id)?.[0]
         await associateWithCliProfile(currentData?.venues ?? [], profileId)
       }
-
-      await addSwitchConfigProfile({
-        params,
-        payload: proceedData(currentData),
-        enableRbac: isSwitchRbacEnabled
-      }).unwrap()
 
       setCurrentData({} as SwitchConfigurationProfile)
       navigate(linkToProfiles, { replace: true })
