@@ -17,10 +17,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   PolicyOperation,
   PolicyType,
-  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
@@ -45,8 +44,8 @@ export const AAAForm = (props: AAAFormProps) => {
   const { type, edit, networkView, backToNetwork } = props
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
+  const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
   const { data } = useConfigTemplateQueryFnSwitcher(
     useAaaPolicyQuery,
     useGetAAAPolicyTemplateQuery,
@@ -89,7 +88,7 @@ export const AAAForm = (props: AAAFormProps) => {
   return (
     <>
       {!networkView && <PageHeader
-        title={generatePolicyPageHeaderTitle(isEdit, isTemplate, PolicyType.AAA)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<AAAPolicyType>
