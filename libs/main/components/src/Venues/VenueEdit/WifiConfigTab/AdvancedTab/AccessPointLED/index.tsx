@@ -232,7 +232,7 @@ export function AccessPointLED () {
         await updateVenueLedOn({
           params: { tenantId, venueId },
           payload: tableData.filter(data => data.model),
-          rbacApiVersionPayload: {rbacApiVersion}
+          rbacApiVersionPayload: { rbacApiVersion }
         })
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
