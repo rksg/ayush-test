@@ -76,7 +76,7 @@ describe('useMenuConfig', () => {
       READ_ACCESS_POINTS_LIST: false,
       READ_SWITCH_LIST: false,
       READ_INCIDENTS: false,
-      READ_OCCUPANCY: false
+      WRITE_OCCUPANCY: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()

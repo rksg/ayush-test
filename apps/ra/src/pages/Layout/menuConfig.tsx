@@ -233,8 +233,8 @@ export function useMenuConfig () {
             label: $t({ defaultMessage: 'Data Studio' })
           },
           { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
-          ...(hasPermission({ permission: 'READ_OCCUPANCY' }) ? [
-            {
+          ...(hasPermission({ permission: 'WRITE_OCCUPANCY' }) ? [
+            { // until we have a read only version in new UI, we need to use WRITE_OCCUPANCY
               uri: legacyLink('/analytics/occupancy', search),
               label: $t({ defaultMessage: 'Occupancy' }),
               openNewTab: true
