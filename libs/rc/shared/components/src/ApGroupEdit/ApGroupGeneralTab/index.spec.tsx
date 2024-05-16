@@ -11,8 +11,7 @@ import {
   screen,
   fireEvent,
   waitFor,
-  waitForElementToBeRemoved,
-  act
+  waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
 import {
@@ -104,8 +103,7 @@ describe('AP Group General tab', () => {
 
     const saveButton = await screen.findByRole('button', { name: 'Add' })
     expect(saveButton).toBeVisible()
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(async () => { fireEvent.click(saveButton)} )
+    await userEvent.click(saveButton)
     await waitFor(() => {
       // eslint-disable-next-line max-len
       expect(mockedUsedNavigate).toHaveBeenCalledWith('/tenant-id/t/devices/wifi', { replace: true })
