@@ -204,7 +204,9 @@ export function RWGForm () {
                     />
                   </>}
                   rules={[
-                    { type: 'string', required: true },
+                    { type: 'string', required: true,
+                      message: $t({ defaultMessage: 'Please enter FQDN / IP' })
+                    },
                     { validator: (_, value) => domainNameRegExp(value),
                       message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
                     }
@@ -227,7 +229,8 @@ export function RWGForm () {
                     />
                   </>}
                   rules={[
-                    { required: true },
+                    { required: true,
+                      message: $t({ defaultMessage: 'Please enter API Key' }) },
                     { max: 80 },
                     { validator: (_, value) => excludeSpaceRegExp(value) }
                   ]}
