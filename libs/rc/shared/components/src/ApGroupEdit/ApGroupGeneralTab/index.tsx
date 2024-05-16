@@ -179,7 +179,7 @@ export function ApGroupGeneralTab () {
         payload.apSerialNumbers = payload.apSerialNumbers.map(i => { return { serialNumber: i } })
       }
 
-      if (!editContextData || !editContextData.isDirty) {
+      if (!isTemplate || !editContextData || !editContextData.isDirty) {
         if (isEditMode) {
           await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
         } else {
