@@ -4,6 +4,7 @@ import { Form, Select, Switch, Row, Button, Col, Space } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal, AnchorContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { ApSnmpMibsDownloadInfo }                                                                      from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
@@ -17,7 +18,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  VenueExtended
+  VenueExtended,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { VenueApSnmpSettings, ApSnmpSettings } from '@acx-ui/rc/utils'
 import {
@@ -53,6 +55,9 @@ export function ApSnmp () {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = (isUseRbacApi)? ApiVersionEnum.v1 : undefined
+
   const { apData: apDetails } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
@@ -65,8 +70,8 @@ export function ApSnmp () {
   const [venue, setVenue] = useState({} as VenueExtended)
   const [isApSnmpEnable, setIsApSnmpEnable] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
-
-  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
+  // eslint-disable-next-line max-len
+  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, payload: { rbacApiVersion } })
   const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
    = useUpdateApSnmpSettingsMutation()

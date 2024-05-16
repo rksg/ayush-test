@@ -1644,13 +1644,48 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params, RKS_NEW_UI)
-        return {
-          ...req
+      async queryFn ({ params, payload }, _api, _extraOptions, fetchWithBQ) {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        if (rbacApiVersion) {
+          let result: ApSnmpPolicy[] = []
+          const req = {
+            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, RKS_NEW_UI),
+            body: {}
+          }
+          const res = await fetchWithBQ(req)
+          const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
+          const rbacApSnmpViewModel = tableResult.data
+
+          const policies: Promise<RbacApSnmpPolicy>[] = rbacApSnmpViewModel.map(async (profile) => {
+            // eslint-disable-next-line max-len
+            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy, { profileId: profile.id }, RKS_NEW_UI)
+            const res = await fetchWithBQ(req)
+            return res.data as RbacApSnmpPolicy
+          })
+          policies.forEach((policyPromise) => {
+            policyPromise.then((policy)=> {
+              const profile = rbacApSnmpViewModel.find((profile) => profile.id === policy.id)
+              let formattedData = {
+                id: profile?.id,
+                policyName: profile?.name,
+                tenantId: params?.tenantId,
+                snmpV2Agents: policy?.snmpV2Agents,
+                snmpV3Agents: policy?.snmpV3Agents
+              } as ApSnmpPolicy
+              result = [...result, formattedData]
+            })
+          })
+          return { data: result }
+        } else {
+          let result: ApSnmpPolicy[] = []
+          const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params, RKS_NEW_UI)
+          const res = await fetchWithBQ(req)
+          result = res.data as ApSnmpPolicy[]
+          return { data: result }
         }
+
       },
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -1665,7 +1700,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicy: build.query<ApSnmpPolicy | RbacApSnmpPolicy, RequestPayload>({
       query: ({ params, payload }) => {
         const { rbacApiVersion } = (payload || {}) as ApiVersionType
@@ -1677,7 +1712,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
       query: ({ params, payload }) => {
         const { rbacApiVersion } = (payload || {}) as ApiVersionType
@@ -1691,7 +1726,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
       query: ({ params, payload }) => {
         const { rbacApiVersion } = (payload || {}) as ApiVersionType
@@ -1705,7 +1740,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     deleteApSnmpPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const { rbacApiVersion } = (payload || {}) as ApiVersionType
@@ -1717,18 +1752,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
-    // TODO: Change RBAC API
-    deleteApSnmpPolicies: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(ApSnmpUrls.deleteApSnmpPolicies, params, RKS_NEW_UI)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
-    }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     getApUsageByApSnmp: build.query<TableResult<ApSnmpApUsage>, RequestPayload>({
       async queryFn ({ params, payload }, _api, _extraOptions, fetchWithBQ) {
         const { rbacApiVersion } = (payload || {}) as ApiVersionType
@@ -2777,10 +2801,10 @@ export const {
   useAddApSnmpPolicyMutation,
   useUpdateApSnmpPolicyMutation,
   useDeleteApSnmpPolicyMutation,
-  useDeleteApSnmpPoliciesMutation,
   useGetApUsageByApSnmpQuery,
   useGetApSnmpViewModelQuery,
   useGetRbacApSnmpViewModelQuery,
+  useLazyGetRbacApSnmpViewModelQuery,
   useGetVenueApSnmpSettingsQuery,
   useLazyGetVenueApSnmpSettingsQuery,
   useUpdateVenueApSnmpSettingsMutation,

@@ -27,11 +27,6 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
     url: '/snmpAgentProfiles/:profileId',
     newApi: true
   },
-  deleteApSnmpPolicies: { // no RBAC replacement
-    method: '',
-    url: '',
-    newApi: true
-  },
   // getApSnmpPolicyList: {
   //   method: 'get',
   //   url: '/apSnmpAgentProfiles',
@@ -47,11 +42,11 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
   //   url: '/venues/:venueId/snmpAgentSettings',
   //   newApi: true
   // },
-  // getApSnmpSettings: { //ap instances
-  //   method: 'get',
-  //   url: '/venues/aps/:serialNumber/snmpAgentSettings',
-  //   newApi: true
-  // },
+  getApSnmpSettings: { //ap instances
+    method: 'get',
+    url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfileSettings',
+    newApi: true
+  },
   // updateApSnmpSettings: { //ap instances
   //   method: 'put',
   //   url: '/venues/aps/:serialNumber/snmpAgentSettings',

@@ -5,6 +5,7 @@ import { isEqual }                             from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { ApSnmpMibsDownloadInfo }                                             from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
@@ -15,7 +16,8 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  VenueApSnmpSettings
+  VenueApSnmpSettings,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -31,6 +33,8 @@ export function ApSnmp () {
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = (isUseRbacApi)? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -44,7 +48,8 @@ export function ApSnmp () {
   const [stateOfVenueApSnmpSettings, setStateOfVenueApSnmpSettings] =
   useState({} as VenueApSnmpSettings)
 
-  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
+  // eslint-disable-next-line max-len
+  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, payload: { rbacApiVersion } })
   const RetrievedVenueApSnmpAgentOptions =
    RetrievedVenueApSnmpAgentList?.data?.map(m => ({ label: m.policyName, value: m.id })) ?? []
 
