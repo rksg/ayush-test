@@ -460,17 +460,19 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/loadBalancingSettings',
     newApi: true
   },
+  */
   getVenueBssColoring: {
     method: 'get',
-    url: '/venues/:venueId/bssColoringSettings',
+    // url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   updateVenueBssColoring: {
     method: 'put',
-    url: '/venues/:venueId/bssColoringSettings',
+    // url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
-  */
   getVenueClientAdmissionControl: {
     method: 'get',
     // url: '/venues/:venueId/clientAdmissionControlSettings',

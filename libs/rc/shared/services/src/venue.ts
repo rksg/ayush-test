@@ -1222,8 +1222,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueBssColoring: build.query<VenueBssColoring, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueBssColoring, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueBssColoring, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1231,10 +1234,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueBssColoring: build.mutation<VenueBssColoring, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueBssColoring, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueBssColoring)
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(urlsInfo.updateVenueBssColoring, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       }
     }),
