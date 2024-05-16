@@ -20,12 +20,11 @@ const listPayload = {
 const VLANPoolInstance = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data } = useConfigTemplateQueryFnSwitcher<VlanPool[]>(
-    useVlanPoolListQuery,
-    useGetVlanPoolPolicyTemplateListQuery,
-    false,
-    listPayload
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<VlanPool[]>({
+    useQueryFn: useVlanPoolListQuery,
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateListQuery,
+    payload: listPayload
+  })
 
   const [vlanPoolList, setVlanPoolList]= useState<DefaultOptionType[]>()
 

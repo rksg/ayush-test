@@ -40,17 +40,21 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
   const params = useParams()
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetVLANPoolPolicyDetailQuery,
-    useGetVlanPoolPolicyTemplateDetailQuery,
-    !isEdit
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVLANPoolPolicyDetailQuery,
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery,
+    skip: !isEdit
+  })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.VLAN_POOL)
-  // eslint-disable-next-line max-len
-  const [ createInstance ] = useConfigTemplateMutationFnSwitcher(useAddVLANPoolPolicyMutation, useAddVlanPoolPolicyTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher(useUpdateVLANPoolPolicyMutation, useUpdateVlanPoolPolicyTemplateMutation)
+  const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddVLANPoolPolicyMutation,
+    useTemplateMutationFn: useAddVlanPoolPolicyTemplateMutation
+  })
+  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVLANPoolPolicyMutation,
+    useTemplateMutationFn: useUpdateVlanPoolPolicyTemplateMutation
+  })
 
   useEffect(() => {
     if (data) {

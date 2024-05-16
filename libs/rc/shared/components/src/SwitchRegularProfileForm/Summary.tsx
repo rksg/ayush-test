@@ -24,12 +24,11 @@ export function Summary () {
   const { $t } = useIntl()
   const { currentData } = useContext(ConfigurationProfileFormContext)
 
-  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
-    useVenuesListQuery,
-    useGetVenuesTemplateListQuery,
-    false,
-    defaultPayload
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
+    useQueryFn: useVenuesListQuery,
+    useTemplateQueryFn: useGetVenuesTemplateListQuery,
+    payload: defaultPayload
+  })
 
   const venueList = data?.data.reduce<Record<Venue['id'], Venue>>((map, obj) => {
     map[obj.id] = obj

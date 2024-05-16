@@ -46,16 +46,20 @@ export const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useAaaPolicyQuery,
-    useGetAAAPolicyTemplateQuery,
-    !isEdit
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useAaaPolicyQuery,
+    useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
+    skip: !isEdit
+  })
 
-  // eslint-disable-next-line max-len
-  const [ createInstance ] = useConfigTemplateMutationFnSwitcher(useAddAAAPolicyMutation, useAddAAAPolicyTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher(useUpdateAAAPolicyMutation, useUpdateAAAPolicyTemplateMutation)
+  const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddAAAPolicyMutation,
+    useTemplateMutationFn: useAddAAAPolicyTemplateMutation
+  })
+  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAAAPolicyMutation,
+    useTemplateMutationFn: useUpdateAAAPolicyTemplateMutation
+  })
   const [saveState, setSaveState] = useState<AAAPolicyType>({ name: '' })
 
   useEffect(() => {

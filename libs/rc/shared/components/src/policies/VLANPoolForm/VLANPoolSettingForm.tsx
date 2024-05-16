@@ -19,15 +19,14 @@ type VLANPoolSettingFormProps = {
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useVlanPoolListQuery,
-    useGetVlanPoolPolicyTemplateListQuery,
-    false,
-    {
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useVlanPoolListQuery,
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateListQuery,
+    payload: {
       fields: ['name', 'id'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  )
+  })
 
   const nameValidator = async (_rule: unknown, value: string) => {
     return new Promise<void>((resolve, reject) => {
