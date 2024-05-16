@@ -12,9 +12,9 @@ import {
 import { useCreateOrUpdateDhcpTemplateMutation, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useSaveOrUpdateDHCPMutation } from '@acx-ui/rc/services'
 import {
   DHCPSaveData,
-  generateServicePageHeaderTitle,
+  useServicePageHeaderTitle,
   ServiceOperation, ServiceType,
-  useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   useServicePreviousPath
 } from '@acx-ui/rc/utils'
@@ -44,9 +44,8 @@ export function DHCPForm (props: DHCPFormProps) {
     useSaveOrUpdateDHCPMutation, useCreateOrUpdateDhcpTemplateMutation
   )
 
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
-
+  const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DHCP)
 
   useEffect(() => {
     if (data) {
@@ -97,7 +96,7 @@ export function DHCPForm (props: DHCPFormProps) {
   return (
     <>
       <PageHeader
-        title={generateServicePageHeaderTitle(editMode, isTemplate, ServiceType.DHCP)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>

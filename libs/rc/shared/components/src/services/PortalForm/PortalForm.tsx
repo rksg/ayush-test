@@ -27,7 +27,7 @@ import {
   ServiceType,
   useConfigTemplate,
   useServiceListBreadcrumb,
-  generateServicePageHeaderTitle,
+  useServicePageHeaderTitle,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   useServicePreviousPath,
@@ -104,6 +104,7 @@ export const PortalForm = (props: {
   const [ updatePortal ] = useConfigTemplateMutationFnSwitcher(useUpdatePortalMutation, useUpdatePortalTemplateMutation)
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.PORTAL)
+  const pageTitle = useServicePageHeaderTitle(!!editMode, ServiceType.PORTAL)
   const updateFileId = async (file: RcFile) => {
     let fileId = ''
     await uploadURL({
@@ -227,7 +228,7 @@ export const PortalForm = (props: {
     <>
       {!networkView && (
         <PageHeader
-          title={generateServicePageHeaderTitle(!!editMode, isTemplate, ServiceType.PORTAL)}
+          title={pageTitle}
           breadcrumb={breadcrumb}
         />
       )}

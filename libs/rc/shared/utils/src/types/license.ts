@@ -17,6 +17,10 @@ export interface LicenseEntitlement {
   graceEndDate: string;
 }
 
+export interface EntitlementBannersData {
+  data: EntitlementBanner[];
+}
+
 export interface EntitlementBanner {
   deviceCount: number;
   deviceType: EntitlementDeviceType;

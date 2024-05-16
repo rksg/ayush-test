@@ -6,8 +6,8 @@ import { MessageDescriptor }   from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail, ConfigurationValue, filterKpisByStatus } from '../config'
-import { getCrrmOptimizedState, getCrrmInterferingLinksText }                               from '../services'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue } from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText }           from '../services'
 
 
 export type BasicRecommendation = {
@@ -115,9 +115,9 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   } as EnhancedRecommendation
 }
 
-export const kpiHelper = (code: string, status: EnhancedRecommendation['status']) => {
+export const kpiHelper = (code: string) => {
   if (!code) return ''
-  return filterKpisByStatus(codes[code].kpis, status)
+  return codes[code].kpis
     .map(kpi => {
       const name = `kpi_${snakeCase(kpi.key)}`
       return `${name}: kpi(key: "${kpi.key}", timeZone: "${moment.tz.guess()}") {
@@ -152,7 +152,7 @@ export const api = recommendationApi.injectEndpoints({
       EnhancedRecommendation,
       BasicRecommendation & { isCrrmPartialEnabled: boolean, status: string }
     >({
-      query: ({ id, code, status, isCrrmPartialEnabled }) => ({
+      query: ({ id, code, isCrrmPartialEnabled }) => ({
         document: gql`
           query ConfigRecommendationDetails($id: String) {
             recommendation(id: $id) {
@@ -162,7 +162,7 @@ export const api = recommendationApi.injectEndpoints({
               ${isCrrmPartialEnabled ? 'preferences' : ''}
               path { type name }
               statusTrail { status createdAt }
-              ${kpiHelper(code!, status as EnhancedRecommendation['status'])}
+              ${kpiHelper(code!)}
               trigger
             }
           }
