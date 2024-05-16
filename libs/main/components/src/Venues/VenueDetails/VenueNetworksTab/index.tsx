@@ -121,17 +121,20 @@ export function VenueNetworksTab () {
   const params = useParams()
   const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
-  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
 
-  const [
-    addNetworkVenue,
-    { isLoading: isAddNetworkUpdating }
-  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
-  const [
-    deleteNetworkVenue,
-    { isLoading: isDeleteNetworkUpdating }
-  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
+  const [ addNetworkVenue, { isLoading: isAddNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenueMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
+  })
+  const [ deleteNetworkVenue, { isLoading: isDeleteNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
