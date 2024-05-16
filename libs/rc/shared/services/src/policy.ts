@@ -1664,8 +1664,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
             const res = await fetchWithBQ(req)
             return res.data as RbacApSnmpPolicy
           })
-          policies.forEach((policyPromise) => {
-            policyPromise.then((policy)=> {
+          // eslint-disable-next-line max-len
+          const asyncFunction = async (policies: Promise<RbacApSnmpPolicy>[]) : Promise<ApSnmpPolicy[]> => {
+            const all = await Promise.all(policies)
+            all.forEach((policy)=> {
               const profile = rbacApSnmpViewModel.find((profile) => profile.id === policy.id)
               let formattedData = {
                 id: profile?.id,
@@ -1676,8 +1678,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
               } as ApSnmpPolicy
               result = [...result, formattedData]
             })
-          })
-          return { data: result }
+            return new Promise(resolve => resolve(result))
+          }
+          return { data: await asyncFunction(policies) }
         } else {
           let result: ApSnmpPolicy[] = []
           const req = createHttpRequest(ApSnmpUrls.getApSnmpPolicyList, params, RKS_NEW_UI)
