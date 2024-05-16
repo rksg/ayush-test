@@ -51,7 +51,8 @@ export function AAAServers (props: {
   }
 
   const { data: aaaSetting } = useConfigTemplateQueryFnSwitcher<AAASetting>(
-    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
+    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false,
+    undefined, undefined, undefined, isSwitchRbacEnabled
   )
 
   const radiusTableQuery = useTableQuery({
