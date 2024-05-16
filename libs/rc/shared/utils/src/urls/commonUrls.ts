@@ -444,13 +444,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getGuestsList: {
     method: 'post',
     url: '/guestUsers/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
     newApi: true
   },
   addGuestPass: {
     method: 'post',
-    url: '/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
   getApNetworkList: {
