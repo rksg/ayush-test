@@ -3,20 +3,27 @@ import { useEffect, useState } from 'react'
 import { embedDashboard, EmbeddedDashboard } from '@superset-ui/embedded-sdk'
 import moment                                from 'moment'
 
-import { SystemMap, useSystems }                                  from '@acx-ui/analytics/services'
-import { getUserProfile as getUserProfileRA, useAnalyticsFilter } from '@acx-ui/analytics/utils'
-import type { UserProfile as UserProfileRA }                      from '@acx-ui/analytics/utils'
-import { RadioBand, Loader, showActionModal }                     from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { useIsSplitOn, Features }                                 from '@acx-ui/feature-toggle'
+import { showExpiredSessionModal } from '@acx-ui/analytics/components'
+import { SystemMap, useSystems }   from '@acx-ui/analytics/services'
+import {
+  getUserProfile as getUserProfileRA,
+  useAnalyticsFilter,
+  Roles as RolesEnumRA
+} from '@acx-ui/analytics/utils'
+import type { UserProfile as UserProfileRA } from '@acx-ui/analytics/utils'
+import { RadioBand, Loader }                 from '@acx-ui/components'
+import { get }                               from '@acx-ui/config'
+import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
 import {
   useGuestTokenMutation,
-  useEmbeddedIdMutation
+  useEmbeddedIdMutation,
+  EmbeddedResponse
 } from '@acx-ui/reports/services'
-import { useReportsFilter }                                                   from '@acx-ui/reports/utils'
-import { REPORT_BASE_RELATIVE_URL }                                           from '@acx-ui/store'
-import { getUserProfile as getUserProfileR1, UserProfile as UserProfileR1 }   from '@acx-ui/user'
-import { useDateFilter, getJwtToken, NetworkPath, getIntl, useLocaleContext } from '@acx-ui/utils'
+import { useReportsFilter }                                                 from '@acx-ui/reports/utils'
+import { REPORT_BASE_RELATIVE_URL }                                         from '@acx-ui/store'
+import { RolesEnum as RolesEnumR1 }                                         from '@acx-ui/types'
+import { getUserProfile as getUserProfileR1, UserProfile as UserProfileR1 } from '@acx-ui/user'
+import { useDateFilter, getJwtToken, NetworkPath, useLocaleContext }        from '@acx-ui/utils'
 
 import {
   bandDisabledReports,
@@ -34,7 +41,7 @@ interface ReportProps {
 
 type CommonUserProfile = Pick<UserProfileRA,
   'firstName' | 'lastName' | 'email' | 'userId' | 'selectedTenant'>
-  & Pick<UserProfileR1, 'externalId' | 'tenantId'>
+  & Pick<UserProfileR1, 'externalId' | 'tenantId' | 'roles'>
 
 export function convertDateTimeToSqlFormat (dateTime: string): string {
   return moment.utc(dateTime).format('YYYY-MM-DD HH:mm:ss')
@@ -53,16 +60,6 @@ const getReportType = (reportName: ReportType) => {
     isRadioBandDisabled,
     isNetworkFilterDisabled
   }
-}
-
-function showExpiredSessionModal () {
-  const { $t } = getIntl()
-  showActionModal({
-    type: 'info',
-    title: $t({ defaultMessage: 'Session Expired' }),
-    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
-    onOk: () => window.location.reload()
-  })
 }
 
 export const getSupersetRlsClause = (
@@ -245,8 +242,11 @@ export function EmbeddedReport (props: ReportProps) {
 
   const [dashboardEmbeddedId, setDashboardEmbeddedId] = useState<string|null>(null)
 
-  const { firstName, lastName, email, externalId,
-    tenantId, userId, selectedTenant } = isRA
+  const {
+    firstName, lastName, email,  // Common
+    externalId, tenantId, roles, // R1
+    userId, selectedTenant       // RA
+  } = isRA
     ? getUserProfileRA() as unknown as CommonUserProfile
     : getUserProfileR1().profile as unknown as CommonUserProfile
 
@@ -292,7 +292,13 @@ export function EmbeddedReport (props: ReportProps) {
     }
     embeddedId({ payload: embeddedData })
       .unwrap()
-      .then((uuid) => setDashboardEmbeddedId(uuid))
+      .then((resp: EmbeddedResponse) => {
+        const { result, user_info } = resp
+        if (user_info) {
+          sessionStorage.setItem('user_info', JSON.stringify(user_info))
+        }
+        setDashboardEmbeddedId(result.uuid)
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [embedDashboardName])
 
@@ -385,6 +391,10 @@ export function EmbeddedReport (props: ReportProps) {
       },
       // debug: true, // Enable this for debugging
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
+      username: isRA ? userId : externalId,
+      isReadOnly: isRA
+        ? selectedTenant.role === RolesEnumRA.BUSINESS_INSIGHTS_USER
+        : !(roles.includes(RolesEnumR1.PRIME_ADMIN) || roles.includes(RolesEnumR1.ADMINISTRATOR)),
       locale // i18n locale from R1
     })
     embeddedObj.then(async (embObj) => {

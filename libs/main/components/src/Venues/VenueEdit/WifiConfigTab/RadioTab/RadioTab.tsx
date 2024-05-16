@@ -5,8 +5,9 @@ import { useIntl } from 'react-intl'
 import { AnchorLayout, StepsFormLegacy, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }             from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
 import { redirectPreviousPage }                   from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }  from '@acx-ui/react-router-dom'
+import { useNavigate, useParams }                 from '@acx-ui/react-router-dom'
 
 import { getAntennaTypePayload, getExternalAntennaPayload, VenueEditContext } from '../../index'
 
@@ -29,10 +30,9 @@ export function RadioTab () {
   } = useContext(VenueEditContext)
 
   const [isLoadOrBandBalaningEnabled, setIsLoadOrBandBalaningEnabled] = useState<boolean>(false)
-  const basePath = useTenantLink('/venues/')
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
 
   const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
-  const supoortClientAdmissionControl = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
   const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
@@ -65,7 +65,7 @@ export function RadioTab () {
       </>
     )
   }] : []),
-  ...(supoortClientAdmissionControl? [{
+  {
     title: clientAdmissionControlTitle,
     content: (
       <>
@@ -83,7 +83,7 @@ export function RadioTab () {
         <ClientAdmissionControlSettings isLoadOrBandBalaningEnabled={isLoadOrBandBalaningEnabled}/>
       </>
     )
-  }]: []),
+  },
   {
     title: externalTitle,
     content: (

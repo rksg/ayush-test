@@ -1,14 +1,14 @@
 import { rest } from 'msw'
 
-import { RadioBand }                          from '@acx-ui/components'
-import { showActionModal }                    from '@acx-ui/components'
-import * as config                            from '@acx-ui/config'
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import {  ReportUrlsInfo, reportsApi }        from '@acx-ui/reports/services'
-import type { GuestToken, DashboardMetadata } from '@acx-ui/reports/services'
-import { Provider, store, rbacApiURL }        from '@acx-ui/store'
-import { render, mockServer, act, waitFor }   from '@acx-ui/test-utils'
-import { NetworkPath, useLocaleContext }      from '@acx-ui/utils'
+import { RadioBand }                         from '@acx-ui/components'
+import { showActionModal }                   from '@acx-ui/components'
+import * as config                           from '@acx-ui/config'
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import {  ReportUrlsInfo, reportsApi }       from '@acx-ui/reports/services'
+import type { GuestToken, EmbeddedResponse } from '@acx-ui/reports/services'
+import { Provider, store, rbacApiURL }       from '@acx-ui/store'
+import { render, mockServer, act, waitFor }  from '@acx-ui/test-utils'
+import { NetworkPath, useLocaleContext }     from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
 
@@ -60,7 +60,7 @@ const guestTokenReponse = {
   token: 'some token'
 } as GuestToken
 
-const getEmbeddedReponse = {
+const embeddedResponse1 = {
   result: {
     allowed_domains: [
       'localhost:8088'
@@ -70,7 +70,26 @@ const getEmbeddedReponse = {
     dashboard_id: '6',
     uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
   }
-} as DashboardMetadata
+} as EmbeddedResponse
+
+const embeddedResponse2 = {
+  result: {
+    allowed_domains: [
+      'localhost:8088'
+    ],
+    changed_by: null,
+    changed_on: '2022-12-06T05:57:51.442545',
+    dashboard_id: '6',
+    uuid: 'ac940866-a6f3-4113-81c1-ffb82983ce51'
+  },
+  user_info: {
+    is_franchisor: 'false',
+    tenant_ids: [
+      '1235'
+    ],
+    tenant_id: '1234'
+  }
+} as EmbeddedResponse
 
 describe('convertDateTimeToSqlFormat', () => {
   it('should convert date to sqlDateTimeFormat', () => {
@@ -89,7 +108,7 @@ describe('EmbeddedDashboard', () => {
         ReportUrlsInfo.getEmbeddedDashboardMeta.url,
         (_, res, ctx) => {
           embedDashboardSpy()
-          return res(ctx.json(getEmbeddedReponse))
+          return res(ctx.json(embeddedResponse1))
         }
       ),
       rest.post(
@@ -173,10 +192,11 @@ describe('EmbeddedDashboard', () => {
       setLang: () => {}
     })
 
-    rest.post(
-      ReportUrlsInfo.getEmbeddedDashboardMeta.url,
-      (_, res, ctx) => res(ctx.json(getEmbeddedReponse))
-    )
+    mockServer.use(
+      rest.post(
+        ReportUrlsInfo.getEmbeddedDashboardMeta.url,
+        (_, res, ctx) => res(ctx.json(embeddedResponse2))
+      ))
     render(<Provider>
       <EmbeddedReport
         reportName={ReportType.AP_DETAIL}
@@ -185,16 +205,6 @@ describe('EmbeddedDashboard', () => {
   })
 
   describe('401 Unauthorized', () => {
-    beforeAll(() => {
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: {
-          ...window.location,
-          reload: jest.fn()
-        }
-      })
-    })
-
     let addEventListenerMock: jest.SpyInstance
     let removeEventListenerMock: jest.SpyInstance
 
@@ -223,7 +233,6 @@ describe('EmbeddedDashboard', () => {
       expect(actionModal).toHaveBeenCalled()
 
       actionModal.mock.calls[0][0].onOk!()
-      expect(window.location.reload).toHaveBeenCalled()
     })
 
     it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {

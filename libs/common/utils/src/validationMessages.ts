@@ -38,6 +38,11 @@ export const validationMessages = {
     defaultMessage: 'Please enter valid domain(s)',
     description: 'Validation - domains checks'
   }),
+  domainWildcard: defineMessage({
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Type a fully qualified domain name, and then try again. The wildcard (*) character is supported (for example, "* ruckuswireless.com").',
+    description: 'Validation - domain checks'
+  }),
   domainDuplication: defineMessage({
     defaultMessage: 'Domain(s) must not be duplicated.',
     description: 'Validation - Domain duplication checks'
@@ -198,12 +203,13 @@ export const validationMessages = {
     description: 'Validation - target host checks'
   }),
   diffVenueCountry: defineMessage({
-    defaultMessage: 'Cannot move AP to another venue in different country code or country',
+    // eslint-disable-next-line max-len
+    defaultMessage: 'Cannot move AP to another <venueSingular></venueSingular> in different country code or country',
     description: 'Validation - Venue Country checks'
   }),
   cellularApDhcpLimitation: defineMessage({
     defaultMessage: `The cellular AP cannot
-      be moved to the venue which doesn’t enable DHCP service`,
+      be moved to the <venueSingular></venueSingular> which doesn’t enable DHCP service`,
     description: 'Validation - Cellular AP Dhcp checks'
   }),
   emailAddress: defineMessage({
@@ -455,6 +461,14 @@ export const validationMessages = {
   switchDhcpOptionIpMaxSize: defineMessage({
     defaultMessage: 'Max number of DHCP Option IPs is 3',
     description: 'Validation - DHCP option IPs max size checks'
+  }),
+  VenueMinFloorGreaterThanMaxFloor: defineMessage({
+    defaultMessage: 'Min floor can\'t be greater than max floor',
+    description: 'Validation - Venue minimum floor checks'
+  }),
+  VenueMaxFloorLessThanMinFloor: defineMessage({
+    defaultMessage: 'Max floor can\'t be less than min floor',
+    description: 'Validation - Venue minimum floor checks'
   })
 }
 

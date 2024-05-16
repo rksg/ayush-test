@@ -1,14 +1,16 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 
-import { useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
-import { Provider }                                                              from '@acx-ui/store'
-import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                          from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { AaaUrls, CertificateUrls, CommonUrlsInfo, WifiUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { Provider }                                                                               from '@acx-ui/store'
+import { act, mockServer, render, screen, fireEvent, waitForElementToBeRemoved, within, waitFor } from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                                           from '@acx-ui/user'
 
+import { certificateAuthorityList, certificateTemplateList } from '../../policies/CertificateTemplate/__test__/fixtures'
 import {
   venuesResponse,
   venueListResponse,
@@ -18,7 +20,9 @@ import {
   networkDeepResponse,
   mockAAAPolicyListResponse
 } from '../__tests__/fixtures'
-import { NetworkForm } from '../NetworkForm'
+import { MLOContext, NetworkForm } from '../NetworkForm'
+
+import { AaaSettingsForm } from './AaaSettingsForm'
 
 jest.mock('react-intl', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -72,7 +76,7 @@ describe('NetworkForm', () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -82,8 +86,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
-      rest.post(CommonUrlsInfo.validateRadius.url,
-        (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
@@ -91,7 +93,11 @@ describe('NetworkForm', () => {
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(networkDeepResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] })))
+        (_, res, ctx) => res(ctx.json({ response: [networkDeepResponse] }))),
+      rest.post(CertificateUrls.getCertificateTemplates.url,
+        (_, res, ctx) => res(ctx.json(certificateTemplateList))),
+      rest.post(CertificateUrls.getCAs.url,
+        (_, res, ctx) => res(ctx.json(certificateAuthorityList)))
     )
   })
 
@@ -138,5 +144,66 @@ describe('NetworkForm', () => {
     await userEvent.click(authBtn)
     diagram = screen.getAllByAltText('Enterprise AAA (802.1X)')
     expect(diagram[1].src).toContain('aaa.png')
+  })
+
+  it('should render AAA Network successfully with mac address format', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <AaaSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
+
+    await screen.findByText(/MAC Authentication/i)
+    await userEvent.click(await screen.findByTestId('macAuth8021x'))
+    expect(await screen.findByText(/MAC Address Format/i)).toBeInTheDocument()
+    expect(await screen.findByText('AA-BB-CC-DD-EE-FF')).toBeVisible()
+  })
+
+  it('should render correctly when certificateTemplate enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.CERTIFICATE_TEMPLATE)
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <AaaSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
+
+    await screen.findByText('Use External AAA Service')
+    const useCertRadio = await screen.findByLabelText('Use Certificate Auth')
+    await userEvent.click(useCertRadio)
+    expect(await screen.findByText('Certificate Template')).toBeVisible()
+    const addCertTemplateBtn = await screen.findByText('Add')
+    await userEvent.click(addCertTemplateBtn)
+    const dialog = await screen.findByRole('dialog')
+    expect(within(dialog).getByText('Add Certificate Template')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: /Cancel/i }))
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should render correctly when certificateTemplate disabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.CERTIFICATE_TEMPLATE)
+    render(<Provider>
+      <MLOContext.Provider value={{
+        isDisableMLO: true,
+        disableMLO: jest.fn
+      }}>
+        <Form>
+          <AaaSettingsForm />
+        </Form>
+      </MLOContext.Provider>
+    </Provider>, { route: { params } })
+
+    expect(screen.queryByText('Use Certificate Auth')).not.toBeInTheDocument()
+    expect(screen.queryByText('Use External AAA Service')).not.toBeInTheDocument()
   })
 })

@@ -34,7 +34,7 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
   const mspEcTenantsPayload = {
     filters: {
       ...ecFilters,
-      id: [...selectedTemplates[0].ecTenants]
+      id: [...selectedTemplates[0].appliedOnTenants]
     },
     fields: [
       'check-all',
@@ -80,7 +80,12 @@ export const AppliedToTenantDrawer = (props: ApplyTemplateDrawerProps) => {
     <Table<MspEc>
       columns={columns}
       dataSource={tableQuery.data?.data}
+      pagination={tableQuery.pagination}
+      onChange={tableQuery.handleTableChange}
+      onFilterChange={tableQuery.handleFilterChange}
+      settingsId='msp-applied-template-table'
       rowKey='id'
+      enableApiFilter={true}
     />
   </Loader>
 

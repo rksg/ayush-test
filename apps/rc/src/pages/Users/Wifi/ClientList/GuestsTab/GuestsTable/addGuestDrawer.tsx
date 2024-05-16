@@ -23,8 +23,7 @@ import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import { PhoneInput }                              from '@acx-ui/rc/components'
 import {
   useLazyGetGuestNetworkListQuery,
-  useAddGuestPassMutation,
-  useLazyGetNetworkQuery
+  useAddGuestPassMutation
 } from '@acx-ui/rc/services'
 import {
   phoneRegExp,
@@ -244,7 +243,7 @@ export const genTemplate = (guestDetails: any, langDictionary: any) => {
 
 export type GuestResponse = {
   requestId: string,
-  response: Guest[] | { data: Guest[], downloadUrl: string } }
+  response: Guest | { data: Guest[], downloadUrl: string } }
 
 export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boolean }) {
   const { $t } = useIntl()
@@ -266,7 +265,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
     setAllowedNetworkList(list.data)
     if(list.data.length === 1) {
       form.setFieldsValue({
-        networkId: list.data[0].id
+        wifiNetworkId: list.data[0].id
       })
     }
   }
@@ -380,7 +379,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
 
     <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
     <Form.Item
-      name={'networkId'}
+      name={'wifiNetworkId'}
       label={$t({ defaultMessage: 'Allowed Network' })}
       rules={[
         { required: true }
@@ -484,7 +483,7 @@ export function AddGuestDrawer (props: AddGuestProps) {
   const [form] = Form.useForm()
   const { visible, setVisible } = props
   const params = useParams()
-  const { handleGuestPassResponse } = useHandleGuestPassResponse({ tenantId: params.tenantId! })
+  const { handleGuestPassResponse } = useHandleGuestPassResponse()
 
   const [
     addGuestPass
@@ -496,15 +495,15 @@ export function AddGuestDrawer (props: AddGuestProps) {
   }
 
   const onSave = async () => {
-    const payload = [form.getFieldsValue()]
+    const formValues = form.getFieldsValue()
+    const payload = { ...formValues, wifiNetworkId: undefined }
     if(form.getFieldValue('deliveryMethods').length === 0){
       showNoSendConfirm(()=>{
-        addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+        addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
         setVisible(false)
       })
-    }
-    else{
-      addGuestPass({ params: { tenantId: params.tenantId }, payload: payload })
+    } else{
+      addGuestPass({ params: { tenantId: params.tenantId, networkId: formValues.wifiNetworkId }, payload: payload })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((res: any) => {
           if (res.error &&
@@ -599,9 +598,7 @@ export function showGuestErrorModal (errorRes: GuestErrorRes) {
   }
 }
 
-export function useHandleGuestPassResponse (params: { tenantId: string }) {
-  const [getNetwork] = useLazyGetNetworkQuery()
-
+export function useHandleGuestPassResponse () {
   const getGuestPrintTemplate =
   (guestDetails: { langCode: LangCode }, useUpdatedTemplate: boolean) => {
     const langDictionary = getGuestDictionaryByLangCode(guestDetails.langCode)
@@ -629,9 +626,9 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
         guestExpiresDate = guest.expirationDate
       } else {
         if (guest.expiration.unit === 'Hour') {
-          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'hours')
         } else {
-          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'days')
         }
       }
     }
@@ -667,9 +664,11 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
   const handleGuestPassResponse = async (jsonGuest: GuestResponse) => {
     let printCondition = false
     let guestsArr: Guest[] = []
-    let jsonGuestData = jsonGuest.response as Guest[]
+    let jsonGuestData: Guest[] = []
     if ('data' in jsonGuest.response) {
-      jsonGuestData = jsonGuest.response.data
+      jsonGuestData = jsonGuest.response.data as Guest[]
+    } else {
+      jsonGuestData = [jsonGuest.response as Guest]
     }
 
     if (jsonGuestData) {
@@ -680,9 +679,7 @@ export function useHandleGuestPassResponse (params: { tenantId: string }) {
     }
 
     if (printCondition) {
-      const networkData = await getNetwork({
-        params: { tenantId: params.tenantId, networkId: jsonGuestData[0].networkId } })
-      const langCode = (networkData?.data?.guestPortal?.guestPage?.langCode) || ''
+      const langCode = jsonGuestData[0].locale || ''
       for (let i = 0; i < guestsArr.length; i++) {
         guestsArr[i].langCode = langCode
       }

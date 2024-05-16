@@ -422,6 +422,31 @@ export const unqualifiedZone = {
   preferences: null
 }
 
+export const unknownAudit = {
+  id: 'unknown',
+  code: 'unknown',
+  status: 'unknown',
+  createdAt: '2023-11-09T07:05:14.900Z',
+  updatedAt: '2023-11-14T06:05:21.004Z',
+  sliceType: 'zone',
+  sliceValue: '22-US-CA-Z22-Aaron-Home',
+  metadata: { audit: [{ code: 'global', stage: 'filter', failure: { somethingUnknown: false } }] },
+  isMuted: false,
+  mutedBy: '',
+  mutedAt: null,
+  path: [
+    {
+      type: 'system',
+      name: 'vsz-h-bdc-home-network-05'
+    },
+    {
+      type: 'zone',
+      name: '22-US-CA-Z22-Aaron-Home'
+    }
+  ] as NetworkPath,
+  preferences: null
+}
+
 export const noAps = {
   id: 'unknown',
   code: 'unknown',
@@ -479,7 +504,8 @@ export const recommendationListResult = {
         { status: 'applyscheduleinprogress' },
         { status: 'applied' }
       ],
-      preferences: { crrmFullOptimization: true }
+      preferences: { crrmFullOptimization: true },
+      trigger: 'daily'
     },
     {
       id: '12',
@@ -514,7 +540,8 @@ export const recommendationListResult = {
         { status: 'applied' },
         { status: 'revertscheduled' }
       ],
-      preferences: null
+      preferences: null,
+      trigger: 'daily'
     },
     {
       id: '13',
@@ -541,7 +568,8 @@ export const recommendationListResult = {
         { type: 'system', name: 'vsz6' },
         { type: 'zone', name: 'EDU' }
       ] as NetworkPath,
-      preferences: null
+      preferences: null,
+      trigger: 'once'
     },
     {
       id: '14',
@@ -572,13 +600,15 @@ export const recommendationListResult = {
       statusTrail: [
         { status: 'new' }
       ],
-      preferences: null
+      preferences: null,
+      trigger: 'once'
     },
     insufficientLicenses,
     verificationError,
     verified,
     unqualifiedZone,
     noAps,
+    unknownAudit,
     {
       id: '15',
       code: 'c-crrm-channel24g-auto',
@@ -600,6 +630,59 @@ export const recommendationListResult = {
         { type: 'zone', name: 'EDU-MeshZone_S12348' }
       ] as NetworkPath,
       preferences: { crrmFullOptimization: true }
+    },
+    {
+      id: '16',
+      code: 'c-probeflex-24g',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath
+    },
+    {
+      id: '17',
+      code: 'c-probeflex-5g',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath
+    },
+    {
+      id: '18',
+      code: 'c-probeflex-6g',
+      status: 'new',
+      createdAt: '2023-06-13T07:05:08.638Z',
+      updatedAt: '2023-06-16T06:05:02.839Z',
+      sliceType: 'zone',
+      sliceValue: 'zone-1',
+      metadata: {},
+      isMuted: false,
+      mutedAt: null,
+      mutedBy: '',
+      path: [
+        { type: 'system', name: 'vsz612' },
+        { type: 'zone', name: 'EDU-MeshZone_S12348' }
+      ] as NetworkPath,
+      preferences: { crrmFullOptimization: true },
+      trigger: 'daily'
     }
   ]
 }

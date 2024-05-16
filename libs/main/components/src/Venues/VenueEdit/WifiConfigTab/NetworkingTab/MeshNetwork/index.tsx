@@ -10,15 +10,19 @@ import { Features, useIsSplitOn }                                           from
 import {
   useLazyApListQuery,
   useGetVenueSettingsQuery,
-  useUpdateVenueMeshMutation
+  useUpdateVenueMeshMutation,
+  useGetVenueTemplateSettingsQuery,
+  useUpdateVenueTemplateMeshMutation
 } from '@acx-ui/rc/services'
-import { APMeshRole, Mesh, generateAlphanumericString } from '@acx-ui/rc/utils'
-import { validationMessages }                           from '@acx-ui/utils'
+import { APMeshRole, Mesh, VenueSettings, generateAlphanumericString } from '@acx-ui/rc/utils'
+import { validationMessages }                                          from '@acx-ui/utils'
 
-import { VenueEditContext } from '../../../index'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }                                                                from '../../../index'
 
 import { ErrorMessageDiv, MeshInfoBlock, MeshPassphraseDiv, MeshSsidDiv, ZeroTouchMeshDiv } from './styledComponents'
 
+const LABEL_WIDTH = '180px'
 
 const MeshInfoIcon = () => {
   const { $t } = useIntl()
@@ -48,7 +52,10 @@ export function MeshNetwork () {
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
-  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useUpdateVenueMeshMutation()
+  const [updateVenueMesh, { isLoading: isUpdatingVenueMesh }] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueMeshMutation,
+    useUpdateVenueTemplateMeshMutation
+  )
 
   const defaultToolTip = $t({ defaultMessage: 'Not available' })
   const [isAllowEnableMesh, setIsAllowEnableMesh] = useState(true)
@@ -72,7 +79,10 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useGetVenueSettingsQuery({ params })
+  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
+    useGetVenueSettingsQuery,
+    useGetVenueTemplateSettingsQuery
+  )
 
   useEffect(() => {
     if (data) {
@@ -83,7 +93,7 @@ export function MeshNetwork () {
 
       const enableDhcpSetting = dhcpServiceSetting && dhcpServiceSetting.enabled
       if (enableDhcpSetting) {
-        setMeshToolTipDisabledText($t({ defaultMessage: 'You cannot activate the Mesh Network on this venue because it already has enable DHCP settings' }))
+        setMeshToolTipDisabledText($t({ defaultMessage: 'You cannot activate the Mesh Network on this <venueSingular></venueSingular> because it already has enable DHCP settings' }))
       } else {
         setMeshToolTipDisabledText('')
       }
@@ -301,13 +311,13 @@ export function MeshNetwork () {
     isLoading: !data || meshToolTipDisabledText === defaultToolTip,
     isFetching: isUpdatingVenueMesh
   }]}>
-    <StepsFormLegacy.FieldLabel width={'160px'}>
+    <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
       {$t({ defaultMessage: 'Mesh Network' })}
       {(hasMeshAPs && meshEnabled)?
         <Space direction='vertical' style={{ width: '400px', paddingBottom: '10px' }}>
           <div>{$t({ defaultMessage: 'ON' })}</div>
           <div>{
-            $t({ defaultMessage: 'Since there are active mesh links in this venue, in order prevent networking issues, you cannot turn mesh networking off' })}
+            $t({ defaultMessage: 'Since there are active mesh links in this <venueSingular></venueSingular>, in order prevent networking issues, you cannot turn mesh networking off' })}
           </div>
         </Space> :
         <Form.Item
@@ -329,17 +339,17 @@ export function MeshNetwork () {
         <ul>
           <li>
             {
-              $t({ defaultMessage: 'Enabling mesh for a venue creates a new WLAN for mesh communication between Access Points' })
+              $t({ defaultMessage: 'Enabling mesh for a <venueSingular></venueSingular> creates a new WLAN for mesh communication between Access Points' })
             }
           </li>
           <li>
             {
-              $t({ defaultMessage: 'Enabling mesh for a venue is a global configuration and once mesh links are formed (automatically), it cannot be undone.' })
+              $t({ defaultMessage: 'Enabling mesh for a <venueSingular></venueSingular> is a global configuration and once mesh links are formed (automatically), it cannot be undone.' })
             }
           </li>
         </ul>
       </MeshInfoBlock>
-      <MeshSsidDiv labelWidth={'160px'} isEditMode={isSsidEditMode}>
+      <MeshSsidDiv labelWidth={LABEL_WIDTH} isEditMode={isSsidEditMode}>
         {$t({ defaultMessage: 'Mesh Network Name' })}
         <Form.Item children={
           <Input
@@ -365,14 +375,14 @@ export function MeshNetwork () {
         }
       </MeshSsidDiv>
       {ssidError &&
-        <StepsFormLegacy.FieldLabel width={'160px'}>
+        <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
           <div />
           <ErrorMessageDiv>
             {ssidError}
           </ErrorMessageDiv>
         </StepsFormLegacy.FieldLabel>
       }
-      <MeshPassphraseDiv labelWidth={'160px'} isEditMode={isPassphraseEditMode}>
+      <MeshPassphraseDiv labelWidth={LABEL_WIDTH} isEditMode={isPassphraseEditMode}>
         {$t({ defaultMessage: 'Mesh PSK' })}
         <Form.Item children={
           <Input.TextArea
@@ -402,14 +412,14 @@ export function MeshNetwork () {
         }
       </MeshPassphraseDiv>
       {passphraseError &&
-        <StepsFormLegacy.FieldLabel width={'160px'}>
+        <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
           <div />
           <ErrorMessageDiv>
             {passphraseError}
           </ErrorMessageDiv>
         </StepsFormLegacy.FieldLabel>
       }
-      <StepsFormLegacy.FieldLabel width={'160px'}>
+      <StepsFormLegacy.FieldLabel width={LABEL_WIDTH}>
         {$t({ defaultMessage: 'Mesh Radio' })}
         <Form.Item >
           <Radio.Group
@@ -424,7 +434,7 @@ export function MeshNetwork () {
         </Form.Item>
       </StepsFormLegacy.FieldLabel>
       { supportZeroTouchMesh &&
-        <ZeroTouchMeshDiv labelWidth={'160px'}>
+        <ZeroTouchMeshDiv labelWidth={LABEL_WIDTH}>
           {$t({ defaultMessage: 'Zero Touch Mesh' })}
           <Form.Item
             valuePropName='checked'

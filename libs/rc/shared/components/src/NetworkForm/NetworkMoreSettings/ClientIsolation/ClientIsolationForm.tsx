@@ -3,11 +3,12 @@ import { useContext } from 'react'
 import { Form, Select, Switch } from 'antd'
 import { useIntl }              from 'react-intl'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
-import NetworkFormContext                   from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
-import * as UI                              from '../styledComponents'
+import { ConfigTemplateType } from '@acx-ui/rc/utils'
+
+import NetworkFormContext                                                              from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
+import * as UI                                                                         from '../styledComponents'
 
 import ClientIsolationAllowListEditor from './ClientIsolationAllowListEditor'
 
@@ -21,10 +22,11 @@ enum IsolatePacketsTypeEnum {
 }
 
 export default function ClientIsolationForm (props: { labelWidth?: string }) {
-  const isPoliciesEnabled = useIsSplitOn(Features.POLICIES)
   const form = Form.useFormInstance()
   const { data } = useContext(NetworkFormContext)
   const { $t } = useIntl()
+  // eslint-disable-next-line max-len
+  const isClientIsolationAllowlistSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.CLIENT_ISOLATION)
 
   const { labelWidth='250px' } = props
 
@@ -89,8 +91,8 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
           initialValue={false}
           children={<Switch />} />
       </UI.FieldLabel>
-      {isPoliciesEnabled ? <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue' })}
+      {isClientIsolationAllowlistSupported ? <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'Client Isolation Allowlist by <VenueSingular></VenueSingular>' })}
         <Form.Item
           name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
           style={{ marginBottom: '10px' }}
@@ -98,7 +100,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
           initialValue={clientIsolationAllowlistEnabledInitValue}
           children={<Switch />} />
       </UI.FieldLabel> : null}
-      {clientIsolationAllowlistEnabled && isPoliciesEnabled &&
+      {clientIsolationAllowlistEnabled && isClientIsolationAllowlistSupported &&
         <ClientIsolationAllowListEditor networkVenues={data?.venues}/>
       }
     </>

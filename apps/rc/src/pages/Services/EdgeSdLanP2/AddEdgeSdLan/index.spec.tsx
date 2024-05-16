@@ -25,6 +25,8 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 
 const mockedAddFn = jest.fn()
 const mockedSubmitDataGen = jest.fn()
+const mockedApiReqCallbackData = jest.fn()
+const mockedApiReqSucceed = jest.fn()
 
 jest.mock('../EdgeSdLanForm', () => ({
   __esModule: true,
@@ -46,29 +48,55 @@ jest.mock('@acx-ui/rc/components', () => ({
   useEdgeSdLanActions: () => {
     return { addEdgeSdLan: (req: RequestPayload) => {
       mockedAddFn(req.payload)
-      return new Promise((resolve) => {
-        resolve(true)
-        setTimeout(() => {
-          (req.callback as Function)({
-            response: { id: 'mocked_service_id' }
-          })
-        }, 300)
+      const cbData = mockedApiReqCallbackData()
+      const isSucceed = mockedApiReqSucceed()
+
+      return new Promise((resolve, reject) => {
+        isSucceed ? resolve(true) : reject()
+        if (isSucceed) {
+          setTimeout(() => {
+            (req.callback as Function)(cbData)
+          }, 300)
+        }
       })
     } }
   }
 }))
 
+const targetPath = getServiceRoutePath({
+  type: ServiceType.EDGE_SD_LAN,
+  oper: ServiceOperation.LIST
+})
+const mockedDmzData = {
+  name: 'testAddDMZSdLanService',
+  edgeClusterId: '0000000002',
+  activatedNetworks: [{
+    id: 'network_4',
+    name: 'Network4'
+  }],
+  tunnelProfileId: 't-tunnelProfile-id',
+  isGuestTunnelEnabled: true,
+  guestEdgeClusterId: '0000000005',
+  guestTunnelProfileId: 't-tunnelProfile-id-2',
+  activatedGuestNetworks: [{
+    id: 'network_4',
+    name: 'Network4'
+  }]
+}
+
 describe('Add SD-LAN service', () => {
   beforeEach(() => {
     mockedAddFn.mockReset()
     mockedSubmitDataGen.mockReset()
+    mockedNavigate.mockReset()
+    mockedApiReqCallbackData.mockReset().mockReturnValue([])
+    mockedApiReqSucceed.mockReset().mockReturnValue(true)
   })
 
   it('should correctly add service', async () => {
     const mockedFormData = {
       name: 'testAddSdLanService',
-      edgeId: '0000000001',
-      corePortMac: 't-coreport-key',
+      edgeClusterId: '0000000001',
       tunnelProfileId: 't-tunnelProfile-id',
       activatedNetworks: [{
         id: 'network_1',
@@ -77,11 +105,6 @@ describe('Add SD-LAN service', () => {
       isGuestTunnelEnabled: false
     }
     mockedSubmitDataGen.mockReturnValueOnce(mockedFormData)
-
-    const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.LIST
-    })
 
     render(<Provider>
       <AddEdgeSdLan />
@@ -97,8 +120,7 @@ describe('Add SD-LAN service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockedFormData.name,
-        edgeId: mockedFormData.edgeId,
-        corePortMac: mockedFormData.corePortMac,
+        edgeClusterId: mockedFormData.edgeClusterId,
         tunnelProfileId: mockedFormData.tunnelProfileId,
         networkIds: mockedFormData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockedFormData.isGuestTunnelEnabled
@@ -115,8 +137,7 @@ describe('Add SD-LAN service', () => {
   it('network is allowed to be empty', async () => {
     const mockeFormData = {
       name: 'testAddSdLanService2',
-      edgeId: '0000000002',
-      corePortMac: 't-coreport2-key',
+      edgeClusterId: '0000000002',
       tunnelProfileId: 't-tunnelProfile2-id',
       activatedNetworks: [],
       isGuestTunnelEnabled: false
@@ -137,8 +158,7 @@ describe('Add SD-LAN service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockeFormData.name,
-        edgeId: mockeFormData.edgeId,
-        corePortMac: mockeFormData.corePortMac,
+        edgeClusterId: mockeFormData.edgeClusterId,
         tunnelProfileId: mockeFormData.tunnelProfileId,
         networkIds: mockeFormData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockeFormData.isGuestTunnelEnabled
@@ -151,36 +171,14 @@ describe('Add SD-LAN service', () => {
   })
 
   it('should correctly handle guest network enabled case', async () => {
-    const mockedDmzData = {
-      name: 'testAddDMZSdLanService',
-      edgeId: '0000000002',
-      corePortMac: 't-coreport2-key',
-      activatedNetworks: [{
-        id: 'network_4',
-        name: 'Network4'
-      }],
-      tunnelProfileId: 't-tunnelProfile-id',
-      isGuestTunnelEnabled: true,
-      guestEdgeId: '0000000005',
-      guestTunnelProfileId: 't-tunnelProfile-id-2',
-      activatedGuestNetworks: [{
-        id: 'network_4',
-        name: 'Network4'
-      }]
-    }
     mockedSubmitDataGen.mockReturnValueOnce(mockedDmzData)
-
-    const targetPath = getServiceRoutePath({
-      type: ServiceType.EDGE_SD_LAN_P2,
-      oper: ServiceOperation.LIST
-    })
 
     render(<Provider>
       <AddEdgeSdLan />
     </Provider>, {
       route: {
         params: { tenantId: 't-id', serviceId: 't-cf-id' },
-        path: '/:tenantId/services/edgeEdgeSdLanP2/:serviceId/create'
+        path: '/:tenantId/services/edgeEdgeSdLanP2/create'
       }
     })
 
@@ -189,12 +187,11 @@ describe('Add SD-LAN service', () => {
     await waitFor(() => {
       expect(mockedAddFn).toBeCalledWith({
         name: mockedDmzData.name,
-        edgeId: mockedDmzData.edgeId,
-        corePortMac: mockedDmzData.corePortMac,
+        edgeClusterId: mockedDmzData.edgeClusterId,
         tunnelProfileId: mockedDmzData.tunnelProfileId,
         networkIds: mockedDmzData.activatedNetworks.map(item => item.id),
         isGuestTunnelEnabled: mockedDmzData.isGuestTunnelEnabled,
-        guestEdgeId: mockedDmzData.guestEdgeId,
+        guestEdgeClusterId: mockedDmzData.guestEdgeClusterId,
         guestNetworkIds: mockedDmzData.activatedGuestNetworks.map(item => item.id),
         guestTunnelProfileId: mockedDmzData.guestTunnelProfileId
       })
@@ -206,6 +203,57 @@ describe('Add SD-LAN service', () => {
         pathname: '/t-id/t/'+targetPath,
         search: ''
       }, { replace: true })
+    })
+  })
+
+  it('should catch profile API error', async () => {
+    const mockedConsoleFn = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(mockedConsoleFn)
+    mockedSubmitDataGen.mockReturnValue(mockedDmzData)
+    mockedApiReqSucceed.mockReturnValue(false)
+
+    render(<Provider>
+      <AddEdgeSdLan />
+    </Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/services/edgeEdgeSdLanP2/create'
+      }
+    })
+
+    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
+    await click(screen.getByRole('button', { name: 'Submit' }))
+    await waitFor(() => {
+      expect(mockedAddFn).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(mockedConsoleFn).toBeCalled()
+    })
+    expect(mockedNavigate).toBeCalledTimes(0)
+  })
+  it('should catch relation API error', async () => {
+    const mockedConsoleFn = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(mockedConsoleFn)
+    mockedSubmitDataGen.mockReturnValue(mockedDmzData)
+    mockedApiReqSucceed.mockReturnValue(true)
+    mockedApiReqCallbackData.mockReturnValue({ status: 400 })
+
+    render(<Provider>
+      <AddEdgeSdLan />
+    </Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/services/edgeEdgeSdLanP2/create'
+      }
+    })
+
+    expect(screen.getByTestId('rc-EdgeSdLanForm')).toBeVisible()
+    await click(screen.getByRole('button', { name: 'Submit' }))
+    await waitFor(() => {
+      expect(mockedAddFn).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(mockedNavigate).toBeCalledTimes(1)
     })
   })
 })

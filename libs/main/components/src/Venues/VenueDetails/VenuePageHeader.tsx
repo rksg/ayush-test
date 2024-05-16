@@ -2,16 +2,16 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
-  getConfigTemplatePath, useBreadcrumb,
   useConfigTemplate,
+  useConfigTemplateBreadcrumb,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
@@ -38,15 +38,17 @@ function VenuePageHeader () {
   const { tenantId, venueId, activeTab } = useParams()
   const enableTimeFilter = () => !['networks', 'services', 'units'].includes(activeTab as string)
 
-  const { data } = useVenueDetailsHeaderQuery({ params: { tenantId, venueId } })
+  const { data } = useVenueDetailsHeaderQuery({
+    params: { tenantId, venueId },
+    payload: { isTemplate }
+  })
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = useTenantLink(`/venues/${venueId}`)
-  const templateBasePath = useTenantLink(getConfigTemplatePath(`venues/${venueId}`), 'v')
+  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/details`)
 
-  const breadcrumb = useBreadcrumb([
-    { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
 
   return (
@@ -58,10 +60,7 @@ function VenuePageHeader () {
         ...filterByAccess([<Button
           type='primary'
           onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${isTemplate ? templateBasePath.pathname : basePath.pathname}/edit/details`
-            }, {
+            navigate(detailsPath, {
               state: {
                 from: location
               }

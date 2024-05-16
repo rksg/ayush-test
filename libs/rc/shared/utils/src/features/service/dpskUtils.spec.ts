@@ -1,4 +1,4 @@
-import { displayDeviceCountLimit, getPassphraseStatus } from './dpskUtils'
+import { displayDefaultAccess, displayDeviceCountLimit, getPassphraseStatus } from './dpskUtils'
 
 const mockedBaseDpskPassphrase = {
   id: '__PASSPHRASE_ID_3__',
@@ -33,5 +33,16 @@ describe('DPSK utils', () => {
       ...mockedBaseDpskPassphrase
     }, true)
     expect(active).toBe('Active')
+  })
+
+  it('display default access', () => {
+    const acceptResult = displayDefaultAccess(true)
+    expect(acceptResult).toBe('ACCEPT')
+
+    const rejectResult = displayDefaultAccess(false)
+    expect(rejectResult).toBe('REJECT')
+
+    const undefinedResult = displayDefaultAccess(undefined)
+    expect(undefinedResult).toBe('ACCEPT')
   })
 })

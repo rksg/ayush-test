@@ -5,14 +5,19 @@ import { Col, InputNumber, Form, Radio, Row, Slider, Space, Switch } from 'antd'
 import { defineMessage, useIntl }                                    from 'react-intl'
 import { useParams }                                                 from 'react-router-dom'
 
-import { AnchorContext, Loader, Tooltip }                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                         from '@acx-ui/icons'
-import { useGetVenueLoadBalancingQuery, useUpdateVenueLoadBalancingMutation } from '@acx-ui/rc/services'
-import { LoadBalancingMethodEnum, SteeringModeEnum }                          from '@acx-ui/rc/utils'
+import { AnchorContext, Loader, Tooltip }       from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { QuestionMarkCircleOutlined }           from '@acx-ui/icons'
+import {
+  useGetVenueLoadBalancingQuery, useGetVenueTemplateLoadBalancingQuery,
+  useUpdateVenueLoadBalancingMutation,
+  useUpdateVenueTemplateLoadBalancingMutation
+} from '@acx-ui/rc/services'
+import { LoadBalancingMethodEnum, SteeringModeEnum, VenueLoadBalancing } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }             from '../..'
-import { FieldLabel, RadioDescription } from '../styledComponents'
+import { VenueEditContext }                                                                from '../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { FieldLabel, RadioDescription }                                                    from '../styledComponents'
 
 const { useWatch } = Form
 
@@ -39,12 +44,17 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const { setIsLoadOrBandBalaningEnabled } = props
-  const getLoadBalancing = useGetVenueLoadBalancingQuery({ params: { venueId } })
-  const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] =
-    useUpdateVenueLoadBalancingMutation()
+  const getLoadBalancing = useVenueConfigTemplateQueryFnSwitcher<VenueLoadBalancing>(
+    useGetVenueLoadBalancingQuery,
+    useGetVenueTemplateLoadBalancingQuery
+  )
+
+  const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueLoadBalancingMutation,
+    useUpdateVenueTemplateLoadBalancingMutation
+  )
 
   const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
-  const clientAdmissionControlFlag = useIsSplitOn(Features.WIFI_FR_6029_FG6_1_TOGGLE)
   const supportStickyClient = stickyClientFlag
 
   const loadBalancingMethods = [
@@ -184,9 +194,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
               title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be
                 allowed to enable client admission control. Make sure that load balancing is enabled on network configuration.` })}
               placement='right'>
-              {clientAdmissionControlFlag &&
-                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
-              }
+              <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
             </Tooltip>
           </Space>
           <Form.Item
@@ -317,9 +325,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
               title={$t({ defaultMessage: `When load balancing or band balancing is enabled, you will not be
                 allowed to enable client admission control.` })}
               placement='right'>
-              {clientAdmissionControlFlag &&
-                <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
-              }
+              <QuestionMarkCircleOutlined style={{ height: '14px', marginBottom: -3 }} />
             </Tooltip>
           </Space>
           <Form.Item

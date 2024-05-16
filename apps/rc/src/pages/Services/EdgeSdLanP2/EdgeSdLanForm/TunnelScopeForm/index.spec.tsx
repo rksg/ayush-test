@@ -1,8 +1,12 @@
 /* eslint-disable max-len */
-import { renderHook, waitFor, waitForElementToBeRemoved, within } from '@testing-library/react'
-import userEvent                                                  from '@testing-library/user-event'
-import { Form }                                                   from 'antd'
-import { rest }                                                   from 'msw'
+import {
+  renderHook,
+  waitFor,
+  within
+} from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
 import { StepsForm, StepsFormProps }                                                    from '@acx-ui/components'
 import { networkApi, tunnelProfileApi }                                                 from '@acx-ui/rc/services'
@@ -14,7 +18,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockDeepNetworkList, mockNetworkSaveData } from '../../__tests__/fixtures'
+import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../__tests__/fixtures'
 
 import { TunnelScopeForm } from '.'
 
@@ -91,11 +95,11 @@ const MockedTargetComponent = (props: Partial<StepsFormProps>) => {
 }
 
 describe('Tunnel Scope Form', () => {
-  const mockedGetNetworkDeepList = jest.fn()
+  const mockedGetNetworkViewmodelList = jest.fn()
 
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
-    mockedGetNetworkDeepList.mockReset()
+    mockedGetNetworkViewmodelList.mockReset()
 
     store.dispatch(tunnelProfileApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
@@ -106,10 +110,14 @@ describe('Tunnel Scope Form', () => {
         (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
-        CommonUrlsInfo.getNetworkDeepList.url,
+        CommonUrlsInfo.getVenueNetworkList.url,
         (_req, res, ctx) => {
-          mockedGetNetworkDeepList()
-          return res(ctx.json(mockDeepNetworkList))
+          mockedGetNetworkViewmodelList()
+          return res(ctx.json({
+            data: mockNetworkViewmodelList,
+            page: 0,
+            totalCount: mockNetworkViewmodelList.length
+          }))
         }
       ),
       rest.post(
@@ -127,14 +135,14 @@ describe('Tunnel Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile (AP- Cluster tunnel)' }),
       'tunnelProfile3')
 
     await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-    expect(rows.length).toBe(4)
+    expect(rows.length).toBe(7)
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
   })
 
@@ -152,7 +160,7 @@ describe('Tunnel Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Tunnel Profile (AP- Cluster tunnel)' }),
       'Default tunnel profile (SD-LAN)')
@@ -177,7 +185,7 @@ describe('Tunnel Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
     await screen.findByText(/Enable the networks that will tunnel the traffic to the selected cluster/i)
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     await waitFor(() =>
@@ -203,8 +211,8 @@ describe('Tunnel Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
+    //await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
     expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
@@ -229,7 +237,7 @@ describe('Tunnel Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
     const switchBtn = within(rows[0]).getByRole('switch')
@@ -250,7 +258,7 @@ describe('Tunnel Scope Form', () => {
     />, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-    await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+    await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
     await screen.findAllByRole('row', { name: /MockedNetwork/i })
     const formFoot = await screen.findByTestId('steps-form-actions')
 
@@ -278,7 +286,7 @@ describe('Tunnel Scope Form', () => {
       />, { route: { params: { tenantId: 't-id' } } })
 
       expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-      await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+      await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
       const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
       const opts = await within(dmzTunnelSelector).findAllByRole('option')
       expect(opts.length).toBe(1)
@@ -288,7 +296,7 @@ describe('Tunnel Scope Form', () => {
       await userEvent.selectOptions(dmzTunnelSelector, 'tunnelProfileId1')
 
       const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-      expect(rows.length).toBe(4)
+      expect(rows.length).toBe(7)
       expect(within(rows[0]).getByRole('cell', { name: /MockedNetwork 1/i })).toBeVisible()
       const switchBtns = within(rows[0]).getAllByRole('switch')
       expect(switchBtns.length).toBe(1)
@@ -313,13 +321,13 @@ describe('Tunnel Scope Form', () => {
       />, { route: { params: { tenantId: 't-id' } } })
 
       expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-      await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+      await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
       const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
       const opts = await within(dmzTunnelSelector).findAllByRole('option')
       expect(opts.length).toBe(1)
 
       const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-      expect(rows.length).toBe(4)
+      expect(rows.length).toBe(7)
 
       // when turn on DC captive portal network DMZ network should be ON by default
       expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()
@@ -350,13 +358,13 @@ describe('Tunnel Scope Form', () => {
       />, { route: { params: { tenantId: 't-id' } } })
 
       expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
-      await waitFor(() => expect(mockedGetNetworkDeepList).toBeCalled())
+      await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
       const dmzTunnelSelector = await screen.findByRole('combobox', { name: 'Tunnel Profile (Cluster- DMZ Cluster tunnel)' })
       const opts = await within(dmzTunnelSelector).findAllByRole('option')
       expect(opts.length).toBe(1)
 
       const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
-      expect(rows.length).toBe(4)
+      expect(rows.length).toBe(7)
 
       // when turn on DC captive portal network DMZ network should be ON by default
       expect(within(rows[3]).getByRole('cell', { name: /MockedNetwork 4/i })).toBeVisible()

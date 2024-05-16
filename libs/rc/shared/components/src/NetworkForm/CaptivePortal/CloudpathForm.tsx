@@ -17,6 +17,7 @@ import { NetworkSaveData, GuestNetworkTypeEnum, NetworkTypeEnum, URLProtocolRegE
 import { validationMessages }                                                        from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -30,6 +31,7 @@ export function CloudpathForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const form = Form.useFormInstance()
 
@@ -45,6 +47,10 @@ export function CloudpathForm () {
         form.setFieldValue('authRadiusId',
           data.authRadius.id)
       }
+    }
+    if(!editMode) {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   },[data])
   return (<>
@@ -88,10 +94,8 @@ export function CloudpathForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip>
         </div>
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.Cloudpath}
           enableDefaultWalledGarden={true} />
         <AuthAccServerSetting/>
       </GridCol>

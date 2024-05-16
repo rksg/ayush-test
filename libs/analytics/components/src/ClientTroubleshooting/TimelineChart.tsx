@@ -23,8 +23,8 @@ import ReactECharts        from 'echarts-for-react'
 import {
   CustomSeriesRenderItem
 } from 'echarts/types/dist/shared'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment                     from 'moment-timezone'
+import { useIntl, defineMessage } from 'react-intl'
 
 import { categoryCodeMap, IncidentCode, incidentsToggle, IncidentsToggleFilter } from '@acx-ui/analytics/utils'
 import {
@@ -36,10 +36,10 @@ import {
   cssNumber,
   toolboxDataZoomOptions
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import type { TimeStampRange }        from '@acx-ui/types'
-import { hasAccess }                  from '@acx-ui/user'
+import { get }                              from '@acx-ui/config'
+import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import type { TimeStampRange }              from '@acx-ui/types'
+import { hasAccess }                        from '@acx-ui/user'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -56,6 +56,7 @@ import {
   INCIDENTS,
   ALL
 } from './config'
+import { checkRollup }                     from './EventsTimeline'
 import * as UI                             from './styledComponents'
 import { getQualityColor, labelFormatter } from './util'
 
@@ -80,9 +81,11 @@ export interface TimelineChartProps extends Omit<EChartsReactProps, 'option' | '
   hasXaxisLabel?: boolean;
   mapping: { key: string; label: string; chartType: string; series: string }[];
   showResetZoom?: boolean;
-  onClick?: Function
+  onClick?: Function;
   index?: React.Attributes['key'];
   popoverRef?: RefObject<HTMLDivElement>;
+  startDate?: string;
+  value?: string;
 }
 
 export const getSeriesData = (
@@ -170,7 +173,7 @@ export const useDotClick = (
   onDotClick: ((param: unknown) => void) | undefined,
   popoverRef: RefObject<HTMLDivElement> | undefined,
   navigate: CallableFunction,
-  basePath: string
+  basePath: Path
 ) => {
   const handler = useCallback(
     function (params: { componentSubType: string; data: unknown }) {
@@ -198,7 +201,7 @@ export const useDotClick = (
       ) {
         const typedIncidentParam = (params as { data: [number, string, number, IncidentDetails] })
         const { id } = typedIncidentParam.data[3]
-        navigate(`${basePath}/analytics/incidents/${id}`)
+        navigate({ ...basePath, pathname: `${basePath.pathname}/incidents/${id}` })
       }
     },
     [onDotClick, navigate, basePath, popoverRef]
@@ -284,15 +287,16 @@ export const useDataZoom = (
 
   return [canResetZoom, resetZoomCallback]
 }
+const textStyle = {
+  color: cssStr('--acx-primary-black'),
+  fontFamily: cssStr('--acx-neutral-brand-font'),
+  fontSize: cssNumber('--acx-body-5-font-size'),
+  lineHeight: cssNumber('--acx-body-5-line-height'),
+  fontWeight: cssNumber('--acx-body-font-weight')
+}
 const tooltipOptions = () =>
   ({
-    textStyle: {
-      color: cssStr('--acx-primary-black'),
-      fontFamily: cssStr('--acx-neutral-brand-font'),
-      fontSize: cssNumber('--acx-body-5-font-size'),
-      lineHeight: cssNumber('--acx-body-5-line-height'),
-      fontWeight: cssNumber('--acx-body-font-weight')
-    },
+    textStyle,
     borderRadius: 2,
     borderWidth: 0,
     padding: 8,
@@ -301,6 +305,8 @@ const tooltipOptions = () =>
     backgroundColor: 'transparent',
     extraCssText: 'box-shadow: 0px 0px 0px rgba(51, 51, 51, 0.08); z-index: 0;'
   } as TooltipComponentOption)
+export const granularityText =
+  defineMessage({ defaultMessage: 'Data granularity at this level is not available' })
 
 export function updateBoundary (window: TimeStampRange, ref: MutableRefObject<TimeStampRange>) {
   ref.current = window
@@ -320,14 +326,15 @@ export function TimelineChart ({
   sharedChartName,
   popoverRef,
   onChartReady,
+  startDate,
+  value,
   ...props
 }: TimelineChartProps) {
   const { $t } = useIntl()
   const eChartsRef = useRef<ReactECharts>(null)
   const navigate = useNavigate()
-  const currentPath = useTenantLink('/')
+  const basePath = useTenantLink('/analytics')
   const toggles = useIncidentToggles()
-  const basePath = currentPath.pathname
   useImperativeHandle(chartRef, () => eChartsRef.current!)
   const chartPadding = 10
   const rowHeight = 22
@@ -372,9 +379,34 @@ export function TimelineChart ({
             color: getBarColor as unknown as string
           },
           animation: false,
-          data: getSeriesData(data, key, series, toggles),
+          data: ((value && startDate) && checkRollup(value, startDate))
+            ? [] : getSeriesData(data, key, series, toggles),
           clip: true,
-          cursor: (key === 'incidents') ? 'pointer' : 'crosshair'
+          cursor: (key === 'incidents') ? 'pointer' : 'crosshair',
+          markArea: {
+            silent: true,
+            itemStyle: {
+              color: 'transparent'
+            },
+            data: [
+              [
+                {
+                  name: ((value && startDate) && checkRollup(value, startDate))
+                    ? $t(granularityText) : '',
+                  xAxis: 'min',
+                  yAxis: 'min',
+                  label: {
+                    offset: [0, 12],
+                    ...textStyle
+                  }
+                },
+                {
+                  xAxis: 'max',
+                  yAxis: 'max'
+                }
+              ]
+            ]
+          }
         })
     ) as SeriesOption[], [data, mapping])
 

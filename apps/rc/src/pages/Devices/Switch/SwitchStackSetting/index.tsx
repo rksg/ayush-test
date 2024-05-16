@@ -11,7 +11,8 @@ import {
   isL3FunctionSupported,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
-  validateSwitchGatewayIpAddress
+  validateSwitchGatewayIpAddress,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 
 import StaticRoutes      from './StaticRoutes'
@@ -36,11 +37,16 @@ const spanningTreePriorityItem = [
   { label: '61440', value: 61440 }
 ]
 
-export function SwitchStackSetting
-(props: { apGroupOption: DefaultOptionType[], readOnly: boolean,
-  isIcx7650?: boolean, disableIpSetting: boolean }) {
+export function SwitchStackSetting (props: {
+  switchDetail?: SwitchViewModel,
+  apGroupOption: DefaultOptionType[],
+  readOnly: boolean,
+  isIcx7650?: boolean,
+  disableIpSetting: boolean,
+  deviceOnline?: boolean
+}) {
   const { $t } = useIntl()
-  const { apGroupOption, readOnly, isIcx7650, disableIpSetting } = props
+  const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline, switchDetail } = props
   const form = Form.useFormInstance()
 
   const [enableDhcp, setEnableDhcp] = useState(false)
@@ -141,7 +147,7 @@ export function SwitchStackSetting
         name='ipAddressType'
         initialValue={'dynamic'}
         rules={[
-          { required: true }
+          { required: true, warningOnly: !deviceOnline }
         ]}
       >
         <Radio.Group disabled={readOnly || disableIpSetting} onChange={onIpAddressTypeChange}>
@@ -172,9 +178,9 @@ export function SwitchStackSetting
         }
         name='ipAddress'
         rules={[
-          { required: !enableDhcp },
+          { required: !enableDhcp, warningOnly: !deviceOnline },
           { validator: (_, value) =>{
-            if(!enableDhcp) {
+            if(!enableDhcp && deviceOnline) {
               return validateSwitchIpAddress(value)
             } else {
               return Promise.resolve()
@@ -191,9 +197,9 @@ export function SwitchStackSetting
         label={$t({ defaultMessage: 'Subnet Mask' })}
         name='subnetMask'
         rules={[
-          { required: !enableDhcp },
+          { required: !enableDhcp, warningOnly: !deviceOnline },
           { validator: (_, value) => {
-            if(!enableDhcp) {
+            if(!enableDhcp && deviceOnline) {
               return validateSwitchSubnetIpAddress(form.getFieldValue('ipAddress'), value)
             } else {
               return Promise.resolve()
@@ -209,9 +215,9 @@ export function SwitchStackSetting
         label={$t({ defaultMessage: 'Default Gateway' })}
         name='defaultGateway'
         rules={[
-          { required: !enableDhcp },
+          { required: !enableDhcp, warningOnly: !deviceOnline },
           { validator: (_, value) => {
-            if(!enableDhcp) {
+            if(!enableDhcp && deviceOnline) {
               return validateSwitchGatewayIpAddress(
                 form.getFieldValue('ipAddress'), form.getFieldValue('subnetMask'), value)
             } else {
@@ -235,7 +241,7 @@ export function SwitchStackSetting
         label={$t({ defaultMessage: 'IGMP Snooping' })}
         name='igmpSnooping'
         rules={[
-          { required: true }
+          { required: true, warningOnly: !deviceOnline }
         ]}
       >
         <Radio.Group disabled={readOnly}>
@@ -275,7 +281,7 @@ export function SwitchStackSetting
         </Form.Item>
       </Form.Item>
       }
-      { isL3ConfigAllowed && <StaticRoutes readOnly={readOnly} /> }
+      { switchDetail && <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
     </>
   )
 }

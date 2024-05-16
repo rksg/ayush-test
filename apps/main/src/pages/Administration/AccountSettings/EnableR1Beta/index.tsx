@@ -43,10 +43,10 @@ function EnableR1Beta (props: EnableR1BetaProps) {
       showActionModal({
         type: 'confirm',
         width: 450,
-        title: $t({ defaultMessage: 'Disable Beta Features?' }),
+        title: $t({ defaultMessage: 'Disable Early Access Features?' }),
         content: $t(MessageMapping.enable_r1_beta_disable_description, { br1: <br/>, br2: <br/> }),
-        okText: $t({ defaultMessage: 'Disable Beta Features' }),
-        cancelText: $t({ defaultMessage: 'Keep Beta Features' }),
+        okText: $t({ defaultMessage: 'Disable Early Access Features' }),
+        cancelText: $t({ defaultMessage: 'Keep Early Access Features' }),
         onOk: async () => {
           try {
             await toggleBetaStatus({
@@ -88,12 +88,12 @@ function EnableR1Beta (props: EnableR1BetaProps) {
                 checked={checked}
                 disabled={isDisabled}
               >
-                {$t({ defaultMessage: 'Enable RUCKUS One Beta features' })}
+                {$t({ defaultMessage: 'Enable RUCKUS One Early Access features' })}
               </Checkbox>
             </Tooltip>
 
             <Typography.Link role='link' onClick={openBetaFeaturesDrawer}>
-              {$t({ defaultMessage: 'Current beta features' })}
+              {$t({ defaultMessage: 'Current Early Access features' })}
             </Typography.Link>
           </SpaceWrapper>
         </Form.Item>
@@ -119,6 +119,7 @@ function EnableR1Beta (props: EnableR1BetaProps) {
         visible={showShowBetaFeaturesDrawer}
         setVisible={() => setShowBetaFeaturesDrawer(false)}
         onClose={() => setShowBetaFeaturesDrawer(false)}
+        width={500}
       />
     }
   </Loader>

@@ -16,13 +16,12 @@ import {
   PolicyOperation,
   SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, flowLevelLabelMapping, facilityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
-import { PROFILE_MAX_COUNT }                           from '../constants'
+import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: [
@@ -59,7 +58,8 @@ export default function SyslogTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
+      // eslint-disable-next-line max-len
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
       async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
     )
   }
@@ -210,7 +210,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,

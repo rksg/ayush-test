@@ -82,11 +82,11 @@ export function nodeTypes (nodeType: NodeType|SliceType): string {
     case 'zone':
       return isMLISA
         ? $t({ defaultMessage: 'Zone' })
-        : $t({ defaultMessage: 'Venue' })
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
     case 'switchGroup':
       return isMLISA
         ? $t({ defaultMessage: 'Switch Group' })
-        : $t({ defaultMessage: 'Venue' })
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
     case 'switch':
       return $t({ defaultMessage: 'Switch' })
     case 'AP':
@@ -243,7 +243,8 @@ export const impactValues = <Type extends 'ap' | 'client'> (
 
 export const longDescription = (incident: Incident) => {
   const { clientImpactRatio, clientImpactRatioFormatted } = impactValues('client', incident)
-  return (clientImpactRatio === null)
+  const noRatioMap = [null, noDataDisplay] as (typeof clientImpactRatio)[]
+  return (noRatioMap.includes(clientImpactRatio))
     ? shortDescription(incident)
     : getIntl().$t(incident.longDescription, {
       scope: incidentScope(incident),

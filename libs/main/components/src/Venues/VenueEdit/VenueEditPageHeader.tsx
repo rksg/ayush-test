@@ -1,38 +1,41 @@
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
-import { useGetVenueQuery }   from '@acx-ui/rc/services'
+import { Button, PageHeader }           from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useConfigTemplateBreadcrumb }  from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+
+import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'
 
 import VenueEditTabs from './VenueEditTabs'
 
 function VenueEditPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, venueId } = useParams()
-  const { data } = useGetVenueQuery({ params: { tenantId, venueId } })
+  const { venueId } = useParams()
+  const { data } = useGetVenueInstance()
 
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/venues/${venueId}/venue-details/`)
+  const detailsPath = usePathBasedOnConfigTemplate(
+    `/venues/${venueId}/venue-details/overview`,
+    `/venues/${venueId}/venue-details/networks`
+  )
+  // eslint-disable-next-line max-len
+  const breadcrumb = useConfigTemplateBreadcrumb([{ text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }])
 
   return (
     <PageHeader
       title={data?.name || ''}
-      breadcrumb={[
-        { text: 'Venues', link: '/venues' }
-      ]}
+      breadcrumb={breadcrumb}
       extra={[
         <Button
           type='primary'
-          onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/overview`
-            })
-          }>{ $t({ defaultMessage: 'Back to venue details' }) }</Button>
+          onClick={() => navigate(detailsPath)}
+        >
+          { $t({ defaultMessage: 'Back to <venueSingular></venueSingular> details' }) }
+        </Button>
       ]}
       footer={<VenueEditTabs />}
     />

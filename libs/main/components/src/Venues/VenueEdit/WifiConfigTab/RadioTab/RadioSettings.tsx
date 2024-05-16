@@ -15,7 +15,8 @@ import {
   isEmpty,
   isEqual,
   dropRight,
-  uniq
+  uniq,
+  flatten
 } from 'lodash'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
@@ -39,11 +40,18 @@ import {
   useVenueDefaultRegulatoryChannelsQuery,
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
-  useGetVenueTripleBandRadioSettingsQuery,
   useUpdateVenueTripleBandRadioSettingsMutation,
   useGetVenueApCapabilitiesQuery,
   useGetVenueApModelBandModeSettingsQuery,
-  useUpdateVenueApModelBandModeSettingsMutation
+  useUpdateVenueApModelBandModeSettingsMutation,
+  useGetVenueTemplateApCapabilitiesQuery,
+  useGetVenueTemplateTripleBandRadioSettingsQuery,
+  useGetVenueTripleBandRadioSettingsQuery,
+  useGetVenueTemplateDefaultRegulatoryChannelsQuery,
+  useGetVenueTemplateDefaultRadioCustomizationQuery,
+  useGetVenueTemplateRadioCustomizationQuery,
+  useUpdateVenueTemplateRadioCustomizationMutation,
+  useUpdateVenueTemplateTripleBandRadioSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
@@ -51,11 +59,15 @@ import {
   ChannelBandwidth6GEnum,
   AFCProps,
   BandModeEnum,
-  VenueApModelBandModeSettings
+  VenueApModelBandModeSettings,
+  TriBandSettings,
+  CapabilitiesApModel,
+  VenueDefaultRegulatoryChannels
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext } from '../..'
+import { VenueEditContext }                                                                from '../..'
+import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import { VenueBandManagement } from './VenueBandManagement'
 
@@ -112,7 +124,7 @@ export function RadioSettings () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const { tenantId, venueId } = useParams()
+  const { tenantId, venueId, wifiRadioTab } = useParams()
 
   const formRef = useRef<StepsFormLegacyInstance<VenueRadioCustomization>>()
   const isTriBandRadioRef = useRef<boolean>(false)
@@ -146,29 +158,47 @@ export function RadioSettings () {
   const [initVenueBandModeData, setInitVenueBandModeData] = useState([] as VenueApModelBandModeSettings[])
 
   const { data: venueCaps, isLoading: isLoadingVenueCaps } =
-    useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels: CapabilitiesApModel[] }>(
+      useGetVenueApCapabilitiesQuery,
+      useGetVenueTemplateApCapabilitiesQuery
+    )
 
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
-    useGetVenueTripleBandRadioSettingsQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>(
+      useGetVenueTripleBandRadioSettingsQuery,
+      useGetVenueTemplateTripleBandRadioSettingsQuery
+    )
 
   // available channels from this venue country code
   const { data: supportChannelsData, isLoading: isLoadingSupportChannelsData } =
-    useVenueDefaultRegulatoryChannelsQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>(
+      useVenueDefaultRegulatoryChannelsQuery,
+      useGetVenueTemplateDefaultRegulatoryChannelsQuery
+    )
 
   // default radio data
   const { data: defaultRadioSettingsData, isLoading: isLoadingDefaultRadioSettingsData } =
-    useGetDefaultRadioCustomizationQuery({
-      params: { tenantId, venueId }
-    })
+    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>(
+      useGetDefaultRadioCustomizationQuery,
+      useGetVenueTemplateDefaultRadioCustomizationQuery
+    )
 
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
-    useGetVenueRadioCustomizationQuery({ params: { tenantId, venueId } })
+    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>(
+      useGetVenueRadioCustomizationQuery,
+      useGetVenueTemplateRadioCustomizationQuery
+    )
 
-  const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] =
-    useUpdateVenueRadioCustomizationMutation()
+  const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueRadioCustomizationMutation,
+    useUpdateVenueTemplateRadioCustomizationMutation
+  )
 
-  const [ updateVenueTripleBandRadioSettings ] = useUpdateVenueTripleBandRadioSettingsMutation()
+  const [ updateVenueTripleBandRadioSettings ] = useVenueConfigTemplateMutationFnSwitcher(
+    useUpdateVenueTripleBandRadioSettingsMutation,
+    useUpdateVenueTemplateTripleBandRadioSettingsMutation
+  )
 
   const { data: venueBandModeSavedData, isLoading: isLoadingVenueBandModeData } =
     useGetVenueApModelBandModeSettingsQuery({ params: { venueId: venueId } }, { skip: !isWifiSwitchableRfEnabled })
@@ -360,6 +390,9 @@ export function RadioSettings () {
     }
     if (!isEqual(currentVenueBandModeData, initVenueBandModeData)) {
       handleChange()
+    }
+    if (wifiRadioTab) {
+      onTabChange(wifiRadioTab)
     }
   }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
 
@@ -559,12 +592,33 @@ export function RadioSettings () {
   }
 
 
+  const validationFields = async () => {
+    return await formRef?.current?.validateFields()
+  }
+
   const handleUpdateRadioSettings = async (formData: VenueRadioCustomization) => {
     const d = formRef?.current?.getFieldsValue() || formData
     const data = { ...d }
 
-    update5gData(data)
+    try {
+      await validationFields() as any
+    } catch (error: any) {
+      showActionModal({
+        type: 'error',
+        width: 450,
+        title: $t({ defaultMessage: 'You Have Invalid Changes' }),
+        content: $t({ defaultMessage: 'You have invalid changes, please see technical detail for more information.' }),
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: {
+            error: flatten(error.errorFields.map((errorFields: any) => errorFields.errors[0])) as unknown as string
+          }
+        }
+      })
+      return
+    }
 
+    update5gData(data)
     const isTriBandRadioEnabled = isTriBandRadioRef.current
 
     if (isWifiSwitchableRfEnabled) {
@@ -634,6 +688,7 @@ export function RadioSettings () {
       tabTitle: $t({ defaultMessage: 'Radio' }),
       isDirty: true
     })
+
     setEditRadioContextData({
       ...editRadioContextData,
       radioData: formRef.current?.getFieldsValue(),

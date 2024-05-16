@@ -5,7 +5,12 @@ import { baseQuery } from './baseQuery'
 export const baseConfigTemplateApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'configTemplateApi',
-  tagTypes: ['ConfigTemplate', 'AAATemplate', 'NetworkTemplate', 'VenueTemplate'],
+  tagTypes: [
+    'ConfigTemplate', 'AAATemplate', 'NetworkTemplate', 'VenueTemplate', 'VenueTemplateRadio',
+    'VenueTemplateExternalAntenna', 'DpskTemplate', 'AccessControlTemplate', 'DhcpTemplate',
+    'PortalTemplate', 'VenueTemplateSwitchAAA', 'WifiCallingTemplate', 'VlanPoolTemplate',
+    'SyslogTemplate', 'RogueApTemplate', 'SwitchConfigProfileTemplate'
+  ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

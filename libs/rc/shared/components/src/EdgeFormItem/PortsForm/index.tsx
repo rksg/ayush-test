@@ -6,6 +6,7 @@ import { useIntl } from 'react-intl'
 import { Tabs, TabsType }                from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useGetEdgeLagsStatusListQuery } from '@acx-ui/rc/services'
+import { EdgeSerialNumber }              from '@acx-ui/rc/utils'
 
 import { EditContext } from '../EdgeEditContext'
 
@@ -19,8 +20,10 @@ export enum EdgePortTabEnum {
   LAG = 'lag',
 SUB_INTERFACE = 'sub-interface'
 }
+
 export interface EdgePortsFormProps {
-  serialNumber: string
+  clusterId: string
+  serialNumber: EdgeSerialNumber
   onTabChange: (tabID: string) => void
   onCancel: () => void
   activeSubTab?: string
@@ -28,8 +31,10 @@ export interface EdgePortsFormProps {
   tabsType?: TabsType
 }
 
-export const EdgePortsForm = (props: EdgePortsFormProps) => {
+// TODO: this will be deprecated after SD-LAN P1 deprecated
+const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   const {
+    clusterId,
     serialNumber,
     onTabChange,
     onCancel,
@@ -39,6 +44,7 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   } = props
   const { $t } = useIntl()
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
+
   const {
     activeSubTab: activeSubTabInContext,
     setActiveSubTab: setActiveSubTabInContext,
@@ -73,6 +79,7 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
     [EdgePortTabEnum.PORTS_GENERAL]: {
       title: $t({ defaultMessage: 'Ports General' }),
       content: <PortsGeneral
+        clusterId={clusterId}
         serialNumber={serialNumber}
         onCancel={onCancel}
       />
@@ -108,24 +115,28 @@ export const EdgePortsForm = (props: EdgePortsFormProps) => {
   }
 
   return (
-    <EdgePortsDataContextProvider serialNumber={serialNumber}>
-      <Tabs
-        destroyInactiveTabPane={true}
-        onChange={handleTabChange}
-        defaultActiveKey={Object.keys(tabs)[0]}
-        activeKey={activeSubTab}
-        type={tabsType ?? 'card'}
-      >
-        {Object.keys(tabs)
-          .map((key) =>
-            <Tabs.TabPane
-              tab={`${tabs[key as keyof typeof tabs].title}
+    <Tabs
+      destroyInactiveTabPane={true}
+      onChange={handleTabChange}
+      defaultActiveKey={Object.keys(tabs)[0]}
+      activeKey={activeSubTab}
+      type={tabsType ?? 'card'}
+    >
+      {Object.keys(tabs)
+        .map((key) =>
+          <Tabs.TabPane
+            tab={`${tabs[key as keyof typeof tabs].title}
               ${(activeSubTabInContext.key === key && isDirty) ? '*' : ''}`}
-              key={key}
-            >
-              {tabs[key as keyof typeof tabs].content}
-            </Tabs.TabPane>)}
-      </Tabs>
-    </EdgePortsDataContextProvider>
+            key={key}
+          >
+            {tabs[key as keyof typeof tabs].content}
+          </Tabs.TabPane>)}
+    </Tabs>
   )
+}
+
+export const EdgePortsForm = (props: EdgePortsFormProps) => {
+  return <EdgePortsDataContextProvider serialNumber={props.serialNumber}>
+    <EdgePhysicalPortsForm {...props}/>
+  </EdgePortsDataContextProvider>
 }

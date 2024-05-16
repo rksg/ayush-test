@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
-import { Provider }                             from '@acx-ui/store'
+import { edgeApi }                                               from '@acx-ui/rc/services'
+import { EdgeUrlsInfo, EdgePortConfigFixtures, EdgeLagFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                       from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,6 +16,7 @@ import { EditContext } from '../EdgeEditContext'
 import { EdgePortsForm, EdgePortTabEnum } from '.'
 
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
 
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
@@ -60,16 +62,23 @@ const defaultContextData = {
 
 describe('EditEdge ports', () => {
   const mockedEdgeID = 'mocked_edge_id'
+  const mockedEdgeClusterID = 'mocked_cluster_id'
 
   beforeEach(() => {
+    store.dispatch(edgeApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
-        (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
+        EdgeUrlsInfo.getPortConfigDeprecated.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgePortConfig))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgePortStatusList.url,
-        (req, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
+        (_req, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeLagStatusList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeLagStatusList))
       )
     )
   })
@@ -81,6 +90,7 @@ describe('EditEdge ports', () => {
           value={defaultContextData}
         >
           <EdgePortsForm
+            clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
             onCancel={jest.fn()}
@@ -101,6 +111,7 @@ describe('EditEdge ports', () => {
           value={defaultContextData}
         >
           <EdgePortsForm
+            clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
             onCancel={jest.fn()}
@@ -124,6 +135,7 @@ describe('EditEdge ports', () => {
           value={defaultContextData}
         >
           <EdgePortsForm
+            clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={handleTabChange}
             onCancel={jest.fn()}

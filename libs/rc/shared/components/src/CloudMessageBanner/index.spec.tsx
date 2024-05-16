@@ -1,10 +1,10 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
-import { FirmwareUrlsInfo }                      from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { render, screen, mockServer, fireEvent } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                          from '@acx-ui/user'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { FirmwareUrlsInfo }                         from '@acx-ui/rc/utils'
+import { Provider }                                 from '@acx-ui/store'
+import { render, screen, mockServer, fireEvent }    from '@acx-ui/test-utils'
+import { UserUrlsInfo }                             from '@acx-ui/user'
 
 import {
   allUserSettings,
@@ -18,7 +18,7 @@ import {
 import { CloudMessageBanner } from '.'
 
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
-jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
 const mockedUseLayoutContext = jest.fn()
 jest.mock('@acx-ui/components', () => ({
@@ -60,7 +60,7 @@ describe('cloud Message Banner', () => {
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (_, res, ctx) => res(ctx.json(switchVenueVersionList))
       ),
-      rest.get(
+      rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
         (_, res, ctx) => res(ctx.json(venueEdgeFirmwareList))
       )

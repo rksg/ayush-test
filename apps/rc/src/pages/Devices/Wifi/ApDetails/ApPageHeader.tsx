@@ -31,7 +31,7 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
   const { activeTab } = useParams()
@@ -81,7 +81,9 @@ function ApPageHeader () {
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete'
-      }].filter(item => currentApOperational || item.key === 'delete')}
+      }].filter(item => (currentApOperational || item.key === 'delete' ||
+        (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+      ))}
     />
   )
 
@@ -132,9 +134,9 @@ function ApPageHeader () {
       ]}
       footer={<>
         {
-          AFC_Featureflag &&
+          AFC_Featureflag && afcEnabled &&
           isAPLowPower(ApStatusData?.afcInfo) &&
-          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo}/>
+          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo} from={'ap'}/>
         }
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}

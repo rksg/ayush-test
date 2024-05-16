@@ -1,12 +1,15 @@
 import React from 'react'
 
-import { PageNotFound }                      from '@acx-ui/components'
+import { PageNoPermissions, PageNotFound }   from '@acx-ui/components'
 import { useStreamActivityMessagesQuery }    from '@acx-ui/rc/services'
 import { Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 
 import Administration                                       from './pages/Administration'
 import MigrationForm                                        from './pages/Administration/OnpremMigration/MigrationForm/MigrationForm'
 import MigrationSummary                                     from './pages/Administration/OnpremMigration/MigrationTable/summary'
+import { AddCustomRole }                                    from './pages/Administration/UserPrivileges/CustomRoles/AddCustomRole'
+import { AddPrivilegeGroup }                                from './pages/Administration/UserPrivileges/PrivilegeGroups/AddPrivilegeGroup'
+import { EditPrivilegeGroup }                               from './pages/Administration/UserPrivileges/PrivilegeGroups/EditPrivilegeGroup'
 import AnalyticsBase                                        from './pages/Analytics'
 import Dashboard                                            from './pages/Dashboard'
 import DevicesBase                                          from './pages/Devices'
@@ -39,6 +42,8 @@ function AllRoutes () {
         <Route path='*' element={<Layout />}>
           <Route index element={<TenantNavigate replace to='/dashboard' />} />
           <Route path='*' element={<PageNotFound />} />
+          <Route path='not-found' element={<PageNotFound />} />
+          <Route path='no-permissions' element={<PageNoPermissions />} />
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='userprofile' element={<UserProfile />} />
           <Route path='analytics/*' element={<AnalyticsBase />}>
@@ -107,6 +112,7 @@ function VenuesRoutes () {
       />
       <Route path=':venueId/:action/:activeTab' element={<VenueEdit />} />
       <Route path=':venueId/edit/:activeTab/:activeSubTab' element={<VenueEdit />} />
+      <Route path=':venueId/edit/:activeTab/:activeSubTab/:wifiRadioTab' element={<VenueEdit />} />
     </Route>
   )
 }
@@ -121,6 +127,12 @@ function AdministrationRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path=':activeTab' element={<Administration />} />
       <Route path=':activeTab/:activeSubTab' element={<Administration />} />
+      <Route path='userPrivileges/privilegeGroups/create' element={<AddPrivilegeGroup />} />
+      <Route
+        path='userPrivileges/privilegeGroups/:action/:groupId'
+        element={<EditPrivilegeGroup />} />
+      <Route path='userPrivileges/customRoles/create' element={<AddCustomRole />} />
+      <Route path='userPrivileges/customRoles/:action/:customRoleId' element={<AddCustomRole />} />
       <Route path='onpremMigration/add' element={<MigrationForm />} />
       <Route path='onpremMigration/:taskId/summary' element={<MigrationSummary />} />
     </Route>
@@ -133,8 +145,8 @@ function RWGRoutes () {
       <Route index element={<RWGTable />} />
       <Route path='*' element={<PageNotFound />} />
       <Route path='add' element={<RWGForm />} />
-      <Route path=':gatewayId/:action' element={<RWGForm />} />
-      <Route path=':gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
+      <Route path=':venueId/:gatewayId/:action' element={<RWGForm />} />
+      <Route path=':venueId/:gatewayId/gateway-details/:activeTab' element={<RWGDetails />} />
     </Route>
   )
 }

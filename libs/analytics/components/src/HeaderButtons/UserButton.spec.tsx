@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { getUserProfile } from '@acx-ui/analytics/utils'
-import type { Tenant }    from '@acx-ui/analytics/utils'
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { getUserProfile }          from '@acx-ui/analytics/utils'
+import type { Invitation, Tenant } from '@acx-ui/analytics/utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen }          from '@acx-ui/test-utils'
 
 import { UserButton } from './UserButton'
 
@@ -15,6 +15,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
   getUserProfile: jest.fn()
 }))
 const userProfile = jest.mocked(getUserProfile)
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  userLogout: jest.fn()
+}))
 
 const mockPermissions = {
   'view-analytics': true,
@@ -36,7 +41,7 @@ const mockUserProfile = {
   userId: '',
   role: '',
   support: false,
-  invitations: [] as Tenant[],
+  invitations: [] as Invitation[],
   selectedTenant: { id: 'accountId', permissions: mockPermissions } as Tenant,
   tenants: [
     { id: 'accountId', permissions: mockPermissions },
@@ -59,18 +64,23 @@ describe('UserButton', () => {
     await userEvent.click(screen.getByRole('button'))
     const links = screen.getAllByRole('link')
     const items = [
-      { text: 'My Profile', href: '/analytics/profile/settings' },
-      { text: 'Accounts', href: '/analytics/profile/tenants' }
+      { text: 'My Profile', href: `/${params.tenantId}/t/profile/settings` }
     ]
     items.forEach((item, i) => {
       expect(links[i]).toHaveTextContent(item.text)
       expect(links[i]).toHaveAttribute('href', item.href)
-      expect(links[i]).toHaveAttribute('rel', 'noreferrer noopener')
-      expect(links[i]).toHaveAttribute('target', '_blank')
     })
   })
 
   it('should handle logout', async () => {
+    const mockUserLogout = require('@acx-ui/utils').userLogout
+    const { location } = window
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: { hostname: 'not.localhost' }
+    })
+
     render(
       <Provider>
         <UserButton />
@@ -78,15 +88,15 @@ describe('UserButton', () => {
       { route: { params } }
     )
 
-    const submit = window.HTMLFormElement.prototype.submit
-    const mockSubmit = jest.fn()
-    window.HTMLFormElement.prototype.submit = mockSubmit
-
     await userEvent.click(screen.getByRole('button'))
     await userEvent.click(screen.getByRole('menuitem', { name: 'Log out' }))
-    expect(mockSubmit).toHaveBeenCalled()
 
-    window.HTMLFormElement.prototype.submit = submit
+    expect(mockUserLogout).toHaveBeenCalled()
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: location
+    })
   })
 
   it('does not throw error if names are empty', async () => {

@@ -190,18 +190,20 @@ export const getAirtimeBusyRecommendations = (
 
 const airtimeRxAllFalseChecks = [
   'isHighDensityWifiDevices',
-  'isLargeMgmtFrameCount',
+  ['isLargeMgmtFrameCount', 'isHighSsidCountPerRadio'],
   'isCRRMRaised',
   'isHighLegacyWifiDevicesCount'
 ]
+
 const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
   const checkTrue = checkTrueParams(checks)
-  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
-
+  const allFalse = airtimeRxAllFalseChecks
+    .filter(check => Array.from([check]).flat().every(property => checkTrue.includes(property)))
+    .length === 0
   const highDensityWifi = <FormattedMessage defaultMessage={'<li>High density of Wi-Fi devices in the network.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
     ? <FormattedMessage defaultMessage={'<li>Excessive number of management frames due to too many SSIDs being broadcasted in the network.</li>'} values={htmlValues}/>
-    : <FormattedMessage defaultMessage={'<li>Excessive number of management frames.</li>'} values={htmlValues}/>
+    : ''
   const highCoChannel = <FormattedMessage defaultMessage={'<li>High co-channel interference.</li>'} values={htmlValues} />
   const highLegacy = <FormattedMessage defaultMessage={'<li>High number of legacy Wi-Fi devices.<ul><li>Definition of legacy devices - 11b, 11a, and a combination of 11a and 11b.</li></ul></li>'} values={htmlValues}/>
 
@@ -236,7 +238,9 @@ const getAirtimeRxRootCauses = (checks: (AirtimeRxChecks)[]) => {
 }
 const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: AirtimeParams) => {
   const checkTrue = checkTrueParams(checks)
-  const allFalse = airtimeRxAllFalseChecks.filter(check => checkTrue.includes(check)).length === 0
+  const allFalse = airtimeRxAllFalseChecks
+    .filter(check => Array.from([check]).flat().every(property => checkTrue.includes(property)))
+    .length === 0
   const { ssidCountPerRadioSlice, recommendationId } = params
   const aiOpsLink = <TenantLink to={`/recommendations/aiOps/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
   const crrmLink = <TenantLink to={`/recommendations/crrm/${recommendationId}`}>{<FormattedMessage defaultMessage={'here'}/>}</TenantLink>
@@ -245,14 +249,14 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
     ? <FormattedMessage defaultMessage={'<li>Click {aiOpsLink} to enable client load balancing AI Ops recommendation.</li>'} values={{ ...htmlValues, aiOpsLink }}/>
     : <FormattedMessage defaultMessage={'<li>Increase AP density to distribute the client load.</li>'} values={htmlValues}/>
   const excessiveFrame = checkTrue.includes('isHighSsidCountPerRadio')
-    ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less. Enabling Airtime Decongestion would be recommended as well.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
-    : <FormattedMessage defaultMessage={'<li>Enable Airtime Decongestion.</li>'} values={htmlValues}/>
+    ? <FormattedMessage defaultMessage={'<li>There are currently an average of {ssidCountPerRadioSlice} SSIDs/WLANs being broadcasted per AP. Disable unnecessary SSIDs/WLANs. A general guideline would be 5 SSIDs/WLANs or less.</li>'} values={{ ...htmlValues, ssidCountPerRadioSlice }}/>
+    : ''
   const crrmRaisedText = <FormattedMessage defaultMessage={'<li>Click {crrmLink} to apply the AI-Driven RRM recommendation.</li>'} values={{ ...htmlValues, crrmLink }}/>
   const channelFly = checkTrue.includes('isChannelFlyEnabled')
     ? <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
     : get('IS_MLISA_SA')
       ? <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the zone.</li>'} values={htmlValues}/>
-      : <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the venue.</li>'} values={htmlValues}/>
+      : <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the <venueSingular></venueSingular>.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [
@@ -420,7 +424,7 @@ export const rootCauseRecommendationMap = {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p>
+        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, <venuePlural></venuePlural>, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or <venueSingular></venueSingular>).</p>
         <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>`
       })
     },
@@ -570,7 +574,7 @@ export const rootCauseRecommendationMap = {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p>
+        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, <venuePlural></venuePlural>, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or <venueSingular></venueSingular>).</p>
         <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>`
       })
     },

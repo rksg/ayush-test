@@ -9,18 +9,25 @@ import {
   showActionModal,
   PasswordInput
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
-import { useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation }                          from '@acx-ui/rc/services'
-import { AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting, VenueMessages } from '@acx-ui/rc/utils'
-import { useParams }                                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                           from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
+import {
+  useDeleteAAAServerMutation, useBulkDeleteAAAServerMutation,
+  useDeleteVenueTemplateSwitchAAAServerMutation, useBulkDeleteVenueTemplateSwitchAAAServerMutation
+} from '@acx-ui/rc/services'
+import {
+  AAAServerTypeEnum, RadiusServer, TacacsServer, LocalUser, AAASetting,
+  VenueMessages, useConfigTemplate, useConfigTemplateMutationFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useParams }                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AAAServerDrawer }                                                                                                    from './AAAServerDrawer'
 import { AAA_Purpose_Type, AAA_Level_Type, purposeDisplayText, serversDisplayText, levelDisplayText, serversTypeDisplayText } from './contentsMap'
 
 function useColumns (type: AAAServerTypeEnum) {
   const { $t } = useIntl()
-  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD)
+  const { isTemplate } = useConfigTemplate()
+  const enableSwitchAdminPassword = useIsSplitOn(Features.SWITCH_ADMIN_PASSWORD) && !isTemplate
 
   const radiusColumns: TableProps<RadiusServer & TacacsServer & LocalUser>['columns'] = [
     {
@@ -171,15 +178,15 @@ export const AAAServerTable = (props: {
   const [editData, setEditData] = useState({} as RadiusServer | TacacsServer | LocalUser)
   const [disabledDelete, setDisabledDelete] = useState(false)
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
-  const { tenantId } = useParams()
-  const [
-    deleteAAAServer,
-    { isLoading: isDeleting }
-  ] = useDeleteAAAServerMutation()
-  const [
-    bulkDeleteAAAServer,
-    { isLoading: isBulkDeleting }
-  ] = useBulkDeleteAAAServerMutation()
+  const { tenantId, venueId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const [ deleteAAAServer, { isLoading: isDeleting } ] = useConfigTemplateMutationFnSwitcher(
+    useDeleteAAAServerMutation, useDeleteVenueTemplateSwitchAAAServerMutation
+  )
+  // eslint-disable-next-line max-len
+  const [ bulkDeleteAAAServer, { isLoading: isBulkDeleting } ] = useConfigTemplateMutationFnSwitcher(
+    useBulkDeleteAAAServerMutation, useBulkDeleteVenueTemplateSwitchAAAServerMutation
+  )
   const { type, tableQuery, aaaSetting, cliApplied } = props
 
   const handleAddAction = () => {
@@ -297,10 +304,15 @@ export const AAAServerTable = (props: {
               numOfEntities: rows.length
             },
             onOk: () => { rows.length === 1 ?
-              deleteAAAServer({ params: { tenantId, aaaServerId: rows[0].id } })
-                .then(clearSelection) :
-              bulkDeleteAAAServer({ params: { tenantId }, payload: rows.map(item => item.id) })
-                .then(clearSelection)
+              deleteAAAServer({
+                params: { tenantId, venueId, aaaServerId: rows[0].id },
+                enableRbac: isSwitchRbacEnabled
+              }).then(clearSelection) :
+              bulkDeleteAAAServer({
+                params: { tenantId, venueId },
+                payload: rows.map(item => item.id),
+                enableRbac: isSwitchRbacEnabled
+              }).then(clearSelection)
             }
           })
         }

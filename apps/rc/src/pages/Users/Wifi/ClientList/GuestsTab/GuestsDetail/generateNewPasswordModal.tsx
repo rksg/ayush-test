@@ -2,12 +2,10 @@ import { useState } from 'react'
 
 import { Checkbox, Form, Tooltip, Typography } from 'antd'
 import moment, { LocaleSpecifier }             from 'moment-timezone'
-import { useParams }                           from 'react-router-dom'
 
 import { cssStr, Modal }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
 import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
-import { useLazyGetNetworkQuery }           from '@acx-ui/rc/services'
 import {
   getGuestDictionaryByLangCode,
   Guest,
@@ -43,18 +41,17 @@ export function GenerateNewPasswordModal (props: {
   }
 
   const [generateGuestPassword] = useGenerateGuestPasswordMutation()
-  const [getNetwork] = useLazyGetNetworkQuery()
-  const params = useParams()
 
   const saveModal = (async () => {
     try {
       const payload = {
-        action: 'regenerate',
+        action: 'regeneratePassword',
         deliveryMethods: form.getFieldValue('outputInterface')
       }
       const params = {
         tenantId: props.tenantId,
-        guestId: props.guestDetail.id
+        guestId: props.guestDetail.id,
+        networkId: props.guestDetail.wifiNetworkId
       }
       await generateGuestPassword({ params, payload }).unwrap()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,10 +70,7 @@ export function GenerateNewPasswordModal (props: {
     let guest = { ...jsonGuest, langCode: '' }
 
     if (printCondition) {
-      const networkData = await getNetwork({
-        params: { tenantId: params.tenantId, networkId: jsonGuest.networkId }
-      })
-      guest.langCode = networkData?.data?.guestPortal?.guestPage?.langCode || ''
+      guest.langCode = jsonGuest.locale || ''
       generateGuestPrint(guest)
     }
   }
@@ -113,11 +107,9 @@ export function GenerateNewPasswordModal (props: {
         guestExpiresDate = guest.expirationDate
       } else {
         if (guest.expiration.unit === 'Hour') {
-          // TODO: fix warn
-          // Deprecation warning: moment().add(period, number) is deprecated. Please use moment().add(number, period). See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info.
-          guestExpiresDate = currentMoment.clone().add('hours', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'hours')
         } else {
-          guestExpiresDate = currentMoment.clone().add('days', guest.expiration.duration)
+          guestExpiresDate = currentMoment.clone().add(guest.expiration.duration, 'days')
         }
       }
     }

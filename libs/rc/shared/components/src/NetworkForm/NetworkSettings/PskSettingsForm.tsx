@@ -34,17 +34,18 @@ import {
   generateHexKey
 } from '@acx-ui/rc/utils'
 
-import AAAInstance                 from '../AAAInstance'
+import { AAAInstance }             from '../AAAInstance'
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
+import * as UI                     from '../styledComponents'
 
 import MacRegistrationListComponent from './MacRegistrationListComponent'
 
 const { Option } = Select
-
 const { useWatch } = Form
+const labelWidth = '250px'
 
 export function PskSettingsForm () {
   const { editMode, cloneMode, data } = useContext(NetworkFormContext)
@@ -96,7 +97,7 @@ export function PskSettingsForm () {
 function SettingsForm () {
   const { editMode, cloneMode, data, setData } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
-  const intl = useIntl()
+  const { $t } = useIntl()
   const form = Form.useFormInstance()
   const [
     wlanSecurity,
@@ -112,23 +113,21 @@ function SettingsForm () {
 
   const securityDescription = () => {
     const wlanSecurity = form.getFieldValue([ 'wlan', 'wlanSecurity' ])
-    return (
-      <>
-        {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
-        {[
-          WlanSecurityEnum.WPA2Personal,
-          WlanSecurityEnum.WPAPersonal,
-          WlanSecurityEnum.WEP
-        ].indexOf(wlanSecurity) > -1 &&
-        <div>
+    const showWarningSecurity = [
+      WlanSecurityEnum.WPA2Personal,
+      WlanSecurityEnum.WPAPersonal,
+      WlanSecurityEnum.WEP
+    ]
+    const showWarning = showWarningSecurity.indexOf(wlanSecurity) > -1
+    return (<>
+      {SecurityOptionsDescription[wlanSecurity as keyof typeof PskWlanSecurityEnum]}
+      {showWarning &&
           <Space align='start' size={2}>
             <InformationSolid />
             {SecurityOptionsDescription.WPA2_DESCRIPTION_WARNING}
           </Space>
-        </div>
-        }
-      </>
-    )
+      }
+    </>)
   }
 
   const securityOptions = Object.keys(PskWlanSecurityEnum).map((key =>
@@ -144,10 +143,12 @@ function SettingsForm () {
       { macAuthMacFormatOptions[key as keyof typeof macAuthMacFormatOptions] }
     </Option>
   ))
+
   const onGenerateHexKey = () => {
     let hexKey = generateHexKey(26)
     form.setFieldsValue({ wlan: { wepHexKey: hexKey.substring(0, 26) } })
   }
+
   const securityOnChange = (value: string) => {
     const wlanProtocolConfig = {} as { [key: string]: string | undefined | null }
     switch(value){
@@ -187,8 +188,8 @@ function SettingsForm () {
         }
       }
     })
-    disableMLO(false)
   }
+
   const onMacAuthChange = (checked: boolean) => {
     setData && setData({
       ...data,
@@ -200,6 +201,7 @@ function SettingsForm () {
       }
     })
   }
+
   useEffect(()=>{
     form.setFieldsValue(data)
     if (editMode && data) {
@@ -214,6 +216,15 @@ function SettingsForm () {
   },[data])
 
   useEffect(() => {
+    if (wlanSecurity === WlanSecurityEnum.WPA3 || wlanSecurity === WlanSecurityEnum.WPA23Mixed){
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  }, [wlanSecurity])
+
+  useEffect(() => {
     if (!editMode && !cloneMode) {
       if (!wlanSecurity || !Object.keys(PskWlanSecurityEnum).includes(wlanSecurity)) {
         form.setFieldValue(['wlan', 'wlanSecurity'], WlanSecurityEnum.WPA2Personal)
@@ -226,7 +237,7 @@ function SettingsForm () {
 
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
-      <StepsFormLegacy.Title>{intl.$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
+      <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
       <div>
         {wlanSecurity !== WlanSecurityEnum.WEP && wlanSecurity !== WlanSecurityEnum.WPA3 &&
             <Form.Item
@@ -241,7 +252,7 @@ function SettingsForm () {
                 { validator: (_, value) => passphraseRegExp(value) }
               ]}
               validateFirst
-              extra={intl.$t({ defaultMessage: '8 characters minimum' })}
+              extra={$t({ defaultMessage: '8 characters minimum' })}
               children={<PasswordInput />}
             />
         }
@@ -253,12 +264,12 @@ function SettingsForm () {
               { required: true },
               { validator: (_, value) => hexRegExp(value) }
             ]}
-            extra={intl.$t({ defaultMessage: 'Must be 26 hex characters' })}
+            extra={$t({ defaultMessage: 'Must be 26 hex characters' })}
             children={<PasswordInput />}
           />
           <div style={{ position: 'absolute', top: '111px', right: '15px' }}>
             <Button type='link' onClick={onGenerateHexKey}>
-              {intl.$t({ defaultMessage: 'Generate' })}
+              {$t({ defaultMessage: 'Generate' })}
             </Button>
           </div>
         </>}
@@ -266,8 +277,8 @@ function SettingsForm () {
             <Form.Item
               name={['wlan', 'saePassphrase']}
               label={wlanSecurity === WlanSecurityEnum.WPA3
-                ? intl.$t({ defaultMessage: 'SAE Passphrase' })
-                : intl.$t({ defaultMessage: 'WPA3 SAE Passphrase' })
+                ? $t({ defaultMessage: 'SAE Passphrase' })
+                : $t({ defaultMessage: 'WPA3 SAE Passphrase' })
               }
               rules={[
                 { required: true, min: 8 },
@@ -276,12 +287,12 @@ function SettingsForm () {
                 { validator: (_, value) => passphraseRegExp(value) }
               ]}
               validateFirst
-              extra={intl.$t({ defaultMessage: '8 characters minimum' })}
+              extra={$t({ defaultMessage: '8 characters minimum' })}
               children={<PasswordInput />}
             />
         }
         <Form.Item
-          label={intl.$t({ defaultMessage: 'Security Protocol' })}
+          label={$t({ defaultMessage: 'Security Protocol' })}
           name={['wlan', 'wlanSecurity']}
           initialValue={WlanSecurityEnum.WPA2Personal}
           extra={securityDescription()}
@@ -294,7 +305,7 @@ function SettingsForm () {
           .includes(wlanSecurity) &&
             <Form.Item
               label={<>
-                {intl.$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
+                {$t({ defaultMessage: 'Management Frame Protection (802.11w)' })}
                 <Tooltip.Question
                   title={<FormattedMessage
                     {...WifiNetworkMessages.NETWORK_MFP_TOOLTIP}
@@ -319,24 +330,25 @@ function SettingsForm () {
         }
       </div>
       <div>
-        <Form.Item>
-          <Form.Item>
-            <Form.Item noStyle
-              name={['wlan', 'macAddressAuthentication']}
-              valuePropName='checked'>
-              <Switch disabled={
-                editMode || disablePolicies
-              }
-              onChange={onMacAuthChange}
-              />
-            </Form.Item>
-            <span>{intl.$t({ defaultMessage: 'MAC Authentication' })}</span>
+        <UI.FieldLabel width={labelWidth}>
+          <Space align='start'>
+            { $t({ defaultMessage: 'MAC Authentication' }) }
             <Tooltip.Question
-              title={intl.$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
+              title={$t(WifiNetworkMessages.ENABLE_MAC_AUTH_TOOLTIP)}
               placement='bottom'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            name={['wlan', 'macAddressAuthentication']}
+            valuePropName='checked'>
+            <Switch disabled={
+              editMode || disablePolicies
+            }
+            onChange={onMacAuthChange}
             />
           </Form.Item>
-        </Form.Item>
+        </UI.FieldLabel>
         {macAddressAuthentication && <>
           <Form.Item
             name={['wlan', 'isMacRegistrationList']}
@@ -345,14 +357,12 @@ function SettingsForm () {
             <Radio.Group disabled={editMode}>
               <Space direction='vertical'>
                 <Radio value={true}
-                  disabled={
-                    !isCloudpathBetaEnabled
-                  }>
-                  { intl.$t({ defaultMessage: 'MAC Registration List' }) }
-                </Radio>
-                <Radio value={false}>
-                  { intl.$t({ defaultMessage: 'External MAC Auth' }) }
-                </Radio>
+                  disabled={!isCloudpathBetaEnabled}
+                  children={$t({ defaultMessage: 'MAC Registration List' })}
+                />
+                <Radio value={false}
+                  children={$t({ defaultMessage: 'External MAC Auth' })}
+                />
               </Space>
             </Radio.Group>
           </Form.Item>
@@ -363,14 +373,11 @@ function SettingsForm () {
 
           { !isMacRegistrationList && <>
             <Form.Item
-              label={intl.$t({ defaultMessage: 'MAC Address Format' })}
+              label={$t({ defaultMessage: 'MAC Address Format' })}
               name={['wlan', 'macAuthMacFormat']}
               initialValue={MacAuthMacFormatEnum.UpperDash}
-            >
-              <Select>
-                {macAuthOptions}
-              </Select>
-            </Form.Item>
+              children={<Select children={macAuthOptions} />}
+            />
             <MACAuthService />
           </>}
 
@@ -382,34 +389,38 @@ function SettingsForm () {
 
 
 function MACAuthService () {
-  const intl = useIntl()
+  const { $t } = useIntl()
   const { data, setData } = useContext(NetworkFormContext)
-  const onChange = (value: boolean) => {
-    setData && setData({ ...data, enableAccountingService: value })
-  }
   const form = Form.useFormInstance()
-  const [
-    enableAccountingService
-  ] = [
-    useWatch<boolean>(['enableAccountingService'])
-  ]
+  const enableAccountingService = useWatch<boolean>(['enableAccountingService'])
+
   useEffect(()=>{
     form.setFieldsValue(data)
   },[data])
+
+  const onChange = (value: boolean) => {
+    setData && setData({ ...data, enableAccountingService: value })
+  }
+
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
-        <Subtitle level={3}>{intl.$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
-        <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Authentication Server' })}
+        <Subtitle level={3}>{$t({ defaultMessage: 'Authentication Service' })}</Subtitle>
+        <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
           type='authRadius'/>
       </div>
       <div>
-        <Subtitle level={3}>{intl.$t({ defaultMessage: 'Accounting Service' })}</Subtitle>
-        <Form.Item name='enableAccountingService' valuePropName='checked'>
-          <Switch onChange={onChange}/>
-        </Form.Item>
+        <UI.FieldLabel width={labelWidth}>
+          <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
+          <Form.Item
+            name='enableAccountingService'
+            valuePropName='checked'
+            style={{ marginTop: '-5px', marginBottom: '0' }}
+            children={<Switch onChange={onChange} />}
+          />
+        </UI.FieldLabel>
         {enableAccountingService &&
-          <AAAInstance serverLabel={intl.$t({ defaultMessage: 'Accounting Server' })}
+          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'/>
         }
       </div>

@@ -2,9 +2,10 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                    from '@acx-ui/components'
-import { SwitchConfigHistoryTable, SwitchVeTable } from '@acx-ui/rc/components'
-import { useNavigate, useParams, useTenantLink }   from '@acx-ui/react-router-dom'
+import { Tabs }                                                                  from '@acx-ui/components'
+import { SwitchConfigHistoryTable, SwitchVeTable, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { useConfigTemplate }                                                     from '@acx-ui/rc/utils'
+import { useNavigate, useParams }                                                from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../index'
 
@@ -17,7 +18,8 @@ export function SwitchConfigTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const basePath = useTenantLink(`/venues/${params.venueId}/edit/switch/`)
+  const { isTemplate } = useConfigTemplate()
+  const basePath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/switch/`)
   const { editContextData, setEditContextData } = useContext(VenueEditContext)
 
   const onTabChange = (tab: string) => {
@@ -65,18 +67,20 @@ export function SwitchConfigTab () {
       <TabPane tab={tabTitleMap('aaa')} key='aaa'>
         <SwitchAAATab />
       </TabPane>
-      <TabPane
-        tab={tabTitleMap('history')}
-        key='history'
-      >
-        <SwitchConfigHistoryTable isVenueLevel={true} />
-      </TabPane>
-      <TabPane
-        tab={tabTitleMap('interfaces')}
-        key='interfaces'
-      >
-        <SwitchVeTable isVenueLevel={true} />
-      </TabPane>
+      {!isTemplate && <>
+        <TabPane
+          tab={tabTitleMap('history')}
+          key='history'
+        >
+          <SwitchConfigHistoryTable isVenueLevel={true} />
+        </TabPane>
+        <TabPane
+          tab={tabTitleMap('interfaces')}
+          key='interfaces'
+        >
+          <SwitchVeTable isVenueLevel={true} />
+        </TabPane>
+      </>}
     </Tabs>
   )
 }

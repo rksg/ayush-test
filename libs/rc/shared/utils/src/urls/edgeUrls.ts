@@ -3,20 +3,17 @@ import { ApiInfo } from '@acx-ui/utils'
 export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   addEdge: {
     method: 'post',
-    url: '/edges',
-    oldUrl: '/api/edges',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges',
     newApi: true
   },
   getEdge: {
     method: 'get',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   updateEdge: {
-    method: 'put',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   getEdgeList: {
@@ -27,8 +24,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteEdge: {
     method: 'delete',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   deleteEdges: {
@@ -39,29 +35,36 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   sendOtp: {
     method: 'PATCH',
-    url: '/edges/:serialNumber',
-    oldUrl: '/api/edges/:serialNumber',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber',
     newApi: true
   },
   getDnsServers: {
     method: 'get',
-    url: '/edges/:serialNumber/dnsServers',
-    oldUrl: '/api/edges/:serialNumber/dnsServers',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/dnsServers',
     newApi: true
   },
   updateDnsServers: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/dnsServers',
-    oldUrl: '/api/edges/:serialNumber/dnsServers',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/dnsServers',
     newApi: true
   },
   getPortConfig: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/portConfigs',
+    newApi: true
+  },
+  updatePortConfig: {
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/portConfigs',
+    newApi: true
+  },
+  getPortConfigDeprecated: {
     method: 'get',
     url: '/edges/:serialNumber/portConfigs',
     oldUrl: '/api/edges/:serialNumber/portConfig',
     newApi: true
   },
-  updatePortConfig: {
+  updatePortConfigDeprecated: {
     method: 'PATCH',
     url: '/edges/:serialNumber/portConfigs',
     oldUrl: '/api/edges/:serialNumber/portConfig',
@@ -93,14 +96,12 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getStaticRoutes: {
     method: 'get',
-    url: '/edges/:serialNumber/staticRouteConfigs',
-    oldUrl: '/api/edges/:serialNumber/staticRouteConfig',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/staticRouteConfigs',
     newApi: true
   },
   updateStaticRoutes: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/staticRouteConfigs',
-    oldUrl: '/api/edges/:serialNumber/staticRouteConfig',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/staticRouteConfigs',
     newApi: true
   },
   getEdgePortStatusList: {
@@ -116,22 +117,22 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   reboot: {
     method: 'post',
-    url: '/edges/:serialNumber/reboot',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/reboot',
     newApi: true
   },
   factoryReset: {
     method: 'post',
-    url: '/edges/:serialNumber/configReset',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/configReset',
     newApi: true
   },
   pingEdge: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/hostDetails',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/hostDetails',
     newApi: true
   },
   traceRouteEdge: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/hostDetails',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/hostDetails',
     newApi: true
   },
   downloadEdgesCSV: {
@@ -206,22 +207,26 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEdgeLagList: {
     method: 'get',
-    url: '/edges/:serialNumber/linkAggregationGroups',
+    //url: '/edges/:serialNumber/linkAggregationGroups',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags',
     newApi: true
   },
   addEdgeLag: {
     method: 'post',
-    url: '/edges/:serialNumber/linkAggregationGroups',
+    //url: '/edges/:serialNumber/linkAggregationGroups',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags',
     newApi: true
   },
   updateEdgeLag: {
     method: 'put',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId',
     newApi: true
   },
   deleteEdgeLag: {
     method: 'delete',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId',
     newApi: true
   },
   getLagSubInterfaces: {
@@ -231,22 +236,30 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addLagSubInterfaces: {
     method: 'post',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces',
     newApi: true
   },
   updateLagSubInterfaces: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces/:subInterfaceId',
     newApi: true
   },
   deleteLagSubInterfaces: {
     method: 'delete',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces/:subInterfaceId',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces/:subInterfaceId',
     newApi: true
   },
   importLagSubInterfacesCSV: {
     method: 'post',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    //url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces',
     newApi: true
   },
   getLagSubInterfacesStatus: {
@@ -277,6 +290,16 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   getEdgeCluster: {
     method: 'get',
     url: '/venues/:venueId/edgeClusters/:clusterId',
+    newApi: true
+  },
+  getEdgeClusterNetworkSettings: {
+    method: 'get',
+    url: '/venues/:venueId/edgeClusters/:clusterId/networkSettings',
+    newApi: true
+  },
+  patchEdgeClusterNetworkSettings: {
+    method: 'PATCH',
+    url: '/venues/:venueId/edgeClusters/:clusterId/networkSettings',
     newApi: true
   }
 }

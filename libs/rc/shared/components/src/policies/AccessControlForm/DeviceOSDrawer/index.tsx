@@ -17,9 +17,15 @@ import {
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   useAddDevicePolicyMutation,
-  useDevicePolicyListQuery,
   useGetDevicePolicyQuery,
+  useGetEnhancedDeviceProfileListQuery,
   useUpdateDevicePolicyMutation
+} from '@acx-ui/rc/services'
+import {
+  useAddDevicePolicyTemplateMutation,
+  useGetDevicePolicyTemplateListQuery,
+  useGetDevicePolicyTemplateQuery,
+  useUpdateDevicePolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
@@ -27,13 +33,17 @@ import {
   DeviceRule,
   OsVendorEnum,
   defaultSort,
-  sortProp } from '@acx-ui/rc/utils'
+  sortProp,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult, DevicePolicy
+} from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps, editModeProps }     from '../AccessControlForm'
-import { PROFILE_MAX_COUNT_DEVICE_POLICY } from '../constants'
-import { useScrollLock }                   from '../ScrollLock'
+import { AddModeProps, editModeProps }                            from '../AccessControlForm'
+import { PROFILE_MAX_COUNT_DEVICE_POLICY, QUERY_DEFAULT_PAYLOAD } from '../constants'
+import { useScrollLock }                                          from '../ScrollLock'
 
 import DeviceOSRuleContent, { DrawerFormItem } from './DeviceOSRuleContent'
 
@@ -60,9 +70,11 @@ export interface DeviceOSDrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
-  setEditMode?: (editMode: editModeProps) => void
+  setEditMode?: (editMode: editModeProps) => void,
+  callBack?: () => void
 }
 
 export const GenDetailsColumn = (props: { row: DeviceOSRule }) => {
@@ -112,8 +124,10 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
-    setEditMode = () => {}
+    setEditMode = () => {},
+    callBack = () => {}
   } = props
   const [visible, setVisible] = useState(onlyAddMode.enable ? onlyAddMode.visible : false)
   const [localEditMode, setLocalEdiMode] = useState(
@@ -149,29 +163,20 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
 
-  const [ createDevicePolicy ] = useAddDevicePolicyMutation()
+  const [ createDevicePolicy ] = useConfigTemplateMutationFnSwitcher(
+    useAddDevicePolicyMutation, useAddDevicePolicyTemplateMutation)
 
-  const [ updateDevicePolicy ] = useUpdateDevicePolicyMutation()
+  const [ updateDevicePolicy ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateDevicePolicyMutation, useUpdateDevicePolicyTemplateMutation)
 
-  const { deviceSelectOptions, deviceList } = useDevicePolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        deviceSelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        deviceList: data? data.map(item => item.name) : []
-      }
-    }
-  })
+  const { deviceSelectOptions, deviceList } = useGetDeviceAclPolicyListInstance(editMode.isEdit)
 
-  const { data: devicePolicyInfo } = useGetDevicePolicyQuery(
-    {
-      params: { ...params, devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
-    },
-    { skip: skipFetch }
+  const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher(
+    useGetDevicePolicyQuery,
+    useGetDevicePolicyTemplateQuery,
+    skipFetch,
+    {},
+    { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
   )
 
   const setDrawerVisible = (status: boolean) => {
@@ -188,6 +193,10 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       return false
     }
 
+    if (drawerViewModeId !== '') {
+      return !_.isNil(devicePolicyInfo)
+    }
+
     if (editMode.isEdit || localEditMode.isEdit) {
       return false
     }
@@ -198,6 +207,13 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && !devicePolicyId)
   }, [isOnlyViewMode, devicePolicyId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -339,6 +355,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
         id: '', isEdit: false
       })
     }
+    callBack()
   }
 
 
@@ -592,7 +609,7 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
   </>
 
   const modelContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -689,4 +706,23 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
       />
     </>
   )
+}
+
+const useGetDeviceAclPolicyListInstance = (isEdit: boolean): {
+  deviceSelectOptions: JSX.Element[], deviceList: string[]
+} => {
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<DevicePolicy>>(
+    useGetEnhancedDeviceProfileListQuery,
+    useGetDevicePolicyTemplateListQuery,
+    isEdit,
+    QUERY_DEFAULT_PAYLOAD
+  )
+
+  return {
+    deviceSelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    deviceList: data?.data?.map(item => item.name) ?? []
+  }
 }

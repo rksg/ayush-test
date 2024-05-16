@@ -17,11 +17,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   PolicyOperation,
   PolicyType,
-  useConfigTemplate,
-  usePolicyBreadcrumb,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  usePolicyListBreadcrumb,
   usePolicyPreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -43,11 +44,18 @@ export const AAAForm = (props: AAAFormProps) => {
   const { type, edit, networkView, backToNetwork } = props
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
-  const { isTemplate } = useConfigTemplate()
-  const breadcrumb = usePolicyBreadcrumb(PolicyType.AAA, PolicyOperation.LIST)
-  const { data } = useGetInstance(isEdit)
-  const createInstance = useAddInstance()
-  const updateInstance = useUpdateInstance()
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
+  const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
+  const { data } = useConfigTemplateQueryFnSwitcher(
+    useAaaPolicyQuery,
+    useGetAAAPolicyTemplateQuery,
+    !isEdit
+  )
+
+  // eslint-disable-next-line max-len
+  const [ createInstance ] = useConfigTemplateMutationFnSwitcher(useAddAAAPolicyMutation, useAddAAAPolicyTemplateMutation)
+  // eslint-disable-next-line max-len
+  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher(useUpdateAAAPolicyMutation, useUpdateAAAPolicyTemplateMutation)
   const [saveState, setSaveState] = useState<AAAPolicyType>({ name: '' })
 
   useEffect(() => {
@@ -80,7 +88,7 @@ export const AAAForm = (props: AAAFormProps) => {
   return (
     <>
       {!networkView && <PageHeader
-        title={generatePolicyPageHeaderTitle(isEdit, isTemplate, PolicyType.AAA)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<AAAPolicyType>
@@ -101,30 +109,4 @@ export const AAAForm = (props: AAAFormProps) => {
       </StepsFormLegacy>
     </>
   )
-}
-
-function useAddInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ createAAAPolicy ] = useAddAAAPolicyMutation()
-  const [ createAAAPolicyTemplate ] = useAddAAAPolicyTemplateMutation()
-
-  return isTemplate ? createAAAPolicyTemplate : createAAAPolicy
-}
-
-function useGetInstance (isEdit: boolean) {
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-  const aaaPolicyResult = useAaaPolicyQuery({ params }, { skip: !isEdit || isTemplate })
-  // eslint-disable-next-line max-len
-  const aaaPolicyTemplateResult = useGetAAAPolicyTemplateQuery({ params }, { skip: !isEdit || !isTemplate })
-
-  return isTemplate ? aaaPolicyTemplateResult : aaaPolicyResult
-}
-
-function useUpdateInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ updateAAAPolicy ] = useUpdateAAAPolicyMutation()
-  const [ updateAAAPolicyTemplate ] = useUpdateAAAPolicyTemplateMutation()
-
-  return isTemplate ? updateAAAPolicyTemplate : updateAAAPolicy
 }

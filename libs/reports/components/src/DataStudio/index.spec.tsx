@@ -4,7 +4,7 @@ import { showActionModal }                          from '@acx-ui/components'
 import * as config                                  from '@acx-ui/config'
 import { useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { ReportUrlsInfo, reportsApi }               from '@acx-ui/reports/services'
-import type { UrlInfo }                             from '@acx-ui/reports/services'
+import type { DataStudioResponse }                  from '@acx-ui/reports/services'
 import { Provider, store }                          from '@acx-ui/store'
 import { render, screen, waitFor, mockServer, act } from '@acx-ui/test-utils'
 import { useLocaleContext }                         from '@acx-ui/utils'
@@ -12,8 +12,16 @@ import { useLocaleContext }                         from '@acx-ui/utils'
 import { DataStudio, getHostName } from '.'
 
 const response = {
+  redirect_url: '/api/a4rc/explorer/',
+  user_info: {
+    own_tenant_id: '1234',
+    cache_key: 'cache-key'
+  }
+} as DataStudioResponse
+
+const response_url = {
   redirect_url: '/api/a4rc/explorer/'
-} as UrlInfo
+} as DataStudioResponse
 
 jest.mock('@acx-ui/utils', () => ({
   __esModule: true,
@@ -64,10 +72,17 @@ describe('DataStudio', () => {
     })
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
-    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/')
+    // eslint-disable-next-line max-len
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?cache_key=cache-key')
   })
 
-  it('should render the data studio for MLISA SA', async () => {
+  it('should render the data studio for MLISA SA with url params', async () => {
+    mockServer.use(
+      rest.post(
+        ReportUrlsInfo.authenticate.url.substring(0, ReportUrlsInfo.authenticate.url.indexOf('?')),
+        (req, res, ctx) => res(ctx.json(response))
+      )
+    )
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     localeContext.mockReturnValue({
       messages: { locale: 'en' },
@@ -85,6 +100,35 @@ describe('DataStudio', () => {
     })
 
     const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
+    // eslint-disable-next-line max-len
+    expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/?cache_key=cache-key')
+  })
+
+  it('should render the data studio for MLISA SA without url params', async () => {
+    mockServer.use(
+      rest.post(
+        ReportUrlsInfo.authenticate.url.substring(0, ReportUrlsInfo.authenticate.url.indexOf('?')),
+        (req, res, ctx) => res(ctx.json(response_url))
+      )
+    )
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    localeContext.mockReturnValue({
+      messages: { locale: 'en' },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    get.mockReturnValue('true')
+    render(<Provider>
+      <DataStudio/>
+    </Provider>, { route: { params } })
+
+    await waitFor(()=>{
+      expect(screen.getByTitle('data-studio')).toBeVisible()
+    })
+
+    const iframe = screen.getByTitle('data-studio') as HTMLIFrameElement
+    // eslint-disable-next-line max-len
     expect(iframe.src).toBe('http://localhost/api/a4rc/explorer/')
   })
 
@@ -112,16 +156,6 @@ describe('DataStudio', () => {
   })
 
   describe('401 Unauthorized', () => {
-    beforeAll(() => {
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: {
-          ...window.location,
-          reload: jest.fn()
-        }
-      })
-    })
-
     let addEventListenerMock: jest.SpyInstance
     let removeEventListenerMock: jest.SpyInstance
 
@@ -148,7 +182,6 @@ describe('DataStudio', () => {
       expect(actionModal).toHaveBeenCalled()
 
       actionModal.mock.calls[0][0].onOk!()
-      expect(window.location.reload).toHaveBeenCalled()
     })
 
     it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {

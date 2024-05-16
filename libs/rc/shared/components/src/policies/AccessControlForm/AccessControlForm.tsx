@@ -3,23 +3,27 @@ import { useRef } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import {
-  PageHeader,
-  StepsFormLegacy,
-  StepsFormLegacyInstance
-} from '@acx-ui/components'
+import { PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import {
   useAddAccessControlProfileMutation,
-  useUpdateAccessControlProfileMutation
+  useAddAccessControlProfileTemplateMutation,
+  useUpdateAccessControlProfileMutation,
+  useUpdateAccessControlProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
+  AccessControlFormFields,
   AccessControlInfoType,
   AccessControlProfile,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
+  PolicyOperation,
   PolicyType,
-  PolicyOperation, AccessControlFormFields, getPolicyListRoutePath
+  useConfigTemplateMutationFnSwitcher,
+  usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate } from '@acx-ui/react-router-dom'
+
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
 
 import { AccessControlSettingForm } from './AccessControlSettingForm'
 
@@ -132,14 +136,16 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const tablePath = getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
+  const linkToInstanceList = usePathBasedOnConfigTemplate(tablePath, '')
   const { editMode } = props
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
-  const [ createAclProfile ] = useAddAccessControlProfileMutation()
+  const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher(
+    useAddAccessControlProfileMutation, useAddAccessControlProfileTemplateMutation)
 
-  const [ updateAclProfile ] = useUpdateAccessControlProfileMutation()
+  const [ updateAclProfile ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateAccessControlProfileMutation, useUpdateAccessControlProfileTemplateMutation)
 
   const handleAccessControlPolicy = async (editMode: boolean) => {
     try {
@@ -158,31 +164,25 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
         }).unwrap()
       }
 
-      navigate(linkToPolicies, { replace: true })
+      navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.ACCESS_CONTROL)
+
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Access Control Policy' })
-          : $t({ defaultMessage: 'Add Access Control Policy' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Access Control' }), link: tablePath }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
       <StepsFormLegacy<AccessControlProfile>
         formRef={formRef}
         editMode={editMode}
-        onCancel={() => navigate(linkToPolicies, { replace: true })}
+        onCancel={() => navigate(linkToInstanceList, { replace: true })}
         onFinish={() => handleAccessControlPolicy(editMode)}
       >
         <StepsFormLegacy.StepForm<AccessControlProfile>

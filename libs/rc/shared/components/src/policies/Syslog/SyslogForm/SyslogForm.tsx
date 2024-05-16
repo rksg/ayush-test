@@ -7,20 +7,24 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useAddSyslogPolicyMutation, useUpdateSyslogPolicyMutation } from '@acx-ui/rc/services'
+import {
+  useAddSyslogPolicyMutation, useAddSyslogPolicyTemplateMutation,
+  useUpdateSyslogPolicyMutation, useUpdateSyslogPolicyTemplateMutation
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   PolicyOperation,
-  getPolicyRoutePath,
   FacilityEnum,
   FlowLevelEnum,
   PriorityEnum,
   ProtocolEnum,
-  SyslogVenue,
   SyslogContextType,
-  getPolicyListRoutePath
+  usePolicyListBreadcrumb,
+  usePolicyPageHeaderTitle,
+  usePolicyPreviousPath,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import SyslogContext , { mainReducer } from '../SyslogContext'
 import SyslogScopeForm                 from '../SyslogScope/SyslogScopeForm'
@@ -32,45 +36,35 @@ type SyslogFormProps = {
   edit: boolean
 }
 
+const initialValues = {
+  policyName: '',
+  server: '',
+  port: 514,
+  protocol: ProtocolEnum.UDP,
+  secondaryServer: '',
+  secondaryPort: 514,
+  secondaryProtocol: ProtocolEnum.TCP,
+  facility: FacilityEnum.KEEP_ORIGINAL,
+  priority: PriorityEnum.INFO,
+  flowLevel: FlowLevelEnum.CLIENT_FLOW,
+  venues: []
+}
+
 export const SyslogForm = (props: SyslogFormProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
   const params = useParams()
   const { edit } = props
-
-  const policyName = ''
-  const server = ''
-  const port = 514
-  const protocol = ProtocolEnum.UDP
-  const secondaryServer = ''
-  const secondaryPort = 514
-  const secondaryProtocol = ProtocolEnum.TCP
-  const facility = FacilityEnum.KEEP_ORIGINAL
-  const priority = PriorityEnum.INFO
-  const flowLevel = FlowLevelEnum.CLIENT_FLOW
-  const venues:SyslogVenue[] = []
-
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.SYSLOG)
+  const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.SYSLOG)
+  const linkToInstanceList = usePolicyPreviousPath(PolicyType.SYSLOG, PolicyOperation.LIST)
   const form = Form.useFormInstance()
-  const [state, dispatch] = useReducer(mainReducer, {
-    policyName,
-    server,
-    port,
-    protocol,
-    secondaryServer,
-    secondaryPort,
-    secondaryProtocol,
-    facility,
-    priority,
-    flowLevel,
-    venues
-  })
+  const [state, dispatch] = useReducer(mainReducer, initialValues)
 
-  const [ createSyslog ] = useAddSyslogPolicyMutation()
-
-  const [ updateSyslog ] = useUpdateSyslogPolicyMutation()
+  // eslint-disable-next-line max-len
+  const [ createSyslog ] = useConfigTemplateMutationFnSwitcher(useAddSyslogPolicyMutation, useAddSyslogPolicyTemplateMutation)
+  // eslint-disable-next-line max-len
+  const [ updateSyslog ] = useConfigTemplateMutationFnSwitcher(useUpdateSyslogPolicyMutation, useUpdateSyslogPolicyTemplateMutation)
 
   const transformPayload = (state: SyslogContextType, edit: boolean) => {
     if (!(state.secondaryServer && state.secondaryPort)) {
@@ -120,7 +114,7 @@ export const SyslogForm = (props: SyslogFormProps) => {
           payload: transformPayload(state, true)
         }).unwrap()
       }
-      navigate(linkToPolicies, { replace: true })
+      navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -129,25 +123,13 @@ export const SyslogForm = (props: SyslogFormProps) => {
   return (
     <SyslogContext.Provider value={{ state, dispatch }}>
       <PageHeader
-        title={edit
-          ? $t({ defaultMessage: 'Edit Syslog Server' })
-          : $t({ defaultMessage: 'Add Syslog Server' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          {
-            text: $t({ defaultMessage: 'Syslog Server' }),
-            link: tablePath
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
       <StepsForm<SyslogContextType>
         form={form}
         editMode={edit}
-        onCancel={() => navigate(linkToPolicies)}
+        onCancel={() => navigate(linkToInstanceList)}
         onFinish={() => handleSyslogPolicy(edit)}
       >
         <StepsForm.StepForm<SyslogContextType>

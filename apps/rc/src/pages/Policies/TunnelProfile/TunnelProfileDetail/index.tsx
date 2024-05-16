@@ -17,8 +17,9 @@ import {
   TunnelTypeEnum,
   isDefaultTunnelProfile as getIsDefaultTunnelProfile
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }        from '@acx-ui/user'
+import { TenantLink, useParams }  from '@acx-ui/react-router-dom'
+import { EdgeScopes, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }         from '@acx-ui/user'
 
 import { ageTimeUnitConversion } from '../util'
 
@@ -27,6 +28,7 @@ import * as UI          from './styledComponents'
 
 const TunnelProfileDetail = () => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const tablePath = getPolicyRoutePath({
@@ -77,7 +79,7 @@ const TunnelProfileDetail = () => {
         })
       }
     },
-    ...(isEdgeSdLanReady ? [{
+    ...((isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Tunnel Type' }),
       content: () => {
         return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
@@ -102,11 +104,13 @@ const TunnelProfileDetail = () => {
         ]}
         extra={
           filterByAccess([
-            <TenantLink to={getPolicyDetailsLink({
-              type: PolicyType.TUNNEL_PROFILE,
-              oper: PolicyOperation.EDIT,
-              policyId: params.policyId as string
-            })}>
+            <TenantLink
+              scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}
+              to={getPolicyDetailsLink({
+                type: PolicyType.TUNNEL_PROFILE,
+                oper: PolicyOperation.EDIT,
+                policyId: params.policyId as string
+              })}>
               <Button key={'configure'} type={'primary'} disabled={isDefaultTunnelProfile}>
                 {$t({ defaultMessage: 'Configure' })}
               </Button></TenantLink>

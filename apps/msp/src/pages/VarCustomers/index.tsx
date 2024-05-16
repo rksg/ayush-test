@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import moment        from 'moment-timezone'
@@ -13,8 +13,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                from '@acx-ui/formatter'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   useInviteCustomerListQuery,
   useVarCustomerListQuery,
@@ -34,37 +34,22 @@ import {
 import { Link, TenantLink, useParams }     from '@acx-ui/react-router-dom'
 import { RolesEnum }                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext } from '@acx-ui/user'
-import { isDelegationMode }                from '@acx-ui/utils'
+import { isDelegationMode, noDataDisplay } from '@acx-ui/utils'
 
-const transformApUtilization = (row: VarCustomer, deviceType: EntitlementNetworkDeviceType ) => {
-  if (row.entitlements) {
-    const entitlement = row.entitlements.filter((en:DelegationEntitlementRecord) =>
-      en.entitlementDeviceType === deviceType)
-    if (entitlement.length > 0) {
-      const apEntitlement = entitlement[0]
-      const quantity = parseInt(apEntitlement.quantity, 10)
-      const consumed = parseInt(apEntitlement.consumed, 10)
-      if (quantity > 0) {
-        const value =
-      (Math.round(((consumed / quantity) * 10000)) / 100) + '%'
-        return value
-      } else {
-        return '0%'
-      }
-    }
-  }
-  return '0%'
-}
+import HspContext from '../../HspContext'
 
 const transformNextExpirationDate = (row: VarCustomer) => {
-  let expirationDate = '--'
+  let expirationDate = ''
   let toBeRemoved = ''
-  if (row.entitlements) {
-    const entitlements = row.entitlements
+  const apswEntitlement = row.entitlements?.filter((en:DelegationEntitlementRecord) =>
+    en.entitlementDeviceType === EntitlementNetworkDeviceType.APSW)
+
+  if (apswEntitlement) {
+    // const entitlements = row.entitlements
     let target: DelegationEntitlementRecord
-    entitlements.forEach((entitlement:DelegationEntitlementRecord) => {
+    apswEntitlement.forEach((entitlement:DelegationEntitlementRecord) => {
       target = entitlement
-      const consumed = parseInt(entitlement.quantity, 10)
+      const consumed = parseInt(entitlement.consumed, 10)
       const quantity = parseInt(entitlement.quantity, 10)
       if (consumed > 0 || quantity > 0) {
         if (!target || moment(entitlement.expirationDate).isBefore(target.expirationDate)) {
@@ -72,24 +57,26 @@ const transformNextExpirationDate = (row: VarCustomer) => {
         }
       }
       expirationDate = formatter(DateFormatEnum.DateFormat)(target.expirationDate)
-      toBeRemoved = EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
-        parseInt(target.toBeRemovedQuantity, 10))
+      toBeRemoved = target.toBeRemovedQuantity > 0
+        ? EntitlementUtil.getNetworkDeviceTypeUnitText(target.entitlementDeviceType,
+          target.toBeRemovedQuantity) : ''
     })
   }
 
-  return `${expirationDate} (${toBeRemoved})`
+  return toBeRemoved === '' ? `${expirationDate}`: `${expirationDate} (${toBeRemoved})`
 }
 
 export function VarCustomers () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
-  const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
   const mspUtils = MSPUtils()
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
 
   const { data: userProfile } = useUserProfileContext()
   const [ handleInvitation
@@ -198,14 +185,13 @@ export function VarCustomers () {
       )
     }
 
-    return (
-      <>
-        <Subtitle level={3}>
-          {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
+    return <div style={{ marginBottom: '50px' }}>
+      <Subtitle level={3}>
+        {$t({ defaultMessage: 'Pending Invitations' })} ({inviteCount})</Subtitle>
 
-        <PendingInvitation />
-      </>
-    )
+      <PendingInvitation />
+    </div>
+
   }
 
   const customerColumns: TableProps<VarCustomer>['columns'] = [
@@ -238,77 +224,48 @@ export function VarCustomers () {
     {
       title: $t({ defaultMessage: 'Alarm Count' }),
       dataIndex: 'alarmCount',
+      align: 'center',
       key: 'alarmCount',
       show: false,
       sorter: true
     },
-    ...(isDeviceAgnosticEnabled ? [
-      {
-        title: $t({ defaultMessage: 'Installed Devices' }),
-        dataIndex: 'apswLicenseInstalled',
-        key: 'apswLicenseInstalled',
-        sorter: true,
-        render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformInstalledDevice(row.entitlements)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Devices Subscriptions' }),
-        dataIndex: 'apswLicense',
-        key: 'apswLicense',
-        sorter: true,
-        render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformDeviceEntitlement(row.entitlements)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
-        dataIndex: 'apswLicensesUtilization',
-        key: 'apswLicensesUtilization',
-        sorter: true,
-        render: function (data: React.ReactNode, row: VarCustomer) {
-          return mspUtils.transformDeviceUtilization(row.entitlements)
-        }
+    {
+      title: $t({ defaultMessage: 'Installed Devices' }),
+      dataIndex: 'apswLicenseInstalled',
+      align: 'center',
+      key: 'apswLicenseInstalled',
+      sorter: true,
+      render: function (data: React.ReactNode, row: VarCustomer) {
+        return mspUtils.transformInstalledDevice(row.entitlements)
       }
-    ] : [
-
-      {
-        title: $t({ defaultMessage: 'Wi-Fi Licenses' }),
-        dataIndex: 'apEntitlement.quantity',
-        // align: 'center',
-        key: 'apEntitlement.quantity',
-        sorter: true,
-        render: function (data: React.ReactNode, row: VarCustomer) {
-          return row.wifiLicenses ? row.wifiLicenses : 0
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Wi-Fi Licenses Utilization' }),
-        dataIndex: 'wifiLicensesUtilization',
-        // align: 'center',
-        key: 'wifiLicensesUtilization',
-        sorter: true,
-        render: function (data: React.ReactNode, row: VarCustomer) {
-          return transformApUtilization(row, EntitlementNetworkDeviceType.WIFI)
-        }
-      },
-      {
-        title: $t({ defaultMessage: 'Switch Licenses' }),
-        dataIndex: 'switchEntitlement',
-        // align: 'center',
-        key: 'switchEntitlement',
-        sorter: true,
-        render: function (data: React.ReactNode, row: VarCustomer) {
-          return row.switchLicenses ? row.switchLicenses : 0
-        }
-      }]),
+    },
+    {
+      title: $t({ defaultMessage: 'Devices Subscriptions' }),
+      dataIndex: 'apswLicense',
+      align: 'center',
+      key: 'apswLicense',
+      sorter: true,
+      render: function (data: React.ReactNode, row: VarCustomer) {
+        return mspUtils.transformDeviceEntitlement(row.entitlements)
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Device Subscriptions Utilization' }),
+      dataIndex: 'apswLicensesUtilization',
+      align: 'center',
+      key: 'apswLicensesUtilization',
+      sorter: true,
+      render: function (data: React.ReactNode, row: VarCustomer) {
+        return mspUtils.transformDeviceUtilization(row.entitlements)
+      }
+    },
     {
       title: $t({ defaultMessage: 'Next Subscription Expiration' }),
       dataIndex: 'expirationDate',
       key: 'expirationDate',
       sorter: true,
       render: function (_, row) {
-        return transformNextExpirationDate(row)
+        return row.entitlements ? transformNextExpirationDate(row) : noDataDisplay
       }
     }
   ]
@@ -378,9 +335,10 @@ export function VarCustomers () {
           </TenantLink>
         }
       />
-
-      {!userProfile?.support && isAdmin && <InvitationList />}
-      <VarCustomerTable />
+      <div>
+        {!userProfile?.support && isAdmin && <InvitationList />}
+        <VarCustomerTable />
+      </div>
     </>
   )
 }

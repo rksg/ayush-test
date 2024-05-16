@@ -3,16 +3,24 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                                   from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, MacRegListUrlsInfo, PortalUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                         from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { networkApi, venueApi }           from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  IdentityProviderUrls,
+  MacRegListUrlsInfo,
+  PortalUrlsInfo,
+  WifiOperatorUrls,
+  WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   fireEvent,
   waitForElementToBeRemoved,
-  waitFor
+  waitFor,
+  act
 } from '@acx-ui/test-utils'
 import { UserUrlsInfo } from '@acx-ui/user'
 
@@ -24,13 +32,15 @@ import {
   cloudpathResponse,
   networkDeepResponse,
   portalList,
-  vlanList
+  vlanList,
+  mockHotpost20IdentityProviderList,
+  mockHotspot20OperatorList
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
-jest.mock('../useEdgeActions', () => ({
-  ...jest.requireActual('../useEdgeActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+jest.mock('../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../EdgeSdLan/useEdgeSdLanActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({})
 }))
 jest.mock('./utils', () => ({
   ...jest.requireActual('./utils'),
@@ -83,13 +93,17 @@ const macRegistrationList = {
 describe('NetworkForm', () => {
 
   beforeEach(() => {
+    act(() => {
+      store.dispatch(networkApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+    })
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     networkDeepResponse.name = 'open network test'
     mockServer.use(
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
-      rest.post(CommonUrlsInfo.getNetworksVenuesList.url,
+      rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
@@ -99,8 +113,6 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(CommonUrlsInfo.getCloudpathList.url,
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
-      rest.get(WifiUrlsInfo.GetDefaultDhcpServiceProfileForGuestNetwork.url,
-        (_, res, ctx) => res(ctx.json(dhcpResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -110,7 +122,7 @@ describe('NetworkForm', () => {
       rest.get(PortalUrlsInfo.getPortalProfileList.url
         .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
       (_, res, ctx) => res(ctx.json({ content: portalList }))),
-      rest.post(PortalUrlsInfo.savePortal.url,
+      rest.post(PortalUrlsInfo.createPortal.url,
         (_, res, ctx) => res(ctx.json({ response: {
           requestId: 'request-id', id: 'test', serviceName: 'test' } }))),
       rest.get(PortalUrlsInfo.getPortalLang.url,
@@ -124,7 +136,12 @@ describe('NetworkForm', () => {
       ),
       rest.get(WifiUrlsInfo.getVlanPools.url, (_, res, ctx) =>
         res(ctx.json(vlanList))
-      )
+      ),
+      rest.post(WifiOperatorUrls.getWifiOperatorList.url,
+        (_, res, ctx) => res(ctx.json(mockHotspot20OperatorList))
+      ),
+      rest.post(IdentityProviderUrls.getIdentityProviderList.url,
+        (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList)))
     )
   })
 
@@ -154,6 +171,43 @@ describe('NetworkForm', () => {
     await screen.findByRole('heading', { level: 3, name: 'Summary' })
 
     await userEvent.click(screen.getByText('Add'))
+  })
+
+  it('should create hotspot20 network successfully', async () => {
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+
+    render(<Provider><NetworkForm /></Provider>, {
+      route: { params }
+    })
+
+    const insertInput = screen.getByLabelText(/Network Name/)
+    fireEvent.change(insertInput, { target: { value: 'hotspot20 network test' } })
+    fireEvent.blur(insertInput)
+
+    let validating = await screen.findByRole('img', { name: 'loading' })
+    await waitForElementToBeRemoved(validating, { timeout: 7000 })
+
+    userEvent.click(screen.getByRole('radio', { name: /Hotspot 2.0 Access/ }))
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { level: 3, name: 'Hotspot 2.0 Settings' })
+
+    const operatorSelect = await screen.findByRole('combobox', { name: /Wi-Fi Operator/i })
+    await userEvent.click(operatorSelect)
+
+    await userEvent.click((await screen.findByRole('option', { name: 'operator1' })))
+
+    const providerSelect = await screen.findByRole('combobox', { name: /Identity Provider/i })
+    await userEvent.click(providerSelect)
+
+    await userEvent.click((await screen.findByRole('option', { name: 'provider_1' })))
+
+    const showMoreButton = await screen.findByRole('button', { name: 'Show more settings' })
+    await userEvent.click(showMoreButton)
+
+    await userEvent.click(screen.getByRole('tab', { name: 'Hotspot 2.0' }))
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
   })
 
   it('should render breadcrumb correctly', async () => {

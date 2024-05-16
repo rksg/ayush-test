@@ -3,8 +3,12 @@ import { useEffect, useState } from 'react'
 import { Form, Input, Select }       from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button, Drawer, Tooltip, PasswordInput }              from '@acx-ui/components'
-import { useAddAAAServerMutation, useUpdateAAAServerMutation } from '@acx-ui/rc/services'
+import { Button, Drawer, Tooltip, PasswordInput }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import {
+  useAddAAAServerMutation, useUpdateAAAServerMutation,
+  useAddVenueTemplateSwitchAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
+} from '@acx-ui/rc/services'
 import { AAAServerTypeEnum,
   excludeExclamationRegExp,
   excludeQuoteRegExp,
@@ -12,7 +16,7 @@ import { AAAServerTypeEnum,
   excludeSpaceRegExp, LocalUser,
   notAllDigitsRegExp, portRegExp,
   RadiusServer, serverIpAddressRegExp,
-  TacacsServer, validateUsername,
+  TacacsServer, useConfigTemplateMutationFnSwitcher, validateUsername,
   validateUserPassword } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -35,8 +39,13 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   const [isAdminUser, setIsAdminUser] = useState(false)
   const params = useParams()
   const [form] = Form.useForm()
-  const [ addAAAServer ] = useAddAAAServerMutation()
-  const [ updateAAAServer ] = useUpdateAAAServerMutation()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher(
+    useAddAAAServerMutation, useAddVenueTemplateSwitchAAAServerMutation
+  )
+  const [ updateAAAServer ] = useConfigTemplateMutationFnSwitcher(
+    useUpdateAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
+  )
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(()=>{
@@ -78,7 +87,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         }
         await addAAAServer({
           params,
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       } else {
         const payload = {
@@ -90,7 +100,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
             ...params,
             aaaServerId: payload.id
           },
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       }
     }

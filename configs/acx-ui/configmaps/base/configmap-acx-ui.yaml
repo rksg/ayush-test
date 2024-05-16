@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: configmap-acx-ui
 data:
-  google.maps.key: "AIzaSyDq4QI2gdhGotqFiR28ZXk_RkbWtZ-IMDQ"
+  google.maps.key: "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI"
   split.io.key: "s56i5harnvpksqb6a5kom1phqncj9d6ujf92"
   pendo.api.key: "b775f526-720b-449c-7fca-f45b7c3df0ae"
   disable.pendo: "false"
@@ -19,3 +19,6 @@ data:
   new.api.domain.name: "api.dev.ruckus.cloud"
   static.assets: "https://storage.googleapis.com/ruckus-web-1"
   api.documentation.url: "https://support.ruckuswireless.com/documents/4485"
+  mib.files: "https://docs.ruckus.cloud/mib/"
+  druid.rollup.period.days: "36500"
+  druid.retain.period.days: "90"

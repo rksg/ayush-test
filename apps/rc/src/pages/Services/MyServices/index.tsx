@@ -13,7 +13,7 @@ import {
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeSdLanViewDataListQuery
+  useGetEdgeSdLanP2ViewDataListQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -37,6 +37,12 @@ export default function MyServices () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const services = [
     {
@@ -55,9 +61,9 @@ export default function MyServices () {
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled
+        skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
       }),
-      disabled: !isEdgeEnabled
+      disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
     },
     {
       type: ServiceType.NETWORK_SEGMENTATION,
@@ -65,19 +71,19 @@ export default function MyServices () {
       tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady
+        skip: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady
+      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
     },
     {
       type: ServiceType.EDGE_SD_LAN,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      tableQuery: useGetEdgeSdLanViewDataListQuery({
+      tableQuery: useGetEdgeSdLanP2ViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+        skip: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+      disabled: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
     },
     {
       type: ServiceType.EDGE_FIREWALL,
@@ -85,9 +91,9 @@ export default function MyServices () {
       tableQuery: useGetEdgeFirewallViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady
+        skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady
+      disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
     },
     {
       type: ServiceType.DPSK,
@@ -109,7 +115,9 @@ export default function MyServices () {
     {
       type: ServiceType.WEBAUTH_SWITCH,
       categories: [RadioCardCategory.SWITCH],
-      tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
+      tableQuery: useWebAuthTemplateListQuery({
+        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+      }, {
         skip: !isEdgeEnabled || !networkSegmentationSwitchEnabled
       }),
       disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled

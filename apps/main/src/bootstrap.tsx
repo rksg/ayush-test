@@ -8,15 +8,15 @@ import {
   Loader,
   SuspenseBoundary
 } from '@acx-ui/components'
-import { useGetPreferencesQuery } from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { BrowserRouter }          from '@acx-ui/react-router-dom'
-import { Provider }               from '@acx-ui/store'
+import { Features, SplitProvider, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useGetPreferencesQuery }                from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                from '@acx-ui/rc/utils'
+import { BrowserRouter }                         from '@acx-ui/react-router-dom'
+import { Provider }                              from '@acx-ui/store'
 import {
   UserProfileProvider,
   useUserProfileContext,
   UserUrlsInfo,
-  useGetUserProfileQuery,
   useUpdateUserProfileMutation
 } from '@acx-ui/user'
 import {
@@ -73,15 +73,18 @@ async function pendoInitalization (): Promise<PendoParameters> {
 }
 
 function PreferredLangConfigProvider (props: React.PropsWithChildren) {
-  const result = useGetUserProfileQuery({})
-  const { data: userProfile } = result
-  const request = useGetPreferencesQuery({ tenantId: getTenantId() })
-  const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
   const tenantId = getTenantId()
+  const { data: userProfile, isUserProfileLoading } = useUserProfileContext()
+
+  const request = useGetPreferencesQuery({ tenantId })
+  const defaultLang = (request.data?.global?.defaultLanguage || DEFAULT_SYS_LANG) as LangKey
 
   const [language, setLanguage] = useState(userProfile?.preferredLanguage?? defaultLang)
   const [langLoading, setLangLoading] = useState(true)
   const [ updateUserProfile ] = useUpdateUserProfileMutation()
+
+  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
+  const propsWithFF = { supportReSkinning, ...props }
 
   useEffect(() => {
     if (userProfile) {
@@ -131,23 +134,22 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter/>}
     states={[{
-      isLoading: result.isLoading || result.isFetching
-        || request.isLoading || request.isFetching
-        || langLoading
+      isLoading: isUserProfileLoading || request.isFetching || langLoading
     }]}
-    children={<ConfigProvider {...props} lang={lang as unknown as LangKey}/>}
+    children={<ConfigProvider {...propsWithFF} lang={lang as unknown as LangKey}/>}
   />
 }
 
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
+  const isCustomeRole = userProfile.abacEnabled && userProfile.isCustomRole
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        !Boolean(userProfile.allowedOperations.length) ||
+        (isCustomeRole ? false : !Boolean(userProfile.allowedOperations.length)) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
@@ -157,20 +159,23 @@ function DataGuardLoader (props: React.PropsWithChildren) {
 export async function init (root: Root) {
   renderPendo(pendoInitalization)
   addMiddleware(refreshTokenMiddleware, errorMiddleware)
+
   root.render(
     <React.StrictMode>
       <Provider>
-        <PreferredLangConfigProvider>
-          <BrowserRouter>
-            <UserProfileProvider>
-              <DataGuardLoader>
-                <React.Suspense fallback={null}>
-                  <AllRoutes />
-                </React.Suspense>
-              </DataGuardLoader>
-            </UserProfileProvider>
-          </BrowserRouter>
-        </PreferredLangConfigProvider>
+        <BrowserRouter>
+          <UserProfileProvider>
+            <SplitProvider>
+              <PreferredLangConfigProvider>
+                <DataGuardLoader>
+                  <React.Suspense fallback={null}>
+                    <AllRoutes />
+                  </React.Suspense>
+                </DataGuardLoader>
+              </PreferredLangConfigProvider>
+            </SplitProvider>
+          </UserProfileProvider>
+        </BrowserRouter>
       </Provider>
     </React.StrictMode>
   )

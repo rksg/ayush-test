@@ -3,14 +3,15 @@ import { createContext, useState } from 'react'
 import { isEmpty }   from 'lodash'
 import { IntlShape } from 'react-intl'
 
-import { showActionModal, CustomButtonProps } from '@acx-ui/components'
+import { showActionModal, CustomButtonProps, StepsFormLegacy } from '@acx-ui/components'
 import { VenueLed,
   VenueSwitchConfiguration,
   ExternalAntenna,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }    from '@acx-ui/react-router-dom'
+import { goToNotFound } from '@acx-ui/user'
+import { getIntl }      from '@acx-ui/utils'
 
 import { PropertyManagementTab }    from './PropertyManagementTab'
 import { SwitchConfigTab }          from './SwitchConfigTab'
@@ -91,7 +92,7 @@ export const VenueEditContext = createContext({} as {
 
 export function VenueEdit () {
   const { activeTab } = useParams()
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as EditContext)
   const [
@@ -331,4 +332,18 @@ export function showUnsavedModal (
       buttons: (hasError ? btns.slice(0, 2) : btns) as CustomButtonProps[]
     }
   })
+}
+
+// eslint-disable-next-line max-len
+export function createAnchorSectionItem (title: string, titleId: string, content: JSX.Element, key?: string) {
+  return {
+    title,
+    ...(key ? { key } : {}),
+    content: <>
+      <StepsFormLegacy.SectionTitle id={titleId}>
+        { title }
+      </StepsFormLegacy.SectionTitle>
+      {content}
+    </>
+  }
 }

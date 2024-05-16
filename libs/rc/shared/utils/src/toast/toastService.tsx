@@ -7,6 +7,8 @@ import styled              from 'styled-components/macro'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { showActionModal, showToast, ToastProps, ToastType } from '@acx-ui/components'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { hasRoles }                                          from '@acx-ui/user'
 import { getIntl }                                           from '@acx-ui/utils'
 
 import { rcToastTemplates } from './toastTemplate'
@@ -158,6 +160,7 @@ const getLinkText = (tx: Transaction) => {
 
 export const showTxToast = (tx: Transaction) => {
   const intl = getIntl()
+  const rolesNotSupportingLinks = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
   if (tx.attributes && tx.attributes.name) {
     // calculate max_name_length
     const fullLength = getToastMessage(tx).length
@@ -203,7 +206,7 @@ export const showTxToast = (tx: Transaction) => {
       ...(!!tx.error && { link: { onClick: () => showDetails(tx, intl) } })
     }
   }
-  if (msg.data?.link) {
+  if (msg.data?.link && !rolesNotSupportingLinks) {
     config = {
       ...config,
       link: {

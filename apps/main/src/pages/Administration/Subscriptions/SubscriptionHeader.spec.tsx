@@ -85,7 +85,7 @@ describe('SubscriptionHeader', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
     expect(await screen.findByText(/2\s+\/\s+130/i)).toBeVisible()
     expect(await screen.findByText('Professional')).toBeVisible()
     expect(mockedTierReq).not.toBeCalled()
@@ -103,7 +103,7 @@ describe('SubscriptionHeader', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     await waitFor(() => expect(mockedTierReq).toBeCalled())
-    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(4)
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
     expect(await screen.findByText('Essentials')).toBeVisible()
   })
 
@@ -118,7 +118,7 @@ describe('SubscriptionHeader', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(3)
+    expect((await screen.findAllByTestId('rc-StackedBarChart')).length).toBe(2)
     expect(screen.queryAllByText('SmartEdge').length).toBe(0)
     expect(await screen.findByText('Essentials')).toBeVisible()
   })

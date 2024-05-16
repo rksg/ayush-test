@@ -15,7 +15,9 @@ import {
   getSwitchModel,
   isOperationalSwitch,
   SwitchPortViewModel,
+  SwitchPortViewModelQueryFields,
   SwitchVlan,
+  SwitchViewModel,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
@@ -24,22 +26,25 @@ import { getIntl }                   from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
-import { EditPortDrawer }                         from './editPortDrawer'
-import { EditPortDrawer as EditPortDrawerLegacy } from './editPortDrawerLegacy'
-import * as UI                                    from './styledComponents'
+import { EditPortDrawer } from './editPortDrawer'
+import * as UI            from './styledComponents'
 
 const STACK_PORT_FIELD = 'usedInFormingStack'
 
-export function SwitchPortTable ({ isVenueLevel }: {
+export function SwitchPortTable (props: {
   isVenueLevel: boolean
+  switchDetail?: SwitchViewModel
 }) {
   const { $t } = useIntl()
+  const { isVenueLevel, switchDetail } = props
   const { serialNumber, venueId, tenantId, switchId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
+
   const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortViewModel[])
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
   const [vlanList, setVlanList] = useState([] as SwitchVlan[])
-  const isSwitchVoiceVlanEnhanced = useIsSplitOn(Features.SWITCH_VOICE_VLAN)
 
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
   const [getSwitchesVlan] = useLazyGetSwitchVlanUnionByVenueQuery()
@@ -51,34 +56,33 @@ export function SwitchPortTable ({ isVenueLevel }: {
   useEffect(() => {
     const setData = async () => {
       if (isVenueLevel) {
-        const vlanList = await getSwitchesVlan({ params: { tenantId, venueId } }).unwrap()
+        const vlanList = await getSwitchesVlan({
+          params: { tenantId, venueId },
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
         setVlanList(vlanList)
-      } else {
-        const vlanUnion = await getSwitchVlan({ params: { tenantId, switchId } }).unwrap()
+      } else if (switchDetail) {
+        const vlanUnion = await getSwitchVlan({
+          params: { tenantId, switchId, venueId: switchDetail?.venueId },
+          enableRbac: isSwitchRbacEnabled,
+          option: { skip: switchDetail?.venueId }
+        }).unwrap()
         // eslint-disable-next-line max-len
-        const vlanList = vlanUnion.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
+        const vlanList = vlanUnion?.switchDefaultVlan?.concat(vlanUnion.switchVlan || [])
           .concat(vlanUnion.profileVlan || [])
           .sort((a, b) => (a.vlanId > b.vlanId) ? 1 : -1)
         setVlanList(vlanList)
       }
     }
     setData()
-  }, [isVenueLevel])
+  }, [isVenueLevel, switchDetail])
 
   const statusFilterOptions = [
     { key: 'Up', value: $t({ defaultMessage: 'UP' }) },
     { key: 'Down', value: $t({ defaultMessage: 'DOWN' }) }
   ]
 
-  const queryFields = ['portIdentifier', 'name', 'status', 'adminStatus', 'portSpeed',
-    'poeUsed', 'vlanIds', 'neighborName', 'tag', 'cog', 'cloudPort', 'portId', 'switchId',
-    'switchSerial', 'switchMac', 'switchName', 'switchUnitId', 'switchModel',
-    'unitStatus', 'unitState', 'deviceStatus', 'poeEnabled', 'poeTotal', 'unTaggedVlan',
-    'lagId', 'syncedSwitchConfig', 'ingressAclName', 'egressAclName', 'usedInFormingStack',
-    'id', 'poeType', 'signalIn', 'signalOut', 'lagName', 'opticsType',
-    'broadcastIn', 'broadcastOut', 'multicastIn', 'multicastOut', 'inErr', 'outErr',
-    'crcErr', 'inDiscard', 'usedInFormingStack', 'mediaType', 'poeUsage'
-  ]
+  const queryFields = SwitchPortViewModelQueryFields
 
   const settingsId = 'switch-port-table'
   const tableQuery = usePollingTableQuery({
@@ -96,6 +100,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       sortOrder: 'ASC'
     },
     enableSelectAllPagesData: queryFields,
+    enableRbac: isSwitchRbacEnabled,
     pagination: { settingsId }
   })
 
@@ -255,18 +260,30 @@ export function SwitchPortTable ({ isVenueLevel }: {
     show: false
   }, {
     key: 'ingressAclName',
-    title: $t({ defaultMessage: 'Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv4)' }),
     dataIndex: 'ingressAclName',
     sorter: true,
     show: false
   }, {
     key: 'egressAclName',
-    title: $t({ defaultMessage: 'Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv4)' }),
     dataIndex: 'egressAclName',
     sorter: true,
     show: false
   },
-  {
+  ...(isSwitchV6AclEnabled ? [{
+    key: 'vsixIngressAclName',
+    title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
+    dataIndex: 'vsixIngressAclName',
+    sorter: true,
+    show: false
+  }, {
+    key: 'vsixEgressAclName',
+    title: $t({ defaultMessage: 'Egress ACL (IPv6)' }),
+    dataIndex: 'vsixEgressAclName',
+    sorter: true,
+    show: false
+  }] : []), {
     key: 'tags',
     title: $t({ defaultMessage: 'Tags' }),
     dataIndex: 'tags',
@@ -331,17 +348,7 @@ export function SwitchPortTable ({ isVenueLevel }: {
       setVisible={setLagDrawerVisible}
     />}
 
-    { drawerVisible && !isSwitchVoiceVlanEnhanced && <EditPortDrawerLegacy
-      key='edit-port'
-      visible={drawerVisible}
-      setDrawerVisible={setDrawerVisible}
-      isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
-      isMultipleEdit={selectedPorts?.length > 1}
-      isVenueLevel={isVenueLevel}
-      selectedPorts={selectedPorts}
-    />}
-
-    { drawerVisible && isSwitchVoiceVlanEnhanced && <EditPortDrawer
+    { drawerVisible && <EditPortDrawer
       key='edit-port'
       visible={drawerVisible}
       setDrawerVisible={setDrawerVisible}
@@ -389,13 +396,13 @@ export function isLAGMemberPort (port: SwitchPortViewModel): boolean {
   return !!port.lagId && port.lagId.trim() !== '0' && port.lagId.trim() !== '-1'
 }
 
-function isOperationalSwitchPort (port: SwitchPortViewModel): boolean {
+export function isOperationalSwitchPort (port: SwitchPortViewModel): boolean {
   return port && port.deviceStatus
     ? isOperationalSwitch(port.deviceStatus, port.syncedSwitchConfig)
     : false
 }
 
-function isStackPort (port: SwitchPortViewModel): boolean {
+export function isStackPort (port: SwitchPortViewModel): boolean {
   const slot = port.portIdentifier.split('/')?.[1]
   if (isICX7650Port(getSwitchModel(port.switchUnitId)) && (slot === '3' || slot === '4')) {
     return true

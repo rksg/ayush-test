@@ -2,9 +2,14 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { AdministrationUrlsInfo, CommonUrlsInfo, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                       from '@acx-ui/store'
+import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import {
+  AdministrationUrlsInfo, CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  VenueConfigTemplateUrlsInfo,
+  useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
+} from '@acx-ui/rc/utils'
+import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -48,11 +53,22 @@ jest.mock('react-router-dom', () => ({
   useLocation: () => mockedUseLocation()
 }))
 
+
+type MutationFnSwitcherTypes = Parameters<typeof useConfigTemplateMutationFnSwitcher>
+type LazyQueryFnSwitcherTypes = Parameters<typeof useConfigTemplateLazyQueryFnSwitcher>
+const mockedMutationFnSwitcher = jest.fn()
+const mockedLazyQueryFnSwitcher = jest.fn()
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
+  // eslint-disable-next-line max-len
+  useConfigTemplateMutationFnSwitcher: (...args: MutationFnSwitcherTypes) => mockedMutationFnSwitcher(...args),
+  // eslint-disable-next-line max-len
+  useConfigTemplateLazyQueryFnSwitcher: (...args: LazyQueryFnSwitcherTypes) => mockedLazyQueryFnSwitcher(...args),
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
+
+const mockedGetTimezone = jest.fn().mockResolvedValue({ data: timezoneResult })
 
 describe('Venues Form', () => {
   let params: { tenantId: string }
@@ -73,9 +89,6 @@ describe('Venues Form', () => {
       rest.put(CommonUrlsInfo.updateVenue.url,
         (req, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.get('https://maps.googleapis.com/maps/api/timezone/*',
-        (req, res, ctx) => res(ctx.json(timezoneResult))
-      ),
       rest.get(
         AdministrationUrlsInfo.getPreferences.url,
         (_req, res, ctx) => res(ctx.json({ global: {
@@ -89,6 +102,8 @@ describe('Venues Form', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockedMutationFnSwitcher.mockImplementation(fn1 => fn1())
+    mockedLazyQueryFnSwitcher.mockImplementation(fn1 => fn1())
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     mockedUseLocation.mockReturnValue({ pathname: '', search: '', hash: '', state: {}, key: '' })
   })
@@ -139,7 +154,7 @@ describe('Venues Form', () => {
   })
 
   it('should call address parser', async () => {
-    const { address } = await addressParser(autocompleteResult)
+    const { address } = await addressParser(autocompleteResult, mockedGetTimezone)
 
     const addressResult = {
       addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA',
@@ -213,17 +228,19 @@ describe('Venues Form', () => {
     await userEvent.click(saveButton)
   })
 
-  it('should render venue config template form', async () => {
+  it('should create venue config template successfully', async () => {
     const mockedPreviousPath = '/configTemplates'
     mockedUseLocation.mockReturnValue({ state: { from: { pathname: mockedPreviousPath } } })
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    mockedMutationFnSwitcher.mockImplementation((fn1, fn2) => fn2())
+    mockedLazyQueryFnSwitcher.mockImplementation((fn1, fn2) => fn2())
 
     const addTemplateFn = jest.fn()
     mockServer.use(
       rest.post(
-        ConfigTemplateUrlsInfo.addVenueTemplate.url,
+        VenueConfigTemplateUrlsInfo.addVenueTemplate.url,
         (_, res, ctx) => {
           addTemplateFn()
           return res(ctx.json(successResponse))
@@ -255,8 +272,6 @@ describe('Venues Form', () => {
     await userEvent.click(screen.getByRole('button', { name: /Add/ }))
 
     await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())
-    await waitFor(() => {
-      expect(mockedUsedNavigate).toHaveBeenCalledWith(mockedPreviousPath)
-    })
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(mockedPreviousPath))
   })
 })

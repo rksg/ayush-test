@@ -112,7 +112,7 @@ function getCols (intl: ReturnType<typeof useIntl>,
     },
     {
       key: 'venues',
-      title: intl.$t({ defaultMessage: 'Venues' }),
+      title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
@@ -154,13 +154,13 @@ function getCols (intl: ReturnType<typeof useIntl>,
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
-                    'certain features in this venue.'
+                    'certain features on this network.'
                   })}
                   placement='right'
                   iconStyle={{
-                    height: '14px',
-                    width: '14px',
-                    marginBottom: '-2px',
+                    height: '16px',
+                    width: '16px',
+                    marginBottom: '-3px',
                     marginLeft: '4px',
                     color: cssStr('--acx-semantics-yellow-50') }}
                 /> : []
@@ -292,7 +292,7 @@ const getDeleteMessage = (messageKey: string) => {
   const deleteMessageMap = {
     deletingGuestPass: $t({ defaultMessage: 'Deleting Guest Pass network will invalidate all its related guest passes.' }),
     deletingDPSK: $t({ defaultMessage: 'Deleting DPSK network will remove all its related DPSK User Credentials (Passphrases).' }),
-    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all venues and APs that the network is activated on.' })
+    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all <venuePlural></venuePlural> and APs that the network is activated on.' })
   }
   return deleteMessageMap?.[messageKey as keyof typeof deleteMessageMap]
 }
@@ -323,16 +323,16 @@ export function NetworkTable ({
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
-      const _rows: string[]=[]
+      const _rows: string[] = []
 
-      tableQuery?.data?.data.map((record: Network) => {
-        if (record?.children) _rows.push(record.id)})
+      tableQuery?.data?.data.forEach((record: Network) => {
+        if (record?.children) _rows.push(record.id)
+      })
+
       setShowOnboardNetworkToggle(!!_rows.length)
-      if (expandOnBoaroardingNetworks) {
-        setExpandedRowKeys(_rows)
-      } else {
-        setExpandedRowKeys([])
-      }
+
+      const exRowKeys = expandOnBoaroardingNetworks ? _rows : []
+      setExpandedRowKeys(exRowKeys)
     }
 
   }, [tableQuery?.data?.data, expandOnBoaroardingNetworks])

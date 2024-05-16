@@ -4,6 +4,7 @@ import { showActionModal, CustomButtonProps }       from '@acx-ui/components'
 import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
 import { ApDeep, ApModel, ApViewModel }             from '@acx-ui/rc/utils'
 import { useParams }                                from '@acx-ui/react-router-dom'
+import { goToNotFound }                             from '@acx-ui/user'
 import { getIntl }                                  from '@acx-ui/utils'
 
 
@@ -63,7 +64,7 @@ export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 export function ApEdit () {
   const params = useParams()
   const { activeTab } = params
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   const [previousPath, setPreviousPath] = useState('')
   const [isOnlyOneTab, setIsOnlyOneTab] = useState(false)
@@ -81,28 +82,29 @@ export function ApEdit () {
   const [apCapabilities, setApCapabilities] = useState<ApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const getAp = useGetApQuery({ params })
-  const getApCapabilities = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
+  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({ params })
+  const {
+    data: capabilities,
+    isLoading: isGetApCapsLoading
+  } = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
 
   useEffect(() => {
-    const data = getAp?.data
-    const modelName = data?.model
-    const capabilities = getApCapabilities.data
+    if (!isGetApLoading && !isGetApCapsLoading) {
+      const modelName = getedApData?.model
+      if (modelName && capabilities) {
+        const setData = async () => {
+          const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
 
-    if (modelName && capabilities) {
-      const setData = async () => {
-        const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
+          setApData(getedApData)
+          setApCapabilities(curApCapabilities)
 
-        setApData(data)
-        setApCapabilities(curApCapabilities)
+          setIsLoaded(true)
+        }
 
-        setIsLoaded(true)
+        setData()
       }
-
-      setData()
     }
-
-  }, [getAp?.data?.venueId, getApCapabilities?.data])
+  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
   return <ApEditContext.Provider value={{
     editContextData,

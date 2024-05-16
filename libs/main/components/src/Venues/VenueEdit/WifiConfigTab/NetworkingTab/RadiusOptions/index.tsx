@@ -4,18 +4,30 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsForm }                                   from '@acx-ui/components'
-import { RadiusOptionsForm }                                                  from '@acx-ui/rc/components'
-import { useGetVenueRadiusOptionsQuery, useUpdateVenueRadiusOptionsMutation } from '@acx-ui/rc/services'
-import { VenueRadiusOptions }                                                 from '@acx-ui/rc/utils'
+import { AnchorContext, Loader, StepsForm }     from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { RadiusOptionsForm }                    from '@acx-ui/rc/components'
+import {
+  useGetVenueRadiusOptionsQuery,
+  useUpdateVenueRadiusOptionsMutation,
+  useGetVenueTemplateRadiusOptionsQuery,
+  useUpdateVenueTemplateRadiusOptionsMutation
+} from '@acx-ui/rc/services'
+import { ApiVersionEnum, ApiVersionType, VenueRadiusOptions } from '@acx-ui/rc/utils'
 
-import { VenueEditContext } from '../../..'
+import { VenueEditContext }               from '../../..'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
 
 const { useWatch } = Form
 
 export function RadiusOptions () {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -26,9 +38,17 @@ export function RadiusOptions () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const form = Form.useFormInstance()
-  const getVenueRadiusOptions = useGetVenueRadiusOptionsQuery({ params: { venueId } })
+  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>(
+    useGetVenueRadiusOptionsQuery,
+    useGetVenueTemplateRadiusOptionsQuery,
+    rbacApiVersion
+  )
+
   const [updateVenueRadiusOptions, { isLoading: isUpdatingVenueRadiusOptions }] =
-  useUpdateVenueRadiusOptionsMutation()
+    useVenueConfigTemplateMutationFnSwitcher(
+      useUpdateVenueRadiusOptionsMutation,
+      useUpdateVenueTemplateRadiusOptionsMutation
+    )
 
   const overrideEnabled = useWatch<boolean>('overrideEnabled')
 
@@ -46,14 +66,15 @@ export function RadiusOptions () {
   const handleUpdateRadiusOptions = async () => {
     try {
       const formData = form.getFieldsValue()
-      let payload: VenueRadiusOptions = {
+      let payload: (ApiVersionType & VenueRadiusOptions) = {
         overrideEnabled: formData.overrideEnabled,
         nasIdType: formData.nasIdType,
         nasRequestTimeoutSec: formData.nasRequestTimeoutSec,
         nasMaxRetry: formData.nasMaxRetry,
         nasReconnectPrimaryMin: formData.nasReconnectPrimaryMin,
         calledStationIdType: formData.calledStationIdType,
-        singleSessionIdAccounting: formData.singleSessionIdAccounting
+        singleSessionIdAccounting: formData.singleSessionIdAccounting,
+        rbacApiVersion
       }
 
       if (formData.nasIdDelimiter) {

@@ -5,13 +5,16 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  coveragePathIgnorePatterns: [
+    '<rootDir>/src/services.ts'
+  ],
   coverageDirectory: '../../../coverage/libs/common/user',
   coverageThreshold: {
     global: {
-      statements: 76,
-      branches: 95,
-      functions: 54,
-      lines: 73
+      statements: 100,
+      branches: 100,
+      functions: 100,
+      lines: 100
     }
   }
 }

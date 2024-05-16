@@ -19,16 +19,20 @@ import {
   checkObjectNotExists,
   NetworkVenue,
   networkTypes,
-  useConfigTemplate,
-  validateByteLength
+  validateByteLength,
+  ConfigTemplateType,
+  TableResult,
+  useConfigTemplateLazyQueryFnSwitcher,
+  Network
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
-import { networkTypesDescription } from '../contentsMap'
-import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext          from '../NetworkFormContext'
-import { RadioDescription }        from '../styledComponents'
+import { networkTypesDescription }                   from '../contentsMap'
+import { NetworkDiagram }                            from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                            from '../NetworkFormContext'
+import { RadioDescription }                          from '../styledComponents'
+import { useServicePolicyEnabledWithConfigTemplate } from '../utils'
 
 import type { RadioChangeEvent } from 'antd'
 
@@ -38,6 +42,7 @@ const { useWatch } = Form
 export function NetworkDetailForm () {
   const intl = useIntl()
   const type = useWatch<NetworkTypeEnum>('type')
+  const form = Form.useFormInstance()
   const {
     editMode,
     cloneMode,
@@ -47,8 +52,13 @@ export function NetworkDetailForm () {
     createType
   } = useContext(NetworkFormContext)
 
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+
   const [differentSSID, setDifferentSSID] = useState(false)
-  const form = Form.useFormInstance()
+
+  // eslint-disable-next-line max-len
+  const isPortalServiceEnabled = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL)
+
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
       enableAccountingProxy: false,
@@ -71,7 +81,9 @@ export function NetworkDetailForm () {
     filters: {},
     pageSize: 10000
   }
-  const [getInstanceList] = useGetLazyInstanceList()
+  const [getInstanceList] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Network>>(
+    useLazyNetworkListQuery, useLazyGetNetworkTemplateListQuery
+  )
   const [getVenueNetrworkApGroupList] = useLazyGetVenueNetworkApGroupQuery()
   const params = useParams()
 
@@ -85,7 +97,7 @@ export function NetworkDetailForm () {
   }
 
   const ssidValidator = async (value: string) => {
-    if (!editMode) { return Promise.resolve() }
+    if (!editMode || isUseWifiApiV2) { return Promise.resolve() }
     const venues = _.get(data, 'venues') || []
     let payload: {
       venueId: string,
@@ -132,7 +144,9 @@ export function NetworkDetailForm () {
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
-    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
+    { type: NetworkTypeEnum.HOTSPOT20,
+      disabled: !useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE) },
+    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !isPortalServiceEnabled },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
 
@@ -266,12 +280,4 @@ export function NetworkDetailForm () {
       </Col>
     </Row>
   )
-}
-
-function useGetLazyInstanceList () {
-  const { isTemplate } = useConfigTemplate()
-  const networkListQuery = useLazyNetworkListQuery()
-  const networkTemplateListQuery = useLazyGetNetworkTemplateListQuery()
-
-  return isTemplate ? networkTemplateListQuery : networkListQuery
 }

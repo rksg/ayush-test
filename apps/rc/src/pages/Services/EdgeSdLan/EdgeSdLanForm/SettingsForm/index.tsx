@@ -92,7 +92,8 @@ export const SettingsForm = () => {
           .map(item => ({
             label: item.name,
             value: item.serialNumber,
-            venueId: item.venueId
+            venueId: item.venueId,
+            clusterId: item.clusterId
           })),
         isLoading
       }
@@ -112,7 +113,9 @@ export const SettingsForm = () => {
   })
 
   const { lagsConfig } = useGetEdgeLagListQuery({
-    params: { serialNumber: edgeId },
+    params: { venueId: venueId,
+      edgeClusterId: edgeOptions?.filter(i => i.value === edgeId)[0]?.clusterId,
+      serialNumber: edgeId },
     payload: {
       page: 1,
       pageSize: 10
@@ -216,10 +219,11 @@ export const SettingsForm = () => {
                 <Col span={13}>
                   <Form.Item
                     name='venueId'
-                    label={$t({ defaultMessage: 'Venue' })}
+                    label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                     rules={[{
                       required: true,
-                      message: $t({ defaultMessage: 'Please select a Venue' })
+                      // eslint-disable-next-line max-len
+                      message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
                     }]}
                   >
                     <Select

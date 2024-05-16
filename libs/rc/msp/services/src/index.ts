@@ -1,6 +1,7 @@
-import _           from 'lodash'
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import _                       from 'lodash'
+import moment                  from 'moment-timezone'
+import { useIntl }             from 'react-intl'
 
 import {
   showActionModal
@@ -27,7 +28,8 @@ import {
   MspAggregations,
   MspEcAlarmList,
   RecommendFirmwareUpgrade,
-  AvailableMspRecCustomers
+  AvailableMspRecCustomers,
+  MspEcWithVenue
 } from '@acx-ui/msp/utils'
 import {
   TableResult,
@@ -36,12 +38,14 @@ import {
   onActivityMessageReceived,
   EntitlementBanner,
   MspEntitlement,
-  downloadFile
+  downloadFile,
+  Venue,
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
-import { baseMspApi }                                    from '@acx-ui/store'
-import { RequestPayload }                                from '@acx-ui/types'
-import { UserUrlsInfo, UserProfile }                     from '@acx-ui/user'
-import { createHttpRequest, ignoreErrorModal, PverName } from '@acx-ui/utils'
+import { baseMspApi }                          from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { UserUrlsInfo, UserProfile }           from '@acx-ui/user'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 export function useCheckDelegateAdmin () {
   const { $t } = useIntl()
@@ -69,13 +73,9 @@ export function useCheckDelegateAdmin () {
 }
 
 export function useDelegateToMspEcPath () {
-  const [getTenantPver] = useLazyGetUserProfilePverQuery()
   const delegateToMspEcPath = async (ecTenantId: string) => {
     try {
-      const user = await getTenantPver({ params: { includeTenantId: ecTenantId } } ).unwrap()
-      window.location.href = (user?.pver === PverName.R1)
-        ? `/${ecTenantId}/t/dashboard`
-        : `/api/ui/t/${ecTenantId}/dashboard`
+      window.location.href = `/${ecTenantId}/t/dashboard`
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -302,6 +302,18 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    mspECList: build.query<TableResult<MspEc>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req =
+        createHttpRequest(MspUrlsInfo.getMspECList, params, {}, true)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'EC_LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
     varCustomerListDropdown: build.query<TableResult<VarCustomer>, RequestPayload>({
@@ -683,6 +695,15 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       }
     }),
+    getBrandingData: build.query<MspProfile, RequestPayload>({
+      query: ({ params }) => {
+        const req =
+          createHttpRequest(MspUrlsInfo.getBrandingData, params)
+        return {
+          ...req
+        }
+      }
+    }),
     getUserProfilePver: build.query<UserProfile, RequestPayload>({
       query: ({ params }) => {
         const CUSTOM_HEADER = {
@@ -827,9 +848,97 @@ export const mspApi = baseMspApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    getMspEcWithVenuesList: build.query<TableResult<MspEcWithVenue>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const listInfo = {
+          ...createHttpRequest(MspUrlsInfo.getMspCustomersList, arg.params),
+          body: arg.payload
+        }
+        const listQuery = await fetchWithBQ(listInfo)
+        const list = listQuery.data as TableResult<MspEcWithVenue>
+        const ecVenues:{ [index:string]: Venue[] } = {}
+        if(!list) return { error: listQuery.error as FetchBaseQueryError }
+
+        const ecTenantId: string[] = []
+
+        list.data.forEach(async (item:MspEcWithVenue) => {
+          ecTenantId.push(item.id)
+        })
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const allEcVenues:any = await Promise.all(ecTenantId.map(id =>
+          fetchWithBQ(genVenuePayload(arg, id))
+        ))
+        ecTenantId.forEach((id:string, index:number) => {
+          ecVenues[id] = allEcVenues[index]?.data.data
+        })
+        const aggregatedList = aggregatedMspEcListData(list, ecVenues)
+
+        return { data: aggregatedList }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    addBrandCustomers: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.addBrandCustomers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    patchCustomer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(MspUrlsInfo.patchCustomer, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     })
   })
 })
+
+const genVenuePayload = (arg:RequestPayload<unknown>, ecTenantId:string) => {
+  const CUSTOM_HEADER = {
+    'x-rks-tenantid': ecTenantId
+  }
+  return {
+    ...createHttpRequest(CommonUrlsInfo.getVenuesList, arg.params, CUSTOM_HEADER, true),
+    body: {
+      fields: ['name', 'country', 'id'],
+      pageSize: 10000,
+      sortField: 'name',
+      sortOrder: 'ASC'
+    }
+  }
+}
+
+const aggregatedMspEcListData = (ecList: TableResult<MspEcWithVenue>,
+  ecVenues:{ [index:string]: Venue[] }) => {
+  const data:MspEcWithVenue[] = []
+  ecList.data.forEach(item => {
+    const tmp = {
+      ...item,
+      isFirstLevel: true
+    }
+    if (ecVenues[item.id]) {
+      const tmpV = _.cloneDeep(ecVenues[item.id])
+      tmp.children = tmpV.map(venue => {
+        return { ...venue, selected: false }
+      })
+    }
+    data.push(tmp)
+  })
+  return {
+    ...ecList,
+    data
+  }
+}
+
 export const {
   useMspCustomerListQuery,
   useIntegratorCustomerListQuery,
@@ -844,6 +953,7 @@ export const {
   useMspAssignmentSummaryQuery,
   useResendEcInvitationMutation,
   useMspCustomerListDropdownQuery,
+  useMspECListQuery,
   useVarCustomerListDropdownQuery,
   useSupportCustomerListDropdownQuery,
   useIntegratorCustomerListDropdownQuery,
@@ -879,6 +989,7 @@ export const {
   useAcceptRejectInvitationMutation,
   useGetGenerateLicenseUsageRptQuery,
   useGetParentLogoUrlQuery,
+  useGetBrandingDataQuery,
   useLazyGetUserProfilePverQuery,
   useAssignMultiMspEcDelegatedAdminsMutation,
   useAddMspAssignmentMutation,
@@ -894,5 +1005,10 @@ export const {
   useGetAvailableMspRecCustomersQuery,
   useAddRecCustomerMutation,
   useAssignMspEcToMultiIntegratorsMutation,
-  useAssignMspEcToIntegrator_v1Mutation
+  useAssignMspEcToIntegrator_v1Mutation,
+  useGetMspEcWithVenuesListQuery,
+  useAddBrandCustomersMutation,
+  usePatchCustomerMutation
 } = mspApi
+
+export * from './hospitalityVerticalFFCheck'

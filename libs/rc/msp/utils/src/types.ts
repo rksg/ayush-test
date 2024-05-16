@@ -33,7 +33,7 @@ export interface DelegationEntitlementRecord {
   entitlementDeviceSubType?: EntitlementDeviceSubType;
   expirationDate: string;
   quantity: string;
-  toBeRemovedQuantity: string;
+  toBeRemovedQuantity: number;
   tenantId: string;
   type: string;
   subTypeText?: string;
@@ -68,6 +68,7 @@ export interface MspEc {
   assignedMspEcList: string[];
   creationDate: number;
   entitlements: DelegationEntitlementRecord[];
+  accountTier?: MspEcTierEnum;
 }
 
 export interface MspEcData {
@@ -421,8 +422,14 @@ export interface UpgradeFirmwareVer {
 
 export interface MspRecData {
   account_id?: string;
+  name?: string;
   delegations?: MspIntegratorDelegated[];
   admin_delegations?: MspEcDelegatedAdmins[];
+}
+
+export interface MspMultiRecData {
+  data: MspRecData[]
+  delegations?: MspIntegratorDelegated[];
 }
 
 export interface AvailableMspRecCustomers {
@@ -450,6 +457,20 @@ export interface MspRecCustomer {
 }
 
 export enum MspEcTierEnum {
-  Essential = 'Gold',
+  Essentials = 'Gold',
   Professional = 'Platinum'
+}
+
+export interface MspEcWithVenue extends MspEc {
+  isFirstLevel?: boolean,
+  children: {
+    name: string,
+    id: string,
+    selected: boolean
+  }[]
+}
+
+export interface MspEcTierPayload {
+  type: string,
+  serviceTierStatus: string
 }

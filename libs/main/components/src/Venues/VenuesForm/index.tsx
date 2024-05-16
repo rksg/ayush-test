@@ -6,12 +6,11 @@ import { useIntl }                       from 'react-intl'
 
 import {
   GoogleMap,
-  GoogleMapMarker,
+  GoogleMapMarker, Loader,
   PageHeader,
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { get }                                                              from '@acx-ui/config'
 import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { SearchOutlined }                                                   from '@acx-ui/icons'
 import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
@@ -19,23 +18,26 @@ import { GoogleMapWithPreference, usePlacesAutocomplete, wifiCountryCodes
 import {
   useAddVenueMutation,
   useLazyVenuesListQuery,
-  useGetVenueQuery,
   useUpdateVenueMutation,
   useAddVenueTemplateMutation,
   useUpdateVenueTemplateMutation,
-  useGetVenueTemplateQuery,
-  useLazyGetVenuesTemplateListQuery
+  useLazyGetVenuesTemplateListQuery,
+  useLazyGetTimezoneQuery
 } from '@acx-ui/rc/services'
 import {
   Address,
   LocationExtended,
   VenueExtended,
   checkObjectNotExists,
-  generatePageHeaderTitle,
   redirectPreviousPage,
-  useBreadcrumb,
+  useConfigTemplateBreadcrumb,
   useConfigTemplate,
-  whitespaceOnlyRegExp
+  whitespaceOnlyRegExp,
+  useConfigTemplateLazyQueryFnSwitcher,
+  Venue,
+  TableResult,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -46,8 +48,9 @@ import {
 import { RequestPayload }     from '@acx-ui/types'
 import { validationMessages } from '@acx-ui/utils'
 
-import { MessageMapping }   from '../MessageMapping'
-import { VenueEditContext } from '../VenueEdit'
+import { MessageMapping }      from '../MessageMapping'
+import { useGetVenueInstance } from '../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }    from '../VenueEdit'
 
 interface AddressComponent {
   long_name?: string;
@@ -92,16 +95,17 @@ export const retrieveCityState = (addressComponents: Array<AddressComponent>, co
   }
 }
 
-export const addressParser = async (place: google.maps.places.PlaceResult) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const addressParser = async (place: google.maps.places.PlaceResult, getTimezone: any) => {
   const address: Address = {}
   const lat = place.geometry?.location?.lat()
   const lng = place.geometry?.location?.lng()
   address.latitude = lat
   address.longitude = lng
 
-  // eslint-disable-next-line max-len
-  const timezone = await fetch(`https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=${get('GOOGLE_MAPS_KEY')}`)
-    .then(res => res.json())
+  const { data: timezone } = await getTimezone({
+    params: { lat: lat?.toString(), lng: lng?.toString() }
+  })
   address.timezone = timezone.timeZoneId
   address.addressLine = place.formatted_address
 
@@ -145,10 +149,13 @@ export function VenuesForm () {
   const navigate = useNavigate()
   const formRef = useRef<StepsFormLegacyInstance<VenueExtended>>()
   const params = useParams()
+  const [getTimezone] = useLazyGetTimezoneQuery()
 
   const linkToVenues = useTenantLink('/venues')
-  const addVenue = useAddInstance()
-  const updateVenue = useUpdateInstance()
+  // eslint-disable-next-line max-len
+  const [ addVenue ] = useConfigTemplateMutationFnSwitcher(useAddVenueMutation, useAddVenueTemplateMutation)
+  // eslint-disable-next-line max-len
+  const [ updateVenue, { isLoading: updateVenueIsLoading } ] = useConfigTemplateMutationFnSwitcher(useUpdateVenueMutation, useUpdateVenueTemplateMutation)
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -159,18 +166,16 @@ export function VenuesForm () {
   const [countryCode, setCountryCode] = useState('')
 
   const { action } = useParams()
-  const { data } = useGetInstance()
+  const { data } = useGetVenueInstance()
   const previousPath = usePreviousPath()
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
-  const breadcrumb = useBreadcrumb([
-    { text: intl.$t({ defaultMessage: 'Venues' }), link: '/venues' }
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: action === 'edit',
-    isTemplate,
-    instanceLabel: intl.$t({ defaultMessage: 'Venue' }),
+    instanceLabel: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
 
@@ -230,7 +235,10 @@ export function VenuesForm () {
     filters: {},
     pageSize: 10000
   }
-  const venuesList = useGetLazyInstances()
+  const [ venuesList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Venue>>(
+    useLazyVenuesListQuery, useLazyGetVenuesTemplateListQuery
+  )
+
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {
       return Promise.reject(intl.$t(validationMessages.name))
@@ -238,7 +246,8 @@ export function VenuesForm () {
     const payload = { ...venuesListPayload, searchString: value }
     const list = (await venuesList({ params, payload }, true)
       .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
-    return checkObjectNotExists(list, { name: value } , intl.$t({ defaultMessage: 'Venue' }))
+    return checkObjectNotExists(list, { name: value },
+      intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }))
   }
 
   const addressValidator = async (value: string) => {
@@ -272,7 +281,7 @@ export function VenuesForm () {
   }
 
   const addressOnChange = async (place: google.maps.places.PlaceResult) => {
-    const { latlng, address } = await addressParser(place)
+    const { latlng, address } = await addressParser(place, getTimezone)
     formRef.current?.setFieldValue('address',
       action === 'edit' ? { ...address, countryCode } : address) // Keep countryCode for edit mode
     setMarker(latlng)
@@ -301,11 +310,11 @@ export function VenuesForm () {
   }
 
   const handleAddVenue = async (values: VenueExtended) => {
-    handleSubmit(values, addVenue)
+    await handleSubmit(values, addVenue)
   }
 
   const handleEditVenue = async (values: VenueExtended) => {
-    handleSubmit(values, updateVenue, false)
+    await handleSubmit(values, updateVenue, false)
   }
 
   return (
@@ -314,97 +323,101 @@ export function VenuesForm () {
         title={pageTitle}
         breadcrumb={breadcrumb}
       />}
-      <StepsFormLegacy
-        formRef={formRef}
-        onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
-        onCancel={() =>
-          redirectPreviousPage(navigate, previousPath, linkToVenues)
-        }
-        buttonLabel={{ submit: action === 'edit' ?
-          intl.$t({ defaultMessage: 'Save' }):
-          intl.$t({ defaultMessage: 'Add' }) }}
-      >
-        <StepsFormLegacy.StepForm>
-          <Row gutter={20}>
-            <Col span={8}>
-              <Form.Item
-                name='name'
-                label={intl.$t({ defaultMessage: 'Venue Name' })}
-                rules={[
-                  { type: 'string', required: true },
-                  { min: 2, transform: (value) => value.trim() },
-                  { max: 32, transform: (value) => value.trim() },
-                  { validator: (_, value) => whitespaceOnlyRegExp(value) },
-                  {
-                    validator: (_, value) => nameValidator(value)
-                  }
-                ]}
-                validateFirst
-                hasFeedback
-                children={<Input />}
-                validateTrigger={'onBlur'}
-              />
-              <Form.Item
-                name='description'
-                label={intl.$t({ defaultMessage: 'Description' })}
-                children={<Input.TextArea rows={2} maxLength={180} />}
-              />
-              {/* // TODO: Waiting for TAG feature support
+      <Loader states={[{
+        isLoading: false,
+        isFetching: updateVenueIsLoading
+      }]}>
+        <StepsFormLegacy
+          formRef={formRef}
+          onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
+          onCancel={() =>
+            redirectPreviousPage(navigate, previousPath, linkToVenues)
+          }
+          buttonLabel={{ submit: action === 'edit' ?
+            intl.$t({ defaultMessage: 'Save' }):
+            intl.$t({ defaultMessage: 'Add' }) }}
+        >
+          <StepsFormLegacy.StepForm>
+            <Row gutter={20}>
+              <Col span={8}>
+                <Form.Item
+                  name='name'
+                  label={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
+                  rules={[
+                    { type: 'string', required: true },
+                    { min: 2, transform: (value) => value.trim() },
+                    { max: 32, transform: (value) => value.trim() },
+                    { validator: (_, value) => whitespaceOnlyRegExp(value) },
+                    {
+                      validator: (_, value) => nameValidator(value)
+                    }
+                  ]}
+                  validateFirst
+                  hasFeedback
+                  children={<Input />}
+                  validateTrigger={'onBlur'}
+                />
+                <Form.Item
+                  name='description'
+                  label={intl.$t({ defaultMessage: 'Description' })}
+                  children={<Input.TextArea rows={2} maxLength={180} />}
+                />
+                {/* // TODO: Waiting for TAG feature support
               <Form.Item
               name='tags'
               label='Tags:'
               children={<Input />} />
               */}
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col span={10}>
-              <GoogleMap.FormItem
-                label={intl.$t({ defaultMessage: 'Address' })}
-                required
-                extra={intl.$t({
-                  defaultMessage: 'Make sure to include a city and country in the address'
-                })}
-              >
-                <Form.Item
-                  noStyle
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col span={10}>
+                <GoogleMap.FormItem
                   label={intl.$t({ defaultMessage: 'Address' })}
-                  name={['address', 'addressLine']}
-                  rules={[{
-                    required: isMapEnabled ? true : false
-                  }, {
-                    validator: (_, value) => addressValidator(value),
-                    validateTrigger: 'onBlur'
-                  }
-                  ]}
+                  required
+                  extra={intl.$t({
+                    defaultMessage: 'Make sure to include a city and country in the address'
+                  })}
                 >
-                  <Input
-                    allowClear
-                    placeholder={intl.$t({ defaultMessage: 'Set address here' })}
-                    prefix={<SearchOutlined />}
-                    data-testid='address-input'
-                    ref={placeInputRef}
-                    disabled={!isMapEnabled}
-                  />
-                </Form.Item>
-                {isMapEnabled ?
-                  <GoogleMapWithPreference
-                    libraries={['places']}
-                    mapTypeControl={false}
-                    streetViewControl={false}
-                    fullscreenControl={false}
-                    zoom={zoom}
-                    center={center}
+                  <Form.Item
+                    noStyle
+                    label={intl.$t({ defaultMessage: 'Address' })}
+                    name={['address', 'addressLine']}
+                    rules={[{
+                      required: isMapEnabled ? true : false
+                    }, {
+                      validator: (_, value) => addressValidator(value),
+                      validateTrigger: 'onBlur'
+                    }
+                    ]}
                   >
-                    {marker && <GoogleMapMarker position={marker} />}
-                  </GoogleMapWithPreference>
-                  :
-                  <GoogleMap.NotEnabled />
-                }
-              </GoogleMap.FormItem>
-            </Col>
-          </Row>
-          {isMapEnabled &&
+                    <Input
+                      allowClear
+                      placeholder={intl.$t({ defaultMessage: 'Set address here' })}
+                      prefix={<SearchOutlined />}
+                      data-testid='address-input'
+                      ref={placeInputRef}
+                      disabled={!isMapEnabled}
+                    />
+                  </Form.Item>
+                  {isMapEnabled ?
+                    <GoogleMapWithPreference
+                      libraries={['places']}
+                      mapTypeControl={false}
+                      streetViewControl={false}
+                      fullscreenControl={false}
+                      zoom={zoom}
+                      center={center}
+                    >
+                      {marker && <GoogleMapMarker position={marker} />}
+                    </GoogleMapWithPreference>
+                    :
+                    <GoogleMap.NotEnabled />
+                  }
+                </GoogleMap.FormItem>
+              </Col>
+            </Row>
+            {isMapEnabled &&
           <Row gutter={20}>
             <Col span={8}>
               <Form.Item
@@ -424,46 +437,12 @@ export function VenuesForm () {
               </Form.Item>
             </Col>
           </Row>
-          }
-        </StepsFormLegacy.StepForm>
-      </StepsFormLegacy>
+            }
+          </StepsFormLegacy.StepForm>
+        </StepsFormLegacy>
+      </Loader>
     </>
   )
-}
-
-function useAddInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ addVenue ] = useAddVenueMutation()
-  const [ addVenueTemplate ] = useAddVenueTemplateMutation()
-
-  return isTemplate ? addVenueTemplate : addVenue
-}
-
-function useUpdateInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const [ updateVenue ] = useUpdateVenueMutation()
-  const [ updateVenueTemplate ] = useUpdateVenueTemplateMutation()
-
-  return isTemplate ? updateVenueTemplate : updateVenue
-}
-
-function useGetInstance () {
-  const { isTemplate } = useConfigTemplate()
-  const { tenantId, venueId } = useParams()
-  // eslint-disable-next-line max-len
-  const venueResult = useGetVenueQuery({ params: { tenantId, venueId } }, { skip: !venueId || isTemplate })
-  // eslint-disable-next-line max-len
-  const venueTemplateResult = useGetVenueTemplateQuery({ params: { venueId } }, { skip: !venueId || !isTemplate })
-
-  return isTemplate ? venueTemplateResult : venueResult
-}
-
-function useGetLazyInstances () {
-  const { isTemplate } = useConfigTemplate()
-  const [ venuesList ] = useLazyVenuesListQuery()
-  const [ venuesTemplateList ] = useLazyGetVenuesTemplateListQuery()
-
-  return isTemplate ? venuesTemplateList : venuesList
 }
 
 function usePreviousPath (): string {

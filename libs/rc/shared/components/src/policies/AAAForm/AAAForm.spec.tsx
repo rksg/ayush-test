@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { AaaUrls, ConfigTemplateUrlsInfo }                        from '@acx-ui/rc/utils'
+import { AaaUrls, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                           from '@acx-ui/user'
@@ -14,12 +14,6 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate
-}))
-
-const mockedUseConfigTemplate = jest.fn()
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
 const params = {
@@ -55,15 +49,6 @@ describe('AAAForm', () => {
         (_, res, ctx) => res(ctx.json(aaaTemplateList))
       )
     )
-  })
-
-  beforeEach(() => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
-    mockedUseConfigTemplate.mockRestore()
   })
 
   it('should create AAA successfully', async () => {
@@ -129,20 +114,19 @@ describe('AAAForm', () => {
     const longSecret = '@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5AgQ@M(N@53YXnBmX$QKc@Lw**VxDgJ2DmA*zN^j(!$87VanGT@qVG&E^5haIENE5Ag1'
     const primarySecret = await screen.findByLabelText('Shared Secret')
 
-    await userEvent.type(primarySecret, longSecret)
+    fireEvent.change(primarySecret, { target: { value: longSecret } })
     const primaryAlert = await screen.findByRole('alert')
     expect(primaryAlert).toHaveTextContent('255 characters')
 
     await userEvent.click(await screen.findByRole('button', { name: /Add Secondary Server/ }))
     const secondaryFieldset = await screen.findByRole('group', { name: /Secondary Server/ })
     const secondarySecret = await within(secondaryFieldset).findByLabelText('Shared Secret')
-    await userEvent.type(secondarySecret, longSecret)
+    fireEvent.change(secondarySecret, { target: { value: longSecret } })
     const secondaryAlert = await within(secondaryFieldset).findByRole('alert')
     expect(secondaryAlert).toHaveTextContent('255 characters')
   })
 
   it('should create AAA template successfully', async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     const addTemplateFn = jest.fn()
 
     mockServer.use(
@@ -154,10 +138,10 @@ describe('AAAForm', () => {
         }
       )
     )
-    render(
+    render(<ConfigTemplateContext.Provider value={{ isTemplate: true }}>
       <Provider>
         <AAAForm edit={false} />
-      </Provider>, { route: { params } }
+      </Provider></ConfigTemplateContext.Provider>, { route: { params } }
     )
 
     await userEvent.type(await screen.findByLabelText(/Profile Name/), 'AAA template')
@@ -170,7 +154,6 @@ describe('AAAForm', () => {
   })
 
   it('should update AAA template successfully', async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
     const updateTemplateFn = jest.fn()
 
     mockServer.use(
@@ -186,10 +169,10 @@ describe('AAAForm', () => {
         (_, res, ctx) => res(ctx.json(aaaData))
       )
     )
-    render(
+    render(<ConfigTemplateContext.Provider value={{ isTemplate: true }}>
       <Provider>
         <AAAForm edit={true} />
-      </Provider>, { route: { params } }
+      </Provider></ConfigTemplateContext.Provider>, { route: { params } }
     )
 
     expect(await screen.findByDisplayValue(aaaData.name)).toBeVisible()

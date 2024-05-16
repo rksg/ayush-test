@@ -1,11 +1,12 @@
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetAAAPolicyViewModelListQuery,
   useLazyAaaPolicyQuery,
   useGetAAAPolicyTemplateListQuery,
   useLazyGetAAAPolicyTemplateQuery
 } from '@acx-ui/rc/services'
-import { useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }         from '@acx-ui/react-router-dom'
+import { AAA_LIMIT_NUMBER, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }                           from '@acx-ui/react-router-dom'
 
 interface useGetAAAPolicyInstanceListProps {
   customPayload?: {}
@@ -15,7 +16,12 @@ export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListP
   const { customPayload = {}, queryOptions = {} } = props
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
-  const requestPayload = { params, payload: customPayload }
+  const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
+    ? 1024
+    : AAA_LIMIT_NUMBER
+  const requestPayload = {
+    params, payload: { page: 1, pageSize: radiusMaxiumnNumber, ...customPayload }
+  }
   const aaaPolicyListResult = useGetAAAPolicyViewModelListQuery(requestPayload, {
     ...queryOptions,
     skip: isTemplate

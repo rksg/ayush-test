@@ -1,30 +1,30 @@
 import { useContext, useEffect } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { Loader, SummaryCard }     from '@acx-ui/components'
-import { useGetSyslogPolicyQuery } from '@acx-ui/rc/services'
+import { Loader, SummaryCard }                                      from '@acx-ui/components'
+import { useGetSyslogPolicyQuery, useGetSyslogPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
-  FacilityEnum,
-  FlowLevelEnum
+  FacilityEnum, facilityLabelMapping,
+  FlowLevelEnum, flowLevelLabelMapping,
+  SyslogPolicyDetailType,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-
-import { facilityLabelMapping, flowLevelLabelMapping } from '../contentsMap'
 
 import { SyslogDetailContext } from './SyslogDetailView'
 
 const SyslogDetailContent = () => {
   const { $t } = useIntl()
 
-  const { data, isLoading } = useGetSyslogPolicyQuery({
-    params: useParams()
-  })
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>(
+    useGetSyslogPolicyQuery,
+    useGetSyslogPolicyTemplateQuery
+  )
 
   const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)
 
   useEffect(() => {
-    if (data){
+    if (data) {
       const venueIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
       setFiltersId(venueIdList)
       setPolicyName(data.name ?? '')

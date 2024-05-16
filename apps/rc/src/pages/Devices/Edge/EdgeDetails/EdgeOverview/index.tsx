@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
@@ -8,11 +8,13 @@ import { GridRow, Tabs }           from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import { EdgeInfoWidget }          from '@acx-ui/rc/components'
 import {
-  useEdgeBySerialNumberQuery,
+  useGetEdgeClusterQuery,
   useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
 import { EdgePortStatus, isEdgeConfigurable } from '@acx-ui/rc/utils'
+
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { LagsTab }              from './LagsTab'
 import { MonitorTab }           from './MonitorTab'
@@ -29,40 +31,16 @@ export const EdgeOverview = () => {
   const { $t } = useIntl()
   const { serialNumber, activeSubTab } = useParams()
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
+  const {
+    currentEdgeStatus: currentEdge,
+    isEdgeStatusLoading: isLoadingEdgeStatus
+  } = useContext(EdgeDetailsDataContext)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
-  const edgeStatusPayload = {
-    fields: [
-      'name',
-      'venueName',
-      'type',
-      'serialNumber',
-      'ports',
-      'ip',
-      'model',
-      'firmwareVersion',
-      'deviceStatus',
-      'deviceSeverity',
-      'venueId',
-      'tags',
-      'cpuCores',
-      'cpuUsedPercentage',
-      'memoryUsedKb',
-      'memoryTotalKb',
-      'diskUsedKb',
-      'diskTotalKb',
-      'description'
-    ],
-    filters: { serialNumber: [serialNumber] } }
-
-  const {
-    data: currentEdge,
-    isLoading: isLoadingEdgeStatus
-  } = useEdgeBySerialNumberQuery({
-    params: { serialNumber },
-    payload: edgeStatusPayload
-  })
+  const { data: currentCluster } = useGetEdgeClusterQuery({
+    params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }
+  }, { skip: !Boolean(currentEdge?.clusterId) || !Boolean(currentEdge?.venueId) })
 
   const isConfigurable = isEdgeConfigurable(currentEdge)
 
@@ -188,6 +166,7 @@ export const EdgeOverview = () => {
       <Col span={24}>
         <EdgeInfoWidget
           currentEdge={currentEdge}
+          currentCluster={currentCluster}
           edgePortsSetting={portStatusList}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}

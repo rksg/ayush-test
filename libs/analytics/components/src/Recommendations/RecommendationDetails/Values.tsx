@@ -3,12 +3,15 @@ import { Fragment } from 'react'
 import { chain, snakeCase } from 'lodash'
 import { useIntl }          from 'react-intl'
 
-import { impactedArea, nodeTypes }          from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Tooltip }  from '@acx-ui/components'
-import { NodeType, getIntl, noDataDisplay } from '@acx-ui/utils'
+import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
+import { Card, GridCol, GridRow, Tooltip }       from '@acx-ui/components'
+import { get }                                   from '@acx-ui/config'
+import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
+import { NodeType, getIntl, noDataDisplay }      from '@acx-ui/utils'
 
 import { codes }              from '../config'
 import { extractBeforeAfter } from '../services'
+import { isDataRetained }     from '../utils'
 
 import { EnhancedRecommendation } from './services'
 import {
@@ -29,15 +32,17 @@ export const getValues = (details: EnhancedRecommendation) => {
     recommendedValue,
     code,
     appliedOnce,
+    firstAppliedAt,
     preferences
   } = details
-  const { valueFormatter, recommendedValueTooltipContent } = codes[code]
+  const { valueFormatter, recommendedValueTooltipContent, valueText } = codes[code]
   return {
     status,
     code,
     appliedOnce,
+    firstAppliedAt,
     preferences,
-    heading: codes[code].valueText,
+    heading: valueText,
     original: valueFormatter(originalValue),
     current: valueFormatter(currentValue),
     recommended: valueFormatter(recommendedValue),
@@ -82,7 +87,9 @@ export const getRecommendationsText = (
     currentValue,
     recommendedValue,
     appliedOnce,
-    code
+    code,
+    status,
+    dataEndTime
   } = details
 
   const metadata = chain(details.metadata)
@@ -96,6 +103,7 @@ export const getRecommendationsText = (
     appliedReasonText,
     valueFormatter,
     actionText,
+    appliedActionText,
     reasonText,
     tradeoffText,
     partialOptimizedActionText,
@@ -103,24 +111,46 @@ export const getRecommendationsText = (
     partialOptimizedTradeoffText
   } = recommendationInfo
 
-  let parameters: Record<string, string | JSX.Element> = {
+  const isCrrm = code.startsWith('c-crrm')
+
+  let parameters: Record<string, string | JSX.Element | boolean> = {
+    ...productNames,
     ...metadata,
     scope: `${nodeTypes(sliceType as NodeType)}: ${impactedArea(path, sliceValue)}`,
     currentValue: appliedOnce ? valueFormatter(originalValue) : valueFormatter(currentValue),
     recommendedValue: valueFormatter(recommendedValue),
     br: <br />
   }
-  if (code.startsWith('c-crrm')) {
+  if (isCrrm) {
     const link = kpiBeforeAfter(details, 'number-of-interfering-links')
     parameters = {
       ...parameters,
-      ...link
+      ...link,
+      initialTime: formatter(
+        DateFormatEnum.DateTimeFormat)(details.statusTrail.slice(-1)[0].createdAt),
+      ...(status === 'applied' && { appliedTime: formatter(DateFormatEnum.DateTimeFormat)(
+        details.statusTrail.filter(r => r.status === 'applied')[0].createdAt)
+      }),
+      isDataRetained: isDataRetained(dataEndTime),
+      dataNotRetainedMsg: $t({
+        defaultMessage: `The initial optimization graph is no longer available below
+        since the {scopeType} recommendation details has crossed the standard RUCKUS
+        data retention policy.{isApplied, select, true { However your {scopeType}
+        configuration continues to be monitored and adjusted for further optimization.} other {}}`
+      }, {
+        isApplied: status === 'applied',
+        scopeType: get('IS_MLISA_SA')
+          ? $t({ defaultMessage: 'zone' }) : $t({ defaultMessage: 'venue' })
+      })
     }
   }
+
   return {
-    actionText: isFullOptimization
-      ? $t(actionText, parameters)
-      : $t(partialOptimizedActionText!, parameters),
+    actionText: $t(isCrrm
+      ? status === 'applied'
+        ? appliedActionText!
+        : isFullOptimization ? actionText : partialOptimizedActionText!
+      : actionText, parameters),
     reasonText: appliedOnce && appliedReasonText
       ? (isFullOptimization
         ? $t(appliedReasonText, parameters)

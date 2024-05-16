@@ -38,10 +38,11 @@ export default function SnmpAgentInstancesTable () {
     },
     {
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'venueName',
       searchable: true,
       sorter: true,
+      defaultSortOrder: 'descend',
       render: (_, row, __, highlightFn) => {
         const { venueName, venueId } = row
         return (

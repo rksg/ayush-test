@@ -45,7 +45,9 @@ interface ErrorMessageType {
 let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
-  'clientInfo'
+  'clientInfo',
+  'clientPcap',
+  'clientConnectionQualities'
 ]
 
 const isIntDevMode =

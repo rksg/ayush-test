@@ -1,6 +1,8 @@
 import {
+  Col,
   Menu,
   MenuProps,
+  Row,
   Space
 } from 'antd'
 import moment      from 'moment-timezone'
@@ -9,7 +11,7 @@ import { useIntl } from 'react-intl'
 import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker } from '@acx-ui/components'
 import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
-  useEdgeBySerialNumberQuery
+  useEdgeBySerialNumberQuery, useGetEdgeClusterQuery
 } from '@acx-ui/rc/services'
 import {
   EdgeStatusEnum, rebootableEdgeStatuses, resettabaleEdgeStatuses
@@ -19,8 +21,11 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { EdgeScopes, WifiScopes, SwitchScopes } from '@acx-ui/types'
+import { filterByAccess, hasPermission }        from '@acx-ui/user'
+import { useDateFilter }                        from '@acx-ui/utils'
+
+import { HaStatusBadge } from '../../HaStatusBadge'
 
 import EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -33,6 +38,7 @@ export const EdgeDetailsPageHeader = () => {
   const edgeStatusPayload = {
     fields: [
       'name',
+      'venueId',
       'venueName',
       'type',
       'serialNumber',
@@ -43,13 +49,18 @@ export const EdgeDetailsPageHeader = () => {
       'deviceStatus',
       'deviceSeverity',
       'venueId',
-      'tags'
+      'tags',
+      'haStatus',
+      'clusterId'
     ],
     filters: { serialNumber: [serialNumber] } }
   const { data: currentEdge }
   = useEdgeBySerialNumberQuery({
     params, payload: edgeStatusPayload
   })
+  const { data: currentCluster } = useGetEdgeClusterQuery({
+    params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }
+  }, { skip: !Boolean(currentEdge?.clusterId) || !Boolean(currentEdge?.venueId) })
 
   const navigate = useNavigate()
   const basePath = useTenantLink('')
@@ -60,21 +71,29 @@ export const EdgeDetailsPageHeader = () => {
 
   const menuConfig = [
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
       showupstatus: rebootableEdgeStatuses
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reset & Recover' }),
       key: 'factoryReset',
       showupstatus: resettabaleEdgeStatuses
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete SmartEdge' }),
       key: 'delete',
       showupstatus: [...Object.values(EdgeStatusEnum)]
     }
-  ] as { label: string, key: string, showupstatus?: EdgeStatusEnum[] } []
+  ] as {
+    scopeKey: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    label: string,
+    key: string,
+    showupstatus?: EdgeStatusEnum[]
+  } []
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!currentEdge) return
@@ -100,7 +119,7 @@ export const EdgeDetailsPageHeader = () => {
       onClick={handleMenuClick}
       items={
         menuConfig.filter(item =>
-          item.showupstatus?.includes(status)
+          item.showupstatus?.includes(status) && hasPermission({ scopes: item.scopeKey })
         ).map(item => {
           delete item.showupstatus
           return item
@@ -112,9 +131,24 @@ export const EdgeDetailsPageHeader = () => {
   return (
     <PageHeader
       title={currentEdge?.name || ''}
-      titleExtra={<EdgeStatusLight data={status} showText={!currentEdgeOperational}/>}
+      titleExtra={
+        <Row gutter={[5,0]}>
+          <Col>
+            <EdgeStatusLight data={status} showText={!currentEdgeOperational}/>
+          </Col>
+          <Col>
+            {
+              (currentCluster?.smartEdges.length ?? 0) >= 2 &&
+              <HaStatusBadge
+                haStatus={currentEdge?.haStatus}
+                needPostFix
+              />
+            }
+          </Col>
+        </Row>
+      }
       breadcrumb={[
-        { text: $t({ defaultMessage: 'SmartEdge' }), link: '/devices/edge' }
+        { text: $t({ defaultMessage: 'SmartEdges' }), link: '/devices/edge' }
       ]}
       extra={[
         <RangePicker
@@ -124,15 +158,18 @@ export const EdgeDetailsPageHeader = () => {
           selectionType={range}
         />,
         ...filterByAccess([
-          <Dropdown overlay={menu}>{()=>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <CaretDownSolidIcon />
-              </Space>
-            </Button>
-          }</Dropdown>,
+          <Dropdown
+            scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
+            overlay={menu}>{()=>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>
+            }</Dropdown>,
           <Button
+            scopeKey={[EdgeScopes.UPDATE]}
             type='primary'
             onClick={() =>
               navigate({

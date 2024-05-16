@@ -841,6 +841,16 @@ describe('transformPathFromDB', () => {
   it('should not covert path when system is not available', () => {
     expect(transformPathFromDB(spec)).toEqual(spec)
   })
+  it('should handle system only path', () => {
+    const spec = {
+      configs: [{ networkPaths: { networkNodes: [
+        [ { type: 'system', name: '00000000-0000-0000-0000-000000000001' } ],
+        [ { type: 'system', name: '00000000-0000-0000-0000-000000000011' } ]
+      ] } }]
+    } as unknown as ServiceGuardSpec
+    expect(transformPathFromDB(spec, systemMap).configs[0].networkPaths.networkNodes)
+      .toEqual([[ { type: 'system', name: 'system 1' } ]])
+  })
 })
 describe('transformPathToDB', () => {
   const systemMap = {
@@ -877,5 +887,15 @@ describe('transformPathToDB', () => {
   })
   it('should not covert path when system is not available', () => {
     expect(transformPathToDB(form)).toEqual(form)
+  })
+  it('should handle system only path', () => {
+    const form = {
+      configs: [{ networkPaths: { networkNodes: [[ { type: 'system', name: 'system 1' } ]] } }]
+    } as unknown as ServiceGuardFormDto
+    expect(transformPathToDB(form, systemMap).configs[0].networkPaths.networkNodes)
+      .toEqual([
+        [ { type: 'system', name: '00000000-0000-0000-0000-000000000001' } ],
+        [ { type: 'system', name: '00000000-0000-0000-0000-000000000011' } ]
+      ])
   })
 })

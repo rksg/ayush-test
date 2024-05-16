@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { useEffect, useState } from 'react'
+
+import { FetchBaseQueryError }   from '@reduxjs/toolkit/query/react'
+import { cloneDeep, omit, uniq } from 'lodash'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -7,6 +10,7 @@ import {
   DHCPUrls,
   WifiUrlsInfo,
   SwitchUrlsInfo,
+  SwitchRbacUrlsInfo,
   FloorPlanDto,
   onSocketActivityChanged,
   onActivityMessageReceived,
@@ -69,23 +73,54 @@ import {
   VenueClientAdmissionControl,
   RogueApLocation,
   ApManagementVlan,
+  ApEnhancedKey,
   ApCompatibility,
   ApCompatibilityResponse,
-  VeuneApAntennaTypeSettings
+  VeuneApAntennaTypeSettings,
+  NetworkApGroup,
+  ConfigTemplateUrlsInfo,
+  getVenueTimeZone,
+  getCurrentTimeSlotIndex,
+  SchedulerTypeEnum,
+  ISlotIndex,
+  Network,
+  ITimeZone,
+  WifiRbacUrlsInfo,
+  GetApiVersionHeader,
+  ApiVersionType,
+  CommonRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { handleCallbackWhenActivitySuccess } from './utils'
+
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
+}
+
+const customHeaders = {
+  v1: {
+    'Content-Type': 'application/vnd.ruckus.v1+json',
+    'Accept': 'application/vnd.ruckus.v1+json'
+  },
+  v1001: {
+    'Content-Type': 'application/vnd.ruckus.v1.1+json',
+    'Accept': 'application/vnd.ruckus.v1.1+json'
+  }
 }
 
 export const venueApi = baseVenueApi.injectEndpoints({
   endpoints: (build) => ({
     venuesList: build.query<TableResult<Venue>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params)
+      query: ({ params, payload }: RequestPayload) => {
+        const venueListReq = createHttpRequest(
+          (payload as { isTemplate?: boolean })?.isTemplate ?? false
+            ? ConfigTemplateUrlsInfo.getVenuesTemplateList
+            : CommonUrlsInfo.getVenuesList,
+          params
+        )
         return {
           ...venueListReq,
           body: payload
@@ -178,6 +213,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
+    getTimezone: build.query<ITimeZone, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getTimezone, params)
+        return{
+          ...req
+        }
+      }
+    }),
     getVenue: build.query<VenueExtended, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
@@ -217,18 +260,29 @@ export const venueApi = baseVenueApi.injectEndpoints({
       providesTags: [{ type: 'Venue', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg,
-            ['AddNetworkVenue', 'DeleteNetworkVenue'], () => {
-              api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
-            })
+          const USE_CASES = [
+            'AddNetworkVenue',
+            'DeleteNetworkVenue'
+          ]
+          const CONFIG_TEMPLATE_USE_CASES = [
+            'DeleteNetworkVenueTemplate',
+            'AddNetworkVenueTemplate',
+            'UpdateNetworkVenueTemplate'
+          ]
+          const useCases = (requestArgs.payload as { isTemplate?: boolean })?.isTemplate ? CONFIG_TEMPLATE_USE_CASES : USE_CASES
+          onActivityMessageReceived(msg, useCases, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'DETAIL' }]))
+          })
         })
       }
     }),
     getVenueCityList: build.query<{ name: string }[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params, headers)
         return{
-          ...req, body: payload
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (result: { cityList: { name: string }[] }) => {
@@ -254,7 +308,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         })
       }
     }),
-    updateVenueMesh: build.mutation<VenueLed[], RequestPayload>({
+    updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
         return {
@@ -323,6 +377,110 @@ export const venueApi = baseVenueApi.injectEndpoints({
         return result.response as NetworkVenue[]
       }
     }),
+    getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        const payloadData = arg.payload as { venueId: string, networkId: string }[]
+        const filters = payloadData.map(item => ({
+          venueId: item.venueId,
+          networkId: item.networkId
+        }))
+
+        const venueIds = uniq(filters.map(item => item.venueId))
+        let venueApgroupMap = new Map<string, NetworkApGroup[]>()
+        let networkVenuesApGroupList = {} as { data: NetworkVenue[] }
+
+        for (let venueId of venueIds) {
+          // get apGroup list filter by venueId
+          const apGroupPayload = {
+            fields: ['name', 'id'],
+            pageSize: 10000,
+            sortField: 'name',
+            sortOrder: 'ASC',
+            filters: { venueId: [venueId] }
+          }
+
+          const apGroupListInfo = {
+            ...createHttpRequest(WifiUrlsInfo.getApGroupsList, arg.params),
+            body: apGroupPayload
+          }
+
+          const apGroupsQuery = await fetchWithBQ(apGroupListInfo)
+          const apGroupListData = apGroupsQuery.data as {
+            data: {
+              id: string,
+              name: string
+            }[]
+          }
+
+          const apgroupsDefaultValue = apGroupListData.data.map((d) => {
+            return {
+              apGroupId: d.id,
+              ...(d.name && { apGroupName: d.name }),
+              isDefault: !d.name,
+              radio: 'Both',
+              radioTypes: ['2.4-GHz', '5-GHz'],
+              validationError: false,
+              validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+              validationErrorReachedMaxConnectedNetworksLimit: false,
+              validationErrorSsidAlreadyActivated: false
+            } as NetworkApGroup
+          })
+
+          venueApgroupMap.set(venueId, apgroupsDefaultValue)
+        }
+
+        const apiV2CustomHeader = {
+          'Content-Type': 'application/vnd.ruckus.v2+json',
+          'Accept': 'application/vnd.ruckus.v2+json'
+        }
+
+        const networkVenuesApGroupInfo = {
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+          body: JSON.stringify({ filters })
+        }
+
+        const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
+        networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
+
+        let aggregatedList: NetworkVenue[] | undefined
+
+        if (filters.length === 1 && !filters[0].networkId ) { // for create Netwrok
+          const venueId = filters[0].venueId
+          const networkVenueData = networkVenuesApGroupList.data?.[0]
+          const networkVenue = omit(networkVenueData, ['networkId', 'id'])
+
+          aggregatedList = [{
+            ...networkVenue,
+            apGroups: cloneDeep(venueApgroupMap.get(venueId))
+          }]
+
+        } else {
+          aggregatedList = networkVenuesApGroupList.data?.map(networkVenue => {
+            const { venueId, apGroups=[] } = networkVenue
+            const currentApGroupsDefaultValue = venueApgroupMap.get(venueId!)
+
+            const newApgroups = cloneDeep(apGroups)
+
+            currentApGroupsDefaultValue?.forEach(apGroup => {
+              const customApGroup = apGroups.find(item => item.apGroupId === apGroup.apGroupId)
+              if (!customApGroup) {
+                newApgroups.push(cloneDeep(apGroup))
+              }
+            })
+
+            return {
+              ...networkVenue,
+              apGroups: newApgroups
+            }
+          })
+        }
+
+        return networkVenuesApGroupQuery.data
+          ? { data: aggregatedList }
+          : { error: networkVenuesApGroupQuery.error as FetchBaseQueryError }
+      }
+    }),
     getFloorPlan: build.query<FloorPlanDto, RequestPayload>({
       query: ({ params }) => {
         const floorPlansReq = createHttpRequest(CommonUrlsInfo.getFloorplan, params)
@@ -378,9 +536,18 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
       query: ({ params, payload }) => {
-        const floorPlansReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params)
+        const request = createHttpRequest(CommonUrlsInfo.getUploadURL, params)
         return {
-          ...floorPlansReq,
+          ...request,
+          body: payload
+        }
+      }
+    }),
+    getVenueSpecificUploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
+      query: ({ params, payload }) => {
+        const request = createHttpRequest(CommonUrlsInfo.getVenueSpecificUploadURL, params)
+        return {
+          ...request,
           body: payload
         }
       }
@@ -548,37 +715,42 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     venueSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueSwitchSetting, params, headers)
         return{
           ...req
         }
       }
     }),
     updateVenueSwitchSetting: build.mutation<Venue, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueSwitchSetting, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     venueSwitchAAAServerList: build.query<
     TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const listReq = createHttpRequest(SwitchUrlsInfo.getAaaServerList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const listReq = createHttpRequest(urlsInfo.getAaaServerList, params, headers)
         return {
           ...listReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
     getAaaSetting: build.query<AAASetting, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getAaaSetting, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.getAaaSetting, params, headers)
         return{
           ...req
         }
@@ -594,38 +766,44 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateAAASetting: build.mutation<AAASetting, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateAaaSetting, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.updateAaaSetting, params, headers)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     updateAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateAaaServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.updateAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteAaaServer, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.deleteAaaServer, params, headers)
         return {
           ...req
         }
@@ -633,11 +811,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     bulkDeleteAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.bulkDeleteAaaServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(urlsInfo.bulkDeleteAaaServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
@@ -727,7 +907,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueApCapabilities: build.query<{
       version: string,
-      apModels:CapabilitiesApModel[] }, RequestPayload>({
+      apModels: CapabilitiesApModel[] }, RequestPayload>({
         query: ({ params }) => {
           const req = createHttpRequest(WifiUrlsInfo.getVenueApCapabilities, params)
           return {
@@ -861,7 +1041,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'DeactivateVenueDhcpPool',
-            'ActivateVenueDhcpPool'
+            'ActivateVenueDhcpPool',
+            'UpdateVenueDhcpConfigServiceProfileSetting'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'poolList' }]))
@@ -905,8 +1086,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueDirectedMulticast, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueDirectedMulticast, params, apiCustomHeader)
         return{
           ...req
         }
@@ -926,44 +1110,56 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueDirectedMulticast, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueDirectedMulticast)
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(urlsInfo.updateVenueDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]
     }),
     getVenueConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistory, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistory, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
-      transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
-        , arg: { payload:{ page:number } }) => {
+      transformResponse: (res: {
+        response:{ list:ConfigurationHistory[], totalCount:number }
+        } & { list:ConfigurationHistory[], totalCount:number }, meta
+      , arg: { payload:{ page:number } }) => {
+        const result = res.response?.list || res.list
+        const totalCount = res.response?.totalCount || res.totalCount
+        const configType = result ? (res.list ? 'historyConfigTypeV1001' : 'configType' ) : 'configType'
         return {
-          data: res.response.list ? res.response.list.map(item => ({
+          data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
-            configType: (item.configType as unknown as string[])
+            configType: (item[configType] as unknown as string[])
               .map(type => transformConfigType(type)).join(', '),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],
-          totalCount: res.response.totalCount,
+          totalCount: totalCount,
           page: arg.payload.page
         }
       },
       extraOptions: { maxRetries: 5 }
     }),
     getVenueConfigHistoryDetail: build.query<VenueConfigHistoryDetailResp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistoryDetail, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(CommonUrlsInfo.getVenueConfigHistoryDetail, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -997,20 +1193,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-            if (response &&
-              requestArgs.callback &&
-              msg.useCase === 'UpdateVenueLoadBalancing'
-            && ((msg.steps?.find((step) => {
-              return step.id === 'UpdateVenueLoadBalancing'
-            })?.status !== 'IN_PROGRESS'))) {
-              (requestArgs.callback as Function)()
-            }
-          } catch (error) {
-            /* eslint-disable no-console */
-            console.error(error)
-          }
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueLoadBalancing', requestArgs.callback)
         })
       }
     }),
@@ -1270,8 +1453,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueRadiusOptions, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(apiInfo.getVenueRadiusOptions, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1290,10 +1476,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueRadiusOptions: build.mutation<VenueRadiusOptions, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueRadiusOptions, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & VenueRadiusOptions)
+        const apiInfo = rbacApiVersion ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(apiInfo.updateVenueRadiusOptions, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
@@ -1318,20 +1509,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          try {
-            const response = await api.cacheDataLoaded
-            if (response &&
-              requestArgs.callback &&
-              msg.useCase === 'UpdateVenueClientAdmissionControlSettings' &&
-              ((msg.steps?.find((step) => {
-                return step.id === 'UpdateVenueClientAdmissionControlSettings'
-              })?.status !== 'IN_PROGRESS'))) {
-              (requestArgs.callback as Function)()
-            }
-          } catch (error) {
-            /* eslint-disable no-console */
-            console.error(error)
-          }
+          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueClientAdmissionControlSettings', requestArgs.callback)
         })
       }
     }),
@@ -1340,6 +1518,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(WifiUrlsInfo.getVenueApManagementVlan, params)
         return{
           ...req
+        }
+      },
+      transformResponse: (data: ApManagementVlan ) => {
+        return {
+          ...data,
+          vlanId: data.vlanId ?? 1,
+          keepAp: !data.vlanId
         }
       }
     }),
@@ -1351,6 +1536,35 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getVenueApEnhancedKey: build.query<ApEnhancedKey, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(CommonUrlsInfo.getVenueApEnhancedKey, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateVenueApEnhancedKey: build.mutation<ApEnhancedKey, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonUrlsInfo.updateVenueApEnhancedKey, params)
+        return{
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    bulkUpdateUnitProfile: build.mutation<PropertyUnit, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PropertyUrlsInfo.bulkUpdateUnitProfile,
+          params)
+        return{
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
       query: ({ params }) => {
@@ -1387,6 +1601,7 @@ export const {
   useLazyVenuesListQuery,
   useVenuesTableQuery,
   useAddVenueMutation,
+  useLazyGetTimezoneQuery,
   useGetVenueQuery,
   useLazyGetVenueQuery,
   useGetVenuesQuery,
@@ -1401,11 +1616,13 @@ export const {
   useGetFloorPlanMeshApsQuery,
   useDeleteVenueMutation,
   useGetNetworkApGroupsQuery,
+  useGetNetworkApGroupsV2Query,
   useGetFloorPlanQuery,
   useFloorPlanListQuery,
   useDeleteFloorPlanMutation,
   useAddFloorPlanMutation,
   useGetUploadURLMutation,
+  useGetVenueSpecificUploadURLMutation,
   useUpdateFloorPlanMutation,
   useGetAllDevicesQuery,
   useUpdateSwitchPositionMutation,
@@ -1498,8 +1715,12 @@ export const {
   useLazyGetVenueClientAdmissionControlQuery,
   useUpdateVenueClientAdmissionControlMutation,
   useGetVenueApManagementVlanQuery,
+  useBulkUpdateUnitProfileMutation,
   useLazyGetVenueApManagementVlanQuery,
   useUpdateVenueApManagementVlanMutation,
+  useGetVenueApEnhancedKeyQuery,
+  useLazyGetVenueApEnhancedKeyQuery,
+  useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
   useUpdateVenueAntennaTypeMutation
@@ -1517,4 +1738,38 @@ export const aggregatedVenueCompatibilitiesData = (venueList: TableResult<Venue>
     ...venueList,
     data
   }
+}
+
+type VenueSubset = {
+  deepVenue?: NetworkVenue,
+  id: string,
+  activated?: Network['activated']
+  latitude?: string,
+  longitude?: string
+}
+
+export const useScheduleSlotIndexMap = (tableData: VenueSubset[], isMapEnabled?: boolean) => {
+  const [scheduleSlotIndexMap, setScheduleSlotIndexMap] = useState<Record<string,ISlotIndex>>({})
+  const [getTimezone] = useLazyGetTimezoneQuery()
+
+  useEffect(()=>{
+    const updateVenueCurrentSlotIndexMap = async (id: string, venueLatitude?: string, venueLongitude?: string) => {
+      let timeZone
+      if (Number(venueLatitude) && Number(venueLongitude)) {
+        timeZone = isMapEnabled ?
+          await getTimezone({ params: { lat: venueLatitude, lng: venueLongitude } }).unwrap() :
+          getVenueTimeZone(Number(venueLatitude), Number(venueLongitude))
+      }
+      const slotIndex = getCurrentTimeSlotIndex(timeZone)
+      setScheduleSlotIndexMap(prevSlotIndexMap => ({ ...prevSlotIndexMap, ...{ [id]: slotIndex } }))
+    }
+
+    tableData.forEach(item => {
+      if (item.activated?.isActivated && item.deepVenue?.scheduler?.type === SchedulerTypeEnum.CUSTOM) {
+        updateVenueCurrentSlotIndexMap(item.id, item.latitude, item.longitude)
+      }
+    })
+  }, [isMapEnabled, tableData])
+
+  return scheduleSlotIndexMap
 }

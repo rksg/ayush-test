@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
+import userEvent    from '@testing-library/user-event'
+import { uniqueId } from 'lodash'
 
 import { useAnalyticsFilter, defaultNetworkPath }             from '@acx-ui/analytics/utils'
 import { defaultTimeRangeDropDownContextValue, useDateRange } from '@acx-ui/components'
@@ -16,10 +17,17 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
+import { RolesEnum }                         from '@acx-ui/types'
+import { getUserProfile, setUserProfile }    from '@acx-ui/user'
 import { setUpIntl, DateRange, NetworkPath } from '@acx-ui/utils'
 
-import { recommendationListResult }                                     from './__tests__/fixtures'
-import { api, useMuteRecommendationMutation, useSetPreferenceMutation } from './services'
+import { recommendationListResult } from './__tests__/fixtures'
+import {
+  api,
+  useDeleteRecommendationMutation,
+  useMuteRecommendationMutation,
+  useSetPreferenceMutation
+} from './services'
 
 import { RecommendationTabContent } from './index'
 
@@ -37,10 +45,12 @@ jest.mock('@acx-ui/config', () => ({
   get: jest.fn()
 }))
 
+const mockedDeleteRecommendation = jest.fn()
 const mockedMuteRecommendation = jest.fn()
 const mockedSetPreference = jest.fn()
 jest.mock('./services', () => ({
   ...jest.requireActual('./services'),
+  useDeleteRecommendationMutation: jest.fn(),
   useMuteRecommendationMutation: jest.fn(),
   useSetPreferenceMutation: jest.fn()
 }))
@@ -71,6 +81,11 @@ describe('RecommendationTabContent', () => {
     jest.mocked(useDateRange).mockReturnValue(defaultTimeRangeDropDownContextValue)
 
     jest.mocked(get).mockReturnValue('') // get('IS_MLISA_SA')
+
+    jest.mocked(useDeleteRecommendationMutation).mockImplementation(() => [
+      mockedDeleteRecommendation,
+      { reset: jest.fn() }
+    ])
 
     jest.mocked(useMuteRecommendationMutation).mockImplementation(() => [
       mockedMuteRecommendation,
@@ -103,7 +118,9 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
@@ -120,7 +137,9 @@ describe('RecommendationTabContent', () => {
   it('should render crrm table for RA', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<RecommendationTabContent/>, {
@@ -139,7 +158,9 @@ describe('RecommendationTabContent', () => {
   it('should render aiops table for R1', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     render(<RecommendationTabContent />, {
       route: { params: { activeTab: 'aiOps' } },
@@ -149,14 +170,16 @@ describe('RecommendationTabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const text = await screen.findAllByText('Medium')
-    expect(text).toHaveLength(1)
+    expect(text).toHaveLength(4)
     expect(screen.getByText('Venue')).toBeVisible()
     expect(useDateRange).toBeCalled()
   })
 
   it('should render aiops table for RA', async () => {
     const recommendations = [...recommendationListResult.recommendations
-      .filter(r => !r.code.includes('crrm'))]
+      .filter(r => !r.code.includes('crrm'))
+      .map(r => ({ ...r, id: uniqueId() }))
+    ]
     recommendations[1].status = 'applywarning' // coverage for Status styled-component
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', { data: { recommendations } })
     jest.mocked(get).mockReturnValue('true')
@@ -168,7 +191,7 @@ describe('RecommendationTabContent', () => {
     await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
 
     const text = await screen.findAllByText('Medium')
-    expect(text).toHaveLength(1)
+    expect(text).toHaveLength(4)
     expect(screen.getByText('Zone')).toBeVisible()
     expect(useDateRange).toBeCalled()
   })
@@ -199,7 +222,9 @@ describe('RecommendationTabContent', () => {
 
   it('switches from aiops to crrm without error', async () => {
     const recommendations = [...recommendationListResult.recommendations
-      .filter(r => !r.code.includes('crrm'))]
+      .filter(r => !r.code.includes('crrm'))
+      .map(r => ({ ...r, id: uniqueId() }))
+    ]
     const crrm = [...recommendationListResult.recommendations
       .filter(r => r.code.includes('crrm'))]
     jest.mocked(get).mockReturnValue('true')
@@ -221,7 +246,9 @@ describe('RecommendationTabContent', () => {
   it('should render muted recommendations & reset correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     jest.mocked(get).mockReturnValue('true')
     render(<Provider><RecommendationTabContent /></Provider>, {
@@ -232,7 +259,7 @@ describe('RecommendationTabContent', () => {
     })
 
     const before = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(before).toHaveLength(1)
+    expect(before).toHaveLength(4)
 
     const settingsButton = await screen.findByTestId('SettingsOutlined')
     expect(settingsButton).toBeDefined()
@@ -243,7 +270,7 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(showMutedRecommendations)
 
     const afterShowMuted = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterShowMuted).toHaveLength(2)
+    expect(afterShowMuted).toHaveLength(5)
 
     await userEvent.click(afterShowMuted[1])
     await screen.findByRole('button', { name: 'Unmute' })
@@ -254,13 +281,15 @@ describe('RecommendationTabContent', () => {
     await userEvent.click(resetButton)
 
     const afterReset = await screen.findAllByRole('radio', { hidden: false, checked: false })
-    expect(afterReset).toHaveLength(1)
+    expect(afterReset).toHaveLength(4)
   })
 
   it('should mute recommendation correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => !r.code.includes('crrm')) }
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     jest.mocked(get).mockReturnValue('true')
     mockedMuteRecommendation.mockImplementation(() => ({
@@ -288,10 +317,35 @@ describe('RecommendationTabContent', () => {
     expect(mockedMuteRecommendation).toHaveBeenCalledTimes(1)
   })
 
+  it('should hide row action when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => !r.code.includes('crrm'))
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
+    })
+    jest.mocked(get).mockReturnValue('')
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/aiOps',
+        params: { activeTab: 'aiOps' },
+        wrapRoutes: false
+      }
+    })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
   it('should handle toggle of full/partial crrm correctly', async () => {
     mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
       data: { recommendations: recommendationListResult.recommendations
-        .filter(r => r.code.includes('crrm') || r.code === 'unknown') }
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
     })
     render(<RecommendationTabContent/>, {
       route: { params: { activeTab: 'crrm' } },
@@ -346,6 +400,30 @@ describe('RecommendationTabContent', () => {
     expect(within(newRow).getByRole('switch')).toBeDisabled()
   })
 
+  it('should not allow toggle of full/partial when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: recommendationListResult.recommendations
+        .filter(r => r.code.includes('crrm') || r.code === 'unknown')
+        .map(r => ({ ...r, id: uniqueId() }))
+      }
+    })
+    render(<RecommendationTabContent/>, {
+      route: { params: { activeTab: 'crrm' } },
+      wrapper: Provider
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    const row = screen.getByRole('row', {
+      // eslint-disable-next-line max-len
+      name: /Non-Optimized 06\/16\/2023 06:05 Optimal channel plan found for 2\.4 GHz radio zone-1 New/i
+    })
+    expect(within(row).getByRole('switch')).toBeDisabled()
+  })
+
   it('should not have mismatch tooltip for unknown zone', async () => {
     const unknownRecommendation = recommendationListResult.recommendations
       .find(r => r.code === 'unknown')
@@ -366,5 +444,156 @@ describe('RecommendationTabContent', () => {
       name: /Insufficient Licenses 11\/12\/2023 06:05 No RRM recommendation due to incomplete license compliance 01-Alethea-WiCheck Test Insufficient Licenses/
     })
     expect(row.classList.contains('crrm-optimization-mismatch')).toBeFalsy()
+  })
+
+  it('should delete recommendation correctly', async () => {
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'revertfailed'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    const deleteBtn = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteBtn).toBeVisible()
+    expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(0)
+    await userEvent.click(deleteBtn)
+    await userEvent.click(await screen.findByRole('button', { name: 'OK' }))
+    expect(mockedDeleteRecommendation).toHaveBeenCalledTimes(1)
+  })
+
+  it('should hide delete recommendation when status is not in enableDeleteStatus', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'new'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+  })
+
+  it('should hide delete recommendations when trigger is once', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1],
+        status: 'revertfailed',
+        trigger: 'once'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+  })
+
+  it('should hide delete recommendation when Features.RECOMMENDATION_DELETE disabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'revertfailed'
+      } ] }
+    })
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
+  })
+
+  it('should show delete recommendation when IS_MLISA_SA', async () => {
+    jest.mocked(get).mockReturnValue('true')
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    mockGraphqlQuery(recommendationUrl, 'RecommendationList', {
+      data: { recommendations: [ {
+        ...recommendationListResult.recommendations[1], status: 'revertfailed'
+      } ] }
+    })
+    jest.mocked(get).mockReturnValue('true')
+    mockedDeleteRecommendation.mockImplementation(() => ({
+      unwrap: () => Promise.resolve({
+        deleteRecommendation: { success: true, errorCode: '', errorMsg: '' }
+      })
+    }))
+    render(<Provider><RecommendationTabContent /></Provider>, {
+      route: {
+        path: '/ai/recommendations/crrm',
+        params: { activeTab: 'crrm' },
+        wrapRoutes: false
+      }
+    })
+
+    const selectRecommendation = await screen.findAllByRole(
+      'radio',
+      { hidden: false, checked: false }
+    )
+    await userEvent.click(selectRecommendation[0])
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument()
   })
 })

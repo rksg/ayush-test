@@ -32,7 +32,8 @@ import {
   TaskContextType,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { hasPermission } from '@acx-ui/user'
 
 import {
   GuestsDetail
@@ -47,6 +48,7 @@ const defaultPayload = {
     'lastStateUpdateTime',
     'errorMessage',
     'fileName',
+    'systemName',
     'venueName',
     'venueId',
     'address',
@@ -99,7 +101,17 @@ const MigrationTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Created Venue' }),
+      title: $t({ defaultMessage: 'ZD System Name' }),
+      key: 'systemName',
+      dataIndex: 'systemName',
+      searchable: true,
+      sorter: true,
+      render: (_, row) => {
+        return row.systemName ?? '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'Created <VenueSingular></VenueSingular>' }),
       key: 'venueName',
       dataIndex: 'venueName',
       searchable: true,
@@ -189,6 +201,7 @@ const MigrationTable = () => {
             {$t({ defaultMessage: 'Migrated ZD Configurations' })}
           </Subtitle>
         </Col>
+        { hasPermission() &&
         <Col span={12}>
           <SpaceWrapper full justifycontent='flex-end' size='large'>
             <TenantLink to='/administration/onpremMigration/add'>
@@ -196,6 +209,7 @@ const MigrationTable = () => {
             </TenantLink>
           </SpaceWrapper>
         </Col>
+        }
       </Row>
 
       <Table

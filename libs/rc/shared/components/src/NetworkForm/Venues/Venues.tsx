@@ -12,29 +12,28 @@ import {
   TableProps,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { useNetworkVenueListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { useNetworkVenueListQuery, useNetworkVenueListV2Query, useScheduleSlotIndexMap } from '@acx-ui/rc/services'
 import {
   aggregateApGroupPayload,
   NetworkSaveData,
   NetworkVenue,
   useTableQuery,
   Venue,
-  useScheduleSlotIndexMap,
   generateDefaultNetworkVenue,
   SchedulingModalState,
   RadioTypeEnum,
   IsNetworkSupport6g,
   ApGroupModalState,
-  SchedulerTypeEnum
+  SchedulerTypeEnum, useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
+import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../EdgeSdLan/useEdgeSdLanActions'
 import { NetworkApGroupDialog }                                                 from '../../NetworkApGroupDialog'
 import { NetworkVenueScheduleDialog }                                           from '../../NetworkVenueScheduleDialog'
 import { transformAps, transformRadios, transformScheduling }                   from '../../pipes/apGroupPipes'
-import { checkSdLanScopedNetworkDeactivateAction, useSdLanScopedNetworkVenues } from '../../useEdgeActions'
 import NetworkFormContext                                                       from '../NetworkFormContext'
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -84,6 +83,7 @@ interface VenuesProps {
 
 export function Venues (props: VenuesProps) {
   const { defaultActiveVenues } = props
+  const { isTemplate } = useConfigTemplate()
   const form = Form.useFormInstance()
   const { cloneMode, data, setData } = useContext(NetworkFormContext)
 
@@ -91,15 +91,19 @@ export function Venues (props: VenuesProps) {
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
+  const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const prevIsWPA3securityRef = useRef(false)
   const isWPA3security = IsNetworkSupport6g(data)
 
   const { $t } = useIntl()
   const tableQuery = useTableQuery({
-    useQuery: useNetworkVenueListQuery,
+    useQuery: isUseWifiApiV2? useNetworkVenueListV2Query : useNetworkVenueListQuery,
     apiParams: { networkId: getNetworkId() },
-    defaultPayload
+    defaultPayload: {
+      ...defaultPayload,
+      isTemplate: isTemplate
+    }
   })
 
   const [tableData, setTableData] = useState<Venue[]>([])
@@ -190,7 +194,7 @@ export function Venues (props: VenuesProps) {
         return !enabled
       },
       onClick: (rows) => {
-        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+        checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
           rows.map(item => item.id),
           () => {
             handleActivateVenue(false, rows)
@@ -265,7 +269,7 @@ export function Venues (props: VenuesProps) {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       sorter: true
     },
@@ -306,7 +310,7 @@ export function Venues (props: VenuesProps) {
       render: function (_, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
         if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
           disabled = true
         }else{
@@ -321,7 +325,7 @@ export function Venues (props: VenuesProps) {
             onClick={(checked, event) => {
               event.stopPropagation()
               if (!checked) {
-                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues,
+                checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues.networkVenueIds,
                   [row.id],
                   () => {
                     handleActivateVenue(false, [row])
@@ -472,8 +476,12 @@ export function Venues (props: VenuesProps) {
 
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsFormLegacy.Title>
-      <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
+      <StepsFormLegacy.Title>
+        { $t({ defaultMessage: '<VenuePlural></VenuePlural>' }) }
+      </StepsFormLegacy.Title>
+      <p>
+        { $t({ defaultMessage: 'Select <venuePlural></venuePlural> to activate this network' }) }
+      </p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table

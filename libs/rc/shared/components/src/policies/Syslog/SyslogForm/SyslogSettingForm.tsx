@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 
 import {
   Col,
@@ -9,22 +9,34 @@ import {
   Select,
   Space
 } from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { StepsForm }                               from '@acx-ui/components'
-import { useGetSyslogPolicyListQuery }             from '@acx-ui/rc/services'
+import { StepsForm }                                          from '@acx-ui/components'
+import {
+  useGetSyslogPolicyQuery, useGetSyslogPolicyTemplateListQuery,
+  useGetSyslogPolicyTemplateQuery, useSyslogPolicyListQuery
+} from '@acx-ui/rc/services'
 import {
   FacilityEnum,
   FlowLevelEnum,
   ProtocolEnum,
   PriorityEnum,
   SyslogActionTypes,
-  serverIpAddressRegExp, servicePolicyNameRegExp
+  serverIpAddressRegExp,
+  servicePolicyNameRegExp,
+  protocolLabelMapping,
+  facilityLabelMapping,
+  flowLevelLabelMapping,
+  PolicyType,
+  checkObjectNotExists,
+  policyTypeLabelMapping,
+  useConfigTemplateQueryFnSwitcher,
+  SyslogPolicyDetailType,
+  TableResult,
+  SyslogPolicyListType
 } from '@acx-ui/rc/utils'
 
-import { facilityLabelMapping, flowLevelLabelMapping, protocolLabelMapping } from '../contentsMap'
-import SyslogContext                                                         from '../SyslogContext'
+import SyslogContext from '../SyslogContext'
 
 const { Option } = Select
 
@@ -35,50 +47,55 @@ type SyslogSettingFormProps = {
 const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
-  const params = useParams()
-  const [originalName, setOriginalName] = useState('')
-
   const {
     state, dispatch
   } = useContext(SyslogContext)
 
   const form = Form.useFormInstance()
-  const { data } = useGetSyslogPolicyListQuery({ params: params })
+  const { data: policyData } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>(
+    useGetSyslogPolicyQuery,
+    useGetSyslogPolicyTemplateQuery,
+    !edit
+  )
+  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>(
+    useSyslogPolicyListQuery,
+    useGetSyslogPolicyTemplateListQuery,
+    false,
+    { page: 1, pageSize: 10000 }
+  )
 
   useEffect(() => {
-    if (edit && data) {
-      let policyData = data.filter(d => d.id === params.policyId)[0]
-      dispatch({
-        type: SyslogActionTypes.UPDATE_STATE,
-        payload: {
-          state: {
-            ...state,
-            policyName: policyData.name ?? '',
-            server: policyData?.primary?.server ?? '',
-            port: policyData.primary?.port ?? 514,
-            protocol: policyData.primary?.protocol ?? ProtocolEnum.UDP,
-            secondaryServer: policyData.secondary?.server ?? '',
-            secondaryPort: policyData.secondary?.port ?? 514,
-            secondaryProtocol: policyData.secondary?.protocol ?? ProtocolEnum.TCP,
-            facility: policyData.facility ?? FacilityEnum.KEEP_ORIGINAL,
-            priority: policyData.priority ?? PriorityEnum.INFO,
-            flowLevel: policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW,
-            venues: policyData.venues ?? []
-          }
+    if (!edit || !policyData) return
+
+    dispatch({
+      type: SyslogActionTypes.UPDATE_STATE,
+      payload: {
+        state: {
+          ...state,
+          policyName: policyData.name ?? '',
+          server: policyData?.primary?.server ?? '',
+          port: policyData.primary?.port ?? 514,
+          protocol: policyData.primary?.protocol ?? ProtocolEnum.UDP,
+          secondaryServer: policyData.secondary?.server ?? '',
+          secondaryPort: policyData.secondary?.port ?? 514,
+          secondaryProtocol: policyData.secondary?.protocol ?? ProtocolEnum.TCP,
+          facility: policyData.facility ?? FacilityEnum.KEEP_ORIGINAL,
+          priority: policyData.priority ?? PriorityEnum.INFO,
+          flowLevel: policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW,
+          venues: policyData.venues ?? []
         }
-      })
-      setOriginalName(policyData.name)
-      form.setFieldValue('policyName', policyData.name ?? '')
-      form.setFieldValue('server', policyData.primary.server ?? '')
-      form.setFieldValue('port', policyData.primary.port ?? 514)
-      form.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
-      form.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
-      form.setFieldValue('secondaryPort', policyData.secondary?.port ?? 514)
-      form.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
-      form.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
-      form.setFieldValue('flowLevel', policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW)
-    }
-  }, [data])
+      }
+    })
+    form.setFieldValue('policyName', policyData.name ?? '')
+    form.setFieldValue('server', policyData.primary.server ?? '')
+    form.setFieldValue('port', policyData.primary.port ?? 514)
+    form.setFieldValue('protocol', policyData.primary.protocol ?? ProtocolEnum.UDP)
+    form.setFieldValue('secondaryServer', policyData.secondary?.server ?? '')
+    form.setFieldValue('secondaryPort', policyData.secondary?.port ?? 514)
+    form.setFieldValue('secondaryProtocol', policyData.secondary?.protocol ?? ProtocolEnum.TCP)
+    form.setFieldValue('facility', policyData.facility ?? FacilityEnum.KEEP_ORIGINAL)
+    form.setFieldValue('flowLevel', policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW)
+  }, [policyData])
 
   const handlePolicyName = (policyName: string) => {
     dispatch({
@@ -225,6 +242,14 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
     </Select>
   )
 
+  const nameValidator = (value: string) => {
+    const list = (policyList?.data ?? [])
+      .filter(n => n.id !== policyData?.id)
+      .map(n => ({ name: n.name }))
+    // eslint-disable-next-line max-len
+    return checkObjectNotExists(list, { name: value } , $t(policyTypeLabelMapping[PolicyType.SYSLOG]))
+  }
+
   return (
     <Row gutter={20}>
       <Col span={10}>
@@ -236,22 +261,8 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
             { required: true },
             { min: 2 },
             { max: 32 },
-            { validator: async (rule, value) => {
-              if (!edit && value
-                  && data?.findIndex((policy) => policy.name === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The syslog server with that name already exists' })
-                )
-              }
-              if (edit && value && value !== originalName
-                  && data?.filter((policy) => policy.name !== originalName)
-                    .findIndex((policy) => policy.name === value) !== -1) {
-                return Promise.reject(
-                  $t({ defaultMessage: 'The syslog server with that name already exists' })
-                )
-              }
-              return servicePolicyNameRegExp(value)
-            } }
+            { validator: (_, value) => nameValidator(value) },
+            { validator: (_, value) => servicePolicyNameRegExp(value) }
           ]}
           validateFirst
           hasFeedback

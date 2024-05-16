@@ -58,7 +58,10 @@ import {
   ApGroupViewModel,
   ApManagementVlan,
   ApFeatureSet,
-  ApAntennaTypeSettings
+  ApAntennaTypeSettings,
+  ApiVersionType,
+  GetApiVersionHeader,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -123,9 +126,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
-        const venueListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+        const apGroupListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
         return {
-          ...venueListReq,
+          ...apGroupListReq,
           body: payload
         }
       },
@@ -620,10 +623,6 @@ export const apApi = baseApApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
     }),
-    resetApBandModeSettings: build.mutation<CommonResult, RequestPayload<void>>({
-      query: ({ params }) => createHttpRequest(WifiUrlsInfo.resetApBandModeSettings, params),
-      invalidatesTags: [{ type: 'Ap', id: 'BandModeSettings' }]
-    }),
     getApAntennaTypeSettings: build.query<ApAntennaTypeSettings, RequestPayload<void>>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApAntennaTypeSettings, params)
@@ -721,8 +720,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApDirectedMulticast, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req
         }
@@ -742,14 +744,20 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApDirectedMulticast, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & ApDirectedMulticast)
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(urlsInfo.updateApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     }),
+    // deprecated! RBAC API will use the updateApDirectedMulticast to replace.
     resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApDirectedMulticast, params)
@@ -949,8 +957,7 @@ export const apApi = baseApApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateApManagementVlanSettings',
-            'ResetApManagementVlanSettings'
+            'UpdateApManagementTrafficVlanSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'ApManagementVlan' }]))
@@ -964,15 +971,6 @@ export const apApi = baseApApi.injectEndpoints({
         return{
           ...req,
           body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
-    }),
-    deleteApManagementVlan: build.mutation<ApManagementVlan, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteApManagementVlan, params)
-        return {
-          ...req
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'ApManagementVlan' }]
@@ -994,7 +992,6 @@ export const {
   useLazyApListQuery,
   useApDetailHeaderQuery,
   useApViewModelQuery,
-  useLazyApViewModelQuery,
   useApDetailsQuery,
   useApLanPortsQuery,
   useAddApMutation,
@@ -1039,7 +1036,6 @@ export const {
   useResetApLedMutation,
   useGetApBandModeSettingsQuery,
   useUpdateApBandModeSettingsMutation,
-  useResetApBandModeSettingsMutation,
   useGetApAntennaTypeSettingsQuery,
   useLazyGetApAntennaTypeSettingsQuery,
   useUpdateApAntennaTypeSettingsMutation,
@@ -1052,6 +1048,7 @@ export const {
   useUpdateApCustomizationMutation,
   useResetApCustomizationMutation,
   useGetApValidChannelQuery,
+  useLazyGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,
   useUpdateApDirectedMulticastMutation,
   useResetApDirectedMulticastMutation,
@@ -1079,7 +1076,6 @@ export const {
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
-  useDeleteApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery
 } = apApi
 

@@ -4,16 +4,19 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, PageHeader, Tabs }                                                              from '@acx-ui/components'
-import { EdgeEditContext, EdgePortTabEnum }                                                      from '@acx-ui/rc/components'
-import { useEdgeBySerialNumberQuery, useGetEdgeQuery }                                           from '@acx-ui/rc/services'
+import { EdgeEditContext }                                                                       from '@acx-ui/rc/components'
+import { useEdgeBySerialNumberQuery }                                                            from '@acx-ui/rc/services'
 import { isEdgeConfigurable }                                                                    from '@acx-ui/rc/utils'
 import { UNSAFE_NavigationContext as NavigationContext, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                        from '@acx-ui/user'
 
-import DnsServer       from './DnsServer'
-import GeneralSettings from './GeneralSettings'
-import Ports           from './Ports'
-import StaticRoutes    from './StaticRoutes'
+import DnsServer                from './DnsServer'
+import { EditEdgeDataProvider } from './EditEdgeDataProvider'
+import GeneralSettings          from './GeneralSettings'
+import Lags                     from './Lags'
+import Ports                    from './Ports'
+import StaticRoutes             from './StaticRoutes'
+import SubInterfaces            from './SubInterfaces'
 
 import type { History, Transition } from 'history'
 
@@ -23,7 +26,7 @@ const useTabs = () => {
   const { data: currentEdge } = useEdgeBySerialNumberQuery({
     params: { serialNumber },
     payload: {
-      fields: ['deviceStatus'],
+      fields: ['deviceStatus', 'clusterId'],
       filters: { serialNumber: [serialNumber] } }
   })
 
@@ -34,15 +37,23 @@ const useTabs = () => {
     },
     ...(isEdgeConfigurable(currentEdge) &&
       {
-        ports: {
+        'ports': {
           title: $t({ defaultMessage: 'Ports' }),
           content: <Ports />
         },
-        dns: {
+        'lags': {
+          title: $t({ defaultMessage: 'LAGs' }),
+          content: <Lags />
+        },
+        'sub-interfaces': {
+          title: $t({ defaultMessage: 'Sub-Interfaces' }),
+          content: <SubInterfaces />
+        },
+        'dns': {
           title: $t({ defaultMessage: 'DNS Server' }),
           content: <DnsServer />
         },
-        routes: {
+        'routes': {
           title: $t({ defaultMessage: 'Static Routes' }),
           content: <StaticRoutes />
         }
@@ -102,7 +113,6 @@ export const EditEdgeTabs = () => {
   }, [editEdgeContext])
 
   const onTabChange = (activeKey: string) => {
-    if(activeKey === 'ports') activeKey = `${activeKey}/${EdgePortTabEnum.PORTS_GENERAL}`
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${activeKey}`
@@ -120,8 +130,16 @@ export const EditEdgeTabs = () => {
 const EditEdge = () => {
 
   const { $t } = useIntl()
-  const { serialNumber, activeTab } = useParams()
-  const { data: edgeInfoData } = useGetEdgeQuery({ params: { serialNumber: serialNumber } })
+  const params = useParams()
+  const { serialNumber = '', activeTab } = params
+  const { data: currentEdge } = useEdgeBySerialNumberQuery({
+    params: { serialNumber },
+    payload: {
+      fields: ['name'],
+      filters: { serialNumber: [serialNumber] } }
+  }, {
+    skip: !serialNumber
+  })
   const [activeSubTab, setActiveSubTab] = useState({ key: '', title: '' })
   const [formControl, setFormControl] = useState({} as EdgeEditContext.EditEdgeFormControlType)
   const tabs = useTabs()
@@ -134,10 +152,10 @@ const EditEdge = () => {
       setFormControl
     }}>
       <PageHeader
-        title={edgeInfoData?.name}
+        title={currentEdge?.name}
         breadcrumb={[
           {
-            text: $t({ defaultMessage: 'SmartEdge' }),
+            text: $t({ defaultMessage: 'SmartEdges' }),
             link: '/devices/edge'
           }
         ]}
@@ -149,7 +167,11 @@ const EditEdge = () => {
         footer={<EditEdgeTabs />}
       />
 
-      {tabs[activeTab as keyof typeof tabs]?.content}
+      <EditEdgeDataProvider
+        serialNumber={serialNumber}
+      >
+        {tabs[activeTab as keyof typeof tabs]?.content}
+      </EditEdgeDataProvider>
     </EdgeEditContext.EditContext.Provider>
   )
 }

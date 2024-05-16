@@ -8,6 +8,59 @@ import { Acl, Vlan, SwitchModel, NetworkDevicePosition } from './venue'
 import { GridDataRow } from './'
 
 export const SWITCH_SERIAL_PATTERN=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+export const SWITCH_SERIAL_PATTERN_INCLUDED_8100=/^(FEG|FEM|FEA|FEB|FEH|FEJ|FEC|FED|FEE|FEF|FJN|FJP|FEK|FEL|FMD|FME|FMF|FMG|FMU|FMH|FMJ|EZC|EZD|EZE|FLU|FLV|FLW|FLX|FMK|FML|FMM|FMN|FMP|FMQ|FMR|FMS|FNC|FNF|FND|FNG|FNH|FNM|FNS|FNE|FNJ|FNK|FNL|FNN|FNR|FNX|FNY|FNZ|FPA|FPB)([0-9A-Z]{2})(0[1-9]|[1-4][0-9]|5[0-4])([A-HJ-NP-Z])([0-9A-HJ-NPRSTV-Z]{3})$/i
+
+export const SwitchPortViewModelQueryFields = [
+  'adminStatus',
+  'broadcastIn',
+  'broadcastOut',
+  'cloudPort',
+  'cog',
+  'crcErr',
+  'deviceStatus',
+  'egressAclName',
+  'id',
+  'inDiscard',
+  'ingressAclName',
+  'inErr',
+  'lagId',
+  'lagName',
+  'mediaType',
+  'multicastIn',
+  'multicastOut',
+  'name',
+  'neighborMacAddress',
+  'neighborName',
+  'opticsType',
+  'outErr',
+  'poeEnabled',
+  'poeTotal',
+  'poeType',
+  'poeUsage',
+  'poeUsed',
+  'portId',
+  'portIdentifier',
+  'portSpeed',
+  'signalIn',
+  'signalOut',
+  'status',
+  'switchId',
+  'switchMac',
+  'switchModel',
+  'switchName',
+  'switchSerial',
+  'switchUnitId',
+  'syncedSwitchConfig',
+  'tag',
+  'unTaggedVlan',
+  'unitState',
+  'unitStatus',
+  'usedInFormingStack',
+  'venueId',
+  'vlanIds',
+  'vsixEgressAclName',
+  'vsixIngressAclName'
+]
 
 export enum IP_ADDRESS_TYPE {
   STATIC = 'static',
@@ -95,6 +148,7 @@ export class Switch {
   rearModule?: string
   serialNumber?: string
   firmwareVersion?: string
+  vlanCustomize?: boolean
 
   constructor () {
     this.name = ''
@@ -117,24 +171,25 @@ export class Switch {
   }
 }
 
-export interface TroubleshootingResult {
-  requestId: string
-  response: {
-      latestResultResponseTime: string
-      result: string
-      pingIp: string
-      syncing: boolean
-      traceRouteTarget: string
-      traceRouteTtl: number
-      troubleshootingType: TroubleshootingType
-      macAddressTablePortIdentify: string
-      macAddressTableVlanId: string
-      macAddressTableAddress: string,
-      macAddressTableType: TroubleshootingMacAddressOptionsEnum,
-      dhcpServerLeaseList?: SwitchDhcpLease[]
-  }
+export interface TroubleshootingResponse {
+  latestResultResponseTime: string
+  result: string
+  pingIp: string
+  syncing: boolean
+  traceRouteTarget: string
+  traceRouteTtl: number
+  troubleshootingType: TroubleshootingType
+  macAddressTablePortIdentify: string
+  macAddressTableVlanId: string
+  macAddressTableAddress: string,
+  macAddressTableType: TroubleshootingMacAddressOptionsEnum,
+  dhcpServerLeaseList?: SwitchDhcpLease[]
 }
 
+export interface TroubleshootingResult {
+  requestId: string
+  response: TroubleshootingResponse
+}
 export interface PingSwitch {
   targetHost: string
 }
@@ -147,6 +202,8 @@ export interface TraceRouteSwitch {
 export interface VeViewModel {
   ingressAclName?: string
   egressAclName?: string
+  vsixIngressAclName?: string
+  vsixEgressAclName?: string
   name?: string
   connectedVe?: boolean
   dhcpRelayAgent?: string
@@ -211,7 +268,6 @@ export class SwitchViewModel extends Switch {
   uptime?: string
   switchName?: string
   aclCustomize?: boolean
-  vlanCustomize?: boolean
   operationalWarning?: boolean
   cliApplied?: boolean
   formStacking?: boolean
@@ -237,6 +293,7 @@ export class SwitchViewModel extends Switch {
   position?: NetworkDevicePosition
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
 }
 
 export interface SwitchRow {
@@ -274,6 +331,7 @@ export interface SwitchRow {
   clientCount?: number
   syncedAdminPassword?: boolean
   adminPassword?: string
+  extIp?: string
 }
 
 export interface StackMember {
@@ -319,6 +377,7 @@ export interface ConfigurationHistory {
   endTime: string
   serialNumber: string
   configType: string
+  historyConfigTypeV1001: string
   dispatchStatus: string
   clis: string
   numberOfErrors: number
@@ -438,6 +497,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   portnumber?: string;
   usedInUplink?: boolean;
   id?: string;
+  venueId: string;
 }
 
 export interface SwitchPortStatus extends SwitchPortViewModel {
@@ -831,3 +891,5 @@ export interface CliProfileFamily {
   family: string,
   model: CliProfileModel[]
 }
+
+

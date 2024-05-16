@@ -4,10 +4,14 @@ import {  useContext, useEffect, useState } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 
 
-import { Alert, Loader, Collapse, AnchorContext }                  from '@acx-ui/components'
-import { useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery } from '@acx-ui/rc/services'
-import { useTableQuery, AAAServerTypeEnum }                        from '@acx-ui/rc/utils'
-import { useParams }                                               from '@acx-ui/react-router-dom'
+import { Alert, Loader, Collapse, AnchorContext }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import {
+  useGetAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery,
+  useGetVenueTemplateSwitchAaaSettingQuery, useVenueSwitchAAAServerListQuery
+} from '@acx-ui/rc/services'
+import { useTableQuery, AAAServerTypeEnum, useConfigTemplateQueryFnSwitcher, AAASetting, useConfigTemplate } from '@acx-ui/rc/utils'
+import { useParams }                                                                                         from '@acx-ui/react-router-dom'
 
 import { AAAServerTable }  from './AAAServerTable'
 import { AAANotification } from './contentsMap'
@@ -24,10 +28,11 @@ const PanelHeader = {
 export function AAAServers (props: {
   cliApplied?: boolean
 }) {
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
   const { $t } = useIntl()
   const { setReadyToScroll } = useContext(AnchorContext)
-
+  const { isTemplate } = useConfigTemplate()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const getPanelHeader = (type: AAAServerTypeEnum, count: number) => {
     return $t(PanelHeader[type] , { count })
   }
@@ -45,30 +50,35 @@ export function AAAServers (props: {
     [AAAServerTypeEnum.LOCAL_USER]: { ...defaultPayload, serverType: AAAServerTypeEnum.LOCAL_USER }
   }
 
-  const { data: aaaSetting } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
+  const { data: aaaSetting } = useConfigTemplateQueryFnSwitcher<AAASetting>(
+    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
+  )
 
   const radiusTableQuery = useTableQuery({
-    useQuery: useVenueSwitchAAAServerListQuery,
+    useQuery: isTemplate ? useGetVenueTemplateSwitchAAAServerListQuery : useVenueSwitchAAAServerListQuery,
     defaultPayload: payloadMap[AAAServerTypeEnum.RADIUS],
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const tacasTableQuery = useTableQuery({
-    useQuery: useVenueSwitchAAAServerListQuery,
+    useQuery: isTemplate ? useGetVenueTemplateSwitchAAAServerListQuery : useVenueSwitchAAAServerListQuery,
     defaultPayload: payloadMap[AAAServerTypeEnum.TACACS],
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const localUserTableQuery = useTableQuery({
-    useQuery: useVenueSwitchAAAServerListQuery,
+    useQuery: isTemplate ? useGetVenueTemplateSwitchAAAServerListQuery : useVenueSwitchAAAServerListQuery,
     defaultPayload: payloadMap[AAAServerTypeEnum.LOCAL_USER],
     pagination: {
       pageSize: 5
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const [aaaServerCount, setAaaServerCount] = useState({

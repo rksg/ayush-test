@@ -5,6 +5,8 @@ import { Tabs }                                  from '@acx-ui/components'
 import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useGetEdgeServiceListQuery }            from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes }                            from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const { $t } = useIntl()
@@ -14,6 +16,9 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
   const navigate = useNavigate()
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgePingTraceRouteReady = useIsSplitOn(Features.EDGES_PING_TRACEROUTE_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+
   const onTabChange = (tab: string) => {
     if(tab === 'dhcp') tab = tab + '/pools'
     navigate({
@@ -33,11 +38,13 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
     })
   })
 
+  const showTroubleshooting = isEdgePingTraceRouteReady && props.isOperational && hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
       {
-        isEdgePingTraceRouteReady && props.isOperational &&
+        showTroubleshooting &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Troubleshooting' })}
           key='troubleshooting' />}
       {
@@ -47,7 +54,10 @@ const EdgeDetailsTabs = (props: { isOperational: boolean }) => {
           key='services'
         />
       }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
+      {
+        isEdgeHaReady && isEdgeDhcpHaReady &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'DHCP' })} key='dhcp' />
+      }
       <Tabs.TabPane tab={$t({ defaultMessage: 'Timeline' })} key='timeline' />
     </Tabs>
   )

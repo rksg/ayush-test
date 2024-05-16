@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi, policyApi }                                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls, WifiUrlsInfo }                          from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls, WifiUrlsInfo }  from '@acx-ui/rc/utils'
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -46,6 +46,18 @@ jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => () => {
 jest.mock('./WifiConfigTab/ServerTab/ApSnmp', () => () => {
   return <div data-testid='ApSnmp' />
 })
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
+
+const mockedUseIsConfigTemplateGA = jest.fn()
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsConfigTemplateGA: () => mockedUseIsConfigTemplateGA()
+}))
 
 let dialog = null
 const buttonAction = {
@@ -136,6 +148,44 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
+
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUseIsConfigTemplateGA.mockReturnValue(false)
+  })
+
+  describe('Overview', () => {
+    const params = {
+      tenantId: 'tenant-id',
+      venueId: 'venue-id',
+      activeTab: 'details'
+    }
+
+    beforeEach(() => {
+      mockServer.use(
+        rest.get(
+          AdministrationUrlsInfo.getPreferences.url,
+          (_req, res, ctx) => res(ctx.json({ global: { mapRegion: 'TW' } }))
+        )
+      )
+    })
+
+    it('should display Switch Configuration tab when the condition is met', async () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+      mockedUseIsConfigTemplateGA.mockReturnValue(false)
+
+      const { rerender } = render(<Provider><VenueEdit /></Provider>, {
+        route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
+      })
+      // eslint-disable-next-line max-len
+      expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
+
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      mockedUseIsConfigTemplateGA.mockReturnValue(true)
+
+      rerender(<Provider><VenueEdit /></Provider>)
+      // eslint-disable-next-line max-len
+      expect(await screen.findByRole('tab', { name: 'Switch Configuration' })).toBeInTheDocument()
+    })
   })
 
   describe('Switch Configuration', () => {
@@ -375,8 +425,11 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       beforeEach(() => {
         store.dispatch(policyApi.util.resetApiState())
         mockServer.use(
-          rest.get(SyslogUrls.getSyslogPolicyList.url,
-            (_, res, ctx) => res(ctx.json(syslogServerProfiles))
+          rest.post(SyslogUrls.syslogPolicyList.url,
+            (req, res, ctx) => res(ctx.json({
+              totalCount: syslogServerProfiles.length,
+              data: syslogServerProfiles
+            }))
           ),
           rest.get(SyslogUrls.getVenueSyslogAp.url,
             (_, res, ctx) => res(ctx.json({ enabled: false }))

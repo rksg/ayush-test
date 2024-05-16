@@ -4,6 +4,7 @@ import { Checkbox, FormInstance, Input, Radio, Space, Switch, Typography } from 
 import _                                                                   from 'lodash'
 
 import { Button, Modal, Tabs, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { InformationSolid }             from '@acx-ui/icons'
 import { useAddVlanMutation }           from '@acx-ui/rc/services'
 import {
@@ -51,8 +52,10 @@ export function SelectVlanModal (props: {
     voiceVlan, isVoiceVlanInvalid
   } = props
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
-  const [selectUntaggedVlan, setSelectUntaggedVlan] = useState(Number(untaggedVlan))
+  const [selectUntaggedVlan, setSelectUntaggedVlan] = useState<Number | ''>(Number(untaggedVlan))
   const [disableButton, setDisableButton] = useState(false)
   const [vlanDrawerVisible, setVlanDrawerVisible] = useState(false)
   const [taggedVlanOptions, setTaggedVlanOptions] = useState([] as CheckboxOptionType[])
@@ -139,13 +142,14 @@ export function SelectVlanModal (props: {
   }
 
   useEffect(() => {
-    setSelectUntaggedVlan(Number(untaggedVlan))
+    const untagged = untaggedVlan ? Number(untaggedVlan) : ''
+    setSelectUntaggedVlan(untagged)
     setSelectTaggedVlans(taggedVlans)
   }, [])
 
   useEffect(() => {
     const untaggedVlanOptions = getUntaggedVlanOptions(selectTaggedVlans)
-    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan)
+    const taggedVlanOptions = getTaggedVlanOptions(selectUntaggedVlan as number)
     setTaggedVlanOptions(taggedVlanOptions)
     setDisplayTaggedVlan(taggedVlanOptions)
     setUntaggedVlanOptions(untaggedVlanOptions)
@@ -260,7 +264,7 @@ export function SelectVlanModal (props: {
     >
       <Tabs stickyTop={false} defaultActiveKey='untaggedVlan'>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Untagged VLANs' })}
+          tab={$t({ defaultMessage: 'Untagged VLAN' })}
           key='untaggedVlan'
         >
           <Typography.Text style={{
@@ -358,7 +362,8 @@ export function SelectVlanModal (props: {
         try {
           await addVlan({
             params: { tenantId: params.tenantId, profileId: props.profileId },
-            payload
+            payload,
+            enableRbac: isSwitchRbacEnabled
           }).unwrap()
           await props.updateSwitchVlans?.(values)
 

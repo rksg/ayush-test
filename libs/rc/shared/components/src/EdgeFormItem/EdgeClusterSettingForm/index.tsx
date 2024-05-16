@@ -1,19 +1,25 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
-import { Col, Divider, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
-import TextArea                                                                               from 'antd/lib/input/TextArea'
-import { useIntl }                                                                            from 'react-intl'
-import { useParams }                                                                          from 'react-router-dom'
+import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
+import TextArea                                                                      from 'antd/lib/input/TextArea'
+import { useIntl }                                                                   from 'react-intl'
+import { useParams }                                                                 from 'react-router-dom'
 
-import { Alert, Button, Select, Subtitle, useStepFormContext }                                            from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                                                             from '@acx-ui/icons'
-import { useVenuesListQuery }                                                                             from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType, EdgeStatusEnum, PRODUCT_CODE_VIRTUAL_EDGE, edgeSerialNumberValidator } from '@acx-ui/rc/utils'
+import { Alert, Button, Select, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { DeleteOutlinedIcon }                                  from '@acx-ui/icons'
+import { useVenuesListQuery }                                  from '@acx-ui/rc/services'
+import {
+  EdgeClusterStatus,
+  EdgeStatusEnum,
+  deriveEdgeModel,
+  edgeSerialNumberValidator,
+  isOtpEnrollmentRequired
+} from '@acx-ui/rc/utils'
 
 import { showDeleteModal } from '../../useEdgeActions'
 
 interface EdgeClusterSettingFormProps {
-  editData?: EdgeClusterTableDataType
+  editData?: EdgeClusterStatus
 }
 
 export interface EdgeClusterSettingFormType {
@@ -25,6 +31,7 @@ export interface EdgeClusterSettingFormType {
   }[]
   venueId: string
   name: string
+  description?: string
 }
 
 const venueOptionsDefaultPayload = {
@@ -60,7 +67,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         smartEdges: editData.edgeList?.map(item => ({
           name: item.name,
           serialNumber: item.serialNumber,
-          model: item.type,
+          model: deriveEdgeModel(item.serialNumber),
           isEdit: true
         }))
       })
@@ -75,9 +82,9 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   when there are at least two nodes present. Please add more nodes to establish
   a complete cluster.` })
 
-  const otpWarningMsg = $t({ defaultMessage: `The one-time-password (OTP) will be 
+  const otpWarningMsg = $t({ defaultMessage: `The one-time-password (OTP) will be
   automatically sent to your email address or via SMS for verification when you add
-  a virtual SmartEdge node. The password will expire in 10 minutes and you must 
+  a virtual SmartEdge node. The password will expire in 10 minutes and you must
   complete the authentication process before using it.` })
 
   const showClusterWarning = (editData?.edgeList?.filter(item =>
@@ -85,7 +92,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
 
   const showOtpMessage = smartEdges?.some(item =>
     !item?.isEdit &&
-    item?.serialNumber?.startsWith(PRODUCT_CODE_VIRTUAL_EDGE))
+    isOtpEnrollmentRequired(item?.serialNumber ?? ''))
 
   const deleteNode = (fieldName: number, serialNumber?: string) => {
     if(!smartEdges?.[fieldName]?.isEdit) {
@@ -104,7 +111,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         <Col span={6}>
           <Form.Item
             name='venueId'
-            label={$t({ defaultMessage: 'Venue' })}
+            label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
             rules={[{
               required: true
             }]}
@@ -149,12 +156,6 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                 children={$t({ defaultMessage: 'Add another SmartEdge' })}
                 onClick={() => formListRef.current?.add()}
                 disabled={(smartEdges?.length ?? 0) >= maxNodeCount}
-              />
-              <Divider type='vertical' />
-              <Button
-                type='link'
-                children={$t({ defaultMessage: 'Import from file' })}
-                disabled={true}
               />
             </Col>
             {
@@ -220,9 +221,17 @@ const NodeList = forwardRef((props: NodeListProps, ref) => {
     }
   }), [operations])
 
+  const onSerialChanged = (index: number, serial: string) => {
+    let { smartEdges } = form.getFieldsValue()
+    if (smartEdges[index]) {
+      smartEdges[index].model = deriveEdgeModel(serial)
+      form.setFieldsValue({ smartEdges })
+    }
+  }
+
   return <>
     {
-      fields.map(field =>
+      fields.map((field, idx) =>
         <Row key={field.key} align='middle' gutter={20}>
           <Col span={7}>
             <Form.Item
@@ -243,14 +252,17 @@ const NodeList = forwardRef((props: NodeListProps, ref) => {
                 { required: true },
                 { validator: (_, value) => edgeSerialNumberValidator(value) }
               ]}
-              children={<Input disabled={smartEdges?.[field.name]?.isEdit} />}
+              children={<Input disabled={smartEdges?.[field.name]?.isEdit}
+                onChange={
+                  (e) => onSerialChanged(idx, e.target.value)
+                } />}
               validateFirst
             />
           </Col>
           <Col span={3}>
             <Form.Item
               label={$t({ defaultMessage: 'Model' })}
-              children={smartEdges?.[field.name]?.model ??'-'}
+              children={smartEdges?.[field.name]?.model ?? '-'}
             />
           </Col>
           <Col span={4}>

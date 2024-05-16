@@ -19,7 +19,10 @@ function NetworkTabs () {
       pathname: `${basePath.pathname}/${tab}`
     })
   const { tenantId, networkId } = params
-  const { data } = useNetworkDetailHeaderQuery({ params: { tenantId, networkId } })
+  const { data } = useNetworkDetailHeaderQuery({
+    params: { tenantId, networkId },
+    payload: { isTemplate }
+  })
 
   const [apsCount, venuesCount] = [
     data?.aps?.totalApCount ?? 0,
@@ -32,7 +35,8 @@ function NetworkTabs () {
     return (
       <Tabs onChange={onTabChange} activeKey={params.activeTab}>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+          tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' },
+            { venuesCount })}
           key='venues'
         />
       </Tabs>
@@ -54,7 +58,8 @@ function NetworkTabs () {
             />
             }
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+              tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' },
+                { venuesCount })}
               key='venues'
             />
             <Tabs.TabPane
@@ -80,7 +85,8 @@ function NetworkTabs () {
               key='aps'
             />
             <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+              tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' },
+                { venuesCount })}
               key='venues'
             />
             <Tabs.TabPane

@@ -77,6 +77,8 @@ const PortsFormEditContextProvider = (props: {
       setFormControl
     }}>
       <EdgePortsForm
+        // for BC phase1 & phase2
+        clusterId=''
         serialNumber={edgeId}
         onTabChange={handleTabChange}
         onCancel={handleClose}
@@ -163,7 +165,7 @@ export const CorePortFormItem = (props: {
           ? null
           : <><Typography.Text>
             {$t({
-              defaultMessage: `To use SD-LAN on the venue, 
+              defaultMessage: `To use SD-LAN on the <venueSingular></venueSingular>,
               you must select a port as the Core Port/LAG on the {editPortLink}.
               Core port is the port used to connect SmartEdge to the core network for SDLAN service`
             },

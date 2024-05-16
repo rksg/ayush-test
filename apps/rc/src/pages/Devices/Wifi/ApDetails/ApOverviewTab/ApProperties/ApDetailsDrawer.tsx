@@ -14,7 +14,6 @@ import {
   gpsToFixed,
   useApContext,
   Capabilities,
-  AFCMaxPowerRender,
   APPropertiesAFCPowerStateRender } from '@acx-ui/rc/utils'
 import { TenantLink }            from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
@@ -68,20 +67,12 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     const apRadioDeploy = currentAP?.apRadioDeploy
 
     if ([AFC_Featureflag, currentApModel?.supportTriRadio, enableAFC, (apRadioDeploy === '2-5-6')].every(Boolean)) {
-      displayContent = (<>
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'AFC Power State' })}
-          children={
-            APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
-          }
-        />
-        <Descriptions.Item
-          label={$t({ defaultMessage: 'AFC Max Power' })}
-          children={
-            AFCMaxPowerRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
-          }
-        />
-      </>)
+      displayContent = (<Descriptions.Item
+        label={$t({ defaultMessage: 'AFC Power State' })}
+        children={
+          APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
+        }
+      />)
     }
 
     return displayContent
@@ -92,7 +83,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     return (<>
       <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
-          label={$t({ defaultMessage: 'Venue' })}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           children={
             <TenantLink to={`/venues/${currentAP?.venueId}/venue-details/overview`}>
               {currentAP?.venueName}
@@ -290,7 +281,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     } else if (venueId) {
       const latitude = gpsToFixed(venueData?.address.latitude)
       const longitude = gpsToFixed(venueData?.address.longitude)
-      return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As venue)' }) }</>
+      return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As <venueSingular></venueSingular>)' }) }</>
     } else {
       return '--'
     }

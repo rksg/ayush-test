@@ -223,12 +223,13 @@ function useColumns () {
         }
         placement='bottom'
         overlayClassName={UI.toolTipClassName}
-        overlayInnerStyle={{ width: 515 }}>{dhcpPools.length}</Tooltip>
+        overlayInnerStyle={{ width: 515 }}
+        dottedUnderline={true}>{dhcpPools.length}</Tooltip>
       }
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueNameMap,
       align: 'center',

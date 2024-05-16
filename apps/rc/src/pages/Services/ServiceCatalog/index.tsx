@@ -22,6 +22,11 @@ export default function ServiceCatalog () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
 
   const sets = [
     {
@@ -32,18 +37,18 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled
+          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          disabled: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady || !isEdgeSdLanReady
+          disabled: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         }
       ]
     },
@@ -53,7 +58,7 @@ export default function ServiceCatalog () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady
+          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
         }
       ]
     },

@@ -26,7 +26,7 @@ export function generatePageHeaderTitle (props: TitleGenerationProps): string {
 }
 
 // eslint-disable-next-line max-len
-export function useBreadcrumb (fallbackPath: { text: string, link?: string, tenantType?: TenantType }[]) {
+export function useConfigTemplateBreadcrumb (fallbackPath: { text: string, link?: string, tenantType?: TenantType }[]) {
   const { isTemplate } = useConfigTemplate()
   const breadcrumb = useMemo(() => {
     return isTemplate
@@ -35,4 +35,10 @@ export function useBreadcrumb (fallbackPath: { text: string, link?: string, tena
   }, [isTemplate])
 
   return breadcrumb
+}
+
+// eslint-disable-next-line max-len
+export function useConfigTemplatePageHeaderTitle (props: Omit<TitleGenerationProps, 'isTemplate'>) {
+  const { isTemplate } = useConfigTemplate()
+  return generatePageHeaderTitle({ ...props, isTemplate })
 }

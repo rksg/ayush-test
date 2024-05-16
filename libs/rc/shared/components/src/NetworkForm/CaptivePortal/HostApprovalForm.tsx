@@ -31,6 +31,7 @@ import { validationMessages } from '@acx-ui/utils'
 
 import { captivePasswordExpiration } from '../contentsMap'
 import { NetworkDiagram }            from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }                from '../NetworkForm'
 import NetworkFormContext            from '../NetworkFormContext'
 import { NetworkMoreSettingsForm }   from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 import { AsteriskFormTitle }         from '../styledComponents'
@@ -47,6 +48,7 @@ export function HostApprovalForm () {
     editMode,
     cloneMode
   } = useContext(NetworkFormContext)
+  const { disableMLO } = useContext(MLOContext)
   const { $t } = useIntl()
   const { useWatch } = Form
   const form = Form.useFormInstance()
@@ -70,6 +72,10 @@ export function HostApprovalForm () {
       } else if (!_.isEmpty(data.guestPortal?.hostGuestConfig?.hostEmails)) {
         setDomainOrEmail('email')
       }
+    }
+    if(!editMode) {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
     }
   }, [data])
 
@@ -227,10 +233,8 @@ export function HostApprovalForm () {
         />
         <RedirectUrlInput/>
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.HostApproval} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.HostApproval}
           enableDefaultWalledGarden={false} />
       </GridCol>
       <GridCol col={{ span: 14 }}>

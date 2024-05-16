@@ -1,5 +1,5 @@
 {
-  "GOOGLE_MAPS": "AIzaSyB42fd7gibpZ4cW_kP2md8ajCQbT8HsXFs",
+  "GOOGLE_MAPS": "AIzaSyB2tIww5SYmX8xjJVdzEUIuwtZyS5TXnhI",
   "SPLIT_IO": "s56i5harnvpksqb6a5kom1phqncj9d6ujf92",
   "SPLIT_PROXY_ENDPOINT": "https://splitproxy.dev.ruckus.cloud/api",
   "PENDO_API": "b775f526-720b-449c-7fca-f45b7c3df0ae",
@@ -15,5 +15,8 @@
   "HOW_TO_VIDEOS": "https://www.youtube.com/playlist?list=PLySwoo7u9-KLJteXD3vhjK20eDQDp7NoP",
   "NEW_API_DOMAIN_NAME": "api.dev.ruckus.cloud",
   "STATIC_ASSETS": "",
-  "API_DOCUMENTATION_URL": "https://docs.ruckus.cloud/api/"
+  "API_DOCUMENTATION_URL": "https://docs.ruckus.cloud/api/",
+  "MIB_FILES": "https://docs.ruckus.cloud/mib/",
+  "DRUID_ROLLUP_DAYS": "36500",
+  "DRUID_RETAIN_PERIOD_DAYS": "90"
 }

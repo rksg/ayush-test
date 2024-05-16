@@ -1,14 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                              from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useBrand360Config }                                      from '@acx-ui/analytics/services'
+import { LayoutProps }                                            from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   ConfigurationOutlined,
   ConfigurationSolid,
   DevicesOutlined,
   DevicesSolid,
+  DataStudioOutlined,
+  DataStudioSolid,
   MspSubscriptionOutlined,
   MspSubscriptionSolid,
   IntegratorsOutlined,
@@ -20,90 +23,59 @@ import {
   SpeedIndicatorSolid,
   SpeedIndicatorOutlined
 } from '@acx-ui/icons'
-import { useIntegratorCustomerListQuery }                 from '@acx-ui/msp/services'
 import { getConfigTemplatePath, hasConfigTemplateAccess } from '@acx-ui/rc/utils'
-import { TenantType, useParams }                          from '@acx-ui/react-router-dom'
+import { TenantType }                                     from '@acx-ui/react-router-dom'
 import { RolesEnum }                                      from '@acx-ui/types'
 import { hasRoles  }                                      from '@acx-ui/user'
 import { AccountType  }                                   from '@acx-ui/utils'
 
-export function useMenuConfig (tenantType: string, hasLicense: boolean,
-  isDogfood?: boolean, parentMspId?: string) {
+import HspContext from '../../HspContext'
+
+export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
-  const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
-  const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const isBrand360 = useIsSplitOn(Features.MSP_BRAND_360)
-  const [hideMenuesforHsp, setHideMenuesforHsp] = useState<boolean>(false)
+  const { names: { brand } } = useBrand360Config()
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR
   const isNonVarMSP = tenantType === AccountType.MSP_NON_VAR
   const isSupport = tenantType === 'SUPPORT'
-  const isIntegrator =
+  const isTechPartner =
   tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const isInstaller = tenantType === AccountType.MSP_INSTALLER
   // eslint-disable-next-line max-len
-  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsSplitOn(Features.CONFIG_TEMPLATE), tenantType)
+  const isConfigTemplateEnabled = hasConfigTemplateAccess(useIsTierAllowed(TierFeatures.BETA_CONFIG_TEMPLATE), tenantType)
 
-  const integratorPayload = {
-    searchString: '',
-    filters: {
-      mspTenantId: [parentMspId],
-      tenantType: [AccountType.MSP_REC]
-    },
-    fields: [
-      'check-all',
-      'id',
-      'name',
-      'tenantType',
-      'status',
-      'alarmCount',
-      'mspAdminCount',
-      'mspEcAdminCount',
-      'mspInstallerAdminCount',
-      'mspIntegratorAdminCount',
-      'creationDate',
-      'expirationDate',
-      'wifiLicense',
-      'switchLicense',
-      'streetAddress'
-    ],
-    searchTargetFields: [
-      'name'
-    ],
-    page: 1,
-    pageSize: 10,
-    defaultPageSize: 10,
-    total: 0,
-    sortField: 'name',
-    sortOrder: 'ASC'
+  const {
+    state
+  } = useContext(HspContext)
+
+  const { isHsp: isHspSupportEnabled } = state
+
+  const mspCustomersMenu = {
+    uri: '/dashboard/mspCustomers',
+    tenantType: 'v' as TenantType,
+    label: $t({ defaultMessage: 'MSP Customers' })
   }
 
-  const params = useParams()
+  const recCustomerMenu = (!isHspSupportEnabled || isSupport ? [] : [{
+    uri: '/dashboard/mspRecCustomers',
+    tenantType: 'v' as TenantType,
+    label: $t({ defaultMessage: 'Brand Properties' })
+  }])
 
-  // for now acx_account_vetical is not available in jwt of LSP tenant so for temp fix
-  // we are having these checks for moe details check ACX-52099
+  const hspMspMenues = (isVar || isDogfood)
+    ? []
+    : (isHspSupportEnabled
+      ? [...recCustomerMenu, mspCustomersMenu]
+      : [ mspCustomersMenu, ...recCustomerMenu])
 
-  const { data: integratorListData } = useIntegratorCustomerListQuery({
-    params, payload: integratorPayload },
-  { skip: !isIntegrator })
-
-  useEffect(() => {
-    // if account is not tech partner (integrator / installer) / LSP
-    // then will have FF check else we will call useIntegratorCustomerListQuery
-    // and will check if data is available and based on that will show and hide
-    // Brand 360 and RUCKUS END Customer menue options
-    if (isIntegrator) {
-      setHideMenuesforHsp(!integratorListData?.data?.length)
-    } else {
-      setHideMenuesforHsp(!isHspSupportEnabled)
-    }
-  }, [isHspSupportEnabled, isIntegrator, integratorListData])
-
-
-  const config: LayoutProps['menuConfig'] = [
-    ...(!hideMenuesforHsp && isBrand360 ? [{
+  return [
+    ...(isHspSupportEnabled && isBrand360Enabled && !isInstaller ? [{
       uri: '/brand360',
-      label: $t({ defaultMessage: 'Brand 360' }),
+      label: brand,
       tenantType: 'v' as TenantType,
       inactiveIcon: SpeedIndicatorOutlined,
       activeIcon: SpeedIndicatorSolid
@@ -113,18 +85,8 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: UsersThreeOutlined,
       activeIcon: UsersThreeSolid,
       children: [
-        ...(isVar || isDogfood ? [] : [{
-          uri: '/dashboard/mspCustomers',
-          tenantType: 'v' as TenantType,
-          label: $t({ defaultMessage: 'MSP Customers' })
-        },
-        ...(hideMenuesforHsp || isSupport ? [] : [{
-          uri: '/dashboard/mspRecCustomers',
-          tenantType: 'v' as TenantType,
-          label: $t({ defaultMessage: 'RUCKUS End Customers' })
-        }])
-        ]),
-        ...((isNonVarMSP || isIntegrator) ? [] : [{
+        ...hspMspMenues,
+        ...((isNonVarMSP || isTechPartner) ? [] : [{
           uri: '/dashboard/varCustomers',
           tenantType: 'v' as TenantType,
           label: isSupport
@@ -133,7 +95,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
         }])
       ]
     },
-    ...((isVar || isIntegrator || isSupport) ? [] : [{
+    ...((isVar || isTechPartner || isSupport) ? [] : [{
       uri: '/integrators',
       label: $t({ defaultMessage: 'Tech Partners' }),
       tenantType: 'v' as TenantType,
@@ -147,13 +109,20 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
       inactiveIcon: DevicesOutlined,
       activeIcon: DevicesSolid
     }]),
-    ...((isIntegrator || isSupport)? [] : [{
+    ...((isTechPartner || isSupport)? [] : [{
       uri: '/mspLicenses',
       label: $t({ defaultMessage: 'Subscriptions' }),
       tenantType: 'v' as TenantType,
       inactiveIcon: MspSubscriptionOutlined,
       activeIcon: MspSubscriptionSolid
     }]),
+    ...(isHspSupportEnabled && isDataStudioEnabled && !isInstaller ? [{
+      uri: '/dataStudio',
+      label: $t({ defaultMessage: 'Data Studio' }),
+      tenantType: 'v' as TenantType,
+      inactiveIcon: DataStudioOutlined,
+      activeIcon: DataStudioSolid
+    }] : []),
     ...(isConfigTemplateEnabled
       ? [{
         uri: '/' + getConfigTemplatePath(),
@@ -162,7 +131,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
         inactiveIcon: CopyOutlined,
         activeIcon: CopySolid
       }] : []),
-    ...((!isPrimeAdmin || isIntegrator || isSupport || !hasLicense)
+    ...((!isPrimeAdmin || isTechPartner || isSupport || !hasLicense)
       ? [] : [{
         uri: '/portalSetting',
         label: $t({ defaultMessage: 'Settings' }),
@@ -171,6 +140,5 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean,
         activeIcon: ConfigurationSolid,
         adminItem: true
       }])
-  ]
-  return config
+  ] as LayoutProps['menuConfig']
 }

@@ -20,8 +20,7 @@ const params = {
 }
 
 const mockVenueApManagementVlan = {
-  vlanId: 1,
-  vlanOverrideEnabled: true
+  vlanId: 1
 }
 
 const mockApManagementVlan = {

@@ -149,7 +149,8 @@ function DashboardPageHeader () {
     expandIcon={<UI.MenuExpandArrow />}
     items={[{
       key: 'add-venue',
-      label: <TenantLink to='venues/add'>{$t({ defaultMessage: 'Venue' })}</TenantLink>
+      // eslint-disable-next-line max-len
+      label: <TenantLink to='venues/add'>{$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</TenantLink>
     }, {
       key: 'add-wifi-network',
       label: <TenantLink to='networks/wireless/add'>{

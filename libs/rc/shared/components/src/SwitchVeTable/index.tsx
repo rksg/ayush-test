@@ -10,6 +10,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useDeleteVePortsMutation,
   useGetSwitchRoutedListQuery,
@@ -21,27 +22,36 @@ import {
   isOperationalSwitch,
   VenueMessages,
   useTableQuery,
-  VeViewModel
+  VeViewModel,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import { SwitchVeDrawer } from './switchVeDrawer'
-
 // TODO: Wait for support venue level
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function SwitchVeTable ( { isVenueLevel } : {
-  isVenueLevel: boolean
-}
-) {
+export function SwitchVeTable (props: {
+  isVenueLevel: boolean,
+  switchInfo?: SwitchViewModel
+}) {
   const { $t } = useIntl()
   const params = useParams()
+  const { isVenueLevel, switchInfo } = props
   const [cliApplied, setCliApplied] = useState(false)
+  const isSwitchV6AclEnabled = useIsSplitOn(Features.SUPPORT_SWITCH_V6_ACL)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const { data: switchDetail }
+    = useSwitchDetailHeaderQuery({
+      params: { switchId: params.switchId, venueId: switchInfo?.venueId || '' },
+      enableRbac: isSwitchRbacEnabled
+    }, { skip: isVenueLevel })
 
   const { data: venueSwitchSetting }
-    = useVenueSwitchSettingQuery({ params }, { skip: !isVenueLevel })
-  const { data: switchDetail }
-    = useSwitchDetailHeaderQuery({ params }, { skip: isVenueLevel })
+      = useVenueSwitchSettingQuery({
+        params, enableRbac: isSwitchRbacEnabled
+      }, { skip: !isVenueLevel })
 
   const defaultPayload = {
     fields: [
@@ -62,13 +72,18 @@ export function SwitchVeTable ( { isVenueLevel } : {
       'ipAddress',
       'ipSubnetMask',
       'ingressAclName',
-      'egressAclName']
+      'egressAclName',
+      'vsixIngressAclName',
+      'vsixEgressAclName'
+    ]
   }
 
 
   const tableQuery = useTableQuery({
     useQuery: isVenueLevel ? useGetVenueRoutedListQuery : useGetSwitchRoutedListQuery,
+    apiParams: isVenueLevel ? {} : { venueId: switchInfo?.venueId || '' },
     defaultPayload,
+    enableRbac: isSwitchRbacEnabled,
     sorter: {
       sortField: 'veId',
       sortOrder: 'ASC'
@@ -119,15 +134,29 @@ export function SwitchVeTable ( { isVenueLevel } : {
     sorter: true
   }, {
     key: 'ingressAclName',
-    title: $t({ defaultMessage: 'Ingress ACL' }),
+    title: $t({ defaultMessage: 'Ingress ACL (IPv4)' }),
     dataIndex: 'ingressAclName',
     sorter: true
   }, {
     key: 'egressAclName',
-    title: $t({ defaultMessage: 'Egress ACL' }),
+    title: $t({ defaultMessage: 'Egress ACL (IPv4)' }),
     dataIndex: 'egressAclName',
     sorter: true
-  }]
+  },
+  ...(isSwitchV6AclEnabled ? [{
+    key: 'vsixIngressAclName',
+    title: $t({ defaultMessage: 'Ingress ACL (IPv6)' }),
+    dataIndex: 'vsixIngressAclName',
+    sorter: true,
+    show: false
+  }, {
+    key: 'vsixEgressAclName',
+    title: $t({ defaultMessage: 'Egress ACL (IPv6)' }),
+    dataIndex: 'vsixEgressAclName',
+    sorter: true,
+    show: false
+  }] : [])
+  ]
 
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const [disabledDelete, setDisabledDelete] = useState(false)
@@ -187,9 +216,40 @@ export function SwitchVeTable ( { isVenueLevel } : {
             entityValue: rows.length === 1 ? (rows[0].name || `VE-${rows[0].veId}`) : undefined,
             numOfEntities: rows.length
           },
-          onOk: () => {
-            deleteVePorts({ params, payload: _.map(rows, 'id') })
-              .then(clearSelection)
+          onOk: async () => {
+            if (isSwitchRbacEnabled) {
+
+              try {
+                const switchGroups = _.groupBy(rows, 'switchId')
+                const requests = Object.keys(switchGroups).map(
+                  key => ({
+                    params: {
+                      venueId: (isVenueLevel ? params.venueId : switchInfo?.venueId) || '',
+                      switchId: key
+                    },
+                    payload: switchGroups[key].map(item => item.id)
+                  }))
+
+                const requestList = requests.map((requests) => {
+                  return deleteVePorts({
+                    params: requests.params,
+                    payload: requests.payload,
+                    enableRbac: isSwitchRbacEnabled
+                  }).unwrap()
+                })
+                await Promise.all(requestList).then(clearSelection)
+
+              } catch (error) {
+                // eslint-disable-next-line no-console
+                console.log(error)
+              }
+            } else {
+              deleteVePorts({
+                params,
+                payload: _.map(rows, 'id'),
+                enableRbac: isSwitchRbacEnabled
+              }).then(clearSelection)
+            }
           }
         })
       }
@@ -201,6 +261,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
 
   return <Loader states={[tableQuery]}>
     <Table
+      settingsId='switch-ve-table'
       columns={isVenueLevel ? columns: columns.filter(item => item.key !== 'switchName')}
       dataSource={transformData(tableQuery.data?.data)}
       pagination={tableQuery.pagination}
@@ -234,6 +295,7 @@ export function SwitchVeTable ( { isVenueLevel } : {
       isVenueLevel={isVenueLevel}
       editData={editData}
       readOnly={isEditMode && cliApplied}
+      switchInfo={props.switchInfo}
     />}
 
   </Loader>

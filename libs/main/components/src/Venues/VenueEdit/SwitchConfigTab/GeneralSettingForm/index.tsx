@@ -3,22 +3,32 @@ import { useContext, useState, useRef, useEffect, Key } from 'react'
 import { Col, Divider, Form, Input, Space, Switch, Tooltip } from 'antd'
 import { isEqual }                                           from 'lodash'
 
-import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { ConfigurationOutlined }                                    from '@acx-ui/icons'
+import { Button, Loader, StepsFormLegacy, StepsFormLegacyInstance }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { ConfigurationOutlined }                                        from '@acx-ui/icons'
+import { useConfigTemplateVisibilityMap, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useConfigProfilesQuery,
   useVenueSwitchSettingQuery,
-  useUpdateVenueSwitchSettingMutation } from '@acx-ui/rc/services'
+  useUpdateVenueSwitchSettingMutation,
+  useGetVenueTemplateSwitchSettingQuery,
+  useUpdateVenueTemplateSwitchSettingMutation,
+  useGetSwitchConfigProfileTemplatesQuery
+} from '@acx-ui/rc/services'
 import {
   ConfigurationProfile,
   ProfileTypeEnum,
   networkWifiIpRegExp,
   VenueSwitchConfiguration,
   VenueMessages,
-  redirectPreviousPage
+  redirectPreviousPage,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
+  useConfigTemplateMutationFnSwitcher,
+  ConfigTemplateType
 } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { getIntl }                               from '@acx-ui/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+import { getIntl }                from '@acx-ui/utils'
 
 import { VenueEditContext, EditContext } from '../../index'
 
@@ -57,14 +67,25 @@ export function GeneralSettingForm () {
   const { $t } = getIntl()
   const navigate = useNavigate()
   const { tenantId, venueId, activeSubTab } = useParams()
-  const basePath = useTenantLink('/venues/')
+  const isProfileDisabled = useSwitchProfileDisabled()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
-  const venueSwitchSetting = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
-  const configProfiles = useConfigProfilesQuery({ params: { tenantId, venueId }, payload: {} })
+  const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
+    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
+    undefined, undefined, isSwitchRbacEnabled
+  )
+
+  const configProfiles = useConfigTemplateQueryFnSwitcher<ConfigurationProfile[]>(
+    useConfigProfilesQuery, useGetSwitchConfigProfileTemplatesQuery, isProfileDisabled, {}
+  )
+
   const [updateVenueSwitchSetting, {
-    isLoading: isUpdatingVenueSwitchSetting }] = useUpdateVenueSwitchSettingMutation()
+    isLoading: isUpdatingVenueSwitchSetting }] = useConfigTemplateMutationFnSwitcher(
+    useUpdateVenueSwitchSettingMutation, useUpdateVenueTemplateSwitchSettingMutation
+  )
 
   const [formState, setFormState] = useState<FormState>(defaultState)
   const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)
@@ -94,14 +115,14 @@ export function GeneralSettingForm () {
         configProfiles: configProfiles.data ?? []
       })
       setFormData({
-        profileId: data.profileId ?? [],
-        dns: data.dns ?? [],
+        profileId: data?.profileId ?? [],
+        dns: data?.dns ?? [],
         syslogEnabled: data?.syslogEnabled ?? false,
         syslogPrimaryServer: data?.syslogPrimaryServer || '',
         syslogSecondaryServer: data?.syslogSecondaryServer || ''
       })
       formRef?.current?.setFieldsValue({
-        dns: data.dns ?? []
+        dns: data?.dns ?? []
       })
     }
   }, [venueSwitchSetting, configProfiles])
@@ -149,14 +170,17 @@ export function GeneralSettingForm () {
         oldData: editContextData?.newData,
         isDirty: false
       })
-      await updateVenueSwitchSetting({ params: { tenantId, venueId }, payload: {
-        ...formRef?.current?.getFieldsValue(),
-        id: venueId,
-        profileId: formData?.profileId,
-        syslogEnabled: formData?.syslogEnabled,
-        syslogPrimaryServer: formData?.syslogPrimaryServer,
-        syslogSecondaryServer: formData?.syslogSecondaryServer
-      } })
+      await updateVenueSwitchSetting({
+        params: { tenantId, venueId },
+        payload: {
+          ...formRef?.current?.getFieldsValue(),
+          id: venueId,
+          profileId: formData?.profileId,
+          syslogEnabled: formData?.syslogEnabled,
+          syslogPrimaryServer: formData?.syslogPrimaryServer,
+          syslogSecondaryServer: formData?.syslogSecondaryServer
+        },
+        enableRbac: isSwitchRbacEnabled })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -200,6 +224,7 @@ export function GeneralSettingForm () {
               <Form.Item
                 label={$t({ defaultMessage: 'Configuration Profile' })}
                 validateFirst
+                hidden={isProfileDisabled}
                 children={
                   <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '12px', display: 'flex' }} >
@@ -344,4 +369,13 @@ export function getProfilesByType (profiles: ConfigurationProfile[], type: strin
 
 export function getProfileKeysByType (profiles: ConfigurationProfile[], type: string) {
   return profiles.filter(p => p.profileType === type).map(p => p.id)
+}
+
+export function useSwitchProfileDisabled (): boolean {
+  const { isTemplate } = useConfigTemplate()
+  const configTemplateVisibilityMap = useConfigTemplateVisibilityMap()
+  // eslint-disable-next-line max-len
+  const isRegularProfileTemplateEnabled = configTemplateVisibilityMap[ConfigTemplateType.SWITCH_REGULAR]
+
+  return isTemplate && !isRegularProfileTemplateEnabled
 }

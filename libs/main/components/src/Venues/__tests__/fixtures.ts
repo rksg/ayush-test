@@ -20,7 +20,15 @@ import {
   ConnectionMetering,
   BillingCycleType,
   TemplateScope,
-  MessageType, PassphraseFormatEnum, MacRegistrationPool
+  MessageType,
+  PassphraseFormatEnum,
+  MacRegistrationPool,
+  NetworkTypeEnum,
+  BasicServiceSetPriorityEnum,
+  RfBandUsageEnum,
+  BssMinimumPhyRateEnum,
+  PhyTypeConstraintEnum,
+  ManagementFrameMinimumPhyRateEnum
 } from '@acx-ui/rc/utils'
 
 export const successResponse = {
@@ -77,7 +85,7 @@ export const venueApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -287,7 +295,6 @@ export const autocompleteResult = {
 export const timezoneResult = {
   dstOffset: 3600,
   rawOffset: -28800,
-  status: 'OK',
   timeZoneId: 'America/Los_Angeles',
   timeZoneName: 'Pacific Daylight Time'
 }
@@ -589,7 +596,8 @@ export const venueNetworkList = {
       ssid: 'test_1',
       venues: {
         count: 0,
-        names: []
+        names: [],
+        ids: []
       },
       aps: 0,
       description: '',
@@ -605,7 +613,8 @@ export const venueNetworkList = {
       ssid: 'test_2',
       venues: {
         count: 0,
-        names: []
+        names: [],
+        ids: []
       },
       aps: 0,
       description: '',
@@ -623,7 +632,7 @@ export const venueNetworkApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -651,7 +660,7 @@ export const venuesApCompatibilitiesData = {
       incompatibleFeatures: [ {
         featureName: 'EXAMPLE-FEATURE-1',
         requiredFw: '7.0.0.0.123',
-        requiredModel: ['11be'],
+        supportedModelFamilies: ['Wi-Fi 6'],
         incompatibleDevices: [{
           firmware: '6.2.3.103.233',
           model: 'R550',
@@ -671,54 +680,57 @@ export const venuesApCompatibilitiesData = {
   ]
 }
 
+export const venueNetworkApGroupData = [
+  {
+    venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+    networkId: 'd556bb683e4248b7a911fdb40c307aa5',
+    apGroups: [
+      {
+        id: 'test',
+        apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+        radio: RadioEnum.Both,
+        isDefault: true,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationError: false
+      }
+    ],
+    isAllApGroups: false,
+    allApGroupsRadio: RadioEnum.Both
+  },
+  {
+    venueId: '45aa5ab71bd040be8c445be8523e0b6c',
+    networkId: 'cd922ec00f744a16b4b784f3305ec0aa',
+    apGroups: [
+      {
+        apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
+        radio: RadioEnum.Both,
+        isDefault: true,
+        validationErrorReachedMaxConnectedNetworksLimit: false,
+        validationErrorSsidAlreadyActivated: false,
+        validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+        validationError: false
+      }
+    ],
+    isAllApGroups: false,
+    allApGroupsRadio: RadioEnum.Both
+  }
+]
 
 export const venueNetworkApGroup = {
-  response: [
-    {
-      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
-      networkId: 'd556bb683e4248b7a911fdb40c307aa5',
-      apGroups: [
-        {
-          id: 'test',
-          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
-          radio: 'Both',
-          isDefault: true,
-          validationErrorReachedMaxConnectedNetworksLimit: false,
-          validationErrorSsidAlreadyActivated: false,
-          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
-          validationError: false
-        }
-      ],
-      isAllApGroups: false,
-      allApGroupsRadio: 'Both'
-    },
-    {
-      venueId: '45aa5ab71bd040be8c445be8523e0b6c',
-      networkId: 'cd922ec00f744a16b4b784f3305ec0aa',
-      apGroups: [
-        {
-          apGroupId: 'f9903daeeadb4af88969b32d185cbf27',
-          radio: 'Both',
-          isDefault: true,
-          validationErrorReachedMaxConnectedNetworksLimit: false,
-          validationErrorSsidAlreadyActivated: false,
-          validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
-          validationError: false
-        }
-      ],
-      isAllApGroups: false,
-      allApGroupsRadio: 'Both'
-    }
-  ]
+  response: venueNetworkApGroupData
 }
+
 
 export const networkDeepList = {
   response: [
     {
-      type: 'aaa',
+      type: NetworkTypeEnum.AAA,
       wlan: {
         wlanSecurity: WlanSecurityEnum.WPA3,
         advancedCustomization: {
+          bssPriority: BasicServiceSetPriorityEnum.HIGH,
           userUplinkRateLimiting: 0,
           userDownlinkRateLimiting: 0,
           totalUplinkRateLimiting: 0,
@@ -738,10 +750,10 @@ export const networkDeepList = {
           enableFastRoaming: false,
           mobilityDomainId: 1,
           radioCustomization: {
-            rfBandUsage: 'BOTH',
-            bssMinimumPhyRate: 'default',
-            phyTypeConstraint: 'OFDM',
-            managementFrameMinimumPhyRate: '6'
+            rfBandUsage: RfBandUsageEnum.BOTH,
+            bssMinimumPhyRate: BssMinimumPhyRateEnum._default,
+            phyTypeConstraint: PhyTypeConstraintEnum.OFDM,
+            managementFrameMinimumPhyRate: ManagementFrameMinimumPhyRateEnum._6
           },
           enableSyslog: false,
           clientInactivityTimeout: 120,
@@ -767,7 +779,8 @@ export const networkDeepList = {
           arpRequestRateLimit: 15,
           enableDhcpRequestRateLimit: true,
           dhcpRequestRateLimit: 15,
-          dnsProxyEnabled: false
+          dnsProxyEnabled: false,
+          vlanPool: null
         },
         vlanId: 1,
         ssid: 'test_2',
@@ -787,13 +800,15 @@ export const networkDeepList = {
       name: 'test_2',
       enableAuthProxy: false,
       enableAccountingProxy: false,
-      id: 'cd922ec00f744a16b4b784f3305ec0aa'
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      venues: []
     },
     {
-      type: 'psk',
+      type: NetworkTypeEnum.PSK,
       wlan: {
         wlanSecurity: WlanSecurityEnum.WPA2Personal,
         advancedCustomization: {
+          bssPriority: BasicServiceSetPriorityEnum.HIGH,
           userUplinkRateLimiting: 0,
           userDownlinkRateLimiting: 0,
           totalUplinkRateLimiting: 0,
@@ -812,10 +827,10 @@ export const networkDeepList = {
           enableFastRoaming: false,
           mobilityDomainId: 1,
           radioCustomization: {
-            rfBandUsage: 'BOTH',
-            bssMinimumPhyRate: 'default',
-            phyTypeConstraint: 'OFDM',
-            managementFrameMinimumPhyRate: '6'
+            rfBandUsage: RfBandUsageEnum.BOTH,
+            bssMinimumPhyRate: BssMinimumPhyRateEnum._default,
+            phyTypeConstraint: PhyTypeConstraintEnum.OFDM,
+            managementFrameMinimumPhyRate: ManagementFrameMinimumPhyRateEnum._6
           },
           enableSyslog: false,
           clientInactivityTimeout: 120,
@@ -841,7 +856,8 @@ export const networkDeepList = {
           arpRequestRateLimit: 15,
           enableDhcpRequestRateLimit: true,
           dhcpRequestRateLimit: 15,
-          dnsProxyEnabled: false
+          dnsProxyEnabled: false,
+          vlanPool: null
         },
         macAddressAuthentication: false,
         macAuthMacFormat: 'UpperDash',
@@ -867,6 +883,41 @@ export const networkDeepList = {
   ]
 }
 
+export const mockVenueNetworkData = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'test_1',
+      id: 'd556bb683e4248b7a911fdb40c307aa5',
+      vlan: 1,
+      nwSubType: 'psk',
+      ssid: 'test_1',
+      venues: { count: 0, names: [], ids: [] },
+      aps: 0,
+      description: '',
+      clients: 0,
+      activated: { isActivated: true, isDisabled: false, errors: [] },
+      deepNetwork: networkDeepList.response[1],
+      incompatible: 0
+    },
+    {
+      name: 'test_2',
+      id: 'cd922ec00f744a16b4b784f3305ec0aa',
+      vlan: 1,
+      nwSubType: 'aaa',
+      ssid: 'test_2',
+      venues: { count: 0, names: [], ids: [] },
+      aps: 0,
+      description: '',
+      clients: 0,
+      activated: { isActivated: false, isDisabled: false, errors: [] },
+      deepNetwork: networkDeepList.response[0],
+      incompatible: 0
+    }
+  ]
+}
+
 export const venueApsList = {
   fields: ['meshRole', 'serialNumber'],
   totalCount: 0,
@@ -885,6 +936,10 @@ export const venueRogueAp = {
   enabled: true,
   reportThreshold: 0,
   roguePolicyId: '9700ca95e4be4a22857f0e4b621a685f'
+}
+
+export const venueApTlsEnhancedKey = {
+  tlsKeyEnhancedModeEnabled: true
 }
 
 export const venueRoguePolicy = [
@@ -982,98 +1037,101 @@ export const rogueApPolicyNotDefaultProfile = {
   id: '9700ca95e4be4a22857f0e4b621a685f'
 }
 
-export const venueRoguePolicyList = [
-  {
-    name: 'Default profile',
-    rules: [
-      {
-        name: 'Same Network Rule',
-        type: 'SameNetworkRule',
-        classification: 'Malicious',
-        priority: 1
-      },
-      {
-        name: 'Mac Spoofing Rule',
-        type: 'MacSpoofingRule',
-        classification: 'Malicious',
-        priority: 2
-      },
-      {
-        name: 'SSID Spoofing Rule',
-        type: 'SsidSpoofingRule',
-        classification: 'Malicious',
-        priority: 3
-      },
-      {
-        name: 'RTS Abuse Rule',
-        type: 'RTSAbuseRule',
-        classification: 'Malicious',
-        priority: 4
-      },
-      {
-        name: 'CTS Abuse Rule',
-        type: 'CTSAbuseRule',
-        classification: 'Malicious',
-        priority: 5
-      },
-      {
-        name: 'Deauth Flood Rule',
-        type: 'DeauthFloodRule',
-        classification: 'Malicious',
-        priority: 6
-      },
-      {
-        name: 'Disassoc Flood Rule',
-        type: 'DisassocFloodRule',
-        classification: 'Malicious',
-        priority: 7
-      },
-      {
-        name: 'Excessive Power Rule',
-        type: 'ExcessivePowerRule',
-        classification: 'Malicious',
-        priority: 8
-      },
-      {
-        name: 'Null SSID Rule',
-        type: 'NullSSIDRule',
-        classification: 'Malicious',
-        priority: 9
-      },
-      {
-        name: 'Adhoc',
-        type: 'AdhocRule',
-        classification: 'Unclassified',
-        priority: 10
-      }
-    ],
-    id: 'ebb16f640edf4272bc56aef4b37fb630'
-  },
-  {
-    venues: [
-      {
-        id: '3db73a30cd06490aaf4bca01a1eb8894',
-        name: 'My-Venue'
-      }
-    ],
-    name: 'roguePolicy1',
-    rules: [
-      {
-        name: 'rule1',
-        type: 'AdhocRule',
-        classification: 'Malicious',
-        priority: 1
-      },
-      {
-        name: 'macSpoofing',
-        type: 'MacSpoofingRule',
-        classification: 'Malicious',
-        priority: 2
-      }
-    ],
-    id: '9700ca95e4be4a22857f0e4b621a685f'
-  }
-]
+export const venueRoguePolicyList = {
+  data: [
+    {
+      name: 'Default profile',
+      rules: [
+        {
+          name: 'Same Network Rule',
+          type: 'SameNetworkRule',
+          classification: 'Malicious',
+          priority: 1
+        },
+        {
+          name: 'Mac Spoofing Rule',
+          type: 'MacSpoofingRule',
+          classification: 'Malicious',
+          priority: 2
+        },
+        {
+          name: 'SSID Spoofing Rule',
+          type: 'SsidSpoofingRule',
+          classification: 'Malicious',
+          priority: 3
+        },
+        {
+          name: 'RTS Abuse Rule',
+          type: 'RTSAbuseRule',
+          classification: 'Malicious',
+          priority: 4
+        },
+        {
+          name: 'CTS Abuse Rule',
+          type: 'CTSAbuseRule',
+          classification: 'Malicious',
+          priority: 5
+        },
+        {
+          name: 'Deauth Flood Rule',
+          type: 'DeauthFloodRule',
+          classification: 'Malicious',
+          priority: 6
+        },
+        {
+          name: 'Disassoc Flood Rule',
+          type: 'DisassocFloodRule',
+          classification: 'Malicious',
+          priority: 7
+        },
+        {
+          name: 'Excessive Power Rule',
+          type: 'ExcessivePowerRule',
+          classification: 'Malicious',
+          priority: 8
+        },
+        {
+          name: 'Null SSID Rule',
+          type: 'NullSSIDRule',
+          classification: 'Malicious',
+          priority: 9
+        },
+        {
+          name: 'Adhoc',
+          type: 'AdhocRule',
+          classification: 'Unclassified',
+          priority: 10
+        }
+      ],
+      id: 'ebb16f640edf4272bc56aef4b37fb630'
+    },
+    {
+      venues: [
+        {
+          id: '3db73a30cd06490aaf4bca01a1eb8894',
+          name: 'My-Venue'
+        }
+      ],
+      name: 'roguePolicy1',
+      rules: [
+        {
+          name: 'rule1',
+          type: 'AdhocRule',
+          classification: 'Malicious',
+          priority: 1
+        },
+        {
+          name: 'macSpoofing',
+          type: 'MacSpoofingRule',
+          classification: 'Malicious',
+          priority: 2
+        }
+      ],
+      id: '9700ca95e4be4a22857f0e4b621a685f'
+    }
+  ],
+  totalCount: 2
+}
 
 export const configProfiles = [
   {
@@ -3130,6 +3188,13 @@ export const mockPropertyUnitList: NewTableResult<PropertyUnit> = {
       dpsks: [],
       personaId: 'persona-1',
       vni: 0
+    }, {
+      id: 'unit-id-2',
+      name: 'unit-2',
+      status: PropertyUnitStatus.ENABLED,
+      dpsks: [],
+      personaId: 'persona-2',
+      vni: 1
     }
   ]
 }

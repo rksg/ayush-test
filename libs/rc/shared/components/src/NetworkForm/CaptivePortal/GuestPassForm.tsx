@@ -11,6 +11,7 @@ import { Features, useIsSplitOn }                                               
 import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
+import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
@@ -19,6 +20,8 @@ import { RedirectUrlInput }                      from './RedirectUrlInput'
 import { BypassCaptiveNetworkAssistantCheckbox } from './SharedComponent/BypassCNA/BypassCaptiveNetworkAssistantCheckbox'
 import { WalledGardenTextArea }                  from './SharedComponent/WalledGarden/WalledGardenTextArea'
 
+
+const { useWatch } = Form
 
 export function GuestPassForm () {
   const {
@@ -29,7 +32,20 @@ export function GuestPassForm () {
   } = useContext(NetworkFormContext)
   const intl = useIntl()
   const form = Form.useFormInstance()
+  const { disableMLO } = useContext(MLOContext)
   const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
+
+  const [enableOwe] = [useWatch('enableOwe')]
+
+  useEffect(()=> {
+    if (enableOwe === true) {
+      disableMLO(false)
+    } else {
+      disableMLO(true)
+      form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+    }
+  },[enableOwe])
+
   useEffect(()=>{
     if((editMode || cloneMode) && data){
       form.setFieldsValue({ ...data })
@@ -67,10 +83,8 @@ export function GuestPassForm () {
           />
         </Form.Item>}
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass}
           enableDefaultWalledGarden={false} />
       </GridCol>
       <GridCol col={{ span: 14 }}>

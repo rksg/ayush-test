@@ -72,6 +72,7 @@ export function SwitchOverviewTab () {
 
       setSwitchDetail({
         ...switchDetailHeader,
+        description: switchData.description,
         venueDescription: venue.description,
         unitDetails: syncedStackMember
       })
@@ -129,19 +130,25 @@ export function SwitchOverviewTab () {
           currentSwitchDevice={currentSwitchDevice} />
       </Tabs.TabPane>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Ports' })} key='ports'>
-        <SwitchOverviewPorts />
+        <SwitchOverviewPorts
+          switchDetail={switchDetail}
+        />
       </Tabs.TabPane>
       {supportRoutedInterfaces &&
         <Tabs.TabPane tab={$t({ defaultMessage: 'Routed Interfaces' })} key='routeInterfaces'>
-          <SwitchOverviewRouteInterfaces />
+          <SwitchOverviewRouteInterfaces switchDetail={switchDetail} />
         </Tabs.TabPane>
       }
-      <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
-        <SwitchOverviewVLANs />
-      </Tabs.TabPane>
-      <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
-        <SwitchOverviewACLs />
-      </Tabs.TabPane>
+      {switchDetail &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'VLANs' })} key='vlans'>
+          <SwitchOverviewVLANs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
+      {switchDetail &&
+        <Tabs.TabPane tab={$t({ defaultMessage: 'ACLs' })} key='acls'>
+          <SwitchOverviewACLs switchDetail={switchDetail} />
+        </Tabs.TabPane>
+      }
     </Tabs>
   </>
 }

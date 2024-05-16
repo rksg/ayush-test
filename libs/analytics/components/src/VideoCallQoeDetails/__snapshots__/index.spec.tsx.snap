@@ -676,8 +676,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:28"
                               >
-                                <span>
-                                  10:28
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    10:28
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -851,8 +855,12 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:29"
                               >
-                                <span>
-                                  10:29
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    10:29
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -1068,7 +1076,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(5 776)"
                             />
@@ -1078,8 +1086,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(5 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-4 -8l4 0l0 16l-4 0Z"
@@ -1614,7 +1623,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(5 776)"
                             />
@@ -1624,8 +1633,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(5 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-5 -8l5 0l0 16l-5 0Z"
@@ -2194,7 +2204,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(6 776)"
                             />
@@ -2204,8 +2214,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(6 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-5 -8l5 0l0 16l-5 0Z"
@@ -2770,7 +2781,7 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(6 776)"
                             />
@@ -2780,8 +2791,9 @@ exports[`VideoCallQoe Details Page render the page properly 1`] = `
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(6 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-6 -8l6 0l0 16l-6 0Z"
@@ -5903,8 +5915,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="04:44"
                               >
-                                <span>
-                                  04:44
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    04:44
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -6082,8 +6098,12 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="04:43"
                               >
-                                <span>
-                                  04:43
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    04:43
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -6299,7 +6319,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(5 776)"
                             />
@@ -6309,8 +6329,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(5 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-5 -8l5 0l0 16l-5 0Z"
@@ -6815,7 +6836,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(5 776)"
                             />
@@ -6825,8 +6846,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(5 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-4 -8l4 0l0 16l-4 0Z"
@@ -7325,7 +7347,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(6 776)"
                             />
@@ -7335,8 +7357,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(6 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-6 -8l6 0l0 16l-6 0Z"
@@ -7826,7 +7849,7 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(6 776)"
                             />
@@ -7836,8 +7859,9 @@ exports[`VideoCallQoe Details Page render the page properly having bad/average q
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(6 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-5 -8l5 0l0 16l-5 0Z"
@@ -10705,8 +10729,12 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:28"
                               >
-                                <span>
-                                  10:28
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    10:28
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -10829,8 +10857,12 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="10:29"
                               >
-                                <span>
-                                  10:29
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    10:29
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -11046,7 +11078,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(5 776)"
                             />
@@ -11056,8 +11088,9 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(5 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-4 -8l4 0l0 16l-4 0Z"
@@ -11592,7 +11625,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(5 776)"
                             />
@@ -11602,8 +11635,9 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(5 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-5 -8l5 0l0 16l-5 0Z"
@@ -12172,7 +12206,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(6 776)"
                             />
@@ -12182,8 +12216,9 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(6 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-5 -8l5 0l0 16l-5 0Z"
@@ -12748,7 +12783,7 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(6 776)"
                             />
@@ -12758,8 +12793,9 @@ exports[`VideoCallQoe Details Page render the page properly when IS_MLISA_SA 1`]
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(6 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-6 -8l6 0l0 16l-6 0Z"
@@ -15896,8 +15932,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span>
-                                  05:08
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    05:08
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -16048,8 +16088,12 @@ exports[`VideoCallQoe Details Page render the page properly when call stats are 
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span>
-                                  05:08
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    05:08
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -17545,8 +17589,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span>
-                                  05:08
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    05:08
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -17697,8 +17745,12 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                                 class="ant-table-cell ant-table-cell-ellipsis"
                                 title="05:08"
                               >
-                                <span>
-                                  05:08
+                                <span
+                                  class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
+                                >
+                                  <span>
+                                    05:08
+                                  </span>
                                 </span>
                               </td>
                               <td
@@ -17999,7 +18051,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(5 776)"
                             />
@@ -18009,8 +18061,9 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(5 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-4 -8l4 0l0 16l-4 0Z"
@@ -18618,7 +18671,7 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               stroke-linecap="round"
                             />
                             <path
-                              d="M-1 -8l1 0l0 16l-1 0Z"
+                              d="M-4 -8l4 0l0 16l-4 0Z"
                               fill="none"
                               transform="translate(6 776)"
                             />
@@ -18628,8 +18681,9 @@ exports[`VideoCallQoe Details Page render the page properly without client MAC 1
                               style="font-size:10px;font-family:'Open Sans', sans-serif;font-weight:400;"
                               text-anchor="end"
                               transform="translate(6 776)"
+                              xml:space="preserve"
                             >
-                              0
+                              0 ms
                             </text>
                             <path
                               d="M-5 -8l5 0l0 16l-5 0Z"

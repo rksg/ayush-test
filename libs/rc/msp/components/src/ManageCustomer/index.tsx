@@ -28,8 +28,6 @@ import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import { SearchOutlined }                                         from '@acx-ui/icons'
 import {
-} from '@acx-ui/msp/services'
-import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
   useUpdateCustomerMutation,
@@ -41,7 +39,8 @@ import {
   useMspAssignmentSummaryQuery,
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
-  useMspCustomerListQuery
+  useMspCustomerListQuery,
+  usePatchCustomerMutation
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -54,7 +53,8 @@ import {
   MspEcDelegatedAdmins,
   MspIntegratorDelegated,
   AssignActionEnum,
-  MspEcTierEnum
+  MspEcTierEnum,
+  MspEcTierPayload
 } from '@acx-ui/msp/utils'
 import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
@@ -72,11 +72,12 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }              from '@acx-ui/types'
-import { useGetUserProfileQuery } from '@acx-ui/user'
-import { AccountType }            from '@acx-ui/utils'
+import { RolesEnum }             from '@acx-ui/types'
+import { useUserProfileContext } from '@acx-ui/user'
+import { AccountType }           from '@acx-ui/utils'
 
-import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
 import { SelectIntegratorDrawer } from '../SelectIntegratorDrawer'
 import { StartSubscriptionModal } from '../StartSubscriptionModal'
@@ -170,6 +171,8 @@ export function ManageCustomer () {
   const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -203,15 +206,17 @@ export function ManageCustomer () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [optionalEcAdmin, setOptionalEcAdmin] = useState(false)
+  const [originalTier, setOriginalTier] = useState('')
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
+  const [patchCustomer] = usePatchCustomerMutation()
 
   const { Option } = Select
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const isTrialEditMode = action === 'edit' && status === 'Trial'
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
@@ -251,15 +256,18 @@ export function ManageCustomer () {
   ] = useDisableMspEcSupportMutation()
 
   useEffect(() => {
+    if (ecSupport && ecSupport.length > 0 ) {
+      setEcSupport(true)
+    }
+  }, [ecSupport])
+
+  useEffect(() => {
     if (licenseSummary) {
       checkAvailableLicense(licenseSummary)
 
       if (isEditMode && data && licenseAssignment) {
         if (ecAdministrators) {
           setMspEcAdmins(ecAdministrators)
-        }
-        if (ecSupport && ecSupport.length > 0 ) {
-          setEcSupport(true)
         }
         const assigned = licenseAssignment.filter(en => en.mspEcTenantId === mspEcTenantId)
         setAssignedLicense(assigned)
@@ -291,6 +299,7 @@ export function ManageCustomer () {
           service_expiration_date: moment(data?.service_expiration_date),
           tier: data?.tier ?? MspEcTierEnum.Professional
         })
+        setOriginalTier(data?.tier ?? '')
         formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
         data?.is_active === 'true' ? setTrialActive(true) : setTrialActive(false)
         status === 'Trial' ? setTrialMode(true) : setTrialMode(false)
@@ -326,7 +335,7 @@ export function ManageCustomer () {
       setSubscriptionStartDate(moment())
       setSubscriptionEndDate(moment().add(30,'days'))
     }
-  }, [data, licenseSummary, licenseAssignment, ecSupport, userProfile, ecAdministrators])
+  }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
   useEffect(() => {
     if (delegatedAdmins && Administrators) {
@@ -603,7 +612,7 @@ export function ManageCustomer () {
         country: address.country,
         service_effective_date: today,
         service_expiration_date: expirationDate,
-        tier: createEcWithTierEnabled ? ecFormData.tier : undefined
+        tier: (createEcWithTierEnabled && !isPatchTierEnabled) ? ecFormData.tier : undefined
       }
       if (!isTrialMode && licAssignment.length > 0) {
         let assignLicense = {
@@ -613,8 +622,15 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
-
       await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+
+      if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
+        const patchTier: MspEcTierPayload = {
+          type: 'serviceTierStatus',
+          serviceTierStatus: ecFormData.tier
+        }
+        await patchCustomer({ params: { tenantId: mspEcTenantId }, payload: patchTier }).unwrap()
+      }
       navigate(linkToCustomers, { replace: true })
       return true
     } catch (error) {
@@ -637,7 +653,8 @@ export function ManageCustomer () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
         </UI.AdminList>
       )}
     </>
@@ -681,16 +698,22 @@ export function ManageCustomer () {
           <Paragraph>{mspEcAdmins[0].email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} {intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -777,30 +800,31 @@ export function ManageCustomer () {
     </>
   }
 
-  const showDataLossDialog = function (tier: RadioChangeEvent) {
-    showActionModal({
-      type: 'confirm',
-      title: intl.$t({
-        defaultMessage: 'Save'
-      }),
-      content: <><p>{intl.$t({
-        defaultMessage: `Changing Service Tier will impact available features.
-        Downgrade from Professional to Essentials may also result in data loss.
-        `
-      })}</p>
-      <p>{intl.$t({
-        defaultMessage: 'Are you sure you want to save the changes?'
-      })}</p>
-      </>,
-      okText: intl.$t({ defaultMessage: 'Save' }),
-      onCancel: () => {
-        if (tier.target.value === MspEcTierEnum.Essential) {
-          formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
-        } else {
-          formRef.current?.setFieldValue('tier', MspEcTierEnum.Essential)
+  const handleServiceTierChange = function (tier: RadioChangeEvent) {
+    if(isEditMode && createEcWithTierEnabled && originalTier !== tier.target.value) {
+      const modalContent = (
+        <>
+          <p>{intl.$t({ defaultMessage: `Changing Service Tier will impact available features. 
+          Downgrade from Professional to Essentials may also result in data loss.` })}</p>
+          <p>{intl.$t({ defaultMessage: 'Are you sure you want to save the changes?' })}</p>
+        </>
+      )
+      showActionModal({
+        type: 'confirm',
+        title: intl.$t({
+          defaultMessage: 'Save'
+        }),
+        content: modalContent,
+        okText: intl.$t({ defaultMessage: 'Save' }),
+        onCancel: () => {
+          if (tier.target.value === MspEcTierEnum.Essentials) {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Professional)
+          } else {
+            formRef.current?.setFieldValue('tier', MspEcTierEnum.Essentials)
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   const EcTierForm = () => {
@@ -809,14 +833,13 @@ export function ManageCustomer () {
       label={intl.$t({ defaultMessage: 'Service Tier' })}
       style={{ width: '300px' }}
       rules={[{ required: true }]}
-      initialValue={MspEcTierEnum.Professional}
       children={
         <Radio.Group>
           <Space direction='vertical'>
             {
               Object.entries(MspEcTierEnum).map(([label, value]) => {
                 return <Radio
-                  onChange={showDataLossDialog}
+                  onChange={handleServiceTierChange}
                   key={value}
                   value={value}
                   children={intl.$t({
@@ -850,6 +873,7 @@ export function ManageCustomer () {
           style={{ width: '300px' }}
           rules={[
             { required: true },
+            { max: 255 },
             { validator: (_, value) => emailRegExp(value) },
             { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
           ]}
@@ -860,6 +884,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'First Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}
@@ -870,6 +896,8 @@ export function ManageCustomer () {
           label={intl.$t({ defaultMessage: 'Last Name' })}
           rules={[
             { required: true },
+            { min: 2 },
+            { max: 64 },
             { validator: (_, value) => whitespaceOnlyRegExp(value) }
           ]}
           children={<Input />}
@@ -877,7 +905,9 @@ export function ManageCustomer () {
         />
         <Form.Item
           name='admin_role'
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
           style={{ width: '300px' }}
           rules={[{ required: true }]}
           initialValue={RolesEnum.PRIME_ADMIN}
@@ -885,10 +915,13 @@ export function ManageCustomer () {
             <Select>
               {
                 Object.entries(RolesEnum).map(([label, value]) => (
-                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER )
+                  !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.GUEST_MANAGER ||
+                    value === RolesEnum.TEMPLATES_ADMIN || value === RolesEnum.REPORTS_ADMIN
+                  )
                   && <Option
                     key={label}
-                    value={value}>{intl.$t(roleDisplayText[value])}
+                    value={value}>
+                    {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                   </Option>
                 ))
               }
@@ -1272,10 +1305,15 @@ export function ManageCustomer () {
           <Paragraph>{formData?.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
@@ -1368,6 +1406,8 @@ export function ManageCustomer () {
             style={{ width: '300px' }}
             rules={[
               { required: true },
+              { min: 2 },
+              { max: 255 },
               { validator: (_, value) => whitespaceOnlyRegExp(value) }
             ]}
             validateFirst
@@ -1424,6 +1464,8 @@ export function ManageCustomer () {
               style={{ width: '300px' }}
               rules={[
                 { required: true },
+                { min: 2 },
+                { max: 255 },
                 { validator: (_, value) => whitespaceOnlyRegExp(value) }
               ]}
               validateFirst
@@ -1480,12 +1522,18 @@ export function ManageCustomer () {
 
       </StepsFormLegacy>
 
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={selectedMspAdmins}
-        tenantId={mspEcTenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+      )}
       {drawerIntegratorVisible && <SelectIntegratorDrawer
         visible={drawerIntegratorVisible}
         tenantType={AccountType.MSP_INTEGRATOR}

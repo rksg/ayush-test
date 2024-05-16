@@ -294,48 +294,4 @@ describe('useMenuConfig', () => {
     const match = find(flattenConfig(result.current), target)
     expect(match).toMatchObject(target)
   })
-  it('should not open new tab for users page if ruckus-ai-users-toggle is enabled', () => {
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    const mockUserProfile = {
-      accountId: 'accountId',
-      selectedTenant: { permissions: defaultMockPermissions },
-      tenants: [
-        {
-          id: 'accountId',
-          permissions: defaultMockPermissions
-        }
-      ]
-    }
-    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig(), { route: true })
-    const target = {
-      openNewTab: false,
-      uri: '/analytics/admin/users'
-    }
-    const match = find(flattenConfig(result.current), target)
-    expect(match).toMatchObject(target)
-  })
-  it('should open new tab for users page if ruckus-ai-users-toggle is disabled', () => {
-    const mockUseUserProfileContext = getUserProfile as jest.Mock
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    const mockUserProfile = {
-      accountId: 'accountId',
-      selectedTenant: { permissions: defaultMockPermissions },
-      tenants: [
-        {
-          id: 'accountId',
-          permissions: defaultMockPermissions
-        }
-      ]
-    }
-    mockUseUserProfileContext.mockReturnValue(mockUserProfile)
-    const { result } = renderHook(() => useMenuConfig(), { route: true })
-    const target = {
-      openNewTab: true,
-      uri: '/analytics/admin/users'
-    }
-    const match = find(flattenConfig(result.current), target)
-    expect(match).toMatchObject(target)
-  })
 })

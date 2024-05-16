@@ -117,7 +117,12 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       <Table<MspEc>
         columns={columns}
         dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        settingsId='msp-apply-template-table'
         rowKey='id'
+        enableApiFilter={true}
         rowSelection={hasAccess() && {
           type: 'checkbox',
           onChange (selectedRowKeys, selRows) {
@@ -144,7 +149,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={$t({ defaultMessage: 'Apply Templates - RUCKUS End Customers' })}
+        title={$t({ defaultMessage: 'Apply Templates - Brand Properties' })}
         visible={true}
         onClose={onClose}
         footer={footer}
@@ -176,11 +181,12 @@ interface ApplyTemplateConfirmationDrawerProps {
 function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
   const { ecNames, templateNames, onBack, onApply, onCancel } = props
   const { $t } = useIntl()
+  const [loading, setLoading ] = useState(false)
 
   const content =
     <Space direction='vertical'>
       {/* eslint-disable-next-line max-len */}
-      <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated venues.' }) }</p>
+      <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated <venuePlural></venuePlural>.' }) }</p>
       <p>{ $t({ defaultMessage: 'Are you sure you want to continue?' }) }</p>
       <UI.EcListContainer>{ ecNames.map(name => <li key={name}>{name}</li>) }</UI.EcListContainer>
       {/* eslint-disable-next-line max-len */}
@@ -191,7 +197,17 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
     <Button onClick={onBack}>
       {$t({ defaultMessage: 'Back' })}
     </Button>
-    <Button onClick={onApply} type='primary'>
+    <Button
+      onClick={async () => {
+        setLoading(true)
+        try {
+          await onApply()
+        } finally {
+          setLoading(false)
+        }
+      }}
+      loading={loading}
+      type='primary'>
       {$t({ defaultMessage: 'Apply Template' })}
     </Button>
     <Button onClick={onCancel}>
