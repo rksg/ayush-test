@@ -12,8 +12,8 @@ import {
   useGetVenueApModelsQuery,
   useUpdateVenueLedOnMutation,
   useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
-import { ApiVersionEnum, VenueLed } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }   from '@acx-ui/react-router-dom'
+import { VenueLed }               from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, EditContext } from '../../../index'
 
@@ -29,11 +29,10 @@ export function AccessPointLED () {
   const navigate = useNavigate()
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
   const venueLed = useGetVenueLedOnQuery(
-    { params: { tenantId, venueId }, payload: { rbacApiVersion } }
+    { params: { tenantId, venueId }, enableRbac: isUseRbacApi }
   )
   const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
@@ -232,7 +231,7 @@ export function AccessPointLED () {
         await updateVenueLedOn({
           params: { tenantId, venueId },
           payload: tableData.filter(data => data.model),
-          rbacApiVersionPayload: { rbacApiVersion }
+          enableRbac: isUseRbacApi
         })
       } catch (error) {
         console.log(error) // eslint-disable-line no-console

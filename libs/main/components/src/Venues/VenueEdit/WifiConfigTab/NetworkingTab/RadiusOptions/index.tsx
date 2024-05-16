@@ -14,8 +14,6 @@ import {
   useUpdateVenueTemplateRadiusOptionsMutation
 } from '@acx-ui/rc/services'
 import {
-  ApiVersionEnum,
-  ApiVersionType,
   VenueRadiusOptions,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
@@ -33,7 +31,6 @@ export function RadiusOptions () {
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
-  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -47,7 +44,7 @@ export function RadiusOptions () {
   const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>(
     useGetVenueRadiusOptionsQuery,
     useGetVenueTemplateRadiusOptionsQuery,
-    rbacApiVersion
+    isUseRbacApi
   )
 
   const [updateVenueRadiusOptions, { isLoading: isUpdatingVenueRadiusOptions }] =
@@ -72,15 +69,14 @@ export function RadiusOptions () {
   const handleUpdateRadiusOptions = async () => {
     try {
       const formData = form.getFieldsValue()
-      let payload: (ApiVersionType & VenueRadiusOptions) = {
+      let payload: VenueRadiusOptions = {
         overrideEnabled: formData.overrideEnabled,
         nasIdType: formData.nasIdType,
         nasRequestTimeoutSec: formData.nasRequestTimeoutSec,
         nasMaxRetry: formData.nasMaxRetry,
         nasReconnectPrimaryMin: formData.nasReconnectPrimaryMin,
         calledStationIdType: formData.calledStationIdType,
-        singleSessionIdAccounting: formData.singleSessionIdAccounting,
-        rbacApiVersion
+        singleSessionIdAccounting: formData.singleSessionIdAccounting
       }
 
       if (formData.nasIdDelimiter) {
@@ -93,7 +89,8 @@ export function RadiusOptions () {
 
       await updateVenueRadiusOptions({
         params: { venueId },
-        payload: payload
+        payload: payload,
+        enableRbac: isUseRbacApi
       }).unwrap()
 
     } catch (error) {

@@ -755,35 +755,7 @@ export interface ApManagementVlan {
 	keepAp?: boolean
 }
 
-export interface MdnsFencingWirelessRule {
-  fencingRange: string//'SAME_AP' | 'ONE_HOP_AP'
-}
 
-export interface MdnsFencingWiredRule {
-  name: string,
-  fencingRange: string, //'SAME_AP' | 'ONE_HOP_AP',
-  closestApMac: string,
-  deviceMacAddresses: string[]
-}
-
-export interface MdnsFencingService {
-  service: string,
-  customServiceName?: string,
-  description: string,
-  wirelessEnabled: boolean,
-  wirelessRule?: MdnsFencingWirelessRule,
-  wiredEnabled: boolean,
-  wiredRules?: MdnsFencingWiredRule[],
-  customMappingEnabled: boolean,
-  customStrings?: string[],
-  rowId?: string
-}
-
-export type VenueMdnsFencingPolicy = {
-  enabled: boolean,
-  services?: MdnsFencingService[] // for old API
-  rules?: MdnsFencingService[] // for rbac API
-}
 
 export enum ShowTopologyFloorplanOn {
 	VENUE_OVERVIEW='VENUE_OVERVIEW',

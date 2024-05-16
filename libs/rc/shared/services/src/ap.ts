@@ -59,9 +59,9 @@ import {
   ApManagementVlan,
   ApFeatureSet,
   ApAntennaTypeSettings,
-  ApiVersionType,
   GetApiVersionHeader,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -720,10 +720,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
         const req = createHttpRequest(urlsInfo.getApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req
@@ -743,16 +744,15 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion, ...config } = payload as (ApiVersionType & ApDirectedMulticast)
-        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
 
         const req = createHttpRequest(urlsInfo.updateApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: configPayload
+          body: enableRbac? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]

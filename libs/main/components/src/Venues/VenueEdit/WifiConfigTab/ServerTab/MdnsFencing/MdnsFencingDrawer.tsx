@@ -26,10 +26,10 @@ export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
   const isEditMode = !isEmpty(currentService)
 
   useEffect(() => {
-    if (form) {
+    if (visible && form) {
       form.setFieldsValue(currentService)
     }
-  }, [currentService, form])
+  }, [currentService, form, visible])
 
 
   const content = <MdnsFencingServiceForm form={form} />

@@ -16,7 +16,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ApDirectedMulticast,
-  ApiVersionEnum,
   VenueDirectedMulticast,
   VenueExtended } from '@acx-ui/rc/utils'
 
@@ -30,7 +29,6 @@ export function DirectedMulticast () {
   const { tenantId, serialNumber } = useParams()
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = (isUseRbacApi)? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -45,7 +43,7 @@ export function DirectedMulticast () {
 
   const directedMulticast = useGetApDirectedMulticastQuery({
     params: { venueId, serialNumber },
-    payload: { rbacApiVersion }
+    enableRbac: isUseRbacApi
   }, { skip: !venueId })
 
   const [updateApDirectedMulticast, { isLoading: isUpdatingApDirectedMulticast }] =
@@ -94,7 +92,7 @@ export function DirectedMulticast () {
           params: { tenantId, venueId } }, true).unwrap())
         const venueDirectedMulticastData = (await getVenueDirectedMulticast({
           params: { tenantId, venueId },
-          payload: { rbacApiVersion }
+          enableRbac: isUseRbacApi
         }, true).unwrap())
 
         setVenue(apVenue)
@@ -155,8 +153,7 @@ export function DirectedMulticast () {
       const isUseVenue = isUseVenueSettingsRef.current
       const payload = {
         ...values,
-        useVenueSettings: isUseVenue,
-        rbacApiVersion
+        useVenueSettings: isUseVenue
       }
 
       if (isUseVenue && !isUseRbacApi) {
@@ -166,7 +163,8 @@ export function DirectedMulticast () {
       } else {
         await updateApDirectedMulticast({
           params: { venueId, serialNumber },
-          payload
+          payload,
+          enableRbac: isUseRbacApi
         }).unwrap()
       }
 

@@ -19,7 +19,6 @@ import {
   useUpdateVenueTemplateMdnsFencingMutation
 } from '@acx-ui/rc/services'
 import {
-  ApiVersionEnum,
   MdnsFencingService,
   useConfigTemplate,
   VenueMdnsFencingPolicy
@@ -48,7 +47,6 @@ export function MdnsFencing () {
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
-  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -61,7 +59,7 @@ export function MdnsFencing () {
   const getVenueMdnsFencing = useVenueConfigTemplateQueryFnSwitcher<VenueMdnsFencingPolicy>(
     useGetVenueMdnsFencingQuery,
     useGetVenueTemplateMdnsFencingQuery,
-    rbacApiVersion
+    isUseRbacApi
   )
 
   const [updateVenueMdnsFencing, { isLoading: isUpdatingVenueMdnsFencing }] =
@@ -160,17 +158,16 @@ export function MdnsFencing () {
 
       const payload = (isUseRbacApi)? {
         enabled: enableMdnsFencing,
-        rules: newServices,
-        rbacApiVersion
+        rules: newServices
       } : {
         enabled: enableMdnsFencing,
-        services: newServices,
-        rbacApiVersion
+        services: newServices
       }
 
       await updateVenueMdnsFencing({
         params: { venueId },
-        payload
+        payload,
+        enableRbac: isUseRbacApi
       }).unwrap()
 
     } catch (error) {

@@ -19,7 +19,6 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  ApiVersionEnum,
   usePolicyListBreadcrumb,
   RbacApSnmpPolicy
 } from '@acx-ui/rc/utils'
@@ -51,14 +50,14 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = isUseRbacApi ? ApiVersionEnum.v1 : undefined
+
   const params = useParams()
   const { editMode } = props
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
-  const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.SNMP_AGENT)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.SNMP_AGENT)
   //eslint-disable-next-line
-  const { data } = useGetApSnmpPolicyQuery({ params, payload: { rbacApiVersion } }, { skip: !editMode })
+  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 
@@ -119,14 +118,12 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   const handleSaveApSnmpAgentPolicy = async () => {
     try {
-      const payload = { ...cloneDeep(state), ...(isUseRbacApi && { rbacApiVersion }) }
+      const payload = cloneDeep(state)
       if (isDataValid(payload)) {
         if (!editMode) {
-          await createApSnmpPolicy({ params, payload }).unwrap()
-          // const results = await createApSnmpPolicy({ params, payload }).unwrap()
-          // const response = results.response as { id: string }
+          await createApSnmpPolicy({ params, payload, enableRbac: isUseRbacApi }).unwrap()
         } else {
-          await updateApSnmpPolicy({ params, payload }).unwrap()
+          await updateApSnmpPolicy({ params, payload, enableRbac: isUseRbacApi }).unwrap()
         }
 
         navigate(linkToPolicies, { replace: true })

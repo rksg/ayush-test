@@ -18,8 +18,14 @@ import {
   useUpdateVenueExternalAntennaMutation,
   useUpdateVenueTemplateExternalAntennaMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, ApiVersionEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                              from '@acx-ui/react-router-dom'
+import {
+  ApAntennaTypeEnum,
+  CapabilitiesApModel,
+  ExternalAntenna,
+  VeuneApAntennaTypeSettings,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext }                                                                from '../..'
 import ApModelPlaceholder                                                                  from '../../../assets/images/aps/ap-model-placeholder.png'
@@ -53,13 +59,12 @@ export function ExternalAntennaSection () {
   const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQueryFnSwitcher()
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = (isUseRbacApi)? ApiVersionEnum.v1 : undefined
 
   const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } =
     useVenueConfigTemplateQueryFnSwitcher<ExternalAntenna[]>(
       useGetVenueExternalAntennaQuery,
       useGetVenueTemplateExternalAntennaQuery,
-      rbacApiVersion
+      isUseRbacApi
     )
 
   const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] =
@@ -73,8 +78,11 @@ export function ExternalAntennaSection () {
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
     try {
-      const rbacApiVersionPayload = { rbacApiVersion }
-      await updateVenueExternalAntenna({ params, payload: [ ...data ], rbacApiVersionPayload })
+      await updateVenueExternalAntenna({
+        params,
+        payload: [ ...data ],
+        enableRbac: isUseRbacApi
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

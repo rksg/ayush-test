@@ -16,8 +16,7 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  VenueApSnmpSettings,
-  ApiVersionEnum
+  VenueApSnmpSettings
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -34,7 +33,6 @@ export function ApSnmp () {
   const toPolicyPath = useTenantLink('')
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = (isUseRbacApi)? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -49,7 +47,7 @@ export function ApSnmp () {
   useState({} as VenueApSnmpSettings)
 
   // eslint-disable-next-line max-len
-  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, payload: { rbacApiVersion } })
+  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
   const RetrievedVenueApSnmpAgentOptions =
    RetrievedVenueApSnmpAgentList?.data?.map(m => ({ label: m.policyName, value: m.id })) ?? []
 
@@ -109,9 +107,7 @@ export function ApSnmp () {
   }
 
   const updateVenueApSnmpSetting = async (data?: VenueApSnmpSettings) => {
-
     try {
-
       // Condition guard, if user didn't change anything, don't send API
       if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
         showActionModal({
@@ -146,6 +142,7 @@ export function ApSnmp () {
   const discardVenuedApSnmpChanges = async (oldData : VenueApSnmpSettings) => {
     setEnableApSnmp(oldData.enableApSnmp ?? false)
   }
+
   return ( <Loader states={[{
     isLoading: RetrievedVenueApSnmpAgentList.isLoading,
     isFetching: isUpdatingApSnmpSettings

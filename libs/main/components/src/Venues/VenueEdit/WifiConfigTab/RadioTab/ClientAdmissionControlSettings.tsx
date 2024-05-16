@@ -17,7 +17,7 @@ import {
   useUpdateVenueClientAdmissionControlMutation,
   useUpdateVenueTemplateClientAdmissionControlMutation
 } from '@acx-ui/rc/services'
-import { ApiVersionEnum, ApiVersionType, VenueClientAdmissionControl } from '@acx-ui/rc/utils'
+import { VenueClientAdmissionControl, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { VenueEditContext }                                                                from '../..'
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
@@ -40,8 +40,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   const minClientThroughput24GFieldName = 'clientAdmissionControlMinClientThroughput24G'
   const minClientThroughput50GFieldName = 'clientAdmissionControlMinClientThroughput50G'
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
   const [ enable24G, enable50G ] = [
     useWatch<boolean>(enable24GFieldName),
@@ -61,7 +61,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   const getClientAdmissionControl = useVenueConfigTemplateQueryFnSwitcher<VenueClientAdmissionControl>(
     useGetVenueClientAdmissionControlQuery,
     useGetVenueTemplateClientAdmissionControlQuery,
-    rbacApiVersion
+    isUseRbacApi
   )
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -106,7 +106,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
 
   const handleUpdateClientAdmissionControl = async (callback?: () => void) => {
     try {
-      const payload: (ApiVersionType & VenueClientAdmissionControl) = {
+      const payload: VenueClientAdmissionControl = {
         enable24G: form.getFieldValue(enable24GFieldName),
         enable50G: form.getFieldValue(enable50GFieldName),
         minClientCount24G: form.getFieldValue(minClientCount24GFieldName),
@@ -114,12 +114,12 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
         maxRadioLoad24G: form.getFieldValue(maxRadioLoad24GFieldName),
         maxRadioLoad50G: form.getFieldValue(maxRadioLoad50GFieldName),
         minClientThroughput24G: form.getFieldValue(minClientThroughput24GFieldName),
-        minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName),
-        rbacApiVersion
+        minClientThroughput50G: form.getFieldValue(minClientThroughput50GFieldName)
       }
       await updateClientAdmissionControl({
         params: { venueId },
         payload,
+        enableRbac: isUseRbacApi,
         callback: callback
       }).unwrap()
 

@@ -76,9 +76,10 @@ import {
   downloadCertExtension,
   CertificateAcceptType,
   RbacApSnmpPolicy,
-  ApiVersionType,
   ApSnmpRbacUrls,
-  RbacApSnmpViewModelData
+  RbacApSnmpViewModelData,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }     from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -1646,21 +1647,20 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicyList: build.query<ApSnmpPolicy[], RequestPayload>({
-      async queryFn ({ params, payload }, _api, _extraOptions, fetchWithBQ) {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        if (rbacApiVersion) {
+      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+        if (enableRbac) {
+          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
           let result: ApSnmpPolicy[] = []
-          const req = {
-            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, RKS_NEW_UI),
-            body: {}
-          }
-          const res = await fetchWithBQ(req)
+          const snmpListReq = createHttpRequest(
+            ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader)
+
+          const res = await fetchWithBQ(snmpListReq)
           const tableResult = res.data as TableResult<RbacApSnmpViewModelData>
           const rbacApSnmpViewModel = tableResult.data
 
           const policies: Promise<RbacApSnmpPolicy>[] = rbacApSnmpViewModel.map(async (profile) => {
             // eslint-disable-next-line max-len
-            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy, { profileId: profile.id }, RKS_NEW_UI)
+            const req = createHttpRequest(ApSnmpRbacUrls.getApSnmpPolicy, { profileId: profile.id }, apiCustomHeader)
             const res = await fetchWithBQ(req)
             return res.data as RbacApSnmpPolicy
           })
@@ -1702,10 +1702,16 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpPolicy: build.query<ApSnmpPolicy | RbacApSnmpPolicy, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        let url = rbacApiVersion ? ApSnmpRbacUrls.getApSnmpPolicy : ApSnmpUrls.getApSnmpPolicy
-        const req = createHttpRequest(url, { ...params, profileId: params?.policyId }, RKS_NEW_UI)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
+        const customParams = {
+          ...params,
+          profileId: params?.policyId
+        }
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getApSnmpPolicy, customParams, apiCustomHeader)
         return {
           ...req
         }
@@ -1714,38 +1720,54 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     addApSnmpPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        let url = rbacApiVersion ? ApSnmpRbacUrls.addApSnmpPolicy : ApSnmpUrls.addApSnmpPolicy
-        let rbacParams = { ...params, ...(rbacApiVersion && { profileId: params?.policyId }) }
-        const req = createHttpRequest(url, rbacParams , RKS_NEW_UI)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
+        const customParams = {
+          ...params,
+          profileId: params?.policyId
+        }
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.addApSnmpPolicy, customParams , apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: enableRbac? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     updateApSnmpPolicy: build.mutation<ApSnmpPolicy, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        let url = rbacApiVersion ? ApSnmpRbacUrls.updateApSnmpPolicy : ApSnmpUrls.updateApSnmpPolicy
-        let rbacParams = { ...params, ...(rbacApiVersion && { profileId: params?.policyId }) }
-        const req = createHttpRequest(url, rbacParams, RKS_NEW_UI)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
+        const customParams = {
+          ...params,
+          profileId: params?.policyId
+        }
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.updateApSnmpPolicy, customParams, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: enableRbac? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     deleteApSnmpPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        let url = rbacApiVersion ? ApSnmpRbacUrls.deleteApSnmpPolicy : ApSnmpUrls.deleteApSnmpPolicy
-        const req = createHttpRequest(url, params, RKS_NEW_UI)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? ApSnmpRbacUrls : ApSnmpUrls
+        const customParams = {
+          ...params,
+          profileId: params?.policyId
+        }
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.deleteApSnmpPolicy, customParams, apiCustomHeader)
         return {
           ...req
         }
@@ -1754,11 +1776,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // TODO: Change RBAC API (API Done, Testing pending)
     getApUsageByApSnmp: build.query<TableResult<ApSnmpApUsage>, RequestPayload>({
-      async queryFn ({ params, payload }, _api, _extraOptions, fetchWithBQ) {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        if (rbacApiVersion) {
+      async queryFn ({ params, payload, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+        if (enableRbac) {
+          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
           const req = {
-            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, RKS_NEW_UI),
+            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
             body: {
               filters: {
                 id: [params?.policyId]
@@ -1783,9 +1805,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             data: formattedData
           }
           return { data: result }
-        }
 
-        else {
+        } else {
           const req = {
             ...createHttpRequest(ApSnmpUrls.getApUsageByApSnmpPolicy, params, RKS_NEW_UI),
             body: payload
