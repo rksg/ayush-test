@@ -10,9 +10,9 @@ import {
 import { useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
-  EPDG, generateServicePageHeaderTitle,
+  EPDG, useServicePageHeaderTitle,
   QosPriorityEnum, ServiceOperation, ServiceType,
-  useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateMutationFnSwitcher,
   useServiceListBreadcrumb, useServicePreviousPath
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
@@ -26,7 +26,6 @@ import WifiCallingSettingForm from './WifiCallingSettingForm'
 export const WifiCallingConfigureForm = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
@@ -60,6 +59,7 @@ export const WifiCallingConfigureForm = () => {
   })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
+  const pageTitle = useServicePageHeaderTitle(true, ServiceType.WIFI_CALLING)
 
   const handleUpdateWifiCallingService = async () => {
     try {
@@ -76,7 +76,7 @@ export const WifiCallingConfigureForm = () => {
   return (
     <WifiCallingFormContext.Provider value={{ state, dispatch }}>
       <PageHeader
-        title={generateServicePageHeaderTitle(true, isTemplate, ServiceType.WIFI_CALLING)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
       <StepsForm<CreateNetworkFormFields>

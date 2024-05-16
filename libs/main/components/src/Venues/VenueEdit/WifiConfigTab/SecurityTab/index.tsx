@@ -31,6 +31,7 @@ import {
   useUpdateVenueTemplateDoSProtectionMutation
 } from '@acx-ui/rc/services'
 import {
+  ApiVersionEnum,
   ConfigTemplateType,
   redirectPreviousPage,
   useConfigTemplate,
@@ -93,6 +94,8 @@ export function SecurityTab () {
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
@@ -116,7 +119,8 @@ export function SecurityTab () {
 
   const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
     useGetDenialOfServiceProtectionQuery,
-    useGetVenueTemplateDoSProtectionQuery
+    useGetVenueTemplateDoSProtectionQuery,
+    rbacApiVersion
   )
 
   const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
@@ -194,7 +198,8 @@ export function SecurityTab () {
           enabled: data?.dosProtectionEnabled,
           blockingPeriod: data?.blockingPeriod,
           checkPeriod: data?.checkPeriod,
-          failThreshold: data?.failThreshold
+          failThreshold: data?.failThreshold,
+          rbacApiVersion
         }
         await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
         setTriggerDoSProtection(false)

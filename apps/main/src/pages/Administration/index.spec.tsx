@@ -81,6 +81,12 @@ jest.mock('./Subscriptions', () => ({
     return <div data-testid='mocked-Subscriptions'></div>
   }
 }))
+jest.mock('@acx-ui/analytics/components', () => {
+  const sets = Object
+    .keys(jest.requireActual('@acx-ui/analytics/components'))
+    .map(key => [key, () => <div data-testid={key} />])
+  return Object.fromEntries(sets)
+})
 describe('Administration page', () => {
   let params: { tenantId: string, activeTab: string } =
   { tenantId: fakeUserProfile.tenantId, activeTab: 'accountSettings' }

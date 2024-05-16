@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -58,6 +58,15 @@ describe('AdvancedTab', () => {
       rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
       rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      // RBAC API
+      rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json(venueLed))),
+      rest.put(CommonRbacUrlsInfo.updateVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
+        (_, res, ctx) => res(ctx.json(venueBssColoring))),
+      rest.put(WifiRbacUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
