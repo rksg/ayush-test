@@ -149,7 +149,7 @@ function DataGuardLoader (props: React.PropsWithChildren) {
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        (isCustomeRole ? false : !Boolean(userProfile.allowedOperations.length)) ||
+        // (isCustomeRole ? false : !Boolean(userProfile.allowedOperations.length)) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}

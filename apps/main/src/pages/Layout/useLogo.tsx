@@ -13,8 +13,10 @@ export function useLogo (tenantId: string | undefined): React.ReactNode {
   return useMemo(() => {
     if (mspEcProfile) {
       if (isMspEc(mspEcProfile) && mspLogo && Boolean(mspLogo.logo_url)) {
+        console.log(mspLogo.logo_url)
         return <img src={mspLogo!.logo_url} alt={mspEcProfile.msp_label} />
       }
+      console.log('icon logo')
       if (!isMspEc(mspEcProfile) || mspLogo) return <Logo />
     }
     return null
