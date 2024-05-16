@@ -23,7 +23,7 @@ import {
   checkObjectNotExists,
   hasGraveAccentAndDollarSign,
   TableResult,
-  trailingNorLeadingSpaces,
+  trailingNorLeadingSpaces, useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
@@ -52,14 +52,17 @@ const apGroupsListPayload = {
 export function ApGroupGeneralTab () {
   const { $t } = useIntl()
   const { tenantId, action, apGroupId } = useParams()
-  const { isEditMode, isApGroupTableFlag, setEditContextData } = useContext(ApGroupEditContext)
+  const { isTemplate } = useConfigTemplate()
+  const {
+    isEditMode, isApGroupTableFlag, editContextData, setEditContextData
+  } = useContext(ApGroupEditContext)
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = usePathBasedOnConfigTemplate('/devices/')
-  const navigatePathName = (isApGroupTableFlag)?
-    `${basePath.pathname}/wifi/apgroups` :
-    `${basePath.pathname}/wifi`
+  const basePath = usePathBasedOnConfigTemplate('/devices/', '/templates')
+  const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
+    ? `${basePath.pathname}/wifi/apgroups`
+    : `${basePath.pathname}/wifi`)
 
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const oldFormDataRef = useRef<AddApGroup>()
@@ -176,10 +179,12 @@ export function ApGroupGeneralTab () {
         payload.apSerialNumbers = payload.apSerialNumbers.map(i => { return { serialNumber: i } })
       }
 
-      if (isEditMode) {
-        await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
-      } else {
-        await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
+      if (!editContextData.isDirty) {
+        if (isEditMode) {
+          await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
+        } else {
+          await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
+        }
       }
 
       setEditContextData({
@@ -188,7 +193,7 @@ export function ApGroupGeneralTab () {
         isDirty: false
       })
 
-      if (!isEditMode || !isApGroupTableFlag) {
+      if (!isEditMode || !isApGroupTableFlag || isTemplate) {
         navigate(navigatePathName, { replace: true })
       }
     } catch (error) {
