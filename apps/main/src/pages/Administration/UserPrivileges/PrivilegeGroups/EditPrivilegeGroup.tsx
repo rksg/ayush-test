@@ -124,6 +124,7 @@ export function EditPrivilegeGroup () {
   const [selectedVenues, setVenues] = useState([] as Venue[])
   const [selectedCustomers, setCustomers] = useState([] as MspEcWithVenue[])
   const [displayMspScope, setDisplayMspScope] = useState(false)
+  const [disableNameChange, setDisableNameChange] = useState(false)
 
   const navigate = useNavigate()
   const { action, groupId } = useParams()
@@ -265,6 +266,8 @@ export function EditPrivilegeGroup () {
         ? ChoiceCustomerEnum.SPECIFIC_CUSTOMER : ChoiceCustomerEnum.ALL_CUSTOMERS)
       form.setFieldValue('mspcustomers', ecCustomersWithVenue.length > 0
         ? ChoiceCustomerEnum.SPECIFIC_CUSTOMER : ChoiceCustomerEnum.ALL_CUSTOMERS)
+      const memberCount = privilegeGroup?.memberCount || 0
+      setDisableNameChange(memberCount > 0)
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 
@@ -486,7 +489,7 @@ export function EditPrivilegeGroup () {
                 },
                 { validator: (_, value) => excludeSpaceRegExp(value) }
               ]}
-              children={<Input />}
+              children={<Input disabled={disableNameChange} />}
             />
             <Form.Item
               name='description'
