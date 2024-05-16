@@ -629,13 +629,12 @@ export const wiredKPIsForTab = () => {
       kpis: [
         // 'portUtilization',
         // 'uplinkPortUtilization',
-        // 'interfaceAnamolies',
+        'switchInterfaceAnomalies'
         // 'bcmcTraffic'
       ]
     },
     infrastructure: {
       kpis: [
-        'switchInterfaceAnomalies',
         'switchReachability',
         'switchMemoryUtilization',
         'switchCpuUtilization',
