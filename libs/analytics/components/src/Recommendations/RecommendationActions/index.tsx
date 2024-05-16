@@ -17,6 +17,7 @@ import {
 } from '@acx-ui/icons'
 import { useVenueNetworkListV2Query } from '@acx-ui/rc/services'
 
+import { codes }                      from '../config'
 import {
   Recommendation,
   RecommendationListItem,
@@ -307,14 +308,13 @@ export const isCrrmOptimizationMatched = (
   _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
     === _.get(preferences, 'crrmFullOptimization', true)
 
-const isContinuosRecommendation = (code: Recommendation['code']) =>
-  code.startsWith('c-crrm-') || code.startsWith('c-probeflex-')
 
 export const getAvailableActions = (
   recommendation: RecommendationActionType,
   isRecommendationRevertEnabled: boolean,
   showTextOnly?: boolean) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
+  const isContinuos = codes[code].continuos
   const props = { ...recommendation, showTextOnly }
   if (isMuted) {
     return [
@@ -360,10 +360,7 @@ export const getAvailableActions = (
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(isRecommendationRevertEnabled &&
-              appliedOnce &&
-              isContinuosRecommendation(recommendation.code)
-            ),
+            disabled: !(isRecommendationRevertEnabled && appliedOnce && isContinuos),
             type: 'Revert',
             initialDate: 'futureDate'
           })
@@ -409,9 +406,7 @@ export const getAvailableActions = (
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(isRecommendationRevertEnabled &&
-              isContinuosRecommendation(recommendation.code)
-            ),
+            disabled: !(isRecommendationRevertEnabled && isContinuos),
             type: 'Revert',
             initialDate: 'futureDate'
           })
