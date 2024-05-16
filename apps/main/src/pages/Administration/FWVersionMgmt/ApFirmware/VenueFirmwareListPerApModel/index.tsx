@@ -14,9 +14,10 @@ import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedules
 import { PreferencesDialog }                                                                          from '../../PreferencesDialog'
 import * as UI                                                                                        from '../../styledComponents'
 
-import { ChangeSchedulePerApModelDialog }                                                                                  from './ChangeScheduleDialog'
-import { UpdateNowPerApModelDialog }                                                                                       from './UpdateNowDialog'
-import { renderCurrentFirmwaresColumn, useChangeScheduleVisiblePerApModel, useUpdateNowPerApModel, useUpgradePerferences } from './venueFirmwareListPerApModelUtils'
+import { ChangeSchedulePerApModelDialog }                                                                                                          from './ChangeScheduleDialog'
+import { DowngradePerApModelDialog }                                                                                                               from './DowngradeDialog'
+import { UpdateNowPerApModelDialog }                                                                                                               from './UpdateNowDialog'
+import { renderCurrentFirmwaresColumn, useChangeScheduleVisiblePerApModel, useUpdateNowPerApModel, useUpgradePerferences, useDowngradePerApModel } from './venueFirmwareListPerApModelUtils'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
@@ -27,6 +28,7 @@ export function VenueFirmwareListPerApModel () {
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
   const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
+  const { downgradeVisible, setDowngradeVisible, handleDowngradeCancel } = useDowngradePerApModel()
   // eslint-disable-next-line max-len
   const { changeScheduleVisible, setChangeScheduleVisible, handleChangeScheduleCancel } = useChangeScheduleVisiblePerApModel()
   const {
@@ -39,7 +41,7 @@ export function VenueFirmwareListPerApModel () {
     setSelectedRowKeys([])
   }
 
-  const afterUpdateModalSubmit = () => {
+  const afterAction = () => {
     clearSelection()
   }
 
@@ -83,6 +85,15 @@ export function VenueFirmwareListPerApModel () {
       onClick: (rows, clearSelection) => {
         doSkipSchedules(rows, clearSelection)
       }
+    },
+    {
+      visible: (rows) => rows.length === 1,
+      // eslint-disable-next-line max-len
+      label: $t({ defaultMessage: 'Downgrade' }),
+      onClick: (rows) => {
+        setSelectedRows(rows)
+        setDowngradeVisible(true)
+      }
     }
   ]
 
@@ -105,12 +116,17 @@ export function VenueFirmwareListPerApModel () {
     </Loader>
     {updateNowVisible && selectedRows && <UpdateNowPerApModelDialog
       onCancel={handleUpdateNowCancel}
-      afterSubmit={afterUpdateModalSubmit}
+      afterSubmit={afterAction}
       selectedVenuesFirmwares={selectedRows}
     />}
     {changeScheduleVisible && selectedRows && <ChangeSchedulePerApModelDialog
       onCancel={handleChangeScheduleCancel}
-      afterSubmit={afterUpdateModalSubmit}
+      afterSubmit={afterAction}
+      selectedVenuesFirmwares={selectedRows}
+    />}
+    {downgradeVisible && selectedRows && <DowngradePerApModelDialog
+      onCancel={handleDowngradeCancel}
+      afterSubmit={afterAction}
       selectedVenuesFirmwares={selectedRows}
     />}
     <PreferencesDialog

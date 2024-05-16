@@ -22,6 +22,7 @@ export interface UpdateFirmwarePerApModelPanelProps {
   selectedVenuesFirmwares: FirmwareVenuePerApModel[]
   updatePayload: (targetFirmwares: UpdateFirmwarePerApModelFirmware) => void
   initialPayload?: UpdateFirmwarePerApModelFirmware
+  isUpgrade?: boolean
 }
 export function UpdateFirmwarePerApModelPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { $t } = useIntl()

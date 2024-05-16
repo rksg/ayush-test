@@ -28,7 +28,7 @@ type DisplayDataType = {
 // eslint-disable-next-line max-len
 export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { $t } = useIntl()
-  const { selectedVenuesFirmwares, updatePayload, initialPayload } = props
+  const { selectedVenuesFirmwares, updatePayload, initialPayload, isUpgrade = true } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
     refetchOnMountOrArgChange: 60
   })
@@ -41,7 +41,7 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
     if (!apModelFirmwares) return
 
     // eslint-disable-next-line max-len
-    const updatedDisplayData = convertToDisplayData(apModelFirmwares, selectedVenuesFirmwares, initialPayload)
+    const updatedDisplayData = convertToDisplayData(apModelFirmwares, selectedVenuesFirmwares, initialPayload, isUpgrade)
 
     if (!updatePayloadRef.current) { // Ensure that 'updatePayload' only call once when the componnent intializes
       updatePayloadRef.current = convertToPayload(updatedDisplayData)
@@ -81,6 +81,10 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
               update={update}
               defaultVersion={item.defaultVersion}
               labelSize={labelSize}
+              emptyOptionLabel={isUpgrade
+                ? $t({ defaultMessage: 'Do not update firmware' })
+                : $t({ defaultMessage: 'Do not downgrade firmware' })
+              }
             />
           </div>
         })}
@@ -92,11 +96,12 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
 function convertToDisplayData (
   data: ApModelFirmware[],
   venuesFirmwares: FirmwareVenuePerApModel[],
-  initialPayload?: UpdateFirmwarePerApModelFirmware
+  initialPayload?: UpdateFirmwarePerApModelFirmware,
+  isUpgrade = true
 ): DisplayDataType[] {
   const intl = getIntl()
   const result: { [apModel in string]: DisplayDataType['versionOptions'] } = {}
-  const apModelMaxFirmwareFromVenues = findApModelMaxFirmwareFromVenues(venuesFirmwares)
+  const extremeFirmwareMap = findExtremeFirmwareBasedOnApModel(venuesFirmwares, isUpgrade)
 
   data.forEach((apModelFirmware: ApModelFirmware) => {
     if (!apModelFirmware.supportedApModels) return
@@ -107,8 +112,11 @@ function convertToDisplayData (
     }
 
     apModelFirmware.supportedApModels.forEach(apModel => {
-      const apModelMaxFirmware = apModelMaxFirmwareFromVenues[apModel]
-      if (!apModelMaxFirmware || compareVersions(apModelMaxFirmware, apModelFirmware.id) > 0) return
+      const apModelExtremeFirmware = extremeFirmwareMap[apModel]
+      if (!apModelExtremeFirmware) return
+
+      const comparisonResult = compareVersions(apModelExtremeFirmware, apModelFirmware.id)
+      if (isUpgrade ? comparisonResult > 0 : comparisonResult <= 0) return
 
       if (result[apModel]) {
         result[apModel].push(option)
@@ -121,7 +129,9 @@ function convertToDisplayData (
   return Object.entries(result).map(([ apModel, versionOptions ]) => ({
     apModel,
     versionOptions,
-    defaultVersion: getDefaultValueFromFirmwares(apModel, versionOptions, initialPayload)
+    defaultVersion: isUpgrade
+      ? getApModelDefaultFirmware(apModel, versionOptions, initialPayload)
+      : ''
   }))
 }
 
@@ -132,7 +142,7 @@ function convertToPayload (data: DisplayDataType[]): UpdateFirmwarePerApModelFir
   }))
 }
 
-function getDefaultValueFromFirmwares (
+function getApModelDefaultFirmware (
   apModel: string,
   versionOptions: DisplayDataType['versionOptions'],
   initialPayload?: UpdateFirmwarePerApModelFirmware
@@ -163,8 +173,9 @@ function patchPayload (
   return _.compact(result)
 }
 
-function findApModelMaxFirmwareFromVenues (
-  venuesFirmwares: FirmwareVenuePerApModel[]
+function findExtremeFirmwareBasedOnApModel (
+  venuesFirmwares: FirmwareVenuePerApModel[],
+  findMax = true
 ): { [apModel in string]: string } {
 
   return venuesFirmwares.reduce((acc, curr) => {
@@ -173,8 +184,11 @@ function findApModelMaxFirmwareFromVenues (
     curr.currentApFirmwares.forEach(currentApFw => {
       if (!acc[currentApFw.apModel]) {
         acc[currentApFw.apModel] = currentApFw.firmware
-      } else if (compareVersions(currentApFw.firmware, acc[currentApFw.apModel]) > 0) {
-        acc[currentApFw.apModel] = currentApFw.firmware
+      } else {
+        const comparisonResult = compareVersions(currentApFw.firmware, acc[currentApFw.apModel])
+        if (findMax ? comparisonResult > 0 : comparisonResult < 0) {
+          acc[currentApFw.apModel] = currentApFw.firmware
+        }
       }
     })
 

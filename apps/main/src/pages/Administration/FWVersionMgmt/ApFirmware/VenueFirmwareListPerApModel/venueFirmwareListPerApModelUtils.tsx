@@ -38,6 +38,19 @@ export function useChangeScheduleVisiblePerApModel () {
   }
 }
 
+export function useDowngradePerApModel () {
+  const [ downgradeVisible, setDowngradeVisible ] = useState(false)
+  const handleDowngradeCancel = () => {
+    setDowngradeVisible(false)
+  }
+
+  return {
+    downgradeVisible,
+    setDowngradeVisible,
+    handleDowngradeCancel
+  }
+}
+
 export function useUpgradePerferences () {
   const params = useParams()
   const [preferencesModalVisible, setPreferencesModalVisible] = useState(false)
