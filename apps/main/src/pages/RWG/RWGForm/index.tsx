@@ -205,7 +205,9 @@ export function RWGForm () {
                   </>}
                   rules={[
                     { type: 'string', required: true },
-                    { validator: (_, value) => domainNameRegExp(value) }
+                    { validator: (_, value) => domainNameRegExp(value),
+                      message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
+                    }
                   ]}
                   children={<Input />}
                 />
