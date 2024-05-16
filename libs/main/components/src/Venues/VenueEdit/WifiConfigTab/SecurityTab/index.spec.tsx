@@ -4,11 +4,11 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { venueApi }                    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider, store }             from '@acx-ui/store'
-import { mockServer, render, screen }  from '@acx-ui/test-utils'
+import { useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { venueApi }                                        from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                 from '@acx-ui/store'
+import { mockServer, render, screen }                      from '@acx-ui/test-utils'
 
 import { VenueEditContext }        from '../..'
 import {
@@ -88,7 +88,14 @@ describe('SecurityTab', () => {
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (_, res, ctx) => {
           return res(ctx.json(venueRoguePolicyList))
-        })
+        }),
+      // RBAC API
+      rest.get(
+        CommonRbacUrlsInfo.getDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json(venueDosProtection))),
+      rest.put(
+        CommonRbacUrlsInfo.updateDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 

@@ -15,7 +15,7 @@ import {
 import {
   ApSnmpActionType,
   ApSnmpPolicy,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,

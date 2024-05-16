@@ -13,7 +13,9 @@ export enum RolesEnum {
   ADMINISTRATOR = 'ADMIN',
   GUEST_MANAGER = 'OFFICE_ADMIN',
   READ_ONLY = 'READ_ONLY',
-  DPSK_ADMIN = 'DPSK_ADMIN'
+  DPSK_ADMIN = 'DPSK_ADMIN',
+  TEMPLATES_ADMIN= 'TEMPLATES_ADMIN',
+  REPORTS_ADMIN='REPORTS_ADMIN'
 }
 
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
@@ -62,3 +64,5 @@ export enum EdgeScopes {
   UPDATE = 'edge-u',
   DELETE = 'edge-d'
 }
+
+export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes)[]

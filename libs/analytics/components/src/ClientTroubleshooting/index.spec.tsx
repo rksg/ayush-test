@@ -1,5 +1,6 @@
 import { MemoryRouter, BrowserRouter } from 'react-router-dom'
 
+import { overlapsRollup }                                                                  from '@acx-ui/analytics/utils'
 import { dataApiURL, Provider, store }                                                     from '@acx-ui/store'
 import { render, screen, fireEvent, mockGraphqlQuery, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
 
@@ -9,6 +10,12 @@ import { FormattedEvent }                                               from './
 import { api }                                                          from './services'
 
 import { ClientTroubleshooting, getSelectedCallback, getPanelCallback } from './index'
+
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+const mockOverlapsRollup = overlapsRollup as jest.Mock
 
 describe('ClientTroubleshootingTab', () => {
   const params = {
@@ -34,6 +41,7 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     })
+    jest.mocked(mockOverlapsRollup).mockReturnValue(false)
   })
   afterEach(() => cleanup())
   it('should render loader', () => {
@@ -85,6 +93,19 @@ describe('ClientTroubleshootingTab', () => {
     const fragment = asFragment()
     const charts = fragment.querySelectorAll('div[_echarts_instance_^="ec_"]')
     expect(charts).toHaveLength(4)
+  })
+  it('should hide chart when under druidRollup', async () => {
+    jest.mocked(mockOverlapsRollup).mockReturnValue(true)
+    render(
+      <Provider><ClientTroubleshooting clientMac='mac' /></Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    await screen.findAllByText('Data granularity at this level is not available')
   })
   it('should render correctly with search params', async () => {
     const { asFragment } = render(

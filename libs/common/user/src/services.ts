@@ -74,6 +74,11 @@ export const UserUrlsInfo = {
     oldUrl: '/api/switch/tenant/:tenantId/allowed-operations',
     newApi: true
   },
+  edgeAllowedOperations: {
+    method: 'get',
+    url: '/tenants/allowedOperations?service=edge',
+    newApi: true
+  },
   tenantAllowedOperations: {
     method: 'get',
     url: '/tenants/allowed-operations',
@@ -247,7 +252,8 @@ export const {
           createHttpRequest(UserUrlsInfo.tenantAllowedOperations, params),
           createHttpRequest(UserUrlsInfo.venueAllowedOperations, params),
           createHttpRequest(UserUrlsInfo.guestAllowedOperations, params),
-          createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params)
+          createHttpRequest(UserUrlsInfo.upgradeAllowedOperations, params),
+          createHttpRequest(UserUrlsInfo.edgeAllowedOperations, params)
         ].map(query))
 
         return { data: responses.flatMap(response => (response.data as string[])) }

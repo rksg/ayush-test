@@ -11,7 +11,7 @@ import {
   useGetVenueBssColoringQuery, useGetVenueTemplateBssColoringQuery,
   useUpdateVenueBssColoringMutation, useUpdateVenueTemplateBssColoringMutation
 } from '@acx-ui/rc/services'
-import { VenueBssColoring } from '@acx-ui/rc/utils'
+import { ApiVersionEnum, VenueBssColoring } from '@acx-ui/rc/utils'
 
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext }                                                                from '../../../index'
@@ -30,11 +30,15 @@ export function BssColoring () {
   /* eslint-disable-next-line max-len */
   const tooltipInfo = $t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions. Supported model family: 802.11ax, 802.11be' })
   const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
+
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [enableBssColoring, setEnableBssColoring] = useState(false)
   const getVenueBssColoring = useVenueConfigTemplateQueryFnSwitcher<VenueBssColoring>(
     useGetVenueBssColoringQuery,
-    useGetVenueTemplateBssColoringQuery
+    useGetVenueTemplateBssColoringQuery,
+    rbacApiVersion
   )
   const [updateVenueBssColoring, { isLoading: isUpdatingVenueBssColoring }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -69,7 +73,7 @@ export function BssColoring () {
     try {
       await updateVenueBssColoring({
         params: { tenantId, venueId },
-        payload: { bssColoringEnabled: checked }
+        payload: { bssColoringEnabled: checked, rbacApiVersion }
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
