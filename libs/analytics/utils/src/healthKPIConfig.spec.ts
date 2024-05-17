@@ -68,6 +68,7 @@ describe('Health KPI', () => {
     expect(wiredKPIsForTab()).toMatchObject({
       overview: {
         kpis: [
+          'switchUplinkPortUtilization',
           'switchReachability'
         ]
       },
@@ -77,7 +78,10 @@ describe('Health KPI', () => {
         ]
       },
       performance: {
-        kpis: []
+        kpis: [
+          'switchPortUtilization',
+          'switchUplinkPortUtilization'
+        ]
       },
       infrastructure: {
         kpis: [
