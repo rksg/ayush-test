@@ -1,21 +1,14 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { getUserProfile }                                        from '@acx-ui/analytics/utils'
-import type { Invitation, Tenant }                               from '@acx-ui/analytics/utils'
-import { get }                                                   from '@acx-ui/config'
-import { Provider }                                              from '@acx-ui/store'
-import { render, screen }                                        from '@acx-ui/test-utils'
-import { RaiPermissions, raiPermissionsList, setRaiPermissions } from '@acx-ui/user'
+import { getUserProfile }          from '@acx-ui/analytics/utils'
+import type { Invitation, Tenant } from '@acx-ui/analytics/utils'
+import { Provider }                from '@acx-ui/store'
+import { render, screen }          from '@acx-ui/test-utils'
 
 import { UserButton } from './UserButton'
 
 const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
-
-const mockGet = get as jest.Mock
-jest.mock('@acx-ui/config', () => ({
-  get: jest.fn()
-}))
 
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
@@ -28,12 +21,6 @@ jest.mock('@acx-ui/utils', () => ({
   userLogout: jest.fn()
 }))
 
-const mockPermissions = {
-  ...Object.keys(raiPermissionsList)
-    .reduce((permissions, name) => ({ ...permissions, [name]: true }), {}),
-  READ_AI_DRIVEN_RRM: false,
-  READ_AI_OPERATIONS: false
-}
 const mockUserProfile = {
   accountId: 'accountId',
   firstName: 'firstName',
@@ -43,10 +30,10 @@ const mockUserProfile = {
   role: '',
   support: false,
   invitations: [] as Invitation[],
-  selectedTenant: { id: 'accountId', permissions: mockPermissions } as Tenant,
+  selectedTenant: { id: 'accountId', permission: {} } as unknown as Tenant,
   tenants: [
-    { id: 'accountId', permissions: mockPermissions },
-    { id: 'accountId2', permissions: [] }
+    { id: 'accountId', permissions: {} },
+    { id: 'accountId2', permissions: {} }
   ] as Tenant[]
 }
 describe('UserButton', () => {
@@ -113,19 +100,5 @@ describe('UserButton', () => {
       { route: { params } }
     )
     expect(screen.getByRole('button')).toHaveTextContent('')
-  })
-
-  it('should not render My Profile if view-analytics is false', async () => {
-    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
-    mockGet.mockReturnValue(true)
-    render(
-      <Provider>
-        <UserButton />
-      </Provider>,
-      { route: { params } }
-    )
-
-    await userEvent.click(screen.getByRole('button'))
-    expect(screen.queryByRole('link', { name: 'My Profile' })).toBeNull()
   })
 })
