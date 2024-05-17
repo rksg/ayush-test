@@ -12,8 +12,11 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
+import { TimeStampRange }         from '@acx-ui/types'
 import { DateRange, NetworkPath } from '@acx-ui/utils'
 import type { AnalyticsFilter }   from '@acx-ui/utils'
+
+import { HealthPageContext } from '../../../Health/HealthPageContext'
 
 import KpiSection from '.'
 
@@ -50,6 +53,12 @@ describe('Kpi Section', () => {
     filter: {}
   }
 
+  const healthContext = {
+    ...filters,
+    timeWindow: [sampleTS.time[0], sampleTS.time[4]] as TimeStampRange,
+    setTimeWindow: jest.fn()
+  }
+
   it('should render loaders', async () => {
     mockGraphqlQuery(dataApiURL, 'KPI', {
       data: { mutationAllowed: false }
@@ -61,7 +70,11 @@ describe('Kpi Section', () => {
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     const params = { tenantId: 'testTenant' }
     render(<Provider>
-      <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+      <HealthPageContext.Provider
+        value={{ ...healthContext }}
+      >
+        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+      </HealthPageContext.Provider>
     </Provider>, { route: { params, path: '/:tenantId' } })
     let loaders = await screen.findAllByRole('img', { name: 'loader' })
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
@@ -78,14 +91,18 @@ describe('Kpi Section', () => {
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
     const filter = pathToFilter(path)
     render(<Router><Provider>
-      <KpiSection tab={'overview'}
-        filters={{ ...filters, filter, endDate: sampleTS.data[2] as unknown as string }}
-      />
+      <HealthPageContext.Provider
+        value={{ ...healthContext }}
+      >
+        <KpiSection tab={'infrastructure'}
+          filters={{ ...filters, filter, endDate: sampleTS.data[2] as unknown as string }}
+        />
+      </HealthPageContext.Provider>
     </Provider></Router>)
-    expect(await screen.findAllByText(/Time-series chart for/i)).toHaveLength(1)
+    expect(await screen.findAllByText(/Switch Reachability/i)).toHaveLength(1)
 
     const viewMore = await screen.findByRole('button', { name: 'View more' })
     await userEvent.click(viewMore)
-    expect(await screen.findAllByText(/Time-series chart for/i)).toHaveLength(2)
+    expect(await screen.findAllByText(/Switch Temperature/i)).toHaveLength(1)
   })
 })
