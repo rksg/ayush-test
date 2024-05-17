@@ -567,7 +567,7 @@ export const kpiConfig = {
     }
   },
   switchUplinkPortUtilization: {
-    text: defineMessage({ defaultMessage: 'Uplink port utilization' }),
+    text: defineMessage({ defaultMessage: 'Uplink Port Utilization' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -593,11 +593,11 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Uplink port utilization' })
+      tooltip: defineMessage({ defaultMessage: 'Uplink Port Utilization' })
     }
   },
   switchPortUtilization: {
-    text: defineMessage({ defaultMessage: 'Port utilization' }),
+    text: defineMessage({ defaultMessage: 'Port Utilization' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -623,7 +623,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Port utilization' })
+      tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
     }
   }
 }
