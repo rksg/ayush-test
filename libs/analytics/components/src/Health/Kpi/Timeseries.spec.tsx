@@ -81,6 +81,23 @@ describe('Kpi timeseries', () => {
     </HealthPageContext.Provider></Provider>)
     expect(await screen.findByText('80%')).toBeVisible()
   })
+  it('should render loader with tooltip', async () => {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { network: { timeSeries: sampleTS } }
+    })
+    render(<Provider><HealthPageContext.Provider value={{ ...healthContext }}>
+      <KpiTimeseries
+        filters={filters}
+        kpi={'switchInterfaceAnomalies'}
+        chartRef={chartRef}
+        setTimeWindow={setTimeWindow}
+        timeWindow={timeWindow}
+        threshold={threshold}
+      />
+    </HealthPageContext.Provider></Provider>
+    )
+    expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
+  })
   it('should render chart with no data', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { network: { timeSeries: sampleNoDataTS } }
