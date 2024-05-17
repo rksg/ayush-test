@@ -551,7 +551,7 @@ export const kpiConfig = {
     }
   },
   switchesTemperature: {
-    text: defineMessage({ defaultMessage: 'Switch Temperature' }),
+    text: defineMessage({ defaultMessage: 'Temperature' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
@@ -563,7 +563,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Switch Temperature' })
+      tooltip: defineMessage({ defaultMessage: 'Temperature' })
     }
   },
   switchUplinkPortUtilization: {
