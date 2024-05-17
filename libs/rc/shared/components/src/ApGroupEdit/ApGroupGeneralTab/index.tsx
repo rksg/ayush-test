@@ -54,7 +54,7 @@ export function ApGroupGeneralTab () {
   const { tenantId, action, apGroupId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
-    isEditMode, isApGroupTableFlag, editContextData, setEditContextData
+    isEditMode, isApGroupTableFlag, setEditContextData
   } = useContext(ApGroupEditContext)
 
   const navigate = useNavigate()
@@ -179,12 +179,10 @@ export function ApGroupGeneralTab () {
         payload.apSerialNumbers = payload.apSerialNumbers.map(i => { return { serialNumber: i } })
       }
 
-      if (!isTemplate || !editContextData || !editContextData.isDirty) {
-        if (isEditMode) {
-          await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
-        } else {
-          await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
-        }
+      if (isEditMode) {
+        await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
+      } else {
+        await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
       }
 
       setEditContextData({
@@ -193,7 +191,7 @@ export function ApGroupGeneralTab () {
         isDirty: false
       })
 
-      if (!isEditMode || !isApGroupTableFlag || isTemplate) {
+      if (!isEditMode || !isApGroupTableFlag) {
         navigate(navigatePathName, { replace: true })
       }
     } catch (error) {
