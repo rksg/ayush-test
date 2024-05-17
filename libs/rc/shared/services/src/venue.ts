@@ -300,7 +300,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateMeshOptions'
+            'UpdateMeshOptions',
+            'UpdateVenueApMeshSettings' // new api used activity
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'WIFI_SETTINGS' }]))
@@ -310,7 +311,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
         const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(urlsInfo.updateVenueMesh, params, customHeaders)
         return {
@@ -1201,7 +1202,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateVenueLoadBalancing'
+            'UpdateVenueLoadBalancing',
+            'UpdateVenueApLoadBalancingSettings' // new api used activity
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LOAD_BALANCING' }]))
@@ -1222,7 +1224,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
-          await handleCallbackWhenActivitySuccess(api, msg, 'UpdateVenueLoadBalancing', requestArgs.callback)
+          const targetUseCase = requestArgs.enableRbac ? 'UpdateVenueApLoadBalancingSettings' : 'UpdateVenueLoadBalancing'
+          await handleCallbackWhenActivitySuccess(api, msg, targetUseCase, requestArgs.callback)
         })
       }
     }),

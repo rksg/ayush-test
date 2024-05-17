@@ -37,6 +37,7 @@ const MeshInfoIcon = () => {
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -288,7 +289,7 @@ export function MeshNetwork () {
         }
       }
 
-      await updateVenueMesh({ params, payload: meshData })
+      await updateVenueMesh({ params, payload: meshData, enableRbac: isWifiRbacEnabled })
 
       setIsSsidEditMode(false)
       setIsPassphraseEditMode(false)
