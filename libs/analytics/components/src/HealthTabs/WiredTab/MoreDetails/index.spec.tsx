@@ -12,13 +12,7 @@ describe('AddMoreDetailsDrawer', () => {
     visible: true,
     setVisible: jest.fn(),
     widget: 'cpu',
-    setWidget: jest.fn(),
-    payload: {
-      start: '2022-01-01',
-      end: '2022-01-02',
-      n: 5,
-      filter: {}
-    }
+    setWidget: jest.fn()
   }
 
   it('should render drawer layout correctly', async () => {
