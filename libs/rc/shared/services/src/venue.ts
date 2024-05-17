@@ -88,7 +88,6 @@ import {
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
   CommonRbacUrlsInfo,
-  ApiVersionEnum,
   ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
