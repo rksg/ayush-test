@@ -381,14 +381,14 @@ export function useMenuConfig () {
         inactiveIcon: DataStudioOutlined,
         activeIcon: DataStudioSolid,
         uri: '/dataStudio',
-        isActiveCheck: new RegExp('^/dataStudio'),
+        isActiveCheck: new RegExp('^/dataStudio')
       },
       {
         label: $t({ defaultMessage: 'Reports' }),
         inactiveIcon: DataStudioOutlined,
         activeIcon: DataStudioSolid,
         uri: '/reports',
-        isActiveCheck: new RegExp('^/reports'),
+        isActiveCheck: new RegExp('^/reports')
       }
     ]
   }
