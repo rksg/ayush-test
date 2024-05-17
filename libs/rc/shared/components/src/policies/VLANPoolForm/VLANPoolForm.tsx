@@ -64,13 +64,18 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   const handleVLANPoolPolicy = async (formData: VLANPoolPolicyType) => {
+    const payload = {
+      ...formData,
+      vlanMembers: (formData.vlanMembers as string).split(',')
+    }
+
     try {
       if (!isEdit) {
-        await createInstance({ params, payload: formData }).unwrap().then(res => {
+        await createInstance({ params, payload }).unwrap().then(res => {
           formData.id = res.response?.id
         })
       } else {
-        await updateInstance({ params, payload: formData }).unwrap()
+        await updateInstance({ params, payload }).unwrap()
       }
       networkView ? backToNetwork?.(formData) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
