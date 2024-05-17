@@ -429,7 +429,7 @@ export const kpiConfig = {
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -479,7 +479,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
@@ -496,7 +496,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -526,7 +526,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -555,7 +555,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
