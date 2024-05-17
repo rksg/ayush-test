@@ -69,14 +69,29 @@ describe('useMenuConfig', () => {
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
   })
-  it('should not return Analytics-related menu items', () => {
+  it('should not return analytics related menu items', () => {
     setRaiPermissions({
       ...defaultMockPermissions,
       READ_DASHBOARD: false,
+      READ_INCIDENTS: false,
+      READ_HEALTH: false,
+      READ_AI_DRIVEN_RRM: false,
+      READ_AI_OPERATIONS: false,
+      READ_SERVICE_VALIDATION: false,
+      READ_CONFIG_CHANGE: false,
       READ_ACCESS_POINTS_LIST: false,
       READ_SWITCH_LIST: false,
-      READ_INCIDENTS: false,
       WRITE_OCCUPANCY: false
+    } as RaiPermissions)
+    const { result } = renderHook(() => useMenuConfig(), { route: true })
+    expect(result.current).toMatchSnapshot()
+  })
+
+  it('should not return app experience', () => {
+    setRaiPermissions({
+      ...defaultMockPermissions,
+      READ_APP_INSIGHTS: false,
+      READ_VIDEO_CALL_QOE: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()

@@ -41,7 +41,7 @@ export function useMenuConfig () {
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
-  const config: LayoutProps['menuConfig'] = [
+  return removeEmptyMenus([
     ...(hasPermission({ permission: 'READ_DASHBOARD' }) ? [
       {
         uri: '/dashboard',
@@ -50,81 +50,79 @@ export function useMenuConfig () {
         activeIcon: SpeedIndicatorSolid
       }
     ] : []),
-    ...(hasPermission({ permission: 'READ_INCIDENTS' }) ? [
-      {
-        label: $t({ defaultMessage: 'AI Assurance' }),
-        inactiveIcon: AIOutlined,
-        activeIcon: AISolid,
-        children: [
+    {
+      label: $t({ defaultMessage: 'AI Assurance' }),
+      inactiveIcon: AIOutlined,
+      activeIcon: AISolid,
+      children: [
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'AI Analytics' }),
+          children: [
+            ...(hasPermission({ permission: 'READ_INCIDENTS' }) ? [
+              {
+                uri: '/incidents',
+                label: $t({ defaultMessage: 'Incidents' })
+              }
+            ] : []),
+            ...(hasPermission({ permission: 'READ_AI_DRIVEN_RRM' }) ? [
+              {
+                uri: '/recommendations/crrm',
+                label: $t({ defaultMessage: 'AI-Driven RRM' })
+              }
+            ] : []),
+            ...(hasPermission({ permission: 'READ_AI_OPERATIONS' }) ? [
+              {
+                uri: '/recommendations/aiOps',
+                label: $t({ defaultMessage: 'AI Operations' })
+              }
+            ] : [])
+          ]
+        },
+        {
+          type: 'group' as const,
+          label: $t({ defaultMessage: 'Network Assurance' }),
+          children: [
+            ...(hasPermission({ permission: 'READ_HEALTH' }) ? [
+              {
+                uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
+                label: $t({ defaultMessage: 'Health' })
+              }
+            ] : []),
+            ...(hasPermission({ permission: 'READ_SERVICE_VALIDATION' }) ? [
+              {
+                uri: '/serviceValidation',
+                label: $t({ defaultMessage: 'Service Validation' })
+              }
+            ] : []),
+            ...(hasPermission({ permission: 'READ_CONFIG_CHANGE' }) ? [
+              {
+                uri: '/configChange',
+                label: $t({ defaultMessage: 'Config Change' })
+              }
+            ] : [])
+          ]
+        }
+      ]
+    },
+    {
+      label: $t({ defaultMessage: 'App Experience' }),
+      inactiveIcon: RocketOutlined,
+      activeIcon: RocketSolid,
+      children: [
+        ...(hasPermission({ permission: 'READ_APP_INSIGHTS' }) ? [
           {
-            type: 'group' as const,
-            label: $t({ defaultMessage: 'AI Analytics' }),
-            children: [
-              ...(hasPermission({ permission: 'READ_INCIDENTS' }) ? [
-                {
-                  uri: '/incidents',
-                  label: $t({ defaultMessage: 'Incidents' })
-                }
-              ] : []),
-              ...(hasPermission({ permission: 'READ_AI_DRIVEN_RRM' }) ? [
-                {
-                  uri: '/recommendations/crrm',
-                  label: $t({ defaultMessage: 'AI-Driven RRM' })
-                }
-              ] : []),
-              ...(hasPermission({ permission: 'READ_AI_OPERATIONS' }) ? [
-                {
-                  uri: '/recommendations/aiOps',
-                  label: $t({ defaultMessage: 'AI Operations' })
-                }
-              ] : [])
-            ]
-          },
-          {
-            type: 'group' as const,
-            label: $t({ defaultMessage: 'Network Assurance' }),
-            children: [
-              ...(hasPermission({ permission: 'READ_HEALTH' }) ? [
-                {
-                  uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
-                  label: $t({ defaultMessage: 'Health' })
-                }
-              ] : []),
-              ...(hasPermission({ permission: 'READ_SERVICE_VALIDATION' }) ? [
-                {
-                  uri: '/serviceValidation',
-                  label: $t({ defaultMessage: 'Service Validation' })
-                }
-              ] : []),
-              ...(hasPermission({ permission: 'READ_CONFIG_CHANGE' }) ? [
-                {
-                  uri: '/configChange',
-                  label: $t({ defaultMessage: 'Config Change' })
-                }
-              ] : [])
-            ]
+            label: $t({ defaultMessage: 'AppInsights (coming soon)' })
           }
-        ]
-      },
-      {
-        label: $t({ defaultMessage: 'App Experience' }),
-        inactiveIcon: RocketOutlined,
-        activeIcon: RocketSolid,
-        children: [
-          ...(hasPermission({ permission: 'READ_APP_INSIGHTS' }) ? [
-            {
-              label: $t({ defaultMessage: 'AppInsights (coming soon)' })
-            }
-          ] : []),
-          ...(hasPermission({ permission: 'READ_VIDEO_CALL_QOE' }) ? [
-            {
-              uri: '/videoCallQoe',
-              label: $t({ defaultMessage: 'Video Call QoE' })
-            }
-          ] : [])
-        ]
-      }
-    ] : []),
+        ] : []),
+        ...(hasPermission({ permission: 'READ_VIDEO_CALL_QOE' }) ? [
+          {
+            uri: '/videoCallQoe',
+            label: $t({ defaultMessage: 'Video Call QoE' })
+          }
+        ] : [])
+      ]
+    },
     ...(hasPermission({ permission: 'READ_ZONES' }) && isZonesPageEnabled
       ? [
         {
@@ -324,6 +322,10 @@ export function useMenuConfig () {
         }
       ]
     }
-  ]
-  return config
+  ])
 }
+const removeEmptyMenus = (config: LayoutProps['menuConfig']): LayoutProps['menuConfig'] =>
+  config.filter(item => item && (
+    !('children' in item) || // no children so we keep the single entry
+    (item.children!.length > 0 && removeEmptyMenus(item.children!).length > 0) // has children and they are not empty
+  ))
