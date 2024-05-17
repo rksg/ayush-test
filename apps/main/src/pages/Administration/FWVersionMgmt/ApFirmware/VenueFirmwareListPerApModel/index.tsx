@@ -28,7 +28,8 @@ export function VenueFirmwareListPerApModel () {
   const [ selectedRowKeys, setSelectedRowKeys ] = useState([])
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
   const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
-  const { downgradeVisible, setDowngradeVisible, handleDowngradeCancel } = useDowngradePerApModel()
+  // eslint-disable-next-line max-len
+  const { downgradeVisible, setDowngradeVisible, handleDowngradeCancel, canDowngrade } = useDowngradePerApModel()
   // eslint-disable-next-line max-len
   const { changeScheduleVisible, setChangeScheduleVisible, handleChangeScheduleCancel } = useChangeScheduleVisiblePerApModel()
   const {
@@ -67,7 +68,7 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
-        setSelectedRows(rows)
+        setSelectedRows(rows.filter(row => !row.isFirmwareUpToDate))
         setUpdateNowVisible(true)
       }
     },
@@ -75,7 +76,7 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
-        setSelectedRows(rows)
+        setSelectedRows(rows.filter(row => !row.isFirmwareUpToDate))
         setChangeScheduleVisible(true)
       }
     },
@@ -87,7 +88,7 @@ export function VenueFirmwareListPerApModel () {
       }
     },
     {
-      visible: (rows) => rows.length === 1,
+      visible: (rows) => canDowngrade(rows),
       // eslint-disable-next-line max-len
       label: $t({ defaultMessage: 'Downgrade' }),
       onClick: (rows) => {

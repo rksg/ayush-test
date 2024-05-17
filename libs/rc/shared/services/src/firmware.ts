@@ -501,24 +501,29 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     patchVenueApModelFirmwares: build.mutation<CommonResult, RequestPayload<UpdateFirmwarePerApModelPayload>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.patchVenueApModelFirmwares, params, v1Header)
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        const { venueIds, ...rest } = args.payload!
+        const requests = venueIds.map(venueId => ({
+          params: { venueId },
+          payload: { ...rest }
+        }))
+        return batchApi(
+          FirmwareUrlsInfo.patchVenueApModelFirmwares, requests, fetchWithBQ, v1Header
+        )
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
     updateVenueSchedulesPerApModel: build.mutation<CommonResult, RequestPayload<UpdateFirmwareSchedulePerApModelPayload>>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(FirmwareUrlsInfo.updateVenueSchedulesPerApModel, params, v1Header)
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
+      async queryFn (args, _queryApi, _extraOptions, fetchWithBQ) {
+        const { venueIds, ...rest } = args.payload!
+        const requests = venueIds.map(venueId => ({
+          params: { venueId },
+          payload: { ...rest }
+        }))
+        return batchApi(
+          FirmwareUrlsInfo.updateVenueSchedulesPerApModel, requests, fetchWithBQ, v1Header
+        )
       },
       invalidatesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),

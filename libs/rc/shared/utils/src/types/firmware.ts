@@ -353,11 +353,11 @@ export interface ApModelFirmware {
 }
 
 export interface UpdateFirmwarePerApModelPayload {
-  targetFirmwares: { apModel: string, firmware: string }[]
+  venueIds: string[];
+  targetFirmwares: { apModel: string, firmware: string }[];
 }
 
-export interface UpdateFirmwareSchedulePerApModelPayload {
+export interface UpdateFirmwareSchedulePerApModelPayload extends UpdateFirmwarePerApModelPayload {
   date: string;
   time: string;
-  targetFirmwares: { apModel: string, firmware: string }[]
 }

@@ -21,6 +21,25 @@ import { mockedApModelFirmwares, mockedFirmwareVenuesPerApModel, mockedFirmwareV
 
 import { VenueFirmwareListPerApModel } from '.'
 
+jest.mock('antd', () => {
+  const antd = jest.requireActual('antd')
+  // @ts-ignore
+  // eslint-disable-next-line max-len
+  const Select = ({ children, onChange }: React.PropsWithChildren<{ onChange?: (value: string) => void }>) => {
+    return (
+      <select role='combobox' onChange={e => onChange?.(e.target.value)}>
+        {children}
+      </select>
+    )
+  }
+
+  // @ts-ignore
+  Select.Option = ({ children, ...otherProps }) => {
+    return <option {...otherProps}>{children}</option>
+  }
+
+  return { ...antd, Select }
+})
 
 describe('Firmware Venues Table Per AP Model', () => {
   const params = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
@@ -71,6 +90,18 @@ describe('Firmware Venues Table Per AP Model', () => {
   })
 
   it('should execute Update Now action', async () => {
+    const updateFn = jest.fn()
+
+    mockServer.use(
+      rest.patch(
+        FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
+        (req, res, ctx) => {
+          updateFn(req.body)
+          return res(ctx.json({}))
+        }
+      )
+    )
+
     render(
       <Provider>
         <VenueFirmwareListPerApModel />
@@ -80,10 +111,14 @@ describe('Firmware Venues Table Per AP Model', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
-    const testingRecord = mockedFirmwareVenuesPerApModel[0]
-    const targetRow = screen.getByRole('row', { name: new RegExp(testingRecord.name) })
+    const testingRecord1 = mockedFirmwareVenuesPerApModel[0]
+    const targetRow1 = screen.getByRole('row', { name: new RegExp(testingRecord1.name) })
+    await userEvent.click(within(targetRow1).getByRole('checkbox'))
 
-    await userEvent.click(within(targetRow).getByRole('checkbox'))
+    const testingRecord2 = mockedFirmwareVenuesPerApModel[2]
+    const targetRow2 = screen.getByRole('row', { name: new RegExp(testingRecord2.name) })
+    await userEvent.click(within(targetRow2).getByRole('checkbox'))
+
     await userEvent.click(screen.getByRole('button', { name: /Update Now/i }))
 
     const dialog = await screen.findByRole('dialog')
@@ -98,7 +133,9 @@ describe('Firmware Venues Table Per AP Model', () => {
     // eslint-disable-next-line max-len
     expect(await within(dialog).findByRole('checkbox', { name: /Show APs with available firmware only/ })).toBeVisible()
 
-    await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Update Firmware' }))
+
+    await waitFor(() => expect(updateFn).toBeCalledTimes(2))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
@@ -217,6 +254,55 @@ describe('Firmware Venues Table Per AP Model', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'Skip' }))
 
     await waitFor(() => expect(skipUpdateFn).toHaveBeenCalledTimes(2))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
+  })
+
+  it('should execute Downgrade action', async () => {
+    const downgradeFn = jest.fn()
+
+    mockServer.use(
+      rest.patch(
+        FirmwareUrlsInfo.patchVenueApModelFirmwares.url,
+        (req, res, ctx) => {
+          downgradeFn(req.body)
+          return res(ctx.json({}))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <VenueFirmwareListPerApModel />
+      </Provider>, {
+        route: { params, path }
+      })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+
+    const testingRecord = mockedFirmwareVenuesPerApModel[1]
+    const targetRow = screen.getByRole('row', { name: new RegExp(testingRecord.name) })
+    await userEvent.click(within(targetRow).getByRole('checkbox'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Downgrade/i }))
+
+    const dialog = await screen.findByRole('dialog')
+
+    expect(within(dialog).getByText('Firmware Downgrade')).toBeVisible()
+
+    await userEvent.click(within(dialog).getByRole('button', { name: /Continue/i }))
+
+    await userEvent.selectOptions(
+      await within(dialog).findByRole('combobox'),
+      '6.2.4.103.244 (Release - Recommended) - 12/25/2023'
+    )
+
+    await userEvent.click(within(dialog).getByRole('button', { name: /Next/i }))
+    await userEvent.click(within(dialog).getByRole('button', { name: /Downgrade Firmware/i }))
+
+    await waitFor(() => expect(downgradeFn).toHaveBeenCalled())
+
+    await userEvent.click(await within(dialog).findByRole('button', { name: /Close/i }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
   })

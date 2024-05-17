@@ -3,8 +3,9 @@ import { useState } from 'react'
 import { Form, Typography } from 'antd'
 import { useIntl }          from 'react-intl'
 
-import { Button, Modal }           from '@acx-ui/components'
-import { FirmwareVenuePerApModel } from '@acx-ui/rc/utils'
+import { Button, Modal }                                            from '@acx-ui/components'
+import { usePatchVenueApModelFirmwaresMutation }                    from '@acx-ui/rc/services'
+import { FirmwareVenuePerApModel, UpdateFirmwarePerApModelPayload } from '@acx-ui/rc/utils'
 
 import * as UI                                     from '../styledComponents'
 import { UpdateFirmwarePerApModelFirmware }        from '../UpdateNowDialog'
@@ -29,23 +30,23 @@ export function DowngradePerApModelDialog (props: DowngradeDialogProps) {
   const [ disableSave, setDisableSave ] = useState(false)
   const [ payload, setPayload ] = useState<UpdateFirmwarePerApModelFirmware>([])
   const [ step, setStep ] = useState<DowngradeSteps>(DowngradeSteps.INTRODUCTION)
+  // eslint-disable-next-line max-len
+  const [ updateVenueApModelFirmwares, { isLoading: isUpdating } ] = usePatchVenueApModelFirmwaresMutation()
 
-  const triggerSubmit = () => {
+  const triggerSubmit = async () => {
     try {
-      // const requests = selectedVenuesFirmwares.map(venueFw => {
-      //   return updateVenueSchedules({
-      //     params: { venueId: venueFw.id },
-      //     payload: createRequestPayload()
-      //   }).unwrap()
-      // })
-
-      // await Promise.all(requests)
-
-      console.log(payload)
+      await updateVenueApModelFirmwares({ payload: createRequestPayload() }).unwrap()
 
       onNext()
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
+    }
+  }
+
+  const createRequestPayload = (): UpdateFirmwarePerApModelPayload => {
+    return {
+      venueIds: selectedVenuesFirmwares.map(v => v.id),
+      targetFirmwares: payload.filter(fw => fw.firmware)
     }
   }
 
@@ -119,7 +120,7 @@ export function DowngradePerApModelDialog (props: DowngradeDialogProps) {
           {$t({ defaultMessage: 'Next' })}
         </Button>,
         // eslint-disable-next-line max-len
-        <Button hidden={!isDowngradeBtnVisible()} key='downgrade' type='primary' onClick={triggerSubmit}>
+        <Button hidden={!isDowngradeBtnVisible()} key='downgrade' type='primary' onClick={triggerSubmit} loading={isUpdating}>
           {$t({ defaultMessage: 'Downgrade Firmware' })}
         </Button>,
         <Button hidden={!isCloseBtnVisible()} key='close' onClick={onModalClose}>
@@ -169,6 +170,15 @@ function IntroductionView () {
   </Form.Item>
 }
 
+function ConfirmationView () {
+  const { $t } = useIntl()
+
+  return <Typography>
+    { // eslint-disable-next-line max-len
+      $t({ defaultMessage: 'Are you sure you want to downgrade the firmware version on devices in this <venueSingular></venueSingular>?' })}
+  </Typography>
+}
+
 function ConclusionView () {
   const { $t } = useIntl()
 
@@ -184,11 +194,4 @@ function ConclusionView () {
   </Form.Item>
 }
 
-function ConfirmationView () {
-  const { $t } = useIntl()
 
-  return <Typography>
-    { // eslint-disable-next-line max-len
-      $t({ defaultMessage: 'Are you sure you want to downgrade the firmware version on devices in this <venueSingular></venueSingular>?' })}
-  </Typography>
-}

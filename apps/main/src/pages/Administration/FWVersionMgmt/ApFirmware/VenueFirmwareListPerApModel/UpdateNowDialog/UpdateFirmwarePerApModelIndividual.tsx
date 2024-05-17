@@ -1,10 +1,11 @@
 import { useState } from 'react'
 
-import { Select, Space } from 'antd'
-import { useIntl }       from 'react-intl'
+import { Space }   from 'antd'
+import { useIntl } from 'react-intl'
+
+import { Select } from '@acx-ui/components'
 
 const { Option } = Select
-
 
 interface UpdateFirmwarePerApModelIndividualProps {
   apModel: string

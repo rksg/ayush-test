@@ -26,7 +26,8 @@ interface ChangeSchedulePerApModelDialogProps {
 
 export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelDialogProps) {
   const { $t } = useIntl()
-  const [ updateVenueSchedules ] = useUpdateVenueSchedulesPerApModelMutation()
+  // eslint-disable-next-line max-len
+  const [ updateVenueSchedules, { isLoading: isUpdating } ] = useUpdateVenueSchedulesPerApModelMutation()
   const { afterSubmit, onCancel, selectedVenuesFirmwares } = props
   const [ step, setStep ] = useState(0)
   const [ payload, setPayload ] = useState<UpdateFirmwarePerApModelFirmware>()
@@ -35,14 +36,7 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
 
   const triggerSubmit = async () => {
     try {
-      const requests = selectedVenuesFirmwares.map(venueFw => {
-        return updateVenueSchedules({
-          params: { venueId: venueFw.id },
-          payload: createRequestPayload()
-        }).unwrap()
-      })
-
-      await Promise.all(requests)
+      await updateVenueSchedules({ payload: createRequestPayload() }).unwrap()
 
       onModalCancel()
       afterSubmit()
@@ -57,6 +51,7 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
 
   const createRequestPayload = (): UpdateFirmwareSchedulePerApModelPayload => {
     return {
+      venueIds: selectedVenuesFirmwares.map(v => v.id),
       date: selectedDate!,
       time: selectedTime!,
       targetFirmwares: payload!.filter(fw => fw.firmware)
@@ -109,6 +104,7 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
           type='primary'
           onClick={triggerSubmit}
           disabled={!selectedDate || !selectedTime}
+          loading={isUpdating}
         >
           {$t({ defaultMessage: 'Save' })}
         </Button>

@@ -30,7 +30,7 @@ type DisplayDataType = {
 export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { selectedVenuesFirmwares, updatePayload, initialPayload } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
-    refetchOnMountOrArgChange: 60
+    refetchOnMountOrArgChange: 300
   })
   const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
   const targetFirmwaresRef = useRef<UpdateFirmwarePerApModelFirmware>()
@@ -40,7 +40,7 @@ export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApMo
 
     const updateGrps = convertApModelFirmwaresToUpdateGroups(apModelFirmwares)
     const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
-    const displayData = convertToDisplayData(venuesBasedUpdateGrps, initialPayload)
+    const displayData = convertToApModelGroupDisplayData(venuesBasedUpdateGrps, initialPayload)
 
     if (!targetFirmwaresRef.current) { // Ensure that 'updatePayload' only call once when the componnent intializes
       targetFirmwaresRef.current = convertToPayload(displayData)
@@ -71,7 +71,7 @@ export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApMo
 }
 
 // eslint-disable-next-line max-len
-function convertToDisplayData (data: ApFirmwareUpdateGroupType[], initialPayload?: UpdateFirmwarePerApModelFirmware): DisplayDataType[] {
+function convertToApModelGroupDisplayData (data: ApFirmwareUpdateGroupType[], initialPayload?: UpdateFirmwarePerApModelFirmware): DisplayDataType[] {
   const intl = getIntl()
 
   return data.map((item: ApFirmwareUpdateGroupType) => ({
@@ -80,14 +80,14 @@ function convertToDisplayData (data: ApFirmwareUpdateGroupType[], initialPayload
       value: firmware.name,
       label: getVersionLabel(intl, firmware)
     })),
-    defaultVersion: getInitialFirmwareValue(item, initialPayload)
+    defaultVersion: getDefaultFirmwareFromPayload(item, initialPayload)
   }))
 }
 
 // Returns the firmware if all AP models in the initialValues have the same firmware version.
 // If not, it returns the first firmware in the update group.
 // eslint-disable-next-line max-len
-function getInitialFirmwareValue (updateGroup: ApFirmwareUpdateGroupType, initialValues?: UpdateFirmwarePerApModelFirmware): string {
+function getDefaultFirmwareFromPayload (updateGroup: ApFirmwareUpdateGroupType, initialValues?: UpdateFirmwarePerApModelFirmware): string {
   if (!initialValues || initialValues.length === 0) return updateGroup.firmwares[0].name
 
   const targetFirmwares = initialValues.filter(fw => updateGroup.apModels.includes(fw.apModel))
@@ -128,7 +128,7 @@ function patchPayload (
 
 function filterByVenues (
   venuesFirmwares: FirmwareVenuePerApModel[],
-  updateGroups: ApFirmwareUpdateGroupType[]
+  updateGroupList: ApFirmwareUpdateGroupType[]
 ): ApFirmwareUpdateGroupType[] {
   const allVenueApModels = _.uniq(
     _.compact(venuesFirmwares.map(venueFw => venueFw.currentApFirmwares))
@@ -136,7 +136,7 @@ function filterByVenues (
   )
 
   const result: ApFirmwareUpdateGroupType[] = []
-  updateGroups.forEach(updateGroup => {
+  updateGroupList.forEach(updateGroup => {
     const intersectionApModels = _.intersection(updateGroup.apModels, allVenueApModels)
     if (intersectionApModels.length > 0) {
       result.push({
