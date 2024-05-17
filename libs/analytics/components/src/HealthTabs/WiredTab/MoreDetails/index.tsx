@@ -23,27 +23,27 @@ export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
   const mapping = [
     {
       type: 'dhcp',
-      title: 'DHCP Failure',
-      pieTitle: 'Top DHCP failure switches',
-      tableTitle: 'Top Impacted Clients'
+      title: $t({ defaultMessage: 'DHCP Failure' }),
+      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
+      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
     },
     {
       type: 'congestion',
-      title: 'Congestion',
-      pieTitle: 'Top Congested switches',
-      tableTitle: 'Top Impacted Clients'
+      title: $t({ defaultMessage: 'Congestion' }),
+      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
+      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
     },
     {
       type: 'portStorm',
-      title: 'Ports experiencing Storm',
-      pieTitle: 'Top Storm switches',
-      tableTitle: 'Top Impacted Clients'
+      title: $t({ defaultMessage: 'Port Storm' }),
+      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
+      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
     },
     {
       type: 'cpu',
-      title: 'High CPU',
-      pieTitle: 'Top Switches with High CPU',
-      tableTitle: 'Top Impacted Clients'
+      title: $t({ defaultMessage: 'High CPU' }),
+      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
+      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
     }
   ]
   const matchingMapping = mapping.find(item => item.type === widget)
@@ -52,7 +52,7 @@ export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
       title={
         <UI.Title>
           <Typography.Title level={2}>
-            {$t({ defaultMessage: matchingMapping?.title })}
+            {matchingMapping?.title}
           </Typography.Title>
         </UI.Title>
       }
