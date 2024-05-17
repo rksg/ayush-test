@@ -205,8 +205,8 @@ export function useMenuConfig () {
       permission: 'READ_REPORTS',
       uri: '/reports',
       label: $t({ defaultMessage: 'Reports' })
-    }, { // until we have a read only version in new UI, we need to use WRITE_OCCUPANCY
-      permission: 'WRITE_OCCUPANCY',
+    }, {
+      permission: 'READ_OCCUPANCY',
       uri: legacyLink('/analytics/occupancy', search),
       label: $t({ defaultMessage: 'Occupancy' }),
       openNewTab: true

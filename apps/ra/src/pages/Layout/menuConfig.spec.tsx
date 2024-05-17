@@ -81,7 +81,7 @@ describe('useMenuConfig', () => {
       READ_CONFIG_CHANGE: false,
       READ_ACCESS_POINTS_LIST: false,
       READ_SWITCH_LIST: false,
-      WRITE_OCCUPANCY: false
+      READ_OCCUPANCY: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
@@ -100,7 +100,7 @@ describe('useMenuConfig', () => {
     setRaiPermissions({
       ...defaultMockPermissions,
       READ_REPORTS: false,
-      WRITE_OCCUPANCY: false,
+      READ_OCCUPANCY: false,
       READ_DATA_STUDIO: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
