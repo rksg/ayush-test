@@ -1,4 +1,5 @@
 import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { Drawer } from '@acx-ui/components'
 
@@ -14,7 +15,7 @@ interface AddMoreDetailsDrawerProps {
 export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
 
   const { visible, setVisible, widget, setWidget } = props
-
+  const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
     setWidget('')
@@ -24,29 +25,25 @@ export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
       type: 'dhcp',
       title: 'DHCP Failure',
       pieTitle: 'Top DHCP failure switches',
-      tableTitle: 'Top Impacted Clients',
-      pieData: []
+      tableTitle: 'Top Impacted Clients'
     },
     {
       type: 'congestion',
       title: 'Congestion',
       pieTitle: 'Top Congested switches',
-      tableTitle: 'Top Impacted Clients',
-      pieData: []
+      tableTitle: 'Top Impacted Clients'
     },
     {
       type: 'portStorm',
       title: 'Ports experiencing Storm',
       pieTitle: 'Top Storm switches',
-      tableTitle: 'Top Impacted Clients',
-      pieData: []
+      tableTitle: 'Top Impacted Clients'
     },
     {
       type: 'cpu',
       title: 'High CPU',
       pieTitle: 'Top Switches with High CPU',
-      tableTitle: 'Top Impacted Clients',
-      pieData: []
+      tableTitle: 'Top Impacted Clients'
     }
   ]
   const matchingMapping = mapping.find(item => item.type === widget)
@@ -55,7 +52,7 @@ export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
       title={
         <UI.Title>
           <Typography.Title level={2}>
-            {matchingMapping?.title}
+            {$t({ defaultMessage: matchingMapping?.title })}
           </Typography.Title>
         </UI.Title>
       }
