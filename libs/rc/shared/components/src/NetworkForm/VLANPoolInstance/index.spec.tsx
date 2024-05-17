@@ -17,9 +17,13 @@ import VLANPoolInstance from '.'
 describe('VLAN Pool Instance Page', () => {
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getVlanPools.url,
-        (req, res, ctx) => res(ctx.json([{ id: '1', name: 'test1' }]))
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({
+          page: 1,
+          totalCount: 1,
+          data: [{ id: '1', name: 'test1' }]
+        }))
       ),
       rest.get(
         VlanPoolUrls.getVLANPoolPolicy.url,
