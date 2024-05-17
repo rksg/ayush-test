@@ -169,7 +169,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
       apiMetric: 'switchDHCPAttemptAndSuccessCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
@@ -429,7 +429,7 @@ export const kpiConfig = {
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -479,7 +479,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
@@ -496,7 +496,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -526,7 +526,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -555,7 +555,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
@@ -572,7 +572,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -602,7 +602,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortUtilizationCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
