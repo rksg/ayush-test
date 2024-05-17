@@ -171,13 +171,13 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
-    addApGroupV1_1: build.mutation<AddApGroup, RequestPayload>({
+    addApGroupV1_1: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1_1)
         const req = createHttpRequest(WifiRbacUrlsInfo.addApGroup, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
