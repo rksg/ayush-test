@@ -110,7 +110,6 @@ const RadioLable = styled.div`
 
 export function RadioSettings () {
   const { $t } = useIntl()
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
@@ -317,11 +316,11 @@ export function RadioSettings () {
     if (isWifiSwitchableRfEnabled) {
       return
     }
-    const triBandEnabled = !!(triBandRadioFeatureFlag && tripleBandRadioSettingsData?.enabled)
+    const triBandEnabled = !!(tripleBandRadioSettingsData?.enabled)
     const isTriBandRadio = venueTriBandApModels.length > 0 || triBandEnabled
     setIsTriBandRadio(isTriBandRadio)
     isTriBandRadioRef.current = isTriBandRadio
-  }, [isWifiSwitchableRfEnabled, triBandRadioFeatureFlag, tripleBandRadioSettingsData, venueTriBandApModels])
+  }, [isWifiSwitchableRfEnabled, tripleBandRadioSettingsData, venueTriBandApModels])
 
   useEffect(() => {
     const setRadioFormData = (data: VenueRadioCustomization) => {
@@ -770,7 +769,7 @@ export function RadioSettings () {
         <StepsFormLegacy.StepForm data-testid='radio-settings'>
           <Row gutter={20}>
             <Col span={14}>
-              {!isWifiSwitchableRfEnabled && triBandRadioFeatureFlag &&
+              {!isWifiSwitchableRfEnabled &&
               <>
                 {$t({ defaultMessage: 'Tri-band radio settings' })}
                 <Switch
@@ -790,7 +789,7 @@ export function RadioSettings () {
                 />
               </>
               }
-              {!isWifiSwitchableRfEnabled && triBandRadioFeatureFlag && isTriBandRadio &&
+              {!isWifiSwitchableRfEnabled && isTriBandRadio &&
               <div style={{ marginTop: '1em' }}>
                 <span>{$t({ defaultMessage: 'R760 radio bands management' })}</span>
                 <Form.Item

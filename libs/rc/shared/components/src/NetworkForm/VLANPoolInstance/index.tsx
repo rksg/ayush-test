@@ -5,35 +5,36 @@ import { DefaultOptionType }          from 'antd/lib/select'
 import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
 
-import { Tooltip }                                                     from '@acx-ui/components'
-import { useGetVlanPoolPolicyTemplateListQuery, useVlanPoolListQuery } from '@acx-ui/rc/services'
-import { VlanPool, useConfigTemplateQueryFnSwitcher }                  from '@acx-ui/rc/utils'
+import { Tooltip }                                                                               from '@acx-ui/components'
+import { useGetEnhancedVlanPoolPolicyTemplateListQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
+import { TableResult, VLANPoolViewModelType, useConfigTemplateQueryFnSwitcher }                  from '@acx-ui/rc/utils'
 
 import VLANPoolModal from './VLANPoolModal'
 
 
 const listPayload = {
-  fields: ['name', 'id'], sortField: 'name',
+  fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
   sortOrder: 'ASC', page: 1, pageSize: 10000
 }
 
 const VLANPoolInstance = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { data } = useConfigTemplateQueryFnSwitcher<VlanPool[]>(
-    useVlanPoolListQuery,
-    useGetVlanPoolPolicyTemplateListQuery,
+  // eslint-disable-next-line max-len
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>(
+    useGetVLANPoolPolicyViewModelListQuery,
+    useGetEnhancedVlanPoolPolicyTemplateListQuery,
     false,
     listPayload
   )
 
-  const [vlanPoolList, setVlanPoolList]= useState<DefaultOptionType[]>()
+  const [ vlanPoolList, setVlanPoolList ]= useState<DefaultOptionType[]>()
 
   useEffect(() => {
-    if (data) {
-      setVlanPoolList(data.map(m => ({ label: m.name, value: m.id })))
+    if (instanceListResult) {
+      setVlanPoolList(instanceListResult.data.map(m => ({ label: m.name, value: m.id })))
     }
-  },[data])
+  },[instanceListResult])
 
   return (
     <>
@@ -49,7 +50,7 @@ const VLANPoolInstance = () => {
           children={<Select
             style={{ width: 210 }}
             onChange={(value)=>{
-              const record = _.find(data, { id: value })
+              const record = _.find(instanceListResult?.data, { id: value })
               form.setFieldValue(['wlan', 'advancedCustomization','vlanPool','name'], record?.name)
               form.setFieldValue([
                 'wlan',
