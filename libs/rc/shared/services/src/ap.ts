@@ -5,65 +5,64 @@ import { Params } from 'react-router-dom'
 import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  ApExtraParams,
-  AP,
-  PingAp,
-  ApDetails,
-  ApDeep,
-  ApDetailHeader,
-  ApGroup,
-  ApRadioBands,
-  CommonUrlsInfo,
-  DhcpAp,
-  onSocketActivityChanged,
-  RequestFormData,
-  onActivityMessageReceived,
-  TableResult,
-  RadioProperties,
-  WifiUrlsInfo,
-  WifiApSetting,
-  ApLanPort,
-  ApLedSettings,
-  ApBandModeSettings,
-  ApBssColoringSettings,
-  APPhoto,
-  ApViewModel,
-  VenueDefaultApGroup,
-  AddApGroup,
-  CommonResult,
-  ImportErrorRes,
-  PacketCaptureState,
-  Capabilities,
-  PacketCaptureOperationResponse,
-  ApRadioCustomization,
-  VenueDefaultRegulatoryChannels,
-  APExtended,
-  LanPortStatusProperties,
-  ApDirectedMulticast,
-  APNetworkSettings,
-  APExtendedGrouped,
-  downloadFile,
-  SEARCH,
-  SORTER,
-  APMeshSettings,
-  MeshUplinkAp,
-  ApRfNeighborsResponse,
-  ApLldpNeighborsResponse,
-  SupportCcdVenue,
-  SupportCcdApGroup,
-  ApClientAdmissionControl,
   AFCInfo,
   AFCPowerMode,
   AFCStatus,
-  ApGroupViewModel,
-  ApManagementVlan,
-  ApFeatureSet,
+  AP,
+  APExtended,
+  APExtendedGrouped,
+  APMeshSettings,
+  APNetworkSettings,
+  APPhoto,
+  AddApGroup,
   ApAntennaTypeSettings,
-  ApiVersionType,
-  GetApiVersionHeader,
-  WifiRbacUrlsInfo,
+  ApBandModeSettings,
+  ApBssColoringSettings,
+  ApClientAdmissionControl,
+  ApDeep,
+  ApDetailHeader,
+  ApDetails,
+  ApDirectedMulticast,
+  ApExtraParams,
+  ApFeatureSet,
+  ApGroup,
+  ApGroupViewModel,
+  ApLanPort,
+  ApLedSettings,
+  ApLldpNeighborsResponse,
+  ApManagementVlan,
+  ApRadioBands,
+  ApRadioCustomization,
+  ApRfNeighborsResponse,
+  ApViewModel,
+  ApiVersionEnum,
+  Capabilities,
   CommonRbacUrlsInfo,
-  ApiVersionEnum
+  CommonResult,
+  CommonUrlsInfo,
+  DhcpAp,
+  GetApiVersionHeader,
+  ImportErrorRes,
+  LanPortStatusProperties,
+  MeshUplinkAp,
+  PacketCaptureOperationResponse,
+  PacketCaptureState,
+  PingAp,
+  RadioProperties,
+  RequestFormData,
+  SEARCH,
+  SORTER,
+  SupportCcdApGroup,
+  SupportCcdVenue,
+  TableResult,
+  VenueDefaultApGroup,
+  VenueDefaultRegulatoryChannels,
+  WifiApSetting,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo,
+  downloadFile,
+  onActivityMessageReceived,
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -760,10 +759,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion } = (payload || {}) as ApiVersionType
-        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
         const req = createHttpRequest(urlsInfo.getApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req
@@ -783,16 +783,15 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
-      query: ({ params, payload }) => {
-        const { rbacApiVersion, ...config } = payload as (ApiVersionType & ApDirectedMulticast)
-        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
 
         const req = createHttpRequest(urlsInfo.updateApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: configPayload
+          body: enableRbac? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]

@@ -103,8 +103,7 @@ export enum ApSnmpActionType {
 export type ApSnmpActionPayload = {
   type: ApSnmpActionType.NAME,
   payload: {
-    name: string,
-    isUseRbacApi: boolean
+    name: string
   }
 } | {
   type: ApSnmpActionType.ADD_SNMP_V2,
@@ -131,6 +130,6 @@ export type ApSnmpActionPayload = {
 } | {
   type: ApSnmpActionType.UPDATE_STATE,
   payload: {
-    state: ApSnmpPolicy | RbacApSnmpPolicy
+    state: ApSnmpPolicy
   }
 }

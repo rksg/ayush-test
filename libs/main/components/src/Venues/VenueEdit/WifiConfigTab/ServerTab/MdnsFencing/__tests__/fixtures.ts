@@ -72,6 +72,79 @@ export const mockMdnsFencing = {
   ]
 }
 
+export const mockRbacMdnsFencing = {
+  enabled: true,
+  rules: [
+    {
+      service: 'AIRDISK',
+      customServiceName: '', //(If service is "OTHER")
+      wirelessEnabled: true,
+      wirelessRule: {
+        fencingRange: 'SAME_AP' //ONE_HOP_AP
+      },
+      wiredEnabled: true,
+      wiredRules: [
+        {
+          name: 'rule1',
+          fencingRange: 'SAME_AP', //ONE_HOP_AP
+          closestApMac: '18:7C:0B:10:29:50',
+          deviceMacAddresses: [
+            '11:22:AA:BB:55:66',
+            '11:22:AA:BB:55:77'
+          ]
+        },
+        {
+          name: 'rule2',
+          fencingRange: 'SAME_AP', //ONE_HOP_AP
+          closestApMac: '18:7C:0B:10:29:51',
+          deviceMacAddresses: [
+            '11:22:AA:BB:55:EE',
+            '11:22:AA:BB:55:FF',
+            '55:55:55:55:55:55'
+          ]
+        }
+      ],
+      description: 'Fencing rule description',
+      customMappingEnabled: true,
+      customStrings: [
+        '_cafe._tcp.',
+        '_cafe._udp.'
+      ]
+    },{
+      service: 'AIRPLAY',
+      customServiceName: '', //(If service is "OTHER")
+      wirelessEnabled: true,
+      wirelessRule: {
+        fencingRange: 'ONE_HOP_AP'
+      },
+      wiredEnabled: false,
+      description: 'Fencing rule description',
+      customMappingEnabled: false
+    },{
+      service: 'OTHER',
+      customServiceName: 'myCustomService', //(If service is "OTHER")
+      wirelessEnabled: false,
+      wiredEnabled: false,
+      description: 'Fencing rule description',
+      customMappingEnabled: false
+    },{
+      service: 'OTHER',
+      customServiceName: 'test2', //(If service is "OTHER")
+      wirelessEnabled: false,
+      wiredEnabled: false,
+      description: '',
+      customMappingEnabled: false
+    },{
+      service: 'OTHER',
+      customServiceName: 'test3', //(If service is "OTHER")
+      wirelessEnabled: false,
+      wiredEnabled: false,
+      description: '',
+      customMappingEnabled: false
+    }
+  ]
+}
+
 export const mockApList = {
   totalCount: 2,
   page: 1,

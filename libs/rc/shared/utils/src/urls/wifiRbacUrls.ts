@@ -70,16 +70,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/capabilities',
     newApi: true
   },
+  */
   getVenueExternalAntenna: {
     method: 'get',
-    url: '/venues/:venueId/externalAntennaSettings',
+    // url: '/venues/:venueId/externalAntennaSettings',
+    url: '/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
   updateVenueExternalAntenna: {
     method: 'put',
-    url: '/venues/:venueId/externalAntennaSettings',
+    // url: '/venues/:venueId/externalAntennaSettings',
+    url: '/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
+  /*
   getVenueAntennaType: {
     method: 'get',
     url: '/venues/:venueId/apModelAntennaTypeSettings',
@@ -451,7 +455,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //url: '/venues/aps/:serialNumber/directedMulticastSettings',
     url: '/venues/:venueId/aps/:serialNumber/directedMulticastSettings',
     newApi: true
-  }
+  },
   /*
   // deprecated. use the updateApDirectedMulticast to replace
   resetApDirectedMulticast: {
@@ -472,26 +476,32 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/loadBalancingSettings',
     newApi: true
   },
+  */
   getVenueBssColoring: {
     method: 'get',
-    url: '/venues/:venueId/bssColoringSettings',
+    // url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   updateVenueBssColoring: {
     method: 'put',
-    url: '/venues/:venueId/bssColoringSettings',
+    // url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   getVenueClientAdmissionControl: {
     method: 'get',
-    url: '/venues/:venueId/clientAdmissionControlSettings',
+    // url: '/venues/:venueId/clientAdmissionControlSettings',
+    url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
   },
   updateVenueClientAdmissionControl: {
     method: 'put',
-    url: '/venues/:venueId/clientAdmissionControlSettings',
+    // url: '/venues/:venueId/clientAdmissionControlSettings',
+    url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
-  },
+  }
+  /*
   getApClientAdmissionControl: {
     method: 'get',
     url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',

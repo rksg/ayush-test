@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react'
 
 import { FormInstance } from 'antd/es/form/Form'
-import _                from 'lodash'
+import { isEmpty }      from 'lodash'
 import { useIntl }      from 'react-intl'
 
 import { Drawer, showActionModal }               from '@acx-ui/components'
@@ -23,11 +23,13 @@ export default function MdnsFencingDrawer (props: MdnsFencingDrawerProps) {
   const { currentService={}, currentServiceRef } = useContext(MdnsFencingServiceContext)
   const { visible, setVisible, onDataChanged, form } = props
 
-  const isEditMode = !_.isEmpty(currentService)
+  const isEditMode = !isEmpty(currentService)
 
   useEffect(() => {
-    form.setFieldsValue(currentService)
-  }, [currentService])
+    if (visible && form) {
+      form.setFieldsValue(currentService)
+    }
+  }, [currentService, form, visible])
 
 
   const content = <MdnsFencingServiceForm form={form} />

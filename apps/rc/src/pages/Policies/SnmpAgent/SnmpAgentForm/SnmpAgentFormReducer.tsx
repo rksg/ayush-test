@@ -2,25 +2,17 @@
 import {
   ApSnmpActionPayload,
   ApSnmpActionType,
-  ApSnmpPolicy,
-  RbacApSnmpPolicy
+  ApSnmpPolicy
 } from '@acx-ui/rc/utils'
 
 export const SnmpAgentFormReducer = (
-  state: ApSnmpPolicy | RbacApSnmpPolicy, action: ApSnmpActionPayload
-): ApSnmpPolicy | RbacApSnmpPolicy => {
+  state: ApSnmpPolicy, action: ApSnmpActionPayload
+): ApSnmpPolicy => {
   switch (action.type) {
     case ApSnmpActionType.NAME:
-      if (action.payload.isUseRbacApi){
-        return {
-          ...state,
-          name: action.payload.name
-        }
-      } else {
-        return {
-          ...state,
-          policyName: action.payload.name
-        }
+      return {
+        ...state,
+        policyName: action.payload.name
       }
     case ApSnmpActionType.ADD_SNMP_V2:
       if (!state.snmpV2Agents) {

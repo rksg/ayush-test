@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { AnchorContext, Loader }    from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   ClientAdmissionControlForm,
   ClientAdmissionControlTypeEnum,
@@ -16,11 +17,10 @@ import {
   useUpdateVenueClientAdmissionControlMutation,
   useUpdateVenueTemplateClientAdmissionControlMutation
 } from '@acx-ui/rc/services'
-import { VenueClientAdmissionControl } from '@acx-ui/rc/utils'
+import { VenueClientAdmissionControl, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { VenueEditContext }                                                                from '../..'
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
-
 
 
 const { useWatch } = Form
@@ -40,6 +40,9 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   const minClientThroughput24GFieldName = 'clientAdmissionControlMinClientThroughput24G'
   const minClientThroughput50GFieldName = 'clientAdmissionControlMinClientThroughput50G'
 
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+
   const [ enable24G, enable50G ] = [
     useWatch<boolean>(enable24GFieldName),
     useWatch<boolean>(enable50GFieldName)
@@ -57,7 +60,8 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
   // eslint-disable-next-line max-len
   const getClientAdmissionControl = useVenueConfigTemplateQueryFnSwitcher<VenueClientAdmissionControl>(
     useGetVenueClientAdmissionControlQuery,
-    useGetVenueTemplateClientAdmissionControlQuery
+    useGetVenueTemplateClientAdmissionControlQuery,
+    isUseRbacApi
   )
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -115,6 +119,7 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
       await updateClientAdmissionControl({
         params: { venueId },
         payload,
+        enableRbac: isUseRbacApi,
         callback: callback
       }).unwrap()
 
