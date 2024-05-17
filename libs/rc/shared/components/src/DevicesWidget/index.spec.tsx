@@ -13,7 +13,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} />
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} />
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -26,7 +26,7 @@ describe('Devices widget', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} enableArrowClick/>
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -47,9 +47,11 @@ describe('Devices widget V2', () => {
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -67,9 +69,11 @@ describe('Devices widget V2', () => {
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -87,9 +91,11 @@ describe('Devices widget V2', () => {
         <DevicesWidgetv2 apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={0}
           switchTotalCount={0}
           edgeTotalCount={0}
+          rwgTotalCount={0}
           enableArrowClick
         />
       </Provider>,
@@ -106,7 +112,7 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} />
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]}/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -119,7 +125,7 @@ describe('Devices widget v1', () => {
     }
     const { asFragment } = render(
       <Provider>
-        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} enableArrowClick/>
+        <DevicesWidget apData={[]} switchData={[]} edgeData={[]} rwgData={[]} enableArrowClick/>
       </Provider>,
       { route: { params } })
     await screen.findByText('Devices')
@@ -141,9 +147,11 @@ describe('Devices widget V2 edge enabled', () => {
           apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={2}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })
@@ -164,9 +172,11 @@ describe('Devices widget V2 edge enabled', () => {
           apStackedData={[]}
           switchStackedData={[]}
           edgeStackedData={[]}
+          rwgStackedData={{ chartData: [], stackedColors: [] }}
           apTotalCount={1}
           switchTotalCount={1}
           edgeTotalCount={0}
+          rwgTotalCount={0}
         />
       </Provider>,
       { route: { params } })

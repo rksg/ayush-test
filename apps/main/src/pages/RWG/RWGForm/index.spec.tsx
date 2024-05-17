@@ -2,10 +2,10 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { rwgApi }          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { rwgApi }                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -64,8 +64,9 @@ const gatewayResponse = {
     name: 'ruckusdemos',
     hostname: 'rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxxxxxxxxxx',
-    status: null
-  }
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 const rwgList = {
@@ -80,8 +81,9 @@ const rwgList = {
       name: 'ruckusdemos',
       hostname: 'rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      status: null
-    }]
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
   }
 }
 
