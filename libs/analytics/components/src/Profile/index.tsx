@@ -5,6 +5,7 @@ import { useUpdatePreferencesMutation }                                         
 import { useRoles, getUserProfile }                                                   from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs, UserProfileSection as BasicUserProfileSection } from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { hasPermission }                                                              from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 
@@ -81,7 +82,10 @@ const useTabs = () : Tab[] => {
     title: $t({ defaultMessage: 'Notifications' }),
     url: '/analytics/profile/settings'
   }
-  return [ settingsTab, notificationsTab ]
+
+  return hasPermission({ permission: 'READ_INCIDENTS' })
+    ? [ settingsTab, notificationsTab ]
+    : [ settingsTab ]
 }
 
 export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {
