@@ -90,6 +90,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         setVisible={setDrawerVisible}
         widget={widget}
         setWidget={setWidget}
+        payload={payload}
       />}
     </Loader>
   )
