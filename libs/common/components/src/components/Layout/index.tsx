@@ -54,7 +54,7 @@ type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
   children?: ItemType[]
 }
 
-type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
+export type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
 
 export function isSubMenuType (value: ItemType): value is SubMenuType {
   if (has(value, 'children') && !has(value, 'type')) return true
