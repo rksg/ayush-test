@@ -19,7 +19,6 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchLatestFirmwareList: {
     method: 'get',
     url: '/switchFirmwares/versions/latest',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/latest',
     newApi: true
   },
   getSwitchDefaultFirmwareList: {
@@ -41,7 +40,6 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchAvailableFirmwareList: {
     method: 'get',
     url: '/switchFirmwares/versions/release',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/release',
     newApi: true
   },
   getSwitchCurrentVersions: {

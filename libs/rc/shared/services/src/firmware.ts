@@ -211,8 +211,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchLatestFirmwareList, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchLatestFirmwareList, params, headers)
         return {
           ...req
         }
@@ -220,8 +222,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchDefaultFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchDefaultFirmwareList, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchDefaultFirmwareList, params, headers)
         return {
           ...req
         }
@@ -292,8 +296,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSwitchAvailableFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchAvailableFirmwareList, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchAvailableFirmwareList, params, headers)
         return {
           ...req
         }
@@ -312,8 +318,10 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareStatusList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchFirmwareStatusList, params, headers)
         return {
           ...req,
           body: payload

@@ -75,6 +75,10 @@ export enum FIRMWARE {
 }
 
 export function SwitchForm () {
+  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
+  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const { $t } = useIntl()
   const { tenantId, switchId, action } = useParams()
   const editMode = action === 'edit'
@@ -83,11 +87,13 @@ export function SwitchForm () {
   const formRef = useRef<StepsFormLegacyInstance<Switch>>()
   const basePath = useTenantLink('/devices/')
   const venuesList = useGetSwitchVenueVersionListQuery({
-    params: { tenantId: tenantId }, payload: {
+    params: { tenantId: tenantId },
+    payload: {
       firmwareType: '',
       firmwareVersion: '',
       search: '', updateAvailable: ''
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const [addSwitch] = useAddSwitchMutation()
@@ -113,9 +119,7 @@ export function SwitchForm () {
   const [currentFW, setCurrentFW] = useState('')
   const [currentAboveTenFW, setCurrentAboveTenFW] = useState('')
 
-  const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
-  const isSupport8100 = useIsSplitOn(Features.SWITCH_SUPPORT_ICX8100)
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
 
   const getSwitchInfo = useGetSwitchListQuery({ params: { tenantId },
     payload: { filters: { id: [switchId || serialNumber] } }, enableRbac: isSwitchRbacEnabled }, {
@@ -209,7 +213,8 @@ export function SwitchForm () {
   useEffect(() => {
     if (!venuesList.isLoading) {
       const venues = venuesList?.data?.data?.map(item => ({
-        label: item.name, value: item.id
+        label: isSwitchRbacEnabled ? item.venueName : item.name,
+        value: isSwitchRbacEnabled ? item.venueId: item.id
       })) ?? []
       const sortedVenueOption = _.sortBy(venues, (v) => v.label)
       setVenueOption(sortedVenueOption)

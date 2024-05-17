@@ -31,6 +31,7 @@ import * as UI                from '../styledComponents'
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
 import { UpdateNowStep }    from './UpdateNowStep'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 
 export enum SwitchFirmwareWizardType {
@@ -48,6 +49,7 @@ export interface UpdateNowWizardProps {
 }
 
 export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [form] = Form.useForm()
   const { $t } = useIntl()
   const params = useParams()
@@ -68,8 +70,14 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
       } return version
     })
   }
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
-  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({ params })
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const isLatestVersion = function (currentVersion: FirmwareVersion) {
     if(_.isEmpty(currentVersion?.id)) return false
