@@ -88,7 +88,8 @@ import {
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
   ApiVersionType,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -309,11 +310,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueMesh: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueMesh, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateVenueMesh, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }]
@@ -1164,8 +1167,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueLoadBalancing: build.query<VenueLoadBalancing, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueLoadBalancing, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getVenueLoadBalancing, params, customHeaders)
         return{
           ...req
         }
@@ -1183,11 +1188,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueLoadBalancing: build.mutation<VenueLoadBalancing, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueLoadBalancing, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateVenueLoadBalancing, params, customHeaders)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LOAD_BALANCING' }],

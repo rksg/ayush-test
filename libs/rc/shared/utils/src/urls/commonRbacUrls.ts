@@ -182,12 +182,15 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId',
     newApi: true
   },
+  */
   updateVenueMesh: {
     method: 'put',
-    url: '/venues/:venueId/meshSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh',
+    url: '/venues/:venueId/apMeshSettings',
+    // url: '/venues/:venueId/meshSettings',
+    // oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh',
     newApi: true
   },
+  /*
   getMeshAps: {
     method: 'post',
     url: '/aps/query?mesh=true',
