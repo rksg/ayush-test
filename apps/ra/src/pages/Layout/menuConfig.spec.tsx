@@ -84,6 +84,8 @@ describe('useMenuConfig', () => {
   it('should not return Data Studio', () => {
     setRaiPermissions({
       ...defaultMockPermissions,
+      READ_REPORTS: false,
+      WRITE_OCCUPANCY: false,
       READ_DATA_STUDIO: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
@@ -116,6 +118,7 @@ describe('useMenuConfig', () => {
       ...defaultMockPermissions,
       READ_ONBOARDED_SYSTEMS: false,
       READ_LABELS: false,
+      READ_LICENSES: false,
       READ_RESOURCE_GROUPS: false,
       READ_WEBHOOKS: false
     } as RaiPermissions)
@@ -132,6 +135,7 @@ describe('useMenuConfig', () => {
       ...defaultMockPermissions,
       READ_ONBOARDED_SYSTEMS: false,
       READ_LABELS: false,
+      READ_LICENSES: false,
       READ_RESOURCE_GROUPS: false,
       READ_WEBHOOKS: false
     } as RaiPermissions)

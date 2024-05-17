@@ -60,10 +60,12 @@ export function useMenuConfig () {
             type: 'group' as const,
             label: $t({ defaultMessage: 'AI Analytics' }),
             children: [
-              {
-                uri: '/incidents',
-                label: $t({ defaultMessage: 'Incidents' })
-              },
+              ...(hasPermission({ permission: 'READ_INCIDENTS' }) ? [
+                {
+                  uri: '/incidents',
+                  label: $t({ defaultMessage: 'Incidents' })
+                }
+              ] : []),
               ...(hasPermission({ permission: 'READ_AI_DRIVEN_RRM' }) ? [
                 {
                   uri: '/recommendations/crrm',
@@ -82,20 +84,24 @@ export function useMenuConfig () {
             type: 'group' as const,
             label: $t({ defaultMessage: 'Network Assurance' }),
             children: [
-              {
-                uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
-                label: $t({ defaultMessage: 'Health' })
-              },
+              ...(hasPermission({ permission: 'READ_HEALTH' }) ? [
+                {
+                  uri: isSwitchHealthEnabled ? '/health/overview' : '/health',
+                  label: $t({ defaultMessage: 'Health' })
+                }
+              ] : []),
               ...(hasPermission({ permission: 'READ_SERVICE_VALIDATION' }) ? [
                 {
                   uri: '/serviceValidation',
                   label: $t({ defaultMessage: 'Service Validation' })
                 }
               ] : []),
-              {
-                uri: '/configChange',
-                label: $t({ defaultMessage: 'Config Change' })
-              }
+              ...(hasPermission({ permission: 'READ_CONFIG_CHANGE' }) ? [
+                {
+                  uri: '/configChange',
+                  label: $t({ defaultMessage: 'Config Change' })
+                }
+              ] : [])
             ]
           }
         ]
@@ -105,9 +111,11 @@ export function useMenuConfig () {
         inactiveIcon: RocketOutlined,
         activeIcon: RocketSolid,
         children: [
-          {
-            label: $t({ defaultMessage: 'AppInsights (coming soon)' })
-          },
+          ...(hasPermission({ permission: 'READ_APP_INSIGHTS' }) ? [
+            {
+              label: $t({ defaultMessage: 'AppInsights (coming soon)' })
+            }
+          ] : []),
           ...(hasPermission({ permission: 'READ_VIDEO_CALL_QOE' }) ? [
             {
               uri: '/videoCallQoe',
@@ -127,27 +135,29 @@ export function useMenuConfig () {
         }
       ]
       : []),
-    {
-      label: $t({ defaultMessage: 'Clients' }),
-      inactiveIcon: AccountCircleOutlined,
-      activeIcon: AccountCircleSolid,
-      children: [
-        {
-          type: 'group' as const,
-          label: $t({ defaultMessage: 'Wireless' }),
-          children: [
-            {
-              uri: '/users/wifi/clients',
-              label: $t({ defaultMessage: 'Wireless Clients List' })
-            },
-            {
-              uri: '/users/wifi/reports',
-              label: $t({ defaultMessage: 'Wireless Clients Report' })
-            }
-          ]
-        }
-      ]
-    },
+    ...(hasPermission({ permission: 'READ_WIRELESS_CLIENTS_LIST' }) ? [
+      {
+        label: $t({ defaultMessage: 'Clients' }),
+        inactiveIcon: AccountCircleOutlined,
+        activeIcon: AccountCircleSolid,
+        children: [
+          {
+            type: 'group' as const,
+            label: $t({ defaultMessage: 'Wireless' }),
+            children: [
+              {
+                uri: '/users/wifi/clients',
+                label: $t({ defaultMessage: 'Wireless Clients List' })
+              },
+              {
+                uri: '/users/wifi/reports',
+                label: $t({ defaultMessage: 'Wireless Clients Report' })
+              }
+            ]
+          }
+        ]
+      }
+    ] : []),
     ...(hasPermission({ permission: 'READ_ACCESS_POINTS_LIST' }) ? [
       {
         label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -222,27 +232,32 @@ export function useMenuConfig () {
         ]
       }
     ] : []),
-    ...(hasPermission({ permission: 'READ_DATA_STUDIO' }) ? [
-      {
-        label: $t({ defaultMessage: 'Business Insights' }),
-        inactiveIcon: BulbOutlined,
-        activeIcon: BulbSolid,
-        children: [
+    {
+      label: $t({ defaultMessage: 'Business Insights' }),
+      inactiveIcon: BulbOutlined,
+      activeIcon: BulbSolid,
+      children: [
+        ...(hasPermission({ permission: 'READ_DATA_STUDIO' }) ? [
           {
             uri: '/dataStudio',
             label: $t({ defaultMessage: 'Data Studio' })
-          },
-          { uri: '/reports', label: $t({ defaultMessage: 'Reports' }) },
-          ...(hasPermission({ permission: 'WRITE_OCCUPANCY' }) ? [
-            { // until we have a read only version in new UI, we need to use WRITE_OCCUPANCY
-              uri: legacyLink('/analytics/occupancy', search),
-              label: $t({ defaultMessage: 'Occupancy' }),
-              openNewTab: true
-            }
-          ] : [])
-        ]
-      }
-    ] : []),
+          }
+        ] : []),
+        ...(hasPermission({ permission: 'READ_REPORTS' }) ? [
+          {
+            uri: '/reports',
+            label: $t({ defaultMessage: 'Reports' })
+          }
+        ] : []),
+        ...(hasPermission({ permission: 'WRITE_OCCUPANCY' }) ? [
+          { // until we have a read only version in new UI, we need to use WRITE_OCCUPANCY
+            uri: legacyLink('/analytics/occupancy', search),
+            label: $t({ defaultMessage: 'Occupancy' }),
+            openNewTab: true
+          }
+        ] : [])
+      ]
+    },
     {
       label: $t({ defaultMessage: 'Administration' }),
       inactiveIcon: AdminOutlined,
@@ -257,7 +272,9 @@ export function useMenuConfig () {
               {
                 uri: '/admin/onboarded',
                 label: $t({ defaultMessage: 'Onboarded Systems' })
-              },
+              }
+            ] : []),
+            ...(hasPermission({ permission: 'READ_USERS' }) ? [
               {
                 uri: '/admin/users',
                 label: $t({ defaultMessage: 'Users' })
@@ -275,22 +292,28 @@ export function useMenuConfig () {
                 uri: legacyLink('/analytics/admin/resourceGroups', search),
                 label: $t({ defaultMessage: 'Resource Groups' }),
                 openNewTab: true
-              },
+              }
+            ] : []),
+            ...(hasPermission({ permission: 'READ_SUPPORT' }) ? [
               {
                 uri: '/admin/support',
                 label: $t({ defaultMessage: 'Support' })
-              },
+              }
+            ] : []),
+            ...(hasPermission({ permission: 'READ_LICENSES' }) ? [
               {
                 uri: legacyLink('/analytics/admin/license', search),
                 label: $t({ defaultMessage: 'Licenses' }),
                 openNewTab: true
               }
             ] : []),
-            {
-              uri: legacyLink('/analytics/admin/schedules', search),
-              label: $t({ defaultMessage: 'Schedules' }),
-              openNewTab: true
-            },
+            ...(hasPermission({ permission: 'READ_REPORT_SCHEDULES' }) ? [
+              {
+                uri: legacyLink('/analytics/admin/schedules', search),
+                label: $t({ defaultMessage: 'Schedules' }),
+                openNewTab: true
+              }
+            ] : []),
             ...(hasPermission({ permission: 'READ_WEBHOOKS' }) ? [
               {
                 uri: '/admin/webhooks',
