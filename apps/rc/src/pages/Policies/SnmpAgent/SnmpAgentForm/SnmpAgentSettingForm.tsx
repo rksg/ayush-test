@@ -42,7 +42,7 @@ const SnmpAgentSettingForm = () => {
       <GridRow >
         <GridCol col={{ span: 8 }}>
           <Form.Item
-            name='policyName'
+            name={'policyName'}
             label={$t({ defaultMessage: 'Profile Name' })}
             rules={[
               { required: true },

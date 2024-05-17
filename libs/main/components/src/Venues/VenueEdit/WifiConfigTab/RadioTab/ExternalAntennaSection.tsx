@@ -18,8 +18,14 @@ import {
   useUpdateVenueExternalAntennaMutation,
   useUpdateVenueTemplateExternalAntennaMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                                                                              from '@acx-ui/react-router-dom'
+import {
+  ApAntennaTypeEnum,
+  CapabilitiesApModel,
+  ExternalAntenna,
+  VeuneApAntennaTypeSettings,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext }                                                                from '../..'
 import ApModelPlaceholder                                                                  from '../../../assets/images/aps/ap-model-placeholder.png'
@@ -52,10 +58,13 @@ export function ExternalAntennaSection () {
 
   const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQueryFnSwitcher()
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } =
     useVenueConfigTemplateQueryFnSwitcher<ExternalAntenna[]>(
       useGetVenueExternalAntennaQuery,
-      useGetVenueTemplateExternalAntennaQuery
+      useGetVenueTemplateExternalAntennaQuery,
+      isUseRbacApi
     )
 
   const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] =
@@ -69,7 +78,11 @@ export function ExternalAntennaSection () {
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
     try {
-      await updateVenueExternalAntenna({ params, payload: [ ...data ] })
+      await updateVenueExternalAntenna({
+        params,
+        payload: [ ...data ],
+        enableRbac: isUseRbacApi
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

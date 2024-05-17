@@ -70,16 +70,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/capabilities',
     newApi: true
   },
+  */
   getVenueExternalAntenna: {
     method: 'get',
-    url: '/venues/:venueId/externalAntennaSettings',
+    // url: '/venues/:venueId/externalAntennaSettings',
+    url: '/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
   updateVenueExternalAntenna: {
     method: 'put',
-    url: '/venues/:venueId/externalAntennaSettings',
+    // url: '/venues/:venueId/externalAntennaSettings',
+    url: '/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
+  /*
   getVenueAntennaType: {
     method: 'get',
     url: '/venues/:venueId/apModelAntennaTypeSettings',
@@ -137,18 +141,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/cellularSettings',
     newApi: true
-  },
+  },*/
   getAp: {
     method: 'get',
-    url: '/venues/aps/:serialNumber?operational=false',
+    // url: '/venues/aps/:serialNumber?operational=false',
+    url: '/venues/:venueId/aps/:serialNumber?operational=false',
     newApi: true
   },
   getApOperational: {
     method: 'get',
-    url: '/venues/aps/:serialNumber?operational=true',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber?operational=true',
+    // url: '/venues/aps/:serialNumber?operational=true',
+    url: '/venues/:venueId/aps/:serialNumber?operational=true',
     newApi: true
   },
+  /*
   getApValidChannel: {
     method: 'get',
     url: '/venues/aps/:serialNumber/channels',
@@ -158,17 +164,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/aps/capabilities',
     newApi: true
-  },
+  },*/
   addAp: {
     method: 'post',
-    url: '/venues/aps',
+    // url: '/venues/aps',
+    url: '/venues/:venueId/aps',
     newApi: true
   },
   updateAp: {
     method: 'put',
-    url: '/venues/aps/:serialNumber',
+    // url: '/venues/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
+  /*
   getImportResult: {
     method: 'get',
     url: '/venues/aps/importResults',
@@ -225,23 +234,26 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/dhcpApSettings/query',
     newApi: true
-  },
+  },*/
   deleteAp: {
     method: 'delete',
-    url: '/venues/aps/:serialNumber',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber',
+    // url: '/venues/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
+  /*
   deleteAps: {
     method: 'delete',
     url: '/venues/aps',
     newApi: true
-  },
+  },*/
   deleteSoloAp: {
     method: 'delete',
-    url: '/venues/aps/:serialNumber?resetFirmware=true',
+    // url: '/venues/aps/:serialNumber?resetFirmware=true',
+    url: '/venues/:venueId/aps/:serialNumber?resetFirmware=true',
     newApi: true
   },
+  /*
   deleteSoloAps: {
     method: 'delete',
     url: '/venues/aps/?resetFirmware=true',
@@ -251,17 +263,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/aps/:serialNumber/logs',
     newApi: true
-  },
+  },*/
   rebootAp: {
     method: 'PATCH',
-    url: '/venues/aps/:serialNumber',
+    // url: '/venues/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
   factoryResetAp: {
     method: 'PATCH',
-    url: '/venues/aps/:serialNumber',
+    // url: '/venues/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
+  /*
   getApPhoto: {
     method: 'get',
     url: '/venues/aps/:serialNumber/pictures',
@@ -291,17 +306,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/aps/:serialNumber/radioSettings',
     newApi: true
-  },
+  },*/
   pingAp: {
     method: 'PATCH',
-    url: '/venues/aps/:serialNumber',
+    // url: '/venues/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
   traceRouteAp: {
     method: 'PATCH',
-    url: '/venues/aps/:serialNumber',
+    // url: '/venues/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
+  /*
   startPacketCapture: {
     method: 'post',
     url: '/venues/aps/:serialNumber/packets',
@@ -316,12 +334,14 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/aps/:serialNumber/packets',
     newApi: true
-  },
+  },*/
   blinkLedAp: {
     method: 'PATCH',
-    url: '/venues/aps/:serialNumber',
+    // url: '/venues/aps/:serialNumber',
+    url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
+  /*
   getApCapabilities: {
     method: 'get',
     url: '/venues/aps/:serialNumber/capabilities',
@@ -467,24 +487,29 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   /*
   getVenueBssColoring: {
     method: 'get',
-    url: '/venues/:venueId/bssColoringSettings',
+    // url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   updateVenueBssColoring: {
     method: 'put',
-    url: '/venues/:venueId/bssColoringSettings',
+    // url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   getVenueClientAdmissionControl: {
     method: 'get',
-    url: '/venues/:venueId/clientAdmissionControlSettings',
+    // url: '/venues/:venueId/clientAdmissionControlSettings',
+    url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
   },
   updateVenueClientAdmissionControl: {
     method: 'put',
-    url: '/venues/:venueId/clientAdmissionControlSettings',
+    // url: '/venues/:venueId/clientAdmissionControlSettings',
+    url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
-  },
+  }
+  /*
   getApClientAdmissionControl: {
     method: 'get',
     url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',

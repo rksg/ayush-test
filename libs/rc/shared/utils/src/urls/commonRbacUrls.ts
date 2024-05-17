@@ -96,13 +96,14 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldMethod: 'delete',
     oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     newApi: true
-  },
+  },*/
   getApsList: {
     method: 'post',
-    url: '/aps/query',
-    oldUrl: '/api/viewmodel/:tenantId/aps',
+    // url: '/aps/query',
+    url: '/venues/aps/query',
     newApi: true
   },
+  /*
   getApGroupsListByGroup: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
@@ -285,18 +286,20 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models',
     newApi: true
   },
+  */
   getVenueLedOn: {
     method: 'get',
-    url: '/venues/:venueId/ledSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
+    // url: '/venues/:venueId/ledSettings',
+    url: '/venues/:venueId/apModelLedSettings',
     newApi: true
   },
   updateVenueLedOn: {
     method: 'put',
-    url: '/venues/:venueId/ledSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
+    // url: '/venues/:venueId/ledSettings',
+    url: '/venues/:venueId/apModelLedSettings',
     newApi: true
   },
+  /*
   getVenueApModelBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/apModelBandModeSettings',
@@ -359,18 +362,20 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
+  */
   getDenialOfServiceProtection: {
     method: 'get',
-    url: '/venues/:venueId/dosProtectionSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection',
+    // url: '/venues/:venueId/dosProtectionSettings',
+    url: '/venues/:venueId/apDosProtectionSettings',
     newApi: true
   },
   updateDenialOfServiceProtection: {
     method: 'put',
-    url: '/venues/:venueId/dosProtectionSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection',
+    // url: '/venues/:venueId/dosProtectionSettings',
+    url: '/venues/:venueId/apDosProtectionSettings',
     newApi: true
   },
+  /*
   getVenueRogueAp: {
     method: 'get',
     url: '/venues/:venueId/rogueApSettings',
@@ -502,19 +507,19 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
+  */
   getVenueMdnsFencingPolicy: {
     method: 'get',
-    url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
+    //url: '/venues/:venueId/mDnsFencingSettings',
+    url: '/venues/:venueId/apMulticastDnsFencingSettings',
     newApi: true
   },
   updateVenueMdnsFencingPolicy: {
     method: 'put',
-    url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
+    //url: '/venues/:venueId/mDnsFencingSettings',
+    url: '/venues/:venueId/apMulticastDnsFencingSettings',
     newApi: true
   },
-  */
   getVenueRadiusOptions: {
     method: 'get',
     //url: '/venues/:venueId/radiusOptions',
