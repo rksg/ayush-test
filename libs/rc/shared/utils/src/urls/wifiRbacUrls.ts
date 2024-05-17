@@ -193,31 +193,38 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/apGroups/query',
     newApi: true
   },
+  */
   addApGroup: {
     method: 'post',
     url: '/venues/:venueId/apGroups',
     newApi: true
   },
+  /*
   getApsByApGroup: {
     method: 'get',
     url: '/venues/apGroups/:apGroupId/aps',
     newApi: true
   },
+  */
   getApGroup: {
     method: 'get',
-    url: '/venues/apGroups/:apGroupId',
+    url: '/venues/:venueId/apGroups/:apGroupId',
+    // url: '/venues/apGroups/:apGroupId',
     newApi: true
   },
   updateApGroup: {
     method: 'put',
-    url: '/venues/apGroups/:apGroupId',
+    url: '/venues/:venueId/apGroups/:apGroupId',
+    // url: '/venues/apGroups/:apGroupId',
     newApi: true
   },
   deleteApGroup: {
     method: 'delete',
-    url: '/venues/apGroups/:apGroupId',
+    url: '/venues/:venueId/apGroups/:apGroupId',
+    // url: '/venues/apGroups/:apGroupId',
     newApi: true
   },
+  /*
   deleteApGroups: {
     method: 'delete',
     url: '/venues/apGroups',
@@ -465,18 +472,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
-  /*,
   getVenueLoadBalancing: {
     method: 'get',
-    url: '/venues/:venueId/loadBalancingSettings',
+    // url: '/venues/:venueId/loadBalancingSettings',
+    url: '/venues/:venueId/apLoadBalancingSettings',
     newApi: true
   },
   updateVenueLoadBalancing: {
     method: 'put',
-    url: '/venues/:venueId/loadBalancingSettings',
+    // url: '/venues/:venueId/loadBalancingSettings',
+    url: '/venues/:venueId/apLoadBalancingSettings',
     newApi: true
   },
-  */
   getVenueBssColoring: {
     method: 'get',
     // url: '/venues/:venueId/bssColoringSettings',
@@ -500,7 +507,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     // url: '/venues/:venueId/clientAdmissionControlSettings',
     url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
-  }
+  },
   /*
   getApClientAdmissionControl: {
     method: 'get',
@@ -517,31 +524,39 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
+  */
   getApNetworkSettings: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/networkSettings',
+    url: '/venues/:venueId/aps/:serialNumber/networkSettings',
+    // url: '/venues/aps/:serialNumber/networkSettings',
     newApi: true
   },
   updateApNetworkSettings: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/networkSettings',
+    url: '/venues/:venueId/aps/:serialNumber/networkSettings',
+    // url: '/venues/aps/:serialNumber/networkSettings',
     newApi: true
   },
+  /*
   resetApNetworkSettings: {
     method: 'delete',
     url: '/venues/aps/:serialNumber/networkSettings',
     newApi: true
   },
+  */
   getApMeshSettings: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/meshSettings',
+    url: '/venues/:venueId/aps/:serialNumber/meshSettings',
+    // url: '/venues/aps/:serialNumber/meshSettings',
     newApi: true
   },
   updateApMeshSettings: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/meshSettings',
+    url: '/venues/:venueId/aps/:serialNumber/meshSettings',
+    // url: '/venues/aps/:serialNumber/meshSettings',
     newApi: true
-  },
+  }
+  /*
   getMeshUplinkAPs: {
     method: 'post',
     url: '/aps/neighbors/query',
