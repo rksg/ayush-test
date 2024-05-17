@@ -556,7 +556,8 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M',
+      tooltip: defineMessage({ defaultMessage: 'Percentage of Uplink Ports without congestion' })
     },
     histogram: {
       highlightAbove: false,
@@ -564,7 +565,7 @@ export const kpiConfig = {
       apiMetric: 'switchUplinkPortUtilization',
       splits: [0, 20, 40, 60, 80, 100],
       xUnit: '%',
-      yUnit: 'Ports:',
+      yUnit: 'Ports',
       shortXFormat: noFormat,
       longXFormat: noFormat,
       reFormatFromBarChart: noFormat
@@ -576,7 +577,7 @@ export const kpiConfig = {
         defineMessage({ defaultMessage: '{threshold} congested' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: (x: number) => `${x}%`,
+      thresholdFormatter: numberWithPercentSymbol,
       tooltip: defineMessage({ defaultMessage: 'Uplink port utilization' })
     }
   },
@@ -586,7 +587,8 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortUtilizationCountAndPortCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M',
+      tooltip: defineMessage({ defaultMessage: 'Percentage of Ports without congestion' })
     },
     histogram: {
       highlightAbove: false,
@@ -606,7 +608,7 @@ export const kpiConfig = {
         defineMessage({ defaultMessage: '{threshold} congested' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: (x: number) => `${x}%`,
+      thresholdFormatter: numberWithPercentSymbol,
       tooltip: defineMessage({ defaultMessage: 'Port utilization' })
     }
   }
