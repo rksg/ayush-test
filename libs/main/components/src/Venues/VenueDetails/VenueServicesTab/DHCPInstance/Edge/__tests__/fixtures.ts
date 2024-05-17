@@ -18,7 +18,8 @@ export const mockedEdgeList = {
       ports: '80',
       venueName: 'Venue 1',
       venueId: '00001',
-      tags: ['Tag1', 'Tag2']
+      tags: ['Tag1', 'Tag2'],
+      clusterId: 'test-cluster'
     }
   ]
 }

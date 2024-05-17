@@ -16,10 +16,9 @@ import {
   VLANPoolPolicyType,
   PolicyType,
   PolicyOperation,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   usePolicyListBreadcrumb,
   usePolicyPreviousPath,
-  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -47,7 +46,7 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
     !isEdit
   )
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
-  const { isTemplate } = useConfigTemplate()
+  const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.VLAN_POOL)
   // eslint-disable-next-line max-len
   const [ createInstance ] = useConfigTemplateMutationFnSwitcher(useAddVLANPoolPolicyMutation, useAddVlanPoolPolicyTemplateMutation)
   // eslint-disable-next-line max-len
@@ -61,13 +60,18 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   const handleVLANPoolPolicy = async (formData: VLANPoolPolicyType) => {
+    const payload = {
+      ...formData,
+      vlanMembers: (formData.vlanMembers as string).split(',')
+    }
+
     try {
       if (!isEdit) {
-        await createInstance({ params, payload: formData }).unwrap().then(res => {
+        await createInstance({ params, payload }).unwrap().then(res => {
           formData.id = res.response?.id
         })
       } else {
-        await updateInstance({ params, payload: formData }).unwrap()
+        await updateInstance({ params, payload }).unwrap()
       }
       networkView ? backToNetwork?.(formData) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
@@ -82,7 +86,7 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
   return (
     <>
       {!networkView &&<PageHeader
-        title={generatePolicyPageHeaderTitle(isEdit, isTemplate, PolicyType.VLAN_POOL)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<VLANPoolPolicyType>

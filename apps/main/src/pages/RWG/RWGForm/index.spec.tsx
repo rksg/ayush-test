@@ -62,7 +62,7 @@ const gatewayResponse = {
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    hostname: 'rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxxxxxxxxxx',
     status: null
   }
@@ -78,7 +78,7 @@ const rwgList = {
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
       name: 'ruckusdemos',
-      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+      hostname: 'rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
       status: null
     }]
@@ -142,7 +142,7 @@ describe('Gateway Form', () => {
     fireEvent.blur(gatewayInput)
 
     const URLInput = screen.getByLabelText('FQDN / IP')
-    await fireEvent.change(URLInput, { target: { value: 'https://test.com' } })
+    await fireEvent.change(URLInput, { target: { value: 'test.com' } })
 
     const passwordInput = screen.getByLabelText('API Key')
     await fireEvent.change(passwordInput, { target: { value: 'Temp!2345' } })
@@ -219,7 +219,7 @@ describe('Gateway Form', () => {
     fireEvent.change(password, { target: { value: 'x' } })
     fireEvent.blur(password)
 
-    expect(await screen.findByText('Please enter a valid URL')).toBeVisible()
+    expect(await screen.findByText('Please enter a valid FQDN / IP')).toBeVisible()
 
   })
 
