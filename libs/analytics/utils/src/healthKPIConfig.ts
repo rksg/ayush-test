@@ -572,8 +572,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
-      minGranularity: 'PT5M',
-      tooltip: defineMessage({ defaultMessage: 'Percentage of Uplink Ports without congestion' })
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -603,8 +602,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortUtilizationCountAndPortCount',
-      minGranularity: 'PT5M',
-      tooltip: defineMessage({ defaultMessage: 'Percentage of Ports without congestion' })
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,

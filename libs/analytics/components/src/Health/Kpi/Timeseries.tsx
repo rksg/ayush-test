@@ -41,9 +41,7 @@ function KpiTimeseries ({
   timeWindow: TimeStampRange | undefined // not set if there is no zoom
 }) {
   const { $t } = useIntl()
-  const { text, enableSwitchFirmwareFilter, timeseries } = Object(
-    kpiConfig[kpi as keyof typeof kpiConfig])
-  const name = timeseries['tooltip'] ? timeseries.tooltip : text
+  const { text, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const queryResults = healthApi.useKpiTimeseriesQuery(
     { ...filters, kpi, threshold: threshold as unknown as string, enableSwitchFirmwareFilter },
     {
@@ -52,7 +50,7 @@ function KpiTimeseries ({
         data: data! && [
           {
             key: kpi,
-            name: $t(name, productNames),
+            name: $t(text, productNames),
             data: transformResponse(data)
           }
         ]

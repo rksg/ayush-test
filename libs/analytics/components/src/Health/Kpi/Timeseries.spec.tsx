@@ -65,23 +65,6 @@ describe('Kpi timeseries', () => {
     )
     expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
   })
-  it('should render loader with tooltip', async () => {
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { network: { timeSeries: sampleTS } }
-    })
-    render(<Provider><HealthPageContext.Provider value={{ ...healthContext }}>
-      <KpiTimeseries
-        filters={filters}
-        kpi={'switchUplinkPortUtilization'}
-        chartRef={chartRef}
-        setTimeWindow={setTimeWindow}
-        timeWindow={timeWindow}
-        threshold={threshold}
-      />
-    </HealthPageContext.Provider></Provider>
-    )
-    expect(await screen.findByRole('img', { name: 'loader' })).toBeInTheDocument()
-  })
   it('should render chart', async () => {
     mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
       data: { network: { timeSeries: sampleTS } }
