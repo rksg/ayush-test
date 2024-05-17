@@ -96,13 +96,14 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldMethod: 'delete',
     oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     newApi: true
-  },
+  },*/
   getApsList: {
     method: 'post',
-    url: '/aps/query',
-    oldUrl: '/api/viewmodel/:tenantId/aps',
+    // url: '/aps/query',
+    url: '/venues/aps/query',
     newApi: true
   },
+  /*
   getApGroupsListByGroup: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
