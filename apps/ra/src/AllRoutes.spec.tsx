@@ -62,11 +62,38 @@ describe('AllRoutes', () => {
   })
 
   it('redirects report users to reports', async () => {
-    setRaiPermissions({ READ_DASHBOARD: false } as RaiPermissions)
+    setRaiPermissions({ READ_REPORTS: true } as RaiPermissions)
     render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
     expect(Navigate).toHaveBeenCalledWith({
       replace: true,
       to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects it helpdesk to health', async () => {
+    setRaiPermissions({ READ_HEALTH: true } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/health', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects data studio users to data studio', async () => {
+    setRaiPermissions({ READ_DATA_STUDIO: true } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects to profile by default', async () => {
+    setRaiPermissions({ READ_DASHBOARD: false } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/profile/settings', search: '?selectedTenants=WyJhaWQiXQ==' }
     }, {})
   })
 

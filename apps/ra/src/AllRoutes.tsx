@@ -41,6 +41,15 @@ import Zones                                 from './pages/Zones'
 const Dashboard = React.lazy(() => import('./pages/Dashboard'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
+const getDefaultRoute = () => {
+  switch (true) {
+    case hasPermission({ permission: 'READ_DASHBOARD' }):   return 'dashboard'
+    case hasPermission({ permission: 'READ_HEALTH' }):      return 'health'
+    case hasPermission({ permission: 'READ_REPORTS' }):     return 'reports'
+    case hasPermission({ permission: 'READ_DATA_STUDIO' }): return 'dataStudio'
+  }
+  return 'profile/settings'
+}
 function Init () {
   const [ search ] = useSearchParams()
   updateSelectedTenant()
@@ -55,9 +64,7 @@ function Init () {
       replace
       to={{
         search: `?selectedTenants=${selectedTenants}`,
-        pathname: hasPermission({ permission: 'READ_DASHBOARD' })
-          ? `${MLISA_BASE_PATH}/dashboard`
-          : `${MLISA_BASE_PATH}/reports`
+        pathname: `${MLISA_BASE_PATH}/${getDefaultRoute()}`
       }}
     />
   }
