@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Form }    from 'antd'
-import { uniq }    from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
@@ -57,8 +56,8 @@ export function ConfigurationProfileForm () {
   )
 
   const editMode = params.action === 'edit'
-  const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState<string[]>([])
-  const [ arpInspection, setArpInspection ] = useState<string[]>([])
+  const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
+  const [ arpInspection, setArpInspection ] = useState(false)
   const [ vlansWithTaggedPorts, setVlansWithTaggedPorts] = useState(false)
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
@@ -186,10 +185,8 @@ export function ConfigurationProfileForm () {
           item.switchFamilyModels.find(model => model?.taggedPorts?.length)
           : false
       }) || []
-    setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.map(
-      item => item.switchFamilyModels?.map(sfmItem => sfmItem.model) || []).flat())
-    setArpInspection(arpInspectionValue.map(
-      item => item.switchFamilyModels?.map(sfmItem => sfmItem.model) || []).flat())
+    setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.length > 0)
+    setArpInspection(arpInspectionValue.length > 0)
     setVlansWithTaggedPorts(vlansWithTaggedPortsValue.length > 0)
     const voiceVlanOptions =
       nextCurrentData.vlans && generateVoiceVlanOptions(nextCurrentData.vlans as Vlan[])
@@ -218,15 +215,19 @@ export function ConfigurationProfileForm () {
 
   const proceedData = (data: SwitchConfigurationProfile) => {
     if(data.trustedPorts){
-      const models = uniq([...ipv4DhcpSnooping, ...arpInspection])
-      if(models.length > 0){
-        data.trustedPorts = data.trustedPorts
-          .filter(tpItem => models.includes(tpItem.model))
-          .map(
-            item => { return {
-              ...item,
-              ...{ vlanDemand: models.includes(item.model) }
-            }})
+      if(ipv4DhcpSnooping || arpInspection){
+        const vlanModels = data.vlans.map(
+          item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
+
+        data.trustedPorts = data.trustedPorts.filter(
+          tpItem => !data.vlans.some(item =>
+            (!item.ipv4DhcpSnooping && !item.arpInspection) &&
+            (item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))
+          )).map(
+          item => { return {
+            ...item,
+            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+          }})
       } else {
         data.trustedPorts = []
       }
