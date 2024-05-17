@@ -89,11 +89,11 @@ export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
           <GridCol key={matchingMapping[0]?.type}
             col={{ span: 10 }}
             style={{ height: 260, width: 430 }}>
-            <Typography.Paragraph>
-              <UI.PieTitle>
+            <UI.PieTitle>
+              <Typography.Paragraph>
                 {matchingMapping[0]?.pieTitle}
-              </UI.PieTitle>
-            </Typography.Paragraph>
+              </Typography.Paragraph>
+            </UI.PieTitle>
             {<MoreDetailsPieChart mapping={matchingMapping}/>}
           </GridCol>
         </GridRow>
