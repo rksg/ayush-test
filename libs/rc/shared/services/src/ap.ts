@@ -62,8 +62,7 @@ import {
   WifiUrlsInfo,
   downloadFile,
   onActivityMessageReceived,
-  onSocketActivityChanged,
-  ApiVersionEnum
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
