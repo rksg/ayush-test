@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Tabs }                        from '@acx-ui/components'
+import { Alert, GridCol, GridRow, Tabs }                 from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
@@ -20,6 +20,9 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
   const basePath = useTenantLink(props.path ?? '/analytics/health/wired/tab/')
+  const switchFirmwareVersionMsg = $t({ defaultMessage: `Data is displayed for switches 
+  with firmware version 10.0.10c or above.` })
+
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -29,6 +32,7 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
   return (
     <GridRow>
       <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
+        <Alert message={switchFirmwareVersionMsg} type='info' showIcon/>
         <SummaryBoxes
           filters={healthPageFilters}
         />

@@ -14,6 +14,25 @@ exports[`OverviewTab should render correctly 1`] = `
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 105px;"
       >
+        <div
+          class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 itaHGl"
+          data-show="true"
+          role="alert"
+        >
+          <svg
+            class="ant-alert-icon"
+            data-testid="InformationSolid"
+          />
+          <div
+            class="ant-alert-content"
+          >
+            <div
+              class="ant-alert-message"
+            >
+              Data is displayed for switches with firmware version 10.0.10c or above.
+            </div>
+          </div>
+        </div>
         <div>
           Mocked SummaryBoxes
         </div>
@@ -50,6 +69,25 @@ exports[`OverviewTab should render correctly with filter passed as props 1`] = `
         class="Grid__Container-sc-5irhjd-1 dRhDDA"
         style="min-height: 105px;"
       >
+        <div
+          class="ant-alert ant-alert-info styledComponents__AlertStyle-sc-1c2evo5-0 itaHGl"
+          data-show="true"
+          role="alert"
+        >
+          <svg
+            class="ant-alert-icon"
+            data-testid="InformationSolid"
+          />
+          <div
+            class="ant-alert-content"
+          >
+            <div
+              class="ant-alert-message"
+            >
+              Data is displayed for switches with firmware version 10.0.10c or above.
+            </div>
+          </div>
+        </div>
         <div>
           Mocked SummaryBoxes
         </div>
