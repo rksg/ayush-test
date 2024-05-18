@@ -21,6 +21,8 @@ export interface KpiThresholdType {
   switchMemoryUtilization: number
   switchCpuUtilization: number
   switchStormControl: number
+  switchUplinkPortUtilization: number
+  switchPortUtilization: number
   clusterLatency: number
 }
 
@@ -118,6 +120,8 @@ interface ThresholdsApiResponse {
   switchMemoryUtilizationThreshold?: ThresholdData
   switchCpuUtilizationThreshold?: ThresholdData
   switchStormControlThreshold?: ThresholdData
+  switchUplinkPortUtilizationThreshold?: ThresholdData
+  switchPortUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
 }
 

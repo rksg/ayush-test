@@ -164,6 +164,22 @@ export const kpiConfig = {
       deltaSign: '+'
     }
   },
+  switchDhcp: {
+    textPostFix: 'Success',
+    text: defineMessage({ defaultMessage: 'DHCP' }),
+    timeseries: {
+      apiMetric: 'switchDHCPAttemptAndSuccessCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP sucessful bindings' }),
+      thresholdDesc: [],
+      thresholdFormatter: null,
+      pillSuffix: pillSuffix.success,
+      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Switch client has received an IP address from the DHCP server. Do note that a single Switch client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
+  },
   radius: {
     text: defineMessage({ defaultMessage: 'RADIUS' }),
     timeseries: {
@@ -535,7 +551,7 @@ export const kpiConfig = {
     }
   },
   switchesTemperature: {
-    text: defineMessage({ defaultMessage: 'Switch Temperature' }),
+    text: defineMessage({ defaultMessage: 'Temperature' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
@@ -547,7 +563,67 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Switch Temperature' })
+      tooltip: defineMessage({ defaultMessage: 'Temperature' })
+    }
+  },
+  switchUplinkPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Uplink Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchUplinkPortUtilCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchUplinkPortUtilization',
+      splits: [0, 20, 40, 60, 80, 100],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} uplink ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Uplink Port Utilization' })
+    }
+  },
+  switchPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchPortUtilizationCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchPortUtilization',
+      splits: [0, 20, 40, 60, 80, 100],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
     }
   },
   switchStormControl: {
@@ -626,20 +702,20 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        // 'uplinkPortUtilization',
+        'switchUplinkPortUtilization',
         'switchReachability'
       ]
     },
     connection: {
       kpis: [
         // 'authentication',
-        // 'dhcp'
+        'switchDhcp'
       ]
     },
     performance: {
       kpis: [
-        // 'portUtilization',
-        // 'uplinkPortUtilization',
+        'switchPortUtilization',
+        'switchUplinkPortUtilization'
         // 'interfaceAnamolies',
         'switchStormControl'
       ]
