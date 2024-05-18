@@ -715,7 +715,7 @@ export const wiredKPIsForTab = () => {
     performance: {
       kpis: [
         'switchPortUtilization',
-        'switchUplinkPortUtilization'
+        'switchUplinkPortUtilization',
         // 'interfaceAnamolies',
         'switchStormControl'
       ]
