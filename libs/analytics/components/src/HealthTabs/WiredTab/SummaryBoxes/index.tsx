@@ -9,6 +9,7 @@ import type { AnalyticsFilter }                                from '@acx-ui/uti
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
 import { MoreDetailsDrawer } from '../MoreDetails'
+import { WidgetType }        from '../MoreDetails/services'
 
 import { useWiredSummaryDataQuery } from './services'
 
@@ -21,8 +22,9 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
   const { data: summaryData, ...summaryQueryState } = useWiredSummaryDataQuery(payload)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [widget, setWidget] = useState<String>('')
-  const moreDetails = (widget: String) => {
+  const [widget, setWidget] = useState<WidgetType['type']>('')
+
+  const moreDetails = (widget: WidgetType['type']) => {
     setDrawerVisible(true)
     setWidget(widget)
   }
@@ -38,7 +40,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
             summaryData?.switchDHCP.successCount / summaryData?.switchDHCP.attemptCount)
           : noDataDisplay
       }],
-      onClick: () => {moreDetails('dhcp')}
+      onClick: () => { moreDetails('dhcpFailure') }
     },
     {
       type: 'red',
@@ -49,7 +51,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.congestedPortCount / summaryData?.portCount)
           : noDataDisplay
       }],
-      onClick: () => {moreDetails('congestion')}
+      onClick: () => { moreDetails('congestion') }
     },
     {
       type: 'yellow',
@@ -60,7 +62,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.stormPortCount / summaryData?.portCount)
           : noDataDisplay
       }],
-      onClick: () => {moreDetails('portStorm')}
+      onClick: () => { moreDetails('portStorm') }
     },
     {
       type: 'grey',
@@ -70,7 +72,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.switchCpuUtilizationPct)
           : noDataDisplay
       }],
-      onClick: () => {moreDetails('cpu')}
+      onClick: () => { moreDetails('cpuUsage') }
     }
   ]
 

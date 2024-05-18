@@ -5,9 +5,10 @@ width: 920px;
 margin-left: 5px;
 margin-top: 5px;
 `
-export const PieTitle = styled.span`
-font-size: 15px;
-font-family: Montserrat, sans-serif;
-padding-left: 5px;
-padding-top: 25px;
+export const ChartTitle = styled.span`
+font-size: var(--acx-headline-4-font-size)
+line-height: var(--acx-headline-4-line-height)
+font-weight: var(--acx-headline-4-font-weight);
+font-family: var(--acx-accent-brand-font);
+padding: 20px 0px 10px 0px;
 `

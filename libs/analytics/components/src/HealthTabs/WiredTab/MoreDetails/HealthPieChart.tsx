@@ -7,7 +7,8 @@ import {
   PieChartResult,
   usePieChartDataQuery,
   TopNByCPUUsageResult,
-  TopNByDHCPFailureResult
+  TopNByDHCPFailureResult,
+  WidgetType
 } from './services'
 
 type PieChartData = {
@@ -18,17 +19,17 @@ type PieChartData = {
 }
 
 export function transformData (
-  type: string,
+  type: WidgetType['type'],
   data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[]
 ): PieChartData[] {
   const colors = qualitativeColorSet()
   let value: number
   return data.map((val, index: number) => {
     switch(type){
-      case 'cpu':
+      case 'cpuUsage':
         value = (val as TopNByCPUUsageResult).cpuUtilization
         break
-      case 'dhcp':
+      case 'dhcpFailure':
         value = (val as TopNByDHCPFailureResult).dhcpFailureCount
         break
     }
@@ -41,15 +42,15 @@ export function transformData (
   })
 }
 
-export const getPieData = (data: PieChartResult, type: string) => {
+export const getPieData = (data: PieChartResult, type: WidgetType['type']) => {
   if (!data) return []
 
   let transformedData: PieChartData[] = []
   switch(type){
-    case 'cpu':
+    case 'cpuUsage':
       transformedData = transformData(type, data.topNSwitchesByCpuUsage)
       break
-    case 'dhcp':
+    case 'dhcpFailure':
       transformedData = transformData(type, data.topNSwitchesByDhcpFailure)
       break
   }
@@ -59,7 +60,7 @@ export const getPieData = (data: PieChartResult, type: string) => {
 export const MoreDetailsPieChart = ({
   filters,
   queryType
-} : { filters: AnalyticsFilter, queryType: string }) => {
+} : { filters: AnalyticsFilter, queryType: WidgetType['type'] }) => {
   const { filter, startDate: start, endDate: end } = filters
   const payload = {
     filter,
@@ -91,7 +92,7 @@ export const MoreDetailsPieChart = ({
             legend='name'
             size={'x-large'}
             showTotal={false}
-            showLegend
+            showLabel
           />
         )}
       </AutoSizer>
