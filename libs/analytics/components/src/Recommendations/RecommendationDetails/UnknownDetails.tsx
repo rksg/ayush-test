@@ -65,7 +65,7 @@ export const UnknownDetails = () => {
     ` }),
     verificationError: defineMessage({ defaultMessage: `
       Insufficient data for RUCKUS AI to generate RRM recommendations.
-      RUCKUS AI requires at least 3 days of data to train its AI models.
+      RUCKUS AI requires at least 4 days of data to train its AI models.
     ` }),
     global_zone_checker: defineMessage({ defaultMessage:
       `RUCKUS AI will not be able to generate RRM recommendations as the controller

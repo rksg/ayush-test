@@ -170,7 +170,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
       apiMetric: 'switchDHCPAttemptAndSuccessCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
@@ -430,7 +430,7 @@ export const kpiConfig = {
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -480,7 +480,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
@@ -497,7 +497,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -527,7 +527,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -552,11 +552,11 @@ export const kpiConfig = {
     }
   },
   switchesTemperature: {
-    text: defineMessage({ defaultMessage: 'Switch Temperature' }),
+    text: defineMessage({ defaultMessage: 'Temperature' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
@@ -564,7 +564,67 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Switch Temperature' })
+      tooltip: defineMessage({ defaultMessage: 'Temperature' })
+    }
+  },
+  switchUplinkPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Uplink Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchUplinkPortUtilCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchUplinkPortUtilization',
+      splits: [0, 20, 40, 60, 80, 100],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} uplink ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Uplink Port Utilization' })
+    }
+  },
+  switchPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchPortUtilizationCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchPortUtilization',
+      splits: [0, 20, 40, 60, 80, 100],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
     }
   },
   switchInterfaceAnomalies: {
@@ -632,7 +692,7 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        // 'uplinkPortUtilization',
+        'switchUplinkPortUtilization',
         'switchReachability'
       ]
     },
@@ -644,8 +704,8 @@ export const wiredKPIsForTab = () => {
     },
     performance: {
       kpis: [
-        // 'portUtilization',
-        // 'uplinkPortUtilization',
+        'switchPortUtilization',
+        'switchUplinkPortUtilization',
         'switchInterfaceAnomalies'
         // 'bcmcTraffic'
       ]

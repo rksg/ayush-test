@@ -17,6 +17,7 @@ import {
 } from '@acx-ui/icons'
 import { useVenueNetworkListV2Query } from '@acx-ui/rc/services'
 
+import { codes }                      from '../config'
 import {
   Recommendation,
   RecommendationListItem,
@@ -307,11 +308,13 @@ export const isCrrmOptimizationMatched = (
   _.get(metadata, 'algorithmData.isCrrmFullOptimization', true)
     === _.get(preferences, 'crrmFullOptimization', true)
 
+
 export const getAvailableActions = (
   recommendation: RecommendationActionType,
   isRecommendationRevertEnabled: boolean,
   showTextOnly?: boolean) => {
   const { isMuted, statusEnum, code, metadata, preferences } = recommendation
+  const isContinuous = codes[code].continuous
   const props = { ...recommendation, showTextOnly }
   if (isMuted) {
     return [
@@ -357,10 +360,7 @@ export const getAvailableActions = (
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(isRecommendationRevertEnabled &&
-              appliedOnce &&
-              recommendation.code.startsWith('c-crrm')
-            ),
+            disabled: !(isRecommendationRevertEnabled && appliedOnce && isContinuous),
             type: 'Revert',
             initialDate: 'futureDate'
           })
@@ -406,7 +406,7 @@ export const getAvailableActions = (
         {
           icon: actions.schedule({
             ...props,
-            disabled: !(isRecommendationRevertEnabled && recommendation.code.startsWith('c-crrm')),
+            disabled: !(isRecommendationRevertEnabled && isContinuous),
             type: 'Revert',
             initialDate: 'futureDate'
           })
