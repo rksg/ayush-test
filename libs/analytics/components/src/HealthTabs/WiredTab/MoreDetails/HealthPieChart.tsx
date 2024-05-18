@@ -43,14 +43,17 @@ export function transformData (
 
 export const getPieData = (data: PieChartResult, type: string) => {
   if (!data) return []
+
+  let transformedData: PieChartData[] = []
   switch(type){
     case 'cpu':
-      return transformData(type, data.topNSwitchesByCpuUsage)
+      transformedData = transformData(type, data.topNSwitchesByCpuUsage)
+      break
     case 'dhcp':
-      return transformData(type, data.topNSwitchesByDhcpFailure)
-    default:
-      return []
+      transformedData = transformData(type, data.topNSwitchesByDhcpFailure)
+      break
   }
+  return transformedData
 }
 
 export const MoreDetailsPieChart = ({

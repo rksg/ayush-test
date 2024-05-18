@@ -14,9 +14,9 @@ describe('MoreDetailsPieChart', () => {
     store.dispatch(moreDetailsApi.util.resetApiState())
   )
 
-  it('should show data', async () => {
+  it.each(['cpu', 'dhcp'])('should show data', async (queryType) => {
     mockGraphqlQuery(dataApiURL, 'PieChartQuery', { data: moreDetailsDataFixture })
-    const { asFragment } = render(
+    render(
       <Provider>
         <MoreDetailsPieChart
           filters={{
@@ -24,10 +24,10 @@ describe('MoreDetailsPieChart', () => {
             startDate: '2021-12-31T00:00:00+00:00',
             endDate: '2022-01-01T00:00:00+00:00' } as AnalyticsFilter
           }
-          queryType='dhcp' />
+          queryType={queryType} />
       </Provider>
     )
-    expect(asFragment()).toMatchSnapshot()
+    expect(await screen.findByText('switch1')).toBeVisible()
   })
   it('should show no data', async () => {
     render(

@@ -1,7 +1,7 @@
 export const moreDetailsNoDataFixture = {
   network: {
     hierarchyNode: {
-      topNSwitchesByCpuUsage: {
+      topNSwitchesByCpuUsage: [{
         mac: 'mac1',
         cpuUtilization: 0,
         name: '',
@@ -10,8 +10,8 @@ export const moreDetailsNoDataFixture = {
         status: '',
         firmware: '',
         numOfPorts: 0
-      },
-      topNSwitchesByDhcpFailure: {
+      }],
+      topNSwitchesByDhcpFailure: [{
         mac: 'mac1',
         dhcpFailureCount: 0,
         name: '',
@@ -20,7 +20,7 @@ export const moreDetailsNoDataFixture = {
         status: '',
         firmware: '',
         numOfPorts: 0
-      }
+      }]
     }
   }
 }
@@ -28,7 +28,7 @@ export const moreDetailsNoDataFixture = {
 export const moreDetailsDataFixture = {
   network: {
     hierarchyNode: {
-      topNSwitchesByCpuUsage: {
+      topNSwitchesByCpuUsage: [{
         mac: 'mac1',
         cpuUtilization: 80,
         name: 'switch1',
@@ -37,8 +37,8 @@ export const moreDetailsDataFixture = {
         status: '',
         firmware: '',
         numOfPorts: 100
-      },
-      topNSwitchesByDhcpFailure: {
+      }],
+      topNSwitchesByDhcpFailure: [{
         mac: 'mac1',
         dhcpFailureCount: 70,
         name: 'switch1',
@@ -47,7 +47,7 @@ export const moreDetailsDataFixture = {
         status: '',
         firmware: '',
         numOfPorts: 100
-      }
+      }]
     }
   }
 }

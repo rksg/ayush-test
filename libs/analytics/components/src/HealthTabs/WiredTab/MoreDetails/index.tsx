@@ -8,7 +8,7 @@ import { MoreDetailsPieChart } from './HealthPieChart'
 import * as UI                 from './styledComponents'
 
 
-interface MoreDetailsDrawerProps {
+export interface MoreDetailsDrawerProps {
   visible: boolean
   widget: String
   setVisible: (visible: boolean) => void
