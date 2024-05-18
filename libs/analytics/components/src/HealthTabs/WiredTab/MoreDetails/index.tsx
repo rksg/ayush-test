@@ -2,81 +2,70 @@ import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
 import { Drawer, GridCol, GridRow } from '@acx-ui/components'
-import { NodesFilter, SSIDFilter }  from '@acx-ui/utils'
+import { AnalyticsFilter }          from '@acx-ui/utils'
 
-import { MoreDetailsPieChart }  from './moreDetailsPieChart'
-import { usePieChartDataQuery } from './services'
-import * as UI                  from './styledComponents'
+import { MoreDetailsPieChart } from './HealthPieChart'
+import * as UI                 from './styledComponents'
 
-interface AddMoreDetailsDrawerProps {
+
+interface MoreDetailsDrawerProps {
   visible: boolean
-  setVisible: (visible: boolean) => void
   widget: String
+  setVisible: (visible: boolean) => void
   setWidget: (widget: String) => void
-  payload: {
-    start: string,
-    end: string,
-    filter: NodesFilter & SSIDFilter
-  }
+  filters: AnalyticsFilter
 }
 
-export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
+export type MoreDetailsWidgetsMapping = {
+  type: string
+  title: string
+  pieTitle: string
+  tableTitle: string
+}[]
 
-  const { visible, setVisible, widget, setWidget, payload } = props
+export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
+
+  const { visible, setVisible, widget, setWidget, filters } = props
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
     setWidget('')
   }
-  const filters = {
-    filter: payload.filter,
-    start: payload.start,
-    end: payload.end,
-    n: 5,
-    type: widget
-  }
 
-  const { data: summaryData } = usePieChartDataQuery(filters)
-  const topNByCpuData = summaryData?.topNSwitchesByCpuUsage
-  const topNByDhcpData = summaryData?.topNSwitchesByDhcpFailure
-
-  const mapping = [
+  const mapping: MoreDetailsWidgetsMapping = [
     {
       type: 'dhcp',
       title: $t({ defaultMessage: 'DHCP Failure' }),
       pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      pieData: topNByDhcpData
+      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
     },
     {
       type: 'congestion',
       title: $t({ defaultMessage: 'Congestion' }),
       pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' }),
-      pieData: []
+      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
     },
     {
       type: 'portStorm',
       title: $t({ defaultMessage: 'Port Storm' }),
       pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' }),
-      pieData: []
+      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
     },
     {
       type: 'cpu',
       title: $t({ defaultMessage: 'High CPU' }),
       pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      pieData: topNByCpuData
+      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
     }
   ]
-  const matchingMapping = mapping.filter(item => item.type === widget)
+  const activeWidgetMapping = mapping.filter(item => item.type === widget)[0]
+
   return (
     <Drawer
       title={
         <UI.Title>
           <Typography.Title level={2}>
-            {matchingMapping[0]?.title}
+            {activeWidgetMapping?.title}
           </Typography.Title>
         </UI.Title>
       }
@@ -86,15 +75,15 @@ export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
       style={{ marginTop: '85px' }}
       children={
         <GridRow>
-          <GridCol key={matchingMapping[0]?.type}
+          <GridCol key={activeWidgetMapping?.type}
             col={{ span: 10 }}
             style={{ height: 260, width: 430 }}>
             <UI.PieTitle>
               <Typography.Paragraph>
-                {matchingMapping[0]?.pieTitle}
+                {activeWidgetMapping?.pieTitle}
               </Typography.Paragraph>
             </UI.PieTitle>
-            {<MoreDetailsPieChart mapping={matchingMapping}/>}
+            {<MoreDetailsPieChart filters={filters} queryType={activeWidgetMapping?.type}/>}
           </GridCol>
         </GridRow>
       } // table TBD

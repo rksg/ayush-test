@@ -5,26 +5,28 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { AnalyticsFilter } from '@acx-ui/utils'
 
-import { AddMoreDetailsDrawer } from './index'
-describe('AddMoreDetailsDrawer', () => {
+import { MoreDetailsDrawerProps } from './index'
+import { MoreDetailsDrawer }      from './index'
+
+describe('MoreDetailsDrawer', () => {
   const props = {
     visible: true,
     setVisible: jest.fn(),
     widget: 'cpu',
     setWidget: jest.fn(),
-    payload: {
-      start: '2022-01-01',
-      end: '2022-01-02',
-      n: 5,
+    filters: {
+      startDate: '2022-01-01',
+      endDate: '2022-01-02',
       filter: {}
-    }
-  }
+    } as AnalyticsFilter
+  } as MoreDetailsDrawerProps
 
   it('should render drawer layout correctly', async () => {
     render(
       <Provider>
-        <AddMoreDetailsDrawer {...props}/>
+        <MoreDetailsDrawer {...props}/>
       </Provider>, {
         route: {}
       })
@@ -35,7 +37,7 @@ describe('AddMoreDetailsDrawer', () => {
     const setVisible = jest.fn()
     render(
       <Provider>
-        <AddMoreDetailsDrawer
+        <MoreDetailsDrawer
           {...props}
           setVisible={setVisible}/>
       </Provider>, {

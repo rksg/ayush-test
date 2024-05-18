@@ -31,7 +31,7 @@ export const moreDetailsDataFixture = {
       topNSwitchesByCpuUsage: {
         mac: 'mac1',
         cpuUtilization: 80,
-        name: '',
+        name: 'switch1',
         serial: '',
         model: '',
         status: '',
@@ -41,7 +41,7 @@ export const moreDetailsDataFixture = {
       topNSwitchesByDhcpFailure: {
         mac: 'mac1',
         dhcpFailureCount: 70,
-        name: '',
+        name: 'switch1',
         serial: '',
         model: '',
         status: '',

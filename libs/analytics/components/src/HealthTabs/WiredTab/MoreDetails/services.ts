@@ -5,29 +5,28 @@ import { dataApi }          from '@acx-ui/store'
 import { NodesFilter }      from '@acx-ui/utils'
 
 export interface PieChartResult {
-  topNSwitchesByCpuUsage: topNByCpu[]
-  topNSwitchesByDhcpFailure: topNByDhcp[]
+  topNSwitchesByCpuUsage: TopNByCPUUsageResult[]
+  topNSwitchesByDhcpFailure: TopNByDHCPFailureResult[]
 }
-export type topNByCpu = {
+
+type SwitchDetails = {
+  mac: string
+  name: string
+  serial: string
+  model: string
+  status: string
+  firmware: string
+  numOfPorts: number
+}
+
+export type TopNByCPUUsageResult = {
   cpuUtilization: number
-  mac: string
-  name: string
-  serial: string
-  model: string
-  status: string
-  firmware: string
-  numOfPorts: number
-}
-export type topNByDhcp = {
+} & SwitchDetails
+
+export type TopNByDHCPFailureResult = {
   dhcpFailureCount: number
-  mac: string
-  name: string
-  serial: string
-  model: string
-  status: string
-  firmware: string
-  numOfPorts: number
-}
+} & SwitchDetails
+
 export interface RequestPayload {
   filter: NodesFilter
   start: string
@@ -35,14 +34,15 @@ export interface RequestPayload {
   n: number
   type: String
 }
+
 const pieChartQuery = (type: String) => {
   switch(type){
     case 'cpu': {
-      return `topNSwitchesByCpuUsage(n: $n) { 
+      return `topNSwitchesByCpuUsage(n: $n) {
         cpuUtilization mac name serial model status firmware numOfPorts }`
     }
     case 'dhcp': {
-      return `topNSwitchesByDhcpFailure(n: $n) { 
+      return `topNSwitchesByDhcpFailure(n: $n) {
         mac name dhcpFailureCount serial model status firmware numOfPorts }`
     }
     default: {
@@ -51,20 +51,20 @@ const pieChartQuery = (type: String) => {
   }
 }
 
-export const api = dataApi.injectEndpoints({
+export const moreDetailsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     pieChartData: build.query<PieChartResult, RequestPayload>({
       query: payload => {
         const innerQuery = pieChartQuery(payload.type)
         return ({
           document: gql`
-          query MoreDetailsQuery(
-          $path: [HierarchyNodeInput],
-          $start: DateTime,
-          $end: DateTime,
-          $filter: FilterInput,
-          $n: Int,
-          $enableSwitchFirmwareFilter: Boolean
+          query PieChartQuery(
+            $path: [HierarchyNodeInput],
+            $start: DateTime,
+            $end: DateTime,
+            $filter: FilterInput,
+            $n: Int,
+            $enableSwitchFirmwareFilter: Boolean
           ) {
             network(start: $start, end: $end, filter: $filter,
               enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
@@ -90,4 +90,4 @@ export const api = dataApi.injectEndpoints({
 export const {
   usePieChartDataQuery
 //   useTableQuery
-} = api
+} = moreDetailsApi

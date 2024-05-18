@@ -1,12 +1,12 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { moreDetailsDataFixture } from './__tests__/fixtures'
-import { api, RequestPayload }    from './services'
+import { moreDetailsDataFixture }         from './__tests__/fixtures'
+import { moreDetailsApi, RequestPayload } from './services'
 
 describe('More Details apis', () => {
   afterEach(() =>
-    store.dispatch(api.util.resetApiState())
+    store.dispatch(moreDetailsApi.util.resetApiState())
   )
   const payload: RequestPayload = {
     filter: {},
@@ -17,9 +17,9 @@ describe('More Details apis', () => {
   }
   describe('more details data api', () => {
     it('should return the correct data', async () => {
-      mockGraphqlQuery(dataApiURL, 'MoreDetailsQuery', { data: moreDetailsDataFixture })
+      mockGraphqlQuery(dataApiURL, 'PieChartQuery', { data: moreDetailsDataFixture })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.pieChartData.initiate(payload)
+        moreDetailsApi.endpoints.pieChartData.initiate(payload)
       )
       expect(status).toBe('fulfilled')
       expect(data).toStrictEqual(moreDetailsDataFixture.network.hierarchyNode)
@@ -27,16 +27,15 @@ describe('More Details apis', () => {
     })
 
     it('should return error', async () => {
-      mockGraphqlQuery(dataApiURL, 'MoreDetailsQuery', {
+      mockGraphqlQuery(dataApiURL, 'PieChartQuery', {
         error: new Error('something went wrong!')
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.pieChartData.initiate(payload)
+        moreDetailsApi.endpoints.pieChartData.initiate(payload)
       )
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)
       expect(error).not.toBe(undefined)
     })
   })
-
 })

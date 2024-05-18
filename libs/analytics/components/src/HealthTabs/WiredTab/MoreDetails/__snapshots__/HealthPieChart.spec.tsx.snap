@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MoreDetailsPieChart should show data 1`] = `
+<DocumentFragment>
+  <div
+    class="styledComponents__NoDataWrapper-sc-m7jeli-0 bZEmQl"
+  >
+    <div
+      class="ant-space ant-space-horizontal ant-space-align-center styledComponents__TextWrapper-sc-m7jeli-1 styledComponents__NoDataTextWrapper-sc-m7jeli-2 izicZw cMdQDn"
+    >
+      <div
+        class="ant-space-item"
+      >
+        No data to display
+      </div>
+    </div>
+  </div>
+</DocumentFragment>
+`;
