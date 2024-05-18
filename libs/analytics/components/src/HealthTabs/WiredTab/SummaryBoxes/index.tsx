@@ -8,7 +8,7 @@ import { formatter }                                           from '@acx-ui/for
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
-import { AddMoreDetailsDrawer } from '../MoreDetails'
+import { MoreDetailsDrawer } from '../MoreDetails'
 
 import { useWiredSummaryDataQuery } from './services'
 
@@ -18,7 +18,6 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     start: filters.startDate,
     end: filters.endDate
   }
-
   const { data: summaryData, ...summaryQueryState } = useWiredSummaryDataQuery(payload)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
@@ -84,13 +83,16 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           </GridCol>
         )}
       </GridRow>
-      {drawerVisible &&
-      <AddMoreDetailsDrawer
-        visible={drawerVisible}
-        setVisible={setDrawerVisible}
-        widget={widget}
-        setWidget={setWidget}
-      />}
+      {
+        drawerVisible &&
+        <MoreDetailsDrawer
+          visible={drawerVisible}
+          setVisible={setDrawerVisible}
+          widget={widget}
+          setWidget={setWidget}
+          filters={filters}
+        />
+      }
     </Loader>
   )
 }
