@@ -56,7 +56,7 @@ export const HelpButton = () => {
         { type: 'divider' },
         {
           key: 'privacy',
-          label: <NewTabLink to='https://support.ruckuswireless.com/ruckus-cloud-privacy-policy'>
+          label: <NewTabLink to='https://www.commscope.com/about-us/privacy-statement/'>
             {$t({ defaultMessage: 'Privacy' })}
           </NewTabLink>
         }
