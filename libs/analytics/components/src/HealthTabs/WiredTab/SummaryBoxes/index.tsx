@@ -49,7 +49,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.congestedPortCount / summaryData?.portCount)
           : noDataDisplay
       }],
-      onClick: () => {moreDetails('congestion')}
+      onClick: () => {moreDetails('congestedPort')}
     },
     {
       type: 'yellow',
@@ -60,7 +60,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.stormPortCount / summaryData?.portCount)
           : noDataDisplay
       }],
-      onClick: () => {moreDetails('portStorm')}
+      onClick: () => {moreDetails('stormPort')}
     },
     {
       type: 'grey',

@@ -40,13 +40,13 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
     },
     {
-      type: 'congestion',
+      type: 'congestedPort',
       title: $t({ defaultMessage: 'Congestion' }),
       pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
       tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
     },
     {
-      type: 'portStorm',
+      type: 'stormPort',
       title: $t({ defaultMessage: 'Port Storm' }),
       pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
       tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })

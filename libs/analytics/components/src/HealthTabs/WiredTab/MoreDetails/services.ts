@@ -7,17 +7,21 @@ import { NodesFilter }      from '@acx-ui/utils'
 export interface PieChartResult {
   topNSwitchesByCpuUsage: TopNByCPUUsageResult[]
   topNSwitchesByDhcpFailure: TopNByDHCPFailureResult[]
+  topNSwitchesByPortCongestion: TopNByPortCongestionResult[]
+  topNSwitchesByStormPortCount: TopNByStormPortCountResult[]
 }
 
-type SwitchDetails = {
+type SwitchId = {
   mac: string
   name: string
+}
+type SwitchDetails = {
   serial: string
   model: string
   status: string
   firmware: string
   numOfPorts: number
-}
+} & SwitchId
 
 export type TopNByCPUUsageResult = {
   cpuUtilization: number
@@ -26,6 +30,14 @@ export type TopNByCPUUsageResult = {
 export type TopNByDHCPFailureResult = {
   dhcpFailureCount: number
 } & SwitchDetails
+
+export type TopNByPortCongestionResult = {
+  congestedPortCount: number
+} & SwitchId
+
+export type TopNByStormPortCountResult = {
+  stormPortCount: number
+} & SwitchId
 
 export interface RequestPayload {
   filter: NodesFilter
@@ -44,6 +56,14 @@ const pieChartQuery = (type: String) => {
     case 'dhcp': {
       return `topNSwitchesByDhcpFailure(n: $n) {
         mac name dhcpFailureCount serial model status firmware numOfPorts }`
+    }
+    case 'congestedPort': {
+      return `topNSwitchesByPortCongestion(n: $n) {
+        mac name congestedPortCount }`
+    }
+    case 'stormPort': {
+      return `topNSwitchesByStormPortCount(n: $n) {
+        mac name stormPortCount }`
     }
     default: {
       return ''

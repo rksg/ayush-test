@@ -8,16 +8,22 @@ describe('More Details apis', () => {
   afterEach(() =>
     store.dispatch(moreDetailsApi.util.resetApiState())
   )
-  const payload: RequestPayload = {
-    filter: {},
-    start: '2021-12-31T00:00:00+00:00',
-    end: '2022-01-01T00:00:00+00:00',
-    n: 5,
-    type: 'cpu'
-  }
+  const kpis = [
+    'cpu',
+    'dhcp',
+    'congestedPort',
+    'stormPort'
+  ]
   describe('more details data api', () => {
-    it('should return the correct data', async () => {
+    it.each(kpis)('should return the correct data', async (type) => {
       mockGraphqlQuery(dataApiURL, 'PieChartQuery', { data: moreDetailsDataFixture })
+      const payload: RequestPayload = {
+        filter: {},
+        start: '2021-12-31T00:00:00+00:00',
+        end: '2022-01-01T00:00:00+00:00',
+        n: 5,
+        type
+      }
       const { status, data, error } = await store.dispatch(
         moreDetailsApi.endpoints.pieChartData.initiate(payload)
       )
@@ -30,6 +36,13 @@ describe('More Details apis', () => {
       mockGraphqlQuery(dataApiURL, 'PieChartQuery', {
         error: new Error('something went wrong!')
       })
+      const payload: RequestPayload = {
+        filter: {},
+        start: '2021-12-31T00:00:00+00:00',
+        end: '2022-01-01T00:00:00+00:00',
+        n: 5,
+        type: ''
+      }
       const { status, data, error } = await store.dispatch(
         moreDetailsApi.endpoints.pieChartData.initiate(payload)
       )

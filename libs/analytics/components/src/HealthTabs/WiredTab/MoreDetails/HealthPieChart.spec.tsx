@@ -14,7 +14,8 @@ describe('MoreDetailsPieChart', () => {
     store.dispatch(moreDetailsApi.util.resetApiState())
   )
 
-  it.each(['cpu', 'dhcp'])('should show data', async (queryType) => {
+  it.each(['cpu', 'dhcp', 'congestedPort', 'stormPort'])
+  ('should show data', async (queryType) => {
     mockGraphqlQuery(dataApiURL, 'PieChartQuery', { data: moreDetailsDataFixture })
     render(
       <Provider>
@@ -41,35 +42,25 @@ describe('MoreDetailsPieChart', () => {
 })
 
 describe('transformData', () => {
-  it('should transform data correctly', () => {
-    const cpuData = [
-      { mac: 'mac1', cpuUtilization: 80, name: '',
-        serial: '', model: '',status: '', firmware: '',numOfPorts: 0 },
-      { mac: 'mac2', cpuUtilization: 60, name: '',
-        serial: '', model: '',status: '', firmware: '',numOfPorts: 0 },
-      { mac: 'mac3', cpuUtilization: 70, name: '',
-        serial: '', model: '',status: '', firmware: '',numOfPorts: 0 }
-    ]
-
-    const dhcpData = [
-      { mac: 'mac1', dhcpFailureCount: 80, name: '',
-        serial: '', model: '',status: '', firmware: '',numOfPorts: 0 },
-      { mac: 'mac2', dhcpFailureCount: 60, name: '',
-        serial: '', model: '',status: '', firmware: '',numOfPorts: 0 },
-      { mac: 'mac3', dhcpFailureCount: 70, name: '',
-        serial: '', model: '',status: '', firmware: '',numOfPorts: 0 }
-    ]
-
+  const metricsData = [
+    { key: 'cpu', value: [{ mac: 'mac1', cpuUtilization: 80, name: '',
+      serial: '', model: '',status: '', firmware: '',numOfPorts: 0 }] },
+    {
+      key: 'dhcp', value: [{ mac: 'mac1', dhcpFailureCount: 80, name: '',
+        serial: '', model: '',status: '', firmware: '',numOfPorts: 0 }]
+    },
+    {
+      key: 'congestedPort', value: [{ mac: 'mac1', congestedPortCount: 80, name: '' }]
+    },
+    {
+      key: 'stormPort', value: [{ mac: 'mac1', stormPortCount: 80, name: '' }]
+    }
+  ]
+  it.each(metricsData)('should transform data correctly', ({ key, value }) => {
     const expectedPieChartData = [
-      { mac: 'mac1', value: 80, name: '', color: '#66B1E8' },
-      { mac: 'mac2', value: 60, name: '', color: '#EC7100' },
-      { mac: 'mac3', value: 70, name: '', color: '#F9C34B' }
+      { mac: 'mac1', value: 80, name: '', color: '#66B1E8' }
     ]
-
-    const cpuResult = transformData('cpu', cpuData)
-    expect(cpuResult).toEqual(expectedPieChartData)
-
-    const dhcpResult = transformData('dhcp', dhcpData)
-    expect(dhcpResult).toEqual(expectedPieChartData)
+    const result = transformData(key, value)
+    expect(result).toEqual(expectedPieChartData)
   })
 })

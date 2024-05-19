@@ -7,7 +7,9 @@ import {
   PieChartResult,
   usePieChartDataQuery,
   TopNByCPUUsageResult,
-  TopNByDHCPFailureResult
+  TopNByDHCPFailureResult,
+  TopNByPortCongestionResult,
+  TopNByStormPortCountResult
 } from './services'
 
 type PieChartData = {
@@ -19,7 +21,10 @@ type PieChartData = {
 
 export function transformData (
   type: string,
-  data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[]
+  data: TopNByCPUUsageResult[] |
+  TopNByDHCPFailureResult[] |
+  TopNByPortCongestionResult[] |
+  TopNByStormPortCountResult[]
 ): PieChartData[] {
   const colors = qualitativeColorSet()
   let value: number
@@ -30,6 +35,12 @@ export function transformData (
         break
       case 'dhcp':
         value = (val as TopNByDHCPFailureResult).dhcpFailureCount
+        break
+      case 'congestedPort':
+        value = (val as TopNByPortCongestionResult).congestedPortCount
+        break
+      case 'stormPort':
+        value = (val as TopNByStormPortCountResult).stormPortCount
         break
     }
     return {
@@ -51,6 +62,12 @@ export const getPieData = (data: PieChartResult, type: string) => {
       break
     case 'dhcp':
       transformedData = transformData(type, data.topNSwitchesByDhcpFailure)
+      break
+    case 'congestedPort':
+      transformedData = transformData(type, data.topNSwitchesByPortCongestion)
+      break
+    case 'stormPort':
+      transformedData = transformData(type, data.topNSwitchesByStormPortCount)
       break
   }
   return transformedData
