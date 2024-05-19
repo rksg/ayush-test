@@ -91,7 +91,7 @@ export const store = configureStore({
 
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware({
-      serializableCheck: false,
+      serializableCheck: isDev ? undefined : false,
       immutableCheck: isDev ? undefined : false
     }).concat([
       dynamicMiddlewares,
