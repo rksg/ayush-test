@@ -8,6 +8,7 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
 import {
@@ -24,7 +25,6 @@ import {
   enableSwitchScheduleTooltip,
   getSwitchNextScheduleTpl
 } from '../switch.upgrade.util'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 export interface SwitchScheduleDrawerProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,

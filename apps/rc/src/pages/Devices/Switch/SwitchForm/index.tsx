@@ -224,10 +224,11 @@ export function SwitchForm () {
   const handleVenueChange = async (value: string) => {
     setVenueId(value)
     if (venuesList && venuesList.data) {
+      const venueId = isSwitchRbacEnabled ? 'venueId' : 'id'
       // eslint-disable-next-line max-len
-      const venueFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersion?.id
+      const venueFW = venuesList.data?.data?.find(venue => venue[venueId] === value)?.switchFirmwareVersion?.id
       // eslint-disable-next-line max-len
-      const venueAboveTenFW = venuesList.data?.data?.find(venue => venue.id === value)?.switchFirmwareVersionAboveTen?.id
+      const venueAboveTenFW = venuesList.data?.data?.find(venue => venue[venueId] === value)?.switchFirmwareVersionAboveTen?.id
       setCurrentFW(venueFW || '')
       setCurrentAboveTenFW(venueAboveTenFW || '')
     }

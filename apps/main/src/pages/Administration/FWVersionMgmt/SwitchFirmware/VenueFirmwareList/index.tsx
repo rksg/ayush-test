@@ -10,10 +10,11 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
 import {
-  useGetSwitchUpgradePreferencesQuery,
-  useUpdateSwitchUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery, //TODO
+  useUpdateSwitchUpgradePreferencesMutation, //TODO
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
@@ -44,7 +45,6 @@ import * as UI                                           from './styledComponent
 import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
 import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
 import { VenueStatusDrawer }                             from './VenueStatusDrawer'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -91,7 +91,10 @@ export const VenueFirmwareTable = (
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
 
-  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
+  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
@@ -120,11 +123,11 @@ export const VenueFirmwareTable = (
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
+      sorter: { compare: sortProp(isSwitchRbacEnabled ? 'venueName' : 'name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return row.name
+        return isSwitchRbacEnabled ? row.venueName : row.name
       }
     },
     {
@@ -337,7 +340,10 @@ export function VenueFirmwareList () {
     enableRbac: isSwitchRbacEnabled
   })
 
-  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({
+    params: useParams(),
+    enableRbac: isSwitchRbacEnabled
+  }, {
     selectFromResult ({ data }) {
       let versionList = data?.currentVersions
       if (data?.currentVersionsAboveTen && versionList) {
@@ -346,7 +352,7 @@ export function VenueFirmwareList () {
 
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: versionList?.map(v=>({ key: v, value: parseSwitchVersion(v) })) || true
+        versionFilterOptions: versionList?.map(v => ({ key: v, value: parseSwitchVersion(v) })) || true
       }
     }
   })

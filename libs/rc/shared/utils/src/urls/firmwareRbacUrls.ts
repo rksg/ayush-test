@@ -56,5 +56,15 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/switchFirmwares/upgradeStatusDetails/query',
     newApi: true
+  },
+  getSwitchFirmwarePredownload: {
+    method: 'get',
+    url: '/switchFirmwares/preDownload',
+    newApi: true
+  },
+  updateSwitchFirmwarePredownload: {
+    method: 'put',
+    url: '/switchFirmwares/preDownload',
+    newApi: true
   }
 }
