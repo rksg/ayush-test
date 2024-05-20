@@ -96,7 +96,6 @@ export const PasswordStrengthIndicator = ({
   input, regExRules, regExErrorMessages, isAllConditionsMet, barWidth, focus }:
     PasswordStrengthIndicatorProps) => {
   const { $t } = useIntl()
-  const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const [mouseEnterTooltip, setMouseEnterTooltip] = useState(false)
   const [currentConditionCount, setCurrentConditionCount] = useState(0)
   const [usedBarColors, setUsedBarColors] = useState([
@@ -162,10 +161,6 @@ export const PasswordStrengthIndicator = ({
       PASSWORD_STRENGTH_CODE[passedRulesRatio])
 
     setCurrentConditionCount(passedRulesRatio)
-
-    setTimeout(() => {
-      setShowTooltip(true)
-    }, 500)
   },[input])
 
   return (<UI.PasswordBarContainer>
@@ -184,7 +179,7 @@ export const PasswordStrengthIndicator = ({
     />
     <UI.StrengthStatus>{strengthStatus}</UI.StrengthStatus>
 
-    {showTooltip && <Tooltip
+    <Tooltip
       title={<div>
         <Row gutter={[8, 16]}>
           <Col span={24}>
@@ -210,7 +205,6 @@ export const PasswordStrengthIndicator = ({
         data-testid={'tooltipIcon'}
       />
     </Tooltip>
-    }
   </UI.PasswordBarContainer>)
 
 }
