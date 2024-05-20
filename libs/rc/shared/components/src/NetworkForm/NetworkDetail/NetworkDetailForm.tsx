@@ -23,7 +23,8 @@ import {
   ConfigTemplateType,
   TableResult,
   useConfigTemplateLazyQueryFnSwitcher,
-  Network
+  Network,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
@@ -140,12 +141,13 @@ export function NetworkDetailForm () {
         extra: ''
       }))
   }
+  const { isTemplate } = useConfigTemplate()
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
     { type: NetworkTypeEnum.HOTSPOT20,
-      disabled: !useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE) },
+      disabled: !useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE) || isTemplate },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !isPortalServiceEnabled },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
