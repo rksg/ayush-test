@@ -121,10 +121,11 @@ export const batchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
   })
   return Promise.all(promises)
     .then((results) => {
+      const error = results.find(i => i.error)
+      if(error) {
+        return { error }
+      }
       return { data: results }
-    })
-    .catch((error)=>{
-      return error
     })
 }
 
