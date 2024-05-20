@@ -12,6 +12,7 @@ import {
   HeaderContext
 } from '@acx-ui/main/components'
 import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
+import { hasRaiPermission }                 from '@acx-ui/user'
 
 import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
@@ -24,6 +25,7 @@ function Layout () {
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+  const canSearch = hasRaiPermission('READ_REPORTS') || hasRaiPermission('READ_HEALTH')
   return (
     <LayoutComponent
       logo={<TenantNavLink to={''} children={<Logo />} />}
@@ -32,7 +34,7 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <GlobalSearchBar />
+          {canSearch && <GlobalSearchBar />}
         </HeaderContext.Provider>
         <LayoutUI.Divider />
         { userProfile.tenants.length > 1 || userProfile.invitations.length > 0

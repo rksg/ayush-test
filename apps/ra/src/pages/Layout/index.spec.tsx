@@ -11,11 +11,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 
 describe('Layout', () => {
+  const permissions = Object.keys(raiPermissionsList)
+    .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
   beforeEach(() => {
     jest.restoreAllMocks()
   })
-  const permissions = Object.keys(raiPermissionsList)
-    .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
   it('should render layout correctly with multiple accounts', async () => {
     mockedProfile.mockImplementation(() => ({
       accountId: '0015000000GlI7SAAV',
