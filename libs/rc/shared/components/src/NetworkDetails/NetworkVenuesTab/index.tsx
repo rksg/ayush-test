@@ -140,7 +140,6 @@ export function NetworkVenuesTab () {
 
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
@@ -242,7 +241,7 @@ export function NetworkVenuesTab () {
     const network = networkQuery.data
     const newNetworkVenue = generateDefaultNetworkVenue(row.id, (network && network?.id) ? network.id : '')
 
-    if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
+    if (IsNetworkSupport6g(network)) {
       newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
     }
 
@@ -302,7 +301,7 @@ export function NetworkVenuesTab () {
     activatingVenues.forEach(venue => {
       const newNetworkVenue = generateDefaultNetworkVenue(venue.id, (network && network?.id) ? network.id : '')
 
-      if (triBandRadioFeatureFlag && IsNetworkSupport6g(network)) {
+      if (IsNetworkSupport6g(network)) {
         newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
       }
       const alreadyActivatedVenue = networkVenues.find(x => x.venueId === venue.id)
