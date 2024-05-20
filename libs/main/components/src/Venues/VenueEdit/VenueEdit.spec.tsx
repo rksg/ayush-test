@@ -43,9 +43,6 @@ jest.mock('./WifiConfigTab/RadioTab/LoadBalancing', () => ({
 jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => () => {
   return <div data-testid='MdnsFencing' />
 })
-jest.mock('./WifiConfigTab/ServerTab/ApSnmp', () => () => {
-  return <div data-testid='ApSnmp' />
-})
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({

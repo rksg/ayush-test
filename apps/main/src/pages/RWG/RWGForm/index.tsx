@@ -25,7 +25,7 @@ import {
   whitespaceOnlyRegExp,
   RWG,
   excludeSpaceRegExp,
-  URLProtocolRegExp
+  domainNameRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -204,8 +204,12 @@ export function RWGForm () {
                     />
                   </>}
                   rules={[
-                    { type: 'string', required: true },
-                    { validator: (_, value) => URLProtocolRegExp(value) }
+                    { type: 'string', required: true,
+                      message: $t({ defaultMessage: 'Please enter FQDN / IP' })
+                    },
+                    { validator: (_, value) => domainNameRegExp(value),
+                      message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
+                    }
                   ]}
                   children={<Input />}
                 />
@@ -225,7 +229,8 @@ export function RWGForm () {
                     />
                   </>}
                   rules={[
-                    { required: true },
+                    { required: true,
+                      message: $t({ defaultMessage: 'Please enter API Key' }) },
                     { max: 80 },
                     { validator: (_, value) => excludeSpaceRegExp(value) }
                   ]}

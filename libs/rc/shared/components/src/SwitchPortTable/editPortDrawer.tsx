@@ -544,7 +544,7 @@ export function EditPortDrawer ({
   const transformData = (data: PortSettingModel) => {
     const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
     const vlansHasChanged = form?.isFieldTouched('taggedVlans') ||
-      form?.isFieldTouched('untaggedVlan')
+      form?.isFieldTouched('untaggedVlan') || form?.isFieldTouched('voiceVlan')
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
       if ((overrideFields?.includes('portVlans') && vlansHasChanged)

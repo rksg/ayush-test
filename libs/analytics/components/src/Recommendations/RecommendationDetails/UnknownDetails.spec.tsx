@@ -35,10 +35,10 @@ describe('Insufficient Licenses', () => {
     expect(await screen.findByText('RUCKUS AI will not be able to generate an RRM recommendation due to Venue TestInsufficientLicenses license compliance being incomplete. Ensure you have sufficient license subscriptions and have assigned licenses for all your APs to your venue to meet the 100% venue license compliance. This is a prerequisite to enable RUCKUS AI to optimize your network RRM configuration.')).toBeVisible()
   })
 
-  it('renders correctly for verification error with mesh', async () => {
+  it('renders correctly for verification error', async () => {
     jest.mocked(useLocation).mockReturnValue({
       search: `?status=verificationError&date=2023-11-09T06:00:00.000Z
-      &sliceValue=TestVerificationError&extra=mesh`,
+      &sliceValue=TestVerificationError&extra=null`,
       state: undefined,
       key: '',
       pathname: '',
@@ -51,6 +51,26 @@ describe('Insufficient Licenses', () => {
 
     expect(await screen.findByText('Verification Error')).toBeVisible()
     expect(await screen.findByText('TestVerificationError')).toBeVisible()
+    // eslint-disable-next-line max-len
+    expect(await screen.findByText('Insufficient data for RUCKUS AI to generate RRM recommendations. RUCKUS AI requires at least 4 days of data to train its AI models.')).toBeVisible()
+  })
+
+  it('renders correctly for verification error with mesh', async () => {
+    jest.mocked(useLocation).mockReturnValue({
+      search: `?status=verificationError&date=2023-11-09T06:00:00.000Z
+      &sliceValue=TestVerificationErrorWithMesh&extra=mesh`,
+      state: undefined,
+      key: '',
+      pathname: '',
+      hash: ''
+    })
+
+    render(<BrowserRouter>
+      <UnknownDetails />
+    </BrowserRouter>)
+
+    expect(await screen.findByText('Verification Error')).toBeVisible()
+    expect(await screen.findByText('TestVerificationErrorWithMesh')).toBeVisible()
     // eslint-disable-next-line max-len
     expect(await screen.findByText('RUCKUS AI has detected mesh configuration in your zone and this configuration is not supported for RRM recommendations.')).toBeVisible()
   })
