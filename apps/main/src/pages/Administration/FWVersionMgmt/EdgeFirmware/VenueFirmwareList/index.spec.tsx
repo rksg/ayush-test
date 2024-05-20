@@ -40,6 +40,13 @@ const mockedSkipUpdate = jest.fn()
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
+
 describe('Edge venue firmware list', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -84,10 +91,6 @@ describe('Edge venue firmware list', () => {
           mockedUpdateSchedule()
           return res(ctx.status(202))
         }
-      ),
-      rest.get(
-        FirmwareUrlsInfo.getSwitchCurrentVersions.url,
-        (req, res, ctx) => res(ctx.json(mockSwitchCurrentVersions))
       )
     )
     params = {

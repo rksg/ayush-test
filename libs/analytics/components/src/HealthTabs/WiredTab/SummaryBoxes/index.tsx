@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { isNil }         from 'lodash'
 import { defineMessage } from 'react-intl'
 
@@ -5,6 +7,8 @@ import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/com
 import { formatter }                                           from '@acx-ui/formatter'
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
+
+import { MoreDetailsDrawer } from '../MoreDetails'
 
 import { useWiredSummaryDataQuery } from './services'
 
@@ -14,8 +18,14 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     start: filters.startDate,
     end: filters.endDate
   }
-
   const { data: summaryData, ...summaryQueryState } = useWiredSummaryDataQuery(payload)
+
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const [widget, setWidget] = useState<String>('')
+  const moreDetails = (widget: String) => {
+    setDrawerVisible(true)
+    setWidget(widget)
+  }
 
   const mapping: StatsCardProps[] = [
     {
@@ -28,7 +38,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
             summaryData?.switchDHCP.successCount / summaryData?.switchDHCP.attemptCount)
           : noDataDisplay
       }],
-      onClick: () => { }
+      onClick: () => {moreDetails('dhcp')}
     },
     {
       type: 'red',
@@ -39,7 +49,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.congestedPortCount / summaryData?.portCount)
           : noDataDisplay
       }],
-      onClick: () => { }
+      onClick: () => {moreDetails('congestion')}
     },
     {
       type: 'yellow',
@@ -50,7 +60,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.stormPortCount / summaryData?.portCount)
           : noDataDisplay
       }],
-      onClick: () => { }
+      onClick: () => {moreDetails('portStorm')}
     },
     {
       type: 'grey',
@@ -60,7 +70,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           ? formatter('percentFormat')(summaryData?.switchCpuUtilizationPct)
           : noDataDisplay
       }],
-      onClick: () => { }
+      onClick: () => {moreDetails('cpu')}
     }
   ]
 
@@ -73,6 +83,16 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
           </GridCol>
         )}
       </GridRow>
+      {
+        drawerVisible &&
+        <MoreDetailsDrawer
+          visible={drawerVisible}
+          setVisible={setDrawerVisible}
+          widget={widget}
+          setWidget={setWidget}
+          filters={filters}
+        />
+      }
     </Loader>
   )
 }
