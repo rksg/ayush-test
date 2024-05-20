@@ -1407,10 +1407,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params)
         return {
           ...req,
-          body: {
-            ...payload,
-            vlanMembers: (payload.vlanMembers as string).split(',')
-          }
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
@@ -1420,10 +1417,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params)
         return {
           ...req,
-          body: {
-            ...payload,
-            vlanMembers: (payload.vlanMembers as string).split(',')
-          }
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]

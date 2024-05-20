@@ -110,11 +110,11 @@ export function SecurityTab () {
       useUpdateVenueTemplateDoSProtectionMutation
     )
 
-  const [updateVenueRogueAp, {
-    isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueRogueApMutation,
-    useUpdateVenueRogueApTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [updateVenueRogueAp, { isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueRogueApMutation,
+    useTemplateMutationFn: useUpdateVenueRogueApTemplateMutation
+  })
 
   const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
     useGetDenialOfServiceProtectionQuery,
@@ -122,10 +122,10 @@ export function SecurityTab () {
     isUseRbacApi
   )
 
-  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
-    useGetVenueRogueApQuery,
-    useGetVenueRogueApTemplateQuery
-  )
+  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVenueRogueApQuery,
+    useTemplateQueryFn: useGetVenueRogueApTemplateQuery
+  })
 
   const [updateVenueApEnhancedKey, {
     isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
@@ -496,12 +496,11 @@ const FieldsetItem = ({
 
 // eslint-disable-next-line max-len
 const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useEnhancedRoguePoliciesQuery,
-    useGetRoguePolicyTemplateListQuery,
-    false,
-    DEFAULT_PAYLOAD
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useEnhancedRoguePoliciesQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
+    payload: DEFAULT_PAYLOAD
+  })
 
   if (data?.totalCount === 0) {
     return {

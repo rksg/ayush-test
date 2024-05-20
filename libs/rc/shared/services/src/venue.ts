@@ -1126,7 +1126,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateVenueDirectedMulticast'
+            'UpdateVenueDirectedMulticast',
+            'UpdateVenueApDirectedMulticastSettings'
           ]
           onActivityMessageReceived(msg, activities, () => {
             const invalidateTagsFunc = venueApi.util.invalidateTags
@@ -1515,7 +1516,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'UpdateVenueRadiusOptions'
+            'UpdateVenueRadiusOptions',
+            'UpdateVenueApRadiusOptions'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'RADIUS_OPTIONS' }]))

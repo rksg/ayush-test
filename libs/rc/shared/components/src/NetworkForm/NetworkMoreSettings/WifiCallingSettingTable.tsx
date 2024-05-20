@@ -53,12 +53,11 @@ export default WifiCallingSettingTable
 
 const WifiCallingNameContent = (props: { id: string }) => {
   const { id } = props
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery,
-    false,
-    null,
-    { serviceId: id }
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetWifiCallingServiceQuery,
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
+    extraParams: { serviceId: id }
+  })
 
   return <div>
     {data?.description || ''}

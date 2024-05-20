@@ -181,10 +181,9 @@ describe('Venue Radio Settings', () => {
 
   })
 
-  describe('given TRI_RADIO and WIFI_SWITCHABLE_RF_TOGGLE enabled', () => {
+  describe('given WIFI_SWITCHABLE_RF_TOGGLE enabled', () => {
     beforeEach(() => {
-      jest.mocked(useIsSplitOn)
-        .mockImplementation(ff => [Features.TRI_RADIO, Features.WIFI_SWITCHABLE_RF_TOGGLE].includes(ff))
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
       mockServer.use(
         rest.get(

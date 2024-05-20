@@ -61,10 +61,14 @@ export const SyslogForm = (props: SyslogFormProps) => {
   const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, initialValues)
 
-  // eslint-disable-next-line max-len
-  const [ createSyslog ] = useConfigTemplateMutationFnSwitcher(useAddSyslogPolicyMutation, useAddSyslogPolicyTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateSyslog ] = useConfigTemplateMutationFnSwitcher(useUpdateSyslogPolicyMutation, useUpdateSyslogPolicyTemplateMutation)
+  const [ createSyslog ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddSyslogPolicyMutation,
+    useTemplateMutationFn: useAddSyslogPolicyTemplateMutation
+  })
+  const [ updateSyslog ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateSyslogPolicyMutation,
+    useTemplateMutationFn: useUpdateSyslogPolicyTemplateMutation
+  })
 
   const transformPayload = (state: SyslogContextType, edit: boolean) => {
     if (!(state.secondaryServer && state.secondaryPort)) {
