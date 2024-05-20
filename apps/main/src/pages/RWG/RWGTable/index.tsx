@@ -1,11 +1,11 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                       from '@acx-ui/components'
-import { useGetVenuesQuery, useRwgListQuery }                                              from '@acx-ui/rc/services'
-import { defaultSort, FILTER, RWG, SEARCH, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                              from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                       from '@acx-ui/user'
+import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                       from '@acx-ui/components'
+import { useGetVenuesQuery, useRwgListQuery }                                                                              from '@acx-ui/rc/services'
+import { defaultSort, FILTER, getRwgStatus, RWG, SEARCH, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                                              from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                                       from '@acx-ui/user'
 
 import { useRwgActions } from '../useRwgActions'
 
@@ -43,18 +43,12 @@ function useColumns (
       filterable: filterables ? filterables['status'] : false,
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
-        const iconColor = (row.status === 'Operational')
-          ? '--acx-semantics-green-50'
-          : '--acx-neutrals-50'
-        const statusText = row.status === 'Operational'
-          ? $t({ defaultMessage: 'Operational' })
-          : $t({ defaultMessage: 'Offline' })
-
+        const { name, color } = getRwgStatus(row.status)
         return (
           <span>
             <Badge
-              color={`var(${iconColor})`}
-              text={transformDisplayText(statusText)}
+              color={`var(${color})`}
+              text={transformDisplayText(name)}
             />
           </span>
         )
@@ -129,13 +123,13 @@ export function RWGTable () {
     })
   })
 
-  const columns = useColumns(true, { venueName: venueFilterOptions, status: [{
-    key: 'Operational',
-    value: 'Operational'
-  }, {
-    key: 'OFFLINE',
-    value: 'Offline'
-  }] })
+  const columns = useColumns(true, { venueName: venueFilterOptions,
+    status: seriesMappingRWG().map(({ key, name }) => {
+      return {
+        key,
+        value: name
+      }
+    }) })
 
   const rowActions: TableProps<RWG>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
