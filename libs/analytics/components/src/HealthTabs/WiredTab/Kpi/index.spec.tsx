@@ -103,6 +103,6 @@ describe('Kpi Section', () => {
 
     const viewMore = await screen.findByRole('button', { name: 'View more' })
     await userEvent.click(viewMore)
-    expect(await screen.findAllByText(/Switch Temperature/i)).toHaveLength(1)
+    expect(await screen.findAllByText(/Temperature/i)).toHaveLength(2)
   })
 })
