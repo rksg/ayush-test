@@ -55,21 +55,21 @@ export const ImpactedSwitchesTable = ({
 
   const columns: TableProps<SwitchDetails>['columns'] = [
     {
-      title: $t({ defaultMessage: 'MAC' }),
-      dataIndex: 'mac',
-      key: 'mac',
-      render: (_, { mac }) => (
-        <TenantLink to={`users/wifi/clients/${mac?.[0]?.toLowerCase()}/details/troubleshooting`}>
-          {mac}
-        </TenantLink>
-      ),
-      sorter: { compare: sortProp('mac', defaultSort) }
-    },
-    {
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
+      render: (_, row: SwitchDetails) => (
+        <TenantLink to={`/devices/switch/${row.mac}/serial/details/incidents`}>
+          {row.name}
+        </TenantLink>
+      ),
       sorter: { compare: sortProp('name', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'mac',
+      key: 'mac',
+      sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Serial' }),
