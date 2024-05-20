@@ -58,13 +58,15 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   useEffect(() => {
     if (editMode && data) {
+      const policyName = data.name || data.policyName
       // update state from API data
       if (state.policyName === '') {
         const newData = cloneDeep(data)
         const payload = {
           state: {
             ...state,
-            ...newData
+            ...newData,
+            policyName
           } }
 
         dispatch({
@@ -97,8 +99,10 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   const handleSaveApSnmpAgentPolicy = async () => {
     try {
-      const payload = cloneDeep(state)
-      if (isDataValid(payload)) {
+      const clonedData = cloneDeep(state)
+      if (isDataValid(clonedData)) {
+        const { policyName, ...others } = clonedData
+        const payload = (isUseRbacApi) ? { ...others, name: policyName } : clonedData
         if (!editMode) {
           await createApSnmpPolicy({ params, payload, enableRbac: isUseRbacApi }).unwrap()
         } else {

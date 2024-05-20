@@ -37,7 +37,8 @@ export type SnmpV3Agent = SnmpPrivilege & {
 }
 
 export type ApSnmpPolicy = {
-  policyName: string
+  policyName?: string
+  name?: string
   id?: string
   tenantId?: string
   snmpV2Agents: SnmpV2Agent[]

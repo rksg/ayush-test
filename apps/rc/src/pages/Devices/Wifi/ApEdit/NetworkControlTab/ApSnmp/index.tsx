@@ -76,7 +76,9 @@ export function ApSnmp () {
   const [formInitializing, setFormInitializing] = useState(true)
   // eslint-disable-next-line max-len
   const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
-  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
+  // eslint-disable-next-line max-len
+  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId: apDetails?.venueId }, enableRbac: isUseRbacApi })
+
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
    = useUpdateApSnmpSettingsMutation()
 
@@ -97,9 +99,9 @@ export function ApSnmp () {
 
         // Get current Venue AP SNMP settings
         const venueApSnmpSetting = (await getVenueApSnmpSettings({
-          params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap()
+          params: { tenantId, venueId: apDetails?.venueId },
+          enableRbac: isUseRbacApi }, true).unwrap()
         )
-
         setApSnmpSettings({ ...defaultApSnmpSettings, ...apSnmp })
         setVenueApSnmpSettings(venueApSnmpSetting)
         setVenue(apVenue)

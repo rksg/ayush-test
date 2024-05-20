@@ -51,7 +51,8 @@ export function ApSnmp () {
   const RetrievedVenueApSnmpAgentOptions =
    RetrievedVenueApSnmpAgentList?.data?.map(m => ({ label: m.policyName, value: m.id })) ?? []
 
-  const RetrievedVenueApSnmpSettings = useGetVenueApSnmpSettingsQuery({ params: { venueId } })
+  // eslint-disable-next-line max-len
+  const RetrievedVenueApSnmpSettings = useGetVenueApSnmpSettingsQuery({ params: { venueId }, enableRbac: isUseRbacApi })
   const RetrievedVenueApSnmpAgentProfileId =
    RetrievedVenueApSnmpSettings?.data?.apSnmpAgentProfileId ?? ''
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }] =

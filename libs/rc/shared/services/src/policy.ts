@@ -1667,7 +1667,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           // eslint-disable-next-line max-len
           const asyncFunction = async (policies: Promise<RbacApSnmpPolicy>[]) : Promise<ApSnmpPolicy[]> => {
             const all = await Promise.all(policies)
-            all.forEach((policy)=> {
+            all.sort().forEach((policy)=> {
               const profile = rbacApSnmpViewModel.find((profile) => profile.id === policy.id)
               let formattedData = {
                 id: profile?.id,
@@ -1848,7 +1848,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     getVenueApSnmpSettings: build.query<VenueApSnmpSettings, RequestPayload>({
       async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
         if (enableRbac) {
@@ -1892,12 +1892,40 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'VENUE' }]
     }),
-    // TODO: Change RBAC API
+    // TODO: Change RBAC API (API Done, Testing pending)
     getApSnmpSettings: build.query<ApSnmpSettings, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(ApSnmpUrls.getApSnmpSettings, params, RKS_NEW_UI)
-        return {
-          ...req
+      async queryFn ({ params, enableRbac }, _api, _extraOptions, fetchWithBQ) {
+        if (enableRbac) {
+          const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+          // eslint-disable-next-line max-len
+          const settingRequest = createHttpRequest(ApSnmpRbacUrls.getApSnmpSettings, params, apiCustomHeader)
+          const settingResponse = await fetchWithBQ(settingRequest)
+          const setting = settingResponse.data as { useVenueSettings: boolean }
+          const viewModelRequest = {
+            ...createHttpRequest(ApSnmpRbacUrls.getApSnmpFromViewModel, params, apiCustomHeader),
+            body: {
+              filters: {
+                apSerialNumbers: [ params?.serialNumber ]
+              }
+            }
+          }
+
+          const viewModelResponse = await fetchWithBQ(viewModelRequest)
+          const viewModel = viewModelResponse.data as TableResult<RbacApSnmpViewModelData>
+          const enableApSnmp = viewModel.data.length === 1
+
+          const result = {
+            enableApSnmp,
+            useVenueSettings: setting.useVenueSettings,
+            ...(enableApSnmp ? { apSnmpAgentProfileId: viewModel.data[0]?.id }: {})
+          } as ApSnmpSettings
+          return { data: result }
+
+        } else {
+          const req = createHttpRequest(ApSnmpUrls.getApSnmpSettings, params, RKS_NEW_UI)
+          const res = await fetchWithBQ(req)
+          const result = res.data as ApSnmpSettings
+          return { data: result }
         }
       },
       providesTags: [{ type: 'SnmpAgent', id: 'AP' }]
