@@ -156,6 +156,37 @@ Array [
 ]
 `;
 
+exports[`getRwgStackedBarChartData should return correct formatted data 1`] = `
+Object {
+  "chartData": Array [
+    Object {
+      "category": "",
+      "series": Array [
+        Object {
+          "name": "Disconnected",
+          "value": 1,
+        },
+      ],
+    },
+  ],
+  "stackedColors": Array [
+    "#ED1C24",
+  ],
+}
+`;
+
+exports[`getRwgStackedBarChartData should return empty array if no data 1`] = `
+Object {
+  "chartData": Array [
+    Object {
+      "category": "",
+      "series": Array [],
+    },
+  ],
+  "stackedColors": Array [],
+}
+`;
+
 exports[`getSwitchStackedBarChartData should return correct formatted data 1`] = `
 Array [
   Object {
