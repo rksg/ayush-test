@@ -174,7 +174,8 @@ const PrivilegeGroups = (props: PrivilegeGroupsTableProps) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
+        return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM &&
+          selectedRows[0].memberCount === 0)
       },
       onClick: (rows, clearSelection) => {
         showActionModal({
