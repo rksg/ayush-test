@@ -52,6 +52,12 @@ export function ConfigurationProfileForm () {
   const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const [form] = Form.useForm()
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const [getProfiles] = useLazyGetProfilesQuery()
+  const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
+  const [batchDisassociateSwitchProfile] = useBatchDisassociateSwitchProfileMutation()
+
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
     useQueryFn: useGetSwitchConfigProfileQuery,
     useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
