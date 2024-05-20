@@ -98,8 +98,13 @@ export const setRaiPermissions = (perms: RaiPermissions) => {
   permissions = perms
 }
 
+// use hasRaiPermission to enforce permission in RAI standalone
+export function hasRaiPermission (permission: RaiPermission) {
+  return permissions[permission]
+}
+
 /**
-* use hasPermission when enforcing for both R1 and RAI at the same time
+* use hasPermission when enforcing for both R1 and RAI standalone at the same time
 * IMPORTANT: Suggest using hasPermission for action items, as it will always return FALSE for Role.READ_ONLY.
 */
 export function hasPermission (props?: {

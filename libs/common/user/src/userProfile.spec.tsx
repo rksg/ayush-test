@@ -17,7 +17,8 @@ import {
   hasPermission,
   setRaiPermissions,
   setUserProfile,
-  WrapIfAccessible
+  WrapIfAccessible,
+  hasRaiPermission
 } from './userProfile'
 
 import type { RaiPermissions } from './types'
@@ -162,6 +163,14 @@ describe('filterByAccess', () => {
 
     setRole(RolesEnum.READ_ONLY)
     expect(filterByAccess(items)).toHaveLength(2)
+  })
+})
+
+describe('hasRaiPermission', () => {
+  it('checks if permission is present', () => {
+    setRaiPermissions({ READ_INCIDENTS: true, READ_HEALTH: false } as RaiPermissions)
+    expect(hasRaiPermission('READ_INCIDENTS')).toBe(true)
+    expect(hasRaiPermission('READ_HEALTH')).toBe(false)
   })
 })
 
