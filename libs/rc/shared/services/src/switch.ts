@@ -1439,11 +1439,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getProfiles, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getProfiles, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
