@@ -105,7 +105,7 @@ export function DowngradePerApModelDialog (props: DowngradeDialogProps) {
     <Modal
       title={$t({ defaultMessage: 'Firmware Downgrade' })}
       visible={true}
-      width={560}
+      width={580}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
       footer={[

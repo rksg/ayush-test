@@ -9,11 +9,12 @@ import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 import { FirmwareVenuePerApModel }           from '@acx-ui/rc/utils'
 import { getIntl }                           from '@acx-ui/utils'
 
-import { getVersionLabel }                from '../../../FirmwareUtils'
+import { compareVersions, getVersionLabel }                from '../../../FirmwareUtils'
 import * as UI                            from '../../VenueFirmwareList/styledComponents'
 import {
   ApFirmwareUpdateGroupType,
-  convertApModelFirmwaresToUpdateGroups
+  convertApModelFirmwaresToUpdateGroups,
+  findExtremeFirmwareBasedOnApModel
 } from '../venueFirmwareListPerApModelUtils'
 
 import { UpdateFirmwarePerApModelGroup }      from './UpdateFirmwarePerApModelGroup'
@@ -130,21 +131,33 @@ function filterByVenues (
   venuesFirmwares: FirmwareVenuePerApModel[],
   updateGroupList: ApFirmwareUpdateGroupType[]
 ): ApFirmwareUpdateGroupType[] {
-  const allVenueApModels = _.uniq(
+
+  const unhandledApModels = _.uniq(
     _.compact(venuesFirmwares.map(venueFw => venueFw.currentApFirmwares))
       .flat().map(currentApFw => currentApFw.apModel)
   )
 
   const result: ApFirmwareUpdateGroupType[] = []
-  updateGroupList.forEach(updateGroup => {
-    const intersectionApModels = _.intersection(updateGroup.apModels, allVenueApModels)
+
+  for (const updateGroup of updateGroupList) {
+    if (unhandledApModels.length === 0) break
+
+    const intersectionApModels = _.intersection(updateGroup.apModels, unhandledApModels)
     if (intersectionApModels.length > 0) {
       result.push({
         ...updateGroup,
         apModels: intersectionApModels
       })
     }
-  })
+    _.pullAll(unhandledApModels, intersectionApModels)
+  }
 
-  return result
+  // Verify that AP models in the updateGroup are already at the maximum firmware
+  const maxFirmwareBasedOnApModel = findExtremeFirmwareBasedOnApModel(venuesFirmwares)
+  return result.filter(updateGroup => {
+    return updateGroup.apModels.some(apModel => {
+      const maxFirmware = maxFirmwareBasedOnApModel[apModel]
+      return maxFirmware && compareVersions(updateGroup.firmwares[0].name, maxFirmware) > 0
+    })
+  })
 }

@@ -66,19 +66,15 @@ export function UpdateFirmwarePerApModelIndividualPanel (props: UpdateFirmwarePe
         {displayData?.map(item => {
           if (showAvailableFirmwareOnly && item.versionOptions.length === 0) return null
 
-          return <div key={item.apModel}>
-            <UpdateFirmwarePerApModelIndividual
-              apModel={item.apModel}
-              versionOptions={item.versionOptions}
-              update={update}
-              defaultVersion={item.defaultVersion}
-              labelSize={labelSize}
-              emptyOptionLabel={isUpgrade
-                ? $t({ defaultMessage: 'Do not update firmware' })
-                : $t({ defaultMessage: 'Do not downgrade firmware' })
-              }
-            />
-          </div>
+          return <UpdateFirmwarePerApModelIndividual key={item.apModel}
+            {...item}
+            update={update}
+            labelSize={labelSize}
+            // eslint-disable-next-line max-len
+            {...(!isUpgrade && { emptyOptionLabel: $t({ defaultMessage: 'Do not downgrade firmware' }) })}
+            // eslint-disable-next-line max-len
+            {...(!isUpgrade && { noOptionsMessage: $t({ defaultMessage: 'No lower firmware versions available for downgrade' }) })}
+          />
         })}
       </Space>
     </Space>

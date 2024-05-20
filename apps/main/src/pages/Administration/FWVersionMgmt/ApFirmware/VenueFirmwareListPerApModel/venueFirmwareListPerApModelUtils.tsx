@@ -194,42 +194,47 @@ export type ApModelIndividualDisplayDataType = {
   apModel: string
   versionOptions: { key: string, label: string }[]
   defaultVersion: string
+  extremeFirmware: string
 }
 
 export function convertToApModelIndividualDisplayData (
-  data: ApModelFirmware[],
+  apModelFirmwareList: ApModelFirmware[],
   venuesFirmwares: FirmwareVenuePerApModel[],
   initialPayload?: UpdateFirmwarePerApModelFirmware,
   isUpgrade = true
 ): ApModelIndividualDisplayDataType[] {
-  const result: { [apModel in string]: ApModelIndividualDisplayDataType['versionOptions'] } = {}
   const extremeFirmwareMap = findExtremeFirmwareBasedOnApModel(venuesFirmwares, isUpgrade)
 
   if (_.isEmpty(extremeFirmwareMap)) return []
 
-  data.forEach((apModelFirmware: ApModelFirmware) => {
-    if (!apModelFirmware.supportedApModels) return
+  // eslint-disable-next-line max-len
+  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware'> } = {}
 
-    const option = createFirmwareOption(apModelFirmware)
+  apModelFirmwareList.forEach((apModelFirmware: ApModelFirmware) => {
+    if (!apModelFirmware.supportedApModels) return
 
     apModelFirmware.supportedApModels.forEach(apModel => {
       const apModelExtremeFirmware = extremeFirmwareMap[apModel]
       if (!apModelExtremeFirmware) return
 
+      if (!result[apModel]) {
+        result[apModel] = {
+          versionOptions: [],
+          extremeFirmware: apModelExtremeFirmware
+        }
+      }
+
       const comparisonResult = compareVersions(apModelExtremeFirmware, apModelFirmware.id)
       if (isUpgrade ? comparisonResult >= 0 : comparisonResult <= 0) return
 
-      if (result[apModel]) {
-        result[apModel].push(option)
-      } else {
-        result[apModel] = [option]
-      }
+      result[apModel].versionOptions.push(createFirmwareOption(apModelFirmware))
     })
   })
 
-  return Object.entries(result).map(([ apModel, versionOptions ]) => ({
+  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware } ]) => ({
     apModel,
     versionOptions,
+    extremeFirmware,
     defaultVersion: isUpgrade
       ? getApModelDefaultFirmwareFromOptions(apModel, versionOptions, initialPayload)
       : ''
@@ -259,7 +264,7 @@ function getApModelDefaultFirmwareFromOptions (
   return versionOptions.length === 0 ? '' : versionOptions[0].key
 }
 
-function findExtremeFirmwareBasedOnApModel (
+export function findExtremeFirmwareBasedOnApModel (
   venuesFirmwares: FirmwareVenuePerApModel[],
   findMax = true
 ): { [apModel in string]: string } {
