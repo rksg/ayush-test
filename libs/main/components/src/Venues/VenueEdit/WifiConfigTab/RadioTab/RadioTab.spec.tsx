@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { venueApi }                                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo, VenueRadioCustomization, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
-import { mockServer, screen, render, within, waitFor }           from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                            from '@acx-ui/feature-toggle'
+import { venueApi }                                                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, VenueRadioCustomization, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                         from '@acx-ui/store'
+import { mockServer, screen, render, within, waitFor }                             from '@acx-ui/test-utils'
 
 import { EditContext, RadioContext, VenueEditContext } from '../..'
 import {
@@ -87,7 +87,23 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json([]))),
       rest.get(
         WifiUrlsInfo.getVenueAntennaType.url,
-        (_, res, ctx) => res(ctx.json([])))
+        (_, res, ctx) => res(ctx.json([]))),
+      // rbac
+      rest.get(
+        WifiRbacUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(venueExternalAntenna))),
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueLoadBalancing.url,
+        (_, res, ctx) => res(ctx.json(mockLoadBalabcing))),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 

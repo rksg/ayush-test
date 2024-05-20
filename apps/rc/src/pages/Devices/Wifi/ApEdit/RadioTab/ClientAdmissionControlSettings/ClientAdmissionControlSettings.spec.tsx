@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { venueApi, apApi }                from '@acx-ui/rc/services'
-import { WifiUrlsInfo, CommonUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { useIsSplitOn, useIsTierAllowed }                 from '@acx-ui/feature-toggle'
+import { venueApi, apApi }                                from '@acx-ui/rc/services'
+import { WifiUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -60,7 +60,11 @@ describe('Ap Client Admission Control', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.delete(
         WifiUrlsInfo.deleteApClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))),
+      // rbac
+      rest.get(
+        WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl)))
     )
   })
 

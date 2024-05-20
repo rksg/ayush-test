@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { venueApi }           from '@acx-ui/rc/services'
-import { WifiUrlsInfo }       from '@acx-ui/rc/utils'
-import { Provider, store }    from '@acx-ui/store'
+import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { venueApi }                       from '@acx-ui/rc/services'
+import { WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                from '@acx-ui/store'
 import { mockServer,
   render,
   screen,
@@ -30,6 +30,10 @@ describe('Venue Load Balancing', () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getVenueLoadBalancing.url,
+        (_, res, ctx) => res(ctx.json(mockLoadBalabcing))),
+      // rbac
+      rest.get(
+        WifiRbacUrlsInfo.getVenueLoadBalancing.url,
         (_, res, ctx) => res(ctx.json(mockLoadBalabcing)))
     )
   })

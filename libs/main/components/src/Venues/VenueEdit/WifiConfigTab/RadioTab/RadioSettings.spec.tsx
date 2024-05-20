@@ -8,6 +8,7 @@ import { venueApi }               from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   VenueRadioCustomization,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -75,7 +76,11 @@ describe('Venue Radio Settings', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] })))
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      // rbac
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
   it.skip('should render Wi-Fi Radio Settings correctly when on/off tri-band button', async () => {
