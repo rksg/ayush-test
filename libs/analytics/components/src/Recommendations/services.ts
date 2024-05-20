@@ -404,12 +404,9 @@ export const api = recommendationApi.injectEndpoints({
         `,
         variables: {
           ...(_.pick(payload,['path', 'crrm'])),
-          ...(_.pick(
-            computeRangeFilter({
-              dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
-            }),
-            ['startDate', 'endDate']
-          ))
+          ...computeRangeFilter({
+            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
+          })
         }
       }),
       transformResponse: (response: Response<Recommendation>) => {
