@@ -127,6 +127,9 @@ export const batchApi = (apiInfo: ApiInfo, requests: RequestPayload<unknown>[],
       }
       return { data: results }
     })
+    .catch((error)=>{
+      return error
+    })
 }
 
 export interface Filters {
