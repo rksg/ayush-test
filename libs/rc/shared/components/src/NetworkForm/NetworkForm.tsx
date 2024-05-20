@@ -126,15 +126,18 @@ export function NetworkForm (props:{
 
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
-  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
-  )
-  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
-  )
-  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
-  )
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenuesMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
+  })
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenuesMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenuesMutation,
+    useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
+  })
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()

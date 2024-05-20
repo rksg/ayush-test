@@ -28,12 +28,11 @@ export function CliStepSummary () {
   })
 
   // eslint-disable-next-line max-len
-  const { data: venuesList } = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
-    useVenuesListQuery,
-    useGetVenuesTemplateListQuery,
-    false,
-    venuesListPayload
-  )
+  const { data: venuesList } = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
+    useQueryFn: useVenuesListQuery,
+    useTemplateQueryFn: useGetVenuesTemplateListQuery,
+    payload: venuesListPayload
+  })
 
   return <>
     <Row gutter={24}>
