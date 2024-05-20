@@ -168,8 +168,7 @@ export const AAASettings = (props: {
 
   // const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
   const { data: aaaSetting, isFetching, isLoading } = useConfigTemplateQueryFnSwitcher<AAASetting>(
-    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false, undefined, undefined,
-    undefined, isSwitchRbacEnabled
+    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
   )
 
   const [ availableLoginServers, setAvailableLoginServers] = useState(defaultAvailableLoginServers)

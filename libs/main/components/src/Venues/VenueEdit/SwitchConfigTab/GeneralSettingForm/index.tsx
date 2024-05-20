@@ -75,7 +75,7 @@ export function GeneralSettingForm () {
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
   const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
     useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
-    undefined, undefined, undefined, isSwitchRbacEnabled
+    undefined, undefined, isSwitchRbacEnabled
   )
 
   const configProfiles = useConfigTemplateQueryFnSwitcher<ConfigurationProfile[]>(
