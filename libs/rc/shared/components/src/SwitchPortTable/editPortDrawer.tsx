@@ -151,7 +151,7 @@ export function EditPortDrawer ({
   const { tenantId, venueId, serialNumber } = useParams()
   const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const [loading, setLoading] = useState<boolean>(true)
-  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
@@ -216,7 +216,7 @@ export function EditPortDrawer ({
     = useGetDefaultVlanQuery({ params: { tenantId }, payload: { switchIds: switches } })
 
   const getVlans = async () => {
-    if (enableSwitchLevelVlan) {
+    if (isSwitchLevelVlanEnabled) {
       return await getSwitchUnionVlans()
     }
 
@@ -1469,7 +1469,7 @@ export function EditPortDrawer ({
             setSwitchVlans,
             venueVlans,
             setVenueVlans,
-            enableSwitchLevelVlan
+            isSwitchLevelVlanEnabled
           )
         }
       />}

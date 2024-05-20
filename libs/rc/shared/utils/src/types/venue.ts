@@ -401,7 +401,7 @@ export interface SwitchModel {
 	model: string,
 	slots: SwitchModelSlot[],
 	switchModel?: string,
-  taggedPorts?: string,
+	taggedPorts?: string,
 	taggedPortsList?: string[],
 	untaggedPorts?: string,
 	untaggedPortsList?: string[],

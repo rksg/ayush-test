@@ -61,7 +61,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
-  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
@@ -605,7 +605,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 setSwitchVlans,
                 venueVlans,
                 setVenueVlans,
-                enableSwitchLevelVlan
+                isSwitchLevelVlanEnabled
               )
             }
 

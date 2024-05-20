@@ -26,8 +26,7 @@ export interface PortsType {
 export function SelectModelStep (props: { editMode: boolean }) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues, isSwitchLevel, switchFamilyModel } = useContext(VlanPortsContext)
-  // const { vlanSettingValues } = useContext(VlanPortsContext)
+  const { vlanSettingValues, switchFamilyModel } = useContext(VlanPortsContext)
   const { editMode } = props
 
   const [families, setFamilies] = useState<ModelsType[]>([])
@@ -381,7 +380,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 children={<Radio.Group onChange={onFamilyChange}
                 >
                   {families.map(({ label, value }) => (
-                    // <Radio key={value} value={value} disabled={editMode || isSwitchLevel}>
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>
@@ -405,7 +403,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
                 children={<Radio.Group onChange={onModelChange}
                 >
                   {models.map(({ label, value }) => (
-                    // <Radio key={value} value={value} disabled={editMode || isSwitchLevel}>
                     <Radio key={value} value={value} disabled={editMode}>
                       <Tooltip
                         title={''}>

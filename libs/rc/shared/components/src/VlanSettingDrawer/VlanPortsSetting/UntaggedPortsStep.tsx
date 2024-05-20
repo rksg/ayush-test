@@ -21,12 +21,15 @@ export interface PortsType {
   value: string
 }
 
-export function UntaggedPortsStep () {
+export function UntaggedPortsStep (props: {
+  isSwitchLevel: boolean
+}) {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const {
     vlanSettingValues, setVlanSettingValues, vlanList, portsUsedByLag
   } = useContext(VlanPortsContext)
+  const { isSwitchLevel } = props
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -288,9 +291,12 @@ export function UntaggedPortsStep () {
       <Row gutter={20}>
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
-            {$t({ defaultMessage:
-                'Select the untagged ports (trunk ports) for this model ({family}-{model}):' },
-            { family: vlanSettingValues.family, model: vlanSettingValues.model })}
+            {isSwitchLevel
+              ? $t({ defaultMessage: 'Select the untagged ports (trunk ports)' })
+              : $t({ defaultMessage:
+                  'Select the untagged ports (trunk ports) for this model ({family}-{model}):' },
+              { family: vlanSettingValues.family, model: vlanSettingValues.model })
+            }
           </label>
         </Col>
       </Row>

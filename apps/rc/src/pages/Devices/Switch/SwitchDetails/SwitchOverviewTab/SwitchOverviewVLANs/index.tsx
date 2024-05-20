@@ -17,7 +17,10 @@ import { VlanSettingDrawer }      from '@acx-ui/rc/components'
 import {
   useGetVlanListBySwitchLevelQuery,
   useGetLagListQuery,
-  useDeleteSwitchVlanMutation
+  useSwitchPortlistQuery,
+  useAddSwitchesVlansMutation,
+  useDeleteSwitchVlanMutation,
+  useUpdateSwitchVlanMutation
 }                            from '@acx-ui/rc/services'
 import {
   Vlan,
@@ -29,7 +32,11 @@ import {
   SpanningTreeProtocolName,
   SwitchMessages,
   SwitchStatusEnum,
-  SWITCH_DEFAULT_VLAN_NAME
+  SwitchSlot,
+  SwitchModel,
+  SWITCH_DEFAULT_VLAN_NAME,
+  SwitchPortViewModelQueryFields,
+  SwitchPortViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -41,26 +48,27 @@ import { VlanDetail } from './vlanDetail'
 
 export function SwitchOverviewVLANs () {
   const { $t } = useIntl()
-  const { tenantId, switchId } = useParams()
+  const { tenantId, switchId, serialNumber } = useParams()
 
   const [currentRow, setCurrentRow] = useState({} as Vlan)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [vlanDrawerVisible, setVlanDrawerVisible] = useState(false)
 
-  const [editVlan, setEditVlan] = useState({})
+  const [editVlan, setEditVlan] = useState({} as unknown as Vlan)
   const [editMode, setEditMode] = useState(false)
   const [vlanList, setVlanList] = useState([] as Vlan[])
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
+  const [portSlotsData, setPortSlotsData] = useState([])
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
 
-  console.log('switchDetailsContextData: ', switchDetailsContextData)
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
-  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
-
+  const [addSwitchesVlans] = useAddSwitchesVlansMutation()
+  const [updateSwitchVlan] = useUpdateSwitchVlanMutation()
   const [deleteSwitchVlan] = useDeleteSwitchVlanMutation()
 
   useEffect(() => {
@@ -79,11 +87,67 @@ export function SwitchOverviewVLANs () {
   const { data: lagList, isLoading: isLagListLoading }
     = useGetLagListQuery({ params: { tenantId, switchId } })
 
+  const { data: portsData } = useSwitchPortlistQuery({
+    params: { tenantId, switchId },
+    payload: {
+      filters: { switchId: [serialNumber] },
+      sortField: 'portIdentifierFormatted',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000,
+      fields: SwitchPortViewModelQueryFields
+    } }, {
+    skip: !isSwitchLevelVlanEnabled
+  })
+
+  useEffect(() => {
+    if (portsData?.data) {
+      const portViewData = getPortViewData(portsData?.data)
+      setPortSlotsData(portViewData.slots)
+    }
+  }, [ portsData ])
+
+
   const onClose = () => {
     setDrawerVisible(false)
   }
 
-  const setVlan = async () => { // values: Vlan
+  const setVlan = async (values: Vlan) => {
+    const payload = {
+      ...(_.omit(values, ['switchFamilyModels'])),
+      vlanId: Number(values.vlanId),
+      switchId: switchId,
+      ...( values?.switchFamilyModels?.length
+        ? { switchVlanPortModels: values?.switchFamilyModels?.map(switchFamily => {
+          return {
+            switchModel: switchFamilyModel,
+            taggedPorts: switchFamily?.taggedPorts?.toString(),
+            untaggedPorts: switchFamily?.untaggedPorts?.toString()
+          }
+        }) }
+        : {}
+      )
+    }
+
+    if (editMode) {
+      try {
+        await updateSwitchVlan({
+          params: { tenantId, switchId, vlanId: editVlan?.id },
+          payload
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    } else {
+      try {
+        await addSwitchesVlans({
+          params: { tenantId, switchId },
+          payload: [payload]
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    }
   }
 
   const columns: TableProps<Vlan>['columns'] = [
@@ -159,7 +223,15 @@ export function SwitchOverviewVLANs () {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         setEditMode(true)
-        setEditVlan(selectedRows[0])
+        setEditVlan({
+          ...selectedRows[0],
+          switchFamilyModels: selectedRows[0]?.switchVlanPortModels?.map(switchFamily => {
+            return {
+              ...switchFamily,
+              model: switchFamily?.switchModel
+            }
+          }) as SwitchModel[]
+        })
         setVlanDrawerVisible(true)
       }
     },
@@ -195,7 +267,7 @@ export function SwitchOverviewVLANs () {
     tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
     onClick: () => {
       setEditMode(false)
-      setEditVlan({})
+      setEditVlan({} as Vlan)
       setVlanDrawerVisible(true)
     }
   }]
@@ -243,7 +315,7 @@ export function SwitchOverviewVLANs () {
         rowKey='vlanId'
         rowActions={filterByAccess(rowActions)}
         rowSelection={
-          hasAccess() && enableSwitchLevelVlan && !cliApplied && isSwitchOperational && {
+          hasAccess() && isSwitchLevelVlanEnabled && !cliApplied && isSwitchOperational && {
             type: 'radio',
             getCheckboxProps: (record) => ({
               disabled: record?.inactiveRow
@@ -256,7 +328,7 @@ export function SwitchOverviewVLANs () {
                 : originNode
             }
           }}
-        actions={enableSwitchLevelVlan ? filterByAccess(tableActions) : []}
+        actions={isSwitchLevelVlanEnabled ? filterByAccess(tableActions) : []}
       />
 
       <Drawer
@@ -270,17 +342,60 @@ export function SwitchOverviewVLANs () {
         }
       />
 
-      { enableSwitchLevelVlan && vlanDrawerVisible && <VlanSettingDrawer
+      { isSwitchLevelVlanEnabled && vlanDrawerVisible && <VlanSettingDrawer
         editMode={editMode}
         visible={vlanDrawerVisible}
         setVisible={setVlanDrawerVisible}
         vlan={editVlan as Vlan}
         switchFamilyModel={switchFamilyModel}
         enablePortModelConfigure={true}
+        portSlotsData={portSlotsData}
         setVlan={setVlan}
         vlansList={tableQuery.data?.data as Vlan[]}
       />}
 
     </Loader>
   )
+}
+
+function getPortViewData (portsData: SwitchPortViewModel[] ) {
+  const portStatusData = {
+    slots: [] as SwitchSlot[]
+  }
+  const tmpSlots: { [key:string]:SwitchSlot } = {}
+
+  portsData
+    .forEach(item => {
+      const port = { ...item }
+      const portNumber = port.portIdentifier.split('/')[2]
+      port.portnumber = portNumber
+      port.portNumber = portNumber
+      port.usedInUplink = port.cloudPort
+      const slot = Number(port.portIdentifier.split('/')[1])
+
+      if(tmpSlots[slot]){
+        tmpSlots[slot].portStatus.push(port)
+        tmpSlots[slot].portCount++
+        tmpSlots[slot].portNumber = Number(portNumber)
+        tmpSlots[slot].portTagged = ''
+      }else {
+        tmpSlots[slot] = {
+          portStatus: [port],
+          portCount: 1,
+          portNumber: Number(portNumber),
+          portTagged: ''
+        }
+      }
+    })
+  Object.keys(tmpSlots).forEach(key => {
+    portStatusData.slots.push(tmpSlots[key])
+  })
+
+  const tmpPortView = JSON.parse(JSON.stringify(portStatusData))
+  tmpPortView.slots.forEach((slot:SwitchSlot) => {
+    if (slot.portStatus !== undefined) {
+      slot.slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1])
+    }
+  })
+  return tmpPortView
 }

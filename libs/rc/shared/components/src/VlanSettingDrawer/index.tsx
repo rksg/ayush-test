@@ -17,6 +17,7 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   SwitchModel,
   SwitchModelPortData,
+  SwitchSlot,
   validateDuplicateVlanId,
   validateVlanName,
   validateVlanNameWithoutDVlans,
@@ -37,12 +38,13 @@ export interface VlanSettingDrawerProps {
   vlansList: Vlan[]
   enablePortModelConfigure?: boolean
   switchFamilyModel?: string
+  portSlotsData?: SwitchSlot[]
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
-    vlansList, switchFamilyModel, enablePortModelConfigure = true } = props
+    vlansList, switchFamilyModel, enablePortModelConfigure = true, portSlotsData } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -68,6 +70,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           vlansList={vlansList || []}
           enablePortModelConfigure={enablePortModelConfigure}
           switchFamilyModel={switchFamilyModel}
+          portSlotsData={portSlotsData}
         />
       }
       footer={
@@ -102,6 +105,7 @@ interface VlanSettingFormProps {
   vlansList: Vlan[]
   switchFamilyModel?: string
   enablePortModelConfigure?: boolean
+  portSlotsData?: SwitchSlot[]
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
@@ -113,8 +117,11 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, vlan, setVlan, vlansList, editMode, switchFamilyModel, enablePortModelConfigure = true } = props
-  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const { form, vlan, setVlan, vlansList, editMode,
+    switchFamilyModel, portSlotsData, enablePortModelConfigure = true } = props
+
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchLevel = !!switchFamilyModel
 
   useEffect(() => {
     if(vlan && editMode){
@@ -137,12 +144,12 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   }, [])
 
   const columns: TableProps<SwitchModelPortData>['columns'] = [
-    {
+    ...(!isSwitchLevel ? [{
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       key: 'model',
       width: 100
-    },
+    }] : []),
     {
       title: $t({ defaultMessage: 'Untagged Port' }),
       dataIndex: 'untaggedPorts',
@@ -178,11 +185,18 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
-          customContent: {
-            action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Model' }),
-            entityValue: selectedRows[0].model
-          },
+          ...( isSwitchLevel
+            ? { title: $t({ defaultMessage: 'Delete Ports?' }),
+              content: $t({ defaultMessage: 'Are you sure you want to delete this item?' }),
+              okText: $t({ defaultMessage: 'Delete Ports' })
+            } : {
+              customContent: {
+                action: 'DELETE',
+                entityName: isSwitchLevel
+                  ? $t({ defaultMessage: 'Ports' }) : $t({ defaultMessage: 'Model' }),
+                entityValue: isSwitchLevel ? $t({ defaultMessage: 'Ports' }) : selectedRows[0].model
+              }
+            }),
           onOk: () => {
             setRuleList(
               ruleList?.filter((option: { model: string }) => {
@@ -247,7 +261,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           rules={[
             { required: true },
             { validator: (_, value) => validateVlanName(value) },
-            { validator: (_, value) => validateDuplicateVlanId(value, vlansList) }
+            { validator: (_, value) => validateDuplicateVlanId(
+              value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
+            ) }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />
@@ -346,7 +362,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           children={<Input type='hidden' />}
         />
       </Form>
-      { enableSwitchLevelVlan && !enablePortModelConfigure
+      { isSwitchLevelVlanEnabled && !enablePortModelConfigure
         ? null
         : <><Row justify='space-between' style={{ margin: '25px 0 10px' }}>
           <Col>
@@ -360,7 +376,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
                 setOpenModal(true)
               }}
             >
-              {$t({ defaultMessage: 'Add Model' })}
+              {isSwitchLevel
+                ? $t({ defaultMessage: 'Add Ports' })
+                : $t({ defaultMessage: 'Add Model' })
+              }
             </Button>
           </Col>
         </Row>
@@ -386,7 +405,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           onCancel={onCancel}
           onSave={onSaveVlan}
           vlanList={vlansList}
-          switchFamilyModel={enableSwitchLevelVlan ? switchFamilyModel : undefined}
+          switchFamilyModel={isSwitchLevelVlanEnabled ? switchFamilyModel : undefined}
+          portSlotsData={portSlotsData}
         /></>}
     </div>
   )

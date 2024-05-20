@@ -56,7 +56,7 @@ export function SelectVlanModal (props: {
     showVoiceVlan, voiceVlan, isVoiceVlanInvalid
   } = props
 
-  const enableSwitchLevelVlan = true// useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const [selectTaggedVlans, setSelectTaggedVlans] = useState(taggedVlans)
   const [selectUntaggedVlan, setSelectUntaggedVlan] = useState(Number(untaggedVlan))
   const [disableButton, setDisableButton] = useState(false)
@@ -200,7 +200,7 @@ export function SelectVlanModal (props: {
   }
 
   const setVlan = async (values: Vlan) => {
-    if (enableSwitchLevelVlan) {
+    if (isSwitchLevelVlanEnabled) {
       const payload = switchIds?.map(switchId => {
         return {
           ...(_.omit(values, ['switchFamilyModels'])),
@@ -277,7 +277,7 @@ export function SelectVlanModal (props: {
           <Tooltip
             placement='top'
             key='disable-add-vlan-tooltip'
-            title={enableSwitchLevelVlan
+            title={isSwitchLevelVlanEnabled
               ? (cliApplied ? $t(VenueMessages.CLI_APPLIED) : '')
               : (!hasSwitchProfile ? vlanDisabledTooltip : '')
             }
@@ -286,7 +286,7 @@ export function SelectVlanModal (props: {
               <Button key='add-vlan'
                 type='link'
                 size='small'
-                disabled={enableSwitchLevelVlan ? cliApplied : !hasSwitchProfile}
+                disabled={isSwitchLevelVlanEnabled ? cliApplied : !hasSwitchProfile}
                 onClick={() => {
                   setVlanDrawerVisible(true)
                 }}
@@ -400,7 +400,7 @@ export function SelectVlanModal (props: {
       switchFamilyModel={switchFamilyModel}
       enablePortModelConfigure={false}
       setVlan={setVlan}
-      vlansList={(enableSwitchLevelVlan
+      vlansList={(isSwitchLevelVlanEnabled
         ? props.switchVlans
         : props.venueVlans
       ) as unknown as Vlan[]}

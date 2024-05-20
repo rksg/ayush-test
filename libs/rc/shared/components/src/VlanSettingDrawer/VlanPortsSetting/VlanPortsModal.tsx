@@ -10,7 +10,8 @@ import {
   SwitchModelPortData,
   TrustedPort,
   Vlan,
-  ICX_MODELS_MODULES
+  SwitchSlot,
+  SwitchSlot2
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -38,11 +39,13 @@ export function VlanPortsModal (props: {
   editRecord?: SwitchModelPortData,
   currrentRecords?: SwitchModelPortData[],
   vlanList: Vlan[],
-  switchFamilyModel?: string
+  switchFamilyModel?: string,
+  portSlotsData?: SwitchSlot[]
 }) {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
-  const { open, editRecord, onSave, onCancel, vlanList, switchFamilyModel } = props
+  const { open, editRecord, onSave, onCancel,
+    vlanList, switchFamilyModel, portSlotsData = [] } = props
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
@@ -53,70 +56,52 @@ export function VlanPortsModal (props: {
       trustedPorts: []
     })
 
+  const isSwitchLevel = !!switchFamilyModel
   const [portsUsedByLag, setPortsUsedByLag] = useState([] as string[])
   const { data: lagList }
     = useGetLagListQuery({ params: { tenantId, switchId } }, { skip: !switchId })
 
-
-  /**  */
-  // const getSlots = (selectedFamily: string, selectedModel: string) => {
-  //   const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
-
-  //   const familyList = ICX_MODELS_MODULES[familyIndex]
-  //   const modelIndex = selectedModel as keyof typeof familyList
-
-  //   const slots = familyList[modelIndex]
-  //   return familyList[modelIndex]
-  // }
-
   useEffect(()=>{
     setEditMode(open && !!editRecord)
 
-    if (open && editRecord) {
+    if (open && isSwitchLevel) {
+      const enableSlot2 = portSlotsData?.filter(port => port.slotNumber === 2)?.length > 0
+      const enableSlot3 = portSlotsData?.filter(port => port.slotNumber === 3)?.length > 0
+      if (editRecord) {
+        const [ family, model ] = switchFamilyModel.split('-')
+        const initValue = {
+          family, model, enableSlot2, enableSlot3,
+          slots: portSlotsData as unknown as SwitchSlot2[],
+          switchFamilyModels: {
+            ...editRecord,
+            model: switchFamilyModel,
+            slots: portSlotsData as unknown as SwitchSlot2[]
+          },
+          trustedPorts: []
+        }
+        setVlanSettingValues(initValue)
+      } else {
+        const [ family, model ] = switchFamilyModel.split('-')
+        const initValue = {
+          family, model, enableSlot2, enableSlot3,
+          slots: portSlotsData as unknown as SwitchSlot2[],
+          switchFamilyModels: {
+            id: '',
+            model: switchFamilyModel,
+            slots: portSlotsData as unknown as SwitchSlot2[],
+            taggedPorts: [],
+            untaggedPorts: []
+          },
+          trustedPorts: []
+        }
+
+        form.setFieldsValue(initValue)
+        setVlanSettingValues(initValue)
+      }
+    } else if (open && editRecord) {
       const family = editRecord.model.split('-')[0]
       const model = editRecord.model.split('-')[1]
       setVlanSettingValues({ family, model, switchFamilyModels: editRecord, trustedPorts: [] })
-    } else if (open && switchFamilyModel) {
-      const [ family, model ] = switchFamilyModel.split('-')
-
-      const switchFamilyModels = {
-        id: '',
-        model: switchFamilyModel,
-        slots: [],
-        taggedPorts: [],
-        untaggedPorts: []
-      }
-
-      const port = updateModelPortData(
-        switchFamilyModels, [], [], [], family, model
-      )
-
-      console.log(port)
-
-      const moduleStatus = getModuleStatus(family, model, [], [])
-
-      const initValue = {
-        family,
-        model,
-        enableSlot2: moduleStatus?.enableSlot2,
-        enableSlot3: moduleStatus?.enableSlot3,
-        // enableSlot4: moduleStatus?.enableSlot4,
-        selectedOptionOfSlot2: undefined,
-        selectedOptionOfSlot3: undefined,
-        selectedOptionOfSlot4: undefined,
-        switchFamilyModels: {
-          id: '',
-          model: switchFamilyModel,
-          slots: port[0]?.slots as any,
-          taggedPorts: [],
-          untaggedPorts: []
-        },
-        trustedPorts: []
-      }
-
-      form.setFieldsValue(initValue)
-      setVlanSettingValues(initValue)
-
     } else {
       setVlanSettingValues({ family: '', model: '', trustedPorts: [] })
     }
@@ -158,7 +143,7 @@ export function VlanPortsModal (props: {
       switchFamilyModels: {
         ...vlanSettingValues.switchFamilyModels,
         ...data.switchFamilyModels,
-        taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
+        untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || []
       }
     })
     return true
@@ -171,7 +156,7 @@ export function VlanPortsModal (props: {
       switchFamilyModels: {
         ...vlanSettingValues.switchFamilyModels,
         ...data.switchFamilyModels,
-        untaggedPorts: vlanSettingValues.switchFamilyModels?.untaggedPorts || []
+        taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
       }
     })
     return true
@@ -184,20 +169,26 @@ export function VlanPortsModal (props: {
       title: '',
       vlanConfigName: ''
     }
+    const enableSlot2 = isSwitchLevel
+      ? vlanSettingValues?.enableSlot2 : data.enableSlot2
+    const enableSlot3 = isSwitchLevel
+      ? vlanSettingValues?.enableSlot3 : data.enableSlot3
+    const slots = isSwitchLevel
+      ? vlanSettingValues.switchFamilyModels?.slots : data.switchFamilyModels.slots
 
     const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
       .filter((value: string) => value.startsWith('1/1/') ||
-        (data.enableSlot2 && value.startsWith('1/2/')) ||
-        (data.enableSlot3 && value.startsWith('1/3/')))
+        (enableSlot2 && value.startsWith('1/2/')) ||
+        (enableSlot3 && value.startsWith('1/3/')))
 
     const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
       .filter((value: string) => value.startsWith('1/1/') ||
-        (data.enableSlot2 && value.startsWith('1/2/')) ||
-        (data.enableSlot3 && value.startsWith('1/3/')))
+        (enableSlot2 && value.startsWith('1/2/')) ||
+        (enableSlot3 && value.startsWith('1/3/')))
 
-    switchFamilyModelsData.model = data.family + '-' + data.model
-    switchFamilyModelsData.slots = data.switchFamilyModels.slots.map(
-      (slot: { slotNumber: number; enable: boolean }) => ({
+    switchFamilyModelsData.model = editMode ? editRecord?.model : data.family + '-' + data.model
+    switchFamilyModelsData.slots
+      = slots?.map((slot: { slotNumber: number; enable: boolean }) => ({
         slotNumber: slot.slotNumber,
         enable: slot.enable,
         option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
@@ -216,7 +207,13 @@ export function VlanPortsModal (props: {
       destroyOnClose={true}
       closable={true}
       type={ModalType.ModalStepsForm}
-      title={$t({ defaultMessage: 'Select Ports By Model' })}
+      title={isSwitchLevel
+        ? $t({ defaultMessage: '{action} Ports for {switchFamilyModel}' }, {
+          action: editMode ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Add' }),
+          switchFamilyModel
+        })
+        : $t({ defaultMessage: 'Select Ports By Model' })
+      }
       data-testid='vlanSettingModal'
     >
       <VlanPortsContext.Provider value={{
@@ -251,13 +248,13 @@ export function VlanPortsModal (props: {
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}
           >
-            <UntaggedPortsStep />
+            <UntaggedPortsStep isSwitchLevel={isSwitchLevel} />
           </StepsForm.StepForm>
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Tagged Ports' })}
             onFinish={onSaveTagged}
           >
-            <TaggedPortsStep />
+            <TaggedPortsStep isSwitchLevel={isSwitchLevel} />
           </StepsForm.StepForm>
         </StepsForm>
       </VlanPortsContext.Provider>
@@ -265,208 +262,252 @@ export function VlanPortsModal (props: {
   )
 }
 
-/** util */
-interface ModelsType {
-  label: string
-  value: string
-}
+// /** util */
+// interface ModelsType {
+//   label: string
+//   value: string
+// }
 
-interface ModuleStatus {
-  moduleSelectionEnable: boolean
-  enableSlot2?: boolean
-  enableSlot3?: boolean
-  // enableSlot4?: boolean
-  selectedOptionOfSlot2?: string
-  selectedOptionOfSlot3?: string
-  selectedOptionOfSlot4?: string
-  module2SelectionEnable?: boolean
-}
+// interface ModuleStatus {
+//   moduleSelectionEnable: boolean
+//   enableSlot2?: boolean
+//   enableSlot3?: boolean
+//   // enableSlot4?: boolean
+//   selectedOptionOfSlot2?: string
+//   selectedOptionOfSlot3?: string
+//   selectedOptionOfSlot4?: string
+//   module2SelectionEnable?: boolean
+// }
+// function getSlots (selectedFamily: string, selectedModel: string) {
+//   const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
 
-function getModuleStatus (
-  family: string, model: string, optionListForSlot2: ModelsType[], optionListForSlot3: ModelsType[]) {
-  if (family === 'ICX7550') {
-    // setModuleSelectionEnable(true)
-    // form.setFieldValue('enableSlot2', true)
-    // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
-    // setModule2SelectionEnable(false)
-    return {
-      moduleSelectionEnable: true,
-      enableSlot2: true,
-      selectedOptionOfSlot2: optionListForSlot2[0]?.value,
-      module2SelectionEnable: false
-    }
-  }
+//   const familyList = ICX_MODELS_MODULES[familyIndex]
+//   const modelIndex = selectedModel as keyof typeof familyList
 
-  if (family === 'ICX7150' || family === 'ICX7850') {
-    switch (model) {
-      case '24':
-      case '24P':
-      case '24F':
-      case 'C10ZP':
-      case 'C12P':
-      case '48':
-      case '48P':
-      case '48PF':
-      case '32Q':
-        // setModuleSelectionEnable(false)
-        // form.setFieldValue('enableSlot2', true)
-        // form.setFieldValue('enableSlot3', true)
-        // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
-        // form.setFieldValue('selectedOptionOfSlot3', optionListForSlot3[0]?.value)
-        return {
-          moduleSelectionEnable: false,
-          enableSlot2: true,
-          enableSlot3: true,
-          selectedOptionOfSlot2: optionListForSlot2[0]?.value,
-          selectedOptionOfSlot3: optionListForSlot3[0]?.value,
-        }
-        break
+//   return familyList[modelIndex]
+// }
 
-      case 'C08P':
-      case 'C08PT':
-      case '48ZP':
-      case '48FS':
-      case '48F':       
-        // setModuleSelectionEnable(false)
-        // form.setFieldValue('enableSlot2', true)
-        // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
-        return {
-          moduleSelectionEnable: false,
-          enableSlot2: true,
-          selectedOptionOfSlot2: optionListForSlot2[0]?.value,
-        } 
-        break
+// function getSlotOptionList (
+//   slots: string[][],
+//   slotIndex: number) {
+//   const slotOptions: ModelsType[] = []
+//   if (slots.length > slotIndex) {
+//     for (let value of slots?.[slotIndex]) {
+//       const name = value.toString().split('X').join(' X ')
+//       slotOptions.push({ label: name, value: value.toString() })
+//     }
+//     return slotOptions
+//     // setSlotOptionsList(slotOptions)
+//   }
+//   return
+// }
 
-      default:
-        // setModuleSelectionEnable(true)
-        return {
-          moduleSelectionEnable: true,
-        } 
-        break
-    }
-  }
-  return
-}
+// function getModuleStatus (
+//   family: string, model: string,
+//   optionListForSlot2: ModelsType[], optionListForSlot3: ModelsType[],
+//   status?: ModuleStatus) {
+//   if (family === 'ICX7550') {
+//     // setModuleSelectionEnable(true)
+//     // form.setFieldValue('enableSlot2', true)
+//     // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+//     // setModule2SelectionEnable(false)
+//     return {
+//       moduleSelectionEnable: true,
+//       enableSlot2: true,
+//       selectedOptionOfSlot2: optionListForSlot2[0]?.value,
+//       module2SelectionEnable: false,
+//       ...status
+//     }
+//   }
 
-function updateModelPortData (
-  switchFamilyModels: SwitchModelPortData,
-  optionListForSlot2: ModelsType[], optionListForSlot3: ModelsType[], optionListForSlot4: ModelsType[],
-  selectedFamily: string, selectedModel: string) {
-  // for (let slotNumber = 1; slotNumber <= 4; slotNumber++) {
-  //   updateSlotPortData(
-  //     switchFamilyModels, optionListForSlot2, optionListForSlot3, optionListForSlot4,
-  //     slotNumber, selectedFamily, selectedModel
-  //   )
-  // }
-  return Array.from({ length: 4 }).map((ele, i) => {
-    const slotNumber = (i ?? 0) + 1
-    return updateSlotPortData(
-      switchFamilyModels, optionListForSlot2, optionListForSlot3, optionListForSlot4,
-      slotNumber, selectedFamily, selectedModel
-    )
-  })
-}
+//   if (family === 'ICX7150' || family === 'ICX7850') {
+//     switch (model) {
+//       case '24':
+//       case '24P':
+//       case '24F':
+//       case 'C10ZP':
+//       case 'C12P':
+//       case '48':
+//       case '48P':
+//       case '48PF':
+//       case '32Q':
+//         // setModuleSelectionEnable(false)
+//         // form.setFieldValue('enableSlot2', true)
+//         // form.setFieldValue('enableSlot3', true)
+//         // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+//         // form.setFieldValue('selectedOptionOfSlot3', optionListForSlot3[0]?.value)
+//         return {
+//           moduleSelectionEnable: false,
+//           enableSlot2: true,
+//           enableSlot3: true,
+//           selectedOptionOfSlot2: optionListForSlot2[0]?.value,
+//           selectedOptionOfSlot3: optionListForSlot3[0]?.value,
+//           ...status
+//         }
+//       case 'C08P':
+//       case 'C08PT':
+//       case '48ZP':
+//       case '48FS':
+//       case '48F':
+//         // setModuleSelectionEnable(false)
+//         // form.setFieldValue('enableSlot2', true)
+//         // form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+//         return {
+//           moduleSelectionEnable: false,
+//           enableSlot2: true,
+//           selectedOptionOfSlot2: optionListForSlot2[0]?.value,
+//           ...status
+//         }
+//       default:
+//         // setModuleSelectionEnable(true)
+//         return {
+//           moduleSelectionEnable: true,
+//           ...status
+//         }
+//     }
+//   }
+//   return {
+//     ...status
+//   }
+// }
 
-function updateSlotPortData (
-  switchFamilyModels: SwitchModelPortData,
-  optionListForSlot2: ModelsType[], optionListForSlot3: ModelsType[], optionListForSlot4: ModelsType[],
-  slotNumber: number, selectedFamily: string, selectedModel: string) {
-  if (slotNumber === 1) {
-    return generateSlotData(switchFamilyModels, slotNumber, true, [], '', selectedFamily, selectedModel)
-  } else {
-    const moduleStatus = getModuleStatus(
-      selectedFamily, selectedModel, optionListForSlot2, optionListForSlot3
-    )
-    const enable = (moduleStatus?.[`enableSlot${slotNumber}` as keyof typeof moduleStatus] ?? false) as boolean //form.getFieldValue(`enableSlot${slotNumber}`)
-    let option = (moduleStatus?.[`selectedOptionOfSlot${slotNumber}` as keyof typeof moduleStatus] ?? '') as string //form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
-    let optionList = optionListForSlot2
-    switch (slotNumber) {
-      case 3:
-        optionList = optionListForSlot3
-        break
-      case 4:
-        optionList = optionListForSlot4
-        break
-    }
-    if (!enable) {
-      option = ''
-    }
-    else if (enable && !option) {
-      option = optionList[0] ? optionList[0].value : option
-    }
+// function updateModelPortData (
+//   switchFamilyModels: SwitchModelPortData,
+//   optionListForSlot2: ModelsType[],
+//   optionListForSlot3: ModelsType[],
+//   optionListForSlot4: ModelsType[],
+//   selectedFamily: string,
+//   selectedModel: string) {
+//   // for (let slotNumber = 1; slotNumber <= 4; slotNumber++) {
+//   //   updateSlotPortData(
+//   //     switchFamilyModels, optionListForSlot2, optionListForSlot3, optionListForSlot4,
+//   //     slotNumber, selectedFamily, selectedModel
+//   //   )
+//   // }
+//   return Array.from({ length: 4 }).reduce((result: SwitchModelPortData, current, i) => {
+//     const slotNumber = i + 1
+//     return {
+//       ...(result),
+//       ...updateSlotPortData(
+//         switchFamilyModels, optionListForSlot2, optionListForSlot3, optionListForSlot4,
+//         slotNumber, selectedFamily, selectedModel
+//       )
+//     }
+//   }, switchFamilyModels)
+// }
 
-    const index = switchFamilyModels?.slots?.findIndex(
-      (s: { slotNumber: number }) => s.slotNumber === slotNumber) || -1
-    if (!enable && index !== -1) {
-      switchFamilyModels?.slots?.splice(index, 1)
-    }
-    return generateSlotData(switchFamilyModels, slotNumber, enable, optionList, option, selectedFamily, selectedModel)
-  }
-}
+// function updateSlotPortData (
+//   switchFamilyModels: SwitchModelPortData,
+//   optionListForSlot2: ModelsType[],
+//   optionListForSlot3: ModelsType[],
+//   optionListForSlot4: ModelsType[],
+//   slotNumber: number, selectedFamily: string, selectedModel: string) {
+//   if (slotNumber === 1) {
+//     return generateSlotData(switchFamilyModels, slotNumber, true,
+//       [], '', selectedFamily, selectedModel)
+//   } else {
+//     const moduleStatus = getModuleStatus(
+//       selectedFamily, selectedModel, optionListForSlot2, optionListForSlot3, { /// test
+//         enableSlot2: true,
+//         enableSlot3: true,
+//         selectedOptionOfSlot2: '2X40G',
+//         selectedOptionOfSlot3: '4X40G'
+//       } as ModuleStatus
+//     )
+//     const enableIndex = `enableSlot${slotNumber}` as keyof typeof moduleStatus
+//     const optionIndex = `selectedOptionOfSlot${slotNumber}` as keyof typeof moduleStatus
+//     const enable = (moduleStatus?.[enableIndex] ?? false) as boolean //form.getFieldValue(`enableSlot${slotNumber}`)
+//     let option = (moduleStatus?.[optionIndex] ?? '') as string //form.getFieldValue(`selectedOptionOfSlot${slotNumber}`)
+//     let optionList = optionListForSlot2
+//     switch (slotNumber) {
+//       case 3:
+//         optionList = optionListForSlot3
+//         break
+//       case 4:
+//         optionList = optionListForSlot4
+//         break
+//     }
+//     if (!enable) {
+//       option = ''
+//     }
+//     else if (enable && !option) {
+//       option = optionList[0] ? optionList[0].value : option
+//     }
 
-function generatePortData (totalNumber: string) {
-  let ports = []
-  for (let i = 1; i <= Number(totalNumber); i++) {
-    let port = { portNumber: i, portTagged: '' }
-    ports.push(port)
-  }
-  return ports
-}
+//     const index = switchFamilyModels?.slots?.findIndex(
+//       (s: { slotNumber: number }) => s.slotNumber === slotNumber) || -1
+//     if (!enable && index !== -1) {
+//       switchFamilyModels?.slots?.splice(index, 1)
+//     }
+//     return generateSlotData(
+//       switchFamilyModels, slotNumber, enable,
+//       optionList, option, selectedFamily, selectedModel
+//     )
+//   }
+// }
 
-function generateSlotData (
-  switchFamilyModels: SwitchModelPortData,
-  slotNumber: number, slotEnable: boolean, slotOptions: ModelsType[],
-  slotOption: string, selectedFamily: string, selectedModel: string) {
+// function generatePortData (totalNumber: string) {
+//   let ports = []
+//   for (let i = 1; i <= Number(totalNumber); i++) {
+//     let port = { portNumber: i, portTagged: '' }
+//     ports.push(port)
+//   }
+//   return ports
+// }
 
-  if (slotEnable) {
-    let totalPortNumber: string = '0'
-    let slotPortInfo: string = ''
+// function generateSlotData (
+//   switchFamilyModels: SwitchModelPortData,
+//   slotNumber: number, slotEnable: boolean, slotOptions: ModelsType[],
+//   slotOption: string, selectedFamily: string, selectedModel: string) {
 
-    if (slotOptions.length > 1) {
-      if (slotOption === '' || slotOption === undefined) {
-        slotOption = slotOptions[0].value
-      }
-      slotPortInfo = slotOption
-      totalPortNumber = slotPortInfo.split('X', 1)[0]
-    }
-    if ((slotOptions.length === 1 || totalPortNumber === '0') &&
-    selectedFamily !== '' && selectedModel !== '') {
-      const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
-      const familyList = ICX_MODELS_MODULES[familyIndex]
-      const modelIndex = selectedModel as keyof typeof familyList
-      slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
-      totalPortNumber = slotPortInfo.split('X')[0]
-    }
+//   if (slotEnable) {
+//     let totalPortNumber: string = '0'
+//     let slotPortInfo: string = ''
 
-    const slotData = {
-      slotNumber: slotNumber,
-      enable: slotEnable,
-      option: slotOption,
-      slotPortInfo: slotPortInfo,
-      portStatus: generatePortData(totalPortNumber)
-    }
+//     if (slotOptions.length > 1) {
+//       if (slotOption === '' || slotOption === undefined) {
+//         slotOption = slotOptions[0].value
+//       }
+//       slotPortInfo = slotOption
+//       totalPortNumber = slotPortInfo.split('X', 1)[0]
+//     }
+//     if ((slotOptions.length === 1 || totalPortNumber === '0') &&
+//     selectedFamily !== '' && selectedModel !== '') {
+//       const familyIndex = selectedFamily as keyof typeof ICX_MODELS_MODULES
+//       const familyList = ICX_MODELS_MODULES[familyIndex]
+//       const modelIndex = selectedModel as keyof typeof familyList
+//       slotPortInfo = slotOption || familyList[modelIndex][slotNumber - 1][0]
+//       totalPortNumber = slotPortInfo.split('X')[0]
+//     }
 
-    const slotIndex = switchFamilyModels.slots?.findIndex(
-      (s: { slotNumber: number }) => s.slotNumber === slotNumber)
+//     const slotData = {
+//       slotNumber: slotNumber,
+//       enable: slotEnable,
+//       option: slotOption,
+//       slotPortInfo: slotPortInfo,
+//       portStatus: generatePortData(totalPortNumber)
+//     }
 
-    const tmpModelPortData = { ...switchFamilyModels }
-    if (slotIndex === -1) {
-      tmpModelPortData.slots.push(slotData)
-    } else {
-      if(switchFamilyModels.slots){
-        tmpModelPortData.slots[slotIndex] = slotData
-      }
-    }
-    tmpModelPortData.slots = tmpModelPortData.slots.sort(
-      function (a: { slotNumber: number }, b: { slotNumber: number }) {
-        return a.slotNumber > b.slotNumber ? 1 : -1
-      })
-    tmpModelPortData.model = selectedFamily + '-' + selectedModel
+//     const slotIndex = switchFamilyModels.slots?.findIndex(
+//       (s: { slotNumber: number }) => s.slotNumber === slotNumber)
 
-    return tmpModelPortData
-    ///setSwitchFamilyModels(tmpModelPortData)
+//     const tmpModelPortData = { ...switchFamilyModels }
+//     if (slotIndex === -1) {
+//       tmpModelPortData.slots.push(slotData)
+//     } else {
+//       if(switchFamilyModels.slots){
+//         tmpModelPortData.slots[slotIndex] = slotData
+//       }
+//     }
+//     tmpModelPortData.slots = tmpModelPortData.slots.sort(
+//       function (a: { slotNumber: number }, b: { slotNumber: number }) {
+//         return a.slotNumber > b.slotNumber ? 1 : -1
+//       })
+//     tmpModelPortData.model = selectedFamily + '-' + selectedModel
 
-    //form.setFieldValue('switchFamilyModels', tmpModelPortData)
-  }
-  return
-}
+//     return tmpModelPortData
+//     ///setSwitchFamilyModels(tmpModelPortData)
+//     //form.setFieldValue('switchFamilyModels', tmpModelPortData)
+//   }
+//   return
+// }
