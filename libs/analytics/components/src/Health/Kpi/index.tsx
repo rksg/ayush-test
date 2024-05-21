@@ -36,6 +36,10 @@ export const defaultThreshold: KpiThresholdType = {
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
+  switchMemoryUtilization: kpiConfig.switchMemoryUtilization.histogram.initialThreshold,
+  switchCpuUtilization: kpiConfig.switchCpuUtilization.histogram.initialThreshold,
+  switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
+  switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
 
@@ -77,7 +81,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   </Loader>
 }
 
-function KpiSection (props: {
+export function KpiSection (props: {
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean

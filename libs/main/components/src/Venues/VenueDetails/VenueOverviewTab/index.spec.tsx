@@ -50,10 +50,9 @@ describe('VenueOverviewTab', () => {
       rest.get(url, (_, res, ctx) => res(ctx.json(venueDetailHeaderData))),
       rest.get(
         WifiUrlsInfo.getVenueTripleBandRadioSettings.url,
-        (_, res, ctx) => res(ctx.json({ enabled: false }))
-      ),
+        (_, res, ctx) => res(ctx.json({ enabled: true }))),
       rest.get(
-        WifiUrlsInfo.getDefaultRadioCustomization.url.split('?')[0],
+        WifiUrlsInfo.getVenueRadioCustomization.url,
         (_, res, ctx) => res(ctx.json({}))
       )
     )

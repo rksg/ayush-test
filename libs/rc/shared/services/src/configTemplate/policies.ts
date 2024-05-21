@@ -14,7 +14,6 @@ import {
   ApplicationPolicy, TableResult,
   VLANPoolPolicyType,
   VLANPoolVenues,
-  VlanPool,
   SyslogContextType,
   SyslogPolicyDetailType,
   VenueSyslogPolicyType,
@@ -24,7 +23,8 @@ import {
   EnhancedRoguePolicyType,
   RogueAPDetectionTempType,
   VenueRoguePolicyType, VenueRogueAp,
-  VenueSyslogSettingType
+  VenueSyslogSettingType,
+  VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -228,8 +228,9 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.delAppAclPolicy),
       invalidatesTags: [{ type: 'AccessControlTemplate', id: 'LIST' }]
     }),
-    getVlanPoolPolicyTemplateList: build.query<VlanPool[], RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPools),
+    // eslint-disable-next-line max-len
+    getEnhancedVlanPoolPolicyTemplateList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedVlanPools),
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -238,7 +239,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
             api.dispatch(policiesConfigTemplateApi.util.invalidateTags([{ type: 'VlanPoolTemplate', id: 'LIST' }]))
           })
         })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getVlanPoolPolicyTemplateDetail: build.query<VLANPoolPolicyType, RequestPayload>({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVlanPoolPolicy),
@@ -390,7 +392,7 @@ export const {
   useGetAppPolicyTemplateListQuery,
   useUpdateAppPolicyTemplateMutation,
   useDelAppPolicyTemplateMutation,
-  useGetVlanPoolPolicyTemplateListQuery,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useGetVlanPoolPolicyTemplateDetailQuery,
   useAddVlanPoolPolicyTemplateMutation,
   useUpdateVlanPoolPolicyTemplateMutation,
