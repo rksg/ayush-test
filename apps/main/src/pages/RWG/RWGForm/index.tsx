@@ -6,6 +6,7 @@ import { useIntl }                              from 'react-intl'
 
 import {
   Button,
+  cssStr,
   Loader,
   PageHeader,
   PasswordInput,
@@ -25,7 +26,8 @@ import {
   whitespaceOnlyRegExp,
   RWG,
   excludeSpaceRegExp,
-  domainNameRegExp
+  domainNameRegExp,
+  getRwgStatus
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -121,9 +123,8 @@ export function RWGForm () {
           isEditMode &&
           <span>
             <Badge
-              color={`var(${data?.status === 'Operational'
-                ? '--acx-semantics-green-50'
-                : '--acx-neutrals-50'})`}
+              color={data?.status ? cssStr(getRwgStatus(data.status).color)
+                : cssStr('--acx-neutrals-50')}
             />
           </span>
         }

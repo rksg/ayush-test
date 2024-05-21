@@ -30,11 +30,11 @@ const EpdgTable = (props: { edit?: boolean }) => {
 
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetWifiCallingServiceQuery,
-    useGetWifiCallingServiceTemplateQuery,
-    !useParams().hasOwnProperty('serviceId')
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetWifiCallingServiceQuery,
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
   const [tableData, setTableData] = useState(state.ePDG as EPDG[])
 

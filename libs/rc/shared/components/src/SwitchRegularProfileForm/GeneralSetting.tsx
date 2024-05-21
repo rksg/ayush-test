@@ -26,9 +26,10 @@ export function GeneralSetting () {
   const form = Form.useFormInstance()
   const { currentData } = useContext(ConfigurationProfileFormContext)
   // eslint-disable-next-line max-len
-  const [validateUniqueProfileName] = useConfigTemplateLazyQueryFnSwitcher<TableResult<SwitchProfile>>(
-    useLazyValidateUniqueProfileNameQuery, useLazyValidateUniqueSwitchProfileTemplateNameQuery
-  )
+  const [validateUniqueProfileName] = useConfigTemplateLazyQueryFnSwitcher<TableResult<SwitchProfile>>({
+    useLazyQueryFn: useLazyValidateUniqueProfileNameQuery,
+    useLazyTemplateQueryFn: useLazyValidateUniqueSwitchProfileTemplateNameQuery
+  })
   const nameValidator = async (value: string) => {
     const payload = { ...profileListPayload, searchString: value }
     const list = (await validateUniqueProfileName({ params, payload }, true).unwrap()).data

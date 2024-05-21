@@ -165,9 +165,10 @@ function DpskServiceSelector () {
   const [ dpskOptions, setDpskOptions ] = useState<DefaultOptionType[]>([])
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
   const [dpskModalVisible, setDpskModalVisible] = useState(false)
-  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
-    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery
-  )
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
+    useQueryFn: useGetDpskListQuery,
+    useTemplateQueryFn: useGetEnhancedDpskTemplateListQuery
+  })
 
   const dpskServiceProfileId = useWatch('dpskServiceProfileId')
 

@@ -123,7 +123,6 @@ export function SingleRadioSettings (props:{
   let allowIndoorForOutdoor = false
   let hasIndoorForOutdoor = false
 
-  const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
   const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
@@ -135,8 +134,7 @@ export function SingleRadioSettings (props:{
     hasIndoorForOutdoor = !isEmpty(indoorForOutdoorAp)
 
     allowIndoorForOutdoor = (radioType === ApRadioTypeEnum.Radio5G
-                             && hasIndoorForOutdoor === true
-                             && allowIndoorForOutdoorFeatureFlag)
+                             && hasIndoorForOutdoor === true)
 
   } else {// context === 'ap'
     //bandwidthList = Object.keys(supportChannels)

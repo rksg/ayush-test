@@ -32,12 +32,11 @@ export function WifiCallingSettingModal () {
   const form = Form.useFormInstance()
   const { $t } = useIntl()
   const { wifiCallingSettingList, setWifiCallingSettingList }= useContext(WifiCallingSettingContext)
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetEnhancedWifiCallingServiceListQuery,
-    useGetEnhancedWifiCallingServiceTemplateListQuery,
-    false,
-    defaultPayload
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEnhancedWifiCallingServiceListQuery,
+    useTemplateQueryFn: useGetEnhancedWifiCallingServiceTemplateListQuery,
+    payload: defaultPayload
+  })
 
   const [visible, setVisible] = useState(false)
   const [targetKeys, setTargetKeys] = useState<string[]>(
