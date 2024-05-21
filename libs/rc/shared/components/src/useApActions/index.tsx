@@ -211,8 +211,7 @@ const hasInvalidAp = (selectedRows: AP[]) => {
 }
 
 const hasDhcpAps = (dhcpAps: DhcpAp) => {
-  let res: DhcpApInfo[] = []
-  res = Array.isArray(dhcpAps) ? dhcpAps as DhcpApInfo[] : []
+  const res: DhcpApInfo[] = Array.isArray(dhcpAps)? dhcpAps : []
 
   const dhcpApMap = res.filter(dhcpAp =>
     dhcpAp.venueDhcpEnabled === true &&
