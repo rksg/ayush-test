@@ -54,13 +54,15 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     venues: [] as RogueVenue[]
   })
 
-  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useAddRoguePolicyMutation, useAddRoguePolicyTemplateMutation
-  )
+  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRoguePolicyMutation,
+    useTemplateMutationFn: useAddRoguePolicyTemplateMutation
+  })
 
-  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateRoguePolicyMutation, useUpdateRoguePolicyTemplateMutation
-  )
+  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateRoguePolicyMutation,
+    useTemplateMutationFn: useUpdateRoguePolicyTemplateMutation
+  })
 
   const transformPayload = (state: RogueAPDetectionContextType, edit: boolean) => {
     return {

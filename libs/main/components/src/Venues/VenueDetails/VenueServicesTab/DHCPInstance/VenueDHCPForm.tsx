@@ -53,12 +53,14 @@ const VenueDHCPForm = (props: {
   // eslint-disable-next-line max-len
   const venueServicesTabPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/venue-details/services`)
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
-  )
-  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
-    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
-  )
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+    useQueryFn: useVenueDHCPProfileQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery
+  })
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery
+  })
   const { data: apList } = useApListQuery({
     params,
     payload: {

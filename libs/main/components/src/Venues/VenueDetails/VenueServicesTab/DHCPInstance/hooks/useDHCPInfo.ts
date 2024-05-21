@@ -13,22 +13,22 @@ export default function useDHCPInfo () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
-  )
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+    useQueryFn: useVenueDHCPProfileQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery
+  })
 
   // eslint-disable-next-line max-len
   const { data: apList } = useApListQuery({ params, payload: defaultApPayload }, { skip: isTemplate })
 
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery,
-    useGetDhcpTemplateQuery,
-    !venueDHCPProfile?.serviceProfileId,
-    undefined,
-    { serviceId: venueDHCPProfile?.serviceProfileId }
-  )
+  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    skip: !venueDHCPProfile?.serviceProfileId,
+    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId }
+  })
 
   let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
   if(venueDHCPProfile?.dhcpServiceAps){

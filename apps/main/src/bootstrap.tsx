@@ -143,13 +143,13 @@ function PreferredLangConfigProvider (props: React.PropsWithChildren) {
 function DataGuardLoader (props: React.PropsWithChildren) {
   const locale = useLocaleContext()
   const userProfile = useUserProfileContext()
-  const isCustomeRole = userProfile.abacEnabled && userProfile.isCustomRole
+  const abacEnabled = userProfile.abacEnabled
 
   return <Loader
     fallback={<SuspenseBoundary.DefaultFallback absoluteCenter />}
     states={[{ isLoading:
         !Boolean(locale.messages) ||
-        (isCustomeRole ? false : !Boolean(userProfile.allowedOperations.length)) ||
+        (abacEnabled ? false : !Boolean(userProfile.allowedOperations.length)) ||
         !Boolean(userProfile.accountTier)
     }]}
     children={props.children}
