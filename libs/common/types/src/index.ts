@@ -64,3 +64,5 @@ export enum EdgeScopes {
   UPDATE = 'edge-u',
   DELETE = 'edge-d'
 }
+
+export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes)[]

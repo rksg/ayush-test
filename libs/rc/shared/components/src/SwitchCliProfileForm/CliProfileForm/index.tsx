@@ -53,18 +53,20 @@ export function CliProfileForm () {
   const editMode = params.action === 'edit'
 
   const [form] = Form.useForm()
-  const [addSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher(
-    useAddSwitchConfigProfileMutation, useAddSwitchConfigProfileTemplateMutation
-  )
-  const [updateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher(
-    useUpdateSwitchConfigProfileMutation, useUpdateSwitchConfigProfileTemplateMutation
-  )
-  const { data: cliProfile, isLoading: isProfileLoading }
-    = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
-      useGetSwitchConfigProfileQuery,
-      useGetSwitchConfigProfileTemplateQuery,
-      !editMode
-    )
+  const [addSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddSwitchConfigProfileMutation,
+    useTemplateMutationFn: useAddSwitchConfigProfileTemplateMutation
+  })
+  const [updateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateSwitchConfigProfileMutation,
+    useTemplateMutationFn: useUpdateSwitchConfigProfileTemplateMutation
+  })
+  // eslint-disable-next-line max-len
+  const { data: cliProfile, isLoading: isProfileLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
+    useQueryFn: useGetSwitchConfigProfileQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
+    skip: !editMode
+  })
 
   // Config Template related states
   const breadcrumb = useConfigTemplateBreadcrumb([

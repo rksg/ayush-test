@@ -17,8 +17,6 @@ import {
   NetworkTypeEnum,
   TunnelTypeEnum
 } from '@acx-ui/rc/utils'
-import { EdgeScopes }    from '@acx-ui/types'
-import { hasPermission } from '@acx-ui/user'
 
 import { EdgeSdLanFormModelP2 } from '..'
 import { messageMappings }      from '../messageMappings'
@@ -165,11 +163,6 @@ export const TunnelScopeForm = () => {
     }
   }, [])
 
-  const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
-  const isTunnelProfileAccessible = editMode
-    ? hasEdgeUpdatePermission && hasPermission({ scopes: [EdgeScopes.DELETE] })
-    : hasEdgeUpdatePermission
-
   return (
     <>
       <Row>
@@ -180,10 +173,6 @@ export const TunnelScopeForm = () => {
       <Row>
         <Col span={24}>
           <TunnelProfileFormItem
-            disabled={!isTunnelProfileAccessible}
-            tooltip={isTunnelProfileAccessible
-              ? undefined
-              : $t({ defaultMessage: 'No permission on this' })}
             options={dcTunnelProfileOptions}
             isLoading={isTunnelOptionsLoading}
             onChange={onTunnelChange}
@@ -194,10 +183,6 @@ export const TunnelScopeForm = () => {
         <Row>
           <Col span={24}>
             <DmzTunnelProfileFormItem
-              disabled={!isTunnelProfileAccessible}
-              tooltip={isTunnelProfileAccessible
-                ? undefined
-                : $t({ defaultMessage: 'No permission on this' })}
               options={dmzTunnelProfileOptions}
               isLoading={isTunnelOptionsLoading}
               onChange={onDmzTunnelChange}
