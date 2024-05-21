@@ -160,15 +160,15 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const [loading, setLoading] = useState(false)
 
-  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>(
-    useGetVLANPoolPolicyViewModelListQuery,
-    useGetEnhancedVlanPoolPolicyTemplateListQuery,
-    false,
-    {
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    skip: false,
+    payload: {
       fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  )
+  })
 
   useEffect(() => {
     if (instanceListResult) {
