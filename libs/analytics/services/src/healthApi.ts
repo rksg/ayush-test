@@ -127,9 +127,9 @@ type KpisHavingThreshold = keyof KpiThresholdType
 
 export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
-const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => { // we do not want to filter switches to always display poe info
-  const { filter: { ssids, networkNodes } } = getFilterPayload(payload)
-  return { filter: { ssids, networkNodes } }
+const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => { // NEEDTOCHECK: we do not want to filter switches to always display poe info
+  const { filter: { ssids, networkNodes, switchNodes } } = getFilterPayload(payload)
+  return { filter: { ssids, networkNodes, switchNodes } }
 }
 
 export const healthApi = dataApi.injectEndpoints({
