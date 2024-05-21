@@ -40,7 +40,8 @@ import {
   MspEntitlement,
   downloadFile,
   Venue,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  LicenseUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -229,8 +230,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     mspEntitlementList: build.query<MspEntitlement[], RequestPayload>({
       query: ({ params }) => {
-        const mspEntitlementListReq =
-          createHttpRequest(MspUrlsInfo.getMspEntitlement, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const mspEntitlementListReq = createHttpRequest(rbacApiEnabled
+          ? LicenseUrlsInfo.getMspEntitlement : MspUrlsInfo.getMspEntitlement, params)
         return {
           ...mspEntitlementListReq
         }
@@ -249,8 +251,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     mspEntitlementSummary: build.query<MspEntitlementSummary[], RequestPayload>({
       query: ({ params }) => {
-        const mspEntitlementSummaryReq =
-          createHttpRequest(MspUrlsInfo.getMspEntitlementSummary, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const mspEntitlementSummaryReq = createHttpRequest(rbacApiEnabled
+          ? LicenseUrlsInfo.getMspEntitlementSummary : MspUrlsInfo.getMspEntitlementSummary, params)
         return {
           ...mspEntitlementSummaryReq
         }
@@ -423,8 +426,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
       query: ({ params }) => {
-        const mspAssignmentHistoryReq =
-          createHttpRequest(MspUrlsInfo.getMspAssignmentHistory, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const mspAssignmentHistoryReq = createHttpRequest(rbacApiEnabled
+          ? LicenseUrlsInfo.getMspAssignmentHistory : MspUrlsInfo.getMspAssignmentHistory, params)
         return {
           ...mspAssignmentHistoryReq
         }
@@ -730,7 +734,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     addMspAssignment: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.addMspAssignment, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? LicenseUrlsInfo.addMspAssignment : MspUrlsInfo.addMspAssignment, params)
         return {
           ...req,
           body: payload
@@ -740,7 +746,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     updateMspAssignment: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspAssignment, params, {
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? LicenseUrlsInfo.updateMspAssignment : MspUrlsInfo.updateMspAssignment, params, {
           ...ignoreErrorModal
         })
         return {
