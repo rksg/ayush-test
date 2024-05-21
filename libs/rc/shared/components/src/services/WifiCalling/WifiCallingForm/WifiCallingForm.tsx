@@ -55,10 +55,10 @@ export const WifiCallingForm = () => {
     epdgs
   })
 
-  const [ createWifiCallingService ] = useConfigTemplateMutationFnSwitcher(
-    useCreateWifiCallingServiceMutation,
-    useCreateWifiCallingServiceTemplateMutation
-  )
+  const [ createWifiCallingService ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useCreateWifiCallingServiceMutation,
+    useTemplateMutationFn: useCreateWifiCallingServiceTemplateMutation
+  })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
   const pageTitle = useServicePageHeaderTitle(false, ServiceType.WIFI_CALLING)

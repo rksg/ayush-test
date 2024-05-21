@@ -52,17 +52,16 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   } = useContext(SyslogContext)
 
   const form = Form.useFormInstance()
-  const { data: policyData } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>(
-    useGetSyslogPolicyQuery,
-    useGetSyslogPolicyTemplateQuery,
-    !edit
-  )
-  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>(
-    useSyslogPolicyListQuery,
-    useGetSyslogPolicyTemplateListQuery,
-    false,
-    { page: 1, pageSize: 10000 }
-  )
+  const { data: policyData } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
+    useQueryFn: useGetSyslogPolicyQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
+    skip: !edit
+  })
+  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
+    useQueryFn: useSyslogPolicyListQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
+    payload: { page: 1, pageSize: 10000 }
+  })
 
   useEffect(() => {
     if (!edit || !policyData) return

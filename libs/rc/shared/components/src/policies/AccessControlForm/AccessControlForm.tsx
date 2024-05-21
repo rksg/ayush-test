@@ -141,11 +141,15 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
-  const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher(
-    useAddAccessControlProfileMutation, useAddAccessControlProfileTemplateMutation)
+  const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddAccessControlProfileMutation,
+    useTemplateMutationFn: useAddAccessControlProfileTemplateMutation
+  })
 
-  const [ updateAclProfile ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateAccessControlProfileMutation, useUpdateAccessControlProfileTemplateMutation)
+  const [ updateAclProfile ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAccessControlProfileMutation,
+    useTemplateMutationFn: useUpdateAccessControlProfileTemplateMutation
+  })
 
   const handleAccessControlPolicy = async (editMode: boolean) => {
     try {
