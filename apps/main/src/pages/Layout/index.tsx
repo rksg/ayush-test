@@ -126,14 +126,17 @@ function Layout () {
   useEffect(() => {
     if(isReportsAdmin){
       const currentPath = location.pathname
-      if(!currentPath.includes('/dataStudio') && !currentPath.includes('/reports')) {
+
+      if(!currentPath.includes('/dataStudio') &&
+         !currentPath.includes('/reports') &&
+         params['*'] !== 'userprofile') {
         navigate({
           ...reportsAdminBasePath,
           pathname: `${reportsAdminBasePath.pathname}`
         })
       }
     }
-  }, [isReportsAdmin, location.pathname])
+  }, [isReportsAdmin, location.pathname, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
