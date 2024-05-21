@@ -54,7 +54,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     {
       type: 'yellow',
       values: [{
-        title: defineMessage({ defaultMessage: 'Ports exp. Storm' }),
+        title: defineMessage({ defaultMessage: 'Ports Experiencing Storm' }),
         value: !isNil(summaryData?.stormPortCount) &&
         summaryData?.portCount
           ? formatter('percentFormat')(summaryData?.stormPortCount / summaryData?.portCount)

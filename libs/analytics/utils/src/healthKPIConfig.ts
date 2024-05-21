@@ -631,8 +631,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
-      minGranularity: 'PT5M',
-      tooltip: defineMessage({ defaultMessage: 'Percentage of Ports' })
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
