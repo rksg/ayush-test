@@ -367,21 +367,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
+  */
   getApLed: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/ledSettings',
+    // url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
   updateApLed: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/ledSettings',
+    // url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
-  resetApLed: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/ledSettings',
-    newApi: true
-  },
+  /*
   getApBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
