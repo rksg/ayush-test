@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { identity, flow }                   from 'lodash'
-import moment                               from 'moment-timezone'
-import { MessageDescriptor, defineMessage } from 'react-intl'
+import { identity, flow } from 'lodash'
+import moment             from 'moment-timezone'
+import { defineMessage }  from 'react-intl'
 
 import { get }       from '@acx-ui/config'
 import { formatter } from '@acx-ui/formatter'
@@ -13,12 +13,11 @@ const pillSuffix = {
   meetGoal: defineMessage({ defaultMessage: 'meets goal' })
 }
 
-const createBarChartConfig = (apiMetric: string, title: MessageDescriptor = {}) => ({
+const createBarChartConfig = (apiMetric: string) => ({
   apiMetric,
   shortXFormat: (date: string) => moment(date).format('DD'),
   longYFormat: (val: number) => formatter('percentFormat')(val / 100),
-  shortYFormat: (val: number) => formatter('percentFormat')(val / 100),
-  title
+  shortYFormat: (val: number) => formatter('percentFormat')(val / 100)
 })
 
 const divideBy1000 = (ms: number) => ms / 1000
@@ -635,8 +634,7 @@ export const kpiConfig = {
       minGranularity: 'PT5M',
       tooltip: defineMessage({ defaultMessage: 'Percentage of Ports' })
     },
-    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount',
-      defineMessage({ defaultMessage: 'Anomaly Type' })),
+    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
       hideProgressBar: true,
       description: '',
