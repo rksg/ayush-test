@@ -6,6 +6,7 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                          from '@acx-ui/feature-toggle'
 import { useGetApBssColoringQuery, useLazyGetVenueBssColoringQuery, useLazyGetVenueQuery, useUpdateApBssColoringMutation } from '@acx-ui/rc/services'
 import { ApBssColoringSettings, VenueBssColoring, VenueExtended }                                                          from '@acx-ui/rc/utils'
 
@@ -18,6 +19,7 @@ export function BssColoring () {
 
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -28,10 +30,16 @@ export function BssColoring () {
 
 
   const { apData: apDetails } = useContext(ApDataContext)
+  const venueId = apDetails?.venueId
 
   const formRef = useRef<StepsFormLegacyInstance<ApBssColoringSettings>>()
 
-  const getApBssColoring = useGetApBssColoringQuery({ params: { serialNumber } })
+  const getApBssColoring = useGetApBssColoringQuery(
+    isUseRbacApi ?
+      { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
+      :
+      { params: { serialNumber }, enableRbac: isUseRbacApi }
+  )
 
   const [updateApBssColoring, { isLoading: isUpdatingBssColoring }]
     = useUpdateApBssColoringMutation()
@@ -56,7 +64,7 @@ export function BssColoring () {
         const apVenue = (await getVenue({
           params: { tenantId, venueId } }, true).unwrap())
         const venueBssColoringData = (await getVenueBssColoring({
-          params: { tenantId, venueId } }, true).unwrap())
+          params: { tenantId, venueId }, enableRbac: isUseRbacApi }, true).unwrap())
 
         setVenue(apVenue)
         setVenueBssColoring(venueBssColoringData)
@@ -112,10 +120,12 @@ export function BssColoring () {
         ...values,
         useVenueSettings: isUseVenue
       }
-      await updateApBssColoring({
-        params: { serialNumber },
-        payload
-      }).unwrap()
+      await updateApBssColoring(
+        isUseRbacApi ?
+          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+          :
+          { params: { serialNumber }, payload, enableRbac: isUseRbacApi }
+      ).unwrap()
 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

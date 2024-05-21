@@ -411,16 +411,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
+  */
   getApBssColoring: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    // url: '/venues/aps/:serialNumber/bssColoringSettings',
+    url: '/venues/:venueId/aps/:serialNumber/bssColoringSettings',
     newApi: true
   },
   updateApBssColoring: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    // url: '/venues/aps/:serialNumber/bssColoringSettings',
+    url: '/venues/:venueId/aps/:serialNumber/bssColoringSettings',
     newApi: true
   },
+  /*
   getApCustomization: {
     method: 'get',
     url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
