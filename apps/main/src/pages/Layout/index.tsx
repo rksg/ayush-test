@@ -129,7 +129,7 @@ function Layout () {
         pathname: `${reportsAdminBasePath.pathname}`
       })
     }
-  }, [isReportsAdmin])
+  }, [isReportsAdmin, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
