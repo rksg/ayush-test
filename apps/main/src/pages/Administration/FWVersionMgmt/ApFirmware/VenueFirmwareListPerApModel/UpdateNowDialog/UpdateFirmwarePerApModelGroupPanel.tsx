@@ -9,8 +9,8 @@ import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 import { FirmwareVenuePerApModel }           from '@acx-ui/rc/utils'
 import { getIntl }                           from '@acx-ui/utils'
 
-import { compareVersions, getVersionLabel }                from '../../../FirmwareUtils'
-import * as UI                            from '../../VenueFirmwareList/styledComponents'
+import { compareVersions, getVersionLabel } from '../../../FirmwareUtils'
+import * as UI                              from '../../VenueFirmwareList/styledComponents'
 import {
   ApFirmwareUpdateGroupType,
   convertApModelFirmwaresToUpdateGroups,
