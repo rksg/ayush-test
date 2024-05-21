@@ -19,7 +19,7 @@ import {
   SwitchPortStatus
 } from '@acx-ui/rc/utils'
 import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }        from '@acx-ui/types'
+import { RequestPayload, SwitchScopes }        from '@acx-ui/types'
 import { hasPermission }         from '@acx-ui/user'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
@@ -197,7 +197,7 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled || !hasPermission()) { // FF
+        if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) { // FF
           return row['switchPort']
         }
 
