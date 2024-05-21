@@ -28,7 +28,7 @@ import { MSPUtils }                                                             
 import { CloudMessageBanner }                                                              from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery }                                                        from '@acx-ui/rc/services'
 import { useTableQuery, dpskAdminRoutePathKeeper }                                         from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }                from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink, useLocation }   from '@acx-ui/react-router-dom'
 import { useParams }                                                                       from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                                 from '@acx-ui/user'
@@ -43,6 +43,7 @@ function Layout () {
   const navigate = useNavigate()
   const tenantId = useTenantId()
   const params = useParams()
+  const location = useLocation()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
@@ -124,12 +125,15 @@ function Layout () {
 
   useEffect(() => {
     if(isReportsAdmin){
-      navigate({
-        ...reportsAdminBasePath,
-        pathname: `${reportsAdminBasePath.pathname}`
-      })
+      const currentPath = location.pathname
+      if(!currentPath.includes('/dataStudio') && !currentPath.includes('/reports')) {
+        navigate({
+          ...reportsAdminBasePath,
+          pathname: `${reportsAdminBasePath.pathname}`
+        })
+      }
     }
-  }, [isReportsAdmin, params['*']])
+  }, [isReportsAdmin, location.pathname])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
