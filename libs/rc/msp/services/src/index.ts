@@ -368,8 +368,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspProfile: build.query<MspProfile, RequestPayload>({
       query: ({ params }) => {
-        const req =
-          createHttpRequest(MspUrlsInfo.getMspProfile, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.getMspProfile : MspUrlsInfo.getMspProfile, params)
         return {
           ...req
         }
@@ -389,8 +390,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspEcProfile: build.query<MspEcProfile, RequestPayload>({
       query: ({ params }) => {
-        const req =
-          createHttpRequest(MspUrlsInfo.getMspEcProfile, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? MspRbacUrlsInfo.getMspEcProfile : MspUrlsInfo.getMspEcProfile, params)
         return {
           ...req
         }

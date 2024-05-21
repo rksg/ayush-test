@@ -121,15 +121,14 @@ export const MspUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspProfile: {
     method: 'get',
-    url: '/brandings',
-    oldUrl: '/mspLabels',
+    url: '/mspLabels',
+    oldUrl: '/api/mspservice/tenant/:tenantId/msplabel',
     newApi: true
   },
   getMspEcProfile: {
     method: 'get',
-    // url: '/tenants/:tenantId',
     url: '/mspCustomers/:tenantId',
-    oldUrl: '/mspCustomers/:tenantId',
+    oldUrl: '/api/mspservice/tenant/:tenantId',
     newApi: true
   },
   getMspEcAdmin: {
