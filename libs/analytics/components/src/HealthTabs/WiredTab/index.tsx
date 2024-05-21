@@ -5,7 +5,8 @@ import { Alert, GridCol, GridRow, Tabs }                 from '@acx-ui/component
 import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
-import * as UI from '../../Health/styledComponents'
+import { HealthPageContextProvider } from '../../Health/HealthPageContext'
+import * as UI                       from '../../Health/styledComponents'
 
 import Kpis             from './Kpi'
 import { SummaryBoxes } from './SummaryBoxes'
@@ -37,21 +38,23 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
           filters={healthPageFilters}
         />
       </GridCol>
-      <GridCol col={{ span: 16 }}>
-        <UI.TabTitle activeKey={selectedTab} onChange={onTabChange}>
-          {categoryTabs.map(({ value, label }) => (
-            <Tabs.TabPane tab={$t(label)} key={value} />
-          ))}
-        </UI.TabTitle>
-      </GridCol>
-      <GridCol col={{ span: 8 }}>
-        <UI.ThresholdTitle>
-          {$t({ defaultMessage: 'Customized SLA Threshold' })}
-        </UI.ThresholdTitle>
-      </GridCol>
-      <GridCol col={{ span: 24 }}>
-        <Kpis tab={selectedTab as CategoryTab} filters={healthPageFilters}/>
-      </GridCol>
+      <HealthPageContextProvider>
+        <GridCol col={{ span: 16 }}>
+          <UI.TabTitle activeKey={selectedTab} onChange={onTabChange}>
+            {categoryTabs.map(({ value, label }) => (
+              <Tabs.TabPane tab={$t(label)} key={value} />
+            ))}
+          </UI.TabTitle>
+        </GridCol>
+        <GridCol col={{ span: 8 }}>
+          <UI.ThresholdTitle>
+            {$t({ defaultMessage: 'Customized SLA Threshold' })}
+          </UI.ThresholdTitle>
+        </GridCol>
+        <GridCol col={{ span: 24 }}>
+          <Kpis tab={selectedTab as CategoryTab} filters={healthPageFilters}/>
+        </GridCol>
+      </HealthPageContextProvider>
     </GridRow>
   )
 }

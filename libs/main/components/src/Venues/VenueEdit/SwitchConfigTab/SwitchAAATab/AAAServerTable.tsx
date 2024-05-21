@@ -180,13 +180,15 @@ export const AAAServerTable = (props: {
   const [deleteButtonTooltip, setDeleteButtonTooltip] = useState('')
   const { tenantId, venueId } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const [ deleteAAAServer, { isLoading: isDeleting } ] = useConfigTemplateMutationFnSwitcher(
-    useDeleteAAAServerMutation, useDeleteVenueTemplateSwitchAAAServerMutation
-  )
+  const [ deleteAAAServer, { isLoading: isDeleting } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteAAAServerMutation,
+    useTemplateMutationFn: useDeleteVenueTemplateSwitchAAAServerMutation
+  })
   // eslint-disable-next-line max-len
-  const [ bulkDeleteAAAServer, { isLoading: isBulkDeleting } ] = useConfigTemplateMutationFnSwitcher(
-    useBulkDeleteAAAServerMutation, useBulkDeleteVenueTemplateSwitchAAAServerMutation
-  )
+  const [ bulkDeleteAAAServer, { isLoading: isBulkDeleting } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useBulkDeleteAAAServerMutation,
+    useTemplateMutationFn: useBulkDeleteVenueTemplateSwitchAAAServerMutation
+  })
   const { type, tableQuery, aaaSetting, cliApplied } = props
 
   const handleAddAction = () => {

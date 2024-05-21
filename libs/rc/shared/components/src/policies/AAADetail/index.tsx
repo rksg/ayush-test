@@ -56,5 +56,8 @@ export function AAAPolicyDetail () {
 }
 
 export function useGetAAAPolicyInstance () {
-  return useConfigTemplateQueryFnSwitcher(useGetAAAProfileDetailQuery, useGetAAAPolicyTemplateQuery)
+  return useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAAAProfileDetailQuery,
+    useTemplateQueryFn: useGetAAAPolicyTemplateQuery
+  })
 }

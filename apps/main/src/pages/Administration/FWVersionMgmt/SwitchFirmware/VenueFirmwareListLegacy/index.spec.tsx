@@ -29,7 +29,12 @@ import {
 import { VenueFirmwareListLegacy } from '.'
 
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
-
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
