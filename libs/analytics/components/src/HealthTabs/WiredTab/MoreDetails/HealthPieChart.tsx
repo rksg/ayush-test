@@ -1,15 +1,13 @@
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { useIntl, FormattedMessage } from 'react-intl'
+import AutoSizer                     from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
 import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
-import {
-  PieChartResult,
-  usePieChartDataQuery,
-  TopNByCPUUsageResult,
-  TopNByDHCPFailureResult,
-  WidgetType
-} from './services'
+import { showTopResult }                                                             from './config'
+import { PieChartResult, TopNByCPUUsageResult, TopNByDHCPFailureResult, WidgetType } from './config'
+import { usePieChartDataQuery }                                                      from './services'
+import { ChartTitle }                                                                from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -19,7 +17,7 @@ type PieChartData = {
 }
 
 export function transformData (
-  type: WidgetType['type'],
+  type: WidgetType,
   data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[]
 ): PieChartData[] {
   const colors = qualitativeColorSet()
@@ -42,7 +40,7 @@ export function transformData (
   })
 }
 
-export const getPieData = (data: PieChartResult, type: WidgetType['type']) => {
+export const getPieData = (data: PieChartResult, type: WidgetType) => {
   if (!data) return []
 
   let transformedData: PieChartData[] = []
@@ -60,7 +58,8 @@ export const getPieData = (data: PieChartResult, type: WidgetType['type']) => {
 export const MoreDetailsPieChart = ({
   filters,
   queryType
-} : { filters: AnalyticsFilter, queryType: WidgetType['type'] }) => {
+} : { filters: AnalyticsFilter, queryType: WidgetType }) => {
+  const { $t } = useIntl()
   const { filter, startDate: start, endDate: end } = filters
   const payload = {
     filter,
@@ -77,25 +76,46 @@ export const MoreDetailsPieChart = ({
     })
   })
 
+  const totalCount = queryResults?.data?.length
+  const Title = <ChartTitle>
+    <FormattedMessage
+      defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
+      one {Switch}
+      other {Switches}
+    }`}
+      values={{
+        count: showTopResult($t, totalCount, 5),
+        totalCount,
+        b: (chunk) => <b>{chunk}</b>
+      }}
+    />
+  </ChartTitle>
+
   const pieData = queryResults.data
   if (!pieData || pieData.length === 0) {
-    return <NoData />
+    return <>
+      {Title}
+      <NoData />
+    </>
   }
 
   return (
     <Loader states={[queryResults]}>
-      <AutoSizer defaultHeight={150}>
-        {({ width, height }) => (
-          <DonutChart
-            data={pieData}
-            style={{ height, width, top: 20 }}
-            legend='name'
-            size={'x-large'}
-            showTotal={false}
-            showLabel
-          />
-        )}
-      </AutoSizer>
+      <div style={{ height: 260, minWidth: 430 }}>
+        {Title}
+        <AutoSizer defaultHeight={150}>
+          {({ width, height }) => (
+            <DonutChart
+              data={pieData}
+              style={{ height, width, top: 20 }}
+              legend='name'
+              size={'x-large'}
+              showTotal={false}
+              showLegend
+            />
+          )}
+        </AutoSizer>
+      </div>
     </Loader>
   )
 }

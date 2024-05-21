@@ -9,7 +9,7 @@ import type { AnalyticsFilter }                                from '@acx-ui/uti
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
 import { MoreDetailsDrawer } from '../MoreDetails'
-import { WidgetType }        from '../MoreDetails/services'
+import { WidgetType }        from '../MoreDetails/config'
 
 import { useWiredSummaryDataQuery } from './services'
 
@@ -22,9 +22,9 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
   const { data: summaryData, ...summaryQueryState } = useWiredSummaryDataQuery(payload)
 
   const [drawerVisible, setDrawerVisible] = useState(false)
-  const [widget, setWidget] = useState<WidgetType['type']>('')
+  const [widget, setWidget] = useState<WidgetType | null>(null)
 
-  const moreDetails = (widget: WidgetType['type']) => {
+  const moreDetails = (widget: WidgetType) => {
     setDrawerVisible(true)
     setWidget(widget)
   }
@@ -90,7 +90,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         <MoreDetailsDrawer
           visible={drawerVisible}
           setVisible={setDrawerVisible}
-          widget={widget}
+          widget={widget!}
           setWidget={setWidget}
           filters={filters}
         />

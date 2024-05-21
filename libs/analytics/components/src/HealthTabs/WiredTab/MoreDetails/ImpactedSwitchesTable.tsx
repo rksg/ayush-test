@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import { sortProp, defaultSort  } from '@acx-ui/analytics/utils'
 import {
@@ -9,14 +9,16 @@ import {
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
-import { useImpactedSwitchesDataQuery, SwitchDetails, WidgetType, PieChartResult } from './services'
+import { WidgetType, PieChartResult, SwitchDetails, showTopResult } from './config'
+import { useImpactedSwitchesDataQuery }                             from './services'
+import { ChartTitle }                                               from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
   queryType
 }: {
   filters: AnalyticsFilter;
-  queryType: WidgetType['type'];
+  queryType: WidgetType;
 }) => {
   const { $t } = useIntl()
 
@@ -25,17 +27,9 @@ export const ImpactedSwitchesTable = ({
     start: filters.startDate,
     end: filters.endDate
   }
-  const getTableData = (data: PieChartResult, type: WidgetType['type']) => {
+  const getTableData = (data: PieChartResult, type: WidgetType) => {
     if (!data) return []
-
-    switch(type){
-      case 'cpuUsage':
-        return data.topNSwitchesByCpuUsage
-      case 'dhcpFailure':
-        return data.topNSwitchesByDhcpFailure
-      default:
-        return []
-    }
+    return type === 'cpuUsage' ? data.topNSwitchesByCpuUsage : data.topNSwitchesByDhcpFailure
   }
   const queryResults = useImpactedSwitchesDataQuery(
     {
@@ -96,19 +90,33 @@ export const ImpactedSwitchesTable = ({
       sorter: { compare: sortProp('firmware', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'No. Of Ports' }),
-      dataIndex: 'numOfPorts',
-      key: 'numOfPorts',
-      sorter: { compare: sortProp('numOfPorts', defaultSort) }
+      title: $t({ defaultMessage: 'DHCP Failure Count' }),
+      dataIndex: 'dhcpFailureCount',
+      key: 'dhcpFailureCount',
+      sorter: { compare: sortProp('dhcpFailureCount', defaultSort) }
     }
   ]
 
+  const totalCount = queryResults?.data?.length
   return (
     <Loader states={[queryResults]}>
+      <ChartTitle>
+        <FormattedMessage
+          defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
+            one {Switch}
+            other {Switches}
+          }`}
+          values={{
+            count: showTopResult($t, totalCount, 10),
+            totalCount,
+            b: (chunk) => <b>{chunk}</b>
+          }}
+        />
+      </ChartTitle>
       <Table
         columns={columns}
         dataSource={queryResults.data}
-        rowKey='id'
+        rowKey='mac'
         type='compactBordered'
       />
     </Loader>

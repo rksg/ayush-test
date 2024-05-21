@@ -31,7 +31,7 @@ export const moreDetailsDataFixture = {
       topNSwitchesByCpuUsage: [{
         mac: 'mac1',
         cpuUtilization: 80,
-        name: 'switch1',
+        name: 'switch1-cpuUsage',
         serial: '',
         model: '',
         status: '',
@@ -41,7 +41,7 @@ export const moreDetailsDataFixture = {
       topNSwitchesByDhcpFailure: [{
         mac: 'mac1',
         dhcpFailureCount: 70,
-        name: 'switch1',
+        name: 'switch1-dhcpFailure',
         serial: '',
         model: '',
         status: '',
@@ -52,3 +52,11 @@ export const moreDetailsDataFixture = {
   }
 }
 
+export const noDataFixture = {
+  network: {
+    hierarchyNode: {
+      topNSwitchesByCpuUsage: [],
+      topNSwitchesByDhcpFailure: []
+    }
+  }
+}

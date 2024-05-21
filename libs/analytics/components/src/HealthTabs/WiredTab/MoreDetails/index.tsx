@@ -4,21 +4,21 @@ import { useIntl }    from 'react-intl'
 import { Drawer, GridCol, GridRow } from '@acx-ui/components'
 import { AnalyticsFilter }          from '@acx-ui/utils'
 
+import { WidgetType }            from './config'
 import { MoreDetailsPieChart }   from './HealthPieChart'
 import { ImpactedSwitchesTable } from './ImpactedSwitchesTable'
-import { WidgetType }            from './services'
 import * as UI                   from './styledComponents'
 
 export interface MoreDetailsDrawerProps {
   visible: boolean
-  widget: String
+  widget: WidgetType
   setVisible: (visible: boolean) => void
-  setWidget: (widget: WidgetType['type']) => void
+  setWidget: (widget: WidgetType | null) => void
   filters: AnalyticsFilter
 }
 
 export type MoreDetailsWidgetsMapping = {
-  type: WidgetType['type']
+  type: WidgetType
   title: string
   pieTitle: string
   tableTitle: string
@@ -30,7 +30,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
-    setWidget('')
+    setWidget(null)
   }
 
   const mapping: MoreDetailsWidgetsMapping = [
@@ -73,29 +73,16 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       width={'80%'}
       visible={visible}
       onClose={onClose}
-      style={{ marginTop: '85px' }}
       children={
         <GridRow>
-          <GridCol key={activeWidgetMapping?.type}
-            col={{ span: 8 }}
-            style={{ height: 260, width: 430 }}>
-            {
-              <>
-                <UI.ChartTitle>{activeWidgetMapping?.pieTitle}</UI.ChartTitle>
-                <MoreDetailsPieChart filters={filters} queryType={activeWidgetMapping?.type}/>
-              </>
-            }
+          <GridCol col={{ span: 9 }} key={activeWidgetMapping?.type}>
+            <MoreDetailsPieChart filters={filters} queryType={activeWidgetMapping?.type}/>
           </GridCol>
           {
             (activeWidgetMapping?.type === 'dhcpFailure' ||
               activeWidgetMapping?.type === 'cpuUsage') &&
-            <GridCol col={{ span: 16 }} style={{ height: 260, width: 830 }}>
-              {
-                <>
-                  <UI.ChartTitle>{activeWidgetMapping?.tableTitle}</UI.ChartTitle>
-                  <ImpactedSwitchesTable filters={filters} queryType={activeWidgetMapping?.type}/>
-                </>
-              }
+            <GridCol col={{ span: 15 }}>
+              <ImpactedSwitchesTable filters={filters} queryType={activeWidgetMapping?.type}/>
             </GridCol>
           }
         </GridRow>

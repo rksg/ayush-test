@@ -5,17 +5,17 @@ import {
   screen }  from '@acx-ui/test-utils'
 import { AnalyticsFilter } from '@acx-ui/utils'
 
-import { moreDetailsDataFixture }             from './__tests__/fixtures'
-import { MoreDetailsPieChart, transformData } from './HealthPieChart'
-import { moreDetailsApi }                     from './services'
+import { moreDetailsDataFixture, noDataFixture } from './__tests__/fixtures'
+import { MoreDetailsPieChart, transformData }    from './HealthPieChart'
+import { moreDetailsApi }                        from './services'
 
 describe('MoreDetailsPieChart', () => {
   afterEach(() =>
     store.dispatch(moreDetailsApi.util.resetApiState())
   )
 
-  it.each(['cpu', 'dhcp'])('should show data', async (queryType) => {
-    mockGraphqlQuery(dataApiURL, 'PieChartQuery', { data: moreDetailsDataFixture })
+  it.each(['cpuUsage', 'dhcpFailure'])('should show data', async (queryType) => {
+    mockGraphqlQuery(dataApiURL, 'Network', { data: moreDetailsDataFixture })
     render(
       <Provider>
         <MoreDetailsPieChart
@@ -24,15 +24,16 @@ describe('MoreDetailsPieChart', () => {
             startDate: '2021-12-31T00:00:00+00:00',
             endDate: '2022-01-01T00:00:00+00:00' } as AnalyticsFilter
           }
-          queryType={queryType} />
+          queryType={queryType as unknown as 'cpuUsage' | 'dhcpFailure'} />
       </Provider>
     )
-    expect(await screen.findByText('switch1')).toBeVisible()
+    expect(await screen.findByText(`switch1-${queryType}`)).toBeVisible()
   })
   it('should show no data', async () => {
+    mockGraphqlQuery(dataApiURL, 'Network', { data: noDataFixture })
     render(
       <Provider>
-        <MoreDetailsPieChart filters={{} as AnalyticsFilter} queryType='someType' />
+        <MoreDetailsPieChart filters={{} as AnalyticsFilter} queryType='cpuUsage' />
       </Provider>
     )
     const element = screen.getByText('No data to display')
@@ -66,10 +67,10 @@ describe('transformData', () => {
       { mac: 'mac3', value: 70, name: '', color: '#F9C34B' }
     ]
 
-    const cpuResult = transformData('cpu', cpuData)
+    const cpuResult = transformData('cpuUsage', cpuData)
     expect(cpuResult).toEqual(expectedPieChartData)
 
-    const dhcpResult = transformData('dhcp', dhcpData)
+    const dhcpResult = transformData('dhcpFailure', dhcpData)
     expect(dhcpResult).toEqual(expectedPieChartData)
   })
 })
