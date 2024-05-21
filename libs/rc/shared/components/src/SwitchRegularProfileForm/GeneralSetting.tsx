@@ -4,7 +4,8 @@ import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import { useIntl }               from 'react-intl'
 
-import { StepsFormLegacy }                                                                            from '@acx-ui/components'
+import { StepsFormLegacy }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
   useLazyValidateUniqueProfileNameQuery,
   useLazyValidateUniqueSwitchProfileTemplateNameQuery
@@ -18,7 +19,6 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 const profileListPayload = {
   url: '/api/viewmodel/{tenantId}/switch/profilelist',
