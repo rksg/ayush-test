@@ -20,7 +20,6 @@ export enum Features {
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
   BETA_BUTTON = 'acx-ui-beta-button-toggle',
   BETA_FLAG = 'acx-ui-beta-flag-toggle',
-  CCD_TOGGLE = 'ap-ops-client-connection-diagnosis-toggle',
   CLOUDMOTE_SERVICE = 'cloudmote-service-enabled',
   CLOUDPATH_ASYNC_API_TOGGLE = 'acx-ui-cloudpath-async-api-toggle',
   CLOUDPATH_BETA = 'BETA-CP',
