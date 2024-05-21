@@ -81,9 +81,10 @@ export function NetworkDetailForm () {
     filters: {},
     pageSize: 10000
   }
-  const [getInstanceList] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Network>>(
-    useLazyNetworkListQuery, useLazyGetNetworkTemplateListQuery
-  )
+  const [getInstanceList] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Network>>({
+    useLazyQueryFn: useLazyNetworkListQuery,
+    useLazyTemplateQueryFn: useLazyGetNetworkTemplateListQuery
+  })
   const [getVenueNetrworkApGroupList] = useLazyGetVenueNetworkApGroupQuery()
   const params = useParams()
 

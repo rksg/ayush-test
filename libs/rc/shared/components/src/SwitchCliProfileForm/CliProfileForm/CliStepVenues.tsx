@@ -20,11 +20,10 @@ export function CliStepVenues () {
   const { $t } = useIntl()
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
-  // eslint-disable-next-line max-len
-  const { data: cliFamilyModels } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>(
-    useGetCliFamilyModelsQuery,
-    useGetSwitchTemplateCliFamilyModelsQuery
-  )
+  const { data: cliFamilyModels } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>({
+    useQueryFn: useGetCliFamilyModelsQuery,
+    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery
+  })
 
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
   const { isTemplate } = useConfigTemplate()

@@ -368,7 +368,10 @@ export function AddPrivilegeGroup () {
                 { min: 2 },
                 { max: 128 },
                 { validator: (_, value) => systemDefinedNameValidator(value) },
-                { validator: (_, value) => specialCharactersRegExp(value) },
+                { validator: (_, value) => specialCharactersRegExp(value),
+                  message: intl.$t({ defaultMessage:
+                    'Special characters (other than $, -, . and _) are not allowed' })
+                },
                 { validator: (_, value) => excludeSpaceRegExp(value) }
               ]}
               children={<Input />}
