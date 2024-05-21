@@ -18,9 +18,9 @@ import {
   Lag,
   SwitchPortStatus
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }        from '@acx-ui/types'
-import { hasPermission }         from '@acx-ui/user'
+import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { hasPermission }                from '@acx-ui/user'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
