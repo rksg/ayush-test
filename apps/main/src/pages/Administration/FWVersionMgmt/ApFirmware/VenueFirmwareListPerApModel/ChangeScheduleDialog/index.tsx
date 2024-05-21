@@ -82,6 +82,8 @@ export function ChangeSchedulePerApModelDialog (props: ChangeSchedulePerApModelD
     <UI.ScheduleModal
       title={$t({ defaultMessage: 'Change Update Schedule' })}
       visible={true}
+      onCancel={onModalCancel}
+      destroyOnClose={true}
       footer={[
         <Button key='cancel' onClick={onModalCancel}>
           {$t({ defaultMessage: 'Cancel' })}
