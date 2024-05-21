@@ -508,23 +508,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
   },
-  /*
   getApClientAdmissionControl: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    // url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
   updateApClientAdmissionControl: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    // url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
-  deleteApClientAdmissionControl: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
-    newApi: true
-  },
-  */
   getApNetworkSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/networkSettings',
