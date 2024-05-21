@@ -948,7 +948,10 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
     const networkVenuesApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
         ? VenueConfigTemplateUrlsInfo.networkActivations
-        : CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+        : CommonUrlsInfo.networkActivations, arg.params,
+      arg.payload.isTemplate
+        ? {}
+        : apiV2CustomHeader),
       body: JSON.stringify({ filters })
     }
     const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
@@ -1011,7 +1014,10 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
     const venueNetworkApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
         ? VenueConfigTemplateUrlsInfo.networkActivations
-        : CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+        : CommonUrlsInfo.networkActivations, arg.params,
+      arg.payload.isTemplate
+        ? {}
+        : apiV2CustomHeader),
       body: JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
@@ -1085,7 +1091,10 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
     const venueNetworkApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
         ? VenueConfigTemplateUrlsInfo.networkActivations
-        : CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+        : CommonUrlsInfo.networkActivations, arg.params,
+      arg.payload.isTemplate
+        ? {}
+        : apiV2CustomHeader),
       body: JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)

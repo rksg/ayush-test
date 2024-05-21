@@ -13,20 +13,21 @@ import {
   Space,
   Spin
 } from 'antd'
-import _           from 'lodash'
-import { useIntl } from 'react-intl'
+import { DefaultOptionType } from 'antd/lib/select'
+import _                     from 'lodash'
+import { useIntl }           from 'react-intl'
 
 import {
   Modal,
   Select,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
+  useGetEnhancedVlanPoolPolicyTemplateListQuery,
   useGetNetworkApGroupsQuery,
   useGetNetworkApGroupsV2Query,
-  useGetVlanPoolPolicyTemplateListQuery,
-  useVlanPoolListQuery
+  useGetVLANPoolPolicyViewModelListQuery
 } from '@acx-ui/rc/services'
 import {
   RadioEnum,
@@ -39,7 +40,7 @@ import {
   NetworkSaveData,
   IsNetworkSupport6g,
   WlanSecurityEnum, NetworkTypeEnum,
-  useConfigTemplate, useConfigTemplateQueryFnSwitcher
+  useConfigTemplate, useConfigTemplateQueryFnSwitcher, TableResult, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -92,6 +93,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
+  const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<DefaultOptionType[]>()
 
   const [form] = Form.useForm()
 
@@ -158,15 +160,21 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const [loading, setLoading] = useState(false)
 
-  const { data: vlanPoolSelectOptions } = useConfigTemplateQueryFnSwitcher(
-    useVlanPoolListQuery,
-    useGetVlanPoolPolicyTemplateListQuery,
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>(
+    useGetVLANPoolPolicyViewModelListQuery,
+    useGetEnhancedVlanPoolPolicyTemplateListQuery,
     false,
     {
-      fields: ['name', 'id'], sortField: 'name',
+      fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
   )
+
+  useEffect(() => {
+    if (instanceListResult) {
+      setVlanPoolSelectOptions(instanceListResult.data.map(m => ({ label: m.name, value: m.id })))
+    }
+  },[instanceListResult])
 
   const RadioSelect = (props: SelectProps) => {
     const isSupport6G = IsNetworkSupport6g(network)
@@ -365,7 +373,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
                 )}
               </Form.Item>
 
-              <Radio disabled={isTemplate} value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
+              <Radio value={1}>{$t({ defaultMessage: 'Select specific AP groups' })}
                 <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to a selected AP group in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.List name='apgroups'>

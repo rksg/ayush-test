@@ -3,12 +3,13 @@ import moment                       from 'moment-timezone'
 import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { LocationOutlined }                from '@acx-ui/icons'
-import { ApGroupDetailHeader }             from '@acx-ui/rc/utils'
-import { useTenantLink }                   from '@acx-ui/react-router-dom'
-import { filterByAccess }                  from '@acx-ui/user'
-import { useDateFilter }                   from '@acx-ui/utils'
+import { Button, PageHeader, RangePicker }                  from '@acx-ui/components'
+import { LocationOutlined }                                 from '@acx-ui/icons'
+import { ApGroupDetailHeader, useConfigTemplateBreadcrumb } from '@acx-ui/rc/utils'
+import { filterByAccess }                                   from '@acx-ui/user'
+import { useDateFilter }                                    from '@acx-ui/utils'
+
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { useApGroupContext }     from './ApGroupContextProvider'
 import ApGroupTabs               from './ApGroupTabs'
@@ -31,9 +32,15 @@ function ApGroupPageHeader () {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = useTenantLink(`/devices/apgroups/${apGroupId}`)
+  const basePath = usePathBasedOnConfigTemplate(`/devices/apgroups/${apGroupId}`)
 
   const enableTimeFilter = () => (['incidents'].includes(activeTab as string))
+
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: 'Wi-Fi' }) },
+    { text: $t({ defaultMessage: 'Access Points' }) },
+    { text: $t({ defaultMessage: 'AP Group List' }), link: '/devices/wifi/apgroups' }
+  ])
 
   return (
     <PageHeader
@@ -42,11 +49,7 @@ function ApGroupPageHeader () {
         <LocationOutlined />
         {venueName}
       </ApGroupDetailSubTitle>}
-      breadcrumb={[
-        { text: $t({ defaultMessage: 'Wi-Fi' }) },
-        { text: $t({ defaultMessage: 'Access Points' }) },
-        { text: $t({ defaultMessage: 'AP Group List' }), link: '/devices/wifi/apgroups' }
-      ]}
+      breadcrumb={breadcrumb}
       extra={[
         enableTimeFilter() &&
           <RangePicker
