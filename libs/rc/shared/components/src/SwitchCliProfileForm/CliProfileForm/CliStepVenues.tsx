@@ -36,15 +36,11 @@ export function CliStepVenues () {
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
 
-  const { data: cliFamilyModels } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>(
-    useGetCliFamilyModelsQuery,
-    useGetSwitchTemplateCliFamilyModelsQuery,
-    false,
-    undefined,
-    undefined,
-    undefined,
-    isSwitchRbacEnabled
-  )
+  const { data: cliFamilyModels } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>({
+    useQueryFn: useGetCliFamilyModelsQuery,
+    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])
   const { isTemplate } = useConfigTemplate()

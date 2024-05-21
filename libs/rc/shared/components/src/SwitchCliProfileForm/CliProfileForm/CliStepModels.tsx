@@ -43,15 +43,12 @@ export function CliStepModels () {
 
   const { form, editMode } = useStepFormContext()
 
-  const { data: profiles } = useConfigTemplateQueryFnSwitcher<TableResult<SwitchProfileModel>>(
-    useGetProfilesQuery,
-    useGetSwitchConfigProfileTemplateListQuery,
-    false,
-    profilesPayload,
-    undefined,
-    undefined,
-    isSwitchRbacEnabled
-  )
+  const { data: profiles } = useConfigTemplateQueryFnSwitcher<TableResult<SwitchProfileModel>>({
+    useQueryFn: useGetProfilesQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateListQuery,
+    payload: profilesPayload,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const [count, setCount] = useState(0)
   const [filteredModelFamily, setFilteredModelFamily] = useState([] as CheckboxValueType[])

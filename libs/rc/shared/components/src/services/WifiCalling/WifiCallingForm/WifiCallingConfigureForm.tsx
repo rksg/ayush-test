@@ -30,9 +30,10 @@ export const WifiCallingConfigureForm = () => {
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
 
-  const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation
-  )
+  const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateWifiCallingServiceMutation,
+    useTemplateMutationFn: useUpdateWifiCallingServiceTemplateMutation
+  })
 
   const initServiceName = ''
   const initDescription = ''
