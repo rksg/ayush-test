@@ -69,7 +69,6 @@ export enum Features {
   INCIDENTS_AIRTIME_TOGGLE = 'acx-ui-incidents-airtime-toggle',
   LICENSE_BANNER = 'acx-ui-license-banner',
   LINKEDIN_OIDC_TOGGLE = 'guest-linkedin-openid-connect-toggle',
-  LIST_OF_CLIENTS_PER_WLAN = 'acx-ui-list-of-clients-per-wlan-toggle',
   MDNS_FENCING = 'wifi-consumer-bonjour-fencing-toggle',
   LOGIN_SSO_SIGNATURE_TOGGLE = 'login-sso-saml-signature',
   MESH_ENHANCEMENTS = 'wifi-eda-mesh-enhancements-toggle',
