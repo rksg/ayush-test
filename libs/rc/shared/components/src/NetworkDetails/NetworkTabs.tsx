@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useConfigTemplate }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
