@@ -28,7 +28,6 @@ import {
 import {
   AuthRadiusEnum,
   Demo,
-  generatePageHeaderTitle,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
@@ -40,7 +39,8 @@ import {
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -126,15 +126,18 @@ export function NetworkForm (props:{
 
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
-  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
-  )
-  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
-  )
-  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
-  )
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenuesMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
+  })
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenuesMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenuesMutation,
+    useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
+  })
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
@@ -183,15 +186,13 @@ export function NetworkForm (props:{
     })
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
     { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
     { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: editMode,
-    isTemplate,
     instanceLabel: intl.$t({ defaultMessage: 'Network' }),
     addLabel: intl.$t({ defaultMessage: 'Create New' })
   })

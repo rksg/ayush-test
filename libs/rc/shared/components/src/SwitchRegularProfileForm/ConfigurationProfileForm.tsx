@@ -7,10 +7,22 @@ import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/componen
 import {
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
-  useGetSwitchConfigProfileQuery
+  useGetSwitchConfigProfileQuery,
+  useGetSwitchConfigProfileTemplateQuery,
+  useAddSwitchConfigProfileTemplateMutation,
+  useUpdateSwitchConfigProfileTemplateMutation
 }                   from '@acx-ui/rc/services'
-import { SwitchConfigurationProfile, SwitchModel, TaggedVlanPorts, Vlan, VoiceVlanConfig, VoiceVlanOption } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }                                                            from '@acx-ui/react-router-dom'
+import {
+  ConfigurationProfile,
+  useConfigTemplatePageHeaderTitle, SwitchConfigurationProfile, SwitchModel,
+  TaggedVlanPorts, useConfigTemplateBreadcrumb,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  Vlan, VoiceVlanConfig, VoiceVlanOption
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
+
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { AclSetting }                               from './AclSetting'
 import { ConfigurationProfileFormContext }          from './ConfigurationProfileFormContext'
@@ -25,16 +37,25 @@ export function ConfigurationProfileForm () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
-  const linkToProfiles = useTenantLink('/networks/wired/profiles')
+  const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const [form] = Form.useForm()
 
-  const { data, isLoading } = useGetSwitchConfigProfileQuery(
-    { params }, { skip: !params.profileId })
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
+    useQueryFn: useGetSwitchConfigProfileQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
+    skip: !params.profileId
+  })
 
-  const [addSwitchConfigProfile, {
-    isLoading: isAddingSwitchConfigProfile }] = useAddSwitchConfigProfileMutation()
-  const [updateSwitchConfigProfile, {
-    isLoading: isUpdatingSwitchConfigProfile }] = useUpdateSwitchConfigProfileMutation()
+  // eslint-disable-next-line max-len
+  const [addSwitchConfigProfile, { isLoading: isAddingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddSwitchConfigProfileMutation,
+    useTemplateMutationFn: useAddSwitchConfigProfileTemplateMutation
+  })
+  // eslint-disable-next-line max-len
+  const [updateSwitchConfigProfile, { isLoading: isUpdatingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateSwitchConfigProfileMutation,
+    useTemplateMutationFn: useUpdateSwitchConfigProfileTemplateMutation
+  })
 
   const editMode = params.action === 'edit'
   const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
@@ -42,6 +63,17 @@ export function ConfigurationProfileForm () {
   const [ vlansWithTaggedPorts, setVlansWithTaggedPorts] = useState(false)
   const [ currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
+
+  // Config Template related states
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: 'Wired' }) },
+    { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
+    { text: $t({ defaultMessage: 'Configuration Profiles' }), link: '/networks/wired/profiles' }
+  ])
+  const pageTitle = useConfigTemplatePageHeaderTitle({
+    isEdit: editMode,
+    instanceLabel: $t({ defaultMessage: 'Switch Configuration Profile' })
+  })
 
   useEffect(() => {
     if(data){
@@ -249,17 +281,8 @@ export function ConfigurationProfileForm () {
       isFetching: isAddingSwitchConfigProfile || isUpdatingSwitchConfigProfile
     }]}>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit Switch Configuration Profile' })
-          : $t({ defaultMessage: 'Add Switch Configuration Profile' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Wired' }) },
-          { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
-          {
-            text: $t({ defaultMessage: 'Configuration Profiles' }),
-            link: '/networks/wired/profiles'
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
       <ConfigurationProfileFormContext.Provider value={{ editMode, currentData }}>
         <StepsForm

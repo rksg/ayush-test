@@ -18,5 +18,10 @@ export const LicenseUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/entitlements/summaries',
     oldUrl: '/api/tenant/:tenantId/entitlement/summary',
     newApi: true
+  },
+  getBanners: {
+    method: 'post',
+    url: '/entitlements/banners/query',
+    newApi: true
   }
 }

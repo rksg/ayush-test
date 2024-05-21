@@ -29,6 +29,7 @@ import {
   useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
@@ -47,6 +48,7 @@ export function Syslog () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const toPolicyPath = usePathBasedOnConfigTemplate('')
   const {
     editContextData,
@@ -59,28 +61,27 @@ export function Syslog () {
   const {
     data: syslogPolicyList,
     isLoading: isSyslogPolicyListLoading
-  } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>(
-    useSyslogPolicyListQuery,
-    useGetSyslogPolicyTemplateListQuery,
-    false,
-    { page: 1, pageSize: 10000 }
-  )
+  } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
+    useQueryFn: useSyslogPolicyListQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
+    payload: { page: 1, pageSize: 10000 }
+  })
 
   const {
     data: venueSyslogSettings,
     isLoading: isVenueSyslogSettingsLoading
-  } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>(
-    useGetVenueSyslogApQuery,
-    useGetVenueTemplateSyslogSettingsQuery
-  )
+  } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>({
+    useQueryFn: useGetVenueSyslogApQuery,
+    useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery
+  })
 
   const [
     updateVenueSyslog,
     { isLoading: isUpdatingVenueSyslog }
-  ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueSyslogApMutation,
-    useUpdateVenueTemplateSyslogSettingsMutation
-  )
+  ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueSyslogApMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSyslogSettingsMutation
+  })
 
   const apSyslogOptions = syslogPolicyList?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
   const [venueSyslogOrinData, setVenueSyslogOrinData] = useState({} as VenueSettings)
@@ -211,7 +212,8 @@ export function Syslog () {
                   type: PolicyType.SYSLOG,
                   oper: PolicyOperation.CREATE
                 })
-                await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`)
+                // eslint-disable-next-line max-len
+                await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`, { state: { from: location } })
               }}
             >
               {$t({ defaultMessage: 'Add Server Profile' })}
