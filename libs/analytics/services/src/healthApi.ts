@@ -18,6 +18,10 @@ export interface KpiThresholdType {
   apServiceUptime: number
   apToSZLatency: number
   switchPoeUtilization: number
+  switchMemoryUtilization: number
+  switchCpuUtilization: number
+  switchUplinkPortUtilization: number
+  switchPortUtilization: number
   clusterLatency: number
 }
 
@@ -42,6 +46,7 @@ export type KpiPayload = AnalyticsFilter & {
   kpi: string;
   threshold?: string;
   granularity?: string;
+  enableSwitchFirmwareFilter?: boolean;
 }
 
 type ConfigCode = keyof typeof kpiConfig
@@ -86,10 +91,12 @@ const getHistogramQuery = (kpi: string) => {
   const { apiMetric, splits } = Object(config).histogram
   return `
     query histogramKPI(
-      $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $filter: FilterInput
+      $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $filter: FilterInput,
+      $enableSwitchFirmwareFilter: Boolean,
     ) {
       network(filter: $filter) {
-        histogram: histogram(path: $path, start: $start, end: $end) {
+        histogram: histogram(path: $path, start: $start, end: $end,
+           enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
           data: ${apiMetric}(splits: [${splits.join(', ')}])
         }
       }
@@ -109,6 +116,10 @@ interface ThresholdsApiResponse {
   apServiceUptimeThreshold?: ThresholdData
   apToSZLatencyThreshold?: ThresholdData
   switchPoeUtilizationThreshold?: ThresholdData
+  switchMemoryUtilizationThreshold?: ThresholdData
+  switchCpuUtilizationThreshold?: ThresholdData
+  switchUplinkPortUtilizationThreshold?: ThresholdData
+  switchPortUtilizationThreshold?: ThresholdData
   clusterLatencyThreshold?: ThresholdData
 }
 
@@ -127,13 +138,15 @@ export const healthApi = dataApi.injectEndpoints({
       query: (payload) => ({
         document: gql`
         query timeseriesKPI(
-          $start: DateTime, $end: DateTime, $granularity: String, $filter: FilterInput
+          $start: DateTime, $end: DateTime, $granularity: String, $filter: FilterInput,
+          $enableSwitchFirmwareFilter: Boolean
         ) {
           network(filter: $filter) {
             timeSeries: timeSeries(
               start: $start
               end: $end
               granularity: $granularity
+              enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
             ) {
               time
               data: ${getKPIMetric(payload.kpi, payload.threshold)}
@@ -146,7 +159,8 @@ export const healthApi = dataApi.injectEndpoints({
           end: payload.endDate,
           granularity: payload.granularity ||
           getGranularity(payload.startDate, payload.endDate, payload.kpi),
-          ...getHealthFilter(payload)
+          ...getHealthFilter(payload),
+          enableSwitchFirmwareFilter: payload.enableSwitchFirmwareFilter || false
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
@@ -163,6 +177,7 @@ export const healthApi = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
+          enableSwitchFirmwareFilter: payload.enableSwitchFirmwareFilter || false,
           ...getHealthFilter(payload)
         }
       }),

@@ -50,9 +50,11 @@ export function AAAServers (props: {
     [AAAServerTypeEnum.LOCAL_USER]: { ...defaultPayload, serverType: AAAServerTypeEnum.LOCAL_USER }
   }
 
-  const { data: aaaSetting } = useConfigTemplateQueryFnSwitcher<AAASetting>(
-    useGetAaaSettingQuery, useGetVenueTemplateSwitchAaaSettingQuery, false, undefined, undefined, isSwitchRbacEnabled
-  )
+  const { data: aaaSetting } = useConfigTemplateQueryFnSwitcher<AAASetting>({
+    useQueryFn: useGetAaaSettingQuery,
+    useTemplateQueryFn: useGetVenueTemplateSwitchAaaSettingQuery,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const radiusTableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenueTemplateSwitchAAAServerListQuery : useVenueSwitchAAAServerListQuery,
