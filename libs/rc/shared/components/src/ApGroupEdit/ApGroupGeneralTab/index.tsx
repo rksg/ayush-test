@@ -66,39 +66,39 @@ export function ApGroupGeneralTab () {
 
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const oldFormDataRef = useRef<AddApGroup>()
-  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
-    useVenuesListQuery,
-    useGetVenuesTemplateListQuery,
-    false,
-    defaultVenuePayload
-  )
+  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
+    useQueryFn: useVenuesListQuery,
+    useTemplateQueryFn: useGetVenuesTemplateListQuery,
+    skip: false,
+    payload: defaultVenuePayload
+  })
 
-  const [venueDefaultApGroup] = useConfigTemplateLazyQueryFnSwitcher(
-    useLazyVenueDefaultApGroupQuery,
-    useLazyGetVenueTemplateDefaultApGroupQuery
-  )
-  const [apGroupsList] = useConfigTemplateLazyQueryFnSwitcher(
-    useLazyApGroupsListQuery,
-    useLazyGetApGroupsTemplateListQuery
-  )
-  const [addApGroup] = useConfigTemplateMutationFnSwitcher(
-    useAddApGroupMutation,
-    useAddApGroupTemplateMutation
-  )
-  const [updateApGroup] = useConfigTemplateMutationFnSwitcher(
-    useUpdateApGroupMutation,
-    useUpdateApGroupTemplateMutation
-  )
+  const [venueDefaultApGroup] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyVenueDefaultApGroupQuery,
+    useLazyTemplateQueryFn: useLazyGetVenueTemplateDefaultApGroupQuery
+  })
+  const [apGroupsList] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyApGroupsListQuery,
+    useLazyTemplateQueryFn: useLazyGetApGroupsTemplateListQuery
+  })
+  const [addApGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddApGroupMutation,
+    useTemplateMutationFn: useAddApGroupTemplateMutation
+  })
+  const [updateApGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateApGroupMutation,
+    useTemplateMutationFn: useUpdateApGroupTemplateMutation
+  })
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apsOption, setApsOption] = useState([] as TransferItem[])
 
-  const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher(
-    useGetApGroupQuery,
-    useGetApGroupTemplateQuery,
-    !isEditMode,
-    null,
-    { tenantId, apGroupId }
-  )
+  const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetApGroupQuery,
+    useTemplateQueryFn: useGetApGroupTemplateQuery,
+    skip: !isEditMode,
+    payload: null,
+    extraParams: { tenantId, apGroupId }
+  })
 
   const locationState = location.state as { venueId?: string, history?: string }
 

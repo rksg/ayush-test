@@ -69,19 +69,20 @@ export function ApGroupVlanRadioTab () {
     `${basePath.pathname}/wifi/apgroups` :
     `${basePath.pathname}/wifi`
 
-  const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher(
-    useGetApGroupQuery,
-    useGetApGroupTemplateQuery,
-    !(isApGroupTableFlag && isEditMode),
-    null,
-    { tenantId, apGroupId }
-  )
+  const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetApGroupQuery,
+    useTemplateQueryFn: useGetApGroupTemplateQuery,
+    skip: !(isApGroupTableFlag && isEditMode),
+    payload: null,
+    extraParams: { tenantId, apGroupId }
+  })
 
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
   const [getApGroupNetworkListV2] = useLazyApGroupNetworkListV2Query()
-  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
-  )
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenuesMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
 
   const [venueId, setVenueId] = useState('')
   const [tableData, setTableData] = useState(defaultTableData)
