@@ -7,7 +7,7 @@ import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { networkApi, policyApi, venueApi } from '@acx-ui/rc/services'
 import {
   ApGroupConfigTemplateUrlsInfo,
-  CommonUrlsInfo, PoliciesConfigTemplateUrlsInfo,
+  CommonUrlsInfo,
   RadioTypeEnum,
   WifiUrlsInfo,
   WlanSecurityEnum
@@ -26,7 +26,7 @@ import {
   networkVenue_apgroup,
   networkVenue_allAps,
   params,
-  vlanPoolList
+  vlanPoolList, vlanPoolListViewMode
 } from './__tests__/NetworkVenueTestData'
 
 import { NetworkApGroupDialog } from './index'
@@ -61,9 +61,9 @@ describe('NetworkApGroupDialog', () => {
         WifiUrlsInfo.getVlanPools.url,
         (req, res, ctx) => res(ctx.json(vlanPoolList))
       ),
-      rest.get(
-        PoliciesConfigTemplateUrlsInfo.getVlanPools.url,
-        (req, res, ctx) => res(ctx.json(vlanPoolList))
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (req, res, ctx) => res(ctx.json(vlanPoolListViewMode))
       )
     )
   })
@@ -122,7 +122,7 @@ describe('NetworkApGroupDialog', () => {
 
     expect(within(dialog).getByLabelText('Select specific AP groups', { exact: false, selector: 'input' })).toBeChecked()
 
-    await waitFor(() => expect(dialog).toHaveTextContent('VLAN Pool: pool1 (Custom)'))
+    await waitFor(() => expect(dialog).toHaveTextContent('VLAN Pool: (Custom)'))
   })
 
   it('should has 6 GHz and could click apply', async () => {

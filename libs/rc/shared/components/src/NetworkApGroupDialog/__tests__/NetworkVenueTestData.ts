@@ -110,6 +110,29 @@ export const vlanPoolList = [{
   id: '1c061cf2649344adaf1e79a9d624a451'
 }]
 
+export const vlanPoolListViewMode = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      id: '1c061cf2649344adaf1e79a9d624a451',
+      name: 'pool1'
+    },
+    {
+      id: '6859ee6ea5cf44dba284b33525145fa9',
+      name: 'pool2'
+    },
+    {
+      id: 'ac315ee51d1c4367a2fea71f2ab236da',
+      name: 'pool3'
+    }
+  ]
+}
+
 export const timezoneRes = { // location=-37.8145092,144.9704868
   dstOffset: 0,
   rawOffset: 36000,
