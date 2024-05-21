@@ -17,18 +17,16 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { VariableType } from './CliStepConfiguration'
-
-import { tooltip } from './'
+import { tooltip, getVariableSeparator, VariableType } from './'
 
 interface variableFormData {
   name: string
   type: string
-  startIp?: string
-  endIp?: string
-  mask?: string
-  startVal?: string
-  endVal?: string
+  ipAddressStart?: string
+  ipAddressEnd?: string
+  subMask?: string
+  rangeStart?: number
+  rangeEnd?: number
   string?:string
 }
 
@@ -52,9 +50,9 @@ export function CliVariableModal (props: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onFieldsChange={(changedFields: any) => {
       const changedField = changedFields?.[0]?.name?.[0]
-      if (changedField === 'startIp' || changedField === 'mask') {
-        const { startIp, endIp, mask } = form.getFieldsValue()
-        startIp && endIp && mask && form.validateFields(['endIp'])
+      if (changedField === 'ipAddressStart' || changedField === 'subMask') {
+        const { ipAddressStart, ipAddressEnd, subMask } = form.getFieldsValue()
+        ipAddressStart && ipAddressEnd && subMask && form.validateFields(['ipAddressEnd'])
       }
     }}
   >
@@ -102,7 +100,7 @@ export function CliVariableModal (props: {
 
     {selectType === VariableType.ADDRESS && <>
       <Form.Item
-        name='startIp'
+        name='ipAddressStart'
         label={$t({ defaultMessage: 'Start IP Address' })}
         rules={[
           { required: true },
@@ -112,7 +110,7 @@ export function CliVariableModal (props: {
         children={<Input data-testid='start-ip' />}
       />
       <Form.Item
-        name='endIp'
+        name='ipAddressEnd'
         label={$t({ defaultMessage: 'End IP Address' })}
         rules={[
           { required: true },
@@ -131,7 +129,7 @@ export function CliVariableModal (props: {
         children={<Input data-testid='end-ip' />}
       />
       <Form.Item
-        name='mask'
+        name='subMask'
         label={$t({ defaultMessage: 'Network Mask' })}
         rules={[
           { required: true },
@@ -144,7 +142,7 @@ export function CliVariableModal (props: {
 
     {selectType === VariableType.RANGE && <>
       <Form.Item
-        name='startVal'
+        name='rangeStart'
         label={<>
           {$t({ defaultMessage: 'Start Value' })}
           <Tooltip.Question
@@ -161,11 +159,11 @@ export function CliVariableModal (props: {
           },
           {
             validator: (_, value) => {
-              const endVal = form.getFieldValue('endVal')
-              if (endVal && (Number(endVal) <= Number(value))) {
+              const rangeEnd = form.getFieldValue('rangeEnd')
+              if (rangeEnd && (Number(rangeEnd) <= Number(value))) {
                 return Promise.reject($t(validationMessages.startRangeInvalid))
               }
-              endVal && form.setFields([{ name: ['endVal'], errors: [] }])
+              rangeEnd && form.setFields([{ name: ['rangeEnd'], errors: [] }])
               return Promise.resolve()
             }
           }
@@ -177,7 +175,7 @@ export function CliVariableModal (props: {
         />}
       />
       <Form.Item
-        name='endVal'
+        name='rangeEnd'
         label={<>
           {$t({ defaultMessage: 'End Value' })}
           <Tooltip.Question
@@ -194,11 +192,11 @@ export function CliVariableModal (props: {
           },
           {
             validator: (_, value) => {
-              const startVal = form.getFieldValue('startVal')
-              if (startVal && (Number(value) <= Number(startVal))) {
+              const rangeStart = form.getFieldValue('rangeStart')
+              if (rangeStart && (Number(value) <= Number(rangeStart))) {
                 return Promise.reject($t(validationMessages.endRangeInvalid))
               }
-              startVal && form.setFields([{ name: ['startVal'], errors: [] }])
+              rangeStart && form.setFields([{ name: ['rangeStart'], errors: [] }])
               return Promise.resolve()
             }
           }
@@ -230,10 +228,10 @@ export function CliVariableModal (props: {
   </Form>
 
   const transformToRawData = (data: variableFormData) => {
-    const separator = getSeparator(data.type)
+    const separator = getVariableSeparator(data.type)
     const fieldsMap: Record<string, string[]> = {
-      [VariableType.ADDRESS]: ['startIp', 'endIp', 'mask'],
-      [VariableType.RANGE]: ['startVal', 'endVal'],
+      [VariableType.ADDRESS]: ['ipAddressStart', 'ipAddressEnd', 'subMask'],
+      [VariableType.RANGE]: ['rangeStart', 'rangeEnd'],
       [VariableType.STRING]: ['string']
     }
 
@@ -242,6 +240,7 @@ export function CliVariableModal (props: {
       .map(item => item[1])
 
     return {
+      ...data,
       name: data.name,
       type: data.type,
       value: values.join(separator)
@@ -249,7 +248,7 @@ export function CliVariableModal (props: {
   }
 
   const transformToFormData = (data: CliTemplateVariable) => {
-    const separator = getSeparator(data.type)
+    const separator = getVariableSeparator(data.type)
     const values = data.value.split(separator)
     let fieldsValue: variableFormData = {
       name: data.name,
@@ -259,16 +258,16 @@ export function CliVariableModal (props: {
       case VariableType.ADDRESS:
         fieldsValue = {
           ...fieldsValue,
-          startIp: values[0],
-          endIp: values[1],
-          mask: values[2]
+          ipAddressStart: values[0],
+          ipAddressEnd: values[1],
+          subMask: values[2]
         }
         break
       case VariableType.RANGE:
         fieldsValue = {
           ...fieldsValue,
-          startVal: values[0],
-          endVal: values[1]
+          rangeStart: Number(values[0]),
+          rangeEnd: Number(values[1])
         }
         break
       default:
@@ -333,13 +332,6 @@ export function CliVariableModal (props: {
   </Modal>
 }
 
-function getSeparator (type: string) {
-  const t = type.toUpperCase()
-  return t === VariableType.RANGE
-    ? ':'
-    : (t === VariableType.ADDRESS ? '_' : '*')
-}
-
 function getNetworkBitmap (ipArr: string, netmaskArr: string) {
   let network = []
   for (let i = 0; i < ipArr.length; i++) {
@@ -359,9 +351,9 @@ function ipv4ToBitmap (ipv4: any) {
 }
 
 function validateSubnetmaskOverlap (form: FormInstance) {
-  const networkAddress = form.getFieldValue('startIp')
-  const networkAddress2 = form.getFieldValue('endIp')
-  const subnetmask = form.getFieldValue('mask')
+  const networkAddress = form.getFieldValue('ipAddressStart')
+  const networkAddress2 = form.getFieldValue('ipAddressEnd')
+  const subnetmask = form.getFieldValue('subMask')
   if (!(networkAddress && networkAddress2 && subnetmask)) {
     return false
   }
