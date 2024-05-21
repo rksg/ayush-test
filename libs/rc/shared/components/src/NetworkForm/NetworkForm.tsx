@@ -22,8 +22,7 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation,
-  useDeactivateWifiOperatorOnWifiNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -44,22 +43,22 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { CloudpathForm }            from './CaptivePortal/CloudpathForm'
+import { GuestPassForm }            from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }         from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }           from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }           from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }           from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }                from './CaptivePortal/WISPrForm'
+import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext           from './NetworkFormContext'
+import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }    from './NetworkSettings/Hotspot20SettingsForm'
+import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }              from './NetworkSummary/SummaryForm'
 import {
   tranferSettingsToSave,
   transferDetailToSave,
@@ -849,17 +848,6 @@ function useWifiOperatorActivation () {
   return activateWifiOperator
 }
 
-function useWifiOperatorDeactivation () {
-  const [deactivate] = useDeactivateWifiOperatorOnWifiNetworkMutation()
-  const deactivateWifiOperator =
-    async (wifiNetworkId?: string, operatorId?: string) => {
-      return wifiNetworkId && operatorId ?
-        await deactivate({ params: { wifiNetworkId, operatorId } }).unwrap() : null
-    }
-
-  return deactivateWifiOperator
-}
-
 function useIdentityProviderActivation () {
   const [activate] = useActivateIdentityProviderOnWifiNetworkMutation()
   const activateIdentityProvider =
@@ -902,7 +890,6 @@ function useAddHotspot20Activation () {
 
 function useUpdateHotspot20Activation () {
   const activateOperator = useWifiOperatorActivation()
-  const deactivateOperator = useWifiOperatorDeactivation()
   const activateProvider = useIdentityProviderActivation()
   const deactivateProvider = useIdentityProviderDeactivation()
   const updateHotspot20Activations =
@@ -914,23 +901,58 @@ function useUpdateHotspot20Activation () {
 
         if (hotspot20OriginalOperator &&
           hotspot20OriginalOperator !== hotspot20Setting.wifiOperator) {
-          await deactivateOperator(network.id, hotspot20OriginalOperator)
           await activateOperator(network.id, hotspot20Setting.wifiOperator)
         }
 
         if (hotspot20OriginalProviders &&
           hotspot20Setting?.identityProviders &&
           !_.isEqual(hotspot20OriginalProviders, hotspot20Setting?.identityProviders)) {
+          let deactivateProviderIds : string[] = []
+          let activateProviderIds : string[] = []
           hotspot20OriginalProviders.forEach(async (id) => {
-            hotspot20Setting?.identityProviders &&
-            !(hotspot20Setting?.identityProviders.includes(id)) &&
-            await deactivateProvider(network.id, id)
+            if (hotspot20Setting?.identityProviders &&
+            !(hotspot20Setting?.identityProviders.includes(id))) {
+              deactivateProviderIds.push(id)
+            }
           })
 
           hotspot20Setting?.identityProviders.forEach(async (id) => {
-            !hotspot20OriginalProviders.includes(id) &&
-            await activateProvider(network.id, id)
+            if (!hotspot20OriginalProviders.includes(id)) {
+              activateProviderIds.push(id)
+            }
           })
+
+          if (deactivateProviderIds.length === hotspot20OriginalProviders.length &&
+            deactivateProviderIds.length === 1 && activateProviderIds.length === 1) {
+            // change original 1 provider, can only activate before deativate to avoid remove reuiqred field
+            // max number of providers activated with a network is 6
+            activateProviderIds.forEach(async (id) => {
+              await activateProvider(network.id, id)
+            })
+
+            deactivateProviderIds.forEach(async (id) => {
+              await deactivateProvider(network.id, id)
+            })
+          } else {
+            let i = 0, j = 0
+            if (deactivateProviderIds.length > 1) {
+              await deactivateProvider(network.id, deactivateProviderIds[i])
+              i = 1
+            }
+
+            if (activateProviderIds.length > 1) {
+              await activateProvider(network.id, activateProviderIds[j])
+              j = 1
+            }
+
+            for (; i < deactivateProviderIds.length; i++) {
+              await deactivateProvider(network.id, deactivateProviderIds[i])
+            }
+
+            for (; j < activateProviderIds.length; j++) {
+              await activateProvider(network.id, activateProviderIds[j])
+            }
+          }
         }
       }
       return
