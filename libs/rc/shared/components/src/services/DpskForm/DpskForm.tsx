@@ -59,19 +59,27 @@ export function DpskForm (props: DpskFormProps) {
 
   const idAfterCreatedRef = useRef<string>()
 
-  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
-    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery, !isModalMode()
-  )
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
+    useQueryFn: useGetDpskListQuery,
+    useTemplateQueryFn: useGetEnhancedDpskTemplateListQuery,
+    skip: !isModalMode()
+  })
+
+  const [ createDpsk ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useCreateDpskMutation,
+    useTemplateMutationFn: useCreateDpskTemplateMutation
+  })
+  const [ updateDpsk ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateDpskMutation,
+    useTemplateMutationFn: useUpdateDpskTemplateMutation
+  })
 
   // eslint-disable-next-line max-len
-  const [ createDpsk ] = useConfigTemplateMutationFnSwitcher(useCreateDpskMutation, useCreateDpskTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateDpsk ] = useConfigTemplateMutationFnSwitcher(useUpdateDpskMutation, useUpdateDpskTemplateMutation)
-
-  // eslint-disable-next-line max-len
-  const { data: dataFromServer, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DpskSaveData>(
-    useGetDpskQuery, useGetDpskTemplateQuery, !editMode
-  )
+  const { data: dataFromServer, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DpskSaveData>({
+    useQueryFn: useGetDpskQuery,
+    useTemplateQueryFn: useGetDpskTemplateQuery,
+    skip: !editMode
+  })
 
   const formRef = useRef<StepsFormLegacyInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {

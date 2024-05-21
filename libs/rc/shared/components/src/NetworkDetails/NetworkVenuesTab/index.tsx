@@ -142,21 +142,36 @@ export function NetworkVenuesTab () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
   const networkId = params.networkId
 
   const networkQuery = useGetNetwork()
   const [
     addNetworkVenue,
     { isLoading: isAddNetworkUpdating }
-  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
+  ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenueMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
+  })
   const [
     deleteNetworkVenue,
     { isLoading: isDeleteNetworkUpdating }
-  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
+  ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
 
-  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation)
-  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation)
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenuesMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
+  })
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenuesMutation,
+    useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
+  })
   const sdLanScopedNetworkVenues = useSdLanScopedNetworkVenues(networkId)
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
