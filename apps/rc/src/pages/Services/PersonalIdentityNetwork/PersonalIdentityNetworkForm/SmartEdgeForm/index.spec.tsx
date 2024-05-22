@@ -94,9 +94,12 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
     }
 
     mockServer.use(
-      rest.get(
-        EdgeDhcpUrls.getDhcpByEdgeId.url,
-        (req, res, ctx) => res(ctx.status(404))
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (req, res, ctx) => res(ctx.json({
+          data: [],
+          totalCount: 0
+        }))
       ),
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
@@ -211,7 +214,7 @@ describe('PersonalIdentityNetworkForm - SmartEdgeForm', () => {
         </PersonalIdentityNetworkFormContext.Provider>
       </Provider>,
       { route: { params, path: createNsgPath } })
-    await user.click(await screen.findByRole('button', { name: 'Add' }))
+    await user.click((await screen.findAllByRole('button', { name: 'Add' }))[1])
     await screen.findByText('Please enter SmartEdge')
     await screen.findByText('Please enter Number of Segments')
     await screen.findByText('Please enter Number of devices per Segment')

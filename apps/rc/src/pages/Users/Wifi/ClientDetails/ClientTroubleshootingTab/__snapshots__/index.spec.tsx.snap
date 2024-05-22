@@ -709,6 +709,17 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                   stroke-width="4"
                                 />
                                 <path
+                                  d="M10 11L1280 11L1280 55L10 55Z"
+                                  fill="none"
+                                  stroke="#5470c6"
+                                  stroke-width="0"
+                                />
+                                <path
+                                  d="M0 0l0 0l0 0l0 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
+                                <path
                                   d="M-5 -5l26 0l0 10l-26 0Z"
                                   fill="none"
                                   stroke="#ccc"
@@ -963,6 +974,17 @@ exports[`ClientTroubleshootingTab should render correctly 1`] = `
                                 >
                                   Feb
                                 </text>
+                                <path
+                                  d="M10 11L1280 11L1280 55L10 55Z"
+                                  fill="none"
+                                  stroke="#5470c6"
+                                  stroke-width="0"
+                                />
+                                <path
+                                  d="M0 0l0 0l0 0l0 0Z"
+                                  fill="none"
+                                  transform="transform_mock"
+                                />
                                 <path
                                   d="M-5 -5l26 0l0 10l-26 0Z"
                                   fill="none"

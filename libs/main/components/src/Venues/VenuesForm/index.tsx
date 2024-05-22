@@ -29,7 +29,6 @@ import {
   LocationExtended,
   VenueExtended,
   checkObjectNotExists,
-  generatePageHeaderTitle,
   redirectPreviousPage,
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
@@ -37,7 +36,8 @@ import {
   useConfigTemplateLazyQueryFnSwitcher,
   Venue,
   TableResult,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -152,10 +152,15 @@ export function VenuesForm () {
   const [getTimezone] = useLazyGetTimezoneQuery()
 
   const linkToVenues = useTenantLink('/venues')
+  const [ addVenue ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddVenueMutation,
+    useTemplateMutationFn: useAddVenueTemplateMutation
+  })
   // eslint-disable-next-line max-len
-  const [ addVenue ] = useConfigTemplateMutationFnSwitcher(useAddVenueMutation, useAddVenueTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateVenue, { isLoading: updateVenueIsLoading } ] = useConfigTemplateMutationFnSwitcher(useUpdateVenueMutation, useUpdateVenueTemplateMutation)
+  const [ updateVenue, { isLoading: updateVenueIsLoading } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateMutation
+  })
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -170,13 +175,11 @@ export function VenuesForm () {
   const previousPath = usePreviousPath()
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: action === 'edit',
-    isTemplate,
     instanceLabel: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     addLabel: intl.$t({ defaultMessage: 'Add New' })
   })
@@ -237,9 +240,10 @@ export function VenuesForm () {
     filters: {},
     pageSize: 10000
   }
-  const [ venuesList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Venue>>(
-    useLazyVenuesListQuery, useLazyGetVenuesTemplateListQuery
-  )
+  const [ venuesList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Venue>>({
+    useLazyQueryFn: useLazyVenuesListQuery,
+    useLazyTemplateQueryFn: useLazyGetVenuesTemplateListQuery
+  })
 
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {

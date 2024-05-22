@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { defineMessage } from 'react-intl'
+import { MessageDescriptor, defineMessage } from 'react-intl'
 
 import { ClientEventEnum, categoryOptions, disconnectClientEventsMap } from '@acx-ui/analytics/utils'
 
@@ -78,6 +78,22 @@ export type DisplayEvent = ConnectionEvent & {
 }
 
 export type ChartMapping = { key: string; label: string; chartType: string; series: string }
+
+interface Subtitle {
+  title: MessageDescriptor;
+  value: string;
+  isLast?: boolean;
+}
+
+export type TimelineItem = {
+  title: MessageDescriptor;
+  value: string;
+  showCount: boolean;
+  hasXaxisLabel?: boolean;
+  chartMapping: ChartMapping[];
+  showResetZoom?: boolean;
+  subtitle?: Subtitle[];
+}
 
 export const eventColorByCategory = {
   [DISCONNECT]: '--acx-neutrals-50',
@@ -192,7 +208,7 @@ export const ClientTroubleShootingConfig = {
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'Roaming' }),
+      title: defineMessage({ defaultMessage: 'Roaming' }), //hide
       value: TYPES.ROAMING,
       showCount: true,
       chartMapping: [

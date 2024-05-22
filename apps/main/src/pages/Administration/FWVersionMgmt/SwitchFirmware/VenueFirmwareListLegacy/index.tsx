@@ -37,10 +37,10 @@ import {
   switchSchedule,
   compareSwitchVersion
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -268,6 +268,7 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Update Now' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: (selectedRows) => {
       return !hasAvailableSwitchFirmware(selectedRows)
     },
@@ -311,6 +312,7 @@ export const VenueFirmwareTable = (
       })
     },
     label: $t({ defaultMessage: 'Change Update Schedule' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: (selectedRows) => {
       return !hasAvailableSwitchFirmware(selectedRows)
     },
@@ -356,6 +358,7 @@ export const VenueFirmwareTable = (
       return !skipUpdateEnabled
     },
     label: $t({ defaultMessage: 'Skip Update' }),
+    scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -378,6 +381,9 @@ export const VenueFirmwareTable = (
     }
   }]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [SwitchScopes.UPDATE]
+  })
 
   return (
     <Loader states={[tableQuery]}>
@@ -389,12 +395,12 @@ export const VenueFirmwareTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
-        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={filterByAccess([{
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
+        actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-        }])}
+        }] : []}
       />
       <UpdateNowDialog
         visible={updateModelVisible}

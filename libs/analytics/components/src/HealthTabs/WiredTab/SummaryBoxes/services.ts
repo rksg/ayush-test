@@ -19,6 +19,7 @@ export interface WiredSummaryResult {
   switchCpuUtilizationPct: number
   stormPortCount: number
   portCount: number
+  congestedPortCount: number
 }
 
 export const api = dataApi.injectEndpoints({
@@ -32,8 +33,11 @@ export const api = dataApi.injectEndpoints({
           $start: DateTime,
           $end: DateTime,
           $filter: FilterInput,
+          $enableSwitchFirmwareFilter: Boolean
           ) {
-            network(start: $start, end: $end, filter: $filter) {
+            network(start: $start, end: $end, filter: $filter,
+              enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
+            ) {
               hierarchyNode(path: $path) {
                 switchDHCP {
                   attemptCount
@@ -41,12 +45,14 @@ export const api = dataApi.injectEndpoints({
                 }
                 switchCpuUtilizationPct
                 portCount
+                congestedPortCount
               }
             }
           }`,
           variables: {
             ...payload,
-            ...getFilterPayload(payload)
+            ...getFilterPayload(payload),
+            enableSwitchFirmwareFilter: true
           }
         })
       },

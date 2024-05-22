@@ -16,9 +16,10 @@ export default function DHCPInstancesTable (){
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery
-  )
+  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery
+  })
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,

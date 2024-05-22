@@ -18,9 +18,9 @@ import {
   Lag,
   SwitchPortStatus
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }        from '@acx-ui/types'
-import { hasPermission }         from '@acx-ui/user'
+import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { hasPermission }                from '@acx-ui/user'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -64,6 +64,7 @@ export function ClientsTable (props: {
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -87,7 +88,8 @@ export function ClientsTable (props: {
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isSwitchRbacEnabled
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   useEffect(() => {
@@ -195,7 +197,7 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled || !hasPermission()) { // FF
+        if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) { // FF
           return row['switchPort']
         }
 
