@@ -1,26 +1,38 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer, GridCol, GridRow } from '@acx-ui/components'
+import { AnalyticsFilter }          from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { MoreDetailsPieChart } from './HealthPieChart'
+import * as UI                 from './styledComponents'
 
-interface AddMoreDetailsDrawerProps {
+
+export interface MoreDetailsDrawerProps {
   visible: boolean
-  setVisible: (visible: boolean) => void
   widget: String
+  setVisible: (visible: boolean) => void
   setWidget: (widget: String) => void
+  filters: AnalyticsFilter
 }
 
-export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
+export type MoreDetailsWidgetsMapping = {
+  type: string
+  title: string
+  pieTitle: string
+  tableTitle: string
+}[]
 
-  const { visible, setVisible, widget, setWidget } = props
+export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
+
+  const { visible, setVisible, widget, setWidget, filters } = props
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
     setWidget('')
   }
-  const mapping = [
+
+  const mapping: MoreDetailsWidgetsMapping = [
     {
       type: 'dhcp',
       title: $t({ defaultMessage: 'DHCP Failure' }),
@@ -46,21 +58,35 @@ export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
       tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
     }
   ]
-  const matchingMapping = mapping.find(item => item.type === widget)
+  const activeWidgetMapping = mapping.filter(item => item.type === widget)[0]
+
   return (
     <Drawer
       title={
         <UI.Title>
           <Typography.Title level={2}>
-            {matchingMapping?.title}
+            {activeWidgetMapping?.title}
           </Typography.Title>
         </UI.Title>
       }
-      width={1082}
+      width={1111}
       visible={visible}
       onClose={onClose}
       style={{ marginTop: '85px' }}
-      children={null} // piechart, table TBD
+      children={
+        <GridRow>
+          <GridCol key={activeWidgetMapping?.type}
+            col={{ span: 10 }}
+            style={{ height: 260, width: 430 }}>
+            <UI.PieTitle>
+              <Typography.Paragraph>
+                {activeWidgetMapping?.pieTitle}
+              </Typography.Paragraph>
+            </UI.PieTitle>
+            {<MoreDetailsPieChart filters={filters} queryType={activeWidgetMapping?.type}/>}
+          </GridCol>
+        </GridRow>
+      } // table TBD
     />
   )
 }

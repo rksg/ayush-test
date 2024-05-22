@@ -40,20 +40,22 @@ export function ConfigurationProfileForm () {
   const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const [form] = Form.useForm()
 
-  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
-    useGetSwitchConfigProfileQuery,
-    useGetSwitchConfigProfileTemplateQuery,
-    !params.profileId
-  )
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
+    useQueryFn: useGetSwitchConfigProfileQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
+    skip: !params.profileId
+  })
 
-  const [addSwitchConfigProfile, {
-    isLoading: isAddingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher(
-    useAddSwitchConfigProfileMutation, useAddSwitchConfigProfileTemplateMutation
-  )
-  const [updateSwitchConfigProfile, {
-    isLoading: isUpdatingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher(
-    useUpdateSwitchConfigProfileMutation, useUpdateSwitchConfigProfileTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [addSwitchConfigProfile, { isLoading: isAddingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddSwitchConfigProfileMutation,
+    useTemplateMutationFn: useAddSwitchConfigProfileTemplateMutation
+  })
+  // eslint-disable-next-line max-len
+  const [updateSwitchConfigProfile, { isLoading: isUpdatingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateSwitchConfigProfileMutation,
+    useTemplateMutationFn: useUpdateSwitchConfigProfileTemplateMutation
+  })
 
   const editMode = params.action === 'edit'
   const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
@@ -218,11 +220,20 @@ export function ConfigurationProfileForm () {
       if(ipv4DhcpSnooping || arpInspection){
         const vlanModels = data.vlans.map(
           item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
-        data.trustedPorts = data.trustedPorts.map(
-          item => { return {
-            ...item,
-            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
-          }})
+
+        if(vlanModels.length > 0 && vlanModels[0] !== undefined){
+          data.trustedPorts = data.trustedPorts.filter(
+            tpItem => !data.vlans.some(item =>
+              (!item.ipv4DhcpSnooping && !item.arpInspection) &&
+              (item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))
+            )).map(
+            item => { return {
+              ...item,
+              ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+            }})
+        } else {
+          data.trustedPorts = []
+        }
       } else {
         data.trustedPorts = []
       }
