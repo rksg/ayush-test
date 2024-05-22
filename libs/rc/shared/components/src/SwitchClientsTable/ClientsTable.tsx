@@ -64,6 +64,7 @@ export function ClientsTable (props: {
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -87,7 +88,8 @@ export function ClientsTable (props: {
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isSwitchRbacEnabled
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   useEffect(() => {
@@ -156,7 +158,7 @@ export function ClientsTable (props: {
     },
     ...(params.switchId || params.venueId ? [] : [{
       key: 'venueName',
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       sorter: true,
       searchable: searchable,

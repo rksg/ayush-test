@@ -31,9 +31,12 @@ export const api = dataApi.injectEndpoints({
           $start: DateTime
           $end: DateTime
           $granularity: String
-          $filter: FilterInput
+          $filter: FilterInput,
+          $enableSwitchFirmwareFilter: Boolean
         ) {
-          network(start: $start, end: $end,filter : $filter) {
+          network(start: $start, end: $end,filter : $filter,
+            enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
+          ) {
             hierarchyNode(path: $path) {
               timeSeries(granularity: $granularity) {
                 time
@@ -48,7 +51,8 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),
-          ...getFilterPayload(payload)
+          ...getFilterPayload(payload),
+          enableSwitchFirmwareFilter: true
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'CONNECTED_CLIENTS_OVER_TIME' }],

@@ -35,9 +35,11 @@ const RuleTable = (props: RuleTableProps) => {
 
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useRoguePolicyQuery, useGetRoguePolicyTemplateQuery, !edit
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
+    skip: !edit
+  })
 
   const [ruleName, setRuleName] = useState('')
   const [visibleAdd, setVisibleAdd] = useState(false)

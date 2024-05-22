@@ -16,6 +16,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 const userProfile = jest.mocked(getUserProfile)
 
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  userLogout: jest.fn()
+}))
+
 const mockPermissions = {
   'view-analytics': true,
   'view-report-controller-inventory': true,
@@ -68,6 +73,14 @@ describe('UserButton', () => {
   })
 
   it('should handle logout', async () => {
+    const mockUserLogout = require('@acx-ui/utils').userLogout
+    const { location } = window
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: { hostname: 'not.localhost' }
+    })
+
     render(
       <Provider>
         <UserButton />
@@ -75,15 +88,15 @@ describe('UserButton', () => {
       { route: { params } }
     )
 
-    const submit = window.HTMLFormElement.prototype.submit
-    const mockSubmit = jest.fn()
-    window.HTMLFormElement.prototype.submit = mockSubmit
-
     await userEvent.click(screen.getByRole('button'))
     await userEvent.click(screen.getByRole('menuitem', { name: 'Log out' }))
-    expect(mockSubmit).toHaveBeenCalled()
 
-    window.HTMLFormElement.prototype.submit = submit
+    expect(mockUserLogout).toHaveBeenCalled()
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: location
+    })
   })
 
   it('does not throw error if names are empty', async () => {

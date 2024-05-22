@@ -8,6 +8,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { ConfigurationSolid }                from '@acx-ui/icons'
 import { useWebAuthTemplateListQuery }       from '@acx-ui/rc/services'
 import { AccessSwitch, defaultTemplateData } from '@acx-ui/rc/utils'
@@ -31,10 +32,12 @@ export function AccessSwitchTable (props: AccessSwitchesTableProps) {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const { editHandler } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: templateListResult } = useWebAuthTemplateListQuery({
     params: { tenantId },
-    payload: { fields: ['name', 'id'] }
+    payload: { fields: ['name', 'id'] },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const columns: TableProps<AccessSwitchTableDataType>['columns'] = React.useMemo(() => {

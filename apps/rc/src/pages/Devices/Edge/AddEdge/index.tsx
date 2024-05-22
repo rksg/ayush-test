@@ -9,8 +9,8 @@ import {
 import {
   EdgeSettingForm
 } from '@acx-ui/rc/components'
-import { useAddEdgeMutation }                     from '@acx-ui/rc/services'
-import { CatchErrorResponse, EdgeGeneralSetting } from '@acx-ui/rc/utils'
+import { useAddEdgeClusterMutation, useAddEdgeMutation } from '@acx-ui/rc/services'
+import { CatchErrorResponse, EdgeGeneralSetting }        from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink
@@ -22,18 +22,46 @@ const AddEdge = () => {
 
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const linkToEdgeList = useTenantLink('/devices/edge')
+  const clusterListPage = useTenantLink('/devices/edge')
   const [addEdge] = useAddEdgeMutation()
+  const [addEdgeCluster] = useAddEdgeClusterMutation()
 
   const handleAddEdge = async (data: EdgeGeneralSetting) => {
+    const hasClusterId = !!data.clusterId
+
+    const params = hasClusterId
+      ? { venueId: data.venueId,
+        edgeClusterId: data.clusterId }
+      : { venueId: data.venueId }
+
+    const clusterPayload = {
+      name: data.name,
+      description: '',
+      smartEdges: [
+        {
+          name: data.name,
+          description: data.description,
+          serialNumber: data.serialNumber
+        }
+      ]
+    }
+
     try {
-      await addEdge({ payload: data }).unwrap()
-      navigate(linkToEdgeList, { replace: true })
+      const request = hasClusterId
+        ? addEdge({ params, payload: clusterPayload.smartEdges[0] })
+        : addEdgeCluster({ params, payload: clusterPayload })
+      await request.unwrap()
+
+      navigate(clusterListPage)
     } catch (error) {
-      showActionModal({
-        type: 'error',
-        ...getErrorModalInfo(error as CatchErrorResponse)
-      })
+      if (hasClusterId) {
+        showActionModal({
+          type: 'error',
+          ...getErrorModalInfo(error as CatchErrorResponse)
+        })
+        return
+      }
+      console.error(error) // eslint-disable-line no-console
     }
   }
 
@@ -47,7 +75,7 @@ const AddEdge = () => {
       />
       <StepsForm
         onFinish={handleAddEdge}
-        onCancel={() => navigate(linkToEdgeList)}
+        onCancel={() => navigate(clusterListPage)}
         buttonLabel={{ submit: $t({ defaultMessage: 'Add' }) }}
       >
         <StepsForm.StepForm>

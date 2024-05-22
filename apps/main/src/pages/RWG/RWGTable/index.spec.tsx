@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider }           from '@acx-ui/store'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -15,31 +15,27 @@ import { RWGTable } from '.'
 
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
-  response: [{
-    rwgId: 'bbc41563473348d29a36b76e95c50381',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
-    venueId: '3f10af1401b44902a88723cb68c4bc77',
-    venueName: 'My-Venue',
-    name: 'ruckusdemos',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: 'Operational',
-    id: 'bbc41563473348d29a36b76e95c50381',
-    new: false
-  }, {
-    rwgId: 'bbc41563473348d29a36b76e95c50382',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a377',
-    venueId: '3f10af1401b44902a88723cb68c4bc77',
-    venueName: 'My-Venue',
-    name: 'rwg1',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: 'Offline',
-    id: 'bbc41563473348d29a36b76e95c50382',
-    new: false
-  }]
+  response: {
+    items: [{
+      rwgId: 'bbc41563473348d29a36b76e95c50381',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
+      venueName: 'My-Venue',
+      name: 'ruckusdemos',
+      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      status: RWGStatusEnum.ONLINE,
+      isCluster: false
+    }, {
+      rwgId: 'bbc41563473348d29a36b76e95c50382',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
+      venueName: 'My-Venue',
+      name: 'rwg1',
+      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
+  }
 }
 
 const mockedUsedNavigate = jest.fn()
@@ -53,7 +49,7 @@ describe('RWG Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
-      rest.get(
+      rest.post(
         CommonUrlsInfo.getRwgList.url,
         (req, res, ctx) => res(ctx.json(rwgList))
       ),
@@ -62,7 +58,7 @@ describe('RWG Table', () => {
         (req, res, ctx) => res(ctx.json([]))
       ),
       rest.delete(
-        CommonUrlsInfo.deleteGateway.url,
+        CommonRbacUrlsInfo.deleteGateway.url,
         (req, res, ctx) => res(ctx.json({ requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f' }))
       )
     )

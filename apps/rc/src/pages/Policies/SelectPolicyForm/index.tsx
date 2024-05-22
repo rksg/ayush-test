@@ -15,6 +15,7 @@ import {
   useIsSplitOn,
   useIsTierAllowed
 } from '@acx-ui/feature-toggle'
+import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT } from '@acx-ui/rc/components'
 import {
   useGetApSnmpViewModelQuery,
   useGetIdentityProviderListQuery,
@@ -28,9 +29,9 @@ import {
   policyTypeLabelMapping, policyTypeDescMapping
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                  from '@acx-ui/types'
+import { hasPermission }                               from '@acx-ui/user'
 
-import { PROFILE_MAX_COUNT as IDENTITY_PROVIDER_MAX_COUNT } from '../IdentityProvider/constants'
-import { PROFILE_MAX_COUNT as WIFI_OPERATOR_MAX_COUNT }     from '../WifiOperator/constants'
 
 interface policyOption {
   type: PolicyType,
@@ -44,7 +45,6 @@ export default function SelectPolicyForm () {
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -53,7 +53,7 @@ export default function SelectPolicyForm () {
     payload: {
       fields: ['id']
     }
-  }, { skip: !supportApSnmp }).data?.totalCount || 0
+  }).data?.totalCount || 0
   const WifiOperatorTotalCount = useGetWifiOperatorListQuery({
     params,
     payload: {
@@ -88,17 +88,13 @@ export default function SelectPolicyForm () {
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
-  ]
-
-  if (supportApSnmp) {
-    // AP SNMP Policy is limited to 64, so disable the radio card if the total count is 64
-    sets.push({
+    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] },
+    {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       disabled: (ApSnmpPolicyTotalCount >= 64)
-    })
-  }
+    }
+  ]
 
   if (supportHotspot20R1) {
     sets.push({
@@ -128,7 +124,7 @@ export default function SelectPolicyForm () {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
   }
 
-  if (isCertificateTemplateEnabled) {
+  if (isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
     sets.push({ type: PolicyType.CERTIFICATE_TEMPLATE, categories: [RadioCardCategory.WIFI] })
   }
 

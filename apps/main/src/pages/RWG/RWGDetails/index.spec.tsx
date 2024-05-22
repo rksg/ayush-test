@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { rwgApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, RWG, RWGStatusEnum }    from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -14,34 +14,28 @@ const gatewayResponse = {
   requestId: 'request-id',
   response: {
     rwgId: 'bbc41563473348d29a36b76e95c50381',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: 'Operational',
-    id: 'bbc41563473348d29a36b76e95c50381',
-    new: false
-  }
+    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    apiKey: 'xxxxxxxxxxxxxxx',
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 const gatewayResponse1 = {
   requestId: 'request-id',
   response: {
     rwgId: 'bbc41563473348d29a36b76e95c50381',
-    tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    loginUrl: 'https://rxgs5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
-    status: 'Offline',
-    id: 'bbc41563473348d29a36b76e95c50381',
-    new: false
-  }
+    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    apiKey: 'xxxxxxxxxxx',
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 jest.mock('./GatewayOverviewTab', () => ({
@@ -67,6 +61,7 @@ describe('RWGDetails', () => {
     const params = {
       tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
       gatewayId: 'bbc41563473348d29a36b76e95c50381',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
       activeTab: 'overview'
     }
     mockServer.use(
@@ -77,7 +72,7 @@ describe('RWGDetails', () => {
     )
     render(<Provider><RWGDetails /></Provider>, {
       // eslint-disable-next-line max-len
-      route: { params, path: '/:tenantId/t/ruckus-wan-gateway/:gatewayId/gateway-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/ruckus-wan-gateway/:venueId/:gatewayId/gateway-details/:activeTab' }
     })
     expect(await screen.findByText('ruckusdemos')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(1)
@@ -92,6 +87,7 @@ describe('RWGDetails', () => {
     const params = {
       tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
       gatewayId: 'bbc41563473348d29a36b76e95c50381',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
       activeTab: 'overview'
     }
     mockServer.use(
@@ -102,7 +98,7 @@ describe('RWGDetails', () => {
     )
     render(<Provider><RWGDetails /></Provider>, {
       // eslint-disable-next-line max-len
-      route: { params, path: '/:tenantId/t/ruckus-wan-gateway/:gatewayId/gateway-details/:activeTab' }
+      route: { params, path: '/:tenantId/t/ruckus-wan-gateway/:venueId/:gatewayId/gateway-details/:activeTab' }
     })
     expect(await screen.findByText('ruckusdemos')).toBeVisible()
     expect(screen.getAllByRole('tab')).toHaveLength(1)

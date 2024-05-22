@@ -5,17 +5,28 @@ import {
   useGetVenueQuery,
   useGetVenueTemplateQuery
 } from '@acx-ui/rc/services'
-import { VenueExtended, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { useParams }                                                                            from '@acx-ui/react-router-dom'
-import { RequestPayload, UseQuery }                                                             from '@acx-ui/types'
+import {
+  ApiVersionEnum,
+  VenueExtended,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useParams }                from '@acx-ui/react-router-dom'
+import { RequestPayload, UseQuery } from '@acx-ui/types'
 
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
   useQueryFn: UseQuery<ResultType, RequestPayload>,
-  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
+  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>,
+  rbacApiVersion?: ApiVersionEnum
 ): ReturnType<typeof useQueryFn> {
   const { venueId } = useParams()
 
-  return useConfigTemplateQueryFnSwitcher(useQueryFn, useTemplateQueryFn, !venueId)
+  return useConfigTemplateQueryFnSwitcher({
+    useQueryFn,
+    useTemplateQueryFn,
+    skip: !venueId,
+    payload: rbacApiVersion ? { rbacApiVersion } : undefined
+  })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -24,7 +35,7 @@ export function useVenueConfigTemplateMutationFnSwitcher (
   useMutationFn: UseMutation<VenueMutationDefinition>,
   useTemplateMutationFn: UseMutation<VenueMutationDefinition>
 ) {
-  return useConfigTemplateMutationFnSwitcher(useMutationFn, useTemplateMutationFn)
+  return useConfigTemplateMutationFnSwitcher({ useMutationFn, useTemplateMutationFn })
 }
 
 export function useGetVenueInstance () {

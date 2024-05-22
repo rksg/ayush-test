@@ -25,28 +25,10 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/edgeDhcpServices/:id',
     newApi: true
   },
-  bulkDeleteDhcpServices: {
-    method: 'delete',
-    url: '/edgeDhcpServices',
-    oldUrl: '/api/edgeDhcpServices',
-    newApi: true
-  },
   getDhcp: {
     method: 'get',
     url: '/edgeDhcpServices/:id',
     oldUrl: '/api/edgeDhcpServices/:id',
-    newApi: true
-  },
-  getDhcpList: {
-    method: 'get',
-    url: '/edgeDhcpServices/dhcps',
-    oldUrl: '/api/edgeDhcpServices/dhcps',
-    newApi: true
-  },
-  getDhcpByEdgeId: {
-    method: 'get',
-    url: '/edgeDhcpServices/edgeDhcpRelationships/:edgeId',
-    oldUrl: '/api/edgeDhcpServices/edgeDhcpRelationships/:edgeId',
     newApi: true
   },
   getDhcpPoolStats: {
@@ -57,18 +39,33 @@ export const EdgeDhcpUrls: { [key: string]: ApiInfo } = {
   },
   getDhcpStats: {
     method: 'post',
-    url: '/edgeDhcpServices/dhcps/query',
+    url: '/edgeDhcpServices/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/edgeDhcpServices/dhcps',
     newApi: true
   },
   getDhcpHostStats: {
     method: 'post',
-    url: '/edgeDhcpServices/dhcpHosts/query',
+    url: '/edgeDhcpServices/dhcpClientLeases/query',
     newApi: true
   },
   getDhcpUeSummaryStats: {
     method: 'post',
     url: '/edgeDhcpServices/dhcpUeSummary/query',
+    newApi: true
+  },
+  restartDhcpService: {
+    method: 'PATCH',
+    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:edgeId',
+    newApi: true
+  },
+  activateDhcpService: {
+    method: 'put',
+    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:edgeId',
+    newApi: true
+  },
+  deactivateDhcpService: {
+    method: 'delete',
+    url: '/edgeDhcpServices/:id/venues/:venueId/edgeClusters/:edgeId',
     newApi: true
   }
 }

@@ -46,12 +46,15 @@ let isModalShown = false
 // TODO: workaround for skipping general error dialog
 const ignoreEndpointList = [
   'clientInfo',
-  'clientPcap'
+  'clientPcap',
+  'clientConnectionQualities'
 ]
 
 const isIntDevMode =
   window.location.hostname.includes('int.ruckus.cloud') &&
   window.location.search.includes('devMode=true')
+
+const isDevModeOn = window.location.hostname === 'localhost'
 
 export const errorMessage = {
   SERVER_ERROR: {
@@ -139,22 +142,24 @@ export const getErrorContent = (action: ErrorAction) => {
       errors = action.payload.message
     }
   }
-  let needLogout = false
   let callback = undefined
 
   switch (status) {
     case 400:
-      if (errors && typeof errors !== 'string' && 'error' in errors &&
-      errors.error === 'API-KEY not present') { //ErrorDetailsProps
-        needLogout = true
-      }
       errorMsg = errorMessage.BAD_REQUEST
       break
     case 401:
     case 403:
-      errorMsg = errorMessage.SESSION_EXPIRED
-      type = 'info'
-      needLogout = true
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if(!(errors as any)?.error) {
+        errorMsg = errorMessage.SESSION_EXPIRED
+        type = 'info'
+        if(!isDevModeOn && !isIntDevMode) {
+          callback = userLogout
+        }
+      } else {
+        errorMsg = errorMessage.SERVER_ERROR
+      }
       break
     case 408: // request timeout
       errorMsg = errorMessage.OPERATION_FAILED
@@ -203,8 +208,7 @@ export const getErrorContent = (action: ErrorAction) => {
     content,
     type,
     errors: errors as ErrorDetailsProps,
-    callback,
-    needLogout
+    callback
   }
 }
 
@@ -241,8 +245,6 @@ const shouldIgnoreErrorModal = (action?: ErrorAction) => {
 }
 
 export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction) => {
-  const isDevModeOn = window.location.hostname === 'localhost'
-
   if (action?.payload && typeof action.payload === 'object' && 'meta' in action.payload
     && action.meta && !action.meta?.baseQueryMeta) {
     // baseQuery (for retry API)
@@ -252,12 +254,9 @@ export const errorMiddleware: Middleware = () => (next) => (action: ErrorAction)
   }
 
   if (isRejectedWithValue(action)) {
-    const { needLogout, ...details } = getErrorContent(action)
+    const details = getErrorContent(action)
     if (!shouldIgnoreErrorModal(action)) {
       showErrorModal(details)
-    }
-    if (needLogout && !isDevModeOn && !isIntDevMode) {
-      userLogout()
     }
   }
   return next(action)

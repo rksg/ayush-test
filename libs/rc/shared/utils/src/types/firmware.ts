@@ -220,7 +220,9 @@ export interface switchSchedule {
 
 export interface FirmwareSwitchVenue {
   id: string;
+  venueId?: string;
   name: string;
+  venueName: string;
   preDownload: boolean;
   switchFirmwareVersionAboveTen: switchVersion;
   switchFirmwareVersion: switchVersion;

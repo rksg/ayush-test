@@ -7,11 +7,13 @@ import { get }                    from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button, Tabs }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import { NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../NetworkFormContext'
 
 import { AdvancedTab }       from './AdvancedTab'
+import { Hotspot20Tab }      from './Hotspot20Tab'
 import { NetworkControlTab } from './NetworkControlTab'
 import { NetworkingTab }     from './NetworkingTab'
 import { RadioTab }          from './RadioTab'
@@ -99,6 +101,8 @@ export function MoreSettingsTabs (props: {
   const form = Form.useFormInstance()
   const wlanData = (editMode) ? props.wlanData : form.getFieldsValue()
 
+  const supportHotspot20 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+
   const [currentTab, setCurrentTab] = useState('vlan')
 
   const MoreSettingsTabsInfo = [
@@ -107,6 +111,11 @@ export function MoreSettingsTabs (props: {
       display: defineMessage({ defaultMessage: 'VLAN' }),
       style: { width: '10px' }
     },
+    ...(supportHotspot20 && data?.type === NetworkTypeEnum.HOTSPOT20 ? [{
+      key: 'hotspot20',
+      display: defineMessage({ defaultMessage: 'Hotspot 2.0' }),
+      style: { width: '19px' }
+    }] : []),
     ...((data?.type === NetworkTypeEnum.CAPTIVEPORTAL)? [{
       key: 'userConnection',
       display: defineMessage({ defaultMessage: 'User Connection' }),
@@ -147,13 +156,18 @@ export function MoreSettingsTabs (props: {
     <div style={{ display: currentTab === 'vlan' ? 'block' : 'none' }}>
       <VlanTab wlanData={wlanData} />
     </div>
+    {supportHotspot20 &&
+      <div style={{ display: currentTab === 'hotspot20' ? 'block' : 'none' }}>
+        <Hotspot20Tab />
+      </div>
+    }
     {(data?.type === NetworkTypeEnum.CAPTIVEPORTAL) &&
     <div style={{ display: currentTab === 'userConnection' ? 'block' : 'none' }}>
       <UserConnectionTab />
     </div>
     }
     <div style={{ display: currentTab === 'networkControl' ? 'block' : 'none' }}>
-      <NetworkControlTab wlanData={wlanData} />
+      <NetworkControlTab/>
     </div>
     <div style={{ display: currentTab === 'radio' ? 'block' : 'none' }}>
       <RadioTab />

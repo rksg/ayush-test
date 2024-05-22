@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 
-import { EdgeIpModeEnum, EdgeLag, EdgeLagFixtures, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePort, EdgePortConfigFixtures, EdgePortTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                               from '@acx-ui/store'
+import { EdgeIpModeEnum, EdgeLag, EdgeLagFixtures, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePort, EdgePortConfigFixtures, EdgePortTypeEnum, VirtualIpSetting } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                                 from '@acx-ui/store'
 import {
   render,
   screen,
@@ -224,6 +224,33 @@ describe('Edge LAG table drawer', () => {
     expect(warningDialog).toHaveTextContent('Modify this options may cause the Edge lost connection')
     await userEvent.click(within(warningDialog).getByRole('button', { name: 'Disable' }))
     await waitFor(() => expect(warningDialog).not.toBeVisible())
+  })
+
+  it('should disable portType dropdown when the interface set as a VRRP interface', async () => {
+    const setVisibleSpy = jest.fn()
+    const onEditSpy = jest.fn()
+    render(
+      <Provider>
+        <LagDrawer
+          clusterId='test-cluster'
+          serialNumber='test-edge'
+          visible={true}
+          data={mockedEdgeLagList.content[1]}
+          setVisible={setVisibleSpy}
+          portList={mockEdgeCorePortPortConfig as EdgePort[]}
+          vipConfig={[{
+            ports: [{
+              serialNumber: 'test-edge',
+              portName: 'lag2'
+            }]
+          }] as VirtualIpSetting[]}
+          onAdd={async () => {}}
+          onEdit={onEditSpy}
+        />
+      </Provider>, { route: { params: { tenantId: 't-id' } } })
+    await waitFor(() =>
+      expect(screen.getByRole('combobox', { name: 'Port Type' })).toBeDisabled()
+    )
   })
 })
 

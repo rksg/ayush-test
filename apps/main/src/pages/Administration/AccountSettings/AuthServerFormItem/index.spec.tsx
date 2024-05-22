@@ -92,6 +92,9 @@ describe('Auth Server Form Item', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
+  afterEach(() => {
+    global.fetch = unmockedFetch
+  })
   it('should render layout correctly when no data exists', async () => {
     render(
       <Provider>

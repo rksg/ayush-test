@@ -81,9 +81,10 @@ export function NetworkDetailForm () {
     filters: {},
     pageSize: 10000
   }
-  const [getInstanceList] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Network>>(
-    useLazyNetworkListQuery, useLazyGetNetworkTemplateListQuery
-  )
+  const [getInstanceList] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Network>>({
+    useLazyQueryFn: useLazyNetworkListQuery,
+    useLazyTemplateQueryFn: useLazyGetNetworkTemplateListQuery
+  })
   const [getVenueNetrworkApGroupList] = useLazyGetVenueNetworkApGroupQuery()
   const params = useParams()
 
@@ -144,6 +145,8 @@ export function NetworkDetailForm () {
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
+    { type: NetworkTypeEnum.HOTSPOT20,
+      disabled: !useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE) },
     { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !isPortalServiceEnabled },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]

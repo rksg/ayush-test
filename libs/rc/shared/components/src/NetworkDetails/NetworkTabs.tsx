@@ -1,7 +1,6 @@
 import { useIntl } from 'react-intl'
 
 import { Tabs }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { useNetworkDetailHeaderQuery }           from '@acx-ui/rc/services'
 import { useConfigTemplate }                     from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
@@ -29,13 +28,12 @@ function NetworkTabs () {
     data?.activeVenueCount ?? 0
   ]
 
-  const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
-
   if (isTemplate) {
     return (
       <Tabs onChange={onTabChange} activeKey={params.activeTab}>
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
+          tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' },
+            { venuesCount })}
           key='venues'
         />
       </Tabs>
@@ -48,55 +46,31 @@ function NetworkTabs () {
         tab={$t({ defaultMessage: 'Overview' })}
         key='overview'
       />
-      {
-        listOfClientsPerWlanFlag ?
-          <>
-            { hasAccess() && <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Incidents' })}
-              key='incidents'
-            />
-            }
-            <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
-              key='venues'
-            />
-            <Tabs.TabPane
-              tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })}
-              key='aps'
-            />
-            <Tabs.TabPane
-              tab={
-                $t({ defaultMessage: 'Clients ({clientsCount})' },
-                  { clientsCount: data?.network?.clients })
-              }
-              key='clients'
-            />
-            <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Timeline' })}
-              key='timeline'
-            />
-          </>
-          :
-          <>
-            <Tabs.TabPane
-              tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })}
-              key='aps'
-            />
-            <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Venues ({venuesCount})' }, { venuesCount })}
-              key='venues'
-            />
-            <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Timeline' })}
-              key='timeline'
-            />
-            { hasAccess() && <Tabs.TabPane
-              tab={$t({ defaultMessage: 'Incidents' })}
-              key='incidents'
-            />
-            }
-          </>
+      { hasAccess() && <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Incidents' })}
+        key='incidents'
+      />
       }
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({venuesCount})' },
+          { venuesCount })}
+        key='venues'
+      />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'APs ({apsCount})' }, { apsCount })}
+        key='aps'
+      />
+      <Tabs.TabPane
+        tab={
+          $t({ defaultMessage: 'Clients ({clientsCount})' },
+            { clientsCount: data?.network?.clients })
+        }
+        key='clients'
+      />
+      <Tabs.TabPane
+        tab={$t({ defaultMessage: 'Timeline' })}
+        key='timeline'
+      />
     </Tabs>
   )
 }

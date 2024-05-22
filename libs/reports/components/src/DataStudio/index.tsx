@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 
+import { showExpiredSessionModal }            from '@acx-ui/analytics/components'
 import { getUserProfile }                     from '@acx-ui/analytics/utils'
-import { IFrame, showActionModal }            from '@acx-ui/components'
+import { IFrame }                             from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
 import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useAuthenticateMutation }            from '@acx-ui/reports/services'
 import type { DataStudioResponse }            from '@acx-ui/reports/services'
 import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
-import { useLocaleContext, getIntl }          from '@acx-ui/utils'
+import { useLocaleContext }                   from '@acx-ui/utils'
 
 export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development') {
@@ -18,16 +19,6 @@ export const getHostName = (origin: string) => {
       // : 'https://alto.local.mlisa.io'
   }
   return origin
-}
-
-function showExpiredSessionModal () {
-  const { $t } = getIntl()
-  showActionModal({
-    type: 'info',
-    title: $t({ defaultMessage: 'Session Expired' }),
-    content: $t({ defaultMessage: 'Your session has expired. Please login again.' }),
-    onOk: () => window.location.reload()
-  })
 }
 
 export function DataStudio () {

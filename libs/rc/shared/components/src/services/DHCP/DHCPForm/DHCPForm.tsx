@@ -12,9 +12,9 @@ import {
 import { useCreateOrUpdateDhcpTemplateMutation, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useSaveOrUpdateDHCPMutation } from '@acx-ui/rc/services'
 import {
   DHCPSaveData,
-  generateServicePageHeaderTitle,
+  useServicePageHeaderTitle,
   ServiceOperation, ServiceType,
-  useConfigTemplate, useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   useServicePreviousPath
 } from '@acx-ui/rc/utils'
@@ -36,17 +36,20 @@ export function DHCPForm (props: DHCPFormProps) {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
-  const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery, !editMode
-  )
+  const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    skip: !editMode
+  })
 
-  const [ saveOrUpdateDHCP, { isLoading: isFormSubmitting } ] = useConfigTemplateMutationFnSwitcher(
-    useSaveOrUpdateDHCPMutation, useCreateOrUpdateDhcpTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [ saveOrUpdateDHCP, { isLoading: isFormSubmitting } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useSaveOrUpdateDHCPMutation,
+    useTemplateMutationFn: useCreateOrUpdateDhcpTemplateMutation
+  })
 
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
-
+  const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DHCP)
 
   useEffect(() => {
     if (data) {
@@ -97,7 +100,7 @@ export function DHCPForm (props: DHCPFormProps) {
   return (
     <>
       <PageHeader
-        title={generateServicePageHeaderTitle(editMode, isTemplate, ServiceType.DHCP)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />
       <Loader states={[{ isLoading: isLoading || isFormSubmitting, isFetching: isFetching }]}>

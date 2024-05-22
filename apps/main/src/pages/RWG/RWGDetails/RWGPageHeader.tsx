@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader } from '@acx-ui/components'
-import { useGetRwgQuery }     from '@acx-ui/rc/services'
-import { RWG }                from '@acx-ui/rc/utils'
+import { Button, cssStr, PageHeader }       from '@acx-ui/components'
+import { useGetRwgQuery }                   from '@acx-ui/rc/services'
+import { getRwgStatus, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -21,10 +21,10 @@ import RWGTabs from './RWGTabs'
 
 function RWGPageHeader () {
   const { $t } = useIntl()
-  const [gatewayStatus, setGatewayStatus] = useState<string>()
-  const { tenantId, gatewayId } = useParams()
+  const [gatewayStatus, setGatewayStatus] = useState<RWGStatusEnum>()
+  const { tenantId, gatewayId, venueId } = useParams()
 
-  const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId } })
+  const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId, venueId } })
 
   useEffect(() => {
     if (gatewayData) {
@@ -53,9 +53,8 @@ function RWGPageHeader () {
       titleExtra={
         <span>
           <Badge
-            color={`var(${gatewayStatus === 'Operational'
-              ? '--acx-semantics-green-50'
-              : '--acx-neutrals-50'})`}
+            color={gatewayStatus ? cssStr(getRwgStatus(gatewayStatus).color)
+              : cssStr('--acx-neutrals-50')}
           />
         </span>
       }

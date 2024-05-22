@@ -87,7 +87,6 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
@@ -170,7 +169,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const RadioSelect = (props: SelectProps) => {
     const isSupport6G = IsNetworkSupport6g(network)
     const disabledBandTooltip = $t({ defaultMessage: '6GHz disabled for non-WPA3 networks. To enable 6GHz operation, configure a WLAN for WPA3 operation.' })
-    if (!triBandRadioFeatureFlag || !isSupport6G) {
+    if (!isSupport6G) {
       _.remove(props.value, (v) => v === RadioTypeEnum._6_GHz)
     }
     return (
@@ -182,13 +181,13 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       >
         <Select.Option value={RadioTypeEnum._2_4_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._2_4_GHz)}</Select.Option>
         <Select.Option value={RadioTypeEnum._5_GHz} title=''>{radioTypeEnumToString(RadioTypeEnum._5_GHz)}</Select.Option>
-        { triBandRadioFeatureFlag && (
-          <Select.Option
-            value={RadioTypeEnum._6_GHz}
-            disabled={!isSupport6G}
-            title={!isSupport6G ? disabledBandTooltip : ''}
-          >{radioTypeEnumToString(RadioTypeEnum._6_GHz)}</Select.Option>
-        )}
+        <Select.Option
+          value={RadioTypeEnum._6_GHz}
+          disabled={!isSupport6G}
+          title={!isSupport6G ? disabledBandTooltip : ''}
+        >
+          {radioTypeEnumToString(RadioTypeEnum._6_GHz)}
+        </Select.Option>
       </Select>
     )
   }
@@ -300,7 +299,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
          && radios.length === 1
          && radios.includes(RadioTypeEnum._6_GHz)) {
       return Promise.reject($t({ defaultMessage:
-        'Configure a Venue using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
+        'Configure a <VenueSingular></VenueSingular> using only 6 GHz, in WPA2/WPA3 Mixed Mode DPSK Network, requires a combination of other Radio Bands. To use 6 GHz, other radios must be added.' }))
     }
     return Promise.resolve()
   }
@@ -309,7 +308,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     <Modal
       {...props}
       title={$t({ defaultMessage: 'Select APs' })}
-      subTitle={$t({ defaultMessage: 'Define how this network will be activated on venue "{venueName}"' }, { venueName: venueName })}
+      subTitle={$t({ defaultMessage: 'Define how this network will be activated on <venueSingular></venueSingular> "{venueName}"' }, { venueName: venueName })}
       okText={$t({ defaultMessage: 'Apply' })}
       maskClosable={true}
       keyboard={false}
@@ -342,7 +341,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
           <Radio.Group>
             <Space direction='vertical' size='middle'>
               <Radio value={0} disabled={isDisableAllAPs(networkVenue?.apGroups)}>{$t({ defaultMessage: 'All APs' })}
-                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this venue in the future.' })}</UI.RadioDescription>
+                <UI.RadioDescription>{$t({ defaultMessage: 'Including any AP that will be added to this <venueSingular></venueSingular> in the future.' })}</UI.RadioDescription>
               </Radio>
               <Form.Item noStyle
                 shouldUpdate={(prevValues, currentValues) => prevValues.selectionType !== currentValues.selectionType}>

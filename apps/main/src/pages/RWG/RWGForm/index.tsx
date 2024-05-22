@@ -6,10 +6,12 @@ import { useIntl }                              from 'react-intl'
 
 import {
   Button,
+  cssStr,
   Loader,
   PageHeader,
   PasswordInput,
-  StepsForm
+  StepsForm,
+  Tooltip
 } from '@acx-ui/components'
 import {
   useAddGatewayMutation,
@@ -24,9 +26,8 @@ import {
   whitespaceOnlyRegExp,
   RWG,
   excludeSpaceRegExp,
-  notAllDigitsRegExp,
-  excludeQuoteRegExp,
-  URLProtocolRegExp
+  domainNameRegExp,
+  getRwgStatus
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -53,9 +54,10 @@ export function RWGForm () {
   const [addGateway] = useAddGatewayMutation()
   const [updateGateway] = useUpdateGatewayMutation()
 
-  const { tenantId, gatewayId, action } = useParams()
-  const { data } = useGetRwgQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
-  const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}/gateway-details`)
+  const { tenantId, gatewayId, venueId, action } = useParams()
+  const { data } = useGetRwgQuery({ params: { tenantId, gatewayId, venueId } },
+    { skip: !gatewayId })
+  const basePath = useTenantLink(`/ruckus-wan-gateway/${venueId}/${gatewayId}/gateway-details`)
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const venuesList = useVenuesListQuery({ params: { tenantId: tenantId }, payload: defaultPayload })
 
@@ -81,14 +83,15 @@ export function RWGForm () {
     }
     const payload = { ...gatewayListPayload, searchString: value }
     const list = (await gatewayList({ params, payload }, true)
-      .unwrap()).data.filter(n => n.id !== data?.id).map(n => ({ name: n.name }))
+      .unwrap()).data.filter(n => n.rwgId !== data?.rwgId).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Gateway' }))
   }
 
   const handleAddGateway = async (values: RWG) => {
     try {
       const formData = { ...values }
-      await addGateway({ params, payload: formData }).unwrap()
+      await addGateway({ params: { ...params, venueId: formData.venueId },
+        payload: formData }).unwrap()
 
       navigate(linkToGateways, { replace: true })
     } catch (error) {
@@ -98,7 +101,7 @@ export function RWGForm () {
 
   const handleEditGateway = async (values: RWG) => {
     try {
-      const formData = { ...values, rwgId: data?.id } // rwg update API use post method where rwgId is required to pass
+      const formData = { ...values, rwgId: data?.rwgId } // rwg update API use post method where rwgId is required to pass
       await updateGateway({ params, payload: formData }).unwrap()
       // TODO: after update need to redirect to gateway detail page
     } catch (error) {
@@ -120,9 +123,8 @@ export function RWGForm () {
           isEditMode &&
           <span>
             <Badge
-              color={`var(${data?.status === 'Operational'
-                ? '--acx-semantics-green-50'
-                : '--acx-neutrals-50'})`}
+              color={data?.status ? cssStr(getRwgStatus(data.status).color)
+                : cssStr('--acx-neutrals-50')}
             />
           </span>
         }
@@ -159,12 +161,12 @@ export function RWGForm () {
                 <Form.Item
                   name='venueId'
                   label={<>
-                    {$t({ defaultMessage: 'Venue' })}
+                    {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                   </>}
                   initialValue={data?.venueId}
                   rules={[{
                     required: true,
-                    message: $t({ defaultMessage: 'Please select Venue' })
+                    message: $t({ defaultMessage: 'Please select <VenueSingular></VenueSingular>' })
                   }]}
                   children={<Select
                     options={venueOption}
@@ -189,50 +191,49 @@ export function RWGForm () {
                   validateTrigger={'onBlur'}
                 />
                 <Form.Item
-                  name='loginUrl'
-                  initialValue={data?.loginUrl}
-                  label={$t({ defaultMessage: 'URL' })}
+                  name='hostname'
+                  initialValue={data?.hostname}
+                  label={<>{$t({ defaultMessage: 'FQDN / IP' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage:
+                        'Fully Qualified Domain Name or IP address of the RWG Device' })}
+                      placement='right'
+                      iconStyle={{
+                        width: 16,
+                        height: 16
+                      }}
+                    />
+                  </>}
                   rules={[
-                    { type: 'string', required: true },
-                    { min: 2, transform: (value) => value.trim() },
-                    { max: 64, transform: (value) => value.trim() },
-                    { validator: (_, value) => URLProtocolRegExp(value) }
+                    { type: 'string', required: true,
+                      message: $t({ defaultMessage: 'Please enter FQDN / IP' })
+                    },
+                    { validator: (_, value) => domainNameRegExp(value),
+                      message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
+                    }
                   ]}
                   children={<Input />}
                 />
                 <Form.Item
-                  name='username'
-                  initialValue={data?.username}
-                  rules={[{ required: true },
-                    { min: 2 },
-                    { max: 48 },
-                    { validator: (_, value) => excludeQuoteRegExp(value) },
-                    { validator: (_, value) => excludeSpaceRegExp(value) }]}
-                  label={$t({ defaultMessage: 'Username' })}
-                  children={<Input />}
-                />
-                <Form.Item
-                  name='password'
-                  initialValue={data?.password}
-                  label={$t({ defaultMessage: 'Password' })}
+                  name='apiKey'
+                  initialValue={data?.apiKey}
+                  label={<>{$t({ defaultMessage: 'API Key' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage:
+                        // eslint-disable-next-line max-len
+                        'API keys can be generated and copied from the RWG administrator UI without any expiration date. They are 80-character strings' })}
+                      placement='right'
+                      iconStyle={{
+                        width: 16,
+                        height: 16
+                      }}
+                    />
+                  </>}
                   rules={[
-                    { required: true },
-                    { validator: (_, value) =>
-                    {
-                      if(value?.length < 8) {
-                        return Promise.reject(
-                          `${$t({ defaultMessage:
-                            'Password must be more 8 or more characters long' })} `
-                        )
-                      }
-                      return Promise.resolve()
-                    }
-                    },
-                    { validator: (_, value) => excludeSpaceRegExp(value) },
-                    { validator: (_, value) => notAllDigitsRegExp(value),
-                      message: $t({ defaultMessage:
-            'Secret must include letters or special characters; numbers alone are not accepted.' })
-                    }
+                    { required: true,
+                      message: $t({ defaultMessage: 'Please enter API Key' }) },
+                    { max: 80 },
+                    { validator: (_, value) => excludeSpaceRegExp(value) }
                   ]}
                   children={<PasswordInput />}
                 />

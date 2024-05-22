@@ -7,6 +7,7 @@ import { useIntl }                 from 'react-intl'
 import { useStepFormContext }                                                                      from '@acx-ui/components'
 import { EdgeLagTable, NodesTabs, TypeForm }                                                       from '@acx-ui/rc/components'
 import { EdgeLag, EdgePortTypeEnum, edgePhysicalPortInitialConfigs, validateEdgeAllPortsEmptyLag } from '@acx-ui/rc/utils'
+import { EdgeScopes }                                                                              from '@acx-ui/types'
 
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
@@ -54,6 +55,13 @@ const LagSettingView = (props: LagSettingViewProps) => {
   const { form } = useStepFormContext()
   // eslint-disable-next-line max-len
   const portSettings = form.getFieldValue('portSettings') as (InterfaceSettingsFormType['portSettings'] | undefined)
+  const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
+  const timeout = form.getFieldValue('timeout')
+  const vipConfigArr = vipConfig?.map(item => ({
+    virtualIp: item.vip,
+    ports: item.interfaces,
+    timeoutSeconds: timeout
+  }))
 
   const cleanupLagMemberPortConfig = (lagData: EdgeLag, serialNumber: string) => {
     // reset physical port config when it is selected as LAG member
@@ -144,9 +152,15 @@ const LagSettingView = (props: LagSettingViewProps) => {
               serialNumber={serialNumber}
               lagList={lagList}
               portList={portList}
+              vipConfig={vipConfigArr}
               onAdd={handleAdd}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              actionScopes={{
+                add: [EdgeScopes.UPDATE],
+                edit: [EdgeScopes.UPDATE],
+                delete: [EdgeScopes.UPDATE]
+              }}
             />
           </>
         }

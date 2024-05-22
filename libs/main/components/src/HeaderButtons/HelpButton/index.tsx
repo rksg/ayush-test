@@ -31,6 +31,7 @@ const HelpButton = (props:HelpButtonProps) => {
   const [isChatDisabled, setIsChatDisabled] = useState(true)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
 
   const mspContactSupport = mspBrandData?.contact_support_url
   const mspOpenaCase = mspBrandData?.open_case_url
@@ -140,7 +141,7 @@ const HelpButton = (props:HelpButtonProps) => {
         key: 'models',
         label: $t({ defaultMessage: 'Supported Device Models' })
       },
-      ...(!(isGuestManager || isDPSKAdmin) ? [{
+      ...(!(isGuestManager || isDPSKAdmin || isReportsAdmin) ? [{
         key: 'firewallACL',
         label: $t({ defaultMessage: 'Firewall ACL Inputs' })
       }] : []),

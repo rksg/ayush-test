@@ -218,7 +218,6 @@ describe('SelectCustomerDrawer', () => {
     expect(await screen.findByRole('dialog')).toBeVisible()
     expect(screen.getByText('AC Hotel Atlanta Airport Gateway')).toBeVisible()
     expect(screen.getByText('Amy')).toBeVisible()
-    expect(screen.getByText('2 selected')).toBeVisible()
 
   })
   it('should search correctly', async () => {

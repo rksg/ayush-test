@@ -156,7 +156,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
       const selectedItemMap = {
         'true,true': $t({ defaultMessage: 'items' }),
-        'true,false': $t({ defaultMessage: 'venues' }),
+        'true,false': $t({ defaultMessage: '<venuePlural></venuePlural>' }),
         'false,true': $t({ defaultMessage: 'switches' }),
         'false,false': $t({ defaultMessage: 'items' })
       }
@@ -253,7 +253,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
           marginRight: '3px'
         }} />
       { // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'The following list will only display the connected switch under the venue.' })}
+        $t({ defaultMessage: 'The following list will only display the connected switch under the <venueSingular></venueSingular>.' })}
       </div>
     }
   }

@@ -95,12 +95,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     newApi: true
   },
-  clearAllAlarm: {
-    method: 'delete',
-    url: '/alarms',
-    oldUrl: '/api/eventalarmapi/:tenantId/alarm',
-    newApi: true
-  },
   getApsList: {
     method: 'post',
     url: '/aps/query',
@@ -428,14 +422,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueConfigHistory: {
     method: 'post',
     url: '/venues/:venueId/configHistories/query',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/query',
     newApi: true
   },
   getVenueConfigHistoryDetail: {
     method: 'post',
     url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/' +
-      'configurationHistory/detail/:transactionId',
     newApi: true
   },
   getApDetailHeader: {
@@ -453,13 +444,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getGuestsList: {
     method: 'post',
     url: '/guestUsers/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
     newApi: true
   },
   addGuestPass: {
     method: 'post',
-    url: '/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
   getApNetworkList: {
@@ -520,8 +509,8 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   getRwgList: {
-    method: 'get',
-    url: '/rwgs',
+    method: 'post',
+    url: '/rwgs/query',
     newApi: true
   },
   deleteGateways: {
@@ -536,17 +525,17 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getGateway: {
     method: 'get',
-    url: '/rwgs/:gatewayId',
+    url: '/venues/:venueId/rwgs/:gatewayId',
     newApi: true
   },
   updateGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   addGateway: {
     method: 'post',
-    url: '/rwgs',
+    url: '/venues/:venueId/rwgs',
     newApi: true
   },
   getGatewayAlarms: {

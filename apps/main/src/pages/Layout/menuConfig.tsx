@@ -23,7 +23,9 @@ import {
   SwitchSolid,
   WiFi,
   DevicesOutlined,
-  DevicesSolid
+  DevicesSolid,
+  DataStudioOutlined,
+  DataStudioSolid
 } from '@acx-ui/icons'
 import {
   getServiceCatalogRoutePath,
@@ -48,6 +50,7 @@ export function useMenuConfig () {
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
   const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
@@ -115,7 +118,7 @@ export function useMenuConfig () {
     },
     {
       uri: '/venues',
-      label: $t({ defaultMessage: 'Venues' }),
+      label: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       inactiveIcon: LocationOutlined,
       activeIcon: LocationSolid
     },
@@ -371,5 +374,23 @@ export function useMenuConfig () {
     }
   ]
   if (isGuestManager || isDPSKAdmin) { return [] }
+  if (isReportsAdmin) {
+    return [
+      {
+        label: $t({ defaultMessage: 'Data Studio' }),
+        inactiveIcon: DataStudioOutlined,
+        activeIcon: DataStudioSolid,
+        uri: '/dataStudio',
+        isActiveCheck: new RegExp('^/dataStudio')
+      },
+      {
+        label: $t({ defaultMessage: 'Reports' }),
+        inactiveIcon: DataStudioOutlined,
+        activeIcon: DataStudioSolid,
+        uri: '/reports',
+        isActiveCheck: new RegExp('^/reports')
+      }
+    ]
+  }
   return config
 }

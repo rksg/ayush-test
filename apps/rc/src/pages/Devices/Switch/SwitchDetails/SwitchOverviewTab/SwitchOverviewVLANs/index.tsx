@@ -36,18 +36,21 @@ import {
   SwitchModel,
   SWITCH_DEFAULT_VLAN_NAME,
   SwitchPortViewModelQueryFields,
-  SwitchPortViewModel
+  SwitchPortViewModel,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
-
 
 import { SwitchDetailsContext } from '../..'
 
 import { VlanDetail } from './vlanDetail'
 
-export function SwitchOverviewVLANs () {
+export function SwitchOverviewVLANs (props: {
+  switchDetail?: SwitchViewModel
+}) {
   const { $t } = useIntl()
+  const { switchDetail } = props
   const { tenantId, switchId, serialNumber } = useParams()
 
   const [currentRow, setCurrentRow] = useState({} as Vlan)
@@ -63,7 +66,7 @@ export function SwitchOverviewVLANs () {
   const [portSlotsData, setPortSlotsData] = useState([])
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
-  const { switchDetailHeader: switchDetail } = switchDetailsContextData
+  // const { switchDetailHeader: switchDetail } = switchDetailsContextData
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
@@ -75,8 +78,12 @@ export function SwitchOverviewVLANs () {
     setSwitchFamilyModel(switchDetail?.model || '')
   }, [ switchDetail ])
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const tableQuery = useTableQuery({
     useQuery: useGetVlanListBySwitchLevelQuery,
+    enableRbac: isSwitchRbacEnabled,
+    apiParams: { venueId: (switchDetail?.venueId || '') as string },
     defaultPayload: {},
     sorter: {
       sortField: 'vlanId',

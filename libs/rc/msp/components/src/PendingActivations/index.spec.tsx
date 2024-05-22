@@ -1,14 +1,12 @@
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { showToast }                                from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { mspApi }                                   from '@acx-ui/msp/services'
-import { MspUrlsInfo }                              from '@acx-ui/msp/utils'
-import { administrationApi }                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo }                   from '@acx-ui/rc/utils'
-import { Provider, store }                          from '@acx-ui/store'
-import { mockServer, render, screen, waitFor  }     from '@acx-ui/test-utils'
+import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { mspApi }                                                 from '@acx-ui/msp/services'
+import { administrationApi }                                      from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
 import { PendingActivations } from '.'
 
@@ -94,52 +92,7 @@ const mockedEtitlementsList =
     }
   ]
 
-const mockedSummary =
-  [
-    {
-      deviceSubType: 'ICX',
-      deviceType: 'SWITCH',
-      tempLicense: false,
-      quantity: 130,
-      deviceCount: 2,
-      remainingDevices: 5
-    },
-    {
-      deviceSubType: null,
-      deviceType: 'WIFI',
-      tempLicense: false,
-      quantity: 80,
-      deviceCount: 3,
-      remainingDevices: 15
-    },
-    {
-      deviceSubType: null,
-      deviceType: 'EDGE',
-      tempLicense: false,
-      quantity: 70,
-      deviceCount: 2,
-      remainingDevices: 20
-    },
-    {
-      deviceSubType: null,
-      deviceType: 'UNKOWNTYPE',
-      tempLicense: false,
-      quantity: 50,
-      deviceCount: 0,
-      remainingDevices: 25
-    },
-    {
-      deviceSubType: null,
-      deviceType: 'ANALYTICS',
-      tempLicense: false,
-      quantity: 60,
-      deviceCount: 80,
-      remainingDevices: 0
-    }
-  ]
-
 const mockedWindowOpen = jest.fn()
-const mockedRefreshFn = jest.fn()
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-11T12:33:37.101+00:00').getTime()
 })
@@ -148,9 +101,6 @@ jest.mock('@acx-ui/components', () => ({
   ...jest.requireActual('@acx-ui/components'),
   showToast: jest.fn()
 }))
-// jest.mock('./SubscriptionHeader', () => ({
-//   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
-// }))
 const services = require('@acx-ui/rc/services')
 const activations = {
   data: [{
@@ -174,6 +124,18 @@ const activations = {
     productClass: 'ACX-TRIAL-NEW',
     orderCreateDate: '2024-04-22T08:53:05.000+0000',
     orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
+  },
+  {
+    orderId: 'a0EO3000001haUHMAY',
+    salesOrderId: 'a0FO30000012DgXMAU',
+    productName: 'R1 Pro 1 AP/SW REC 1-Yr',
+    productCode: 'CLD-PROF-APSW-REC1',
+    quantity: 60,
+    spaStartDate: '2024-04-22',
+    spaEndDate: '2025-04-22',
+    productClass: 'ACX-PROF-NEW',
+    orderCreateDate: '2024-04-22T08:53:05.000+0000',
+    orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
   }]
 }
 
@@ -184,7 +146,6 @@ describe('PendingActivations', () => {
     jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockedWindowOpen.mockClear()
-    mockedRefreshFn.mockClear()
 
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
@@ -197,33 +158,6 @@ describe('PendingActivations', () => {
       return { data: mockedEtitlementsList }
     })
     mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.refreshLicensesData.url.split('?')[0],
-        (req, res, ctx) => {
-          if (req.url.searchParams.get('refresh') === 'true') {
-            mockedRefreshFn()
-            return res(ctx.status(202))
-          } else {
-            return res(ctx.json({
-              banners: [],
-              entitlements: mockedEtitlementsList,
-              summary: mockedSummary
-            }))
-          }
-        }
-      ),
-      rest.post(
-        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
-        (_req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(
-        MspUrlsInfo.getMspProfile.url,
-        (_req, res, ctx) => res(ctx.json({
-          msp_external_id: '0000A000001234YFFOO',
-          msp_label: '',
-          msp_tenant_name: ''
-        }))
-      ),
       rest.post(
         AdministrationUrlsInfo.getEntitlementsActivations.url,
         (req, res, ctx) => res(ctx.json(activations))
@@ -239,70 +173,12 @@ describe('PendingActivations', () => {
         route: { params }
       })
 
-    expect(screen.getByRole('button', { name: 'Manage Subscriptions' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Refresh' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'SPA Activation Code' })
     expect(await screen.findByRole('row', { name: /test/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /aaa/i })).toBeVisible()
   })
 
-  it('should refresh successfully', async () => {
-    const mockedShowToast = jest.fn()
-    jest.mocked(showToast).mockImplementation(mockedShowToast)
-
-    render(
-      <Provider>
-        <PendingActivations />
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(await screen.findByRole('row', { name: /test/i })).toBeVisible()
-
-    const licenseManagementButton =
-    await screen.findByRole('button', { name: 'Manage Subscriptions' })
-    await userEvent.click(licenseManagementButton)
-    expect(mockedWindowOpen).toBeCalled()
-    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    await userEvent.click(refreshButton)
-    await waitFor(() => expect(mockedRefreshFn).toBeCalled())
-  })
-
-  it('should display toast message when refresh failed', async () => {
-    const spyConsole = jest.spyOn(console, 'log')
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.refreshLicensesData.url.split('?')[0],
-        (req, res, ctx) => {
-          if (req.url.searchParams.get('refresh') === 'true')
-            return res(ctx.status(500))
-          else
-            return res(ctx.json({
-              banners: [],
-              entitlements: mockedEtitlementsList,
-              summary: mockedSummary
-            }))
-        }
-      ),
-      rest.post(
-        AdministrationUrlsInfo.internalRefreshLicensesData.oldUrl as string,
-        (_req, res, ctx) => res(ctx.status(500))
-      )
-    )
-
-    render(
-      <Provider>
-        <PendingActivations />
-      </Provider>, {
-        route: { params }
-      })
-
-    await screen.findByRole('columnheader', { name: 'SPA Activation Code' })
-    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
-    await userEvent.click(refreshButton)
-    // FIXME: might need to fix when general error handler behavior changed.
-    await waitFor(() => expect(spyConsole).toBeCalled())
-  })
 
   it('should open window correctly when activation code clicked', async () => {
     render(

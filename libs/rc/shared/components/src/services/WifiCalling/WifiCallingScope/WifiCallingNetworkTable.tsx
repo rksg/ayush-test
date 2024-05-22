@@ -37,11 +37,11 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetWifiCallingServiceQuery,
-    useGetWifiCallingServiceTemplateQuery,
-    !useParams().hasOwnProperty('serviceId')
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetWifiCallingServiceQuery,
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
   const basicColumns: TableProps<Network>['columns'] = [
     {
@@ -60,7 +60,7 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venues',
       key: 'venues',
       sorter: true,

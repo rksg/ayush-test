@@ -33,8 +33,9 @@ import {
   firmwareTypeTrans,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import {
   compareVersions,
@@ -94,7 +95,7 @@ export function VenueFirmwareList () {
 
   const columns: TableProps<EdgeVenueFirmware>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
@@ -161,6 +162,7 @@ export function VenueFirmwareList () {
 
   const rowActions: TableProps<EdgeVenueFirmware>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => {
         const hasOutdatedFw = selectedRows?.every(
           item => latestReleaseVersion?.id &&
@@ -180,6 +182,7 @@ export function VenueFirmwareList () {
   if(isScheduleUpdateReady) {
     rowActions.push(...[
       {
+        scopeKey: [EdgeScopes.UPDATE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -195,6 +198,7 @@ export function VenueFirmwareList () {
         }
       },
       {
+        scopeKey: [EdgeScopes.UPDATE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -205,7 +209,7 @@ export function VenueFirmwareList () {
             width: 460,
             title: $t({ defaultMessage: 'Skip This Update?' }),
             // eslint-disable-next-line max-len
-            content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+            content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
             okText: $t({ defaultMessage: 'Skip' }),
             cancelText: $t({ defaultMessage: 'Cancel' }),
             onOk () {
@@ -282,6 +286,10 @@ export function VenueFirmwareList () {
     }
   }
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE]
+  })
+
   return (
     <Loader states={[
       { isLoading: isVenueFirmwareListLoading, isFetching: isVenueFirmwareListLoading }
@@ -291,15 +299,15 @@ export function VenueFirmwareList () {
         dataSource={venueFirmwareList}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
+        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
         actions={filterByAccess([
           ...(
-            isScheduleUpdateReady ? [
-              {
-                label: $t({ defaultMessage: 'Preferences' }),
-                onClick: () => setPreferenceModalVisible(true)
-              }
-            ] : []
+            isScheduleUpdateReady ? [{
+              scopeKey: [EdgeScopes.UPDATE],
+              label: $t({ defaultMessage: 'Preferences' }),
+              onClick: () => setPreferenceModalVisible(true)
+            }]
+              : []
           )
         ])}
       />

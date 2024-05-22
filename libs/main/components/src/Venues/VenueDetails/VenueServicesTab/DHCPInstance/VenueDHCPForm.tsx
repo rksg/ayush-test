@@ -26,9 +26,12 @@ import {
   getServiceRoutePath, ServiceOperation, ServiceType,
   useConfigTemplateQueryFnSwitcher, VenueDHCPProfile, useConfigTemplate
 } from '@acx-ui/rc/utils'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import useDHCPInfo                                               from './hooks/useDHCPInfo'
 import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledComponents'
+
 
 
 const { Option } = AntSelect
@@ -50,12 +53,14 @@ const VenueDHCPForm = (props: {
   // eslint-disable-next-line max-len
   const venueServicesTabPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/venue-details/services`)
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
-  )
-  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
-    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
-  )
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+    useQueryFn: useVenueDHCPProfileQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery
+  })
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery
+  })
   const { data: apList } = useApListQuery({
     params,
     payload: {
@@ -84,6 +89,7 @@ const VenueDHCPForm = (props: {
   const isMaxNumberReached = ()=>{
     return dhcpProfileList && dhcpProfileList.length >= DHCP_LIMIT_NUMBER
   }
+  const hasAddDhcpPermission = hasPermission({ scopes: [WifiScopes.CREATE] })
 
   useEffect(() => {
     setIsSimpleMode(getSelectedDHCPMode() === DHCPConfigTypeEnum.SIMPLE)
@@ -305,11 +311,11 @@ const VenueDHCPForm = (props: {
           </AntSelect>
         </StyledForm.Item>
 
-        <Link style={isMaxNumberReached()
+        <Link style={!hasAddDhcpPermission || isMaxNumberReached()
           ? { marginLeft: 10, cursor: 'not-allowed', color: 'var(--acx-neutrals-40)' }
           : { marginLeft: 10 }}
         onClick={(e) => {
-          if(isMaxNumberReached()){
+          if(!hasAddDhcpPermission || isMaxNumberReached()){
             e.preventDefault()
             e.stopPropagation()
           }

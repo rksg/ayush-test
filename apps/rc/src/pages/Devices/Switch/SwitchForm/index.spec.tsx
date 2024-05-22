@@ -2,8 +2,8 @@ import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import { rest }    from 'msw'
 
-import { useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { switchApi, venueApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { switchApi, venueApi }    from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   FirmwareUrlsInfo,
@@ -114,7 +114,7 @@ describe('Add switch form', () => {
   })
 
   it('should cannot add TSB standalone switch', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     render(<Provider><SwitchForm /></Provider>, {
       route: {
         params: { tenantId: 'tenant-id', action: 'add' },
