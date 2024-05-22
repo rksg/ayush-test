@@ -8,12 +8,6 @@ export const ApSnmpUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/apSnmpAgentProfiles/:policyId',
     newApi: true
   },
-  deleteApSnmpPolicies: {
-    method: 'delete',
-    url: '/apSnmpAgentProfiles',
-    oldUrl: '/api/apSnmpAgentProfiles',
-    newApi: true
-  },
   addApSnmpPolicy: {
     method: 'post',
     url: '/apSnmpAgentProfiles',

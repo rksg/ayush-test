@@ -37,7 +37,16 @@ export type SnmpV3Agent = SnmpPrivilege & {
 }
 
 export type ApSnmpPolicy = {
-  policyName: string
+  policyName?: string
+  name?: string
+  id?: string
+  tenantId?: string
+  snmpV2Agents: SnmpV2Agent[]
+  snmpV3Agents: SnmpV3Agent[]
+}
+
+export type RbacApSnmpPolicy = {
+  name: string
   id?: string
   tenantId?: string
   snmpV2Agents: SnmpV2Agent[]
@@ -58,6 +67,17 @@ export type ApSnmpApUsage = {
   apName: string
   venueId: string
   venueName: string
+}
+
+export type RbacApSnmpViewModelData = {
+  id: string,
+  name: string,
+  communityNames: string[]
+  userNames: string[]
+  apSerialNumbers: string
+  apNames: string[]
+  venueIds: string[]
+  venueNames: string[]
 }
 
 export type ApSnmpViewModelData = {

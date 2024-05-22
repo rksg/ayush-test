@@ -4,7 +4,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls, CommonUrlsInfo, SyslogUrls }                                    from '@acx-ui/rc/utils'
+import { ApSnmpUrls, CommonRbacUrlsInfo, CommonUrlsInfo, SyslogUrls }                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -68,7 +68,10 @@ describe('ServerTab', () => {
         (_, res, ctx) => res(ctx.json(resultOfGetApSnmpAgentProfiles))),
       rest.get(
         ApSnmpUrls.getVenueApSnmpSettings.url,
-        (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings)))
+        (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings))),
+      // rbac
+      rest.get(CommonRbacUrlsInfo.getVenueMdnsFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
   it('should render correctly', async () => {

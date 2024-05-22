@@ -41,6 +41,7 @@ export * from './googleMaps'
 export * from './applicationPolicy'
 export * from './configTemplate'
 export * from './topology'
+export * from './mDnsFencingServie'
 
 export interface CommonResult {
   requestId: string

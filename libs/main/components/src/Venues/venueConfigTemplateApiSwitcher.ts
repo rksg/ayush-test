@@ -6,7 +6,6 @@ import {
   useGetVenueTemplateQuery
 } from '@acx-ui/rc/services'
 import {
-  ApiVersionEnum,
   VenueExtended,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
@@ -17,7 +16,7 @@ import { RequestPayload, UseQuery } from '@acx-ui/types'
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
   useQueryFn: UseQuery<ResultType, RequestPayload>,
   useTemplateQueryFn: UseQuery<ResultType, RequestPayload>,
-  rbacApiVersion?: ApiVersionEnum
+  enableRbac?: boolean
 ): ReturnType<typeof useQueryFn> {
   const { venueId } = useParams()
 
@@ -25,7 +24,7 @@ export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
     useQueryFn,
     useTemplateQueryFn,
     skip: !venueId,
-    payload: rbacApiVersion ? { rbacApiVersion } : undefined
+    enableRbac
   })
 }
 

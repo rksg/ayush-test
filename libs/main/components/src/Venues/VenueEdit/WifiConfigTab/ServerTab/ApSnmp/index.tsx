@@ -5,6 +5,7 @@ import { isEqual }                             from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { ApSnmpMibsDownloadInfo }                                             from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
@@ -31,6 +32,7 @@ export function ApSnmp () {
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -44,11 +46,13 @@ export function ApSnmp () {
   const [stateOfVenueApSnmpSettings, setStateOfVenueApSnmpSettings] =
   useState({} as VenueApSnmpSettings)
 
-  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
+  // eslint-disable-next-line max-len
+  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
   const RetrievedVenueApSnmpAgentOptions =
    RetrievedVenueApSnmpAgentList?.data?.map(m => ({ label: m.policyName, value: m.id })) ?? []
 
-  const RetrievedVenueApSnmpSettings = useGetVenueApSnmpSettingsQuery({ params: { venueId } })
+  // eslint-disable-next-line max-len
+  const RetrievedVenueApSnmpSettings = useGetVenueApSnmpSettingsQuery({ params: { venueId }, enableRbac: isUseRbacApi })
   const RetrievedVenueApSnmpAgentProfileId =
    RetrievedVenueApSnmpSettings?.data?.apSnmpAgentProfileId ?? ''
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }] =
@@ -104,9 +108,7 @@ export function ApSnmp () {
   }
 
   const updateVenueApSnmpSetting = async (data?: VenueApSnmpSettings) => {
-
     try {
-
       // Condition guard, if user didn't change anything, don't send API
       if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
         showActionModal({
@@ -141,6 +143,7 @@ export function ApSnmp () {
   const discardVenuedApSnmpChanges = async (oldData : VenueApSnmpSettings) => {
     setEnableApSnmp(oldData.enableApSnmp ?? false)
   }
+
   return ( <Loader states={[{
     isLoading: RetrievedVenueApSnmpAgentList.isLoading,
     isFetching: isUpdatingApSnmpSettings

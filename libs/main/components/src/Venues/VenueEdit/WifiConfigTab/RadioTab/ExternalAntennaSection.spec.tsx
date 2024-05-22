@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                               from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                                                           from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo, WifiUrlsInfo }                                         from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
@@ -32,6 +32,13 @@ describe('Venue External Antenna Settings', () => {
         (_, res, ctx) => res(ctx.json(venueExternalAntennaCap))),
       rest.put(
         WifiUrlsInfo.updateVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      // RBAC API
+      rest.get(
+        WifiRbacUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(venueExternalAntenna))),
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueExternalAntenna.url,
         (_, res, ctx) => res(ctx.json({})))
     )})
 

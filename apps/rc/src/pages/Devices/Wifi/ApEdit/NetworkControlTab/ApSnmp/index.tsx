@@ -3,8 +3,16 @@ import { useEffect, useState, useContext, useRef } from 'react'
 import { Form, Select, Switch, Row, Button, Col, Space } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
-import { Loader, StepsFormLegacy, showToast, StepsFormLegacyInstance, showActionModal, AnchorContext } from '@acx-ui/components'
-import { ApSnmpMibsDownloadInfo }                                                                      from '@acx-ui/rc/components'
+import {
+  Loader,
+  StepsFormLegacy,
+  showToast,
+  StepsFormLegacyInstance,
+  showActionModal,
+  AnchorContext
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ApSnmpMibsDownloadInfo } from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetApSnmpSettingsQuery,
@@ -17,8 +25,7 @@ import {
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
-  VenueExtended
-} from '@acx-ui/rc/utils'
+  VenueExtended } from '@acx-ui/rc/utils'
 import { VenueApSnmpSettings, ApSnmpSettings } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -53,6 +60,8 @@ export function ApSnmp () {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { apData: apDetails } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
@@ -65,9 +74,11 @@ export function ApSnmp () {
   const [venue, setVenue] = useState({} as VenueExtended)
   const [isApSnmpEnable, setIsApSnmpEnable] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
+  // eslint-disable-next-line max-len
+  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
+  // eslint-disable-next-line max-len
+  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId: apDetails?.venueId }, enableRbac: isUseRbacApi })
 
-  const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
-  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
    = useUpdateApSnmpSettingsMutation()
 
@@ -88,9 +99,9 @@ export function ApSnmp () {
 
         // Get current Venue AP SNMP settings
         const venueApSnmpSetting = (await getVenueApSnmpSettings({
-          params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap()
+          params: { tenantId, venueId: apDetails?.venueId },
+          enableRbac: isUseRbacApi }, true).unwrap()
         )
-
         setApSnmpSettings({ ...defaultApSnmpSettings, ...apSnmp })
         setVenueApSnmpSettings(venueApSnmpSetting)
         setVenue(apVenue)

@@ -2,9 +2,21 @@ import _                                from 'lodash'
 import { useIntl }                      from 'react-intl'
 import { Path, useNavigate, useParams } from 'react-router-dom'
 
-import { Button, ColumnType, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { CountAndNamesTooltip }                                                       from '@acx-ui/rc/components'
-import { useDeleteApSnmpPolicyMutation, useGetApSnmpViewModelQuery }                  from '@acx-ui/rc/services'
+import {
+  Button,
+  ColumnType,
+  Loader,
+  PageHeader,
+  showActionModal,
+  Table,
+  TableProps
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { CountAndNamesTooltip }   from '@acx-ui/rc/components'
+import {
+  useDeleteApSnmpPolicyMutation,
+  useGetApSnmpViewModelQuery
+} from '@acx-ui/rc/services'
 import {
   ApSnmpViewModelData,
   getPolicyDetailsLink,
@@ -36,6 +48,8 @@ export default function SnmpAgentTable () {
   const navigate = useNavigate()
   const { tenantId } = useParams()
   const tenantBasePath: Path = useTenantLink('')
+
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
@@ -107,13 +121,19 @@ export default function SnmpAgentTable () {
               defaultMessage: 'This agent is currently activated on <venuePlural></venuePlural>. Deleting it will deactivate the agent for those <venuePlural></venuePlural>/ APs. Are you sure you want to delete it?'
             }),
             onOk: () => {
-              deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
+              deleteFn({
+                params: { tenantId, policyId: ids[0] },
+                enableRbac: isUseRbacApi
+              }).then(clearSelection)
             },
             onCancel: () => { clearSelection() },
             okText: $t({ defaultMessage: 'Delete' })
           })
         } else {
-          deleteFn({ params: { tenantId, policyId: ids[0] } }).then(clearSelection)
+          deleteFn({
+            params: { tenantId, policyId: ids[0] },
+            enableRbac: isUseRbacApi
+          }).then(clearSelection)
         }
       }
     }

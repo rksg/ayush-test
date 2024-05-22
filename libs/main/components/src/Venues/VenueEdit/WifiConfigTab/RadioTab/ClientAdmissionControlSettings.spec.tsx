@@ -5,7 +5,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { venueApi }                       from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                   from '@acx-ui/rc/utils'
+import { WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import { mockServer,
   render,
@@ -33,7 +33,14 @@ describe('Venue Client Admission Control', () => {
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getVenueClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl)))
+        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
+      // RBAC API
+      rest.get(
+        WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 

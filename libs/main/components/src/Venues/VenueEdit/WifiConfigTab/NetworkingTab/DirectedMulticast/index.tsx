@@ -12,19 +12,20 @@ import {
   useUpdateVenueDirectedMulticastMutation,
   useUpdateVenueTemplateDirectedMulticastMutation
 } from '@acx-ui/rc/services'
-import { ApiVersionEnum, VenueDirectedMulticast, useConfigTemplate } from '@acx-ui/rc/utils'
+import { VenueDirectedMulticast, useConfigTemplate } from '@acx-ui/rc/utils'
 
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                                                                from '../../../index'
-import { FieldLabel }                                                                      from '../../styledComponents'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext } from '../../../index'
+import { FieldLabel }       from '../../styledComponents'
 
 export function DirectedMulticast () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
-
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = (isUseRbacApi && !isTemplate)? ApiVersionEnum.v1 : undefined
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
   const {
     editContextData,
@@ -37,7 +38,7 @@ export function DirectedMulticast () {
   const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>(
     useGetVenueDirectedMulticastQuery,
     useGetVenueTemplateDirectedMulticastQuery,
-    rbacApiVersion
+    isUseRbacApi
   )
 
   const [updateVenueDirectedMulticast, { isLoading: isUpdatingVenueDirectedMulticast }] =
@@ -117,13 +118,13 @@ export function DirectedMulticast () {
       const payload = {
         wiredEnabled: isWiredEnabled,
         wirelessEnabled: isWirelessEnabled,
-        networkEnabled: isNetworkEnabled,
-        rbacApiVersion
+        networkEnabled: isNetworkEnabled
       }
 
       await updateVenueDirectedMulticast({
         params: { venueId },
-        payload
+        payload,
+        enableRbac: isUseRbacApi
       }).unwrap()
 
     } catch (error) {
