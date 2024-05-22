@@ -1,4 +1,3 @@
-
 import { IntlShape } from 'react-intl'
 
 import { NodesFilter } from '@acx-ui/utils'
@@ -9,7 +8,6 @@ export interface PieChartResult {
   topNSwitchesByPortCongestion: TopNByPortCongestionResult[]
   topNSwitchesByStormPortCount: TopNByStormPortCountResult[]
 }
-
 export type WidgetType =
   | 'dhcpFailure'
   | 'congestion'
