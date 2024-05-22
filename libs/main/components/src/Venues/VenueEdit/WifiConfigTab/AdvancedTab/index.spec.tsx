@@ -89,7 +89,7 @@ describe('AdvancedTab', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await screen.findByText('LEDs Status')
     await screen.findByRole('button', { name: 'Add Model' })
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
@@ -114,7 +114,7 @@ describe('AdvancedTab', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
       })
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await screen.findByText('E510')
     fireEvent.click(await screen.findByRole('button', { name: 'Add Model' }))
     expect(screen.getByRole('button', { name: 'Add Model' })).toBeDisabled()
@@ -159,7 +159,7 @@ describe('AdvancedTab', () => {
     })
   })
 
-  it('should show BssColoring if feature flag is On', async () => {
+  it('should show BssColoring', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const advanceSettingContext = {
       updateAccessPointLED: jest.fn(),

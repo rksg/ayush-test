@@ -40,7 +40,6 @@ export function AdvancedTab () {
     previousPath } = useContext(VenueEditContext)
 
 
-  const supportBssColoring = useIsSplitOn(Features.WIFI_FR_6029_FG1_TOGGLE)
   const supportApMgmgtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
 
   const anchorItems = [
@@ -52,14 +51,11 @@ export function AdvancedTab () {
         'apLed'
       )
     ] : []),
-    ...(supportBssColoring ? [
-      createAnchorSectionItem(
-        $t({ defaultMessage: 'BSS Coloring' }),
-        'bss-coloring',
-        <BssColoring />,
-        'bssColoring'
-      )
-    ] : []
+    createAnchorSectionItem(
+      $t({ defaultMessage: 'BSS Coloring' }),
+      'bss-coloring',
+      <BssColoring />,
+      'bssColoring'
     ),
     ...((supportApMgmgtVlan && !isTemplate) ? [
       createAnchorSectionItem(
