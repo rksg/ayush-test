@@ -239,11 +239,20 @@ export function ConfigurationProfileForm () {
       if(ipv4DhcpSnooping || arpInspection){
         const vlanModels = data.vlans.map(
           item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
-        data.trustedPorts = data.trustedPorts.map(
-          item => { return {
-            ...item,
-            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
-          }})
+
+        if(vlanModels.length > 0 && vlanModels[0] !== undefined){
+          data.trustedPorts = data.trustedPorts.filter(
+            tpItem => !data.vlans.some(item =>
+              (!item.ipv4DhcpSnooping && !item.arpInspection) &&
+              (item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))
+            )).map(
+            item => { return {
+              ...item,
+              ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+            }})
+        } else {
+          data.trustedPorts = []
+        }
       } else {
         data.trustedPorts = []
       }
