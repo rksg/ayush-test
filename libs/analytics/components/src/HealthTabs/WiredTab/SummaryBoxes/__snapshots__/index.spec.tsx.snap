@@ -23,7 +23,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -64,7 +64,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -105,7 +105,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -146,7 +146,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 GgYvx"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 iEaUZI"
                 style="width: 100%;"
               >
                 <div
@@ -201,7 +201,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -242,7 +242,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -283,7 +283,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -324,7 +324,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 GgYvx"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 iEaUZI"
                 style="width: 100%;"
               >
                 <div
@@ -379,7 +379,7 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -420,7 +420,7 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -461,7 +461,7 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dikhiR"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 dkZHSE"
                 style="width: 100%;"
               >
                 <div
@@ -502,7 +502,7 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 GgYvx"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 iEaUZI"
                 style="width: 100%;"
               >
                 <div

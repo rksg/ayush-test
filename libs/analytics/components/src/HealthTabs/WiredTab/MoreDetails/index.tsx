@@ -64,24 +64,24 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
   return (
     <Drawer
       title={
-        <UI.Title>
+        <UI.DrawerTitle>
           <Typography.Title level={2}>
             {activeWidgetMapping?.title}
           </Typography.Title>
-        </UI.Title>
+        </UI.DrawerTitle>
       }
       width={'80%'}
       visible={visible}
       onClose={onClose}
       children={
-        <GridRow>
-          <GridCol col={{ span: 9 }} key={activeWidgetMapping?.type}>
+        <GridRow style={{ paddingTop: 20 }}>
+          <GridCol col={{ span: 9 }} key={`pie-${activeWidgetMapping?.type}`}>
             <MoreDetailsPieChart filters={filters} queryType={activeWidgetMapping?.type}/>
           </GridCol>
           {
             (activeWidgetMapping?.type === 'dhcpFailure' ||
               activeWidgetMapping?.type === 'cpuUsage') &&
-            <GridCol col={{ span: 15 }}>
+            <GridCol col={{ span: 15 }} key={`table-${activeWidgetMapping?.type}`}>
               <ImpactedSwitchesTable filters={filters} queryType={activeWidgetMapping?.type}/>
             </GridCol>
           }

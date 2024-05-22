@@ -68,14 +68,14 @@ export const Statistic = styled(AntStatistic)<{ $type: string }>`
   flex-direction: column-reverse;
   .ant-statistic-title {
     color: var(${props => colors[props.$type as Type].text});
-    font-size: var(--acx-body-5-font-size);
+    font-size: var(--acx-body-4-font-size);
     min-height: ${props => props.style?.width !== '100%' ? '24px' : '0px'};
     margin-bottom: 0px;
   }
   .ant-statistic-content {
     color: var(${props => colors[props.$type as Type].text});
     .ant-statistic-content-value {
-      font-size: 23px;
+      font-size: 36px;
       font-weight: var(--acx-body-font-weight-bold);
     }
     .ant-statistic-content-suffix {
