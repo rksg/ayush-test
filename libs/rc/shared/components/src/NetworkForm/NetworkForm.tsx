@@ -935,12 +935,12 @@ function useUpdateHotspot20Activation () {
             })
           } else {
             let i = 0, j = 0
-            if (deactivateProviderIds.length > 1) {
+            if (deactivateProviderIds.length >= 1) {
               await deactivateProvider(network.id, deactivateProviderIds[i])
               i = 1
             }
 
-            if (activateProviderIds.length > 1) {
+            if (activateProviderIds.length >= 1) {
               await activateProvider(network.id, activateProviderIds[j])
               j = 1
             }
