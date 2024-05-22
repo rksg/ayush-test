@@ -3,6 +3,8 @@ import { omit } from 'lodash'
 import {
   Dashboard,
   EdgeStatusSeverityStatistic,
+  RWG,
+  RWGStatusEnum,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
 
@@ -13,8 +15,28 @@ import {
   getEdgeDonutChartData,
   getSwitchStackedBarChartData,
   getApStackedBarChartData,
-  getEdgeStackedBarChartData
+  getEdgeStackedBarChartData,
+  getRwgStackedBarChartData,
+  getRwgDonutChartData
 } from './helper'
+
+const rwgList = {
+  requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
+  response: {
+    totalSizes: 1,
+    totalPages: 1,
+    items: [{
+      rwgId: 'bbc41563473348d29a36b76e95c50381',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
+      venueName: 'My-Venue',
+      name: 'ruckusdemos',
+      hostname: 'rxgs5-vpoc.ruckusdemos.net',
+      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
+  }
+}
 
 describe('getApDonutChartData', () => {
   const data = {
@@ -285,5 +307,27 @@ describe('getEdgeStackedBarChartData', () => {
   it('should return empty array if no data', ()=>{
     expect(getEdgeStackedBarChartData(null as unknown as
        VenueDetailHeader['edges'])).toMatchSnapshot()
+  })
+})
+
+describe('getRwgStackedBarChartData', () => {
+  it('should return correct formatted data', async () => {
+    expect(getRwgStackedBarChartData(rwgList.response.items)).toMatchSnapshot()
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getRwgStackedBarChartData([])).toMatchSnapshot()
+  })
+})
+
+describe('getRwgDonutChartData', () => {
+  it('should return correct formatted data', async () => {
+    expect(getRwgDonutChartData(rwgList.response.items)).toEqual([{
+      color: '#ED1C24',
+      name: 'Disconnected',
+      value: 1
+    }])
+  })
+  it('should return empty array if no data', ()=>{
+    expect(getRwgDonutChartData([] as RWG[])).toEqual([])
   })
 })

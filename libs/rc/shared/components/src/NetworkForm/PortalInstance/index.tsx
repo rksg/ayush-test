@@ -63,10 +63,11 @@ const PortalInstance = (props: {
     fields: ['id', 'name'],
     pageSize: 256
   }
-  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>(
-    useGetPortalProfileListQuery,
-    useGetEnhancedPortalTemplateListQuery, false, undefined, undefined, templatePayload
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>({
+    useQueryFn: useGetPortalProfileListQuery,
+    useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
+    templatePayload
+  })
   const [demoValue, setDemoValue] = useState({} as Demo)
   const portalServices =
     data?.data?.map((m) => ({ label: m.serviceName ?? m.name, value: m.id })) ?? []

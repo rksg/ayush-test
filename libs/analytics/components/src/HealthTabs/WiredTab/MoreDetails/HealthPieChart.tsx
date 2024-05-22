@@ -1,16 +1,13 @@
-import AutoSizer from 'react-virtualized-auto-sizer'
+import { useIntl, FormattedMessage } from 'react-intl'
+import AutoSizer                     from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
 import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
-import {
-  PieChartResult,
-  usePieChartDataQuery,
-  TopNByCPUUsageResult,
-  TopNByDHCPFailureResult,
-  TopNByPortCongestionResult,
-  TopNByStormPortCountResult
-} from './services'
+import { TopNByPortCongestionResult, TopNByStormPortCountResult, showTopResult }     from './config'
+import { PieChartResult, TopNByCPUUsageResult, TopNByDHCPFailureResult, WidgetType } from './config'
+import { usePieChartDataQuery }                                                      from './services'
+import { ChartTitle }                                                                from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -20,26 +17,24 @@ type PieChartData = {
 }
 
 export function transformData (
-  type: string,
-  data: TopNByCPUUsageResult[] |
-  TopNByDHCPFailureResult[] |
-  TopNByPortCongestionResult[] |
-  TopNByStormPortCountResult[]
+  type: WidgetType,
+  data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[] |
+  TopNByPortCongestionResult[] | TopNByStormPortCountResult[]
 ): PieChartData[] {
   const colors = qualitativeColorSet()
   let value: number
   return data.map((val, index: number) => {
     switch(type){
-      case 'cpu':
+      case 'cpuUsage':
         value = (val as TopNByCPUUsageResult).cpuUtilization
         break
-      case 'dhcp':
+      case 'dhcpFailure':
         value = (val as TopNByDHCPFailureResult).dhcpFailureCount
         break
-      case 'congestedPort':
+      case 'congestion':
         value = (val as TopNByPortCongestionResult).congestedPortCount
         break
-      case 'stormPort':
+      case 'portStorm':
         value = (val as TopNByStormPortCountResult).stormPortCount
         break
     }
@@ -52,21 +47,21 @@ export function transformData (
   })
 }
 
-export const getPieData = (data: PieChartResult, type: string) => {
+export const getPieData = (data: PieChartResult, type: WidgetType) => {
   if (!data) return []
 
   let transformedData: PieChartData[] = []
   switch(type){
-    case 'cpu':
+    case 'cpuUsage':
       transformedData = transformData(type, data.topNSwitchesByCpuUsage)
       break
-    case 'dhcp':
+    case 'dhcpFailure':
       transformedData = transformData(type, data.topNSwitchesByDhcpFailure)
       break
-    case 'congestedPort':
+    case 'congestion':
       transformedData = transformData(type, data.topNSwitchesByPortCongestion)
       break
-    case 'stormPort':
+    case 'portStorm':
       transformedData = transformData(type, data.topNSwitchesByStormPortCount)
       break
   }
@@ -76,7 +71,8 @@ export const getPieData = (data: PieChartResult, type: string) => {
 export const MoreDetailsPieChart = ({
   filters,
   queryType
-} : { filters: AnalyticsFilter, queryType: string }) => {
+} : { filters: AnalyticsFilter, queryType: WidgetType }) => {
+  const { $t } = useIntl()
   const { filter, startDate: start, endDate: end } = filters
   const payload = {
     filter,
@@ -93,25 +89,46 @@ export const MoreDetailsPieChart = ({
     })
   })
 
+  const totalCount = queryResults?.data?.length
+  const Title = <ChartTitle>
+    <FormattedMessage
+      defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
+      one {Switch}
+      other {Switches}
+    }`}
+      values={{
+        count: showTopResult($t, totalCount, 5),
+        totalCount,
+        b: (chunk) => <b>{chunk}</b>
+      }}
+    />
+  </ChartTitle>
+
   const pieData = queryResults.data
   if (!pieData || pieData.length === 0) {
-    return <NoData />
+    return <>
+      {Title}
+      <NoData />
+    </>
   }
 
   return (
     <Loader states={[queryResults]}>
-      <AutoSizer defaultHeight={150}>
-        {({ width, height }) => (
-          <DonutChart
-            data={pieData}
-            style={{ height, width, top: 20 }}
-            legend='name'
-            size={'x-large'}
-            showTotal={false}
-            showLegend
-          />
-        )}
-      </AutoSizer>
+      <div style={{ height: 260, minWidth: 430 }}>
+        {Title}
+        <AutoSizer defaultHeight={150}>
+          {({ width, height }) => (
+            <DonutChart
+              data={pieData}
+              style={{ height, width, top: 20 }}
+              legend='name'
+              size={'x-large'}
+              showTotal={false}
+              showLegend
+            />
+          )}
+        </AutoSizer>
+      </div>
     </Loader>
   )
 }

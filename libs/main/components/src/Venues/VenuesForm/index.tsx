@@ -152,10 +152,15 @@ export function VenuesForm () {
   const [getTimezone] = useLazyGetTimezoneQuery()
 
   const linkToVenues = useTenantLink('/venues')
+  const [ addVenue ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddVenueMutation,
+    useTemplateMutationFn: useAddVenueTemplateMutation
+  })
   // eslint-disable-next-line max-len
-  const [ addVenue ] = useConfigTemplateMutationFnSwitcher(useAddVenueMutation, useAddVenueTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateVenue, { isLoading: updateVenueIsLoading } ] = useConfigTemplateMutationFnSwitcher(useUpdateVenueMutation, useUpdateVenueTemplateMutation)
+  const [ updateVenue, { isLoading: updateVenueIsLoading } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateMutation
+  })
   const [zoom, setZoom] = useState(1)
   const [center, setCenter] = useState<google.maps.LatLngLiteral>({
     lat: 0,
@@ -235,9 +240,10 @@ export function VenuesForm () {
     filters: {},
     pageSize: 10000
   }
-  const [ venuesList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Venue>>(
-    useLazyVenuesListQuery, useLazyGetVenuesTemplateListQuery
-  )
+  const [ venuesList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Venue>>({
+    useLazyQueryFn: useLazyVenuesListQuery,
+    useLazyTemplateQueryFn: useLazyGetVenuesTemplateListQuery
+  })
 
   const nameValidator = async (value: string) => {
     if ([...value].length !== JSON.stringify(value).normalize().slice(1, -1).length) {

@@ -1,9 +1,4 @@
-const switchId = {
-  mac: 'mac1',
-  name: 'switch1'
-}
 const switchDetails = {
-  ...switchId,
   serial: '',
   model: '',
   status: '',
@@ -16,21 +11,37 @@ export const moreDetailsDataFixture = {
     hierarchyNode: {
       topNSwitchesByCpuUsage: [{
         ...switchDetails,
-        cpuUtilization: 80
+        mac: 'mac1',
+        cpuUtilization: 80,
+        name: 'switch1-cpuUsage'
       }],
       topNSwitchesByDhcpFailure: [{
         ...switchDetails,
-        dhcpFailureCount: 70
+        mac: 'mac1',
+        dhcpFailureCount: 70,
+        name: 'switch1-dhcpFailure'
       }],
       topNSwitchesByPortCongestion: [{
-        ...switchId,
-        congestedPortCount: 70
+        mac: 'mac1',
+        congestedPortCount: 70,
+        name: 'switch1-congestion'
       }],
       topNSwitchesByStormPortCount: [{
-        ...switchId,
-        stormPortCount: 80
+        mac: 'mac1',
+        stormPortCount: 70,
+        name: 'switch1-portStorm'
       }]
     }
   }
 }
 
+export const noDataFixture = {
+  network: {
+    hierarchyNode: {
+      topNSwitchesByCpuUsage: [],
+      topNSwitchesByDhcpFailure: [],
+      topNSwitchesByPortCongestion: [],
+      topNSwitchesByStormPortCount: []
+    }
+  }
+}

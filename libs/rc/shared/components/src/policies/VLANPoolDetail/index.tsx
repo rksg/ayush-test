@@ -20,8 +20,10 @@ import VLANPoolOverview       from './VLANPoolOverview'
 export function VLANPoolDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const queryResults = useConfigTemplateQueryFnSwitcher<VLANPoolPolicyType>(
-    useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery)
+  const queryResults = useConfigTemplateQueryFnSwitcher<VLANPoolPolicyType>({
+    useQueryFn: useGetVLANPoolPolicyDetailQuery,
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery
+  })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
 
   return (

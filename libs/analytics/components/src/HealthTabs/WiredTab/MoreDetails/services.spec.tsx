@@ -1,29 +1,24 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { moreDetailsDataFixture }         from './__tests__/fixtures'
-import { moreDetailsApi, RequestPayload } from './services'
+import { moreDetailsDataFixture } from './__tests__/fixtures'
+import { RequestPayload }         from './config'
+import { moreDetailsApi }         from './services'
 
 describe('More Details apis', () => {
   afterEach(() =>
     store.dispatch(moreDetailsApi.util.resetApiState())
   )
-  const kpis = [
-    'cpu',
-    'dhcp',
-    'congestedPort',
-    'stormPort'
-  ]
+  const payload: RequestPayload = {
+    filter: {},
+    start: '2021-12-31T00:00:00+00:00',
+    end: '2022-01-01T00:00:00+00:00',
+    n: 5,
+    type: 'cpuUsage'
+  }
   describe('more details data api', () => {
-    it.each(kpis)('should return the correct data', async (type) => {
-      mockGraphqlQuery(dataApiURL, 'PieChartQuery', { data: moreDetailsDataFixture })
-      const payload: RequestPayload = {
-        filter: {},
-        start: '2021-12-31T00:00:00+00:00',
-        end: '2022-01-01T00:00:00+00:00',
-        n: 5,
-        type
-      }
+    it('should return the correct data', async () => {
+      mockGraphqlQuery(dataApiURL, 'Network', { data: moreDetailsDataFixture })
       const { status, data, error } = await store.dispatch(
         moreDetailsApi.endpoints.pieChartData.initiate(payload)
       )
@@ -33,16 +28,9 @@ describe('More Details apis', () => {
     })
 
     it('should return error', async () => {
-      mockGraphqlQuery(dataApiURL, 'PieChartQuery', {
+      mockGraphqlQuery(dataApiURL, 'Network', {
         error: new Error('something went wrong!')
       })
-      const payload: RequestPayload = {
-        filter: {},
-        start: '2021-12-31T00:00:00+00:00',
-        end: '2022-01-01T00:00:00+00:00',
-        n: 5,
-        type: ''
-      }
       const { status, data, error } = await store.dispatch(
         moreDetailsApi.endpoints.pieChartData.initiate(payload)
       )
