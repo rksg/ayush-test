@@ -1,15 +1,16 @@
 import { useContext, useEffect, useState } from 'react'
 
 import { Form, Select } from 'antd'
-import _                from 'lodash'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { GridCol, GridRow, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useGetPortalLangMutation,
-  useGetPortalProfileListQuery,
+  useGetEnhancedPortalProfileListQuery,
   useGetEnhancedPortalTemplateListQuery,
+  useLazyGetPortalQuery,
   useLazyGetPortalTemplateQuery
 } from '@acx-ui/rc/services'
 import {
@@ -20,7 +21,7 @@ import {
   TableResult,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { loadImageWithJWT } from '@acx-ui/utils'
+import { getImageDownloadUrl } from '@acx-ui/utils'
 
 import { PortalDemo }        from '../../services/PortalDemo'
 import { initialPortalData } from '../../services/PortalForm'
@@ -38,7 +39,10 @@ const PortalInstance = (props: {
   const params = useParams()
   const { useWatch } = Form
   const { isTemplate } = useConfigTemplate()
-  const [ getPortalTemplate ] = useLazyGetPortalTemplateQuery()
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [getPortal] = useLazyGetPortalQuery()
+  const [getPortalTemplate] = useLazyGetPortalTemplateQuery()
+  const [getPortalLang] = useGetPortalLangMutation()
   const form = Form.useFormInstance()
   const networkData = useContext(NetworkFormContext).data
   const socialIdentities = networkData?.guestPortal?.socialIdentities
@@ -59,37 +63,59 @@ const PortalInstance = (props: {
     socials.linkedInEnabled = socialIdentities.linkedin ? true : false
   }
   const portalServiceID = useWatch('portalServiceProfileId')
-  const templatePayload = {
+  const defaultPayload = {
     fields: ['id', 'name'],
     pageSize: 256
   }
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>({
-    useQueryFn: useGetPortalProfileListQuery,
+    useQueryFn: useGetEnhancedPortalProfileListQuery,
     useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
-    templatePayload
+    payload: { ...defaultPayload, enableRbac: isEnabledRbacService },
+    enableRbac: isEnabledRbacService
   })
+
   const [demoValue, setDemoValue] = useState({} as Demo)
   const portalServices =
     data?.data?.map((m) => ({ label: m.serviceName ?? m.name, value: m.id })) ?? []
   const [portalList, setPortalList] = useState(portalServices)
   const [portalData, setPortalData] = useState([] as Portal[])
+  const [portalLang, setPortalLang] = useState({} as { [key: string]: string })
+
+  const getPortalContent = async (serviceId: string,
+    list: (Portal|PortalDetail)[], isEnabledRbac: boolean
+  ) => (await getPortal({
+    params: { serviceId },
+    payload: { enableRbac: isEnabledRbac } })
+    .unwrap())?.content as Demo
 
   const getTemplateContent = async (serviceId: string) =>
-  (await getPortalTemplate({ params: { serviceId } }).unwrap())?.content as Demo
-  const getContent = (list: (Portal|PortalDetail)[], portalServiceProfileId: string ) =>
-    ( _.find(list, { id: portalServiceProfileId }) as Portal)?.content as Demo
-  const setPortal = async (value: string) => {
-    const content = isTemplate ?
-      await getTemplateContent(value) : getContent(portalData, value)
+  (await getPortalTemplate({
+    params: { serviceId },
+    payload: { enableRbac: isEnabledRbacService } })
+    .unwrap())?.content as Demo
+
+  const getCurrentPortalContent = async (isTemplateMode: boolean, serviceId: string,
+    list: (Portal|PortalDetail)[], isEnabledRbac: boolean) => {
+    return await (isTemplateMode ?
+      getTemplateContent(serviceId) :
+      getPortalContent(serviceId, list, isEnabledRbac))
+  }
+
+  const getImageUrl = async (data: string) => {
+    return getImageDownloadUrl(isEnabledRbacService, data)
+  }
+
+  const setPortal = async (value: string, isEnabledRbac:boolean) => {
+    const content = await getCurrentPortalContent(isTemplate, value, portalData, isEnabledRbac)
     const tempValue = {
       ...initialPortalData.content,
       ...content,
       poweredImg: content?.poweredImg
-        ? await loadImageWithJWT(content.poweredImg)
+        ? await getImageUrl(content.poweredImg)
         : Powered,
-      logo: content?.logo ? await loadImageWithJWT(content.logo) : Logo,
-      photo: content?.photo ? await loadImageWithJWT(content.photo) : Photo,
-      bgImage: content?.bgImage ? await loadImageWithJWT(content.bgImage) : '',
+      logo: content?.logo ? await getImageUrl(content.logo) : Logo,
+      photo: content?.photo ? await getImageUrl(content.photo) : Photo,
+      bgImage: content?.bgImage ? await getImageUrl(content.bgImage) : '',
       wifi4EUNetworkId: content?.wifi4EUNetworkId || ''
     }
     setDemoValue(tempValue)
@@ -107,19 +133,21 @@ const PortalInstance = (props: {
           'portalServiceProfileId',
           networkData.portalServiceProfileId
         )
-        const content = isTemplate ?
-          await getTemplateContent(networkData.portalServiceProfileId) :
-          getContent(data.data, networkData.portalServiceProfileId)
+        const content = await getCurrentPortalContent(
+          isTemplate,
+          networkData.portalServiceProfileId,
+          data.data,
+          isEnabledRbacService)
         const tempValue = {
           ...initialPortalData.content,
           ...content,
           poweredImg: content?.poweredImg
-            ? await loadImageWithJWT(content.poweredImg)
+            ? await getImageUrl(content.poweredImg)
             : Powered,
-          logo: content?.logo ? await loadImageWithJWT(content.logo) : Logo,
-          photo: content?.photo ? await loadImageWithJWT(content.photo) : Photo,
+          logo: content?.logo ? await getImageUrl(content.logo) : Logo,
+          photo: content?.photo ? await getImageUrl(content.photo) : Photo,
           bgImage: content?.bgImage
-            ? await loadImageWithJWT(content.bgImage)
+            ? await getImageUrl(content.bgImage)
             : '',
           wifi4EUNetworkId: content?.wifi4EUNetworkId || ''
         }
@@ -130,19 +158,18 @@ const PortalInstance = (props: {
       fetchData(data)
     }
   }, [data])
-  const [getPortalLang] = useGetPortalLangMutation()
-  const [portalLang, setPortalLang] = useState({} as { [key: string]: string })
+
   useEffect(() => {
     if (demoValue.displayLangCode) {
       getPortalLang({
         params: { ...params, messageName: demoValue.displayLangCode + '.json' }
-      })
-        .unwrap()
+      }).unwrap()
         .then((res) => {
           setPortalLang(res)
         })
     }
   }, [demoValue])
+
   return (
     <>
       <GridRow>
@@ -167,7 +194,7 @@ const PortalInstance = (props: {
                   ...portalList
                 ]}
                 onChange={(v) => {
-                  setPortal(v)
+                  setPortal(v, isEnabledRbacService)
                 }}
               />
             }
@@ -183,20 +210,21 @@ const PortalInstance = (props: {
                 setPortalList([...portalList])
                 setPortalData([...portalData])
                 form.setFieldValue('portalServiceProfileId', data.id)
-                props.updatePortalData?.(data.content)
+                const demoData = data.content as Demo
+                props.updatePortalData?.(demoData)
                 setDemoValue({
-                  ...data.content,
-                  poweredImg: data.content.poweredImg
-                    ? await loadImageWithJWT(data.content.poweredImg)
+                  ...demoData,
+                  poweredImg: demoData.poweredImg
+                    ? await getImageUrl(demoData.poweredImg)
                     : Powered,
-                  logo: data.content.logo
-                    ? await loadImageWithJWT(data.content.logo)
+                  logo: demoData.logo
+                    ? await getImageUrl(demoData.logo)
                     : Logo,
-                  photo: data.content.photo
-                    ? await loadImageWithJWT(data.content.photo)
+                  photo: demoData.photo
+                    ? await getImageUrl(demoData.photo)
                     : Photo,
-                  bgImage: data.content.bgImage
-                    ? await loadImageWithJWT(data.content.bgImage)
+                  bgImage: demoData.bgImage
+                    ? await getImageUrl(demoData.bgImage)
                     : ''
                 })
               }}

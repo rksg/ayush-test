@@ -23,7 +23,9 @@ import {
   WifiUrlsInfo,
   RequestFormData,
   ClientStatusEnum,
-  UEDetail
+  UEDetail,
+  ApiVersionEnum,
+  GetApiVersionHeader
 } from '@acx-ui/rc/utils'
 import { baseClientApi }                       from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -59,17 +61,6 @@ const defaultVenuePayload = {
   page: 1,
   pageSize: 10000
 }
-
-const v1Header = {
-  'Content-Type': 'application/vnd.ruckus.v1+json',
-  'Accept': 'application/vnd.ruckus.v1+json'
-}
-
-const v1_1Header = {
-  'Content-Type': 'application/vnd.ruckus.v1.1+json',
-  'Accept': 'application/vnd.ruckus.v1.1+json'
-}
-
 
 export const clientApi = baseClientApi.injectEndpoints({
   endpoints: (build) => ({
@@ -150,7 +141,9 @@ export const clientApi = baseClientApi.injectEndpoints({
 
         const fields = [ ...(arg.payload as { fields: string[] }).fields, 'devicesMac' ]
         const guestsListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonUrlsInfo.getGuestsList, arg.params, v1_1Header),
+          ...createHttpRequest(CommonUrlsInfo.getGuestsList,
+            arg.params,
+            GetApiVersionHeader(ApiVersionEnum.v1_1)),
           body: JSON.stringify({ ...body, filters, fields })
         })
         const guestsList = guestsListQuery.data as TableResult<Guest>
@@ -176,7 +169,9 @@ export const clientApi = baseClientApi.injectEndpoints({
         const filter = { clientMac: distinctMacs }
         const clientPayload = { ...defaultClientPayload, filter }
         const clientListQuery = await fetchWithBQ({
-          ...createHttpRequest(ClientUrlsInfo.getClientList, arg.params, v1Header),
+          ...createHttpRequest(ClientUrlsInfo.getClientList,
+            arg.params,
+            GetApiVersionHeader(ApiVersionEnum.v1_1)),
           body: JSON.stringify(clientPayload)
         })
         const clientList = clientListQuery.data as TableResult<GuestClient>
@@ -189,7 +184,9 @@ export const clientApi = baseClientApi.injectEndpoints({
           filters: { id: Array.from(uniqueVenueIds) }
         }
         const venueListQuery = await fetchWithBQ({
-          ...createHttpRequest(CommonUrlsInfo.getVenues, arg.params, v1Header),
+          ...createHttpRequest(CommonUrlsInfo.getVenues,
+            arg.params,
+            GetApiVersionHeader(ApiVersionEnum.v1)),
           body: JSON.stringify(venuePayload)
         })
         const venueList = venueListQuery.data as TableResult<{ id:string, name:string }>
@@ -227,13 +224,17 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     deleteGuest: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        return createHttpRequest(ClientUrlsInfo.deleteGuest, params, v1Header)
+        return createHttpRequest(ClientUrlsInfo.deleteGuest,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
     disableGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.disableGuests, params, v1Header)
+        const req = createHttpRequest(ClientUrlsInfo.disableGuests,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -243,7 +244,9 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     enableGuests: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.enableGuests, params, v1Header)
+        const req = createHttpRequest(ClientUrlsInfo.enableGuests,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -274,7 +277,9 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     generateGuestPassword: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword, params, v1Header)
+        const req = createHttpRequest(ClientUrlsInfo.generateGuestPassword,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -346,7 +351,9 @@ export const clientApi = baseClientApi.injectEndpoints({
     }),
     addGuestPass: build.mutation<Guest, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addGuestPass, params, v1Header)
+        const req = createHttpRequest(CommonUrlsInfo.addGuestPass,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -367,7 +374,7 @@ export const clientApi = baseClientApi.injectEndpoints({
     importGuestPass: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.importGuestPass, params, {
-          ...v1Header,
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
           'Content-Type': undefined
         })
         return {

@@ -2,45 +2,44 @@ import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
 import { StepsFormLegacy }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
-  useLazyGetPortalProfileListQuery,
-  useLazyGetEnhancedPortalTemplateListQuery
-} from '@acx-ui/rc/services'
+  useLazyGetEnhancedPortalProfileListQuery,
+  useLazyGetEnhancedPortalTemplateListQuery } from '@acx-ui/rc/services'
 import {
+  Portal,
+  TableResult,
   checkObjectNotExists,
   hasGraveAccentAndDollarSign,
-  useConfigTemplate
+  useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { PortalDemo } from '../PortalDemo'
 
-const templatePayload = () => ({
+const templatePayload = {
   fields: ['id', 'name'],
   filters: {},
-  pageSize: 1024
-})
+  pageSize: 256
+}
 
 const PortalSettingForm = (props: { resetDemoField: () => void }) => {
   const { resetDemoField } = props
   const { $t } = useIntl()
   const params = useParams()
-  const { isTemplate } = useConfigTemplate()
-  const [ getPortalList ] = useLazyGetPortalProfileListQuery()
-  const [ getPortalTemplateList ] = useLazyGetEnhancedPortalTemplateListQuery()
-
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [ getPortalList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Portal>>({
+    useLazyQueryFn: useLazyGetEnhancedPortalProfileListQuery,
+    useLazyTemplateQueryFn: useLazyGetEnhancedPortalTemplateListQuery
+  })
   const nameValidator = async (value: string) => {
-    const list = !isTemplate ? (await getPortalList({ params }, true).unwrap()).data
-      .filter((n) => n.id !== params.serviceId)
-      .map((n) => n.serviceName):
-      (await getPortalTemplateList(
-        { params, payload: templatePayload()
-        }, true)
-        .unwrap()).data
-        .filter((n) => n.id !== params.serviceId)
-        .map((n) => n.name)
+    const list = await getPortalList({
+      params, payload: { ...templatePayload,
+        enableRbac: isEnabledRbacService } }).unwrap()
+    const result = list.data?.filter((n:Portal) => n.id !== params.serviceId)
+      .map((n:Portal) => n.serviceName ?? n.name)
 
-    return checkObjectNotExists(list, value, $t({ defaultMessage: 'Portal' }))
+    return checkObjectNotExists(result, value, $t({ defaultMessage: 'Portal' }))
   }
   return (
     <>
@@ -50,7 +49,7 @@ const PortalSettingForm = (props: { resetDemoField: () => void }) => {
             {$t({ defaultMessage: 'Settings' })}
           </StepsFormLegacy.Title>
           <Form.Item
-            name={isTemplate ? 'name': 'serviceName'}
+            name={isEnabledRbacService ? 'serviceName' : 'name'}
             label={$t({ defaultMessage: 'Service Name' })}
             rules={[
               { required: true },

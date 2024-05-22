@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { SummaryCard }              from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useGetPortalLangMutation } from '@acx-ui/rc/services'
 import { Demo, PortalLanguageEnum } from '@acx-ui/rc/utils'
 import { useParams }                from '@acx-ui/react-router-dom'
-import { loadImageWithJWT }         from '@acx-ui/utils'
+import { getImageDownloadUrl }      from '@acx-ui/utils'
 
 import { initialPortalData }               from '../../services/PortalForm'
 import { PortalPreviewModal, getLanguage } from '../PortalDemo'
@@ -19,14 +20,18 @@ export function PortalOverview (props: { demoValue: Demo }) {
   const { $t } = useIntl()
   const { demoValue } = props
   const params = useParams()
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [newDemo, setNewDemo]=useState({ displayLangCode: 'en' } as Demo)
   const getDemo = async ()=>{
     const newDemoValue = { ...initialPortalData.content,
       ...demoValue, poweredImg: demoValue?.poweredImg?
-        await loadImageWithJWT(demoValue.poweredImg):Powered,
-      logo: demoValue?.logo?await loadImageWithJWT(demoValue.logo):Logo,
-      photo: demoValue?.photo?await loadImageWithJWT(demoValue.photo): Photo,
-      bgImage: demoValue?.bgImage?await loadImageWithJWT(demoValue.bgImage):'' }
+        await getImageDownloadUrl(isEnabledRbacService, demoValue.poweredImg):Powered,
+      logo: demoValue?.logo?
+        await getImageDownloadUrl(isEnabledRbacService, demoValue.logo):Logo,
+      photo: demoValue?.photo?
+        await getImageDownloadUrl(isEnabledRbacService, demoValue.photo): Photo,
+      bgImage: demoValue?.bgImage?
+        await getImageDownloadUrl(isEnabledRbacService, demoValue.bgImage):'' }
     setNewDemo(newDemoValue)
   }
   const [getPortalLang] = useGetPortalLangMutation()

@@ -1,4 +1,4 @@
-import { getJwtTokenPayload, getJwtHeaders, loadImageWithJWT } from './jwtToken'
+import { getJwtTokenPayload, getJwtHeaders, loadImageWithJWT, getImageDownloadUrl } from './jwtToken'
 
 describe('getJwtTokenPayload', () => {
   afterEach(() => {
@@ -148,7 +148,7 @@ describe('loadImageWithJWT', () => {
     const jwtToken = `xxx.${window.btoa(JSON.stringify(token))}.xxx`
     sessionStorage.setItem('jwt', jwtToken)
 
-    const result = await loadImageWithJWT('123')
+    const result = await getImageDownloadUrl(false, '123')
     expect(global.fetch).toHaveBeenCalledWith(
       '/api/file/tenant/8b9e8338c81d404e986c1d651ca7fed0/123/url',
       expect.objectContaining({

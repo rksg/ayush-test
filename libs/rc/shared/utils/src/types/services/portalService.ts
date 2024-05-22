@@ -9,12 +9,14 @@ export interface Portal{
   name?: string
   tags?: string[]
   network?: PortalNetwork[]
-  content: Demo,
+  content?: Demo,
   networkIds?: string[],
   logoFile?: RcFile,
   bgFile?: RcFile,
   photoFile?: RcFile,
-  poweredFile?: RcFile
+  poweredFile?: RcFile,
+  wifiNetworkIds?: string[],
+  displayLangCode?: string
 }
 
 export interface PortalSaveData {
@@ -28,7 +30,7 @@ export interface PortalDetail{
   id: string
   name?: string
   serviceName?: string
-  displayLangCode: string,
+  displayLangCode?: string,
   wifiNetworkIds?: string[]
 }
 

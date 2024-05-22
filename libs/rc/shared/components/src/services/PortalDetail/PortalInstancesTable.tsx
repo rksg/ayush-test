@@ -4,10 +4,25 @@ import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                                                            from '@acx-ui/components'
-import { useGetPortalProfileDetailQuery, useGetEnhancedPortalTemplateListQuery, useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
-import { Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery, ConfigTemplateType }                                from '@acx-ui/rc/utils'
-import { TenantLink, useParams }                                                                                                      from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import {
+  useGetEnhancedPortalProfileListQuery,
+  useGetEnhancedPortalTemplateListQuery,
+  useGetNetworkTemplateListQuery,
+  useNetworkListQuery } from '@acx-ui/rc/services'
+import {
+  Network,
+  NetworkType,
+  NetworkTypeEnum,
+  useConfigTemplate,
+  useTableQuery,
+  ConfigTemplateType,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult,
+  Portal
+} from '@acx-ui/rc/utils'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
@@ -16,15 +31,21 @@ export function PortalInstancesTable (){
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-  const { data } = useGetPortalProfileDetailQuery({ params }, { skip: isTemplate })
-  const templatePayload = {
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const defaultPayload = {
     fields: ['id', 'name', 'wifiNetworkIds', 'displayLangCode'],
     filters: {
       id: [params.serviceId]
     },
-    pageSize: 1024
+    pageSize: 256
   }
-  const { data: templateData } = useGetEnhancedPortalTemplateListQuery({ params, payload: templatePayload }, { skip: !isTemplate })
+
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal>>({
+    useQueryFn: useGetEnhancedPortalProfileListQuery,
+    useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
+    payload: { ...defaultPayload, enableRbac: isEnabledRbacService },
+    enableRbac: isEnabledRbacService
+  })
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
 
   const tableQuery = useTableQuery<Network>({
@@ -32,8 +53,8 @@ export function PortalInstancesTable (){
     defaultPayload: {
       fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
       filters: {
-        id: isTemplate ? templateData?.data?.[0]?.wifiNetworkIds?.length? templateData.data[0]?.wifiNetworkIds: ['none'] :
-          (data?.networkIds?.length? data?.networkIds: ['none'])
+        id: isEnabledRbacService ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
+          (data?.data?.[0]?.networkIds?.length? data.data[0]?.networkIds: ['none'])
       }
     },
     search: {
@@ -47,22 +68,12 @@ export function PortalInstancesTable (){
       tableQuery.setPayload({
         ...tableQuery.payload,
         filters: {
-          id: data?.networkIds?.length? data?.networkIds : ['none']
+          id: isEnabledRbacService ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
+            (data?.data?.[0]?.networkIds?.length? data.data[0]?.networkIds: ['none'])
         }
       })
     }
   },[data])
-
-  useEffect(()=>{
-    if(templateData){
-      tableQuery.setPayload({
-        ...tableQuery.payload,
-        filters: {
-          id: templateData?.data?.[0]?.wifiNetworkIds?.length? templateData.data[0]?.wifiNetworkIds: ['none']
-        }
-      })
-    }
-  },[templateData])
 
   const columns: TableProps<Network>['columns'] = [
     {

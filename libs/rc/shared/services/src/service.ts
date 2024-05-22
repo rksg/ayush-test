@@ -1,8 +1,4 @@
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import {
-  FetchBaseQueryError,
-  FetchBaseQueryMeta
-} from '@reduxjs/toolkit/query/react'
+/* eslint-disable max-len */
 import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
@@ -52,7 +48,9 @@ import {
   DpskPassphrasesClientPayload,
   DpskNewFlowPassphraseClient,
   CloudpathServer,
-  ApplicationPolicy
+  ApplicationPolicy,
+  ApiVersionEnum,
+  GetApiVersionHeader
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }             from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -81,6 +79,16 @@ const mDnsProxyMutationUseCases = [
 const defaultDpskVersioningHeaders = {
   'Content-Type': 'application/vnd.ruckus.v2+json',
   'Accept': 'application/vnd.ruckus.v2+json'
+}
+
+const getV1orV1_1Headers = (payload:unknown) => {
+  const currentPayload = payload ?? {}
+  const enableRbac: boolean =
+  (currentPayload != null && typeof currentPayload === 'object' && 'enableRbac' in currentPayload) ?
+    (currentPayload as { enableRbac: boolean }).enableRbac : false
+  return enableRbac ?
+    GetApiVersionHeader(ApiVersionEnum.v1_1) :
+    GetApiVersionHeader(ApiVersionEnum.v1)
 }
 
 export const serviceApi = baseServiceApi.injectEndpoints({
@@ -345,51 +353,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
-    }),
-    getPortal: build.query<Portal | null, RequestPayload>({
-      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
-        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
-          null,
-          FetchBaseQueryError,
-          FetchBaseQueryMeta
-        >)
-        const result = await fetch(createHttpRequest(PortalUrlsInfo.getPortal, params))
-        return result as QueryReturnValue<Portal,
-        FetchBaseQueryError,
-        FetchBaseQueryMeta>
-      },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
-    }),
-    deletePortal: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(PortalUrlsInfo.deletePortal, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    updatePortal: build.mutation<Service, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PortalUrlsInfo.updatePortal, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    createPortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload }) => {
-        const createPortalReq = createHttpRequest(
-          PortalUrlsInfo.createPortal, params
-        )
-        return {
-          ...createPortalReq,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -811,57 +774,66 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         } as DpskPassphraseClient
       }
     }),
-    getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
-      query: ({ params }) => {
-        const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
-        return {
-          ...portalDetailReq
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    getPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
+    getPortal: build.query<Portal, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: PortalUrlsInfo.getPortalProfileList,
+        const req = createHttpRequest(PortalUrlsInfo.getPortal,
           params,
-          payload: { ...((payload as TableChangePayload) ?? defaultNewTablePaginationParams),
-            pageStartZero: false }
-        })
-
+          getV1orV1_1Headers(payload))
+        return { ...req }
+      },
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
+    }),
+    deletePortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PortalUrlsInfo.deletePortal,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return { ...req }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updatePortal: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.updatePortal,
+          params,
+          getV1orV1_1Headers(payload))
         return {
-          ...req
+          ...req,
+          body: JSON.stringify({ ...(_.omit(payload as Portal, ['enableRbac'])) })
         }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
-      transformResponse (result: NewAPITableResult<Portal>) {
-        return transferNewResToTableResult<Portal>(result)
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createPortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          PortalUrlsInfo.createPortal, params, getV1orV1_1Headers(payload)
+        )
+        return {
+          ...req,
+          body: JSON.stringify({ ...(_.omit(payload as Portal, ['enableRbac'])) })
+        }
       },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'Add Portal Service Profile',
-            'Update Portal Service Profile',
-            'Delete Portal Service Profile',
-            'Delete Portal Service Profiles'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
-          })
-        })
-      }
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getEnhancedPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
       query: ({ params, payload }) => {
+        const enableRbac = payload && (payload as { enableRbac: boolean }).enableRbac
         const req = createHttpRequest(PortalUrlsInfo.getEnhancedPortalProfileList,
-          params)
-
+          params, getV1orV1_1Headers(payload))
+        const portalTablePayload = enableRbac ?
+          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total', 'enableRbac']) :
+          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total', 'fields', 'enableRbac'])
         return {
           ...req,
-          body: _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total'])
+          body: JSON.stringify({ ...portalTablePayload })
         }
       },
-      transformResponse (result: NewAPITableResult<Portal>) {
-        return transferNewResToTableResult<Portal>(result)
+      transformResponse (result: NewAPITableResult<Portal>|TableResult<Portal>) {
+        if (result && 'data' in result && result.data) {
+          return result as TableResult<Portal>
+        }
+        return transferNewResToTableResult<Portal>(result as NewAPITableResult<Portal>)
       },
       providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -883,6 +855,46 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const portalLang = createHttpRequest(PortalUrlsInfo.getPortalLang, params)
         return {
           ...portalLang
+        }
+      }
+    }),
+    uploadPhoto: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadPhoto,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadLogo: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadLogo,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadBgImage: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadBgImage,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadPoweredImg: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadPoweredImg,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -948,16 +960,19 @@ export const {
   useLazyDownloadNewFlowPassphrasesQuery,
   useGetPassphraseClientQuery,
   useGetPortalQuery,
+  useLazyGetPortalQuery,
+  useGetEnhancedPortalProfileListQuery,
+  useLazyGetEnhancedPortalProfileListQuery,
   useCreatePortalMutation,
-  useGetPortalProfileDetailQuery,
-  useLazyGetPortalProfileListQuery,
-  useGetPortalProfileListQuery,
   useGetPortalLangMutation,
   useDeletePortalMutation,
   useUpdatePortalMutation,
+  useUploadBgImageMutation,
+  useUploadLogoMutation,
+  useUploadPhotoMutation,
+  useUploadPoweredImgMutation,
   useUploadURLMutation,
-  useGetDHCPProfileListViewModelQuery,
-  useGetEnhancedPortalProfileListQuery
+  useGetDHCPProfileListViewModelQuery
 } = serviceApi
 
 export function createDpskHttpRequest (

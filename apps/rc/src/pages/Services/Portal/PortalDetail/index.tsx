@@ -2,8 +2,9 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { PortalOverview, PortalInstancesTable }         from '@acx-ui/rc/components'
-import { useGetPortalProfileDetailQuery }               from '@acx-ui/rc/services'
+import { useGetPortalQuery }                            from '@acx-ui/rc/services'
 import {
   Demo,
   getServiceDetailsLink,
@@ -18,12 +19,13 @@ import { filterByAccess } from '@acx-ui/user'
 export default function PortalServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const queryResults = useGetPortalProfileDetailQuery({ params })
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const queryResults = useGetPortalQuery({ params, payload: { enableRbac: isEnabledRbacService } })
 
   return (
     <>
       <PageHeader
-        title={queryResults.data?.serviceName||''}
+        title={queryResults.data?.serviceName ?? queryResults.data?.name}
         breadcrumb={[
           { text: $t({ defaultMessage: 'Network Control' }) },
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },

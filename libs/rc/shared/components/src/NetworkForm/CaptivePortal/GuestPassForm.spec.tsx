@@ -66,7 +66,7 @@ describe('CaptiveNetworkForm-GuestPass', () => {
         (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json( externalProviders ))),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url,
+      rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))
       ),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,

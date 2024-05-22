@@ -2,13 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-
-import { servicesConfigTemplateApi, serviceApi }                                  from '@acx-ui/rc/services'
-import { ServicesConfigTemplateUrlsInfo, CommonUrlsInfo, PortalUrlsInfo, Portal } from '@acx-ui/rc/utils'
-import { Path, To }                                                               from '@acx-ui/react-router-dom'
-import { Provider, store }                                                        from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved }                  from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                           from '@acx-ui/user'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { servicesConfigTemplateApi, serviceApi }                                        from '@acx-ui/rc/services'
+import { ServicesConfigTemplateUrlsInfo, CommonUrlsInfo, PortalUrlsInfo, Portal, Demo } from '@acx-ui/rc/utils'
+import { Path, To }                                                                     from '@acx-ui/react-router-dom'
+import { Provider, store }                                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved, waitFor }               from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                                 from '@acx-ui/user'
 
 import { portalResponse, portalTemaplteResponse, createPath } from './__tests__/fixtures'
 import Logo                                                   from './assets/images/portal-demo/RuckusCloud.svg'
@@ -38,7 +38,7 @@ jest.mock('@acx-ui/rc/utils', () => ({
 
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
-  loadImageWithJWT: () => Promise.resolve('testId')
+  getImageDownloadUrl: () => Promise.resolve('testId')
 }))
 
 async function fillInBeforeSettings (portalName: string) {
@@ -55,6 +55,7 @@ describe('PortalForm', () => {
   const mockAdd = jest.fn()
   const mockCreatePortal = jest.fn()
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     store.dispatch(serviceApi.util.resetApiState())
     store.dispatch(servicesConfigTemplateApi.util.resetApiState())
     mockServer.use(
@@ -66,7 +67,7 @@ describe('PortalForm', () => {
           return res(ctx.json(portalResponse))
         }),
       rest.post(
-        PortalUrlsInfo.createPortal.url.replace('?quickAck=true', ''),
+        PortalUrlsInfo.createPortal.url,
         (_, res, ctx) => {
           mockCreatePortal()
           return res(ctx.json(successResponse))
@@ -89,20 +90,51 @@ describe('PortalForm', () => {
           mockAdd()
           return res(ctx.json({}))
         }),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url
-        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
-      (_, res, ctx) => {
-        return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }],
-          paging: { page: 1, pageSize: 10, totalCount: 1 } }))
-      }),
+      rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ content: [{ id: 'test', serviceName: 'test' }],
+            paging: { page: 1, pageSize: 10, totalCount: 1 } }))
+        }),
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedPortalList.url,
         (_, res, ctx) => {
-          return res(ctx.json({ content: [{ id: 'test', name: 'test' }],
+          return res(ctx.json({ data: [{ id: 'test', name: 'test' }],
             paging: { page: 1, pageSize: 10, totalCount: 1 } }))
         }),
       rest.get(ServicesConfigTemplateUrlsInfo.getPortal.url,
         (_, res, ctx) => {
           return res(ctx.json(portalTemaplteResponse))
+        }),
+      rest.post(PortalUrlsInfo.uploadPhoto.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(PortalUrlsInfo.uploadLogo.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(PortalUrlsInfo.uploadBgImage.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(PortalUrlsInfo.uploadPoweredImg.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(ServicesConfigTemplateUrlsInfo.uploadPhoto.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(ServicesConfigTemplateUrlsInfo.uploadLogo.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(ServicesConfigTemplateUrlsInfo.uploadBgImage.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(ServicesConfigTemplateUrlsInfo.uploadPoweredImg.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
         })
     )
   })
@@ -113,6 +145,7 @@ describe('PortalForm', () => {
     mockCreatePortal.mockClear()
   })
   it('should create Portal with file successfully', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
 
@@ -132,11 +165,35 @@ describe('PortalForm', () => {
     await userEvent.click(await screen.findByText('Select image'))
 
     await userEvent.click(await screen.findByText('Add'))
-    // await waitFor(() => expect(mockAdd).toBeCalled())
-    // await waitFor(() => expect(mockCreatePortal).toBeCalled())
+    await waitFor(() => expect(mockCreatePortal).toBeCalled())
     expect(await screen.findByText('English')).toBeVisible()
   })
-  it('should create Portal successfully', async () => {
+
+  // RBAC
+  it('should create Portal RBAC with file successfully', async () => {
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
+
+    render(<Provider><PortalForm /></Provider>, {
+      route: { params, path: createPath }
+    })
+    //step 1 setting form
+    await userEvent.type(await screen.findByRole(
+      'textbox', { name: 'Service Name' }),'create Portal test')
+    await userEvent.click(await screen.findByText('Reset'))
+    const file = new File(['logo ruckus'],
+      Logo,
+      { type: 'image/png' })
+    await userEvent.click(await screen.findByTitle('background setting'))
+
+    await userEvent.upload(await screen.findByLabelText('Select image'),file)
+    await userEvent.click(await screen.findByText('Select image'))
+
+    await userEvent.click(await screen.findByText('Add'))
+    await waitFor(() => expect(mockCreatePortal).toBeCalled())
+    expect(await screen.findByText('English')).toBeVisible()
+  })
+  it('should create Portal RBAC successfully', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', type: 'wifi' }
 
@@ -148,10 +205,10 @@ describe('PortalForm', () => {
       'textbox', { name: 'Service Name' }),'create Portal test')
 
     await userEvent.click(await screen.findByText('Add'))
-    // await waitFor(() => expect(mockCreatePortal).toBeCalled())
+    await waitFor(() => expect(mockCreatePortal).toBeCalled())
   })
 
-  it('should edit open Portal successfully', async () => {
+  it('should edit open Portal RBAC successfully', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     const params = { networkId: '5d45082c812c45fbb9aab24420f39bf0',
       tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }
@@ -167,7 +224,7 @@ describe('PortalForm', () => {
   it('should cancel successfully', async () => {
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     const cancelPortalRes: Portal = { ...portalResponse, content: { ...portalResponse.content,
-      componentDisplay: { ...portalResponse.content.componentDisplay, wifi4eu: true } }
+      componentDisplay: { ...portalResponse.content?.componentDisplay, wifi4eu: true } }as Demo
     }
     const params = { networkId: '5d45082c812c45fbb9aab24420f39bf0',
       tenantId: 'tenant-id', action: 'edit', serviceId: '5d45082c812c45fbb9aab24420f39bf1' }

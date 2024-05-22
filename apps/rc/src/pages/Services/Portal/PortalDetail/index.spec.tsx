@@ -46,7 +46,7 @@ describe('Portal Detail Page', () => {
           return res(ctx.json({}))
         }),
       rest.get(
-        PortalUrlsInfo.getPortalProfileDetail.url,
+        PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => res(ctx.json(mockDetailResult))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
@@ -87,7 +87,7 @@ describe('Portal Detail Page', () => {
   it('should render detail changed page', async () => {
     mockServer.use(
       rest.get(
-        PortalUrlsInfo.getPortalProfileDetail.url,
+        PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => res(ctx.json(mockDetailChangeResult))
       )
     )
