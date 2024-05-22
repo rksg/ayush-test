@@ -24,11 +24,13 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   },
   associateDpskPool: {
     method: 'put',
-    url: `${NewPersonaBaseUrl}/:groupId/dpskPools/:poolId`
+    url: `${NewPersonaBaseUrl}/:groupId/dpskPools/:poolId`,
+    newApi: true
   },
   associateMacRegistration: {
     method: 'put',
-    url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`
+    url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`,
+    newApi: true
   },
   searchPersonaGroupList: {
     method: 'post',
