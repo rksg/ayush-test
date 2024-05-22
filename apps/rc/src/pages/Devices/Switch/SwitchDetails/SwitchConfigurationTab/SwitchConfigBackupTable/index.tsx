@@ -10,7 +10,7 @@ import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGet
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, RESTORE_IN_PROGRESS_TOOLTIP, SwitchViewModel, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
 import { SwitchScopes }                                                                                                                                from '@acx-ui/types'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission }                                                                                   from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey }                                                                                                  from '@acx-ui/user'
 import { handleBlobDownloadFile }                                                                                                                      from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../..'
@@ -227,7 +227,7 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
       showRestoreModal(rows[0], clearSelection)
     }
   }, {
-    key: getShowWithoutRbacCheckKey('DownloadConfig'),
+    // key: getShowWithoutRbacCheckKey('DownloadConfig'), TODO: Waiting for API fix
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
@@ -260,10 +260,6 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
     }
   }]
 
-  const isSelectionVisible = hasPermission({
-    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
-  })
-
   return <>
     <Loader states={[tableQuery]}>
       <Table
@@ -274,7 +270,7 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(rightActions)}
         onChange={tableQuery.handleTableChange}
-        rowSelection={isSelectionVisible ? {
+        rowSelection={{
           type: 'checkbox',
           onChange: (selectedRowKeys, selectedData) => {
             const selectedRows = selectedRowKeys.length
@@ -311,7 +307,7 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
             }
             setEnabledRowButton(enabledButton)
           }
-        } : undefined}
+        }}
       />
     </Loader>
     <BackupModal
