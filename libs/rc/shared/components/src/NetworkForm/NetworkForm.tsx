@@ -895,64 +895,57 @@ function useUpdateHotspot20Activation () {
   const updateHotspot20Activations =
     async (network?: NetworkSaveData) => {
       if (network && network.type === NetworkTypeEnum.HOTSPOT20) {
+        const networkId = network.id
         const hotspot20Setting = network.hotspot20Settings
         const hotspot20OriginalOperator = hotspot20Setting?.originalOperator
         const hotspot20OriginalProviders = hotspot20Setting?.originalProviders
 
         if (hotspot20OriginalOperator &&
           hotspot20OriginalOperator !== hotspot20Setting.wifiOperator) {
-          await activateOperator(network.id, hotspot20Setting.wifiOperator)
+          await activateOperator(networkId, hotspot20Setting.wifiOperator)
         }
 
         if (hotspot20OriginalProviders &&
           hotspot20Setting?.identityProviders &&
           !_.isEqual(hotspot20OriginalProviders, hotspot20Setting?.identityProviders)) {
-          let deactivateProviderIds : string[] = []
-          let activateProviderIds : string[] = []
-          hotspot20OriginalProviders.forEach(async (id) => {
-            if (hotspot20Setting?.identityProviders &&
-            !(hotspot20Setting?.identityProviders.includes(id))) {
-              deactivateProviderIds.push(id)
-            }
-          })
 
-          hotspot20Setting?.identityProviders.forEach(async (id) => {
-            if (!hotspot20OriginalProviders.includes(id)) {
-              activateProviderIds.push(id)
-            }
-          })
+          const deactivateProviderIds = hotspot20OriginalProviders.filter(providerId =>
+            !(hotspot20Setting.identityProviders!.includes(providerId))
+          )
 
-          if (deactivateProviderIds.length === hotspot20OriginalProviders.length &&
-            deactivateProviderIds.length === 1 && activateProviderIds.length === 1) {
-            // change original 1 provider, can only activate before deativate to avoid remove reuiqred field
+          const activateProviderIds = hotspot20Setting?.identityProviders.filter(providerId =>
+            !hotspot20OriginalProviders.includes(providerId)
+          )
+
+          const deactivateLength = deactivateProviderIds.length
+          const activateLength = activateProviderIds.length
+
+          // if remove all original providers
+          if (deactivateLength === hotspot20OriginalProviders.length &&
+            deactivateLength === 1 && activateLength > 0) {
+            // can only activate before deativate to avoid remove reuiqred field
             // max number of providers activated with a network is 6
-            activateProviderIds.forEach(async (id) => {
-              await activateProvider(network.id, id)
-            })
-
-            deactivateProviderIds.forEach(async (id) => {
-              await deactivateProvider(network.id, id)
-            })
+            await activateProvider(networkId, activateProviderIds[activateLength - 1])
+            activateProviderIds.pop()
+            await deactivateProvider(networkId, deactivateProviderIds[0])
+            deactivateProviderIds.pop()
           } else {
-            let i = 0, j = 0
-            if (deactivateProviderIds.length >= 1) {
-              await deactivateProvider(network.id, deactivateProviderIds[i])
-              i = 1
+            // deactivate first to have space to activate
+            if (deactivateLength > 0) {
+              await deactivateProvider(network.id, deactivateProviderIds[deactivateLength - 1])
+              deactivateProviderIds.pop()
             }
 
-            if (activateProviderIds.length >= 1) {
-              await activateProvider(network.id, activateProviderIds[j])
-              j = 1
-            }
-
-            for (; i < deactivateProviderIds.length; i++) {
-              await deactivateProvider(network.id, deactivateProviderIds[i])
-            }
-
-            for (; j < activateProviderIds.length; j++) {
-              await activateProvider(network.id, activateProviderIds[j])
+            if (activateLength > 0) {
+              await activateProvider(network.id, activateProviderIds[activateLength - 1])
+              activateProviderIds.pop()
             }
           }
+
+          await Promise.allSettled(deactivateProviderIds.map(id =>
+            deactivateProvider(networkId, id)))
+
+          await Promise.allSettled(activateProviderIds.map(id => activateProvider(networkId, id)))
         }
       }
       return
