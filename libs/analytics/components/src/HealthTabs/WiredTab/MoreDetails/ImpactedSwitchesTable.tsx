@@ -9,9 +9,12 @@ import {
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
-import { WidgetType, PieChartResult, SwitchDetails, showTopResult } from './config'
-import { useImpactedSwitchesDataQuery }                             from './services'
-import { ChartTitle }                                               from './styledComponents'
+import {
+  WidgetType, PieChartResult, SwitchDetails,
+  showTopResult, topImpactedSwitchesLimit
+} from './config'
+import { useImpactedSwitchesDataQuery } from './services'
+import { ChartTitle }                   from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
@@ -107,7 +110,7 @@ export const ImpactedSwitchesTable = ({
             other {Switches}
           }`}
           values={{
-            count: showTopResult($t, totalCount, 10),
+            count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
             totalCount,
             b: (chunk) => <b>{chunk}</b>
           }}

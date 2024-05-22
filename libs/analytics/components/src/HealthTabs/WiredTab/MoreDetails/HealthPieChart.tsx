@@ -4,10 +4,13 @@ import AutoSizer                     from 'react-virtualized-auto-sizer'
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
 import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
-import { TopNByPortCongestionResult, TopNByStormPortCountResult, showTopResult }     from './config'
-import { PieChartResult, TopNByCPUUsageResult, TopNByDHCPFailureResult, WidgetType } from './config'
-import { usePieChartDataQuery }                                                      from './services'
-import { ChartTitle }                                                                from './styledComponents'
+import {
+  PieChartResult, TopNByCPUUsageResult,
+  TopNByDHCPFailureResult, WidgetType, showTopResult,
+  TopNByPortCongestionResult, TopNByStormPortCountResult
+} from './config'
+import { usePieChartDataQuery }        from './services'
+import { ChartTitle, PieChartWrapper } from './styledComponents'
 
 type PieChartData = {
   mac: string
@@ -106,15 +109,15 @@ export const MoreDetailsPieChart = ({
 
   const pieData = queryResults.data
   if (!pieData || pieData.length === 0) {
-    return <>
+    return <PieChartWrapper>
       {Title}
       <NoData />
-    </>
+    </PieChartWrapper>
   }
 
   return (
     <Loader states={[queryResults]}>
-      <div style={{ height: 260, minWidth: 430 }}>
+      <PieChartWrapper>
         {Title}
         <AutoSizer defaultHeight={150}>
           {({ width, height }) => (
@@ -128,7 +131,7 @@ export const MoreDetailsPieChart = ({
             />
           )}
         </AutoSizer>
-      </div>
+      </PieChartWrapper>
     </Loader>
   )
 }

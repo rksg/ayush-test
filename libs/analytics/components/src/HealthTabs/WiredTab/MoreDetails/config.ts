@@ -54,6 +54,6 @@ export interface RequestPayload {
 
 export const topImpactedSwitchesLimit = 10
 
-export const showTopResult = ($t: IntlShape['$t'], count: number, limit: number) => count >= limit
+export const showTopResult = ($t: IntlShape['$t'], count: number, limit: number) => count === limit
   ? $t({ defaultMessage: 'Top {limit}' }, { limit })
   : count

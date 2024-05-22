@@ -32,6 +32,38 @@ describe('MoreDetailsPieChart', () => {
     )
     expect(await screen.findByText(`switch1-${queryType}`)).toBeVisible()
   })
+  it('should show "Top 5" in title when top 5 is available', async () => {
+    let moreDetailsDataFixtureCopy = moreDetailsDataFixture
+    const cpuUsageArray = moreDetailsDataFixtureCopy.network.hierarchyNode.topNSwitchesByCpuUsage
+    const count = 5
+
+    while (cpuUsageArray.length < count) {
+      cpuUsageArray.push({
+        mac: '',
+        cpuUtilization: 0,
+        name: `switch${cpuUsageArray.length + 1}-cpuUsage`,
+        serial: '',
+        model: '',
+        status: '',
+        firmware: '',
+        numOfPorts: 0
+      })
+    }
+
+    mockGraphqlQuery(dataApiURL, 'Network', { data: moreDetailsDataFixtureCopy })
+    render(
+      <Provider>
+        <MoreDetailsPieChart
+          filters={{
+            filter: {},
+            startDate: '2021-12-31T00:00:00+00:00',
+            endDate: '2022-01-01T00:00:00+00:00' } as AnalyticsFilter
+          }
+          queryType='cpuUsage' />
+      </Provider>
+    )
+    expect(await screen.findByText('Top 5')).toBeVisible()
+  })
   it('should show no data', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', { data: noDataFixture })
     render(
