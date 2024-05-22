@@ -127,7 +127,7 @@ type KpisHavingThreshold = keyof KpiThresholdType
 
 export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
-const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => { // NEEDTOCHECK: we do not want to filter switches to always display poe info
+const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
   const { filter: { ssids, networkNodes, switchNodes } } = getFilterPayload(payload)
   return { filter: { ssids, networkNodes, switchNodes } }
 }

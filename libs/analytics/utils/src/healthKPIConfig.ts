@@ -426,6 +426,7 @@ export const kpiConfig = {
   },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
+    enableSwitchFirmwareFilter: true,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
