@@ -61,7 +61,8 @@ import {
   ApAntennaTypeSettings,
   ApiVersionType,
   GetApiVersionHeader,
-  WifiRbacUrlsInfo
+  WifiRbacUrlsInfo,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -768,8 +769,10 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     }),
     getApNetworkSettings: build.query<APNetworkSettings, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApNetworkSettings, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApNetworkSettings, params, customHeaders)
         return{
           ...req
         }
@@ -788,8 +791,10 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     updateApNetworkSettings: build.mutation<APNetworkSettings, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApNetworkSettings, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateApNetworkSettings, params, customHeaders)
         return{
           ...req,
           body: payload
@@ -807,8 +812,10 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }]
     }),
     getApMeshSettings: build.query<APMeshSettings, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApMeshSettings, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApMeshSettings, params, customHeaders)
         return{
           ...req
         }
@@ -826,8 +833,10 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     updateApMeshSettings: build.mutation<APMeshSettings, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApMeshSettings, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateApMeshSettings, params, customHeaders)
         return{
           ...req,
           body: payload

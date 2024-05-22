@@ -4,9 +4,10 @@ import { Col, Form, Input, Radio, Row, Space, Typography } from 'antd'
 import { defineMessage, useIntl }                          from 'react-intl'
 import { useParams }                                       from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }                       from '@acx-ui/components'
-import { useApViewModelQuery, useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
-import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }                            from '@acx-ui/rc/utils'
+import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
+import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }       from '@acx-ui/rc/utils'
 
 import { ApEditContext } from '../..'
 
@@ -17,30 +18,29 @@ enum IpTypeEnum {
 
 export function IpSettings () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
     setEditContextData,
     editNetworkingContextData,
-    setEditNetworkingContextData
+    setEditNetworkingContextData,
+    apViewContextData: currentAP
   } = useContext(ApEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const formRef = useRef<StepsFormLegacyInstance<APNetworkSettings>>()
 
-  const getApIpSettings = useGetApNetworkSettingsQuery({ params: { serialNumber } })
+  const getApIpSettings = useGetApNetworkSettingsQuery({
+    params: {
+      venueId: currentAP.venueId,
+      serialNumber
+    },
+    enableRbac: isWifiRbacEnabled
+  })
   const [updateApIpSettings, { isLoading: isUpdatingApIpSettings }] =
     useUpdateApNetworkSettingsMutation()
-
-  const apViewModelPayload = {
-    fields: ['name', 'serialNumber', 'apMac', 'IP', 'apStatusData.APSystem'],
-    filters: { serialNumber: [serialNumber] }
-  }
-  const { data: currentAP, isLoading: isLoadingApViewModel, isFetching: isFetchingApViewModel }
-    = useApViewModelQuery({
-      params: { tenantId, serialNumber }, payload: apViewModelPayload
-    })
 
   const [initData, setInitData] = useState({} as APNetworkSettings)
   const [currentIpType, setCurrentIpType] = useState('DYNAMIC')
@@ -117,10 +117,14 @@ export function IpSettings () {
         delete payload.secondaryDnsServer
       }
 
-      //console.log('IP settings - payload: ', payload)
+      // console.log('IP settings - payload: ', payload)
       await updateApIpSettings({
-        params: { serialNumber },
-        payload
+        params: {
+          venueId: currentAP.venueId,
+          serialNumber
+        },
+        payload,
+        enableRabc: isWifiRbacEnabled
       }).unwrap()
 
     } catch (error) {
@@ -165,7 +169,7 @@ export function IpSettings () {
 
   return (<Loader states={[{
     isLoading: formInitializing,
-    isFetching: isUpdatingApIpSettings || isLoadingApViewModel || isFetchingApViewModel
+    isFetching: isUpdatingApIpSettings
   }]}>
     <StepsFormLegacy
       formRef={formRef}

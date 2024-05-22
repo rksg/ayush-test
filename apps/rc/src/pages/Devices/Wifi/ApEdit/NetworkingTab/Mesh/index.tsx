@@ -5,6 +5,7 @@ import { FormattedMessage, defineMessage, useIntl } from 'react-intl'
 import { useParams }                                from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, showActionModal, AnchorContext }                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                         from '@acx-ui/feature-toggle'
 import { useGetApMeshSettingsQuery, useLazyGetMeshUplinkApsQuery, useLazyGetVenueQuery, useUpdateApMeshSettingsMutation } from '@acx-ui/rc/services'
 import { APMeshSettings, MeshApNeighbor, MeshModeEnum, UplinkModeEnum, VenueExtended }                                    from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                     from '@acx-ui/react-router-dom'
@@ -48,6 +49,7 @@ const uplinkModes = [
 export function ApMesh () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -57,9 +59,14 @@ export function ApMesh () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails } = useContext(ApDataContext)
+  const venueId = apDetails?.venueId
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const getApMesh = useGetApMeshSettingsQuery({ params: { serialNumber } })
+  const getApMesh = useGetApMeshSettingsQuery({
+    params: { venueId, serialNumber },
+    enableRbac: isWifiRbacEnabled
+  }, { skip: isWifiRbacEnabled && !venueId })
+
   const [updateApMesh, { isLoading: isUpdateingApMesh } ] = useUpdateApMeshSettingsMutation()
   const [getVenue] = useLazyGetVenueQuery()
   const [getMeshUplinkAps] = useLazyGetMeshUplinkApsQuery()
@@ -94,7 +101,7 @@ export function ApMesh () {
   useEffect(() => {
     const meshData = getApMesh?.data
     if (apDetails && meshData) {
-      const venueId = apDetails.venueId
+      // const venueId = apDetails.venueId
       const setData = async () => {
         // get venue data
         const apVenue = (await getVenue({
@@ -159,8 +166,9 @@ export function ApMesh () {
       }
 
       await updateApMesh({
-        params: { serialNumber },
-        payload
+        params: { venueId, serialNumber },
+        payload,
+        enableRbac: isWifiRbacEnabled
       }).unwrap()
 
     } catch (error) {

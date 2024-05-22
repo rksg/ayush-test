@@ -435,7 +435,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //url: '/venues/aps/:serialNumber/directedMulticastSettings',
     url: '/venues/:venueId/aps/:serialNumber/directedMulticastSettings',
     newApi: true
-  }
+  },
   /*
   // deprecated. use the updateApDirectedMulticast to replace
   resetApDirectedMulticast: {
@@ -490,32 +490,36 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
-  },
+  },*/
   getApNetworkSettings: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/networkSettings',
+    // url: '/venues/aps/:serialNumber/networkSettings',
+    url: '/venues/:venueId/aps/:serialNumber/networkSettings',
     newApi: true
   },
   updateApNetworkSettings: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/networkSettings',
+    // url: '/venues/aps/:serialNumber/networkSettings',
+    url: '/venues/:venueId/aps/:serialNumber/networkSettings',
     newApi: true
-  },
+  },/*
   resetApNetworkSettings: {
     method: 'delete',
     url: '/venues/aps/:serialNumber/networkSettings',
     newApi: true
-  },
+  },*/
   getApMeshSettings: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/meshSettings',
+    // url: '/venues/aps/:serialNumber/meshSettings',
+    url: '/venues/:venueId/aps/:serialNumber/meshSettings',
     newApi: true
   },
   updateApMeshSettings: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/meshSettings',
+    // url: '/venues/aps/:serialNumber/meshSettings',
+    url: '/venues/:venueId/aps/:serialNumber/meshSettings',
     newApi: true
-  },
+  }/*
   getMeshUplinkAPs: {
     method: 'post',
     url: '/aps/neighbors/query',

@@ -116,7 +116,9 @@ function ApEditTabs () {
   useEffect(() => {
     if (currentAP) {
       setIsOnlyOneTab(!currentAP?.model)
+      setApViewContextData(currentAP)
     }
+
   }, [currentAP])
 
   useEffect(() => {
