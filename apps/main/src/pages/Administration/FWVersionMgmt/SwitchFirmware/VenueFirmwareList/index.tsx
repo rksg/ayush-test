@@ -121,8 +121,8 @@ export const VenueFirmwareTable = (
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: isSwitchRbacEnabled ? 'venueName' : 'name',
+      dataIndex: isSwitchRbacEnabled ? 'venueName' : 'name',
       sorter: { compare: sortProp(isSwitchRbacEnabled ? 'venueName' : 'name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',

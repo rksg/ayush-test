@@ -53,8 +53,8 @@ function useColumns () {
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
       title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      key: isSwitchRbacEnabled ? 'name' : 'venueName',
-      dataIndex: isSwitchRbacEnabled ? 'name' : 'venueName',
+      key: isSwitchRbacEnabled ? 'venueName' : 'name',
+      dataIndex: isSwitchRbacEnabled ? 'venueName' : 'name',
       width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
