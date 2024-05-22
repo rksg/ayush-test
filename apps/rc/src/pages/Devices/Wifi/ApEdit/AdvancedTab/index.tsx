@@ -42,8 +42,6 @@ export function AdvancedTab () {
 
   const { apCapabilities } = useContext(ApDataContext)
 
-  const supportBssColor = useIsSplitOn(Features.WIFI_AP_BSS_COLORING_TOGGLE)
-    && apCapabilities?.support11AX
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
 
   const apLedTitle = $t({ defaultMessage: 'Access Point LEDs' })
@@ -63,7 +61,7 @@ export function AdvancedTab () {
         </>
       )
     },
-    ...(supportBssColor? [{
+    ...(apCapabilities?.support11AX? [{
       title: bssColoringTitle,
       key: 'bssColoring',
       content: (

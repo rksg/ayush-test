@@ -49,7 +49,7 @@ describe('AP advanced Tab', () => {
     )
 
     expect(await screen.findByTestId('apLed')).toBeVisible()
-    //expect(await screen.findByTestId('bssColoring')).toBeVisible()
+    expect(await screen.findByTestId('bssColoring')).toBeVisible()
   })
 
   it ('Save data after config changed', async () => {
