@@ -627,7 +627,7 @@ export const kpiConfig = {
     }
   },
   switchStormControl: {
-    text: defineMessage({ defaultMessage: 'BC/MC traffic' }),
+    text: defineMessage({ defaultMessage: 'Broadcast Traffic' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -636,12 +636,12 @@ export const kpiConfig = {
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 2000,
+      initialThreshold: 80,
       apiMetric: 'switchPortStormCount',
-      splits: [0, 1000, 2000, 3000, 4000, 5000, 6000],
-      xUnit: defineMessage({ defaultMessage: ' packets/sec' }),
-      yUnit: 'Number of Ports',
-      shortXFormat: formatter('countFormat'),
+      splits: [0, 20, 40, 60, 80, 100],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
       longXFormat: noFormat,
       reFormatFromBarChart: noFormat
     },
@@ -649,11 +649,11 @@ export const kpiConfig = {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports do not experiment Storm' }),
       thresholdDesc: [
         defineMessage({ defaultMessage: 'above' }),
-        defineMessage({ defaultMessage: '{threshold} packets/sec' })
+        defineMessage({ defaultMessage: '{threshold}' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: noFormat,
-      tooltip: defineMessage({ defaultMessage: 'BC/MC traffic' })
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Broadcast Traffic' })
     }
   }
 }
