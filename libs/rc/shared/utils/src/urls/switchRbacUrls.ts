@@ -361,6 +361,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/cliTemplates/:templateId',
     newApi: true
   },
+  disassociateCliTemplate: {
+    method: 'delete',
+    url: '/venues/:venueId/cliTemplates/:templateId',
+    newApi: true
+  },
   getLagList: {
     method: 'get',
     url: '/venues/:venueId/switches/:switchId/lags',

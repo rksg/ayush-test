@@ -15,7 +15,8 @@ import {
 }      from '@acx-ui/rc/services'
 import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                from '@acx-ui/user'
+import { SwitchScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasPermission }            from '@acx-ui/user'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
@@ -65,6 +66,7 @@ export function ProfilesTab () {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         const row = selectedRows?.[0]
         navigate(`${row?.profileType?.toLowerCase()}/${row?.id}/edit`, { replace: false })
@@ -72,6 +74,7 @@ export function ProfilesTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -98,6 +101,10 @@ export function ProfilesTab () {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
+
   return (
     <> <Loader states={[
       tableQuery
@@ -109,13 +116,15 @@ export function ProfilesTab () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Regular Profile' }),
+          scopeKey: [SwitchScopes.CREATE],
           onClick: () => navigate(`${linkToProfiles.pathname}/add`)
         },
         {
           label: $t({ defaultMessage: 'Add CLI Profile' }),
+          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate('cli/add', { replace: false })
           }
