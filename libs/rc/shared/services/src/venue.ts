@@ -662,7 +662,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(apiInfo.updateVenueLedOn, params, apiCustomHeader)
         return {
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -940,7 +940,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateVenueExternalAntenna, params, apiCustomHeader)
         return {
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
@@ -965,7 +965,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateDenialOfServiceProtection, params, apiCustomHeader)
         return {
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
@@ -1145,7 +1145,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateVenueDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'DIRECTEDMULTICAST' }]
@@ -1251,7 +1251,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateVenueBssColoring, params, apiCustomHeader)
         return{
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -1311,7 +1311,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateVenueMdnsFencingPolicy, params, apiCustomHeader)
         return{
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'MDNS_FENCING' }]
@@ -1534,7 +1534,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateVenueRadiusOptions, params, apiCustomHeader)
         return{
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'RADIUS_OPTIONS' }]
@@ -1561,7 +1561,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateVenueClientAdmissionControl, params, apiCustomHeader)
         return{
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'ClientAdmissionControl' }],

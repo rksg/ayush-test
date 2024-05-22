@@ -817,7 +817,7 @@ export const apApi = baseApApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]

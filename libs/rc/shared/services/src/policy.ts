@@ -1729,7 +1729,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.addApSnmpPolicy, customParams , apiCustomHeader)
         return {
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
@@ -1748,7 +1748,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateApSnmpPolicy, customParams, apiCustomHeader)
         return {
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'LIST' }]
