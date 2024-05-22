@@ -867,22 +867,38 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })}
-          element={<ConnectionMeteringTable />}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ, EdgeScopes.READ]}>
+              <ConnectionMeteringTable />
+            </AuthRoute>
+          }
         />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
-          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE, EdgeScopes.CREATE]}>
+              <ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />
+            </AuthRoute>
+          }
         />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
-          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE, EdgeScopes.UPDATE]}>
+              <ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />
+            </AuthRoute>
+          }
         />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
-          element={<ConnectionMeteringDetail/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ, EdgeScopes.READ]}>
+              <ConnectionMeteringDetail/>
+            </AuthRoute>
+          }
         />
       </>}
       {isCloudpathBetaEnabled && <>
