@@ -66,7 +66,6 @@ export function WISPrForm () {
     setData
   } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
-  const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
   const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
@@ -597,7 +596,7 @@ export function WISPrForm () {
             </Checkbox>
           }
         />
-        {enableWISPREncryptMacIP && <Form.Item
+        <Form.Item
           name={['guestPortal','wisprPage', 'encryptMacIpEnabled']}
           valuePropName='checked'
           initialValue={true}
@@ -606,7 +605,7 @@ export function WISPrForm () {
               {$t({ defaultMessage: 'Enable the encryption for users’ MAC and IP addresses' })}
             </Checkbox>
           }
-        />}
+        />
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox />
         <WalledGardenTextArea
