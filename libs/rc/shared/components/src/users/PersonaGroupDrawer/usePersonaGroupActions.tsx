@@ -54,32 +54,39 @@ export function usePersonaGroupAction () {
     if (!patchData || Object.keys(patchData).length === 0) return
 
     const { dpskPoolId, macRegistrationPoolId, ...groupData } = patchData
+    const associationPromises = []
 
     if (macRegistrationPoolId) {
-      await associateMacReg({
+      associationPromises.push(associateMacReg({
         params: {
           groupId,
           poolId: macRegistrationPoolId
         }
-      })
+      }))
     }
 
     if (dpskPoolId) {
-      await associateDpsk({
+      associationPromises.push(associateDpsk({
         params: {
           groupId,
           poolId: dpskPoolId
         }
-      })
+      }))
     }
 
-    if (Object.keys(groupData).length === 0) return
+    let updatePersonaGroupPromise
+    if (Object.keys(groupData).length !== 0) {
+      updatePersonaGroupPromise = updatePersonaGroup({
+        params: { groupId },
+        payload: groupData,
+        customHeaders
+      })
+      associationPromises.push(updatePersonaGroupPromise)
+    }
 
-    return updatePersonaGroup({
-      params: { groupId },
-      payload: groupData,
-      customHeaders
-    }).unwrap()
+    await Promise.all(associationPromises)
+
+    return await updatePersonaGroupPromise?.unwrap()
   }
 
   return {
