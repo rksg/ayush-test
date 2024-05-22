@@ -22,28 +22,39 @@ export function VenueDevicesTab () {
     })
   }
 
+  const tabs = [
+    {
+      label: $t({ defaultMessage: 'Wi-Fi' }),
+      value: 'wifi',
+      children: <VenueWifi />
+    },
+    {
+      label: $t({ defaultMessage: 'Switch' }),
+      value: 'switch',
+      children: <VenueSwitch />
+    },
+    ...(useIsTierAllowed(TierFeatures.SMART_EDGES)
+      ? [{
+        label: $t({ defaultMessage: 'SmartEdge' }),
+        value: 'edge',
+        children: <VenueEdge />
+      }]: [])
+  ]
+
   return (
     <Tabs activeKey={activeSubTab}
-      defaultActiveKey='wifi'
+      defaultActiveKey={activeSubTab || tabs[0]?.value}
       onChange={onTabChange}
       type='card'
     >
-      <Tabs.TabPane tab={$t({ defaultMessage: 'Wi-Fi' })} key='wifi'>
-        <VenueWifi />
-      </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Switch' })}
-        key='switch'>
-        <VenueSwitch />
-      </Tabs.TabPane>
-
-      { useIsTierAllowed(TierFeatures.SMART_EDGES) && (
+      {tabs.map((tab) => (
         <Tabs.TabPane
-          tab={$t({ defaultMessage: 'SmartEdge' })}
-          key='edge'>
-          <VenueEdge />
+          tab={tab.label}
+          key={tab.value}
+        >
+          {tab.children}
         </Tabs.TabPane>
-      )}
+      ))}
     </Tabs>
   )
 }
