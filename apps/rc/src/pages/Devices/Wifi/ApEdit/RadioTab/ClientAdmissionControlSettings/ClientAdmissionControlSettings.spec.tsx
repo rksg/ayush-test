@@ -107,6 +107,8 @@ describe('Ap Client Admission Control', () => {
   })
 
   it('should render correctly when use custom settings', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getApClientAdmissionControl.url,
