@@ -799,6 +799,11 @@ export interface CliTemplateVariable {
   name: string
   type: string
   value: string
+  rangeStart?: number,
+  rangeEnd?: number,
+  ipAddressStart?: string,
+  ipAddressEnd?: string,
+  subMask?: string
 }
 
 export interface CliTemplateVenueSwitches {
