@@ -155,7 +155,6 @@ export enum Features {
   WIFI_EDA_WPA3_DSAE_TOGGLE = 'wifi-eda-wpa3-dsae-toggle',
   WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE = 'wifi-eda-tls-key-enhance-mode-config-toggle',
   WIFI_FR_6029_FG1_TOGGLE = 'wifi-fr-6029-fg1-toggle',
-  WIFI_FR_6029_FG3_2_TOGGLE = 'wifi-fr-6029-fg3-2-toggle',
   WIFI_FR_6029_FG5_TOGGLE = 'wifi-fr-6029-fg5-toggle',
   WIFI_FR_HOTSPOT20_R1_TOGGLE = 'wifi-fr-hotspot20-r1-toggle',
   WIFI_SWITCHABLE_RF_TOGGLE = 'wifi-switchable-rf-toggle',
