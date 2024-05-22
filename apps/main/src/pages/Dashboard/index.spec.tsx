@@ -5,7 +5,7 @@ import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { BrowserRouter }                  from '@acx-ui/react-router-dom'
 import { Provider }                       from '@acx-ui/store'
 import { fireEvent, render, screen }      from '@acx-ui/test-utils'
-import {  DateRange }                     from '@acx-ui/utils'
+import { DateRange }                      from '@acx-ui/utils'
 
 import Dashboard, { DashboardFilterProvider, useDashBoardUpdatedFilter } from '.'
 
@@ -152,4 +152,5 @@ describe('Dashboard', () => {
       ,{ wrapper: Provider })
     expect(await screen.findByText('2021-12-31T00:01:00+00:00')).toBeInTheDocument()
   })
+
 })

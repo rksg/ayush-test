@@ -10,7 +10,7 @@ import {
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }                             from '@acx-ui/user'
+import { hasPermission }                         from '@acx-ui/user'
 
 function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   const { $t } = useIntl()
@@ -45,9 +45,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
 
     navigate({
       ...basePath,
-      pathname: (tab === 'clients' || tab === 'devices')
-        ? `${basePath.pathname}/${tab}/wifi`
-        : `${basePath.pathname}/${tab}`
+      pathname: `${basePath.pathname}/${tab}`
     })
   }
 
@@ -80,7 +78,7 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={$t({ defaultMessage: 'Overview' })} key='overview' />
-      { hasAccess() && <Tabs.TabPane
+      { hasPermission() && <Tabs.TabPane
         tab={$t({ defaultMessage: 'AI Analytics' })}
         key='analytics'
       /> }
