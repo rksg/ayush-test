@@ -4,9 +4,22 @@ import { Col, Form, Input, Row, Typography } from 'antd'
 import _                                     from 'lodash'
 import { useIntl }                           from 'react-intl'
 
-import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext }                                               from '@acx-ui/components'
-import { useVenuesListQuery, useGetCliFamilyModelsQuery, useGetVenuesTemplateListQuery, useGetSwitchTemplateCliFamilyModelsQuery } from '@acx-ui/rc/services'
-import { CliConfiguration, CliFamilyModels, Venue, useConfigTemplate, useConfigTemplateQueryFnSwitcher, useTableQuery }            from '@acx-ui/rc/utils'
+import { cssStr, Loader, StepsForm, Table, TableProps, Tooltip, useStepFormContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import {
+  useVenuesListQuery,
+  useGetCliFamilyModelsQuery,
+  useGetVenuesTemplateListQuery,
+  useGetSwitchTemplateCliFamilyModelsQuery
+} from '@acx-ui/rc/services'
+import {
+  CliConfiguration,
+  CliFamilyModels,
+  Venue,
+  useConfigTemplate,
+  useConfigTemplateQueryFnSwitcher,
+  useTableQuery
+}            from '@acx-ui/rc/utils'
 
 import { cliFormMessages } from './'
 
@@ -18,11 +31,15 @@ interface VenueExtend extends Venue {
 
 export function CliStepVenues () {
   const { $t } = useIntl()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const { form, initialValues } = useStepFormContext()
   const data = (form?.getFieldsValue(true) as CliConfiguration)
+
   const { data: cliFamilyModels } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>({
     useQueryFn: useGetCliFamilyModelsQuery,
-    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery
+    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery,
+    enableRbac: isSwitchRbacEnabled
   })
 
   const [selectedRows, setSelectedRows] = useState<React.Key[]>([])

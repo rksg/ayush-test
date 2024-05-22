@@ -1165,12 +1165,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       , arg: { payload:{ page:number } }) => {
         const result = res.response?.list || res.list
         const totalCount = res.response?.totalCount || res.totalCount
-        const configType = result ? (res.list ? 'historyConfigTypeV1001' : 'configType' ) : 'configType'
         return {
           data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
-            configType: (item[configType] as unknown as string[])
+            configType: (item.configType as unknown as string[])
               .map(type => transformConfigType(type)).join(', '),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],

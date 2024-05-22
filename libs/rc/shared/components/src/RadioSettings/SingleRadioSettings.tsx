@@ -4,9 +4,8 @@ import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }         from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { AFCProps }               from '@acx-ui/rc/utils'
+import { Button, cssStr } from '@acx-ui/components'
+import { AFCProps }       from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -124,8 +123,6 @@ export function SingleRadioSettings (props:{
   let allowIndoorForOutdoor = false
   let hasIndoorForOutdoor = false
 
-  const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
-
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
     hasIndoorBandwidth = !isEmpty(indoor)
@@ -133,8 +130,7 @@ export function SingleRadioSettings (props:{
     hasIndoorForOutdoor = !isEmpty(indoorForOutdoorAp)
 
     allowIndoorForOutdoor = (radioType === ApRadioTypeEnum.Radio5G
-                             && hasIndoorForOutdoor === true
-                             && allowIndoorForOutdoorFeatureFlag)
+                             && hasIndoorForOutdoor === true)
 
   } else {// context === 'ap'
     //bandwidthList = Object.keys(supportChannels)

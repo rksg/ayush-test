@@ -51,6 +51,13 @@ jest.mock('./ApFirmware/VersionBannerPerApModel', () => ({
   ...jest.requireActual('./ApFirmware/VersionBannerPerApModel'),
   VersionBannerPerApModel: () => <div>VersionBannerPerApModel</div>
 }))
+jest.mock('../ApplicationPolicyMgmt', () => ({
+  ...jest.requireActual('../ApplicationPolicyMgmt'),
+  default: () => {
+    return <div data-testid='mocked-application-policy-mgmt'></div>
+  }
+}))
+
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({

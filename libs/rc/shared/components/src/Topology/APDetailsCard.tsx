@@ -46,16 +46,17 @@ export function APDetailsCard (props: {
     skip: !apDetail?.venueId || !apDetail?.apMac
   })
 
+  const apName = apDetail?.name
+    || apDetail?.apMac
+    || $t({ defaultMessage: 'Unknown' }) // for unknown device
+
   return <Card><Card.Title>
-    <Space>
+    <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
       <UI.NodeTitle
         state={{ from: location.pathname }}
         // eslint-disable-next-line max-len
         to={`/devices/wifi/${apDetail?.serialNumber}/details/overview`}>
-        {apDetail?.name
-        || apDetail?.apMac
-        || $t({ defaultMessage: 'Unknown' }) // for unknown device
-        }
+        {apName}
       </UI.NodeTitle>
       <Button
         size='small'
