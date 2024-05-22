@@ -4,23 +4,24 @@ import { useEffect, useState } from 'react'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { SwitchesTrafficByVolume }                                                                                                            from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }                                                                                                                 from '@acx-ui/analytics/components'
-import { TopologyFloorPlanWidget, isLAGMemberPort }                                                                                           from '@acx-ui/rc/components'
-import { useSwitchPortlistQuery }                                                                                                             from '@acx-ui/rc/services'
-import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchPortViewModel, SwitchViewModel, sortPortFunction, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                          from '@acx-ui/react-router-dom'
-import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                                                  from '@acx-ui/utils'
-import type { AnalyticsFilter }                                                                                                               from '@acx-ui/utils'
-
-import { Button, GridCol, GridRow } from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { SwitchesTrafficByVolume }                  from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }                       from '@acx-ui/analytics/components'
+import { Button, GridCol, GridRow }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { TopologyFloorPlanWidget, isLAGMemberPort } from '@acx-ui/rc/components'
 import {
   SwitchBlinkLEDsDrawer,
   SwitchInfo
 }
   from '@acx-ui/rc/components'
-import { hasPermission }                     from '@acx-ui/user'
+import { useSwitchPortlistQuery }                                                                                                                                                               from '@acx-ui/rc/services'
+import { NetworkDevice, NetworkDevicePosition, ShowTopologyFloorplanOn, StackMember, SwitchPortViewModel, SwitchViewModel, sortPortFunction, SwitchStatusEnum, SwitchPortViewModelQueryFields } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                                                                                            from '@acx-ui/react-router-dom'
+import { hasPermission }                                                                                                                                                                        from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                                                                                                                                    from '@acx-ui/utils'
+import type { AnalyticsFilter }                                                                                                                                                                 from '@acx-ui/utils'
+
+
 import { ResourceUtilization } from './ResourceUtilization'
 import { SwitchFrontRearView } from './SwitchFrontRearView'
 import { TopPorts }            from './TopPorts'
@@ -93,31 +94,38 @@ export function SwitchOverviewPanel (props:{
 
 function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: SwitchViewModel }) {
   const { filters, switchDetailHeader } = props
-
   const { $t } = useIntl()
-  const { tenantId, switchId } = useParams()
+  const { tenantId, serialNumber } = useParams()
   const portPayload = {
-    fields: ['id', 'portIdentifier', 'opticsType', 'usedInFormingStack', 'lagId'],
     page: 1,
     pageSize: 10000,
-    filters: { switchId: [switchId] },
-    sortField: 'portIdentifier',
-    sortOrder: 'ASC'
+    filters: { switchId: [serialNumber] },
+    sortField: 'portIdentifierFormatted',
+    sortOrder: 'ASC',
+    fields: SwitchPortViewModelQueryFields
   }
 
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
+  const [selectedPorts, setSelectedPorts] = useState([] as string[])
 
   const getPortLabel = (port: SwitchPortViewModel) => {
     const id = port.portIdentifier
-    let suffix = ''
+    let suffix:string[] = []
+
+    if (port.cloudPort) {
+      suffix.push('UpLink')
+    }
     if((switchDetailHeader.isStack || switchDetailHeader.formStacking) && port.usedInFormingStack) {
-      suffix = '(S)'
+      suffix.push('S')
     }
     if(isLAGMemberPort(port)) {
-      suffix = '(L)'
+      suffix.push('L')
     }
-    return id + ' ' + suffix
+
+    const suffixString = suffix.length ? ' (' + suffix.join(', ') + ')' : ''
+
+    return id + suffixString
   }
 
   useEffect(() => {
@@ -138,8 +146,8 @@ function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: S
   }, [portList, switchDetailHeader])
 
   const onPortChange = (value: string) =>{
-    // eslint-disable-next-line no-console
-    console.log(value, filters)
+    const ports = value ? [value] : []
+    setSelectedPorts(ports)
   }
 
   return (
@@ -154,6 +162,7 @@ function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: S
           enableSelectPort={true}
           portOptions={portOptions}
           onPortChange={onPortChange}
+          selectedPorts={selectedPorts}
         />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>

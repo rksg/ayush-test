@@ -6,8 +6,9 @@ import AutoSizer             from 'react-virtualized-auto-sizer'
 import { getSeriesData }                                  from '@acx-ui/analytics/utils'
 import { HistoricalCard, Loader, MultiLineTimeSeriesChart,
   qualitativeColorSet, StackedAreaChart, NoData, Select } from '@acx-ui/components'
-import { formatter }            from '@acx-ui/formatter'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { formatter }              from '@acx-ui/formatter'
+import type { AnalyticsFilter }   from '@acx-ui/utils'
 
 import {
   useSwitchesTrafficByVolumeQuery,
@@ -22,7 +23,7 @@ SwitchesTrafficByVolume.defaultProps = {
 }
 
 export function SwitchesTrafficByVolume ({
-  filters, vizType, refreshInterval, enableSelectPort, portOptions, onPortChange
+  filters, vizType, refreshInterval, enableSelectPort, portOptions, onPortChange, selectedPorts
 } : {
   filters : AnalyticsFilter,
   vizType: string,
@@ -30,26 +31,32 @@ export function SwitchesTrafficByVolume ({
   enableSelectPort?: boolean,
   portOptions?: DefaultOptionType[],
   onPortChange?: (value: string) => void
+  selectedPorts?: string[]
 }) {
   const { $t } = useIntl()
+  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   const seriesMapping = [
     { key: 'switchTotalTraffic', name: $t({ defaultMessage: 'Total' }) },
     { key: 'switchTotalTraffic_tx', name: $t({ defaultMessage: 'Tx' }) },
     { key: 'switchTotalTraffic_rx', name: $t({ defaultMessage: 'Rx' }) }
   ] as Array<{ key: Key, name: string }>
 
-  const queryResults = useSwitchesTrafficByVolumeQuery(filters, {
+  const queryResults = useSwitchesTrafficByVolumeQuery({
+    ...filters, selectedPorts: selectedPorts || []
+  },
+  {
     ...(refreshInterval ? { pollingInterval: refreshInterval } : {}),
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, vizType === 'area' ? seriesMapping.splice(1) : seriesMapping),
       ...rest
     })
-  })
+  }
+  )
   return (
     <Loader states={[queryResults]}>
       <HistoricalCard title={$t({ defaultMessage: 'Traffic by Volume' })}>
         {
-          enableSelectPort &&
+          supportPortTraffic && enableSelectPort && portOptions && portOptions.length > 1 &&
           <UI.SelectPort>
             <Select
               defaultValue={null}
