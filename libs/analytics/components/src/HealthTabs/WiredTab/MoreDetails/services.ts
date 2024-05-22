@@ -13,7 +13,7 @@ export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
     portStorm: 'stormPortCount'
   }
 
-  const resultMapping: Record<WidgetType, string> = {
+  const queryMapping: Record<WidgetType, string> = {
     dhcpFailure: 'topNSwitchesByDhcpFailure',
     congestion: 'topNSwitchesByPortCongestion',
     portStorm: 'topNSwitchesByStormPortCount',
@@ -25,7 +25,7 @@ export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
 
   const baseFields = `mac name ${field}`
   const detailedFields = `${field} mac name serial model status firmware numOfPorts`
-  const queryName = resultMapping[type as keyof typeof resultMapping]
+  const queryName = queryMapping[type as keyof typeof queryMapping]
 
   return `${queryName}(n: $n) { ${detailed ? detailedFields : baseFields} }`
 }
