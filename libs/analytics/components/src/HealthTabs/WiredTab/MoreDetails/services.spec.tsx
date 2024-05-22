@@ -1,9 +1,9 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { moreDetailsDataFixture } from './__tests__/fixtures'
-import { RequestPayload }         from './config'
-import { moreDetailsApi }         from './services'
+import { moreDetailsDataFixture }        from './__tests__/fixtures'
+import { RequestPayload, WidgetType }    from './config'
+import { generateQuery, moreDetailsApi } from './services'
 
 describe('More Details apis', () => {
   afterEach(() =>
@@ -37,6 +37,10 @@ describe('More Details apis', () => {
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)
       expect(error).not.toBe(undefined)
+    })
+    it('should return empty string with unknown widget type', () => {
+      const result = generateQuery('unknownType' as WidgetType)
+      expect(result).toBe('')
     })
   })
 })

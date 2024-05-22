@@ -5,7 +5,7 @@ import { dataApi }          from '@acx-ui/store'
 
 import { PieChartResult, RequestPayload, WidgetType } from './config'
 
-const generateQuery = (type: WidgetType, detailed: boolean = false) => {
+export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
   const fieldsMap: Record<Exclude<WidgetType, ''>, string> = {
     cpuUsage: 'cpuUtilization',
     dhcpFailure: 'dhcpFailureCount',
