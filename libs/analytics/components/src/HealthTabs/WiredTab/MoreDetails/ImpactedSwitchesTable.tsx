@@ -13,8 +13,8 @@ import {
   WidgetType, PieChartResult, SwitchDetails,
   showTopResult, topImpactedSwitchesLimit
 } from './config'
-import { useImpactedSwitchesDataQuery } from './services'
-import { ChartTitle }                   from './styledComponents'
+import { useImpactedSwitchesDataQuery, fieldsMap } from './services'
+import { ChartTitle }                              from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
@@ -50,6 +50,13 @@ export const ImpactedSwitchesTable = ({
     }
   )
 
+  const metricTableColLabelMapping: Record<Exclude<WidgetType,
+    'congestion' | 'portStorm'>, string> = {
+      cpuUsage: $t({ defaultMessage: 'CPU Usage' }),
+      dhcpFailure: $t({ defaultMessage: 'DHCP Failure Count' })
+    }
+
+  const metricField = fieldsMap[queryType as keyof typeof fieldsMap]
   const columns: TableProps<SwitchDetails>['columns'] = [
     {
       title: $t({ defaultMessage: 'Name' }),
@@ -93,10 +100,10 @@ export const ImpactedSwitchesTable = ({
       sorter: { compare: sortProp('firmware', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'DHCP Failure Count' }),
-      dataIndex: 'dhcpFailureCount',
-      key: 'dhcpFailureCount',
-      sorter: { compare: sortProp('dhcpFailureCount', defaultSort) }
+      title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
+      dataIndex: metricField,
+      key: metricField,
+      sorter: { compare: sortProp(metricField, defaultSort) }
     }
   ]
 

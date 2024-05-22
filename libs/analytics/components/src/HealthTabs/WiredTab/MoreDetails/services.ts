@@ -5,21 +5,21 @@ import { dataApi }          from '@acx-ui/store'
 
 import { PieChartResult, RequestPayload, WidgetType } from './config'
 
+export const fieldsMap: Record<WidgetType, string> = {
+  cpuUsage: 'cpuUtilization',
+  dhcpFailure: 'dhcpFailureCount',
+  congestion: 'congestedPortCount',
+  portStorm: 'stormPortCount'
+}
+
+export const queryMapping: Record<WidgetType, string> = {
+  dhcpFailure: 'topNSwitchesByDhcpFailure',
+  congestion: 'topNSwitchesByPortCongestion',
+  portStorm: 'topNSwitchesByStormPortCount',
+  cpuUsage: 'topNSwitchesByCpuUsage'
+}
+
 export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
-  const fieldsMap: Record<WidgetType, string> = {
-    cpuUsage: 'cpuUtilization',
-    dhcpFailure: 'dhcpFailureCount',
-    congestion: 'congestedPortCount',
-    portStorm: 'stormPortCount'
-  }
-
-  const queryMapping: Record<WidgetType, string> = {
-    dhcpFailure: 'topNSwitchesByDhcpFailure',
-    congestion: 'topNSwitchesByPortCongestion',
-    portStorm: 'topNSwitchesByStormPortCount',
-    cpuUsage: 'topNSwitchesByCpuUsage'
-  }
-
   const field = fieldsMap[type as keyof typeof fieldsMap]
   if (!field) return ''
 
