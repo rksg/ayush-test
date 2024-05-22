@@ -45,6 +45,187 @@ exports[`MeshNetwork should render correctly 1`] = `
         </div>
       </div>
     </label>
+    <div
+      class="sc-iuStju fogmca"
+    >
+      <ul>
+        <li>
+          Enabling mesh for a venue creates a new WLAN for mesh communication between Access Points
+        </li>
+        <li>
+          Enabling mesh for a venue is a global configuration and once mesh links are formed (automatically), it cannot be undone.
+        </li>
+      </ul>
+    </div>
+    <div
+      class="sc-ddcaxn iLrYfH"
+    >
+      Mesh Network Name
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <input
+                  class="ant-input ant-input-borderless"
+                  type="text"
+                  value="Mesh-V3jJKOxs"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="ant-btn ant-btn-link"
+        disabled=""
+        type="button"
+      >
+        <span>
+          Change
+        </span>
+      </button>
+      <svg
+        data-testid="InformationSolid"
+      />
+    </div>
+    <div
+      class="sc-egNfGp bsUAFn"
+    >
+      Mesh PSK
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <textarea
+                  class="ant-input ant-input-borderless"
+                  rows="3"
+                >
+                  86lShBtb5cDuAdktKlMCCtPWuiNDXovIOXr5zj0YNTmjqA2XDIVGXvdq6OOwlnW
+                </textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        class="ant-btn ant-btn-link"
+        disabled=""
+        type="button"
+      >
+        <span>
+          Change
+        </span>
+      </button>
+      <svg
+        data-testid="InformationSolid"
+      />
+    </div>
+    <label
+      class="styledComponents__FieldLabel-sc-1ibvcih-6 iRGgyA"
+      width="180px"
+    >
+      Mesh Radio
+      <div
+        class="ant-form-item"
+      >
+        <div
+          class="ant-row ant-form-item-row"
+        >
+          <div
+            class="ant-col ant-form-item-control"
+          >
+            <div
+              class="ant-form-item-control-input"
+            >
+              <div
+                class="ant-form-item-control-input-content"
+              >
+                <div
+                  class="ant-radio-group ant-radio-group-outline"
+                >
+                  <div
+                    class="ant-space ant-space-vertical"
+                  >
+                    <div
+                      class="ant-space-item"
+                      style="margin-bottom: 8px;"
+                    >
+                      <label
+                        class="ant-radio-wrapper ant-radio-wrapper-checked ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                      >
+                        <span
+                          class="ant-radio ant-radio-checked ant-radio-disabled"
+                        >
+                          <input
+                            checked=""
+                            class="ant-radio-input"
+                            disabled=""
+                            type="radio"
+                            value="5-GHz"
+                          />
+                          <span
+                            class="ant-radio-inner"
+                          />
+                        </span>
+                        <span>
+                          5 & 6 GHz
+                        </span>
+                      </label>
+                    </div>
+                    <div
+                      class="ant-space-item"
+                    >
+                      <label
+                        class="ant-radio-wrapper ant-radio-wrapper-disabled ant-radio-wrapper-in-form-item"
+                      >
+                        <span
+                          class="ant-radio ant-radio-disabled"
+                        >
+                          <input
+                            class="ant-radio-input"
+                            disabled=""
+                            type="radio"
+                            value="2.4-GHz"
+                          />
+                          <span
+                            class="ant-radio-inner"
+                          />
+                        </span>
+                        <span>
+                          2.4 GHz
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </label>
   </div>
 </DocumentFragment>
 `;

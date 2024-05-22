@@ -49,8 +49,6 @@ export function NetworkingTab () {
   const { apCapabilities } = useContext(ApDataContext)
 
   const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
-  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isFeatureOnMeshEnhancement
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const [isSupportMesh, setIsSupportMesh] = useState(false)
@@ -89,7 +87,7 @@ export function NetworkingTab () {
         </>
       )
     },
-    ...((supportMeshEnhancement && isSupportMesh)? [{
+    ...(isSupportMesh? [{
       title: meshTitle,
       content: (
         <>
