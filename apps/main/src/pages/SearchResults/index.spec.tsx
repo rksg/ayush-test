@@ -84,4 +84,5 @@ describe('Search Results', () => {
       await screen.findByText(/Hmmmm... we couldn’t find any match for "bdcPerformanceVenue2"/i)
     expect(header).toBeInTheDocument()
   })
+
 })

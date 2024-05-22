@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ClientUrlsInfo,
   CommonUrlsInfo,
@@ -129,7 +128,7 @@ describe('NetworkDetails', () => {
     })
 
     expect(await screen.findByText('overview')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(5)
+    expect(screen.getAllByRole('tab')).toHaveLength(6)
   })
 
   it('renders a tab with MSP account', async () => {
@@ -159,7 +158,7 @@ describe('NetworkDetails', () => {
     })
 
     expect(await screen.findByText('incidents')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(5)
+    expect(screen.getAllByRole('tab')).toHaveLength(6)
   })
 
   it('should hide incidents when role is READ_ONLY', async () => {
@@ -179,7 +178,6 @@ describe('NetworkDetails', () => {
   })
 
   it('renders clients tab', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',
