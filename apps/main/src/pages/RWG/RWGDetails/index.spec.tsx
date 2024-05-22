@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { rwgApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, RWG, RWGStatusEnum }    from '@acx-ui/rc/utils'
 import { Provider, store }                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
@@ -17,10 +17,11 @@ const gatewayResponse = {
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    hsotname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxxxxxx',
-    status: 'Operational'
-  }
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 const gatewayResponse1 = {
@@ -32,8 +33,9 @@ const gatewayResponse1 = {
     name: 'ruckusdemos',
     hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxx',
-    status: 'Offline'
-  }
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 jest.mock('./GatewayOverviewTab', () => ({

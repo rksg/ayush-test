@@ -33,8 +33,11 @@ export const api = dataApi.injectEndpoints({
           $start: DateTime,
           $end: DateTime,
           $filter: FilterInput,
+          $enableSwitchFirmwareFilter: Boolean
           ) {
-            network(start: $start, end: $end, filter: $filter) {
+            network(start: $start, end: $end, filter: $filter,
+              enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
+            ) {
               hierarchyNode(path: $path) {
                 switchDHCP {
                   attemptCount
@@ -48,7 +51,8 @@ export const api = dataApi.injectEndpoints({
           }`,
           variables: {
             ...payload,
-            ...getFilterPayload(payload)
+            ...getFilterPayload(payload),
+            enableSwitchFirmwareFilter: true
           }
         })
       },

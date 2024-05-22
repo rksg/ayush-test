@@ -143,7 +143,7 @@ export function VenuePropertyTab () {
   const [getPersonaGroupById, personaGroupQuery] = useLazyGetPersonaGroupByIdQuery()
   const [downloadCsv] = useLazyDownloadPropertyUnitsQuery()
   const [uploadCsv, uploadCsvResult] = useImportPropertyUnitsMutation()
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [getConnectionMeteringById] = useLazyGetConnectionMeteringByIdQuery()
   const hasResidentPortalAssignment = !!propertyConfigsQuery?.data?.residentPortalId
@@ -235,7 +235,7 @@ export function VenuePropertyTab () {
 
     fetchApData(apMacs)
     fetchSwitchData(switchMacs)
-    if (isConnectionMeteringEnabled) {
+    if (isConnectionMeteringAvailable) {
       fetchConnectionMeteringData([...connectionMeteringSet])
     }
   }, [personaMap])
@@ -328,7 +328,7 @@ export function VenuePropertyTab () {
       label: $t({ defaultMessage: 'Edit' }),
       scopeKey: [WifiScopes.UPDATE],
       visible: (selectedItems => selectedItems.length <= 1 ||
-        (isConnectionMeteringEnabled && selectedItems.length > 1)),
+        (isConnectionMeteringAvailable && selectedItems.length > 1)),
       onClick: (units, clearSelection) => {
         setDrawerState({ units: units.map(u=> {return {
           ...u,
@@ -495,25 +495,24 @@ export function VenuePropertyTab () {
 
           return switchList.map((s, index) => <div key={index}>{s}</div>)
         }
-      }
-    ] : [],
-    {
-      show: isConnectionMeteringEnabled,
-      key: 'connectionMetering',
-      title: $t({ defaultMessage: 'Data Usage Metering' }),
-      dataIndex: 'connectionMetering',
-      render: (_, row) => {
-        const persona = personaMap.get(row.personaId)
-        const connectionMeteringId = persona?.meteringProfileId ?? ''
-        // eslint-disable-next-line max-len
-        const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
-        if (persona && connectionMetering) {
+      }] : [],
+    ...isConnectionMeteringAvailable ? [
+      {
+        key: 'connectionMetering',
+        title: $t({ defaultMessage: 'Data Usage Metering' }),
+        dataIndex: 'connectionMetering',
+        render: (_: ReactNode, row: PropertyUnit) => {
+          const persona = personaMap.get(row.personaId)
+          const connectionMeteringId = persona?.meteringProfileId ?? ''
           // eslint-disable-next-line max-len
-          return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationDate={persona.expirationDate}/>
+          const connectionMetering = connectionMeteringMap.get(connectionMeteringId) as ConnectionMetering
+          if (persona && connectionMetering) {
+          // eslint-disable-next-line max-len
+            return <ConnectionMeteringLink id={connectionMetering.id} name={connectionMetering.name} expirationDate={persona.expirationDate}/>
+          }
+          return ''
         }
-        return ''
-      }
-    },
+      }]: [],
     {
       key: 'residentName',
       title: $t({ defaultMessage: 'Resident Name' }),

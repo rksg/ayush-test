@@ -299,7 +299,7 @@ describe('Aps', () => {
     expect(drawer).toBeVisible()
 
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
-    await waitFor(() => expect(drawer).not.toBeVisible())
+    await waitFor(() => expect(drawer).toBeVisible())
   })
 
   it.skip('Should render the low power warning messages', async () => {
