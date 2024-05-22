@@ -215,7 +215,7 @@ exports[`TopAppsByTrafficWidget should render Tabs: contentSwitcher 1`] = `
   style="text-align: right;"
 >
   <div
-    class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
+    class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
   >
     <div
       class="ant-radio-group ant-radio-group-outline ant-radio-group-small"
@@ -540,7 +540,7 @@ exports[`TopAppsByTrafficWidget should render for empty data: NoData 1`] = `
                 style="text-align: right;"
               >
                 <div
-                  class="styledComponents__Wrapper-sc-c4vpsp-0 esXyCO"
+                  class="styledComponents__Wrapper-sc-c4vpsp-0 lexJCV"
                 >
                   <div
                     class="ant-radio-group ant-radio-group-outline ant-radio-group-small"

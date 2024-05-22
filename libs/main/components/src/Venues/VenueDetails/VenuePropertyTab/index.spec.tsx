@@ -357,43 +357,42 @@ describe('Property Unit Page', () => {
     await userEvent.click(secondRow)
     await screen.findByRole('button', { name: /edit/i })
   })
-})
 
+  it('should export Units to CSV', async () => {
+    const exportFn = jest.fn()
 
-it('should export Units to CSV', async () => {
-  const exportFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        PropertyUrlsInfo.exportPropertyUnits.url,
+        (req, res, ctx) => {
+          const headers = req['headers']
 
-  mockServer.use(
-    rest.post(
-      PropertyUrlsInfo.exportPropertyUnits.url,
-      (req, res, ctx) => {
-        const headers = req['headers']
+          if (headers.get('accept') !== 'text/csv') {
+            return res(ctx.json(mockPropertyUnitList))
+          } else {
+            exportFn()
 
-        if (headers.get('accept') !== 'text/csv') {
-          return res(ctx.json(mockPropertyUnitList))
-        } else {
-          exportFn()
-
-          return res(ctx.set({
-            'content-disposition': 'attachment; filename=Units_20230118100829.csv',
-            'content-type': 'text/csv;charset=ISO-8859-1'
-          }), ctx.text('Property'))
+            return res(ctx.set({
+              'content-disposition': 'attachment; filename=Units_20230118100829.csv',
+              'content-type': 'text/csv;charset=ISO-8859-1'
+            }), ctx.text('Property'))
+          }
         }
-      }
+      )
     )
-  )
 
-  render(
-    <Provider><VenuePropertyTab /></Provider>,
-    {
-      route: {
-        params,
-        path: '/:tenantId/t/venues/:venueId/venue-details/units'
-      }
-    })
+    render(
+      <Provider><VenuePropertyTab /></Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/units'
+        }
+      })
 
-  const exportBtn = await screen.findByTestId('export-unit')
-  await userEvent.click(exportBtn)
-  await waitFor(() => expect(exportFn).toHaveBeenCalled())
+    const exportBtn = await screen.findByTestId('export-unit')
+    await userEvent.click(exportBtn)
+    await waitFor(() => expect(exportFn).toHaveBeenCalled())
+  })
+
 })
-

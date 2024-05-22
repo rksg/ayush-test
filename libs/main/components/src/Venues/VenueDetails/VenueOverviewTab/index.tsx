@@ -24,8 +24,7 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
-import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
-import { LowPowerBannerAndModal }                                        from '@acx-ui/rc/components'
+import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
 import {
   useGetVenueRadioCustomizationQuery,
   useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
@@ -59,6 +58,7 @@ export function VenueOverviewTab () {
       children: <SwitchWidgets filters={venueFilter}/>
     }
   ]
+
   return (<>
     {
       (
