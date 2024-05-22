@@ -6,7 +6,8 @@ import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
 import {
   PieChartResult, TopNByCPUUsageResult,
-  TopNByDHCPFailureResult, WidgetType, showTopResult
+  TopNByDHCPFailureResult, WidgetType, showTopResult,
+  TopNByPortCongestionResult, TopNByStormPortCountResult
 } from './config'
 import { usePieChartDataQuery }        from './services'
 import { ChartTitle, PieChartWrapper } from './styledComponents'
@@ -20,7 +21,8 @@ type PieChartData = {
 
 export function transformData (
   type: WidgetType,
-  data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[]
+  data: TopNByCPUUsageResult[] | TopNByDHCPFailureResult[] |
+  TopNByPortCongestionResult[] | TopNByStormPortCountResult[]
 ): PieChartData[] {
   const colors = qualitativeColorSet()
   let value: number
@@ -31,6 +33,12 @@ export function transformData (
         break
       case 'dhcpFailure':
         value = (val as TopNByDHCPFailureResult).dhcpFailureCount
+        break
+      case 'congestion':
+        value = (val as TopNByPortCongestionResult).congestedPortCount
+        break
+      case 'portStorm':
+        value = (val as TopNByStormPortCountResult).stormPortCount
         break
     }
     return {
@@ -52,6 +60,12 @@ export const getPieData = (data: PieChartResult, type: WidgetType) => {
       break
     case 'dhcpFailure':
       transformedData = transformData(type, data.topNSwitchesByDhcpFailure)
+      break
+    case 'congestion':
+      transformedData = transformData(type, data.topNSwitchesByPortCongestion)
+      break
+    case 'portStorm':
+      transformedData = transformData(type, data.topNSwitchesByStormPortCount)
       break
   }
   return transformedData
@@ -94,30 +108,27 @@ export const MoreDetailsPieChart = ({
   </ChartTitle>
 
   const pieData = queryResults.data
-  if (!pieData || pieData.length === 0) {
-    return <PieChartWrapper>
-      {Title}
-      <NoData />
-    </PieChartWrapper>
-  }
 
   return (
-    <Loader states={[queryResults]}>
-      <PieChartWrapper>
+    <PieChartWrapper>
+      <Loader states={[queryResults]}>
         {Title}
-        <AutoSizer defaultHeight={150}>
-          {({ width, height }) => (
-            <DonutChart
-              data={pieData}
-              style={{ height, width, top: 20 }}
-              legend='name'
-              size={'x-large'}
-              showTotal={false}
-              showLegend
-            />
-          )}
-        </AutoSizer>
-      </PieChartWrapper>
-    </Loader>
+        {pieData && pieData.length > 0 ?
+          <AutoSizer defaultHeight={150}>
+            {({ width, height }) => (
+              <DonutChart
+                data={pieData}
+                style={{ height, width, top: 20 }}
+                legend='name'
+                size={'x-large'}
+                showTotal={false}
+                showLegend
+              />
+            )}
+          </AutoSizer> :
+          <NoData />
+        }
+      </Loader>
+    </PieChartWrapper>
   )
 }

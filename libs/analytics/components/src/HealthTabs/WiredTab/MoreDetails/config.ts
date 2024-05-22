@@ -1,4 +1,3 @@
-
 import { IntlShape } from 'react-intl'
 
 import { NodesFilter } from '@acx-ui/utils'
@@ -6,23 +5,26 @@ import { NodesFilter } from '@acx-ui/utils'
 export interface PieChartResult {
   topNSwitchesByCpuUsage: TopNByCPUUsageResult[]
   topNSwitchesByDhcpFailure: TopNByDHCPFailureResult[]
+  topNSwitchesByPortCongestion: TopNByPortCongestionResult[]
+  topNSwitchesByStormPortCount: TopNByStormPortCountResult[]
 }
-
 export type WidgetType =
   | 'dhcpFailure'
   | 'congestion'
   | 'portStorm'
   | 'cpuUsage'
 
-export type SwitchDetails = {
+export type SwitchName = {
   mac: string
   name: string
+}
+export type SwitchDetails = {
   serial: string
   model: string
   status: string
   firmware: string
   numOfPorts: number
-}
+} & SwitchName
 
 export type TopNByCPUUsageResult = {
   cpuUtilization: number
@@ -31,6 +33,14 @@ export type TopNByCPUUsageResult = {
 export type TopNByDHCPFailureResult = {
   dhcpFailureCount: number
 } & SwitchDetails
+
+export type TopNByPortCongestionResult = {
+  congestedPortCount: number
+} & SwitchName
+
+export type TopNByStormPortCountResult = {
+  stormPortCount: number
+} & SwitchName
 
 export interface RequestPayload {
   filter: NodesFilter

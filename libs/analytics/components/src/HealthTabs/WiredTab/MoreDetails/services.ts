@@ -5,18 +5,27 @@ import { dataApi }          from '@acx-ui/store'
 
 import { PieChartResult, RequestPayload, WidgetType } from './config'
 
-const generateQuery = (type: WidgetType, detailed: boolean = false) => {
-  const fieldsMap: Record<Exclude<WidgetType, '' | 'congestion' | 'portStorm'>, string> = {
-    cpuUsage: 'cpuUtilization',
-    dhcpFailure: 'dhcpFailureCount'
-  }
+export const fieldsMap: Record<WidgetType, string> = {
+  cpuUsage: 'cpuUtilization',
+  dhcpFailure: 'dhcpFailureCount',
+  congestion: 'congestedPortCount',
+  portStorm: 'stormPortCount'
+}
 
+export const queryMapping: Record<WidgetType, string> = {
+  dhcpFailure: 'topNSwitchesByDhcpFailure',
+  congestion: 'topNSwitchesByPortCongestion',
+  portStorm: 'topNSwitchesByStormPortCount',
+  cpuUsage: 'topNSwitchesByCpuUsage'
+}
+
+export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
   const field = fieldsMap[type as keyof typeof fieldsMap]
   if (!field) return ''
 
   const baseFields = `mac name ${field}`
   const detailedFields = `${field} mac name serial model status firmware numOfPorts`
-  const queryName = `topNSwitchesBy${type.charAt(0).toUpperCase() + type.slice(1)}`
+  const queryName = queryMapping[type as keyof typeof queryMapping]
 
   return `${queryName}(n: $n) { ${detailed ? detailedFields : baseFields} }`
 }
