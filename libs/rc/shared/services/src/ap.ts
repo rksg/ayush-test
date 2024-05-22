@@ -62,8 +62,7 @@ import {
   WifiUrlsInfo,
   downloadFile,
   onActivityMessageReceived,
-  onSocketActivityChanged,
-  ApiVersionEnum
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -898,10 +897,6 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     updateApMeshSettings: build.mutation<APMeshSettings, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.updateApMeshSettings, params, customHeaders)
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
