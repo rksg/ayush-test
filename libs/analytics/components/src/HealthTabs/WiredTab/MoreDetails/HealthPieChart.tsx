@@ -108,30 +108,27 @@ export const MoreDetailsPieChart = ({
   </ChartTitle>
 
   const pieData = queryResults.data
-  if (!pieData || pieData.length === 0) {
-    return <PieChartWrapper>
-      {Title}
-      <NoData />
-    </PieChartWrapper>
-  }
 
   return (
-    <Loader states={[queryResults]}>
-      <PieChartWrapper>
+    <PieChartWrapper>
+      <Loader states={[queryResults]}>
         {Title}
-        <AutoSizer defaultHeight={150}>
-          {({ width, height }) => (
-            <DonutChart
-              data={pieData}
-              style={{ height, width, top: 20 }}
-              legend='name'
-              size={'x-large'}
-              showTotal={false}
-              showLegend
-            />
-          )}
-        </AutoSizer>
-      </PieChartWrapper>
-    </Loader>
+        {pieData && pieData.length > 0 ?
+          <AutoSizer defaultHeight={150}>
+            {({ width, height }) => (
+              <DonutChart
+                data={pieData}
+                style={{ height, width, top: 20 }}
+                legend='name'
+                size={'x-large'}
+                showTotal={false}
+                showLegend
+              />
+            )}
+          </AutoSizer> :
+          <NoData />
+        }
+      </Loader>
+    </PieChartWrapper>
   )
 }

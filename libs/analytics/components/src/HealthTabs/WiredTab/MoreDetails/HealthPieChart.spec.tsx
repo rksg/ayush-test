@@ -79,8 +79,7 @@ describe('MoreDetailsPieChart', () => {
         <MoreDetailsPieChart filters={{} as AnalyticsFilter} queryType='cpuUsage' />
       </Provider>
     )
-    const element = screen.getByText('No data to display')
-    expect(element).toBeInTheDocument()
+    expect(await screen.findByText('No data to display')).toBeVisible()
   })
 })
 
