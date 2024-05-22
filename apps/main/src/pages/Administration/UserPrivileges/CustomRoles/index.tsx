@@ -102,7 +102,7 @@ const CustomRoles = (props: CustomRolesTableProps) => {
     {
       label: $t({ defaultMessage: 'Clone' }),
       visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].name !== RolesEnum.PRIME_ADMIN)
+        return (selectedRows.length === 1 && selectedRows[0].type !== CustomGroupType.SYSTEM)
       },
       onClick: (selectedRows) => {
         navigate({

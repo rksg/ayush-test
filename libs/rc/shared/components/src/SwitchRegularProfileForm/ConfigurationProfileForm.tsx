@@ -40,20 +40,22 @@ export function ConfigurationProfileForm () {
   const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const [form] = Form.useForm()
 
-  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
-    useGetSwitchConfigProfileQuery,
-    useGetSwitchConfigProfileTemplateQuery,
-    !params.profileId
-  )
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
+    useQueryFn: useGetSwitchConfigProfileQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
+    skip: !params.profileId
+  })
 
-  const [addSwitchConfigProfile, {
-    isLoading: isAddingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher(
-    useAddSwitchConfigProfileMutation, useAddSwitchConfigProfileTemplateMutation
-  )
-  const [updateSwitchConfigProfile, {
-    isLoading: isUpdatingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher(
-    useUpdateSwitchConfigProfileMutation, useUpdateSwitchConfigProfileTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [addSwitchConfigProfile, { isLoading: isAddingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddSwitchConfigProfileMutation,
+    useTemplateMutationFn: useAddSwitchConfigProfileTemplateMutation
+  })
+  // eslint-disable-next-line max-len
+  const [updateSwitchConfigProfile, { isLoading: isUpdatingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateSwitchConfigProfileMutation,
+    useTemplateMutationFn: useUpdateSwitchConfigProfileTemplateMutation
+  })
 
   const editMode = params.action === 'edit'
   const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)

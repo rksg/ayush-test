@@ -40,17 +40,21 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
   const params = useParams()
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetVLANPoolPolicyDetailQuery,
-    useGetVlanPoolPolicyTemplateDetailQuery,
-    !isEdit
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVLANPoolPolicyDetailQuery,
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery,
+    skip: !isEdit
+  })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.VLAN_POOL)
-  // eslint-disable-next-line max-len
-  const [ createInstance ] = useConfigTemplateMutationFnSwitcher(useAddVLANPoolPolicyMutation, useAddVlanPoolPolicyTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher(useUpdateVLANPoolPolicyMutation, useUpdateVlanPoolPolicyTemplateMutation)
+  const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddVLANPoolPolicyMutation,
+    useTemplateMutationFn: useAddVlanPoolPolicyTemplateMutation
+  })
+  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVLANPoolPolicyMutation,
+    useTemplateMutationFn: useUpdateVlanPoolPolicyTemplateMutation
+  })
 
   useEffect(() => {
     if (data) {
@@ -60,13 +64,18 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   const handleVLANPoolPolicy = async (formData: VLANPoolPolicyType) => {
+    const payload = {
+      ...formData,
+      vlanMembers: (formData.vlanMembers as string).split(',')
+    }
+
     try {
       if (!isEdit) {
-        await createInstance({ params, payload: formData }).unwrap().then(res => {
+        await createInstance({ params, payload }).unwrap().then(res => {
           formData.id = res.response?.id
         })
       } else {
-        await updateInstance({ params, payload: formData }).unwrap()
+        await updateInstance({ params, payload }).unwrap()
       }
       networkView ? backToNetwork?.(formData) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {

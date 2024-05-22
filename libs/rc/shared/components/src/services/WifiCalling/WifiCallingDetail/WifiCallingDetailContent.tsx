@@ -11,9 +11,10 @@ import {
 
 const WifiCallingDetailContent = () => {
   const { $t } = useIntl()
-  const { data, isLoading } = useConfigTemplateQueryFnSwitcher(
-    useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery
-  )
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetWifiCallingServiceQuery,
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery
+  })
 
   const wifiCallingInfo = [
     {

@@ -27,16 +27,19 @@ export default function VenuePoolTable (){
 
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
-  const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>(
-    useVenueDHCPPoolsQuery, useGetVenueTemplateDhcpPoolsQuery
-  )
+  const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>({
+    useQueryFn: useVenueDHCPPoolsQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpPoolsQuery
+  })
 
-  const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher(
-    useActivateDHCPPoolMutation, useActivateVenueTemplateDhcpPoolMutation
-  )
-  const [deactivateDHCPPool] = useConfigTemplateMutationFnSwitcher(
-    useDeactivateDHCPPoolMutation, useDeactivateVenueTemplateDhcpPoolMutation
-  )
+  const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateDHCPPoolMutation,
+    useTemplateMutationFn: useActivateVenueTemplateDhcpPoolMutation
+  })
+  const [deactivateDHCPPool] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateDHCPPoolMutation,
+    useTemplateMutationFn: useDeactivateVenueTemplateDhcpPoolMutation
+  })
 
   const setActivePool = async (dhcppoolId:string, active:boolean)=>{
 
