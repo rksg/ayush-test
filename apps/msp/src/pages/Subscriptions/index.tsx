@@ -26,13 +26,15 @@ import {
   useMspEntitlementSummaryQuery,
   useRefreshMspEntitlementMutation
 } from '@acx-ui/msp/services'
-import { MspAssignmentSummary, MspEntitlementSummary }    from '@acx-ui/msp/utils'
-import { SpaceWrapper, MspSubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { MspAssignmentSummary, MspEntitlementSummary }                 from '@acx-ui/msp/utils'
+import { SpaceWrapper, MspSubscriptionUtilizationWidget }              from '@acx-ui/rc/components'
+import { useRbacEntitlementListQuery, useRbacEntitlementSummaryQuery } from '@acx-ui/rc/services'
 import {
   dateSort,
   defaultSort,
   EntitlementDeviceType,
   EntitlementDeviceTypes,
+  EntitlementSummaries,
   EntitlementUtil,
   getEntitlementDeviceTypes,
   MspEntitlement,
@@ -63,6 +65,41 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
   }
 ]
 
+const entitlementSummaryPayload = {
+  filters: {
+    licenseType: ['APSW'],
+    usageType: 'ASSIGNED'
+  }
+}
+
+const entitlementListPayload = {
+  fields: [
+    'externalId',
+    'licenseType',
+    'effectiveDate',
+    'expirationDate',
+    'quantity',
+    'sku',
+    'licenseDesc',
+    'isR1SKU',
+    'status',
+    'isTrial',
+    'graceEndDate',
+    'usageType'
+  ],
+  page: 1,
+  pageSize: 1000,
+  sortField: 'expirationDate',
+  sortOrder: 'DESC',
+  filters: {
+    licenseType: ['APSW'],
+    // isTrial: false,
+    // status': ['VALID','EXPIRED','FUTURE']
+    // isAssignedLicense: false,
+    usageType: 'ASSIGNED'
+  }
+}
+
 export function Subscriptions () {
   const { $t } = useIntl()
   const navigate = useNavigate()
@@ -73,14 +110,16 @@ export function Subscriptions () {
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
   const {
     state
   } = useContext(HspContext)
   const { isHsp: isHspSupportEnabled } = state
 
   const { tenantId } = useParams()
-  const subscriptionDeviceTypeList = getEntitlementDeviceTypes()
-    .filter(o => o.value.startsWith('MSP'))
+  const subscriptionDeviceTypeList = isEntitlementRbacApiEnabled
+    ? getEntitlementDeviceTypes()
+    : getEntitlementDeviceTypes().filter(o => o.value.startsWith('MSP'))
 
   const [
     refreshEntitlement
@@ -210,6 +249,52 @@ export function Subscriptions () {
     }
   ]
 
+  const rbacSubscriptionUtilizationTransformer = (
+    deviceTypeList: EntitlementDeviceTypes,
+    data: EntitlementSummaries[]) => {
+    const result = {} as { [key in EntitlementDeviceType]: {
+      total: number;
+      used: number;
+      assigned: number;
+      courtesy: number;
+      tooltip: string;
+      trial: boolean;
+    } }
+
+    deviceTypeList.forEach(item => {
+      const isApswTrial = item.value === EntitlementDeviceType.MSP_APSW_TEMP
+      const licenseTypeType = !isApswTrial ? item.value : EntitlementDeviceType.APSW
+      const summaryData =
+        data.filter(n => n.licenseType === licenseTypeType && n.isTrial === isApswTrial)
+      let quantity = 0
+      let used = 0
+      let courtesy = 0
+      let assigned = 0
+
+      // only display types that has data in summary
+      if (summaryData.length > 0) {
+        summaryData.forEach(summary => {
+          quantity += summary.purchasedQuantity + summary.courtesyQuantity
+          courtesy += summary.courtesyQuantity
+          used += summary.usedQuantity
+          assigned += summary.usedQuantityForOwnAssignment
+        })
+
+        // including to display 0 quantity.
+        result[item.value] = {
+          total: quantity,
+          used: used,
+          assigned: assigned,
+          courtesy: courtesy,
+          tooltip: getCourtesyTooltip(quantity, courtesy),
+          trial: isApswTrial
+        }
+      }
+    })
+
+    return result
+  }
+
   const subscriptionUtilizationTransformer = (
     deviceTypeList: EntitlementDeviceTypes,
     assignedSummary: MspAssignmentSummary[],
@@ -271,11 +356,24 @@ export function Subscriptions () {
         ...rest
       })
     })
-    const summaryResults = useMspEntitlementSummaryQuery({ params: useParams() })
-    const summaryData = subscriptionUtilizationTransformer(
-      subscriptionDeviceTypeList,
-      queryResults.data ?? [],
-      summaryResults.data ?? [])
+    const rbacSummaryResults =
+      useRbacEntitlementSummaryQuery(
+        { params: useParams(), payload: entitlementSummaryPayload },
+        { skip: !isEntitlementRbacApiEnabled })
+
+    const summaryResults =
+      useMspEntitlementSummaryQuery(
+        { params: useParams() },
+        { skip: isEntitlementRbacApiEnabled })
+
+    const summaryData = isEntitlementRbacApiEnabled
+      ? rbacSubscriptionUtilizationTransformer(
+        subscriptionDeviceTypeList,
+        rbacSummaryResults.data ?? [])
+      : subscriptionUtilizationTransformer(
+        subscriptionDeviceTypeList,
+        queryResults.data ?? [],
+        summaryResults.data ?? [])
 
     useEffect(() => {
       if (queryResults.data) {
@@ -314,20 +412,26 @@ export function Subscriptions () {
   }
 
   const SubscriptionTable = () => {
-    const queryResults = useMspEntitlementListQuery({
-      params: useParams()
-    },{
-      selectFromResult: ({ data, ...rest }) => ({
-        data,
-        ...rest
+    const { data: rbacQueryResults } = useRbacEntitlementListQuery(
+      { params: useParams(), payload: entitlementListPayload },
+      { skip: !isEntitlementRbacApiEnabled })
+    const queryResults = useMspEntitlementListQuery(
+      { params: useParams() },
+      { skip: isEntitlementRbacApiEnabled ,
+        selectFromResult: ({ data, ...rest }) => ({
+          data,
+          ...rest
+        })
       })
-    })
-    const subscriptionData = queryResults.data?.map(response => {
-      return {
-        ...response,
-        name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
-      }
-    })
+
+    const subscriptionData = isEntitlementRbacApiEnabled
+      ? (rbacQueryResults?.data ?? [])
+      : queryResults.data?.map(response => {
+        return {
+          ...response,
+          name: EntitlementUtil.getMspDeviceTypeText(response?.deviceType)
+        }
+      })
 
     return (
       <Loader states={[queryResults]}>

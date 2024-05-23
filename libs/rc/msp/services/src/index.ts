@@ -230,9 +230,8 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     mspEntitlementList: build.query<MspEntitlement[], RequestPayload>({
       query: ({ params }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const mspEntitlementListReq = createHttpRequest(rbacApiEnabled
-          ? LicenseUrlsInfo.getMspEntitlement : MspUrlsInfo.getMspEntitlement, params)
+        const mspEntitlementListReq = createHttpRequest(
+          MspUrlsInfo.getMspEntitlement, params)
         return {
           ...mspEntitlementListReq
         }
@@ -251,9 +250,8 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     mspEntitlementSummary: build.query<MspEntitlementSummary[], RequestPayload>({
       query: ({ params }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const mspEntitlementSummaryReq = createHttpRequest(rbacApiEnabled
-          ? LicenseUrlsInfo.getMspEntitlementSummary : MspUrlsInfo.getMspEntitlementSummary, params)
+        const mspEntitlementSummaryReq =
+          createHttpRequest(MspUrlsInfo.getMspEntitlementSummary, params)
         return {
           ...mspEntitlementSummaryReq
         }
