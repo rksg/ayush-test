@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/analytics/components'
 import { updateSelectedTenant, getUserProfile }                          from '@acx-ui/analytics/utils'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
-import { hasPermission }                                                 from '@acx-ui/user'
+import { hasRaiPermission, RaiPermission }                               from '@acx-ui/user'
 
 import ClientDetails                         from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum }         from './pages/Clients'
@@ -43,13 +43,17 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 
 const getDefaultRoute = () => {
   switch (true) {
-    case hasPermission({ permission: 'READ_DASHBOARD' }):   return 'dashboard'
-    case hasPermission({ permission: 'READ_HEALTH' }):      return 'health'
-    case hasPermission({ permission: 'READ_REPORTS' }):     return 'reports'
-    case hasPermission({ permission: 'READ_DATA_STUDIO' }): return 'dataStudio'
+    case hasRaiPermission('READ_DASHBOARD'):   return 'dashboard'
+    case hasRaiPermission('READ_HEALTH'):      return 'health' // TODO /overview if FF is on
+    case hasRaiPermission('READ_REPORTS'):     return 'reports'
+    case hasRaiPermission('READ_DATA_STUDIO'): return 'dataStudio'
   }
   return 'profile/settings'
 }
+
+const check = (permission: RaiPermission, component?: JSX.Element) =>
+  !permission || hasRaiPermission(permission) ? component : <Init />
+
 function Init () {
   const [ search ] = useSearchParams()
   updateSelectedTenant()
@@ -75,21 +79,21 @@ function AllRoutes () {
     <Route path='/' element={<Init />} />
     <Route path={MLISA_BASE_PATH} element={<Init />} />
     <Route path={MLISA_BASE_PATH}>
-      <Route path='dashboard' element={<Dashboard />} />
+      <Route path='dashboard' element={check('READ_DASHBOARD', <Dashboard />)} />
       <Route path='profile'>
         <Route path=':activeTab' element={<Profile />} />
       </Route>
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
-        <Route path='aiOps/:id' element={<RecommendationDetails />} />
-        <Route path='crrm/:id' element={<CrrmDetails />} />
-        <Route path='crrm/unknown/*' element={<UnknownDetails />} />
+        <Route path='aiOps/:id' element={check('READ_AI_OPERATIONS', <RecommendationDetails/>)}/>
+        <Route path='crrm/:id' element={check('READ_AI_DRIVEN_RRM', <CrrmDetails />)}/>
+        <Route path='crrm/unknown/*' element={check('READ_AI_DRIVEN_RRM', <UnknownDetails />)}/>
       </Route>
-      <Route path='incidents'>
+      <Route path='incidents' element={check('READ_INCIDENTS')}>
         <Route index={true} element={<Incidents />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
       </Route>
-      <Route path='networks/wireless'>
+      <Route path='networks/wireless' element={check('READ_WIFI_NETWORKS_LIST')}>
         <Route index={true} element={<WiFiNetworksPage tab={NetworkTabsEnum.LIST} />} />
         <Route
           path='reports/wlans'
@@ -104,7 +108,7 @@ function AllRoutes () {
           <Route path=':activeTab' element={<NetworkDetails />} />
         </Route>
       </Route>
-      <Route path='devices/wifi'>
+      <Route path='devices/wifi' element={check('READ_ACCESS_POINTS_LIST')}>
         <Route index={true}
           element={<WiFiPage tab={WifiTabsEnum.LIST} />} />
         <Route
@@ -123,10 +127,10 @@ function AllRoutes () {
           path=':apId/details/:activeTab/:activeSubTab/:categoryTab'
           element={<ApDetails />} />
       </Route>
-      <Route path='configChange' element={<ConfigChange />} />
-      <Route path='reports/*' element={<ReportsRoutes />} />
-      <Route path='dataStudio/*' element={<ReportsRoutes />} />
-      <Route path='serviceValidation/*'>
+      <Route path='configChange' element={check('READ_CONFIG_CHANGE', <ConfigChange />)} />
+      <Route path='reports/*' element={check('READ_REPORTS', <ReportsRoutes />)} />
+      <Route path='dataStudio/*' element={check('READ_DATA_STUDIO', <ReportsRoutes />)} />
+      <Route path='serviceValidation/*' element={check('READ_SERVICE_VALIDATION')} >
         <Route index
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD} />} />
         <Route path='add' element={<ServiceGuardForm />} />
@@ -147,24 +151,36 @@ function AllRoutes () {
           </Route>
         </Route>
       </Route>
-      <Route path='videoCallQoe' >
+      <Route path='videoCallQoe' element={check('READ_VIDEO_CALL_QOE')}>
         <Route index element={<VideoCallQoe />} />
         <Route path=':testId' element={<VideoCallQoeDetails/>} />
         <Route path='add' element={<VideoCallQoeForm />} />
       </Route>
-      <Route path='occupancy' element={<div>Occupancy</div>} />
+      <Route path='occupancy' element={check('READ_OCCUPANCY', <div>Occupancy</div>)} />
       <Route path='search/:searchVal' element={<SearchResults />} />
       <Route path='admin'>
         <Route path='onboarded'
-          element={<AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>} />
+          element={check('READ_ONBOARDED_SYSTEMS',
+            <AccountManagement tab={AccountManagementTabEnum.ONBOARDED_SYSTEMS}/>
+          )}
+        />
         <Route path='users'
-          element={<AccountManagement tab={AccountManagementTabEnum.USERS}/>} />
+          element={check('READ_USERS',
+            <AccountManagement tab={AccountManagementTabEnum.USERS}/>
+          )}
+        />
         <Route path='support'
-          element={<AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>} />
+          element={check('READ_SUPPORT',
+            <AccountManagement tab={AccountManagementTabEnum.SUPPORT}/>
+          )}
+        />
         <Route path='webhooks'
-          element={<AccountManagement tab={AccountManagementTabEnum.WEBHOOKS}/>} />
+          element={check('READ_WEBHOOKS',
+            <AccountManagement tab={AccountManagementTabEnum.WEBHOOKS}/>
+          )}
+        />
       </Route>
-      <Route path='health'>
+      <Route path='health' element={check('READ_HEALTH')}>
         <Route index={true} element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
         <Route path=':activeSubTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />}>
@@ -175,13 +191,13 @@ function AllRoutes () {
           path='tab/:categoryTab'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />} />
       </Route>
-      <Route path='devices/switch'>
+      <Route path='devices/switch' element={check('READ_SWITCH_LIST')}>
         <Route path='' element={<Wired tab={AISwitchTabsEnum.SWITCH_LIST}/>} />
         <Route path='reports/wired'
           element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
         <Route path=':switchId/serial/details/:activeTab' element={<SwitchDetails/>} />
       </Route>
-      <Route path='users'>
+      <Route path='users' element={check('READ_WIRELESS_CLIENTS_LIST')}>
         <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
         <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
         <Route path='wifi/clients/:clientId'>
@@ -191,7 +207,7 @@ function AllRoutes () {
           </Route>
         </Route>
       </Route>
-      <Route path='zones'>
+      <Route path='zones' element={check('READ_ZONES')}>
         <Route index element={<Zones />} />
         <Route path=':systemName/:zoneName/:activeTab' element={<ZoneDetails />} />
         <Route path=':systemName/:zoneName/:activeTab/:activeSubTab' element={<ZoneDetails />} />

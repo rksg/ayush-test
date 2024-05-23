@@ -1,9 +1,9 @@
 import { Navigate, useSearchParams } from 'react-router-dom'
 
-import { getUserProfile }                    from '@acx-ui/analytics/utils'
-import { Provider }                          from '@acx-ui/store'
-import { render, screen }                    from '@acx-ui/test-utils'
-import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { getUserProfile }                                        from '@acx-ui/analytics/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { render, screen }                                        from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions, raiPermissionsList } from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
 
@@ -47,7 +47,8 @@ describe('AllRoutes', () => {
     }
   }
   beforeEach(() => {
-    setRaiPermissions({ READ_DASHBOARD: true } as RaiPermissions)
+    setRaiPermissions(Object.keys(raiPermissionsList)
+      .reduce((permissions, name) => ({ ...permissions, [name]: true }), {} as RaiPermissions))
     userProfile.mockReturnValue(defaultUserProfile)
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
