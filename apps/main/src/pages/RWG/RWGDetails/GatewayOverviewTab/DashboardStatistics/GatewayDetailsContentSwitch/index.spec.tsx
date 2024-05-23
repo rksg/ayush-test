@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { venueApi }                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo }                             from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -13,8 +13,7 @@ const gatewayDetails = {
   gatewayDetailsGeneral: {
     venueName: 'My-Venue',
     hostname: 'rxgS5-vpoc.ruckusdemos.net',
-    username: 'inigo',
-    password: 'Inigo123!',
+    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
     uptimeInSeconds: null,
     bootedAt: '2023-09-07T12:47:16.000-07:00',
     temperature: '43.38',
@@ -42,14 +41,6 @@ const gatewayDetails = {
     systemVersion: '0123456789',
     systemFamily: 'To be filled by O.E.M.'
   },
-  gatewayDetailsOs: {
-    architecture: 'amd64',
-    branch: 'RELEASE',
-    kernel: 'FreeBSD 13.2-RELEASE #15 0e0d333f',
-    name: 'FreeBSD',
-    release: '13.2-RELEASE #15',
-    version: '13.2'
-  },
   gatewayDetailsDiskMemory: {
     diskDevice: 'AHCI SGPIO Enclosure 2.00 0001',
     diskTotalSpaceInGb: 1286,
@@ -63,6 +54,7 @@ const gatewayDetails = {
 const params = {
   tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
   gatewayId: 'bbc41563473348d29a36b76e95c50381',
+  venueId: '3f10af1401b44902a88723cb68c4bc77',
   activeTab: 'overview'
 }
 
@@ -72,7 +64,7 @@ describe('RWG Dashboard statistics', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGatewayDetails.url,
+        CommonRbacUrlsInfo.getGatewayDetails.url,
         (req, res, ctx) => res(ctx.json(gatewayDetails))
       )
     )
@@ -92,11 +84,9 @@ describe('RWG Dashboard statistics', () => {
 
     expect(await screen.findByRole('radio', { name: 'General' })).toBeInTheDocument()
     expect(await screen.findByRole('radio', { name: 'Hardware' })).toBeInTheDocument()
-    expect(await screen.findByRole('radio', { name: 'OS' })).toBeInTheDocument()
     expect(await screen.findByRole('radio', { name: 'Disk & Memory' })).toBeInTheDocument()
 
     fireEvent.click(await screen.findByRole('radio', { name: 'Hardware' }))
-    fireEvent.click(await screen.findByRole('radio', { name: 'OS' }))
     fireEvent.click(await screen.findByRole('radio', { name: 'Disk & Memory' }))
     fireEvent.click(await screen.findByRole('radio', { name: 'General' }))
   })

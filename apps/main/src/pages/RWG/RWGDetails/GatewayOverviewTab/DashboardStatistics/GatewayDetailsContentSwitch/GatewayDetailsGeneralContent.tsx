@@ -34,16 +34,12 @@ export default function GatewayDetailsGeneralContent (props: {
       children={gatewayDetails?.hostname}
     />
     <Descriptions.Item
-      label={$t({ defaultMessage: 'Username' })}
-      children={gatewayDetails?.username}
-    />
-    <Descriptions.Item
-      label={$t({ defaultMessage: 'Password' })}
+      label={$t({ defaultMessage: 'API Key' })}
       children={<UI.DetailsPassword>
         <PasswordInput
           readOnly
           bordered={false}
-          value={gatewayDetails?.password}
+          value={gatewayDetails?.apiKey}
         />
       </UI.DetailsPassword>}
     />

@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { rwgApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, RWG, RWGStatusEnum }    from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { rwgApi }                                 from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                        from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }  from '@acx-ui/test-utils'
 
 
 import { RWGDetails } from '.'
@@ -44,12 +44,6 @@ jest.mock('./GatewayOverviewTab', () => ({
     title='GatewayOverviewTab' />
 }))
 
-const mockNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate
-}))
-
 describe('RWGDetails', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -66,7 +60,7 @@ describe('RWGDetails', () => {
     }
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGateway.url,
+        CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse))
       )
     )
@@ -79,7 +73,7 @@ describe('RWGDetails', () => {
 
     await fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
 
-    await expect(mockNavigate).toBeCalledTimes(1)
+    await expect(window.open).toBeCalledTimes(1)
 
   })
 
@@ -92,7 +86,7 @@ describe('RWGDetails', () => {
     }
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGateway.url,
+        CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse1))
       )
     )

@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonRbacUrlsInfo, CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                               from '@acx-ui/store'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RWGRow, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                  from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -18,6 +18,7 @@ const rwgList = {
   response: {
     items: [{
       rwgId: 'bbc41563473348d29a36b76e95c50381',
+      rowId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
       name: 'ruckusdemos',
@@ -27,6 +28,7 @@ const rwgList = {
       isCluster: false
     }, {
       rwgId: 'bbc41563473348d29a36b76e95c50382',
+      rowId: 'bbc41563473348d29a36b76e95c50382',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
       name: 'rwg1',
@@ -34,7 +36,22 @@ const rwgList = {
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
       status: RWGStatusEnum.OFFLINE,
       isCluster: false
-    }] as RWG[]
+    }, {
+      rwgId: 'bbc41563473348d29a36b76e95c50383',
+      rowId: 'bbc41563473348d29a36b76e95c50383',
+      venueId: '3f10af1401b44902a88723cb68c4bc77',
+      venueName: 'My-Venue',
+      name: 'cluster',
+      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      status: RWGStatusEnum.RWG_STATUS_UNKNOWN,
+      isCluster: true,
+      clusterNodes: [{
+        name: 'node1',
+        ip: '4.4.4.4',
+        id: '1'
+      }]
+    }] as RWGRow[]
   }
 }
 
@@ -46,11 +63,11 @@ jest.mock('react-router-dom', () => ({
 
 
 describe('RWG Table', () => {
-  let params: { tenantId: string }
+  let params: { tenantId: string, venueId: string }
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getRwgList.url,
+        CommonRbacUrlsInfo.getRwgList.url,
         (req, res, ctx) => res(ctx.json(rwgList))
       ),
       rest.post(
@@ -63,7 +80,8 @@ describe('RWG Table', () => {
       )
     )
     params = {
-      tenantId: '7b8cb9e8e99a4f42884ae9053604a376'
+      tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
+      venueId: '3f10af1401b44902a88723cb68c4bc77'
     }
   })
 

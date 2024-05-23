@@ -24,13 +24,24 @@ import NameValueWidget             from './NameValueWidget'
 export function DashboardStatistics () {
 
   const { $t } = useIntl()
-  const { tenantId, gatewayId } = useParams()
+  const { tenantId, gatewayId, venueId, clusterNodeId } = useParams()
   const [visible, setVisible] = useState(false)
+  const rwgAlarmPayload = {
+    pageNumber: 1,
+    pageSize: 10,
+    sortBy: 'UpdateTimeDesc'
+  }
   const { data: alarm, isLoading: isAlarmLoading, isFetching: isAlarmFetching } =
-    useGetGatewayAlarmsQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+    useGetGatewayAlarmsQuery({ params: { tenantId, gatewayId, venueId }, payload: {
+      ...rwgAlarmPayload,
+      ...(clusterNodeId ? {
+        filterBy: [{ key: 'CLUSTER_NODE_ID_IS', value: clusterNodeId }] } : {})
+    } }, { skip: !gatewayId })
 
   const { data: dashboardData, isLoading: isDashboardLoading, isFetching: isDashboardFetching } =
-    useGetGatewayDashboardQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+    useGetGatewayDashboardQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
+      { skip: !gatewayId })
+
 
 
   const alarmData: DonutChartData[] = [

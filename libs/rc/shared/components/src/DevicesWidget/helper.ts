@@ -10,9 +10,9 @@ import {
   VenueDetailHeader,
   EdgeStatusSeverityStatistic,
   transformSwitchStatus,
-  RWG,
   RWGStatusEnum,
-  getRwgStatus
+  getRwgStatus,
+  RWGRow
 } from '@acx-ui/rc/utils'
 
 import {
@@ -363,13 +363,13 @@ export const getEdgeStackedBarChartData =
 }
 
 export const getRwgDonutChartData =
-(rwgs: RWG[] | undefined): DonutChartData[] => {
+(rwgs: RWGRow[]): DonutChartData[] => {
   const chartData: DonutChartData[] = []
 
   const rwgMap = new Map<RWGStatusEnum, number>(rwgs?.map(({ status }) =>
     [status, 0]))
 
-  for (let { status } of rwgs as RWG[]) {
+  for (let { status } of rwgs as RWGRow[]) {
     if (rwgMap) {
       const value: number = rwgMap.get(status) as number
       rwgMap.set(status, value + 1)
@@ -387,11 +387,10 @@ export const getRwgDonutChartData =
 
 
 export const getRwgStackedBarChartData =
-(rwgList: RWG[] | undefined): { chartData: ChartData[], stackedColors: string[] } => {
-
+(rwgList: RWGRow[]): { chartData: ChartData[], stackedColors: string[] } => {
   let map = new Map(rwgList?.map(({ status }) =>
     [status, { name: getRwgStatus(status).name, value: 0 }]))
-  for (let { status } of rwgList as RWG[]) {
+  for (let { status } of rwgList as RWGRow[]) {
     if (map && map.get(status)) {
       (map.get(status) as { name: string; value: number }).value++
     }

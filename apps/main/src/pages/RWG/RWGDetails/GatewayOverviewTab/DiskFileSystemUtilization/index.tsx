@@ -12,11 +12,12 @@ import * as UI from '../styledComponents'
 
 export default function DiskFileSystemUtilization () {
   const { $t } = useIntl()
-  const { tenantId, gatewayId } = useParams()
+  const { tenantId, gatewayId, venueId, clusterNodeId } = useParams()
 
   const { data: fileSystemData,
     isLoading: isFileSystemDataLoading, isFetching: isFileSystemDataFetching } =
-  useGetGatewayFileSystemsQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+  useGetGatewayFileSystemsQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
+    { skip: !gatewayId })
 
   const bytesFormatter = formatter('bytesFormat')
 

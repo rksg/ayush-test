@@ -508,61 +508,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/radiusOptions',
     newApi: true
   },
-  getRwgList: {
-    method: 'post',
-    url: '/rwgs/query',
-    newApi: true
-  },
-  deleteGateways: {
-    method: 'delete',
-    url: '/rwgs',
-    newApi: true
-  },
-  deleteGateway: {
-    method: 'delete',
-    url: '/rwgs/:rwgId',
-    newApi: true
-  },
-  getGateway: {
-    method: 'get',
-    url: '/venues/:venueId/rwgs/:gatewayId',
-    newApi: true
-  },
-  updateGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  addGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  getGatewayAlarms: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/alarms',
-    newApi: true
-  },
-  getGatewayDashboard: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dashboards',
-    newApi: true
-  },
-  getGatewayTopProcess: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/topprocess',
-    newApi: true
-  },
-  getGatewayFileSystems: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/filesystems',
-    newApi: true
-  },
-  getGatewayDetails: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/details',
-    newApi: true
-  },
   addExportSchedules: {
     method: 'post',
     url: '/reports/exportSchedules',

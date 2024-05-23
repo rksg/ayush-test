@@ -3,7 +3,7 @@ import { omit } from 'lodash'
 import {
   Dashboard,
   EdgeStatusSeverityStatistic,
-  RWG,
+  RWGRow,
   RWGStatusEnum,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
@@ -34,7 +34,7 @@ const rwgList = {
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
       status: RWGStatusEnum.OFFLINE,
       isCluster: false
-    }] as RWG[]
+    }] as RWGRow[]
   }
 }
 
@@ -328,6 +328,6 @@ describe('getRwgDonutChartData', () => {
     }])
   })
   it('should return empty array if no data', ()=>{
-    expect(getRwgDonutChartData([] as RWG[])).toEqual([])
+    expect(getRwgDonutChartData([] as RWGRow[])).toEqual([])
   })
 })

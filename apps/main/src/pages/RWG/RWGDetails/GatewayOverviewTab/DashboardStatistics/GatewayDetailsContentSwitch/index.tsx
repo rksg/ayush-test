@@ -6,21 +6,21 @@ import {
   ContentSwitcherProps,
   Loader
 } from '@acx-ui/components'
-import { useGetGatewayDetailsQuery }                                                                 from '@acx-ui/rc/services'
-import { GatewayDetailsDiskMemory, GatewayDetailsGeneral, GatewayDetailsHardware, GatewayDetailsOs } from '@acx-ui/rc/utils'
+import { useGetGatewayDetailsQuery }                                               from '@acx-ui/rc/services'
+import { GatewayDetailsDiskMemory, GatewayDetailsGeneral, GatewayDetailsHardware } from '@acx-ui/rc/utils'
 
 import GatewayDetailsDiskMemoryContent from './GatewayDetailsDiskMemoryContent'
 import GatewayDetailsGeneralContent    from './GatewayDetailsGeneralContent'
 import GatewayDetailsHardwareContent   from './GatewayDetailsHardwareContent'
-import GatewayDetailsOSContent         from './GatewayDetailsOSContent'
 
 
 export default function GatewayDetailsContentSwitch () {
   const { $t } = useIntl()
-  const { tenantId, gatewayId } = useParams()
+  const { tenantId, gatewayId, venueId, clusterNodeId } = useParams()
 
   const { data: gatewayDetails, isLoading: isDetailsLoading } =
-      useGetGatewayDetailsQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+      useGetGatewayDetailsQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
+        { skip: !gatewayId })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -35,13 +35,6 @@ export default function GatewayDetailsContentSwitch () {
       value: 'hardware',
       children: <GatewayDetailsHardwareContent
         gatewayDetails={gatewayDetails?.gatewayDetailsHardware as GatewayDetailsHardware}
-      />
-    },
-    {
-      label: $t({ defaultMessage: 'OS' }),
-      value: 'os',
-      children: <GatewayDetailsOSContent
-        gatewayDetails={gatewayDetails?.gatewayDetailsOs as GatewayDetailsOs}
       />
     },
     {

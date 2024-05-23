@@ -73,10 +73,11 @@ export function DevicesDashboardWidgetV2 () {
 
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
-  const { data: rwgs } = useRwgListQuery({ params: useParams() }, { skip: !showRwgUI })
+  const { data: rwgs, isLoading: rwgLoading } =
+    useRwgListQuery({ params: useParams() }, { skip: !showRwgUI })
 
   return (
-    <Loader states={[queryResults]}>
+    <Loader states={[queryResults, { isLoading: rwgLoading }]}>
       <DevicesWidgetv2
         apStackedData={queryResults.data.apStackedData}
         switchStackedData={queryResults.data.switchStackedData}
