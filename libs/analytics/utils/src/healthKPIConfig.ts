@@ -173,7 +173,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP sucessful bindings' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
@@ -627,7 +627,7 @@ export const kpiConfig = {
     }
   },
   switchStormControl: {
-    text: defineMessage({ defaultMessage: 'Broadcast Traffic' }),
+    text: defineMessage({ defaultMessage: 'MC Traffic' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -653,7 +653,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Broadcast Traffic' })
+      tooltip: defineMessage({ defaultMessage: 'MC Traffic' })
     }
   }
 }
