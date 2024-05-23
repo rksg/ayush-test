@@ -40,17 +40,17 @@ const DHCPInstance = () => {
     return item.status === DHCPLeasesStatusEnum.ONLINE
   })
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
-  )
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+    useQueryFn: useVenueDHCPProfileQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery
+  })
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery,
-    useGetDhcpTemplateQuery,
-    !venueDHCPProfile?.serviceProfileId,
-    undefined,
-    { serviceId: venueDHCPProfile?.serviceProfileId }
-  )
+  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    skip: !venueDHCPProfile?.serviceProfileId,
+    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId }
+  })
 
   const leaseContent = $t({ defaultMessage: 'Lease Table ({count} Online)' },
     { count: onlineList.length || 0 })

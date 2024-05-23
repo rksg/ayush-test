@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment-timezone'
 import { rest }  from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   ConnectionMeteringUrls,
@@ -95,7 +95,7 @@ const updateUnitFn = jest.fn()
 const getPersonaGroupSpy = jest.fn()
 const getApSpy = jest.fn()
 const getSwitchSpy = jest.fn()
-jest.mocked(useIsSplitOn).mockReturnValue(true)
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 describe('Property Unit Page', () => {
   beforeEach(async () => {
     updateUnitFn.mockClear()
@@ -357,43 +357,42 @@ describe('Property Unit Page', () => {
     await userEvent.click(secondRow)
     await screen.findByRole('button', { name: /edit/i })
   })
-})
 
+  it('should export Units to CSV', async () => {
+    const exportFn = jest.fn()
 
-it('should export Units to CSV', async () => {
-  const exportFn = jest.fn()
+    mockServer.use(
+      rest.post(
+        PropertyUrlsInfo.exportPropertyUnits.url,
+        (req, res, ctx) => {
+          const headers = req['headers']
 
-  mockServer.use(
-    rest.post(
-      PropertyUrlsInfo.exportPropertyUnits.url,
-      (req, res, ctx) => {
-        const headers = req['headers']
+          if (headers.get('accept') !== 'text/csv') {
+            return res(ctx.json(mockPropertyUnitList))
+          } else {
+            exportFn()
 
-        if (headers.get('accept') !== 'text/csv') {
-          return res(ctx.json(mockPropertyUnitList))
-        } else {
-          exportFn()
-
-          return res(ctx.set({
-            'content-disposition': 'attachment; filename=Units_20230118100829.csv',
-            'content-type': 'text/csv;charset=ISO-8859-1'
-          }), ctx.text('Property'))
+            return res(ctx.set({
+              'content-disposition': 'attachment; filename=Units_20230118100829.csv',
+              'content-type': 'text/csv;charset=ISO-8859-1'
+            }), ctx.text('Property'))
+          }
         }
-      }
+      )
     )
-  )
 
-  render(
-    <Provider><VenuePropertyTab /></Provider>,
-    {
-      route: {
-        params,
-        path: '/:tenantId/t/venues/:venueId/venue-details/units'
-      }
-    })
+    render(
+      <Provider><VenuePropertyTab /></Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/units'
+        }
+      })
 
-  const exportBtn = await screen.findByTestId('export-unit')
-  await userEvent.click(exportBtn)
-  await waitFor(() => expect(exportFn).toHaveBeenCalled())
+    const exportBtn = await screen.findByTestId('export-unit')
+    await userEvent.click(exportBtn)
+    await waitFor(() => expect(exportFn).toHaveBeenCalled())
+  })
+
 })
-

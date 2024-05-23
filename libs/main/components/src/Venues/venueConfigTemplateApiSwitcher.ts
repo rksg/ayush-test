@@ -21,9 +21,12 @@ export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
 ): ReturnType<typeof useQueryFn> {
   const { venueId } = useParams()
 
-  return useConfigTemplateQueryFnSwitcher(useQueryFn, useTemplateQueryFn, !venueId,
-    rbacApiVersion? { rbacApiVersion } : undefined
-  )
+  return useConfigTemplateQueryFnSwitcher({
+    useQueryFn,
+    useTemplateQueryFn,
+    skip: !venueId,
+    payload: rbacApiVersion ? { rbacApiVersion } : undefined
+  })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,7 +35,7 @@ export function useVenueConfigTemplateMutationFnSwitcher (
   useMutationFn: UseMutation<VenueMutationDefinition>,
   useTemplateMutationFn: UseMutation<VenueMutationDefinition>
 ) {
-  return useConfigTemplateMutationFnSwitcher(useMutationFn, useTemplateMutationFn)
+  return useConfigTemplateMutationFnSwitcher({ useMutationFn, useTemplateMutationFn })
 }
 
 export function useGetVenueInstance () {

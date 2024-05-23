@@ -7,6 +7,7 @@ import {
   RequestFormData,
   SaveSwitchProfile,
   SwitchUrlsInfo,
+  SwitchRbacUrlsInfo,
   SwitchViewModel,
   SwitchVlans,
   Acl,
@@ -56,7 +57,8 @@ import {
   downloadFile,
   SEARCH,
   SORTER,
-  SwitchPortViewModelQueryFields
+  SwitchPortViewModelQueryFields,
+  TroubleshootingResponse
 } from '@acx-ui/rc/utils'
 import { baseSwitchApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -67,23 +69,45 @@ export type SwitchsExportPayload = {
   tenantId: string
 } & SEARCH & SORTER
 
+type StackInfo = {
+  serialNumber: string
+  venueId: string
+}
+
+const customHeaders = {
+  v1: {
+    'Content-Type': 'application/vnd.ruckus.v1+json',
+    'Accept': 'application/vnd.ruckus.v1+json'
+  },
+  v1001: {
+    'Content-Type': 'application/vnd.ruckus.v1.1+json',
+    'Accept': 'application/vnd.ruckus.v1.1+json'
+  }
+}
+
+const getSwitchUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? SwitchRbacUrlsInfo : SwitchUrlsInfo
+}
+
 export const switchApi = baseSwitchApi.injectEndpoints({
   endpoints: (build) => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     switchList: build.query<TableResult<SwitchRow>, RequestPayload<any>>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const hasGroupBy = !!arg.payload?.groupBy
+        const switchUrls = getSwitchUrls(arg.enableRbac)
+        const headers = arg.enableRbac ? customHeaders.v1 : {}
         const req = hasGroupBy
-          ? createHttpRequest(SwitchUrlsInfo.getSwitchListByGroup, arg.params)
-          : createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params)
+          ? createHttpRequest(switchUrls.getSwitchListByGroup, arg.params, headers)
+          : createHttpRequest(switchUrls.getSwitchList, arg.params, headers)
         const listInfo = {
           ...req,
-          body: arg.payload
+          body: JSON.stringify(arg.payload)
         }
         const listQuery = await fetchWithBQ(listInfo)
         const list = listQuery.data as TableResult<SwitchRow>
         const stackMembers:{ [index:string]: StackMember[] } = {}
-        const stacks: string[] = []
+        const stacks: StackInfo[] = []
         if(!list) return { error: listQuery.error as FetchBaseQueryError }
 
         list.data.forEach(async (item:SwitchRow) => {
@@ -91,19 +115,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
             item.children = item.switches
             item.switches?.forEach((i:SwitchRow) => {
               if(i.isStack || i.formStacking){
-                stacks.push(i.serialNumber)
+                stacks.push({
+                  serialNumber: i.serialNumber,
+                  venueId: i.venueId
+                })
               }
             })
           }else if(item.isStack || item.formStacking){
-            stacks.push(item.serialNumber)
+            stacks.push({
+              serialNumber: item.serialNumber,
+              venueId: item.venueId
+            })
           }
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const allStacksMember:any = await Promise.all(stacks.map(id =>
-          fetchWithBQ(genStackMemberPayload(arg, id))
+        const allStacksMember:any = await Promise.all(stacks.map(stack =>
+          fetchWithBQ(genStackMemberPayload(arg, stack))
         ))
-        stacks.forEach((id:string, index:number) => {
-          stackMembers[id] = allStacksMember[index]?.data?.data
+        stacks.forEach((stack:StackInfo, index:number) => {
+          stackMembers[stack.serialNumber] = allStacksMember[index]?.data?.data
         })
 
         const getUniqSerialNumberList = function (list: TableResult<SwitchRow>) {
@@ -158,15 +188,16 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       providesTags: [{ type: 'Switch', id: 'StackMemberList' }]
     }),
-    batchDeleteSwitch: build.mutation<void, RequestPayload[]>({
+    batchDeleteSwitch: build.mutation<void, RequestPayload[]>({ // RBAC only
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
         return batchApi(SwitchUrlsInfo.deleteSwitches, requests, fetchWithBQ)
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     deleteSwitches: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteSwitches, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteSwitches, params)
         return {
           ...req,
           body: payload
@@ -203,8 +234,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     syncData: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.syncData, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.syncData, params)
         return {
           ...req,
           body: payload
@@ -212,26 +244,45 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     syncSwitchesData: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.syncSwitchesData, params)
-        return {
-          ...req,
-          body: payload
+      query: ({ params, payload, enableRbac }) => {
+        if (enableRbac) {
+          const req = createHttpRequest(SwitchRbacUrlsInfo.syncSwitchesData, params)
+          return {
+            ...req,
+            body: payload
+          }
+        } else {
+          const req = createHttpRequest(SwitchUrlsInfo.syncSwitchesData, params)
+          return {
+            ...req,
+            body: payload
+          }
         }
       }
     }),
     retryFirmwareUpdate: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.retryFirmwareUpdate, params)
-        return {
-          ...req,
-          body: payload
+      query: ({ params, payload, enableRbac }) => {
+        if (enableRbac) {
+          const req = createHttpRequest(SwitchRbacUrlsInfo.retryFirmwareUpdate, params)
+          return {
+            ...req
+          }
+        } else {
+          const req = createHttpRequest(SwitchUrlsInfo.retryFirmwareUpdate, params)
+          return {
+            ...req,
+            body: payload
+          }
         }
+
+
       }
     }),
     switchDetailHeader: build.query<SwitchViewModel, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchDetailHeader, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchDetailHeader, params, headers)
         return {
           ...req
         }
@@ -259,11 +310,14 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    switchRearView: build.query<SwitchRearView, RequestPayload>({
-      query: ({ params }) => {
+    switchRearView: build.query<SwitchRearView & { data:SwitchRearView[] } , RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(
-          SwitchUrlsInfo.getSwitchRearView,
-          params
+          switchUrls.getSwitchRearView,
+          params,
+          headers
         )
         return {
           ...req
@@ -271,14 +325,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     switchPortlist: build.query<TableResult<SwitchPortViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(
-          SwitchUrlsInfo.getSwitchPortlist,
-          params
+          switchUrls.getSwitchPortlist,
+          params,
+          headers
         )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       async onCacheEntryAdded (requestArgs, api) {
@@ -296,14 +353,15 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getProfiles: build.query<TableResult<SwitchProfileModel>, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(
-          SwitchUrlsInfo.getProfiles,
-          params
+          switchUrls.getProfiles, params, headers
         )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'SwitchProfiles', id: 'LIST' }],
@@ -343,41 +401,46 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     getCliTemplates: build.query<TableResult<SwitchCliTemplateModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          SwitchUrlsInfo.getCliTemplates,
-          params
-        )
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getCliTemplates, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
     deleteCliTemplates: build.mutation<SwitchCliTemplateModel, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteCliTemplates, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteCliTemplates, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
     addSwitch: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addSwitch, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       }
     }),
     convertToStack: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.convertToStack, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.convertToStack, params, headers)
         return {
           ...req,
           body: payload
@@ -385,9 +448,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getPortSetting: build.query<PortSettingModel, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getPortSetting, params)
-        return { ...req, body: payload }
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getPortSetting, params, headers)
+        return { ...req, body: JSON.stringify(payload) }
       },
       transformResponse: (result: PortsSetting | PortSettingModel) => {
         const res = _.get(result, 'response')
@@ -397,52 +462,63 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
     getPortsSetting: build.query<PortsSetting, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(
-          SwitchUrlsInfo.getPortsSetting,
-          params
+          switchUrls.getPortsSetting,
+          params,
+          headers
         )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchPort', id: 'Setting' }]
     }),
     cyclePoe: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.portsPowerCycle, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.portsPowerCycle, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          SwitchUrlsInfo.getDefaultVlan,
-          params
-        )
-        payload = { isDefault: true, switchIds: payload }
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getDefaultVlan, params, headers)
+        payload = enableRbac
+          ? payload
+          : { isDefault: true, switchIds: payload }
+
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     getSwitchVlanUnionByVenue: build.query<SwitchVlan[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlanUnionByVenue, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchVlanUnionByVenue, params, headers)
         return {
           ...req
         }
       }
     }),
     getSwitchVlan: build.query<SwitchVlanUnion, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlanUnion, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchVlanUnion, params, headers)
         return {
           ...req
         }
@@ -451,8 +527,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlans: build.query<Vlan[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchVlans, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchVlans, params, headers)
         return {
           ...req
         }
@@ -461,14 +539,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchesVlan: build.query<SwitchVlanUnion, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          SwitchUrlsInfo.getSwitchesVlan,
-          params
-        )
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchesVlan, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -485,19 +562,25 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigurationProfileByVenue: build.query<SwitchProfile[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigurationProfileByVenue, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(
+          switchUrls.getSwitchConfigurationProfileByVenue, params, headers
+        )
         return {
           ...req
         }
       }
     }),
-    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.savePortsSetting, params)
+    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({ ////
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.savePortsSetting, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchPort', id: 'LIST' }]
@@ -517,20 +600,24 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     getSwitchList: build.query<TableResult<SwitchViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const switchListReq = createHttpRequest(SwitchUrlsInfo.getSwitchList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const switchListReq = createHttpRequest(switchUrls.getSwitchList, params, headers)
         return {
           ...switchListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     getSwitchConfigBackupList: build.query<TableResult<ConfigurationBackup>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigBackupList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.getSwitchConfigBackupList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse: (res: TableResult<ConfigurationBackup>) => {
@@ -548,60 +635,82 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     addConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addBackup, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.addBackup, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     restoreConfigBackup: build.mutation<ConfigurationBackup, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.restoreBackup, params)
+      query: ({ params, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.restoreBackup, params, headers)
+        const payload = {
+          configBackupAction: 'restore'
+        }
         return {
-          ...req
+          ...req,
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     downloadConfigBackup: build.mutation<{ response: string }, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchConfig, params)
+      query: ({ params, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.downloadSwitchConfig, params, headers)
+        const payload = {
+          configBackupAction: 'download'
+        }
         return {
-          ...req
+          ...req,
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       }
     }),
     deleteConfigBackups: build.mutation<ConfigurationBackup, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteBackups, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.deleteBackups, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchBackup', id: 'LIST' }]
     }),
     getSwitchConfigHistory: build.query<TableResult<ConfigurationHistory>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigHistory, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.getSwitchConfigHistory, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
-      transformResponse: (res: { response:{ list:ConfigurationHistory[], totalCount:number } }, meta
-        , arg: { payload:{ page:number } }) => {
+      transformResponse: (res: {
+        response:{ list:ConfigurationHistory[], totalCount:number }
+        } & { list:ConfigurationHistory[], totalCount:number }, meta
+      , arg: { payload:{ page:number } }) => {
+        const result = res.response?.list || res.list
+        const totalCount = res.response?.totalCount || res.totalCount
         return {
-          data: res.response.list ? res.response.list.map(item => ({
+          data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
             configType: transformConfigType(item.configType),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],
-          totalCount: res.response.totalCount,
+          totalCount: totalCount,
           page: arg.payload.page
         }
       },
@@ -618,8 +727,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     getVlansByVenue: build.query<Vlan[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getVlansByVenue, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getVlansByVenue, params, headers)
         return {
           ...req
         }
@@ -628,58 +739,70 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchRoutedList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchRoutedList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Switch', id: 'VE' }],
       extraOptions: { maxRetries: 5 }
     }),
     getVenueRoutedList: build.query<TableResult<VeViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getVenueRoutedList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getVenueRoutedList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Switch', id: 'VE' }],
       extraOptions: { maxRetries: 5 }
     }),
     getVlanListBySwitchLevel: build.query<TableResult<Vlan>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getVlanListBySwitchLevel, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getVlanListBySwitchLevel, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       extraOptions: { maxRetries: 5 }
     }),
     getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchAcls, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchAcls, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       extraOptions: { maxRetries: 5 }
     }),
     getJwtToken: build.query<JwtToken, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getJwtToken, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getJwtToken, params, headers)
         return {
           ...req
         }
       }
     }),
     saveSwitch: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitch, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addSwitch, params, headers)
         return {
           ...req,
           body: [payload]
@@ -688,11 +811,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     updateSwitch: build.mutation<Switch, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateSwitch, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateSwitch, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
@@ -703,62 +828,76 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       ]
     }),
     getFreeVePortVlans: build.query<VlanVePort[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getFreeVePortVlans, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getFreeVePortVlans, params, headers)
         return {
           ...req
         }
       }
     }),
     getAclUnion: build.query<AclUnion, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getAclUnion, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getAclUnion, params, headers)
         return {
           ...req
         }
       }
     }),
     addAcl: build.mutation<Acl, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addAcl, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addAcl, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     addVlan: build.mutation<Vlan, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addVlan, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addVlan, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     addVePort: build.mutation<VeForm, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addVePort, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addVePort, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     updateVePort: build.mutation<VeForm, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateVePort, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateVePort, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getSwitch: build.query<Switch, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitch, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitch, params, headers)
         return {
           ...req
         }
@@ -766,27 +905,33 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'Switch', id: 'SWITCH' }]
     }),
     getSwitchModelList: build.query<TableResult<Switch>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchModelList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchModelList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     deleteVePorts: build.mutation<VeForm, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteVePorts, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteVePorts, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'VE' }]
     }),
     getSwitchStaticRoutes: build.query<StaticRoute[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getStaticRoutes, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getStaticRoutes, params, headers)
         return {
           ...req
         }
@@ -794,31 +939,37 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     addSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addStaticRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addStaticRoute, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     updateSwitchStaticRoute: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateStaticRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateStaticRoute, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
     }),
     deleteSwitchStaticRoutes: build.mutation<StaticRoute, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteStaticRoutes, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteStaticRoutes, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'ROUTES' }]
@@ -834,32 +985,34 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getSwitchClientList: build.query<TableResult<SwitchClient>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const headers = arg.enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(arg.enableRbac)
         const listInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchClientList, arg.params),
-          body: arg.payload
+          ...createHttpRequest(switchUrls.getSwitchClientList, arg.params, headers),
+          body: JSON.stringify(arg.payload)
         }
         const listQuery = await fetchWithBQ(listInfo)
         const list = listQuery.data as TableResult<SwitchClient>
 
         const switchesInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchList, arg.params),
-          body: {
+          ...createHttpRequest(switchUrls.getSwitchList, arg.params, headers),
+          body: JSON.stringify({
             fields: ['name', 'venueName', 'id', 'switchMac', 'switchName'],
             filters: { id: _.uniq(list.data.map(c => c.switchId)) },
             pageSize: 10000
-          }
+          })
         }
         const switchesQuery = await fetchWithBQ(switchesInfo)
         const switches = switchesQuery.data as TableResult<SwitchRow>
 
 
         const switchPortsInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.getSwitchPortlist, arg.params),
-          body: {
+          ...createHttpRequest(switchUrls.getSwitchPortlist, arg.params, headers),
+          body: JSON.stringify({
             fields: SwitchPortViewModelQueryFields,
             filters: { portId: _.uniq(list.data.map(c=>c.switchPortId)) },
             pageSize: 10000
-          }
+          })
         }
         const switchPortsQuery = await fetchWithBQ(switchPortsInfo)
         const switchPorts = switchPortsQuery.data as TableResult<SwitchPortViewModel>
@@ -875,8 +1028,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSwitchClientDetails: build.query<SwitchClient, RequestPayload>({
-      query: ({ params }) => {
-        const clientListReq = createHttpRequest(SwitchUrlsInfo.getSwitchClientDetail, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const clientListReq = createHttpRequest(switchUrls.getSwitchClientDetail, params, headers)
         const payload = {
           fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
             'clientName','clientDesc','clientType','switchPort','vlanName',
@@ -888,7 +1043,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           }
         }
         return {
-          ...clientListReq, body: payload
+          ...clientListReq, body: JSON.stringify(payload)
         }
       },
       transformResponse: (result: SwitchClient | TableResult<SwitchClient>) => {
@@ -897,72 +1052,94 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getTroubleshooting: build.query<TroubleshootingResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshooting, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getTroubleshooting, params, headers)
         return {
           ...req
         }
+      },
+      transformResponse: (res: TroubleshootingResult | TroubleshootingResponse) => {
+        if ('requestId' in res) {
+          return res as TroubleshootingResult
+        } else {
+          return { response: res as TroubleshootingResponse, requestId: '' }
+        }
       }
     }),
-    getTroubleshootingClean: build.query<{}, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getTroubleshootingClean, params)
+    getTroubleshootingClean: build.query<{}, RequestPayload>({ // TODO: Karen, Need backend check the API
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getTroubleshootingClean, params, headers)
         return {
           ...req
         }
       }
     }),
     blinkLeds: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.blinkLeds, params)
+      query: ({ params, payload }) => { // RBAC
+        const headers = customHeaders.v1
+        const req = createHttpRequest(SwitchUrlsInfo.blinkLeds, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     ping: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.ping, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.ping, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     traceRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.traceRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.traceRoute, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     ipRoute: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.ipRoute, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.ipRoute, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
     macAddressTable: build.mutation<TroubleshootingResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.macAddressTable, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.macAddressTable, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
-    updateDhcpServerState: build.mutation<{}, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateDhcpServerState, params)
+    updateDhcpServerState: build.mutation<{}, RequestPayload>({ ////
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateDhcpServerState, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
@@ -970,8 +1147,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       ]
     }),
     getLagList: build.query<Lag[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getLagList, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getLagList, params, headers)
         return {
           ...req
         }
@@ -979,99 +1158,118 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'Switch', id: 'LAG' }]
     }),
     updateLag: build.mutation<Lag, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateLag, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateLag, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
     }),
     addLag: build.mutation<Lag, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addLag, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addLag, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
     }),
     deleteLag: build.mutation<Lag, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteLag, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteLag, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LAG' }]
     }),
     getDhcpPools: build.query<TableResult<SwitchDhcp>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getDhcpPools, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getDhcpPools, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Switch', id: 'DHCP' }],
       extraOptions: { maxRetries: 5 }
     }),
     getDhcpServer: build.query<SwitchDhcp, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getDhcpServer, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getDhcpServer, params, headers)
         return {
           ...req
         }
       }
     }),
     createDhcpServer: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addDhcpServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addDhcpServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
     updateDhcpServer: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateDhcpServer, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateDhcpServer, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
     deleteDhcpServers: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteDhcpServers, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.deleteDhcpServers, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'DHCP' }]
     }),
     getDhcpLeases: build.query<SwitchDhcpLease[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const headers = arg.enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(arg.enableRbac)
         const doDhcpServerLeaseTableInfo = {
-          ...createHttpRequest(SwitchUrlsInfo.dhcpLeaseTable, arg.params)
+          ...createHttpRequest(switchUrls.dhcpLeaseTable, arg.params, headers),
+          body: JSON.stringify(arg.payload)
         }
         const infoResult = await fetchWithBQ(doDhcpServerLeaseTableInfo)
         if (infoResult.error)
           return { error: infoResult.error as FetchBaseQueryError }
 
         const pollingDhcpLease = async () => {
-          const getDhcpLeasesInfo = createHttpRequest(SwitchUrlsInfo.getDhcpLeases, arg.params)
+          const getDhcpLeasesInfo = createHttpRequest(switchUrls.getDhcpLeases, arg.params, headers)
           let ret = await fetchWithBQ(getDhcpLeasesInfo)
           let result = ret.data as TroubleshootingResult
 
-          while (result?.response.syncing) {
+          while (result?.response?.syncing) {
             await wait(2000)
             ret = await fetchWithBQ(getDhcpLeasesInfo)
             result = ret.data as TroubleshootingResult
@@ -1088,8 +1286,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getCliTemplate: build.query<CliConfiguration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getCliTemplate, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getCliTemplate, params, headers)
         return {
           ...req,
           body: payload
@@ -1098,37 +1298,78 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       keepUnusedDataFor: 0
     }),
     addCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addCliTemplate, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addCliTemplate, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
     getCliConfigExamples: build.query<CliTemplateExample[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getCliConfigExamples, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getCliConfigExamples, params, headers)
         return {
-          ...req,
-          body: payload
+          ...req
         }
       }
     }),
     updateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateCliTemplate, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateCliTemplate, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchOnDemandCli', id: 'LIST' }]
     }),
+    associateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchRbacUrlsInfo.associateCliTemplate, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    batchAssociateCliTemplate: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          SwitchRbacUrlsInfo.associateCliTemplate, requests, fetchWithBQ, customHeaders.v1
+        )
+      }
+    }),
+    disassociateCliTemplate: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchRbacUrlsInfo.disassociateCliTemplate, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    batchDisassociateCliTemplate: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          SwitchRbacUrlsInfo.disassociateCliTemplate, requests, fetchWithBQ, customHeaders.v1
+        )
+      }
+    }),
     getCliFamilyModels: build.query<CliFamilyModels[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getCliFamilyModels, params, headers)
         return {
           ...req,
           body: payload
@@ -1136,8 +1377,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getSwitchConfigProfile: build.query<ConfigurationProfile, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigProfile, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getSwitchConfigProfile, params, headers)
         return {
           ...req,
           body: payload
@@ -1146,27 +1389,65 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitchConfigProfile, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.addSwitchConfigProfile, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
     updateSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateSwitchConfigProfile, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.updateSwitchConfigProfile, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
         { type: 'SwitchProfiles', id: 'LIST' },
         { type: 'SwitchProfiles', id: 'DETAIL' }
       ]
+    }),
+    associateSwitchProfile: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchRbacUrlsInfo.associateSwitchProfile, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    batchAssociateSwitchProfile: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          SwitchRbacUrlsInfo.associateSwitchProfile, requests, fetchWithBQ, customHeaders.v1
+        )
+      }
+    }),
+    disassociateSwitchProfile: build.mutation<CliConfiguration, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(SwitchRbacUrlsInfo.disassociateSwitchProfile, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    batchDisassociateSwitchProfile: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(
+          SwitchRbacUrlsInfo.disassociateSwitchProfile, requests, fetchWithBQ, customHeaders.v1
+        )
+      }
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1177,37 +1458,32 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    downloadSwitchsCSV: build.mutation<Blob, SwitchsExportPayload>({
-      query: (payload) => {
-        const req = createHttpRequest(SwitchUrlsInfo.downloadSwitchsCSV,
-          { tenantId: payload.tenantId }
-        )
-        return {
-          ...req,
-          body: payload,
-          responseHandler: async (response) => {
-            const date = new Date()
-            // eslint-disable-next-line max-len
-            const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
-            const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
-            const headerContent = response.headers.get('content-disposition')
-            const fileName = headerContent
-              ? headerContent.split('filename=')[1]
-              : filename
-            downloadFile(response, fileName)
+    downloadSwitchsCSV: build.mutation<Blob, {
+      payload: SwitchsExportPayload, enableRbac:boolean }>({
+        query: ({ payload, enableRbac }) => {
+          const switchUrls = getSwitchUrls(enableRbac)
+          const headers = enableRbac ? customHeaders.v1 : {}
+          const req = createHttpRequest(switchUrls.downloadSwitchsCSV,
+            { tenantId: payload.tenantId },
+            headers
+          )
+          return {
+            ...req,
+            body: payload,
+            responseHandler: async (response) => {
+              const date = new Date()
+              // eslint-disable-next-line max-len
+              const nowTime = date.getUTCFullYear() + ('0' + (date.getUTCMonth() + 1)).slice(-2) + ('0' + date.getUTCDate()).slice(-2) + ('0' + date.getUTCHours()).slice(-2) + ('0' + date.getUTCMinutes()).slice(-2) + ('0' + date.getUTCSeconds()).slice(-2)
+              const filename = 'Switch Device Inventory - ' + nowTime + '.csv'
+              const headerContent = response.headers.get('content-disposition')
+              const fileName = headerContent
+                ? headerContent.split('filename=')[1]
+                : filename
+              downloadFile(response, fileName)
+            }
           }
         }
-      }
-    })
-    // getCliFamilyModels: build.query<CliProfileFamilyModels[], RequestPayload>({
-    //   query: ({ params, payload }) => {
-    //     const req = createHttpRequest(SwitchUrlsInfo.getCliFamilyModels, params)
-    //     return {
-    //       ...req,
-    //       body: payload
-    //     }
-    //   }
-    // })
+      })
   })
 })
 
@@ -1215,10 +1491,20 @@ function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, m
 
 
 
-const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string) => {
+const genStackMemberPayload = (switchArg:RequestPayload<unknown>, stack:StackInfo) => {
+  const arg: RequestPayload<unknown> = {
+    ...switchArg,
+    params: {
+      ...switchArg.params,
+      venueId: stack.venueId,
+      switchId: stack.serialNumber
+    }
+  }
+  const switchUrls = getSwitchUrls(arg.enableRbac)
+  const headers = arg.enableRbac ? customHeaders.v1 : {}
   return {
-    ...createHttpRequest(SwitchUrlsInfo.getMemberList, arg.params),
-    body: {
+    ...createHttpRequest(switchUrls.getMemberList, arg.params, headers),
+    ...(arg.enableRbac ? {}: { body: {
       fields: [
         'activeUnitId',
         'unitId',
@@ -1245,9 +1531,9 @@ const genStackMemberPayload = (arg:RequestPayload<unknown>, serialNumber:string)
         'suspendingDeployTime'
       ],
       filters: {
-        activeUnitId: [serialNumber]
+        activeUnitId: [stack.serialNumber]
       }
-    }
+    } })
   }
 }
 
@@ -1419,13 +1705,18 @@ export const {
   useGetDhcpLeasesQuery,
   useLazyValidateUniqueProfileNameQuery,
   useGetCliTemplatesQuery,
+  useLazyGetCliTemplatesQuery,
   useGetProfilesQuery,
+  useLazyGetProfilesQuery,
   useGetCliFamilyModelsQuery,
   useAddCliTemplateMutation,
   useDeleteCliTemplatesMutation,
   useDeleteProfilesMutation,
   useGetCliTemplateQuery,
   useUpdateCliTemplateMutation,
+  useAssociateCliTemplateMutation,
+  useBatchAssociateCliTemplateMutation,
+  useBatchDisassociateCliTemplateMutation,
   useGetCliConfigExamplesQuery,
   useAddAclMutation,
   useAddVlanMutation,
@@ -1433,6 +1724,8 @@ export const {
   useGetSwitchConfigProfileDetailQuery,
   useAddSwitchConfigProfileMutation,
   useUpdateSwitchConfigProfileMutation,
+  useBatchAssociateSwitchProfileMutation,
+  useBatchDisassociateSwitchProfileMutation,
   useGetSwitchModelListQuery,
   useDownloadSwitchsCSVMutation
 } = switchApi

@@ -8,12 +8,11 @@ import {
   EdgeDhcpUrls,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  PaginationQueryResult,
   TableResult
 } from '@acx-ui/rc/utils'
-import { baseEdgeDhcpApi }                                   from '@acx-ui/store'
-import { RequestPayload }                                    from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal, showApiError } from '@acx-ui/utils'
+import { baseEdgeDhcpApi }                 from '@acx-ui/store'
+import { RequestPayload }                  from '@acx-ui/types'
+import { createHttpRequest, showApiError } from '@acx-ui/utils'
 
 import { edgeApi } from './edge'
 
@@ -70,40 +69,6 @@ export const edgeDhcpApi = baseEdgeDhcpApi.injectEndpoints({
     getEdgeDhcpService: build.query<EdgeDhcpSetting, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(EdgeDhcpUrls.getDhcp, params, versionHeader)
-        return {
-          ...req
-        }
-      },
-      providesTags: [{ type: 'EdgeDhcp', id: 'DETAIL' }]
-    }),
-    getEdgeDhcpList: build.query<PaginationQueryResult<EdgeDhcpSetting>, RequestPayload>({
-      query: ({ payload, params }) => {
-        const { page, pageSize } = payload as { page: number, pageSize: number }
-        const req = createHttpRequest(EdgeDhcpUrls.getDhcpList, params)
-        return {
-          ...req,
-          params: { page, pageSize }
-        }
-      },
-      providesTags: [{ type: 'EdgeDhcp', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'Add DHCP',
-            'Update DHCP',
-            'Delete DHCP'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(edgeDhcpApi.util.invalidateTags([{ type: 'EdgeDhcp', id: 'LIST' }]))
-          })
-        })
-      }
-    }),
-    getDhcpByEdgeId: build.query<EdgeDhcpSetting, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(EdgeDhcpUrls.getDhcpByEdgeId, params, {
-          ...ignoreErrorModal
-        })
         return {
           ...req
         }
@@ -213,8 +178,6 @@ export const {
   usePatchEdgeDhcpServiceMutation,
   useDeleteEdgeDhcpServicesMutation,
   useGetEdgeDhcpServiceQuery,
-  useGetEdgeDhcpListQuery,
-  useGetDhcpByEdgeIdQuery,
   useGetDhcpPoolStatsQuery,
   useGetDhcpStatsQuery,
   useGetDhcpHostStatsQuery,

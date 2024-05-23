@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Form }                   from 'antd'
+import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import {
@@ -9,22 +10,34 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import {
+  useLazyGetProfilesQuery,
   useGetSwitchConfigProfileQuery,
   useAddSwitchConfigProfileMutation,
-  useUpdateSwitchConfigProfileMutation
+  useUpdateSwitchConfigProfileMutation,
+  useBatchAssociateSwitchProfileMutation,
+  useBatchDisassociateSwitchProfileMutation,
+  useGetSwitchConfigProfileTemplateQuery,
+  useAddSwitchConfigProfileTemplateMutation,
+  useUpdateSwitchConfigProfileTemplateMutation
 } from '@acx-ui/rc/services'
 import {
-  CliConfiguration
+  CliConfiguration,
+  useConfigTemplatePageHeaderTitle,
+  useConfigTemplateBreadcrumb,
+  useConfigTemplateQueryFnSwitcher,
+  ConfigurationProfile,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
-  useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
 
-import { CliStepConfiguration } from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
-import { CliStepNotice }        from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
+import { CliStepConfiguration }         from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepConfiguration'
+import { CliStepNotice }                from '../../SwitchCliTemplateForm/CliTemplateForm/CliStepNotice'
 
 import { CliStepModels }  from './CliStepModels'
 import { CliStepSummary } from './CliStepSummary'
@@ -37,18 +50,52 @@ export const cliFormMessages = {
 }
 /* eslint-enable max-len */
 
+export const profilesPayload = {
+  filterType: null,
+  pageSize: 9999,
+  sortField: 'name',
+  sortOrder: 'DESC'
+}
+
 export function CliProfileForm () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const linkToNetworks = useTenantLink('/networks/wired/profiles')
+  const linkToProfiles = usePathBasedOnConfigTemplate('/networks/wired/profiles', '')
   const editMode = params.action === 'edit'
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [form] = Form.useForm()
-  const [addSwitchConfigProfile] = useAddSwitchConfigProfileMutation()
-  const [updateSwitchConfigProfile] = useUpdateSwitchConfigProfileMutation()
-  const { data: cliProfile, isLoading: isProfileLoading }
-    = useGetSwitchConfigProfileQuery({ params }, { skip: !editMode })
+  const [getProfiles] = useLazyGetProfilesQuery()
+  const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
+  const [batchDisassociateSwitchProfile] = useBatchDisassociateSwitchProfileMutation()
+
+  const [addSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddSwitchConfigProfileMutation,
+    useTemplateMutationFn: useAddSwitchConfigProfileTemplateMutation
+  })
+  const [updateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateSwitchConfigProfileMutation,
+    useTemplateMutationFn: useUpdateSwitchConfigProfileTemplateMutation
+  })
+  // eslint-disable-next-line max-len
+  const { data: cliProfile, isLoading: isProfileLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
+    useQueryFn: useGetSwitchConfigProfileQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
+    skip: !editMode,
+    enableRbac: isSwitchRbacEnabled
+  })
+
+  // Config Template related states
+  const breadcrumb = useConfigTemplateBreadcrumb([
+    { text: $t({ defaultMessage: 'Wired' }) },
+    { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
+    { text: $t({ defaultMessage: 'Configuration Profiles' }), link: '/networks/wired/profiles' }
+  ])
+  const pageTitle = useConfigTemplatePageHeaderTitle({
+    isEdit: editMode,
+    instanceLabel: $t({ defaultMessage: 'CLI Configuration Profile' })
+  })
 
   const transformSaveData = (data: CliConfiguration) => {
     const { name, cli, overwrite, variables } = data
@@ -69,13 +116,22 @@ export function CliProfileForm () {
 
   const handleEditCliProfile = async (data: CliConfiguration) => {
     try {
+      const orinAppliedVenues = cliProfile?.venues as string[]
+      const appliedVenues = data.venues as string[]
+      const disassociateSwitch = _.difference(orinAppliedVenues, appliedVenues)
+      const diffAssociatedSwitch = _.difference(appliedVenues, orinAppliedVenues)
+
+      await disassociateWithCliProfile(disassociateSwitch)
       await updateSwitchConfigProfile({
         params, payload: {
           id: params.profileId,
           ...transformSaveData(data)
-        }
+        },
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+      await associateWithCliProfile(diffAssociatedSwitch)
+      navigate(linkToProfiles, { replace: true })
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -83,13 +139,56 @@ export function CliProfileForm () {
 
   const handleAddCliProfile = async (data: CliConfiguration) => {
     try {
+      const hasAssociatedVenues = (data?.venues ?? [])?.length > 0
       await addSwitchConfigProfile({
-        params, payload: transformSaveData(data)
+        params, payload: transformSaveData(data),
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
-      navigate(linkToNetworks, { replace: true })
+
+      if (isSwitchRbacEnabled && hasAssociatedVenues) {
+        const { data: cliProfiles } = await getProfiles({
+          params, payload: profilesPayload, enableRbac: isSwitchRbacEnabled
+        }).unwrap()
+        const profileId = cliProfiles?.filter(t => t.name === data.name)?.map(t => t.id)?.[0]
+        await associateWithCliProfile(data?.venues ?? [], profileId)
+      }
+      navigate(linkToProfiles, { replace: true })
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const associateWithCliProfile = async (
+    venues: string[],
+    cliProfileId?: string,
+    callBack?: () => void
+  ) => {
+    const profileId = params.profileId || cliProfileId
+    const hasAssociatedVenues = venues.length > 0
+
+    if (isSwitchRbacEnabled && hasAssociatedVenues && profileId) {
+      const requests = venues.map((key: string)=> ({
+        params: { venueId: key, profileId }
+      }))
+
+      await batchAssociateSwitchProfile(requests).then(callBack)
+    }
+    return Promise.resolve()
+  }
+
+  const disassociateWithCliProfile = async (
+    venues: string[],
+    callBack?: () => void
+  ) => {
+    const hasDisassociatedVenues = venues.length > 0
+    if (isSwitchRbacEnabled && hasDisassociatedVenues) {
+      const requests = venues.map((key: string)=> ({
+        params: { venueId: key, profileId: params.profileId }
+      }))
+      await batchDisassociateSwitchProfile(requests).then(callBack)
+    }
+    return Promise.resolve()
   }
 
   useEffect(() => {
@@ -109,17 +208,8 @@ export function CliProfileForm () {
   return (
     <>
       <PageHeader
-        title={editMode
-          ? $t({ defaultMessage: 'Edit CLI Configuration Profile' })
-          : $t({ defaultMessage: 'Add CLI Configuration Profile' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Wired' }) },
-          { text: $t({ defaultMessage: 'Wired Network Profiles' }) },
-          {
-            text: $t({ defaultMessage: 'Configuration Profiles' }),
-            link: '/networks/wired/profiles'
-          }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />
 
       <Loader states={[{ isLoading: editMode && isProfileLoading }]}>
@@ -129,7 +219,7 @@ export function CliProfileForm () {
           initialValues={{
             venues: cliProfile?.venues
           }}
-          onCancel={() => navigate(linkToNetworks)}
+          onCancel={() => navigate(linkToProfiles)}
           onFinish={editMode ? handleEditCliProfile : handleAddCliProfile}
         >
           <StepsForm.StepForm

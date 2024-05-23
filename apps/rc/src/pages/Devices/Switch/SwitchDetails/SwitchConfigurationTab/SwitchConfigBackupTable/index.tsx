@@ -3,12 +3,15 @@ import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps, showActionModal, showToast }                                                                              from '@acx-ui/components'
-import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation } from '@acx-ui/rc/services'
-import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, RESTORE_IN_PROGRESS_TOOLTIP, usePollingTableQuery }         from '@acx-ui/rc/utils'
-import { useParams }                                                                                                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasAccess }                                                                              from '@acx-ui/user'
-import { handleBlobDownloadFile }                                                                                                             from '@acx-ui/utils'
+
+import { Loader, Table, TableProps, showActionModal, showToast }                                                                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                      from '@acx-ui/feature-toggle'
+import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
+import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, RESTORE_IN_PROGRESS_TOOLTIP, SwitchViewModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
+import { SwitchScopes }                                                                                                                                from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey }                                                                                                  from '@acx-ui/user'
+import { handleBlobDownloadFile }                                                                                                                      from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../..'
 
@@ -20,9 +23,11 @@ interface clearTableSelection {
   clearSelection: () => void
 }
 
-export function SwitchConfigBackupTable () {
+export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: SwitchViewModel }) {
   const { $t } = useIntl()
   const params = useParams()
+  const venueId = switchDetail?.venueId
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [viewVisible, setViewVisible] = useState(false)
   const [compareVisible, setCompareVisible] = useState(false)
   const [viewData, setViewData] = useState(null as unknown as ConfigurationBackup)
@@ -43,7 +48,6 @@ export function SwitchConfigBackupTable () {
   const [ downloadConfigBackup ] = useDownloadConfigBackupMutation()
   const [ deleteConfigBackups ] = useDeleteConfigBackupsMutation()
   const { currentSwitchOperational } = switchDetailsContextData
-
   const showViewModal = (rows: ConfigurationBackup[], clearSelection: ()=>void) => {
     setViewData(rows[0])
     setViewVisible(true)
@@ -72,13 +76,15 @@ export function SwitchConfigBackupTable () {
   const settingsId = 'switch-config-backup-table'
   const tableQuery = usePollingTableQuery({
     useQuery: useGetSwitchConfigBackupListQuery,
+    apiParams: { venueId },
     defaultPayload: {},
     sorter: {
       sortField: 'createdDate',
       sortOrder: 'DESC'
     },
     pagination: { settingsId },
-    option: { pollingInterval: 60_000 }
+    option: { pollingInterval: 60_000 },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const tableData = tableQuery.data?.data ?? []
@@ -149,7 +155,8 @@ export function SwitchConfigBackupTable () {
       okText: $t({ defaultMessage: 'Delete' }),
       onOk: () => {
         const idList = rows.map(item => item.id)
-        deleteConfigBackups({ params, payload: idList })
+        deleteConfigBackups({ params: { ...params, venueId }, payload: idList ,
+          enableRbac: isSwitchRbacEnabled })
           .then(clearSelection)
       }
     })
@@ -165,23 +172,31 @@ export function SwitchConfigBackupTable () {
       }),
       okText: $t({ defaultMessage: 'Restore' }),
       onOk: () => {
-        restoreConfigBackup({ params: { ...params, configId: row.id } })
-          .then(() => {
-            showToast({
-              type: 'success',
-              content: $t({ defaultMessage: 'Backup {name} was restored' }, { name: row.name })
-            })
-            clearSelection()
+        restoreConfigBackup({
+          params: { ...params, venueId, configId: row.id, configBackupId: row.id },
+          enableRbac: isSwitchRbacEnabled
+        }).then(() => {
+          showToast({
+            type: 'success',
+            content: $t({ defaultMessage: 'Backup {name} was restored' }, { name: row.name })
           })
+          clearSelection()
+        })
       }
     })
   }
 
   const downloadBackup = (row: ConfigurationBackup) => {
     downloadConfigBackup({
+      enableRbac: isSwitchRbacEnabled,
+      payload: {
+        name: row.name
+      },
       params: {
         ...params,
-        configId: row.id
+        venueId,
+        configId: row.id,
+        configBackupId: row.id
       } })
       .unwrap().then((res)=>{
         const downloadFileName = row.name + '.txt'
@@ -206,12 +221,13 @@ export function SwitchConfigBackupTable () {
     }
   }, {
     label: $t({ defaultMessage: 'Restore' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: () => !enabledRowButton.find(item => item === 'Restore'),
     onClick: (rows, clearSelection) => {
       showRestoreModal(rows[0], clearSelection)
     }
   }, {
-    key: getShowWithoutRbacCheckKey('DownloadConfig'),
+    // key: getShowWithoutRbacCheckKey('DownloadConfig'), TODO: Waiting for API fix
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
@@ -219,6 +235,7 @@ export function SwitchConfigBackupTable () {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [SwitchScopes.DELETE],
     disabled: () => !enabledRowButton.find(item => item === 'Delete'),
     onClick: (rows, clearSelection) => {
       showDeleteModal(rows, clearSelection)
@@ -235,6 +252,7 @@ export function SwitchConfigBackupTable () {
 
   const rightActions = [{
     label: $t({ defaultMessage: 'Backup Now' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: backupButtonnStatus.disabled,
     tooltip: backupButtonnStatus.tooltip,
     onClick: () => {
@@ -252,7 +270,7 @@ export function SwitchConfigBackupTable () {
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(rightActions)}
         onChange={tableQuery.handleTableChange}
-        rowSelection={hasAccess() ? {
+        rowSelection={{
           type: 'checkbox',
           onChange: (selectedRowKeys, selectedData) => {
             const selectedRows = selectedRowKeys.length
@@ -289,10 +307,12 @@ export function SwitchConfigBackupTable () {
             }
             setEnabledRowButton(enabledButton)
           }
-        } : undefined}
+        }}
       />
     </Loader>
     <BackupModal
+      venueId={venueId}
+      enableRbac={isSwitchRbacEnabled}
       visible={backupModalVisible}
       handleCancel={() => setBackupModalVisible(false)}
     />

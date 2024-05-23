@@ -21,10 +21,10 @@ export function AccessControlDetail () {
   const { $t } = useIntl()
   const params = useParams()
 
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetAccessControlProfileQuery,
-    useGetAccessControlProfileTemplateQuery
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAccessControlProfileQuery,
+    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery
+  })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ACCESS_CONTROL)
 
   return (

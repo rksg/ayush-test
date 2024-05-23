@@ -25,7 +25,7 @@ export const ActivateNetworkSwitchButtonP2 = (props: ActivateNetworkSwitchButton
   const { fieldName, row, activated, disabled, onChange } = props
   const isActivated = _.findIndex(activated, i => i === row.id) !== -1
   const isPermiited = hasPermission({
-    scopes: [isActivated ? EdgeScopes.DELETE : EdgeScopes.UPDATE]
+    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE]
   })
   let newSelected = _.cloneDeep(activated)
 
