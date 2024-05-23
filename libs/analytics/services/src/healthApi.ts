@@ -46,7 +46,7 @@ export type KpiPayload = AnalyticsFilter & {
   kpi: string;
   threshold?: string;
   granularity?: string;
-  enableSwitchFirmwareFilter?: boolean;
+  enableSwitchFirmwareFilter?: boolean | CallableFunction ;
 }
 
 type ConfigCode = keyof typeof kpiConfig
@@ -127,9 +127,13 @@ type KpisHavingThreshold = keyof KpiThresholdType
 
 export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold[] }
 
-const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
+export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
   const { filter: { ssids, networkNodes, switchNodes } } = getFilterPayload(payload)
-  return { filter: { ssids, networkNodes, switchNodes } }
+  let { enableSwitchFirmwareFilter=false } = payload
+  if(typeof enableSwitchFirmwareFilter === 'function'){
+    enableSwitchFirmwareFilter = enableSwitchFirmwareFilter()
+  }
+  return { filter: { ssids, networkNodes, switchNodes }, enableSwitchFirmwareFilter }
 }
 
 export const healthApi = dataApi.injectEndpoints({
@@ -159,8 +163,7 @@ export const healthApi = dataApi.injectEndpoints({
           end: payload.endDate,
           granularity: payload.granularity ||
           getGranularity(payload.startDate, payload.endDate, payload.kpi),
-          ...getHealthFilter(payload),
-          enableSwitchFirmwareFilter: payload.enableSwitchFirmwareFilter || false
+          ...getHealthFilter(payload)
         }
       }),
       providesTags: [{ type: 'Monitoring', id: 'KPI_TIMESERIES' }],
@@ -177,7 +180,6 @@ export const healthApi = dataApi.injectEndpoints({
         variables: {
           start: payload.startDate,
           end: payload.endDate,
-          enableSwitchFirmwareFilter: payload.enableSwitchFirmwareFilter || false,
           ...getHealthFilter(payload)
         }
       }),

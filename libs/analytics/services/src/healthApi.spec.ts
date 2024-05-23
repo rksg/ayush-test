@@ -6,7 +6,7 @@ import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange, NetworkPath }                from '@acx-ui/utils'
 import type { AnalyticsFilter }                  from '@acx-ui/utils'
 
-import { healthApi } from '.'
+import { healthApi, getHealthFilter } from '.'
 
 describe('Services for health kpis', () => {
   const store = configureStore({
@@ -240,6 +240,30 @@ describe('Services for health kpis', () => {
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)
       expect(error).not.toBe(undefined)
+    })
+  })
+  describe('getHealthFilter',()=>{
+    it('should return health filter for firmware filter as boolean',()=>{
+      const filter=getHealthFilter({ ...props, kpi: 'someKpi', enableSwitchFirmwareFilter: true })
+      expect(filter).toEqual({
+        filter: {},
+        enableSwitchFirmwareFilter: true
+      })
+    })
+    it('should return health filter for firmware filter as function',()=>{
+      const filter=getHealthFilter({ ...props, kpi: 'someKpi',
+        enableSwitchFirmwareFilter: () => true })
+      expect(filter).toEqual({
+        filter: {},
+        enableSwitchFirmwareFilter: true
+      })
+    })
+    it('should return health filter for without firmware filter passed',()=>{
+      const filter=getHealthFilter({ ...props, kpi: 'someKpi' })
+      expect(filter).toEqual({
+        filter: {},
+        enableSwitchFirmwareFilter: false
+      })
     })
   })
 })

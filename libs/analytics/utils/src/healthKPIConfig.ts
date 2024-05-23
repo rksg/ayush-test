@@ -427,7 +427,7 @@ export const kpiConfig = {
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
     enableSwitchFirmwareFilter: () => {
-      return window.location.pathname === '/ai/health/wired'
+      return window.location.pathname.includes('/ai/health/wired')
     },
     isBeta: false,
     timeseries: {
