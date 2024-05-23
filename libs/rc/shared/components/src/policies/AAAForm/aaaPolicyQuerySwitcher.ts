@@ -19,8 +19,13 @@ export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListP
   const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
     ? 1024
     : AAA_LIMIT_NUMBER
+
+  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+
   const requestPayload = {
-    params, payload: { page: 1, pageSize: radiusMaxiumnNumber, ...customPayload }
+    params,
+    payload: { page: 1, pageSize: radiusMaxiumnNumber, ...customPayload },
+    enableRbac
   }
   const aaaPolicyListResult = useGetAAAPolicyViewModelListQuery(requestPayload, {
     ...queryOptions,

@@ -36,5 +36,15 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/radius/:policyId/networks',
     url: '/radiusServerProfiles/:policyId/networks',
     newApi: true
-  }
+  },
+  queryAAAPolicyList: {
+    method: 'post',
+    url: '/radiusServerProfiles/query',
+    newApi: true
+  },
+  deleteAAAPolicy: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:policyId',
+    newApi: true
+  },
 }

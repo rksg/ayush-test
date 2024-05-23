@@ -49,11 +49,6 @@ export interface CommonResult {
   }
 }
 
-export interface CommonResultWithEntityResponse<EntityType> {
-  requestId: string
-  response: EntityType
-}
-
 export interface CommonErrorsResult<T> {
   data: {
     errors: T[];
@@ -609,6 +604,5 @@ export const RWGStatusMap = {
   [RWGStatusEnum.INVALID_CERTIFICATE]: defineMessage({ defaultMessage: 'Invalid Certificate' }),
   [RWGStatusEnum.INVALID_HOSTNAME]: defineMessage({ defaultMessage: 'Invalid Hostname' }),
   [RWGStatusEnum.RWG_STATUS_UNKNOWN]: defineMessage({ defaultMessage: 'RWG Status Unknown' }),
-  [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' }),
-  [RWGStatusEnum.STAGING]: defineMessage({ defaultMessage: 'Staging' })
+  [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' })
 }

@@ -1,6 +1,7 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Table, TableProps, Card, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { useAaaNetworkInstancesQuery }     from '@acx-ui/rc/services'
 import {
   AAAPolicyNetwork, captiveNetworkTypes, ConfigTemplateType,
@@ -14,6 +15,8 @@ import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 export default function AAAInstancesTable (){
   const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
+  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+  // eslint-disable-next-line max-len
   const tableQuery = useTableQuery({
     useQuery: useAaaNetworkInstancesQuery,
     defaultPayload: {
@@ -24,10 +27,14 @@ export default function AAAInstancesTable (){
       sortField: 'networkName',
       sortOrder: 'DESC'
     },
+    pagination: {
+      pageSize: 10000
+    },
     search: {
       searchTargetFields: ['networkName'],
       searchString: ''
-    }
+    },
+    enableRbac
   })
   const columns: TableProps<AAAPolicyNetwork>['columns'] = [
     {

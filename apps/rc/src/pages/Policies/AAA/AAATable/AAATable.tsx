@@ -33,6 +33,9 @@ export default function AAATable () {
   const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
     ? 1024
     : AAA_LIMIT_NUMBER
+
+  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
@@ -42,7 +45,8 @@ export default function AAATable () {
       searchString: '',
       searchTargetFields: ['name']
     },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const doDelete = (selectedRows: AAAViewModalType[], callback: () => void) => {
@@ -53,7 +57,8 @@ export default function AAATable () {
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () => deleteFn({
         params: { tenantId },
-        payload: selectedRows.map(row => row.id)
+        payload: selectedRows.map(row => row.id!),
+        enableRbac
       }).then(callback)
     )
   }

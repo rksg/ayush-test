@@ -1,83 +1,41 @@
-import { Params } from 'react-router-dom'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query/react'
+import { Params }              from 'react-router-dom'
 
 import {
-  MacRegistration,
-  MacRegistrationPool,
-  MacRegListUrlsInfo,
-  RogueApUrls,
-  RogueAPDetectionContextType,
-  RogueAPDetectionTempType,
-  SyslogUrls,
-  SyslogContextType,
-  SyslogPolicyDetailType,
-  SyslogPolicyListType,
-  VenueSyslogPolicyType,
-  VenueSyslogSettingType,
-  VenueRoguePolicyType,
+  MacRegistration, MacRegistrationPool, MacRegListUrlsInfo,
+  RogueApUrls, RogueAPDetectionContextType, RogueAPDetectionTempType,
+  SyslogUrls, SyslogContextType, SyslogPolicyDetailType, SyslogPolicyListType,
+  VenueSyslogPolicyType, VenueSyslogSettingType, VenueRoguePolicyType,
   VLANPoolPolicyType, VLANPoolViewModelType, VlanPoolUrls, VLANPoolVenues,
-  TableResult,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  CommonResult,
-  devicePolicyInfoType,
-  DevicePolicy,
-  NewTableResult,
-  transferToTableResult,
-  AAAPolicyType,
-  AaaUrls,
-  AAAViewModalType,
-  l3AclPolicyInfoType,
-  l2AclPolicyInfoType,
-  L2AclPolicy,
-  L3AclPolicy,
-  AvcCategory,
-  AvcApp,
+  TableResult, onSocketActivityChanged, onActivityMessageReceived, CommonResult,
+  devicePolicyInfoType, DevicePolicy, NewTableResult,
+  transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
+  l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
-  VlanPool,
-  WifiUrlsInfo,
-  AccessControlUrls,
-  ClientIsolationSaveData, ClientIsolationUrls,
+  VlanPool, WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
-  VenueUsageByClientIsolation,
-  IdentityProvider,
-  WifiOperatorUrls,
-  WifiOperator,
-  WifiOperatorViewModel,
-  IdentityProviderUrls,
-  IdentityProviderViewModel,
-  AAAPolicyNetwork,
-  ClientIsolationViewModel,
+  VenueUsageByClientIsolation, IdentityProvider, WifiOperatorUrls, WifiOperator,
+  WifiOperatorViewModel, IdentityProviderUrls, IdentityProviderViewModel,
+  AAAPolicyNetwork, ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
-  ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
-  EnhancedAccessControlInfoType,
-  RadiusAttributeGroupUrlsInfo,
-  RadiusAttributeGroup,
-  RadiusAttribute,
-  RadiusAttributeVendor,
-  EnhancedRoguePolicyType,
-  RulesManagementUrlsInfo,
-  AdaptivePolicySet,
-  AdaptivePolicy,
-  RuleTemplate,
-  RuleAttribute,
-  AccessCondition,
-  PrioritizedPolicy,
-  Assignment,
+  ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData, EnhancedAccessControlInfoType,
+  RadiusAttributeGroupUrlsInfo, RadiusAttributeGroup, RadiusAttribute,
+  RadiusAttributeVendor, EnhancedRoguePolicyType, RulesManagementUrlsInfo,
+  AdaptivePolicySet, AdaptivePolicy, RuleTemplate, RuleAttribute,
+  AccessCondition, PrioritizedPolicy, Assignment,
   NewAPITableResult, transferNewResToTableResult,
   transferToNewTablePaginationParams,
-  CommonResultWithEntityResponse,
-  CertificateUrls,
-  CertificateTemplate,
-  CertificateAuthority,
-  Certificate,
-  downloadFile,
-  CertificateTemplateMutationResult,
-  downloadCertExtension,
-  CertificateAcceptType
+  CertificateUrls, CertificateTemplate, CertificateAuthority,
+  Certificate, downloadFile, CertificateTemplateMutationResult,
+  downloadCertExtension, CertificateAcceptType, AAARbacViewModalType,
+  CommonUrlsInfo,
+  WifiNetwork
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }     from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { basePolicyApi }                                                                                         from '@acx-ui/store'
+import { RequestPayload, QueryViewModelPayload }                                                                 from '@acx-ui/types'
+import { aggregateQueryResponse, batchApi, createFetchArgsBasedOnRbac, createHttpRequest, getApiVersionHeaders } from '@acx-ui/utils'
+
+import { aaaPolicyNetworkFieldMapping, combineAAAPolicyWithRbacData, convertRbacToAAAPolicyNetworkList, convertRbacToAAAViewModelPolicyList } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -712,32 +670,52 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
-        return {
-          ...req,
-          body: payload
-        }
+    addAAAPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: (queryArgs) => {
+        return createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.addAAAPolicy,
+          rbacApiVersionKey: 'v1_1',
+          queryArgs
+        })
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.deleteAAAPolicyList, params)
-        return {
-          ...req,
-          body: payload
+    deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload<string[]>>({
+      async queryFn (args, _queryApi, _extraOptions, baseQuery) {
+        const { params, payload, enableRbac = false } = args
+
+        if (enableRbac) {
+          const requests = args.payload!.map(policyId => ({ params: { policyId } }))
+          return batchApi(
+            AaaUrls.deleteAAAPolicy, requests, baseQuery, getApiVersionHeaders(true, 'v1_1')
+          )
+        } else {
+          return baseQuery({
+            ...createHttpRequest(AaaUrls.deleteAAAPolicyList, params),
+            body: payload
+          })
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicyViewModelList, params)
+      async queryFn (queryArgs, _queryApi, _extraOptions, baseQuery) {
+        const resolvedFetchArgs = createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.getAAAPolicyViewModelList,
+          rbacApiInfo: AaaUrls.queryAAAPolicyList,
+          rbacApiVersionKey: 'v1',
+          queryArgs
+        })
+
+        const result = await baseQuery(resolvedFetchArgs)
+
+        if (result.error) return { error: result.error as FetchBaseQueryError }
+
         return {
-          ...req,
-          body: payload
+          data: queryArgs.enableRbac
+            // eslint-disable-next-line max-len
+            ? convertRbacToAAAViewModelPolicyList(result.data as TableResult<AAARbacViewModalType>)
+            : result.data as TableResult<AAAViewModalType>
         }
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }],
@@ -755,30 +733,96 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicy, params)
-        return {
-          ...req
+      async queryFn ({ params, enableRbac = false }, _queryApi, _extraOptions, baseQuery) {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(AaaUrls.getAAAPolicy, params, getApiVersionHeaders(enableRbac, 'v1_1'))
+
+        // eslint-disable-next-line max-len
+        const rbacViewModelReq = {
+          // eslint-disable-next-line max-len
+          ...createHttpRequest(AaaUrls.queryAAAPolicyList, params, getApiVersionHeaders(true, 'v1')),
+          body: JSON.stringify({
+            filters: { id: [ params?.policyId ] }
+          })
         }
+
+        return aggregateQueryResponse<AAAPolicyType, TableResult<AAARbacViewModalType>>({
+          targetArgs: req,
+          otherArgs: rbacViewModelReq,
+          enableAggreate: enableRbac,
+          baseQuery,
+          doAggregate: combineAAAPolicyWithRbacData
+        })
       },
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
-    updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params)
-        return {
-          ...req,
-          body: payload
-        }
+    updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: (queryArgs) => {
+        return createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.updateAAAPolicy,
+          rbacApiVersionKey: 'v1_1',
+          queryArgs
+        })
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
+    // eslint-disable-next-line max-len
     aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params)
-        return {
-          ...instancesRes,
-          body: payload
+      async queryFn ({ params, payload, enableRbac = false }, _queryApi, _extraOptions, baseQuery) {
+        if (enableRbac) {
+          const rbacAAAViewModelEntityResult = await baseQuery({
+            // eslint-disable-next-line max-len
+            ...createHttpRequest(AaaUrls.queryAAAPolicyList, params, getApiVersionHeaders(true, 'v1')),
+            body: JSON.stringify({
+              filters: { id: [ params?.policyId ] }
+            })
+          })
+
+          if (rbacAAAViewModelEntityResult.error) {
+            return { error: rbacAAAViewModelEntityResult.error as FetchBaseQueryError }
+          }
+
+          // eslint-disable-next-line max-len
+          const rbacAAAViewModelData = (rbacAAAViewModelEntityResult.data as TableResult<AAARbacViewModalType>)
+          const associatedNetworkIds = rbacAAAViewModelData.data[0]?.wifiNetworkIds
+
+          if (!associatedNetworkIds || associatedNetworkIds.length === 0) {
+            return {
+              data: { data: [], page: 1, totalCount: 0 } as TableResult<AAAPolicyNetwork>
+            }
+          }
+
+          const resolvedPayload = payload as QueryViewModelPayload
+          const rbacNetworkListResult = await baseQuery({
+            // eslint-disable-next-line max-len
+            ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, getApiVersionHeaders(true, 'v1')),
+            body: JSON.stringify({
+              ...resolvedPayload,
+              filters: {
+                id: associatedNetworkIds
+              },
+              // eslint-disable-next-line max-len
+              fields: resolvedPayload.fields?.map(f => aaaPolicyNetworkFieldMapping[f as keyof AAAPolicyNetwork]) ?? []
+            })
+          })
+
+          if (rbacNetworkListResult.error) {
+            return { error: rbacNetworkListResult.error as FetchBaseQueryError }
+          }
+
+          const rbacNetworkList = rbacNetworkListResult.data as TableResult<WifiNetwork>
+
+          return { data: convertRbacToAAAPolicyNetworkList(rbacNetworkList) }
+        } else {
+          const networkListResult = await baseQuery({
+            ...createHttpRequest(AaaUrls.getAAANetworkInstances, params),
+            body: payload
+          })
+
+          // eslint-disable-next-line max-len
+          if (networkListResult.error) return { error: networkListResult.error as FetchBaseQueryError }
+
+          return { data: networkListResult.data as TableResult<AAAPolicyNetwork> }
         }
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }],

@@ -22,6 +22,19 @@ export interface RequestPayload <Payload = unknown> extends Record<string,unknow
   params?: Params<string>
   payload?: Payload
   customHeaders?: Record<string,unknown>
+  enableRbac?: boolean
+  oldPayload?: Payload
+}
+
+export interface QueryViewModelPayload {
+  filters?: Record<string, string[]>
+  fields?: string[]
+  page?: number
+  pageSize?: number
+  searchString?: string
+  searchTargetFields?: string[]
+  sortField?: string
+  sortOrder?: 'ASC' | 'DESC'
 }
 
 // Needed for Browser language detection

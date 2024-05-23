@@ -7,6 +7,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
 import {
   useAaaPolicyQuery,
   useAddAAAPolicyMutation,
@@ -46,10 +47,12 @@ export const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
+  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
-    skip: !isEdit
+    skip: !isEdit,
+    enableRbac
   })
 
   const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
@@ -72,7 +75,7 @@ export const AAAForm = (props: AAAFormProps) => {
   }, [data])
 
   const handleAAAPolicy = async (data: AAAPolicyType) => {
-    const requestPayload = { params, payload: data }
+    const requestPayload = { params, payload: data, enableRbac }
     try {
       if (isEdit) {
         await updateInstance(requestPayload).unwrap()

@@ -170,3 +170,71 @@ export const enableNewApi = function (apiInfo: ApiInfo) {
 export const getUrlForTest = (apiInfo: ApiInfo) => {
   return enableNewApi(apiInfo) ? apiInfo.url : (apiInfo.oldUrl || apiInfo.url)
 }
+
+export const apiVersionHeaders = {
+  v1: {
+    'Content-Type': 'application/vnd.ruckus.v1+json',
+    'Accept': 'application/vnd.ruckus.v1+json'
+  },
+  v1_1: {
+    'Content-Type': 'application/vnd.ruckus.v1.1+json',
+    'Accept': 'application/vnd.ruckus.v1.1+json'
+  }
+}
+
+export type ApiVersionKey = keyof typeof apiVersionHeaders
+export function getApiVersionHeaders (enableRbac: boolean | undefined, version: ApiVersionKey) {
+  if (!enableRbac) return {}
+
+  return apiVersionHeaders[version]
+}
+
+interface AggregateQueryResponseProps<TargetReturnType, OtherReturnType> {
+  targetArgs: FetchArgs
+  otherArgs: FetchArgs
+  enableAggreate: boolean
+  // eslint-disable-next-line max-len
+  baseQuery: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>
+  doAggregate: (target: TargetReturnType, other: OtherReturnType) => TargetReturnType
+}
+
+
+export async function aggregateQueryResponse<TargetReturnType, OtherReturnType> (
+  props: AggregateQueryResponseProps<TargetReturnType, OtherReturnType>
+) {
+  const { targetArgs, otherArgs, enableAggreate, baseQuery, doAggregate } = props
+  const targetResult = await baseQuery(targetArgs)
+
+  if (targetResult.error) return { error: targetResult.error as FetchBaseQueryError }
+
+  if (!enableAggreate) return { data: targetResult.data as TargetReturnType }
+
+  const otherResult = await baseQuery(otherArgs)
+
+  if (otherResult.error) return { error: otherResult.error as FetchBaseQueryError }
+
+  const otherResultData = otherResult.data as OtherReturnType
+
+  return {
+    data: doAggregate(targetResult.data as TargetReturnType, otherResultData)
+  }
+}
+
+interface CreateFetchArgsBasedOnRbacProps {
+  apiInfo: ApiInfo
+  rbacApiInfo?: ApiInfo
+  rbacApiVersionKey: ApiVersionKey
+  queryArgs: RequestPayload
+}
+export function createFetchArgsBasedOnRbac (props: CreateFetchArgsBasedOnRbacProps) {
+  const { apiInfo, rbacApiInfo = apiInfo, rbacApiVersionKey, queryArgs } = props
+  const enableRbac = queryArgs.enableRbac ?? false
+  const resolvedApiInfo = enableRbac ? rbacApiInfo : apiInfo
+  const apiVersionHeaders = getApiVersionHeaders(enableRbac, rbacApiVersionKey)
+  const resolvedPayload = enableRbac ? JSON.stringify(queryArgs.payload) : queryArgs.payload
+
+  return {
+    ...createHttpRequest(resolvedApiInfo, queryArgs.params, apiVersionHeaders),
+    body: resolvedPayload
+  }
+}
