@@ -5,7 +5,6 @@ import { isEqual }                             from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { ApSnmpMibsDownloadInfo }                                             from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
