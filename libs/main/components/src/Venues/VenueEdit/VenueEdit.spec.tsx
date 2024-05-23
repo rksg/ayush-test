@@ -40,9 +40,9 @@ jest.mock('./WifiConfigTab/RadioTab/ClientAdmissionControlSettings', () => ({
 jest.mock('./WifiConfigTab/RadioTab/LoadBalancing', () => ({
   LoadBalancing: () => <div data-testid='LoadBalancing' />
 }))
-jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => () => {
-  return <div data-testid='MdnsFencing' />
-})
+jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => ({
+  MdnsFencing: () => <div data-testid='MdnsFencing' />
+}))
 jest.mock('./WifiConfigTab/ServerTab/ApSnmp', () => ({
   ApSnmp: () => <div data-testid='ApSnmp' />
 }))
@@ -275,6 +275,9 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         ),
         rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(CommonUrlsInfo.getVenueBssColoring.url,
+          (_, res, ctx) => res(ctx.json({}))
         )
       )
     })
@@ -290,7 +293,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
         })
-        await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+        await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
         await updateAdvancedSettings(false)
         fireEvent.click(await screen.findByText('Back to venue details'))
         await showInvalidChangesModal('Advanced Settings', buttonAction.CANCEL)
@@ -299,7 +302,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
         })
-        await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+        await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
         await updateAdvancedSettings(false)
         fireEvent.click(await screen.findByRole('tab', { name: 'Networking' }))
 
@@ -309,7 +312,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
         })
-        await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+        await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
         await updateAdvancedSettings(true)
         fireEvent.click(await screen.findByRole('tab', { name: 'Networking' }))
 
