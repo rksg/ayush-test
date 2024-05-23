@@ -2,12 +2,12 @@ import { Form, Select, Switch } from 'antd'
 import { replace }              from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { ApModel, CapabilitiesApModel, VenueLanPorts, WifiApSetting } from '@acx-ui/rc/utils'
+import { CapabilitiesApModel, VenueLanPorts, WifiApSetting } from '@acx-ui/rc/utils'
 
 export function LanPortPoeSettings (props: {
   context?: string,
   selectedModel: VenueLanPorts | WifiApSetting,
-  selectedModelCaps: ApModel | CapabilitiesApModel,
+  selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   useVenueSettings?: boolean
 }) {

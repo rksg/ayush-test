@@ -377,25 +377,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/lanPortSettings',
     newApi: true
   },
+  */
   getApLed: {
     method: 'get',
-    //url: '/venues/aps/:serialNumber/ledSettings',
+    // url: '/venues/aps/:serialNumber/ledSettings',
     url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
   updateApLed: {
     method: 'put',
-    //url: '/venues/aps/:serialNumber/ledSettings',
+    // url: '/venues/aps/:serialNumber/ledSettings',
     url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
-  resetApLed: {
-    method: 'delete',
-    //url: '/venues/aps/:serialNumber/ledSettings',
-    url: '/venues/:venueId/aps/:serialNumber/ledSettings',
-    newApi: true
-  },
-  */
+  /*
   getApBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
@@ -426,17 +421,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
-  /*
+  */
   getApBssColoring: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    // url: '/venues/aps/:serialNumber/bssColoringSettings',
+    url: '/venues/:venueId/aps/:serialNumber/bssColoringSettings',
     newApi: true
   },
   updateApBssColoring: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/bssColoringSettings',
+    // url: '/venues/aps/:serialNumber/bssColoringSettings',
+    url: '/venues/:venueId/aps/:serialNumber/bssColoringSettings',
     newApi: true
   },
+  /*
   getApCustomization: {
     method: 'get',
     url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
@@ -523,26 +521,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apClientAdmissionControlSettings',
     newApi: true
   },
-  /*
   getApClientAdmissionControl: {
     method: 'get',
-    //url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    // url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
     url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
   updateApClientAdmissionControl: {
     method: 'put',
-    //url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    // url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
     url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
-  deleteApClientAdmissionControl: {
-    method: 'delete',
-    //url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
-    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
-    newApi: true
-  },
-  */
   getApNetworkSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/networkSettings',

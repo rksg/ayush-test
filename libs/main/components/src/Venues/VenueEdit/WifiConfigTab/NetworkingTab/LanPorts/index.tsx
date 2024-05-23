@@ -17,7 +17,7 @@ import {
   useUpdateVenueTemplateLanPortsMutation
 } from '@acx-ui/rc/services'
 import {
-  ApModel,
+  CapabilitiesApModel,
   LanPort,
   VenueLanPorts,
   VenueSettings
@@ -74,7 +74,7 @@ export function LanPorts () {
   const [lanPortOrinData, setLanPortOrinData] = useState(venueLanPorts?.data)
   const [lanPortData, setLanPortData] = useState(venueLanPorts?.data)
   const [selectedModel, setSelectedModel] = useState({} as VenueLanPorts)
-  const [selectedModelCaps, setSelectedModelCaps] = useState({} as ApModel)
+  const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
 
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
@@ -153,7 +153,7 @@ export function LanPorts () {
     const tabIndex = 0
 
     setSelectedModel(selected)
-    setSelectedModelCaps(modelCaps as ApModel)
+    setSelectedModelCaps(modelCaps as CapabilitiesApModel)
     setActiveTabIndex(tabIndex)
     setSelectedPortCaps(modelCaps?.lanPorts?.[tabIndex] as LanPort)
 

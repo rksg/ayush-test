@@ -83,7 +83,6 @@ export function AccessPointLED () {
   useEffect(() => {
     const apModels = venueApCaps?.apModels
     if (apModels?.length) {
-      // @ts-ignore
       const supportModels: string[] = apModels?.filter(apModel => apModel.ledOn)
         .map(apModel => apModel.model)
       const venueApLeds = venueLed?.data?.map((item: VenueLed) => ({
