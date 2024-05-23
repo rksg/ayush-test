@@ -181,8 +181,10 @@ export const rwgApi = baseRWGApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse: (data: { response: GatewayDetails }) => {
-        return data?.response
+      transformResponse: (data: { response: GatewayDetails | GatewayDetails[] }) => {
+        return isArray(data?.response)
+          ? data?.response[0] || {}
+          : data?.response || {}
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     })

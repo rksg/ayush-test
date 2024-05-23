@@ -131,13 +131,13 @@ export function DashboardStatistics () {
           </UI.Wrapper>
         </GridCol>
       </GridRow>
-      <Drawer
+      { visible && <Drawer
         title={$t({ defaultMessage: 'Gateway Details' })}
         width={480}
         visible={visible}
         onClose={onClose}
         children={<GatewayDetailsContentSwitch/>}
-      />
+      /> }
     </Card>
   )
 }

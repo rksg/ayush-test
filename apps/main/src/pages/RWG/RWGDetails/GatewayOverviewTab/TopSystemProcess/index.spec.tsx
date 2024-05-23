@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { venueApi }                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo }                  from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -46,6 +46,7 @@ const topProcess = [
 const params = {
   tenantId: '7b8cb9e8e99a4f42884ae9053604a376',
   gatewayId: 'bbc41563473348d29a36b76e95c50381',
+  venueId: '3f10af1401b44902a88723cb68c4bc77',
   activeTab: 'overview'
 }
 
@@ -56,7 +57,7 @@ describe('RWG Dashboard statistics', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGatewayTopProcess.url,
+        CommonRbacUrlsInfo.getGatewayTopProcess.url,
         (req, res, ctx) => res(ctx.json({ response: topProcess }))
       )
     )
