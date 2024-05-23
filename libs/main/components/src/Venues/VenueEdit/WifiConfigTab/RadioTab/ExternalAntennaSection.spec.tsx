@@ -3,10 +3,11 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                               from '@acx-ui/rc/services'
-import { WifiRbacUrlsInfo, WifiUrlsInfo }                                         from '@acx-ui/rc/utils'
+import { Capabilities, WifiRbacUrlsInfo, WifiUrlsInfo }                           from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
+import { VenueUtilityContext }                                                    from '..'
 import { VenueEditContext }                                                       from '../..'
 import { externalAntennaApModels, venueExternalAntenna, venueExternalAntennaCap } from '../../../__tests__/fixtures'
 
@@ -19,6 +20,17 @@ const params = {
   activeTab: 'wifi',
   activeSubTab: 'radio'
 }
+
+const mockExternalAntennaSection = (
+  <VenueUtilityContext.Provider value={{
+    venueApCaps: venueExternalAntennaCap as Capabilities,
+    isLoadingVenueApCaps: false
+  }}>
+    <Form>
+      <ExternalAntennaSection />
+    </Form>
+  </VenueUtilityContext.Provider>
+)
 
 describe('Venue External Antenna Settings', () => {
   beforeEach(() => {
@@ -53,9 +65,7 @@ describe('Venue External Antenna Settings', () => {
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()
         }}>
-          <Form>
-            <ExternalAntennaSection />
-          </Form>
+          {mockExternalAntennaSection}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
@@ -112,9 +122,7 @@ describe('Venue External Antenna Settings', () => {
         setEditContextData: jest.fn(),
         setEditRadioContextData: jest.fn()
       }}>
-        <Form>
-          <ExternalAntennaSection />
-        </Form>
+        { mockExternalAntennaSection }
       </VenueEditContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }

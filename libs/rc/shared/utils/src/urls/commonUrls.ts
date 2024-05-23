@@ -198,11 +198,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/aps/query/csvFiles',
     newApi: true
   },
-  getService: {
-    // no use
-    method: 'get',
-    url: '/api/tenant/:tenantId/service/:serviceId'
-  },
   getFloorplan: {
     method: 'get',
     url: '/venues/:venueId/floorplans/:floorPlanId',

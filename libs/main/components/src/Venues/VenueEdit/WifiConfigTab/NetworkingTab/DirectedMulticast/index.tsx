@@ -35,11 +35,11 @@ export function DirectedMulticast () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>(
-    useGetVenueDirectedMulticastQuery,
-    useGetVenueTemplateDirectedMulticastQuery,
-    isUseRbacApi
-  )
+  const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>({
+    useQueryFn: useGetVenueDirectedMulticastQuery,
+    useTemplateQueryFn: useGetVenueTemplateDirectedMulticastQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const [updateVenueDirectedMulticast, { isLoading: isUpdatingVenueDirectedMulticast }] =
     useVenueConfigTemplateMutationFnSwitcher(

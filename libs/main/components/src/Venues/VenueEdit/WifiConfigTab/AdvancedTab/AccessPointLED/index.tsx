@@ -10,11 +10,12 @@ import { DeleteOutlinedIcon }                           from '@acx-ui/icons'
 import {
   useGetVenueLedOnQuery,
   useGetVenueApModelsQuery,
-  useUpdateVenueLedOnMutation,
-  useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
+  useUpdateVenueLedOnMutation
+} from '@acx-ui/rc/services'
 import { VenueLed }               from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
+import { VenueUtilityContext }           from '../..'
 import { VenueEditContext, EditContext } from '../../../index'
 
 export interface ModelOption {
@@ -23,14 +24,13 @@ export interface ModelOption {
   }
 
 export function AccessPointLED () {
-
   const { $t } = useIntl()
   const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
-  const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
   const venueLed = useGetVenueLedOnQuery(
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi }
   )
@@ -81,7 +81,7 @@ export function AccessPointLED () {
 
 
   useEffect(() => {
-    const apModels = venueCaps?.data?.apModels
+    const apModels = venueApCaps?.apModels
     if (apModels?.length) {
       // @ts-ignore
       const supportModels: string[] = apModels?.filter(apModel => apModel.ledOn)
@@ -103,7 +103,7 @@ export function AccessPointLED () {
       setSelectedModels(existingModels as string[])
       setModelOptions(availableModels)
     }
-  }, [venueLed.data, venueCaps.data])
+  }, [venueLed.data, venueApCaps])
 
   useEffect(() => {
     setEditContextData({
@@ -241,7 +241,7 @@ export function AccessPointLED () {
 
   return (
     <Loader states={[{
-      isLoading: venueLed.isLoading || venueCaps.isLoading,
+      isLoading: isLoadingVenueApCaps || venueLed.isLoading,
       isFetching: isUpdatingVenueLedOn
     }]}>
       <Space size={8} direction='vertical'>

@@ -785,8 +785,12 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'Details' }, { type: 'Ap', id: 'LanPorts' }]
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApValidChannel, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getApValidChannel, params, apiCustomHeader)
         return {
           ...req
         }
@@ -825,7 +829,7 @@ export const apApi = baseApApi.injectEndpoints({
         const req = createHttpRequest(urlsInfo.updateApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: enableRbac? JSON.stringify(payload) : payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]

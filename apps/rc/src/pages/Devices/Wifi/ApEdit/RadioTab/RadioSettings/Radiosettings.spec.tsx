@@ -12,6 +12,7 @@ import {
   ApRadioParams50G,
   ApRadioParams6G,
   CommonUrlsInfo,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
@@ -44,7 +45,6 @@ import {
   RadioSettings,
   RadioType,
   StateOfIsUseVenueSettings,
-  summarizedStateOfIsUseVenueSettings,
   toggleState
 } from './RadioSettings'
 
@@ -85,6 +85,22 @@ describe('RadioSettingsTab', ()=> {
           (_, res, ctx) => res(ctx.json({}))),
         rest.delete(
           WifiUrlsInfo.deleteApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        // rbac
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apDeviceRadio))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json({})))
       )
     })
@@ -524,6 +540,22 @@ describe('RadioSettingsTab', ()=> {
           (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
         rest.put(
           WifiUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        // rbac
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apR760DeviceRadio))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json({})))
       )
     })
@@ -701,22 +733,20 @@ describe('test isCurrentTabUseVenueSettings func', () => {
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
     const stateB: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
-    const isEnablePerApRadioCustomizationFlag = true
+
     const type = RadioType.Normal24GHz
 
-    const actualA = isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
-    const actualB = isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
+    const actualA = isCurrentTabUseVenueSettings(stateA, type)
+    const actualB = isCurrentTabUseVenueSettings(stateB, type)
 
     expect(actualA).toBe(stateA.isUseVenueSettings24G)
     expect(actualB).toBe(stateB.isUseVenueSettings24G)
@@ -727,22 +757,20 @@ describe('test isCurrentTabUseVenueSettings func', () => {
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
     const stateB: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
-    const isEnablePerApRadioCustomizationFlag = true
+
     const type = RadioType.Normal5GHz
 
-    const actualA = isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
-    const actualB = isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
+    const actualA = isCurrentTabUseVenueSettings(stateA, type)
+    const actualB = isCurrentTabUseVenueSettings(stateB, type)
 
     expect(actualA).toBe(stateA.isUseVenueSettings5G)
     expect(actualB).toBe(stateB.isUseVenueSettings5G)
@@ -753,22 +781,20 @@ describe('test isCurrentTabUseVenueSettings func', () => {
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: true
     }
     const stateB: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: false
     }
-    const isEnablePerApRadioCustomizationFlag = true
+
     const type = RadioType.Normal6GHz
 
-    const actualA = isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
-    const actualB = isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
+    const actualA = isCurrentTabUseVenueSettings(stateA, type)
+    const actualB = isCurrentTabUseVenueSettings(stateB, type)
 
     expect(actualA).toBe(stateA.isUseVenueSettings6G)
     expect(actualB).toBe(stateB.isUseVenueSettings6G)
@@ -779,22 +805,20 @@ describe('test isCurrentTabUseVenueSettings func', () => {
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: true
     }
     const stateB: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: false
     }
-    const isEnablePerApRadioCustomizationFlag = true
+
     const type = RadioType.Lower5GHz
 
-    const actualA = isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
-    const actualB = isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
+    const actualA = isCurrentTabUseVenueSettings(stateA, type)
+    const actualB = isCurrentTabUseVenueSettings(stateB, type)
 
     expect(actualA).toBe(stateA.isUseVenueSettingsLower5G)
     expect(actualB).toBe(stateB.isUseVenueSettingsLower5G)
@@ -805,22 +829,20 @@ describe('test isCurrentTabUseVenueSettings func', () => {
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: true
+      isUseVenueSettingsUpper5G: false
     }
     const stateB: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: false
+      isUseVenueSettingsUpper5G: true
     }
-    const isEnablePerApRadioCustomizationFlag = true
+
     const type = RadioType.Upper5GHz
 
-    const actualA = isCurrentTabUseVenueSettings(stateA, type, isEnablePerApRadioCustomizationFlag)
-    const actualB = isCurrentTabUseVenueSettings(stateB, type, isEnablePerApRadioCustomizationFlag)
+    const actualA = isCurrentTabUseVenueSettings(stateA, type)
+    const actualB = isCurrentTabUseVenueSettings(stateB, type)
 
     expect(actualA).toBe(stateA.isUseVenueSettingsUpper5G)
     expect(actualB).toBe(stateB.isUseVenueSettingsUpper5G)
@@ -828,35 +850,31 @@ describe('test isCurrentTabUseVenueSettings func', () => {
 })
 
 describe('test isUseVenueSettings func', () => {
-  describe('test isUseVenueSettings func', function () {
-    it('should return correctly when isEnablePerApRadioCustomizationFlag is true', function () {
-      const isEnablePerApRadioCustomizationFlag = true
-      const settings: ApRadioCustomization = {
-        enable24G: true,
-        enable50G: true,
-        enable6G: true,
-        useVenueSettings: false,
-        apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
-        apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
-        apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
-        apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
-          radioParamsLower5G: { ...new ApRadioParams50G(), useVenueSettings: true },
-          radioParamsUpper5G: { ...new ApRadioParams50G(), useVenueSettings: true }
-        }
+  it('should return correctly when isEnablePerApRadioCustomizationFlag is true', function () {
+    const settings: ApRadioCustomization = {
+      enable24G: true,
+      enable50G: true,
+      enable6G: true,
+      apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
+      apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
+      apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
+      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
+        radioParamsLower5G: { ...new ApRadioParams50G(), useVenueSettings: true },
+        radioParamsUpper5G: { ...new ApRadioParams50G(), useVenueSettings: true }
       }
+    }
 
-      const actualA = isUseVenueSettings(settings, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-      const actualB = isUseVenueSettings(settings, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualC = isUseVenueSettings(settings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-      const actualD = isUseVenueSettings(settings, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-      const actualE = isUseVenueSettings(settings, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
+    const actualA = isUseVenueSettings(settings, RadioType.Normal24GHz)
+    const actualB = isUseVenueSettings(settings, RadioType.Normal5GHz)
+    const actualC = isUseVenueSettings(settings, RadioType.Normal6GHz)
+    const actualD = isUseVenueSettings(settings, RadioType.Lower5GHz)
+    const actualE = isUseVenueSettings(settings, RadioType.Upper5GHz)
 
-      expect(actualA).toEqual(settings.apRadioParams24G.useVenueSettings)
-      expect(actualB).toEqual(settings.apRadioParams50G?.useVenueSettings)
-      expect(actualC).toEqual(settings.apRadioParams6G?.useVenueSettings)
-      expect(actualD).toEqual(settings.apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings)
-      expect(actualE).toEqual(settings.apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings)
-    })
+    expect(actualA).toEqual(settings.apRadioParams24G.useVenueSettings)
+    expect(actualB).toEqual(settings.apRadioParams50G?.useVenueSettings)
+    expect(actualC).toEqual(settings.apRadioParams6G?.useVenueSettings)
+    expect(actualD).toEqual(settings.apRadioParamsDual5G?.radioParamsLower5G?.useVenueSettings)
+    expect(actualE).toEqual(settings.apRadioParamsDual5G?.radioParamsUpper5G?.useVenueSettings)
   })
 })
 
@@ -866,7 +884,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
@@ -879,7 +896,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: false },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
@@ -892,7 +908,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: false },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
@@ -905,7 +920,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: false },
@@ -918,7 +932,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
@@ -931,7 +944,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
@@ -944,7 +956,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: false,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
@@ -1022,67 +1033,6 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
   })
 })
 
-describe('test summarizedStateOfIsUseVenueSettings func', () => {
-  it('should return correctly when isEnablePerApRadioCustomizationFlag is false', function () {
-    const isEnablePerApRadioCustomizationFlag = false
-
-    const stateA: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: undefined,
-      isUseVenueSettings5G: undefined,
-      isUseVenueSettings6G: undefined,
-      isUseVenueSettingsLower5G: undefined,
-      isUseVenueSettingsUpper5G: undefined,
-      isUseVenueSettings: false
-    }
-
-    const stateB: StateOfIsUseVenueSettings = {
-      isUseVenueSettings24G: undefined,
-      isUseVenueSettings5G: undefined,
-      isUseVenueSettings6G: undefined,
-      isUseVenueSettingsLower5G: undefined,
-      isUseVenueSettingsUpper5G: undefined,
-      isUseVenueSettings: true
-    }
-
-    const isHasRadio5GA = false
-    const isHasRadio6GA = false
-    const isHasRadioDual5GA = false
-
-    const actualAA = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    const actualBA = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GA, isHasRadio6GA, isHasRadioDual5GA, isEnablePerApRadioCustomizationFlag)
-    expect(actualAA.isUseVenueSettings).toBe(stateA.isUseVenueSettings)
-    expect(actualBA.isUseVenueSettings).toBe(stateB.isUseVenueSettings)
-
-
-    const isHasRadio5GB = true
-    const isHasRadio6GB = false
-    const isHasRadioDual5GB = false
-
-    const actualAB = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GB, isHasRadio6GB, isHasRadioDual5GB, isEnablePerApRadioCustomizationFlag)
-    const actualBB = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GB, isHasRadio6GB, isHasRadioDual5GB, isEnablePerApRadioCustomizationFlag)
-    expect(actualAB.isUseVenueSettings).toBe(stateA.isUseVenueSettings)
-    expect(actualBB.isUseVenueSettings).toBe(stateB.isUseVenueSettings)
-
-
-    const isHasRadio5GC = true
-    const isHasRadio6GC = true
-    const isHasRadioDual5GC = false
-
-    const actualAC = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GC, isHasRadio6GC, isHasRadioDual5GC, isEnablePerApRadioCustomizationFlag)
-    const actualBC = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GC, isHasRadio6GC, isHasRadioDual5GC, isEnablePerApRadioCustomizationFlag)
-    expect(actualAC.isUseVenueSettings).toBe(stateA.isUseVenueSettings)
-    expect(actualBC.isUseVenueSettings).toBe(stateB.isUseVenueSettings)
-
-    const isHasRadio5GD = true
-    const isHasRadio6GD = true
-    const isHasRadioDual5GD = true
-
-    const actualAD = summarizedStateOfIsUseVenueSettings(stateA, isHasRadio5GD, isHasRadio6GD, isHasRadioDual5GD, isEnablePerApRadioCustomizationFlag)
-    const actualBD = summarizedStateOfIsUseVenueSettings(stateB, isHasRadio5GD, isHasRadio6GD, isHasRadioDual5GD, isEnablePerApRadioCustomizationFlag)
-    expect(actualAD.isUseVenueSettings).toBe(stateA.isUseVenueSettings)
-    expect(actualBD.isUseVenueSettings).toBe(stateB.isUseVenueSettings)
-  })
-})
 
 describe('test toggleState func', () => {
   it('should toggle StateOfIsUseVenueSetting correctly when isEnablePerApRadioCustomizationFlag is true', function () {
@@ -1093,40 +1043,35 @@ describe('test toggleState func', () => {
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
+      isUseVenueSettingsUpper5G: false
     }
     const stateB: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: true,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
+      isUseVenueSettingsUpper5G: false
     }
     const stateC: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: true,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
+      isUseVenueSettingsUpper5G: false
     }
     const stateD: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: true,
-      isUseVenueSettingsUpper5G: false,
-      isUseVenueSettings: undefined
+      isUseVenueSettingsUpper5G: false
     }
     const stateE: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: false,
       isUseVenueSettings6G: false,
       isUseVenueSettingsLower5G: false,
-      isUseVenueSettingsUpper5G: true,
-      isUseVenueSettings: undefined
+      isUseVenueSettingsUpper5G: true
     }
 
     const actualA = toggleState(stateA, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
@@ -1341,7 +1286,7 @@ describe('test applySettings func', () => {
       enable24G: true,
       enable50G: true,
       enable6G: true,
-      useVenueSettings: true,
+      useVenueSettings: false,
       apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
       apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
       apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
