@@ -12,15 +12,12 @@ import {
   useGetVenueSettingsQuery,
   useGetVenueLanPortsQuery,
   useUpdateVenueLanPortsMutation,
-  useGetVenueApCapabilitiesQuery,
   useGetVenueTemplateSettingsQuery,
   useGetVenueTemplateLanPortsQuery,
-  useGetVenueTemplateApCapabilitiesQuery,
   useUpdateVenueTemplateLanPortsMutation
 } from '@acx-ui/rc/services'
 import {
   ApModel,
-  CapabilitiesApModel,
   LanPort,
   VenueLanPorts,
   VenueSettings
@@ -29,9 +26,13 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 
-import DefaultApModelDiagram                                                               from '../../../../assets/images/aps/ap-model-placeholder.png'
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                                                                from '../../../index'
+import { VenueUtilityContext }            from '../..'
+import DefaultApModelDiagram              from '../../../../assets/images/aps/ap-model-placeholder.png'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext } from '../../../index'
 
 
 const { useWatch } = Form
@@ -49,22 +50,17 @@ export function LanPorts () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const customGuiChagedRef = useRef(false)
+  const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
-  const venueSettings = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
-    useGetVenueSettingsQuery,
-    useGetVenueTemplateSettingsQuery
-  )
+  const venueSettings = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
+  })
 
-  const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>(
-    useGetVenueLanPortsQuery,
-    useGetVenueTemplateLanPortsQuery
-  )
-
-  // eslint-disable-next-line max-len
-  const venueCaps = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels: CapabilitiesApModel[] }>(
-    useGetVenueApCapabilitiesQuery,
-    useGetVenueTemplateApCapabilitiesQuery
-  )
+  const venueLanPorts = useVenueConfigTemplateQueryFnSwitcher<VenueLanPorts[]>({
+    useQueryFn: useGetVenueLanPortsQuery,
+    useTemplateQueryFn: useGetVenueTemplateLanPortsQuery
+  })
 
   // eslint-disable-next-line max-len
   const [updateVenueLanPorts, { isLoading: isUpdatingVenueLanPorts }] = useVenueConfigTemplateMutationFnSwitcher(
@@ -150,7 +146,7 @@ export function LanPorts () {
   }
 
   const handleModelChange = (value: string) => {
-    const modelCaps = venueCaps?.data?.apModels?.filter(item => item.model === value)[0]
+    const modelCaps = venueApCaps?.apModels?.filter(item => item.model === value)[0]
     const selected = getSelectedModelData(lanPortData as VenueLanPorts[], value)
     const lanPortsCap = modelCaps?.lanPorts || []
     const poeOutFormData = ConvertPoeOutToFormData(selected, lanPortsCap) as VenueLanPorts
@@ -209,7 +205,7 @@ export function LanPorts () {
   }
 
   return (<Loader states={[{
-    isLoading: venueLanPorts.isLoading || venueCaps.isLoading,
+    isLoading: venueLanPorts.isLoading || isLoadingVenueApCaps,
     isFetching: isUpdatingVenueLanPorts
   }]}>
     <Row gutter={24}>

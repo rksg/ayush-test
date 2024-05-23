@@ -41,10 +41,8 @@ import {
   useGetVenueRadioCustomizationQuery,
   useUpdateVenueRadioCustomizationMutation,
   useUpdateVenueTripleBandRadioSettingsMutation,
-  useGetVenueApCapabilitiesQuery,
   useGetVenueApModelBandModeSettingsQuery,
   useUpdateVenueApModelBandModeSettingsMutation,
-  useGetVenueTemplateApCapabilitiesQuery,
   useGetVenueTemplateTripleBandRadioSettingsQuery,
   useGetVenueTripleBandRadioSettingsQuery,
   useGetVenueTemplateDefaultRegulatoryChannelsQuery,
@@ -60,12 +58,12 @@ import {
   BandModeEnum,
   VenueApModelBandModeSettings,
   TriBandSettings,
-  CapabilitiesApModel,
   VenueDefaultRegulatoryChannels,
   useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
+import { VenueUtilityContext }            from '..'
 import { VenueEditContext }               from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
@@ -147,43 +145,37 @@ export function RadioSettings () {
   const [currentVenueBandModeData, setCurrentVenueBandModeData] = useState([] as VenueApModelBandModeSettings[])
   const [initVenueBandModeData, setInitVenueBandModeData] = useState([] as VenueApModelBandModeSettings[])
 
-  const { data: venueCaps, isLoading: isLoadingVenueCaps } =
-    useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels: CapabilitiesApModel[] }>(
-      useGetVenueApCapabilitiesQuery,
-      useGetVenueTemplateApCapabilitiesQuery,
-      isUseRbacApi
-    )
+  const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
 
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
-    useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>(
-      useGetVenueTripleBandRadioSettingsQuery,
-      useGetVenueTemplateTripleBandRadioSettingsQuery,
-      isUseRbacApi
-    )
+    useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>({
+      useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
+      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery
+    })
 
   // available channels from this venue country code
   const { data: supportChannelsData, isLoading: isLoadingSupportChannelsData } =
-    useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>(
-      useVenueDefaultRegulatoryChannelsQuery,
-      useGetVenueTemplateDefaultRegulatoryChannelsQuery,
-      isUseRbacApi
-    )
+    useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>({
+      useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
+      useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
+      enableRbac: isUseRbacApi
+    })
 
   // default radio data
   const { data: defaultRadioSettingsData, isLoading: isLoadingDefaultRadioSettingsData } =
-    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>(
-      useGetDefaultRadioCustomizationQuery,
-      useGetVenueTemplateDefaultRadioCustomizationQuery,
-      isUseRbacApi
-    )
+    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
+      useQueryFn: useGetDefaultRadioCustomizationQuery,
+      useTemplateQueryFn: useGetVenueTemplateDefaultRadioCustomizationQuery,
+      enableRbac: isUseRbacApi
+    })
 
   // Custom radio data
   const { data: venueSavedChannelsData, isLoading: isLoadingVenueData } =
-    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>(
-      useGetVenueRadioCustomizationQuery,
-      useGetVenueTemplateRadioCustomizationQuery,
-      isUseRbacApi
-    )
+    useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
+      useQueryFn: useGetVenueRadioCustomizationQuery,
+      useTemplateQueryFn: useGetVenueTemplateRadioCustomizationQuery,
+      enableRbac: isUseRbacApi
+    })
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useVenueConfigTemplateMutationFnSwitcher(
     useUpdateVenueRadioCustomizationMutation,
@@ -196,10 +188,7 @@ export function RadioSettings () {
   )
 
   const { data: venueBandModeSavedData, isLoading: isLoadingVenueBandModeData } =
-    useGetVenueApModelBandModeSettingsQuery({
-      params: { venueId: venueId },
-      enableRbac: isUseRbacApi
-    }, { skip: !isWifiSwitchableRfEnabled })
+    useGetVenueApModelBandModeSettingsQuery({ params: { venueId: venueId } }, { skip: !isWifiSwitchableRfEnabled })
 
   const [ updateVenueBandMode, { isLoading: isUpdatingVenueBandMode } ] =
     useUpdateVenueApModelBandModeSettingsMutation()
@@ -278,16 +267,17 @@ export function RadioSettings () {
 
 
   const { triBandApModels, dual5gApModels, bandModeCaps } = useMemo(() => {
-    if (venueCaps) {
-      const triBandApModels = venueCaps.apModels
+    if (venueApCaps) {
+      const apModels = venueApCaps.apModels
+      const triBandApModels = apModels
         .filter(apCapability => apCapability.supportTriRadio === true)
         .map(triBandApCapability => triBandApCapability.model) as string[]
 
-      const dual5gApModels = venueCaps.apModels
+      const dual5gApModels = apModels
         .filter(apCapability => apCapability.supportDual5gMode === true)
         .map(dual5gApCapability => dual5gApCapability.model) as string[]
 
-      const bandModeCaps = venueCaps.apModels
+      const bandModeCaps = apModels
         .filter(apCapability => apCapability.supportBandCombination === true)
         .reduce((a, v) => ({ ...a, [v.model as string]: v.bandCombinationCapabilities }), {})
 
@@ -304,7 +294,7 @@ export function RadioSettings () {
       bandModeCaps: []
     }
 
-  }, [venueCaps])
+  }, [venueApCaps])
 
   useEffect(() => {
     const triBandApModelNames = isEmpty(triBandApModels)? ['R760', 'R560'] : triBandApModels
@@ -684,7 +674,8 @@ export function RadioSettings () {
 
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
-        payload: data
+        payload: data,
+        enableRabc: isUseRbacApi
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -775,7 +766,7 @@ export function RadioSettings () {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingVenueCaps || isLoadingSupportChannelsData || isLoadingDefaultRadioSettingsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData)),
+      isLoading: isLoadingVenueData || (isWifiSwitchableRfEnabled && (isLoadingVenueApCaps || isLoadingSupportChannelsData || isLoadingDefaultRadioSettingsData || isLoadingTripleBandRadioSettingsData || isLoadingVenueBandModeData)),
       isFetching: isUpdatingVenueRadio || (isWifiSwitchableRfEnabled && isUpdatingVenueBandMode)
     }]}>
       <StepsFormLegacy

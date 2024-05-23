@@ -56,11 +56,11 @@ export function MdnsFencing () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const getVenueMdnsFencing = useVenueConfigTemplateQueryFnSwitcher<VenueMdnsFencingPolicy>(
-    useGetVenueMdnsFencingQuery,
-    useGetVenueTemplateMdnsFencingQuery,
-    isUseRbacApi
-  )
+  const getVenueMdnsFencing = useVenueConfigTemplateQueryFnSwitcher<VenueMdnsFencingPolicy>({
+    useQueryFn: useGetVenueMdnsFencingQuery,
+    useTemplateQueryFn: useGetVenueTemplateMdnsFencingQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const [updateVenueMdnsFencing, { isLoading: isUpdatingVenueMdnsFencing }] =
     useVenueConfigTemplateMutationFnSwitcher(

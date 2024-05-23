@@ -3,10 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
-import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider }                    from '@acx-ui/store'
-import { mockServer, render, screen }  from '@acx-ui/test-utils'
+import { CommonUrlsInfo, RogueApUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                    from '@acx-ui/store'
+import { mockServer, render, screen }                                  from '@acx-ui/test-utils'
 
+import { venueCaps }                     from '../../__tests__/fixtures'
 import { defaultValue }                  from '../../contentsMap'
 import { EditContext, VenueEditContext } from '../index'
 
@@ -61,6 +62,17 @@ const policyListContent = [
   }
 ]
 
+const policyListViewModel = {
+  totalCount: 2,
+  data: [{
+    id: 'policyId1',
+    name: 'test'
+  }, {
+    id: 'be62604f39aa4bb8a9f9a0733ac07add',
+    name: 'test6'
+  }]
+}
+
 describe('WifiConfigTab', () => {
   it('should render correctly', async () => {
     mockServer.use(
@@ -72,7 +84,17 @@ describe('WifiConfigTab', () => {
         (_, res, ctx) => res(ctx.json(venueRogueAp))),
       rest.get(
         RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(policyListContent)))
+        (_, res, ctx) => res(ctx.json(policyListContent))),
+      rest.post(
+        RogueApUrls.getEnhancedRoguePolicyList.url,
+        (_, res, ctx) => res(ctx.json(policyListViewModel))),
+      rest.get(
+        WifiUrlsInfo.getVenueApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))),
+      // rbac
+      rest.get(
+        WifiRbacUrlsInfo.getVenueApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps)))
     )
 
     render(

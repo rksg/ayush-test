@@ -8,6 +8,7 @@ import { CommonUrlsInfo, WifiUrlsInfo }                                         
 import { Provider, store }                                                                   from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { VenueUtilityContext } from '../..'
 import {
   venueData,
   venueCaps,
@@ -22,6 +23,17 @@ const params = {
   activeTab: 'wifi',
   activeSubTab: 'networking'
 }
+
+const mockLanPorts = (
+  <VenueUtilityContext.Provider value={{
+    venueApCaps: venueCaps,
+    isLoadingVenueApCaps: false
+  }} >
+    <Form>
+      <LanPorts />
+    </Form>
+  </VenueUtilityContext.Provider>
+)
 
 describe('LanPortsForm', () => {
   beforeEach(() => {
@@ -45,9 +57,7 @@ describe('LanPortsForm', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <Form>
-          <LanPorts />
-        </Form>
+        {mockLanPorts}
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
@@ -59,9 +69,7 @@ describe('LanPortsForm', () => {
   it('should handle tab and model changed', async () => {
     render(
       <Provider>
-        <Form>
-          <LanPorts />
-        </Form>
+        {mockLanPorts}
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
@@ -108,9 +116,7 @@ describe('LanPortsForm', () => {
   it('should handle Port type, PoE Mode and PoE Out changed', async () => {
     render(
       <Provider>
-        <Form>
-          <LanPorts />
-        </Form>
+        {mockLanPorts}
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })

@@ -90,6 +90,15 @@ describe('RadioTab', () => {
         (_, res, ctx) => res(ctx.json([]))),
       // rbac
       rest.get(
+        WifiRbacUrlsInfo.getDefaultRadioCustomization.url.split('?')[0],
+        (_, res, ctx) => res(ctx.json(defaultRadioCustomizationData))),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+        (_, res, ctx) => res(ctx.json(radioCustomizationData))),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+        (_, res, ctx) => res(ctx.json(validChannelsData))),
+      rest.get(
         WifiRbacUrlsInfo.getVenueExternalAntenna.url,
         (_, res, ctx) => res(ctx.json(venueExternalAntenna))),
       rest.put(

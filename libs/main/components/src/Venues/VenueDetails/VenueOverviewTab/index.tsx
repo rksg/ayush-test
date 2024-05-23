@@ -24,6 +24,7 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
 import {
   useGetVenueRadioCustomizationQuery,
@@ -39,11 +40,18 @@ export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
   const { venueId } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const venueFilter = {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
-  const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
+
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery({
+    params: { venueId },
+    enableRbac: isUseRbacApi
+  })
+
   const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [

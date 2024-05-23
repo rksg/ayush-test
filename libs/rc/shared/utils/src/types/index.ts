@@ -7,9 +7,9 @@ import {
   ApDeviceStatusEnum,
   QosPriorityEnum
 } from '../constants'
-import { EdgeStatusSeverityEnum } from '../models'
-import { NetworkVenue }           from '../models/NetworkVenue'
-import { TrustedCAChain }         from '../models/TrustedCAChain'
+import { CapabilitiesApModel, EdgeStatusSeverityEnum } from '../models'
+import { NetworkVenue }                                from '../models/NetworkVenue'
+import { TrustedCAChain }                              from '../models/TrustedCAChain'
 
 import { ApModel }                               from './ap'
 import { EdgeStatusSeverityStatistic }           from './edge'
@@ -521,7 +521,7 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-  apModels: ApModel[]
+  apModels: ApModel[] | CapabilitiesApModel[]
   version: string
 }
 

@@ -65,12 +65,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/networkActivations',
     newApi: true
   },
+  */
   getVenueApCapabilities: {
     method: 'get',
-    url: '/venues/:venueId/aps/capabilities',
+    //url: '/venues/:venueId/aps/capabilities',
+    url: '/venues/:venueId/apModelCapabilities',
     newApi: true
   },
-  */
   getVenueExternalAntenna: {
     method: 'get',
     // url: '/venues/:venueId/externalAntennaSettings',
@@ -94,24 +95,29 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelAntennaTypeSettings',
     newApi: true
   },
+  */
   getVenueDefaultRegulatoryChannels: {
     method: 'get',
-    url: '/venues/:venueId/channels',
+    //url: '/venues/:venueId/channels',
+    url: '/venues/:venueId/wifiAvailableChannels',
     newApi: true
   },
   getDefaultRadioCustomization: {
     method: 'get',
-    url: '/venues/:venueId/radioSettings?defaultOnly=true',
+    //url: '/venues/:venueId/radioSettings?defaultOnly=true',
+    url: '/venues/:venueId/apRadioSettings?defaultOnly=true',
     newApi: true
   },
   getVenueRadioCustomization: {
     method: 'get',
-    url: '/venues/:venueId/radioSettings',
+    //url: '/venues/:venueId/radioSettings',
+    url: '/venues/:venueId/apRadioSettings',
     newApi: true
   },
   updateVenueRadioCustomization: {
     method: 'put',
-    url: '/venues/:venueId/radioSettings',
+    //url: '/venues/:venueId/radioSettings',
+    url: '/venues/:venueId/apRadioSettings',
     newApi: true
   },
   getVenueTripleBandRadioSettings: {
@@ -128,20 +134,22 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getAvailableLteBands: {
     method: 'get',
-    url: '/venues/lteBands',
+    //url: '/venues/lteBands',
+    url: '/venues/apAvailableLteBands',
     newApi: true
   },
   getVenueApModelCellular: {
     method: 'get',
-    url: '/venues/:venueId/cellularSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/cellular',
+    //url: '/venues/:venueId/cellularSettings',
+    url: '/venues/:venueId/apCellularSettings',
     newApi: true
   },
   updateVenueCellularSettings: {
     method: 'put',
-    url: '/venues/:venueId/cellularSettings',
+    //url: '/venues/:venueId/cellularSettings',
+    url: '/venues/:venueId/apCellularSettings',
     newApi: true
-  },*/
+  },
   getAp: {
     method: 'get',
     // url: '/venues/aps/:serialNumber?operational=false',
@@ -154,17 +162,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber?operational=true',
     newApi: true
   },
-  /*
   getApValidChannel: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/channels',
+    //url: '/venues/aps/:serialNumber/channels',
+    url: '/venues/:venueId/aps/:serialNumber/wifiAvailableChannels',
     newApi: true
   },
   getWifiCapabilities: {
     method: 'get',
-    url: '/venues/aps/capabilities',
+    //url: '/venues/aps/capabilities',
+    url: '/venues/apModelCapabilities',
     newApi: true
-  },*/
+  },
   addAp: {
     method: 'post',
     // url: '/venues/aps',
@@ -341,12 +350,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
-  /*
   getApCapabilities: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/capabilities',
+    //url: '/venues/aps/:serialNumber/capabilities',
+    url: '/venues/:venueId/aps/:serialNumber/capabilities',
     newApi: true
   },
+  /*
   getDpskPassphraseByQuery: {
     method: 'post',
     url: '/dpskPassphrasePools/query',
@@ -369,19 +379,23 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getApLed: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/ledSettings',
+    //url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
   updateApLed: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/ledSettings',
+    //url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
   resetApLed: {
     method: 'delete',
-    url: '/venues/aps/:serialNumber/ledSettings',
+    //url: '/venues/aps/:serialNumber/ledSettings',
+    url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
+  */
   getApBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
@@ -412,6 +426,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
+  /*
   getApBssColoring: {
     method: 'get',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
@@ -511,17 +526,20 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   /*
   getApClientAdmissionControl: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    //url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
   updateApClientAdmissionControl: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    //url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
   deleteApClientAdmissionControl: {
     method: 'delete',
-    url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    //url: '/venues/aps/:serialNumber/clientAdmissionControlSettings',
+    url: '/venues/:venueId/aps/:serialNumber/clientAdmissionControlSettings',
     newApi: true
   },
   */
@@ -538,6 +556,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // deprecated. use the updateApNetworkSettings to replace
   resetApNetworkSettings: {
     method: 'delete',
     url: '/venues/aps/:serialNumber/networkSettings',

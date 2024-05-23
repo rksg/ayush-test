@@ -307,12 +307,14 @@ export function RadioSettings () {
   const ap70BetaFlag = useIsTierAllowed(TierFeatures.AP_70)
   const supportWifi7_320MHz = ap70BetaFlag && wifi7_320Mhz_FeatureFlag
 
-  //const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const isEnablePerApRadioCustomizationFlag = useIsSplitOn(Features.WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE)
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { apData, apCapabilities } = useContext(ApDataContext)
+  const venueId = apData?.venueId
+
   const {
     has160MHzChannelBandwidth = false,
     maxChannelization5G = 160,
@@ -341,7 +343,10 @@ export function RadioSettings () {
 
   }, [bandCombinationCapabilities, isWifiSwitchableRfEnabled, supportBandCombination, supportDual5gMode, supportTriRadio])
 
-  const getApAvailableChannels = useGetApValidChannelQuery({ params: { tenantId, serialNumber } })
+  const getApAvailableChannels = useGetApValidChannelQuery({
+    params: { tenantId, venueId, serialNumber },
+    enableRbac: isUseRbacApi
+  }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
     isUseVenueSettings24G: true,
@@ -577,7 +582,10 @@ export function RadioSettings () {
       }
 
       const venueRadioData = (await getVenueCustomization({
-        params: { tenantId, venueId: venue.id } }, true).unwrap())
+        params: { tenantId, venueId: venue.id },
+        enableRbac: isUseRbacApi
+      }, true).unwrap())
+
       setVenueRadioData(venueRadioData)
       const apVenueData = convertVenueRadioSetingsToApRadioSettings(venueRadioData)
       venueRef.current = apVenueData
