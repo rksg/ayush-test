@@ -52,17 +52,18 @@ export function SwitchDetailsCard (props: {
     return time.join(', ')
   }
 
+  const switchName = switchDetail?.name
+  || switchDetail?.id
+  || switchDetail?.switchMac
+  || $t({ defaultMessage: 'Unknown' }) // for unknown device
+
   return <Card><Card.Title>
-    <Space>
+    <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
       <UI.NodeTitle
         state={{ from: location.pathname }}
         // eslint-disable-next-line max-len
         to={`/devices/switch/${switchDetail?.id || switchDetail?.serialNumber}/${switchDetail?.serialNumber}/details/overview`}>
-        {switchDetail?.name
-            || switchDetail?.id
-            || switchDetail?.switchMac
-            || $t({ defaultMessage: 'Unknown' }) // for unknown device
-        }
+        { switchName }
       </UI.NodeTitle>
       <Button
         size='small'

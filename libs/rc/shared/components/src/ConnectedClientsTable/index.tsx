@@ -348,7 +348,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Switch' }),
         dataIndex: 'switchName',
         sorter: true,
-        render: (_, row) => {
+        render: (_: React.ReactNode, row: ClientList) => {
           return AsyncLoadingInColumn(row.apName, row.venueName, () => {
             if(!row.switchName){
               return noDataDisplay
