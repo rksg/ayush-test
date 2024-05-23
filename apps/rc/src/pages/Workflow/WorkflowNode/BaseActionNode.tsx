@@ -1,18 +1,19 @@
 import { ReactNode } from 'react'
 
-import { Space }                                  from 'antd'
+import { Popover, Space }                         from 'antd'
 import { useIntl }                                from 'react-intl'
 import { useParams }                              from 'react-router-dom'
 import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
 
 import { Button, Loader, showActionModal }                                     from '@acx-ui/components'
-import { MoreVertical, Plus }                                                  from '@acx-ui/icons'
+import { DeleteOutlined, EditOutlined, EyeOpenOutlined, MoreVertical, Plus }   from '@acx-ui/icons'
 import { useDeleteSplitOptionByIdMutation, useDeleteWorkflowStepByIdMutation } from '@acx-ui/rc/services'
 import { ActionType }                                                          from '@acx-ui/rc/utils'
 
-import { useWorkflowContext } from '../WorkflowPanel'
 
-import { CustomDiv, EditHandle, SourceHandle, TargetHandle, WorkflowNode } from './styledComponents'
+import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
+
+import * as UI from './styledComponents'
 
 function getHandlePosition (partitionCount: number, index: number) {
   const onePartition = 100 / (partitionCount + 1)
@@ -30,38 +31,36 @@ export default function BaseActionNode (props: NodeProps
   // FIXME: Maybe it is not necessary
   const splitCount = props.splitCount ?? ['a']
   const {
-    nodeState, actionDrawerState, actionModalState,
-    splitOptionDrawerState
+    nodeState, actionDrawerState,
+    stepDrawerState
   } = useWorkflowContext()
   const [ deleteStep, { isLoading: isDeleteStepLoading } ] = useDeleteWorkflowStepByIdMutation()
   const [ deleteOption, { isLoading: isDeleteOptionLoading }] = useDeleteSplitOptionByIdMutation()
 
   const onHandleNode = (node?: NodeProps) => {
-    console.log('Interacted Node = ', node)
     nodeState.setInteractedNode(node)
   }
 
   const onEditClick = () => {
+    console.log('[EditBtnClick]', nodeId, props)
+
     onHandleNode(props)
-    console.log('Edit btn Click!', props)
-    actionModalState.onOpen(props.type as ActionType, props.data.enrollmentActionId)
+    stepDrawerState.onOpen(true, 'definitionId', props.type as ActionType)
   }
 
-  const onAddClick = (isTopNode: boolean) => {
-    onHandleNode(props)
-    console.log('Add btn Click!', props)
+  const onAddClick = () => {
+    console.log('[AddBtnClick]', nodeId, props)
 
-    if (props.type === ActionType.USER_SELECTION_SPLIT.toString()
-    && !props.data?.splitStepId) {
-      splitOptionDrawerState.onOpen()
-    } else {
-      actionDrawerState.onOpen()
-    }
+    onHandleNode(props)
+    actionDrawerState.onOpen()
   }
 
   const onDeleteClick = () => {
+    console.log('[DeleteBtnClick]', nodeId, props)
+
     onHandleNode(props)
-    console.log('Delete btn Click!', nodeId, props)
+    stepDrawerState.onClose()
+
     showActionModal({
       type: 'confirm',
       customContent: {
@@ -82,8 +81,31 @@ export default function BaseActionNode (props: NodeProps
     })
   }
 
+  const onPreviewClick = () => {
+    console.log('[PreviewBtnClick]', nodeId, props)
+  }
+
+  const stepToolBar = (<>
+    <Button
+      type={'link'}
+      icon={<EditOutlined/>}
+      onClick={onEditClick}
+    />
+    <Button
+      type={'link'}
+      icon={<EyeOpenOutlined/>}
+      onClick={onPreviewClick}
+    />
+    <Button
+      type={'link'}
+      icon={<DeleteOutlined/>}
+      onClick={onDeleteClick}
+    />
+  </>)
+
+
   return (
-    <WorkflowNode selected={props.selected}>
+    <UI.WorkflowNode selected={props.selected}>
       <Loader states={[
         { isLoading: false, isFetching: isDeleteStepLoading },
         { isLoading: false, isFetching: isDeleteOptionLoading }
@@ -92,51 +114,43 @@ export default function BaseActionNode (props: NodeProps
           {props.children}
         </Space>
       </Loader>
-      <EditHandle>
+      <UI.EditHandle>
         <Handle hidden={!props.selected} type={'source'} position={Position.Right} >
-          <Button
-            style={{ background: 'white' }}
-            shape={'circle'}
-            size={'small'}
-            icon={<MoreVertical />}
-            onClick={onDeleteClick}
-          />
+          <Popover
+            content={stepToolBar}
+            trigger={'hover'}
+          >
+            <Button
+              style={{ background: 'white' }}
+              shape={'circle'}
+              size={'small'}
+              icon={<MoreVertical />}
+              // onClick={onEditClick}
+            />
+          </Popover>
         </Handle>
-      </EditHandle>
+      </UI.EditHandle>
 
 
-      {/*<CustomDiv>*/}
-      {/*  <Handle type={'source'} position={Position.Top}>*/}
-      {/*    <div className={'circle'} />*/}
-      {/*  </Handle>*/}
-      {/*</CustomDiv>*/}
+      {/* <CustomDiv>
+        <Handle type={'source'} position={Position.Top}>
+          <div className={'circle'} />
+        </Handle>
+      </CustomDiv> */}
 
 
-      <TargetHandle>
+      <UI.TargetHandle>
         <Handle
           type='target'
           position={Position.Top}
           className={'circle'}
-        >
-          {/*{props.selected &&*/}
-          {/*  <Button*/}
-          {/*    style={{ color: 'white', background: 'white' }}*/}
-          {/*    shape={'circle'}*/}
-          {/*    size={'small'}*/}
-          {/*    icon={<Plus />}*/}
-          {/*    onClick={() => onAddClick(true)}*/}
-          {/*  />*/}
-          {/*}*/}
-        </Handle>
-      </TargetHandle>
+        />
+      </UI.TargetHandle>
 
       {splitCount.map((split, index) => {
         return (
-          <SourceHandle selected={props.selected} key={index}>
+          <UI.SourceHandle selected={props.selected} key={index}>
             <Handle
-              onClick={() => {
-                console.log('Click Handler')
-              }}
               id={`${index}`}
               key={split}
               type={'source'}
@@ -149,14 +163,13 @@ export default function BaseActionNode (props: NodeProps
                   shape={'circle'}
                   size={'small'}
                   icon={<Plus />}
-                  onClick={() => onAddClick(false)}
+                  onClick={onAddClick}
                 />
               }
             </Handle>
-          </SourceHandle>
+          </UI.SourceHandle>
         )
       })}
-    </WorkflowNode>
+    </UI.WorkflowNode>
   )
 }
-

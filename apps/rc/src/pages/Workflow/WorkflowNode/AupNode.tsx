@@ -12,7 +12,7 @@ import BaseActionNode from './BaseActionNode'
 
 
 
-export default function AupActionNode (props: NodeProps<WorkflowStep>) {
+export default function AupNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
   const nodeId = useNodeId()
   const { data, isLoading, isFetching } = useGetActionByIdQuery({
@@ -25,9 +25,6 @@ export default function AupActionNode (props: NodeProps<WorkflowStep>) {
         <div>{$t(ActionNodeDisplay.AUP)}</div>
         <div>{` (${data?.name ?? noDataDisplay})`}</div>
       </Loader>
-      {/*<NodeToolbar isVisible={props.selected}>*/}
-      {/*  {'I am toolbar'}*/}
-      {/*</NodeToolbar>*/}
     </BaseActionNode>
   )
 }

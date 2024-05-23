@@ -1,9 +1,22 @@
+import { ActionType } from '@ant-design/pro-table'
+
 import {
   ActionBase,
   AupAction,
-  DataPromptAction, GenericActionData,
-  NewTableResult, onActivityMessageReceived,
-  onSocketActivityChanged, SplitOption, TableResult, Workflow, WorkflowActionDefinition,
+  DataPromptAction,
+  GenericActionData,
+  NewAPITableResult,
+  NewTableResult,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  SplitOption,
+  TableChangePayload,
+  TableResult,
+  transferNewResToTableResult,
+  transferToNewTablePaginationParams,
+  TxStatus,
+  Workflow,
+  WorkflowActionDefinition,
   WorkflowStep,
   WorkflowUrls
 } from '@acx-ui/rc/utils'
@@ -11,20 +24,34 @@ import { baseWorkflowApi }   from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
+export interface AsyncResponse {
+  id: string,
+  requestId: string
+}
+
 // FIXME: think about should I declare this variable here or not?
 type UnionAction = AupAction | DataPromptAction
 
 export const workflowApi = baseWorkflowApi.injectEndpoints({
+  /** Workflow Management */
   endpoints: build => ({
-    queryWorkflowList:
+    getWorkflows:
     build.query<TableResult<Workflow>, RequestPayload>({
       query: ({ params, payload }) => {
+        const req = createHttpRequest(WorkflowUrls.queryWorkflows, params)
         return {
-          ...createHttpRequest(WorkflowUrls.queryWorkflowList, params),
-          body: payload
+          ...req,
+          body: {
+            ...payload as TableChangePayload,
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
+      },
+      transformResponse (result: NewAPITableResult<Workflow>) {
+        return transferNewResToTableResult<Workflow>(result)
       }
     }),
+
     /** Workflow Action Definitions */
     getWorkflowActionDefinitionList:
       build.query<NewTableResult<WorkflowActionDefinition>, RequestPayload>({
@@ -34,6 +61,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           }
         }
       }),
+    // eslint-disable-next-line max-len
     getWorkflowActionRequiredDefinitions: build.query<NewTableResult<WorkflowActionDefinition> ,RequestPayload>({
       query: ({ params }) => {
         return {
@@ -41,6 +69,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         }
       }
     }),
+
     /** Workflow Step API */
     createWorkflowStep: build.mutation<WorkflowStep, RequestPayload>({
       query: ({ params, payload }) => {
@@ -71,7 +100,20 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
       query: ({ params }) => {
         return createHttpRequest(WorkflowUrls.getWorkflowStepsById, params)
       },
-      providesTags: [{ type: 'Step', id: 'LIST' }]
+      providesTags: [{ type: 'Step', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'CREATE_STEP',
+            'DELETE_STEP'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Step' }
+            ]))
+          })
+        })
+      }
     }),
     // FIXME: need to check
     getWorkflowStepById: build.query<WorkflowStep, RequestPayload>({
@@ -125,14 +167,28 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
 
 
     /** Workflow Actions API */
-    createAction: build.mutation<UnionAction, RequestPayload>({
+    // eslint-disable-next-line max-len
+    createAction: build.mutation<AsyncResponse, RequestPayload & { callback?: (response: AsyncResponse) => void }>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(WorkflowUrls.createAction, params),
           body: payload
         }
       },
-      invalidatesTags: [{ type: 'Action', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Action', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response.data.requestId === msg.requestId
+              && msg.status === TxStatus.SUCCESS
+              && msg.useCase === 'CREATE_WORKFLOW_ACTION') {
+              requestArgs.callback?.(response.data)
+            }
+          } catch {}
+        })
+      }
     }),
     getActionById: build.query<GenericActionData, RequestPayload>({
       query: ({ params }) => {
@@ -147,6 +203,27 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(workflowApi.util.invalidateTags([
               { type: 'Action', id: 'ID' }
+            ]))
+          })
+        })
+      }
+    }),
+    searchActions: build.query<NewTableResult<ActionBase>, RequestPayload<ActionQueryCriteria>>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WorkflowUrls.queryActions, params),
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Action', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UPDATE_WORKFLOW_ACTION'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(workflowApi.util.invalidateTags([
+              { type: 'Action', id: 'LIST' }
             ]))
           })
         })
@@ -189,8 +266,18 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
   })
 })
 
+export interface ActionQueryCriteria {
+  name?: string,
+  description?: string,
+  actionType?: ActionType,
+  version?: string,
+  sortFields?: string[],
+  page?: number,
+  pageSize?: number
+}
+
 export const {
-  useQueryWorkflowListQuery
+  useGetWorkflowsQuery
 } = workflowApi
 
 export const {
@@ -214,7 +301,9 @@ export const {
 
 export const {
   useCreateActionMutation,
+  useLazySearchActionsQuery,
   useGetActionByIdQuery,
+  useLazyGetActionByIdQuery,
   useGetAllActionsByTypeQuery,
   usePatchActionMutation,
   useDeleteActionByIdMutation

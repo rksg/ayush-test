@@ -8,15 +8,14 @@ export enum ActionType {
   AUP = 'AUP',
   DPSK = 'DPSK',
   DATA_PROMPT = 'DATA_PROMPT',
-  // SPLIT = 'SPLIT',
-  USER_SELECTION_SPLIT = 'USER_SELECTION_SPLIT',
-  // AUTO_SELECTION_SPLIT = 'AUTO_SELECTION_SPLIT',
-  // DISPLAY_MESSAGE = 'DISPLAY_MESSAGE'
+  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
+
+  USER_SELECTION_SPLIT = 'USER_SELECTION_SPLIT'
 }
 
 export const SplitActionTypes: ActionType[] = [
-  // ActionType.SPLIT,
-  ActionType.USER_SELECTION_SPLIT
+
+
 ]
 
 export interface WorkflowAction {
@@ -91,14 +90,23 @@ export interface DataPromptVariable {
   name?: string
 }
 
+export interface DisplayMessageActionContext {
+  title: string,
+  messageHtml: string,
+  backButtonText: string,
+  continueButtonText: string
+}
+
 export type AupAction = ActionBase & AupActionContext
 export type DpskAction = ActionBase & DpskActionContext
 export type DataPromptAction = ActionBase & DataPromptActionContext
 export type UserSelectionAction = ActionBase & UserSelectionSplitContext
+export type DisplayMessageAction = ActionBase & DisplayMessageActionContext
 
 export type GenericActionData =
   ActionBase &
   AupActionFormContext &
   DataPromptActionContext &
-  UserSelectionAction
+  UserSelectionAction &
+  DisplayMessageAction
 

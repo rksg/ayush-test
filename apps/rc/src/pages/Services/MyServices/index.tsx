@@ -13,7 +13,8 @@ import {
   useWebAuthTemplateListQuery,
   useGetResidentPortalListQuery,
   useGetEdgeFirewallViewDataListQuery,
-  useGetEdgeSdLanP2ViewDataListQuery
+  useGetEdgeSdLanP2ViewDataListQuery,
+  useGetWorkflowsQuery
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
@@ -33,7 +34,8 @@ export default function MyServices () {
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isWorkflowEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  // FIXME: Change to use workflow-related feature flag
+  const isWorkflowEnabled = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
@@ -133,9 +135,10 @@ export default function MyServices () {
     {
       type: ServiceType.WORKFLOW,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
+      tableQuery: useGetWorkflowsQuery({ params, payload: { filters: {} } }, {
         skip: !isWorkflowEnabled
-      })
+      }),
+      disabled: !isWorkflowEnabled
     }
   ]
 

@@ -1,13 +1,17 @@
 import { Button }    from 'antd'
+import { useIntl }   from 'react-intl'
 import { NodeProps } from 'reactflow'
 
 
-import { useWorkflowContext } from '../WorkflowPanel'
+
+
+import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
 
 import { StarterNode } from './styledComponents'
 
 
-export default function StartActionNode (props: NodeProps) {
+export default function StartNode (props: NodeProps) {
+  const { $t } = useIntl()
   const { actionDrawerState } = useWorkflowContext()
 
   const onClick = () => {
@@ -22,7 +26,9 @@ export default function StartActionNode (props: NodeProps) {
           type={'text'}
           onClick={onClick}
         >
-          {'Click Me to Start'}
+          {$t({ defaultMessage: 'Start building your' })}
+          <br/>
+          {$t({ defaultMessage: 'Onboarding Workflow' })}
         </Button>
       </div>
     </StarterNode>

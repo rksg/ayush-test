@@ -6,8 +6,8 @@ import { useIntl } from 'react-intl'
 import { ContentSwitcher, ContentSwitcherProps } from '@acx-ui/components'
 import { AupActionContext }                      from '@acx-ui/rc/utils'
 
-import AupActionSettingsForm from '../WorkflowActionForm/AupActionSettingsForm'
-import AupActionPreview      from '../WorkflowActionPreview/AupActionPreview'
+import { AupSettings }  from '../WorkflowActionForm/AupSettings'
+import AupActionPreview from '../WorkflowActionPreview/AupActionPreview'
 
 
 export default function AupActionView () {
@@ -20,7 +20,7 @@ export default function AupActionView () {
       label: $t({ defaultMessage: 'Content' }),
       value: '1',
       children:
-        <AupActionSettingsForm/>
+        <AupSettings/>
     },
     {
       label: $t({ defaultMessage: 'Look & Feel' }),

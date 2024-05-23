@@ -17,19 +17,22 @@ import ReactFlow, {
 import { ActionType } from '@acx-ui/rc/utils'
 
 
-import AupActionNode   from '../WorkflowNode/AupActionNode'
-import DataPromptNode  from '../WorkflowNode/DataPromptNode'
-import DpskActionNode  from '../WorkflowNode/DpskActionNode'
-import SplitOptionNode from '../WorkflowNode/SplitOptionNode'
-import StartActionNode from '../WorkflowNode/StartActionNode'
+import AupNode            from '../WorkflowNode/AupNode'
+import DataPromptNode     from '../WorkflowNode/DataPromptNode'
+import DisplayMessageNode from '../WorkflowNode/DisplayMessageNode'
+import DpskNode           from '../WorkflowNode/DpskNode'
+import SplitOptionNode    from '../WorkflowNode/SplitOptionNode'
+import StartNode          from '../WorkflowNode/StartNode'
 
 
+// TODO: Use enum to make sure new type adding
 const nodeTypes: NodeTypes = {
-  START: StartActionNode,
-  [ActionType.AUP]: AupActionNode,
-  [ActionType.DPSK]: DpskActionNode,
+  START: StartNode,
+  [ActionType.AUP]: AupNode,
+  [ActionType.DPSK]: DpskNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
-  [ActionType.USER_SELECTION_SPLIT]: SplitOptionNode
+  [ActionType.USER_SELECTION_SPLIT]: SplitOptionNode,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode
 }
 
 const findMaxPosition = (nodes: Node[]): XYPosition | undefined => {

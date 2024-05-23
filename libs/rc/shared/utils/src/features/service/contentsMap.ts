@@ -35,7 +35,7 @@ export const serviceTypeLabelMapping: Record<ServiceType, MessageDescriptor> = {
   [ServiceType.WEBAUTH_SWITCH]: defineMessage(
     { defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
   [ServiceType.RESIDENT_PORTAL]: defineMessage({ defaultMessage: 'Resident Portal' }),
-  [ServiceType.WORKFLOW]: defineMessage({ defaultMessage: 'Workflow' })
+  [ServiceType.WORKFLOW]: defineMessage({ defaultMessage: 'Onboarding Workflows' })
 }
 export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
   // eslint-disable-next-line max-len
@@ -62,8 +62,8 @@ export const serviceTypeDescMapping: Record<ServiceType, MessageDescriptor> = {
     { defaultMessage: 'Templates of Personal Identity Network Auth Page for Switch' }),
   [ServiceType.RESIDENT_PORTAL]: defineMessage(
     { defaultMessage: 'Resident portal for property management' }),
-  [ServiceType.WORKFLOW]: defineMessage(
-    { defaultMessage: 'Workflow for enrollment steps' })
+  // eslint-disable-next-line max-len
+  [ServiceType.WORKFLOW]: defineMessage({ defaultMessage: 'A customizable onboarding process that provides control over who is granted network access' })
 }
 export const serviceStatusLabelMapping: Record<ServiceStatus, MessageDescriptor> = {
   [ServiceStatus.UP]: defineMessage({ defaultMessage: 'Up' }),

@@ -25,11 +25,14 @@ interface ActionLibraryProps {
 
 
 // TODO: Split each ActionType to related Toggle (Starter, Authorization, Results...)
-const starterActions: ActionType[] = [ActionType.AUP, ActionType.USER_SELECTION_SPLIT]
+const starterActions: ActionType[] = [
+  ActionType.AUP,
+  ActionType.DISPLAY_MESSAGE
+]
 const authorizationActions: ActionType[] = [ActionType.DPSK]
 const resultActions: ActionType[] = [ActionType.DATA_PROMPT]
 
-export default function ActionsLibraryDrawer (props: ActionLibraryProps) {
+export default function ActionLibraryDrawer (props: ActionLibraryProps) {
   const { $t } = useIntl()
   const { visible, relationshipMap, existingActionTypes, onClose, onClickAction } = props
 
@@ -63,7 +66,7 @@ export default function ActionsLibraryDrawer (props: ActionLibraryProps) {
 
   const isDenied = (actionType: ActionType): boolean => {
     const dependency = relationshipMap[actionType]
-    console.log('isDenied ?', dependency, actionType)
+    // console.log('isDenied ?', dependency, actionType)
     if (dependency && dependency.type !== 'NONE') {
 
       switch (dependency.type) {
@@ -80,7 +83,7 @@ export default function ActionsLibraryDrawer (props: ActionLibraryProps) {
 
   return (
     <Drawer
-      title={$t({ defaultMessage: 'Workflow Steps Library' })}
+      title={$t({ defaultMessage: 'Actions Library' })}
       width={650}
       visible={visible}
       onClose={onClose}
@@ -93,7 +96,7 @@ export default function ActionsLibraryDrawer (props: ActionLibraryProps) {
         >
           {/* TODO: if defMap not found, do not display the ActionCard */}
           <UI.Collapse defaultActiveKey={[1, 2, 3]} ghost={true}>
-            <Panel header={'Starter'} key={1}>
+            <Panel header={$t({ defaultMessage: 'User Interaction' })} key={1}>
               <GridRow>
                 {starterActions.map(actionType =>
                   <GridCol key={actionType.toString()} col={{ span: 12 }}>
@@ -106,7 +109,7 @@ export default function ActionsLibraryDrawer (props: ActionLibraryProps) {
                 )}
               </GridRow>
             </Panel>
-            <Panel header={'Authorization'} key={2}>
+            <Panel header={$t({ defaultMessage: 'Authentication' })} key={2}>
               <GridRow>
                 {authorizationActions.map(actionType =>
                   <GridCol key={actionType.toString()} col={{ span: 12 }}>
@@ -119,7 +122,7 @@ export default function ActionsLibraryDrawer (props: ActionLibraryProps) {
                 )}
               </GridRow>
             </Panel>
-            <Panel header={'Results'} key={3}>
+            <Panel header={$t({ defaultMessage: 'Operational' })} key={3}>
               <GridRow>
                 {resultActions.map(actionType =>
                   <GridCol key={actionType.toString()} col={{ span: 12 }}>
@@ -139,7 +142,7 @@ export default function ActionsLibraryDrawer (props: ActionLibraryProps) {
         buttonLabel={{
           cancel: $t({ defaultMessage: 'Close' })
         }}
-        onCancel={() => onClose()}
+        onCancel={onClose}
       />}
     />
   )

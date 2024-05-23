@@ -12,7 +12,7 @@ export const WorkflowActionTypeBaseUrl = '/enrollmentActions/actionTypes'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 type WorkFlowUrlType =
-  'queryWorkflowList' |
+  'queryWorkflows' |
   'createWorkflowOption' | 'getWorkflowOptionById' | 'getWorkflowOptionsByStepId' |
   'createWorkflowStepUnderOption' | 'deleteSplitOptionById' |
   'createWorkflowChildStep' | 'createWorkflowStep' | 'deleteWorkflowStep' |
@@ -20,13 +20,13 @@ type WorkFlowUrlType =
   'getWorkflowActionDefinitions' | 'getWorkflowActionDefinitionById' |
   'getWorkflowActionRequiredDefinitions' |
   'createAction' | 'patchAction' | 'deleteAction' | 'getActionById' |
-  'getAllActionsByType'
+  'getAllActionsByType' | 'queryActions'
 
 
 export const WorkflowUrls: { [key in WorkFlowUrlType]: ApiInfo } = {
-  queryWorkflowList: {
+  queryWorkflows: {
     method: 'post',
-    url: `${WorkflowBaseUrl}/query`
+    url: `${WorkflowBaseUrl}/query?excludeContent=false`
   },
   /** Workflow Action Definitions endpoints */
   getWorkflowActionDefinitions: {
@@ -106,5 +106,9 @@ export const WorkflowUrls: { [key in WorkFlowUrlType]: ApiInfo } = {
   deleteAction: {
     method: 'delete',
     url: `${WorkflowActionBaseUrl}/:actionId`
+  },
+  queryActions: {
+    method: 'post',
+    url: `${WorkflowActionBaseUrl}/query`
   }
 }

@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 import {
@@ -6,18 +6,15 @@ import {
   Edge,
   MarkerType,
   Node,
-  NodeProps,
   ReactFlowProvider,
-  useEdges,
   useEdgesState,
-  useNodes,
   useNodesState,
   useViewport,
   XYPosition
 } from 'reactflow'
 
 
-import { Card, Loader, Modal, ModalType }            from '@acx-ui/components'
+import { Card, Loader }                              from '@acx-ui/components'
 import {
   useGetWorkflowActionDefinitionListQuery,
   useGetWorkflowStepsByIdQuery,
@@ -25,20 +22,18 @@ import {
 } from '@acx-ui/rc/services'
 import {
   ActionType,
-  ActionTypeTitle,
   findFirstStep,
   getInitialNodes,
   SplitOption,
-  toStepMap, WorkflowActionDef,
+  toStepMap,
   WorkflowStep
 } from '@acx-ui/rc/utils'
 
-import ActionsLibraryDrawer from '../ActionLibraryDrawer/ActionsLibraryDrawer'
-import AddSplitOptionDrawer from '../AddSplitOptionDrawer'
-import StepDrawer           from '../StepDrawer/StepDrawer'
-import ActionGenericForm    from '../WorkflowActionForm/ActionGenericForm'
+import ActionLibraryDrawer from '../ActionLibraryDrawer/ActionLibraryDrawer'
+import StepDrawer          from '../StepDrawer/StepDrawer'
 
-import WorkflowCanvas from './WorkflowCanvas'
+import WorkflowCanvas                                  from './WorkflowCanvas'
+import { useWorkflowContext, WorkflowContextProvider } from './WorkflowContextProvider'
 
 
 interface WorkflowPanelProps {
@@ -47,223 +42,6 @@ interface WorkflowPanelProps {
   height?: string,
   width?: string
 }
-
-interface ActionDrawerState {
-  visible: boolean,
-  onOpen: (node?: NodeProps) => void,
-  onClose: () => void
-}
-
-interface StepDrawerState {
-  visible: boolean,
-  selectedActionDef?: WorkflowActionDef,
-  onOpen: (definitionId: string, actionType: ActionType) => void,
-  onClose: () => void
-}
-
-interface EditActionModalState {
-  visible: boolean,
-  onOpen: (actionType: ActionType, actionId: string) => void,
-  onClose: () => void
-  actionType: ActionType,
-  selectedActionId?: string,
-}
-
-interface SplitOptionDrawerState {
-  visible: boolean,
-  onOpen: () => void,
-  onClose: () => void
-}
-
-interface WorkflowContextProps {
-  actionDefMap: Map<string, ActionType>,
-  setActionDefMap: (defMap: Map<string, ActionType>) => void,
-
-  stepDrawerState: StepDrawerState,
-  actionDrawerState: ActionDrawerState,
-  actionModalState: EditActionModalState,
-  splitOptionDrawerState: SplitOptionDrawerState,
-
-  nodeState: {
-    interactedNode?: NodeProps,
-    setInteractedNode: (node?: NodeProps) => void,
-    existingDependencies: Set<ActionType>
-  }
-}
-
-// TODO: Move the ContextProvider to another file for more clearly
-const WorkflowContext = createContext<WorkflowContextProps>({} as WorkflowContextProps)
-export const useWorkflowContext = () => useContext(WorkflowContext)
-
-export const WorkflowContextProvider = (props: { children: ReactNode }) => {
-  const [interactedNode, setInteractedNode] = useState<NodeProps | undefined>()
-
-  const [actionDrawerVisible, setActionDrawerVisible] = useState(false)
-  const [existingDependencies, setExistingDependencies] = useState<Set<ActionType>>(new Set())
-
-  const [stepDrawerVisible, setStepDrawerVisible] = useState(false)
-  const [stepDrawerActionDef, setStepDrawerActionDef] = useState<WorkflowActionDef | undefined>()
-
-  const [actionModalVisible, setActionModalVisible] = useState(false)
-  const [selectedActionId, setSelectedActionId] = useState<string | undefined>()
-  const [modalActionType, setModalActionType] = useState<ActionType>(ActionType.AUP)
-
-  const [splitOptionDrawerVisible, setSplitOptionDrawerVisible] = useState(false)
-
-  const [definitionMap, setDefinitionMap] = useState<Map<string, ActionType>>(new Map())
-
-  const nodes = useNodes()
-  const edges = useEdges()
-
-  useEffect(() => {
-    const findDependencies = (startId: string, dependencies: Set<ActionType>): Set<ActionType> => {
-      console.log('1. Current State : Node = ', nodes, ' and \nEdge = ', edges)
-
-      const node = nodes.find(node => node.id === startId)
-      if (!node) return dependencies
-
-      console.log(`2. Found Node(${node.id}) with ActionType = ${node.type}`)
-      dependencies.add(node.type as ActionType)
-
-      const priorEdge = edges.find(edge => edge.target === node.id)
-      if (!priorEdge) return dependencies
-
-      console.log(`3. Found prior Node(${priorEdge.source})`)
-      return findDependencies(priorEdge.source, dependencies)
-    }
-
-    if (interactedNode !== undefined) {
-      setExistingDependencies(findDependencies(interactedNode.id, new Set()))
-    } else {
-      setExistingDependencies(new Set())
-    }
-  }, [interactedNode])
-
-  return <WorkflowContext.Provider
-    value={{
-      nodeState: {
-        interactedNode: interactedNode,
-        setInteractedNode: setInteractedNode,
-        existingDependencies: existingDependencies
-      },
-
-      actionDefMap: definitionMap,
-      setActionDefMap: setDefinitionMap,
-
-      splitOptionDrawerState: {
-        visible: splitOptionDrawerVisible,
-        onOpen: () => {
-          setSplitOptionDrawerVisible(true)
-          setActionDrawerVisible(false)
-        },
-        onClose: () => {
-          setSplitOptionDrawerVisible(false)
-        }
-      },
-
-      stepDrawerState: {
-        visible: stepDrawerVisible,
-        selectedActionDef: stepDrawerActionDef,
-        onOpen: (definitionId, actionType) => {
-          setStepDrawerVisible(true)
-          setStepDrawerActionDef({ id: definitionId, actionType })
-        },
-        onClose: () => {
-          setStepDrawerVisible(false)
-          setActionDrawerVisible(false)
-          setStepDrawerActionDef(undefined)
-        }
-      },
-
-      actionDrawerState: {
-        visible: actionDrawerVisible,
-        onOpen: (node?: NodeProps) => {
-          console.log('OpenActionDrawer', node)
-          setActionDrawerVisible(true)
-          setSplitOptionDrawerVisible(false)
-        },
-        onClose: () => {
-          console.log('CloseActionDrawer')
-          setActionDrawerVisible(false)
-        }
-      },
-
-      actionModalState: {
-        visible: actionModalVisible,
-        selectedActionId,
-        actionType: modalActionType,
-        onOpen: (actionType, actionId) => {
-          setSelectedActionId(actionId)
-          setModalActionType(actionType)
-          setActionModalVisible(true)
-        },
-        onClose: () => {
-          setActionModalVisible(false)
-        }
-      }
-    }}
-  >
-    {props.children}
-  </WorkflowContext.Provider>
-}
-
-const mockWorkflowSteps: WorkflowStep[] = [
-  {
-    id: '03e4448c-9bfa-4dee-aa42-f55e9746c196',
-    nextStepId: 'e4f3e1ad-b65a-46e3-b945-a8e5989c8a92',
-    enrollmentActionId: 'ae753f73-c6fd-4579-a352-95de84ec6618',
-    actionDefinitionId: 'd1342c9e-c379-4fe6-9a18-8eec67e34eb6',
-    actionType: 'AUP'
-  },
-  {
-    id: 'dccb59d2-19f7-4d57-8188-ab0b1b7256f0',
-    priorStepId: 'e4f3e1ad-b65a-46e3-b945-a8e5989c8a92',
-    nextStepId: 'e31e756b-8358-4182-81d3-c1054e0c861f',
-    enrollmentActionId: '83de20f7-bf2e-4b81-b447-ade4c913b00d',
-    actionDefinitionId: 'd1342c9e-c379-4fe6-9a18-8eec67e34eb6',
-    actionType: 'AUP'
-  },
-  // @ts-ignore
-  {
-    id: 'e31e756b-8358-4182-81d3-c1054e0c861f',
-    priorStepId: 'dccb59d2-19f7-4d57-8188-ab0b1b7256f0',
-    actionDefinitionId: 'fe3c0896-8dbc-4da8-9271-96b196319283',
-    actionType: 'USER_SELECTION_SPLIT',
-    splitOptionsList: [
-      {
-        id: '5aaf42de-9580-4412-b596-230109cf7ce7',
-        optionName: 'FirstOption',
-        enrollmentActionId: 'fe3c0896-8dbc-4da8-9271-96b196319283',
-        actionDefinitionId: 'fe3c0896-8dbc-4da8-9271-96b196319283',
-        actionType: 'USER_SELECTION_SPLIT',
-        // FIXME: Make sure the 'nextStepId' would include in SplitOption
-        nextStepId: '371ae19d-e898-4de6-9dec-1b5290680032'
-      },
-      {
-        id: 'c6f39470-deb5-43ee-b204-662ee9ddb5d6',
-        optionName: 'SecondOption',
-        enrollmentActionId: 'fe3c0896-8dbc-4da8-9271-96b196319283',
-        actionDefinitionId: 'fe3c0896-8dbc-4da8-9271-96b196319283',
-        actionType: 'USER_SELECTION_SPLIT'
-      }
-    ]
-  },
-  {
-    id: '371ae19d-e898-4de6-9dec-1b5290680032',
-    splitOptionId: '5aaf42de-9580-4412-b596-230109cf7ce7',
-    enrollmentActionId: 'ae753f73-c6fd-4579-a352-95de84ec6618',
-    actionDefinitionId: 'd1342c9e-c379-4fe6-9a18-8eec67e34eb6',
-    actionType: 'AUP'
-  },
-  {
-    id: 'e4f3e1ad-b65a-46e3-b945-a8e5989c8a92',
-    priorStepId: '03e4448c-9bfa-4dee-aa42-f55e9746c196',
-    nextStepId: 'dccb59d2-19f7-4d57-8188-ab0b1b7256f0',
-    enrollmentActionId: 'fff1347a-8fe1-480f-b89c-de67af93c4ee',
-    actionDefinitionId: '580584f1-a3f4-407f-b3ac-a62addea530e',
-    actionType: 'DATA_PROMPT'
-  }
-]
 
 const composeSplitOptions = (
   splitStep: WorkflowStep,
@@ -380,12 +158,15 @@ function toReactflowData (steps: WorkflowStep[], definitionMap: Map<string, Acti
     return { nodes: getInitialNodes(startX, startY), edges }
   }
 
+  console.groupCollapsed('[Processing] - toReactflowData')
   const firstStep = findFirstStep(steps)
   const stepMap = toStepMap(steps, definitionMap)
 
   if (firstStep) {
     composeNext(firstStep.id, stepMap, nodes, edges, startX, startY)
   }
+
+  console.groupEnd()
 
   return { nodes, edges }
 }
@@ -406,6 +187,7 @@ const useRequiredDependency = () => {
   useEffect(() => {
     if (isLoading || !actionDefsData) return
     const gen = async () => {
+      console.groupCollapsed('[Processing] - useRequiredDependency gen()')
       for (const def of actionDefsData?.content) {
         if (def.dependencyType === 'NONE' && def.actionType !== ActionType.USER_SELECTION_SPLIT) {
           console.log('NONE - ', def)
@@ -429,6 +211,7 @@ const useRequiredDependency = () => {
             })
         }
       }
+      console.groupEnd()
     }
 
     gen().then(() => {
@@ -449,8 +232,8 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const { workflowId: serviceId } = props
   const {
     nodeState,
-    stepDrawerState, splitOptionDrawerState,
-    actionDrawerState, actionModalState
+    stepDrawerState,
+    actionDrawerState
   } = useWorkflowContext()
   const [nodes, setNodes] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
@@ -458,7 +241,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const [originalPosition, setOriginalPosition] = useState<XYPosition>()
 
   const requiredDependency = useRequiredDependency()
-  console.log('const requiredDependency = useRequiredDependency()', requiredDependency)
+  // console.log('const requiredDependency = useRequiredDependency()', requiredDependency)
 
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
     params: { serviceId, pageSize: '1000', page: '0', sort: 'id,ASC' }
@@ -473,7 +256,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 
     const defsMap = actionDefsData?.content
       ?.reduce((map, def) => map.set(def.id, def.actionType), new Map())
-    console.log(`(${serviceId})Steps List = ${stepsData?.content}`)
+
     const {
       nodes: inputNodes,
       edges: inputEdges
@@ -484,7 +267,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   }, [stepsData, actionDefsData])
 
   const onClickAction = (definitionId: string, type: ActionType) => {
-    stepDrawerState.onOpen(definitionId, type)
+    stepDrawerState.onOpen(false, definitionId, type)
   }
 
   return (
@@ -499,7 +282,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 
       {
         actionDrawerState.visible &&
-        <ActionsLibraryDrawer
+        <ActionLibraryDrawer
           visible={actionDrawerState.visible}
           onClose={actionDrawerState.onClose}
           onClickAction={onClickAction}
@@ -508,49 +291,18 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
         />
       }
       {
-        (stepDrawerState.visible && stepDrawerState.selectedActionDef) &&
+        (stepDrawerState.visible && stepDrawerState?.selectedActionDef?.actionType) &&
         <StepDrawer
+          isEdit={stepDrawerState.isEdit}
           workflowId={serviceId}
-          actionType={stepDrawerState?.selectedActionDef.actionType}
+          actionId={nodeState.interactedNode?.data?.enrollmentActionId}
+          actionType={stepDrawerState.selectedActionDef.actionType}
           selectedActionDef={stepDrawerState.selectedActionDef}
           visible={stepDrawerState.visible}
-          onClose={stepDrawerState.onClose}
+          onClose={() => {
+            stepDrawerState.onClose()
+          }}
           priorNode={nodeState.interactedNode}
-        />
-      }
-
-      {
-        (splitOptionDrawerState.visible && nodeState.interactedNode) &&
-        <AddSplitOptionDrawer
-          visible={true}
-          workflowId={serviceId}
-          stepId={nodeState.interactedNode.id}
-          optionType={nodeState.interactedNode.type as ActionType}
-          onClose={splitOptionDrawerState.onClose}
-        />
-      }
-
-      {
-        actionModalState.visible &&
-        <Modal
-          visible={true}
-          destroyOnClose={true}
-          title={$t({ defaultMessage: 'Edit' }) + ' '
-            + $t(ActionTypeTitle[actionModalState.actionType])}
-          type={ModalType.ModalStepsForm}
-          width={800}
-          children={
-            <ActionGenericForm
-              isEdit={true}
-              actionId={actionModalState.selectedActionId}
-              // FIXME: DEMO only support AUP, DataPrompt in BE
-              actionType={actionModalState.actionType}
-              modalCallback={() => {
-                console.log('Outer Modal callback')
-                actionModalState.onClose()
-              }}
-            />}
-          onCancel={actionModalState.onClose}
         />
       }
     </Loader>

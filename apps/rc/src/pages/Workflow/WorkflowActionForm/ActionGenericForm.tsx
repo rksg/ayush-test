@@ -12,19 +12,18 @@ import {
 } from '@acx-ui/rc/services'
 import { ActionDefaultValueMap, ActionType, GenericActionData } from '@acx-ui/rc/utils'
 
-import AupActionView        from '../WorkflowActionView/AupActionView'
-import DataPromptActionView from '../WorkflowActionView/DataPromptActionView'
-import UserSplitActionView  from '../WorkflowActionView/UserSplitActionView'
 
-import SplitOptionSettingForm from './SplitOptionSettingForm'
+import { AupSettings }          from './AupSettings'
+import { DataPromptActionForm } from './DataPromptActionForm'
 
 
 const actionFormMap = {
-  [ActionType.AUP]: AupActionView,
+  [ActionType.AUP]: AupSettings,
   // [ActionType.SPLIT]: SplitOptionSettingForm,
-  [ActionType.USER_SELECTION_SPLIT]: UserSplitActionView,
-  [ActionType.DATA_PROMPT]: DataPromptActionView,
-  [ActionType.DPSK]: () => <></>
+  [ActionType.USER_SELECTION_SPLIT]: () => <></>,
+  [ActionType.DATA_PROMPT]: DataPromptActionForm,
+  [ActionType.DPSK]: () => <></>,
+  [ActionType.DISPLAY_MESSAGE]: () => <></>
 }
 
 export interface ActionGenericFormProps {
@@ -39,18 +38,16 @@ export default function ActionGenericForm (props: ActionGenericFormProps) {
   const params = useParams()
   const { actionType, modalCallback, actionId, isEdit } = props
   const [form] = Form.useForm()
+  const ActionSettingsForm = actionFormMap[actionType]
+
   const [ createAction ] = useCreateActionMutation()
   const [ patchAction ] = usePatchActionMutation()
   const [ getUploadURL ] = useUploadURLMutation()
-  const ActionSettingsForm = actionFormMap[actionType]
 
-  // const { data, isLoading } = useGetSplitOptionByIdQuery({
-  //   params: { }
-  // }, { skip: !isEdit })
-
-  const { data, isLoading } = useGetActionByIdQuery({
-    params: { actionId }
-  }, { skip: !isEdit || !actionId })
+  const { data, isLoading } = useGetActionByIdQuery(
+    { params: { actionId } },
+    { skip: !isEdit || !actionId }
+  )
 
   const defaultValue = Object.entries(ActionDefaultValueMap[actionType])
     .reduce((acc: Record<string, string | boolean>, [key, value]) => {

@@ -5,6 +5,7 @@ import { useIntl }      from 'react-intl'
 
 import { whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
+import { CommonActionSettings } from './CommonActionSettings'
 
 export function DataPromptActionForm () {
   const { $t } = useIntl()
@@ -12,6 +13,7 @@ export function DataPromptActionForm () {
 
   return (
     <>
+      <CommonActionSettings />
       <Form.Item
         name='title'
         label={$t({ defaultMessage: 'Title' })}

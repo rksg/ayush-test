@@ -1,130 +1,150 @@
+import { useEffect, useState } from 'react'
+
 import { Form }      from 'antd'
 import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
 import { NodeProps } from 'reactflow'
 
-import { Drawer } from '@acx-ui/components'
-import {
-  useCreateWorkflowChildStepMutation,
-  useCreateWorkflowStepMutation,
-  useCreateWorkflowStepUnderOptionMutation,
-  workflowApi
-} from '@acx-ui/rc/services'
-import { ActionType, ActionTypeTitle, isSplitActionType, WorkflowActionDef } from '@acx-ui/rc/utils'
-import { store }                                                             from '@acx-ui/store'
+import { Button, Drawer, Loader }                                                                   from '@acx-ui/components'
+import { EyeOpenSolid }                                                                             from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery }                                                               from '@acx-ui/rc/services'
+import { ActionDefaultValueMap, ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef } from '@acx-ui/rc/utils'
 
-import ActionSelectedForm from './ActionSelectedForm'
+import { AupSettings }           from '../WorkflowActionForm/AupSettings'
+import { DataPromptActionForm }  from '../WorkflowActionForm/DataPromptActionForm'
+import { DisplayMessageSetting } from '../WorkflowActionForm/DisplayMessageSettings'
 
-enum StepType {
-  Basic = 'stepDto',
-  Split = 'splitStepDto'
-}
+import { useWorkflowStepActions } from './useWorkflowStepAction'
+
 
 export interface StepDrawerProps {
+  isEdit: boolean,
+  actionId?: string,
   workflowId: string
   visible: boolean,
   actionType: ActionType,
   onClose: () => void,
-  selectedActionDef: WorkflowActionDef
+  selectedActionDef?: WorkflowActionDef
 
   priorNode?: NodeProps
 }
 
+// FIXME: Use enum to make sure new ActionType to be added into this Map
+const actionFormMap = {
+  [ActionType.AUP]: AupSettings,
+  [ActionType.DATA_PROMPT]: DataPromptActionForm,
+  [ActionType.DPSK]: () => <></>,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
+  [ActionType.USER_SELECTION_SPLIT]: () => <></>
+}
+
 export default function StepDrawer (props: StepDrawerProps) {
   const { $t } = useIntl()
-  const params = useParams()
   const {
     workflowId: serviceId, visible, onClose,
-    actionType, priorNode, selectedActionDef
+    actionType, priorNode, selectedActionDef,
+    isEdit, actionId
   } = props
-  const [ formInstance ] = Form.useForm()
-  const [ createStepMutation ] = useCreateWorkflowStepMutation()
-  const [ createChildStepMutation ] = useCreateWorkflowChildStepMutation()
-  const [ createStepUnderOptionMutation ] = useCreateWorkflowStepUnderOptionMutation()
+  const ActionForm = actionFormMap[actionType]
+  const defaultValue = Object.entries(ActionDefaultValueMap[actionType])
+    .reduce((acc: Record<string, string | boolean>, [key, value]) => {
+      if (typeof value === 'string' || typeof value === 'boolean') {
+        acc[key] = value
+      } else {
+        acc[key] = $t(value)
+      }
+      return acc
+    }, {})
 
+  const [ formInstance ] = Form.useForm()
+
+  const { createStepWithActionMutation: createStep, patchActionMutation } = useWorkflowStepActions()
+  const [actionData, setActionData] = useState<GenericActionData | undefined>()
+  const [ getActionById, {
+    isLoading: isActionLoading,
+    isFetching: isActionFetching,
+    isError: isActionError
+  } ] = useLazyGetActionByIdQuery()
+
+
+  useEffect(() => {
+    formInstance.resetFields()
+
+    if (!isEdit) {
+      formInstance.setFieldsValue(defaultValue)
+      return
+    }
+
+    if (!actionId) return
+
+    getActionById({ params: { serviceId, actionId } })
+      .then((result) => {
+        setActionData(result?.data)
+        formInstance.setFieldsValue(result?.data)
+      })
+
+  }, [actionId, isEdit])
 
   const onSave = async () => {
-    console.log('OnSave :: ', formInstance.getFieldsValue())
-    console.log('onSave :: priorActionType = ', priorNode?.type)
+    try {
+      const formContent = await formInstance.validateFields()
 
-    formInstance.validateFields()
-      .then(async (formContent) => {
-        console.log('OK :: ', formContent)
-        console.log('params :: ', params)
-
-        // TODO: If priorNode is Split action type -> call different api to create step
-        if (priorNode?.type === ActionType.USER_SELECTION_SPLIT) {
-          console.log('createStepUnderOptionMutation', priorNode)
-          await createStepUnderOptionMutation({
-            params: { serviceId, stepId: priorNode.data.splitStepId, optionId: priorNode.id },
-            payload: {
-              type: isSplitActionType(actionType) ? 'splitStepDto' : 'stepDto',
-              // FIXME: How to pass the actionDefinitionId to here?
-              enrollmentActionId: formContent.actionId,
-              ...formContent
-            },
-            skip: !serviceId
-          })
-        } else {
-          if (actionType === ActionType.USER_SELECTION_SPLIT) {
-            console.log('createSplitStep', actionType)
-          } else {
-            console.log('createBasicStep', actionType)
-          }
-
-          priorNode?.id
-            ? await createChildStepMutation({
-              params: { serviceId, stepId: priorNode.id },
-              payload: {
-                type: isSplitActionType(actionType) ? StepType.Split : StepType.Basic,
-                enrollmentActionId: formContent.actionId,
-                ...formContent
-              },
-              skip: !serviceId
-            })
-            : await createStepMutation({
-              params: { serviceId },
-              payload: {
-                type: isSplitActionType(actionType) ? StepType.Split : StepType.Basic,
-                enrollmentActionId: formContent.actionId,
-                ...formContent
-              },
-              skip: !serviceId
-            })
-        }
-
-        onClose()
-
-        // FIXME: Due to Activity failure, so I manually invalidate the cache tags.
-        setTimeout(() => {
-          store.dispatch(workflowApi.util.invalidateTags([{ type: 'Step' }]))
-        }, 3000)
-      })
-      .catch((err) => {
-        console.log('Failed to create step reason = ', err)
-      })
+      isEdit
+        ? actionData && await patchActionMutation(actionData, formContent).then(onClose)
+        : await createStep(serviceId, actionType, formContent, priorNode?.id, onClose)
+    } catch (ex) {
+      console.error('Failed to create/update step. isEdit=', isEdit, ' reason=', ex)
+    }
   }
-
 
   return (
     <Drawer
       title={$t(ActionTypeTitle[actionType])}
+      destroyOnClose
       width={650}
       visible={visible}
       onClose={onClose}
       children={
-        <ActionSelectedForm
-          form={formInstance}
-          actionDef={selectedActionDef}
-        />
+        <Loader
+          states={[
+            { isLoading: isActionLoading, isFetching: isActionFetching }
+          ]}
+        >
+          <Form
+            name={'actionForm'}
+            disabled={isActionError}
+            preserve={false}
+            form={formInstance}
+            layout={'vertical'}
+          >
+            <ActionForm />
+          </Form>
+        </Loader>
       }
       footer={
         <Drawer.FormFooter
-          buttonLabel={{ save: $t({ defaultMessage: 'Add Step' }) }}
+          buttonLabel={{
+            save: isEdit
+              ? $t({ defaultMessage: 'Save Step' })
+              : $t({ defaultMessage: 'Add Step' })
+          }}
           onSave={onSave}
           onCancel={onClose}
+          showSaveButton={!isActionError}
+          extra={
+            <Button
+              type={'link'}
+              icon={<EyeOpenSolid/>}
+            >
+              {$t({ defaultMessage: 'Preview' })}
+            </Button>
+          }
         />
       }
+      footerStyle={{
+        backgroundColor: '#f8f8fa',
+        margin: '0px',
+        padding: '20px'
+      }}
     />
   )
 }

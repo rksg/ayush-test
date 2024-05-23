@@ -7,7 +7,7 @@ import { ActionNodeDisplay } from '@acx-ui/rc/utils'
 import BaseActionNode from './BaseActionNode'
 
 
-export default function DpskActionNode (props: NodeProps) {
+export default function DpskNode (props: NodeProps) {
   const { $t } = useIntl()
   const nodeId = useNodeId()
 
