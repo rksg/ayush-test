@@ -21,7 +21,6 @@ export type MoreDetailsWidgetsMapping = {
   type: WidgetType
   title: string
   pieTitle: string
-  tableTitle: string
 }[]
 
 export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
@@ -36,27 +35,23 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
   const mapping: MoreDetailsWidgetsMapping = [
     {
       type: 'dhcpFailure',
-      title: $t({ defaultMessage: 'DHCP Failure' }),
-      pieTitle: $t({ defaultMessage: 'Top 5 DHCP Failure Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top 10 Switches with DHCP Failures' })
+      title: $t({ defaultMessage: 'DHCP' }),
+      pieTitle: 'DHCP Failure'
     },
     {
       type: 'congestion',
-      title: $t({ defaultMessage: 'Congestion' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
+      title: $t({ defaultMessage: 'Uplink Usage' }),
+      pieTitle: 'Congested'
     },
     {
       type: 'portStorm',
       title: $t({ defaultMessage: 'Port Storm' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
+      pieTitle: 'Storm'
     },
     {
       type: 'cpuUsage',
       title: $t({ defaultMessage: 'High CPU' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
+      pieTitle: 'High CPU'
     }
   ]
   const activeWidgetMapping = mapping.filter(item => item.type === widget)[0]
@@ -76,7 +71,10 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       children={
         <GridRow style={{ paddingTop: 20 }}>
           <GridCol col={{ span: 9 }} key={`pie-${activeWidgetMapping?.type}`}>
-            <MoreDetailsPieChart filters={filters} queryType={activeWidgetMapping?.type}/>
+            <MoreDetailsPieChart
+              filters={filters}
+              queryType={activeWidgetMapping?.type}
+              title={activeWidgetMapping?.pieTitle}/>
           </GridCol>
           {
             (activeWidgetMapping?.type === 'dhcpFailure' ||

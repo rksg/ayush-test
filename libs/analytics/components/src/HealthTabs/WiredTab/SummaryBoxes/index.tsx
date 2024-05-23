@@ -45,7 +45,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     {
       type: 'red',
       values: [{
-        title: defineMessage({ defaultMessage: 'Uplink usage' }),
+        title: defineMessage({ defaultMessage: 'Uplink Usage' }),
         value: !isNil(summaryData?.congestedPortCount) &&
         summaryData?.portCount
           ? formatter('percentFormat')(summaryData?.congestedPortCount / summaryData?.portCount)
@@ -56,7 +56,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
     {
       type: 'yellow',
       values: [{
-        title: defineMessage({ defaultMessage: 'Ports exp. Storm' }),
+        title: defineMessage({ defaultMessage: 'Storm Ports' }),
         value: !isNil(summaryData?.stormPortCount) &&
         summaryData?.portCount
           ? formatter('percentFormat')(summaryData?.stormPortCount / summaryData?.portCount)

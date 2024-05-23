@@ -73,8 +73,9 @@ export const getPieData = (data: PieChartResult, type: WidgetType) => {
 
 export const MoreDetailsPieChart = ({
   filters,
-  queryType
-} : { filters: AnalyticsFilter, queryType: WidgetType }) => {
+  queryType,
+  title
+} : { filters: AnalyticsFilter, queryType: WidgetType, title: string }) => {
   const { $t } = useIntl()
   const { filter, startDate: start, endDate: end } = filters
   const payload = {
@@ -95,12 +96,13 @@ export const MoreDetailsPieChart = ({
   const totalCount = queryResults?.data?.length
   const Title = <ChartTitle>
     <FormattedMessage
-      defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
+      defaultMessage={`<b>{count}</b> {title} {totalCount, plural,
       one {Switch}
       other {Switches}
     }`}
       values={{
         count: showTopResult($t, totalCount, 5),
+        title,
         totalCount,
         b: (chunk) => <b>{chunk}</b>
       }}
