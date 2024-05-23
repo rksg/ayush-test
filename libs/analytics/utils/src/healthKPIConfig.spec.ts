@@ -1,5 +1,6 @@
 import { multipleBy1000, divideBy100, noFormat,
-  kpisForTab, wiredKPIsForTab, numberWithPercentSymbol } from './healthKPIConfig'
+  kpisForTab, wiredKPIsForTab,
+  numberWithPercentSymbol, hasFirmwareFilterForPoe } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   const mockGet = jest.fn()
@@ -37,6 +38,10 @@ describe('Health KPI', () => {
     expect(kpiConfig.apToSZLatency.histogram.initialThreshold).toBe(40)
     expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([5, 10, 20, 40, 60, 100, 200, 500])
+  })
+
+  it('should return false if path name doesn\'t have wired',()=>{
+    expect(hasFirmwareFilterForPoe()).toBe(false)
   })
 
   it('should return correct config for RA', () => {

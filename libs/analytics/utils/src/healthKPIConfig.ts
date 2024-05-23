@@ -27,6 +27,10 @@ export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
+export const hasFirmwareFilterForPoe = () => {
+  return window.location.pathname.includes('/ai/health/wired')
+}
+
 export const kpiConfig = {
   connectionSuccess: {
     text: defineMessage({ defaultMessage: 'Connection Success' }),
@@ -426,9 +430,7 @@ export const kpiConfig = {
   },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
-    enableSwitchFirmwareFilter: () => {
-      return window.location.pathname.includes('/ai/health/wired')
-    },
+    enableSwitchFirmwareFilter: hasFirmwareFilterForPoe,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
