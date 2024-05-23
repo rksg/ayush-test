@@ -79,7 +79,7 @@ exports[`MeshNetwork should render correctly 1`] = `
                 <input
                   class="ant-input ant-input-borderless"
                   type="text"
-                  value="Mesh-V3jJKOxs"
+                  value="Mesh-sMyvjqIA"
                 />
               </div>
             </div>
@@ -122,7 +122,7 @@ exports[`MeshNetwork should render correctly 1`] = `
                   class="ant-input ant-input-borderless"
                   rows="3"
                 >
-                  86lShBtb5cDuAdktKlMCCtPWuiNDXovIOXr5zj0YNTmjqA2XDIVGXvdq6OOwlnW
+                  PnFcntAZhIDIWxZsQmR311waWlIgcfCKJ87QU4wgP2sVRjXxpHWtK0loAoMQ7M1
                 </textarea>
               </div>
             </div>
