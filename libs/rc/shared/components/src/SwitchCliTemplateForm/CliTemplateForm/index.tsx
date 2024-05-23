@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Form }                   from 'antd'
 import _                          from 'lodash'
@@ -10,12 +10,14 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import {
   useGetCliTemplateQuery,
+  useLazyGetCliTemplatesQuery,
   useAddCliTemplateMutation,
   useUpdateCliTemplateMutation,
-  useBatchAssociateCliTemplateMutation
+  useBatchAssociateCliTemplateMutation,
+  useBatchDisassociateCliTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   CliConfiguration
@@ -47,6 +49,21 @@ export const tooltip = {
 }
 /* eslint-enable max-len */
 
+export enum VariableType {
+  ADDRESS = 'ADDRESS',
+  RANGE = 'RANGE',
+  STRING = 'STRING'
+}
+
+export const cliTemplatesPayload = {
+  fields: ['name', 'id', 'venueSwitches'],
+  pageSize: 9999,
+  sortField: 'name',
+  sortOrder: 'DESC'
+}
+
+type VenueSwitches = { [key: string]: string[] }
+
 export function CliTemplateForm () {
   const { $t } = useIntl()
   const params = useParams()
@@ -59,15 +76,25 @@ export function CliTemplateForm () {
   const [addCliTemplate] = useAddCliTemplateMutation()
   const [updateCliTemplate] = useUpdateCliTemplateMutation()
   const [batchAssociateCliTemplate] = useBatchAssociateCliTemplateMutation()
+  const [batchDisassociateCliTemplate] = useBatchDisassociateCliTemplateMutation()
+  const [getCliTemplates] = useLazyGetCliTemplatesQuery()
   const { data: cliTemplate, isLoading: isCliTemplateLoading }
     = useGetCliTemplateQuery({
       params,
       enableRbac: isSwitchRbacEnabled
     }, { skip: !editMode })
 
+  const [orinVenueSwitches, setOrinVenueSwitches] = useState({} as unknown as VenueSwitches)
+
   const handleEditCli = async (data: CliConfiguration) => {
     try {
-      const venueSwitches = data.venueSwitches as unknown as Map<string, string[]>[]
+      const venueSwitches = data.venueSwitches as unknown as VenueSwitches
+      const disassociateSwitch = getDiffAssociatedSwitch(venueSwitches, orinVenueSwitches)
+      const diffAssociatedSwitch = getDiffAssociatedSwitch(orinVenueSwitches, venueSwitches)
+      // should update in order:
+      // disassociate -> update -> associate(exclude already associated)
+      await disassociateWithCliTemplate(disassociateSwitch)
+
       await updateCliTemplate({
         params, payload: {
           ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
@@ -77,8 +104,10 @@ export function CliTemplateForm () {
         },
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
-      await associateWithCliTemplate(venueSwitches)
+
+      await associateWithCliTemplate(diffAssociatedSwitch)
       navigate(linkToNetworks, { replace: true })
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -86,16 +115,26 @@ export function CliTemplateForm () {
 
   const handleAddCli = async (data: CliConfiguration) => {
     try {
+      const venueSwitches = data.venueSwitches as unknown as VenueSwitches
+      const hasAssociatedSwitches = hasVenueSwitches(venueSwitches)
       await addCliTemplate({
         params, payload: {
           ..._.omit(data, ['applyNow', 'cliValid', 'applySwitch']),
           applyLater: !data.applyNow,
-          venueSwitches: transformVenueSwitches(
-            data.venueSwitches as unknown as Map<string, string[]>[]
-          )
+          venueSwitches: transformVenueSwitches(venueSwitches)
         },
         enableRbac: isSwitchRbacEnabled
       }).unwrap()
+
+      if (isSwitchRbacEnabled && hasAssociatedSwitches) {
+        const { data: cliTemplates } = await getCliTemplates({
+          params,
+          payload: cliTemplatesPayload,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
+        const templateId = cliTemplates?.filter(t => t.name === data.name)?.map(t => t.id)?.[0]
+        await associateWithCliTemplate(venueSwitches, templateId)
+      }
       navigate(linkToNetworks, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -103,14 +142,25 @@ export function CliTemplateForm () {
   }
 
   const associateWithCliTemplate = async (
-    venueSwitches: Map<string, string[]>[],
+    venueSwitches: VenueSwitches,
+    cliTemplateId?: string,
     callBack?: () => void
   ) => {
-    // TODO: waiting for BE support API
-    if (false && isSwitchRbacEnabled && venueSwitches && Object.keys(venueSwitches)?.length) {
-      const requests = Object.keys(venueSwitches).map((key: string)=> ({
-        params: { venueId: key, templateId: params.templateId },
-        payload: venueSwitches?.[key as keyof typeof venueSwitches]
+    const templateId = params.templateId || cliTemplateId
+    const hasAssociatedSwitches = hasVenueSwitches(venueSwitches)
+
+    if (isSwitchRbacEnabled && hasAssociatedSwitches && templateId) {
+      const trimVenueSwitches = Object.keys(venueSwitches).reduce((result, index) => {
+        const hasSwitches = venueSwitches[index]?.length > 0
+        return {
+          ...result,
+          ...( hasSwitches ? { [index]: venueSwitches[index] } : {})
+        }
+      }, {})
+
+      const requests = Object.keys(trimVenueSwitches).map((key: string)=> ({
+        params: { venueId: key, templateId },
+        payload: trimVenueSwitches?.[key as keyof typeof trimVenueSwitches]
       }))
 
       await batchAssociateCliTemplate(requests).then(callBack)
@@ -118,19 +168,36 @@ export function CliTemplateForm () {
     return Promise.resolve()
   }
 
+  const disassociateWithCliTemplate = async (
+    venueSwitches: VenueSwitches,
+    callBack?: () => void
+  ) => {
+    const hasDisassociatedSwitches = hasVenueSwitches(venueSwitches)
+    if (isSwitchRbacEnabled && hasDisassociatedSwitches) {
+      const requests = Object.keys(venueSwitches).map((key: string)=> ({
+        params: { venueId: key, templateId: params.templateId },
+        payload: venueSwitches?.[key as keyof typeof venueSwitches]
+      }))
+      await batchDisassociateCliTemplate(requests).then(callBack)
+    }
+    return Promise.resolve()
+  }
+
   useEffect(() => {
     if (!isCliTemplateLoading) {
+      const venueSwitches = cliTemplate?.venueSwitches?.reduce((result, v) => ({
+        ...result,
+        [v.venueId as string]: v.switches ?? []
+      }), {}) as VenueSwitches
       const data = {
         ...cliTemplate,
         applyNow: editMode && cliTemplate ? !cliTemplate?.applyLater : false,
         ...(cliTemplate?.venueSwitches && {
-          venueSwitches: cliTemplate?.venueSwitches?.reduce((result, v) => ({
-            ...result,
-            [v.venueId as string]: v.switches
-          }), {})
+          venueSwitches: venueSwitches
         })
       }
 
+      setOrinVenueSwitches(venueSwitches)
       form?.setFieldsValue(data)
     }
   }, [cliTemplate])
@@ -202,7 +269,33 @@ export function CliTemplateForm () {
   )
 }
 
-function transformVenueSwitches (venueSwitches?: Map<string, string[]>[]) {
+function transformVenueSwitches (venueSwitches?: VenueSwitches) {
   return Object.entries(venueSwitches ?? {})
     .map(v => ({ venueId: v[0], switches: v[1] }))
+}
+
+function getDiffAssociatedSwitch (
+  sourceSwitches?: VenueSwitches,
+  compareSwitches?: VenueSwitches
+) {
+  return Object.keys(compareSwitches ?? {}).reduce((result, key) => {
+    const diff = compareSwitches?.[key]?.filter(
+      item => !sourceSwitches?.[key]?.includes(item)
+    )
+    return {
+      ...result,
+      ...(diff?.length ? { [key]: diff } : {})
+    }
+  }, {})
+}
+
+function hasVenueSwitches (venueSwitches: VenueSwitches) {
+  return Object.values(venueSwitches ?? {}).flat()?.length > 0
+}
+
+export function getVariableSeparator (type: string) {
+  const t = type.toUpperCase()
+  return t === VariableType.RANGE
+    ? ':'
+    : (t === VariableType.ADDRESS ? '_' : '*')
 }
