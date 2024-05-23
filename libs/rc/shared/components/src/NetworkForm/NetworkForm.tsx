@@ -899,21 +899,21 @@ function useUpdateHotspot20Activation () {
         const hotspot20Setting = network.hotspot20Settings
         const hotspot20OriginalOperator = hotspot20Setting?.originalOperator
         const hotspot20OriginalProviders = hotspot20Setting?.originalProviders
+        const newProviderIds = hotspot20Setting?.identityProviders
 
         if (hotspot20OriginalOperator &&
           hotspot20OriginalOperator !== hotspot20Setting.wifiOperator) {
           await activateOperator(networkId, hotspot20Setting.wifiOperator)
         }
 
-        if (hotspot20OriginalProviders &&
-          hotspot20Setting?.identityProviders &&
-          !_.isEqual(hotspot20OriginalProviders, hotspot20Setting?.identityProviders)) {
+        if (hotspot20OriginalProviders && newProviderIds &&
+          !_.isEqual(hotspot20OriginalProviders, newProviderIds)) {
 
           const deactivateProviderIds = hotspot20OriginalProviders.filter(providerId =>
             !(hotspot20Setting.identityProviders!.includes(providerId))
           )
 
-          const activateProviderIds = hotspot20Setting?.identityProviders.filter(providerId =>
+          const activateProviderIds = newProviderIds.filter(providerId =>
             !hotspot20OriginalProviders.includes(providerId)
           )
 
