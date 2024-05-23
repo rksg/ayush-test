@@ -32,7 +32,7 @@ export function ApSnmp () {
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseRbacApi = false //useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
