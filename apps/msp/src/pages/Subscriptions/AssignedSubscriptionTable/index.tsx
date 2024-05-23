@@ -29,6 +29,7 @@ export function AssignedSubscriptionTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
 
   const columns: TableProps<MspAssignmentHistory>['columns'] = [
     {
@@ -108,7 +109,9 @@ export function AssignedSubscriptionTable () {
   ]
 
   const AssignedTable = () => {
-    const queryResults = useMspAssignmentHistoryQuery({ params: useParams() })
+    const params = useParams()
+    const queryResults = useMspAssignmentHistoryQuery({ params: isEntitlementRbacApiEnabled
+      ? { tenantId: tenantId, isRbacApi: 'true' } : params })
 
     const subscriptionData = queryResults.data?.map(response => {
       const type = EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)

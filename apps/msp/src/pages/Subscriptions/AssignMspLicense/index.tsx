@@ -81,6 +81,7 @@ export function AssignMspLicense () {
   const navigate = useNavigate()
   const linkToSubscriptions = useTenantLink('/msplicenses', 'v')
   const { tenantId } = useParams()
+  const params = useParams()
   const [form] = Form.useForm()
 
   const [availableWifiLicense, setAvailableWifiLicense] = useState(0)
@@ -94,9 +95,12 @@ export function AssignMspLicense () {
 
   const { Option } = Select
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const { data: licenseAssignment } =
+    useMspAssignmentHistoryQuery({ params: isEntitlementRbacApiEnabled
+      ? { tenantId: tenantId, isRbacApi: 'true' } : params })
   const [addMspSubscription] = useAddMspAssignmentMutation()
   const [updateMspSubscription] = useUpdateMspAssignmentMutation()
   const [deleteMspSubscription] = useDeleteMspAssignmentMutation()
