@@ -99,7 +99,8 @@ export const LicenseUrlsInfo: { [key: string]: ApiInfo } = {
   getMspAssignmentHistory: {
     // method: 'get',
     method: 'post',
-    url: '/tenants/:tenantId/entitlements/assignments/query',
+    // url: '/tenants/:tenantId/entitlements/assignments/query',
+    url: '/tenants/self/entitlements/assignments/query',
     oldUrl: '/assignments',
     newApi: true
   },

@@ -423,12 +423,13 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
         const mspAssignmentHistoryReq = createHttpRequest(rbacApiEnabled
           ? LicenseUrlsInfo.getMspAssignmentHistory : MspUrlsInfo.getMspAssignmentHistory, params)
         return {
-          ...mspAssignmentHistoryReq
+          ...mspAssignmentHistoryReq,
+          body: payload
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]

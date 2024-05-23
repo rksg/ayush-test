@@ -23,7 +23,8 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
 
-import * as UI from '../styledComponent'
+import { entitlementAssignmentPayload } from '../AssignMspLicense'
+import * as UI                          from '../styledComponent'
 
 export function AssignedSubscriptionTable () {
   const { $t } = useIntl()
@@ -110,18 +111,20 @@ export function AssignedSubscriptionTable () {
 
   const AssignedTable = () => {
     const params = useParams()
-    const queryResults = useMspAssignmentHistoryQuery({ params: isEntitlementRbacApiEnabled
-      ? { tenantId: tenantId, isRbacApi: 'true' } : params })
-
-    const subscriptionData = queryResults.data?.map(response => {
-      const type = EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
-      return {
-        ...response,
-        name: isDeviceAgnosticEnabled ? (response?.trialAssignment
-          ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' })) + ' ' + type
-          : type
-      }
-    }).filter(rec => rec.status === 'VALID' && rec.mspEcTenantId === tenantId)
+    const queryResults = useMspAssignmentHistoryQuery(isEntitlementRbacApiEnabled
+      ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: entitlementAssignmentPayload }
+      : { params: params })
+    const subscriptionData = isEntitlementRbacApiEnabled
+      ? queryResults.data
+      : queryResults.data?.map(response => {
+        const type = EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
+        return {
+          ...response,
+          name: isDeviceAgnosticEnabled ? (response?.trialAssignment
+            ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' })) + ' ' + type
+            : type
+        }
+      }).filter(rec => rec.status === 'VALID' && rec.mspEcTenantId === tenantId)
 
     return (
       <Loader states={[queryResults]}>

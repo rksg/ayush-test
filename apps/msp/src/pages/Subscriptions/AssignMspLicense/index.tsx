@@ -74,6 +74,32 @@ interface ErrorDetails {
   errorMessage?: string
 }
 
+export const entitlementAssignmentPayload = {
+  fields: [
+    'id',
+    'mspTenantId',
+    'licenseType',
+    'quantity',
+    'effectiveDate',
+    'expiresDate',
+    'isTrial',
+    'createdDate',
+    'revokedDate',
+    'status'
+  ],
+  page: 1,
+  pageSize: 20,
+  sortField: 'expiresDate',
+  sortOrder: 'DESC',
+  filters: {
+    createdBy: [],
+    isTrial: true,
+    licenseType: [],
+    status: [
+      'VALID'
+    ]
+  }
+}
 
 export function AssignMspLicense () {
   const intl = useIntl()
@@ -99,8 +125,9 @@ export function AssignMspLicense () {
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } =
-    useMspAssignmentHistoryQuery({ params: isEntitlementRbacApiEnabled
-      ? { tenantId: tenantId, isRbacApi: 'true' } : params })
+    useMspAssignmentHistoryQuery(isEntitlementRbacApiEnabled
+      ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: entitlementAssignmentPayload }
+      : { params: params })
   const [addMspSubscription] = useAddMspAssignmentMutation()
   const [updateMspSubscription] = useUpdateMspAssignmentMutation()
   const [deleteMspSubscription] = useDeleteMspAssignmentMutation()
@@ -281,10 +308,14 @@ export function AssignMspLicense () {
           endDate: expirationDate,
           assignments: addAssignment
         }
-        await addMspSubscription({ payload: mspAssignments }).unwrap()
+        await addMspSubscription(isEntitlementRbacApiEnabled
+          ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: mspAssignments }
+          : { payload: mspAssignments }).unwrap()
       }
       if (updateAssignment.length > 0) {
-        await updateMspSubscription({ payload: updateAssignment }).unwrap()
+        await updateMspSubscription(isEntitlementRbacApiEnabled
+          ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: updateAssignment }
+          : { payload: updateAssignment }).unwrap()
       }
       if (deleteAssignment.length > 0) {
         await deleteMspSubscription({ payload: deleteAssignment }).unwrap()
