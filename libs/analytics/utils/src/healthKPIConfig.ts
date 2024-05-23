@@ -625,6 +625,22 @@ export const kpiConfig = {
       thresholdFormatter: numberWithPercentSymbol,
       tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
     }
+  },
+  switchAuthentication: {
+    text: defineMessage({ defaultMessage: 'Authentication' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchAuthCountAndAttemptCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchAuthCountAndAttemptCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} of auth succeeded' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Authentication' })
+    }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -678,7 +694,7 @@ export const wiredKPIsForTab = () => {
     },
     connection: {
       kpis: [
-        // 'authentication',
+        'switchAuthentication',
         'switchDhcp'
       ]
     },
