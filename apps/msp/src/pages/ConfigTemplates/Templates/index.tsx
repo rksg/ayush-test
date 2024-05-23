@@ -13,14 +13,14 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }              from '@acx-ui/formatter'
+import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
   isAccessControlSubPolicy,
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, subPolicyMappingType
+  AccessControlSubPolicyVisibility, subPolicyMappingType, isNotAllowToApplyPolicy
 } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
@@ -96,7 +96,7 @@ export function ConfigTemplateList () {
     },
     {
       label: $t({ defaultMessage: 'Apply Template' }),
-      disabled: (selectedRows) => selectedRows.some(row => isAccessControlSubPolicy(row.type)),
+      disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
