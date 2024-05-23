@@ -30,10 +30,5 @@ export const WifiOperatorUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/wifiNetworks/:wifiNetworkId/hotspot20Operators/:operatorId',
     newApi: true
-  },
-  deactivateWifiOperatorOnWifiNetwork: {
-    method: 'delete',
-    url: '/wifiNetworks/:wifiNetworkId/hotspot20Operators/:operatorId',
-    newApi: true
   }
 }

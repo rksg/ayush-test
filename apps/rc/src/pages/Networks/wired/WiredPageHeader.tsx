@@ -24,7 +24,11 @@ function WiredPageHeader () {
     enableRbac: isSwitchRbacEnabled
   })
 
-  const profileList = useGetProfilesQuery({ params: { tenantId }, payload: defaultPayload }, {
+  const profileList = useGetProfilesQuery({
+    params: { tenantId },
+    payload: defaultPayload,
+    enableRbac: isSwitchRbacEnabled
+  }, {
     pollingInterval: 30_000
   })
 

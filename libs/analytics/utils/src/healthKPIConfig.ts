@@ -173,7 +173,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP sucessful bindings' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
@@ -635,12 +635,11 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
-      hideProgressBar: true,
       description: '',
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Switch Interface Anomalies' })
+      tooltip: defineMessage({ defaultMessage: 'Interface Anomalies measures the percentage of Ports which do not have anomaly.{br}{br}The time-series graph on the left displays the non anomaly ports percentage across time. The bar chart on the right captures the daily non anomaly ports percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   }
 }
