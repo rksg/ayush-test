@@ -28,8 +28,7 @@ import {
   AdminGroupLastLogins,
   CustomRole,
   PrivilegeGroup,
-  EntitlementPendingActivations,
-  LicenseUrlsInfo
+  EntitlementPendingActivations
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -441,10 +440,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     getEntitlementSummary: build.query<EntitlementSummary[], RequestPayload>({
       query: ({ params }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const req = createHttpRequest(rbacApiEnabled
-          ? LicenseUrlsInfo.getEntitlementSummary
-          : AdministrationUrlsInfo.getEntitlementSummary, params)
+        const req = createHttpRequest(AdministrationUrlsInfo.getEntitlementSummary, params)
         return {
           ...req
         }
@@ -468,10 +464,7 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     getEntitlementsList: build.query<Entitlement[], RequestPayload>({
       query: ({ params }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const req = createHttpRequest(rbacApiEnabled
-          ? LicenseUrlsInfo.getEntitlementsList
-          : AdministrationUrlsInfo.getEntitlementsList, params)
+        const req = createHttpRequest(AdministrationUrlsInfo.getEntitlementsList, params)
         return {
           ...req
         }

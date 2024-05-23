@@ -231,7 +231,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     mspEntitlementList: build.query<MspEntitlement[], RequestPayload>({
       query: ({ params }) => {
         const mspEntitlementListReq =
-        createHttpRequest(MspUrlsInfo.getMspEntitlement, params)
+          createHttpRequest(MspUrlsInfo.getMspEntitlement, params)
         return {
           ...mspEntitlementListReq
         }
