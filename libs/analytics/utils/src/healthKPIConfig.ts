@@ -28,7 +28,7 @@ export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
 export const hasFirmwareFilterForPoe = () => {
-  return window.location.pathname.includes('/wired')
+  return window.location.pathname.includes('/health/wired')
 }
 
 export const kpiConfig = {
