@@ -34,12 +34,9 @@ export function BssColoring () {
 
   const formRef = useRef<StepsFormLegacyInstance<ApBssColoringSettings>>()
 
-  const getApBssColoring = useGetApBssColoringQuery(
-    isUseRbacApi ?
-      { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
-      :
-      { params: { serialNumber }, enableRbac: isUseRbacApi }
-  )
+  const getApBssColoring = useGetApBssColoringQuery({
+    params: { venueId, serialNumber }, enableRbac: isUseRbacApi
+  })
 
   const [updateApBssColoring, { isLoading: isUpdatingBssColoring }]
     = useUpdateApBssColoringMutation()
@@ -121,10 +118,7 @@ export function BssColoring () {
         useVenueSettings: isUseVenue
       }
       await updateApBssColoring(
-        isUseRbacApi ?
-          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
-          :
-          { params: { serialNumber }, payload, enableRbac: isUseRbacApi }
+        { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
       ).unwrap()
 
     } catch (error) {

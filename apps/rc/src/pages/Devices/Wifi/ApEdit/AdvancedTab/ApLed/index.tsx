@@ -34,12 +34,9 @@ export function ApLed () {
 
   const formRef = useRef<StepsFormLegacyInstance<ApLedSettings>>()
 
-  const getApLed = useGetApLedQuery(
-    isUseRbacApi ?
-      { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
-      :
-      { params: { serialNumber }, enableRbac: isUseRbacApi }
-  )
+  const getApLed = useGetApLedQuery({
+    params: { venueId, serialNumber }, enableRbac: isUseRbacApi
+  })
 
   const [updateApLed, { isLoading: isUpdatingApLed }] = useUpdateApLedMutation()
   const [resetApLed, { isLoading: isResetApLed }] = useResetApLedMutation()
@@ -132,10 +129,7 @@ export function ApLed () {
         }
 
         await updateApLed(
-          isUseRbacApi ?
-            { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
-            :
-            { params: { serialNumber }, payload, enableRbac: isUseRbacApi }
+          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
         ).unwrap()
       }
 

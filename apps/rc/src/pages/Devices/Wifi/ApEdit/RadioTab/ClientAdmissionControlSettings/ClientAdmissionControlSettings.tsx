@@ -69,10 +69,7 @@ export function ClientAdmissionControlSettings () {
   const [getVenueClientAdmissionCtrl] = useLazyGetVenueClientAdmissionControlQuery()
   const getApClientAdmissionControl =
     useGetApClientAdmissionControlQuery(
-      isUseRbacApi ?
-        { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
-        :
-        { params: { serialNumber }, enableRbac: isUseRbacApi }
+      { params: { venueId, serialNumber }, enableRbac: isUseRbacApi }
     )
   const [updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useUpdateApClientAdmissionControlMutation()
@@ -162,10 +159,7 @@ export function ClientAdmissionControlSettings () {
           useVenueSettings: isUseVenueSettingsRef.current
         }
         await updateClientAdmissionControl(
-          isUseRbacApi ?
-            { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
-            :
-            { params: { serialNumber }, payload, enableRbac: isUseRbacApi }
+          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
         ).unwrap()
       }
     } catch (error) {
