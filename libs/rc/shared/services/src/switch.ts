@@ -391,6 +391,12 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SwitchProfiles', id: 'LIST' }]
     }),
+    batchDeleteProfiles: build.mutation<void, RequestPayload[]>({ // RBAC only
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(SwitchRbacUrlsInfo.deleteSwitchProfile, requests, fetchWithBQ)
+      },
+      invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
+    }),
     getSwitchConfigProfileDetail: build.query<ConfigurationProfile, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(SwitchUrlsInfo.getSwitchConfigProfileDetail, params)
@@ -746,13 +752,11 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       , arg: { payload:{ page:number } }) => {
         const result = res.response?.list || res.list
         const totalCount = res.response?.totalCount || res.totalCount
-        const configType = result ? (res.list ? 'historyConfigTypeV1001' : 'configType' )
-          : 'configType'
         return {
           data: result ? result.map(item => ({
             ...item,
             startTime: formatter(DateFormatEnum.DateTimeFormatWithSeconds)(item.startTime),
-            configType: transformConfigType(item[configType]),
+            configType: transformConfigType(item.configType),
             dispatchStatus: transformConfigStatus(item.dispatchStatus)
           })) : [],
           totalCount: totalCount,
@@ -1496,11 +1500,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     validateUniqueProfileName: build.query<TableResult<SwitchProfile>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.getProfiles, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const switchUrls = getSwitchUrls(enableRbac)
+        const req = createHttpRequest(switchUrls.getProfiles, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -1777,5 +1783,6 @@ export const {
   useBatchAssociateSwitchProfileMutation,
   useBatchDisassociateSwitchProfileMutation,
   useGetSwitchModelListQuery,
-  useDownloadSwitchsCSVMutation
+  useDownloadSwitchsCSVMutation,
+  useBatchDeleteProfilesMutation
 } = switchApi

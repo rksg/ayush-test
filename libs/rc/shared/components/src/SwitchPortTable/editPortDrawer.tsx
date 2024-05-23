@@ -44,9 +44,11 @@ import {
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { store }     from '@acx-ui/store'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { store }         from '@acx-ui/store'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import { ACLSettingDrawer }       from './ACLSettingDrawer'
 import { EditLldpModal }          from './editLldpModal'
@@ -155,6 +157,8 @@ export function EditPortDrawer ({
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [loading, setLoading] = useState<boolean>(true)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+
+  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
 
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
@@ -1449,7 +1453,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('ingressAcl')}>
               <Space style={{ marginLeft: '8px', marginBottom: isMultipleEdit ? '10px' : '' }}>
                 <Button type='link'
@@ -1482,7 +1486,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('egressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'

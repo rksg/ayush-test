@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl'
+import { useIntl, FormattedMessage } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { Alert, GridCol, GridRow, Tabs }                 from '@acx-ui/components'
@@ -21,9 +21,14 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
   const basePath = useTenantLink(props.path ?? '/analytics/health/wired/tab/')
-  const switchFirmwareVersionMsg = $t({ defaultMessage: `Data is displayed for switches 
-  with firmware version 10.0.10c or above.` })
-
+  const switchFirmwareVersionMsg = <FormattedMessage
+    defaultMessage={
+      'Data is displayed for switches with firmware version <b>10.0.10c</b> or above.'
+    }
+    values={{
+      b: (content) => <b >{content}</b>
+    }}
+  />
 
   const onTabChange = (tab: string) =>
     navigate({

@@ -135,6 +135,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
   useEffect(() => {
     if(vlan && editMode){
+      form.resetFields()
       form.setFieldsValue(vlan)
       const vlanPortsData = vlan.switchFamilyModels?.map(item => {
         return {

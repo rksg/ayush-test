@@ -377,7 +377,6 @@ export interface ConfigurationHistory {
   endTime: string
   serialNumber: string
   configType: string
-  historyConfigTypeV1001: string
   dispatchStatus: string
   clis: string
   numberOfErrors: number
