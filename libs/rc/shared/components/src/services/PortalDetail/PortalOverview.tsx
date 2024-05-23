@@ -36,6 +36,7 @@ export function PortalOverview (props: { demoValue: Demo }) {
   }
   const [getPortalLang] = useGetPortalLangMutation()
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
+
   useEffect(()=>{
     if(newDemo.displayLangCode){
       getPortalLang({ params: { ...params, messageName:
@@ -44,9 +45,10 @@ export function PortalOverview (props: { demoValue: Demo }) {
       })
     }
   }, [newDemo.displayLangCode])
+
   useEffect(()=>{
     getDemo()
-  },[])
+  },[demoValue])
 
   const portalInfo = [
     {

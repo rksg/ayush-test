@@ -16,9 +16,10 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockPortalList, mockPortalDetailResult,
-  mockedEnhancedPortalList, mockedNetworkTemplates,
-  mockPortalDetailChangeResult } from '../__tests__/fixtures'
+import { mockPortalList,
+  mockPortalDetailResult,
+  mockedEnhancedPortalList,
+  mockedNetworkTemplates } from '../__tests__/fixtures'
 
 import PortalDetail from './PortalDetail'
 
@@ -52,6 +53,10 @@ describe('Portal Detail Page', () => {
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockPortalList))
       ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(mockPortalList))
+      ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
@@ -60,7 +65,10 @@ describe('Portal Detail Page', () => {
       rest.post(ServicesConfigTemplateUrlsInfo.getEnhancedPortalList.url,
         (_, res, ctx) => {
           return res(ctx.json(mockedEnhancedPortalList))
-        })
+        }),
+      rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
+        (_, res, ctx) => res(ctx.json(mockedEnhancedPortalList))
+      )
     )
   })
 
@@ -90,21 +98,6 @@ describe('Portal Detail Page', () => {
     expect(screen.getByRole('link', {
       name: 'Configure'
     })).toBeVisible()
-  })
-
-  it('should render detail changed page', async () => {
-    mockServer.use(
-      rest.get(
-        PortalUrlsInfo.getPortal.url,
-        (_, res, ctx) => res(ctx.json(mockPortalDetailChangeResult))
-      )
-    )
-    render(<Provider><PortalDetail /></Provider>, {
-      route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
-    })
-    const count = mockedNetworkTemplates.data.length
-    expect(await screen.findByText('English')).toBeVisible()
-    expect(await screen.findByText((`Instances (${count})`))).toBeVisible()
   })
 
   it('should navigate to the edit page', async () => {

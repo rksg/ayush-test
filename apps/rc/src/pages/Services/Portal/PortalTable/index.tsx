@@ -15,6 +15,7 @@ import {
 import {
   ServiceType,
   useTableQuery,
+  useConfigTemplate,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
@@ -36,7 +37,9 @@ export default function PortalTable () {
   const intl = useIntl()
   const navigate = useNavigate()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isNewDefined = isTemplate || isEnabledRbacService
   const tenantBasePath: Path = useTenantLink('')
   const [ deletePortal ] = useDeletePortalMutation()
   const [getPortalLang] = useGetPortalLangMutation()
@@ -132,7 +135,7 @@ export default function PortalTable () {
       title: intl.$t({ defaultMessage: 'Language' }),
       dataIndex: 'language',
       render: (_, row) =>{
-        if (isEnabledRbacService) {
+        if (isNewDefined) {
           return getLanguage((row?.displayLangCode||'en')as keyof typeof PortalLanguageEnum )
         }
         return getLanguage((row.content?.displayLangCode||'en')as keyof typeof PortalLanguageEnum )
@@ -177,13 +180,13 @@ export default function PortalTable () {
       }
     },
     {
-      key: isEnabledRbacService ? 'wifiNetworkIds' : 'networkIds',
+      key: isNewDefined ? 'wifiNetworkIds' : 'networkIds',
       title: intl.$t({ defaultMessage: 'Networks' }),
-      dataIndex: isEnabledRbacService ? 'wifiNetworkIds' : 'networkIds',
+      dataIndex: isNewDefined ? 'wifiNetworkIds' : 'networkIds',
       align: 'center',
       filterable: networkNameMap,
       render: (_,row) =>{
-        const networkIds = isEnabledRbacService ? row.wifiNetworkIds : row.networkIds
+        const networkIds = isNewDefined ? row.wifiNetworkIds : row.networkIds
         if (!networkIds || networkIds.length === 0) return 0
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)

@@ -11,6 +11,7 @@ import {
   TableResult,
   checkObjectNotExists,
   hasGraveAccentAndDollarSign,
+  useConfigTemplate,
   useConfigTemplateLazyQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -27,6 +28,7 @@ const PortalSettingForm = (props: { resetDemoField: () => void }) => {
   const { resetDemoField } = props
   const { $t } = useIntl()
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ getPortalList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Portal>>({
     useLazyQueryFn: useLazyGetEnhancedPortalProfileListQuery,
@@ -49,8 +51,9 @@ const PortalSettingForm = (props: { resetDemoField: () => void }) => {
             {$t({ defaultMessage: 'Settings' })}
           </StepsFormLegacy.Title>
           <Form.Item
-            name={isEnabledRbacService ? 'serviceName' : 'name'}
+            name={(isTemplate || isEnabledRbacService) ? 'name' : 'serviceName'}
             label={$t({ defaultMessage: 'Service Name' })}
+            initialValue=''
             rules={[
               { required: true },
               { min: 2 },

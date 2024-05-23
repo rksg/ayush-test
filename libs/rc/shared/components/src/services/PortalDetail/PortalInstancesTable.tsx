@@ -32,6 +32,7 @@ export function PortalInstancesTable (){
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isNewDefined = isTemplate || isEnabledRbacService
   const defaultPayload = {
     fields: ['id', 'name', 'wifiNetworkIds', 'displayLangCode'],
     filters: {
@@ -53,7 +54,7 @@ export function PortalInstancesTable (){
     defaultPayload: {
       fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
       filters: {
-        id: isEnabledRbacService ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
+        id: isNewDefined ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
           (data?.data?.[0]?.networkIds?.length? data.data[0]?.networkIds: ['none'])
       }
     },
@@ -68,7 +69,7 @@ export function PortalInstancesTable (){
       tableQuery.setPayload({
         ...tableQuery.payload,
         filters: {
-          id: isEnabledRbacService ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
+          id: isNewDefined ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
             (data?.data?.[0]?.networkIds?.length? data.data[0]?.networkIds: ['none'])
         }
       })

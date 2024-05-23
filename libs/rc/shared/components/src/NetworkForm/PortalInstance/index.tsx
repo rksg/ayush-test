@@ -32,6 +32,13 @@ import NetworkFormContext    from '../NetworkFormContext'
 
 import PortalServiceModal from './PortalServiceModal'
 
+type ImagePortalData = {
+  poweredImg: string,
+  photo: string,
+  logo: string,
+  bgImage: string
+}
+
 const PortalInstance = (props: {
   updatePortalData?: (value: Demo) => void;
 }) => {
@@ -65,6 +72,7 @@ const PortalInstance = (props: {
   const portalServiceID = useWatch('portalServiceProfileId')
   const defaultPayload = {
     fields: ['id', 'name'],
+    filters: {},
     pageSize: 256
   }
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>({
@@ -101,21 +109,34 @@ const PortalInstance = (props: {
       getPortalContent(serviceId, list, isEnabledRbac))
   }
 
-  const getImageUrl = async (data: string) => {
-    return getImageDownloadUrl(isEnabledRbacService, data)
+  const getImageUrl = async (content: string) => {
+    return await getImageDownloadUrl(isEnabledRbacService, content)
+  }
+
+  const bindImageUrl = async (demoData: Demo):Promise<ImagePortalData> => {
+    return {
+      poweredImg: demoData.poweredImg
+        ? await getImageUrl(demoData.poweredImg)
+        : Powered,
+      logo: demoData.logo
+        ? await getImageUrl(demoData.logo)
+        : Logo,
+      photo: demoData.photo
+        ? await getImageUrl(demoData.photo)
+        : Photo,
+      bgImage: demoData.bgImage
+        ? await getImageUrl(demoData.bgImage)
+        : ''
+    }
   }
 
   const setPortal = async (value: string, isEnabledRbac:boolean) => {
     const content = await getCurrentPortalContent(isTemplate, value, portalData, isEnabledRbac)
+    const imagePortalData = await bindImageUrl(content)
     const tempValue = {
       ...initialPortalData.content,
       ...content,
-      poweredImg: content?.poweredImg
-        ? await getImageUrl(content.poweredImg)
-        : Powered,
-      logo: content?.logo ? await getImageUrl(content.logo) : Logo,
-      photo: content?.photo ? await getImageUrl(content.photo) : Photo,
-      bgImage: content?.bgImage ? await getImageUrl(content.bgImage) : '',
+      ...imagePortalData,
       wifi4EUNetworkId: content?.wifi4EUNetworkId || ''
     }
     setDemoValue(tempValue)
@@ -123,10 +144,10 @@ const PortalInstance = (props: {
   }
 
   useEffect(() => {
-    const fetchData = async (data: TableResult<Portal|PortalDetail>) => {
-      setPortalData([...(data.data as Portal[])])
+    const fetchData = async (response: TableResult<Portal|PortalDetail>) => {
+      setPortalData([...(response.data as Portal[])])
       setPortalList(
-        data?.data?.map((m) => ({ label: m.serviceName ?? m.name, value: m.id }))
+        response?.data?.map((m) => ({ label: m.serviceName ?? m.name, value: m.id }))
       )
       if (networkData?.portalServiceProfileId) {
         form.setFieldValue(
@@ -136,19 +157,13 @@ const PortalInstance = (props: {
         const content = await getCurrentPortalContent(
           isTemplate,
           networkData.portalServiceProfileId,
-          data.data,
+          response.data,
           isEnabledRbacService)
+        const imagePortalData = await bindImageUrl(content)
         const tempValue = {
           ...initialPortalData.content,
           ...content,
-          poweredImg: content?.poweredImg
-            ? await getImageUrl(content.poweredImg)
-            : Powered,
-          logo: content?.logo ? await getImageUrl(content.logo) : Logo,
-          photo: content?.photo ? await getImageUrl(content.photo) : Photo,
-          bgImage: content?.bgImage
-            ? await getImageUrl(content.bgImage)
-            : '',
+          ...imagePortalData,
           wifi4EUNetworkId: content?.wifi4EUNetworkId || ''
         }
         setDemoValue(tempValue)
@@ -212,20 +227,10 @@ const PortalInstance = (props: {
                 form.setFieldValue('portalServiceProfileId', data.id)
                 const demoData = data.content as Demo
                 props.updatePortalData?.(demoData)
+                const imagePortalData = await bindImageUrl(demoData)
                 setDemoValue({
                   ...demoData,
-                  poweredImg: demoData.poweredImg
-                    ? await getImageUrl(demoData.poweredImg)
-                    : Powered,
-                  logo: demoData.logo
-                    ? await getImageUrl(demoData.logo)
-                    : Logo,
-                  photo: demoData.photo
-                    ? await getImageUrl(demoData.photo)
-                    : Photo,
-                  bgImage: demoData.bgImage
-                    ? await getImageUrl(demoData.bgImage)
-                    : ''
+                  ...imagePortalData
                 })
               }}
               portalCount={portalData.length}

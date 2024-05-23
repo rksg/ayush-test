@@ -139,10 +139,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getPortal,
           params, getV1orV1_1Headers(payload))
         return {
-          ...req,
-          body: JSON.stringify({
-            ...(_.omit(payload as Portal, ['enableRbac']))
-          })
+          ...req
         }
       },
       providesTags: [{ type: 'PortalTemplate', id: 'DETAIL' }]

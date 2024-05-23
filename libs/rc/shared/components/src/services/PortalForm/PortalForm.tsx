@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { RcFile }  from 'antd/lib/upload'
+import { use }     from 'echarts'
 import { useIntl } from 'react-intl'
 
 import {
@@ -10,12 +11,10 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   useGetPortalQuery,
-  useLazyGetPortalQuery,
   useGetPortalTemplateQuery,
-  useLazyGetPortalTemplateQuery,
   useCreatePortalMutation,
   useCreatePortalTemplateMutation,
   useUpdatePortalMutation,
@@ -24,7 +23,11 @@ import {
   useUploadBgImageMutation,
   useUploadLogoMutation,
   useUploadPhotoMutation,
-  useUploadPoweredImgMutation
+  useUploadPoweredImgMutation,
+  useUploadBgImageTemplateMutation,
+  useUploadLogoTemplateMutation,
+  useUploadPhotoTemplateMutation,
+  useUploadPoweredImgTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   defaultAlternativeLang,
@@ -34,11 +37,10 @@ import {
   ServiceType,
   useServiceListBreadcrumb,
   useServicePageHeaderTitle,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  useConfigTemplateLazyQueryFnSwitcher,
   useServicePreviousPath,
-  PortalSaveData,
   Demo
 } from '@acx-ui/rc/utils'
 import {
@@ -56,8 +58,6 @@ import PortalFormContext from './PortalFormContext'
 import PortalSettingForm from './PortalSettingForm'
 
 export const initialPortalData: Portal = {
-  name: '',
-  serviceName: '',
   network: [],
   content: {
     bgColor: '#FFFFFF',
@@ -97,6 +97,7 @@ export const PortalForm = (props: {
   const navigate = useNavigate()
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.PORTAL, ServiceOperation.LIST)
   const params = useParams()
+  const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const editMode = props.editMode && !networkView
   const [portalData, setPortalData] = useState<Portal>(initialPortalData)
@@ -105,10 +106,22 @@ export const PortalForm = (props: {
   )
   const formRef = useRef<StepsFormLegacyInstance<Portal>>()
   const [uploadURL] = useUploadURLMutation()
-  const [uploadBgImage] = useUploadBgImageMutation()
-  const [uploadLogo] = useUploadLogoMutation()
-  const [uploadPhoto] = useUploadPhotoMutation()
-  const [uploadPoweredImg] = useUploadPoweredImgMutation()
+  const [uploadBgImage] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUploadBgImageMutation,
+    useTemplateMutationFn: useUploadBgImageTemplateMutation
+  })
+  const [uploadLogo] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUploadLogoMutation,
+    useTemplateMutationFn: useUploadLogoTemplateMutation
+  })
+  const [uploadPhoto] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUploadPhotoMutation,
+    useTemplateMutationFn: useUploadPhotoTemplateMutation
+  })
+  const [uploadPoweredImg] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUploadPoweredImgMutation,
+    useTemplateMutationFn: useUploadPoweredImgTemplateMutation
+  })
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<Portal>({
     useQueryFn: useGetPortalQuery,
     useTemplateQueryFn: useGetPortalTemplateQuery,
@@ -124,31 +137,12 @@ export const PortalForm = (props: {
     useMutationFn: useUpdatePortalMutation,
     useTemplateMutationFn: useUpdatePortalTemplateMutation
   })
-  const [ getPortal ]= useConfigTemplateLazyQueryFnSwitcher<Portal>({
-    useLazyQueryFn: useLazyGetPortalQuery,
-    useLazyTemplateQueryFn: useLazyGetPortalTemplateQuery
-  })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.PORTAL)
   const pageTitle = useServicePageHeaderTitle(!!editMode, ServiceType.PORTAL)
 
   const getImageUrl = async (data: string) => {
-    return getImageDownloadUrl(isEnabledRbacService, data)
-  }
-
-  const getRefreshImageUrl = async (serviceId:string, content:Demo) => {
-    // refetch file image url
-    const newProfileData = await getPortal({
-      params: { serviceId },
-      payload: { enableRbac: isEnabledRbacService }
-    }).unwrap()
-
-    return { ...content,
-      logo: newProfileData.content?.logo,
-      photo: newProfileData.content?.photo,
-      poweredImg: newProfileData.content?.poweredImg,
-      bgImage: newProfileData.content?.bgImage
-    } as Demo
+    return await getImageDownloadUrl(isEnabledRbacService, data)
   }
 
   const updateFileId = async (file: RcFile) => {
@@ -173,17 +167,22 @@ export const PortalForm = (props: {
   }
 
   const uploadFile = async (data: Portal) => {
-    if (data.bgFile) {
-      await uploadBgImage({ params, payload: { image: await getImageBase64(data.bgFile) } })
-    }
-    if (data.logoFile) {
-      await uploadLogo({ params, payload: { image: await getImageBase64(data.logoFile) } })
-    }
-    if (data.photoFile) {
-      await uploadPhoto({ params, payload: { image: await getImageBase64(data.photoFile) } })
-    }
-    if (data.poweredFile) {
-      await uploadPoweredImg({ params, payload: { image: await getImageBase64(data.poweredFile) } })
+    try {
+      if (data.bgFile) {
+        await uploadBgImage({ params, payload: { image: await getImageBase64(data.bgFile) } }).unwrap()
+      }
+      if (data.logoFile) {
+        await uploadLogo({ params, payload: { image: await getImageBase64(data.logoFile) } }).unwrap()
+      }
+      if (data.photoFile) {
+        await uploadPhoto({ params, payload: { image: await getImageBase64(data.photoFile) } }).unwrap()
+      }
+      if (data.poweredFile) {
+        await uploadPoweredImg({ params, payload: { image: await getImageBase64(data.poweredFile) } }).unwrap()
+      }
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      throw error
     }
   }
 
@@ -212,14 +211,16 @@ export const PortalForm = (props: {
           ? data?.content?.bgImage?.split('/')[6].split('?')[0]
           : ''
       }
+      const serviceName = data.name ?? data.serviceName
+      const nameData = (isEnabledRbacService || isTemplate) ?
+        { name: serviceName } : { serviceName }
       const payload = {
-        name: data.name ?? data.serviceName,
+        ...nameData,
         content: {
           ...data.content,
           ...imageContent
         }
       }
-
 
       if (!isEnabledRbacService) {
         if (portalData.bgFile) {
@@ -245,8 +246,8 @@ export const PortalForm = (props: {
         }).unwrap()
 
         if (backToNetwork) {
-          const newContent = await getRefreshImageUrl(params.serviceId || '', payload.content as Demo)
-          data.content = { ...newContent }
+          // const newContent = await getRefreshImageUrl(params.serviceId || '', payload.content as Demo)
+          data.content = { ...payload.content } as Demo
         }
       } else {
         try {
@@ -257,12 +258,6 @@ export const PortalForm = (props: {
           // upload files
           if (isEnabledRbacService) {
             await uploadFile(data)
-            // refetch file image url
-            const serviceId = result.response?.id
-            if (backToNetwork) {
-              const newContent = await getRefreshImageUrl(serviceId, payload.content as Demo)
-              payload.content = { ...newContent }
-            }
           }
 
           data.id = result.response?.id
@@ -284,10 +279,9 @@ export const PortalForm = (props: {
   }
 
   useEffect(() => {
-    const fetchData = async (data: Portal|PortalSaveData) => {
+    const fetchData = async (data: Portal) => {
       const formatData = {
         ...data,
-        serviceName: data.name ?? data.serviceName,
         content: {
           ...data.content,
           logo: data.content?.logo
