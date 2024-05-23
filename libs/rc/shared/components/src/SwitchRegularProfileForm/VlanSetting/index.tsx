@@ -14,11 +14,11 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { getIntl }                   from '@acx-ui/utils'
 
+import { DefaultVlanDrawer }               from '../../DefaultVlanDrawer'
 import { VlanSettingDrawer }               from '../../VlanSettingDrawer'
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
-import { DefaultVlanDrawer } from './DefaultVlanDrawer'
-import * as UI               from './styledComponents'
+import * as UI from './styledComponents'
 
 export function VlanSetting () {
   const { $t } = getIntl()

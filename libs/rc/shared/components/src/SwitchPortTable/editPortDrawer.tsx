@@ -216,9 +216,6 @@ export function EditPortDrawer ({
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
 
-  // const { data: switchesDefaultVlan }
-  //   = useGetDefaultVlanQuery({ params: { tenantId }, payload: { switchIds: switches } })
-
   const { data: switchData, isLoading: isSwitchDataLoading }
     = useGetSwitchQuery({
       params: { tenantId, switchId, venueId: switchDetail?.venueId },
@@ -313,15 +310,6 @@ export function EditPortDrawer ({
       })
     }
   }
-  // const getEachSwitchVlans = async () => {
-  //   const switchVlans = switches?.map(async (switchId) => {
-  //     return await getSwitchVlans({
-  //       params: { tenantId, switchId, venueId: switchDetail?.venueId },
-  //       enableRbac: isSwitchRbacEnabled
-  //     }, true).unwrap()
-  //   })
-  //   return Promise.all(switchVlans)
-  // }
 
   const getUseVenueSettingDisabled = async (profileDefaultVlan: Number) => {
     const switchVlans = switchesDefaultVlan?.map(v => v.vlanList)?.flat() ?? []
@@ -360,7 +348,7 @@ export function EditPortDrawer ({
         : []
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
-        ?.find((item) => item?.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
+        ?.find((item) => item?.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.vlanId ?? 1
       setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
 
       setDefaultVlan(defaultVlan)

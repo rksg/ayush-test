@@ -69,6 +69,7 @@ export function SelectVlanModal (props: {
   const [displayUntaggedVlan, setDisplayUntaggedVlan] = useState([] as CheckboxOptionType[])
   const [voiceVlanTmp, setVoiceVlanTmp] = useState(voiceVlan)
   const [isVoiceVlanInvalidTmp, setIsVoiceVlanInvalidTmp] = useState(isVoiceVlanInvalid)
+
   const [addVlan] = useAddVlanMutation()
   const [addSwitchesVlans] = useAddSwitchesVlansMutation()
 
@@ -202,7 +203,7 @@ export function SelectVlanModal (props: {
       : setDisplayUntaggedVlan(filteredOptions)
   }
 
-  const setVlan = async (values: Vlan) => {
+  const applyVlan = async (values: Vlan) => {
     if (isSwitchLevelVlanEnabled) {
       const payload = switchIds?.map(switchId => {
         return {
@@ -403,7 +404,7 @@ export function SelectVlanModal (props: {
       vlan={{} as Vlan}
       switchFamilyModel={switchFamilyModel}
       enablePortModelConfigure={false}
-      setVlan={setVlan}
+      setVlan={applyVlan}
       vlansList={(isSwitchLevelVlanEnabled
         ? props.switchVlans
         : props.venueVlans

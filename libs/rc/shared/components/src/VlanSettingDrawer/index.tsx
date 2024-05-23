@@ -29,6 +29,12 @@ import { filterByAccess } from '@acx-ui/user'
 import * as UI            from './styledComponents'
 import { VlanPortsModal } from './VlanPortsSetting/VlanPortsModal'
 
+export interface PortsUsedByProps {
+  lag?: string[]
+  tagged?: string[]
+  untagged?: string[]
+}
+
 export interface VlanSettingDrawerProps {
   vlan?: Vlan
   setVlan: (r: Vlan) => void
@@ -39,12 +45,14 @@ export interface VlanSettingDrawerProps {
   enablePortModelConfigure?: boolean
   switchFamilyModel?: string
   portSlotsData?: SwitchSlot[]
+  portsUsedBy?: PortsUsedByProps
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
-    vlansList, switchFamilyModel, enablePortModelConfigure = true, portSlotsData } = props
+    vlansList, switchFamilyModel,
+    enablePortModelConfigure = true, portSlotsData, portsUsedBy } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -71,6 +79,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           enablePortModelConfigure={enablePortModelConfigure}
           switchFamilyModel={switchFamilyModel}
           portSlotsData={portSlotsData}
+          portsUsedBy={portsUsedBy}
         />
       }
       footer={
@@ -106,6 +115,7 @@ interface VlanSettingFormProps {
   switchFamilyModel?: string
   enablePortModelConfigure?: boolean
   portSlotsData?: SwitchSlot[]
+  portsUsedBy?: PortsUsedByProps
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
@@ -118,7 +128,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
   const { form, vlan, setVlan, vlansList, editMode,
-    switchFamilyModel, portSlotsData, enablePortModelConfigure = true } = props
+    switchFamilyModel, portSlotsData, enablePortModelConfigure = true, portsUsedBy } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLevel = !!switchFamilyModel
@@ -151,7 +161,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       width: 100
     }] : []),
     {
-      title: $t({ defaultMessage: 'Untagged Port' }),
+      title: $t({ defaultMessage: 'Untagged Ports' }),
       dataIndex: 'untaggedPorts',
       key: 'untaggedPorts',
       width: 180,
@@ -362,15 +372,15 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           children={<Input type='hidden' />}
         />
       </Form>
-      { isSwitchLevelVlanEnabled && !enablePortModelConfigure
-        ? null
-        : <><Row justify='space-between' style={{ margin: '25px 0 10px' }}>
+      { !(isSwitchLevelVlanEnabled && !enablePortModelConfigure) && <>
+        <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
           <Col>
             <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
           </Col>
           <Col>
             <Button
               type='link'
+              disabled={isSwitchLevel && ruleList?.length > 0}
               onClick={() => {
                 setSelected(undefined)
                 setOpenModal(true)
@@ -407,7 +417,9 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           vlanList={vlansList}
           switchFamilyModel={isSwitchLevelVlanEnabled ? switchFamilyModel : undefined}
           portSlotsData={portSlotsData}
-        /></>}
+          portsUsedBy={portsUsedBy}
+        />
+      </>}
     </div>
   )
 }

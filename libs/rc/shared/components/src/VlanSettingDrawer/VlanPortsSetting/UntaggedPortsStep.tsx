@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Card, Tooltip }                                 from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel } from '@acx-ui/rc/utils'
-import { getIntl }                                       from '@acx-ui/utils'
+import { Card, Tooltip }                                                     from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
+import { getIntl }                                                           from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -21,15 +21,12 @@ export interface PortsType {
   value: string
 }
 
-export function UntaggedPortsStep (props: {
-  isSwitchLevel: boolean
-}) {
+export function UntaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const {
-    vlanSettingValues, setVlanSettingValues, vlanList, portsUsedByLag
+    vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
   } = useContext(VlanPortsContext)
-  const { isSwitchLevel } = props
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -212,13 +209,6 @@ export function UntaggedPortsStep (props: {
     }
 
   const getDisabledPorts = (timeslot: string) => {
-    // TODO: support switch level vlan
-    // const vlanSelectedPorts = isSwitchLevel && vlanList
-    //   ? vlanList.map((item: Vlan) => item.switchVlanPortModels?.filter((obj) => obj))
-    //   : (vlanList ? vlanList.map(item => item.switchFamilyModels
-    //     ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
-    //   )
-
     const vlanSelectedPorts = vlanList ? vlanList.map(item => item.switchFamilyModels
       ?.filter(obj => obj.model === vlanSettingValues.switchFamilyModels?.model)) : []
 
@@ -230,7 +220,10 @@ export function UntaggedPortsStep (props: {
       vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
 
     const disabledPorts
-      = taggedPorts.includes(timeslot) || portsUsedByLag?.includes(timeslot) || portExists || false
+      = taggedPorts.includes(timeslot)
+      || portsUsedBy?.lag?.includes(timeslot)
+      || portsUsedBy?.untagged?.includes(timeslot)
+      || portExists || false
 
     return disabledPorts
   }
@@ -238,15 +231,6 @@ export function UntaggedPortsStep (props: {
   const getTooltip = (timeslot: string) => {
     const taggedPorts =
     vlanSettingValues.switchFamilyModels?.taggedPorts?.toString().split(',') || []
-
-    // TODO: support switch level vlan
-    // const untaggedModel = isSwitchLevel && vlanList
-    //   ? vlanList.filter((item:Vlan) => item.switchVlanPortModels?.some((switchModel) =>
-    //     switchModel.untaggedPorts?.split(',')?.includes(timeslot)))
-    //   : (vlanList ?
-    //     vlanList.filter(item => item.switchFamilyModels?.some(
-    //       switchModel => switchModel.model === vlanSettingValues.switchFamilyModels?.model &&
-    //     switchModel.untaggedPorts?.split(',')?.includes(timeslot))) : [])
 
     const untaggedModel = vlanList ?
       vlanList.filter(item => item.switchFamilyModels?.some(
@@ -259,12 +243,14 @@ export function UntaggedPortsStep (props: {
         switchModel.taggedPorts?.split(',')?.includes(timeslot))) : []
 
     if(taggedPorts.includes(timeslot)){
-      return <div>{$t({ defaultMessage: 'Port set as tagged' })}</div>
-    } else if (portsUsedByLag?.includes(timeslot)) {
-      return <div>{$t({ defaultMessage: 'Port used by LAG' })}</div>
+      return <div>{$t(PortStatusMessages.SET_AS_TAGGED)}</div>
+    } else if (portsUsedBy?.lag?.includes(timeslot)) {
+      return <div>{$t(PortStatusMessages.USED_BY_LAG)}</div>
+    } else if (portsUsedBy?.untagged?.includes(timeslot)) {
+      return <div>{$t(PortStatusMessages.USED_BY_OTHERS)}</div>
     } else{
       return <div>
-        <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
+        <div>{$t(PortStatusMessages.CURRENT)}</div>
         <div>
           <UI.TagsOutlineIcon />
           <UI.PortSpan>
@@ -310,7 +296,7 @@ export function UntaggedPortsStep (props: {
                     {$t({ defaultMessage: 'Module 1' })}
                   </Typography.Text>
                 </div>
-                { vlanSettingValues.switchFamilyModels?.slots[0] &&
+                { vlanSettingValues.switchFamilyModels?.slots?.[0] &&
                   <Typography.Paragraph>
                     {$t({ defaultMessage: '{module1}' },
                       { module1: vlanSettingValues.switchFamilyModels?.slots[0].slotPortInfo

@@ -264,6 +264,25 @@ export const MultipleEditPortMessages = {
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
   })
 }
+
+export const PortStatusMessages = {
+  SET_AS_TAGGED: defineMessage({
+    defaultMessage: 'Port set as tagged'
+  }),
+  SET_AS_UNTAGGED: defineMessage({
+    defaultMessage: 'Port set as untagged'
+  }),
+  USED_BY_LAG: defineMessage({
+    defaultMessage: 'Port used by LAG'
+  }),
+  USED_BY_OTHERS: defineMessage({
+    defaultMessage: 'Port used by other VLAN setting'
+  }),
+  CURRENT: defineMessage({
+    defaultMessage: 'Networks on this port:'
+  })
+}
+
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {

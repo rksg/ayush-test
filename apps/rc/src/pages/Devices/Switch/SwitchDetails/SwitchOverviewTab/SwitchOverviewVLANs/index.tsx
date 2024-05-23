@@ -12,8 +12,8 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { VlanSettingDrawer }      from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { DefaultVlanDrawer, VlanSettingDrawer } from '@acx-ui/rc/components'
 import {
   useGetVlanListBySwitchLevelQuery,
   useGetLagListQuery,
@@ -56,18 +56,24 @@ export function SwitchOverviewVLANs (props: {
   const [currentRow, setCurrentRow] = useState({} as Vlan)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [vlanDrawerVisible, setVlanDrawerVisible] = useState(false)
+  const [defaultVlanDrawerVisible, setDefaultVlanDrawerVisible] = useState(false)
 
   const [editVlan, setEditVlan] = useState({} as unknown as Vlan)
   const [editMode, setEditMode] = useState(false)
   const [vlanList, setVlanList] = useState([] as Vlan[])
+  const [defaultVlan, setDefaultVlan] = useState({} as Vlan)
+  const [vlanTableData, setVlanTableData] = useState([] as Vlan[])
+
+  const [usedByLag, setUsedByLag] = useState([] as string[])
+  const [usedUntaggedPorts, setUsedUntaggedPorts] = useState([] as string[])
+  const [usedTaggedPorts, setUsedTaggedPorts] = useState([] as string[])
+
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
   const [portSlotsData, setPortSlotsData] = useState([])
 
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
-  // const { switchDetailHeader: switchDetail } = switchDetailsContextData
-
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const [addSwitchesVlans] = useAddSwitchesVlansMutation()
@@ -88,6 +94,18 @@ export function SwitchOverviewVLANs (props: {
     sorter: {
       sortField: 'vlanId',
       sortOrder: 'ASC'
+    }
+  })
+
+  const { data: vlanListBySwitch, isLoading: isVlanListLoading }
+  = useGetVlanListBySwitchLevelQuery({
+    params: { tenantId, switchId },
+    payload: {
+      pageSize: 9999,
+      sorter: {
+        sortField: 'vlanId',
+        sortOrder: 'ASC'
+      }
     }
   })
 
@@ -119,7 +137,7 @@ export function SwitchOverviewVLANs (props: {
     setDrawerVisible(false)
   }
 
-  const setVlan = async (values: Vlan) => {
+  const applyVlan = async (values: Vlan) => {
     const payload = {
       ...(_.omit(values, ['switchFamilyModels'])),
       vlanId: Number(values.vlanId),
@@ -140,6 +158,38 @@ export function SwitchOverviewVLANs (props: {
       try {
         await updateSwitchVlan({
           params: { tenantId, switchId, vlanId: editVlan?.id },
+          payload
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    } else {
+      try {
+        await addSwitchesVlans({
+          params: { tenantId, switchId },
+          payload: [payload]
+        }).unwrap()
+      } catch (error) {
+        console.log(error) // eslint-disable-line no-console
+      }
+    }
+  }
+
+  const applyDefaultVlan = async (values: Vlan) => {
+    const payload = {
+      ...values,
+      vlanId: Number(values.vlanId),
+      switchId: switchId,
+      enableAsDefaultVlan: true
+    }
+    const isVlanExisted = vlanList?.filter(v =>
+      v.vlanId == values.vlanId)?.length > 0
+
+    // TODO: Default VLAN ID can't be changed
+    if (defaultVlan.id && isVlanExisted) {
+      try {
+        await updateSwitchVlan({
+          params: { tenantId, switchId, vlanId: defaultVlan.id },
           payload
         }).unwrap()
       } catch (error) {
@@ -229,17 +279,23 @@ export function SwitchOverviewVLANs (props: {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
-        setEditMode(true)
-        setEditVlan({
-          ...selectedRows[0],
-          switchFamilyModels: selectedRows[0]?.switchVlanPortModels?.map(switchFamily => {
-            return {
-              ...switchFamily,
-              model: switchFamily?.switchModel
-            }
-          }) as SwitchModel[]
-        })
-        setVlanDrawerVisible(true)
+        const selectedRow = selectedRows?.[0]
+        const isSelectDefaultVlan = selectedRow?.vlanName === SWITCH_DEFAULT_VLAN_NAME
+        if (isSelectDefaultVlan) {
+          setDefaultVlanDrawerVisible(true)
+        } else {
+          setEditMode(true)
+          setEditVlan({
+            ...selectedRow,
+            switchFamilyModels: selectedRow?.switchVlanPortModels?.map(switchFamily => {
+              return {
+                ...switchFamily,
+                model: switchFamily?.switchModel
+              }
+            }) as SwitchModel[]
+          })
+          setVlanDrawerVisible(true)
+        }
       }
     },
     {
@@ -277,25 +333,49 @@ export function SwitchOverviewVLANs (props: {
       setEditVlan({} as Vlan)
       setVlanDrawerVisible(true)
     }
+  }, {
+    label: $t({ defaultMessage: 'Default VLAN settings' }),
+    disabled: cliApplied || !isSwitchOperational,
+    tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
+    onClick: () => {
+      setDefaultVlanDrawerVisible(true)
+    }
   }]
 
-  useEffect(() => {
-    if (tableQuery.data?.data && !isLagListLoading) {
-      const portsUsedByLag = lagList?.map(l => l.ports).flat()
+  const checkUsedPorts = (vlanList: Vlan[], checkPostsField: 'untaggedPorts' | 'taggedPorts') => {
+    return vlanList?.filter(
+      v => v?.[checkPostsField] && v?.vlanName !== SWITCH_DEFAULT_VLAN_NAME
+    ).map(v => v?.[checkPostsField]?.split(',')).flat() as string[]
+  }
 
-      setVlanList(tableQuery.data?.data.map(vlan => {
+  useEffect(() => {
+    if (tableQuery.data?.data && !isLagListLoading && !isVlanListLoading) {
+      const portsUsedByLag = lagList?.map(lag => lag.ports)?.filter(lag => lag).flat() as string[]
+      const vlanList = vlanListBySwitch?.data as Vlan[]
+      const vlanTableData = tableQuery.data?.data.map(vlan => {
         const hasPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
           _.intersection(port.taggedPortsList, portsUsedByLag)?.length > 1
             || _.intersection(port.untaggedPortsList, portsUsedByLag)?.length > 1
         )
-
         return {
           ...vlan,
           inactiveRow: !!hasPortsUsedByLag?.length
         }
-      }))
+      })
+      const defaultVlan = vlanList?.filter(
+        v => v.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.[0]
+
+      const usedTagged = checkUsedPorts(vlanList, 'taggedPorts')
+      const usedUntagged = checkUsedPorts(vlanList, 'untaggedPorts')
+
+      setVlanList(vlanList)
+      setUsedByLag(portsUsedByLag)
+      setUsedTaggedPorts(usedTagged)
+      setUsedUntaggedPorts(usedUntagged)
+      setVlanTableData(vlanTableData)
+      setDefaultVlan(defaultVlan)
     }
-  }, [tableQuery.data?.data, isLagListLoading])
+  }, [tableQuery.data?.data, isLagListLoading, isVlanListLoading])
 
   useEffect(() => {
     if (switchDetailsContextData) {
@@ -318,7 +398,7 @@ export function SwitchOverviewVLANs (props: {
         type='tall'
         onChange={tableQuery.handleTableChange}
         pagination={tableQuery.pagination}
-        dataSource={vlanList}
+        dataSource={vlanTableData}
         rowKey='vlanId'
         rowActions={filterByAccess(rowActions)}
         rowSelection={
@@ -357,8 +437,22 @@ export function SwitchOverviewVLANs (props: {
         switchFamilyModel={switchFamilyModel}
         enablePortModelConfigure={true}
         portSlotsData={portSlotsData}
-        setVlan={setVlan}
-        vlansList={tableQuery.data?.data as Vlan[]}
+        setVlan={applyVlan}
+        vlansList={vlanList}
+        portsUsedBy={{
+          lag: usedByLag,
+          tagged: _.xor(usedTaggedPorts, editVlan?.taggedPorts?.split(',')),
+          untagged: _.xor(usedUntaggedPorts, editVlan?.untaggedPorts?.split(','))
+        }}
+      />}
+
+      { isSwitchLevelVlanEnabled && defaultVlanDrawerVisible && <DefaultVlanDrawer
+        visible={defaultVlanDrawerVisible}
+        setVisible={setDefaultVlanDrawerVisible}
+        defaultVlan={defaultVlan}
+        setDefaultVlan={applyDefaultVlan}
+        isSwitchLevel={true}
+        vlansList={vlanList}
       />}
 
     </Loader>
@@ -371,29 +465,29 @@ function getPortViewData (portsData: SwitchPortViewModel[] ) {
   }
   const tmpSlots: { [key:string]:SwitchSlot } = {}
 
-  portsData
-    .forEach(item => {
-      const port = { ...item }
-      const portNumber = port.portIdentifier.split('/')[2]
-      port.portnumber = portNumber
-      port.portNumber = portNumber
-      port.usedInUplink = port.cloudPort
-      const slot = Number(port.portIdentifier.split('/')[1])
+  portsData.forEach(item => {
+    const port = { ...item }
+    const portNumber = port.portIdentifier.split('/')[2]
+    port.portnumber = portNumber
+    port.portNumber = portNumber
+    port.usedInUplink = port.cloudPort
+    const slot = Number(port.portIdentifier.split('/')[1])
 
-      if(tmpSlots[slot]){
-        tmpSlots[slot].portStatus.push(port)
-        tmpSlots[slot].portCount++
-        tmpSlots[slot].portNumber = Number(portNumber)
-        tmpSlots[slot].portTagged = ''
-      }else {
-        tmpSlots[slot] = {
-          portStatus: [port],
-          portCount: 1,
-          portNumber: Number(portNumber),
-          portTagged: ''
-        }
+    if(tmpSlots[slot]){
+      tmpSlots[slot].portStatus.push(port)
+      tmpSlots[slot].portCount++
+      tmpSlots[slot].portNumber = Number(portNumber)
+      tmpSlots[slot].portTagged = ''
+    }else {
+      tmpSlots[slot] = {
+        portStatus: [port],
+        portCount: 1,
+        portNumber: Number(portNumber),
+        portTagged: ''
       }
-    })
+    }
+  })
+
   Object.keys(tmpSlots).forEach(key => {
     portStatusData.slots.push(tmpSlots[key])
   })
@@ -404,5 +498,6 @@ function getPortViewData (portsData: SwitchPortViewModel[] ) {
       slot.slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1])
     }
   })
+
   return tmpPortView
 }

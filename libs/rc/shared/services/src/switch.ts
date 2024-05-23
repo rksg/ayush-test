@@ -490,12 +490,6 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       }
     }),
     getDefaultVlan: build.query<SwitchDefaultVlan[], RequestPayload>({
-      // query: ({ params, payload }) => {
-      //   const req = createHttpRequest(
-      //     SwitchUrlsInfo.getDefaultVlan,
-      //     params
-      //   )
-      // payload = { isDefault: true, switchIds: payload }
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)

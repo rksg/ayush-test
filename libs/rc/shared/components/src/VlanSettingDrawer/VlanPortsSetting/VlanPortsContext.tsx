@@ -1,6 +1,8 @@
 import { createContext } from 'react'
 
-import { Vlan } from '@acx-ui/rc/utils'
+import { Vlan, SwitchSlot } from '@acx-ui/rc/utils'
+
+import { PortsUsedByProps } from '..'
 
 import { VlanSettingInterface } from './VlanPortsModal'
 
@@ -12,7 +14,8 @@ export interface VlanPortsType {
   vlanList: Vlan[]
   isSwitchLevel?: boolean
   switchFamilyModel?: string
-  portsUsedByLag?: string[]
+  portSlotsData?: SwitchSlot[]
+  portsUsedBy?: PortsUsedByProps
 }
 const VlanPortsContext = createContext({} as VlanPortsType)
 

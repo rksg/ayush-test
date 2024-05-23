@@ -28,6 +28,7 @@ export {
   networkDisplayTransformer,
   isEqualCaptivePortal
 } from './ConnectedClientsTable'
+export { DefaultVlanDrawer } from './DefaultVlanDrawer'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'

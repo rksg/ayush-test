@@ -5,7 +5,6 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 
 import { Modal, ModalType, StepsForm } from '@acx-ui/components'
-import { useGetLagListQuery }          from '@acx-ui/rc/services'
 import {
   SwitchModelPortData,
   TrustedPort,
@@ -13,7 +12,8 @@ import {
   SwitchSlot,
   SwitchSlot2
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
+
+import { PortsUsedByProps } from '..'
 
 import { SelectModelStep }   from './SelectModelStep'
 import { TaggedPortsStep }   from './TaggedPortsStep'
@@ -41,11 +41,11 @@ export function VlanPortsModal (props: {
   vlanList: Vlan[],
   switchFamilyModel?: string,
   portSlotsData?: SwitchSlot[]
+  portsUsedBy?: PortsUsedByProps
 }) {
   const { $t } = useIntl()
-  const { tenantId, switchId } = useParams()
   const { open, editRecord, onSave, onCancel,
-    vlanList, switchFamilyModel, portSlotsData = [] } = props
+    vlanList, switchFamilyModel, portSlotsData = [], portsUsedBy } = props
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
@@ -57,46 +57,38 @@ export function VlanPortsModal (props: {
     })
 
   const isSwitchLevel = !!switchFamilyModel
-  const [portsUsedByLag, setPortsUsedByLag] = useState([] as string[])
-  const { data: lagList }
-    = useGetLagListQuery({ params: { tenantId, switchId } }, { skip: !switchId })
 
   useEffect(()=>{
     setEditMode(open && !!editRecord)
 
     if (open && isSwitchLevel) {
-      const enableSlot2 = portSlotsData?.filter(port => port.slotNumber === 2)?.length > 0
-      const enableSlot3 = portSlotsData?.filter(port => port.slotNumber === 3)?.length > 0
-      if (editRecord) {
-        const [ family, model ] = switchFamilyModel.split('-')
-        const initValue = {
-          family, model, enableSlot2, enableSlot3,
+      const [ family, model ] = switchFamilyModel.split('-')
+      const enableSlot2 = checkSlotEnabled(portSlotsData, 2)
+      const enableSlot3 = checkSlotEnabled(portSlotsData, 3)
+      const initValues = {
+        family, model, enableSlot2, enableSlot3,
+        slots: portSlotsData as unknown as SwitchSlot2[],
+        switchFamilyModels: {
+          id: '',
+          model: switchFamilyModel,
           slots: portSlotsData as unknown as SwitchSlot2[],
-          switchFamilyModels: {
-            ...editRecord,
-            model: switchFamilyModel,
-            slots: portSlotsData as unknown as SwitchSlot2[]
-          },
-          trustedPorts: []
-        }
-        setVlanSettingValues(initValue)
-      } else {
-        const [ family, model ] = switchFamilyModel.split('-')
-        const initValue = {
-          family, model, enableSlot2, enableSlot3,
-          slots: portSlotsData as unknown as SwitchSlot2[],
-          switchFamilyModels: {
-            id: '',
-            model: switchFamilyModel,
-            slots: portSlotsData as unknown as SwitchSlot2[],
-            taggedPorts: [],
-            untaggedPorts: []
-          },
-          trustedPorts: []
-        }
+          taggedPorts: [],
+          untaggedPorts: []
+        },
+        trustedPorts: []
+      }
 
-        form.setFieldsValue(initValue)
-        setVlanSettingValues(initValue)
+      if (editRecord) {
+        setVlanSettingValues({
+          ...initValues,
+          switchFamilyModels: {
+            ...initValues.switchFamilyModels,
+            ..._.omit(editRecord, 'slots')
+          }
+        })
+      } else {
+        form.setFieldsValue(initValues)
+        setVlanSettingValues(initValues)
       }
     } else if (open && editRecord) {
       const family = editRecord.model.split('-')[0]
@@ -107,12 +99,9 @@ export function VlanPortsModal (props: {
     }
   }, [form, open, editRecord])
 
-  useEffect(()=>{
-    if (lagList) {
-      const ports = lagList.map(l => l.ports).flat()
-      setPortsUsedByLag(ports as string[])
-    }
-  }, [lagList])
+  const checkSlotEnabled = (portSlotsData: SwitchSlot[], slotNumber: number) => {
+    return portSlotsData?.filter(port => port.slotNumber === slotNumber)?.length > 0
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveModel = async (data: any) => {
@@ -217,10 +206,13 @@ export function VlanPortsModal (props: {
       data-testid='vlanSettingModal'
     >
       <VlanPortsContext.Provider value={{
-        vlanSettingValues, setVlanSettingValues, vlanList, editMode,
-        isSwitchLevel: !!switchFamilyModel,
+        vlanSettingValues, setVlanSettingValues,
+        vlanList,
+        editMode,
+        isSwitchLevel,
         switchFamilyModel,
-        portsUsedByLag
+        portSlotsData,
+        portsUsedBy
       }}>
         <StepsForm
           editMode={editMode}
@@ -228,7 +220,7 @@ export function VlanPortsModal (props: {
           onFinish={onFinish}
           style={{ paddingBlockEnd: 0 }}
         >
-          { !switchFamilyModel && <StepsForm.StepForm
+          { !isSwitchLevel && <StepsForm.StepForm
             title={$t({ defaultMessage: 'Select Model' })}
             onFinish={onSaveModel}
           >
@@ -248,13 +240,13 @@ export function VlanPortsModal (props: {
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}
           >
-            <UntaggedPortsStep isSwitchLevel={isSwitchLevel} />
+            <UntaggedPortsStep />
           </StepsForm.StepForm>
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Tagged Ports' })}
             onFinish={onSaveTagged}
           >
-            <TaggedPortsStep isSwitchLevel={isSwitchLevel} />
+            <TaggedPortsStep />
           </StepsForm.StepForm>
         </StepsForm>
       </VlanPortsContext.Provider>

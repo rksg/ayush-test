@@ -9,9 +9,9 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Card, Tooltip }                                 from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel } from '@acx-ui/rc/utils'
-import { getIntl }                                       from '@acx-ui/utils'
+import { Card, Tooltip }                                                     from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
+import { getIntl }                                                           from '@acx-ui/utils'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -21,15 +21,12 @@ export interface PortsType {
   value: string
 }
 
-export function TaggedPortsStep (props: {
-  isSwitchLevel: boolean
-}) {
+export function TaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
   const {
-    vlanSettingValues, setVlanSettingValues, vlanList, portsUsedByLag
+    vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
   } = useContext(VlanPortsContext)
-  const { isSwitchLevel } = props
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -212,7 +209,9 @@ export function TaggedPortsStep (props: {
         vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
     const disabledPorts
-      = untaggedPorts.includes(timeslot) || portsUsedByLag?.includes(timeslot) || false
+      = untaggedPorts.includes(timeslot)
+      || portsUsedBy?.lag?.includes(timeslot)
+      // || portsUsedBy?.tagged?.includes(timeslot) || false
 
     return disabledPorts
   }
@@ -232,12 +231,14 @@ export function TaggedPortsStep (props: {
         switchModel.taggedPorts?.split(',').includes(timeslot))) : []
 
     if(untaggedPorts.includes(timeslot)){
-      return <div>{$t({ defaultMessage: 'Port set as untagged' })}</div>
-    } else if (portsUsedByLag?.includes(timeslot)) {
-      return <div>{$t({ defaultMessage: 'Port used by LAG' })}</div>
+      return <div>{$t(PortStatusMessages.SET_AS_UNTAGGED)}</div>
+    } else if (portsUsedBy?.lag?.includes(timeslot)) {
+      return <div>{$t(PortStatusMessages.USED_BY_LAG)}</div>
+    // } else if (portsUsedBy?.tagged?.includes(timeslot)) {
+    //   return <div>{$t(PortStatusMessages.USED_BY_OTHERS)}</div>
     } else {
       return <div>
-        <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
+        <div>{$t(PortStatusMessages.CURRENT)}</div>
         <div>
           <UI.TagsOutlineIcon />
           <UI.PortSpan>
