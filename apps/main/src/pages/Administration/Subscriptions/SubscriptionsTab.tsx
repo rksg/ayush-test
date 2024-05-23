@@ -13,7 +13,9 @@ import { AccountTier, getJwtTokenPayload, isDelegationMode } from '@acx-ui/utils
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 // import MySubscriptions            from './MySubscriptions'
-import { SubscriptionsTabHeader } from './SubscriptionsTabHeader'
+import { RbacSubscriptionsTabHeader } from './RbacSubscriptionsTabHeader'
+import { RbacSubscriptionTable }      from './RbacSubscriptionTable'
+import { SubscriptionsTabHeader }     from './SubscriptionsTabHeader'
 
 import { SubscriptionTable } from '.'
 
@@ -27,6 +29,7 @@ export const SubscriptionTabs = () => {
       Gold = 'Essentials'
     }
     const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
+    const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
     const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
     const tier = request?.data?.acx_account_tier?? getJwtTokenPayload().acx_account_tier
     const subscriptionVal = tier === AccountTier.GOLD ? SubscriptionTierType.Gold
@@ -36,8 +39,10 @@ export const SubscriptionTabs = () => {
       mySubscriptions: {
         title: $t({ defaultMessage: 'My Subscriptions' }),
         content: <SpaceWrapper fullWidth size='large' direction='vertical'>
-          <SubscriptionsTabHeader />
-          <SubscriptionTable />
+          {isEntitlementRbacApiEnabled
+            ? <RbacSubscriptionsTabHeader /> : <SubscriptionsTabHeader />}
+          {isEntitlementRbacApiEnabled
+            ? <RbacSubscriptionTable /> : <SubscriptionTable />}
         </SpaceWrapper>,
         visible: true
       },

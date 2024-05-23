@@ -93,9 +93,6 @@ const entitlementListPayload = {
   sortOrder: 'DESC',
   filters: {
     licenseType: ['APSW'],
-    // isTrial: false,
-    // status': ['VALID','EXPIRED','FUTURE']
-    // isAssignedLicense: false,
     usageType: 'ASSIGNED'
   }
 }

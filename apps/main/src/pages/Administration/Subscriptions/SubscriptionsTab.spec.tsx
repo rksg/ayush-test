@@ -3,7 +3,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                                     from '@acx-ui/msp/utils'
-import { AdministrationUrlsInfo }                                          from '@acx-ui/rc/utils'
+import { AdministrationUrlsInfo, LicenseUrlsInfo }                         from '@acx-ui/rc/utils'
 import { Provider }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                    from '@acx-ui/user'
@@ -42,6 +42,12 @@ describe('SubscriptionsTab', () => {
           return res(ctx.json(mockedSummary))
         }
       ),
+      rest.post(
+        LicenseUrlsInfo.getEntitlementSummary.url as string,
+        (_req, res, ctx) => {
+          return res(ctx.json(mockedSummary))
+        }
+      ),
       rest.get(
         AdministrationUrlsInfo.getEntitlementSummary.url,
         (req, res, ctx) => {
@@ -57,6 +63,12 @@ describe('SubscriptionsTab', () => {
       ),
       rest.get(
         AdministrationUrlsInfo.getEntitlementsList.url,
+        (_req, res, ctx) => {
+          return res(ctx.json(mockedEtitlementsList))
+        }
+      ),
+      rest.post(
+        LicenseUrlsInfo.getEntitlementsList.url,
         (_req, res, ctx) => {
           return res(ctx.json(mockedEtitlementsList))
         }
