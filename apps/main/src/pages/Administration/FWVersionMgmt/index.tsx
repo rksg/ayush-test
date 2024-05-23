@@ -37,8 +37,12 @@ const FWVersionMgmt = () => {
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
-  const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
-  const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const { data: latestSwitchReleaseVersions } =
+    useGetSwitchLatestFirmwareListQuery({ params, enableRbac: isSwitchRbacEnabled })
+  const { data: switchVenueVersionList } =
+    useGetSwitchVenueVersionListQuery({ params, enableRbac: isSwitchRbacEnabled })
   const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
     skip: !isEdgeEnabled
   })
