@@ -71,7 +71,7 @@ export const SwitchFirmwareBanner = (props: FirmwareBannerProps) => {
   )
 }
 
-interface VersionInfoProps {
+export interface VersionInfoProps {
   label?: string
   firmware: {
     version: string
