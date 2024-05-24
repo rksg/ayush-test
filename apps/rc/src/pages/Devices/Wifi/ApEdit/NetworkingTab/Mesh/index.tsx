@@ -106,8 +106,8 @@ export function ApMesh () {
     setEditNetworkingContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
-  const venueId = apDetails?.venueId
+  const { venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
   const venueMeshSettings = useApMeshSettingsData(venueId)
   const venueMeshEnabled: boolean = !!venueMeshSettings?.enabled

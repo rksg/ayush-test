@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
@@ -83,6 +84,7 @@ describe('ApEdit', () => {
     store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff !== Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
@@ -152,7 +154,7 @@ describe('ApEdit', () => {
     it('Should render correctly when ap has not connected to the cloud', async () => {
       mockServer.use(
         rest.post(CommonUrlsInfo.getApsList.url,
-          (_, res, ctx) => res(ctx.json({
+          (_req, res, ctx) => res(ctx.json({
             ...deviceAps,
             data: [{
               ...(_.omit(deviceAps?.data?.[0], ['model']))

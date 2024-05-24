@@ -60,7 +60,8 @@ export function ApSnmp () {
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
-  const { apData: apDetails, venueData } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
@@ -74,7 +75,8 @@ export function ApSnmp () {
   // eslint-disable-next-line max-len
   const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
   // eslint-disable-next-line max-len
-  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId: apDetails?.venueId }, enableRbac: isUseRbacApi })
+  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId }, enableRbac: isUseRbacApi },
+    { skip: !venueId })
 
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
    = useUpdateApSnmpSettingsMutation()
@@ -84,12 +86,13 @@ export function ApSnmp () {
    = useResetApSnmpSettingsMutation()
 
   const [getVenueApSnmpSettings] = useLazyGetVenueApSnmpSettingsQuery()
-  const venueId = venueData?.id
 
   useEffect(() => {
     const apSnmp = getApSnmpSettings?.data
-    if (apSnmp) {
+
+    if (venueId && apSnmp) {
       const setData = async () => {
+
         // Get current Venue AP SNMP settings
         const venueApSnmpSetting = (await getVenueApSnmpSettings({
           params: { venueId },
