@@ -207,4 +207,22 @@ describe('NetworkAssurance', () => {
       expect(await screen.findByTestId('HealthTabs')).toBeVisible()
     })
   })
+  it('should redirect from health path to overview', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useTenantLink).mockReturnValue({
+      pathname: 't1/t/ai',
+      search: '',
+      hash: ''
+    })
+    jest.mocked(useLocation).mockReturnValue({
+      ...location,
+      pathname: 't1/t/ai/health'
+    })
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByTestId('HealthTabs')).toBeVisible()
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: 't1/t/ai/health/overview', hash: '', search: ''
+    }))
+  })
 })
