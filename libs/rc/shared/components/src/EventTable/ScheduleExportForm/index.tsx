@@ -356,6 +356,7 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
         label={$t({ defaultMessage: 'Product' })}
         children={<Select
           mode='multiple'
+          showArrow
           allowClear
           options={productList}
         />
@@ -368,6 +369,7 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
         label={$t({ defaultMessage: 'Severity' })}
         children={<Select
           mode='multiple'
+          showArrow
           allowClear
           options={severityList}/>
         }
@@ -379,6 +381,7 @@ export function ScheduleExportForm (props: ScheduleExportFormProps) {
         label={$t({ defaultMessage: 'Event Type' })}
         children={<Select
           mode='multiple'
+          showArrow
           allowClear
           options={eventTypeList}/>
         }
