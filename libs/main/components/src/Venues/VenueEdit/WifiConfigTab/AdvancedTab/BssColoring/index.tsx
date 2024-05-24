@@ -45,11 +45,11 @@ export function BssColoring () {
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [enableBssColoring, setEnableBssColoring] = useState(false)
-  const getVenueBssColoring = useVenueConfigTemplateQueryFnSwitcher<VenueBssColoring>(
-    useGetVenueBssColoringQuery,
-    useGetVenueTemplateBssColoringQuery,
-    isUseRbacApi
-  )
+  const getVenueBssColoring = useVenueConfigTemplateQueryFnSwitcher<VenueBssColoring>({
+    useQueryFn: useGetVenueBssColoringQuery,
+    useTemplateQueryFn: useGetVenueTemplateBssColoringQuery,
+    enableRbac: isUseRbacApi
+  })
   const [updateVenueBssColoring, { isLoading: isUpdatingVenueBssColoring }] =
     useVenueConfigTemplateMutationFnSwitcher(
       useUpdateVenueBssColoringMutation,

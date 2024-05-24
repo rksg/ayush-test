@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                   from '@acx-ui/rc/utils'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi, venueApi }                                                    from '@acx-ui/rc/services'
+import { CommonUrlsInfo, CommonRbacUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { r760Ap, venueData }            from '../../../../__tests__/fixtures'
@@ -49,7 +49,14 @@ describe('AP Led', () => {
           return res(ctx.json({ requestId: '123' }))
         }),
       rest.delete(WifiUrlsInfo.updateApLed.url,
-        (_, res, ctx)=> res(ctx.json({ requestId: '123' })))
+        (_, res, ctx)=> res(ctx.json({ requestId: '123' }))),
+      // RBAC API
+      rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json(mockVenueLed))),
+      rest.get(WifiRbacUrlsInfo.getApLed.url,
+        (_, res, ctx) => res(ctx.json(mockApLedSettings))),
+      rest.put(WifiRbacUrlsInfo.updateApLed.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 

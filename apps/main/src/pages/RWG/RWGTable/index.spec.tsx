@@ -1,7 +1,7 @@
 import { rest } from 'msw'
 
-import { CommonRbacUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider }                                               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -23,7 +23,8 @@ const rwgList = {
       name: 'ruckusdemos',
       hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      status: 'Operational'
+      status: RWGStatusEnum.ONLINE,
+      isCluster: false
     }, {
       rwgId: 'bbc41563473348d29a36b76e95c50382',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
@@ -31,8 +32,9 @@ const rwgList = {
       name: 'rwg1',
       hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      status: 'Offline'
-    }]
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
   }
 }
 

@@ -1,11 +1,11 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { showActionModal, CustomButtonProps }       from '@acx-ui/components'
-import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApModel, ApViewModel }             from '@acx-ui/rc/utils'
-import { useParams }                                from '@acx-ui/react-router-dom'
-import { goToNotFound }                             from '@acx-ui/user'
-import { getIntl }                                  from '@acx-ui/utils'
+import { showActionModal, CustomButtonProps }        from '@acx-ui/components'
+import { useGetApCapabilitiesQuery, useGetApQuery }  from '@acx-ui/rc/services'
+import { ApDeep,  ApViewModel, CapabilitiesApModel } from '@acx-ui/rc/utils'
+import { useParams }                                 from '@acx-ui/react-router-dom'
+import { goToNotFound }                              from '@acx-ui/user'
+import { getIntl }                                   from '@acx-ui/utils'
 
 
 import { AdvancedTab, ApAdvancedContext }             from './AdvancedTab'
@@ -25,7 +25,7 @@ const tabs = {
 
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
-  apCapabilities?: ApModel
+  apCapabilities?: CapabilitiesApModel
 })
 
 export interface ApEditContextType {
@@ -79,7 +79,7 @@ export function ApEdit () {
   const [apViewContextData, setApViewContextData] = useState({} as ApViewModel)
 
   const [apData, setApData] = useState<ApDeep>()
-  const [apCapabilities, setApCapabilities] = useState<ApModel>()
+  const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
   const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({ params })
@@ -96,7 +96,7 @@ export function ApEdit () {
           const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
 
           setApData(getedApData)
-          setApCapabilities(curApCapabilities)
+          setApCapabilities(curApCapabilities as CapabilitiesApModel)
 
           setIsLoaded(true)
         }

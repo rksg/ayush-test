@@ -38,9 +38,17 @@ import {
   MapWidgetV2,
   VenuesDashboardWidgetV2
 } from '@acx-ui/rc/components'
-import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey }                                                         from '@acx-ui/user'
-import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter, getDatePickerValues } from '@acx-ui/utils'
+import { TenantLink }                                                from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }                      from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import {
+  useDashboardFilter,
+  DateFilter,
+  DateRange,
+  getDateRangeFilter,
+  AnalyticsFilter,
+  getDatePickerValues
+} from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -145,32 +153,44 @@ function DashboardPageHeader () {
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
 
+  const hasCreatePermission
+    = hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE] })
+
   const addMenu = <Menu
     expandIcon={<UI.MenuExpandArrow />}
     items={[{
       key: 'add-venue',
       // eslint-disable-next-line max-len
       label: <TenantLink to='venues/add'>{$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</TenantLink>
-    }, {
+    },
+    ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
       key: 'add-wifi-network',
       label: <TenantLink to='networks/wireless/add'>{
         $t({ defaultMessage: 'Wi-Fi Network' })}
       </TenantLink>
-    }, {
+    }] : []),
+    ...( hasCreatePermission ? [{
       key: 'add-device',
       label: $t({ defaultMessage: 'Device' }),
       // type: 'group',
-      children: [{
-        key: 'add-ap',
-        label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
-      }, {
-        key: 'add-switch',
-        label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
-      }, ...(isEdgeEnabled && isEdgeReady) ? [{
-        key: 'add-edge',
-        label: <TenantLink to='devices/edge/add'>{$t({ defaultMessage: 'SmartEdge' })}</TenantLink>
-      }] : []]
-    }]}
+      children: [
+        ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
+          key: 'add-ap',
+          label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
+        }] : []),
+        ...( hasPermission({ scopes: [SwitchScopes.CREATE] }) ? [{
+          key: 'add-switch',
+          label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+        }] : []),
+        ...(isEdgeEnabled && isEdgeReady && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
+          key: 'add-edge',
+          label: <TenantLink to='devices/edge/add'>{
+            $t({ defaultMessage: 'SmartEdge' })
+          }</TenantLink>
+        }] : []
+      ]
+    }] : [])
+    ]}
   />
 
   return (

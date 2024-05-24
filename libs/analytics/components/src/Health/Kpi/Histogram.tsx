@@ -69,7 +69,8 @@ function Histogram ({
   disabled?: boolean;
 }) {
   const { $t } = useIntl()
-  const { histogram, text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const { histogram, text,
+    enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
   const { splits, highlightAbove, isReverse } = histogram
   const [thresholdValue, setThresholdValue] = useState(threshold)
   const splitsAfterIsReverseCheck = isReverse ? splits.slice().reverse() : splits
@@ -103,7 +104,7 @@ function Histogram ({
     setKpiThreshold({ ...thresholds, [kpi]: splitsAfterIsReverseCheck[newValue - 1] })
   }
   const queryResults = healthApi.useKpiHistogramQuery(
-    { ...filters, kpi },
+    { ...filters, kpi, enableSwitchFirmwareFilter },
     {
       selectFromResult: ({ data, ...rest }) => ({
         ...rest,

@@ -25,6 +25,7 @@ const multipleBy100 = (ms: number) => ms * 100
 export const multipleBy1000 = (ms: number) => ms * 1000
 export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
+export const numberWithPercentSymbol = (x: number) => `${x}%`
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -161,6 +162,22 @@ export const kpiConfig = {
       apiMetric: 'dhcpSuccess',
       format: formatter('percentFormat'),
       deltaSign: '+'
+    }
+  },
+  switchDhcp: {
+    textPostFix: 'Success',
+    text: defineMessage({ defaultMessage: 'DHCP' }),
+    timeseries: {
+      apiMetric: 'switchDHCPAttemptAndSuccessCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
+      thresholdDesc: [],
+      thresholdFormatter: null,
+      pillSuffix: pillSuffix.success,
+      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Switch client has received an IP address from the DHCP server. Do note that a single Switch client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
     }
   },
   radius: {
@@ -456,6 +473,158 @@ export const kpiConfig = {
       format: formatter('countFormat'),
       deltaSign: '+'
     }
+  },
+  switchReachability: {
+    text: defineMessage({ defaultMessage: 'Switch Reachability' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchStatusCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are reachable.' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Online Switches measures the percentage of Switches which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online Switch percentage across time. The bar chart on the right captures the daily Online Switch percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
+  },
+  switchMemoryUtilization: {
+    text: defineMessage({ defaultMessage: 'Memory' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchMemoryUtilization',
+      splits: [10,25,50,60,70,80,90],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} Memory' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'The memory Utilization measures the percentage of the switches that utilize less memory percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of Memory Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
+  },
+  switchCpuUtilization: {
+    text: defineMessage({ defaultMessage: 'CPU' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchCpuUtilization',
+      splits: [10,25,50,60,70,80,90],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} CPU' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'The CPU Utilization measures the percentage of the switches that utilize less CPU percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of CPU Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
+  },
+  switchesTemperature: {
+    text: defineMessage({ defaultMessage: 'Temperature' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchTempCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are under safe thresholds of temperature.' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Temperature' })
+    }
+  },
+  switchUplinkPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Uplink Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchUplinkPortUtilCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchUplinkPortUtilization',
+      splits: [0, 20, 40, 60, 80, 100],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} uplink ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Uplink Port Utilization' })
+    }
+  },
+  switchPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchPortUtilizationCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchPortUtilization',
+      splits: [0, 20, 40, 60, 80, 100],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
+    }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -503,31 +672,31 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        'uplinkPortUtilization',
+        'switchUplinkPortUtilization',
         'switchReachability'
       ]
     },
     connection: {
       kpis: [
-        'authentication',
-        'dhcp'
+        // 'authentication',
+        'switchDhcp'
       ]
     },
     performance: {
       kpis: [
-        'portUtilization',
-        'uplinkPortUtilization',
-        'interfaceAnamolies',
-        'bcmcTraffic'
+        'switchPortUtilization',
+        'switchUplinkPortUtilization'
+        // 'interfaceAnamolies',
+        // 'bcmcTraffic'
       ]
     },
     infrastructure: {
       kpis: [
         'switchReachability',
-        'memory',
-        'cpu',
-        'temperature',
-        'poeUtilization'
+        'switchMemoryUtilization',
+        'switchCpuUtilization',
+        'switchesTemperature',
+        'switchPoeUtilization'
       ]
     }
   }

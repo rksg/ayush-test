@@ -60,10 +60,10 @@ const SyslogVenueDetail = () => {
     }
   ]
 
-  const { data: syslogPolicy } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>(
-    useGetSyslogPolicyQuery,
-    useGetSyslogPolicyTemplateQuery
-  )
+  const { data: syslogPolicy } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
+    useQueryFn: useGetSyslogPolicyQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery
+  })
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenueTemplateForSyslogPolicyQuery : useVenueSyslogPolicyQuery,

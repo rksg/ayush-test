@@ -33,16 +33,16 @@ describe('VLANPoolForm', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        WifiUrlsInfo.getVlanPools.url,
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json(vlanList))
       ),
       rest.get(
         VlanPoolUrls.getVLANPoolPolicy.url,
         (_, res, ctx) => res(ctx.json(vlanData))
       ),
-      rest.get(
-        PoliciesConfigTemplateUrlsInfo.getVlanPools.url,
+      rest.post(
+        PoliciesConfigTemplateUrlsInfo.getEnhancedVlanPools.url,
         (_, res, ctx) => res(ctx.json(vlanTemplateList))
       )
     )
@@ -174,7 +174,7 @@ describe('VLANPoolForm', () => {
 
     await userEvent.type(await screen.findByLabelText('Policy Name'), 'My VLAN pool template')
     await userEvent.type(await screen.findByLabelText('Description'), 'Some description')
-    await userEvent.type(await screen.findByLabelText('VLANs'), '1288')
+    await userEvent.type(await screen.findByLabelText('VLANs'), '1288,1299')
     await userEvent.click(await screen.findByText('Add'))
 
     await waitFor(() => expect(addTemplateFn).toHaveBeenCalled())

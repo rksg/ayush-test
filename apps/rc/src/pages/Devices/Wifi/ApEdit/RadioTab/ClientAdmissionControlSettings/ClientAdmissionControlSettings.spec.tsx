@@ -61,10 +61,16 @@ describe('Ap Client Admission Control', () => {
       rest.delete(
         WifiUrlsInfo.deleteApClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json({}))),
-      // rbac
+      // RBAC API
       rest.get(
         WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
-        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl)))
+        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
+      rest.get(
+        WifiRbacUrlsInfo.getApClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
+      rest.put(
+        WifiRbacUrlsInfo.updateApClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
@@ -101,6 +107,8 @@ describe('Ap Client Admission Control', () => {
   })
 
   it('should render correctly when use custom settings', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getApClientAdmissionControl.url,

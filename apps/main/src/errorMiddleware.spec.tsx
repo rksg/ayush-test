@@ -254,11 +254,10 @@ describe('errorMiddleware', () => {
           }
         })
       })
-      expect(window.location.href).toBe('/logout')
+      expect(await screen.findByText('Session Expired')).toBeVisible()
     })
     it('with token', async () => {
       sessionStorage.setItem('jwt', 'testToken')
-      const token = sessionStorage.getItem('jwt')
       const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
         return rejectWithValue({ originalStatus: 403 })
       })
@@ -272,7 +271,7 @@ describe('errorMiddleware', () => {
           }
         })
       })
-      expect(window.location.href).toEqual(`/logout?token=${token}`)
+      expect(await screen.findByText('Session Expired')).toBeVisible()
     })
   })
 })
