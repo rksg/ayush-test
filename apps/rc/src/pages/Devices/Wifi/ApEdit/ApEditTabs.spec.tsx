@@ -14,7 +14,8 @@ import {
 import {
   apDetailsList,
   deviceAps,
-  venueCaps
+  venueCaps,
+  venueData
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from '.'
@@ -38,7 +39,10 @@ describe('ApEditTabs', () => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(CommonUrlsInfo.getApsList.url,

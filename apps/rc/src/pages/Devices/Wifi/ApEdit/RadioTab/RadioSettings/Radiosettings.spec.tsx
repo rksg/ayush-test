@@ -53,8 +53,24 @@ const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 
 const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760')
 const r560Cap = triBandApCap.apModels.find(cap => cap.model === 'R560')
 
+const defaultApEditCxtData = {
+  editContextData: {
+    tabTitle: '',
+    isDirty: false,
+    updateChanges: jest.fn(),
+    discardChanges: jest.fn()
+  },
+  setEditContextData: jest.fn()
+}
+
 describe('RadioSettingsTab', ()=> {
   describe('RadioSettingsTab with R560 AP', () => {
+    const defaultR560ApDataCxtData = {
+      apData: r560Ap,
+      apCapabilities: r560Cap,
+      venueData: venueRadioDetail
+    }
+
     beforeEach(() => {
       store.dispatch(apApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
@@ -66,8 +82,6 @@ describe('RadioSettingsTab', ()=> {
         rest.get(
           CommonUrlsInfo.getVenuesList.url,
           (_, res, ctx) => res(ctx.json(venuelist))),
-        rest.get(CommonUrlsInfo.getVenue.url,
-          (_, res, ctx) => res(ctx.json(venueRadioDetail))),
         rest.get(
           WifiUrlsInfo.getApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json(apDeviceRadio))),
@@ -94,20 +108,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -129,20 +131,8 @@ describe('RadioSettingsTab', ()=> {
       apDeviceRadio.apRadioParams50G.channelBandwidth = 'AUTO'
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -161,20 +151,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with 40Mhz bandwidth', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -200,20 +178,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with 80Mhz bandwidth', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -238,20 +204,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render 2.4GHz channels correctly with MANUAL method', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -269,20 +223,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render 5GHz channels correctly with MANUAL method', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -302,20 +244,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render 6GHz channels correctly with MANUAL method', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -338,20 +268,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with disable 2.4G', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -368,20 +286,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with disable 5G', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -398,20 +304,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with disable 6G', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -428,20 +322,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with Customize or Use Venue Settings', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -459,12 +341,7 @@ describe('RadioSettingsTab', ()=> {
       render(
         <Provider>
           <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
+            ...defaultApEditCxtData,
             apViewContextData: {
               apStatusData: {
                 afcInfo: {
@@ -472,14 +349,10 @@ describe('RadioSettingsTab', ()=> {
                   powerMode: AFCPowerMode.STANDARD_POWER
                 }
               }
-            },
-            setEditContextData: jest.fn()
+            }
           }}
           >
-            <ApDataContext.Provider value={{
-              apData: r560Ap,
-              apCapabilities: r560Cap
-            }}>
+            <ApDataContext.Provider value={defaultR560ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -491,6 +364,12 @@ describe('RadioSettingsTab', ()=> {
   })
 
   describe('RadioSettingsTab with R760 AP', () => {
+    const defaultR760ApDataCxtData = {
+      apData: r760Ap,
+      apCapabilities: r760Cap,
+      venueData: venueRadioDetail
+    }
+
     beforeEach(() => {
       store.dispatch(apApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
@@ -533,20 +412,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r760Ap,
-              apCapabilities: r760Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -567,12 +434,7 @@ describe('RadioSettingsTab', ()=> {
       render(
         <Provider>
           <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
+            ...defaultApEditCxtData,
             apViewContextData: {
               apStatusData: {
                 afcInfo: {
@@ -580,14 +442,10 @@ describe('RadioSettingsTab', ()=> {
                   powerMode: AFCPowerMode.STANDARD_POWER
                 }
               }
-            },
-            setEditContextData: jest.fn()
+            }
           }}
           >
-            <ApDataContext.Provider value={{
-              apData: r760Ap,
-              apCapabilities: r760Cap
-            }}>
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -609,20 +467,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with disable lower 5G', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r760Ap,
-              apCapabilities: r760Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>
@@ -644,20 +490,8 @@ describe('RadioSettingsTab', ()=> {
     xit('should render correctly with disable upper 5G', async () => {
       render(
         <Provider>
-          <ApEditContext.Provider value={{
-            editContextData: {
-              tabTitle: '',
-              isDirty: false,
-              updateChanges: jest.fn(),
-              discardChanges: jest.fn()
-            },
-            setEditContextData: jest.fn()
-          }}
-          >
-            <ApDataContext.Provider value={{
-              apData: r760Ap,
-              apCapabilities: r760Cap
-            }}>
+          <ApEditContext.Provider value={defaultApEditCxtData}>
+            <ApDataContext.Provider value={defaultR760ApDataCxtData}>
               <RadioSettings />
             </ApDataContext.Provider>
           </ApEditContext.Provider>

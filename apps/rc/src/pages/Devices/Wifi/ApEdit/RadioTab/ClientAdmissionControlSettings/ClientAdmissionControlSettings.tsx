@@ -13,13 +13,12 @@ import {
   ClientAdmissionControlLevelEnum
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueQuery,
   useLazyGetVenueClientAdmissionControlQuery,
   useGetApClientAdmissionControlQuery,
   useUpdateApClientAdmissionControlMutation,
   useDeleteApClientAdmissionControlMutation
 } from '@acx-ui/rc/services'
-import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl, VenueExtended } from '@acx-ui/rc/utils'
+import { ApClientAdmissionControl, VenueClientAdmissionControl, ClientAdmissionControl } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -35,7 +34,7 @@ export const FieldGroup = styled.div`
 
 export function ClientAdmissionControlSettings () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
   const form = Form.useFormInstance()
 
   const enable24GFieldName = 'enableClientAdmissionControl24G'
@@ -59,10 +58,9 @@ export function ClientAdmissionControlSettings () {
     setEditRadioContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueClientAdmissionCtrl] = useLazyGetVenueClientAdmissionControlQuery()
   const getApClientAdmissionControl =
     useGetApClientAdmissionControlQuery({ params: { serialNumber } })
@@ -75,14 +73,11 @@ export function ClientAdmissionControlSettings () {
   const initDataRef = useRef<ApClientAdmissionControl>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
-  const [venue, setVenue] = useState({} as VenueExtended)
+  const venueId = venueData?.id
 
   useEffect(() => {
-    if(apDetails && !getApClientAdmissionControl.isLoading) {
-      const venueId = apDetails.venueId
+    if(!getApClientAdmissionControl.isLoading) {
       const setData = async () => {
-        const apVenue = (await getVenue({ params: { tenantId, venueId } }, true).unwrap())
-        setVenue(apVenue)
         const clientAdmissionControlData = getApClientAdmissionControl?.data
         if (clientAdmissionControlData) {
           initDataRef.current = clientAdmissionControlData
@@ -99,7 +94,7 @@ export function ClientAdmissionControlSettings () {
       setReadyToScroll?.(r => [...(new Set(r.concat('Client-Admission-Control')))])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form, getApClientAdmissionControl?.data, apDetails])
+  }, [form, getApClientAdmissionControl?.data])
 
   const setDataToForm = (data: ClientAdmissionControl ) => {
     form.setFieldValue(enable24GFieldName, data.enable24G)
@@ -183,7 +178,7 @@ export function ClientAdmissionControlSettings () {
     isLoading: getApClientAdmissionControl.isLoading,
     isFetching: isUpdatingClientAdmissionControl || isDeletingClientAdmissionControl
   }]}>
-    <VenueSettingsHeader venue={venue}
+    <VenueSettingsHeader venue={venueData}
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
     <ClientAdmissionControlForm

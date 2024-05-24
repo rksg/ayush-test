@@ -31,14 +31,14 @@ const mockApLedSettings = {
 const resetApLedSpy = jest.fn()
 
 describe('AP Led', () => {
+  const defaultR760ApCtxData = { apData: r760Ap, venueData }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
     resetApLedSpy.mockClear()
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(CommonUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(mockVenueLed))),
       rest.get(WifiUrlsInfo.getApLed.url,
@@ -56,7 +56,7 @@ describe('AP Led', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <ApLed />
         </ApDataContext.Provider>
       </Provider>, {
@@ -88,7 +88,7 @@ describe('AP Led', () => {
           },
           setEditAdvancedContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <ApLed />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -118,7 +118,7 @@ describe('AP Led', () => {
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <ApLed />
         </ApDataContext.Provider>
       </Provider>, {

@@ -84,6 +84,8 @@ describe('ApEdit', () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
       ff !== Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
     mockServer.use(
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,

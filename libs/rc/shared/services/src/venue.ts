@@ -88,7 +88,8 @@ import {
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
   CommonRbacUrlsInfo,
-  ApiVersionEnum
+  ApiVersionEnum,
+  Mesh
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -304,7 +305,31 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateVenueApMeshSettings' // new api used activity
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'WIFI_SETTINGS' }]))
+            api.dispatch(venueApi.util.invalidateTags([
+              { type: 'Venue', id: 'WIFI_SETTINGS' },
+              { type: 'Venue', id: 'VENUE_MESH_SETTINGS' }
+            ]))
+          })
+        })
+      }
+    }),
+    // only exist in v1(RBAC version)
+    getVenueMesh: build.query<Mesh, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CommonRbacUrlsInfo.getVenueMesh, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'VENUE_MESH_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueApMeshSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'VENUE_MESH_SETTINGS' }]))
           })
         })
       }
@@ -319,7 +344,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }]
+      invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }, { type: 'Venue', id: 'VENUE_MESH_SETTINGS' }]
     }),
     updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -1668,6 +1693,7 @@ export const {
   useGetVenueCityListQuery,
   useGetVenueSettingsQuery,
   useLazyGetVenueSettingsQuery,
+  useGetVenueMeshQuery,
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,

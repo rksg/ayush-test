@@ -184,6 +184,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  getVenueMesh: {
+    method: 'get',
+    url: '/venues/:venueId/apMeshSettings',
+    newApi: true
+  },
   updateVenueMesh: {
     method: 'put',
     url: '/venues/:venueId/apMeshSettings',

@@ -11,21 +11,20 @@ import {
   showActionModal,
   AnchorContext
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { ApSnmpMibsDownloadInfo } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { ApSnmpMibsDownloadInfo }      from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
   useResetApSnmpSettingsMutation,
-  useLazyGetVenueApSnmpSettingsQuery,
-  useLazyGetVenueQuery
+  useLazyGetVenueApSnmpSettingsQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType,
-  VenueExtended } from '@acx-ui/rc/utils'
+  PolicyType
+} from '@acx-ui/rc/utils'
 import { VenueApSnmpSettings, ApSnmpSettings } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -37,7 +36,6 @@ import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 export function ApSnmp () {
-
 
   const defaultVenueApSnmpSettings : VenueApSnmpSettings = {
     enableApSnmp: false,
@@ -62,7 +60,7 @@ export function ApSnmp () {
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { apData: apDetails, venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
@@ -71,7 +69,6 @@ export function ApSnmp () {
   const [apSnmpSettings, setApSnmpSettings] = useState(defaultApSnmpSettings)
   const [venueApSnmpSettings, setVenueApSnmpSettings] = useState(defaultVenueApSnmpSettings)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(false)
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [isApSnmpEnable, setIsApSnmpEnable] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
   // eslint-disable-next-line max-len
@@ -86,25 +83,20 @@ export function ApSnmp () {
   const [resetApSnmpSettings, { isLoading: isResettingApSnmpSettings }]
    = useResetApSnmpSettingsMutation()
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueApSnmpSettings] = useLazyGetVenueApSnmpSettingsQuery()
+  const venueId = venueData?.id
 
   useEffect(() => {
     const apSnmp = getApSnmpSettings?.data
-    if (apSnmp && apDetails) {
-      const venueId = apDetails.venueId
+    if (apSnmp) {
       const setData = async () => {
-        const apVenue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
-
         // Get current Venue AP SNMP settings
         const venueApSnmpSetting = (await getVenueApSnmpSettings({
-          params: { tenantId, venueId: apDetails?.venueId },
+          params: { venueId },
           enableRbac: isUseRbacApi }, true).unwrap()
         )
         setApSnmpSettings({ ...defaultApSnmpSettings, ...apSnmp })
         setVenueApSnmpSettings(venueApSnmpSetting)
-        setVenue(apVenue)
 
         setIsApSnmpEnable(apSnmp.enableApSnmp)
         setIsUseVenueSettings(apSnmp.useVenueSettings)
@@ -115,7 +107,7 @@ export function ApSnmp () {
       }
       setData()
     }
-  }, [apDetails, getApSnmpSettings?.data])
+  }, [venueId, getApSnmpSettings?.data])
 
   const handleFormApSnmpChange = () => {
     //updateEditContext(formRef?.current as StepsFormLegacyInstance, true)
@@ -235,7 +227,7 @@ export function ApSnmp () {
       <StepsFormLegacy.StepForm
         //layout='horizontal'
         initialValues={apSnmpSettings}>
-        <VenueSettingsHeader venue={venue}
+        <VenueSettingsHeader venue={venueData}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting}
         />

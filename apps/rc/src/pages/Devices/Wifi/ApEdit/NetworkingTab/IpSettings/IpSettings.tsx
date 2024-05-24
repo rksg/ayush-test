@@ -9,7 +9,7 @@ import { Features, useIsSplitOn }                                           from
 import { useGetApNetworkSettingsQuery, useUpdateApNetworkSettingsMutation } from '@acx-ui/rc/services'
 import { APNetworkSettings, networkWifiIpRegExp, subnetMaskIpRegExp }       from '@acx-ui/rc/utils'
 
-import { ApEditContext } from '../..'
+import { ApDataContext, ApEditContext } from '../..'
 
 enum IpTypeEnum {
   DYNAMIC = 'DYNAMIC',
@@ -28,13 +28,15 @@ export function IpSettings () {
     setEditNetworkingContextData,
     apViewContextData: currentAP
   } = useContext(ApEditContext)
+  const { venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const venueId = venueData?.id
 
   const formRef = useRef<StepsFormLegacyInstance<APNetworkSettings>>()
 
   const getApIpSettings = useGetApNetworkSettingsQuery({
     params: {
-      venueId: currentAP.venueId,
+      venueId,
       serialNumber
     },
     enableRbac: isWifiRbacEnabled
@@ -60,7 +62,6 @@ export function IpSettings () {
   ]
 
   useEffect(() => {
-
     if (currentAP && getApIpSettings && !getApIpSettings.isLoading) {
       const { primaryDnsServer, secondaryDnsServer,
         gateway, ipType, netmask } = currentAP.apStatusData?.APSystem || {}
@@ -120,7 +121,7 @@ export function IpSettings () {
       // console.log('IP settings - payload: ', payload)
       await updateApIpSettings({
         params: {
-          venueId: currentAP.venueId,
+          venueId,
           serialNumber
         },
         payload,
