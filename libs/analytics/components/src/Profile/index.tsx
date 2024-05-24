@@ -6,6 +6,8 @@ import { useRoles, getUserProfile }                                             
 import { PageHeader, StepsForm, Tabs, UserProfileSection as BasicUserProfileSection } from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
 
+import { NotificationSettingsPage } from '../NotificationSettings'
+
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 
 interface Tab {
@@ -79,7 +81,7 @@ const useTabs = () : Tab[] => {
   const notificationsTab = {
     key: ProfileTabEnum.NOTIFICATIONS,
     title: $t({ defaultMessage: 'Notifications' }),
-    url: '/analytics/profile/settings'
+    component: <NotificationSettingsPage />
   }
   return [ settingsTab, notificationsTab ]
 }
@@ -91,10 +93,6 @@ export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {
   const tabs = useTabs()
   const onTabChange = (tabKey: string) => {
     const tab = tabs.find(({ key }) => key === tabKey)
-    if (tab?.url) {
-      window.open(tab.url, '_blank')
-      return
-    }
     tab && navigate({
       ...basePath,
       pathname: `${basePath.pathname}/profile/${tab.key}`
