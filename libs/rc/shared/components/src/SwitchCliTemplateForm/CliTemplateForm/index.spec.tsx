@@ -192,6 +192,8 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
         ...formValue,
         variables: [{
           name: 'var1',
+          rangeEnd: '127',
+          rangeStart: '25',
           type: 'RANGE',
           value: '25:127'
         }]
@@ -226,7 +228,10 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
       expect(call[0]).toStrictEqual({
         ...formValue,
         variables: [{
+          ipAddressEnd: '1.1.1.10',
+          ipAddressStart: '1.1.1.1',
           name: 'var1',
+          subMask: '255.255.255.0',
           type: 'ADDRESS',
           value: '1.1.1.1_1.1.1.10_255.255.255.0'
         }]
@@ -262,6 +267,7 @@ manager active-list {ip-address} [ip-address2] [ip-address3]
         ...formValue,
         variables: [{
           name: 'var1',
+          string: 'test string',
           type: 'STRING',
           value: 'test string'
         }]
