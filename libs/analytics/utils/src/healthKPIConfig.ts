@@ -635,7 +635,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
-      description: '',
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports without anomalies' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
