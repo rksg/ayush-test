@@ -119,7 +119,8 @@ describe('Firmware Version Management', () => {
   })
 
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      (ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.SWITCH_RBAC_API))
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
