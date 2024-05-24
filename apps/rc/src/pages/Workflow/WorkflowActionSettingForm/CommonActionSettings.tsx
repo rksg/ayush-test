@@ -32,7 +32,6 @@ export function CommonActionSettings () {
       children={<Input hidden />}
     />
     <Form.Item
-      id='name'
       name={'name'}
       label={$t({ defaultMessage: 'Name' })}
       rules={[

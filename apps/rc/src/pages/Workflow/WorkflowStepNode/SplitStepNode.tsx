@@ -6,7 +6,7 @@ import { ActionNodeDisplay } from '@acx-ui/rc/utils'
 
 import BaseActionNode from './BaseActionNode'
 
-export default function SplitStepNode (props: NodeProps) {
+export function SplitStepNode (props: NodeProps) {
   const { $t } = useIntl()
   const nodeId = useNodeId()
   const splitCount = ['Guest']

@@ -7,7 +7,7 @@ import BaseActionNode from './BaseActionNode'
 
 
 
-export default function DisplayMessageNode (props: NodeProps<WorkflowStep>) {
+export function DisplayMessageNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
 
 

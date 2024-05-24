@@ -7,13 +7,14 @@ import { whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
 import { CommonActionSettings } from './CommonActionSettings'
 
-export function DataPromptActionForm () {
+export function DataPromptSettings () {
   const { $t } = useIntl()
 
 
   return (
     <>
       <CommonActionSettings />
+
       <Form.Item
         name='title'
         label={$t({ defaultMessage: 'Title' })}

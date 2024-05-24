@@ -16,22 +16,19 @@ import ReactFlow, {
 
 import { ActionType } from '@acx-ui/rc/utils'
 
-
-import AupNode            from '../WorkflowNode/AupNode'
-import DataPromptNode     from '../WorkflowNode/DataPromptNode'
-import DisplayMessageNode from '../WorkflowNode/DisplayMessageNode'
-import DpskNode           from '../WorkflowNode/DpskNode'
-import SplitOptionNode    from '../WorkflowNode/SplitOptionNode'
-import StartNode          from '../WorkflowNode/StartNode'
+import {
+  AupNode,
+  DataPromptNode,
+  DisplayMessageNode,
+  StartNode
+} from '../WorkflowStepNode'
 
 
 // TODO: Use enum to make sure new type adding
 const nodeTypes: NodeTypes = {
   START: StartNode,
   [ActionType.AUP]: AupNode,
-  [ActionType.DPSK]: DpskNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
-  [ActionType.USER_SELECTION_SPLIT]: SplitOptionNode,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode
 }
 
@@ -141,10 +138,6 @@ export default function WorkflowCanvas (props: WorkflowProps) {
         <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />
         <Background color='#ccc' variant={BackgroundVariant.Dots} />
       </ReactFlow>
-
-      {/*<Button onClick={() => setVisible(true)}>*/}
-      {/*  {'Open Library'}*/}
-      {/*</Button>*/}
 
       {/*<div>*/}
       {/*  <div>Viewport State:</div>*/}

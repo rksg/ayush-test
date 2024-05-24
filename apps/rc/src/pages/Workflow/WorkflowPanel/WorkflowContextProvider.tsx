@@ -6,7 +6,7 @@ import {
   useNodes
 } from 'reactflow'
 
-import { ActionType, WorkflowActionDef }           from '@acx-ui/rc/utils'
+import { ActionType, WorkflowActionDef } from '@acx-ui/rc/utils'
 
 
 interface ActionDrawerState {
@@ -20,7 +20,6 @@ interface StepDrawerState {
   isEdit: boolean,
   selectedActionDef?: WorkflowActionDef,
   onOpen: (isEdit: boolean, definitionId: string, actionType: ActionType) => void,
-//   onOpenEditMode: () => void,
   onClose: () => void
 }
 
@@ -102,16 +101,10 @@ export const WorkflowContextProvider = (props: { children: ReactNode }) => {
         isEdit: stepDrawerEditMode,
         selectedActionDef: stepDrawerActionDef,
         onOpen: (isEdit, definitionId, actionType) => {
-        //   setActionDrawerVisible(false)
           setStepDrawerVisible(true)
           setStepDrawerEditMode(isEdit)
           setStepDrawerActionDef({ id: definitionId, actionType })
         },
-        // onOpenEditMode: (definitionId, actionType) => {
-        //   setStepDrawerVisible(true)
-        //   setStepDrawerEditMode(true)
-        //   setStepDrawerActionDef({ id: definitionId, actionType })
-        // },
         onClose: () => {
           console.log('step drawer onClose')
           setStepDrawerVisible(false)

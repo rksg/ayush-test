@@ -7,8 +7,8 @@ import { useGetWorkflowActionDefinitionListQuery }    from '@acx-ui/rc/services'
 import { ActionType }                                 from '@acx-ui/rc/utils'
 
 
-import * as UI                from '../WorkflowNode/styledComponents'
 import { RequiredDependency } from '../WorkflowPanel'
+import * as UI                from '../WorkflowStepNode/styledComponents'
 
 import ActionCard from './ActionCard'
 
@@ -29,18 +29,16 @@ const starterActions: ActionType[] = [
   ActionType.AUP,
   ActionType.DISPLAY_MESSAGE
 ]
-const authorizationActions: ActionType[] = [ActionType.DPSK]
-const resultActions: ActionType[] = [ActionType.DATA_PROMPT]
+const authorizationActions: ActionType[] = [
+
+]
+const resultActions: ActionType[] = [
+  ActionType.DATA_PROMPT
+]
 
 export default function ActionLibraryDrawer (props: ActionLibraryProps) {
   const { $t } = useIntl()
   const { visible, relationshipMap, existingActionTypes, onClose, onClickAction } = props
-
-  const onClick = (type: ActionType) => {
-    if(defMap?.get(type)) {
-      onClickAction(defMap?.get(type), type)
-    }
-  }
 
   const { defMap, isDefLoading } = useGetWorkflowActionDefinitionListQuery({
     params: {
@@ -57,18 +55,22 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
     )
   })
 
-
   useEffect(() => {
     console.log('existingActionTypes = ', existingActionTypes)
     console.log('Definitions :: ', defMap)
     console.log('RelationshipMap :: ', relationshipMap)
   }, [existingActionTypes])
 
+  const onClick = (type: ActionType) => {
+    if(defMap?.get(type)) {
+      onClickAction(defMap?.get(type), type)
+    }
+  }
+
   const isDenied = (actionType: ActionType): boolean => {
     const dependency = relationshipMap[actionType]
-    // console.log('isDenied ?', dependency, actionType)
-    if (dependency && dependency.type !== 'NONE') {
 
+    if (dependency && dependency.type !== 'NONE') {
       switch (dependency.type) {
         case 'ONE_OF':
           return ![...dependency.required].some(item => existingActionTypes?.has(item))
@@ -79,8 +81,6 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
     return false
   }
 
-
-
   return (
     <Drawer
       title={$t({ defaultMessage: 'Actions Library' })}
@@ -89,9 +89,8 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
       onClose={onClose}
       children={
         <Loader
-          // FIXME: seems not working?? no loading state?!
           states={[
-            { isLoading: isDefLoading, isFetching: isDefLoading }
+            { isLoading: false, isFetching: isDefLoading }
           ]}
         >
           {/* TODO: if defMap not found, do not display the ActionCard */}
@@ -138,12 +137,11 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
           </UI.Collapse>
         </Loader>
       }
-      footer={<Drawer.FormFooter
-        buttonLabel={{
-          cancel: $t({ defaultMessage: 'Close' })
-        }}
-        onCancel={onClose}
-      />}
+      footer={
+        <Drawer.FormFooter
+          buttonLabel={{ cancel: $t({ defaultMessage: 'Close' }) }}
+          onCancel={onClose}
+        />}
     />
   )
 }

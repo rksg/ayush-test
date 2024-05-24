@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react'
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { NodeProps } from 'reactflow'
+import { Col, Form, Row } from 'antd'
+import { useIntl }        from 'react-intl'
+import { NodeProps }      from 'reactflow'
 
-import { Button, Drawer, Loader }                                                                   from '@acx-ui/components'
-import { EyeOpenSolid }                                                                             from '@acx-ui/icons'
-import {  useLazyGetActionByIdQuery }                                                               from '@acx-ui/rc/services'
-import { ActionDefaultValueMap, ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef } from '@acx-ui/rc/utils'
+import { Button, Drawer, Loader }                                                                            from '@acx-ui/components'
+import { EyeOpenSolid }                                                                                      from '@acx-ui/icons'
+import {  useLazyGetActionByIdQuery }                                                                        from '@acx-ui/rc/services'
+import { ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
 
-import { AupSettings }           from '../WorkflowActionForm/AupSettings'
-import { DataPromptActionForm }  from '../WorkflowActionForm/DataPromptActionForm'
-import { DisplayMessageSetting } from '../WorkflowActionForm/DisplayMessageSettings'
+import {
+  AupSettings,
+  DataPromptSettings,
+  DisplayMessageSetting
+} from '../WorkflowActionSettingForm'
 
 import { useWorkflowStepActions } from './useWorkflowStepAction'
 
@@ -31,9 +33,9 @@ export interface StepDrawerProps {
 // FIXME: Use enum to make sure new ActionType to be added into this Map
 const actionFormMap = {
   [ActionType.AUP]: AupSettings,
-  [ActionType.DATA_PROMPT]: DataPromptActionForm,
-  [ActionType.DPSK]: () => <></>,
+  [ActionType.DATA_PROMPT]: DataPromptSettings,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
+
   [ActionType.USER_SELECTION_SPLIT]: () => <></>
 }
 
@@ -44,16 +46,8 @@ export default function StepDrawer (props: StepDrawerProps) {
     actionType, priorNode, selectedActionDef,
     isEdit, actionId
   } = props
+  const defaultValue = useGetActionDefaultValueByType(actionType)
   const ActionForm = actionFormMap[actionType]
-  const defaultValue = Object.entries(ActionDefaultValueMap[actionType])
-    .reduce((acc: Record<string, string | boolean>, [key, value]) => {
-      if (typeof value === 'string' || typeof value === 'boolean') {
-        acc[key] = value
-      } else {
-        acc[key] = $t(value)
-      }
-      return acc
-    }, {})
 
   const [ formInstance ] = Form.useForm()
 
@@ -87,6 +81,7 @@ export default function StepDrawer (props: StepDrawerProps) {
   const onSave = async () => {
     try {
       const formContent = await formInstance.validateFields()
+      console.log('SaveData = ', formInstance.getFieldsValue())
 
       isEdit
         ? actionData && await patchActionMutation(actionData, formContent).then(onClose)
@@ -110,13 +105,16 @@ export default function StepDrawer (props: StepDrawerProps) {
           ]}
         >
           <Form
-            name={'actionForm'}
             disabled={isActionError}
             preserve={false}
             form={formInstance}
             layout={'vertical'}
           >
-            <ActionForm />
+            <Row>
+              <Col span={23}>
+                <ActionForm />
+              </Col>
+            </Row>
           </Form>
         </Loader>
       }

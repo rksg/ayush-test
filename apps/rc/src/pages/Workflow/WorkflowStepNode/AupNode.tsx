@@ -12,7 +12,7 @@ import BaseActionNode from './BaseActionNode'
 
 
 
-export default function AupNode (props: NodeProps<WorkflowStep>) {
+export function AupNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
   const nodeId = useNodeId()
   const { data, isLoading, isFetching } = useGetActionByIdQuery({

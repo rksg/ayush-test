@@ -7,7 +7,7 @@ import { StepsForm }            from '@acx-ui/components'
 import { whitespaceOnlyRegExp } from '@acx-ui/rc/utils'
 
 
-export default function SplitOptionSettingForm () {
+export default function SplitOptionSettings () {
   const { $t } = useIntl()
 
   return (

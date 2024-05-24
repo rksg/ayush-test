@@ -13,7 +13,7 @@ import {
   SplitActionTypes, WorkflowActionDef
 } from '@acx-ui/rc/utils'
 
-import ActionGenericForm from '../WorkflowActionForm/ActionGenericForm'
+import ActionGenericForm from '../WorkflowActionSettingForm/ActionGenericForm'
 
 
 interface ActionSelectedFormProps {
@@ -21,6 +21,7 @@ interface ActionSelectedFormProps {
   actionDef: WorkflowActionDef
 }
 
+// FIXME: Deprecated! if we don't want to support action template concept, this can be removed
 export default function ActionSelectedForm (props: ActionSelectedFormProps) {
   const { $t } = useIntl()
   const { form, actionDef } = props
@@ -34,10 +35,7 @@ export default function ActionSelectedForm (props: ActionSelectedFormProps) {
 
   const { options, isLoading } = useGetAllActionsByTypeQuery({
     params: {
-      // FIXME: DEMO [Currently, not support DPSK in BE]
-      actionType: (ActionType.DPSK).includes(actionDef.toString())
-        ? ActionType.AUP
-        : actionDef.actionType.toString(),
+      actionType: actionDef.actionType.toString(),
       ...defaultActionTypePagination
     }
   }, {

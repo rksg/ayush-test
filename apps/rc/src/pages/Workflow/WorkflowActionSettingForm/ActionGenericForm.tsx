@@ -10,20 +10,19 @@ import {
   usePatchActionMutation,
   useUploadURLMutation
 } from '@acx-ui/rc/services'
-import { ActionDefaultValueMap, ActionType, GenericActionData } from '@acx-ui/rc/utils'
+import { ActionType, GenericActionData, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
 
 
-import { AupSettings }          from './AupSettings'
-import { DataPromptActionForm } from './DataPromptActionForm'
+import { AupSettings }        from './AupSettings'
+import { DataPromptSettings } from './DataPromptSettings'
 
 
 const actionFormMap = {
   [ActionType.AUP]: AupSettings,
-  // [ActionType.SPLIT]: SplitOptionSettingForm,
-  [ActionType.USER_SELECTION_SPLIT]: () => <></>,
-  [ActionType.DATA_PROMPT]: DataPromptActionForm,
-  [ActionType.DPSK]: () => <></>,
-  [ActionType.DISPLAY_MESSAGE]: () => <></>
+  [ActionType.DATA_PROMPT]: DataPromptSettings,
+  [ActionType.DISPLAY_MESSAGE]: () => <></>,
+
+  [ActionType.USER_SELECTION_SPLIT]: () => <></>
 }
 
 export interface ActionGenericFormProps {
@@ -33,6 +32,7 @@ export interface ActionGenericFormProps {
   modalCallback?: () => void
 }
 
+// FIXME: Deprecated! if we don't want to support action template concept, this can be removed
 export default function ActionGenericForm (props: ActionGenericFormProps) {
   const { $t } = useIntl()
   const params = useParams()
@@ -49,15 +49,7 @@ export default function ActionGenericForm (props: ActionGenericFormProps) {
     { skip: !isEdit || !actionId }
   )
 
-  const defaultValue = Object.entries(ActionDefaultValueMap[actionType])
-    .reduce((acc: Record<string, string | boolean>, [key, value]) => {
-      if (typeof value === 'string' || typeof value === 'boolean') {
-        acc[key] = value
-      } else {
-        acc[key] = $t(value)
-      }
-      return acc
-    }, {})
+  const defaultValue = useGetActionDefaultValueByType(actionType)
 
   const handleCreateAction = async (formData: GenericActionData) => {
     await processUploadFile(formData)

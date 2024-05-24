@@ -10,7 +10,7 @@ import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
 import { StarterNode } from './styledComponents'
 
 
-export default function StartNode (props: NodeProps) {
+export function StartNode (props: NodeProps) {
   const { $t } = useIntl()
   const { actionDrawerState } = useWorkflowContext()
 

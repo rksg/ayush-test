@@ -6,7 +6,6 @@ import { RcFile } from 'antd/lib/upload'
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
 export enum ActionType {
   AUP = 'AUP',
-  DPSK = 'DPSK',
   DATA_PROMPT = 'DATA_PROMPT',
   DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
 

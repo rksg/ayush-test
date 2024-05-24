@@ -15,7 +15,6 @@ export default function ActionCard (props: ActionCardProps) {
   const { actionType, handleClick, disabled = false } = props
 
   return <RadioCard
-    // TODO: Using this to disable the <Card> component
     type={disabled ? 'disabled' : 'default'}
     value={actionType.toString()}
     title={$t(ActionTypeTitle[actionType])}

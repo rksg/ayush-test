@@ -15,9 +15,7 @@ export function DisplayMessageSetting () {
   return (<>
     <CommonActionSettings />
 
-
-
-    <FieldLabel width='580px' key='key'>
+    <FieldLabel width='555px' key='key'>
       {$t({ defaultMessage: 'Page Title' })}
       <Form.Item
         name={'displayTitle'}

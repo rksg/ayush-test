@@ -5,7 +5,7 @@ import { ActionNodeDisplay } from '@acx-ui/rc/utils'
 
 import BaseActionNode from './BaseActionNode'
 
-export default function SplitOptionNode (props: NodeProps) {
+export function SplitOptionNode (props: NodeProps) {
   const { $t } = useIntl()
   const { data } = props
 

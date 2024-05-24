@@ -125,18 +125,17 @@ export default function BaseActionNode (props: NodeProps
               shape={'circle'}
               size={'small'}
               icon={<MoreVertical />}
-              // onClick={onEditClick}
             />
           </Popover>
         </Handle>
       </UI.EditHandle>
 
 
-      {/* <CustomDiv>
-        <Handle type={'source'} position={Position.Top}>
-          <div className={'circle'} />
-        </Handle>
-      </CustomDiv> */}
+      {/*<CustomDiv>*/}
+      {/*  <Handle type={'source'} position={Position.Top}>*/}
+      {/*    <div className={'circle'} />*/}
+      {/*  </Handle>*/}
+      {/*</CustomDiv>*/}
 
 
       <UI.TargetHandle>
