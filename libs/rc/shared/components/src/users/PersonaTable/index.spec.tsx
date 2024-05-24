@@ -44,8 +44,8 @@ describe('Persona Table', () => {
           return res(ctx.json(mockPersonaTableResult))
         }
       ),
-      rest.get(
-        replacePagination(PersonaUrls.getPersonaGroupList.url),
+      rest.post(
+        replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.get(
