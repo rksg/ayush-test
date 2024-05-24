@@ -67,6 +67,7 @@ export function ApSnmp () {
 
   const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
+  const profileIdRef = useRef<string>('')
 
   const [apSnmpSettings, setApSnmpSettings] = useState(defaultApSnmpSettings)
   const [venueApSnmpSettings, setVenueApSnmpSettings] = useState(defaultVenueApSnmpSettings)
@@ -183,9 +184,20 @@ export function ApSnmp () {
       })
 
       if (useVenueSettings === true) {
-        await resetApSnmpSettings({ params: { serialNumber } }).unwrap()
+        // eslint-disable-next-line max-len
+        await resetApSnmpSettings({ params: {
+          serialNumber,
+          venueId: apDetails?.venueId
+        },
+        enableRbac: isUseRbacApi }).unwrap()
       } else {
-        await updateApSnmpSettings({ params: { serialNumber }, payload }).unwrap()
+        await updateApSnmpSettings({ params: {
+          serialNumber,
+          venueId: apDetails?.venueId,
+          profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
+        },
+        enableRbac: isUseRbacApi,
+        payload }).unwrap()
       }
 
     } catch (error) {
@@ -193,6 +205,12 @@ export function ApSnmp () {
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
       })
+    }
+  }
+
+  const memorizeProfileIdWhenApSnmpOff = (state: boolean) => {
+    if (state === false) {
+      profileIdRef.current = formRef.current?.getFieldValue('apSnmpAgentProfileId')
     }
   }
 
@@ -256,6 +274,9 @@ export function ApSnmp () {
                     disabled={isUseVenueSettings}
                     data-testid='snmp-switch'
                     style={{ marginLeft: '20px' }}
+                    onChange={(state) => {
+                      memorizeProfileIdWhenApSnmpOff(state)
+                    }}
                   />
                 </Form.Item>
               </StepsFormLegacy.FieldLabel>

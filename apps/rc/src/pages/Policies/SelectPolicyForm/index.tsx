@@ -49,8 +49,10 @@ export default function SelectPolicyForm () {
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
+    enableRbac: isUseRbacApi,
     payload: {
       fields: ['id']
     }

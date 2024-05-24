@@ -53,6 +53,7 @@ export default function SnmpAgentTable () {
 
   const filterResults = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
+    enableRbac: isUseRbacApi,
     pagination: {
       pageSize: 100
     },
@@ -81,6 +82,7 @@ export default function SnmpAgentTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetApSnmpViewModelQuery,
+    enableRbac: isUseRbacApi,
     defaultPayload,
     search: {
       searchTargetFields: defaultPayload.searchTargetFields as string[]

@@ -100,6 +100,7 @@ function useCardData (): CardDataProps[] {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   return [
     {
@@ -185,7 +186,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetApSnmpViewModelQuery({
-        params, payload: { ...defaultPayload }
+        params, enableRbac: isUseRbacApi, payload: { ...defaultPayload }
       }, { skip: !supportApSnmp }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
