@@ -1,10 +1,10 @@
 import { UseLazyQuery, UseMutation }           from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { MutationDefinition, QueryDefinition } from '@reduxjs/toolkit/query'
 
-import { Params, TenantType, useParams }           from '@acx-ui/react-router-dom'
+import { Params, TenantType, useParams }       from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, UseQuery } from '@acx-ui/types'
-import { hasRoles }                                from '@acx-ui/user'
-import { AccountType, getIntl }                    from '@acx-ui/utils'
+import { hasRoles }                            from '@acx-ui/user'
+import { AccountType, getIntl }                from '@acx-ui/utils'
 
 import { CONFIG_TEMPLATE_LIST_PATH } from './configTemplateRouteUtils'
 import { useConfigTemplate }         from './useConfigTemplate'

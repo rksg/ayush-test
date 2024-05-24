@@ -46,5 +46,5 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/radiusServerProfiles/:policyId',
     newApi: true
-  },
+  }
 }
