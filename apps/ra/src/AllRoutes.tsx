@@ -74,7 +74,8 @@ function Init () {
 }
 
 function AllRoutes () {
-  return rootRoutes(<Route element={<Layout />}>
+  const [ search ] = useSearchParams() // to refresh available routes when we change tenant
+  return rootRoutes(<Route key={search.get('selectedTenants')} element={<Layout />}>
     <Route path='/' element={<Init />} />
     <Route path={MLISA_BASE_PATH} element={<Init />} />
     <Route path={MLISA_BASE_PATH}>
