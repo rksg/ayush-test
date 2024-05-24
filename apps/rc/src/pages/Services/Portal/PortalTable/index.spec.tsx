@@ -53,6 +53,10 @@ describe('PortalTable', () => {
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
         res(ctx.json(networksResponse))
       ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(networksResponse))
+      ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',

@@ -12,7 +12,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockList, mockDetailResult, mockDetailChangeResult } from './__tests__/fixtures'
+import { mockList, mockDetailResult, mockDetailChangeResult, mockedPortalList } from './__tests__/fixtures'
 
 import PortalServiceDetail from '.'
 
@@ -35,6 +35,10 @@ describe('Portal Detail Page', () => {
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockList))
       ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockList))
+      ),
       rest.get(
         `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
         (req, res, ctx) => {
@@ -53,7 +57,11 @@ describe('Portal Detail Page', () => {
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
             acceptTermsMsg: 'I accept the' }))
-        })
+        }),
+      rest.post(
+        PortalUrlsInfo.getEnhancedPortalProfileList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
+      )
     )
   })
 

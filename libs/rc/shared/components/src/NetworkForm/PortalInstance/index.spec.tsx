@@ -79,6 +79,38 @@ describe('Portal Instance Page', () => {
       rest.get(ServicesConfigTemplateUrlsInfo.getPortal.url,
         (_, res, ctx) => {
           return res(ctx.json(portalTemaplteResponse))
+        }),
+      rest.put(ServicesConfigTemplateUrlsInfo.uploadPhoto.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.put(ServicesConfigTemplateUrlsInfo.uploadLogo.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.put(ServicesConfigTemplateUrlsInfo.uploadBgImage.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.put(ServicesConfigTemplateUrlsInfo.uploadPoweredImg.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.put(PortalUrlsInfo.uploadPhoto.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.put(PortalUrlsInfo.uploadLogo.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.put(PortalUrlsInfo.uploadBgImage.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.put(PortalUrlsInfo.uploadPoweredImg.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
         })
     )
   })

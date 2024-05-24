@@ -39,6 +39,10 @@ describe('Portal Instances Table', () => {
         CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockedNetworks))
       ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockedNetworks))
+      ),
       rest.get(
         PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => res(ctx.json(mockDetailResult))

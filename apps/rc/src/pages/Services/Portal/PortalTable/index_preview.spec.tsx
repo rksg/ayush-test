@@ -16,7 +16,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedPortalList, networksResponse } from './__tests__/fixtures'
+import { mockedPortalList, networksResponse, mockDetailResult } from './__tests__/fixtures'
 
 import PortalTable from '.'
 
@@ -49,11 +49,14 @@ describe('PortalTable', () => {
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
-          return res(ctx.json({ acceptTermsLink: 'terms & conditions',
-            acceptTermsMsg: 'I accept the', accept: 'accept' }))
+          return res(ctx.json(mockDetailResult))
         }),
       rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
         res(ctx.json(networksResponse))
+      ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(networksResponse))
       ),
       rest.get(
         `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
