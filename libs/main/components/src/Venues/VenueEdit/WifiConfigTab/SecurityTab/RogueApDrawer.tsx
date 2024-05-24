@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }                                    from '@acx-ui/components'
 import { rogueRuleLabelMapping }                                        from '@acx-ui/rc/components'
