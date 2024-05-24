@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
 import { Col, Divider, Row, Space } from 'antd'
-import moment                       from 'moment'
 import { useIntl }                  from 'react-intl'
 
 import { cssNumber }                           from '@acx-ui/components'
+import { formatter, DateFormatEnum }           from '@acx-ui/formatter'
 import { FirmwareCategory, firmwareTypeTrans } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -101,7 +101,8 @@ const VersionInfo = (props: VersionInfoProps) => {
           <div>
             <UI.BannerVersionName>{firmware.recommendedVersion}</UI.BannerVersionName>
           </div>
-          {firmware.recommendedDate && moment(firmware.recommendedDate).format('MMMM DD, yyyy')}
+          {firmware.recommendedDate &&
+            formatter(DateFormatEnum.DateFormat)(firmware.recommendedDate)}
         </UI.TypeSpace>
       </div>
       <div>
@@ -110,15 +111,12 @@ const VersionInfo = (props: VersionInfoProps) => {
           <div>
             <UI.BannerVersionName>{firmware.version}</UI.BannerVersionName>
           </div>
-          {firmware.releaseDate && moment(firmware.releaseDate).format('MMMM DD, yyyy')}
+          {firmware.releaseDate && formatter(DateFormatEnum.DateFormat)(firmware.releaseDate)}
         </UI.TypeSpace>
       </div></> :
-        <UI.TypeSpace split={<Divider type='vertical' />}>
-          <div>
-            <UI.BannerVersionName>{firmware.recommendedVersion}</UI.BannerVersionName>
-          </div>
-          {firmware.recommendedDate && moment(firmware.recommendedDate).format('MMMM DD, yyyy')}
-        </UI.TypeSpace>
+        <div>
+          <UI.BannerVersionName>{firmware.recommendedVersion}</UI.BannerVersionName>
+        </div>
       }
     </UI.FwContainer>
   )
