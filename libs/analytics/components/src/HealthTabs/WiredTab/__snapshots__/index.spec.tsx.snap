@@ -29,7 +29,11 @@ exports[`WiredTab should render correctly 1`] = `
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 10.0.10c or above.
+              Data is displayed for switches with firmware version 
+              <b>
+                10.0.10c
+              </b>
+               or above.
             </div>
           </div>
         </div>
@@ -261,7 +265,11 @@ exports[`WiredTab should render correctly with filter passed as props 1`] = `
             <div
               class="ant-alert-message"
             >
-              Data is displayed for switches with firmware version 10.0.10c or above.
+              Data is displayed for switches with firmware version 
+              <b>
+                10.0.10c
+              </b>
+               or above.
             </div>
           </div>
         </div>
