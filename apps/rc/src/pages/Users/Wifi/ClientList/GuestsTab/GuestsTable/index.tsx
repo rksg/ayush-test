@@ -333,6 +333,7 @@ export const GuestsTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Download Information' }),
+      scopeKey: [WifiScopes.READ],
       onClick: (selectedRows:Guest[]) => {
         guestAction.showDownloadInformation(selectedRows, params.tenantId)
       }

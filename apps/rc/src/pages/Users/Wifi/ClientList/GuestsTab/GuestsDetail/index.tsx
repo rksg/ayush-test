@@ -214,7 +214,8 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
         scopeKey: [WifiScopes.UPDATE]
       }, {
         label: $t({ defaultMessage: 'Download Information' }),
-        key: 'downloadInformation'
+        key: 'downloadInformation',
+        scopeKey: [WifiScopes.READ]
       },
       {
         label: $t({ defaultMessage: 'Disable Guest' }),
