@@ -3,7 +3,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 /* eslint-disable max-len */
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
-  ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
   AI_CRRM = 'acx-ui-ai-crrm-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
