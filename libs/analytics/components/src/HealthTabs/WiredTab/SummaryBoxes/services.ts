@@ -46,6 +46,7 @@ export const api = dataApi.injectEndpoints({
                 switchCpuUtilizationPct
                 portCount
                 congestedPortCount
+                stormPortCount
               }
             }
           }`,
