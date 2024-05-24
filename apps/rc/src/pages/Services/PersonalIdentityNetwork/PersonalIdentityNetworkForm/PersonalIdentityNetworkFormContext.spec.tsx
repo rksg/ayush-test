@@ -5,8 +5,6 @@ import { rest } from 'msw'
 import {
   CommonUrlsInfo,
   DpskUrls,
-  EdgeDHCPFixtures,
-  EdgeDhcpUrls,
   EdgeGeneralFixtures,
   EdgeNSGFixtures,
   EdgeTunnelProfileFixtures,
@@ -42,7 +40,6 @@ const {
   mockNsgSwitchInfoData
 } = EdgeNSGFixtures
 const { mockEdgeList } = EdgeGeneralFixtures
-const { mockEdgeDhcpDataList } = EdgeDHCPFixtures
 const { mockedTunnelProfileViewData } = EdgeTunnelProfileFixtures
 const pinTunnelData = {
   ...mockedTunnelProfileViewData,
@@ -83,10 +80,6 @@ describe('PersonalIdentityNetworkFormContext', () => {
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
         (req, res, ctx) => res(ctx.json(mockEdgeList))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
       ),
       rest.post(
         CommonUrlsInfo.networkActivations.url,
@@ -149,13 +142,6 @@ describe('PersonalIdentityNetworkFormContext', () => {
     expect(result.current.edgeOptions?.[0].label).toBe(mockEdgeList.data[0].name)
     expect(result.current.edgeOptions?.[0].value).toBe(mockEdgeList.data[0].serialNumber)
     await waitFor(() =>
-      expect(result.current.dhcpProfles?.length).toBe(mockEdgeDhcpDataList.content.length))
-    expect(result.current.dhcpOptions?.length).toBe(mockEdgeDhcpDataList.content.length)
-    expect(result.current.dhcpOptions?.[0].label).toBe(mockEdgeDhcpDataList.content[0].serviceName)
-    expect(result.current.dhcpOptions?.[0].value).toBe(mockEdgeDhcpDataList.content[0].id)
-    expect(Object.keys(result.current.poolMap ?? {}).length)
-      .toBe(mockEdgeDhcpDataList.content.length)
-    await waitFor(() =>
       expect(result.current.tunnelProfileOptions?.length)
         .toBe(pinTunnelData.data.length))
     expect(result.current.tunnelProfileOptions?.[0].label)
@@ -189,9 +175,9 @@ describe('PersonalIdentityNetworkFormContext', () => {
     await waitFor(() =>
       expect(result.current.getEdgeName('0000000001')).toBe('Smart Edge 1'))
     await waitFor(() =>
-      expect(result.current.getDhcpName('1')).toBe('TestDhcp-1'))
+      expect(result.current.getDhcpName('1')).toBe('1')) // Should be updated when doing PIN RBAC task
     await waitFor(() =>
-      expect(result.current.getDhcpPoolName('1', '1')).toBe('PoolTest1'))
+      expect(result.current.getDhcpPoolName('1', '1')).toBe('11')) // Should be updated when doing PIN RBAC task
     await waitFor(() =>
       expect(result.current.getTunnelProfileName('tunnelProfileId1')).toBe('tunnelProfile1'))
     await waitFor(() =>

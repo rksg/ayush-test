@@ -9,7 +9,8 @@ import { Features, useIsSplitOn }                                               
 import { useDeleteConfigBackupsMutation, useDownloadConfigBackupMutation, useGetSwitchConfigBackupListQuery, useRestoreConfigBackupMutation }          from '@acx-ui/rc/services'
 import { BACKUP_DISABLE_TOOLTIP, BACKUP_IN_PROGRESS_TOOLTIP, ConfigurationBackup, RESTORE_IN_PROGRESS_TOOLTIP, SwitchViewModel, usePollingTableQuery } from '@acx-ui/rc/utils'
 import { useParams }                                                                                                                                   from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey, hasAccess }                                                                                       from '@acx-ui/user'
+import { SwitchScopes }                                                                                                                                from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey }                                                                                                  from '@acx-ui/user'
 import { handleBlobDownloadFile }                                                                                                                      from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../..'
@@ -220,12 +221,13 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
     }
   }, {
     label: $t({ defaultMessage: 'Restore' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: () => !enabledRowButton.find(item => item === 'Restore'),
     onClick: (rows, clearSelection) => {
       showRestoreModal(rows[0], clearSelection)
     }
   }, {
-    key: getShowWithoutRbacCheckKey('DownloadConfig'),
+    // key: getShowWithoutRbacCheckKey('DownloadConfig'), TODO: Waiting for API fix
     label: $t({ defaultMessage: 'Download' }),
     disabled: () => !enabledRowButton.find(item => item === 'Download'),
     onClick: (rows) => {
@@ -233,6 +235,7 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [SwitchScopes.DELETE],
     disabled: () => !enabledRowButton.find(item => item === 'Delete'),
     onClick: (rows, clearSelection) => {
       showDeleteModal(rows, clearSelection)
@@ -249,6 +252,7 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
 
   const rightActions = [{
     label: $t({ defaultMessage: 'Backup Now' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: backupButtonnStatus.disabled,
     tooltip: backupButtonnStatus.tooltip,
     onClick: () => {
@@ -266,7 +270,7 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(rightActions)}
         onChange={tableQuery.handleTableChange}
-        rowSelection={hasAccess() ? {
+        rowSelection={{
           type: 'checkbox',
           onChange: (selectedRowKeys, selectedData) => {
             const selectedRows = selectedRowKeys.length
@@ -303,7 +307,7 @@ export function SwitchConfigBackupTable ({ switchDetail }:{ switchDetail: Switch
             }
             setEnabledRowButton(enabledButton)
           }
-        } : undefined}
+        }}
       />
     </Loader>
     <BackupModal

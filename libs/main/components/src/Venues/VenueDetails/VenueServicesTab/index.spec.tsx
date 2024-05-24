@@ -144,7 +144,8 @@ describe('Venue service tab', () => {
         data: [
           {
             serialNumber: '0000000001',
-            firewallId: '123'
+            firewallId: '123',
+            clusterId: 'test-cluster'
           }
         ]
       }
@@ -168,11 +169,11 @@ describe('Venue service tab', () => {
               return res(ctx.json(mockNsgList))
             }
           ),
-          rest.get(
-            EdgeDhcpUrls.getDhcpByEdgeId.url,
+          rest.post(
+            EdgeDhcpUrls.getDhcpStats.url,
             (_req, res, ctx) => {
               mockedGetEdgeDhcpFn()
-              return res(ctx.json({ id: 'testDhcp' }))
+              return res(ctx.json({ data: [{ id: 'testDhcp' }] }))
             }
           ),
           rest.post(

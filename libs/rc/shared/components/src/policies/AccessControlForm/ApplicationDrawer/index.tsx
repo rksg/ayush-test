@@ -201,22 +201,26 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
 
-  const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher(
-    useAddAppPolicyMutation, useAddAppPolicyTemplateMutation)
+  const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddAppPolicyMutation,
+    useTemplateMutationFn: useAddAppPolicyTemplateMutation
+  })
 
-  const [ updateAppPolicy ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateAppPolicyMutation, useUpdateAppPolicyTemplateMutation)
+  const [ updateAppPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAppPolicyMutation,
+    useTemplateMutationFn: useUpdateAppPolicyTemplateMutation
+  })
 
   const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(editMode.isEdit)
 
-  const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher(
-    useGetAppPolicyQuery,
-    useGetAppPolicyTemplateQuery,
+  const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAppPolicyQuery,
+    useTemplateQueryFn: useGetAppPolicyTemplateQuery,
     // eslint-disable-next-line max-len
-    skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
-    {},
-    { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId }
-  )
+    skip: skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
+    payload: {},
+    extraParams: { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId }
+  })
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
     [key: string]: { catId: number, appId: number }
@@ -736,18 +740,15 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
 const useGetAppAclPolicyListInstance = (isEdit: boolean): {
   appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
 } => {
-  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>(
-    useGetEnhancedApplicationProfileListQuery,
-    useGetAppPolicyTemplateListQuery,
-    isEdit,
-    QUERY_DEFAULT_PAYLOAD
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>({
+    useQueryFn: useGetEnhancedApplicationProfileListQuery,
+    useTemplateQueryFn: useGetAppPolicyTemplateListQuery,
+    skip: isEdit,
+    payload: QUERY_DEFAULT_PAYLOAD
+  })
 
   return {
-    appSelectOptions: data?.data?.map(
-      item => {
-        return <Option key={item.id}>{item.name}</Option>
-      }) ?? [],
+    appSelectOptions: data?.data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
     appList: data?.data?.map(item => item.name) ?? [],
     appIdList: data?.data?.map(item => item.id) ?? []
   }

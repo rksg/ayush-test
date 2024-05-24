@@ -28,9 +28,10 @@ export const WifiCallingDetailView = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [networkIds, setNetworkIds] = useState([] as string[])
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetWifiCallingServiceQuery,
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery
+  })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
 

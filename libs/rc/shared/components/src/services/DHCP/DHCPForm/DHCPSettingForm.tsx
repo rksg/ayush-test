@@ -60,9 +60,10 @@ export function SettingForm (props: DHCPFormProps) {
 
   const types = isTemplate ? [DHCPConfigTypeEnum.SIMPLE] : Object.values(DHCPConfigTypeEnum)
   const params = useParams()
-  const [ getDHCPProfileList ] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData[]>(
-    useLazyGetDHCPProfileListQuery, useLazyGetDhcpTemplateListQuery
-  )
+  const [ getDHCPProfileList ] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData[]>({
+    useLazyQueryFn: useLazyGetDHCPProfileListQuery,
+    useLazyTemplateQueryFn: useLazyGetDhcpTemplateListQuery
+  })
   const form = Form.useFormInstance()
   const id = Form.useWatch<string>('id', form)
 
@@ -74,9 +75,11 @@ export function SettingForm (props: DHCPFormProps) {
     return checkObjectNotExists(list, { serviceName: value } , $t({ defaultMessage: 'DHCP service' }))
   }
 
-  const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery, !editMode
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    skip: !editMode
+  })
 
   const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME
 

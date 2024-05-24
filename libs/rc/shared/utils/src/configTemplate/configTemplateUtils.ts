@@ -29,23 +29,33 @@ export function hasConfigTemplateAccess (featureFlagEnabled: boolean, accountTyp
     && (accountType === AccountType.MSP || accountType === AccountType.MSP_NON_VAR)
 }
 
-export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
-  useQueryFn: UseQuery<ResultType, RequestPayload>,
-  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>,
-  skip = false,
-  payload?: Payload,
-  extraParams?: Params<string>,
-  templatePayload?: Payload,
+interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
+  useQueryFn: UseQuery<ResultType, RequestPayload>
+  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
+  skip?: boolean
+  payload?: Payload
+  extraParams?: Params<string>
+  templatePayload?: Payload
   enableRbac?: boolean
+  enableTemplateRbac?: boolean
+}
+export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
+  props: UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload>
 ): ReturnType<typeof useQueryFn> {
+
+  const {
+    useQueryFn, useTemplateQueryFn, skip = false, payload, templatePayload,
+    extraParams, enableRbac, enableTemplateRbac
+  } = props
+
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
-  const currentPayload = isTemplate && templatePayload ? templatePayload : payload
+  const resolvedPayload = isTemplate && templatePayload ? templatePayload : payload
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   const requestPayload = {
     params: { ...params, ...(extraParams ?? {}) },
-    ...(payload ? ({ payload }) : {}),
-    ...(enableRbac ? ({ enableRbac }) : {}),
-    ...(currentPayload ? ({ payload: currentPayload }) : {})
+    ...(resolvedPayload ? ({ payload: resolvedPayload }) : {}),
+    ...(resolvedEnableRbac ? ({ enableRbac: resolvedEnableRbac }) : {})
   }
   const result = useQueryFn(requestPayload, { skip: skip || isTemplate })
   const templateResult = useTemplateQueryFn(requestPayload, { skip: skip || !isTemplate })
@@ -56,10 +66,14 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultQueryDefinition<ResultType> = QueryDefinition<any, any, any, ResultType>
-export function useConfigTemplateLazyQueryFnSwitcher<ResultType> (
+interface UseConfigTemplateLazyQueryFnSwitcherProps<ResultType> {
   useLazyQueryFn: UseLazyQuery<DefaultQueryDefinition<ResultType>>,
   useLazyTemplateQueryFn: UseLazyQuery<DefaultQueryDefinition<ResultType>>
+}
+export function useConfigTemplateLazyQueryFnSwitcher<ResultType> (
+  props: UseConfigTemplateLazyQueryFnSwitcherProps<ResultType>
 ): ReturnType<typeof useLazyQueryFn> {
+  const { useLazyQueryFn, useLazyTemplateQueryFn } = props
   const { isTemplate } = useConfigTemplate()
   const result = useLazyQueryFn()
   const templateResult = useLazyTemplateQueryFn()
@@ -70,11 +84,14 @@ export function useConfigTemplateLazyQueryFnSwitcher<ResultType> (
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DefaultMutationDefinition = MutationDefinition<any, any, any, any>
-
-export function useConfigTemplateMutationFnSwitcher (
+interface UseConfigTemplateMutationFnSwitcherProps {
   useMutationFn: UseMutation<DefaultMutationDefinition>,
   useTemplateMutationFn: UseMutation<DefaultMutationDefinition>
-) {
+}
+export function useConfigTemplateMutationFnSwitcher (
+  props: UseConfigTemplateMutationFnSwitcherProps
+): ReturnType<typeof useMutationFn> {
+  const { useMutationFn, useTemplateMutationFn } = props
   const { isTemplate } = useConfigTemplate()
   const result = useMutationFn()
   const templateResult = useTemplateMutationFn()
