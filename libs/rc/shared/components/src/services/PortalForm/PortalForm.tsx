@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { RcFile }  from 'antd/lib/upload'
-import { use }     from 'echarts'
 import { useIntl } from 'react-intl'
 
 import {
