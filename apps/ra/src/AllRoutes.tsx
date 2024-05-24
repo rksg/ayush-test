@@ -44,7 +44,7 @@ const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
 const getDefaultRoute = () => {
   switch (true) {
     case hasRaiPermission('READ_DASHBOARD'):   return 'dashboard'
-    case hasRaiPermission('READ_HEALTH'):      return 'health' // TODO /overview if FF is on
+    case hasRaiPermission('READ_HEALTH'):      return 'health'
     case hasRaiPermission('READ_REPORTS'):     return 'reports'
     case hasRaiPermission('READ_DATA_STUDIO'): return 'dataStudio'
   }
