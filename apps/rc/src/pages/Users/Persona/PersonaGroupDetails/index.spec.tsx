@@ -82,7 +82,7 @@ describe('Persona Group Details', () => {
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       ),
       rest.get(
-        replacePagination(PersonaUrls.getPersonaGroupList.url),
+        replacePagination(PersonaUrls.searchPersonaGroupList.url),
         (req, res, ctx) => res(ctx.json(mockPersonaTableResult))
       ),
       rest.get(
