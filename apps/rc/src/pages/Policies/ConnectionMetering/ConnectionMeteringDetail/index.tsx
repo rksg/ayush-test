@@ -11,8 +11,9 @@ import {
   PolicyType,
   PolicyOperation, getPolicyRoutePath
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink }             from '@acx-ui/react-router-dom'
+import { EdgeScopes, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }         from '@acx-ui/user'
 
 import { DataConsumptionLabel }  from '../DataConsumptionHelper'
 import { RateLimitingTableCell } from '../RateLimitingHelper'
@@ -65,7 +66,8 @@ export default function ConnectionMeteringDetail () {
             policyId: policyId!,
             type: PolicyType.CONNECTION_METERING,
             oper: PolicyOperation.EDIT
-          })}>
+          })}
+          scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE ]}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

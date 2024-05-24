@@ -243,31 +243,4 @@ describe('CaptiveNetworkForm-WISPr', () => {
     // eslint-disable-next-line max-len
     expect(await screen.findByTestId('radius_server_selection')).not.toHaveClass('ant-select-disabled')
   })
-
-  it('WISPr always accept test case when feature toggle is off', async ()=>{
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(
-      <Provider>
-        <NetworkFormContext.Provider
-          value={{ editMode: true, cloneMode: true, data: wisprDataForOnlyAuth }}>
-          <MLOContext.Provider value={{
-            isDisableMLO: false,
-            disableMLO: jest.fn()
-          }}>
-            <StepsFormLegacy>
-              <StepsFormLegacy.StepForm>
-                <WISPrForm />
-              </StepsFormLegacy.StepForm>
-            </StepsFormLegacy>
-          </MLOContext.Provider>
-        </NetworkFormContext.Provider>
-      </Provider>,
-      { route: { params } }
-    )
-    await userEvent.click((await screen.findAllByTitle('Select provider'))[0])
-    await userEvent.click((await screen.findAllByTitle('Custom Provider'))[0])
-    expect(screen.queryByTestId('radius')).not.toBeInTheDocument()
-    expect(await screen.findByTestId('bypasscna_checkbox')).toBeInTheDocument()
-    expect(screen.queryByTestId('always_accept')).not.toBeInTheDocument()
-  })
 })

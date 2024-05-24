@@ -1,7 +1,7 @@
-import { waitFor, within } from '@testing-library/react'
-import userEvent           from '@testing-library/user-event'
-import _                   from 'lodash'
-import { rest }            from 'msw'
+import { waitFor, within }                    from '@testing-library/react'
+import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
+import _                                      from 'lodash'
+import { rest }                               from 'msw'
 
 import { networkApi }                      from '@acx-ui/rc/services'
 import { CommonUrlsInfo, NetworkTypeEnum } from '@acx-ui/rc/utils'
@@ -11,6 +11,8 @@ import {
   render,
   screen
 } from '@acx-ui/test-utils'
+import { EdgeScopes, SwitchScopes, WifiScopes }          from '@acx-ui/types'
+import { getUserProfile, hasPermission, setUserProfile } from '@acx-ui/user'
 
 import { mockNetworkSaveData, mockNetworkViewmodelList } from '../../__tests__/fixtures'
 
@@ -276,6 +278,100 @@ describe('Edge SD-LAN ActivatedNetworksTable', () => {
       const switchBtns = within(await screen.findByRole('row', { name: /MockedNetwork 4/i }))
         .getAllByRole('switch')
       expect(switchBtns[1]).toBeDisabled()
+    })
+  })
+
+  describe('ABAC permission handling', () => {
+    const mockedCustomRoleUserProfile = {
+      allowedOperations: [],
+      profile: {
+        ...getUserProfile().profile
+      },
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [EdgeScopes.READ, SwitchScopes.READ, WifiScopes.READ]
+    }
+
+    it('should not grey out when user has UPDATE', async () => {
+      setUserProfile({
+        ...mockedCustomRoleUserProfile,
+        scopes: [EdgeScopes.READ, EdgeScopes.UPDATE, SwitchScopes.READ, WifiScopes.READ]
+      })
+
+      render(
+        <Provider>
+          <EdgeSdLanP2ActivatedNetworksTable
+            venueId='mocked-venue-2'
+            isGuestTunnelEnabled={true}
+            activated={['network_2', 'network_3']}
+            activatedGuest={['network_3']}
+            onActivateChange={mockedOnChangeFn}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await checkPageLoaded()
+      const nonGuestNetwork = screen.getByRole('row', { name: /MockedNetwork 2/i })
+      const switchBtns = within(nonGuestNetwork).getAllByRole('switch')
+      expect(switchBtns.length).toBe(1)
+      expect(switchBtns[0]).not.toBeDisabled()
+      await userEvent.hover(switchBtns[0], { pointerEventsCheck: PointerEventsCheckLevel.Never })
+      expect(screen.queryByRole('tooltip')).toBeNull()
+    })
+
+    it('should correctly grey out by setting props - disabled', async () => {
+      setUserProfile({
+        ...mockedCustomRoleUserProfile,
+        scopes: [EdgeScopes.READ, EdgeScopes.CREATE, SwitchScopes.READ, WifiScopes.READ]
+      })
+
+      const hasUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
+
+      render(
+        <Provider>
+          <EdgeSdLanP2ActivatedNetworksTable
+            venueId='mocked-venue-2'
+            isGuestTunnelEnabled={true}
+            activated={['network_2', 'network_3']}
+            activatedGuest={['network_3']}
+            onActivateChange={mockedOnChangeFn}
+            disabled={!hasUpdatePermission}
+            tooltip='Permission testing'
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await checkPageLoaded()
+      const nonGuestNetwork = screen.getByRole('row', { name: /MockedNetwork 2/i })
+      const switchBtns = within(nonGuestNetwork).getAllByRole('switch')
+      expect(switchBtns.length).toBe(1)
+      expect(switchBtns[0]).toBeDisabled()
+      await userEvent.hover(switchBtns[0], { pointerEventsCheck: PointerEventsCheckLevel.Never })
+      await screen.findByRole('tooltip', { name: 'Permission testing', hidden: true })
+    })
+
+    it('should correctly grey out by default permission check', async () => {
+      setUserProfile({
+        ...mockedCustomRoleUserProfile,
+        scopes: [EdgeScopes.READ, EdgeScopes.DELETE, SwitchScopes.READ, WifiScopes.READ]
+      })
+
+      render(
+        <Provider>
+          <EdgeSdLanP2ActivatedNetworksTable
+            venueId='mocked-venue-2'
+            isGuestTunnelEnabled={true}
+            activated={['network_2', 'network_3']}
+            activatedGuest={['network_3']}
+            onActivateChange={mockedOnChangeFn}
+          />
+        </Provider>, { route: { params: { tenantId: 't-id' } } })
+
+      await checkPageLoaded()
+      const nonGuestNetwork = screen.getByRole('row', { name: /MockedNetwork 2/i })
+      const switchBtns = within(nonGuestNetwork).getAllByRole('switch')
+      expect(switchBtns.length).toBe(1)
+      expect(switchBtns[0]).toBeDisabled()
+      await userEvent.hover(switchBtns[0], { pointerEventsCheck: PointerEventsCheckLevel.Never })
+      await screen.findByRole('tooltip', { name: 'No permission on this', hidden: true })
     })
   })
 })

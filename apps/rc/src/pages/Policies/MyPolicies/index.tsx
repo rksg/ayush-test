@@ -32,7 +32,8 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { EdgeScopes, WifiScopes }   from '@acx-ui/types'
+import { filterByAccess, hasScope } from '@acx-ui/user'
 
 interface CardDataProps {
   type: PolicyType
@@ -93,7 +94,6 @@ export default function MyPolicies () {
 
 function useCardData (): CardDataProps[] {
   const params = useParams()
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
@@ -185,11 +185,10 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetApSnmpViewModelQuery({
-        params, payload: { ...defaultPayload }
-      }, { skip: !supportApSnmp }).data?.totalCount,
+        params, payload: defaultPayload
+      }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
-      disabled: !supportApSnmp
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST }))
     },
     {
       type: PolicyType.TUNNEL_PROFILE,
@@ -209,7 +208,8 @@ function useCardData (): CardDataProps[] {
       }, { skip: !isConnectionMeteringEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
-      disabled: !isConnectionMeteringEnabled
+      disabled: !isConnectionMeteringEnabled ||
+        !hasScope([WifiScopes.READ, EdgeScopes.READ])
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,

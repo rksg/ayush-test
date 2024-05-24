@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { clientApi }                      from '@acx-ui/rc/services'
-import { ClientUrlsInfo, CommonUrlsInfo } from '@acx-ui/rc/utils'
-import { ReportType }                     from '@acx-ui/reports/components'
-import { Provider, store }                from '@acx-ui/store'
+import { clientApi }       from '@acx-ui/rc/services'
+import { ClientUrlsInfo }  from '@acx-ui/rc/utils'
+import { ReportType }      from '@acx-ui/reports/components'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,7 +12,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import { GuestClient } from '../__tests__/fixtures'
+import { GuestList, GuestClients } from '../__tests__/fixtures'
 
 import { WifiClientList, WirelessTabsEnum } from '.'
 
@@ -20,6 +20,13 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+
+const mockGuestData = { data: GuestList, isLoading: false }
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetGuestsListQuery: () => mockGuestData
 }))
 
 jest.mock('@acx-ui/rc/components', () => ({
@@ -64,8 +71,8 @@ describe('WifiClientList', () => {
           return res(ctx.json({ data: [] }))
         }
       ),
-      rest.post(CommonUrlsInfo.getGuestsList.url, (req, res, ctx) =>
-        res(ctx.json(GuestClient))
+      rest.post(ClientUrlsInfo.getClientList.url, (req, res, ctx) =>
+        res(ctx.json(GuestClients))
       )
     )
   })
