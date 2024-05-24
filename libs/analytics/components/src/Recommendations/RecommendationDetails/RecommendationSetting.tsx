@@ -41,8 +41,9 @@ export function RecommendationSetting (
   const isRecommendationDeleteEnabled =
     useIsSplitOn(Features.RECOMMENDATION_DELETE) || Boolean(get('IS_MLISA_SA'))
 
-  const { id, status, trigger } = recommendationDetails
-  const { title, link } = recommendationTypeMapping[trigger === 'daily' ? 'crrm' : 'aiOps']
+  const { id, status, trigger, code } = recommendationDetails
+  const category = code.startsWith('c-crrm-') ? 'crrm' : 'aiOps'
+  const { title, link } = recommendationTypeMapping[category]
   const { $t } = useIntl()
   const [ muteRecommendation ] = useMuteRecommendationMutation()
   const [ deleteRecommendation ] = useDeleteRecommendationMutation()
