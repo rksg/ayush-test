@@ -63,15 +63,17 @@ const Svg = (props: TopologyProps) => {
       const dy = event.sourceEvent.layerY - startY
 
       const treeContainer = document.querySelector('#treeContainer')
+      const topologyGraph =
+        document.getElementById('topologyGraph') as unknown as SVGGraphicsElement
       const containerWidth = treeContainer?.clientWidth || 0
-      const containerHeight = treeContainer?.clientHeight || 0
+      const containerHeight = topologyGraph?.getBBox().height || 0
 
       let boundaryDx = translate[0] + dx >= containerWidth ?
         containerWidth : (translate[0] + dx <= 0 ?
           0 : translate[0] + dx)
       let boundaryDy = translate[1] + dy >= containerHeight ?
-        containerHeight : (translate[1] + dy <= -200 ?
-          -200 : translate[1] + dy)
+        containerHeight : (translate[1] + dy <= -(containerHeight - 200) ?
+          -(containerHeight - 200) : translate[1] + dy)
 
       setTranslate([boundaryDx, boundaryDy])
       closeTooltipHandler()
@@ -166,7 +168,7 @@ const Svg = (props: TopologyProps) => {
   }
 
   return (
-    <svg ref={refSvg} style={{ width, height }} data-testid='topologyGraph'>
+    <svg ref={refSvg} style={{ width, height }} data-testid='topologyGraph' id='topologyGraph'>
       <g className='d3-tree-main' ref={refMain}>
         <g transform={`translate(${translate}) scale(${scale})`}>
           {nodes &&
