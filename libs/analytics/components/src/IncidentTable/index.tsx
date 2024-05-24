@@ -24,6 +24,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                  from '@acx-ui/types'
 import { filterByAccess, hasPermission }                               from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
@@ -147,6 +148,7 @@ export function IncidentTable ({ filters }: {
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })
       ),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: async () => {
         const { id, code, severityLabel, isMuted } = selectedIncident
         await muteIncident({ id, code, priority: severityLabel, mute: !isMuted }).unwrap()

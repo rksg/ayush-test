@@ -13,6 +13,7 @@ import {
   showToast
 } from '@acx-ui/components'
 import { get }                           from '@acx-ui/config'
+import { WifiScopes }                    from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
@@ -111,9 +112,11 @@ export const useWebhooks = () => {
 
   const rowActions: WebhookTableProps['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE],
     onClick: ([webhook]) => setSelectedId(webhook.id)
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [WifiScopes.DELETE],
     onClick: ([webhook]) => showActionModal({
       type: 'confirm',
       title: $t({ defaultMessage: 'Delete "{name}"?' }, { name: webhook.name }),
@@ -124,6 +127,7 @@ export const useWebhooks = () => {
 
   const actions: WebhookTableProps['actions'] = [{
     label: $t({ defaultMessage: 'Create Webhook' }),
+    scopeKey: [WifiScopes.CREATE],
     onClick: () => setSelectedId(undefined)
   }]
 

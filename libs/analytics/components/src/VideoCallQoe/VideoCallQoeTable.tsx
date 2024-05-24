@@ -11,6 +11,7 @@ import { Button, Table, TableProps, Tooltip, TrendPill, showActionModal, showToa
 import { Loader }                                                                    from '@acx-ui/components'
 import { DateFormatEnum, formatter }                                                 from '@acx-ui/formatter'
 import { TenantLink }                                                                from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                from '@acx-ui/types'
 import { filterByAccess, hasPermission }                                             from '@acx-ui/user'
 import { TABLE_DEFAULT_PAGE_SIZE }                                                   from '@acx-ui/utils'
 
@@ -188,6 +189,7 @@ export function VideoCallQoeTable () {
   const actions: TableProps<(typeof meetingList)[0]>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
