@@ -61,9 +61,8 @@ function Init () {
   if (previousURL) {
     return <Navigate replace to={decodeURIComponent(previousURL)} />
   } else {
-    const { selectedTenant } = getUserProfile()
-    const selectedTenants = search.get('selectedTenants') ||
-      window.btoa(JSON.stringify([selectedTenant.id]))
+    const { selectedTenant: { id } } = getUserProfile()
+    const selectedTenants = search.get('selectedTenants') || window.btoa(JSON.stringify([id]))
     return <Navigate
       replace
       to={{
