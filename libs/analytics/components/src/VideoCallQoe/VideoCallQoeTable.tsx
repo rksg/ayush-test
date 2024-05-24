@@ -34,7 +34,7 @@ export function VideoCallQoeTable () {
   const meetingList: Meeting[] = []
 
   allCallQoeTests?.forEach((qoeTest) => {
-    const { name, meetings } = qoeTest
+    const { name, meetings, id: testId } = qoeTest
 
     meetings.forEach(meeting => {
       // As part of mugration, some calls were marked as invalid
@@ -46,7 +46,7 @@ export function VideoCallQoeTable () {
       if (meeting.status === MeetingType.INVALID.toUpperCase() && meeting.mos > 0) {
         meetingCopy.mos = -1
       }
-      meetingList.push({ ...meetingCopy, name })
+      meetingList.push({ ...meetingCopy, name, testId })
     })
   })
 
@@ -67,11 +67,11 @@ export function VideoCallQoeTable () {
       searchable: true,
       render: (_, row) => {
         const status = startCase(toLower(row.status as string))
-        const meetingId = row.id
+        const testId = row.testId
 
         if ([MeetingType.ENDED].includes(status)) {
           return (
-            <TenantLink to={`/analytics/videoCallQoe/${meetingId}`}>
+            <TenantLink to={`/analytics/videoCallQoe/${testId}`}>
               {row.name}
             </TenantLink>
           )
