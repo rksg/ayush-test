@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { SwitchesTrafficByVolume }                  from '@acx-ui/analytics/components'
-import { SwitchStatusByTime }                       from '@acx-ui/analytics/components'
-import { Button, GridCol, GridRow }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
-import { TopologyFloorPlanWidget, isLAGMemberPort } from '@acx-ui/rc/components'
+import { SwitchesTrafficByVolume, SwitchesTrafficByVolumeLegacy } from '@acx-ui/analytics/components'
+import { SwitchStatusByTime }                                     from '@acx-ui/analytics/components'
+import { Button, GridCol, GridRow }                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { TopologyFloorPlanWidget, isLAGMemberPort }               from '@acx-ui/rc/components'
 import {
   SwitchBlinkLEDsDrawer,
   SwitchInfo
@@ -105,6 +105,7 @@ function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: S
     fields: SwitchPortViewModelQueryFields
   }
 
+  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   const portList = useSwitchPortlistQuery({ params: { tenantId }, payload: portPayload })
   const [portOptions, setPortOptions] = useState([] as DefaultOptionType[])
   const [selectedPorts, setSelectedPorts] = useState([] as string[])
@@ -157,13 +158,20 @@ function SwitchWidgets (props: { filters: AnalyticsFilter, switchDetailHeader: S
           refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL} />
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={filters}
-          refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL}
-          enableSelectPort={true}
-          portOptions={portOptions}
-          onPortChange={onPortChange}
-          selectedPorts={selectedPorts}
-        />
+        {
+          supportPortTraffic ?
+            <SwitchesTrafficByVolume filters={filters}
+              refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL}
+              enableSelectPort={true}
+              portOptions={portOptions}
+              onPortChange={onPortChange}
+              selectedPorts={selectedPorts}
+            />
+            :
+            <SwitchesTrafficByVolumeLegacy filters={filters}
+              refreshInterval={TABLE_QUERY_LONG_POLLING_INTERVAL} />
+        }
+
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <ResourceUtilization filters={filters} />

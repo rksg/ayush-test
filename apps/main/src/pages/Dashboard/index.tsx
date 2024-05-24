@@ -8,7 +8,7 @@ import {
   ConnectedClientsOverTime,
   IncidentsDashboardv2,
   ClientExperience,
-  SwitchesTrafficByVolume,
+  SwitchesTrafficByVolumeLegacy,
   TopAppsByTraffic,
   TopSwitchesByError,
   TopSwitchesByPoEUsage,
@@ -18,7 +18,8 @@ import {
   DidYouKnow,
   TopWiFiNetworks,
   TopEdgesByTraffic,
-  TopEdgesByResources } from '@acx-ui/analytics/components'
+  TopEdgesByResources,
+  SwitchesTrafficByVolume } from '@acx-ui/analytics/components'
 import {
   Button,
   Dropdown,
@@ -248,10 +249,15 @@ function DashboardMapWidget () {
 
 function SwitchWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
+  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
+        {
+          supportPortTraffic ?
+            <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
+            :<SwitchesTrafficByVolumeLegacy filters={dashboardFilters} vizType={'area'} />
+        }
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={dashboardFilters}/>

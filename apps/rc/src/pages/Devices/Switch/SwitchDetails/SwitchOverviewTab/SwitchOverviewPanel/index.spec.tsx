@@ -3,9 +3,9 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
-import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }       from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -104,6 +104,7 @@ describe('SwitchOverviewTab', () => {
   }
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     const params = {
       tenantId: 'tenantId',
       switchId: 'switchId',
@@ -156,6 +157,7 @@ describe('SwitchOverviewTab', () => {
   })
 
   it('should render SwitchesTrafficByVolume portOptions correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     const useStateSpy = jest.spyOn(React, 'useState')
     const params = {
       tenantId: 'tenantId',
