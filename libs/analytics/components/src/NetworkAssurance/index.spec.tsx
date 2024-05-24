@@ -4,7 +4,7 @@ import * as config                           from '@acx-ui/config'
 import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useLocation, useTenantLink }        from '@acx-ui/react-router-dom'
 import { Provider }                          from '@acx-ui/store'
-import { render, screen, waitFor }           from '@acx-ui/test-utils'
+import { cleanup, render, screen, waitFor }  from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import { NetworkAssurance, NetworkAssuranceTabEnum } from '.'
@@ -191,7 +191,8 @@ describe('NetworkAssurance', () => {
     expect(screen.queryByText('Config Change')).toBeNull()
   })
   it('should render header with correct options for health pages', async () => {
-    ['overview', 'wireless', 'wired'].forEach(async (tab) => {
+    const tabs = ['overview', 'wireless', 'wired']
+    for(const tab of tabs) {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       jest.mocked(useTenantLink).mockReturnValue({
         pathname: 't1/t/ai',
@@ -202,10 +203,11 @@ describe('NetworkAssurance', () => {
         ...location,
         pathname: `t1/t/ai/health/${tab}`
       })
+      cleanup()
       render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
         { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       expect(await screen.findByTestId('HealthTabs')).toBeVisible()
-    })
+    }
   })
   it('should redirect from health path to overview', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
