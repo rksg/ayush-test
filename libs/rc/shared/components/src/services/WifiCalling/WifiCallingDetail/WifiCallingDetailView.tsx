@@ -11,13 +11,13 @@ import {
 } from '@acx-ui/components'
 import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
-  getServiceDetailsLink,
   ServiceOperation,
   ServiceType, useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
   WifiCallingDetailContextType
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
+
+import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
 
 import WifiCallingDetailContent  from './WifiCallingDetailContent'
 import WifiCallingNetworksDetail from './WifiCallingNetworksDetail'
@@ -49,17 +49,16 @@ export const WifiCallingDetailView = () => {
         title={data?.serviceName}
         breadcrumb={breadcrumb}
         extra={filterByAccess([
-          <TenantLink
-            to={getServiceDetailsLink({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.EDIT,
-              serviceId: params.serviceId!
-            })}
-          >
-            <Button key={'configure'} type={'primary'}>
-              {$t({ defaultMessage: 'Configure' })}
-            </Button>
-          </TenantLink>
+          <ServiceConfigTemplateLinkSwitcher
+            type={ServiceType.WIFI_CALLING}
+            oper={ServiceOperation.EDIT}
+            serviceId={params.serviceId!}
+            children={
+              <Button key={'configure'} type={'primary'}>
+                {$t({ defaultMessage: 'Configure' })}
+              </Button>
+            }
+          />
         ])}
       />
 
