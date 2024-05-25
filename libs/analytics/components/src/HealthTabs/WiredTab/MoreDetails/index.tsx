@@ -4,23 +4,23 @@ import { useIntl }    from 'react-intl'
 import { Drawer, GridCol, GridRow } from '@acx-ui/components'
 import { AnalyticsFilter }          from '@acx-ui/utils'
 
-import { MoreDetailsPieChart } from './HealthPieChart'
-import * as UI                 from './styledComponents'
-
+import { WidgetType }            from './config'
+import { MoreDetailsPieChart }   from './HealthPieChart'
+import { ImpactedSwitchesTable } from './ImpactedSwitchesTable'
+import * as UI                   from './styledComponents'
 
 export interface MoreDetailsDrawerProps {
   visible: boolean
-  widget: String
+  widget: WidgetType
   setVisible: (visible: boolean) => void
-  setWidget: (widget: String) => void
+  setWidget: (widget: WidgetType | null) => void
   filters: AnalyticsFilter
 }
 
 export type MoreDetailsWidgetsMapping = {
-  type: string
+  type: WidgetType
   title: string
   pieTitle: string
-  tableTitle: string
 }[]
 
 export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
@@ -29,33 +29,29 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
-    setWidget('')
+    setWidget(null)
   }
 
   const mapping: MoreDetailsWidgetsMapping = [
     {
-      type: 'dhcp',
-      title: $t({ defaultMessage: 'DHCP Failure' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
+      type: 'dhcpFailure',
+      title: $t({ defaultMessage: 'DHCP' }),
+      pieTitle: 'DHCP Failure'
     },
     {
       type: 'congestion',
-      title: $t({ defaultMessage: 'Congestion' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
+      title: $t({ defaultMessage: 'Uplink Usage' }),
+      pieTitle: 'Congested'
     },
     {
       type: 'portStorm',
       title: $t({ defaultMessage: 'Port Storm' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
+      pieTitle: 'Storm'
     },
     {
-      type: 'cpu',
+      type: 'cpuUsage',
       title: $t({ defaultMessage: 'High CPU' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
+      pieTitle: 'High CPU'
     }
   ]
   const activeWidgetMapping = mapping.filter(item => item.type === widget)[0]
@@ -63,30 +59,32 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
   return (
     <Drawer
       title={
-        <UI.Title>
+        <UI.DrawerTitle>
           <Typography.Title level={2}>
             {activeWidgetMapping?.title}
           </Typography.Title>
-        </UI.Title>
+        </UI.DrawerTitle>
       }
-      width={1111}
+      width={'80%'}
       visible={visible}
       onClose={onClose}
-      style={{ marginTop: '85px' }}
       children={
-        <GridRow>
-          <GridCol key={activeWidgetMapping?.type}
-            col={{ span: 10 }}
-            style={{ height: 260, width: 430 }}>
-            <UI.PieTitle>
-              <Typography.Paragraph>
-                {activeWidgetMapping?.pieTitle}
-              </Typography.Paragraph>
-            </UI.PieTitle>
-            {<MoreDetailsPieChart filters={filters} queryType={activeWidgetMapping?.type}/>}
+        <GridRow style={{ paddingTop: 20 }}>
+          <GridCol col={{ span: 9 }} key={`pie-${activeWidgetMapping?.type}`}>
+            <MoreDetailsPieChart
+              filters={filters}
+              queryType={activeWidgetMapping?.type}
+              title={activeWidgetMapping?.pieTitle}/>
           </GridCol>
+          {
+            (activeWidgetMapping?.type === 'dhcpFailure' ||
+              activeWidgetMapping?.type === 'cpuUsage') &&
+            <GridCol col={{ span: 15 }} key={`table-${activeWidgetMapping?.type}`}>
+              <ImpactedSwitchesTable filters={filters} queryType={activeWidgetMapping?.type}/>
+            </GridCol>
+          }
         </GridRow>
-      } // table TBD
+      }
     />
   )
 }

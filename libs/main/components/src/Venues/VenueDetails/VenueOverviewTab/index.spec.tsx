@@ -97,4 +97,5 @@ describe('VenueOverviewTab', () => {
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
+
 })
