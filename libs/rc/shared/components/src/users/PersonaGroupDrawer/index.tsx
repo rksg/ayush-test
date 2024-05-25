@@ -1,18 +1,21 @@
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, showToast }                                         from '@acx-ui/components'
-import { useAddPersonaGroupMutation, useUpdatePersonaGroupMutation } from '@acx-ui/rc/services'
-import { PersonaGroup }                                              from '@acx-ui/rc/utils'
+import { Drawer, showToast } from '@acx-ui/components'
+import {
+  AsyncCommonResponse
+} from '@acx-ui/rc/services'
+import { PersonaGroup } from '@acx-ui/rc/utils'
 
 import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
 
-import { PersonaGroupForm } from './PersonaGroupForm'
+import { PersonaGroupForm }      from './PersonaGroupForm'
+import { usePersonaGroupAction } from './usePersonaGroupActions'
 
 interface PersonaGroupDrawerProps {
   isEdit: boolean,
   visible: boolean,
-  onClose: (result?: PersonaGroup) => void,
+  onClose: (result?: AsyncCommonResponse) => void,
   data?: PersonaGroup
 }
 
@@ -20,9 +23,8 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { isEdit, data, visible, onClose } = props
-  const [addPersonaGroup] = useAddPersonaGroupMutation()
-  const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
-  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
+  const { createPersonaGroupMutation, updatePersonaGroupMutation } = usePersonaGroupAction()
+  const { isAsync } = usePersonaAsyncHeaders()
 
   const onFinish = async (contextData: PersonaGroup) => {
     try {
@@ -49,7 +51,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
   }
 
   const handleAddPersonaGroup = async (submittedData: PersonaGroup) => {
-    return addPersonaGroup({ payload: { ...submittedData }, customHeaders }).unwrap()
+    return createPersonaGroupMutation(submittedData)
   }
 
   const handleEditPersonaGroup = async (submittedData: PersonaGroup) => {
@@ -64,13 +66,7 @@ export function PersonaGroupDrawer (props: PersonaGroupDrawerProps) {
       }
     })
 
-    if (Object.keys(patchData).length === 0) return
-
-    return updatePersonaGroup({
-      params: { groupId: data?.id },
-      payload: patchData,
-      customHeaders
-    }).unwrap()
+    return updatePersonaGroupMutation(data.id, patchData)
   }
 
   const onSave = async () => {
