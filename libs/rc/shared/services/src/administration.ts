@@ -28,7 +28,8 @@ import {
   AdminGroupLastLogins,
   CustomRole,
   PrivilegeGroup,
-  EntitlementPendingActivations
+  EntitlementPendingActivations,
+  AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -174,7 +175,10 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     enableAccessSupport: build.mutation<TenantDelegationResponse, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.enableAccessSupport, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? AdminRbacUrlsInfo.enableAccessSupport
+          : AdministrationUrlsInfo.enableAccessSupport, params)
         return {
           ...req,
           body: payload
@@ -191,7 +195,10 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
     }),
     disableAccessSupport: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.disableAccessSupport, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? AdminRbacUrlsInfo.disableAccessSupport
+          : AdministrationUrlsInfo.disableAccessSupport, params)
         return {
           ...req,
           body: payload

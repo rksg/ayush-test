@@ -6,6 +6,7 @@ import { useIntl }                                       from 'react-intl'
 import { useParams }                                     from 'react-router-dom'
 import styled                                            from 'styled-components/macro'
 
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { SpaceWrapper }              from '@acx-ui/rc/components'
 import {
@@ -45,6 +46,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
   const params = useParams()
   const { data: userProfileData, hasAccess } = useUserProfileContext()
   const { className, hasMSPEcLabel, canMSPDelegation } = props
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
   const isRevokeExpired = useRef<boolean>(false)
   const isMspDelegatedEC = hasMSPEcLabel && userProfileData?.varTenantId
                               && canMSPDelegation === false
@@ -93,7 +95,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     const triggerAction = isChecked ? enableAccessSupport : disableAccessSupport
 
     try {
-      await triggerAction({ params }).unwrap()
+      await triggerAction(isPtenantRbacApiEnabled
+        ? { params: { isRbacApi: 'true' } } : { params }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

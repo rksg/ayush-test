@@ -40,21 +40,37 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     data: profile,
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
-  const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } },
-    { skip: !Boolean(profile) })
-  const betaEnabled = (beta?.enabled === 'true')? true : false
-  const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
-    { skip: !Boolean(profile) })
-  const accountTier = accTierResponse?.acx_account_tier
-
-  const allowedOperationsFF = 'allowed-operations-toggle'
 
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
+  const allowedOperationsFF = 'allowed-operations-toggle'
+  const ptenantRbacFF = 'acx-ui-rbac-api-ptenant-toggle'
+
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF, allowedOperationsFF] }, { skip: !Boolean(profile) }
+      { params: { tenantId }, payload: [abacFF, allowedOperationsFF, ptenantRbacFF] },
+      { skip: !Boolean(profile) }
     )
+  // test for now
+  const ptenantRbacEnable = featureFlagStates?.[abacFF]
+
+  const { data: beta } = useGetBetaStatusQuery(
+    { params: ptenantRbacEnable ? { tenantId, isRbacApi: 'true' } : { tenantId } },
+    { skip: !Boolean(profile) })
+  const betaEnabled = (beta?.enabled === 'true')? true : false
+  const { data: accTierResponse } = useGetAccountTierQuery(
+    { params: ptenantRbacEnable ? { tenantId, isRbacApi: 'true' } : { tenantId } },
+    { skip: !Boolean(profile) })
+  const accountTier = accTierResponse?.acx_account_tier
+
+  // const allowedOperationsFF = 'allowed-operations-toggle'
+
+  // let abacEnabled = false, isCustomRole = false
+  // const abacFF = 'abac-policies-toggle'
+  // const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
+  //   = useFeatureFlagStatesQuery(
+  //     { params: { tenantId }, payload: [abacFF, allowedOperationsFF] }, { skip: !Boolean(profile) }
+  //   )
 
   const rcgAllowedOperationsEnabled = featureFlagStates?.[allowedOperationsFF]
   const { data: allAllowedOperations } = useAllowedOperationsQuery(tenantId!,

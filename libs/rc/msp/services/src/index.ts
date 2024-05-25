@@ -40,7 +40,8 @@ import {
   MspEntitlement,
   downloadFile,
   Venue,
-  CommonUrlsInfo
+  CommonUrlsInfo,
+  AdminRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -764,7 +765,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     getMspAggregations: build.query<MspAggregations, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.getMspAggregations, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? AdminRbacUrlsInfo.getMspAggregations : MspUrlsInfo.getMspAggregations, params)
         return {
           ...req
         }
@@ -781,7 +784,9 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     updateMspAggregations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspAggregations, params)
+        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
+        const req = createHttpRequest(rbacApiEnabled
+          ? AdminRbacUrlsInfo.updateMspAggregations : MspUrlsInfo.updateMspAggregations, params)
         return {
           ...req,
           body: payload

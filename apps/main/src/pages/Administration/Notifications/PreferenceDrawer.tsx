@@ -5,6 +5,7 @@ import { CheckboxChangeEvent }    from 'antd/es/checkbox'
 import { useIntl }                from 'react-intl'
 
 import { Drawer, Subtitle }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { useGetMspAggregationsQuery, useUpdateMspAggregationsMutation } from '@acx-ui/msp/services'
 import { SpaceWrapper }                                                 from '@acx-ui/rc/components'
 
@@ -15,13 +16,15 @@ interface PreferenceDrawerProps {
 
 export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   const { $t } = useIntl()
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const { visible, setVisible } = props
   const [ mspAggregationChecked, setMspAggregationChecked ] = useState(false)
   const [ ecExclusionChecked, setEcExclusionChecked ] = useState(false)
   const [form] = Form.useForm()
 
-  const { data: mspAggregations } = useGetMspAggregationsQuery({ })
+  const { data: mspAggregations } = useGetMspAggregationsQuery(
+    isPtenantRbacApiEnabled ? { params: { isRbacApi: 'true' } } : { })
 
   const [updateMspAggregations] = useUpdateMspAggregationsMutation()
 
@@ -42,7 +45,8 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
     }
     try {
       await form.validateFields()
-      updateMspAggregations({ payload })
+      updateMspAggregations(isPtenantRbacApiEnabled
+        ? { params: { isRbacApi: 'true' }, payload } : { payload })
         .then(() => {
           setVisible(false)
         })
