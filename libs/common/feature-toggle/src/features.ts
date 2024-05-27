@@ -136,7 +136,6 @@ export enum Features {
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
   WIFI_EDA_NEIGHBORS_TOGGLE = 'wifi-eda-neighbors-toggle',
-  WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
