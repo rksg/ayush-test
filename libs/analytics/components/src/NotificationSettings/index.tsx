@@ -1,5 +1,6 @@
 import { useState, useEffect, Dispatch, SetStateAction, MutableRefObject, useRef } from 'react'
 
+import { Form }                                      from 'antd'
 import {  cloneDeep, get, set, unset, isEmpty }      from 'lodash'
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
@@ -52,37 +53,33 @@ const getApplyMsg = (success?: boolean) => {
 }
 
 type Preferences = { preferences: AnalyticsPreferences }
-function OptionsList ({ labels, setState, type }:
-  {
-    labels: ListLabel[],
-    setState: Dispatch<SetStateAction<Preferences>>,
-    type: 'incident' | 'configRecommendation'
-  }) {
+function OptionsList ({ labels, setState, type }: {
+  labels: ListLabel[],
+  setState: Dispatch<SetStateAction<Preferences>>,
+  type: 'incident' | 'configRecommendation'
+}) {
   const { $t } = useIntl()
-  return <UI.List bordered={false}>
-    {labels.map((({ label, key, checked }) => <UI.List.Item key={key}>
-      <span>
-        <UI.Checkbox
-          id={key}
-          name={key}
-          checked={checked.includes('email')}
-          onChange={(e: { target: { checked: boolean } }) =>
-            setState(({ preferences: p }: Preferences) => {
-              const preferences = cloneDeep(p)
-              const path = [type, key]
-              e.target.checked
-                ? set(preferences, path, ['email'])
-                : unset(preferences, path)
-              if (isEmpty(preferences[type])) {
-                delete preferences[type]
-              }
-              return { preferences }
-            })
-          } />
-        <label htmlFor={key}>{$t(label)}</label>
-      </span>
-    </UI.List.Item>))}
-  </UI.List>
+  return <>{labels.map(({ label, key, checked }) => <div key={key}>
+    <UI.Checkbox
+      id={key}
+      name={key}
+      checked={checked.includes('email')}
+      onChange={(e: { target: { checked: boolean } }) =>
+        setState(({ preferences: p }: Preferences) => {
+          const preferences = cloneDeep(p)
+          const path = [type, key]
+          e.target.checked
+            ? set(preferences, path, ['email'])
+            : unset(preferences, path)
+          if (isEmpty(preferences[type])) {
+            delete preferences[type]
+          }
+          return { preferences }
+        })
+      } />
+    <label htmlFor={key}>{$t(label)}</label>
+  </div>
+  )}</>
 }
 
 export const NotificationSettings = (props: {
@@ -112,20 +109,17 @@ export const NotificationSettings = (props: {
     })
   const incidentLabels = getPreferenceLabel(preferences, 'incident')
   const recommendationLabels = getPreferenceLabel(preferences, 'configRecommendation')
-  return <Loader states={[query]}>
-    <UI.SectionTitle>{$t({ defaultMessage: 'Incidents' })}</UI.SectionTitle>
-    <OptionsList labels={incidentLabels} setState={setState} type='incident' />
-    <UI.SectionTitle>{$t({ defaultMessage: 'Recommendations' })}</UI.SectionTitle>
-    <OptionsList
-      labels={recommendationLabels}
-      setState={setState}
-      type='configRecommendation'
-    />
-    {showLicense && <>
-      <UI.SectionTitle>{$t({ defaultMessage: 'Licenses' })}</UI.SectionTitle>
+  return <Loader states={[query]}><Form layout='vertical' autoComplete='off'>
+    <Form.Item label={$t({ defaultMessage: 'Incidents' })}>
+      <OptionsList labels={incidentLabels} setState={setState} type='incident' />
+    </Form.Item>
+    <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
+      <OptionsList labels={recommendationLabels} setState={setState} type='configRecommendation' />
+    </Form.Item>
+    {showLicense && <Form.Item label={$t({ defaultMessage: 'Licenses' })}>
       <div>licenses list</div>
-    </>}
-  </Loader>
+    </Form.Item>}
+  </Form></Loader>
 }
 
 export const NotificationSettingsPage = () => {

@@ -31,6 +31,7 @@ export const IncidentNotificationWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   flex-wrap: nowrap;
+  gap: 20px;
 `
 
 export const AfterMsg = styled.div`
