@@ -123,24 +123,17 @@ export function SecurityTab () {
   const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetVenueRogueApQuery,
     useTemplateQueryFn: useGetVenueRogueApTemplateQuery,
-    false,
-    null,
-    undefined,
-    null,
     enableRbac
   })
 
   // eslint-disable-next-line max-len
   const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
-    const { data } = useConfigTemplateQueryFnSwitcher(
-      useEnhancedRoguePoliciesQuery,
-      useGetRoguePolicyTemplateListQuery,
-      false,
-      DEFAULT_PAYLOAD,
-      undefined,
-      null,
+    const { data } = useConfigTemplateQueryFnSwitcher({
+      useQueryFn: useEnhancedRoguePoliciesQuery,
+      useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
+      payload: DEFAULT_PAYLOAD,
       enableRbac
-    )
+    })
 
     if (data?.totalCount === 0) {
       return {

@@ -41,9 +41,6 @@ const RuleTable = (props: RuleTableProps) => {
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
     skip: !edit,
-    null,
-    undefined,
-    null,
     enableRbac
   })
 

@@ -44,9 +44,6 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
     skip: !edit,
-    null,
-    undefined,
-    null,
     enableRbac
   })
 
@@ -55,8 +52,6 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     useQueryFn: useEnhancedRoguePoliciesQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
     payload: { page: 1, pageSize: 10000 },
-    undefined,
-    null,
     enableRbac
   })
 

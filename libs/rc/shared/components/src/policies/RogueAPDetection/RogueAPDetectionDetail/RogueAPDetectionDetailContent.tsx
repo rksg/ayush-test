@@ -13,15 +13,11 @@ const RogueAPDetectionDetailContent = () => {
   const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   const { $t } = useIntl()
 
-  const { data, isLoading } = useConfigTemplateQueryFnSwitcher(
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
-    false,
-    null,
-    undefined,
-    null,
     enableRbac
-  )
+  })
 
   const { setFiltersId, setPolicyName } = useContext(RogueAPDetailContext)
 

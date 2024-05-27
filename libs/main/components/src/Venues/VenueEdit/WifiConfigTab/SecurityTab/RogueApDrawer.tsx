@@ -3,9 +3,9 @@ import React from 'react'
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }  from '@acx-ui/components'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { rogueRuleLabelMapping }      from '@acx-ui/rc/components'
+import { Drawer, Table, TableProps }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { rogueRuleLabelMapping }                                        from '@acx-ui/rc/components'
 import { useGetRoguePolicyTemplateQuery, useRoguePolicyQuery }          from '@acx-ui/rc/services'
 import { RogueAPRule, RogueRuleType, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
