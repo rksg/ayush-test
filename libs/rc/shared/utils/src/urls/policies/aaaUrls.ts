@@ -31,12 +31,6 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/enhancedRadiusServerProfiles/query',
     newApi: true
   },
-  getAAANetworkInstances: {
-    method: 'post',
-    oldUrl: '/api/radius/:policyId/networks',
-    url: '/radiusServerProfiles/:policyId/networks',
-    newApi: true
-  },
   queryAAAPolicyList: {
     method: 'post',
     url: '/radiusServerProfiles/query',

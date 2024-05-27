@@ -20,7 +20,10 @@ import AAAOverview       from './AAAOverview'
 export function AAAPolicyDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const queryResults = useGetAAAPolicyInstance()
+  const queryResults = useConfigTemplateQueryFnSwitcher<AAAPolicyType>({
+    useQueryFn: useAaaPolicyQuery,
+    useTemplateQueryFn: useGetAAAPolicyTemplateQuery
+  })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
 
   return (
@@ -49,17 +52,10 @@ export function AAAPolicyDetail () {
         </GridCol>
         <GridCol col={{ span: 24 }}>
           <Loader states={[queryResults]}>
-            <AAAInstancesTable networkIds={queryResults.data?.networkIds ?? []}/>
+            <AAAInstancesTable />
           </Loader>
         </GridCol>
       </GridRow>
     </>
   )
-}
-
-export function useGetAAAPolicyInstance () {
-  return useConfigTemplateQueryFnSwitcher<AAAPolicyType>({
-    useQueryFn: useAaaPolicyQuery,
-    useTemplateQueryFn: useGetAAAPolicyTemplateQuery
-  })
 }

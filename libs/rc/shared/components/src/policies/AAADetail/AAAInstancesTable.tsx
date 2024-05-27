@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Table, TableProps, Card, Loader }                     from '@acx-ui/components'
@@ -8,36 +10,16 @@ import {
   GuestNetworkTypeEnum, Network, NetworkTypeEnum, networkTypes,
   useConfigTemplate, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
+import { useGetAAAPolicyInstanceList }          from '../AAAForm/aaaPolicyQuerySwitcher'
 
-export default function AAAInstancesTable (props: { networkIds: string[] }) {
-  const { networkIds } = props
+export default function AAAInstancesTable () {
   const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
-  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
 
-  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
-  const tableQuery = useTableQuery<Network>({
-    useQuery,
-    defaultPayload: {
-      fields: ['name', 'id', 'captiveType', 'nwSubType'],
-      filters: { id: networkIds?.length > 0 ? networkIds : [''] }
-    },
-    sorter: {
-      sortField: 'name',
-      sortOrder: 'DESC'
-    },
-    pagination: {
-      pageSize: 10000
-    },
-    search: {
-      searchTargetFields: ['name'],
-      searchString: ''
-    },
-    enableRbac
-  })
+  const tableQuery = useAaaInstanceTableQuery()
 
   const columns: TableProps<Network>['columns'] = [
     {
@@ -90,4 +72,50 @@ export default function AAAInstancesTable (props: { networkIds: string[] }) {
       </Card>
     </Loader>
   )
+}
+
+
+function useAaaInstanceTableQuery () {
+  const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+  const params = useParams()
+  const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
+    customPayload: { filters: { id: [ params?.policyId ] } }
+  })
+
+  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+  const tableQuery = useTableQuery<Network>({
+    useQuery,
+    defaultPayload: {
+      fields: ['name', 'id', 'captiveType', 'nwSubType']
+    },
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'DESC'
+    },
+    pagination: {
+      pageSize: 10000
+    },
+    search: {
+      searchTargetFields: ['name'],
+      searchString: ''
+    },
+    enableRbac,
+    option: {
+      skip: !aaaPolicyViewModel
+    }
+  })
+
+  useEffect(() => {
+    if (!aaaPolicyViewModel) return
+
+    const networkIds = aaaPolicyViewModel.data[0]?.networkIds ?? []
+
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { id: networkIds.length > 0 ? networkIds : ['NO_NETWORK'] }
+    })
+  }, [aaaPolicyViewModel])
+
+  return tableQuery
 }

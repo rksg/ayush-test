@@ -28,11 +28,11 @@ import {
   Certificate, downloadFile, CertificateTemplateMutationResult,
   downloadCertExtension, CertificateAcceptType, AAARbacViewModalType
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }                                                                                         from '@acx-ui/store'
-import { RequestPayload }                                                                                        from '@acx-ui/types'
-import { aggregateQueryResponse, batchApi, createFetchArgsBasedOnRbac, createHttpRequest, getApiVersionHeaders } from '@acx-ui/utils'
+import { basePolicyApi }                                                                 from '@acx-ui/store'
+import { RequestPayload }                                                                from '@acx-ui/types'
+import { batchApi, createFetchArgsBasedOnRbac, createHttpRequest, getApiVersionHeaders } from '@acx-ui/utils'
 
-import { combineAAAPolicyWithRbacData, convertRbacDataToAAAViewModelPolicyList } from './servicePolicy.utils'
+import { convertRbacDataToAAAViewModelPolicyList } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -730,32 +730,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
-      async queryFn (queryArgs, _queryApi, _extraOptions, baseQuery) {
-
-        const aaaPolicyFetchArgs = createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.getAAAPolicy,
-          rbacApiVersionKey: 'v1_1',
-          queryArgs
-        })
-
-        const aaaViewModelListFetchArgs = createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.queryAAAPolicyList,
-          rbacApiVersionKey: 'v1',
-          queryArgs: {
-            ...queryArgs,
-            payload: {
-              filters: { id: [ queryArgs.params?.policyId ] }
-            }
-          }
-        })
-
-        return aggregateQueryResponse<AAAPolicyType, TableResult<AAARbacViewModalType>>({
-          targetArgs: aaaPolicyFetchArgs,
-          otherArgs: aaaViewModelListFetchArgs,
-          enableAggreate: true,
-          baseQuery,
-          doAggregate: combineAAAPolicyWithRbacData
-        })
+      query: ({ params, enableRbac }) => {
+        return {
+          ...createHttpRequest(
+            AaaUrls.getAAAPolicy,
+            params,
+            getApiVersionHeaders('v1_1', enableRbac)
+          )
+        }
       },
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),

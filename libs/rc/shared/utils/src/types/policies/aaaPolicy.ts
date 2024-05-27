@@ -4,8 +4,7 @@ export interface AAAPolicyType{
   name: string,
   primary?: RadiusServer,
   secondary?: RadiusServer,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
-  networkIds?: string[]
+  type?: 'ACCOUNTING' | 'AUTHENTICATION'
 }
 
 export interface AAATacacsServer{

@@ -189,37 +189,6 @@ export function getApiVersionHeaders (version: ApiVersionKey, enabled = true) {
   return apiVersionHeaders[version]
 }
 
-interface AggregateQueryResponseProps<TargetReturnType, OtherReturnType> {
-  targetArgs: FetchArgs
-  otherArgs: FetchArgs
-  enableAggreate: boolean
-  // eslint-disable-next-line max-len
-  baseQuery: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>
-  doAggregate: (target: TargetReturnType, other: OtherReturnType) => TargetReturnType
-}
-
-
-export async function aggregateQueryResponse<TargetReturnType, OtherReturnType> (
-  props: AggregateQueryResponseProps<TargetReturnType, OtherReturnType>
-) {
-  const { targetArgs, otherArgs, enableAggreate, baseQuery, doAggregate } = props
-  const targetResult = await baseQuery(targetArgs)
-
-  if (targetResult.error) return { error: targetResult.error as FetchBaseQueryError }
-
-  if (!enableAggreate) return { data: targetResult.data as TargetReturnType }
-
-  const otherResult = await baseQuery(otherArgs)
-
-  if (otherResult.error) return { error: otherResult.error as FetchBaseQueryError }
-
-  const otherResultData = otherResult.data as OtherReturnType
-
-  return {
-    data: doAggregate(targetResult.data as TargetReturnType, otherResultData)
-  }
-}
-
 interface CreateFetchArgsBasedOnRbacProps {
   apiInfo: ApiInfo
   rbacApiInfo?: ApiInfo
