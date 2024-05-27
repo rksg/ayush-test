@@ -14,7 +14,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { render, screen, mockServer, waitFor } from '@acx-ui/test-utils'
-import { UseQueryResult }                      from '@acx-ui/types'
+import { SwitchScopes, UseQueryResult }        from '@acx-ui/types'
+import { getUserProfile, setUserProfile }      from '@acx-ui/user'
 
 import { switchFirmwareVenue } from '../__tests__/fixtures'
 
@@ -284,5 +285,53 @@ describe('SwitchPageHeader', () => {
 
     await userEvent.click(await screen.findByText('More Actions'))
     expect(await screen.findAllByRole('menuitem')).toHaveLength(5)
+  })
+
+  describe('should render correctly when abac is enabled', () => {
+    it('has permission', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ, SwitchScopes.UPDATE]
+      })
+
+      render(<Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchPageHeader />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
+
+      expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+      expect(await screen.findByTestId('switch-status')).toBeVisible()
+
+      await userEvent.click(await screen.findByText('More Actions'))
+      expect(await screen.findAllByRole('menuitem')).toHaveLength(3)
+    })
+
+    it('has no permission', async () => {
+      setUserProfile({
+        ...getUserProfile(),
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [SwitchScopes.READ]
+      })
+
+      render(<Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchPageHeader />
+        </SwitchDetailsContext.Provider>
+      </Provider>, { route: { params } })
+
+      expect(await screen.findByText(/Switch - FEK3230S0C5/)).toBeVisible()
+      expect(await screen.findByTestId('switch-status')).toBeVisible()
+      expect(screen.queryByText('More Actions')).toBeNull()
+    })
   })
 })

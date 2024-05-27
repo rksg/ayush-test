@@ -18,23 +18,23 @@ import GenericError from '../../GenericError'
 import * as UI      from '../styledComponents'
 
 
-export type PillData = { success: number, total: number }
+export type PillData = { success: number, total: number, length?: number }
 
 export const transformTSResponse = (
   { data, time }: KPITimeseriesResponse,
   window: { startDate: string, endDate: string }
 ) : PillData => {
-  const [success, total] = data
+  const filteredData = data
     .filter((_, index) =>
       moment(time[index]).isBetween(
         moment(window.startDate), moment(window.endDate), undefined, '[]'
       )
     )
-    .reduce(([success, total], datum) => (
-      datum && datum.length && (datum[0] !== null && datum[1] !== null )
-        ? [success + datum[0], total + datum[1]] : [success, total]
-    ), [0, 0])
-  return { success, total }
+  const [success, total] = filteredData.reduce(([success, total], datum) => (
+    datum && datum.length && (datum[0] !== null && datum[1] !== null )
+      ? [success + datum[0], total + datum[1]] : [success, total]
+  ), [0, 0])
+  return { success, total, length: filteredData.length }
 }
 
 export const tranformHistResponse = (
@@ -67,15 +67,17 @@ type PillQueryProps = {
 }
 
 export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryProps) => {
-  const { histogram } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
-  const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow, kpi }, {
+  const { histogram, enableSwitchFirmwareFilter } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
+  const histogramQuery = healthApi.useKpiHistogramQuery({ ...filters, ...timeWindow,
+    kpi, enableSwitchFirmwareFilter }, {
     skip: !Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
       data: data ? tranformHistResponse({ ...data!, kpi, threshold }) : { success: 0, total: 0 }
     })
   })
-  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters, kpi }, {
+  const timeseriesQuery = healthApi.useKpiTimeseriesQuery({ ...filters,
+    kpi, enableSwitchFirmwareFilter }, {
     skip: Boolean(histogram),
     selectFromResult: ({ data, ...rest }) => ({
       ...rest,
@@ -84,10 +86,10 @@ export const usePillQuery = ({ kpi, filters, timeWindow, threshold }: PillQueryP
   })
   const queryResults = histogram ? histogramQuery : timeseriesQuery
 
-  const { success, total } = queryResults.data as PillData
+  const { success, total, length } = queryResults.data as PillData
   const percent = total > 0 ? (success / total) : 0
 
-  return { queryResults, percent }
+  return { queryResults, percent, length }
 }
 
 function HealthPill ({ filters, kpi, timeWindow, threshold }: {
@@ -101,12 +103,14 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const { queryResults, percent } = usePillQuery({
     kpi, filters, timeWindow: { startDate, endDate }, threshold
   })
-  const { success, total } = queryResults.data as PillData
+  const { success, total, length } = queryResults.data as PillData
 
   const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
   const countFormat = formatter('countFormat')
   const translatedDesc = description
-    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total) })
+    ? $t(description, { successCount: countFormat(success), totalCount: countFormat(total),
+      avgSuccessCount: countFormat(Math.ceil(success/(length || 1))),
+      avgTotalCount: countFormat(Math.ceil(total/(length || 1))) })
     : ''
   const translatedThresholdDesc = []
   if (thresholdDesc.length) {

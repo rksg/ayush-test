@@ -25,15 +25,14 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const form = Form.useFormInstance()
   const id = Form.useWatch<string>('id', form) || form.getFieldValue('id')
   // eslint-disable-next-line max-len
-  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>(
-    useGetVLANPoolPolicyViewModelListQuery,
-    useGetEnhancedVlanPoolPolicyTemplateListQuery,
-    false,
-    {
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    payload: {
       fields: ['name', 'id'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  )
+  })
 
   const nameValidator = async (_rule: unknown, value: string) => {
     const policyList = instanceListResult?.data!

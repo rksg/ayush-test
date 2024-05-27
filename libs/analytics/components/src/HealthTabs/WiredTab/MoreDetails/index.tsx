@@ -1,66 +1,90 @@
 import { Typography } from 'antd'
 import { useIntl }    from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer, GridCol, GridRow } from '@acx-ui/components'
+import { AnalyticsFilter }          from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import { WidgetType }            from './config'
+import { MoreDetailsPieChart }   from './HealthPieChart'
+import { ImpactedSwitchesTable } from './ImpactedSwitchesTable'
+import * as UI                   from './styledComponents'
 
-interface AddMoreDetailsDrawerProps {
+export interface MoreDetailsDrawerProps {
   visible: boolean
+  widget: WidgetType
   setVisible: (visible: boolean) => void
-  widget: String
-  setWidget: (widget: String) => void
+  setWidget: (widget: WidgetType | null) => void
+  filters: AnalyticsFilter
 }
 
-export const AddMoreDetailsDrawer = (props: AddMoreDetailsDrawerProps) => {
+export type MoreDetailsWidgetsMapping = {
+  type: WidgetType
+  title: string
+  pieTitle: string
+}[]
 
-  const { visible, setVisible, widget, setWidget } = props
+export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
+
+  const { visible, setVisible, widget, setWidget, filters } = props
   const { $t } = useIntl()
   const onClose = () => {
     setVisible(false)
-    setWidget('')
+    setWidget(null)
   }
-  const mapping = [
+
+  const mapping: MoreDetailsWidgetsMapping = [
     {
-      type: 'dhcp',
-      title: $t({ defaultMessage: 'DHCP Failure' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
+      type: 'dhcpFailure',
+      title: $t({ defaultMessage: 'DHCP' }),
+      pieTitle: 'DHCP Failure'
     },
     {
       type: 'congestion',
-      title: $t({ defaultMessage: 'Congestion' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
+      title: $t({ defaultMessage: 'Uplink Usage' }),
+      pieTitle: 'Congested'
     },
     {
       type: 'portStorm',
       title: $t({ defaultMessage: 'Port Storm' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Clients' })
+      pieTitle: 'Storm'
     },
     {
-      type: 'cpu',
+      type: 'cpuUsage',
       title: $t({ defaultMessage: 'High CPU' }),
-      pieTitle: $t({ defaultMessage: 'Top Impacted Switches' }),
-      tableTitle: $t({ defaultMessage: 'Top Impacted Switches' })
+      pieTitle: 'High CPU'
     }
   ]
-  const matchingMapping = mapping.find(item => item.type === widget)
+  const activeWidgetMapping = mapping.filter(item => item.type === widget)[0]
+
   return (
     <Drawer
       title={
-        <UI.Title>
+        <UI.DrawerTitle>
           <Typography.Title level={2}>
-            {matchingMapping?.title}
+            {activeWidgetMapping?.title}
           </Typography.Title>
-        </UI.Title>
+        </UI.DrawerTitle>
       }
-      width={1082}
+      width={'80%'}
       visible={visible}
       onClose={onClose}
-      style={{ marginTop: '85px' }}
-      children={null} // piechart, table TBD
+      children={
+        <GridRow style={{ paddingTop: 20 }}>
+          <GridCol col={{ span: 9 }} key={`pie-${activeWidgetMapping?.type}`}>
+            <MoreDetailsPieChart
+              filters={filters}
+              queryType={activeWidgetMapping?.type}
+              title={activeWidgetMapping?.pieTitle}/>
+          </GridCol>
+          {
+            (activeWidgetMapping?.type === 'dhcpFailure' ||
+              activeWidgetMapping?.type === 'cpuUsage') &&
+            <GridCol col={{ span: 15 }} key={`table-${activeWidgetMapping?.type}`}>
+              <ImpactedSwitchesTable filters={filters} queryType={activeWidgetMapping?.type}/>
+            </GridCol>
+          }
+        </GridRow>
+      }
     />
   )
 }

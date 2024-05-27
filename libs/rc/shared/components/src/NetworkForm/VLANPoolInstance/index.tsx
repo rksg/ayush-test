@@ -21,12 +21,11 @@ const VLANPoolInstance = () => {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
   // eslint-disable-next-line max-len
-  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>(
-    useGetVLANPoolPolicyViewModelListQuery,
-    useGetEnhancedVlanPoolPolicyTemplateListQuery,
-    false,
-    listPayload
-  )
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    payload: listPayload
+  })
 
   const [ vlanPoolList, setVlanPoolList ]= useState<DefaultOptionType[]>()
 
