@@ -3,13 +3,13 @@ import { useContext, useEffect } from 'react'
 import {
   Form,
   Switch,
-  Space,
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Subtitle, Tooltip }      from '@acx-ui/components'
-import { NetworkTypeEnum }        from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip } from '@acx-ui/components'
+import { NetworkTypeEnum }   from '@acx-ui/rc/utils'
 
 import { AAAInstance }    from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
