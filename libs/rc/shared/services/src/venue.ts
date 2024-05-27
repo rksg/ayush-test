@@ -155,7 +155,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         const venueListQuery = await fetchWithBQ(venueListReq)
         const venueList = venueListQuery.data as TableResult<Venue>
-        const venueIds = venueList?.data?.map(v => v.id) || []
+        const venuesData = venueList.data as Venue[]
+        const venueIds = venuesData?.filter(v => {
+          if (v.aggregatedApStatus) {
+            return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
+          }
+          return false
+        }).map(v => v.id) || []
+
         const venueIdsToIncompatible:{ [key:string]: number } = {}
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

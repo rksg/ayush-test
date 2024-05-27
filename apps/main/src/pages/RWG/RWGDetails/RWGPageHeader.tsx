@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react'
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, cssStr, PageHeader }       from '@acx-ui/components'
-import { useGetRwgQuery }                   from '@acx-ui/rc/services'
-import { getRwgStatus, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Button, cssStr, PageHeader }                       from '@acx-ui/components'
+import { useGetRwgQuery }                                   from '@acx-ui/rc/services'
+import { getRwgStatus, RWG, RWGClusterNode, RWGStatusEnum } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
@@ -22,19 +22,35 @@ import RWGTabs from './RWGTabs'
 function RWGPageHeader () {
   const { $t } = useIntl()
   const [gatewayStatus, setGatewayStatus] = useState<RWGStatusEnum>()
-  const { tenantId, gatewayId, venueId } = useParams()
+  const [gatewayData, setGatewayData] = useState<RWG>()
+  const { tenantId, gatewayId, venueId, clusterNodeId } = useParams()
 
-  const { data: gatewayData } = useGetRwgQuery({ params: { tenantId, gatewayId, venueId } })
+  const { data: _gatewayData } = useGetRwgQuery({ params:
+    { tenantId, gatewayId, venueId } })
 
   useEffect(() => {
-    if (gatewayData) {
-      setGatewayStatus(gatewayData?.status)
+    if (clusterNodeId && _gatewayData?.clusterNodes && _gatewayData?.clusterNodes?.length) {
+      const _gateway: RWGClusterNode =
+        _gatewayData?.clusterNodes?.filter(gateway => gateway.id === clusterNodeId)[0]
+      const rwg: RWG = {
+        name: _gateway.name,
+        status: _gatewayData.status,
+        venueId: _gatewayData.venueId,
+        venueName: _gatewayData.venueName,
+        hostname: _gatewayData.hostname,
+        apiKey: _gatewayData.apiKey,
+        rwgId: _gatewayData.rwgId,
+        isCluster: false
+      }
+      setGatewayData(rwg)
+      setGatewayStatus(rwg.status)
+    } else {
+      setGatewayData(_gatewayData)
     }
-  })
+  }, [_gatewayData])
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = useTenantLink(`/ruckus-wan-gateway/${gatewayId}`)
   const rwgListBasePath = useTenantLink('/ruckus-wan-gateway/')
   const rwgActions = useRwgActions()
 
@@ -49,7 +65,7 @@ function RWGPageHeader () {
 
   return (
     <PageHeader
-      title={gatewayData?.name || ''}
+      title={gatewayData?.name}
       titleExtra={
         <span>
           <Badge
@@ -67,18 +83,13 @@ function RWGPageHeader () {
           onClick={() =>
             rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
           }
+          disabled={!!clusterNodeId}
         >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
         <Button
           type='primary'
           onClick={() =>
-            navigate({
-              ...basePath,
-              pathname: `${basePath.pathname}/edit`
-            }, {
-              state: {
-                from: location
-              }
-            })
+            window.open('https://' + (gatewayData?.hostname)?.toString(),
+              '_blank')
           }
         >{$t({ defaultMessage: 'Configure' })}</Button>])
       ]}
