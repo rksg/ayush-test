@@ -38,14 +38,18 @@ export function DHCPForm (props: DHCPFormProps) {
   const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
-  const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery,
-    !editMode, undefined, undefined, undefined, enableRbac
-  )
+  const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    skip: !editMode,
+    enableRbac
+  })
 
-  const [ saveOrUpdateDHCP, { isLoading: isFormSubmitting } ] = useConfigTemplateMutationFnSwitcher(
-    useSaveOrUpdateDHCPMutation, useCreateOrUpdateDhcpTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [ saveOrUpdateDHCP, { isLoading: isFormSubmitting } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useSaveOrUpdateDHCPMutation,
+    useTemplateMutationFn: useCreateOrUpdateDhcpTemplateMutation
+  })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DHCP)

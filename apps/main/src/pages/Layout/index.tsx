@@ -28,7 +28,7 @@ import { MSPUtils }                                                             
 import { CloudMessageBanner }                                                              from '@acx-ui/rc/components'
 import { useGetTenantDetailsQuery }                                                        from '@acx-ui/rc/services'
 import { useTableQuery, dpskAdminRoutePathKeeper }                                         from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink }                from '@acx-ui/react-router-dom'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink, useLocation }   from '@acx-ui/react-router-dom'
 import { useParams }                                                                       from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                                       from '@acx-ui/types'
 import { hasRoles, useUserProfileContext }                                                 from '@acx-ui/user'
@@ -43,6 +43,7 @@ function Layout () {
   const navigate = useNavigate()
   const tenantId = useTenantId()
   const params = useParams()
+  const location = useLocation()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
@@ -80,6 +81,7 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
     getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
@@ -89,6 +91,7 @@ function Layout () {
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
+  const reportsAdminBasePath = useTenantLink('/dataStudio')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
       (params['*'] === 'userprofile')
@@ -119,6 +122,21 @@ function Layout () {
         pathname: `${dpskBasePath.pathname}`
       })
   }, [isDPSKAdmin, params['*']])
+
+  useEffect(() => {
+    if(isReportsAdmin){
+      const currentPath = location.pathname
+
+      if(!currentPath.includes('/dataStudio') &&
+         !currentPath.includes('/reports') &&
+         params['*'] !== 'userprofile') {
+        navigate({
+          ...reportsAdminBasePath,
+          pathname: `${reportsAdminBasePath.pathname}`
+        })
+      }
+    }
+  }, [isReportsAdmin, location.pathname, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
@@ -174,7 +192,7 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        {!(isGuestManager || isDPSKAdmin) &&
+        {!(isGuestManager || isDPSKAdmin || isReportsAdmin) &&
           <>
             <AlarmsButton/>
             <ActivityButton/>

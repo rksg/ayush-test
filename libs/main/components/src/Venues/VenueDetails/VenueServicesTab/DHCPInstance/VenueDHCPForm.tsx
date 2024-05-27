@@ -57,14 +57,17 @@ const VenueDHCPForm = (props: {
   // eslint-disable-next-line max-len
   const venueServicesTabPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/venue-details/services`)
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery,
-    false, undefined, undefined, params, useIsSplitOn(Features.SERVICE_POLICY_RBAC)
-  )
-  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
-    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery,
-    false, undefined, undefined, undefined, useIsSplitOn(Features.SERVICE_POLICY_RBAC)
-  )
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+    useQueryFn: useVenueDHCPProfileQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
+    extraParams: params,
+    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  })
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery,
+    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  })
   const { data: apList } = useApListQuery({
     params,
     payload: {

@@ -96,12 +96,19 @@ export const PortalForm = (props: {
   )
   const formRef = useRef<StepsFormLegacyInstance<Portal>>()
   const [uploadURL] = useUploadURLMutation()
-  const { data,
-    isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<Portal|PortalSaveData|null>(
-      useGetPortalQuery, useGetPortalTemplateQuery, !editMode
-    )
-  const [ createPortal ] = useConfigTemplateMutationFnSwitcher(useCreatePortalMutation, useCreatePortalTemplateMutation)
-  const [ updatePortal ] = useConfigTemplateMutationFnSwitcher(useUpdatePortalMutation, useUpdatePortalTemplateMutation)
+  const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<Portal|PortalSaveData|null>({
+    useQueryFn: useGetPortalQuery,
+    useTemplateQueryFn: useGetPortalTemplateQuery,
+    skip: !editMode
+  })
+  const [ createPortal ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useCreatePortalMutation,
+    useTemplateMutationFn: useCreatePortalTemplateMutation
+  })
+  const [ updatePortal ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdatePortalMutation,
+    useTemplateMutationFn: useUpdatePortalTemplateMutation
+  })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.PORTAL)
   const pageTitle = useServicePageHeaderTitle(!!editMode, ServiceType.PORTAL)

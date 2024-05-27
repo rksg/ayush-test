@@ -32,18 +32,22 @@ export function DHCPDetail () {
   const params = useParams()
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
 
-  const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery,
-    false, undefined, undefined, undefined, useIsSplitOn(Features.SERVICE_POLICY_RBAC)
-  )
-  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
-    useVenuesListQuery, useGetVenuesTemplateListQuery, !data, {
+  const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  })
+  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
+    useQueryFn: useVenuesListQuery,
+    useTemplateQueryFn: useGetVenuesTemplateListQuery,
+    skip: !data,
+    payload: {
       fields: ['name', 'id'],
       filters: {
         id: data?.usage?.map((usage: DHCPUsage) => usage.venueId) || ['none']
       }
     }
-  )
+  })
 
   return (
     <>

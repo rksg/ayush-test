@@ -37,19 +37,18 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     state, dispatch
   } = useContext(RogueAPDetectionContext)
 
-  const { data: policyData } = useConfigTemplateQueryFnSwitcher(
-    useRoguePolicyQuery,
-    useGetRoguePolicyTemplateQuery,
-    !edit
-  )
+  const { data: policyData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
+    skip: !edit
+  })
 
   // eslint-disable-next-line max-len
-  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<EnhancedRoguePolicyType>>(
-    useEnhancedRoguePoliciesQuery,
-    useGetRoguePolicyTemplateListQuery,
-    false,
-    { page: 1, pageSize: 10000 }
-  )
+  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<EnhancedRoguePolicyType>>({
+    useQueryFn: useEnhancedRoguePoliciesQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
+    payload: { page: 1, pageSize: 10000 }
+  })
 
   const handlePolicyName = (policyName: string) => {
     dispatch({

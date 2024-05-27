@@ -190,9 +190,9 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/vlanPools/:policyId/venues',
     newApi: true
   },
-  getVlanPools: {
-    method: 'get',
-    url: '/templates/vlanPools',
+  getEnhancedVlanPools: {
+    method: 'post',
+    url: '/templates/enhancedVlanPoolProfiles/query',
     newApi: true
   },
   deleteSyslogPolicy: {

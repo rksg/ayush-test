@@ -46,10 +46,11 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
   const [selectedRows, setSelectedRows] = useState<MspEcWithVenue[]>([])
   const [totalCount, setTotalCount] = useState<number>(0)
 
-  function getSelectedKeys (mspEcs: MspEcWithVenue[], selected: MspEcWithVenue[]) {
-    const customerIds = selected.filter(ec => ec.children.some(venue => venue.selected))
-      .map(ec => ec.id)
-    return customerIds
+  function getSelectedKeys (selected: MspEcWithVenue[]) {
+    const customers = selected.filter(ec => ec.children.some(venue => venue.selected))
+    const venueIds = customers.flatMap(ec => ec.children).filter(venue => venue.selected)
+      .map(venue => venue.id)
+    return venueIds
   }
 
   const { data: customerList }
@@ -81,6 +82,10 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
 
   const getSelectedVenues = (selectedRows: MspEcWithVenue[]) => {
     const selVenueIds = selectedRows.filter(item => !item.isFirstLevel).map(venue => venue.id)
+    // If no change in selected venues was made, return unchanged selectedRows
+    if (selVenueIds.length === 0) {
+      return selectedRows
+    }
     const ecsWithSelVenues: MspEcWithVenue[] = customerList?.data.filter(ec =>
       ec.children.some(venue => selVenueIds.includes(venue.id))) ?? []
     return ecsWithSelVenues.map(ec => {
@@ -109,7 +114,7 @@ export const SelectCustomerDrawer = (props: SelectCustomerDrawerProps) => {
 
   useEffect(() => {
     if (customerList?.data) {
-      const selectKeys = getSelectedKeys(customerList?.data as MspEcWithVenue[], selected)
+      const selectKeys = getSelectedKeys(selected)
       setSelectedKeys(selectKeys)
       setSelectedRows(selected)
       setTotalCount(selected.length)

@@ -15,25 +15,25 @@ export default function useDHCPInfo () {
   const { isTemplate } = useConfigTemplate()
 
   const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery,
-    false, undefined, undefined, params, enableRbac
-  )
+  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+    useQueryFn: useVenueDHCPProfileQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
+    extraParams: params,
+    enableRbac
+  })
 
   // eslint-disable-next-line max-len
   const { data: apList } = useApListQuery({ params, payload: defaultApPayload }, { skip: isTemplate })
 
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery,
-    useGetDhcpTemplateQuery,
-    !venueDHCPProfile?.serviceProfileId,
-    undefined,
-    { serviceId: venueDHCPProfile?.serviceProfileId },
-    undefined,
+  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    skip: !venueDHCPProfile?.serviceProfileId,
+    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId },
     enableRbac
-  )
+  })
 
   let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
   if(venueDHCPProfile?.dhcpServiceAps){

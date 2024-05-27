@@ -31,18 +31,22 @@ export default function VenuePoolTable (
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
   // eslint-disable-next-line max-len
-  const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>(
-    useVenueDHCPPoolsQuery, useGetVenueTemplateDhcpPoolsQuery,
-    false,
-    { venueDHCPProfile, dhcpProfile }, undefined, undefined, enableRbac
-  )
+  const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>({
+    useQueryFn: useVenueDHCPPoolsQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpPoolsQuery,
+    skip: false,
+    payload: { venueDHCPProfile, dhcpProfile },
+    enableRbac
+  })
 
-  const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher(
-    useActivateDHCPPoolMutation, useActivateVenueTemplateDhcpPoolMutation
-  )
-  const [deactivateDHCPPool] = useConfigTemplateMutationFnSwitcher(
-    useDeactivateDHCPPoolMutation, useDeactivateVenueTemplateDhcpPoolMutation
-  )
+  const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useActivateDHCPPoolMutation,
+    useTemplateMutationFn: useActivateVenueTemplateDhcpPoolMutation
+  })
+  const [deactivateDHCPPool] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeactivateDHCPPoolMutation,
+    useTemplateMutationFn: useDeactivateVenueTemplateDhcpPoolMutation
+  })
 
   const setActivePool = async (dhcppoolId: string, dhcpPoolName: string, active: boolean)=>{
     const { id, serviceProfileId, enabled, ...rest } = venueDHCPProfile || {}

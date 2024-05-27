@@ -282,7 +282,7 @@ export function SelfSignInForm () {
         <Form.Item
           label={<>
             {$t({ defaultMessage: 'Here is some information about' })}&nbsp;&nbsp;
-            <a href='https://support.ruckuswireless.com/ruckus-cloud-privacy-policy'
+            <a href='https://www.commscope.com/about-us/privacy-statement/'
               target='_blank'
               rel='noreferrer'>
               {$t({ defaultMessage: 'Ruckus Networks’ privacy policy' })}</a>

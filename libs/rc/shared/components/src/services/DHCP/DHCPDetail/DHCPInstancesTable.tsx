@@ -17,10 +17,11 @@ export default function DHCPInstancesTable (){
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery,
-    false, undefined, undefined, undefined, useIsSplitOn(Features.SERVICE_POLICY_RBAC)
-  )
+  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  })
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
