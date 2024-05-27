@@ -65,9 +65,15 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
   const { data: userProfile } = useUserProfileContext()
   const isShowEdgePassword = userProfile?.support || userProfile?.var || userProfile?.dogfood
   const { data: passwordDetail } = useGetEdgePasswordDetailQuery(
-    { params: { serialNumber } },
     {
-      skip: !isShowEdgePassword || !isEdgeReady
+      params: {
+        venueId: currentEdge?.venueId,
+        edgeClusterId: currentEdge?.clusterId,
+        serialNumber
+      }
+    },
+    {
+      skip: !isShowEdgePassword || !isEdgeReady || !currentEdge
     }
   )
 

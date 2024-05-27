@@ -73,19 +73,24 @@ export function GeneralSettingForm () {
   const { editContextData, setEditContextData, previousPath } = useContext(VenueEditContext)
 
   const formRef = useRef<StepsFormLegacyInstance<VenueSwitchConfiguration>>()
-  const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
-    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
-    undefined, undefined, isSwitchRbacEnabled
-  )
+  const venueSwitchSetting = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>({
+    useQueryFn: useVenueSwitchSettingQuery,
+    useTemplateQueryFn: useGetVenueTemplateSwitchSettingQuery,
+    enableRbac: isSwitchRbacEnabled
+  })
 
-  const configProfiles = useConfigTemplateQueryFnSwitcher<ConfigurationProfile[]>(
-    useConfigProfilesQuery, useGetSwitchConfigProfileTemplatesQuery, isProfileDisabled, {}
-  )
+  const configProfiles = useConfigTemplateQueryFnSwitcher<ConfigurationProfile[]>({
+    useQueryFn: useConfigProfilesQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplatesQuery,
+    skip: isProfileDisabled,
+    payload: {}
+  })
 
-  const [updateVenueSwitchSetting, {
-    isLoading: isUpdatingVenueSwitchSetting }] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueSwitchSettingMutation, useUpdateVenueTemplateSwitchSettingMutation
-  )
+  // eslint-disable-next-line max-len
+  const [updateVenueSwitchSetting, { isLoading: isUpdatingVenueSwitchSetting }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueSwitchSettingMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSwitchSettingMutation
+  })
 
   const [formState, setFormState] = useState<FormState>(defaultState)
   const [formData, setFormData] = useState<VenueSwitchConfiguration>(defaultFormData)

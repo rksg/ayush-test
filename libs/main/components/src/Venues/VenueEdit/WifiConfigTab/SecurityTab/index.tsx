@@ -109,26 +109,26 @@ export function SecurityTab () {
       useUpdateVenueTemplateDoSProtectionMutation
     )
 
-  const [updateVenueRogueAp, {
-    isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueRogueApMutation,
-    useUpdateVenueRogueApTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [updateVenueRogueAp, { isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueRogueApMutation,
+    useTemplateMutationFn: useUpdateVenueRogueApTemplateMutation
+  })
 
   const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
     useGetDenialOfServiceProtectionQuery,
     useGetVenueTemplateDoSProtectionQuery
   )
 
-  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
-    useGetVenueRogueApQuery,
-    useGetVenueRogueApTemplateQuery,
+  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVenueRogueApQuery,
+    useTemplateQueryFn: useGetVenueRogueApTemplateQuery,
     false,
     null,
     undefined,
     null,
     enableRbac
-  )
+  })
 
   // eslint-disable-next-line max-len
   const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {

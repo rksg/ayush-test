@@ -70,6 +70,7 @@ type RecommendationConfig = {
   partialOptimizationAppliedReasonText?: MessageDescriptor
   partialOptimizedTradeoffText?: MessageDescriptor
   appliedActionText?: MessageDescriptor
+  continuous: boolean
 }
 
 const categories = {
@@ -96,7 +97,8 @@ const bandbalancingEnable: RecommendationConfig = {
     label: defineMessage({ defaultMessage: 'Percentage of Clients on 2.4 GHz' }),
     format: formatter('percentFormat'),
     deltaSign: '-'
-  }]
+  }],
+  continuous: false
 }
 
 
@@ -204,7 +206,8 @@ const probeflexConfig: RecommendationConfig = {
       deltaSign: 'none',
       filter: (trail: StatusTrail ) => trail.some((t) => t.status === 'applied' )
     }
-  ]
+  ],
+  continuous: true
 }
 
 export const codes = {
@@ -219,7 +222,8 @@ export const codes = {
       : defineMessage({ defaultMessage: '2.4 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this <VenueSingular></VenueSingular>. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
-    kpis: []
+    kpis: [],
+    continuous: false
   },
   'c-bgscan5g-enable': {
     category: categories['Wi-Fi Client Experience'],
@@ -232,7 +236,8 @@ export const codes = {
       : defineMessage({ defaultMessage: '5 GHz radio setting for {scope} has "Auto Channel Selection" set as "{channelSelectionMode}", however "Background Scan" feature is disabled for this <VenueSingular></VenueSingular>. To effectively use "{channelSelectionMode}" as channel selection algorithm, it recommended to enable "Background Scan" feature with default scan timer as 20 seconds.' }),
     reasonText: defineMessage({ defaultMessage: 'Auto Channel Selection feature works well only when RUCKUS APs can perform background scan of the available channels in the network. This helps in building the RF neighborhood. APs can then select an optimum channel for their operation. Hence it is recommended to enable Background Scan feature.' }),
     tradeoffText: defineMessage({ defaultMessage: 'Enabling background scan feature would cause RUCKUS Radio to send additional beacons on the shared wireless medium. However the size of these beacons are very small and would cause negligible effect on the network capacity and would outweigh the benefits of using the optimized and non-interfering radio channels.' }),
-    kpis: []
+    kpis: [],
+    continuous: false
   },
   'c-bgscan24g-timer': {
     category: categories['Wi-Fi Client Experience'],
@@ -259,7 +264,8 @@ export const codes = {
       tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: false
   },
   'c-bgscan5g-timer': {
     category: categories['Wi-Fi Client Experience'],
@@ -286,7 +292,8 @@ export const codes = {
       tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: false
   },
   'c-bgscan6g-timer': {
     category: categories['Wi-Fi Client Experience'],
@@ -313,7 +320,8 @@ export const codes = {
       tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: false
   },
   'c-dfschannels-enable': {
     category: categories['Wi-Fi Client Experience'],
@@ -330,7 +338,8 @@ export const codes = {
       tooltipContent: defineMessage({ defaultMessage: 'Interference of 0-20% is minimal, 20-50% is mild and 50-100% is severe.' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: false
   },
   'c-dfschannels-disable': {
     category: categories['Wi-Fi Client Experience'],
@@ -353,7 +362,8 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Max DFS Events' }),
       format: formatter('countFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: false
   },
   'c-bandbalancing-enable': {
     category: categories['Wi-Fi Client Experience'],
@@ -381,7 +391,8 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Percentage of Clients on 2.4 GHz' }),
       format: formatter('percentFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: false
   },
   'c-aclb-enable': {
     category: categories['Wi-Fi Client Experience'],
@@ -402,7 +413,8 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Max AP Unique Clients' }),
       format: formatter('countFormat'),
       deltaSign: 'none'
-    }]
+    }],
+    continuous: false
   },
   'i-zonefirmware-upgrade': {
     category: categories.Infrastructure,
@@ -439,7 +451,8 @@ export const codes = {
       format: formatter('ratioFormat'),
       tooltipContent: defineMessage({ defaultMessage: 'Numbers could be delayed by up to 1 hour.' }),
       showAps: true
-    }]
+    }],
+    continuous: false
   },
   'c-txpower-same': {
     category: categories['Wi-Fi Client Experience'],
@@ -463,7 +476,8 @@ export const codes = {
         label: defineMessage({ defaultMessage: 'Session time on 2.4 GHz' }),
         format: formatter('percentFormat'),
         deltaSign: '-'
-      }]
+      }],
+    continuous: false
   },
   'c-crrm-channel24g-auto': {
     category: categories['AI-Driven Cloud RRM'],
@@ -489,7 +503,8 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: true
   },
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
@@ -515,7 +530,8 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: true
   },
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
@@ -541,41 +557,48 @@ export const codes = {
       label: defineMessage({ defaultMessage: 'Number of Interfering Links' }),
       format: formatter('countFormat'),
       deltaSign: '-'
-    }]
+    }],
+    continuous: true
   },
   'unqualifiedZone': {
     category: crrmStates[CRRMStates.unqualifiedZone].label,
     summary: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'No RRM recommendation as zone is unqualified' })
       : defineMessage({ defaultMessage: 'No RRM recommendation as <venueSingular></venueSingular> is unqualified' }),
-    priority: priorities.low
+    priority: priorities.low,
+    continuous: true
   },
   'noAps': {
     category: crrmStates[CRRMStates.noAps].label,
     summary: get('IS_MLISA_SA')
       ? defineMessage({ defaultMessage: 'No RRM recommendation as zone has no APs' })
       : defineMessage({ defaultMessage: 'No RRM recommendation as <venueSingular></venueSingular> has no APs' }),
-    priority: priorities.low
+    priority: priorities.low,
+    continuous: true
   },
   'insufficientLicenses': {
     category: crrmStates[CRRMStates.insufficientLicenses].label,
     summary: defineMessage({ defaultMessage: 'No RRM recommendation due to incomplete license compliance' }),
-    priority: priorities.low
+    priority: priorities.low,
+    continuous: true
   },
   'verificationError': {
     category: crrmStates[CRRMStates.verificationError].label,
     summary: defineMessage({ defaultMessage: 'No RRM recommendation due to verification error' }),
-    priority: priorities.low
+    priority: priorities.low,
+    continuous: true
   },
   'verified': {
     category: crrmStates[CRRMStates.verified].label,
     summary: defineMessage({ defaultMessage: 'AI verified and in optimal state' }),
-    priority: priorities.low
+    priority: priorities.low,
+    continuous: true
   },
   'unknown': {
     category: crrmStates[CRRMStates.unknown].label,
     summary: defineMessage({ defaultMessage: 'Unknown' }),
-    priority: priorities.low
+    priority: priorities.low,
+    continuous: true
   },
   'c-probeflex-24g': {
     category: categories['Wi-Fi Client Experience'],

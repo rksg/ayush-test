@@ -60,13 +60,15 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     defaultPolicyId: ''
   })
 
-  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useAddRoguePolicyMutation, useAddRoguePolicyTemplateMutation
-  )
+  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRoguePolicyMutation,
+    useTemplateMutationFn: useAddRoguePolicyTemplateMutation
+  })
 
-  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateRoguePolicyMutation, useUpdateRoguePolicyTemplateMutation
-  )
+  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateRoguePolicyMutation,
+    useTemplateMutationFn: useUpdateRoguePolicyTemplateMutation
+  })
 
   // eslint-disable-next-line max-len
   const transformPayload = (state: RogueAPDetectionContextType, edit: boolean) : RoguePolicyRequest => {

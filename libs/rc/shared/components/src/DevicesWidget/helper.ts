@@ -9,7 +9,10 @@ import {
   EdgeStatusSeverityEnum,
   VenueDetailHeader,
   EdgeStatusSeverityStatistic,
-  transformSwitchStatus
+  transformSwitchStatus,
+  RWGStatusEnum,
+  getRwgStatus,
+  RWGRow
 } from '@acx-ui/rc/utils'
 
 import {
@@ -357,4 +360,55 @@ export const getEdgeStackedBarChartData =
     category: '',
     series: finalSeries.sort(sortByName)
   }]
+}
+
+export const getRwgDonutChartData =
+(rwgs: RWGRow[]): DonutChartData[] => {
+  const chartData: DonutChartData[] = []
+
+  const rwgMap = new Map<RWGStatusEnum, number>(rwgs?.map(({ status }) =>
+    [status, 0]))
+
+  for (let { status } of rwgs as RWGRow[]) {
+    if (rwgMap) {
+      const value: number = rwgMap.get(status) as number
+      rwgMap.set(status, value + 1)
+    }
+  }
+
+  Array.from(rwgMap).forEach(([status, value]) => {
+    const { name, color } = getRwgStatus(status)
+    chartData.push({ name, value, color: cssStr(color) })
+  })
+
+  return chartData
+}
+
+
+
+export const getRwgStackedBarChartData =
+(rwgList: RWGRow[]): { chartData: ChartData[], stackedColors: string[] } => {
+  let map = new Map(rwgList?.map(({ status }) =>
+    [status, { name: getRwgStatus(status).name, value: 0 }]))
+  for (let { status } of rwgList as RWGRow[]) {
+    if (map && map.get(status)) {
+      (map.get(status) as { name: string; value: number }).value++
+    }
+  }
+
+  const result = Array.from(map.values())
+
+  let colors: string[] = []
+
+  Array.from(map.keys()).map(status => {
+    colors.push(cssStr(getRwgStatus(status).color))
+  })
+
+  return {
+    chartData: [{
+      category: '',
+      series: result
+    }],
+    stackedColors: colors
+  }
 }

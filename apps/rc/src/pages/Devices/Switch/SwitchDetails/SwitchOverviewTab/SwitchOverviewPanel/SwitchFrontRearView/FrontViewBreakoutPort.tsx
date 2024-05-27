@@ -4,6 +4,8 @@ import { useIntl } from 'react-intl'
 
 import { Tooltip }                            from '@acx-ui/components'
 import { SwitchPortStatus, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { SwitchScopes }                       from '@acx-ui/types'
+import { hasPermission }                      from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -71,7 +73,12 @@ export function FrontViewBreakoutPort (props:{
     return 'gray'
   }
 
+  const editable = hasPermission({ scopes: [SwitchScopes.UPDATE] })
+
   const onPortClick = () => {
+    if (!editable) {
+      return
+    }
     setSelectedPorts([])
     setBreakoutPorts(breakOutPorts)
     setEditLagModalVisible(false)
@@ -85,7 +92,7 @@ export function FrontViewBreakoutPort (props:{
     { labelPosition === 'top' && <UI.PortLabel>{labelText}</UI.PortLabel> }
     <div>
 
-      <UI.Port portColor={getPortColorEnum()} editable={true}>
+      <UI.Port portColor={getPortColorEnum()} editable={editable}>
         <UI.WithIconPortContainer
           data-testid='BreakoutPort'
           onClick={onPortClick}>

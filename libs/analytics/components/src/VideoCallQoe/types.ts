@@ -3,6 +3,7 @@ import { TimeStamp } from '@acx-ui/types'
 
 export type Meeting = {
   id: number
+  testId: number
   name: string
   zoomMeetingId: number
   status: string

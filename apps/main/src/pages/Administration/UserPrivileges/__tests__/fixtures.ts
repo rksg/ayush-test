@@ -360,7 +360,8 @@ export const fakedPrivilegeGroupList =
       roleName: 'new wi-fi custom role',
       type: 'Custom',
       delegation: false,
-      allCustomers: false
+      allCustomers: false,
+      memberCount: 0
     },
     {
       // id: '00bb7b958a5544898cd0b938fa800a6b',

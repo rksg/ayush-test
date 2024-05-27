@@ -14,7 +14,8 @@ const RogueAPDetectionDetailContent = () => {
   const { $t } = useIntl()
 
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher(
-    useRoguePolicyQuery, useGetRoguePolicyTemplateQuery,
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
     false,
     null,
     undefined,

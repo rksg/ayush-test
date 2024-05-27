@@ -44,6 +44,7 @@ const getTooltipText = function (value: string, customDisplayValue?: string | Re
 }
 
 function useColumns () {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const intl = useIntl()
   const { getSwitchNextScheduleTplTooltip,
     getSwitchFirmwareList,
@@ -52,14 +53,17 @@ function useColumns () {
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
       title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      key: 'name',
-      dataIndex: 'name',
+      key: isSwitchRbacEnabled ? 'venueName' : 'name',
+      dataIndex: isSwitchRbacEnabled ? 'venueName' : 'name',
       width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
+        const venueName = isSwitchRbacEnabled ? row.venueName : row.name
         const customDisplayValue =
-          <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} > {row.name}</div >
-        return getTooltipText(row.name, customDisplayValue)
+          <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} >
+            {venueName}
+          </div >
+        return getTooltipText(venueName, customDisplayValue)
 
       }
     }, {
