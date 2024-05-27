@@ -28,12 +28,6 @@ export enum AAAPurposeEnum{
   AUTHORIZATION = 'Authorization',
   ACCOUNTING = 'Accounting RADIUS Server'
 }
-export interface AAAPolicyNetwork {
-  networkId: string,
-  networkName: string,
-  networkType: string,
-  guestNetworkType?: string
-}
 export interface AAARbacViewModalType {
   id?: string,
   name: string,

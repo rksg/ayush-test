@@ -26,17 +26,6 @@ export interface RequestPayload <Payload = unknown> extends Record<string,unknow
   oldPayload?: Payload
 }
 
-export interface QueryViewModelPayload {
-  filters?: Record<string, string[]>
-  fields?: string[]
-  page?: number
-  pageSize?: number
-  searchString?: string
-  searchTargetFields?: string[]
-  sortField?: string
-  sortOrder?: 'ASC' | 'DESC'
-}
-
 // Needed for Browser language detection
 export const browserSupportedLocales: Record<string, string> = {
   'en-US': 'en-US',

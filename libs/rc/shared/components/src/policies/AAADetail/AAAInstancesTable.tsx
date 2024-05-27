@@ -1,70 +1,73 @@
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { useAaaNetworkInstancesQuery }     from '@acx-ui/rc/services'
+import { Table, TableProps, Card, Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  AAAPolicyNetwork, captiveNetworkTypes, ConfigTemplateType,
-  GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes,
+  captiveNetworkTypes, ConfigTemplateType,
+  GuestNetworkTypeEnum, Network, NetworkTypeEnum, networkTypes,
   useConfigTemplate, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
-export default function AAAInstancesTable (){
+export default function AAAInstancesTable (props: { networkIds: string[] }) {
+  const { networkIds } = props
   const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
   const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
-  // eslint-disable-next-line max-len
-  const tableQuery = useTableQuery({
-    useQuery: useAaaNetworkInstancesQuery,
+
+  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+  const tableQuery = useTableQuery<Network>({
+    useQuery,
     defaultPayload: {
-      fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType'],
-      filters: {}
+      fields: ['name', 'id', 'captiveType', 'nwSubType'],
+      filters: { id: networkIds?.length > 0 ? networkIds : [''] }
     },
     sorter: {
-      sortField: 'networkName',
+      sortField: 'name',
       sortOrder: 'DESC'
     },
     pagination: {
       pageSize: 10000
     },
     search: {
-      searchTargetFields: ['networkName'],
+      searchTargetFields: ['name'],
       searchString: ''
     },
     enableRbac
   })
-  const columns: TableProps<AAAPolicyNetwork>['columns'] = [
+
+  const columns: TableProps<Network>['columns'] = [
     {
-      key: 'NetworkName',
+      key: 'name',
       title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'networkName',
+      dataIndex: 'name',
       searchable: true,
       sorter: true,
       fixed: 'left',
       render: function (_, row) {
         return isTemplate
           // eslint-disable-next-line max-len
-          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.networkId, row.networkName)
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
           // eslint-disable-next-line max-len
-          : <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{row.networkName}</TenantLink>
+          : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{row.name}</TenantLink>
       }
     },
     {
-      key: 'Type',
+      key: 'nwSubType',
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'networkType',
+      dataIndex: 'nwSubType',
       sorter: true,
       render: (_, row) => {
-        const message = networkTypes[row.networkType.toLowerCase() as NetworkTypeEnum]
-        return row.networkType === 'GUEST'
+        const message = networkTypes[row.nwSubType.toLowerCase() as NetworkTypeEnum]
+        return row.nwSubType === 'GUEST'
           ? <FormattedMessage
             defaultMessage={'Captive Portal - {captiveNetworkType}'}
             values={{
               captiveNetworkType: $t(captiveNetworkTypes[
-                row.guestNetworkType as GuestNetworkTypeEnum || GuestNetworkTypeEnum.Cloudpath
+                row.captiveType as GuestNetworkTypeEnum || GuestNetworkTypeEnum.Cloudpath
               ])
             }}
           />

@@ -1,8 +1,8 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, GridRow, Loader, GridCol }              from '@acx-ui/components'
-import { useGetAAAProfileDetailQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
+import { PageHeader, Button, GridRow, Loader, GridCol }    from '@acx-ui/components'
+import { useAaaPolicyQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
   PolicyOperation,
@@ -26,7 +26,7 @@ export function AAAPolicyDetail () {
   return (
     <>
       <PageHeader
-        title={queryResults.data?.name||''}
+        title={queryResults.data?.name || ''}
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <PolicyConfigTemplateLinkSwitcher
@@ -44,11 +44,13 @@ export function AAAPolicyDetail () {
       <GridRow>
         <GridCol col={{ span: 24 }}>
           <Loader states={[queryResults]}>
-            <AAAOverview aaaProfile={queryResults.data as AAAPolicyType} />
+            <AAAOverview aaaProfile={queryResults.data} />
           </Loader>
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <AAAInstancesTable/>
+          <Loader states={[queryResults]}>
+            <AAAInstancesTable networkIds={queryResults.data?.networkIds ?? []}/>
+          </Loader>
         </GridCol>
       </GridRow>
     </>
@@ -56,8 +58,8 @@ export function AAAPolicyDetail () {
 }
 
 export function useGetAAAPolicyInstance () {
-  return useConfigTemplateQueryFnSwitcher({
-    useQueryFn: useGetAAAProfileDetailQuery,
+  return useConfigTemplateQueryFnSwitcher<AAAPolicyType>({
+    useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery
   })
 }

@@ -183,8 +183,8 @@ export const apiVersionHeaders = {
 }
 
 export type ApiVersionKey = keyof typeof apiVersionHeaders
-export function getApiVersionHeaders (enableRbac: boolean | undefined, version: ApiVersionKey) {
-  if (!enableRbac) return {}
+export function getApiVersionHeaders (version: ApiVersionKey, enabled = true) {
+  if (!enabled) return {}
 
   return apiVersionHeaders[version]
 }
@@ -230,7 +230,7 @@ export function createFetchArgsBasedOnRbac (props: CreateFetchArgsBasedOnRbacPro
   const { apiInfo, rbacApiInfo = apiInfo, rbacApiVersionKey, queryArgs } = props
   const enableRbac = queryArgs.enableRbac ?? false
   const resolvedApiInfo = enableRbac ? rbacApiInfo : apiInfo
-  const apiVersionHeaders = getApiVersionHeaders(enableRbac, rbacApiVersionKey)
+  const apiVersionHeaders = getApiVersionHeaders(rbacApiVersionKey, enableRbac)
   const resolvedPayload = enableRbac ? JSON.stringify(queryArgs.payload) : queryArgs.payload
 
   return {

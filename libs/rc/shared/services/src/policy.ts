@@ -16,8 +16,7 @@ import {
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation, IdentityProvider, WifiOperatorUrls, WifiOperator,
   WifiOperatorViewModel, IdentityProviderUrls, IdentityProviderViewModel,
-  AAAPolicyNetwork, ClientIsolationViewModel,
-  ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
+  ClientIsolationViewModel, ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
   ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData, EnhancedAccessControlInfoType,
   RadiusAttributeGroupUrlsInfo, RadiusAttributeGroup, RadiusAttribute,
   RadiusAttributeVendor, EnhancedRoguePolicyType, RulesManagementUrlsInfo,
@@ -27,15 +26,13 @@ import {
   transferToNewTablePaginationParams,
   CertificateUrls, CertificateTemplate, CertificateAuthority,
   Certificate, downloadFile, CertificateTemplateMutationResult,
-  downloadCertExtension, CertificateAcceptType, AAARbacViewModalType,
-  CommonUrlsInfo,
-  WifiNetwork
+  downloadCertExtension, CertificateAcceptType, AAARbacViewModalType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }                                                                                         from '@acx-ui/store'
-import { RequestPayload, QueryViewModelPayload }                                                                 from '@acx-ui/types'
+import { RequestPayload }                                                                                        from '@acx-ui/types'
 import { aggregateQueryResponse, batchApi, createFetchArgsBasedOnRbac, createHttpRequest, getApiVersionHeaders } from '@acx-ui/utils'
 
-import { aaaPolicyNetworkFieldMapping, combineAAAPolicyWithRbacData, convertRbacToAAAPolicyNetworkList, convertRbacToAAAViewModelPolicyList } from './servicePolicy.utils'
+import { combineAAAPolicyWithRbacData, convertRbacDataToAAAViewModelPolicyList } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -687,7 +684,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const requests = args.payload!.map(policyId => ({ params: { policyId } }))
           return batchApi(
-            AaaUrls.deleteAAAPolicy, requests, baseQuery, getApiVersionHeaders(true, 'v1_1')
+            AaaUrls.deleteAAAPolicy, requests, baseQuery, getApiVersionHeaders('v1_1')
           )
         } else {
           return baseQuery({
@@ -714,7 +711,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           data: queryArgs.enableRbac
             // eslint-disable-next-line max-len
-            ? convertRbacToAAAViewModelPolicyList(result.data as TableResult<AAARbacViewModalType>)
+            ? convertRbacDataToAAAViewModelPolicyList(result.data as TableResult<AAARbacViewModalType>)
             : result.data as TableResult<AAAViewModalType>
         }
       },
@@ -733,23 +730,29 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
-      async queryFn ({ params, enableRbac = false }, _queryApi, _extraOptions, baseQuery) {
-        // eslint-disable-next-line max-len
-        const req = createHttpRequest(AaaUrls.getAAAPolicy, params, getApiVersionHeaders(enableRbac, 'v1_1'))
+      async queryFn (queryArgs, _queryApi, _extraOptions, baseQuery) {
 
-        // eslint-disable-next-line max-len
-        const rbacViewModelReq = {
-          // eslint-disable-next-line max-len
-          ...createHttpRequest(AaaUrls.queryAAAPolicyList, params, getApiVersionHeaders(true, 'v1')),
-          body: JSON.stringify({
-            filters: { id: [ params?.policyId ] }
-          })
-        }
+        const aaaPolicyFetchArgs = createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.getAAAPolicy,
+          rbacApiVersionKey: 'v1_1',
+          queryArgs
+        })
+
+        const aaaViewModelListFetchArgs = createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.queryAAAPolicyList,
+          rbacApiVersionKey: 'v1',
+          queryArgs: {
+            ...queryArgs,
+            payload: {
+              filters: { id: [ queryArgs.params?.policyId ] }
+            }
+          }
+        })
 
         return aggregateQueryResponse<AAAPolicyType, TableResult<AAARbacViewModalType>>({
-          targetArgs: req,
-          otherArgs: rbacViewModelReq,
-          enableAggreate: enableRbac,
+          targetArgs: aaaPolicyFetchArgs,
+          otherArgs: aaaViewModelListFetchArgs,
+          enableAggreate: true,
           baseQuery,
           doAggregate: combineAAAPolicyWithRbacData
         })
@@ -765,77 +768,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
-    }),
-    // eslint-disable-next-line max-len
-    aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac = false }, _queryApi, _extraOptions, baseQuery) {
-        if (enableRbac) {
-          const rbacAAAViewModelEntityResult = await baseQuery({
-            // eslint-disable-next-line max-len
-            ...createHttpRequest(AaaUrls.queryAAAPolicyList, params, getApiVersionHeaders(true, 'v1')),
-            body: JSON.stringify({
-              filters: { id: [ params?.policyId ] }
-            })
-          })
-
-          if (rbacAAAViewModelEntityResult.error) {
-            return { error: rbacAAAViewModelEntityResult.error as FetchBaseQueryError }
-          }
-
-          // eslint-disable-next-line max-len
-          const rbacAAAViewModelData = (rbacAAAViewModelEntityResult.data as TableResult<AAARbacViewModalType>)
-          const associatedNetworkIds = rbacAAAViewModelData.data[0]?.wifiNetworkIds
-
-          if (!associatedNetworkIds || associatedNetworkIds.length === 0) {
-            return {
-              data: { data: [], page: 1, totalCount: 0 } as TableResult<AAAPolicyNetwork>
-            }
-          }
-
-          const resolvedPayload = payload as QueryViewModelPayload
-          const rbacNetworkListResult = await baseQuery({
-            // eslint-disable-next-line max-len
-            ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, getApiVersionHeaders(true, 'v1')),
-            body: JSON.stringify({
-              ...resolvedPayload,
-              filters: {
-                id: associatedNetworkIds
-              },
-              // eslint-disable-next-line max-len
-              fields: resolvedPayload.fields?.map(f => aaaPolicyNetworkFieldMapping[f as keyof AAAPolicyNetwork]) ?? []
-            })
-          })
-
-          if (rbacNetworkListResult.error) {
-            return { error: rbacNetworkListResult.error as FetchBaseQueryError }
-          }
-
-          const rbacNetworkList = rbacNetworkListResult.data as TableResult<WifiNetwork>
-
-          return { data: convertRbacToAAAPolicyNetworkList(rbacNetworkList) }
-        } else {
-          const networkListResult = await baseQuery({
-            ...createHttpRequest(AaaUrls.getAAANetworkInstances, params),
-            body: payload
-          })
-
-          // eslint-disable-next-line max-len
-          if (networkListResult.error) return { error: networkListResult.error as FetchBaseQueryError }
-
-          return { data: networkListResult.data as TableResult<AAAPolicyNetwork> }
-        }
-      },
-      providesTags: [{ type: 'AAA', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
-    getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
-      query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAPolicy, params)
-        return {
-          ...aaaDetailReq
-        }
-      },
-      providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({
       query: ({ params }) => {
@@ -2668,8 +2600,6 @@ export const {
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
   useLazyAaaPolicyQuery,
-  useAaaNetworkInstancesQuery,
-  useGetAAAProfileDetailQuery,
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
