@@ -6,63 +6,46 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 import styled        from 'styled-components/macro'
 
-import {
-  Loader,
-  showActionModal,
-  showToast,
-  Table,
-  TableProps
-} from '@acx-ui/components'
-import {
-  Features,
-  useIsSplitOn
-}                                from '@acx-ui/feature-toggle'
-import {  DateFormatEnum,  userDateTimeFormat } from '@acx-ui/formatter'
-import {
-  DownloadOutlined,
-  WarningTriangleSolid
-} from '@acx-ui/icons'
-import {
-  CsvSize,
-  ImportFileDrawer,
-  ImportFileDrawerType
-}      from '@acx-ui/rc/components'
+import { Loader, showActionModal, showToast, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
+import { DateFormatEnum, userDateTimeFormat }                    from '@acx-ui/formatter'
+import { DownloadOutlined, WarningTriangleSolid }                from '@acx-ui/icons'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }       from '@acx-ui/rc/components'
 import {
   useDeletePropertyUnitsMutation,
   useGetPropertyConfigsQuery,
   useGetPropertyUnitListQuery,
+  useGetVenueQuery,
+  useImportPropertyUnitsMutation,
   useLazyApListQuery,
+  useLazyDownloadPropertyUnitsQuery,
+  useLazyGetConnectionMeteringByIdQuery,
   useLazyGetPersonaByIdQuery,
   useLazyGetPersonaGroupByIdQuery,
   useLazyGetPropertyUnitByIdQuery,
   useLazyGetSwitchListQuery,
-  useUpdatePropertyUnitMutation,
-  useImportPropertyUnitsMutation,
-  useLazyDownloadPropertyUnitsQuery,
-  useLazyGetConnectionMeteringByIdQuery,
-  useGetVenueQuery,
-  useNotifyPropertyUnitsMutation
+  useNotifyPropertyUnitsMutation,
+  useUpdatePropertyUnitMutation
 } from '@acx-ui/rc/services'
 import {
   APExtended,
   ConnectionMetering,
   FILTER,
+  getPolicyDetailsLink,
   Persona,
+  PolicyOperation,
+  PolicyType,
   PropertyUnit,
   PropertyUnitMessages,
   PropertyUnitStatus,
   SEARCH,
   SwitchViewModel,
-  useTableQuery,
-  getPolicyDetailsLink,
-  PolicyOperation,
-  PolicyType
+  useTableQuery
 } from '@acx-ui/rc/utils'
-import {
-  TenantLink
-} from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }      from '@acx-ui/utils'
+import { TenantLink }                    from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping }          from '@acx-ui/utils'
 
 import { PropertyUnitBulkDrawer } from './PropertyUnitBulkDrawer'
 import { PropertyUnitDrawer }     from './PropertyUnitDrawer'
@@ -298,6 +281,8 @@ export function VenuePropertyTab () {
   const fetchSwitchData = (switchMac: string[]) => {
     // console.log('Fetch switches : ', switchMac)
 
+    if (!switchMac || switchMac.length === 0) return
+
     setSwitchMap(new Map())
     getSwitchList({
       params: { tenantId },
@@ -325,22 +310,23 @@ export function VenuePropertyTab () {
       })
   }
 
-  const actions: TableProps<PropertyUnit>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Unit' }),
-      disabled: !hasAssociation,
-      onClick: () => setDrawerState({ isEdit: false, visible: true, units: undefined })
-    },
-    {
-      label: $t({ defaultMessage: 'Import From File' }),
-      disabled: !hasAssociation,
-      onClick: () => setUploadCsvDrawerVisible(true)
-    }
-  ]
+  const actions: TableProps<PropertyUnit>['actions'] =
+    hasPermission({ scopes: [WifiScopes.CREATE] })
+      ? [{
+        label: $t({ defaultMessage: 'Add Unit' }),
+        disabled: !hasAssociation,
+        onClick: () => setDrawerState({ isEdit: false, visible: true, units: undefined })
+      },
+      {
+        label: $t({ defaultMessage: 'Import From File' }),
+        disabled: !hasAssociation,
+        onClick: () => setUploadCsvDrawerVisible(true)
+      }] : []
 
   const rowActions: TableProps<PropertyUnit>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: (selectedItems => selectedItems.length <= 1 ||
         (isConnectionMeteringAvailable && selectedItems.length > 1)),
       onClick: (units, clearSelection) => {
@@ -356,6 +342,7 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'Suspend' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: (selectedRows => {
         const activeCount = selectedRows.filter(row => enabled(row.status)).length
         return activeCount > 0 && activeCount === selectedRows.length
@@ -391,6 +378,7 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'Activate' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: (selectedRows => {
         const suspendCount = selectedRows.filter(row => !enabled(row.status)).length
         return suspendCount > 0 && suspendCount === selectedRows.length
@@ -415,6 +403,7 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'Resend' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (selectedItems, clearSelection) => {
         notifyUnits({ params: { venueId }, payload: selectedItems.map(i => i.id) })
           .unwrap()
@@ -430,6 +419,7 @@ export function VenuePropertyTab () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: (selectedItems, clearSelection) => {
         setDrawerState({ isEdit: false, visible: false })
         showActionModal({
@@ -575,7 +565,10 @@ export function VenuePropertyTab () {
         onChange={queryUnitList.handleTableChange}
         actions={filterByAccess(hasAssociation ? actions : [])}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={
+          hasPermission({
+            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+          }) && { type: 'checkbox' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-unit'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),
