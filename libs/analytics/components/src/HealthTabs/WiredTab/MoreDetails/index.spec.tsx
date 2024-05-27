@@ -14,7 +14,7 @@ describe('MoreDetailsDrawer', () => {
   const props = {
     visible: true,
     setVisible: jest.fn(),
-    widget: 'cpu',
+    widget: 'cpuUsage',
     setWidget: jest.fn(),
     filters: {
       startDate: '2022-01-01',

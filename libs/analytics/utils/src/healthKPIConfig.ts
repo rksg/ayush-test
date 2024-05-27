@@ -27,6 +27,10 @@ export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
+export const hasFirmwareFilterForPoe = () => {
+  return window.location.pathname.includes('/health/wired')
+}
+
 export const kpiConfig = {
   connectionSuccess: {
     text: defineMessage({ defaultMessage: 'Connection Success' }),
@@ -173,7 +177,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP sucessful bindings' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
@@ -426,6 +430,7 @@ export const kpiConfig = {
   },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
+    enableSwitchFirmwareFilter: hasFirmwareFilterForPoe,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
@@ -626,6 +631,22 @@ export const kpiConfig = {
       tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
     }
   },
+  switchInterfaceAnomalies: {
+    text: defineMessage({ defaultMessage: 'Interface Anomalies' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: 'Ports without anomalies' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Interface Anomalies measures the percentage of Ports which do not have anomaly.{br}{br}The time-series graph on the left displays the non anomaly ports percentage across time. The bar chart on the right captures the daily non anomaly ports percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
+  },
   switchAuthentication: {
     text: defineMessage({ defaultMessage: 'Authentication' }),
     enableSwitchFirmwareFilter: true,
@@ -639,7 +660,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Authentication' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of authentication events amongst success and failed categories.' })
     }
   }
 }
@@ -701,8 +722,8 @@ export const wiredKPIsForTab = () => {
     performance: {
       kpis: [
         'switchPortUtilization',
-        'switchUplinkPortUtilization'
-        // 'interfaceAnamolies',
+        'switchUplinkPortUtilization',
+        'switchInterfaceAnomalies'
         // 'bcmcTraffic'
       ]
     },
