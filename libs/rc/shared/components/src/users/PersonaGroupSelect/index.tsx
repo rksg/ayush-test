@@ -1,7 +1,7 @@
 import { Select }      from 'antd'
 import { SelectProps } from 'antd/lib/select'
 
-import { useGetPersonaGroupListQuery } from '@acx-ui/rc/services'
+import { useSearchPersonaGroupListQuery } from '@acx-ui/rc/services'
 
 export function PersonaGroupSelect (props: {
   filterProperty?: boolean,
@@ -9,9 +9,9 @@ export function PersonaGroupSelect (props: {
 } & SelectProps) {
   const { filterProperty, whiteList, ...customSelectProps } = props
 
-  const personaGroupList = useGetPersonaGroupListQuery({
+  const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
-      page: 1, pageSize: 2147483647, sortField: 'name', sortOrder: 'ASC'
+      page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
 
