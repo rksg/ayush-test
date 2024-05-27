@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import {
@@ -121,12 +123,14 @@ export function NetworkAssurance ({ tab }:{ tab: NetworkAssuranceTabEnum }) {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   // split does not work in router so we need to redirect here until we can remove the switch toggle
-  if (location.pathname.endsWith('health') && isSwitchHealthEnabled) {
-    navigate({
-      ...basePath,
-      pathname: `${basePath.pathname}/health/overview`
-    })
-  }
+  useEffect(() => {
+    if (location.pathname.endsWith('health') && isSwitchHealthEnabled) {
+      navigate({
+        ...basePath,
+        pathname: `${basePath.pathname}/health/overview`
+      })
+    }
+  }, [basePath, isSwitchHealthEnabled, location.pathname, navigate])
   const massagePath = (path: string) => {
     if (isSwitchHealthEnabled) {
       return path.replace('health', 'health/overview')
