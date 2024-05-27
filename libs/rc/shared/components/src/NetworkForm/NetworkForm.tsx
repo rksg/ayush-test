@@ -22,13 +22,11 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation,
-  useDeactivateWifiOperatorOnWifiNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
   Demo,
-  generatePageHeaderTitle,
   GuestNetworkTypeEnum,
   GuestPortal,
   LocationExtended,
@@ -40,7 +38,8 @@ import {
   useConfigTemplateBreadcrumb,
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
-  WlanSecurityEnum
+  WlanSecurityEnum,
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -126,15 +125,18 @@ export function NetworkForm (props:{
 
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
-  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
-  )
-  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
-  )
-  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
-  )
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenuesMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
+  })
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenuesMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenuesMutation,
+    useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
+  })
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
@@ -183,15 +185,13 @@ export function NetworkForm (props:{
     })
 
   // Config Template related states
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
     { text: intl.$t({ defaultMessage: 'Wi-Fi Networks' }) },
     { text: intl.$t({ defaultMessage: 'Network List' }), link: '/networks' }
   ])
-  const pageTitle = generatePageHeaderTitle({
+  const pageTitle = useConfigTemplatePageHeaderTitle({
     isEdit: editMode,
-    isTemplate,
     instanceLabel: intl.$t({ defaultMessage: 'Network' }),
     addLabel: intl.$t({ defaultMessage: 'Create New' })
   })
@@ -848,17 +848,6 @@ function useWifiOperatorActivation () {
   return activateWifiOperator
 }
 
-function useWifiOperatorDeactivation () {
-  const [deactivate] = useDeactivateWifiOperatorOnWifiNetworkMutation()
-  const deactivateWifiOperator =
-    async (wifiNetworkId?: string, operatorId?: string) => {
-      return wifiNetworkId && operatorId ?
-        await deactivate({ params: { wifiNetworkId, operatorId } }).unwrap() : null
-    }
-
-  return deactivateWifiOperator
-}
-
 function useIdentityProviderActivation () {
   const [activate] = useActivateIdentityProviderOnWifiNetworkMutation()
   const activateIdentityProvider =
@@ -901,35 +890,62 @@ function useAddHotspot20Activation () {
 
 function useUpdateHotspot20Activation () {
   const activateOperator = useWifiOperatorActivation()
-  const deactivateOperator = useWifiOperatorDeactivation()
   const activateProvider = useIdentityProviderActivation()
   const deactivateProvider = useIdentityProviderDeactivation()
   const updateHotspot20Activations =
     async (network?: NetworkSaveData) => {
       if (network && network.type === NetworkTypeEnum.HOTSPOT20) {
+        const networkId = network.id
         const hotspot20Setting = network.hotspot20Settings
         const hotspot20OriginalOperator = hotspot20Setting?.originalOperator
         const hotspot20OriginalProviders = hotspot20Setting?.originalProviders
+        const newProviderIds = hotspot20Setting?.identityProviders
 
         if (hotspot20OriginalOperator &&
           hotspot20OriginalOperator !== hotspot20Setting.wifiOperator) {
-          await deactivateOperator(network.id, hotspot20OriginalOperator)
-          await activateOperator(network.id, hotspot20Setting.wifiOperator)
+          await activateOperator(networkId, hotspot20Setting.wifiOperator)
         }
 
-        if (hotspot20OriginalProviders &&
-          hotspot20Setting?.identityProviders &&
-          !_.isEqual(hotspot20OriginalProviders, hotspot20Setting?.identityProviders)) {
-          hotspot20OriginalProviders.forEach(async (id) => {
-            hotspot20Setting?.identityProviders &&
-            !(hotspot20Setting?.identityProviders.includes(id)) &&
-            await deactivateProvider(network.id, id)
-          })
+        if (hotspot20OriginalProviders && newProviderIds &&
+          !_.isEqual(hotspot20OriginalProviders, newProviderIds)) {
 
-          hotspot20Setting?.identityProviders.forEach(async (id) => {
-            !hotspot20OriginalProviders.includes(id) &&
-            await activateProvider(network.id, id)
-          })
+          const deactivateProviderIds = hotspot20OriginalProviders.filter(providerId =>
+            !(hotspot20Setting.identityProviders!.includes(providerId))
+          )
+
+          const activateProviderIds = newProviderIds.filter(providerId =>
+            !hotspot20OriginalProviders.includes(providerId)
+          )
+
+          const deactivateLength = deactivateProviderIds.length
+          const activateLength = activateProviderIds.length
+
+          // if remove all original providers
+          if (deactivateLength === hotspot20OriginalProviders.length &&
+            deactivateLength === 1 && activateLength > 0) {
+            // can only activate before deativate to avoid remove reuiqred field
+            // max number of providers activated with a network is 6
+            await activateProvider(networkId, activateProviderIds[activateLength - 1])
+            activateProviderIds.pop()
+            await deactivateProvider(networkId, deactivateProviderIds[0])
+            deactivateProviderIds.pop()
+          } else {
+            // deactivate first to have space to activate
+            if (deactivateLength > 0) {
+              await deactivateProvider(network.id, deactivateProviderIds[deactivateLength - 1])
+              deactivateProviderIds.pop()
+            }
+
+            if (activateLength > 0) {
+              await activateProvider(network.id, activateProviderIds[activateLength - 1])
+              activateProviderIds.pop()
+            }
+          }
+
+          await Promise.allSettled(deactivateProviderIds.map(id =>
+            deactivateProvider(networkId, id)))
+
+          await Promise.allSettled(activateProviderIds.map(id => activateProvider(networkId, id)))
         }
       }
       return

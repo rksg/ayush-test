@@ -6,7 +6,7 @@ import { useNavigate, useParams }                     from 'react-router-dom'
 
 import { Alert, Button, StepsForm, useStepFormContext }         from '@acx-ui/components'
 import { AddEdgeDhcpServiceModal }                              from '@acx-ui/rc/components'
-import { useGetDhcpByEdgeIdQuery }                              from '@acx-ui/rc/services'
+import { useGetDhcpStatsQuery }                                 from '@acx-ui/rc/services'
 import { ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { useTenantLink }                                        from '@acx-ui/react-router-dom'
 
@@ -43,12 +43,29 @@ export const SmartEdgeForm = (props: SmartEdgeFormProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [shouldDhcpDisabled, setShouldDhcpDisabled] = useState(true)
   const {
-    data: currentEdgeDhcp,
-    isError: isGetDhcpByEdgeIdFail,
-    isFetching: isGetDhcpByEdgeIdFetching
-  } = useGetDhcpByEdgeIdQuery(
-    { params: { ...params, edgeId: edgeId } },
-    { skip: !Boolean(edgeId) }
+    currentEdgeDhcp,
+    isGetDhcpByEdgeIdFail,
+    isGetDhcpByEdgeIdFetching
+  } = useGetDhcpStatsQuery(
+    {
+      payload: {
+        fields: [
+          'id',
+          'dhcpRelay'
+        ],
+        filters: { edgeClusterIds: [edgeId] }
+      }
+    },
+    {
+      skip: !Boolean(edgeId),
+      selectFromResult: ({ data, isFetching }) => {
+        return {
+          currentEdgeDhcp: data?.data[0],
+          isGetDhcpByEdgeIdFail: (data?.totalCount ?? 0) < 1,
+          isGetDhcpByEdgeIdFetching: isFetching
+        }
+      }
+    }
   )
 
   useEffect(() => {

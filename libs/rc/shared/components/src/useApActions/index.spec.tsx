@@ -74,9 +74,9 @@ describe('Test useApActions', () => {
       ),
       rest.post(
         WifiUrlsInfo.getDhcpAp.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '456', response: [{
+        (req, res, ctx) => res(ctx.json([{
           venueDhcpEnabled: true
-        }] }))
+        }] ))
       ),
       rest.delete(
         WifiUrlsInfo.deleteAp.url,

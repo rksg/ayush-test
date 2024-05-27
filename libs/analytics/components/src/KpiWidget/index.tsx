@@ -78,13 +78,15 @@ export function KpiWidget ({
   filters: AnalyticsFilter;
   type?: 'no-chart-style' | 'with-chart-style'
 }){
-  const { histogram } = Object(kpiConfig[name as keyof typeof kpiConfig])
+  const { histogram,
+    enableSwitchFirmwareFilter } = Object(kpiConfig[name as keyof typeof kpiConfig])
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
   const intl = useIntl()
   const historgramQuery = useKpiHistogramQuery({
     ...filters,
-    kpi: name
+    kpi: name,
+    enableSwitchFirmwareFilter
   }, {
     skip: !Boolean(histogram),
     selectFromResult: (response) => {
@@ -103,7 +105,8 @@ export function KpiWidget ({
     ...filters,
     kpi: name,
     threshold: (threshold ?? '') as string,
-    granularity: getSparklineGranularity(startDate,endDate)
+    granularity: getSparklineGranularity(startDate,endDate),
+    enableSwitchFirmwareFilter
   }, {
     selectFromResult: (response) => {
       const agg = response.data && transformTSResponse(response.data, { startDate, endDate })

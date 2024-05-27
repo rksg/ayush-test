@@ -377,7 +377,6 @@ export interface ConfigurationHistory {
   endTime: string
   serialNumber: string
   configType: string
-  historyConfigTypeV1001: string
   dispatchStatus: string
   clis: string
   numberOfErrors: number
@@ -800,6 +799,11 @@ export interface CliTemplateVariable {
   name: string
   type: string
   value: string
+  rangeStart?: number,
+  rangeEnd?: number,
+  ipAddressStart?: string,
+  ipAddressEnd?: string,
+  subMask?: string
 }
 
 export interface CliTemplateVenueSwitches {

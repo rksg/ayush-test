@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl'
 import { showActionModal }   from '@acx-ui/components'
 import {
   useGetGuestsMutation,
-  useDeleteGuestsMutation,
+  useDeleteGuestMutation,
   useEnableGuestsMutation,
   useDisableGuestsMutation
 } from '@acx-ui/rc/services'
@@ -14,16 +14,16 @@ import {
 export function useGuestActions () {
   const { $t } = useIntl()
   const[ getGuests ] = useGetGuestsMutation()
-  const [deleteGuests] = useDeleteGuestsMutation()
+  const [deleteGuest] = useDeleteGuestMutation()
   const [enableGuests] = useEnableGuestsMutation()
   const [disableGuests] = useDisableGuestsMutation()
 
   const showDownloadInformation = (guest: Guest | Guest[], tenantId?: string) => {
     const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-    const guestIds = Array.isArray(guest) ? guest.map(g => g.id) : [guest.id]
+    const id = Array.isArray(guest) ? guest.map(g => g.id) : [guest.id]
 
-    getGuests({ params: { tenantId }, payload: { dateFormat, timezone, guestIds } })
+    getGuests({ params: { tenantId }, payload: { dateFormat, timezone, filters: { id } } })
       .catch((error) => {
         console.log(error) // eslint-disable-line no-console
       })
@@ -31,30 +31,38 @@ export function useGuestActions () {
 
   const showDeleteGuest = async (guest: Guest | Guest[],
     tenantId?: string, callBack?: ()=>void) => {
+    const isMultiple = Array.isArray(guest) && guest.length > 1
     const guests = Array.isArray(guest) ? guest : [guest]
 
     showActionModal({
       type: 'confirm',
       customContent: {
         action: 'DELETE',
-        entityName: $t({ defaultMessage: 'Guest' }),
+        entityName: isMultiple? $t({ defaultMessage: 'Guests' }) : $t({ defaultMessage: 'Guest' }),
         entityValue: guests[0].name,
         numOfEntities: guests.length
       },
       onOk: () => {
-        deleteGuests({ params: { tenantId }, payload: guests.map(g => g.id) }).then(
-          callBack
-        )
+        guests.forEach(g => {
+          deleteGuest({ params: { tenantId, networkId: g.wifiNetworkId, guestId: g.id } })
+        })
+        callBack && callBack()
       }
     })
   }
 
   const disableGuest = async (guest: Guest, tenantId?: string) => {
-    disableGuests({ params: { tenantId, guestId: guest.id }, payload: { action: 'disabled' } })
+    disableGuests({
+      params: { tenantId, networkId: guest.wifiNetworkId, guestId: guest.id },
+      payload: { disabled: true }
+    })
   }
 
   const enableGuest = async (guest: Guest, tenantId?: string) => {
-    enableGuests({ params: { tenantId, guestId: guest.id }, payload: { action: 'enabled' } })
+    enableGuests({
+      params: { tenantId, networkId: guest.wifiNetworkId, guestId: guest.id },
+      payload: { disabled: false }
+    })
   }
 
   return {

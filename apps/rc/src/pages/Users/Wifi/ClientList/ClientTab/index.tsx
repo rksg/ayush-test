@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { ContentSwitcher, ContentSwitcherProps, CustomButtonProps, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { ClientDualTable }                                                           from '@acx-ui/rc/components'
 import { UNSAFE_NavigationContext as NavigationContext }                             from '@acx-ui/react-router-dom'
 import { getIntl }                                                                   from '@acx-ui/utils'
@@ -28,7 +27,6 @@ interface CcdRefType {
 }
 
 export function ClientTab () {
-  const isSupportCCD = useIsSplitOn(Features.CCD_TOGGLE)
   const { $t } = useIntl()
 
   const [ ccdControlContext, setCcdControlContext ] = useState({} as CcdControlContextData)
@@ -38,8 +36,6 @@ export function ClientTab () {
   const ccdRef = useRef<CcdRefType>()
 
   useEffect(() => {
-    if (!isSupportCCD) return
-
     const { isTracing } = ccdControlContext
     // Avoid the show modal function to be called twice
     if (isTracing) {
@@ -58,7 +54,7 @@ export function ClientTab () {
       unblockRef.current?.()
     }
 
-  }, [isSupportCCD, ccdControlContext, blockNavigator])
+  }, [ccdControlContext, blockNavigator])
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -78,19 +74,17 @@ export function ClientTab () {
     localStorage.setItem('client-tab', value)
   }
 
-  return (isSupportCCD ?
-    <ClientContext.Provider value={{
-      ccdControlContext: ccdControlContext,
-      setCcdControlContext: setCcdControlContext
-    }} >
-      <ContentSwitcher
-        tabDetails={tabDetails}
-        size='large'
-        defaultValue={localStorage.getItem('client-tab') || tabDetails[0].value}
-        onChange={onTabChange}
-      />
-    </ClientContext.Provider> : <ClientDualTable />
-  )
+  return <ClientContext.Provider value={{
+    ccdControlContext: ccdControlContext,
+    setCcdControlContext: setCcdControlContext
+  }} >
+    <ContentSwitcher
+      tabDetails={tabDetails}
+      size='large'
+      defaultValue={localStorage.getItem('client-tab') || tabDetails[0].value}
+      onChange={onTabChange}
+    />
+  </ClientContext.Provider>
 }
 
 export const showPageLeaveWarningModal = (ccdContext: CcdControlContextData,

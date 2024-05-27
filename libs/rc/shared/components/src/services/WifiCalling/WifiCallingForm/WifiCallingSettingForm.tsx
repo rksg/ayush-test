@@ -47,18 +47,17 @@ const WifiCallingSettingForm = (props: WifiCallingSettingFormProps) => {
   const {
     state, dispatch
   } = useContext(WifiCallingFormContext)
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetWifiCallingServiceQuery,
-    useGetWifiCallingServiceTemplateQuery,
-    !useParams().hasOwnProperty('serviceId')
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetWifiCallingServiceQuery,
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
+    skip: !useParams().hasOwnProperty('serviceId')
+  })
 
-  const { data: dataList } = useConfigTemplateQueryFnSwitcher(
-    useGetEnhancedWifiCallingServiceListQuery,
-    useGetEnhancedWifiCallingServiceTemplateListQuery,
-    false,
-    defaultPayload
-  )
+  const { data: dataList } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetEnhancedWifiCallingServiceListQuery,
+    useTemplateQueryFn: useGetEnhancedWifiCallingServiceTemplateListQuery,
+    payload: defaultPayload
+  })
 
   const handleServiceName = (serviceName: string) => {
     dispatch({

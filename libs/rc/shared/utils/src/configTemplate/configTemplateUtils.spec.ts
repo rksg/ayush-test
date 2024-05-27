@@ -71,10 +71,10 @@ describe('config-template-utils', () => {
     it('should return template query result when isTemplate is true', () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
-      const { result } = renderHook(() => useConfigTemplateQueryFnSwitcher<QueryResultType>(
-        mockedRegularQueryFn,
-        mockedTemplateQueryFn
-      ))
+      const { result } = renderHook(() => useConfigTemplateQueryFnSwitcher<QueryResultType>({
+        useQueryFn: mockedRegularQueryFn,
+        useTemplateQueryFn: mockedTemplateQueryFn
+      }))
 
       expect(result.current).toEqual(expect.objectContaining({ data: 'template data' }))
       expect(mockedTemplateQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: false })
@@ -84,10 +84,10 @@ describe('config-template-utils', () => {
     it('should return regular query result when isTemplate is false', () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result } = renderHook(() => useConfigTemplateQueryFnSwitcher<QueryResultType>(
-        mockedRegularQueryFn,
-        mockedTemplateQueryFn
-      ))
+      const { result } = renderHook(() => useConfigTemplateQueryFnSwitcher<QueryResultType>({
+        useQueryFn: mockedRegularQueryFn,
+        useTemplateQueryFn: mockedTemplateQueryFn
+      }))
 
       expect(result.current).toEqual(expect.objectContaining({ data: 'regular data' }))
       expect(mockedTemplateQueryFn).toHaveBeenCalledWith({ params: mockedParams }, { skip: true })
@@ -97,13 +97,13 @@ describe('config-template-utils', () => {
     it('should return correct query result when the payload and extraParams are present', () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
-      const { result } = renderHook(() => useConfigTemplateQueryFnSwitcher<QueryResultType>(
-        mockedRegularQueryFn,
-        mockedTemplateQueryFn,
-        false,
-        { fakePayload: '123' },
-        { venueId: 'overrideVenueId' }
-      ))
+      const { result } = renderHook(() => useConfigTemplateQueryFnSwitcher<QueryResultType>({
+        useQueryFn: mockedRegularQueryFn,
+        useTemplateQueryFn: mockedTemplateQueryFn,
+        skip: false,
+        payload: { fakePayload: '123' },
+        extraParams: { venueId: 'overrideVenueId' }
+      }))
 
       const customRequestPayload = {
         params: { ...mockedParams, venueId: 'overrideVenueId' },
@@ -133,10 +133,10 @@ describe('config-template-utils', () => {
     it('should return template lazy query result when isTemplate is true', () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
 
-      const { result } = renderHook(() => useConfigTemplateLazyQueryFnSwitcher<string>(
-        mockedRegularLazyQueryFn,
-        mockedTemplateLazyQueryFn
-      ))
+      const { result } = renderHook(() => useConfigTemplateLazyQueryFnSwitcher<string>({
+        useLazyQueryFn: mockedRegularLazyQueryFn,
+        useLazyTemplateQueryFn: mockedTemplateLazyQueryFn
+      }))
 
       expect(result.current).toEqual('template')
       expect(mockedTemplateLazyQueryFn).toHaveBeenCalled()
@@ -146,10 +146,10 @@ describe('config-template-utils', () => {
     it('should return regular lazy query result when isTemplate is false', () => {
       mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
-      const { result } = renderHook(() => useConfigTemplateLazyQueryFnSwitcher<string>(
-        mockedRegularLazyQueryFn,
-        mockedTemplateLazyQueryFn
-      ))
+      const { result } = renderHook(() => useConfigTemplateLazyQueryFnSwitcher<string>({
+        useLazyQueryFn: mockedRegularLazyQueryFn,
+        useLazyTemplateQueryFn: mockedTemplateLazyQueryFn
+      }))
 
       expect(result.current).toEqual('regular')
       expect(mockedTemplateLazyQueryFn).toHaveBeenCalledWith()
@@ -163,10 +163,10 @@ describe('config-template-utils', () => {
       const mutationFn = jest.fn().mockReturnValue('regular')
       const templateMutationFn = jest.fn().mockReturnValue('template')
 
-      const { result } = renderHook(() => useConfigTemplateMutationFnSwitcher(
-        mutationFn,
-        templateMutationFn
-      ))
+      const { result } = renderHook(() => useConfigTemplateMutationFnSwitcher({
+        useMutationFn: mutationFn,
+        useTemplateMutationFn: templateMutationFn
+      }))
 
       expect(result.current).toEqual('template')
       expect(mutationFn).toHaveBeenCalled()
@@ -178,10 +178,10 @@ describe('config-template-utils', () => {
       const mutationFn = jest.fn().mockReturnValue('regular')
       const templateMutationFn = jest.fn().mockReturnValue('template')
 
-      const { result } = renderHook(() => useConfigTemplateMutationFnSwitcher(
-        mutationFn,
-        templateMutationFn
-      ))
+      const { result } = renderHook(() => useConfigTemplateMutationFnSwitcher({
+        useMutationFn: mutationFn,
+        useTemplateMutationFn: templateMutationFn
+      }))
 
       expect(result.current).toEqual('regular')
       expect(mutationFn).toHaveBeenCalled()

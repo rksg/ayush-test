@@ -16,7 +16,8 @@ import {
   EdgeSdLanActivateNetworkPayload,
   EdgeSdLanToggleDmzPayload,
   EdgeSdLanSettingP2,
-  EdgeClusterStatus
+  EdgeClusterStatus,
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { baseEdgeSdLanApi }  from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -274,13 +275,17 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
           try {
             const response = await api.cacheDataLoaded
 
-            if (response && msg.useCase === 'Add SD-LAN'
-                && msg.steps?.find((step) =>
-                  (step.id === 'Add SD-LAN'))?.status !== 'IN_PROGRESS') {
-              (requestArgs.callback as Function)(response.data)
+            // eslint-disable-next-line max-len
+            if (response && response.data.requestId === msg.requestId && msg.useCase === 'Add SD-LAN') {
+              const status = msg.steps?.find((step) => (step.id === 'Add SD-LAN'))?.status
+
+              if (status === TxStatus.FAIL) {
+                (requestArgs.failedCallback as Function)?.(response.data)
+              } else if (status === TxStatus.SUCCESS) {
+                (requestArgs.callback as Function)?.(response.data)
+              }
             }
-          } catch {
-          }
+          } catch {}
         })
       }
     }),
@@ -297,13 +302,18 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-            if (response && msg.useCase === 'Update SD-LAN'
-                && msg.steps?.find((step) =>
-                  (step.id === 'Update SD-LAN'))?.status !== 'IN_PROGRESS') {
-              (requestArgs.callback as Function)(response.data)
+
+            // eslint-disable-next-line max-len
+            if (response && response.data.requestId === msg.requestId && msg.useCase === 'Update SD-LAN') {
+              const status = msg.steps?.find((step) => (step.id === 'Update SD-LAN'))?.status
+
+              if (status === TxStatus.FAIL) {
+                (requestArgs.failedCallback as Function)?.(response.data)
+              } else if (status === TxStatus.SUCCESS) {
+                (requestArgs.callback as Function)?.(response.data)
+              }
             }
-          } catch {
-          }
+          } catch {}
         })
       }
     }),
@@ -353,13 +363,18 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-            if (response && msg.useCase === 'Activate network'
-                && msg.steps?.find((step) =>
-                  (step.id === 'Activate network'))?.status !== 'IN_PROGRESS') {
-              (requestArgs.callback as Function)(response.data)
+
+            // eslint-disable-next-line max-len
+            if (response && response.data.requestId === msg.requestId && msg.useCase === 'Activate network') {
+              const status = msg.steps?.find((step) => (step.id === 'Activate network'))?.status
+
+              if (status === TxStatus.FAIL) {
+                (requestArgs.failedCallback as Function)?.(response.data)
+              } else if (status === TxStatus.SUCCESS) {
+                (requestArgs.callback as Function)?.(response.data)
+              }
             }
-          } catch {
-          }
+          } catch {}
         })
       }
     }),
@@ -374,13 +389,18 @@ export const edgeSdLanApi = baseEdgeSdLanApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-            if (response && msg.useCase === 'Deactivate network'
-                && msg.steps?.find((step) =>
-                  (step.id === 'Deactivate network'))?.status !== 'IN_PROGRESS') {
-              (requestArgs.callback as Function)(response.data)
+
+            // eslint-disable-next-line max-len
+            if (response && response.data.requestId === msg.requestId && msg.useCase === 'Deactivate network') {
+              const status = msg.steps?.find((step) => (step.id === 'Deactivate network'))?.status
+
+              if (status === TxStatus.FAIL) {
+                (requestArgs.failedCallback as Function)?.(response.data)
+              } else if (status === TxStatus.SUCCESS) {
+                (requestArgs.callback as Function)?.(response.data)
+              }
             }
-          } catch {
-          }
+          } catch {}
         })
       }
     }),

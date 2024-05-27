@@ -1,16 +1,17 @@
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery } from '@acx-ui/rc/services'
-import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }  from '@acx-ui/rc/utils'
-import { RequestPayload }                                    from '@acx-ui/types'
+import { Loader, Table, TableProps }                                                                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                 from '@acx-ui/feature-toggle'
+import { useEdgeBySerialNumberQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
+import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }                                                       from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                         from '@acx-ui/types'
 
 
 interface EdgeDhcpLeaseTableProps {
   edgeId?: string
   isInfinite?: boolean
+  clusterId?: string
 }
 
 export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
@@ -35,10 +36,35 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     pagination: { settingsId }
   })
 
-  const { dhcpPoolOptions } = useGetDhcpByEdgeIdQuery(
-    { params: { edgeId: props.edgeId } },
+  const { data: currentEdgeStatus } = useEdgeBySerialNumberQuery({
+    payload: {
+      fields: [
+        'clusterId'
+      ],
+      filters: { serialNumber: [props.edgeId] } }
+  }, { skip: Boolean(props.clusterId) })
+
+  const { dhcpId } = useGetDhcpStatsQuery(
     {
-      skip: !!!props.edgeId,
+      payload: {
+        fields: [
+          'id'
+        ],
+        filters: { edgeClusterIds: [(props.clusterId || currentEdgeStatus?.clusterId)] }
+      }
+    },
+    {
+      skip: !Boolean(props.clusterId) && !Boolean(currentEdgeStatus?.clusterId),
+      selectFromResult: ({ data }) => ({
+        dhcpId: data?.data[0]?.id
+      })
+    }
+  )
+
+  const { dhcpPoolOptions } = useGetEdgeDhcpServiceQuery(
+    { params: { id: dhcpId } },
+    {
+      skip: !Boolean(dhcpId),
       selectFromResult: ({ data }) => ({
         dhcpPoolOptions: data?.dhcpPools?.map(pool => ({
           key: pool.poolName,

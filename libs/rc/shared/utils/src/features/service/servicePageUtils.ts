@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { useIntl } from 'react-intl'
+
 import { TenantType, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                              from '@acx-ui/types'
 import { hasRoles }                               from '@acx-ui/user'
@@ -14,10 +16,9 @@ import { serviceTypeLabelMapping }                                        from '
 import { ServiceOperation, getServiceListRoutePath, getServiceRoutePath } from './serviceRouteUtils'
 
 
-
-// eslint-disable-next-line max-len
-export function generateServicePageHeaderTitle (isEdit: boolean, isTemplate: boolean, serviceType: ServiceType) {
-  const { $t } = getIntl()
+export function useServicePageHeaderTitle (isEdit: boolean, serviceType: ServiceType) {
+  const { isTemplate } = useConfigTemplate()
+  const { $t } = useIntl()
   return generatePageHeaderTitle({
     isEdit,
     isTemplate,

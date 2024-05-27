@@ -14,13 +14,18 @@ export interface RoleSelectorProps {
 
 const RoleSelector = (props: RoleSelectorProps) => {
   const dpskRbac=useIsSplitOn(Features.PTENANT_RBAC_DPSK_ROLE_INTRODUCTION)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+
   const { $t } = useIntl()
   const { disabled } = props
   const rolesList = getRoles().map((item) => ({
     label: $t(item.label),
     value: item.value
-  })).filter(item => !(item.value === RolesEnum.DPSK_ADMIN
-    && !dpskRbac))
+  })).filter( item =>
+    !((item.value === RolesEnum.DPSK_ADMIN && !dpskRbac) ||
+      (item.value === RolesEnum.TEMPLATES_ADMIN && !isAbacToggleEnabled) ||
+      (item.value === RolesEnum.REPORTS_ADMIN && !isAbacToggleEnabled))
+  )
 
   return (
     <Form.Item

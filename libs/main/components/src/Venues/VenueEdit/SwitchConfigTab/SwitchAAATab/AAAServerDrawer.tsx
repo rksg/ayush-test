@@ -40,12 +40,14 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   const params = useParams()
   const [form] = Form.useForm()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher(
-    useAddAAAServerMutation, useAddVenueTemplateSwitchAAAServerMutation
-  )
-  const [ updateAAAServer ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
-  )
+  const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddAAAServerMutation,
+    useTemplateMutationFn: useAddVenueTemplateSwitchAAAServerMutation
+  })
+  const [ updateAAAServer ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAAAServerMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSwitchAAAServerMutation
+  })
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(()=>{

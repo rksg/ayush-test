@@ -21,9 +21,10 @@ export function DpskSummaryForm (props: {
   const { summaryData } = props
   const intl = useIntl()
   const $t = intl.$t
-  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
-    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery
-  )
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
+    useQueryFn: useGetDpskListQuery,
+    useTemplateQueryFn: useGetEnhancedDpskTemplateListQuery
+  })
   const [ selectedDpsk, setSelectedDpsk ] = useState<DpskSaveData>()
 
   useEffect(() => {

@@ -1,17 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { edgeApi }                                              from '@acx-ui/rc/services'
-import { EdgeClusterStatus, EdgeDhcpUrls, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                      from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                  from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                from '@acx-ui/rc/services'
+import { EdgeClusterStatus, EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                        from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                    from '@acx-ui/test-utils'
 
-import { mockDhcpPoolStatsData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
+import { mockDhcpPoolStatsData } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
 
 import { EdgeClusterDhcp } from '.'
 
 const { mockEdgeClusterList } = EdgeGeneralFixtures
+const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
 const mockedUsedNavigate = jest.fn()
 const mockedActivateEdgeDhcp = jest.fn()
@@ -64,9 +65,9 @@ describe('Edge Cluster DHCP Tab', () => {
       activeTab: 'dhcp'
     }
     mockServer.use(
-      rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (_, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_, res, ctx) => res(ctx.json(mockDhcpStatsData))
       ),
       rest.patch(
         EdgeDhcpUrls.patchDhcpService.url,
@@ -75,6 +76,10 @@ describe('Edge Cluster DHCP Tab', () => {
       rest.post(
         EdgeDhcpUrls.getDhcpPoolStats.url,
         (_, res, ctx) => res(ctx.json(mockDhcpPoolStatsData))
+      ),
+      rest.get(
+        EdgeDhcpUrls.getDhcp.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       )
     )
   })
@@ -129,7 +134,7 @@ describe('Edge Cluster DHCP Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
+    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
   })
 
   it('should back to list page when clicking cancel button', async () => {
@@ -163,9 +168,9 @@ describe('Edge Cluster DHCP Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
+    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
     await userEvent.selectOptions(await screen.findByRole('combobox'),
-      await screen.findByRole('option', { name: 'TestDhcp-2' })
+      await screen.findByRole('option', { name: 'TestDHCP-2' })
     )
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
     expect(mockedActivateEdgeDhcp).toBeCalledWith(
@@ -187,7 +192,7 @@ describe('Edge Cluster DHCP Tab', () => {
           path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab'
         }
       })
-    expect(await screen.findByText('TestDhcp-1')).toBeVisible()
+    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
     const switchBtn = screen.getByRole('switch')
     expect(switchBtn).toBeChecked()
     await userEvent.click(switchBtn)
