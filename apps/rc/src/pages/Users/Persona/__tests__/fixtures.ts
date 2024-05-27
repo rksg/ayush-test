@@ -205,7 +205,7 @@ export const mockDpskPool: DpskSaveData = {
 }
 
 export const mockDpskList = {
-  content: [
+  data: [
     {
       id: 'dpsk-pool-1',
       name: 'DPSK Service 1',
@@ -230,13 +230,9 @@ export const mockDpskList = {
       expirationOffset: 2
     }
   ],
-  totalElements: 3,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  page: 1,
+  totalCount: 3,
+  totalPages: 1
 }
 
 export const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [

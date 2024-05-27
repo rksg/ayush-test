@@ -7,11 +7,12 @@ export const PersonaBaseUrl = '/api/identityGroups'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 type PersonaUrlType =
-  'addPersonaGroup' | 'getPersonaGroupList' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
+  'addPersonaGroup' | 'searchPersonaGroupList' | 'getPersonaGroupById' |
   'updatePersonaGroup' | 'deletePersonaGroup' | 'addPersona' | 'getPersonaById' |
-  'listPersonaByGroupId' | 'searchPersonaList' | 'updatePersona' | 'deletePersona' |
+  'searchPersonaList' | 'updatePersona' | 'deletePersona' |
   'addPersonaDevices' | 'deletePersonaDevices' | 'importPersonas' | 'exportPersona' |
-  'exportPersonaGroup' | 'deletePersonas' | 'allocateVni'
+  'exportPersonaGroup' | 'deletePersonas' | 'allocateVni' | 'associateMacRegistration' |
+  'associateDpskPool'
 
 export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
   /** Persona Group API endpoints */
@@ -21,10 +22,14 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     oldUrl: PersonaBaseUrl,
     newApi: true
   },
-  getPersonaGroupList: {
-    method: 'get',
-    url: NewPersonaBaseUrl + paginationParams,
-    oldUrl: PersonaBaseUrl + paginationParams,
+  associateDpskPool: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/dpskPools/:poolId`,
+    newApi: true
+  },
+  associateMacRegistration: {
+    method: 'put',
+    url: `${NewPersonaBaseUrl}/:groupId/macRegistrationPools/:poolId`,
     newApi: true
   },
   searchPersonaGroupList: {
@@ -70,12 +75,6 @@ export const PersonaUrls: { [key in PersonaUrlType]: ApiInfo } = {
     method: 'get',
     url: `${NewPersonaBaseUrl}/:groupId/identities/:id`,
     oldUrl: `${PersonaBaseUrl}/:groupId/identities/:id`,
-    newApi: true
-  },
-  listPersonaByGroupId: {
-    method: 'get',
-    url: `${NewPersonaBaseUrl}/:groupId/identities`,
-    oldUrl: `${PersonaBaseUrl}/:groupId/identities`,
     newApi: true
   },
   searchPersonaList: {

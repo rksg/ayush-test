@@ -29,8 +29,9 @@ import {
   PersonaErrorResponse,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 
 const defaultPayload = {
@@ -247,6 +248,7 @@ export function PersonaDevicesTable (props: {
 
   const rowActions: TableProps<PersonaDevice>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedItems, clearSelection) => {
 
@@ -270,13 +272,15 @@ export function PersonaDevicesTable (props: {
     }
   ]
 
-  const actions: TableProps<PersonaDevice>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Device' }),
-      onClick: () => {setModelVisible(true)},
-      disabled: disableAddButton
-    }
-  ]
+  const actions: TableProps<PersonaDevice>['actions'] =
+    hasPermission({ scopes: [WifiScopes.CREATE] })
+      ? [{
+        label: $t({ defaultMessage: 'Add Device' }),
+        onClick: () => {
+          setModelVisible(true)
+        },
+        disabled: disableAddButton
+      }] : []
 
   const handleModalCancel = () => {
     setModelVisible(false)
@@ -341,7 +345,7 @@ export function PersonaDevicesTable (props: {
         dataSource={macDevices.concat(dpskDevices)}
         rowActions={filterByAccess(rowActions)}
         actions={filterByAccess(actions)}
-        rowSelection={hasAccess() ? {
+        rowSelection={hasPermission({ scopes: [WifiScopes.DELETE] }) ? {
           type: 'checkbox',
           getCheckboxProps: (item) => ({
             // Those devices auth by DPSK can not edit on this page
