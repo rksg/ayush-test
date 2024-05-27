@@ -18,6 +18,9 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+
 
 import { mockedPortalList, networksResponse } from './__tests__/fixtures'
 
@@ -151,5 +154,52 @@ describe('PortalTable', () => {
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${portalEditPath}`
     })
+  })
+
+  describe('ABAC permission', () => {
+    it('should dispaly with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.CREATE]
+      })
+
+      render(
+        <Provider>
+          <PortalTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        }
+      )
+
+      expect(await screen.findByRole('button', { name: /Add Guest Portal/i })).toBeVisible()
+    })
+
+    it('should correctly hide with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.DELETE]
+      })
+
+      render(
+        <Provider>
+          <PortalTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        }
+      )
+
+      expect(screen.queryByRole('button', { name: /Add Guest Portal/i })).toBeNull()
+    })
+
   })
 })
