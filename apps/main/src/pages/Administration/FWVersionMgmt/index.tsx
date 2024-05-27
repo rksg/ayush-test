@@ -36,7 +36,6 @@ const FWVersionMgmt = () => {
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: latestSwitchReleaseVersions } =
@@ -53,7 +52,7 @@ const FWVersionMgmt = () => {
     })
   })
   const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
-    { skip: !enableSigPackUpgrade })
+    { skip: false })
   const isApFirmwareAvailable = useIsApFirmwareAvailable()
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
@@ -117,7 +116,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
       content: <ApplicationPolicyMgmt />,
-      visible: enableSigPackUpgrade
+      visible: true
     }
   }
 

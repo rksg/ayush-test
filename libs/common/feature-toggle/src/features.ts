@@ -105,7 +105,6 @@ export enum Features {
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   SERVICES = 'acx-ui-services',
-  SIGPACK_UPGRADE = 'acx-ui-sigpack-upgrade',
   SSO = 'ADMN-SSO',
   STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
