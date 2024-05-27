@@ -27,6 +27,10 @@ export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
+export const hasFirmwareFilterForPoe = () => {
+  return window.location.pathname.includes('/health/wired')
+}
+
 export const kpiConfig = {
   connectionSuccess: {
     text: defineMessage({ defaultMessage: 'Connection Success' }),
@@ -426,6 +430,7 @@ export const kpiConfig = {
   },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
+    enableSwitchFirmwareFilter: hasFirmwareFilterForPoe,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
@@ -483,7 +488,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are reachable.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are reachable.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
@@ -559,7 +564,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are under safe thresholds of temperature.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are under safe thresholds of temperature.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
@@ -625,6 +630,22 @@ export const kpiConfig = {
       thresholdFormatter: numberWithPercentSymbol,
       tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
     }
+  },
+  switchInterfaceAnomalies: {
+    text: defineMessage({ defaultMessage: 'Interface Anomalies' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: 'Ports without anomalies' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Interface Anomalies measures the percentage of Ports which do not have anomaly.{br}{br}The time-series graph on the left displays the non anomaly ports percentage across time. The bar chart on the right captures the daily non anomaly ports percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+    }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -685,8 +706,8 @@ export const wiredKPIsForTab = () => {
     performance: {
       kpis: [
         'switchPortUtilization',
-        'switchUplinkPortUtilization'
-        // 'interfaceAnamolies',
+        'switchUplinkPortUtilization',
+        'switchInterfaceAnomalies'
         // 'bcmcTraffic'
       ]
     },
