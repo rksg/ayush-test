@@ -66,7 +66,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkListReq = createHttpRequest(CommonUrlsInfo.getVMNetworksList, params)
         const networkListQuery = await fetchWithBQ({ ...networkListReq, body: payload })
         const networkList = networkListQuery.data as TableResult<Network>
-        const networkIds = networkList?.data?.map(n => n.id) || []
+        const networkIds = networkList?.data?.filter(n => n.aps > 0).map(n => n.id) || []
         const networkIdsToIncompatible:{ [key:string]: number } = {}
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -741,8 +741,12 @@ export const fetchNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   }
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
   const networkVenuesList = networkVenuesListQuery.data as TableResult<Venue>
-  const venueIds:string[] = []
-  networkVenuesList.data.forEach(item => venueIds.push(item.id))
+  const venueIds:string[] = networkVenuesList.data?.filter(v => {
+    if (v.aggregatedApStatus) {
+      return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
+    }
+    return false
+  }).map(v => v.id) || []
 
   const networkDeepListInfo = {
     ...createHttpRequest(CommonUrlsInfo.getNetworkDeepList, arg.params),
@@ -929,8 +933,12 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   }
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
   const networkVenuesList = networkVenuesListQuery.data as TableResult<Venue>
-  const venueIds:string[] = []
-  networkVenuesList.data.forEach(item => venueIds.push(item.id))
+  const venueIds:string[] = networkVenuesList.data?.filter(v => {
+    if (v.aggregatedApStatus) {
+      return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
+    }
+    return false
+  }).map(v => v.id) || []
 
   const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate)
   const networkDeep = Array.isArray(networkDeepList?.response) ?
