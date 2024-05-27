@@ -2,6 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, GridRow, GridCol, Tabs, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetDHCPProfileQuery,
   useGetDhcpTemplateQuery,
@@ -32,7 +33,8 @@ export function DHCPDetail () {
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
 
   const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery
+    useGetDHCPProfileQuery, useGetDhcpTemplateQuery,
+    false, undefined, undefined, undefined, useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   )
   const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>(
     useVenuesListQuery, useGetVenuesTemplateListQuery, !data, {

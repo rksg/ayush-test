@@ -7,6 +7,7 @@ import { useIntl, FormattedList } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Table, TableProps, showActionModal, Loader, Tooltip, UsageRate } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { formatter }                                                      from '@acx-ui/formatter'
 import {
   useVenueDHCPPoolsQuery,
@@ -16,19 +17,24 @@ import {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation
 } from '@acx-ui/rc/services'
-import { IpUtilsService, VenueDHCPPoolInst, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { hasAccess }                                                                                                from '@acx-ui/user'
+import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { hasAccess }                                                                                                                                from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
-export default function VenuePoolTable (){
+export default function VenuePoolTable (
+  { venueDHCPProfile, dhcpProfile }:
+  { venueDHCPProfile?: VenueDHCPProfile, dhcpProfile?: DHCPSaveData }){
   const params = useParams()
   const { $t } = useIntl()
-
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
+  // eslint-disable-next-line max-len
   const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>(
-    useVenueDHCPPoolsQuery, useGetVenueTemplateDhcpPoolsQuery
+    useVenueDHCPPoolsQuery, useGetVenueTemplateDhcpPoolsQuery,
+    false,
+    { venueDHCPProfile, dhcpProfile }, undefined, undefined, enableRbac
   )
 
   const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher(
@@ -38,12 +44,23 @@ export default function VenuePoolTable (){
     useDeactivateDHCPPoolMutation, useDeactivateVenueTemplateDhcpPoolMutation
   )
 
-  const setActivePool = async (dhcppoolId:string, active:boolean)=>{
-
+  const setActivePool = async (dhcppoolId: string, dhcpPoolName: string, active: boolean)=>{
+    const { id, serviceProfileId, enabled, ...rest } = venueDHCPProfile || {}
     if(active){
-      await activateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
-    }else{
-      await deactivateDHCPPool({ params: { ...params, dhcppoolId } }).unwrap()
+      const payload = venueDHCPProfile ? {
+        ...rest,
+        activeDhcpPoolNames: [...(venueDHCPProfile?.activeDhcpPoolNames ?? []), dhcpPoolName] } : {}
+      await activateDHCPPool({
+        params: { ...params, dhcppoolId, serviceId: venueDHCPProfile?.serviceProfileId },
+        payload, enableRbac }).unwrap()
+    } else {
+      const payload = venueDHCPProfile ? {
+        ...rest,
+        activeDhcpPoolNames: venueDHCPProfile?.activeDhcpPoolNames?.filter((name)=>
+          name!==dhcpPoolName) } : {}
+      await deactivateDHCPPool({
+        params: { ...params, dhcppoolId, serviceId: venueDHCPProfile?.serviceProfileId },
+        payload, enableRbac }).unwrap()
     }
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){
@@ -171,7 +188,7 @@ export default function VenuePoolTable (){
               content: checked ? activeMsg : deactivateMsg,
               okText: $t({ defaultMessage: 'Confirm' }),
               onOk () {
-                setActivePool(row.id, checked)
+                setActivePool(row.id, row.name, checked)
               }
             })
 

@@ -1,6 +1,7 @@
 import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }                                                                                                         from '@acx-ui/feature-toggle'
 import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery, useGetVenueTemplateDhcpProfileQuery, useGetDhcpTemplateQuery } from '@acx-ui/rc/services'
 import { DHCPConfigTypeMessages, DHCPProfileAps, DHCPSaveData, VenueDHCPProfile, useConfigTemplate, useConfigTemplateQueryFnSwitcher }    from '@acx-ui/rc/utils'
 
@@ -13,8 +14,10 @@ export default function useDHCPInfo () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
+    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery,
+    false, undefined, undefined, params, enableRbac
   )
 
   // eslint-disable-next-line max-len
@@ -27,7 +30,9 @@ export default function useDHCPInfo () {
     useGetDhcpTemplateQuery,
     !venueDHCPProfile?.serviceProfileId,
     undefined,
-    { serviceId: venueDHCPProfile?.serviceProfileId }
+    { serviceId: venueDHCPProfile?.serviceProfileId },
+    undefined,
+    enableRbac
   )
 
   let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]

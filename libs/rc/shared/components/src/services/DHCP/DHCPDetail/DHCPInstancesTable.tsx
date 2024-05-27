@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Card, Loader }                                                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
 import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery }                     from '@acx-ui/rc/services'
 import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplateQueryFnSwitcher, useConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                             from '@acx-ui/react-router-dom'
@@ -17,7 +18,8 @@ export default function DHCPInstancesTable (){
   const { isTemplate } = useConfigTemplate()
 
   const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery
+    useGetDHCPProfileQuery, useGetDhcpTemplateQuery,
+    false, undefined, undefined, undefined, useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   )
 
   const tableQuery = useTableQuery({

@@ -42,6 +42,7 @@ export default function MyServices () {
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isServicePolicyRbacEnabled = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
 
   const services = [
     {
@@ -52,7 +53,8 @@ export default function MyServices () {
     {
       type: ServiceType.DHCP,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload })
+      // eslint-disable-next-line max-len
+      tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload, enableRbac: isServicePolicyRbacEnabled })
     },
     {
       type: ServiceType.EDGE_DHCP,

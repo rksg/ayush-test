@@ -8,6 +8,7 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useVenuesLeasesListQuery,
   useGetDHCPProfileQuery,
@@ -33,15 +34,17 @@ const DHCPInstance = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-
-  const { data: leasesList } = useVenuesLeasesListQuery({ params }, { skip: isTemplate })
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const { data: leasesList } = useVenuesLeasesListQuery(
+    { params, enableRbac }, { skip: isTemplate })
 
   const onlineList = _.filter(leasesList, (item)=>{
     return item.status === DHCPLeasesStatusEnum.ONLINE
   })
 
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
+    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery,
+    false, undefined, undefined, params, enableRbac
   )
 
   const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
@@ -49,7 +52,9 @@ const DHCPInstance = () => {
     useGetDhcpTemplateQuery,
     !venueDHCPProfile?.serviceProfileId,
     undefined,
-    { serviceId: venueDHCPProfile?.serviceProfileId }
+    { serviceId: venueDHCPProfile?.serviceProfileId },
+    undefined,
+    enableRbac
   )
 
   const leaseContent = $t({ defaultMessage: 'Lease Table ({count} Online)' },
@@ -65,7 +70,12 @@ const DHCPInstance = () => {
       label: $t({ defaultMessage: 'Pools ({count})' },
         { count: dhcpProfile?.dhcpPools.length || 0 }),
       value: 'pools',
-      children: <GridCol col={{ span: 24 }}><PoolTable /></GridCol>
+      children: <GridCol col={{ span: 24 }}>
+        {venueDHCPProfile && dhcpProfile &&
+          <PoolTable
+            venueDHCPProfile={venueDHCPProfile}
+            dhcpProfile={dhcpProfile}
+          />}</GridCol>
     },
     {
       label: leaseLabel,

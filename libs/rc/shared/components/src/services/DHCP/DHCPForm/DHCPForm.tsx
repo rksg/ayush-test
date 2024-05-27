@@ -9,6 +9,7 @@ import {
   StepsFormLegacyInstance,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                              from '@acx-ui/feature-toggle'
 import { useCreateOrUpdateDhcpTemplateMutation, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useSaveOrUpdateDHCPMutation } from '@acx-ui/rc/services'
 import {
   DHCPSaveData,
@@ -34,10 +35,12 @@ export function DHCPForm (props: DHCPFormProps) {
   const { editMode = false } = props
   const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
   const navigate = useNavigate()
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery, !editMode
+    useGetDHCPProfileQuery, useGetDhcpTemplateQuery,
+    !editMode, undefined, undefined, undefined, enableRbac
   )
 
   const [ saveOrUpdateDHCP, { isLoading: isFormSubmitting } ] = useConfigTemplateMutationFnSwitcher(
@@ -59,15 +62,14 @@ export function DHCPForm (props: DHCPFormProps) {
       convertLeashTimeforBackend(formData)
       const payload = {
         ...formData,
-        dhcpPools: formData.dhcpPools.map((pool)=>{
-          delete pool.allowWired
+        dhcpPools: formData.dhcpPools.map(({ id, allowWired, ...pool })=>{
           return {
             ...pool,
-            id: pool.id.indexOf('_NEW_')!==-1 ? '' : pool.id
+            ...(id.indexOf('_NEW_')!==-1 || enableRbac) ? {} : { id }
           }
         })
       }
-      await saveOrUpdateDHCP({ params, payload }).unwrap()
+      await saveOrUpdateDHCP({ params, payload, enableRbac }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
