@@ -22,7 +22,7 @@ import {
   ApCompatibilityResponse,
   transformNetwork,
   WifiNetwork,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -880,7 +880,9 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
 
 export const fetchApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   const apGroupNetworkListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getApGroupNetworkList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList
+      : CommonUrlsInfo.getApGroupNetworkList, arg.params),
     body: arg.payload
   }
   const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
@@ -952,7 +954,12 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
     }))
 
     const networkVenuesApGroupInfo = {
-      ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+      ...createHttpRequest(arg.payload.isTemplate
+        ? VenueConfigTemplateUrlsInfo.networkActivations
+        : CommonUrlsInfo.networkActivations, arg.params,
+      arg.payload.isTemplate
+        ? {}
+        : apiV2CustomHeader),
       body: JSON.stringify({ filters })
     }
     const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
@@ -1013,7 +1020,12 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
     }))
 
     const venueNetworkApGroupInfo = {
-      ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+      ...createHttpRequest(arg.payload.isTemplate
+        ? VenueConfigTemplateUrlsInfo.networkActivations
+        : CommonUrlsInfo.networkActivations, arg.params,
+      arg.payload.isTemplate
+        ? {}
+        : apiV2CustomHeader),
       body: JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
@@ -1066,7 +1078,9 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
 
 export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const apGroupNetworkListInfo = {
-    ...createHttpRequest(CommonUrlsInfo.getApGroupNetworkList, arg.params),
+    ...createHttpRequest(arg.payload.isTemplate
+      ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList
+      : CommonUrlsInfo.getApGroupNetworkList, arg.params),
     body: arg.payload
   }
   const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
@@ -1083,13 +1097,18 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
     const networkIds = networkList.data.map(item => item.id)
 
     const venueNetworkApGroupInfo = {
-      ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+      ...createHttpRequest(arg.payload.isTemplate
+        ? VenueConfigTemplateUrlsInfo.networkActivations
+        : CommonUrlsInfo.networkActivations, arg.params,
+      arg.payload.isTemplate
+        ? {}
+        : apiV2CustomHeader),
       body: JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
 
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
   }
 
   return { apGroupNetworkListQuery,

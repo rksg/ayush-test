@@ -29,7 +29,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
       [ConfigTemplateType.SYSLOG]: false,
       [ConfigTemplateType.SWITCH_REGULAR]: false,
-      [ConfigTemplateType.SWITCH_CLI]: false
+      [ConfigTemplateType.SWITCH_CLI]: false,
+      [ConfigTemplateType.AP_GROUP]: false
     })
   })
 
@@ -58,7 +59,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.ROGUE_AP_DETECTION]: true,
       [ConfigTemplateType.SYSLOG]: true,
       [ConfigTemplateType.SWITCH_REGULAR]: false,
-      [ConfigTemplateType.SWITCH_CLI]: false
+      [ConfigTemplateType.SWITCH_CLI]: false,
+      [ConfigTemplateType.AP_GROUP]: false
     })
   })
 
@@ -87,7 +89,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
       [ConfigTemplateType.SYSLOG]: false,
       [ConfigTemplateType.SWITCH_REGULAR]: false,
-      [ConfigTemplateType.SWITCH_CLI]: false
+      [ConfigTemplateType.SWITCH_CLI]: false,
+      [ConfigTemplateType.AP_GROUP]: false
     })
   })
 
@@ -115,7 +118,8 @@ describe('useIsConfigTemplateOnByType', () => {
       [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
       [ConfigTemplateType.SYSLOG]: false,
       [ConfigTemplateType.SWITCH_REGULAR]: true,
-      [ConfigTemplateType.SWITCH_CLI]: true
+      [ConfigTemplateType.SWITCH_CLI]: true,
+      [ConfigTemplateType.AP_GROUP]: true
     })
   })
 })
