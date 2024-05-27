@@ -1045,16 +1045,24 @@ function UserRoutes () {
       <Route path='users/switch/clients/:clientId'
         element={<SwitchClientDetailsPage />} />
       {(isCloudpathBetaEnabled)
-        ? <><Route
-          path='users/identity-management'
-          element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}/><Route
-          path='users/identity-management/:activeTab'
-          element={<PersonaPortal/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId'
-          element={<PersonaGroupDetails/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-          element={<PersonaDetails/>}/></>
-        : <></>}
+        ? <>
+          <Route
+            path='users/identity-management'
+            element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}
+          />
+          <Route
+            path='users/identity-management/:activeTab'
+            element={<PersonaPortal/>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId'
+            element={<PersonaGroupDetails/>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+            element={<PersonaDetails/>}
+          />
+        </> : <></>}
     </Route>
   )
 }
