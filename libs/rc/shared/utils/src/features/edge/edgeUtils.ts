@@ -4,10 +4,10 @@ import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                                                                                          from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                                                                 from '../../models/EdgeEnum'
-import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeSerialNumber, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
-import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                                                from '../../validator'
+import { IpUtilsService }                                                                                                                                                                            from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                                                                                   from '../../models/EdgeEnum'
+import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeSerialNumber, EdgeStatus, EdgeSubInterface, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                                                                  from '../../validator'
 
 const Netmask = require('netmask').Netmask
 
@@ -155,6 +155,16 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
         payload.ipMode = EdgeIpModeEnum.STATIC
       }
     }
+  }
+
+  return payload
+}
+
+export const convertEdgeSubinterfaceToApiPayload = (formData: EdgeSubInterface) => {
+  const payload = { ...formData }
+  if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+    payload.ip = ''
+    payload.subnet = ''
   }
 
   return payload

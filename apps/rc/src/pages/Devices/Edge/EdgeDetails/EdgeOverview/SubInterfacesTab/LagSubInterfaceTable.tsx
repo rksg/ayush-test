@@ -1,7 +1,7 @@
-import { Loader }                                       from '@acx-ui/components'
-import { useGetEdgeLagSubInterfacesStatusListQuery }    from '@acx-ui/rc/services'
-import { EdgeLagStatus, EdgePortStatus, useTableQuery } from '@acx-ui/rc/utils'
-import { RequestPayload }                               from '@acx-ui/types'
+import { Loader }                                    from '@acx-ui/components'
+import { useGetEdgeLagSubInterfacesStatusListQuery } from '@acx-ui/rc/services'
+import { EdgePortInfo, useTableQuery }               from '@acx-ui/rc/utils'
+import { RequestPayload }                            from '@acx-ui/types'
 
 import { SubInterfaceTable } from './SubInterfaceTable'
 
@@ -10,13 +10,13 @@ export const LagSubInterfaceTable = ({ serialNumber, lagId }:
   const settingsId = 'edge-sub-interfaces-table'
   const defaultPayload = {
     fields: [
-      'status','portType','subnet','ip','ipMode','vlan'
+      'status','portType','subnet','ip','ipMode','vlan', 'mac'
     ],
     filters: { lagId: [lagId] }
   }
 
   // eslint-disable-next-line max-len
-  const tableQuery = useTableQuery<EdgePortStatus | EdgeLagStatus, RequestPayload<unknown>, unknown>({
+  const tableQuery = useTableQuery<EdgePortInfo, RequestPayload<unknown>, unknown>({
     useQuery: useGetEdgeLagSubInterfacesStatusListQuery,
     apiParams: { serialNumber },
     defaultPayload: defaultPayload,

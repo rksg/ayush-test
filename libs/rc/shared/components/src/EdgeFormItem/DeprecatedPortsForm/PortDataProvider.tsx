@@ -6,6 +6,8 @@ import { useGetEdgeLagListQuery, useGetEdgeListQuery, useGetEdgesPortStatusQuery
 import { EdgeLag, EdgePort, EdgePortInfo }                                                                from '@acx-ui/rc/utils'
 
 export interface EdgePortsDataContextType {
+  venueId?: string,
+  edgeClusterId?: string,
   portData: EdgePort[]
   portStatus: EdgePortInfo[]
   lagData?: EdgeLag[]
@@ -51,8 +53,8 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
     isLoading: isPortLoading,
     isFetching: isPortFetching
   } = useGetPortConfigQuery({
-    params: { serialNumber }
-  })
+    params: { venueId, edgeClusterId, serialNumber }
+  }, { skip: !venueId || !edgeClusterId })
 
   const {
     data: portStatus,
@@ -83,6 +85,8 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
   const isFetching = isPortFetching || isPortStatusFetching || isLagFetching
 
   return <EdgePortsDataContext.Provider value={{
+    venueId,
+    edgeClusterId,
     portData: portData?.ports ?? [],
     portStatus: portStatus?.[serialNumber] ?? [],
     lagData: lagData ?? [],

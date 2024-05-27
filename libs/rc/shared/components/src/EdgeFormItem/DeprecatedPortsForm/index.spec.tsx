@@ -13,7 +13,7 @@ import {
 
 import { EditContext } from '../EdgeEditContext'
 
-import { EdgePortsForm, EdgePortTabEnum } from '.'
+import { DeprecatedEdgePortsForm, EdgePortTabEnum } from '.'
 
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
@@ -89,7 +89,7 @@ describe('EditEdge ports', () => {
         <EditContext.Provider
           value={defaultContextData}
         >
-          <EdgePortsForm
+          <DeprecatedEdgePortsForm
             clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
@@ -110,7 +110,7 @@ describe('EditEdge ports', () => {
         <EditContext.Provider
           value={defaultContextData}
         >
-          <EdgePortsForm
+          <DeprecatedEdgePortsForm
             clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
@@ -134,7 +134,7 @@ describe('EditEdge ports', () => {
         <EditContext.Provider
           value={defaultContextData}
         >
-          <EdgePortsForm
+          <DeprecatedEdgePortsForm
             clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={handleTabChange}

@@ -30,7 +30,7 @@ import { EdgePortTabEnum }                                                      
 import { EditContext as EdgeEditContext, EditEdgeContextType, EditEdgeFormControlType } from '../../EdgeEditContext'
 import { EdgePortsDataContext, EdgePortsDataContextType }                               from '../PortDataProvider'
 
-import PortsGeneral from './'
+import PortsGeneral from '.'
 
 const { mockEdgePortConfig, mockPortInfo } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
