@@ -88,7 +88,9 @@ import {
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
   ApiVersionType,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo,
+  RogueApUrls,
+  EnhancedRoguePolicyType
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -945,23 +947,59 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     getVenueRogueAp: build.query<VenueRogueAp, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params)
-        return{
-          ...req
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          if (enableRbac) {
+            let response
+            response = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getVenueRogueAp, params))
+            const roguePolicySetting = response.data as VenueRogueAp
+
+            response = await fetchWithBQ({
+              ...createHttpRequest(RogueApUrls.getRoguePolicyListRbac, params),
+              body: { filters: { venueIds: [params?.venueId] }, fields: ['id'] }
+            })
+            const roguePolicy = response.data as TableResult<EnhancedRoguePolicyType>
+            console.log(JSON.stringify({
+              enabled: roguePolicy.totalCount > 0,
+              roguePolicyId: (roguePolicy.totalCount > 0) ? roguePolicy.data[0].id : null,
+              reportThreshold: roguePolicySetting.reportThreshold
+            }))
+            return {
+              data: {
+                enabled: roguePolicy.totalCount > 0,
+                roguePolicyId: (roguePolicy.totalCount > 0) ? roguePolicy.data[0].id : null,
+                reportThreshold: roguePolicySetting.reportThreshold
+              } as VenueRogueAp
+            }
+          } else {
+            debugger
+            const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params)
+            const res = await fetchWithBQ(req)
+            // Ensure the return type is QueryReturnValue
+            if (res.error) {
+              return { error: res.error as FetchBaseQueryError }
+            } else {
+              return { data: res.data as VenueRogueAp }
+            }
+          }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateVenueRogueAp',
-            'UpdateDenialOfServiceProtection'
+            'UpdateDenialOfServiceProtection',
+            'ActivateRoguePolicyOnVenue',
+            'DeactivateRoguePolicyOnVenue'
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }]))
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'LIST' }, { type: 'Venue', id: 'RogueAp' }]))
           })
         })
-      }
+      },
+      providesTags: [{ type: 'Venue', id: 'RogueAp' }]
     }),
     getRogueApLocation: build.query<RogueApLocation, RequestPayload>({
       query: ({ params }) => {
@@ -981,12 +1019,47 @@ export const venueApi = baseVenueApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params)
-        return {
-          ...req,
-          body: payload
+    updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload<{ enabled: boolean | undefined, reportThreshold: number | undefined, roguePolicyId: string | undefined, currentReportThreshold: number | undefined, currentRoguePolicyId: string | undefined }>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          if (!payload) {
+            // eslint-disable-next-line max-len
+            return { error: { status: 'CUSTOM_ERROR', error: 'Payload is required' } as FetchBaseQueryError }
+          }
+          if (enableRbac) {
+            const { enabled, reportThreshold, roguePolicyId, currentRoguePolicyId, currentReportThreshold } = payload
+            if (enabled) {
+              if (currentRoguePolicyId !== roguePolicyId) {
+                await fetchWithBQ(createHttpRequest(RogueApUrls.activateRoguePolicy, {
+                  policyId: roguePolicyId,
+                  venueId: params?.venueId
+                }))
+              }
+              if (currentReportThreshold !== reportThreshold) {
+                await fetchWithBQ({
+                  ...createHttpRequest(WifiRbacUrlsInfo.updateVenueRogueAp, params),
+                  body: { reportThreshold }
+                })
+              }
+            } else {
+              await fetchWithBQ(createHttpRequest(RogueApUrls.deactivateRoguePolicy, { policyId: currentRoguePolicyId, venueId: params?.venueId }))
+            }
+            return { data: { enabled, reportThreshold, roguePolicyId } as VenueRogueAp }
+          } else {
+            const req = {
+              ...createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params),
+              body: payload
+            }
+            const res = await fetchWithBQ(req)
+            // Ensure the return type is QueryReturnValue
+            if (res.error) {
+              return { error: res.error as FetchBaseQueryError }
+            } else {
+              return { data: res.data as VenueRogueAp }
+            }
+          }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]

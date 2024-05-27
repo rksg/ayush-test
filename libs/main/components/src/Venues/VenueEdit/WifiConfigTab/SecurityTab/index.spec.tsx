@@ -4,20 +4,21 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { venueApi }                    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider, store }             from '@acx-ui/store'
-import { mockServer, render, screen }  from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
+import { venueApi }                                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, RogueApUrls, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }           from '@acx-ui/test-utils'
 
-import { VenueEditContext }        from '../..'
+import { VenueEditContext }     from '../..'
 import {
   venueData,
   venueRogueAp,
   venueApTlsEnhancedKey,
   venueDosProtection,
   venueRoguePolicyList,
-  rogueApPolicyNotDefaultProfile
+  rogueApPolicyNotDefaultProfile,
+  mockRogueApPoliciesListRbac
 } from '../../../__tests__/fixtures'
 
 
@@ -28,6 +29,7 @@ const params = {
   venueId: 'f892848466d047798430de7ac234e940'
 }
 const mockedUpdateFn = jest.fn()
+const mockGetRoguePolicy = jest.fn()
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -88,7 +90,19 @@ describe('SecurityTab', () => {
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (_, res, ctx) => {
           return res(ctx.json(venueRoguePolicyList))
-        })
+        }),
+      rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(
+          ctx.json(mockRogueApPoliciesListRbac)
+        )
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueRogueAp.url,
+        (_, res, ctx) => res(
+          mockGetRoguePolicy(),
+          ctx.json({ reportThreshold: 0 }))
+      )
     )
   })
 
@@ -212,6 +226,32 @@ describe('SecurityTab', () => {
     await userEvent.click(cancelButton[1])
 
     expect(screen.queryByText(/rogue ap detection policy details: roguepolicy1/i)).toBeNull()
+  })
+
+  it('should render correctly with RogueApProfile settings with RBAC turned on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          setEditContextData: jest.fn(),
+          setEditSecurityContextData: jest.fn()
+        }}>
+          <SecurityTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await waitFor(() => expect(mockGetRoguePolicy).toBeCalled())
+
+    await screen.findByRole('option', { name: 'a123' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[0],
+      screen.getByRole('option', { name: 'a123' })
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'View Details' }))
+
   })
 
 })

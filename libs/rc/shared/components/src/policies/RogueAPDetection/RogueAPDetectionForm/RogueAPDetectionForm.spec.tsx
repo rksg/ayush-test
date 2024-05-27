@@ -1,9 +1,12 @@
 import React from 'react'
 
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
+import { waitFor } from '@testing-library/react'
+import userEvent   from '@testing-library/user-event'
+import { rest }    from 'msw'
 
+import {Features, useIsSplitOn} from '@acx-ui/feature-toggle'
 import {
+  CommonResult,
   RogueAPDetectionContextType,
   RogueAPRule,
   RogueApUrls,
@@ -16,13 +19,20 @@ import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockedRogueApPoliciesList, policyListContent, venueTable } from '../__tests__/fixtures'
-import RogueAPDetectionContext                                      from '../RogueAPDetectionContext'
+import RogueAPDetectionContext                                                               from '../RogueAPDetectionContext'
 
 import { RogueAPDetectionForm } from './RogueAPDetectionForm'
 
 
 const policyResponse = {
   requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'
+}
+
+const addPolicyRbacResponse: CommonResult = {
+  requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0',
+  response: {
+    id: 'policyId1'
+  }
 }
 
 const detailContent = {
@@ -242,6 +252,18 @@ describe('RogueAPDetectionForm', () => {
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        RogueApUrls.addRoguePolicyRbac.url,
+        (_, res, ctx) => res(
+          ctx.json(addPolicyRbacResponse)
+        )
+      ),
+      rest.put(
+        RogueApUrls.activateRoguePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(policyResponse)
+        )
       )
     )
   })
@@ -468,5 +490,33 @@ describe('RogueAPDetectionForm', () => {
     const applyBtn = await screen.findByRole('button', { name: 'Apply' })
 
     await userEvent.click(applyBtn)
+  })
+
+  it('add policy is successful when enableRbac is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+
+    render(<RogueAPDetectionForm edit={false} />)
+
+    mockServer.use(
+      rest.get(
+        RogueApUrls.addRoguePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(detailContent)
+        )
+      ), rest.put(
+        RogueApUrls.updateRoguePolicy.url,
+        (_, res, ctx) => res(
+          ctx.json(policyResponse)
+        )
+      ))
+
+    // Click on the submit button
+    await userEvent.click(screen.getByRole('button', { name: /submit/i }))
+
+    // Wait for the success message to appear on the screen
+    await screen.findByText(/policy added successfully/i)
+
+    // Assert that the new policy is added to the list
+    expect(screen.getByText(/newPolicyId/i)).toBeInTheDocument()
   })
 })

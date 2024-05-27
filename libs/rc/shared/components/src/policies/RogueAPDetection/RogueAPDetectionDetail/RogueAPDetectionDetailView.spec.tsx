@@ -2,6 +2,7 @@ import React from 'react'
 
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { policyApi }                       from '@acx-ui/rc/services'
 import { RogueApUrls }                     from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
@@ -160,5 +161,42 @@ describe('RogueAPDetectionDetailView', () => {
 
     await screen.findByText(/instance \(0\)/i)
 
+  })
+
+  it('should render RogueAPDetectionDetailView correctly when enableRbac is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    mockServer.use(rest.get(
+      RogueApUrls.getRoguePolicyRbac.url,
+      (_, res, ctx) => res(
+        ctx.json(detailContent)
+      )
+    ), rest.post(
+      RogueApUrls.getVenueRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(venueDetailContent)
+      )
+    ))
+
+    render(
+      <RogueAPDetectionDetailView />
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByText(/classification rules/i)
+
+    screen.getByText(detailContent.rules.length)
+
+    await screen.findByText(/venue name/i)
+
+    await screen.findByText(/instance \(3\)/i)
+
+    expect(await screen.findByRole('cell', {
+      name: 'test-venue2'
+    })).toBeVisible()
   })
 })

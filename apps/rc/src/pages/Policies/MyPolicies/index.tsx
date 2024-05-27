@@ -100,6 +100,7 @@ function useCardData (): CardDataProps[] {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
 
   return [
     {
@@ -160,7 +161,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.ROGUE_AP_DETECTION,
       categories: [RadioCardCategory.WIFI],
       totalCount: useEnhancedRoguePoliciesQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))

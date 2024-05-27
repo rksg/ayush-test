@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
@@ -67,6 +68,13 @@ describe('MyPolicies', () => {
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: 99,
+          data: []
+        }))
       )
     )
   })
@@ -101,5 +109,20 @@ describe('MyPolicies', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
+  })
+
+  it('should render Rogue AP with RBAC on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const rogueApTitle = 'Rogue AP Detection (99)'
+    expect(await screen.findByText(rogueApTitle)).toBeVisible()
   })
 })

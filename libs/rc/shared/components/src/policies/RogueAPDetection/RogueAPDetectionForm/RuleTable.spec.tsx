@@ -3,13 +3,14 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { policyApi }                                                         from '@acx-ui/rc/services'
 import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
 import { Provider, store }                                                   from '@acx-ui/store'
 import { act, mockServer, render, screen, within }                           from '@acx-ui/test-utils'
 
-import { detailContent }       from '../__tests__/fixtures'
-import RogueAPDetectionContext from '../RogueAPDetectionContext'
+import { detailContent, mockedRogueApPolicyRbac } from '../__tests__/fixtures'
+import RogueAPDetectionContext                    from '../RogueAPDetectionContext'
 
 import RuleTable from './RuleTable'
 
@@ -181,5 +182,42 @@ describe('RuleTable', () => {
     await userEvent.click(screen.getByText(/delete \"samenetworkrulename1\"?/i))
 
     expect(await screen.findByText(/are you sure you want to delete this rule\?/i)).toBeVisible()
+  })
+
+  it('should render RuleTable successfully with RBAC turned on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+
+    mockServer.use(
+      rest.get(RogueApUrls.getRoguePolicyRbac.url,
+        (_, res, ctx) => res(ctx.json(mockedRogueApPolicyRbac))
+      ))
+
+    render(
+      <RogueAPDetectionContext.Provider value={{
+        state: initState,
+        dispatch: setRogueAPConfigure
+      }}>
+        <RuleTable edit={false}/>
+      </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.getByRole('columnheader', {
+      name: /priority/i
+    })).toBeTruthy()
+    expect(screen.getByRole('columnheader', {
+      name: /rule name/i
+    })).toBeTruthy()
+    expect(screen.getByRole('columnheader', {
+      name: /rule type/i
+    })).toBeTruthy()
+    expect(screen.getByRole('columnheader', {
+      name: /category/i
+    })).toBeTruthy()
   })
 })

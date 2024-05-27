@@ -1,0 +1,54 @@
+import { render } from '@testing-library/react'
+import { rest }   from 'msw'
+
+import { useIsSplitOn }                from '@acx-ui/feature-toggle'
+import { RogueApUrls }                 from '@acx-ui/rc/utils'
+import { Provider }                    from '@acx-ui/store'
+import { mockServer, screen, waitFor } from '@acx-ui/test-utils'
+
+import { mockedRogueApPolicyRbac } from '../../../__tests__/fixtures'
+
+import RogueApDrawer from './RogueApDrawer'
+import {VenueEditContext} from "@acx-ui/main/components";
+import {SecurityTab} from "./index";
+import React from "react";
+
+const mockRoguePolicyQuery = jest.fn()
+
+const params = {
+  tenantId: '15a04f095a8f4a96acaf17e921e8a6df',
+  venueId: 'f892848466d047798430de7ac234e940'
+}
+
+mockServer.use(
+  rest.get(RogueApUrls.getRoguePolicyRbac.url, (req, res, ctx) => {
+    mockRoguePolicyQuery()
+    return res(ctx.json(mockedRogueApPolicyRbac))
+  })
+)
+
+describe('RogueApDrawer', () => {
+  it('uses RogueApUrls.getRoguePolicyRbac.url when enableRbac is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(feature => feature === 'SERVICE_POLICY_RBAC')
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          setEditContextData: jest.fn(),
+          setEditSecurityContextData: jest.fn()
+        }}>
+          <RogueApDrawer visible={true} setVisible={() => {}} policyId='policyId' />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params } })
+
+
+    await waitFor(() => expect(mockRoguePolicyQuery).toBeCalled())
+
+    await screen.findByTitle('Rogue AP Detection Policy Profile: a123')
+
+    await screen.findByTitle('Classification rules (1)')
+
+    await screen.findByText('123123')
+  })
+
+})

@@ -93,6 +93,7 @@ export function SecurityTab () {
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
@@ -121,8 +122,41 @@ export function SecurityTab () {
 
   const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
     useGetVenueRogueApQuery,
-    useGetVenueRogueApTemplateQuery
+    useGetVenueRogueApTemplateQuery,
+    false,
+    null,
+    undefined,
+    null,
+    enableRbac
   )
+
+  // eslint-disable-next-line max-len
+  const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
+    const { data } = useConfigTemplateQueryFnSwitcher(
+      useEnhancedRoguePoliciesQuery,
+      useGetRoguePolicyTemplateListQuery,
+      false,
+      DEFAULT_PAYLOAD,
+      undefined,
+      null,
+      enableRbac
+    )
+
+    if (data?.totalCount === 0) {
+      return {
+        selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
+        selected: DEFAULT_OPTIONS.find((item) =>
+          item.id === DEFAULT_POLICY_ID
+        )
+      }
+    }
+    return {
+      selectOptions: data?.data.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
+      selected: data?.data.find((item) =>
+        item.id === policyId
+      )
+    }
+  }
 
   const [updateVenueApEnhancedKey, {
     isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
@@ -204,9 +238,11 @@ export function SecurityTab () {
         const rogueApPayload = {
           enabled: data?.rogueApEnabled,
           reportThreshold: data?.reportThreshold,
-          roguePolicyId: data?.roguePolicyId
+          roguePolicyId: data?.roguePolicyId,
+          currentRoguePolicyId: venueRogueApData?.roguePolicyId,
+          currentReportThreshold: venueRogueApData?.reportThreshold
         }
-        await updateVenueRogueAp({ params, payload: rogueApPayload })
+        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac })
         setTriggerRogueAPDetection(false)
       }
 
@@ -487,27 +523,3 @@ const FieldsetItem = ({
     onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>
 
-// eslint-disable-next-line max-len
-const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useEnhancedRoguePoliciesQuery,
-    useGetRoguePolicyTemplateListQuery,
-    false,
-    DEFAULT_PAYLOAD
-  )
-
-  if (data?.totalCount === 0) {
-    return {
-      selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
-      selected: DEFAULT_OPTIONS.find((item) =>
-        item.id === DEFAULT_POLICY_ID
-      )
-    }
-  }
-  return {
-    selectOptions: data?.data.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
-    selected: data?.data.find((item) =>
-      item.id === policyId
-    )
-  }
-}

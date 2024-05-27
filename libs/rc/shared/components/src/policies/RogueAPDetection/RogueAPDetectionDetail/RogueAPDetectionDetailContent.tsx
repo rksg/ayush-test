@@ -3,16 +3,23 @@ import { useContext, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, SummaryCard }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { useGetRoguePolicyTemplateQuery, useRoguePolicyQuery } from '@acx-ui/rc/services'
 import { useConfigTemplateQueryFnSwitcher }                    from '@acx-ui/rc/utils'
 
 import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
 const RogueAPDetectionDetailContent = () => {
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   const { $t } = useIntl()
 
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher(
-    useRoguePolicyQuery, useGetRoguePolicyTemplateQuery
+    useRoguePolicyQuery, useGetRoguePolicyTemplateQuery,
+    false,
+    null,
+    undefined,
+    null,
+    enableRbac
   )
 
   const { setFiltersId, setPolicyName } = useContext(RogueAPDetailContext)

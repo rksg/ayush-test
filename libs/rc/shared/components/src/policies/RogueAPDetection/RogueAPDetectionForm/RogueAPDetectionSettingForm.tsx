@@ -3,7 +3,8 @@ import React, { useContext, useEffect } from 'react'
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm }    from '@acx-ui/components'
+import { StepsForm }              from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetRoguePolicyTemplateListQuery,
@@ -28,10 +29,12 @@ type RogueAPDetectionSettingFormProps = {
 }
 
 export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
+  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   const { $t } = useIntl()
   const { edit } = props
 
   const form = Form.useFormInstance()
+  const DEFAULT_PROFILE = 'Default profile'
 
   const {
     state, dispatch
@@ -40,7 +43,11 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
   const { data: policyData } = useConfigTemplateQueryFnSwitcher(
     useRoguePolicyQuery,
     useGetRoguePolicyTemplateQuery,
-    !edit
+    !edit,
+    null,
+    undefined,
+    null,
+    enableRbac
   )
 
   // eslint-disable-next-line max-len
@@ -48,7 +55,10 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     useEnhancedRoguePoliciesQuery,
     useGetRoguePolicyTemplateListQuery,
     false,
-    { page: 1, pageSize: 10000 }
+    { page: 1, pageSize: 10000 },
+    undefined,
+    null,
+    enableRbac
   )
 
   const handlePolicyName = (policyName: string) => {
@@ -70,23 +80,33 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
   }
 
   useEffect(() => {
-    if (edit && policyData) {
-      dispatch({
-        type: RogueAPDetectionActionTypes.UPDATE_STATE,
-        payload: {
-          state: {
-            ...state,
-            description: policyData.description ?? '',
-            policyName: policyData.name ?? '',
-            venues: policyData.venues ?? [],
-            rules: policyData.rules ?? []
+    if (edit && policyData && policyList) {
+      const policy = policyList.data?.find(p => p.id === policyData?.id)
+      const defaultPolicyId = policyList.data?.find(p => p.name === DEFAULT_PROFILE)?.id
+      if (!defaultPolicyId) {
+        throw new Error('Default profile not found')
+      }
+      if (policy) {
+        dispatch({
+          type: RogueAPDetectionActionTypes.UPDATE_STATE,
+          payload: {
+            state: {
+              ...state,
+              id: policyData.id,
+              description: policyData.description ?? '',
+              policyName: policyData.name ?? '',
+              venues: policy.venueIds.map((id: string) => ({ id, name: '' })),
+              oldVenues: policy.venueIds.map((id: string) => ({ id, name: '' })),
+              rules: policyData.rules ?? [],
+              defaultPolicyId: defaultPolicyId
+            }
           }
-        }
-      })
+        })
+      }
       form.setFieldValue('policyName', policyData.name ?? '')
       form.setFieldValue('description', policyData.description ?? '')
     }
-  }, [policyData])
+  }, [policyData, policyList])
 
   const nameValidator = (value: string) => {
     const list = (policyList?.data ?? [])
