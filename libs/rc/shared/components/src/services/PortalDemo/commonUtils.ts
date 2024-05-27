@@ -32,6 +32,20 @@ export const getBase64 = (img: RcFile, callback: (url: string) => void) => {
   reader.addEventListener('load', () => callback(reader.result as string))
   reader.readAsDataURL(img)
 }
+
+export const getImageBase64 = (file: RcFile):Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.onload = () => {
+      try {
+        resolve(fileReader.result as string)
+      } catch(error) {reject(error)}
+    }
+
+    fileReader.readAsDataURL(file)
+  })
+}
+
 export const PortalDemoDefaultSize={
   welcomeSize: 16,
   photoRatio: 170,
