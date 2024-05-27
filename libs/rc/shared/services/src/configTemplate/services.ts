@@ -148,7 +148,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
         const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.addPortal,
-          params, getV1orV1_1Headers(payload))
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
           body: JSON.stringify({
