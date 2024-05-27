@@ -15,7 +15,7 @@ export function useIsSplitOn (splitName: string): boolean {
   const treatment = treatments[splitName].treatment
   useDebugValue(`${splitName}: ${treatment}`) // used to display a label for custom hooks in React DevTools
 
-  if (splitName === 'acx-ui-rbac-service-policy-toggle') return false
+  // if (splitName === 'acx-ui-rbac-service-policy-toggle') return false
 
   return treatment === FeatureFlag.ON
 }

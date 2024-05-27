@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { useCallback } from 'react'
+
 import _ from 'lodash'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useGetTunnelProfileViewDataListQuery }                   from '@acx-ui/rc/services'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                   from '@acx-ui/feature-toggle'
+import { useActivateRadiusServerMutation, useDeactivateRadiusServerMutation, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
   GuestNetworkTypeEnum,
@@ -15,7 +17,8 @@ import {
   useConfigTemplate,
   ConfigTemplateType,
   configTemplatePolicyTypeMap,
-  configTemplateServiceTypeMap
+  configTemplateServiceTypeMap,
+  CommonResult
 } from '@acx-ui/rc/utils'
 
 import { useIsConfigTemplateEnabledByType } from '../configTemplates'
@@ -146,4 +149,37 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
   }
 
   return false
+}
+
+export function useUpdateRadiusServer () {
+  const [ activateRadiusServer ] = useActivateRadiusServerMutation()
+  const [ deactivateRadiusServer ] = useDeactivateRadiusServerMutation()
+  const enableServicePolicyRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+
+  // eslint-disable-next-line max-len
+  const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+
+    const mutations: Promise<CommonResult>[] = []
+
+    // eslint-disable-next-line max-len
+    const radiusServerIdKeys: Extract<keyof NetworkSaveData, 'authRadiusId' | 'accountingRadiusId'>[] = ['authRadiusId', 'accountingRadiusId']
+    radiusServerIdKeys.forEach(radiusKey => {
+      const radiusValue = saveData[radiusKey]
+      const oldRadiusValue = oldSaveData?.[radiusKey]
+
+      if ((radiusValue ?? '') !== (oldRadiusValue ?? '')) {
+        const mutationTrigger = radiusValue ? activateRadiusServer : deactivateRadiusServer
+        mutations.push(mutationTrigger({
+          params: { networkId, radiusId: radiusValue ?? oldRadiusValue as string }
+        }).unwrap())
+      }
+    })
+
+    return await Promise.all(mutations)
+  }
+
+  return {
+    updateProfile: useCallback(updateProfile, [])
+  }
 }

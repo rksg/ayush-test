@@ -435,7 +435,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     //url: '/venues/aps/:serialNumber/directedMulticastSettings',
     url: '/venues/:venueId/aps/:serialNumber/directedMulticastSettings',
     newApi: true
-  }
+  },
   /*
   // deprecated. use the updateApDirectedMulticast to replace
   resetApDirectedMulticast: {
@@ -592,4 +592,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   }
   */
+  activateRadiusServer: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
+    newApi: true
+  },
+  deactivateRadiusServer: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
+    newApi: true
+  },
+  updateRadiusServerSettings: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
+    newApi: true
+  },
+  getRadiusServerSettings: {
+    method: 'get',
+    url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
+    newApi: true
+  }
 }

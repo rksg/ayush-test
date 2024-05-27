@@ -22,11 +22,12 @@ import {
   ApCompatibilityResponse,
   transformNetwork,
   WifiNetwork,
-  ConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
-import { baseNetworkApi }                      from '@acx-ui/store'
-import { RequestPayload }                      from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+import { baseNetworkApi }                                            from '@acx-ui/store'
+import { RequestPayload }                                            from '@acx-ui/types'
+import { createHttpRequest, getApiVersionHeaders, ignoreErrorModal } from '@acx-ui/utils'
 
 
 const RKS_NEW_UI = {
@@ -692,6 +693,20 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    activateRadiusServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.activateRadiusServer, params, getApiVersionHeaders('v1'))
+        }
+      }
+    }),
+    deactivateRadiusServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params, getApiVersionHeaders('v1'))
+        }
+      }
     })
   })
 })
@@ -1150,7 +1165,9 @@ export const {
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
-  useActivateCertificateTemplateMutation
+  useActivateCertificateTemplateMutation,
+  useActivateRadiusServerMutation,
+  useDeactivateRadiusServerMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

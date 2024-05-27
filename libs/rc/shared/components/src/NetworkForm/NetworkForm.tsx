@@ -44,22 +44,22 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
-import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
-import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
-import { HostApprovalForm }        from './CaptivePortal/HostApprovalForm'
-import { OnboardingForm }          from './CaptivePortal/OnboardingForm'
-import { PortalTypeForm }          from './CaptivePortal/PortalTypeForm'
-import { SelfSignInForm }          from './CaptivePortal/SelfSignInForm'
-import { WISPrForm }               from './CaptivePortal/WISPrForm'
-import { NetworkDetailForm }       from './NetworkDetail/NetworkDetailForm'
-import NetworkFormContext          from './NetworkFormContext'
-import { NetworkMoreSettingsForm } from './NetworkMoreSettings/NetworkMoreSettingsForm'
-import { AaaSettingsForm }         from './NetworkSettings/AaaSettingsForm'
-import { DpskSettingsForm }        from './NetworkSettings/DpskSettingsForm'
-import { Hotspot20SettingsForm }   from './NetworkSettings/Hotspot20SettingsForm'
-import { OpenSettingsForm }        from './NetworkSettings/OpenSettingsForm'
-import { PskSettingsForm }         from './NetworkSettings/PskSettingsForm'
-import { SummaryForm }             from './NetworkSummary/SummaryForm'
+import { CloudpathForm }            from './CaptivePortal/CloudpathForm'
+import { GuestPassForm }            from './CaptivePortal/GuestPassForm'
+import { HostApprovalForm }         from './CaptivePortal/HostApprovalForm'
+import { OnboardingForm }           from './CaptivePortal/OnboardingForm'
+import { PortalTypeForm }           from './CaptivePortal/PortalTypeForm'
+import { SelfSignInForm }           from './CaptivePortal/SelfSignInForm'
+import { WISPrForm }                from './CaptivePortal/WISPrForm'
+import { NetworkDetailForm }        from './NetworkDetail/NetworkDetailForm'
+import NetworkFormContext           from './NetworkFormContext'
+import { NetworkMoreSettingsForm }  from './NetworkMoreSettings/NetworkMoreSettingsForm'
+import { AaaSettingsForm }          from './NetworkSettings/AaaSettingsForm'
+import { DpskSettingsForm }         from './NetworkSettings/DpskSettingsForm'
+import { Hotspot20SettingsForm }    from './NetworkSettings/Hotspot20SettingsForm'
+import { OpenSettingsForm }         from './NetworkSettings/OpenSettingsForm'
+import { PskSettingsForm }          from './NetworkSettings/PskSettingsForm'
+import { SummaryForm }              from './NetworkSummary/SummaryForm'
 import {
   tranferSettingsToSave,
   transferDetailToSave,
@@ -67,9 +67,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                       from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo } from './utils'
-import { Venues }                           from './Venues/Venues'
+import PortalInstance                                              from './PortalInstance'
+import { useNetworkVxLanTunnelProfileInfo, useUpdateRadiusServer } from './utils'
+import { Venues }                                                  from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -141,6 +141,7 @@ export function NetworkForm (props:{
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
+  const { updateProfile: updateRadiusProfile } = useUpdateRadiusServer()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -489,6 +490,7 @@ export function NetworkForm (props:{
       const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
+      await updateRadiusProfile(saveState, data, networkId)
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
@@ -572,6 +574,7 @@ export function NetworkForm (props:{
       await updateNetworkInstance({ params, payload }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
+      await updateRadiusProfile(formData, data, payload.id)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
