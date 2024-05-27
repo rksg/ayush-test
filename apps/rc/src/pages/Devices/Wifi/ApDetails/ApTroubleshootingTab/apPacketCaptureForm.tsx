@@ -5,7 +5,7 @@ import saveAs                                      from 'file-saver'
 import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
-import { Button, Loader, showToast } from '@acx-ui/components'
+import { Button, Loader, showToast, showActionModal } from '@acx-ui/components'
 import {
   useGetApCapabilitiesQuery,
   useGetApLanPortsQuery,
@@ -176,22 +176,52 @@ export function ApPacketCaptureForm () {
 
   const handlePackeCapture = async () => {
     if (!isCapturing) { // Start
-      try {
-        const formValue = packetCaptureForm.getFieldsValue()
-        const payload = _.cloneDeep(formValue)
-        if (payload.captureInterface === CaptureInterfaceEnumExtended.WIRED) {
-          payload.captureInterface = payload.wiredCaptureInterface
-          payload.frameTypeFilter = []
+      showActionModal({
+        type: 'warning',
+        width: 450,
+        content: <p>
+          {$t({ defaultMessage: `After starting the packet capture, please ensure to manually {br}
+                <b>STOP</b> the packet capture once the investigation has been {br}
+                completed to avoid any performance degradation.` }, {
+            br: <br/>,
+            b: (chunk) => <b>{chunk}</b>
+          })}
+        </p>,
+        okText: $t({ defaultMessage: 'Start' }),
+        cancelText: $t({ defaultMessage: 'Cancel' }),
+        customContent: {
+          action: 'CUSTOM_BUTTONS',
+          buttons: [
+            {
+              text: 'Cancel',
+              type: 'default',
+              key: 'cancel'
+            },
+            {
+              text: 'Start',
+              type: 'primary',
+              key: 'cancel',
+              handler: async () => {
+                try{
+                  const formValue = packetCaptureForm.getFieldsValue()
+                  const payload = _.cloneDeep(formValue)
+                  if (payload.captureInterface === CaptureInterfaceEnumExtended.WIRED) {
+                    payload.captureInterface = payload.wiredCaptureInterface
+                    payload.frameTypeFilter = []
+                  }
+                  delete payload.wiredCaptureInterface
+                  // eslint-disable-next-line
+                  const result = await startPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
+                  setIsCapturing(true)
+                  setSessionId(result.requestId || '')
+                } catch (error) {
+                  console.log(error) // eslint-disable-line no-console
+                }
+              }
+            }
+          ]
         }
-        delete payload.wiredCaptureInterface
-        const result =
-          await startPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
-        setIsCapturing(true)
-        setSessionId(result.requestId || '')
-
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-      }
+      })
     } else { // Stop
       const payload = { sessionId }
       try {

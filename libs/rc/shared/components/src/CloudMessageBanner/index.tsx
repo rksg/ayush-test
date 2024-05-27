@@ -29,6 +29,7 @@ export function CloudMessageBanner () {
   const navigate = useNavigate()
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const layout = useLayoutContext()
 
   const linkToAdministration = useTenantLink('/administration/')
@@ -49,16 +50,19 @@ export function CloudMessageBanner () {
 
   const hidePlmMessage = !!sessionStorage.getItem('hidePlmMessage')
   const plmMessageExists = !!(data && data.description) && !hidePlmMessage
-  const isDpskOrGuestAdmin = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
+  const isSpecialRole = hasRoles([
+    RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER, RolesEnum.REPORTS_ADMIN])
 
   useEffect(() => {
-    if (cloudVersion && userSettings) {
+    if(cloudVersion && userSettings) {
       setVersion(version)
-      checkWifiScheduleExists()
-      if (!hasRoles(RolesEnum.DPSK_ADMIN))
+      if(!isSpecialRole) {
+        checkWifiScheduleExists()
         checkSwitchScheduleExists()
-      if(isEdgeEnabled && isScheduleUpdateReady && !isDpskOrGuestAdmin)
-        checkEdgeScheduleExists()
+        if(isEdgeEnabled && isScheduleUpdateReady) {
+          checkEdgeScheduleExists()
+        }
+      }
     }
   }, [cloudVersion, userSettings])
 
@@ -85,7 +89,7 @@ export function CloudMessageBanner () {
   }
 
   const checkSwitchScheduleExists = async () => {
-    return await getSwitchVenueVersionList({ params })
+    return await getSwitchVenueVersionList({ params, enableRbac: isSwitchRbacEnabled })
       .unwrap()
       .then(result => {
         const upgradeVenueViewList = result?.data ?? []

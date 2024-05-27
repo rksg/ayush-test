@@ -13,6 +13,7 @@ import {
   Tooltip,
   useStepFormContext
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetCliConfigExamplesQuery,
   useGetCliTemplatesQuery
@@ -33,13 +34,7 @@ import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFil
 import { CliVariableModal } from './CliVariableModal'
 import * as UI              from './styledComponents'
 
-import { tooltip } from './'
-
-export enum VariableType {
-  ADDRESS = 'ADDRESS',
-  RANGE = 'RANGE',
-  STRING = 'STRING'
-}
+import { tooltip, getVariableSeparator, VariableType } from './'
 
 interface codeMirrorElement {
   current: {
@@ -96,6 +91,7 @@ export function CliStepConfiguration () {
   const { form, editMode } = useStepFormContext()
   const isTemplate = params?.configType !== 'profiles'
   const cliDefaultString = isTemplate ? '' : 'manager registrar'
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [cli, setCli] = useState('')
   const [cliFontSize, setCliFontSize] = useState('14')
@@ -107,9 +103,15 @@ export function CliStepConfiguration () {
   const [importModalvisible, setImportModalvisible] = useState(false)
   const [initVariableList, setInitVariableList] = useState(false)
 
-  const { data: configExamples } = useGetCliConfigExamplesQuery({ params })
+  const { data: configExamples } = useGetCliConfigExamplesQuery({
+    params, enableRbac: isSwitchRbacEnabled
+  })
   const { data: cliTemplates }
-    = useGetCliTemplatesQuery({ params, payload: cliTemplatesPayload }, { skip: !isTemplate })
+    = useGetCliTemplatesQuery({
+      params,
+      payload: cliTemplatesPayload,
+      enableRbac: isSwitchRbacEnabled
+    }, { skip: !isTemplate })
 
   const codeMirrorEl = useRef(null as unknown as {
     getInstance: Function,
@@ -146,7 +148,16 @@ export function CliStepConfiguration () {
   useEffect(() => {
     const data = form?.getFieldsValue(true)
     if (data) {
-      setVariableList((data?.variables ?? []) as CliTemplateVariable[])
+      const transformVariables = !isSwitchRbacEnabled
+        ? data?.variables
+        : data?.variables.map((variable: CliTemplateVariable) => {
+          return {
+            ...variable,
+            value: transformToV1Variables(variable)
+          }
+        })
+
+      setVariableList((transformVariables ?? []) as CliTemplateVariable[])
       setInitVariableList(true)
     }
   }, [])
@@ -489,7 +500,7 @@ function CliTemplateExampleList (props: {
 
 function transformVariableValue (vtype: string, value: string) {
   const type = vtype.toUpperCase()
-  const separator = type === VariableType.RANGE ? ':' : (type === VariableType.ADDRESS ? '_' : '*')
+  const separator = getVariableSeparator(type)
   const values = value.split(separator)
 
   switch (type) {
@@ -499,6 +510,17 @@ function transformVariableValue (vtype: string, value: string) {
       return `${values[0]} ~ ${values[1]}`
     default:
       return values[0]
+  }
+}
+
+function transformToV1Variables (variable: CliTemplateVariable) {
+  switch (variable.type) {
+    case VariableType.ADDRESS:
+      return `${variable?.ipAddressStart}_${variable?.ipAddressEnd}_${variable?.subMask}`
+    case VariableType.RANGE:
+      return `${variable?.rangeStart}:${variable?.rangeEnd}`
+    default:
+      return variable?.value
   }
 }
 

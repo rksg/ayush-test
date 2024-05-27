@@ -299,7 +299,7 @@ export const fakeIncidentDowntimeHigh = fakeIncident({
 
 export const fakeIncidentVlan = fakeIncident({
   severity: 0.75,
-  startTime: '2022-08-30T07:00:00.000Z',
+  startTime: '2022-09-30T07:00:00.000Z',
   endTime: '2022-10-05T01:00:00.000Z',
   code: 'i-switch-vlan-mismatch',
   sliceType: 'switchGroup',

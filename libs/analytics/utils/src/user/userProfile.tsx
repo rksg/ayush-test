@@ -1,7 +1,7 @@
 /* Provide profile outside component */
-import { get }                  from '@acx-ui/config'
-import type { PendoParameters } from '@acx-ui/utils'
-import { updatePendo }          from '@acx-ui/utils'
+import { get }                         from '@acx-ui/config'
+import type { PendoParameters }        from '@acx-ui/utils'
+import { updatePendo, decodeTenantId } from '@acx-ui/utils'
 
 import { Tenant, UserProfile } from './types'
 
@@ -34,10 +34,11 @@ export function getPendoConfig (): PendoParameters {
 }
 const getSelectedTenant = (profile: UserProfile): Tenant => {
   const search = new URLSearchParams(window.location.search)
-  const selected = search.get('selectedTenants')
-  const id = selected
-    ? JSON.parse(window.atob(decodeURIComponent(selected)))[0]
-    : profile.accountId
+  let id = decodeTenantId(search)
+  if (!id) {
+    id = profile.accountId
+    window.location.search = '?selectedTenants=' + window.btoa(JSON.stringify([id]))
+  }
   return profile.tenants.find(tenant => tenant.id === id)!
 }
 export const getUserProfile = () => user.profile

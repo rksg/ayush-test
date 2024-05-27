@@ -28,7 +28,7 @@ const IdentityProviderDetail = () => {
   const { data: identityProviderList } = useGetIdentityProviderListQuery({
     params,
     payload: {
-      fields: ['id', 'name', 'networkIds',
+      fields: ['id', 'name', 'wifiNetworkIds',
         'naiRealms', 'plmns', 'roamConsortiumOIs',
         'authRadiusId', 'accountingRadiusId'],
       searchString: '',

@@ -3,10 +3,8 @@ import React from 'react'
 import { SplitFactory, SplitSdk } from '@splitsoftware/splitio-react'
 import SplitIO                    from '@splitsoftware/splitio-react/types/splitio/splitio'
 
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { getUserProfile } from '@acx-ui/analytics/utils'
-import { get }            from '@acx-ui/config'
-import { useTenantId }    from '@acx-ui/utils'
+import { get }         from '@acx-ui/config'
+import { useTenantId } from '@acx-ui/utils'
 
 let factory: SplitIO.IBrowserSDK
 function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
@@ -15,11 +13,9 @@ function SplitProvider (props: Readonly<{ children: React.ReactElement }>) {
   const isMLISA = get('IS_MLISA_SA')
   const suffix = splitKey.substring(0, 5)
 
-  const tenantId = useTenantId()
-  const { accountId } = getUserProfile()
+  const tenantKey = useTenantId()
 
   const prefixKey = isMLISA ? 'MLISA' : 'ACX'
-  const tenantKey = isMLISA ? accountId : tenantId
 
   if (!factory && tenantKey) {
     factory = SplitSdk({

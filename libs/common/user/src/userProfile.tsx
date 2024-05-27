@@ -89,6 +89,9 @@ export function filterByAccess <Item> (items: Item[]) {
   })
 }
 
+/**
+* IMPORTANT: Suggest using hasPermission for action items, as it will always return FALSE for Role.READ_ONLY.
+*/
 export function hasPermission (props?: {
     scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[],
     allowedOperations?:string
@@ -149,5 +152,7 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
   [Role.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
   [Role.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
-  [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
+  [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' }),
+  [Role.TEMPLATES_ADMIN]: defineMessage({ defaultMessage: 'Templates Management' }),
+  [Role.REPORTS_ADMIN]: defineMessage({ defaultMessage: 'Reports Admin' })
 }

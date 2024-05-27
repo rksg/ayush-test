@@ -20,12 +20,6 @@ const tenantAccountTierMock = {
   acx_account_tier: 'Gold'
 }
 
-jest.mock('@acx-ui/analytics/utils', () => (
-  {
-    ...jest.requireActual('@acx-ui/analytics/utils'),
-    getUserProfile: jest.fn()
-  }))
-
 jest.mock('@splitsoftware/splitio-react', () => (
   {
     ...jest.requireActual('@splitsoftware/splitio-react'),
@@ -37,12 +31,6 @@ jest.mock('@acx-ui/user', () => ({
   useGetBetaStatusQuery: () => ({ data: {
     enabled: 'true'
   } })
-}))
-
-jest.mock('@acx-ui/analytics/utils', () => ({
-  getUserProfile: () => ({
-    accountId: 'mockedAccountId'
-  })
 }))
 
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -85,9 +73,6 @@ function TestSplitProvider (props: { tenant: string, IS_MLISA_SA: string,
         default: return props.IS_MLISA_SA
       }
     })
-  }))
-  jest.doMock('@acx-ui/analytics/utils', () => ({
-    getUserProfile: jest.fn().mockImplementation(() => ({ accountId: props.tenant }))
   }))
   jest.doMock('@acx-ui/utils', () => ({
     useTenantId: () => props.tenant

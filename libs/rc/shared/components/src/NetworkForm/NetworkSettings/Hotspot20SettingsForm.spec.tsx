@@ -33,7 +33,7 @@ import { Hotspot20SettingsForm } from './Hotspot20SettingsForm'
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
 
-describe('NetworkForm', () => {
+describe('Hotspot20SettingsForm', () => {
   beforeEach(() => {
     networkDeepResponse.name = 'Hotspot 20 network test'
     mockServer.use(

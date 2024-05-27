@@ -29,7 +29,7 @@ const WifiOperatorNetworkDetail = () => {
   const [networkFilters, setNetworkFilters] = useState<{ id: string[] }>({ id: [] })
 
   const defaultWifiOperatorPayload = {
-    fields: ['id', 'networkIds', 'friendlyNames', 'friendlyNameCount'],
+    fields: ['id', 'wifiNetworkIds', 'friendlyNames', 'friendlyNameCount'],
     searchString: '',
     filters: { id: [policyId] }
   }

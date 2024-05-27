@@ -69,6 +69,7 @@ export interface UserProfile {
   fullName: string
   preferredLanguage?: string
   customRoleName?: string
+  customRoleType?: string
   scopes?: []
 }
 

@@ -40,7 +40,6 @@ export function NetworkingTab () {
   const { tenantId, venueId } = useParams()
 
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
-  const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
 
   const [cellularApModels, setCellularApModels] = useState<string[]>([])
   const [hasCellularAps, setHasCellularAps] = useState(false)
@@ -136,15 +135,15 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm />
     </> }] : []),
-  ...(supportRadiusOptions? [{
+  {
     title: $t({ defaultMessage: 'RADIUS Options' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='radius-options'>
         { $t({ defaultMessage: 'RADIUS Options' }) }
       </StepsFormLegacy.SectionTitle>
       <RadiusOptions />
-    </> }] : []
-  )]
+    </>
+  }]
 
   const handleUpdateAllSettings = async () => {
     try {

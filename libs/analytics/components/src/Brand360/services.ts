@@ -1,25 +1,16 @@
 import { gql } from 'graphql-request'
-import moment  from 'moment-timezone'
 
-import { IncidentsToggleFilter, incidentsToggle } from '@acx-ui/analytics/utils'
-import { dataApi }                                from '@acx-ui/store'
-
+import { IncidentsToggleFilter, calculateGranularity, incidentsToggle } from '@acx-ui/analytics/utils'
+import { dataApi }                                                      from '@acx-ui/store'
 
 export const calcGranularityForBrand360 = (
   start: string, end: string
-): string => {
-  const interval = moment.duration(moment(end).diff(moment(start))).asHours()
-  switch (true) {
-    case interval > 24 * 30: // > 1 month
-      return 'PT72H'
-    case interval > 24 * 7: // 8 days to 30 days
-      return 'PT24H'
-    case interval > 8 : // 8 hours to 7 days
-      return 'PT1H'
-    default: // less than 8 hours
-      return 'PT15M'
-  }
-}
+): string => calculateGranularity(start, end, undefined, [
+  { granularity: 'PT72H', hours: 24 * 30 }, // > 1 month
+  { granularity: 'PT24H', hours: 24 * 7 }, // 8 days to 30 days
+  { granularity: 'PT1H', hours: 8 }, // 8 hours to 7 days
+  { granularity: 'PT15M', hours: 0 } // less than 8 hours
+])
 
 export interface Response {
   id?: string

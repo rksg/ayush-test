@@ -20,7 +20,7 @@ import {
   PolicyOperation,
   PolicyType,
   WifiOperatorContext,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
@@ -52,7 +52,7 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
   const [ updateWifiOperator ] = useUpdateWifiOperatorMutation()
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.WIFI_OPERATOR)
-  const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.WIFI_OPERATOR)
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.WIFI_OPERATOR)
 
   useEffect(() => {
     if (data) {
@@ -104,17 +104,14 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
     >
       <StepsFormLegacy.StepForm>
         <GridRow>
-          {!modalMode?
-            <GridCol col={{ span: 10 }}>
+          <GridCol col={{ span: modalMode? 24: 10 }}>
+            {!modalMode &&
               <StepsFormLegacy.Title>
                 {$t({ defaultMessage: 'Settings' })}
               </StepsFormLegacy.Title>
-              <WifiOperatorSettingForm edit={editMode}/>
-            </GridCol>
-            : <GridCol col={{ span: 24 }}>
-              <WifiOperatorSettingForm edit={editMode}/>
-            </GridCol>
-          }
+            }
+            <WifiOperatorSettingForm />
+          </GridCol>
         </GridRow>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>

@@ -2,7 +2,7 @@ import { message, Modal } from 'antd'
 import { rest }           from 'msw'
 import '@testing-library/jest-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   SwitchStatusEnum,
   SwitchUrlsInfo
@@ -89,7 +89,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showDeleteSwitches', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -113,7 +113,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showDeleteSwitches: patch API', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -137,7 +137,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showDeleteSwitch', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -158,7 +158,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showRebootSwitch', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -177,7 +177,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('showRebootSwitch - stack', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -196,7 +196,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('doSyncData', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -211,7 +211,7 @@ describe('Test useSwitchActions', () => {
   })
 
   it('doRetryFirmwareUpdate', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -253,7 +253,7 @@ describe('Handle error occurred', () => {
   })
 
   it('showRebootSwitch', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -272,7 +272,7 @@ describe('Handle error occurred', () => {
   })
 
   it('doSyncData', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -287,8 +287,8 @@ describe('Handle error occurred', () => {
   })
 
   it('doRetryFirmwareUpdate', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { result } = renderHook(() => useSwitchActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })

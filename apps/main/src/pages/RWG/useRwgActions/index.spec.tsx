@@ -3,9 +3,9 @@ import { message } from 'antd'
 import { rest }    from 'msw'
 import '@testing-library/jest-dom'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
-  CommonUrlsInfo
+  CommonRbacUrlsInfo, RWG, RWGStatusEnum
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -30,7 +30,8 @@ const rwgList = {
       name: 'ruckusdemos',
       hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      status: 'Operational'
+      status: RWGStatusEnum.ONLINE,
+      isCluster: false
     }, {
       rwgId: 'bbc41563473348d29a36b76e95c50382',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
@@ -38,8 +39,9 @@ const rwgList = {
       name: 'rwg1',
       hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      status: 'Offline'
-    }]
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
   }
 }
 
@@ -49,13 +51,10 @@ describe('Test useRwgActions', () => {
     message.destroy()
     mockServer.use(
       rest.delete(
-        CommonUrlsInfo.deleteGateway.url,
+        CommonRbacUrlsInfo.deleteGateway.url,
         (req, res, ctx) => res(ctx.json({ requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f' }))
-      ),
-      rest.delete(
-        CommonUrlsInfo.deleteGateways.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f' }))
-      ))
+      )
+    )
   })
 
   afterEach(() => {

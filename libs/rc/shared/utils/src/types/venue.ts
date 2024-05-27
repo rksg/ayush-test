@@ -708,9 +708,9 @@ export interface LocalUser {
 	syncedPasswordSwitchCount?: number
 }
 
-export interface VenueDirectedMulticast {
-  wiredEnabled: boolean,
-  wirelessEnabled: boolean,
+export type VenueDirectedMulticast = {
+  wiredEnabled: boolean
+  wirelessEnabled: boolean
   networkEnabled: boolean
 }
 
@@ -718,6 +718,7 @@ export interface VenueConfigHistoryDetailResp {
 	response: {
 		list: ConfigurationHistory[]
 	}
+	list?: ConfigurationHistory[]
 }
 
 export enum LoadBalancingMethodEnum {

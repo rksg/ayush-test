@@ -3,13 +3,14 @@ import { rest } from 'msw'
 
 import { StepsForm }                              from '@acx-ui/components'
 import { edgeApi }                                from '@acx-ui/rc/services'
-import { EdgeDhcpUrls }                           from '@acx-ui/rc/utils'
+import { EdgeDHCPFixtures, EdgeDhcpUrls }         from '@acx-ui/rc/utils'
 import { Provider, store }                        from '@acx-ui/store'
 import { mockServer, render, renderHook, screen } from '@acx-ui/test-utils'
 
-import { mockEdgeDhcpList } from './__tests__/fixtures'
 
 import { EdgeDhcpSelectionForm } from './index'
+
+const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -42,9 +43,13 @@ describe('EdgeDhcpSelectionForm', () => {
     store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (_, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
       rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpList))
+        EdgeDhcpUrls.getDhcp.url,
+        (_, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
       )
     )
   })
@@ -92,7 +97,7 @@ describe('EdgeDhcpSelectionForm', () => {
         </StepsForm>
       </Provider>, { route: { params } }
     )
-    expect(await screen.findByText('Mock DHCP service')).toBeVisible()
-    expect(await screen.findByText('RelayOffPoolTest1')).toBeVisible()
+    expect(await screen.findByText('TestDHCP-1')).toBeVisible()
+    expect(await screen.findByText('PoolTest1')).toBeVisible()
   })
 })

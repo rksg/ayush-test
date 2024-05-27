@@ -175,7 +175,11 @@ function useColumns () {
       title: $t({ defaultMessage: 'Domain' }),
       dataIndex: 'domainNames',
       sorter: true,
-      render: (_, { domainNames }) => domainNames.join(', ')
+      render: (_, { domainNames }) => {
+        return <SimpleListTooltip
+          items={domainNames}
+          displayText={domainNames.join(', ')} />
+      }
     },
     {
       key: 'friendlyNames',
@@ -188,8 +192,8 @@ function useColumns () {
 
         return <SimpleListTooltip
           items={friendlyNames.map(fn =>
-            `[${$t(friendlyNameEnumOptions[FriendlyNameEnum[fn.language as FriendlyNameEnum]])}]
-            : ${fn.name}` )}
+            // eslint-disable-next-line max-len
+            `[${$t(friendlyNameEnumOptions[FriendlyNameEnum[fn.language as FriendlyNameEnum]])}]: ${fn.name}` )}
           displayText={friendlyNames.length} />
       }
     },

@@ -7,13 +7,11 @@ import { apApi, venueApi }                                                      
 import { CommonUrlsInfo, ConnectionMeteringUrls, Persona, PersonaUrls, PropertyUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                from '@acx-ui/store'
 import {  mockServer, render, screen,  waitForElementToBeRemoved }                        from '@acx-ui/test-utils'
-import { RolesEnum }                                                                      from '@acx-ui/types'
+import { EdgeScopes, RolesEnum, WifiScopes }                                              from '@acx-ui/types'
 import {
   UserProfile as UserProfileInterface,
   UserProfileContext,
-  UserProfileContextProps,
-  setUserProfile
-}         from '@acx-ui/user'
+  UserProfileContextProps }         from '@acx-ui/user'
 
 import {
   mockPersonaGroupWithoutNSG,
@@ -61,8 +59,9 @@ const userProfile = {
   role: RolesEnum.ADMINISTRATOR,
   email: 'dog12@email.com',
   dateFormat: 'yyyy/mm/dd',
-  detailLevel: 'su'
-} as UserProfileInterface
+  detailLevel: 'su',
+  scopes: [WifiScopes.CREATE, WifiScopes.UPDATE, EdgeScopes.CREATE, EdgeScopes.UPDATE]
+} as unknown as UserProfileInterface
 
 
 jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -146,7 +145,6 @@ describe('Property Unit Drawer', () => {
   })
 
   it('should add no nsg drawer', async () => {
-    setUserProfile({ profile: userProfile, allowedOperations: [] })
     mockServer.use(
       rest.post(
         PropertyUrlsInfo.getPropertyUnitList.url,

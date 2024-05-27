@@ -36,6 +36,10 @@ export const defaultThreshold: KpiThresholdType = {
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
+  switchMemoryUtilization: kpiConfig.switchMemoryUtilization.histogram.initialThreshold,
+  switchCpuUtilization: kpiConfig.switchCpuUtilization.histogram.initialThreshold,
+  switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
+  switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
 
@@ -77,7 +81,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   </Loader>
 }
 
-function KpiSection (props: {
+export function KpiSection (props: {
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
@@ -99,6 +103,8 @@ function KpiSection (props: {
     moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
+  useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
+
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
   return (
     <>

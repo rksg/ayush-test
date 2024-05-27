@@ -4,9 +4,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { switchApi }                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { switchApi }                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Provider, store }                                 from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -30,6 +30,12 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
 }))
+
+const mockedSwitchDetail = {
+  id: 'c0:c5:20:aa:24:0f',
+  venueId: '72cf6720ccba4c37af972b3856b8ac6d',
+  name: 'FEK3224R08V-test'
+} as SwitchViewModel
 
 const list = {
   data: [
@@ -110,7 +116,7 @@ describe('SwitchConfigBackupTable', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchConfigBackupTable />
+        <SwitchConfigBackupTable switchDetail={mockedSwitchDetail} />
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
@@ -150,7 +156,7 @@ describe('SwitchConfigBackupTable', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchConfigBackupTable />
+        <SwitchConfigBackupTable switchDetail={mockedSwitchDetail} />
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
@@ -184,7 +190,7 @@ describe('SwitchConfigBackupTable', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchConfigBackupTable />
+        <SwitchConfigBackupTable switchDetail={mockedSwitchDetail} />
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
@@ -221,7 +227,7 @@ describe('SwitchConfigBackupTable', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchConfigBackupTable />
+        <SwitchConfigBackupTable switchDetail={mockedSwitchDetail} />
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
@@ -261,7 +267,7 @@ describe('SwitchConfigBackupTable', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchConfigBackupTable />
+        <SwitchConfigBackupTable switchDetail={mockedSwitchDetail} />
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
@@ -298,7 +304,7 @@ describe('SwitchConfigBackupTable', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchConfigBackupTable />
+        <SwitchConfigBackupTable switchDetail={mockedSwitchDetail} />
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
@@ -360,7 +366,7 @@ describe('SwitchConfigBackupTable', () => {
         },
         setSwitchDetailsContextData: jest.fn()
       }}>
-        <SwitchConfigBackupTable />
+        <SwitchConfigBackupTable switchDetail={mockedSwitchDetail} />
       </SwitchDetailsContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }

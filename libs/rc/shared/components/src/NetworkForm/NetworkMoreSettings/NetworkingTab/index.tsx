@@ -38,9 +38,7 @@ export function NetworkingTab (props: {
   const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-  const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
 
-  const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
   const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
   const enable80211D = useIsSplitOn(Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE)
@@ -452,7 +450,7 @@ export function NetworkingTab (props: {
 
       { wifi6AndWifi7Flag && enableAP70 && <WiFi7/> }
 
-      {showRadiusOptions &&
+      {hasAuthRadius(data, wlanData) &&
       <>
         <UI.Subtitle>{$t({ defaultMessage: 'RADIUS Options' })}</UI.Subtitle>
         <RadiusOptionsForm context='network'

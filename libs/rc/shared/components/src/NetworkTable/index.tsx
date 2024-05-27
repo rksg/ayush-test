@@ -30,7 +30,7 @@ import { getIntl, noDataDisplay }    from '@acx-ui/utils'
 const disabledType: NetworkTypeEnum[] = []
 
 function getCols (intl: ReturnType<typeof useIntl>,
-  oweTransFlag: boolean, clientsFlag: boolean, supportApCompatibleCheck: boolean) {
+  oweTransFlag: boolean, supportApCompatibleCheck: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -177,19 +177,13 @@ function getCols (intl: ReturnType<typeof useIntl>,
       sorter: false, // API does not seem to be working
       align: 'center',
       render: function (_, row) {
-        if (clientsFlag) {
-          return (
-            row?.isOnBoarded
-              ? <span>{row.clients || noDataDisplay}</span>
-              : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
-                {row.clients}
-              </TenantLink>
-          )
-        }else{
-          return row?.isOnBoarded ?
-            row.clients || noDataDisplay
-            : row.clients
-        }
+        return (
+          row?.isOnBoarded
+            ? <span>{row.clients || noDataDisplay}</span>
+            : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
+              {row.clients}
+            </TenantLink>
+        )
       }
     },
     // { TODO: Wait for Services
@@ -318,7 +312,6 @@ export function NetworkTable ({
   const { $t } = intl
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
-  const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
   const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   useEffect(() => {
@@ -428,7 +421,6 @@ export function NetworkTable ({
         settingsId={settingsId}
         columns={getCols(intl,
           supportOweTransition,
-          listOfClientsPerWlanFlag,
           supportApCompatibleCheck
         )}
         dataSource={tableQuery.data?.data}

@@ -1,7 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { get } from '@acx-ui/config'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const productNames = get('IS_MLISA_SA')

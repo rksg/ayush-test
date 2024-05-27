@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -33,9 +34,11 @@ export default function NetworkSegAuthTable () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const tableQuery = useTableQuery({
     useQuery: useWebAuthTemplateListQuery,
-    defaultPayload: getNetworkSegAuthPayload
+    defaultPayload: getNetworkSegAuthPayload,
+    enableRbac: isSwitchRbacEnabled
   })
 
   const [
@@ -120,8 +123,9 @@ export default function NetworkSegAuthTable () {
           },
           okText: $t({ defaultMessage: 'Delete' }),
           onOk: () => {
-            deleteWebAuthTemplate({ params: { serviceId: rows[0].id } })
-              .then(clearSelection)
+            deleteWebAuthTemplate({
+              params: { serviceId: rows[0].id }, enableRbac: isSwitchRbacEnabled
+            }).then(clearSelection)
           }
         })
       }

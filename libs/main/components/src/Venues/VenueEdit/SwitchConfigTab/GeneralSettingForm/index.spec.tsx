@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 
-import { venueApi }                                                                          from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }                                                    from '@acx-ui/rc/utils'
-import { Provider, store }                                                                   from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                                                                                      from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ConfigTemplateType, SwitchUrlsInfo }                                            from '@acx-ui/rc/utils'
+import { Provider, store }                                                                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within, waitForElementToBeRemoved, renderHook } from '@acx-ui/test-utils'
 
 import {
   successResponse,
@@ -17,7 +17,7 @@ import {
 import { defaultValue }                  from '../../../contentsMap'
 import { VenueEditContext, EditContext } from '../../index'
 
-import { GeneralSettingForm } from './index'
+import { GeneralSettingForm, useSwitchProfileDisabled } from '.'
 
 let editContextData = {} as EditContext
 const setEditContextData = jest.fn()
@@ -28,6 +28,18 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 const params = { venueId: 'venue-id', tenantId: 'tenant-id' }
+
+const mockedUseConfigTemplateVisibilityMap = jest.fn()
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useConfigTemplateVisibilityMap: () => mockedUseConfigTemplateVisibilityMap()
+}))
+
+const mockedUseConfigTemplate = jest.fn()
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useConfigTemplate: () => mockedUseConfigTemplate()
+}))
 
 describe('GeneralSettingForm', () => {
   beforeEach(() => {
@@ -42,6 +54,9 @@ describe('GeneralSettingForm', () => {
       rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(switchConfigProfile[0])))
     )
+
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    mockedUseConfigTemplateVisibilityMap.mockReturnValue({})
   })
 
   it('should render correctly', async () => {
@@ -243,6 +258,62 @@ describe('GeneralSettingForm', () => {
       pathname: `/${params.tenantId}/t/venues`,
       hash: '',
       search: ''
+    })
+  })
+
+  describe('useSwitchProfileDisabled', () => {
+    const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
+      [ConfigTemplateType.NETWORK]: false,
+      [ConfigTemplateType.VENUE]: false,
+      [ConfigTemplateType.DPSK]: false,
+      [ConfigTemplateType.RADIUS]: false,
+      [ConfigTemplateType.DHCP]: false,
+      [ConfigTemplateType.ACCESS_CONTROL]: false,
+      [ConfigTemplateType.PORTAL]: false,
+      [ConfigTemplateType.VLAN_POOL]: false,
+      [ConfigTemplateType.WIFI_CALLING]: false,
+      [ConfigTemplateType.CLIENT_ISOLATION]: false,
+      [ConfigTemplateType.LAYER_2_POLICY]: false,
+      [ConfigTemplateType.LAYER_3_POLICY]: false,
+      [ConfigTemplateType.DEVICE_POLICY]: false,
+      [ConfigTemplateType.APPLICATION_POLICY]: false,
+      [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
+      [ConfigTemplateType.SYSLOG]: false,
+      [ConfigTemplateType.SWITCH_REGULAR]: false
+    }
+    beforeEach(() => {
+      mockedUseConfigTemplateVisibilityMap.mockReturnValue({ ...mockedConfigTemplateVisibilityMap })
+    })
+    it('should return true if isTemplate is true and profileEnabled is false', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+        ...mockedConfigTemplateVisibilityMap,
+        [ConfigTemplateType.SWITCH_REGULAR]: false
+      })
+
+      const { result } = renderHook(() => useSwitchProfileDisabled())
+
+      expect(result.current).toBe(true)
+    })
+
+    it('should return false if isTemplate is false', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+
+      const { result } = renderHook(() => useSwitchProfileDisabled())
+
+      expect(result.current).toBe(false)
+    })
+
+    it('should return false if isTemplate is true and profileEnabled is true', () => {
+      mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+      mockedUseConfigTemplateVisibilityMap.mockReturnValue({
+        ...mockedConfigTemplateVisibilityMap,
+        [ConfigTemplateType.SWITCH_REGULAR]: true
+      })
+
+      const { result } = renderHook(() => useSwitchProfileDisabled())
+
+      expect(result.current).toBe(false)
     })
   })
 })

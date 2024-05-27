@@ -3,6 +3,7 @@ import React, { CSSProperties, ReactNode, useContext, useEffect, useRef, useStat
 import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
 import _                                                           from 'lodash'
 import { FormattedMessage, useIntl }                               from 'react-intl'
+import styled                                                      from 'styled-components'
 
 import {
   Button,
@@ -107,21 +108,21 @@ export function SecurityTab () {
       useUpdateVenueTemplateDoSProtectionMutation
     )
 
-  const [updateVenueRogueAp, {
-    isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueRogueApMutation,
-    useUpdateVenueRogueApTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [updateVenueRogueAp, { isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueRogueApMutation,
+    useTemplateMutationFn: useUpdateVenueRogueApTemplateMutation
+  })
 
   const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
     useGetDenialOfServiceProtectionQuery,
     useGetVenueTemplateDoSProtectionQuery
   )
 
-  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
-    useGetVenueRogueApQuery,
-    useGetVenueRogueApTemplateQuery
-  )
+  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVenueRogueApQuery,
+    useTemplateQueryFn: useGetVenueRogueApTemplateQuery
+  })
 
   const [updateVenueApEnhancedKey, {
     isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
@@ -459,6 +460,12 @@ export function SecurityTab () {
   )
 }
 
+const CustomFieldSet = styled(Fieldset)`
+  & > legend > label {
+    font-weight: 100 !important;
+  }
+`
+
 const FieldsetItem = ({
   children,
   label,
@@ -474,7 +481,7 @@ const FieldsetItem = ({
   {...props}
   valuePropName='checked'
 >
-  <Fieldset
+  <CustomFieldSet
     {...{ label, children }}
     switchStyle={switchStyle}
     onChange={() => triggerDirtyFunc(true)}/>
@@ -482,12 +489,11 @@ const FieldsetItem = ({
 
 // eslint-disable-next-line max-len
 const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useEnhancedRoguePoliciesQuery,
-    useGetRoguePolicyTemplateListQuery,
-    false,
-    DEFAULT_PAYLOAD
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useEnhancedRoguePoliciesQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
+    payload: DEFAULT_PAYLOAD
+  })
 
   if (data?.totalCount === 0) {
     return {

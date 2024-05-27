@@ -69,7 +69,8 @@ export enum FirmwareCategory {
   RECOMMENDED = 'RECOMMENDED',
   CRITICAL = 'CRITICAL',
   BETA = 'BETA',
-  REGULAR = 'REGULAR'
+  REGULAR = 'REGULAR',
+  LATEST = 'LATEST'
 }
 
 export enum UpdateAdvice {
@@ -220,7 +221,9 @@ export interface switchSchedule {
 
 export interface FirmwareSwitchVenue {
   id: string;
+  venueId?: string;
   name: string;
+  venueName: string;
   preDownload: boolean;
   switchFirmwareVersionAboveTen: switchVersion;
   switchFirmwareVersion: switchVersion;
@@ -308,6 +311,9 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
     }, {
       type: $t({ defaultMessage: 'Release' }),
       value: FirmwareCategory.REGULAR
+    }, {
+      type: $t({ defaultMessage: 'Latest' }),
+      value: FirmwareCategory.LATEST
     }
   ]
 

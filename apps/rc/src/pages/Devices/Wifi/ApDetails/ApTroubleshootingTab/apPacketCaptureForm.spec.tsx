@@ -4,10 +4,10 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { venueApi }                              from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                          from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { venueApi }                                      from '@acx-ui/rc/services'
+import { WifiUrlsInfo }                                  from '@acx-ui/rc/utils'
+import { Provider, store }                               from '@acx-ui/store'
+import { within, fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   apLanPort,
@@ -101,9 +101,13 @@ describe('ApPacketCaptureForm', () => {
         <ApPacketCaptureForm />
       </Provider>, { route: { params } })
 
-
     expect(await screen.findByText(/2\.4 ghz/i)).toBeVisible()
     await userEvent.click(screen.getByRole('button', {
+      name: /Start/i
+    }))
+
+    const dialog = await screen.findByRole('dialog')
+    await userEvent.click(within(dialog).getByRole('button', {
       name: /Start/i
     }))
 

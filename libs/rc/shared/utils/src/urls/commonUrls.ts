@@ -422,14 +422,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueConfigHistory: {
     method: 'post',
     url: '/venues/:venueId/configHistories/query',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/configurationHistory/query',
     newApi: true
   },
   getVenueConfigHistoryDetail: {
     method: 'post',
     url: '/venues/:venueId/transactions/:transactionId/configHistDetails',
-    oldUrl: '/api/switch/tenant/:tenantId/venues/:venueId/' +
-      'configurationHistory/detail/:transactionId',
     newApi: true
   },
   getApDetailHeader: {
@@ -447,13 +444,11 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   getGuestsList: {
     method: 'post',
     url: '/guestUsers/query',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/guests',
     newApi: true
   },
   addGuestPass: {
     method: 'post',
-    url: '/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
   getApNetworkList: {
@@ -511,61 +506,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRadiusOptions: {
     method: 'put',
     url: '/venues/:venueId/radiusOptions',
-    newApi: true
-  },
-  getRwgList: {
-    method: 'post',
-    url: '/rwgs/query',
-    newApi: true
-  },
-  deleteGateways: {
-    method: 'delete',
-    url: '/rwgs',
-    newApi: true
-  },
-  deleteGateway: {
-    method: 'delete',
-    url: '/rwgs/:rwgId',
-    newApi: true
-  },
-  getGateway: {
-    method: 'get',
-    url: '/venues/:venueId/rwgs/:gatewayId',
-    newApi: true
-  },
-  updateGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  addGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  getGatewayAlarms: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/alarms',
-    newApi: true
-  },
-  getGatewayDashboard: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dashboards',
-    newApi: true
-  },
-  getGatewayTopProcess: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/topprocess',
-    newApi: true
-  },
-  getGatewayFileSystems: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/filesystems',
-    newApi: true
-  },
-  getGatewayDetails: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/details',
     newApi: true
   },
   addExportSchedules: {

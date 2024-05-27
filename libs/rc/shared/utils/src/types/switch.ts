@@ -148,6 +148,7 @@ export class Switch {
   rearModule?: string
   serialNumber?: string
   firmwareVersion?: string
+  vlanCustomize?: boolean
 
   constructor () {
     this.name = ''
@@ -170,24 +171,25 @@ export class Switch {
   }
 }
 
-export interface TroubleshootingResult {
-  requestId: string
-  response: {
-      latestResultResponseTime: string
-      result: string
-      pingIp: string
-      syncing: boolean
-      traceRouteTarget: string
-      traceRouteTtl: number
-      troubleshootingType: TroubleshootingType
-      macAddressTablePortIdentify: string
-      macAddressTableVlanId: string
-      macAddressTableAddress: string,
-      macAddressTableType: TroubleshootingMacAddressOptionsEnum,
-      dhcpServerLeaseList?: SwitchDhcpLease[]
-  }
+export interface TroubleshootingResponse {
+  latestResultResponseTime: string
+  result: string
+  pingIp: string
+  syncing: boolean
+  traceRouteTarget: string
+  traceRouteTtl: number
+  troubleshootingType: TroubleshootingType
+  macAddressTablePortIdentify: string
+  macAddressTableVlanId: string
+  macAddressTableAddress: string,
+  macAddressTableType: TroubleshootingMacAddressOptionsEnum,
+  dhcpServerLeaseList?: SwitchDhcpLease[]
 }
 
+export interface TroubleshootingResult {
+  requestId: string
+  response: TroubleshootingResponse
+}
 export interface PingSwitch {
   targetHost: string
 }
@@ -266,7 +268,6 @@ export class SwitchViewModel extends Switch {
   uptime?: string
   switchName?: string
   aclCustomize?: boolean
-  vlanCustomize?: boolean
   operationalWarning?: boolean
   cliApplied?: boolean
   formStacking?: boolean
@@ -798,6 +799,11 @@ export interface CliTemplateVariable {
   name: string
   type: string
   value: string
+  rangeStart?: number,
+  rangeEnd?: number,
+  ipAddressStart?: string,
+  ipAddressEnd?: string,
+  subMask?: string
 }
 
 export interface CliTemplateVenueSwitches {

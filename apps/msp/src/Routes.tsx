@@ -20,7 +20,9 @@ import {
   RogueAPDetectionForm,
   RogueAPDetectionDetailView,
   SyslogForm,
-  SyslogDetailView
+  SyslogDetailView,
+  ConfigurationProfileForm,
+  CliProfileForm, ApGroupDetails, ApGroupEdit
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -36,6 +38,8 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
+import { SwitchScopes }                                                          from '@acx-ui/types'
+import { AuthRoute }                                                             from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import HspContext, { HspActionTypes }              from './HspContext'
@@ -369,6 +373,47 @@ export function ConfigTemplatesRoutes () {
             })}
             element={<RogueAPDetectionDetailView />}
           />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SWITCH_REGULAR] && <>
+          <Route
+            path='networks/wired/profiles/add'
+            element={
+              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+                <ConfigurationProfileForm />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='networks/wired/profiles/regular/:profileId/:action'
+            element={
+              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+                <ConfigurationProfileForm />
+              </AuthRoute>
+            }
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SWITCH_CLI] && <>
+          <Route path='networks/wired/:configType/cli/add'
+            element={
+              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+                <CliProfileForm />
+              </AuthRoute>
+            } />
+          <Route
+            path='networks/wired/:configType/cli/:profileId/:action'
+            element={
+              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+                <CliProfileForm />
+              </AuthRoute>
+            }
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.AP_GROUP] && <>
+          {/* eslint-disable-next-line max-len */}
+          <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
+          <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
         </>}
       </Route>
     </Route>

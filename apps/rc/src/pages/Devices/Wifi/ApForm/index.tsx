@@ -54,7 +54,7 @@ import {
   WifiNetworkMessages,
   gpsToFixed,
   redirectPreviousPage,
-  validateTags, DhcpAp, DhcpApResponse, AFCStatus
+  validateTags, DhcpAp, AFCStatus
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -85,8 +85,6 @@ export function ApForm () {
   const params = useParams()
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
-  const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
-  const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
@@ -145,13 +143,8 @@ export function ApForm () {
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
-    if (wifiEdaflag || wifiEdaGatewayflag) {
-      const result = dhcpApResponse as DhcpApInfo[]
-      return result[0]
-    } else {
-      const result = dhcpApResponse as DhcpApResponse
-      return result.response?.[0]
-    }
+    const result = dhcpApResponse as DhcpApInfo[]
+    return result[0]
   }
 
   const getVenueInfos = (venueFwVersion: string) => {
@@ -444,7 +437,7 @@ export function ApForm () {
         setChangeMgmtVlan(false)
       } else {
         const apMgmtVlan = (await getApMgmtVlan(
-          { params: { serialNumber } })).data
+          { params: { venueId: apDetails?.venueId, serialNumber } })).data
         setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId)
       }
     }

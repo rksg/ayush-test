@@ -62,7 +62,7 @@ describe('getJwtHeaders', () => {
       tenantId: '8b9e8338c81d404e986c1d651ca7fed0'
     }
     const jwtToken = `xxx.${window.btoa(JSON.stringify(token))}.xxx`
-    const originalUrl = window.location.href
+    const { href, pathname } = window.location
 
     beforeEach(() => {
       sessionStorage.setItem('jwt', jwtToken)
@@ -72,7 +72,7 @@ describe('getJwtHeaders', () => {
       sessionStorage.removeItem('jwt')
       Object.defineProperty(window, 'location', {
         writable: true,
-        value: { href: originalUrl, pathname: originalUrl }
+        value: { href, pathname }
       })
     })
 
@@ -92,11 +92,23 @@ describe('getJwtHeaders', () => {
         writable: true,
         value: { href: url, pathname: '/8b9e8338c81d404e986c1d651ca7fed1/t/dashboard' }
       })
-
       expect(getJwtHeaders()).toEqual({
         'Authorization': `Bearer ${jwtToken}`,
         'x-rks-tenantid': '8b9e8338c81d404e986c1d651ca7fed1'
       })
+    })
+
+    it('does not return x-rks-tenantid header if IS_MLISA_SA', () => {
+      jest.resetModules()
+      jest.doMock('@acx-ui/config', () => ({ get: () => 'true' }))
+      const { getJwtHeaders } = require('./jwtToken')
+      const url = 'http://dummy.com/analytics'
+      Object.defineProperty(window, 'location', {
+        writable: true,
+        value: { href: url, pathname: '/analytics' }
+      })
+      expect(getJwtHeaders()).toStrictEqual({ Authorization: `Bearer ${jwtToken}` })
+      jest.restoreAllMocks()
     })
   })
 

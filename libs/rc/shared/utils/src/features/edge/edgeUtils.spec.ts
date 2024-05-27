@@ -72,26 +72,22 @@ describe('Edge utils', () => {
   })
 
   it('Test validate serial number success', async () => {
-    const result = await edgeSerialNumberValidator('9612345678901234567890111123456110')
+    let result = await edgeSerialNumberValidator('96123456789ABC34567890111123456110')
+    expect(result).toBeUndefined()
+    result = await edgeSerialNumberValidator('123456789012')
     expect(result).toBeUndefined()
   })
 
   it('Test validate serial number failed', async () => {
     let error
     try {
-      await edgeSerialNumberValidator('9612345')
-    } catch (ex) {
-      error = ex
-    }
-    expect(error).toBe('Field must be exactly 34 characters')
-    try {
-      await edgeSerialNumberValidator('123')
+      await edgeSerialNumberValidator('96123456789012')
     } catch (ex) {
       error = ex
     }
     expect(error).toBe('This field is invalid')
     try {
-      await edgeSerialNumberValidator('AB12345678901234567890111123456110')
+      await edgeSerialNumberValidator('1012A4567890')
     } catch (ex) {
       error = ex
     }

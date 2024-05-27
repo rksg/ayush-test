@@ -3,7 +3,7 @@ import { Modal }    from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { apApi, switchApi, venueApi } from '@acx-ui/rc/services'
 import { CommonUrlsInfo,
   FirmwareUrlsInfo,
@@ -27,7 +27,8 @@ import {
   editStackDetail,
   editStackMembers,
   standaloneSwitches,
-  switchFirmwareVenue
+  switchFirmwareVenue,
+  staticRoutes
 } from '../__tests__/fixtures'
 import {
   vlansByVenueListResponse
@@ -105,6 +106,8 @@ describe('Switch Stack Form - Add', () => {
         (_, res, ctx) => res(ctx.json(editStackDetail))),
       rest.post(SwitchUrlsInfo.getSwitchList.url,
         (_, res, ctx) => res(ctx.json({ data: standaloneSwitches }))),
+      rest.get(SwitchUrlsInfo.getStaticRoutes.url,
+        (_, res, ctx) => res(ctx.json(staticRoutes))),
       rest.post(SwitchUrlsInfo.convertToStack.url,
         (_, res, ctx) => res(ctx.json({})))
     )
@@ -170,7 +173,7 @@ describe('Switch Stack Form - Add', () => {
   })
 
   it('should handle add stack by stack switches', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     const params = { tenantId: 'tenant-id', switchId: 'switch-id', action: 'add' ,
       venueId: 'venue-id', stackList: 'FEK3224R07X_FEK3224R08X'
     }
@@ -235,6 +238,8 @@ describe('Switch Stack Form - Edit', () => {
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.post(SwitchUrlsInfo.getMemberList.url,
         (_, res, ctx) => res(ctx.json(editStackMembers))),
+      rest.get(SwitchUrlsInfo.getStaticRoutes.url,
+        (_, res, ctx) => res(ctx.json(staticRoutes))),
       rest.put(SwitchUrlsInfo.updateSwitch.url,
         (_, res, ctx) => {
           mockUpdateSwitch()

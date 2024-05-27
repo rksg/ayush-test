@@ -26,7 +26,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import {
-  useApListQuery, useImportApOldMutation, useImportApMutation, useLazyImportResultQuery,
+  useApListQuery, useImportApMutation, useLazyImportResultQuery,
   useLazyGetApCompatibilitiesVenueQuery, useLazyGetApCompatibilitiesNetworkQuery
 } from '@acx-ui/rc/services'
 import {
@@ -56,7 +56,7 @@ import {
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
-import { exportMessageMapping }                                           from '@acx-ui/utils'
+import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
 
 import { ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType, ApCompatibilityDrawer } from '../ApCompatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
@@ -611,39 +611,23 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
   const [ isImportResultLoading, setIsImportResultLoading ] = useState(false)
   const [ importVisible, setImportVisible ] = useState(false)
-  const [ importAps, importApsResult ] = useImportApOldMutation()
   const [ importCsv ] = useImportApMutation()
   const [ importQuery ] = useLazyImportResultQuery()
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const wifiEdaFlag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
+  const { acx_account_vertical } = getJwtTokenPayload()
+  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
+  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ?
+    AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = apGpsFlag ?
-    'assets/templates/aps_import_template_with_gps.csv' :
-    'assets/templates/aps_import_template.csv'
+    `assets/templates/${isHospitality}aps_import_template_with_gps.csv` :
+    `assets/templates/${isHospitality}aps_import_template.csv`
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<APExtended>(tableQuery as TableQuery<APExtended, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
 
   useEffect(()=>{
-    if (wifiEdaFlag) {
-      return
-    }
-
-    setIsImportResultLoading(false)
-    if (importApsResult.isSuccess) {
-      setImportVisible(false)
-    } else if (importApsResult.isError && importApsResult?.error &&
-      'data' in importApsResult.error) {
-      setImportResult(importApsResult?.error.data as ImportErrorRes)
-    }
-  },[importApsResult])
-
-  useEffect(()=>{
-    if (!wifiEdaFlag) {
-      return
-    }
-
     setIsImportResultLoading(false)
     if (importResult?.fileErrorsCount === 0) {
       setImportVisible(false)
@@ -749,19 +733,15 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         importError={importErrors}
         importRequest={(formData) => {
           setIsImportResultLoading(true)
-          if (wifiEdaFlag) {
-            importCsv({ params: {}, payload: formData,
-              callback: async (res: CommonResult) => {
-                const result = await importQuery(
-                  { payload: { requestId: res.requestId } }, true)
-                  .unwrap()
-                setImportResult(result)
-              } }).unwrap().catch(() => {
-              setIsImportResultLoading(false)
-            })
-          } else {
-            importAps({ params: {}, payload: formData })
-          }
+          importCsv({ params: {}, payload: formData,
+            callback: async (res: CommonResult) => {
+              const result = await importQuery(
+                { payload: { requestId: res.requestId } }, true)
+                .unwrap()
+              setImportResult(result)
+            } }).unwrap().catch(() => {
+            setIsImportResultLoading(false)
+          })
         }}
         onClose={() => setImportVisible(false)}/>
       <ApCompatibilityDrawer

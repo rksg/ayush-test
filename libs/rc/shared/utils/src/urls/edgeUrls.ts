@@ -202,8 +202,7 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getEdgePasswordDetail: {
     method: 'get',
-    url: '/edges/:serialNumber/passwordDetails',
-    oldUrl: '/edges/:serialNumber/passwordDetails',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/passwordDetails',
     newApi: true
   },
   getEdgeLagStatusList: {

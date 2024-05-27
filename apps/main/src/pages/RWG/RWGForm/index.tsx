@@ -6,10 +6,12 @@ import { useIntl }                              from 'react-intl'
 
 import {
   Button,
+  cssStr,
   Loader,
   PageHeader,
   PasswordInput,
-  StepsForm
+  StepsForm,
+  Tooltip
 } from '@acx-ui/components'
 import {
   useAddGatewayMutation,
@@ -24,7 +26,8 @@ import {
   whitespaceOnlyRegExp,
   RWG,
   excludeSpaceRegExp,
-  URLProtocolRegExp
+  domainNameRegExp,
+  getRwgStatus
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -120,9 +123,8 @@ export function RWGForm () {
           isEditMode &&
           <span>
             <Badge
-              color={`var(${data?.status === 'Operational'
-                ? '--acx-semantics-green-50'
-                : '--acx-neutrals-50'})`}
+              color={data?.status ? cssStr(getRwgStatus(data.status).color)
+                : cssStr('--acx-neutrals-50')}
             />
           </span>
         }
@@ -177,7 +179,7 @@ export function RWGForm () {
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
-                    { max: 32, transform: (value) => value.trim() },
+                    { max: 255, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     {
                       validator: (_, value) => nameValidator(value)
@@ -191,19 +193,46 @@ export function RWGForm () {
                 <Form.Item
                   name='hostname'
                   initialValue={data?.hostname}
-                  label={$t({ defaultMessage: 'FQDN / IP' })}
+                  label={<>{$t({ defaultMessage: 'FQDN / IP' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage:
+                        'Fully Qualified Domain Name or IP address of the RWG Device' })}
+                      placement='right'
+                      iconStyle={{
+                        width: 16,
+                        height: 16
+                      }}
+                    />
+                  </>}
                   rules={[
-                    { type: 'string', required: true },
-                    { validator: (_, value) => URLProtocolRegExp(value) }
+                    { type: 'string', required: true,
+                      message: $t({ defaultMessage: 'Please enter FQDN / IP' })
+                    },
+                    { validator: (_, value) => domainNameRegExp(value),
+                      message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
+                    }
                   ]}
                   children={<Input />}
                 />
                 <Form.Item
                   name='apiKey'
                   initialValue={data?.apiKey}
-                  label={$t({ defaultMessage: 'API Key' })}
+                  label={<>{$t({ defaultMessage: 'API Key' })}
+                    <Tooltip.Question
+                      title={$t({ defaultMessage:
+                        // eslint-disable-next-line max-len
+                        'API keys can be generated and copied from the RWG administrator UI without any expiration date. They are 80-character strings' })}
+                      placement='right'
+                      iconStyle={{
+                        width: 16,
+                        height: 16
+                      }}
+                    />
+                  </>}
                   rules={[
-                    { required: true },
+                    { required: true,
+                      message: $t({ defaultMessage: 'Please enter API Key' }) },
+                    { max: 80 },
                     { validator: (_, value) => excludeSpaceRegExp(value) }
                   ]}
                   children={<PasswordInput />}
