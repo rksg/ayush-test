@@ -163,7 +163,7 @@ describe('Subscriptions', () => {
   })
 
   it('should display empty string when subscription type is not mapped', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
 
     render(
       <Provider>

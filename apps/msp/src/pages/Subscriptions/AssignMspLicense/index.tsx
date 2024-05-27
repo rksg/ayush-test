@@ -22,7 +22,8 @@ import {
   useMspAssignmentHistoryQuery,
   useAddMspAssignmentMutation,
   useUpdateMspAssignmentMutation,
-  useDeleteMspAssignmentMutation
+  useDeleteMspAssignmentMutation,
+  useMspRbacAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -31,7 +32,7 @@ import {
   MspAssignmentSummary
 } from '@acx-ui/msp/utils'
 import {
-  EntitlementDeviceType, EntitlementUtil
+  EntitlementDeviceType, EntitlementUtil, useTableQuery
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -124,10 +125,13 @@ export function AssignMspLicense () {
   const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
 
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } =
-    useMspAssignmentHistoryQuery(isEntitlementRbacApiEnabled
-      ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: entitlementAssignmentPayload }
-      : { params: params })
+  const { data: assignment } =
+    useMspAssignmentHistoryQuery({ params: params }, { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacAssignment } = useTableQuery({
+    useQuery: useMspRbacAssignmentHistoryQuery,
+    defaultPayload: entitlementAssignmentPayload
+  })
+  const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const [addMspSubscription] = useAddMspAssignmentMutation()
   const [updateMspSubscription] = useUpdateMspAssignmentMutation()
   const [deleteMspSubscription] = useDeleteMspAssignmentMutation()

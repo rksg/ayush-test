@@ -424,9 +424,19 @@ export const mspApi = baseMspApi.injectEndpoints({
     }),
     mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
       query: ({ params, payload }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const mspAssignmentHistoryReq = createHttpRequest(rbacApiEnabled
-          ? LicenseUrlsInfo.getMspAssignmentHistory : MspUrlsInfo.getMspAssignmentHistory, params)
+        const mspAssignmentHistoryReq =
+          createHttpRequest(MspUrlsInfo.getMspAssignmentHistory, params)
+        return {
+          ...mspAssignmentHistoryReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
+    mspRbacAssignmentHistory: build.query<TableResult<MspAssignmentHistory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspAssignmentHistoryReq =
+          createHttpRequest(LicenseUrlsInfo.getMspAssignmentHistory, params)
         return {
           ...mspAssignmentHistoryReq,
           body: payload
@@ -972,6 +982,7 @@ export const {
   useUpdateMspEcAdminMutation,
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
+  useMspRbacAssignmentHistoryQuery,
   useAddCustomerMutation,
   useUpdateCustomerMutation,
   useUpdateMspEcDelegatedAdminsMutation,

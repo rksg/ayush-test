@@ -115,12 +115,16 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const utils = require('@acx-ui/rc/utils')
 
 describe('AssignedSubscriptionTable', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
       return { data: assignmentHistory }
+    })
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: { data: assignmentHistory } }
     })
     params = {
       tenantId: '1576b79db6b549f3b1f3a7177d7d4ca5'
@@ -140,7 +144,7 @@ describe('AssignedSubscriptionTable', () => {
     expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
   })
-  it('should render correctly feature flag on', async () => {
+  it('should render correctly for device agnostic feature flag on', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
     services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
       return { data: assignmentHistoryAgnostic }
@@ -158,5 +162,18 @@ describe('AssignedSubscriptionTable', () => {
     expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
   })
+  it('should render correctly for rbac feature flag on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ENTITLEMENT_RBAC_API)
+    render(
+      <Provider>
+        <AssignedSubscriptionTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/mspLicenses' }
+      })
 
+    expect(await screen.findAllByText('Active')).toHaveLength(3)
+    expect(screen.queryByRole('button', { name: 'Generate Usage Report' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
+  })
 })

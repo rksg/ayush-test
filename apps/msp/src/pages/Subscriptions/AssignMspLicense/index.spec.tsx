@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event'
 import moment    from 'moment'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                    from '@acx-ui/msp/utils'
+import { LicenseUrlsInfo }                                from '@acx-ui/rc/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -206,6 +207,7 @@ jest.mock('react-router-dom', () => ({
 jest.spyOn(Date, 'now').mockImplementation(() => {
   return new Date('2023-01-20T12:33:37.101+00:00').getTime()
 })
+const utils = require('@acx-ui/rc/utils')
 
 describe('AssignMspLicense', () => {
   let params: { tenantId: string, mspEcTenantId: string, action: string }
@@ -216,6 +218,9 @@ describe('AssignMspLicense', () => {
     services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
       return { data: assignmentHistory }
     })
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: { data: assignmentHistory } }
+    })
     jest.spyOn(services, 'useAddMspAssignmentMutation')
     jest.spyOn(services, 'useUpdateMspAssignmentMutation')
     jest.spyOn(services, 'useDeleteMspAssignmentMutation')
@@ -223,6 +228,10 @@ describe('AssignMspLicense', () => {
       rest.post(
         MspUrlsInfo.addMspAssignment.url,
         (req, res, ctx) => res(ctx.json({ requestId: 123 }))
+      ),
+      rest.post(
+        LicenseUrlsInfo.addMspAssignment.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'rbac123' }))
       ),
       rest.patch(
         MspUrlsInfo.updateMspAssignment.url,
@@ -280,7 +289,7 @@ describe('AssignMspLicense', () => {
 
   })
   it('should render correctly for device agnostic flag on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
     services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
       return { data: deviceAssignmentHistoryWithTrial }
     })
@@ -301,7 +310,7 @@ describe('AssignMspLicense', () => {
 
   })
   it('should validate device input correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesAssignmentSummary }
     })
@@ -717,7 +726,7 @@ describe('AssignMspLicense', () => {
     const value: [Function, Object] = [
       expect.any(Function),
       expect.objectContaining({
-        data: { requestId: 123 },
+        data: { requestId: 'rbac123' },
         status: 'fulfilled'
       })
     ]
@@ -753,7 +762,7 @@ describe('AssignMspLicense', () => {
     const value: [Function, Object] = [
       expect.any(Function),
       expect.objectContaining({
-        data: { requestId: 123 },
+        data: { requestId: 'rbac123' },
         status: 'fulfilled'
       })
     ]
@@ -769,7 +778,7 @@ describe('AssignMspLicense', () => {
     })
   })
   it('should save correctly for edit assigned device', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesAssignmentSummary }
     })
@@ -807,7 +816,7 @@ describe('AssignMspLicense', () => {
     })
   })
   it('should save correctly for delete assigned device', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.DEVICE_AGNOSTIC)
     services.useMspAssignmentSummaryQuery = jest.fn().mockImplementation(() => {
       return { data: devicesAssignmentSummary }
     })

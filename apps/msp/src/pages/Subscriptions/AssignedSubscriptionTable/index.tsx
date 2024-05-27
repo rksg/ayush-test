@@ -10,7 +10,8 @@ import {
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
-  useMspAssignmentHistoryQuery
+  useMspAssignmentHistoryQuery,
+  useMspRbacAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import { MspAssignmentHistory } from '@acx-ui/msp/utils'
 import {
@@ -18,7 +19,8 @@ import {
   defaultSort,
   EntitlementDeviceType,
   EntitlementUtil,
-  sortProp
+  sortProp,
+  useTableQuery
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
@@ -111,11 +113,14 @@ export function AssignedSubscriptionTable () {
 
   const AssignedTable = () => {
     const params = useParams()
-    const queryResults = useMspAssignmentHistoryQuery(isEntitlementRbacApiEnabled
-      ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: entitlementAssignmentPayload }
-      : { params: params })
+    const tableResults = useTableQuery({
+      useQuery: useMspRbacAssignmentHistoryQuery,
+      defaultPayload: entitlementAssignmentPayload
+    })
+    const queryResults = useMspAssignmentHistoryQuery({ params: params },
+      { skip: isEntitlementRbacApiEnabled })
     const subscriptionData = isEntitlementRbacApiEnabled
-      ? queryResults.data
+      ? tableResults.data?.data
       : queryResults.data?.map(response => {
         const type = EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
         return {

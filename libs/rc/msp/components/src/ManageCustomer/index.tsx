@@ -40,7 +40,8 @@ import {
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
   useMspCustomerListQuery,
-  usePatchCustomerMutation
+  usePatchCustomerMutation,
+  useMspRbacAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -220,9 +221,13 @@ export function ManageCustomer () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } =
-    useMspAssignmentHistoryQuery({ params: isEntitlementRbacApiEnabled
-      ? { tenantId: tenantId, isRbacApi: 'true' } : params })
+  const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
+    { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacAssignment } = useTableQuery({
+    useQuery: useMspRbacAssignmentHistoryQuery,
+    defaultPayload: {}
+  })
+  const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: Administrators } =
