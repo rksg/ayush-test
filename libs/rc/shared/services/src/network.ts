@@ -933,8 +933,12 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   }
   const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
   const networkVenuesList = networkVenuesListQuery.data as TableResult<Venue>
-  const venueIds:string[] = []
-  networkVenuesList.data.forEach(item => venueIds.push(item.id))
+  const venueIds:string[] = networkVenuesList.data?.filter(v => {
+    if (v.aggregatedApStatus) {
+      return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
+    }
+    return false
+  }).map(v => v.id) || []
 
   const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate)
   const networkDeep = Array.isArray(networkDeepList?.response) ?
