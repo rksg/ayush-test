@@ -14,7 +14,9 @@ import {
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
+
 
 export default function PortalServiceDetail () {
   const { $t } = useIntl()
@@ -41,6 +43,7 @@ export default function PortalServiceDetail () {
               oper: ServiceOperation.EDIT,
               serviceId: params.serviceId!
             })}
+            scopeKey={[WifiScopes.UPDATE]}
           >
             <Button key={'configure'} type={'primary'}>
               {$t({ defaultMessage: 'Configure' })}

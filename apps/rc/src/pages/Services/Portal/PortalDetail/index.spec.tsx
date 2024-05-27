@@ -11,6 +11,9 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+
 
 import { mockList, mockDetailResult, mockDetailChangeResult, mockedPortalList } from './__tests__/fixtures'
 
@@ -104,5 +107,41 @@ describe('Portal Detail Page', () => {
     })
     expect(await screen.findByText('English')).toBeVisible()
     expect(await screen.findByText((`Instances (${mockList.data.length})`))).toBeVisible()
+  })
+
+  describe('ABAC permission', () => {
+    it('should dispaly with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.UPDATE]
+      })
+
+      render(<Provider><PortalServiceDetail /></Provider>, {
+        route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
+      })
+      expect(await screen.findByRole('button', { name: 'Configure' })).toBeVisible()
+    })
+
+    it('should correctly hide with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.DELETE]
+      })
+
+      render(<Provider><PortalServiceDetail /></Provider>, {
+        route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
+      })
+      expect(screen.queryByRole('button', { name: 'Configure' })).toBeNull()
+    })
   })
 })
