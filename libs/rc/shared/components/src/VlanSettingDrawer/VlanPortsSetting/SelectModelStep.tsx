@@ -64,7 +64,6 @@ export function SelectModelStep (props: { editMode: boolean }) {
       })
       setFamilies(familiesData)
     }
-
     if(ICX_MODELS_MODULES && vlanSettingValues.family && vlanSettingValues.model){
       const selectedFamily = vlanSettingValues.family
       const selectedModel = vlanSettingValues.model

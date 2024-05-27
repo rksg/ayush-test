@@ -273,13 +273,16 @@ export const PortStatusMessages = {
     defaultMessage: 'Port set as untagged'
   }),
   USED_BY_LAG: defineMessage({
-    defaultMessage: 'Port used by LAG'
+    defaultMessage: 'Port is member of LAG – {lagName}'
+  }),
+  USED_UNTAGGED_VLAN: defineMessage({
+    defaultMessage: 'Port is already an untagged member of VLAN {vlanId}'
   }),
   USED_BY_OTHERS: defineMessage({
     defaultMessage: 'Port used by other VLAN setting'
   }),
   CURRENT: defineMessage({
-    defaultMessage: 'Networks on this port:'
+    defaultMessage: 'VLANs'
   })
 }
 

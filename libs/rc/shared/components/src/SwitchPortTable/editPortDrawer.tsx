@@ -153,9 +153,9 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
+  const [ loading, setLoading ] = useState<boolean>(true)
   const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const [loading, setLoading] = useState<boolean>(true)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
@@ -228,7 +228,7 @@ export function EditPortDrawer ({
       skip: !switchDetail?.venueId
     })
 
-  const { data: switchesDefaultVlan } = useGetDefaultVlanQuery({
+  const { data: switchesDefaultVlan, isLoading: isDefaultVlanLoading } = useGetDefaultVlanQuery({
     params: { tenantId, venueId: switchDetail?.venueId },
     payload: switches,
     enableRbac: isSwitchRbacEnabled
@@ -380,13 +380,13 @@ export function EditPortDrawer ({
     }
 
     // eslint-disable-next-line max-len
-    if (switchesDefaultVlan && !isSwitchDetailLoading && !isSwitchDataLoading && switchDetail?.venueId) {
+    if (!isSwitchDetailLoading && !isSwitchDataLoading && !isDefaultVlanLoading && switchDetail?.venueId) {
       resetFields()
       setData()
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, switchesDefaultVlan, visible, switchDetail])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible, switchDetail])
 
   const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
     vlansByVenue: Vlan[]
@@ -1538,6 +1538,7 @@ export function EditPortDrawer ({
         cliApplied={cliApplied}
         profileId={switchConfigurationProfileId}
         switchIds={switches}
+        venueId={switchDetail?.venueId}
         updateSwitchVlans={async (values: Vlan) =>
           updateSwitchVlans(
             values,

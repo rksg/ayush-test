@@ -548,17 +548,17 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     addSwitchVlans: build.mutation<Vlan[], RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitchVlans, params)
+        const req = createHttpRequest(SwitchRbacUrlsInfo.addSwitchVlans, params, customHeaders.v1)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     deleteSwitchVlan: build.mutation<Vlan[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteSwitchVlan, params)
+        const req = createHttpRequest(SwitchRbacUrlsInfo.deleteSwitchVlan, params, customHeaders.v1)
         return {
           ...req
         }
@@ -567,20 +567,23 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     updateSwitchVlan: build.mutation<Vlan[], RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.updateSwitchVlan, params)
+        const req = createHttpRequest(SwitchRbacUrlsInfo.updateSwitchVlan, params, customHeaders.v1)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     addSwitchesVlans: build.mutation<Vlan[], RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.addSwitchesVlans, params)
+        const req = createHttpRequest(
+          // TODO: enable RBAC api
+          SwitchUrlsInfo.addSwitchesVlans, params //, customHeaders.v1
+        )
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]

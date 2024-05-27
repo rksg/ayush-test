@@ -184,7 +184,28 @@ export const defaultVlan = [{
 }, {
   defaultVlanId: 2,
   switchId: '58:fb:96:0e:82:8a'
+}, {
+  // for switch level vlan
+  defaultVlanId: 1,
+  switchId: 'c0:c5:20:aa:32:79',
+  vlanList: [{
+    vlanId: 1, vlanName: 'DEFAULT-VLAN'
+  }, {
+    vlanId: 2, vlanName: 'vlan2'
+  }, {
+    vlanId: 3
+  }, {
+    vlanId: 4
+  }]
+}, {
+  defaultVlanId: 2,
+  switchId: '58:fb:96:0e:82:8a',
+  vlanList: [{
+    vlanId: 1
+  }]
 }]
+
+
 
 export const switchVlanUnion = {
   profileVlan: [

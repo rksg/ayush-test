@@ -46,6 +46,7 @@ export function SelectVlanModal (props: {
   cliApplied?: boolean,
   profileId?: string,
   switchIds?: string[],
+  venueId?: string,
   updateSwitchVlans?: (vlan: Vlan) => void,
   vlanDisabledTooltip: string
 }) {
@@ -53,7 +54,7 @@ export function SelectVlanModal (props: {
   const params = useParams()
   const { form, selectModalvisible, setSelectModalvisible,
     setUseVenueSettings, onValuesChange, hasSwitchProfile, cliApplied,
-    vlanDisabledTooltip, defaultVlan, switchVlans, switchIds, switchFamilyModel,
+    vlanDisabledTooltip, defaultVlan, switchVlans, switchIds, venueId, switchFamilyModel,
     vlanUsedByVe = [], taggedVlans = '', untaggedVlan,
     showVoiceVlan, voiceVlan, isVoiceVlanInvalid
   } = props
@@ -216,7 +217,10 @@ export function SelectVlanModal (props: {
 
       try {
         await addSwitchesVlans({
-          params,
+          params: {
+            ...params,
+            venueId: venueId
+          },
           payload
         }).unwrap()
         await props.updateSwitchVlans?.(values)

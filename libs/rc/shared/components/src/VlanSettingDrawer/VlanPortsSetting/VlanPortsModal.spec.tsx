@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import { render, screen, fireEvent } from '@testing-library/react'
 import userEvent                     from '@testing-library/user-event'
+import { Modal }                     from 'antd'
 import { debounce }                  from 'lodash'
 import { rest }                      from 'msw'
 import { IntlProvider }              from 'react-intl'
@@ -11,6 +12,8 @@ import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider  }      from '@acx-ui/store'
 import { mockServer }     from '@acx-ui/test-utils'
 
+import { vlans, records, portSlotsData, vlanSettingValues } from '../__tests__/fixtures'
+
 import { SelectModelStep }   from './SelectModelStep'
 import { TaggedPortsStep }   from './TaggedPortsStep'
 import { UntaggedPortsStep } from './UntaggedPortsStep'
@@ -19,83 +22,6 @@ import { VlanPortsModal }    from './VlanPortsModal'
 
 
 describe('VlanPortsModal', () => {
-  /* eslint-disable max-len */
-  const vlans = [{
-    arpInspection: false,
-    id: '545d08c0e7894501846455233ad60cc5',
-    igmpSnooping: 'none',
-    ipv4DhcpSnooping: false,
-    spanningTreePriority: 32768,
-    spanningTreeProtocol: 'none',
-    vlanId: 2,
-    vlanName: 'vlan-01'
-  }, {
-    arpInspection: false,
-    id: '1af3d29b5dcc46a5a20a651fda55e2df',
-    igmpSnooping: 'none',
-    ipv4DhcpSnooping: false,
-    spanningTreePriority: 32768,
-    spanningTreeProtocol: 'none',
-    switchFamilyModels: [{
-      id: '9874453239bc479fac68bc050d0cf729',
-      model: 'ICX7550-24P',
-      slots: [
-        { slotNumber: 1, enable: true },
-        { slotNumber: 3, enable: true, option: '2X40G' },
-        { slotNumber: 2, enable: true, option: '2X40G' }
-      ],
-      taggedPorts: '1/2/2',
-      untaggedPorts: '1/1/20,1/3/2'
-    }, {
-      id: '9874453239bc479fac68bc050d0cf730',
-      model: 'ICX7850-48F',
-      slots: [
-        { slotNumber: 1, enable: true, option: '' },
-        { slotNumber: 2, enable: true, option: '12X40/100G' },
-        { slotNumber: 3, enable: true, option: '8X40/100G' }
-      ]
-    }],
-    vlanId: 3,
-    vlanName: 'vlan-02'
-  }]
-
-  const records = [{
-    id: '9874453239bc479fac68bc050d0cf729',
-    model: 'ICX7550-24P',
-    slots: [
-      { slotNumber: 1, enable: true, option: '' },
-      { slotNumber: 3, enable: true, option: '2X40G' },
-      { slotNumber: 2, enable: true, option: '2X40G' }
-    ],
-    taggedPorts: ['1/1/48'],
-    title: '',
-    untaggedPorts: ['1/1/44'],
-    vlanConfigName: ''
-  }]
-
-  const vlanSettingValues = {
-    enableSlot2: true,
-    enableSlot3: true,
-    enableSlot4: false,
-    family: 'ICX7150',
-    model: '48',
-    selectedOptionOfSlot2: '2X1G',
-    selectedOptionOfSlot3: '4X1/10G',
-    selectedOptionOfSlot4: '',
-    switchFamilyModels: {
-      id: '',
-      model: 'ICX7150-48',
-      slots: [
-        { slotNumber: 1, enable: true, option: '', slotPortInfo: '48X1G', portStatus: Array(48) },
-        { slotNumber: 2, enable: true, option: '2X1G', slotPortInfo: '2X1G', portStatus: Array(2) },
-        { slotNumber: 3, enable: true, option: '4X1/10G', slotPortInfo: '4X1/10G', portStatus: Array(4) }
-      ],
-      taggedPorts: ['1/1/28'],
-      untaggedPorts: ['1/1/21', '1/1/40']
-    }
-  }
-  /* eslint-enable */
-
   beforeEach(async () => {
     mockServer.use(
       rest.get(
@@ -106,7 +32,7 @@ describe('VlanPortsModal', () => {
   })
 
   afterEach(() => {
-    //Modal.destroyAll()
+    Modal.destroyAll()
   })
 
   it('should render correctly', async () => {
@@ -373,7 +299,7 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     fireEvent.mouseOver(await screen.findByTestId('untagged_module2_6'))
-    await screen.findByText(/Networks on this port/i)
+    await screen.findByText(/VLANs/i)
     await userEvent.click(await screen.findByTestId('untagged_module2_6'))
     await userEvent.click(await screen.findByTestId('untagged_module1_25'))
 
@@ -383,7 +309,7 @@ describe('VlanPortsModal', () => {
     await screen.findByText('Port set as untagged')
 
     fireEvent.mouseOver(await screen.findByTestId('tagged_module1_47'))
-    await screen.findByText(/Networks on this port/i)
+    await screen.findByText(/VLANs/i)
     await userEvent.click(await screen.findByTestId('tagged_module1_47'))
     await userEvent.click(await screen.findByTestId('tagged_module2_5'))
 
@@ -531,5 +457,46 @@ describe('VlanPortsModal', () => {
     )
 
     await screen.findByText(/Select Ports By Model/i)
+  })
+
+  it('should render correctly in switch level', async () => {
+    const setVlan = jest.fn()
+    render(<IntlProvider locale='en'>
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={setVlan}
+          vlanList={[]}
+          switchFamilyModel='ICX7150-C08P'
+          portSlotsData={portSlotsData}
+          portsUsedBy={{
+            lag: {
+              '1/1/3': 'LAG1'
+            }
+          }}
+        />
+      </Provider>
+    </IntlProvider>)
+
+    await userEvent.click(await screen.findByTestId('untagged_module1_0'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
+
+    await userEvent.click(await screen.findByTestId('tagged_module1_1'))
+    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    expect(setVlan).toHaveBeenLastCalledWith({
+      model: 'ICX7150-C08P',
+      slots: [
+        { enable: undefined, option: '', slotNumber: 1 },
+        { enable: undefined, option: undefined, slotNumber: 2 }
+      ],
+      taggedPorts: ['1/1/2'],
+      title: '',
+      untaggedPorts: ['1/1/1'],
+      vlanConfigName: ''
+    })
   })
 })

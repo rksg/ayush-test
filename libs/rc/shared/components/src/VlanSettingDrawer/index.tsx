@@ -18,21 +18,23 @@ import {
   SwitchModel,
   SwitchModelPortData,
   SwitchSlot,
+  PortStatusMessages,
   validateDuplicateVlanId,
   validateVlanName,
   validateVlanNameWithoutDVlans,
   Vlan
 } from '@acx-ui/rc/utils'
 import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 
 import * as UI            from './styledComponents'
+import * as VlanPortsUI   from './VlanPortsSetting/styledComponents'
 import { VlanPortsModal } from './VlanPortsSetting/VlanPortsModal'
 
 export interface PortsUsedByProps {
-  lag?: string[]
-  tagged?: string[]
-  untagged?: string[]
+  lag?: Record<string, string>
+  untagged?: Record<string, number>
 }
 
 export interface VlanSettingDrawerProps {
@@ -61,6 +63,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
 
   return (
     <Drawer
+      data-testid='vlan-setting-drawer'
       title={
         editMode
           ? $t({ defaultMessage: 'Edit VLAN' })
@@ -373,7 +376,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           children={<Input type='hidden' />}
         />
       </Form>
-      { !(isSwitchLevelVlanEnabled && !enablePortModelConfigure) && <>
+      { (!isSwitchLevelVlanEnabled || enablePortModelConfigure) && <>
         <Row justify='space-between' style={{ margin: '25px 0 10px' }}>
           <Col>
             <label style={{ color: 'var(--acx-neutrals-60)' }}>Ports</label>
@@ -423,4 +426,28 @@ function VlanSettingForm (props: VlanSettingFormProps) {
       </>}
     </div>
   )
+}
+
+export function getTooltipTemplate (untaggedModel: Vlan[], taggedModel: Vlan[]) {
+  const { $t } = getIntl()
+  return <div>
+    <VlanPortsUI.TooltipTitle>{
+      $t(PortStatusMessages.CURRENT)
+    }</VlanPortsUI.TooltipTitle>
+    <div>
+      <VlanPortsUI.TagsTitle>
+        <VlanPortsUI.TagsOutlineIcon />{ $t({ defaultMessage: 'Untagged' }) }
+      </VlanPortsUI.TagsTitle>
+      <VlanPortsUI.PortSpan>
+        {untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
+      </VlanPortsUI.PortSpan></div>
+    <div>
+      <VlanPortsUI.TagsTitle>
+        <VlanPortsUI.TagsSolidIcon />{ $t({ defaultMessage: 'Tagged' }) }
+      </VlanPortsUI.TagsTitle>
+      <VlanPortsUI.PortSpan>
+        {taggedModel.length > 0 ? taggedModel.map(item => item.vlanId).join(', ') : '-'}
+      </VlanPortsUI.PortSpan>
+    </div>
+  </div>
 }

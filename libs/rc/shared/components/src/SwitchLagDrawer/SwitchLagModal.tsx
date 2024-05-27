@@ -642,12 +642,14 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             taggedVlans={taggedVlans}
             untaggedVlan={untaggedVlan}
             vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+            cliApplied={cliApplied}
             hasSwitchProfile={hasSwitchProfile}
             profileId={switchConfigurationProfileId}
-            cliApplied={cliApplied}
             switchIds={switchId ? [switchId] : []}
+            venueId={switchDetailHeader?.venueId}
             updateSwitchVlans={async (values: Vlan) =>
-              updateSwitchVlans(values,
+              updateSwitchVlans(
+                values,
                 switchVlans,
                 setSwitchVlans,
                 venueVlans,

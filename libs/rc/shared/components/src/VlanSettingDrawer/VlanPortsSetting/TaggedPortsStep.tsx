@@ -13,6 +13,8 @@ import { Card, Tooltip }                                                     fro
 import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
 import { getIntl }                                                           from '@acx-ui/utils'
 
+import { getTooltipTemplate } from '../'
+
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
 
@@ -210,8 +212,8 @@ export function TaggedPortsStep () {
 
     const disabledPorts
       = untaggedPorts.includes(timeslot)
-      || portsUsedBy?.lag?.includes(timeslot)
-      // || portsUsedBy?.tagged?.includes(timeslot) || false
+      || Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)
+      || false
 
     return disabledPorts
   }
@@ -232,26 +234,12 @@ export function TaggedPortsStep () {
 
     if(untaggedPorts.includes(timeslot)){
       return <div>{$t(PortStatusMessages.SET_AS_UNTAGGED)}</div>
-    } else if (portsUsedBy?.lag?.includes(timeslot)) {
-      return <div>{$t(PortStatusMessages.USED_BY_LAG)}</div>
-    // } else if (portsUsedBy?.tagged?.includes(timeslot)) {
-    //   return <div>{$t(PortStatusMessages.USED_BY_OTHERS)}</div>
+    } else if (Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)) {
+      return <div>{
+        $t(PortStatusMessages.USED_BY_LAG, { lagName: portsUsedBy?.lag?.[timeslot] })
+      }</div>
     } else {
-      return <div>
-        <div>{$t(PortStatusMessages.CURRENT)}</div>
-        <div>
-          <UI.TagsOutlineIcon />
-          <UI.PortSpan>
-            {untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
-          </UI.PortSpan>
-        </div>
-        <div>
-          <UI.TagsSolidIcon />
-          <UI.PortSpan>
-            {taggedModel.length > 0 ? taggedModel.map(item => item.vlanId).join(',') : '-'}
-          </UI.PortSpan>
-        </div>
-      </div>
+      return getTooltipTemplate(untaggedModel, taggedModel)
     }
   }
 

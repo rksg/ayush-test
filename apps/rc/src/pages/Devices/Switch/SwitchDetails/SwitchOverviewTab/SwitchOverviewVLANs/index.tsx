@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
@@ -42,8 +42,6 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { SwitchDetailsContext } from '../..'
-
 import { VlanDetail } from './vlanDetail'
 
 export function SwitchOverviewVLANs (props: {
@@ -64,25 +62,19 @@ export function SwitchOverviewVLANs (props: {
   const [defaultVlan, setDefaultVlan] = useState({} as Vlan)
   const [vlanTableData, setVlanTableData] = useState([] as Vlan[])
 
-  const [usedByLag, setUsedByLag] = useState([] as string[])
-  const [usedUntaggedPorts, setUsedUntaggedPorts] = useState([] as string[])
-  const [usedTaggedPorts, setUsedTaggedPorts] = useState([] as string[])
+  const [usedByLag, setUsedByLag] = useState({} as Record<string, string>)
+  const [usedUntaggedPorts, setUsedUntaggedPorts] = useState({} as Record<string, string>)
 
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
   const [portSlotsData, setPortSlotsData] = useState([])
 
-  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const [addSwitchesVlans] = useAddSwitchesVlansMutation()
   const [updateSwitchVlan] = useUpdateSwitchVlanMutation()
   const [deleteSwitchVlan] = useDeleteSwitchVlanMutation()
-
-  useEffect(() => {
-    setSwitchFamilyModel(switchDetail?.model || '')
-  }, [ switchDetail ])
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
@@ -94,26 +86,36 @@ export function SwitchOverviewVLANs (props: {
     sorter: {
       sortField: 'vlanId',
       sortOrder: 'ASC'
+    },
+    option: {
+      skip: !switchDetail?.venueId
     }
   })
 
   const { data: vlanListBySwitch, isLoading: isVlanListLoading }
   = useGetVlanListBySwitchLevelQuery({
-    params: { tenantId, switchId },
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    enableRbac: isSwitchRbacEnabled,
     payload: {
       pageSize: 9999,
       sorter: {
         sortField: 'vlanId',
         sortOrder: 'ASC'
       }
-    }
+    },
+    skip: !switchDetail?.venueId
   })
 
   const { data: lagList, isLoading: isLagListLoading }
-    = useGetLagListQuery({ params: { tenantId, switchId } })
+    = useGetLagListQuery({
+      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      enableRbac: isSwitchRbacEnabled,
+      skip: !switchDetail?.venueId
+    })
 
   const { data: portsData } = useSwitchPortlistQuery({
     params: { tenantId, switchId },
+    enableRbac: isSwitchRbacEnabled,
     payload: {
       filters: { switchId: [serialNumber] },
       sortField: 'portIdentifierFormatted',
@@ -124,14 +126,6 @@ export function SwitchOverviewVLANs (props: {
     } }, {
     skip: !isSwitchLevelVlanEnabled
   })
-
-  useEffect(() => {
-    if (portsData?.data) {
-      const portViewData = getPortViewData(portsData?.data)
-      setPortSlotsData(portViewData.slots)
-    }
-  }, [ portsData ])
-
 
   const onClose = () => {
     setDrawerVisible(false)
@@ -157,7 +151,7 @@ export function SwitchOverviewVLANs (props: {
     if (editMode) {
       try {
         await updateSwitchVlan({
-          params: { tenantId, switchId, vlanId: editVlan?.id },
+          params: { tenantId, switchId, vlanId: editVlan?.id, venueId: switchDetail?.venueId },
           payload
         }).unwrap()
       } catch (error) {
@@ -166,7 +160,7 @@ export function SwitchOverviewVLANs (props: {
     } else {
       try {
         await addSwitchesVlans({
-          params: { tenantId, switchId },
+          params: { tenantId, switchId, venueId: switchDetail?.venueId },
           payload: [payload]
         }).unwrap()
       } catch (error) {
@@ -182,14 +176,15 @@ export function SwitchOverviewVLANs (props: {
       switchId: switchId,
       enableAsDefaultVlan: true
     }
-    const isVlanExisted = vlanList?.filter(v =>
-      v.vlanId == values.vlanId)?.length > 0
+    const isVlanExisted = vlanList?.filter(v => {
+      return Number(v.vlanId) === Number(values.vlanId)
+    })?.length > 0
 
     // TODO: Default VLAN ID can't be changed
     if (defaultVlan.id && isVlanExisted) {
       try {
         await updateSwitchVlan({
-          params: { tenantId, switchId, vlanId: defaultVlan.id },
+          params: { tenantId, switchId, venueId: switchDetail?.venueId, vlanId: defaultVlan.id },
           payload
         }).unwrap()
       } catch (error) {
@@ -198,7 +193,7 @@ export function SwitchOverviewVLANs (props: {
     } else {
       try {
         await addSwitchesVlans({
-          params: { tenantId, switchId },
+          params: { tenantId, switchId, venueId: switchDetail?.venueId, vlanId: defaultVlan.id },
           payload: [payload]
         }).unwrap()
       } catch (error) {
@@ -307,17 +302,16 @@ export function SwitchOverviewVLANs (props: {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: rows.length === 1
-              ? $t({ defaultMessage: 'VLAN' })
-              : $t({ defaultMessage: 'VLANs' }),
-            entityValue: rows.length === 1
-              ? $t({ defaultMessage: 'VLAN {vlan}' }, { vlan: vlanId })
-              : undefined,
+            entityName: $t({ defaultMessage: 'VLAN' }),
+            entityValue: $t({ defaultMessage: 'VLAN {vlan}' }, { vlan: vlanId }),
             numOfEntities: rows.length
           },
           onOk: () => {
-            deleteSwitchVlan({ params: { vlanId: rows[0]?.id } })
-              .then(clearSelection)
+            deleteSwitchVlan({ params: {
+              venueId: switchDetail?.venueId,
+              switchId: switchId,
+              vlanId: rows[0]?.id
+            } }).then(clearSelection)
           }
         })
       }
@@ -342,52 +336,74 @@ export function SwitchOverviewVLANs (props: {
     }
   }]
 
-  const checkUsedPorts = (vlanList: Vlan[], checkPostsField: 'untaggedPorts' | 'taggedPorts') => {
+  const getUsedPorts = (vlanList: Vlan[], checkPostsField: 'untaggedPorts' | 'taggedPorts') => {
     return vlanList?.filter(
       v => v?.[checkPostsField] && v?.vlanName !== SWITCH_DEFAULT_VLAN_NAME
-    ).map(v => v?.[checkPostsField]?.split(',')).flat() as string[]
+    ).reduce((result, v) => {
+      const ports = v?.[checkPostsField]?.split(',')?.reduce((tmp, port) => ({
+        ...tmp,
+        [port]: v.vlanId
+      }), {})
+      return {
+        ...result,
+        ...ports
+      }
+    }, {})
   }
 
   useEffect(() => {
+    if (portsData?.data) {
+      const portViewData = getPortViewData(portsData?.data)
+      setPortSlotsData(portViewData.slots)
+    }
+  }, [ portsData ])
+
+  useEffect(() => {
     if (tableQuery.data?.data && !isLagListLoading && !isVlanListLoading) {
-      const portsUsedByLag = lagList?.map(lag => lag.ports)?.filter(lag => lag).flat() as string[]
+      const portsUsedByLagObj = lagList?.reduce((result, lag) => {
+        const ports = lag.ports?.reduce((tmp, port) => ({
+          ...tmp,
+          [port]: lag.name
+        }), {})
+        return { ...result, ...ports }
+      }, {})
+      const portsUsedByLag = Object.keys(portsUsedByLagObj ?? {})
+
       const vlanList = vlanListBySwitch?.data as Vlan[]
       const vlanTableData = tableQuery.data?.data.map(vlan => {
         const hasPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
-          _.intersection(port.taggedPortsList, portsUsedByLag)?.length > 1
-            || _.intersection(port.untaggedPortsList, portsUsedByLag)?.length > 1
+          _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
+            || _.intersection(port.untaggedPorts?.split(','), portsUsedByLag)?.length > 0
         )
         return {
           ...vlan,
-          inactiveRow: !!hasPortsUsedByLag?.length
+          inactiveRow: vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME && !!hasPortsUsedByLag?.length
         }
       })
       const defaultVlan = vlanList?.filter(
         v => v.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.[0]
 
-      const usedTagged = checkUsedPorts(vlanList, 'taggedPorts')
-      const usedUntagged = checkUsedPorts(vlanList, 'untaggedPorts')
+      const usedUntagged = getUsedPorts(vlanList, 'untaggedPorts')
 
       setVlanList(vlanList)
-      setUsedByLag(portsUsedByLag)
-      setUsedTaggedPorts(usedTagged)
-      setUsedUntaggedPorts(usedUntagged)
+      setUsedByLag(portsUsedByLagObj as Record<string, string>)
+      setUsedUntaggedPorts(usedUntagged as Record<string, string>)
       setVlanTableData(vlanTableData)
       setDefaultVlan(defaultVlan)
     }
-  }, [tableQuery.data?.data, isLagListLoading, isVlanListLoading])
+  }, [tableQuery.data?.data, vlanListBySwitch, isLagListLoading, isVlanListLoading])
 
   useEffect(() => {
-    if (switchDetailsContextData) {
-      const switchDetailHeader = switchDetailsContextData?.switchDetailHeader
+    if (switchDetail) {
       const isOperational = isStrictOperationalSwitch(
-        switchDetailHeader?.deviceStatus as SwitchStatusEnum, !!switchDetailHeader?.configReady
-        , !!switchDetailHeader?.syncedSwitchConfig)
+        switchDetail?.deviceStatus as SwitchStatusEnum, !!switchDetail?.configReady
+        , !!switchDetail?.syncedSwitchConfig)
 
-      setCliApplied(switchDetailsContextData?.switchDetailHeader?.cliApplied || false)
+      setSwitchFamilyModel(switchDetail?.model || '')
+      setCliApplied(switchDetail?.cliApplied || false)
       setIsSwitchOperational(isOperational || false)
     }
-  }, [switchDetailsContextData])
+  }, [switchDetail])
 
   return (
     <Loader
@@ -441,8 +457,7 @@ export function SwitchOverviewVLANs (props: {
         vlansList={vlanList}
         portsUsedBy={{
           lag: usedByLag,
-          tagged: _.xor(usedTaggedPorts, editVlan?.taggedPorts?.split(',')),
-          untagged: _.xor(usedUntaggedPorts, editVlan?.untaggedPorts?.split(','))
+          untagged: _.omit(usedUntaggedPorts, editVlan?.untaggedPorts?.split(',') ?? [])
         }}
       />}
 

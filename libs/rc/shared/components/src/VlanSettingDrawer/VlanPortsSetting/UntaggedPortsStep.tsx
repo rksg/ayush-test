@@ -13,6 +13,8 @@ import { Card, Tooltip }                                                     fro
 import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
 import { getIntl }                                                           from '@acx-ui/utils'
 
+import { getTooltipTemplate } from '../'
+
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
 
@@ -221,8 +223,8 @@ export function UntaggedPortsStep () {
 
     const disabledPorts
       = taggedPorts.includes(timeslot)
-      || portsUsedBy?.lag?.includes(timeslot)
-      || portsUsedBy?.untagged?.includes(timeslot)
+      || Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)
+      || Object.keys(portsUsedBy?.untagged ?? {})?.includes(timeslot)
       || portExists || false
 
     return disabledPorts
@@ -244,25 +246,16 @@ export function UntaggedPortsStep () {
 
     if(taggedPorts.includes(timeslot)){
       return <div>{$t(PortStatusMessages.SET_AS_TAGGED)}</div>
-    } else if (portsUsedBy?.lag?.includes(timeslot)) {
-      return <div>{$t(PortStatusMessages.USED_BY_LAG)}</div>
-    } else if (portsUsedBy?.untagged?.includes(timeslot)) {
-      return <div>{$t(PortStatusMessages.USED_BY_OTHERS)}</div>
+    } else if (Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)) {
+      return <div>{
+        $t(PortStatusMessages.USED_BY_LAG, { lagName: portsUsedBy?.lag?.[timeslot] })
+      }</div>
+    } else if (Object.keys(portsUsedBy?.untagged ?? {})?.includes(timeslot)) {
+      return <div>{
+        $t(PortStatusMessages.USED_UNTAGGED_VLAN, { vlanId: portsUsedBy?.untagged?.[timeslot] })
+      }</div>
     } else{
-      return <div>
-        <div>{$t(PortStatusMessages.CURRENT)}</div>
-        <div>
-          <UI.TagsOutlineIcon />
-          <UI.PortSpan>
-            {untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
-          </UI.PortSpan></div>
-        <div>
-          <UI.TagsSolidIcon />
-          <UI.PortSpan>
-            {taggedModel.length > 0 ? taggedModel.map(item => item.vlanId).join(',') : '-'}
-          </UI.PortSpan>
-        </div>
-      </div>
+      return getTooltipTemplate(untaggedModel, taggedModel)
     }
   }
 
@@ -296,7 +289,7 @@ export function UntaggedPortsStep () {
                     {$t({ defaultMessage: 'Module 1' })}
                   </Typography.Text>
                 </div>
-                { vlanSettingValues.switchFamilyModels?.slots?.[0] &&
+                { vlanSettingValues.switchFamilyModels?.slots[0] &&
                   <Typography.Paragraph>
                     {$t({ defaultMessage: '{module1}' },
                       { module1: vlanSettingValues.switchFamilyModels?.slots[0].slotPortInfo
