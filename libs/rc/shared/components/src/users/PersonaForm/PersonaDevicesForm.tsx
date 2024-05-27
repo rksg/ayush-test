@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import {  Table, TableProps }                   from '@acx-ui/components'
+import { Table, TableProps }                    from '@acx-ui/components'
 import { defaultSort, PersonaDevice, sortProp } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }            from '@acx-ui/user'
+import { WifiScopes }                           from '@acx-ui/types'
+import { filterByAccess, hasPermission }        from '@acx-ui/user'
 
 import { PersonaDevicesImportDialog } from './PersonaDevicesImportDialog'
 
@@ -53,15 +54,15 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
     }
   ]
 
-  const actions: TableProps<PersonaDeviceItem>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Device' }),
-      disabled: !canAddDevices,
-      onClick: () => {
-        setModelVisible(true)
-      }
-    }
-  ]
+  const actions: TableProps<PersonaDeviceItem>['actions'] =
+    hasPermission({ scopes: [WifiScopes.CREATE] })
+      ? [{
+        label: $t({ defaultMessage: 'Add Device' }),
+        disabled: !canAddDevices,
+        onClick: () => {
+          setModelVisible(true)
+        }
+      }] : []
 
   const rowActions: TableProps<PersonaDeviceItem>['rowActions'] = [
     {
@@ -83,7 +84,7 @@ export function PersonaDevicesForm (props: PersonaDevicesFormProps) {
         dataSource={value ?? []}
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { defaultSelectedRowKeys: [] }}
+        rowSelection={hasPermission() && { defaultSelectedRowKeys: [] }}
       />
       {modelVisible &&
         <PersonaDevicesImportDialog
