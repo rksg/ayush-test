@@ -10,12 +10,14 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
+import { RolesEnum } from '@acx-ui/types'
 import {
   DetailLevel,
   UserProfile as UserProfileInterface,
   useUserProfileContext,
   useUpdateUserProfileMutation,
-  roleStringMap
+  roleStringMap,
+  hasRoles
 } from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
@@ -135,6 +137,7 @@ export function UserProfile () {
 
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Recent Logins' })}
+          disabled={hasRoles([RolesEnum.DPSK_ADMIN])}
           key='RecentLogins'>
           {userProfile && <RecentLogin userEmail={userProfile!.email} />}
         </Tabs.TabPane>

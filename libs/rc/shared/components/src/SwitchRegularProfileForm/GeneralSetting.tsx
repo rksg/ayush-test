@@ -4,10 +4,19 @@ import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import { useIntl }               from 'react-intl'
 
-import { StepsFormLegacy }                                                                            from '@acx-ui/components'
-import { useLazyValidateUniqueProfileNameQuery, useLazyValidateUniqueSwitchProfileTemplateNameQuery } from '@acx-ui/rc/services'
-import { SwitchProfile, TableResult, checkObjectNotExists, useConfigTemplateLazyQueryFnSwitcher }     from '@acx-ui/rc/utils'
-import { useParams }                                                                                  from '@acx-ui/react-router-dom'
+import { StepsFormLegacy }                              from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import {
+  useLazyValidateUniqueProfileNameQuery,
+  useLazyValidateUniqueSwitchProfileTemplateNameQuery
+} from '@acx-ui/rc/services'
+import {
+  SwitchProfile,
+  TableResult,
+  checkObjectNotExists,
+  useConfigTemplateLazyQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
@@ -21,6 +30,8 @@ const profileListPayload = {
 }
 
 export function GeneralSetting () {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
@@ -32,7 +43,10 @@ export function GeneralSetting () {
   })
   const nameValidator = async (value: string) => {
     const payload = { ...profileListPayload, searchString: value }
-    const list = (await validateUniqueProfileName({ params, payload }, true).unwrap()).data
+    const list = (await validateUniqueProfileName({
+      params,
+      payload,
+      enableRbac: isSwitchRbacEnabled }, true).unwrap()).data
       .filter(n => n.id !== params.profileId)
       .map(n => n.name)
 

@@ -1,8 +1,9 @@
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { moreDetailsDataFixture }         from './__tests__/fixtures'
-import { moreDetailsApi, RequestPayload } from './services'
+import { moreDetailsDataFixture }        from './__tests__/fixtures'
+import { RequestPayload, WidgetType }    from './config'
+import { generateQuery, moreDetailsApi } from './services'
 
 describe('More Details apis', () => {
   afterEach(() =>
@@ -13,11 +14,11 @@ describe('More Details apis', () => {
     start: '2021-12-31T00:00:00+00:00',
     end: '2022-01-01T00:00:00+00:00',
     n: 5,
-    type: 'cpu'
+    type: 'cpuUsage'
   }
   describe('more details data api', () => {
     it('should return the correct data', async () => {
-      mockGraphqlQuery(dataApiURL, 'PieChartQuery', { data: moreDetailsDataFixture })
+      mockGraphqlQuery(dataApiURL, 'Network', { data: moreDetailsDataFixture })
       const { status, data, error } = await store.dispatch(
         moreDetailsApi.endpoints.pieChartData.initiate(payload)
       )
@@ -27,7 +28,7 @@ describe('More Details apis', () => {
     })
 
     it('should return error', async () => {
-      mockGraphqlQuery(dataApiURL, 'PieChartQuery', {
+      mockGraphqlQuery(dataApiURL, 'Network', {
         error: new Error('something went wrong!')
       })
       const { status, data, error } = await store.dispatch(
@@ -36,6 +37,10 @@ describe('More Details apis', () => {
       expect(status).toBe('rejected')
       expect(data).toBe(undefined)
       expect(error).not.toBe(undefined)
+    })
+    it('should return empty string with unknown widget type', () => {
+      const result = generateQuery('unknownType' as WidgetType)
+      expect(result).toBe('')
     })
   })
 })

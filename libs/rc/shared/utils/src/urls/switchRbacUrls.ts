@@ -351,6 +351,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switchProfiles/:profileId',
     newApi: true
   },
+  deleteSwitchProfile: {
+    method: 'delete',
+    url: '/switchProfiles/:switchProfileId',
+    newApi: true
+  },
   associateCliTemplate: {
     method: 'put',
     url: '/venues/:venueId/cliTemplates/:templateId',

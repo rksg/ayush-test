@@ -1,11 +1,22 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showActionModal, Table, TableProps, Tooltip } from '@acx-ui/components'
-import { useDeleteProfilesMutation, useGetProfilesQuery }      from '@acx-ui/rc/services'
-import { SwitchProfileModel, usePollingTableQuery }            from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink }               from '@acx-ui/react-router-dom'
-import { SwitchScopes }                                        from '@acx-ui/types'
-import { filterByAccess, hasPermission }                       from '@acx-ui/user'
+import {
+  Loader,
+  showActionModal,
+  Table,
+  TableProps,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useBatchDeleteProfilesMutation,
+  useDeleteProfilesMutation,
+  useGetProfilesQuery
+}      from '@acx-ui/rc/services'
+import { SwitchProfileModel, usePollingTableQuery } from '@acx-ui/rc/utils'
+import { useNavigate, useParams, useTenantLink }    from '@acx-ui/react-router-dom'
+import { SwitchScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasPermission }            from '@acx-ui/user'
 
 export function ProfilesTab () {
   const { $t } = useIntl()
@@ -14,9 +25,13 @@ export function ProfilesTab () {
   const linkToProfiles = useTenantLink('/networks/wired/profiles')
 
   const [deleteProfiles] = useDeleteProfilesMutation()
+  const [batchDeleteProfiles] = useBatchDeleteProfilesMutation()
+
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = usePollingTableQuery<SwitchProfileModel>({
     useQuery: useGetProfilesQuery,
+    enableRbac: isSwitchRbacEnabled,
     defaultPayload: {}
   })
 
@@ -70,11 +85,16 @@ export function ProfilesTab () {
             entityValue: selectedRows[0].name,
             numOfEntities: selectedRows.length
           },
-          onOk: () => {
-            deleteProfiles({
-              params: { tenantId },
-              payload: selectedRows.map(r => r.id)
-            }).then(clearSelection)
+          onOk: async () => {
+            if (isSwitchRbacEnabled) {
+              const requests = selectedRows.map(row => ({ params: { switchProfileId: row.id } }))
+              await batchDeleteProfiles(requests).then(clearSelection)
+            } else {
+              deleteProfiles({
+                params: { tenantId },
+                payload: selectedRows.map(r => r.id)
+              }).then(clearSelection)
+            }
           }
         })
       }
