@@ -1,25 +1,19 @@
 import { useState, useEffect, Dispatch, SetStateAction, MutableRefObject, useRef } from 'react'
 
-import { Form }                                      from 'antd'
-import {  cloneDeep, get, set, unset, isEmpty }      from 'lodash'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { Form }                                 from 'antd'
+import {  cloneDeep, get, set, unset, isEmpty } from 'lodash'
+import { defineMessage, useIntl }               from 'react-intl'
 
 import {
   AnalyticsPreferences,
+  AnalyticsPreferenceType,
   useGetPreferencesQuery,
-  useSetNotificationMutation,
-  NotificationMethod
+  useSetNotificationMutation
 } from '@acx-ui/analytics/services'
 import { getUserProfile }    from '@acx-ui/analytics/utils'
 import { showToast, Loader } from '@acx-ui/components'
 
 import * as UI from './styledComponents'
-
-type ListLabel = {
-  label: MessageDescriptor
-  key: string
-  checked: NotificationMethod[]
-}
 
 const labels = {
   incident: {
@@ -31,19 +25,12 @@ const labels = {
   configRecommendation: {
     crrm: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
     aiOps: defineMessage({ defaultMessage: 'AI Operations' })
+  },
+  licenses: {
+    '60D': defineMessage({ defaultMessage: 'Licenses expiring in 60 days' }),
+    '30D': defineMessage({ defaultMessage: 'Licenses expiring in 30 days' }),
+    '7D': defineMessage({ defaultMessage: 'Licenses expiring in 7 days' })
   }
-}
-
-function getPreferenceLabel (
-  pref: AnalyticsPreferences,
-  type: 'incident' | 'configRecommendation'
-): ListLabel[] {
-
-  return Object.keys(get(labels, type)).map((key) => ({
-    key,
-    label: get(labels, [type, key]),
-    checked: get(pref, [type, key], [])
-  }))
 }
 
 const getApplyMsg = (success?: boolean) => {
@@ -53,17 +40,17 @@ const getApplyMsg = (success?: boolean) => {
 }
 
 type Preferences = { preferences: AnalyticsPreferences }
-function OptionsList ({ labels, setState, type }: {
-  labels: ListLabel[],
+function OptionsList ({ preferences, setState, type }: {
+  preferences: AnalyticsPreferences,
   setState: Dispatch<SetStateAction<Preferences>>,
-  type: 'incident' | 'configRecommendation'
+  type: AnalyticsPreferenceType
 }) {
   const { $t } = useIntl()
-  return <>{labels.map(({ label, key, checked }) => <div key={key}>
+  return <>{Object.entries(labels[type]).map(([key, label]) => <div key={key}>
     <UI.Checkbox
       id={key}
       name={key}
-      checked={checked.includes('email')}
+      checked={get(preferences, [type, key], []).includes('email')}
       onChange={(e: { target: { checked: boolean } }) =>
         setState(({ preferences: p }: Preferences) => {
           const preferences = cloneDeep(p)
@@ -107,19 +94,19 @@ export const NotificationSettings = (props: {
         content: $t(getApplyMsg())
       })
     })
-  const incidentLabels = getPreferenceLabel(preferences, 'incident')
-  const recommendationLabels = getPreferenceLabel(preferences, 'configRecommendation')
-  return <Loader states={[query]}><Form layout='vertical' autoComplete='off'>
-    <Form.Item label={$t({ defaultMessage: 'Incidents' })}>
-      <OptionsList labels={incidentLabels} setState={setState} type='incident' />
-    </Form.Item>
-    <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
-      <OptionsList labels={recommendationLabels} setState={setState} type='configRecommendation' />
-    </Form.Item>
-    {showLicense && <Form.Item label={$t({ defaultMessage: 'Licenses' })}>
-      <div>licenses list</div>
-    </Form.Item>}
-  </Form></Loader>
+  return <Loader states={[query]}>
+    <Form layout='vertical' autoComplete='off'>
+      <Form.Item label={$t({ defaultMessage: 'Incidents' })}>
+        <OptionsList preferences={preferences} setState={setState} type='incident' />
+      </Form.Item>
+      <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
+        <OptionsList preferences={preferences} setState={setState} type='configRecommendation' />
+      </Form.Item>
+      {showLicense && <Form.Item label={$t({ defaultMessage: 'Licenses' })}>
+        <OptionsList preferences={preferences} setState={setState} type='licenses' />
+      </Form.Item>}
+    </Form>
+  </Loader>
 }
 
 export const NotificationSettingsPage = () => {
