@@ -26,14 +26,14 @@ function useColumns (
       searchable: searchable,
       defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
-        return row?.isCluster ? (searchable ? highlightFn(row.name) : row.name) : (
+        return row?.isCluster ? highlightFn(row.name) : (
           <TenantLink
             to={
               row?.isNode
                 // eslint-disable-next-line max-len
                 ? `/ruckus-wan-gateway/${row.venueId}/${row.clusterId}/gateway-details/overview/${row.rwgId}`
                 : `/ruckus-wan-gateway/${row.venueId}/${row.rwgId}/gateway-details/overview`}>
-            {searchable ? highlightFn(row.name) : row.name}</TenantLink>
+            {highlightFn(row.name)}</TenantLink>
         )
       }
     },{
