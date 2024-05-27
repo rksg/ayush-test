@@ -1,8 +1,13 @@
-import userEvent from '@testing-library/user-event'
+import React from 'react'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
+  mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
@@ -16,7 +21,6 @@ import {
 } from './__tests__/fixtures'
 
 import { SwitchOverviewPanel } from '.'
-
 
 jest.mock('@acx-ui/analytics/components', () => ({
   SwitchesTrafficByVolume: () =>
@@ -43,9 +47,54 @@ jest.mock('@acx-ui/rc/components', () => ({
 }))
 
 
-
+const portlist = {
+  fields: [
+    'portIdentifier',
+    'id'
+  ],
+  totalCount: 16,
+  page: 1,
+  data: [
+    {
+      cloudPort: true,
+      stack: false,
+      poeUsed: 0,
+      poeTotal: 0,
+      signalIn: 0,
+      signalOut: 0,
+      poeEnabled: false,
+      usedInFormingStack: false,
+      portIdentifier: '1/1/1',
+      id: 'c0-c5-20-aa-32-79_1-1-1',
+      lagId: '1',
+      syncedSwitchConfig: false
+    },
+    {
+      cloudPort: false,
+      stack: false,
+      poeUsed: 0,
+      poeTotal: 0,
+      signalIn: 0,
+      signalOut: 0,
+      poeEnabled: false,
+      usedInFormingStack: true,
+      portIdentifier: '1/1/10',
+      id: 'c0-c5-20-aa-32-82_1-1-10',
+      lagId: '0',
+      syncedSwitchConfig: false
+    }
+  ]
+}
 
 describe('SwitchOverviewTab', () => {
+  beforeEach(() => {
+    mockServer.use(
+      rest.post(
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portlist)))
+    )
+  })
+
   const filters : AnalyticsFilter = {
     startDate: '2022-01-01T00:00:00+08:00',
     endDate: '2022-01-02T00:00:00+08:00',
@@ -55,6 +104,7 @@ describe('SwitchOverviewTab', () => {
   }
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     const params = {
       tenantId: 'tenantId',
       switchId: 'switchId',
@@ -104,6 +154,31 @@ describe('SwitchOverviewTab', () => {
     expect(blinkLedsButton).toBeVisible()
     await userEvent.click(blinkLedsButton)
     expect(await screen.findByTestId('rc-SwitchBlinkLEDsDrawer')).toBeVisible()
+  })
+
+  it('should render SwitchesTrafficByVolume portOptions correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
+    const useStateSpy = jest.spyOn(React, 'useState')
+    const params = {
+      tenantId: 'tenantId',
+      switchId: 'switchId',
+      serialNumber: 'serialNumber',
+      activeTab: 'overview'
+    }
+    render(<Provider>
+      <SwitchOverviewPanel
+        filters={filters}
+        stackMember={stackMembersData}
+        switchDetail={switchDetailSwitchOnline}
+        currentSwitchDevice={currentSwitchDevice} />
+    </Provider>, {
+      route: {
+        params,
+        path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab'
+      }
+    })
+    expect(await screen.findByTestId('rc-SwitchesTrafficByVolume')).toBeVisible()
+    expect(useStateSpy).toBeCalled()
   })
 }
 )
