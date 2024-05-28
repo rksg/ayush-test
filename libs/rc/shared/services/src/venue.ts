@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { FetchBaseQueryError }   from '@reduxjs/toolkit/query/react'
 import { cloneDeep, omit, uniq } from 'lodash'
 
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { DateFormatEnum, formatter }                  from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -88,7 +88,7 @@ import {
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
   ApiVersionType,
-  CommonRbacUrlsInfo
+  CommonRbacUrlsInfo, ApGroupConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -155,7 +155,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         const venueListQuery = await fetchWithBQ(venueListReq)
         const venueList = venueListQuery.data as TableResult<Venue>
-        const venueIds = venueList?.data?.map(v => v.id) || []
+        const venuesData = venueList.data as Venue[]
+        const venueIds = venuesData?.filter(v => {
+          if (v.aggregatedApStatus) {
+            return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
+          }
+          return false
+        }).map(v => v.id) || []
+
         const venueIdsToIncompatible:{ [key:string]: number } = {}
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -380,7 +387,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
 
-        const payloadData = arg.payload as { venueId: string, networkId: string }[]
+        const payloadData = arg.payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
           venueId: item.venueId,
           networkId: item.networkId
@@ -401,7 +408,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
 
           const apGroupListInfo = {
-            ...createHttpRequest(WifiUrlsInfo.getApGroupsList, arg.params),
+            ...createHttpRequest(payloadData[0].isTemplate
+              ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
+              : WifiUrlsInfo.getApGroupsList, arg.params),
             body: apGroupPayload
           }
 

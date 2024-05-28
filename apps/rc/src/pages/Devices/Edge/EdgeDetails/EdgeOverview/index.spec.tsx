@@ -2,8 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                                from '@acx-ui/rc/services'
 import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }                                                                              from '@acx-ui/store'
+import { Provider, store  }                                                                       from '@acx-ui/store'
 import {
   render,
   screen,
@@ -55,6 +56,8 @@ describe('Edge Detail Overview', () => {
   { tenantId: 'tenant-id', serialNumber: 'edge-serialnum' }
 
   beforeEach(() => {
+    store.dispatch(edgeApi.util.resetApiState())
+
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(

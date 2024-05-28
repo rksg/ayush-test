@@ -22,7 +22,7 @@ import {
   SyslogForm,
   SyslogDetailView,
   ConfigurationProfileForm,
-  CliProfileForm
+  CliProfileForm, ApGroupDetails, ApGroupEdit
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -407,6 +407,13 @@ export function ConfigTemplatesRoutes () {
               </AuthRoute>
             }
           />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.AP_GROUP] && <>
+          {/* eslint-disable-next-line max-len */}
+          <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
+          <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
         </>}
       </Route>
     </Route>

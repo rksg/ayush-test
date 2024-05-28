@@ -75,7 +75,8 @@ export const SettingsForm = () => {
       fields: [
         'name',
         'serialNumber',
-        'venueId'
+        'venueId',
+        'clusterId'
       ],
       filters: {
         venueId: [venueId],
@@ -102,9 +103,13 @@ export const SettingsForm = () => {
 
   // get corePort by portsConfig API
   const { portsConfig } = useGetPortConfigQuery({
-    params: { serialNumber: edgeId }
+    params: {
+      venueId,
+      edgeClusterId: edgeOptions?.filter(i => i.value === edgeId)[0]?.clusterId,
+      serialNumber: edgeId
+    }
   }, {
-    skip: !edgeId,
+    skip: !edgeId || !venueId || !edgeOptions,
     selectFromResult: ({ data }) => {
       return {
         portsConfig: data?.ports

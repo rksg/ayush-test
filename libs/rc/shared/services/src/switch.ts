@@ -811,7 +811,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(switchUrls.addSwitch, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
@@ -1477,7 +1477,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           )
           return {
             ...req,
-            body: payload,
+            body: JSON.stringify(payload),
             responseHandler: async (response) => {
               const date = new Date()
               // eslint-disable-next-line max-len

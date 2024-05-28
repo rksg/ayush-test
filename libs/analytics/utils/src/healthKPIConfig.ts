@@ -173,7 +173,7 @@ export const kpiConfig = {
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
       apiMetric: 'switchDHCPAttemptAndSuccessCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
@@ -181,7 +181,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,
-      tooltip: defineMessage({ defaultMessage: 'The time-series graph on the left displays the percentage of DHCP connection attempts that have completed successfully. A DHCP connection attempt is deemed successful when the Switch client has received an IP address from the DHCP server. Do note that a single Switch client could have multiple DHCP connection attempts.{br}{br}The bar chart on the right captures the daily percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of DHCP successful bindings for switches that have DHCP snooping configured.' })
     }
   },
   radius: {
@@ -434,7 +434,7 @@ export const kpiConfig = {
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -455,7 +455,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: formatter('percentFormat'),
-      tooltip: defineMessage({ defaultMessage: 'The PoE Utilization measures the percentage of the switches that utilize less power than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of PoE Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Indication of switches where power consumption is above a threshold.' })
     }
   },
   onlineAPs: {
@@ -484,15 +484,15 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are reachable.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are reachable.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Online Switches measures the percentage of Switches which are online and connected to {smartZone}.{br}{br}The time-series graph on the left displays the Online Switch percentage across time. The bar chart on the right captures the daily Online Switch percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility to switches.' })
     }
   },
   switchMemoryUtilization: {
@@ -501,7 +501,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -522,7 +522,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'The memory Utilization measures the percentage of the switches that utilize less memory percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of Memory Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of switches with memory utilisation above a threshold.' })
     }
   },
   switchCpuUtilization: {
@@ -531,7 +531,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -552,7 +552,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'The CPU Utilization measures the percentage of the switches that utilize less CPU percent than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of CPU Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of switches with CPU utilisation above a threshold.' })
     }
   },
   switchesTemperature: {
@@ -560,15 +560,15 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} Switches are under safe thresholds of temperature.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are under safe thresholds of temperature.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Temperature' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of switches with temperature above or below the operating conditions.' })
     }
   },
   switchUplinkPortUtilization: {
@@ -577,7 +577,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -598,7 +598,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Uplink Port Utilization' })
+      tooltip: defineMessage({ defaultMessage: 'Metric that refers to amount of network traffic that is transmitted effectively through the uplink port of wired switches.' })
     }
   },
   switchPortUtilization: {
@@ -607,7 +607,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortUtilizationCountAndPortCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
@@ -628,7 +628,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Port Utilization' })
+      tooltip: defineMessage({ defaultMessage: 'Metric that refers to traffic being transmitted effectively if its within the network capacity.' })
     }
   },
   switchInterfaceAnomalies: {
@@ -636,7 +636,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
@@ -644,7 +644,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Interface Anomalies measures the percentage of Ports which do not have anomaly.{br}{br}The time-series graph on the left displays the non anomaly ports percentage across time. The bar chart on the right captures the daily non anomaly ports percentage over the last 7 days of the selected time range. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Anomalies refer to unexpected and abnormal networking behaviour can occur due to cable issues, failed negotiation, and MTU Errors, Input errors contributing to bad user minutes.' })
     }
   }
 }
