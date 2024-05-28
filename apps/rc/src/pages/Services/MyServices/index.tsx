@@ -42,6 +42,7 @@ export default function MyServices () {
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const services = [
     {
@@ -109,7 +110,8 @@ export default function MyServices () {
     {
       type: ServiceType.PORTAL,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetEnhancedPortalProfileListQuery({ params, payload: { filters: {} } })
+      tableQuery: useGetEnhancedPortalProfileListQuery({
+        params, payload: { filters: {}, enableRbac: isEnabledRbacService } })
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,

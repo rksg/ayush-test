@@ -167,7 +167,7 @@ export enum Features {
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
-  SERVICE_POLICY_RBAC = 'acx-ui-rbac-service-policy-toggle'
+  RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -1,16 +1,30 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, Button, GridRow, Loader, GridCol }                           from '@acx-ui/components'
-import { PortalOverview, PortalInstancesTable, ServiceConfigTemplateDetailsLink } from '@acx-ui/rc/components'
-import { useGetPortalTemplateQuery }                                              from '@acx-ui/rc/services'
-import { ServiceOperation, ServiceType, generateConfigTemplateBreadcrumb, Demo }  from '@acx-ui/rc/utils'
-import { filterByAccess }                                                         from '@acx-ui/user'
+import { PageHeader, Button, GridRow, Loader, GridCol } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import {
+  PortalOverview,
+  PortalInstancesTable,
+  ServiceConfigTemplateDetailsLink
+} from '@acx-ui/rc/components'
+import { useGetPortalTemplateQuery } from '@acx-ui/rc/services'
+import {
+  ServiceOperation,
+  ServiceType,
+  generateConfigTemplateBreadcrumb,
+  Demo
+}  from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 export default function PortalServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const queryResults = useGetPortalTemplateQuery({ params })
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const queryResults = useGetPortalTemplateQuery({
+    params,
+    payload: { enableRbac: isEnabledRbacService } }
+  )
   const breadcrumb = generateConfigTemplateBreadcrumb()
 
   return (

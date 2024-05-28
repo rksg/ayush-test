@@ -1,22 +1,43 @@
 import {
   AAASetting,
-  CapabilitiesApModel, CommonResult, ConfigTemplateUrlsInfo, ExternalAntenna,
-  LocalUser, RadiusServer, TableResult, TacacsServer,
-  TriBandSettings, Venue, VenueBssColoring,
-  VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
-  VenueDHCPPoolInst, VenueDHCPProfile,
-  VenueDefaultRegulatoryChannels, VenueDirectedMulticast,
-  VenueDosProtection, VenueExtended, VenueLanPorts, VenueLoadBalancing,
-  VenueMdnsFencingPolicy, VenueRadioCustomization, VenueRadiusOptions, VenueSettings,
-  VenueSwitchConfiguration, onActivityMessageReceived, onSocketActivityChanged
+  CapabilitiesApModel,
+  CommonResult,
+  ConfigTemplateUrlsInfo,
+  ExternalAntenna,
+  LocalUser,
+  RadiusServer,
+  TableResult,
+  TacacsServer,
+  TriBandSettings,
+  Venue,
+  VenueBssColoring,
+  VenueClientAdmissionControl,
+  VenueConfigTemplateUrlsInfo,
+  VenueDHCPPoolInst,
+  VenueDHCPProfile,
+  VenueDefaultRegulatoryChannels,
+  VenueDirectedMulticast,
+  VenueDosProtection,
+  VenueExtended,
+  VenueLanPorts,
+  VenueLoadBalancing,
+  VenueMdnsFencingPolicy,
+  VenueRadioCustomization,
+  VenueRadiusOptions,
+  VenueSettings,
+  VenueSwitchConfiguration,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
 import { handleCallbackWhenActivitySuccess } from '../utils'
 
-import { commonQueryFn, configTemplateApi }   from './common'
-import { useCasesToRefreshVenueTemplateList } from './constants'
+import { commonQueryFn, configTemplateApi }                                          from './common'
+import { useCasesToRefreshVenueTemplateList, useCasesToRefreshVlanPoolTemplateList } from './constants'
+import { policiesConfigTemplateApi }                                                 from './policies'
 
 export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -322,6 +343,20 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     updateVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServer),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    getVLANPoolPolicyViewModeTemplateList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVlanPoolViewModelList),
+      providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshVlanPoolTemplateList, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(policiesConfigTemplateApi.util.invalidateTags([{ type: 'VlanPoolTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -374,5 +409,6 @@ export const {
   useDeleteVenueTemplateSwitchAAAServerMutation,
   useBulkDeleteVenueTemplateSwitchAAAServerMutation,
   useAddVenueTemplateSwitchAAAServerMutation,
-  useUpdateVenueTemplateSwitchAAAServerMutation
+  useUpdateVenueTemplateSwitchAAAServerMutation,
+  useGetVLANPoolPolicyViewModeTemplateListQuery
 } = venueConfigTemplateApi
