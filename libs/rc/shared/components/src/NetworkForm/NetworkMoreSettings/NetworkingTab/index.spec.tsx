@@ -189,10 +189,6 @@ describe.skip('Network More settings - Networking Tab', () => {
   })
 
   it('Test case for 80211D additional regulatory domains', async ()=> {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE ? true : false
-    })
-
     render(MockedMoreSettingsForm(mockWlanData, mockContextData), { route: { params } })
     const tabs = await screen.findAllByRole('tab')
     const networkingTab = tabs[3]
