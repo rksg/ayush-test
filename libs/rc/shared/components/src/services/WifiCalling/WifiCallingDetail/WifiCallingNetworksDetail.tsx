@@ -41,7 +41,7 @@ const WifiCallingNetworksDetail = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venues',
       key: 'venues',
       sorter: true,

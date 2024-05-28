@@ -4,6 +4,7 @@ import { rest }  from 'msw'
 import { useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { serviceApi, policyApi } from '@acx-ui/rc/services'
 import {
+  CertificateUrls,
   DpskUrls,
   getPolicyDetailsLink, getPolicyRoutePath, MacRegListUrlsInfo,
   PolicyOperation,
@@ -16,7 +17,13 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { dpskList } from '../AdaptivePolicySetDetail/__test__/fixtures'
 
-import { policySetList, prioritizedPolicies, adaptivePolicyList, macList } from './__test__/fixtures'
+import {
+  policySetList,
+  prioritizedPolicies,
+  adaptivePolicyList,
+  macList,
+  certificateTemplateList
+} from './__test__/fixtures'
 
 import AdaptivePolicySetTable from './index'
 
@@ -70,6 +77,10 @@ describe('AdaptivePolicySetTable', () => {
       rest.post(
         RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url,
+        (req, res, ctx) => res(ctx.json(certificateTemplateList))
       )
     )
   })

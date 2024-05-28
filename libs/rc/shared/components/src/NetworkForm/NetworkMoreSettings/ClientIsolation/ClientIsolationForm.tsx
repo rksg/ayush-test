@@ -92,7 +92,7 @@ export default function ClientIsolationForm (props: { labelWidth?: string }) {
           children={<Switch />} />
       </UI.FieldLabel>
       {isClientIsolationAllowlistSupported ? <UI.FieldLabel width={labelWidth}>
-        {$t({ defaultMessage: 'Client Isolation Allowlist by Venue' })}
+        {$t({ defaultMessage: 'Client Isolation Allowlist by <VenueSingular></VenueSingular>' })}
         <Form.Item
           name={['wlan','advancedCustomization', 'clientIsolationAllowlistEnabled']}
           style={{ marginBottom: '10px' }}

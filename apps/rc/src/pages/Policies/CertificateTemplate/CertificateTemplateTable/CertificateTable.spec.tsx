@@ -1,9 +1,11 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CertificateUrls }                                                        from '@acx-ui/rc/utils'
+import { AlgorithmType, CertificateUrls }                                         from '@acx-ui/rc/utils'
 import { Provider }                                                               from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { WifiScopes }                                                             from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                                         from '@acx-ui/user'
 
 import { certificateList, certificateTemplate } from '../__test__/fixtures'
 
@@ -135,7 +137,14 @@ describe('CertificateTable', () => {
   })
 
   it('should show fewer column when templateId exist', async () => {
-    render(<Provider><CertificateTable templateId='123'/></Provider>)
+    const certificateTemplate = {
+      id: 'templateId',
+      name: 'templateName',
+      caType: 'caType',
+      keyLength: 123,
+      algorithm: AlgorithmType.SHA_256
+    }
+    render(<Provider><CertificateTable templateData={certificateTemplate}/></Provider>)
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row')
@@ -148,5 +157,49 @@ describe('CertificateTable', () => {
     expect(within(row[0]).getByText('Timestamp')).toBeInTheDocument()
     expect(within(row[0]).queryByText('CA Name')).not.toBeInTheDocument()
     expect(within(row[0]).queryByText('Template')).not.toBeInTheDocument()
+  })
+
+  it('should render correctly with wifi-u wifi-d permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.UPDATE, WifiScopes.CREATE]
+    })
+
+    render(<Provider><CertificateTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificate/list'
+      }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /certificate1/ })
+    await userEvent.click(row)
+    expect(await screen.findByRole('button', { name: 'Revoke' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Unrevoke' })).toBeVisible()
+  })
+
+  it('should render correctly with wifi-r permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+    render(<Provider><CertificateTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificate/list'
+      }
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /certificate1/ })
+    await userEvent.click(row)
+    expect(screen.queryByRole('button', { name: 'Revoke' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Unrevoke' })).not.toBeInTheDocument()
   })
 })

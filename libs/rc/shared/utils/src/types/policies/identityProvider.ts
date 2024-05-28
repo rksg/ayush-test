@@ -108,8 +108,8 @@ export type IdentityProvider = {
   naiRealms: NaiRealmType[]
   plmns?: PlmnType[]
   roamConsortiumOIs?: RoamConsortiumType[]
-  authRadiusId: string
-  accountingRadiusEnabled: boolean
+  authRadiusId?: string
+  accountingRadiusEnabled?: boolean
   accountingRadiusId?: string
 }
 

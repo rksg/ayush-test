@@ -161,7 +161,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
                   <Radio value={ScheduleMode.Automatically}>
                     {$t({ defaultMessage: 'Schedule Automatically' })}
                     { // eslint-disable-next-line max-len
-                      <div>{$t({ defaultMessage: 'Upgrade preference saved for each venue based on venue’s local time-zone' })}</div>}
+                      <div>{$t({ defaultMessage: 'Upgrade preference saved for each <venueSingular></venueSingular> based on local time-zone of <venueSingular></venueSingular>' })}</div>}
                     <UI.PreferencesSection>
                       { // eslint-disable-next-line max-len
                         <div style={{ fontWeight: 600, marginLeft: 8, paddingTop: 8 }}>{$t({ defaultMessage: 'Preferred update slot(s):' })}</div>}
@@ -173,8 +173,8 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
                     </UI.ChangeButton>
                   </Radio>
                   <Radio value={ScheduleMode.Manually}>
-                    {$t({ defaultMessage: 'Schedule Manually' })}
-                    <div>{$t({ defaultMessage: 'Manually update firmware per venue' })}</div>
+                    {$t({ defaultMessage: 'Schedule Manually' })} { /*eslint-disable-next-line max-len*/ }
+                    <div>{$t({ defaultMessage: 'Manually update firmware per <venueSingular></venueSingular>' })}</div>
                   </Radio>
                 </Space>
               </Radio.Group>

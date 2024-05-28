@@ -21,7 +21,7 @@ export const DcSdLanDetailContent = (props: { data: EdgeSdLanViewDataP2 | undefi
 
   const sdLanInfo = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       content: () =>
         data?.venueId ? (
           <TenantLink to={`/venues/${data.venueId}/venue-details/overview`}>

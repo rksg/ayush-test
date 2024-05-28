@@ -1,16 +1,29 @@
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
-import { networkApi, policyApi }                                                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, IdentityProviderUrls, PolicyOperation, PolicyType, getPolicyRoutePath } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                       from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                                   from '@acx-ui/test-utils'
+import { networkApi, policyApi } from '@acx-ui/rc/services'
+import {
+  AaaUrls,
+  CommonUrlsInfo,
+  IdentityProviderUrls,
+  PolicyOperation,
+  PolicyType,
+  getPolicyRoutePath
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
-import { dummyNetworksResult, dummyTableResult, mockedPolicyId, mockedTenantId } from '../__tests__/fixtures'
+import {
+  dummayAccounting,
+  dummyAuthRadius,
+  dummyNetworksResult,
+  dummyTableResult,
+  mockAuthRadiusId,
+  mockedPolicyId,
+  mockedTenantId
+} from '../__tests__/fixtures'
 
 import IdentityProviderDetail from './IdentityProviderDetail'
-
-
 
 
 const mockedUseNavigate = jest.fn()
@@ -19,6 +32,7 @@ const mockedTenantPath: Path = {
   search: '',
   hash: ''
 }
+
 const detailPath = '/:tenantId/t/' + getPolicyRoutePath({
   type: PolicyType.IDENTITY_PROVIDER,
   oper: PolicyOperation.DETAIL
@@ -49,6 +63,15 @@ describe('IdentityProviderDetail', () => {
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(dummyNetworksResult))
+      ),
+      rest.get(
+        AaaUrls.getAAAPolicy.url,
+        (req, res, ctx) => {
+          const { policyId } = req.params
+          return (policyId === mockAuthRadiusId)
+            ? res(ctx.json(dummyAuthRadius))
+            : res(ctx.json(dummayAccounting))
+        }
       )
     )
   })

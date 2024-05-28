@@ -8,8 +8,8 @@ import { Loader, Table, TableProps, showActionModal }      from '@acx-ui/compone
 import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import { EdgeSubInterface, TableQuery }                    from '@acx-ui/rc/utils'
-import { RequestPayload }                                  from '@acx-ui/types'
-import { filterByAccess, hasAccess }                       from '@acx-ui/user'
+import { EdgeScopes, RequestPayload }                      from '@acx-ui/types'
+import { filterByAccess, hasPermission }                   from '@acx-ui/user'
 
 import * as UI from '../styledComponents'
 
@@ -112,6 +112,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
 
   const rowActions: TableProps<EdgeSubInterface>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -119,6 +120,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
@@ -140,10 +142,12 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const actionButtons = [
     {
       label: $t({ defaultMessage: 'Add Sub-interface' }),
+      scopeKey: [EdgeScopes.CREATE],
       onClick: () => openDrawer()
     },
     ...(isEdgeSubInterfaceCSVEnabled ? [{
       label: $t({ defaultMessage: 'Import from file' }),
+      scopeKey: [EdgeScopes.CREATE],
       onClick: () => setImportModalvisible(true)
     }]:[])
   ]
@@ -161,6 +165,8 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
+  const isSelectionVisible = hasPermission({ scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE] })
 
   return (
     <>
@@ -190,7 +196,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
               onChange={tableQuery.handleTableChange}
               columns={columns}
               rowActions={filterByAccess(rowActions)}
-              rowSelection={hasAccess() && {
+              rowSelection={isSelectionVisible && {
                 type: 'radio',
                 selectedRowKeys: selectedRows,
                 onChange: (key: Key[]) => {

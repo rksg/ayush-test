@@ -12,6 +12,7 @@ import { useIntl }           from 'react-intl'
 import {
   Button, Drawer, Subtitle, Tooltip
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }   from '@acx-ui/icons'
 import { isLAGMemberPort }              from '@acx-ui/rc/components'
 import {
@@ -48,6 +49,7 @@ export function AccessSwitchDrawer (props: {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [form] = Form.useForm()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { open, editRecords, venueId, onClose = ()=>{}, onSave } = props
 
@@ -63,9 +65,9 @@ export function AccessSwitchDrawer (props: {
   const [getWebAuthTemplate] = useLazyGetWebAuthTemplateQuery()
 
   const { vlanList } = useGetSwitchVlanQuery({
-    params: { tenantId, switchId }
+    params: { tenantId, switchId, venueId }, enableRbac: isSwitchRbacEnabled
   }, {
-    skip: isMultipleEdit || !switchId,
+    skip: isMultipleEdit || !switchId || (isSwitchRbacEnabled && !venueId),
     selectFromResult: ({ data }) => ({
       vlanList: [
         ...(data?.switchVlan || []),
@@ -78,7 +80,8 @@ export function AccessSwitchDrawer (props: {
       filters: { switchMac: editRecords.map(rec => rec.id) }, page: 1, pageSize: 1000,
       sortField: 'portIdentifierFormatted', sortOrder: 'ASC',
       fields: ['portIdentifier', 'lagId', 'switchMac']
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   }, {
     skip: editRecords.length === 0,
     selectFromResult: ({ data }) => {
@@ -99,8 +102,11 @@ export function AccessSwitchDrawer (props: {
       return { portList: _.intersectionWith(...(_.values(switchPorts)), _.isEqual) }
     }
   })
-  const { lagList } = useGetLagListQuery({ params: { tenantId, switchId } }, {
-    skip: isMultipleEdit || !switchId,
+  const { lagList } = useGetLagListQuery({
+    params: { tenantId, switchId, venueId },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: isMultipleEdit || !switchId || (isSwitchRbacEnabled && !venueId),
     selectFromResult: ({ data }) => ({
       lagList: data?.map(lag => ({
         label: `${lag.lagId} (${lag.name})`,
@@ -112,7 +118,8 @@ export function AccessSwitchDrawer (props: {
     params: { tenantId },
     payload: {
       fields: ['name', 'id']
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
   const templateList = templateListResult?.data as WebAuthTemplate[]
 
@@ -138,7 +145,8 @@ export function AccessSwitchDrawer (props: {
   useEffect(() => {
     if (templateId) {
       getWebAuthTemplate({
-        params: { tenantId, serviceId: templateId }
+        params: { tenantId, serviceId: templateId },
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
         .then((templateRes) => {
           setTemplate(templateRes)

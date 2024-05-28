@@ -22,10 +22,10 @@ export default function CertificateForm () {
 
 
   const handleFinish = async (formData: CertificateFormData) => {
-    const { certificateTemplateId, csrType, ...rest } = formData
+    const { certificateTemplateId, csrType, csrString, description, ...variables } = formData
     await generateCertificate({
       params: { templateId: formData.certificateTemplateId },
-      payload: { ...rest }
+      payload: { csrString, description, variableValues: { ...variables } }
     })
     navigate(linkToList, { replace: true })
   }

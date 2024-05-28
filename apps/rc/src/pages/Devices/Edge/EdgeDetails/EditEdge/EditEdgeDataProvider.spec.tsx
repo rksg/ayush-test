@@ -12,7 +12,7 @@ import { EditEdgeDataContext, EditEdgeDataProvider } from './EditEdgeDataProvide
 
 const {
   mockEdgeList, mockEdgeData, mockEdgeClusterList,
-  mockEdgeDnsServersData, mockStaticRoutes
+  mockEdgeDnsServersData, mockStaticRoutes, mockEdgeCluster
 } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList, mockedEdgeLagList } = EdgeLagFixtures
@@ -57,6 +57,10 @@ describe('EditEdge - EditEdgeDataProvider', () => {
       rest.get(
         EdgeUrlsInfo.getStaticRoutes.url,
         (req, res, ctx) => res(ctx.json(mockStaticRoutes))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
@@ -80,5 +84,6 @@ describe('EditEdge - EditEdgeDataProvider', () => {
     await waitFor(() => expect(result.current.dnsServersData?.secondary).toBe('2.2.2.2'))
     await waitFor(() => expect(result.current.staticRouteData?.routes.length).toBe(2))
     await waitFor(() => expect(result.current.isCluster).toBeTruthy())
+    await waitFor(() => expect(result.current.clusterConfig?.id).toBe('clusterId_1'))
   })
 })

@@ -22,8 +22,11 @@ export function SwitchClientDetails () {
   const [isManaged, setIsManaged] = useState(false)
   const [clientDetails, setClientDetails] = useState({} as SwitchClient)
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
-  const { data, isLoading } = useGetSwitchClientDetailsQuery({ params })
-
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const { data, isLoading } = useGetSwitchClientDetailsQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const [apList] = useLazyApListQuery()
 
@@ -71,7 +74,7 @@ export function SwitchClientDetails () {
         ? ['dhcpClientModelName', $t({ defaultMessage: 'Model Name' })] : ['', '']),
       ['clientName', $t({ defaultMessage: 'Hostname' })],
       ['switchName', $t({ defaultMessage: 'Switch Name' })],
-      ['venueName', $t({ defaultMessage: 'Venue Name' })],
+      ['venueName', $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })],
       ['clientVlan', $t({ defaultMessage: 'Vlan ID' })],
       ['vlanName', $t({ defaultMessage: 'Vlan' })],
       ['switchSerialNumber', $t({ defaultMessage: 'Switch Serial Number' })],
@@ -176,7 +179,7 @@ export function SwitchClientDetails () {
     },
     {
       title: <span>
-        {$t({ defaultMessage: 'Venue' })}
+        {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
       </span>,
       value: <TenantLink to={`/venues/${clientDetails?.venueId}/venue-details/overview`}>
         {clientDetails?.venueName}</TenantLink>

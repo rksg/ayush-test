@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { showActionModal }   from '@acx-ui/components'
+import { showActionModal }        from '@acx-ui/components'
 import {
-  useDeleteGatewayMutation
+  useBatchDeleteGatewayMutation
 } from '@acx-ui/rc/services'
 import {
   RWG
@@ -10,7 +10,7 @@ import {
 
 export function useRwgActions () {
   const { $t } = useIntl()
-  const [deleteGateway] = useDeleteGatewayMutation()
+  const [batchDeleteGateway] = useBatchDeleteGatewayMutation()
 
   const deleteGateways = async ( rows: RWG[], tenantId?: string, callBack?: ()=>void ) => {
     showActionModal({
@@ -23,10 +23,9 @@ export function useRwgActions () {
         numOfEntities: rows.length,
         confirmationText: $t({ defaultMessage: 'Delete' })
       },
-      onOk: () => { rows.length === 1 ?
-        deleteGateway({ params: { tenantId, rwgId: rows[0].id } })
-          .then(callBack) :
-        deleteGateway({ params: { tenantId }, payload: rows.map(item => item.id) })
+      onOk: () => {
+        const requests = rows.map(rwg => ({ params: { venueId: rwg.venueId, rwgId: rwg.rwgId } }))
+        batchDeleteGateway(requests)
           .then(callBack)
       }
     })

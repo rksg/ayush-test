@@ -8,6 +8,7 @@ import {
 } from '@acx-ui/test-utils'
 import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { getIntl }                        from '@acx-ui/utils'
 
 import ThresholdConfig , { getDisabledToolTip } from './ThresholdConfigContent'
 const shortXFormat = jest.fn()
@@ -34,10 +35,10 @@ describe('Threshold Histogram chart', () => {
     expect(await screen.findByText('Reset')).toBeInTheDocument()
   })
   it('should return correct intl for ACX', async () => {
-    expect(getDisabledToolTip(true, undefined)).toEqual(defineMessage({
-      defaultMessage:
+    const { $t } = getIntl()
+    expect($t(getDisabledToolTip(true, undefined))).toEqual(
       'Cannot save threshold at organization level. Please select a Venue or AP to set a threshold.'
-    }))
+    )
   })
   it('should return correct intl for RA', async () => {
     expect(getDisabledToolTip(true, 'true')).toEqual(defineMessage({

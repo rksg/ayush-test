@@ -1,6 +1,7 @@
 import { ApDeviceStatusEnum } from '../../constants'
 
 export interface RogueAPDetectionContextType {
+  id?: string,
   policyName: string,
   name?: string,
   tags: string[],

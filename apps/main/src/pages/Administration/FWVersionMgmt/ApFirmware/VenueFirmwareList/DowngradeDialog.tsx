@@ -164,7 +164,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
             </UI.Ul>
             <Typography>
               { // eslint-disable-next-line max-len
-                intl.$t({ defaultMessage: 'Are you sure you want to downgrade the firmware version on devices in selected venue?' })}
+                intl.$t({ defaultMessage: 'Are you sure you want to downgrade the firmware version on devices in selected <venueSingular></venueSingular>?' })}
             </Typography>
           </Form.Item>
         }
@@ -195,7 +195,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
             <>
               <Typography style={{ fontWeight: 700 }}>
                 { // eslint-disable-next-line max-len
-                  intl.$t({ defaultMessage: 'The selected firmware version will be updated on all devices in the venue, except for the device models listed below. Firmware for these models is not supported and won’t be updated during downgrade.' })}
+                  intl.$t({ defaultMessage: 'The selected firmware version will be updated on all devices in the <venueSingular></venueSingular>, except for the device models listed below. Firmware for these models is not supported and won’t be updated during downgrade.' })}
               </Typography>
               <UI.Ul>
                 { unSupportedModels.map((model, index) => {
@@ -208,7 +208,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
             }
             <Typography>
               { // eslint-disable-next-line max-len
-                intl.$t({ defaultMessage: 'Are you sure you want to downgrade the firmware version on devices in this venue?' })}
+                intl.$t({ defaultMessage: 'Are you sure you want to downgrade the firmware version on devices in this <venueSingular></venueSingular>?' })}
             </Typography>
           </Form.Item>
         }
@@ -216,7 +216,7 @@ export function DowngradeDialog (props: DowngradeDialogProps) {
           <Form.Item>
             <Typography>
               { // eslint-disable-next-line max-len
-                intl.$t({ defaultMessage: 'Firmware downgrade started on devices in the selected venue.' })}
+                intl.$t({ defaultMessage: 'Firmware downgrade started on devices in the selected <venueSingular></venueSingular>.' })}
             </Typography>
             <Typography>
               { // eslint-disable-next-line max-len

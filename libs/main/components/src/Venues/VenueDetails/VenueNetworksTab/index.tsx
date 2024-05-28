@@ -108,7 +108,6 @@ export function VenueNetworksTab () {
     pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
@@ -121,17 +120,20 @@ export function VenueNetworksTab () {
   const params = useParams()
   const navigate = useNavigate()
   const venueDetailsQuery = useVenueDetailsHeaderQuery({ params })
-  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher(useUpdateNetworkVenueMutation, useUpdateNetworkVenueTemplateMutation)
+  const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenueMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
 
-  const [
-    addNetworkVenue,
-    { isLoading: isAddNetworkUpdating }
-  ] = useConfigTemplateMutationFnSwitcher(useAddNetworkVenueMutation, useAddNetworkVenueTemplateMutation)
-  const [
-    deleteNetworkVenue,
-    { isLoading: isDeleteNetworkUpdating }
-  ] = useConfigTemplateMutationFnSwitcher(useDeleteNetworkVenueMutation, useDeleteNetworkVenueTemplateMutation)
+  const [ addNetworkVenue, { isLoading: isAddNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenueMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplateMutation
+  })
+  const [ deleteNetworkVenue, { isLoading: isDeleteNetworkUpdating } ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenueMutation,
+    useTemplateMutationFn: useDeleteNetworkVenueTemplateMutation
+  })
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
@@ -191,7 +193,7 @@ export function VenueNetworksTab () {
       if (row.deepNetwork) {
         if (checked) { // activate
           const newNetworkVenue = generateDefaultNetworkVenue(params.venueId as string, row.id)
-          if (triBandRadioFeatureFlag && IsNetworkSupport6g(row.deepNetwork)) {
+          if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
           addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
@@ -287,7 +289,7 @@ export function VenueNetworksTab () {
         if (Boolean(row.activated?.isActivated)) {
           const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
             sdlan.networkIds.includes(row.id))
-          return getNetworkTunnelInfo(destinationsInfo)
+          return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
         } else {
           return ''
         }
@@ -302,12 +304,12 @@ export function VenueNetworksTab () {
       render: function (__, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this venue because it already enabled mesh setting' })
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting' })
         if((get(row,'deepNetwork.enableDhcp') && get(venueDetailsQuery.data,'venue.mesh.enabled'))){
           disabled = true
         } else if (row?.isOnBoarded) {
           disabled = true
-          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this venue is tied to the Service network exclusively.' })
+          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this <venueSingular></venueSingular> is tied to the Service network exclusively.' })
         } else if (isSystemCreatedNetwork(row)) {
           disabled = true
           title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })

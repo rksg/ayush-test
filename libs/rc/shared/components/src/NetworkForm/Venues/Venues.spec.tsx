@@ -316,7 +316,8 @@ describe('Create Network: Venues Step', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(useSdLanScopedNetworkVenues).mockReturnValue({
       sdLansVenueMap: {},
-      networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a']
+      networkVenueIds: ['02e2ddbc88e1428987666d31edbc3d9a'],
+      guestNetworkVenueIds: []
     })
 
     render(<Venues defaultActiveVenues={[list.data[0].id]} />, {

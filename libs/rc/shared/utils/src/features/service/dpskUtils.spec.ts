@@ -1,5 +1,3 @@
-import { setUpIntl } from '@acx-ui/utils'
-
 import { displayDefaultAccess, displayDeviceCountLimit, getPassphraseStatus } from './dpskUtils'
 
 const mockedBaseDpskPassphrase = {
@@ -10,12 +8,6 @@ const mockedBaseDpskPassphrase = {
 }
 
 describe('DPSK utils', () => {
-  beforeEach(() => {
-    setUpIntl({
-      locale: 'en-US',
-      messages: {}
-    })
-  })
   it('display device count limit', () => {
     const numberResult = displayDeviceCountLimit(1)
     expect(numberResult).toBe(1)

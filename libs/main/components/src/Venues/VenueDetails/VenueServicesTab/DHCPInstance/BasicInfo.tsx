@@ -19,11 +19,14 @@ import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
 
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
+
 
 interface DHCPFormRefType {
   resetForm: Function,
@@ -32,9 +35,10 @@ export default function BasicInfo () {
   const params = useParams()
   const locationState = (useLocation() as LocationExtended)?.state
 
-  const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueDHCPProfileMutation, useUpdateVenueTemplateDhcpProfileMutation
-  )
+  const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueDHCPProfileMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateDhcpProfileMutation
+  })
 
   const [visible, setVisible] = useState(!!locationState?.from?.returnParams?.showConfig)
   const { $t } = useIntl()
@@ -47,9 +51,10 @@ export default function BasicInfo () {
     useGetVenueSettingsQuery, useGetVenueTemplateSettingsQuery
   )
 
-  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
-    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
-  )
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery
+  })
 
   const getSelectedDHCPMode = (dhcpServiceID:string)=> {
     if(dhcpProfileList && dhcpServiceID){
@@ -161,10 +166,10 @@ export default function BasicInfo () {
         disabled={meshEnable}
         title={meshEnable
           // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+          ? $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
           : ''
         }>{$t({ defaultMessage: 'Manage Local Service' })}</Button>,
-      visible: true
+      visible: hasPermission({ scopes: [WifiScopes.UPDATE] })
     }
   ]
 

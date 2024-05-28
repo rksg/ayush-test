@@ -51,6 +51,13 @@ jest.mock('./ApFirmware/VersionBannerPerApModel', () => ({
   ...jest.requireActual('./ApFirmware/VersionBannerPerApModel'),
   VersionBannerPerApModel: () => <div>VersionBannerPerApModel</div>
 }))
+jest.mock('../ApplicationPolicyMgmt', () => ({
+  ...jest.requireActual('../ApplicationPolicyMgmt'),
+  default: () => {
+    return <div data-testid='mocked-application-policy-mgmt'></div>
+  }
+}))
+
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useGetSwitchCurrentVersionsQuery: () => ({
@@ -92,6 +99,10 @@ describe('Firmware Version Management', () => {
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
@@ -108,7 +119,8 @@ describe('Firmware Version Management', () => {
   })
 
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      (ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.SWITCH_RBAC_API))
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),

@@ -82,28 +82,29 @@ export function ApEdit () {
   const [apCapabilities, setApCapabilities] = useState<ApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const getAp = useGetApQuery({ params })
-  const getApCapabilities = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
+  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({ params })
+  const {
+    data: capabilities,
+    isLoading: isGetApCapsLoading
+  } = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
 
   useEffect(() => {
-    const data = getAp?.data
-    const modelName = data?.model
-    const capabilities = getApCapabilities.data
+    if (!isGetApLoading && !isGetApCapsLoading) {
+      const modelName = getedApData?.model
+      if (modelName && capabilities) {
+        const setData = async () => {
+          const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
 
-    if (modelName && capabilities) {
-      const setData = async () => {
-        const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
+          setApData(getedApData)
+          setApCapabilities(curApCapabilities)
 
-        setApData(data)
-        setApCapabilities(curApCapabilities)
+          setIsLoaded(true)
+        }
 
-        setIsLoaded(true)
+        setData()
       }
-
-      setData()
     }
-
-  }, [getAp?.data?.venueId, getApCapabilities?.data])
+  }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
   return <ApEditContext.Provider value={{
     editContextData,

@@ -63,13 +63,33 @@ describe('RBAC API', () => {
     expect(data).toEqual('Created')
   })
   it('fetch users api should work', async () => {
+    const user = {
+      id: '1',
+      firstName: 'firstName dog1',
+      lastName: 'lastName dog1',
+      email: 'dog1@ruckuswireless.com.uat',
+      accountId: '12345',
+      accountName: 'RUCKUS NETWORKS, INC',
+      role: 'admin',
+      tenantId: '0015000000GlI7SAAV',
+      resourceGroupId: '087b6de8-953f-405e-b2c2-000000000000',
+      resourceGroupName: 'default',
+      updatedAt: '2023-09-22T07:31:11.844Z',
+      type: null,
+      invitation: null
+    }
     mockServer.use(
-      rest.get(`${rbacApiURL}/users`, (_req, res, ctx) => res(ctx.json([{ id: 'user1' }])))
+      rest.get(`${rbacApiURL}/users`, (_req, res, ctx) => res(ctx.json([user])))
     )
     const { data } = await store.dispatch(
-      rbacApi.endpoints.getUsers.initiate()
+      rbacApi.endpoints.getUsers.initiate('Brand 360')
     )
-    expect(data).toStrictEqual([{ id: 'user1' }])
+    expect(data).toStrictEqual([{
+      ...user,
+      displayType: 'Internal',
+      displayInvitationState: '--',
+      displayInvitor: '--'
+    }])
   })
   it('fetch available users api should work', async () => {
     mockServer.use(
@@ -195,7 +215,7 @@ describe('RBAC API', () => {
         resourceGroupId: 'rg1'
       })
     ) as { data: string }
-    expect(data).toEqual(null)
+    expect(data).toEqual('')
   })
 
   it('update account', async () => {

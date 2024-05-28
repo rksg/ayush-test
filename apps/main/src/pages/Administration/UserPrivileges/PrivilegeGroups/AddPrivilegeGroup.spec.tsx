@@ -266,7 +266,7 @@ describe('Add Privilege Group', () => {
     expect(await screen.findByText('Please enter Role')).toBeVisible()
 
     // Should be able to add after inputting role name and selecting role
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'custom group' } })
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'custom-group' } })
     await userEvent.click(screen.getByRole('button', { name: 'Add' }))
     await waitFor(() => {
       expect(screen.queryByText('Please enter Name')).toBeNull()
@@ -278,7 +278,7 @@ describe('Add Privilege Group', () => {
       expect(screen.queryByText('Please enter Role')).toBeNull()
     })
 
-    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venue(s)' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venues' }))
     await userEvent.click(screen.getByRole('button', { name: 'Select venues' }))
     await userEvent.click(screen.getByRole('radio', { name: 'All Venues' }))
     await userEvent.click(screen.getByRole('radio', { name: 'Specific Customer(s)' }))
@@ -327,13 +327,13 @@ describe('Add Privilege Group', () => {
       }
     )
 
-    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'custom group' } })
+    fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'custom-group' } })
     fireEvent.mouseDown(screen.getByRole('combobox', { name: 'Role' }))
     await userEvent.click(screen.getByText('Prime Admin'))
 
 
     // Select venues
-    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venue(s)' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venues' }))
     await userEvent.click(screen.getByRole('button', { name: 'Select venues' }))
     await screen.findByText('Select Venues')
     await screen.findByText('new venue')
@@ -399,7 +399,7 @@ describe('Add Privilege Group', () => {
     expect(screen.getByRole('button', { name: 'Add' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
     expect(screen.queryByText('Own Account')).toBeNull()
-    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venue(s)' }))
+    await userEvent.click(screen.getByRole('radio', { name: 'Specific Venues' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Select venues' }))
     await screen.findByText('Select Venues')
     await screen.findByText('new venue')

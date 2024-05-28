@@ -5,6 +5,8 @@ import { Path, To } from 'react-router-dom'
 import { CertificateUrls, CommonUrlsInfo, PolicyOperation, PolicyType, getPolicyDetailsLink } from '@acx-ui/rc/utils'
 import { Provider }                                                                           from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }             from '@acx-ui/test-utils'
+import { WifiScopes }                                                                         from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                                                     from '@acx-ui/user'
 
 import { certificateAuthorityList, certificateTemplate, certificateTemplateList } from '../__test__/fixtures'
 
@@ -183,5 +185,47 @@ describe('CertificateTemplateTable', () => {
         search: ''
       })
     })
+  })
+
+  it('should render correctly with wifi-u wifi-d permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+    })
+
+    render(<Provider><CertificateTemplateTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateTemplate/list'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /certificateTemplate1/ })
+    await userEvent.click(row)
+    expect(await screen.findByRole('button', { name: 'Edit' })).toBeVisible()
+    expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
+  })
+
+  it('should render correctly with wifi-r permission', async () => {
+    setUserProfile({
+      ...getUserProfile(),
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ]
+    })
+
+    render(<Provider><CertificateTemplateTable /></Provider>, {
+      route: {
+        params: { tenantId: 't-id' },
+        path: '/:tenantId/policies/certificateTemplate/list'
+      }
+    })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /certificateTemplate1/ })
+    await userEvent.click(row)
+    expect(screen.queryByRole('button', { name: 'Edit' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument()
   })
 })

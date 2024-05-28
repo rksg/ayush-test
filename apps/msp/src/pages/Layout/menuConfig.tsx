@@ -34,8 +34,9 @@ import HspContext from '../../HspContext'
 export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfood?: boolean) {
   const { $t } = useIntl()
   const { names: { brand } } = useBrand360Config()
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
-  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO)
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isVar = tenantType === AccountType.VAR

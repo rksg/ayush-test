@@ -68,6 +68,7 @@ const EditEdgeCluster = () => {
       title: $t({ defaultMessage: 'Cluster Interface' }),
       content: <ClusterInterface
         currentClusterStatus={currentClusterStatus}
+        currentVipConfig={currentCluster?.virtualIpSettings}
       />
     }
   }
@@ -76,7 +77,7 @@ const EditEdgeCluster = () => {
     ? basicTabs
     : Object.assign(basicTabs, { dhcp: {
       title: $t({ defaultMessage: 'DHCP' }),
-      content: <EdgeClusterDhcp />
+      content: <EdgeClusterDhcp currentClusterStatus={currentClusterStatus} />
     } })
 
   const onTabChange = (finalTabs: string) => {

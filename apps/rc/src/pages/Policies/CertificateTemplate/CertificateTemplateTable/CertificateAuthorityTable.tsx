@@ -9,7 +9,8 @@ import { Loader, TableProps, Table, Button, showActionModal }                   
 import { MAX_CERTIFICATE_PER_TENANT, SimpleListTooltip }                                                                                         from '@acx-ui/rc/components'
 import { showAppliedInstanceMessage, useDeleteCertificateAuthorityMutation, useGetCertificateAuthoritiesQuery, useGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
 import { CertificateAuthority, CertificateCategoryType, EXPIRATION_DATE_FORMAT, useTableQuery }                                                  from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                                             from '@acx-ui/user'
+import { WifiScopes }                                                                                                                            from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                                         from '@acx-ui/user'
 
 import { deleteDescription } from '../contentsMap'
 
@@ -96,18 +97,21 @@ export default function CertificateAuthorityTable () {
       title: $t({ defaultMessage: 'Common Name' }),
       dataIndex: 'commonName',
       searchable: true,
+      sorter: true,
       key: 'commonName'
     },
     {
       title: $t({ defaultMessage: 'SHA Fingerprint' }),
       dataIndex: 'publicKeyShaThumbprint',
       searchable: true,
+      sorter: true,
       key: 'publicKeyShaThumbprint'
     },
     {
       title: $t({ defaultMessage: 'Expires' }),
       dataIndex: 'expireDate',
       key: 'expireDate',
+      sorter: true,
       render: (_, { expireDate }) => {
         return moment(expireDate).format(EXPIRATION_DATE_FORMAT)
       }
@@ -172,13 +176,15 @@ export default function CertificateAuthorityTable () {
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([selectedRow]) => {
         showEditModal(selectedRow)
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([selectedRow], clearSelection) => {
         showDeleteModal(selectedRow, clearSelection)
-      }
+      },
+      scopeKey: [WifiScopes.DELETE]
     }
   ]
 
@@ -192,7 +198,8 @@ export default function CertificateAuthorityTable () {
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
           rowKey='id'
           searchableWidth={430}
           enableApiFilter={true}

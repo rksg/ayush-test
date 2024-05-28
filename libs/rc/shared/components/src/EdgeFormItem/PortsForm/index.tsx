@@ -31,6 +31,7 @@ export interface EdgePortsFormProps {
   tabsType?: TabsType
 }
 
+// TODO: this will be deprecated after SD-LAN P1 deprecated
 const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   const {
     clusterId,

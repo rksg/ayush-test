@@ -305,7 +305,7 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableProps, venueId: st
     },
     {
       key: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,

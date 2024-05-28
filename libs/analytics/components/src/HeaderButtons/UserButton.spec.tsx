@@ -16,18 +16,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 const userProfile = jest.mocked(getUserProfile)
 
-const mockPermissions = {
-  'view-analytics': true,
-  'view-report-controller-inventory': true,
-  'view-data-explorer': true,
-  'manage-service-guard': false,
-  'manage-call-manager': false,
-  'manage-mlisa': true,
-  'manage-occupancy': true,
-  'manage-label': true,
-  'manage-tenant-settings': true,
-  'manage-config-recommendation': false
-}
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  userLogout: jest.fn()
+}))
+
 const mockUserProfile = {
   accountId: 'accountId',
   firstName: 'firstName',
@@ -37,10 +30,10 @@ const mockUserProfile = {
   role: '',
   support: false,
   invitations: [] as Invitation[],
-  selectedTenant: { id: 'accountId', permissions: mockPermissions } as Tenant,
+  selectedTenant: { id: 'accountId', permission: {} } as unknown as Tenant,
   tenants: [
-    { id: 'accountId', permissions: mockPermissions },
-    { id: 'accountId2', permissions: [] }
+    { id: 'accountId', permissions: {} },
+    { id: 'accountId2', permissions: {} }
   ] as Tenant[]
 }
 describe('UserButton', () => {
@@ -68,6 +61,14 @@ describe('UserButton', () => {
   })
 
   it('should handle logout', async () => {
+    const mockUserLogout = require('@acx-ui/utils').userLogout
+    const { location } = window
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: { hostname: 'not.localhost' }
+    })
+
     render(
       <Provider>
         <UserButton />
@@ -75,15 +76,15 @@ describe('UserButton', () => {
       { route: { params } }
     )
 
-    const submit = window.HTMLFormElement.prototype.submit
-    const mockSubmit = jest.fn()
-    window.HTMLFormElement.prototype.submit = mockSubmit
-
     await userEvent.click(screen.getByRole('button'))
     await userEvent.click(screen.getByRole('menuitem', { name: 'Log out' }))
-    expect(mockSubmit).toHaveBeenCalled()
 
-    window.HTMLFormElement.prototype.submit = submit
+    expect(mockUserLogout).toHaveBeenCalled()
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      enumerable: true,
+      value: location
+    })
   })
 
   it('does not throw error if names are empty', async () => {
@@ -99,26 +100,5 @@ describe('UserButton', () => {
       { route: { params } }
     )
     expect(screen.getByRole('button')).toHaveTextContent('')
-  })
-
-  it('should not render My Profile if view-analytics is false', async () => {
-    const permissions = { ...mockPermissions, 'view-analytics': false }
-    userProfile.mockReturnValue({
-      ...mockUserProfile,
-      accountId: 'accountId1',
-      selectedTenant: { id: 'accountId1', permissions } as Tenant,
-      tenants: [
-        { id: 'accountId1', permissions }
-      ] as Tenant[]
-    })
-    render(
-      <Provider>
-        <UserButton />
-      </Provider>,
-      { route: { params } }
-    )
-
-    await userEvent.click(screen.getByRole('button'))
-    expect(screen.queryByRole('link', { name: 'My Profile' })).toBeNull()
   })
 })

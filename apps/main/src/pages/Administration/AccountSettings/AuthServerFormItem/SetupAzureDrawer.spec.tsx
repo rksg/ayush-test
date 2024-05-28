@@ -488,6 +488,7 @@ describe('Setup Azure Drawer', () => {
   it('should not save when error uploading file', async () => {
     const mockedCloseDrawer = jest.fn()
     // Mocking global.fetch will cause error in uploading file
+    const originalFetch = global.fetch
     global.fetch = jest.fn().mockImplementation(() => Promise.resolve({
       json: () => ({}),
       text: () => ({}),
@@ -532,6 +533,7 @@ describe('Setup Azure Drawer', () => {
     await waitFor(() => {
       expect(services.useUpdateTenantAuthenticationsMutation).toHaveLastReturnedWith(value)
     })
+    global.fetch = originalFetch
   })
   it('should render correctly for selected auth type', async () => {
     const mockedCloseDrawer = jest.fn()

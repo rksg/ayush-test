@@ -280,7 +280,7 @@ export function ApMesh () {
         </> : <VenueMeshNotEnabledInfo>
           {<FormattedMessage
             // eslint-disable-next-line max-len
-            defaultMessage={'Mesh is not enabled at the venue where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the venue, you will be able to set the AP\'s mesh role and select the uplink AP.'}
+            defaultMessage={'Mesh is not enabled at the <venueSingular></venueSingular> where this AP is installed in (<venuelink></venuelink>). When mesh is enabled at the <venueSingular></venueSingular>, you will be able to set the AP\'s mesh role and select the uplink AP.'}
             values={{
               venuelink: () => venue?
                 <TenantLink

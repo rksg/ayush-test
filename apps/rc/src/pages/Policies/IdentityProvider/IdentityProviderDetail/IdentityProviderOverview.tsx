@@ -27,14 +27,12 @@ export function IdentityProviderOverview (props: { data: IdentityProviderViewMod
     skip: !data?.accountingRadiusId
   })
 
-
-
   const identityProviderInfo = [
     {
       title: $t({ defaultMessage: 'NAI Realm' }),
       content: (
         data.naiRealms?.map((realm) => (
-          <div>{`${realm.name}`}</div>
+          <div key={realm.name}>{realm.name}</div>
         ))
       )
     },

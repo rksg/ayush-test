@@ -2,9 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                          from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                        from '@acx-ui/feature-toggle'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                      from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -14,6 +14,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
+
 import { EdgeServices } from '.'
 
 jest.mock('./ServiceDetailDrawer/SdLanDetailsP2', () => ({
@@ -21,7 +23,7 @@ jest.mock('./ServiceDetailDrawer/SdLanDetailsP2', () => ({
   SdLanDetailsP2: () => <div data-testid='rc-SdLanDetailsP2'/>
 }))
 
-const { mockEdgeData: currentEdge, mockEdgeServiceList } = EdgeGeneralFixtures
+const { mockEdgeData: currentEdge, mockEdgeServiceList, mockEdgeList } = EdgeGeneralFixtures
 const { mockDhcpStatsData } = EdgeDHCPFixtures
 
 describe('Edge Detail Services Tab', () => {
@@ -50,7 +52,14 @@ describe('Edge Detail Services Tab', () => {
   it('should render services tab correctly', async () => {
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -64,7 +73,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -81,7 +97,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -96,7 +119,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -113,7 +143,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -132,7 +169,14 @@ describe('Edge Detail Services Tab', () => {
   it('should show "NA" in [Service Version] field correctly', async () => {
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -144,7 +188,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -165,7 +216,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -187,7 +245,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -204,7 +269,14 @@ describe('Edge Detail Services Tab', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeServices />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeServices />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })

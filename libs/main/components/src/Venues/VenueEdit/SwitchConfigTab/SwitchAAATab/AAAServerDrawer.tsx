@@ -4,6 +4,7 @@ import { Form, Input, Select }       from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Drawer, Tooltip, PasswordInput }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
 import {
   useAddAAAServerMutation, useUpdateAAAServerMutation,
   useAddVenueTemplateSwitchAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
@@ -38,12 +39,15 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
   const [isAdminUser, setIsAdminUser] = useState(false)
   const params = useParams()
   const [form] = Form.useForm()
-  const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher(
-    useAddAAAServerMutation, useAddVenueTemplateSwitchAAAServerMutation
-  )
-  const [ updateAAAServer ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateAAAServerMutation, useUpdateVenueTemplateSwitchAAAServerMutation
-  )
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const [ addAAAServer ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddAAAServerMutation,
+    useTemplateMutationFn: useAddVenueTemplateSwitchAAAServerMutation
+  })
+  const [ updateAAAServer ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAAAServerMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSwitchAAAServerMutation
+  })
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(()=>{
@@ -85,7 +89,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
         }
         await addAAAServer({
           params,
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       } else {
         const payload = {
@@ -97,7 +102,8 @@ export const AAAServerDrawer = (props: AAAServerDrawerProps) => {
             ...params,
             aaaServerId: payload.id
           },
-          payload
+          payload,
+          enableRbac: isSwitchRbacEnabled
         }).unwrap()
       }
     }

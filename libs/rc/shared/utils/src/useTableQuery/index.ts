@@ -42,7 +42,12 @@ export interface TABLE_QUERY <
   defaultPayload: Partial<Payload>
   useQuery: UseQuery<
     TableResult<ResultType, ResultExtra>,
-    { params: Params<string>, payload: Payload, customHeaders?: Record<string,unknown> }
+    {
+      params: Params<string>,
+      payload: Payload,
+      customHeaders?: Record<string,unknown>
+      enableRbac?: boolean
+    }
   >
   apiParams?: Record<string, string>
   pagination?: Partial<PAGINATION>
@@ -51,6 +56,7 @@ export interface TABLE_QUERY <
   rowKey?: string
   option?: UseQueryOptions
   enableSelectAllPagesData?: string[] // query fields for all data
+  enableRbac?: boolean
   customHeaders?: Record<string,unknown> // api versioning
 }
 type PAGINATION = {
@@ -174,7 +180,8 @@ export function useTableQuery <
   const api = option.useQuery({
     params: { ...params, ...option.apiParams },
     payload: payload,
-    customHeaders: option?.customHeaders
+    customHeaders: option?.customHeaders,
+    enableRbac: option?.enableRbac
   }, option.option)
 
   const getAllDataApi = option.enableSelectAllPagesData && option.useQuery({
@@ -185,7 +192,8 @@ export function useTableQuery <
       page: 1,
       pageSize: TABLE_MAX_PAGE_SIZE
     },
-    customHeaders: option?.customHeaders
+    customHeaders: option?.customHeaders,
+    enableRbac: option?.enableRbac
   }, option.option)
 
   useEffect(() => {

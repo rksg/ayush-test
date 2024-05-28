@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -29,6 +30,9 @@ export default function AAATable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteAAAPolicyListMutation()
   const settingsId = 'policies-aaa-table'
+  const radiusMaxiumnNumber = useIsSplitOn(Features.WIFI_INCREASE_RADIUS_INSTANCE_1024)
+    ? 1024
+    : AAA_LIMIT_NUMBER
   const tableQuery = useTableQuery({
     useQuery: useGetAAAPolicyViewModelListQuery,
     defaultPayload: {
@@ -97,7 +101,7 @@ export default function AAATable () {
           <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
-                ? tableQuery.data?.totalCount >= AAA_LIMIT_NUMBER
+                ? tableQuery.data?.totalCount >= radiusMaxiumnNumber
                 : false} >{$t({ defaultMessage: 'Add RADIUS Server' })}</Button>
           </TenantLink>
         ])}

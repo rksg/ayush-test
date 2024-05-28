@@ -12,14 +12,15 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { formatter } from '@acx-ui/formatter'
+import { formatter }  from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,
-  useClearAllAlarmMutation,
   useGetAlarmCountQuery,
   eventAlarmApi,
-  networkApi
+  networkApi,
+  useClearAlarmByVenueMutation,
+  useGetVenuesQuery
 }  from '@acx-ui/rc/services'
 import { Alarm, CommonUrlsInfo, useTableQuery, EventSeverityEnum, EventTypeEnum } from '@acx-ui/rc/utils'
 import { useParams, TenantLink }                                                  from '@acx-ui/react-router-dom'
@@ -89,15 +90,26 @@ export function AlarmsDrawer (props: AlarmsType) {
   const [venueId, setVenueId] = useState('')
   const [serialNumber, setSerialNumber] = useState('')
 
+  const venuesListPayload = {
+    fields: ['name', 'country', 'id'],
+    pageSize: 10000,
+    sortField: 'name',
+    sortOrder: 'ASC'
+  }
+
   const [
     clearAlarm,
     { isLoading: isAlarmCleaning }
   ] = useClearAlarmMutation()
 
   const [
-    clearAllAlarm,
-    { isLoading: isAllAlarmCleaning }
-  ] = useClearAllAlarmMutation()
+    clearAlarmByVenue,
+    { isLoading: isAlarmByVenueCleaning }
+  ] = useClearAlarmByVenueMutation()
+
+  const { data: venuesList } =
+      useGetVenuesQuery({ params: useParams(), payload: venuesListPayload })
+
 
   const tableQuery = useTableQuery({
     useQuery: useAlarmsListQuery,
@@ -111,6 +123,16 @@ export function AlarmsDrawer (props: AlarmsType) {
     },
     option: { skip: !visible }
   })
+
+  const allAlarmsPayload = { ...defaultPayload,
+    filters: {},
+    sortField: 'startTime',
+    sortOrder: 'DESC',
+    page: 1,
+    pageSize: 10000 }
+
+  const { data: allAlarms } = useAlarmsListQuery({ payload: allAlarmsPayload },
+    { skip: !visible })
 
   useEffect(()=>{
     const { payload } = tableQuery
@@ -176,6 +198,13 @@ export function AlarmsDrawer (props: AlarmsType) {
     }
   }
 
+  const getVenueIdsOfAlarms = (venueNames: string[]) => {
+    const venueIds = (venuesList?.data.filter(venue =>
+      venueNames.includes(venue.name)) || []).map(venue => venue.id)
+
+    return venueIds
+  }
+
   const alarmList = <>
     <UI.FilterRow>
       <Select value={severity}
@@ -198,7 +227,35 @@ export function AlarmsDrawer (props: AlarmsType) {
         size='small'
         style={{ fontWeight: 'var(--acx-body-font-weight-bold)' }}
         onClick={async ()=>{
-          await clearAllAlarm({ params: { ...params } })
+          const venueNames: string[] = []
+          const alarmIds: string[] = []
+          allAlarms?.data.forEach(alarm => {
+            if(alarm?.venueName) {
+              if (!venueNames.includes(alarm?.venueName)) {
+                venueNames.push(alarm?.venueName)
+              }
+            } else {
+              if (!alarmIds.includes(alarm.id)) {
+                alarmIds.push(alarm.id)
+              }
+            }})
+
+          if (venueNames.length) {
+            const venueIds = getVenueIdsOfAlarms(venueNames)
+            if (venueIds.length) {
+              await Promise.all(venueIds.map(async (venueId) => {
+                await clearAlarmByVenue({ params: { ...params,
+                  venueId } })
+              }))
+            }
+          }
+
+          if (alarmIds.length) {
+            await Promise.all(alarmIds.map(async (alarmId) => {
+              await clearAlarm({ params: { ...params, alarmId } })
+            }))
+          }
+
           //FIXME: temporary workaround to waiting for backend add websocket to refresh the RTK cache automatically
           setTimeout(() => {
             store.dispatch(
@@ -217,7 +274,8 @@ export function AlarmsDrawer (props: AlarmsType) {
       </Button>
     </UI.FilterRow>
     <Loader states={[
-      tableQuery,{ isLoading: false, isFetching: isAlarmCleaning||isAllAlarmCleaning }
+      tableQuery,{ isLoading: false,
+        isFetching: isAlarmCleaning || isAlarmByVenueCleaning }
     ]}>
       <UI.ListTable
         itemLayout='horizontal'

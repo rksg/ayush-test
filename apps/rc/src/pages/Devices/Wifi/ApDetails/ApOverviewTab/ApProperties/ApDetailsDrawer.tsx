@@ -83,7 +83,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     return (<>
       <Descriptions labelWidthPercent={50}>
         <Descriptions.Item
-          label={$t({ defaultMessage: 'Venue' })}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           children={
             <TenantLink to={`/venues/${currentAP?.venueId}/venue-details/overview`}>
               {currentAP?.venueName}
@@ -281,7 +281,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     } else if (venueId) {
       const latitude = gpsToFixed(venueData?.address.latitude)
       const longitude = gpsToFixed(venueData?.address.longitude)
-      return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As venue)' }) }</>
+      return <>{ latitude + ', ' + longitude } <br/> {$t({ defaultMessage: '(As <venueSingular></venueSingular>)' }) }</>
     } else {
       return '--'
     }

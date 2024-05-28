@@ -110,7 +110,7 @@ export default function ResidentPortalTable () {
     },
     {
       key: 'venueCount',
-      title: intl.$t({ defaultMessage: 'Venues' }),
+      title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venueCount']
     }
   ]

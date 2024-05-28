@@ -9,6 +9,17 @@ export const mockVenueData = {
   ]
 }
 
+export const mockClusterData = {
+  fields: ['name', 'clusterId'],
+  totalCount: 3,
+  page: 1,
+  data: [
+    { clusterId: 'mock_cluster_1', name: 'Mock Cluster 1' },
+    { clusterId: 'mock_cluster_2', name: 'Mock Cluster 2' },
+    { clusterId: 'mock_cluster_3', name: 'Mock Cluster 3' }
+  ]
+}
+
 export const mockedPersonaGroup = {
   id: 'testPersonaId',
   name: 'TestPersona',

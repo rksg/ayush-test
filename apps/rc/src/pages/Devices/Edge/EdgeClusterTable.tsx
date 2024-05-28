@@ -18,10 +18,12 @@ import {
   usePollingTableQuery,
   genUrl,
   CommonCategory,
-  EdgeStatusEnum
+  EdgeStatusEnum,
+  isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
+import { EdgeScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasPermission }          from '@acx-ui/user'
 import { getIntl }                                from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
@@ -160,7 +162,7 @@ export const EdgeClusterTable = () => {
       dataIndex: 'clusterInterface'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
       dataIndex: 'venueId',
       sorter: true,
@@ -185,6 +187,7 @@ export const EdgeClusterTable = () => {
 
   const rowActions: TableProps<EdgeClusterTableDataType>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -218,6 +221,7 @@ export const EdgeClusterTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       visible: (selectedRows) =>
         (selectedRows.filter(row =>
           row.isFirstLevel && (row.children?.length ?? 0) > 0).length === 0),
@@ -227,15 +231,19 @@ export const EdgeClusterTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
-          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0),
+          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0 &&
+          // eslint-disable-next-line max-len
+          selectedRows.filter(row => isOtpEnrollmentRequired(row.serialNumber)).length === selectedRows.length),
       label: $t({ defaultMessage: 'Send OTP' }),
       onClick: (selectedRows, clearSelection) => {
         sendEdgeOnboardOtp(selectedRows, clearSelection)
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
           selectedRows.filter(row => {
@@ -247,6 +255,7 @@ export const EdgeClusterTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootForStatus(row?.deviceStatus)).length === 0),
@@ -256,6 +265,7 @@ export const EdgeClusterTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) =>
         (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
@@ -284,12 +294,16 @@ export const EdgeClusterTable = () => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+  })
+
   return (
     <Loader states={[tableQuery]}>
       <Table
         settingsId='edge-cluster-table'
         rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? `c-${row.clusterId}`)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}
         dataSource={tableQuery?.data?.data}

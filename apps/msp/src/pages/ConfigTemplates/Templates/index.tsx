@@ -13,14 +13,14 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }              from '@acx-ui/formatter'
+import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
   isAccessControlSubPolicy,
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, subPolicyMappingType
+  AccessControlSubPolicyVisibility, subPolicyMappingType, isNotAllowToApplyPolicy
 } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
@@ -36,7 +36,11 @@ import {
   useDelDevicePolicyTemplateMutation,
   useDeleteWifiCallingServiceTemplateMutation,
   useDeletePortalTemplateMutation,
-  useDelVlanPoolPolicyTemplateMutation
+  useDelVlanPoolPolicyTemplateMutation,
+  useDelSyslogPolicyTemplateMutation,
+  useDelRoguePolicyTemplateMutation,
+  useDeleteSwitchConfigProfileTemplateMutation,
+  useDeleteApGroupsTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -92,7 +96,7 @@ export function ConfigTemplateList () {
     },
     {
       label: $t({ defaultMessage: 'Apply Template' }),
-      disabled: (selectedRows) => selectedRows.some(row => isAccessControlSubPolicy(row.type)),
+      disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
@@ -166,14 +170,14 @@ export function ConfigTemplateList () {
   )
 }
 
-interface templateColumnProps {
+interface TemplateColumnProps {
   setAppliedToTenantDrawerVisible: (visible: boolean) => void,
   setSelectedTemplates: (row: ConfigTemplate[]) => void,
   // eslint-disable-next-line max-len
   setAccessControlSubPolicyVisible: (accessControlSubPolicyVisibility: AccessControlSubPolicyVisibility) => void
 }
 
-function useColumns (props: templateColumnProps) {
+function useColumns (props: TemplateColumnProps) {
   const { $t } = useIntl()
   const {
     setAppliedToTenantDrawerVisible,
@@ -295,6 +299,10 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
   const [ deletePortalTemplate ] = useDeletePortalTemplateMutation()
   const [ deleteWifiCalling ] = useDeleteWifiCallingServiceTemplateMutation()
   const [ deleteVlanPoolTemplate ] = useDelVlanPoolPolicyTemplateMutation()
+  const [ deleteSyslogTemplate ] = useDelSyslogPolicyTemplateMutation()
+  const [ deleteRogueAPTemplate ] = useDelRoguePolicyTemplateMutation()
+  const [ deleteSwitchConfigProfileTemplate ] = useDeleteSwitchConfigProfileTemplateMutation()
+  const [ deleteApGroupTemplate ] = useDeleteApGroupsTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -309,6 +317,11 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
     [ConfigTemplateType.DHCP]: deleteDhcpTemplate,
     [ConfigTemplateType.PORTAL]: deletePortalTemplate,
     [ConfigTemplateType.WIFI_CALLING]: deleteWifiCalling,
-    [ConfigTemplateType.VLAN_POOL]: deleteVlanPoolTemplate
+    [ConfigTemplateType.VLAN_POOL]: deleteVlanPoolTemplate,
+    [ConfigTemplateType.SYSLOG]: deleteSyslogTemplate,
+    [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAPTemplate,
+    [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate,
+    [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate,
+    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate
   }
 }

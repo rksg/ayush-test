@@ -61,7 +61,7 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       render: function (_, row) {

@@ -325,7 +325,8 @@ export function LanPorts () {
     >
       {useVenueSettings
         ? <FormattedMessage
-          defaultMessage={'Currently using LAN port settings of the venue ({venue})'}
+          defaultMessage={
+            'Currently using LAN port settings of the <venueSingular></venueSingular> ({venue})'}
           values={{
             venue: <Button type='link'
               size='small'
@@ -343,7 +344,7 @@ export function LanPorts () {
         onClick={() => handleCustomize(!useVenueSettings)}
       > {useVenueSettings
           ? $t({ defaultMessage: 'Customize' })
-          : $t({ defaultMessage: 'Use Venue Settings' })
+          : $t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
         }</Button>}
     </Space>
   }

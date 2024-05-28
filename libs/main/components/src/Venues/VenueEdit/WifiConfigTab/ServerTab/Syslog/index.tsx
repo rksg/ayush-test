@@ -7,21 +7,29 @@ import { useIntl }                                         from 'react-intl'
 import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
 import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
 import {
-  useGetSyslogPolicyListQuery,
+  useGetSyslogPolicyTemplateListQuery,
   useGetVenueSyslogApQuery,
-  useUpdateVenueSyslogApMutation
+  useGetVenueTemplateSyslogSettingsQuery,
+  useSyslogPolicyListQuery,
+  useUpdateVenueSyslogApMutation,
+  useUpdateVenueTemplateSyslogSettingsMutation
 } from '@acx-ui/rc/services'
 import {
   facilityLabelMapping,
   flowLevelLabelMapping,
   FacilityEnum,
   FlowLevelEnum,
-  SyslogPolicyDetailType,
   getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  SyslogPolicyListType,
+  useConfigTemplateQueryFnSwitcher,
+  TableResult,
+  VenueSyslogSettingType,
+  useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
 import {
+  useLocation,
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
@@ -38,8 +46,9 @@ export interface VenueSettings {
 export function Syslog () {
   const { Paragraph } = Typography
   const { $t } = useIntl()
-  const { tenantId, venueId } = useParams()
+  const { venueId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const toPolicyPath = usePathBasedOnConfigTemplate('')
   const {
     editContextData,
@@ -49,30 +58,52 @@ export function Syslog () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const syslogPolicyList = useGetSyslogPolicyListQuery({ params: { tenantId } })
-  const venueSettings = useGetVenueSyslogApQuery({ params: { venueId } })
-  const [updateVenueSyslog, {
-    isLoading: isUpdatingVenueSyslog }] = useUpdateVenueSyslogApMutation()
+  const {
+    data: syslogPolicyList,
+    isLoading: isSyslogPolicyListLoading
+  } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
+    useQueryFn: useSyslogPolicyListQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
+    payload: { page: 1, pageSize: 10000 }
+  })
+
+  const {
+    data: venueSyslogSettings,
+    isLoading: isVenueSyslogSettingsLoading
+  } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>({
+    useQueryFn: useGetVenueSyslogApQuery,
+    useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery
+  })
+
+  const [
+    updateVenueSyslog,
+    { isLoading: isUpdatingVenueSyslog }
+  ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueSyslogApMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSyslogSettingsMutation
+  })
 
   const apSyslogOptions = syslogPolicyList?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
   const [venueSyslogOrinData, setVenueSyslogOrinData] = useState({} as VenueSettings)
   const [enableServerRadio, setEnableServerRadio] = useState(false)
   const [defaultSyslogValue, setDefaultSyslogValue] = useState('')
-  const [syslogValue, setSyslogValue] = useState({} as SyslogPolicyDetailType | undefined)
+  const [syslogValue, setSyslogValue] = useState<SyslogPolicyListType>()
 
   useEffect(() => {
-    const { data } = venueSettings
-    if (!venueSettings?.isLoading) {
-      setEnableServerRadio(data?.enabled ?? false)
-      setVenueSyslogOrinData({ serviceProfileId: data?.serviceProfileId, enabled: data?.enabled })
-      setDefaultSyslogValue(data?.serviceProfileId ?? '')
-    }
-    if (!venueSettings?.isLoading && syslogPolicyList.data) {
-      setSyslogValue(syslogPolicyList.data.find(p => p.id === data?.serviceProfileId))
+    if (venueSyslogSettings && !isVenueSyslogSettingsLoading) {
+      setEnableServerRadio(venueSyslogSettings?.enabled ?? false)
+      // eslint-disable-next-line max-len
+      setVenueSyslogOrinData({ serviceProfileId: venueSyslogSettings.serviceProfileId, enabled: venueSyslogSettings.enabled })
+      setDefaultSyslogValue(venueSyslogSettings.serviceProfileId ?? '')
 
-      setReadyToScroll?.(r => [...(new Set(r.concat('Syslog-Server')))])
+      if (syslogPolicyList?.data) {
+        // eslint-disable-next-line max-len
+        setSyslogValue(syslogPolicyList.data.find(p => p.id === venueSyslogSettings?.serviceProfileId))
+
+        setReadyToScroll?.(r => [...(new Set(r.concat('Syslog-Server')))])
+      }
     }
-  }, [venueSettings, syslogPolicyList, setReadyToScroll])
+  }, [venueSyslogSettings, syslogPolicyList, setReadyToScroll])
 
   const handleEnableChange = (checked: boolean) => {
     setEnableServerRadio(checked)
@@ -93,7 +124,7 @@ export function Syslog () {
 
   const handleSyslogChange = (id: string) => {
     setDefaultSyslogValue(id)
-    setSyslogValue(syslogPolicyList.data?.find(p => p.id === id))
+    setSyslogValue(syslogPolicyList?.data?.find(p => p.id === id))
     const newData = { serviceProfileId: id, enabled: enableServerRadio }
     setEditContextData({
       ...editContextData,
@@ -135,7 +166,7 @@ export function Syslog () {
 
   return (
     <Loader states={[{
-      isLoading: syslogPolicyList.isLoading,
+      isLoading: isSyslogPolicyListLoading,
       isFetching: isUpdatingVenueSyslog
     }]}>
       <Space align='start'>
@@ -181,7 +212,8 @@ export function Syslog () {
                   type: PolicyType.SYSLOG,
                   oper: PolicyOperation.CREATE
                 })
-                await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`)
+                // eslint-disable-next-line max-len
+                await navigate(`${toPolicyPath.pathname}/${policyRoutePath}`, { state: { from: location } })
               }}
             >
               {$t({ defaultMessage: 'Add Server Profile' })}
@@ -193,15 +225,13 @@ export function Syslog () {
               {$t({ defaultMessage: 'Primary Server:' })}
             </label>
             <Paragraph>
-              {`${syslogValue?.primary?.server}
-              :${syslogValue?.primary?.port} ${syslogValue?.primary?.protocol}`}
+              {syslogValue?.primaryServer ?? ''}
             </Paragraph>
             <label style={{ height: '33px' }}>
               {$t({ defaultMessage: 'Secondary Server:' })}
             </label>
             <Paragraph>
-              {syslogValue?.secondary?.server ? `${syslogValue?.secondary?.server}
-              :${syslogValue?.secondary?.port} ${syslogValue?.secondary?.protocol}` : ''}
+              {syslogValue?.secondaryServer ?? ''}
             </Paragraph>
             <label style={{ height: '33px' }}>
               {$t({ defaultMessage: 'Event Facility:' })}

@@ -164,6 +164,25 @@ describe('Add Custom Role', () => {
       search: ''
     })
   })
+  it('should render correctly for clone', async () => {
+    params.action = 'clone'
+    params.customRoleId = 'abc'
+
+    render(
+      <Provider>
+        <AddCustomRole />
+      </Provider>, {
+        route: { params }
+      }
+    )
+
+    expect(screen.getByText('Clone Admin Role')).toBeVisible()
+    expect(screen.getByText('Role Name')).toBeVisible()
+    expect(screen.getByText('Role Description')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Next' })).toBeVisible()
+    expect(screen.queryByRole('button', { name: 'Back' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
+  })
   it('should close correctly', async () => {
     render(
       <Provider>

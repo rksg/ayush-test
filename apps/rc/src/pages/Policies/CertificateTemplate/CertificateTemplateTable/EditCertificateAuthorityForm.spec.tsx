@@ -32,7 +32,7 @@ describe('EditCertificateAuthorityForm', () => {
             startDate: '2022-01-01',
             expireDate: '2023-01-01',
             keyLength: 2048,
-            algorithm: AlgorithmType.SHA_1
+            algorithm: AlgorithmType.SHA_256
           }}
           modal={{
             update: jest.fn(),

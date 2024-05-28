@@ -140,7 +140,8 @@ export default class VenueClusterRenderer implements Renderer {
         fontSize: cssStr('--acx-body-2-font-size'),
         fontWeight: 'semibold'
       },
-      title: this.intl.$t({ defaultMessage: 'Cluster of {count} Venues' }, { count }),
+      // eslint-disable-next-line max-len
+      title: this.intl.$t({ defaultMessage: 'Cluster of {count} <VenuePlural></VenuePlural>' }, { count }),
       // adjust zIndex to be above other markers
       zIndex: Number(google.maps.Marker.MAX_ZINDEX) + count
     })

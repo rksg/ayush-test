@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { getUserProfile, RolesEnum }             from '@acx-ui/analytics/utils'
 import { Tabs }                                  from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasPermission }                         from '@acx-ui/user'
 
 function ClientDetailTabs () {
   const { $t } = useIntl()
@@ -14,11 +14,10 @@ function ClientDetailTabs () {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-  const { selectedTenant: { role } } = getUserProfile()
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       {
-        role !== RolesEnum.REPORT_ONLY
+        hasPermission({ permission: 'READ_CLIENT_TROUBLESHOOTING' })
           ? <Tabs.TabPane
             tab={$t({ defaultMessage: 'Troubleshooting' })}
             key='troubleshooting'

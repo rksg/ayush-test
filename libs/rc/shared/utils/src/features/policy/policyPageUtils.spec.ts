@@ -2,7 +2,7 @@ import { renderHook } from '@acx-ui/test-utils'
 
 import { PolicyType } from '../../types'
 
-import { PolicyOperation, generatePolicyPageHeaderTitle, getPolicyListRoutePath, getPolicyRoutePath, usePolicyListBreadcrumb } from '.'
+import { PolicyOperation, getPolicyListRoutePath, getPolicyRoutePath, usePolicyListBreadcrumb, usePolicyPageHeaderTitle } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('../../configTemplate', () => ({
@@ -19,8 +19,16 @@ describe('policyPageUtils', () => {
   afterEach(() => {
     mockedUseConfigTemplate.mockRestore()
   })
+
   it('should generate Policy PageHeader Title correctly', () => {
-    expect(generatePolicyPageHeaderTitle(false, false, PolicyType.AAA)).toBe('Add RADIUS Server ')
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
+    const { result } = renderHook(() => usePolicyPageHeaderTitle(false, PolicyType.AAA))
+    expect(result.current).toBe('Add RADIUS Server Template')
+
+    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
+    // eslint-disable-next-line max-len
+    const { result: nonTemplateResult } = renderHook(() => usePolicyPageHeaderTitle(false, PolicyType.AAA))
+    expect(nonTemplateResult.current).toBe('Add RADIUS Server ')
   })
 
   it('usePolicyListBreadcrumb when isTemplate is true', () => {

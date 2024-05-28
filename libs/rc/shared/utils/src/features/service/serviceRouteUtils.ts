@@ -1,6 +1,8 @@
 import { generatePath } from '@acx-ui/react-router-dom'
 
-import { ServiceType } from '../../constants'
+import { ServiceType }           from '../../constants'
+import { PolicyType }            from '../../types'
+import { policyTypePathMapping } from '../policy'
 
 export enum DpskDetailsTabKey {
   OVERVIEW = 'overview',
@@ -33,7 +35,7 @@ const operationPathMapping: Record<ServiceOperation, string> = {
   [ServiceOperation.LIST]: 'list'
 }
 
-const typePathMapping: Record<ServiceType, string> = {
+const serviceTypePathMapping: Record<ServiceType, string> = {
   [ServiceType.PORTAL]: 'portal',
   [ServiceType.DHCP]: 'dhcp',
   [ServiceType.EDGE_DHCP]: 'edgeDhcp',
@@ -60,7 +62,7 @@ export function getServiceRoutePath (props: ServiceRoutePathProps): string {
   const { type, oper } = props
   const paths = ['services']
 
-  paths.push(typePathMapping[type])
+  paths.push(serviceTypePathMapping[type])
   paths.push(operationPathMapping[oper])
   if (hasTab(props)) {
     paths.push(':activeTab')
@@ -89,4 +91,16 @@ export function getSelectServiceRoutePath (prefixSlash = false): string {
 
 export function getServiceCatalogRoutePath (prefixSlash = false): string {
   return (prefixSlash ? '/' : '') + 'services/catalog'
+}
+
+export function dpskAdminRoutePathKeeper (currentPath: string): boolean {
+  const dpskAllowedPaths = [
+    serviceTypePathMapping[ServiceType.DPSK],
+    policyTypePathMapping[PolicyType.ADAPTIVE_POLICY_SET],
+    policyTypePathMapping[PolicyType.ADAPTIVE_POLICY],
+    policyTypePathMapping[PolicyType.RADIUS_ATTRIBUTE_GROUP]
+  ]
+  const paths = currentPath.split('/')
+
+  return dpskAllowedPaths.some(p => paths.includes(p))
 }

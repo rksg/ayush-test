@@ -10,6 +10,7 @@ import {
   useGetMfaTenantDetailsQuery,
   useGetMfaAdminDetailsQuery
 } from '@acx-ui/user'
+import { userLogout } from '@acx-ui/utils'
 
 import { AuthenticationMethod }       from '../AuthenticationMethod'
 import { BackupAuthenticationMethod } from '../BackupAuthenticationMethod'
@@ -33,11 +34,7 @@ export const MFASetupModal = (props: MFASetupModalProps) => {
   const authAppToggle = Form.useWatch('authAppToggle', form)
 
   const handleCancel = () => {
-    // redirect to login page
-    const token = sessionStorage.getItem('jwt')?? null
-    sessionStorage.removeItem('jwt')
-    sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
-    window.location.href = token? `/logout?token=${token}` : '/logout'
+    userLogout()
   }
 
   useEffect(() => {

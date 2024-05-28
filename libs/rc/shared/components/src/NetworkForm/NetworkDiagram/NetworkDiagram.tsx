@@ -26,6 +26,7 @@ import DpskUsingRadiusDiagram         from '../assets/images/network-wizard-diag
 import DpskDiagram                    from '../assets/images/network-wizard-diagrams/dpsk.png'
 import GuestPassDiagram               from '../assets/images/network-wizard-diagrams/guest-pass.png'
 import HostApprovalDiagram            from '../assets/images/network-wizard-diagrams/host-approval.png'
+import Hotspot20Diagram               from '../assets/images/network-wizard-diagrams/hotspot2.0.png'
 import DefaultDiagram                 from '../assets/images/network-wizard-diagrams/none.png'
 import OpenCloudpathCloudDiagram      from '../assets/images/network-wizard-diagrams/open-cloudpath-cloud-deployment.png'
 import OpenCloudpathOnPremDiagram     from '../assets/images/network-wizard-diagrams/open-cloudpath-on-prem-deployment.png'
@@ -104,6 +105,9 @@ function getDiagram (props: NetworkDiagramProps) {
       break
     case NetworkTypeEnum.AAA:
       diagram = getAAADiagram(props)
+      break
+    case NetworkTypeEnum.HOTSPOT20:
+      diagram = Hotspot20Diagram
       break
     case NetworkTypeEnum.CAPTIVEPORTAL:
       diagram = getCaptivePortalDiagram(props)

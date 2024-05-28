@@ -16,7 +16,13 @@ import {
   useConfigTemplateVisibilityMap,
   WifiCallingForm, WifiCallingConfigureForm, WifiCallingDetailView,
   VLANPoolForm,
-  VLANPoolDetail
+  VLANPoolDetail,
+  RogueAPDetectionForm,
+  RogueAPDetectionDetailView,
+  SyslogForm,
+  SyslogDetailView,
+  ConfigurationProfileForm,
+  CliProfileForm, ApGroupDetails, ApGroupEdit
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -32,6 +38,8 @@ import {
 import { rootRoutes, Route, TenantNavigate, Navigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { DataStudio }                                                            from '@acx-ui/reports/components'
 import { Provider }                                                              from '@acx-ui/store'
+import { SwitchScopes }                                                          from '@acx-ui/types'
+import { AuthRoute }                                                             from '@acx-ui/user'
 import { AccountType, getJwtTokenPayload }                                       from '@acx-ui/utils'
 
 import HspContext, { HspActionTypes }              from './HspContext'
@@ -49,12 +57,13 @@ import { Subscriptions }                           from './pages/Subscriptions'
 import { AssignMspLicense }                        from './pages/Subscriptions/AssignMspLicense'
 import { VarCustomers }                            from './pages/VarCustomers'
 
-function Init () {
+export function Init () {
   const {
     state
   } = useContext(HspContext)
 
-  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360)
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
+  const isBrand360Enabled = useIsSplitOn(Features.MSP_BRAND_360) && brand360PLMEnabled
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -70,8 +79,9 @@ function Init () {
 
 export default function MspRoutes () {
   const isHspPlmFeatureOn = useIsTierAllowed(Features.MSP_HSP_PLM_FF)
+  const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
-  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO)
+  const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -281,22 +291,19 @@ export function ConfigTemplatesRoutes () {
         {configTemplateVisibilityMap[ConfigTemplateType.WIFI_CALLING] && <>
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.CREATE
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE
             })}
             element={<WifiCallingForm />}
           />
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.EDIT
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT
             })}
             element={<WifiCallingConfigureForm />}
           />
           <Route
             path={getServiceRoutePath({
-              type: ServiceType.WIFI_CALLING,
-              oper: ServiceOperation.DETAIL
+              type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL
             })}
             element={<WifiCallingDetailView />}
           />
@@ -323,6 +330,90 @@ export function ConfigTemplatesRoutes () {
             })}
             element={<VLANPoolDetail />}
           />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SYSLOG] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.CREATE
+            })}
+            element={<SyslogForm edit={false} />}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.EDIT
+            })}
+            element={<SyslogForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.SYSLOG,
+              oper: PolicyOperation.DETAIL
+            })}
+            element={<SyslogDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.ROGUE_AP_DETECTION] && <>
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE
+            })}
+            element={<RogueAPDetectionForm edit={false}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT
+            })}
+            element={<RogueAPDetectionForm edit={true}/>}
+          />
+          <Route
+            path={getPolicyRoutePath({
+              type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL
+            })}
+            element={<RogueAPDetectionDetailView />}
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SWITCH_REGULAR] && <>
+          <Route
+            path='networks/wired/profiles/add'
+            element={
+              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+                <ConfigurationProfileForm />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='networks/wired/profiles/regular/:profileId/:action'
+            element={
+              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+                <ConfigurationProfileForm />
+              </AuthRoute>
+            }
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.SWITCH_CLI] && <>
+          <Route path='networks/wired/:configType/cli/add'
+            element={
+              <AuthRoute scopes={[SwitchScopes.CREATE]}>
+                <CliProfileForm />
+              </AuthRoute>
+            } />
+          <Route
+            path='networks/wired/:configType/cli/:profileId/:action'
+            element={
+              <AuthRoute scopes={[SwitchScopes.UPDATE]}>
+                <CliProfileForm />
+              </AuthRoute>
+            }
+          />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.AP_GROUP] && <>
+          {/* eslint-disable-next-line max-len */}
+          <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
+          <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
         </>}
       </Route>
     </Route>

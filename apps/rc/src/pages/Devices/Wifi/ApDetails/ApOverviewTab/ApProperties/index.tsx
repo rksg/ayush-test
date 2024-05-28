@@ -35,7 +35,7 @@ export function ApProperties (props:{
         <UI.Container>
           <Descriptions labelWidthPercent={50}>
             <Descriptions.Item
-              label={$t({ defaultMessage: 'Venue' })}
+              label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
               children={
                 <TenantLink to={`/venues/${currentAP?.venueId}/venue-details/overview`}>
                   {currentAP?.venueName}

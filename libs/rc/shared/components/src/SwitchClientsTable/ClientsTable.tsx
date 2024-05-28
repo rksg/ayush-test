@@ -6,7 +6,6 @@ import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/
 import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
 import {
-
   FILTER,
   getOsTypeIcon,
   getDeviceTypeIcon,
@@ -19,8 +18,9 @@ import {
   Lag,
   SwitchPortStatus
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }        from '@acx-ui/types'
+import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { hasPermission }                from '@acx-ui/user'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -64,6 +64,7 @@ export function ClientsTable (props: {
   const isDhcpClientsEnabled = useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [editLagModalVisible, setEditLagModalVisible] = useState(false)
   const [editLag, setEditLag] = useState([] as Lag[])
@@ -87,7 +88,8 @@ export function ClientsTable (props: {
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
     option: { skip: !!props.tableQuery },
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isSwitchRbacEnabled
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   useEffect(() => {
@@ -156,7 +158,7 @@ export function ClientsTable (props: {
     },
     ...(params.switchId || params.venueId ? [] : [{
       key: 'venueName',
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       sorter: true,
       searchable: searchable,
@@ -195,7 +197,7 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled) { // FF
+        if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) { // FF
           return row['switchPort']
         }
 

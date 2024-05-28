@@ -91,12 +91,10 @@ describe('DnsProxyModal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Manage' }))
     expect(await screen.findByText('aaa.com')).toBeVisible()
 
-    const row = await screen.findByRole('row', { name: /ccc.com/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    fireEvent.click(await screen.findByText('ccc.com'))
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
 
-    const row2 = await screen.findByRole('row', { name: /aaa.com/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    fireEvent.click(await screen.findByText('aaa.com'))
     fireEvent.click(screen.getByRole('button', { name: 'Edit' }))
 
     const nameInput = screen.getByLabelText('Domain Name')

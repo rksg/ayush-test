@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
+import moment         from 'moment'
 import { Path, rest } from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { MspEcTierEnum, MspUrlsInfo }                             from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -40,7 +41,8 @@ const list = {
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
       switchLicenses: 1,
-      edgeLicenses: 1
+      edgeLicenses: 1,
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -68,7 +70,8 @@ const list = {
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
-      accountType: 'TRIAL'
+      accountType: 'TRIAL',
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -105,18 +108,19 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     },
     {
       assignedMspEcList: [],
       creationDate: '1659589676050',
       entitlements: [
         {
-          consumed: '0',
+          consumed: '1',
           entitlementDeviceType: 'APSW',
-          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDate: moment().add(30, 'days'),
           expirationDateTs: '1667372399000',
-          quantity: '0',
+          quantity: '10',
           tenantId: '701fe9df5f6b4c17928a29851c07cc07',
           toBeRemovedQuantity: 0,
           type: 'entitlement'
@@ -132,7 +136,36 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
+    },
+    {
+      assignedMspEcList: [],
+      creationDate: '1659589677050',
+      entitlements: [
+        {
+          consumed: '2',
+          entitlementDeviceType: 'APSW',
+          expirationDate: moment().add(70, 'days'),
+          expirationDateTs: '1667372399000',
+          quantity: '10',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc07',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        }
+      ],
+      id: '701fe9df5f6b4c17928a29851c07cc22',
+      integrator: '675dc01dc28846c383219b00d2f28f48',
+      mspAdminCount: 1,
+      mspIntegratorAdminCount: 1,
+      mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
+      mspEcAdminCount: 1,
+      name: 'ec 888',
+      status: 'Inactive',
+      streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
+      tenantType: 'MSP_EC',
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     }
   ]
 }
@@ -539,6 +572,7 @@ describe('MspCustomers', () => {
     })
   })
   it('should render table for installer', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -576,6 +610,7 @@ describe('MspCustomers', () => {
     expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for integrator', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -640,6 +675,7 @@ describe('MspCustomers', () => {
     expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })

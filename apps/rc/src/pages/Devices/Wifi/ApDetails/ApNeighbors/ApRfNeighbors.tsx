@@ -90,7 +90,7 @@ function getColumns (): TableProps<ApRfNeighbor>['columns'] {
     {
       key: 'venueName',
       dataIndex: 'venueName',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       render: (data, row, index, highlightFn) => apNeighborValueRender(row.venueName, highlightFn)
     },
     {

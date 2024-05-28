@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Col, Row, Typography } from 'antd'
+import { isNil }                from 'lodash'
 import { useIntl }              from 'react-intl'
 
 import { Card, SummaryCard }                                                     from '@acx-ui/components'
@@ -19,7 +20,9 @@ import {
   PolicyOperation,
   NetworkTypeEnum,
   Network } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { EdgeScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 interface EdgeSdLanServiceProps {
   data: EdgeSdLanViewDataP2;
@@ -48,7 +51,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
       {data.name}
     </TenantLink>
   }, {
-    title: $t({ defaultMessage: 'Venue' }),
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     content: () => <TenantLink to={`/venues/${data.venueId}/venue-details/overview`}>
       {data.venueName}
     </TenantLink>
@@ -126,8 +129,10 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
     try {
       if (data.isGuestTunnelEnabled
       && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
+        // network with vlan pooling enabled cannot be a SD-LAN guest network
+        const isVlanPooling = !isNil(rowData.vlanPool)
         const isGuestNetwork = fieldName === 'activatedGuestNetworks'
-                              || (fieldName === 'activatedNetworks' && checked)
+                              || (fieldName === 'activatedNetworks' && checked && !isVlanPooling)
         await toggleNetwork(isGuestNetwork, networkId, checked, () => {
           setIsActivateUpdating(false)
         })
@@ -142,6 +147,8 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
       console.error(err)
     }
   }
+
+  const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
 
   return (
     <SpaceWrapper fullWidth direction='vertical' size={30}>
@@ -172,6 +179,10 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
             isGuestTunnelEnabled={data.isGuestTunnelEnabled}
             activated={data.networkIds}
             activatedGuest={data.guestNetworkIds}
+            disabled={!hasEdgeUpdatePermission}
+            tooltip={!hasEdgeUpdatePermission
+              ? $t({ defaultMessage: 'No permission on this' })
+              : undefined}
             onActivateChange={handleActivateChange}
             isUpdating={isActivateUpdating
               || isActivateRequesting

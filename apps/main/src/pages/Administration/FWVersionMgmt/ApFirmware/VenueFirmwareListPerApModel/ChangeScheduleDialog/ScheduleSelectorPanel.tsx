@@ -48,7 +48,7 @@ export default function ScheduleSelectorPanel (props: ScheduleSelectorPanelProps
     </UI.TitleDate>
     <UI.Title2Date>
       {// eslint-disable-next-line max-len
-        $t({ defaultMessage: 'Selected time will apply to each venue according to own time-zone' })}
+        $t({ defaultMessage: 'Selected time will apply to each <venueSingular></venueSingular> according to own time-zone' })}
     </UI.Title2Date>
     <UI.DateContainer>
       <label>{$t({ defaultMessage: 'Update date:' })}</label>

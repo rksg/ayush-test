@@ -1,7 +1,7 @@
 
 import userEvent from '@testing-library/user-event'
 
-import { EdgeIpModeEnum, EdgePortConfigFixtures } from '@acx-ui/rc/utils'
+import { EdgeIpModeEnum, EdgePortConfigFixtures, VirtualIpSetting } from '@acx-ui/rc/utils'
 import {
   render,
   screen,
@@ -23,7 +23,7 @@ jest.mock('antd', () => {
   }: MockSelectProps) => (
     <select {...props} onChange={(e) => onChange?.(e.target.value)} value=''>
       {/* Additional <option> to ensure it is possible to reset value to empty */}
-      {children ? <><option value={undefined}></option>{children}</> : null}
+      {children ? children : null}
       {options?.map((option, index) => (
         <option key={`option-${index}`} value={option.value as string}>{option.label}</option>
       ))}
@@ -129,5 +129,30 @@ describe('ClusterInterface - EditClusterInterfaceDrawer', () => {
     await userEvent.clear(ipField)
     await userEvent.type(ipField, '192.168.12.136')
     expect(await screen.findByText('IP address cannot be the same as other nodes.')).toBeVisible()
+  })
+
+  it('should disable the interface option which set as a VRRP interface', async () => {
+    render(
+      <EditClusterInterfaceDrawer
+        visible={true}
+        setVisible={mockedSetVisibleFn}
+        handleFinish={mockedHandleFinishFn}
+        interfaceList={mockClusterInterfaceOptionData['serialNumber-1']}
+        editData={mockedAllNodeData[0]}
+        allNodeData={mockedAllNodeData}
+        vipConfig={[{
+          ports: [{
+            serialNumber: 'serialNumber-1',
+            portName: 'port3'
+          }]
+        }] as VirtualIpSetting[]}
+      />
+    )
+
+    const options = await screen.findAllByRole('option')
+    expect(options[0].innerHTML).toBe('Lag0')
+    expect(options[0]).not.toBeDisabled()
+    expect(options[1].innerHTML).toBe('Port3')
+    expect(options[1]).toBeDisabled()
   })
 })

@@ -1,8 +1,6 @@
-
-import { Card }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                 from '@acx-ui/components'
+import { Card, Loader, Table, TableProps }           from '@acx-ui/components'
 import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { useNetworkListQuery, useNetworkTableQuery } from '@acx-ui/rc/services'
 import {
@@ -73,7 +71,7 @@ export function IdentityProviderInstancesTable (props: { data: IdentityProviderV
       />
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venues',
       key: 'venues',
       sorter: true,
@@ -88,7 +86,6 @@ export function IdentityProviderInstancesTable (props: { data: IdentityProviderV
       }
     }
   ]
-
 
   return (
     <Card title={$t({ defaultMessage: 'Instances ({count})' },

@@ -78,7 +78,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
 
   return (
     <>
-      <Form.Item label={props.serverLabel}><Space>
+      <Form.Item label={props.serverLabel} required><Space>
         <Form.Item
           name={radiusIdName}
           noStyle

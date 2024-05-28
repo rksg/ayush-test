@@ -4,20 +4,26 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps, Button }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { useGetSwitchStaticRoutesQuery, useDeleteSwitchStaticRoutesMutation } from '@acx-ui/rc/services'
-import { defaultSort, sortProp, StaticRoute }                                 from '@acx-ui/rc/utils'
+import { defaultSort, sortProp, StaticRoute, SwitchViewModel }                from '@acx-ui/rc/utils'
 import { filterByAccess }                                                     from '@acx-ui/user'
 
 import StaticRoutesDrawer from './StaticRoutesDrawer'
 
-const StaticRoutes = (props: { readOnly: boolean }) => {
+const StaticRoutes = (props: { readOnly: boolean, switchDetail?: SwitchViewModel }) => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const { readOnly } = props
+  const { readOnly, switchDetail } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [currentEditData, setCurrentEditData] = useState<StaticRoute>()
-  const { data, isFetching: isDataFetching }= useGetSwitchStaticRoutesQuery({ params: params })
+  const { data, isFetching: isDataFetching } = useGetSwitchStaticRoutesQuery({
+    params: { ...params, venueId: switchDetail?.venueId },
+    enableRbac: isSwitchRbacEnabled
+  })
   const [deleteSwitchStaticRoutes] = useDeleteSwitchStaticRoutesMutation()
 
   useEffect(() => {
@@ -61,7 +67,11 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
-        deleteSwitchStaticRoutes({ params, payload: selectedRows.map(item => item.id) })
+        deleteSwitchStaticRoutes({
+          params: { ...params, venueId: switchDetail?.venueId || '' },
+          payload: selectedRows.map(item => item.id),
+          enableRbac: isSwitchRbacEnabled
+        })
         clearSelection()
       }
     }
@@ -86,6 +96,7 @@ const StaticRoutes = (props: { readOnly: boolean }) => {
       }
     ]}>
       <StaticRoutesDrawer
+        switchDetail={switchDetail}
         visible={drawerVisible}
         setVisible={setDrawerVisible}
         data={currentEditData}

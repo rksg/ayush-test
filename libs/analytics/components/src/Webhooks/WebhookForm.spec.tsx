@@ -330,6 +330,7 @@ describe('WebhookForm', () => {
       })
       expect(dialog).toBeVisible()
       expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      await click(await screen.findByRole('button', { name: 'OK' }))
     })
     it('send sample and render details (object)', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]
@@ -353,6 +354,7 @@ describe('WebhookForm', () => {
       })
       expect(dialog).toBeVisible()
       expect(payloadSpy).toBeCalledWith(_.pick(webhook, ['callbackUrl', 'secret']))
+      await click(await screen.findByRole('button', { name: 'OK' }))
     })
     it('handle RTKQuery error', async () => {
       const [payloadSpy, onClose] = [jest.fn(), jest.fn()]

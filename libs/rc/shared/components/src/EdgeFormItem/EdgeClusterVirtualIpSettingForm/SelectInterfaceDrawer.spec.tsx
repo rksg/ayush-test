@@ -125,7 +125,7 @@ describe('InterfaceTable', () => {
       'port3'
     )
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('The selected port is not in the same subnet as other nodes.')).toBeVisible()
+    expect((await screen.findAllByText('The selected port is not in the same subnet as other nodes.'))[0]).toBeVisible()
   })
 
   it('should submit successfully', async () => {

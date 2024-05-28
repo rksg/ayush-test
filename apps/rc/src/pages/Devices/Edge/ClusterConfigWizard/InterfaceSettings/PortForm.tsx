@@ -31,7 +31,7 @@ export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
     <PortSettingView />
   </Form.Item>
 
-  useEffect(() => onInit?.(), [])
+  useEffect(() => onInit?.(), [onInit])
 
   return (
     <TypeForm
@@ -56,6 +56,13 @@ const PortSettingView = (props: PortSettingViewProps) => {
   } = useContext(ClusterConfigWizardContext)
   const [activeTab, setActiveTab] = useState<string>('')
   const nodesLagData = form.getFieldValue('lagSettings') as InterfaceSettingsFormType['lagSettings']
+  const vipConfig = form.getFieldValue('vipConfig') as InterfaceSettingsFormType['vipConfig']
+  const timeout = form.getFieldValue('timeout')
+  const vipConfigArr = vipConfig?.map(item => ({
+    virtualIp: item.vip,
+    ports: item.interfaces,
+    timeoutSeconds: timeout
+  }))
 
   const handleTabChange = (value: string) => {
     setActiveTab(value)
@@ -81,6 +88,7 @@ const PortSettingView = (props: PortSettingViewProps) => {
                 activeTab={activeTab}
                 onTabChange={handleTabChange}
                 fieldHeadPath={['portSettings', serialNumber]}
+                vipConfig={vipConfigArr}
               />
               : <div />
           }

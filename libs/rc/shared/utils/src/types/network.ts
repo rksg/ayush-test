@@ -8,6 +8,7 @@ import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomi
 import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
 import { GuestPortal }                    from '../models/GuestPortal'
 import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
+import { NetworkHotspot20Settings }       from '../models/NetworkHotspot20Settings'
 import { NetworkVenue }                   from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization }  from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }   from '../models/PskWlanAdvancedCustomization'
@@ -153,8 +154,10 @@ export interface NetworkSaveData {
   enableOwe?: boolean
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
+  hotspot20Settings?: NetworkHotspot20Settings
   useCertificateTemplate?: boolean
   certificateTemplateId?: string
+  accountingInterimUpdates?: number
 }
 
 export enum MaxRateEnum {

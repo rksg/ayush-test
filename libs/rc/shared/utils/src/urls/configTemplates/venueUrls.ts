@@ -21,11 +21,6 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId',
     newApi: true
   },
-  getVenuesTemplateList: {
-    method: 'post',
-    url: '/templates/venues/query',
-    newApi: true
-  },
   getVenueApCapabilities: {
     method: 'get',
     url: '/templates/venues/:venueId/aps/capabilities',
@@ -234,6 +229,46 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   bulkDeleteVenueSwitchAaaServer: {
     method: 'delete',
     url: '/templates/venues/aaaServers',
+    newApi: true
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apGroups',
+    newApi: true
+  },
+  addApGroup: {
+    method: 'post',
+    url: '/templates/venues/:venueId/apGroups',
+    newApi: true
+  },
+  updateApGroup: {
+    method: 'put',
+    url: '/templates/venues/apGroups/:apGroupId',
+    newApi: true
+  },
+  deleteApGroups: {
+    method: 'delete',
+    url: '/templates/venues/apGroups',
+    newApi: true
+  },
+  getApGroup: {
+    method: 'get',
+    url: '/templates/venues/apGroups/:apGroupId',
+    newApi: true
+  },
+  getVlanPoolViewModelList: {
+    method: 'post',
+    url: '/templates/enhancedVlanPoolProfiles/query',
+    newApi: true
+  },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/templates/apGroups/:apGroupId/networks/query',
+    newApi: true
+  },
+  networkActivations: {
+    method: 'post',
+    url: '/templates/networkActivations/query',
     newApi: true
   }
 }

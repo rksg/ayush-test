@@ -11,8 +11,11 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
-import { mockList, mockDetailResult, mockDetailChangeResult } from './__tests__/fixtures'
+
+import { mockList, mockDetailResult, mockDetailChangeResult, mockedPortalList } from './__tests__/fixtures'
 
 import PortalServiceDetail from '.'
 
@@ -35,6 +38,10 @@ describe('Portal Detail Page', () => {
         CommonUrlsInfo.getVMNetworksList.url,
         (_, res, ctx) => res(ctx.json(mockList))
       ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockList))
+      ),
       rest.get(
         `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
         (req, res, ctx) => {
@@ -46,14 +53,18 @@ describe('Portal Detail Page', () => {
           return res(ctx.json({}))
         }),
       rest.get(
-        PortalUrlsInfo.getPortalProfileDetail.url,
+        PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => res(ctx.json(mockDetailResult))
       ),
       rest.get(PortalUrlsInfo.getPortalLang.url,
         (_, res, ctx) => {
           return res(ctx.json({ acceptTermsLink: 'terms & conditions',
             acceptTermsMsg: 'I accept the' }))
-        })
+        }),
+      rest.post(
+        PortalUrlsInfo.getEnhancedPortalProfileList.url,
+        (req, res, ctx) => res(ctx.json({ ...mockedPortalList }))
+      )
     )
   })
 
@@ -87,7 +98,7 @@ describe('Portal Detail Page', () => {
   it('should render detail changed page', async () => {
     mockServer.use(
       rest.get(
-        PortalUrlsInfo.getPortalProfileDetail.url,
+        PortalUrlsInfo.getPortal.url,
         (_, res, ctx) => res(ctx.json(mockDetailChangeResult))
       )
     )
@@ -96,5 +107,41 @@ describe('Portal Detail Page', () => {
     })
     expect(await screen.findByText('English')).toBeVisible()
     expect(await screen.findByText((`Instances (${mockList.data.length})`))).toBeVisible()
+  })
+
+  describe('ABAC permission', () => {
+    it('should dispaly with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.UPDATE]
+      })
+
+      render(<Provider><PortalServiceDetail /></Provider>, {
+        route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
+      })
+      expect(await screen.findByRole('button', { name: 'Configure' })).toBeVisible()
+    })
+
+    it('should correctly hide with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.DELETE]
+      })
+
+      render(<Provider><PortalServiceDetail /></Provider>, {
+        route: { params, path: '/:tenantId/t/services/portal/:serviceId/detail' }
+      })
+      expect(screen.queryByRole('button', { name: 'Configure' })).toBeNull()
+    })
   })
 })

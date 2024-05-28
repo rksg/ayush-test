@@ -3,8 +3,8 @@ import _ from 'lodash'
 import { EdgeLag }                                                                 from '../..'
 import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
 
-import { EdgeAlarmFixtures }  from './__tests__/fixtures'
-import { mockEdgePortConfig } from './__tests__/fixtures/portsConfig'
+import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
+import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
   allowRebootForStatus,
   allowResetForStatus,
@@ -13,6 +13,7 @@ import {
   getIpWithBitMask,
   getSuggestedIpRange,
   isAllPortsLagMember,
+  isInterfaceInVRRPSetting,
   lanPortsubnetValidator,
   optionSorter,
   validateClusterInterface,
@@ -22,6 +23,8 @@ import {
 } from './edgeUtils'
 
 const { requireAttentionAlarmSummary, poorAlarmSummary } = EdgeAlarmFixtures
+const { mockEdgeClusterList, mockedHaNetworkSettings } = EdgeGeneralFixtures
+
 describe('Edge utils', () => {
 
   it('should get good service health', () => {
@@ -69,26 +72,22 @@ describe('Edge utils', () => {
   })
 
   it('Test validate serial number success', async () => {
-    const result = await edgeSerialNumberValidator('9612345678901234567890111123456110')
+    let result = await edgeSerialNumberValidator('96123456789ABC34567890111123456110')
+    expect(result).toBeUndefined()
+    result = await edgeSerialNumberValidator('123456789012')
     expect(result).toBeUndefined()
   })
 
   it('Test validate serial number failed', async () => {
     let error
     try {
-      await edgeSerialNumberValidator('9612345')
-    } catch (ex) {
-      error = ex
-    }
-    expect(error).toBe('Field must be exactly 34 characters')
-    try {
-      await edgeSerialNumberValidator('123')
+      await edgeSerialNumberValidator('96123456789012')
     } catch (ex) {
       error = ex
     }
     expect(error).toBe('This field is invalid')
     try {
-      await edgeSerialNumberValidator('AB12345678901234567890111123456110')
+      await edgeSerialNumberValidator('1012A4567890')
     } catch (ex) {
       error = ex
     }
@@ -243,6 +242,22 @@ describe('Edge utils', () => {
     }
     // eslint-disable-next-line max-len
     expect(mockErrorFn).toBeCalledWith('Make sure you select the same interface type (physical port or LAG) as that of another node in this cluster.')
+  })
+
+  it('Test isInterfaceInVRRPSetting true', async () => {
+    expect(isInterfaceInVRRPSetting(
+      mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      'port2',
+      mockedHaNetworkSettings.virtualIpSettings
+    )).toBeTruthy()
+  })
+
+  it('Test isInterfaceInVRRPSetting false', async () => {
+    expect(isInterfaceInVRRPSetting(
+      mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      'port3',
+      mockedHaNetworkSettings.virtualIpSettings
+    )).toBeFalsy()
   })
 })
 

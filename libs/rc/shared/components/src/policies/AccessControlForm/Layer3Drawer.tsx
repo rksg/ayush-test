@@ -172,22 +172,25 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
 
-  const [ createL3AclPolicy ] = useConfigTemplateMutationFnSwitcher(
-    useAddL3AclPolicyMutation, useAddL3AclPolicyTemplateMutation)
+  const [ createL3AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddL3AclPolicyMutation,
+    useTemplateMutationFn: useAddL3AclPolicyTemplateMutation
+  })
 
-  const [ updateL3AclPolicy ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateL3AclPolicyMutation, useUpdateL3AclPolicyTemplateMutation)
+  const [ updateL3AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateL3AclPolicyMutation,
+    useTemplateMutationFn: useUpdateL3AclPolicyTemplateMutation
+  })
 
   const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(editMode.isEdit)
 
-
-  const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher(
-    useGetL3AclPolicyQuery,
-    useGetL3AclPolicyTemplateQuery,
-    skipFetch,
-    {},
-    { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
-  )
+  const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetL3AclPolicyQuery,
+    useTemplateQueryFn: useGetL3AclPolicyTemplateQuery,
+    skip: skipFetch,
+    payload: {},
+    extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
+  })
 
   const isViewMode = () => {
     if (queryPolicyId === '') {
@@ -1123,12 +1126,12 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
 const useGetL3AclPolicyListInstance = (isEdit: boolean): {
   layer3SelectOptions: JSX.Element[], layer3List: string[]
 } => {
-  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>(
-    useGetEnhancedL3AclProfileListQuery,
-    useGetL3AclPolicyTemplateListQuery,
-    isEdit,
-    QUERY_DEFAULT_PAYLOAD
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>({
+    useQueryFn: useGetEnhancedL3AclProfileListQuery,
+    useTemplateQueryFn: useGetL3AclPolicyTemplateListQuery,
+    skip: isEdit,
+    payload: QUERY_DEFAULT_PAYLOAD
+  })
 
   return {
     layer3SelectOptions: data?.data?.map(

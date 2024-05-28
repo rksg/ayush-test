@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { PageHeader }                                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { SwitchClientsTable, SwitchClientContext, defaultSwitchClientPayload } from '@acx-ui/rc/components'
 import { useGetSwitchClientListQuery }                                         from '@acx-ui/rc/services'
 import { usePollingTableQuery }                                                from '@acx-ui/rc/utils'
@@ -11,6 +12,7 @@ export default function ClientList () {
   const { $t } = useIntl()
   const [ switchCount, setSwitchCount ] = useState(0)
   const [ tableQueryFilters, setTableQueryFilters ] = useState({})
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = usePollingTableQuery({
     useQuery: useGetSwitchClientListQuery,
@@ -19,7 +21,8 @@ export default function ClientList () {
     },
     search: {
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   useEffect(() => {

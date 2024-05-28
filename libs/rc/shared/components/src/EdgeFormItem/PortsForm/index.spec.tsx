@@ -62,13 +62,14 @@ const defaultContextData = {
 
 describe('EditEdge ports', () => {
   const mockedEdgeID = 'mocked_edge_id'
+  const mockedEdgeClusterID = 'mocked_cluster_id'
 
   beforeEach(() => {
     store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
-        EdgeUrlsInfo.getPortConfig.url,
+        EdgeUrlsInfo.getPortConfigDeprecated.url,
         (_req, res, ctx) => res(ctx.json(mockEdgePortConfig))
       ),
       rest.post(
@@ -89,6 +90,7 @@ describe('EditEdge ports', () => {
           value={defaultContextData}
         >
           <EdgePortsForm
+            clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
             onCancel={jest.fn()}
@@ -109,6 +111,7 @@ describe('EditEdge ports', () => {
           value={defaultContextData}
         >
           <EdgePortsForm
+            clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
             onCancel={jest.fn()}
@@ -132,6 +135,7 @@ describe('EditEdge ports', () => {
           value={defaultContextData}
         >
           <EdgePortsForm
+            clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={handleTabChange}
             onCancel={jest.fn()}

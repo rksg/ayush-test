@@ -46,9 +46,6 @@ export function MeshNetwork () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isFeatureOnMeshEnhancement
-
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
@@ -93,7 +90,7 @@ export function MeshNetwork () {
 
       const enableDhcpSetting = dhcpServiceSetting && dhcpServiceSetting.enabled
       if (enableDhcpSetting) {
-        setMeshToolTipDisabledText($t({ defaultMessage: 'You cannot activate the Mesh Network on this venue because it already has enable DHCP settings' }))
+        setMeshToolTipDisabledText($t({ defaultMessage: 'You cannot activate the Mesh Network on this <venueSingular></venueSingular> because it already has enable DHCP settings' }))
       } else {
         setMeshToolTipDisabledText('')
       }
@@ -265,7 +262,7 @@ export function MeshNetwork () {
     try {
       let meshData: Mesh = { enabled: meshEnabled }
 
-      if (meshEnabled && supportMeshEnhancement) {
+      if (meshEnabled) {
         meshData = { ...meshData,
           ssid: meshSsid,
           passphrase: meshPassphrase,
@@ -317,7 +314,7 @@ export function MeshNetwork () {
         <Space direction='vertical' style={{ width: '400px', paddingBottom: '10px' }}>
           <div>{$t({ defaultMessage: 'ON' })}</div>
           <div>{
-            $t({ defaultMessage: 'Since there are active mesh links in this venue, in order prevent networking issues, you cannot turn mesh networking off' })}
+            $t({ defaultMessage: 'Since there are active mesh links in this <venueSingular></venueSingular>, in order prevent networking issues, you cannot turn mesh networking off' })}
           </div>
         </Space> :
         <Form.Item
@@ -334,17 +331,17 @@ export function MeshNetwork () {
         />
       }
     </StepsFormLegacy.FieldLabel>
-    {(supportMeshEnhancement && meshEnabled) && <>
+    {meshEnabled && <>
       <MeshInfoBlock>
         <ul>
           <li>
             {
-              $t({ defaultMessage: 'Enabling mesh for a venue creates a new WLAN for mesh communication between Access Points' })
+              $t({ defaultMessage: 'Enabling mesh for a <venueSingular></venueSingular> creates a new WLAN for mesh communication between Access Points' })
             }
           </li>
           <li>
             {
-              $t({ defaultMessage: 'Enabling mesh for a venue is a global configuration and once mesh links are formed (automatically), it cannot be undone.' })
+              $t({ defaultMessage: 'Enabling mesh for a <venueSingular></venueSingular> is a global configuration and once mesh links are formed (automatically), it cannot be undone.' })
             }
           </li>
         </ul>

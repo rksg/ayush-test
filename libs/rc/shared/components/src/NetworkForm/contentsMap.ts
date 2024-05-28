@@ -27,6 +27,10 @@ export const networkTypesDescription: Record<NetworkTypeEnum, MessageDescriptor>
     defaultMessage: 'Use 802.1X standard and WPA2 security protocols to authenticate users using an authentication server on the network',
     description: 'Description for Enterprise AAA (802.1X)'
   }),
+  [NetworkTypeEnum.HOTSPOT20]: defineMessage({
+    defaultMessage: 'Hotspot 2.0 (Passpoint) provides seamless Wi-Fi with enhanced security and roaming capabilities',
+    description: 'Description for Hotspot 2.0 Access'
+  }),
   [NetworkTypeEnum.CAPTIVEPORTAL]: defineMessage({
     defaultMessage: 'Users are authorized through a captive portal in various methods',
     description: 'Description for Captive Portal'
@@ -143,6 +147,7 @@ export const GuestNetworkTypeDescription: Record<GuestNetworkTypeEnum, string> =
 export const NetworkTypeTitle: Partial<Record<NetworkTypeEnum, MessageDescriptor>> = {
   [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Settings' }),
   [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'AAA Settings' }),
+  [NetworkTypeEnum.HOTSPOT20]: defineMessage({ defaultMessage: 'Hotspot 2.0 Settings' }),
   [NetworkTypeEnum.OPEN]: defineMessage({ defaultMessage: 'Settings' }),
   [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'DPSK Settings' })
 }

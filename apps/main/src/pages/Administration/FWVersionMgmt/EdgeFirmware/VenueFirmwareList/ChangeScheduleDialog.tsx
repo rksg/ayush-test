@@ -81,7 +81,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
         <Form.Item>
           <Typography>
             { // eslint-disable-next-line max-len
-              $t({ defaultMessage: 'Choose which version to update the venue to:' })}
+              $t({ defaultMessage: 'Choose which version to update the <venueSingular></venueSingular> to:' })}
           </Typography>
           <Form.Item
             name='version'
@@ -113,7 +113,7 @@ export function ChangeScheduleDialog (props: ChangeScheduleDialogProps) {
         <UI.TitleActive>
           {
             // eslint-disable-next-line max-len
-            $t({ defaultMessage: 'Selected time will apply to each venue according to own time-zone' })
+            $t({ defaultMessage: 'Selected time will apply to each <venueSingular></venueSingular> according to own time-zone' })
           }
         </UI.TitleActive>
         <UI.DateContainer>

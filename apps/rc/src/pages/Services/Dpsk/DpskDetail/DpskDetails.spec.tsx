@@ -111,12 +111,8 @@ describe('DpskDetails', () => {
     expect(await within(table).findByRole('row', { name: /DPSK_USER_1/ })).toBeVisible()
 
     expect(await screen.findByText('Network Control')).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'My Services'
-    })).toBeVisible()
-    expect(screen.getByRole('link', {
-      name: 'DPSK'
-    })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'My Services' })).toBeVisible()
+    expect(screen.getByRole('link', { name: 'DPSK' })).toBeVisible()
   })
 
   it('should navigate to the Passphrase Management tab', async () => {

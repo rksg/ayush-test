@@ -8,6 +8,9 @@ import { SwitchUrlsInfo }                      from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
+import { SwitchDetailsContext }     from '..'
+import { switchDetailsContextData } from '../__tests__/fixtures'
+
 import {
   doRunResponse,
   troubleshootingResult_ping_empty,
@@ -49,7 +52,12 @@ describe('TroubleshootingPingForm', () => {
   it('should copy correctly', async () => {
     jest.spyOn(navigator.clipboard, 'writeText')
     render(<Provider>
-      <SwitchPingForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchPingForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
     await userEvent.click(await screen.findByRole('button', { name: /copy output/i }))
@@ -65,7 +73,12 @@ describe('TroubleshootingPingForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_empty)))
     )
     render(<Provider>
-      <SwitchPingForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchPingForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/Target host or IP address/i)).toBeVisible()
@@ -78,7 +91,12 @@ describe('TroubleshootingPingForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_emptyResult)))
     )
     render(<Provider>
-      <SwitchPingForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchPingForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     expect(await screen.findByText(/No data to display./i)).toBeVisible()
@@ -91,7 +109,12 @@ describe('TroubleshootingPingForm', () => {
         (req, res, ctx) => res(ctx.json(troubleshootingResult_ping_isSyncing)))
     )
     render(<Provider>
-      <SwitchPingForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchPingForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     const ipAddressField = await screen.findByRole('textbox', {
@@ -113,7 +136,12 @@ describe('TroubleshootingPingForm', () => {
         })
     )
     render(<Provider>
-      <SwitchPingForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchPingForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
     expect(await screen.findByText(/Last synced at/i)).toBeVisible()
 
@@ -130,7 +158,12 @@ describe('TroubleshootingPingForm', () => {
         (_, res, ctx) => res(ctx.status(404), ctx.json({})))
     )
     render(<Provider>
-      <SwitchPingForm />
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchPingForm />
+      </SwitchDetailsContext.Provider>
     </Provider>, { route: { params } })
 
     const ipAddressField = await screen.findByRole('textbox', {

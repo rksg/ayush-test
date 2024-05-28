@@ -196,6 +196,10 @@ describe('AP Form - Add', () => {
       rest.get(
         WifiUrlsInfo.getVenueApManagementVlan.url,
         (_req, res, ctx) => res(ctx.json({ vlanId: null }))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
       )
     )
   })

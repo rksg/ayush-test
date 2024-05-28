@@ -48,7 +48,7 @@ function VenuePageHeader () {
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/details`)
 
   const breadcrumb = useConfigTemplateBreadcrumb([
-    { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
+    { text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
 
   return (

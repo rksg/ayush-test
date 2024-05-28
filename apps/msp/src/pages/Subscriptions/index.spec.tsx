@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import moment         from 'moment'
 import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
@@ -28,7 +29,7 @@ const entitlement =
       deviceSubType: 'MSP_WIFI',
       deviceType: 'MSP_WIFI',
       effectiveDate: 'Mon Dec 06 00:00:00 UTC 2021',
-      expirationDate: 'Tue Dec 01 23:59:59 UTC 2026',
+      expirationDate: moment().add(30, 'days'),
       id: '373419142-1',
       isTrial: false,
       lastNotificationDate: null,

@@ -69,7 +69,8 @@ jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
   ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
   useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({
     sdLansVenueMap: {},
-    networkVenueIds: []
+    networkVenueIds: [],
+    guestNetworkVenueIds: []
   })
 }))
 

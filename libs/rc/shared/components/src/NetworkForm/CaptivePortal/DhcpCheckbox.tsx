@@ -17,8 +17,8 @@ import { useParams }                  from '@acx-ui/react-router-dom'
 export function DhcpCheckbox () {
   const intl = useIntl()
   /* eslint-disable max-len */
-  const guestDhcpDisableToolTipText = intl.$t({ defaultMessage: 'You cannot enable the DHCP service because the network is activated in a Mesh enabled Venue.' })
-  const guestDhcpToolTipText = intl.$t({ defaultMessage: 'RUCKUS DHCP service automatically creates and assigns a new DHCP-Guest Service and DHCP Pool for those Guest WLAN related venues that do not have a specified DHCP Service. Please refer to the DHCP Service at each Venue for more information.' })
+  const guestDhcpDisableToolTipText = intl.$t({ defaultMessage: 'You cannot enable the DHCP service because the network is activated in a Mesh enabled <VenueSingular></VenueSingular>.' })
+  const guestDhcpToolTipText = intl.$t({ defaultMessage: 'RUCKUS DHCP service automatically creates and assigns a new DHCP-Guest Service and DHCP Pool for those Guest WLAN related <venuePlural></venuePlural> that do not have a specified DHCP Service. Please refer to the DHCP Service at each <VenueSingular></VenueSingular> for more information.' })
   const [
     venues
   ] = [

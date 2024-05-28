@@ -55,11 +55,7 @@ export function AuthAccServerSetting () {
       form.setFieldValue(['guestPortal','wisprPage','accountingRadius'], accountingRadius)
     }
   },[accountingRadius])
-  useEffect(()=>{
-    if(data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.Cloudpath){
-      form.setFieldsValue(data)
-    }
-  },[data])
+
   return (
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>

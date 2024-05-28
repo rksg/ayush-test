@@ -1020,7 +1020,7 @@ export function RadioSettings () {
               {
                 isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
                   <FormattedMessage
-                    defaultMessage={'Currently using radio settings of the venue (<venuelink></venuelink>)'}
+                    defaultMessage={'Currently using radio settings of the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
                     values={{
                       venuelink: () => venue?
                         <TenantLink
@@ -1035,7 +1035,7 @@ export function RadioSettings () {
           <Col span={8}>
             <Button type='link' onClick={handleStateOfIsUseVenueSettingsChange}>
               {isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
-                $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use Venue Settings' })
+                $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
               }
             </Button>
           </Col>
@@ -1057,7 +1057,7 @@ export function RadioSettings () {
                 isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
                   <span>
                     <FormattedMessage
-                      defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the venue (<venuelink></venuelink>)'}
+                      defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
                       values={{
                         radioTypeName: () => getRadioTypeDisplayName(currentTab),
                         venuelink: () => venue ? <VenueNameDisplay venue={venue} /> : ''
@@ -1079,7 +1079,7 @@ export function RadioSettings () {
           <Col span={8}>
             <Button type='link' onClick={handleStateOfIsUseVenueSettingsChange}>
               {isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag) ?
-                $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use Venue Settings' })
+                $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
               }
             </Button>
           </Col>
@@ -1116,7 +1116,7 @@ export function RadioSettings () {
                     children={<></>}
                   />
                   <Button type='link' onClick={handleOnUseVenueEnabledChange}>
-                    { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as Venue' }) }
+                    { stateOfUseVenueEnabled ? $t({ defaultMessage: 'Change' }) : $t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' }) }
                   </Button>
                 </Col>
               </>

@@ -115,7 +115,7 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
             <Space>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
               <Tooltip.Question
-                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in Venue/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
                 placement='right'
                 iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
               />

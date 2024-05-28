@@ -1,12 +1,15 @@
-import React from 'react'
-
 import { Form, Input }               from 'antd'
 import { useIntl, FormattedMessage } from 'react-intl'
 
-import { GridCol, GridRow, StepsFormLegacy, Tooltip }                  from '@acx-ui/components'
-import { useGetVlanPoolPolicyTemplateListQuery, useVlanPoolListQuery } from '@acx-ui/rc/services'
+
+import { GridCol, GridRow, StepsFormLegacy, Tooltip }                                            from '@acx-ui/components'
+import { useGetEnhancedVlanPoolPolicyTemplateListQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
-  checkVlanPoolMembers, servicePolicyNameRegExp,
+  PolicyType,
+  TableResult,
+  VLANPoolViewModelType,
+  checkObjectNotExists,
+  checkVlanPoolMembers, policyTypeLabelMapping, servicePolicyNameRegExp,
   useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 
@@ -19,32 +22,34 @@ type VLANPoolSettingFormProps = {
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useVlanPoolListQuery,
-    useGetVlanPoolPolicyTemplateListQuery,
-    false,
-    {
+  const form = Form.useFormInstance()
+  const id = Form.useWatch<string>('id', form) || form.getFieldValue('id')
+  // eslint-disable-next-line max-len
+  const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
+    useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
+    useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
+    payload: {
       fields: ['name', 'id'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
     }
-  )
+  })
 
   const nameValidator = async (_rule: unknown, value: string) => {
-    return new Promise<void>((resolve, reject) => {
-      if (!edit && value && data?.length && data?.findIndex((vlanPool) =>
-        vlanPool.name === value) !== -1
-      ) {
-        return reject(
-          $t({ defaultMessage: 'The VLAN Pool with that name already exists' })
-        )
-      }
-      return resolve()
-    })
+    const policyList = instanceListResult?.data!
+
+    return checkObjectNotExists(policyList.filter(
+      policy => edit ? policy.id !== id : true
+    ).map(policy => ({ name: policy.name })), { name: value } ,
+    $t(policyTypeLabelMapping[PolicyType.VLAN_POOL]))
   }
+
   return (
     <GridRow>
       <GridCol col={props.networkView ? { span: 24 } :{ span: 8 }}>
         <StepsFormLegacy.Title>{$t({ defaultMessage: 'Settings' })}</StepsFormLegacy.Title>
+        <Form.Item name='id' noStyle>
+          <Input type='hidden' />
+        </Form.Item>
         <Form.Item
           name='name'
           label={$t({ defaultMessage: 'Policy Name' })}
@@ -83,7 +88,8 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
                   You can enter a single VLAN, multiple VLANs separated by comma (e.g. 6, 8, 158), or a VLAN range (e.g. 6-47).<br></br>
                   Valid values are between 2 and 4094. For ranges, the start value must be less than the end value.<br></br>
                   The total number of VLAN members per pool is 64 (including ranges)<br></br>
-                  IF DHCP/NAT is enabled on a venue, the VLANs configured should be aligned with the VLANs in the DHCP profiles. Otherwise, clients may experience connectivity issues<br></br>
+                  IF DHCP/NAT is enabled on a <venueSingular></venueSingular>, the VLANs configured should be aligned with the VLANs in the DHCP profiles.
+                  Otherwise, clients may experience connectivity issues<br></br>
                 `}
                 /* eslint-enable */
               />}

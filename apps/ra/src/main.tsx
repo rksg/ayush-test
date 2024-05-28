@@ -6,14 +6,25 @@ export async function initialize () {
     React,
     { createRoot },
     { SuspenseBoundary },
-    config
+    config,
+    utils
   ] = await Promise.all([
     import('react'),
     import('react-dom/client'),
     import('@acx-ui/components'),
-    import('@acx-ui/config')
+    import('@acx-ui/config'),
+    import('@acx-ui/utils')
   ])
-  await config.initialize('ra')
+
+  try {
+    await config.initialize()
+  } catch (error) {
+    if (error instanceof config.CommonConfigGetError) {
+      utils.userLogout()
+    } else {
+      throw error
+    }
+  }
 
   const isMaintenanceModeOn = config.get('ENABLED_FEATURES')?.split('|')
     .includes('maintenance_mode')

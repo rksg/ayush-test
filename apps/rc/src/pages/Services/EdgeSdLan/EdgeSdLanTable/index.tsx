@@ -36,7 +36,8 @@ import {
   useNavigate,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 const venueOptionsDefaultPayload = {
   fields: ['name', 'id'],
@@ -124,7 +125,7 @@ const EdgeSdLanTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
       dataIndex: 'venueId',
       sorter: true,
@@ -223,6 +224,7 @@ const EdgeSdLanTable = () => {
 
   const rowActions: TableProps<EdgeSdLanViewData>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: (selectedRows) => {
@@ -239,6 +241,7 @@ const EdgeSdLanTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -258,6 +261,10 @@ const EdgeSdLanTable = () => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
+  })
+
   return (
     <>
       <PageHeader
@@ -274,6 +281,7 @@ const EdgeSdLanTable = () => {
         ]}
         extra={filterByAccess([
           <TenantLink
+            scopeKey={[EdgeScopes.CREATE]}
             to={getServiceRoutePath({
               type: ServiceType.EDGE_SD_LAN,
               oper: ServiceOperation.CREATE
@@ -295,7 +303,7 @@ const EdgeSdLanTable = () => {
           settingsId={settingsId}
           rowKey='id'
           columns={columns}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={isSelectionVisible && { type: 'checkbox' }}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}

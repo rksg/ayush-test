@@ -19,7 +19,7 @@ const varlist = {
       entitlements: [
         {
           consumed: '0',
-          entitlementDeviceType: 'DVCNWTYPE_WIFI',
+          entitlementDeviceType: 'DVCNWTYPE_APSW',
           expirationDate: '2023-10-09T00:00:00Z',
           expirationDateTs: '1694217600000',
           quantity: '1040',
@@ -42,7 +42,7 @@ const varlist = {
       entitlements: [
         {
           consumed: '0',
-          entitlementDeviceType: 'DVCNWTYPE_WIFI',
+          entitlementDeviceType: 'DVCNWTYPE_APSW',
           expirationDate: '2023-09-09T00:00:00Z',
           expirationDateTs: '1694217600000',
           quantity: '1040',
@@ -65,12 +65,12 @@ const varlist = {
       entitlements: [
         {
           consumed: '0',
-          entitlementDeviceType: 'DVCNWTYPE_WIFI',
-          expirationDate: '2023-09-09T00:00:00Z',
+          entitlementDeviceType: 'DVCNWTYPE_APSW',
+          expirationDate: '2024-09-09T00:00:00Z',
           expirationDateTs: '1694217600000',
-          quantity: '0',
+          quantity: '3',
           tenantId: '79cae97ce39343c99632600b30be5465',
-          toBeRemovedQuantity: 0,
+          toBeRemovedQuantity: 3,
           type: 'entitlement'
         }
       ],

@@ -261,7 +261,7 @@ export interface EntitlementActivations {
   productName: string,
   productCode: string,
   productId: string,
-  quantity: 100,
+  quantity: number,
   registeredQuantity: number,
   remainingQuantity: number,
   spaStartDate: string,
@@ -271,7 +271,8 @@ export interface EntitlementActivations {
   orderSoNumber: string,
   orderCreateDate: string,
   orderRegistrationCode: string,
-  orderAcxRegistrationCode:string
+  orderAcxRegistrationCode:string,
+  isChild?: boolean
 }
 
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>

@@ -1,7 +1,8 @@
 /* Provide profile outside component */
-import { get }                  from '@acx-ui/config'
-import type { PendoParameters } from '@acx-ui/utils'
-import { updatePendo }          from '@acx-ui/utils'
+import { get }                         from '@acx-ui/config'
+import { setRaiPermissions }           from '@acx-ui/user'
+import type { PendoParameters }        from '@acx-ui/utils'
+import { updatePendo, decodeTenantId } from '@acx-ui/utils'
 
 import { Tenant, UserProfile } from './types'
 
@@ -34,20 +35,24 @@ export function getPendoConfig (): PendoParameters {
 }
 const getSelectedTenant = (profile: UserProfile): Tenant => {
   const search = new URLSearchParams(window.location.search)
-  const selected = search.get('selectedTenants')
-  const id = selected
-    ? JSON.parse(window.atob(decodeURIComponent(selected)))[0]
-    : profile.accountId
+  let id = decodeTenantId(search)
+  if (!id) {
+    id = profile.accountId
+    window.location.search = '?selectedTenants=' + window.btoa(JSON.stringify([id]))
+  }
   return profile.tenants.find(tenant => tenant.id === id)!
 }
 export const getUserProfile = () => user.profile
 export const setUserProfile = (profile: UserProfile) => {
-  user.profile = { ...profile, selectedTenant: getSelectedTenant(profile) }
+  const selectedTenant = getSelectedTenant(profile)
+  setRaiPermissions(selectedTenant.permissions)
+  user.profile = { ...profile, selectedTenant }
 }
 export const updateSelectedTenant = () => {
   const currentProfile = getUserProfile()
   const selectedTenant = getSelectedTenant(currentProfile)
   if (selectedTenant.id === currentProfile.selectedTenant.id) return
+  setRaiPermissions(selectedTenant.permissions)
   user.profile.selectedTenant = selectedTenant
   updatePendo(
     /* istanbul ignore next */

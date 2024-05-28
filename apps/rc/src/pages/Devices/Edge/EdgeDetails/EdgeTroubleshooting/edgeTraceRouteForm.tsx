@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
-import { Row, Col, Form, Input } from 'antd'
+import { Col, Form, Input, Row } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
@@ -8,13 +8,18 @@ import { useParams }             from 'react-router-dom'
 
 import { Button, Loader, Tooltip }                                                from '@acx-ui/components'
 import { useTraceRouteEdgeMutation }                                              from '@acx-ui/rc/services'
-import { targetHostRegExp, EdgeTroubleshootingMessages, EdgeTroubleshootingType } from '@acx-ui/rc/utils'
+import { EdgeTroubleshootingMessages, EdgeTroubleshootingType, targetHostRegExp } from '@acx-ui/rc/utils'
+
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 export function EdgeTraceRouteForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
   const [form] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
+  const {
+    currentEdgeStatus: currentEdge
+  } = useContext(EdgeDetailsDataContext)
   const [traceRouteEdge, { isLoading: isTraceRouteEdge }] = useTraceRouteEdgeMutation()
   const handleTraceRouteEdge = async () => {
     try {
@@ -23,7 +28,11 @@ export function EdgeTraceRouteForm () {
         action: EdgeTroubleshootingType.TRACE_ROUTE
       }
       const traceRouteEdgeResult =
-        await traceRouteEdge({ params: { tenantId, serialNumber }, payload }).unwrap()
+        await traceRouteEdge({ params: {
+          venueId: currentEdge?.venueId,
+          edgeClusterId: currentEdge?.clusterId,
+          serialNumber
+        }, payload }).unwrap()
       if (traceRouteEdgeResult) {
         form.setFieldValue('traceRoute', _.get(traceRouteEdgeResult, 'response'))
       }

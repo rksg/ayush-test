@@ -1,4 +1,6 @@
-import { multipleBy1000, divideBy100, noFormat, kpisForTab } from './healthKPIConfig'
+import { multipleBy1000, divideBy100, noFormat,
+  kpisForTab, wiredKPIsForTab,
+  numberWithPercentSymbol, hasFirmwareFilterForPoe } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   const mockGet = jest.fn()
@@ -25,6 +27,7 @@ describe('Health KPI', () => {
     expect(multipleBy1000(10)).toBe(10000)
     expect(divideBy100(100)).toBe(1)
     expect(noFormat(100)).toBe(100)
+    expect(numberWithPercentSymbol(100)).toBe('100%')
     expect(kpiConfig.apToSZLatency.histogram.initialThreshold).toBe(200)
     expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([50, 100, 150, 200, 250, 300, 350, 400])
@@ -35,6 +38,10 @@ describe('Health KPI', () => {
     expect(kpiConfig.apToSZLatency.histogram.initialThreshold).toBe(40)
     expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([5, 10, 20, 40, 60, 100, 200, 500])
+  })
+
+  it('should return false if path name doesn\'t have wired',()=>{
+    expect(hasFirmwareFilterForPoe()).toBe(false)
   })
 
   it('should return correct config for RA', () => {
@@ -58,6 +65,37 @@ describe('Health KPI', () => {
           'apToSZLatency',
           'switchPoeUtilization',
           'onlineAPs'
+        ]
+      }
+    })
+  })
+  it('should return correct config for wired in RA', () => {
+    expect(wiredKPIsForTab()).toMatchObject({
+      overview: {
+        kpis: [
+          'switchUplinkPortUtilization',
+          'switchReachability'
+        ]
+      },
+      connection: {
+        kpis: [
+          'switchDhcp'
+        ]
+      },
+      performance: {
+        kpis: [
+          'switchPortUtilization',
+          'switchUplinkPortUtilization',
+          'switchInterfaceAnomalies'
+        ]
+      },
+      infrastructure: {
+        kpis: [
+          'switchReachability',
+          'switchMemoryUtilization',
+          'switchCpuUtilization',
+          'switchesTemperature',
+          'switchPoeUtilization'
         ]
       }
     })

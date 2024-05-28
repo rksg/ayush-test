@@ -2,9 +2,10 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { useUpdatePreferencesMutation }                                               from '@acx-ui/analytics/services'
-import { roleStringMap, getUserProfile }                                              from '@acx-ui/analytics/utils'
+import { useRoles, getUserProfile }                                                   from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs, UserProfileSection as BasicUserProfileSection } from '@acx-ui/components'
 import { useLocation, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
+import { hasPermission }                                                              from '@acx-ui/user'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 
@@ -26,6 +27,7 @@ export enum ProfileTabEnum {
 
 const UserProfileSection = () => {
   const { email, accountId, selectedTenant, firstName, lastName } = getUserProfile()
+  const roles = useRoles()
   return <BasicUserProfileSection
     userProfile={{
       initials: `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`,
@@ -34,7 +36,7 @@ const UserProfileSection = () => {
       email
     }}
     tenantId={accountId}
-    roleStringMap={roleStringMap}/>
+    roleStringMap={roles}/>
 }
 
 const SettingsTab = () => {
@@ -80,7 +82,10 @@ const useTabs = () : Tab[] => {
     title: $t({ defaultMessage: 'Notifications' }),
     url: '/analytics/profile/settings'
   }
-  return [ settingsTab, notificationsTab ]
+
+  return hasPermission({ permission: 'READ_INCIDENTS' })
+    ? [ settingsTab, notificationsTab ]
+    : [ settingsTab ]
 }
 
 export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {

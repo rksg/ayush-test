@@ -46,7 +46,7 @@ export function getConfigChangeEntityTypeMapping () : ChartRowMappingType[] {
   const { $t } = getIntl()
   const colors = qualitativeColorSet()
   const rcMap = [
-    { key: 'zone', label: $t({ defaultMessage: 'Venue' }) },
+    { key: 'zone', label: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) },
     { key: 'wlan', label: $t({ defaultMessage: 'WLAN' }) },
     { key: 'apGroup', label: $t({ defaultMessage: 'AP Group' }) },
     { key: 'ap', label: $t({ defaultMessage: 'AP' }) }

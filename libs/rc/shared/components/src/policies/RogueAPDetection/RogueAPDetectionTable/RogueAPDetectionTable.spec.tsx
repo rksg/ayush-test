@@ -19,71 +19,10 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { mockedRogueApPoliciesList, mockVenueRogueApResult } from '../__tests__/fixtures'
+
 import { RogueAPDetectionTable } from './RogueAPDetectionTable'
 
-const mockTableResult = {
-  fields: [
-    'id',
-    'name',
-    'numOfRules',
-    'venueIds'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-      name: 'My Rogue AP Detection 1',
-      numOfRules: 5,
-      venueIds: []
-    }
-  ]
-}
-
-const mockVenueResult = {
-  fields: [
-    'country',
-    'clients',
-    'city',
-    'latitude',
-    'switches',
-    'edges',
-    'description',
-    'check-all',
-    'networks',
-    'switchClients',
-    'name',
-    'cog',
-    'id',
-    'aggregatedApStatus',
-    'longitude',
-    'status'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: '2e7a2dd226c8422ab62316b57f5a8631',
-      name: 'My-Venue',
-      description: 'My-Venue',
-      city: 'New York',
-      country: 'United States',
-      latitude: '40.7690084',
-      longitude: '-73.9431541',
-      networks: {
-        count: 1,
-        names: [
-          'test-psk'
-        ],
-        vlans: [
-          1
-        ]
-      },
-      status: '1_InSetupPhase',
-      aggregatedApClientHealth: []
-    }
-  ]
-}
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -110,11 +49,11 @@ describe('RogueAPDetectionTable', () => {
     mockServer.use(
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueResult))
+        (req, res, ctx) => res(ctx.json(mockVenueRogueApResult))
       )
     )
   })
@@ -128,7 +67,7 @@ describe('RogueAPDetectionTable', () => {
       }
     )
 
-    const targetName = mockTableResult.data[0].name
+    const targetName = mockedRogueApPoliciesList.data[0].name
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add Rogue AP Detection Policy/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
@@ -155,7 +94,7 @@ describe('RogueAPDetectionTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedRogueApPoliciesList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 
@@ -184,7 +123,7 @@ describe('RogueAPDetectionTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedRogueApPoliciesList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 

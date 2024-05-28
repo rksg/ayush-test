@@ -205,16 +205,6 @@ describe('EmbeddedDashboard', () => {
   })
 
   describe('401 Unauthorized', () => {
-    beforeAll(() => {
-      Object.defineProperty(window, 'location', {
-        writable: true,
-        value: {
-          ...window.location,
-          reload: jest.fn()
-        }
-      })
-    })
-
     let addEventListenerMock: jest.SpyInstance
     let removeEventListenerMock: jest.SpyInstance
 
@@ -243,7 +233,6 @@ describe('EmbeddedDashboard', () => {
       expect(actionModal).toHaveBeenCalled()
 
       actionModal.mock.calls[0][0].onOk!()
-      expect(window.location.reload).toHaveBeenCalled()
     })
 
     it('should NOT call showExpiredSessionModal when event type is NOT unauthorized', () => {

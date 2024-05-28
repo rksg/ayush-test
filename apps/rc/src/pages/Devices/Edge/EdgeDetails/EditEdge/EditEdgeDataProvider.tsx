@@ -5,6 +5,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetDnsServersQuery,
   useGetEdgeClusterListQuery,
+  useGetEdgeClusterQuery,
   useGetEdgeLagListQuery,
   useGetEdgeLagsStatusListQuery,
   useGetEdgeListQuery,
@@ -14,6 +15,7 @@ import {
   useGetStaticRoutesQuery
 } from '@acx-ui/rc/services'
 import {
+  EdgeCluster,
   EdgeClusterStatus,
   EdgeDnsServers,
   EdgeGeneralSetting,
@@ -34,6 +36,7 @@ export interface EditEdgeDataContextType {
   lagStatus: EdgeLagStatus[]
   dnsServersData?: EdgeDnsServers
   staticRouteData?: EdgeStaticRouteConfig
+  clusterConfig?: EdgeCluster
   isCluster: boolean
   isGeneralSettingsLoading: boolean
   isGeneralSettingsFetching: boolean
@@ -51,6 +54,8 @@ export interface EditEdgeDataContextType {
   isDnsServersDataFetching: boolean
   isStaticRouteDataLoading: boolean
   isStaticRouteDataFetching: boolean
+  isClusterConfigLoading: boolean
+  isClusterConfigFetching: boolean
   isLoading: boolean
   isFetching: boolean
 }
@@ -68,7 +73,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
   const { serialNumber } = props
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
 
-  const { clusterId } = useGetEdgeListQuery(
+  const { clusterId, venueId } = useGetEdgeListQuery(
     { payload: {
       fields: [
         'name',
@@ -81,19 +86,35 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     {
       skip: !serialNumber,
       selectFromResult: ({ data }) => ({
-        clusterId: data?.data[0].clusterId
+        clusterId: data?.data[0].clusterId,
+        venueId: data?.data[0].venueId
       })
     }
   )
 
   const {
-    data: generalSettings,
-    isLoading: isGeneralSettingsLoading,
-    isFetching: isGeneralSettingsFetching
+    generalSettings,
+    isGeneralSettingsLoading,
+    isGeneralSettingsFetching
   } = useGetEdgeQuery({
-    params: { serialNumber }
+    params: {
+      edgeClusterId: clusterId,
+      venueId,
+      serialNumber
+    }
   }, {
-    skip: !serialNumber
+    skip: !serialNumber || !venueId || !clusterId,
+    selectFromResult: ({ data, isLoading, isFetching }) => ({
+      generalSettings: {
+        venueId: venueId,
+        clusterId: clusterId,
+        serialNumber: serialNumber,
+        ...data
+      } as EdgeGeneralSetting,
+      isGeneralSettingsLoading: isLoading,
+      isGeneralSettingsFetching: isFetching,
+      ...data
+    })
   })
 
   const {
@@ -211,16 +232,24 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     skip: !serialNumber || !clusterInfo?.venueId || !clusterInfo?.clusterId
   })
 
+  const {
+    data: clusterConfig,
+    isLoading: isClusterConfigLoading,
+    isFetching: isClusterConfigFetching
+  } = useGetEdgeClusterQuery({
+    params: { venueId: clusterInfo?.venueId, clusterId: clusterInfo?.clusterId }
+  }, { skip: !Boolean(clusterInfo?.clusterId) || !Boolean(clusterInfo?.venueId) })
+
   const isCluster = !!clusterInfo?.edgeList &&
     clusterInfo.edgeList.filter(item =>
       item.deviceStatus !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length > 1
 
   const isLoading = isPortDataLoading || isPortStatusLoading || isLagDataLoading ||
     isClusterInfoLoading || isLagStatusLoading || isGeneralSettingsLoading ||
-    isDnsServersDataLoading || isStaticRouteDataLoading
+    isDnsServersDataLoading || isStaticRouteDataLoading || isClusterConfigLoading
   const isFetching = isPortDataFetching || isPortStatusFetching || isLagDataFetching ||
     isClusterInfoFetching || isLagStatusFetching || isGeneralSettingsFetching ||
-    isDnsServersDataFetching || isStaticRouteDataFetching
+    isDnsServersDataFetching || isStaticRouteDataFetching || isClusterConfigFetching
 
   return <EditEdgeDataContext.Provider value={{
     generalSettings,
@@ -231,6 +260,7 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     lagStatus: lagStatus ?? [],
     dnsServersData,
     staticRouteData,
+    clusterConfig,
     isCluster,
     isGeneralSettingsLoading,
     isGeneralSettingsFetching,
@@ -248,6 +278,8 @@ export const EditEdgeDataProvider = (props:EditEdgeDataProviderProps) => {
     isDnsServersDataFetching,
     isStaticRouteDataLoading,
     isStaticRouteDataFetching,
+    isClusterConfigLoading,
+    isClusterConfigFetching,
     isLoading,
     isFetching
   }}>

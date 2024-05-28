@@ -32,3 +32,7 @@ export const getProductKey = (path: UserSettingsValuePath): string => {
 export function goToNotFound () {
   return <TenantNavigate replace to='/not-found' />
 }
+
+export function goToNoPermission () {
+  return <TenantNavigate replace to='/no-permissions' />
+}

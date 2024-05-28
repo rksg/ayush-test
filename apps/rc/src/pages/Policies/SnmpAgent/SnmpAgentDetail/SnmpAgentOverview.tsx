@@ -6,9 +6,8 @@ import { CountAndNamesTooltip } from '@acx-ui/rc/components'
 import { ApSnmpViewModelData }  from '@acx-ui/rc/utils'
 
 export default function SnmpAgentOverview (props: { snmpData: ApSnmpViewModelData }) {
-  const intl = useIntl()
-  const { $t } = intl
-  const { v2Agents, v3Agents } = props?.snmpData || {}
+  const { $t } = useIntl()
+  const { v2Agents, v3Agents } = props.snmpData || {}
   const snmpAgentInfo = [
     {
       title: $t({ defaultMessage: 'SNMPv2 Agent' }),

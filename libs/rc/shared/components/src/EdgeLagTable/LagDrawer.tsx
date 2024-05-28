@@ -8,6 +8,7 @@ import { useIntl }                       from 'react-intl'
 import { Drawer, Select, StepsForm, showActionModal } from '@acx-ui/components'
 import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
+  ClusterNetworkSettings,
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagLacpModeEnum,
@@ -18,7 +19,8 @@ import {
   EdgeSerialNumber,
   convertEdgePortsConfigToApiPayload,
   getEdgePortDisplayName,
-  getEdgePortTypeOptions
+  getEdgePortTypeOptions,
+  isInterfaceInVRRPSetting
 } from '@acx-ui/rc/utils'
 
 import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
@@ -33,6 +35,7 @@ interface LagDrawerProps {
   data?: EdgeLag
   portList?: EdgePort[]
   existedLagList?: EdgeLag[]
+  vipConfig?: ClusterNetworkSettings['virtualIpSettings']
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
 }
@@ -52,13 +55,9 @@ const defaultFormValues = {
 export const LagDrawer = (props: LagDrawerProps) => {
 
   const {
-    clusterId = '',
-    serialNumber = '',
-    visible,
-    setVisible,
-    data,
-    portList,
-    existedLagList, onAdd, onEdit
+    clusterId = '', serialNumber = '', visible, setVisible,
+    data, portList, existedLagList, vipConfig = [],
+    onAdd, onEdit
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
@@ -401,7 +400,8 @@ export const LagDrawer = (props: LagDrawerProps) => {
           isListForm={false}
           formFieldsProps={{
             portType: {
-              options: portTypeOptions
+              options: portTypeOptions,
+              disabled: isInterfaceInVRRPSetting(serialNumber, `lag${data?.id}`, vipConfig)
             },
             corePortEnabled: {
               title: $t({ defaultMessage: 'Use this LAG as Core LAG' })

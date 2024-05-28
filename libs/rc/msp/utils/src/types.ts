@@ -33,7 +33,7 @@ export interface DelegationEntitlementRecord {
   entitlementDeviceSubType?: EntitlementDeviceSubType;
   expirationDate: string;
   quantity: string;
-  toBeRemovedQuantity: string;
+  toBeRemovedQuantity: number;
   tenantId: string;
   type: string;
   subTypeText?: string;

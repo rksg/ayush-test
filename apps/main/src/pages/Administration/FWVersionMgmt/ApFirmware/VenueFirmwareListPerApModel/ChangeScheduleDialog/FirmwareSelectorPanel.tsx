@@ -8,7 +8,8 @@ export default function FirmwareSelectorPanel (props: UpdateFirmwarePerApModelPa
 
   return (<>
     <Typography style={{ fontWeight: 700, marginBottom: 12 }}>
-      { $t({ defaultMessage: 'Choose which version to schedule the venue to:' }) }
+      { // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'Choose which version to schedule the <venueSingular></venueSingular> to:' }) }
     </Typography>
     <UpdateFirmwarePerApModelPanel {...props} />
   </>)

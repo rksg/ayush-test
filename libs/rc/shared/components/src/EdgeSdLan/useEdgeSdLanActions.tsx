@@ -16,7 +16,8 @@ import {
   CatchErrorDetails,
   CommonErrorsResult,
   CommonResult,
-  EdgeSdLanSettingP2
+  EdgeSdLanSettingP2,
+  EdgeSdLanViewDataP2
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -228,8 +229,10 @@ export const useEdgeSdLanActions = () => {
   }
 }
 
-export const useSdLanScopedVenueNetworks = (venueId: string | undefined,
-  networkIds: string[] | undefined) => {
+export const useSdLanScopedVenueNetworks = (
+  venueId: string | undefined,
+  networkIds: string[] | undefined
+) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
@@ -243,7 +246,10 @@ export const useSdLanScopedVenueNetworks = (venueId: string | undefined,
         'tunnelProfileId',
         'guestTunnelProfileId',
         'networkIds',
-        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+        'guestNetworkIds',
+        ...(isEdgeSdLanHaReady
+          ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
+          : ['edgeId', 'edgeName'])
       ],
       pageSize: 10000
     }
@@ -253,7 +259,13 @@ export const useSdLanScopedVenueNetworks = (venueId: string | undefined,
 
   return {
     sdLans: data?.data,
-    scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds))
+    scopedNetworkIds: _.uniq(_.flatMap(data?.data, (item) => item.networkIds)),
+    scopedGuestNetworkIds: _.uniq(_.flatMap(data?.data, (item) =>
+      item.isGuestTunnelEnabled ? item.guestNetworkIds : undefined)).filter(i => !!i)
+  } as {
+    sdLans: EdgeSdLanViewDataP2[] | undefined,
+    scopedNetworkIds: string[],
+    scopedGuestNetworkIds: string[]
   }
 }
 
@@ -270,7 +282,10 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
         'isGuestTunnelEnabled',
         'tunnelProfileId',
         'guestTunnelProfileId',
-        ...(isEdgeSdLanHaReady ? ['edgeClusterId', 'edgeClusterName'] : ['edgeId', 'edgeName'])
+        'guestNetworkIds',
+        ...(isEdgeSdLanHaReady
+          ? ['edgeClusterId', 'edgeClusterName', 'guestEdgeClusterId', 'guestEdgeClusterName']
+          : ['edgeId', 'edgeName'])
       ],
       pageSize: 10000
     }
@@ -280,7 +295,16 @@ export const useSdLanScopedNetworkVenues = (networkId: string | undefined) => {
 
   return {
     sdLansVenueMap: _.groupBy(data?.data, 'venueId'),
-    networkVenueIds: data?.data?.map(item => item.venueId)
+    networkVenueIds: data?.data?.map(item => item.venueId),
+    guestNetworkVenueIds: data?.data
+      ?.map(item =>
+        // eslint-disable-next-line max-len
+        item.isGuestTunnelEnabled && item.guestNetworkIds.includes(networkId??'') ? item.venueId : undefined)
+      .filter(i => !!i)
+  } as {
+    sdLansVenueMap: { [key in string]: EdgeSdLanViewDataP2[] },
+    networkVenueIds: string[] | undefined,
+    guestNetworkVenueIds: string[] | undefined
   }
 }
 
@@ -303,9 +327,9 @@ export const checkSdLanScopedNetworkDeactivateAction =
         title: $t({ defaultMessage: 'Deactivate network' }),
         content: selectedIds!.length === 1
           // eslint-disable-next-line max-len
-          ? $t({ defaultMessage: 'This network is running the SD-LAN service on this venue. Are you sure you want to deactivate it?' })
+          ? $t({ defaultMessage: 'This network is running the SD-LAN service on this <venueSingular></venueSingular>. Are you sure you want to deactivate it?' })
           // eslint-disable-next-line max-len
-          : $t({ defaultMessage: 'The SD-LAN service is running on one or some of the selected venues. Are you sure you want to deactivate?' }),
+          : $t({ defaultMessage: 'The SD-LAN service is running on one or some of the selected <venuePlural></venuePlural>. Are you sure you want to deactivate?' }),
         okText: $t({ defaultMessage: 'Deactivate' }),
         onOk: () => {
           cb()

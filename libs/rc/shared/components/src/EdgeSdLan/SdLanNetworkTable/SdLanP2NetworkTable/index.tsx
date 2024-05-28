@@ -18,8 +18,9 @@ import {
   Network,
   NetworkType
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { WifiScopes }     from '@acx-ui/types'
+import { filterByAccess } from '@acx-ui/user'
+import { getIntl }        from '@acx-ui/utils'
 
 import { AddNetworkModal } from '../../../NetworkForm/AddNetworkModal'
 
@@ -67,6 +68,8 @@ export interface ActivatedNetworksTableP2Props {
   columnsSetting?: Partial<Omit<TableColumn<Network, 'text'>, 'render'>>[],
   activated?: string[],
   activatedGuest?: string[],
+  disabled?: boolean,
+  tooltip?: string,
   onActivateChange?: ActivateNetworkSwitchButtonP2Props['onChange'],
   isUpdating?: boolean
 }
@@ -78,6 +81,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
     columnsSetting,
     activated,
     activatedGuest,
+    disabled,
+    tooltip,
     onActivateChange,
     isUpdating
   } = props
@@ -115,7 +120,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
   const defaultColumns: TableProps<Network>['columns'] = useMemo(() => ([{
     title: $t({ defaultMessage: 'Active Network' }),
     tooltip: $t({ defaultMessage:
-        'A list of the networks that have been activated on this venue.' }),
+        // eslint-disable-next-line max-len
+        'A list of the networks that have been activated on this <venueSingular></venueSingular>.' }),
     key: 'name',
     dataIndex: 'name',
     defaultSortOrder: 'ascend',
@@ -145,8 +151,8 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
         fieldName='activatedNetworks'
         row={row}
         activated={activated ?? []}
-        disabled={disabledInfo.disabled || hasAccess() === false}
-        tooltip={disabledInfo.tooltip}
+        disabled={disabled || disabledInfo.disabled}
+        tooltip={tooltip || disabledInfo.tooltip}
         onChange={onActivateChange}
       />
     }
@@ -169,17 +175,25 @@ export const EdgeSdLanP2ActivatedNetworksTable = (props: ActivatedNetworksTableP
           fieldName='activatedGuestNetworks'
           row={row}
           activated={activatedGuest ?? []}
-          disabled={disabledInfo.disabled || hasAccess() === false}
-          tooltip={disabledInfo.tooltip}
+          disabled={disabled || disabledInfo.disabled}
+          tooltip={tooltip || disabledInfo.tooltip}
           onChange={onActivateChange}
         />
         : ''
     }
   }] : [])
-  // eslint-disable-next-line max-len
-  ]), [activated, activatedGuest, isGuestTunnelEnabled, onActivateChange, detailDrawerVisible])
+  ]), [
+    activated,
+    activatedGuest,
+    isGuestTunnelEnabled,
+    onActivateChange,
+    detailDrawerVisible,
+    disabled,
+    dsaeOnboardNetworkIds
+  ])
 
   const actions: TableProps<Network>['actions'] = [{
+    scopeKey: [WifiScopes.CREATE],
     label: $t({ defaultMessage: 'Add Wi-Fi Network' }),
     onClick: () => {
       setNetworkModalVisible(true)

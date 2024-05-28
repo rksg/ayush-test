@@ -21,7 +21,7 @@ const baseQuery = graphqlRequestBaseQuery({
 export type ServiceGuardBaseQuery = typeof baseQuery
 
 export const serviceGuardApi = createApi({
-  baseQuery: baseQuery,
+  baseQuery,
   reducerPath: 'analytics-network-health-api',
   refetchOnMountOrArgChange: true,
   tagTypes: ['ServiceGuard'],

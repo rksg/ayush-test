@@ -28,7 +28,7 @@ import {
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                         from '@acx-ui/types'
+import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
 import { exportMessageMapping }                   from '@acx-ui/utils'
 
@@ -182,7 +182,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venue',
       dataIndex: ['venueName'],
       sorter: true,
@@ -222,6 +222,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
 
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -233,12 +234,14 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         deleteEdges(rows, clearSelection)
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         allowRebootForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
@@ -247,6 +250,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Send OTP' }),
@@ -254,6 +258,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
         sendOtp(rows[0], clearSelection)
       }
     },{
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (
         selectedRows.length === 1 &&
         allowResetForStatus(selectedRows[0]?.deviceStatus)

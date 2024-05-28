@@ -81,7 +81,7 @@ function useColumns () {
 
   const columns: TableProps<FirmwareVenue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       sorter: { compare: sortProp('name', defaultSort) },
@@ -348,7 +348,7 @@ const VenueFirmwareTable = () => {
         width: 460,
         title: $t({ defaultMessage: 'Skip This Update?' }),
         // eslint-disable-next-line max-len
-        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected venues from this scheduled update' }),
+        content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
         okText: $t({ defaultMessage: 'Skip' }),
         cancelText: $t({ defaultMessage: 'Cancel' }),
         onOk () {
@@ -517,8 +517,8 @@ const VenueFirmwareTable = () => {
 // eslint-disable-next-line max-len
 const scheduleTypeIsApFunc = (value: Schedule) => value && value.versionInfo && value.versionInfo.type && value.versionInfo.type === FirmwareType.AP_FIRMWARE_UPGRADE
 
-function hasApSchedule (venue: FirmwareVenue): boolean {
-  return venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc).length > 0
+function hasApSchedule (venue: { nextSchedules?: Schedule[] }): boolean {
+  return !!venue.nextSchedules && venue.nextSchedules.filter(scheduleTypeIsApFunc).length > 0
 }
 
 export function VenueFirmwareList () {

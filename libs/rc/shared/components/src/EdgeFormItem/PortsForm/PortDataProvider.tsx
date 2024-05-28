@@ -21,6 +21,8 @@ export const EdgePortsDataContext = createContext({
 type EdgePortsDataContextProviderProps = React.PropsWithChildren<{
   serialNumber:string
 }>
+
+// TODO: this will be deprecated after SD-LAN P1 deprecated
 export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderProps) => {
   const { serialNumber } = props
   const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)

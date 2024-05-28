@@ -1,4 +1,6 @@
-import { RolesEnum } from '../constants'
+import type { RaiPermission } from '@acx-ui/user'
+
+import { Roles } from '../constants'
 
 export type UserProfile = {
   firstName: string
@@ -17,7 +19,7 @@ export type UserProfile = {
 }
 export type Invitation = {
   accountName: string
-  role: RolesEnum
+  role: Roles
   type: string
   resourceGroupId: string
   firstName: string
@@ -28,28 +30,13 @@ export type Tenant = {
   name: string
   support: boolean
   type: 'tenant' | 'super-tenant'
-  role: RolesEnum
+  role: Roles
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
-  permissions: Permissions
+  permissions: Record<RaiPermission, boolean>
   settings: Settings
 }
-
-export type Permissions = {
-  'view-analytics': boolean
-  'view-report-controller-inventory': boolean
-  'view-data-explorer': boolean
-  'manage-service-guard': boolean
-  'manage-call-manager': boolean
-  'manage-mlisa': boolean
-  'manage-occupancy': boolean
-  'manage-label': boolean
-  'manage-tenant-settings': boolean
-  'manage-config-recommendation': boolean
-  'franchisor': boolean
-}
-
 
 export type Settings = {
   'sla-p1-incidents-count': string
@@ -69,7 +56,7 @@ export type ManagedUser = {
   email: string
   accountId: string
   accountName: string
-  role: RolesEnum
+  role: Roles
   tenantId: string
   resourceGroupId: string
   resourceGroupName: string

@@ -48,7 +48,7 @@ const AccessControlNetworksDetail = (props: { data: AccessControlInfoType | unde
       }
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venues',
       align: 'center',
       key: 'venues',

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -33,6 +35,10 @@ const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
+}))
+jest.mock('./EdgeDetailsDataProvider', () => ({
+  EdgeDetailsDataProvider: ({ children }: { children: ReactNode }) =>
+    <div data-testid='EdgeDetailsDataProvider' children={children} />
 }))
 
 describe('EdgeDetails', () => {
@@ -72,6 +78,7 @@ describe('EdgeDetails', () => {
 
     const tab = await screen.findByText('Overview')
     expect(tab.getAttribute('aria-selected')).toBe('true')
+    expect(screen.getByTestId('EdgeDetailsDataProvider')).toBeVisible()
   })
 
   it('should display troubleshooting tab correctly', async () => {

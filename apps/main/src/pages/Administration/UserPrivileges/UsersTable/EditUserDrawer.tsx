@@ -128,7 +128,7 @@ const EditUserDrawer = (props: EditUserDrawerProps) => {
             save: $t({ defaultMessage: 'Apply' })
           }}
           onCancel={handleCancel}
-          onSave={handleSubmit}
+          onSave={async () => form.submit()}
         />
       }
     >

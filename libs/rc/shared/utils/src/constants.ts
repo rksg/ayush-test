@@ -6,6 +6,7 @@ export enum NetworkTypeEnum {
   PSK = 'psk',
   OPEN = 'open',
   AAA = 'aaa',
+  HOTSPOT20 = 'hotspot20',
   CAPTIVEPORTAL = 'guest',
   DPSK = 'dpsk'
 }

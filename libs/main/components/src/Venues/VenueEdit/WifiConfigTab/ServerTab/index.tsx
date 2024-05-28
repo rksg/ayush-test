@@ -2,11 +2,10 @@ import { useContext } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
-import { usePathBasedOnConfigTemplate }            from '@acx-ui/rc/components'
-import { redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useNavigate }                             from '@acx-ui/react-router-dom'
+import { AnchorLayout, StepsFormLegacy }                                  from '@acx-ui/components'
+import { useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import { ConfigTemplateType, redirectPreviousPage, useConfigTemplate }    from '@acx-ui/rc/utils'
+import { useNavigate }                                                    from '@acx-ui/react-router-dom'
 
 import { VenueEditContext, createAnchorSectionItem } from '../..'
 
@@ -28,6 +27,7 @@ export function ServerTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  const isSyslogTemplateEnabled = useIsConfigTemplateEnabledByType(ConfigTemplateType.SYSLOG)
 
   const {
     previousPath,
@@ -36,25 +36,19 @@ export function ServerTab () {
     editServerContextData
   } = useContext(VenueEditContext)
 
-  const supportMdnsFencing = useIsSplitOn(Features.MDNS_FENCING)
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-
   const items = []
 
-  if (!isTemplate) {
+  if (!isTemplate || isSyslogTemplateEnabled) {
     // eslint-disable-next-line max-len
     items.push(createAnchorSectionItem($t({ defaultMessage: 'Syslog Server' }), 'syslog-server', <Syslog />))
   }
 
-  if (supportMdnsFencing) {
-    // eslint-disable-next-line max-len
-    items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing />))
-  }
+  // eslint-disable-next-line max-len
+  items.push(createAnchorSectionItem($t({ defaultMessage: 'mDNS Fencing' }), 'mdns-fencing', <MdnsFencing />))
 
-  if (supportApSnmp && !isTemplate) {
+  if (!isTemplate) {
     items.push(createAnchorSectionItem($t({ defaultMessage: 'AP SNMP' }), 'ap-snmp', <ApSnmp />))
   }
-
 
   const handleUpdateSetting = async () => {
     try {

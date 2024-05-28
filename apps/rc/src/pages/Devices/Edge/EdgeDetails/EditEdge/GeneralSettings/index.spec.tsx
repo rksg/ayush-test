@@ -24,15 +24,17 @@ jest.mock('react-router-dom', () => ({
 const updateRequestSpy = jest.fn()
 
 describe('EditEdge - GeneralSettings', () => {
-  let params: { tenantId: string, serialNumber: string }
+  let params: { tenantId: string, venueId: string, edgeClusterId: string, serialNumber: string }
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      venueId: '66e6694ca3334997998c42def9326797',
+      edgeClusterId: 'cluster-1',
       serialNumber: '000000000000'
     }
     store.dispatch(edgeApi.util.resetApiState())
     mockServer.use(
-      rest.put(
+      rest.patch(
         EdgeUrlsInfo.updateEdge.url,
         (req, res, ctx) => {
           updateRequestSpy()
@@ -132,6 +134,7 @@ describe('EditEdge - GeneralSettings', () => {
 
 describe('EditEdge general settings api fail', () => {
   let params: { tenantId: string, serialNumber: string }
+
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -139,7 +142,7 @@ describe('EditEdge general settings api fail', () => {
     }
 
     mockServer.use(
-      rest.put(
+      rest.patch(
         EdgeUrlsInfo.updateEdge.url,
         (req, res, ctx) => res(ctx.status(500), ctx.json(null))
       ),
@@ -152,6 +155,9 @@ describe('EditEdge general settings api fail', () => {
 
   it('General settings api fail handle', async () => {
     const user = userEvent.setup()
+    const spyOnConsole = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(spyOnConsole)
+
     render(
       <Provider>
         <EditEdgeDataContext.Provider
@@ -165,11 +171,12 @@ describe('EditEdge general settings api fail', () => {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
     const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
-    fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
+    await user.type(edgeNameInput, 'edge_name_test')
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    await user.type(serialNumberInput, 'serial_number_test')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(spyOnConsole).toBeCalled())
     // TODO
     // await screen.findAllByText('Server Error')
   })

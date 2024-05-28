@@ -90,7 +90,6 @@ export function Venues (props: VenuesProps) {
   const activatedNetworkVenues: NetworkVenue[] = Form.useWatch('venues')
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
 
   const prevIsWPA3securityRef = useRef(false)
@@ -143,7 +142,7 @@ export function Venues (props: VenuesProps) {
       const newActivatedNetworkVenues: NetworkVenue[] =
         rows.map(row => {
           const newNetworkVenue = generateDefaultNetworkVenue(row.id, row.networkId as string)
-          if (triBandRadioFeatureFlag && isWPA3security) {
+          if (isWPA3security) {
             newNetworkVenue.allApGroupsRadioTypes?.push(RadioTypeEnum._6_GHz)
           }
           return newNetworkVenue
@@ -269,7 +268,7 @@ export function Venues (props: VenuesProps) {
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'name',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'name',
       sorter: true
     },
@@ -310,7 +309,7 @@ export function Venues (props: VenuesProps) {
       render: function (_, row) {
         let disabled = false
         // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this venue because it already enabled mesh setting' })
+        let title = $t({ defaultMessage: 'You cannot activate the DHCP service on this <venueSingular></venueSingular> because it already enabled mesh setting' })
         if(data && data.enableDhcp && row.mesh && row.mesh.enabled){
           disabled = true
         }else{
@@ -476,8 +475,12 @@ export function Venues (props: VenuesProps) {
 
   return (
     <>
-      <StepsFormLegacy.Title>{ $t({ defaultMessage: 'Venues' }) }</StepsFormLegacy.Title>
-      <p>{ $t({ defaultMessage: 'Select venues to activate this network' }) }</p>
+      <StepsFormLegacy.Title>
+        { $t({ defaultMessage: '<VenuePlural></VenuePlural>' }) }
+      </StepsFormLegacy.Title>
+      <p>
+        { $t({ defaultMessage: 'Select <venuePlural></venuePlural> to activate this network' }) }
+      </p>
       <Form.Item name='venues'>
         <Loader states={[tableQuery]}>
           <Table

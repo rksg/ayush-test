@@ -27,7 +27,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
-  const basePath = useTenantLink(props.path ?? '/analytics/health/tab/')
+  const basePath = useTenantLink(props.path ?? '/analytics/health/wireless/tab/')
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)

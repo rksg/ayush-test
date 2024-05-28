@@ -51,8 +51,13 @@ export const useEdgeActions = () => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            invokeRebootEdge({ params: { serialNumber: data.serialNumber } })
-              .then(() => callback?.())
+            invokeRebootEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
           }
         }]
       }
@@ -97,8 +102,13 @@ export const useEdgeActions = () => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            invokeFactoryResetEdge({ params: { serialNumber: data.serialNumber } })
-              .then(() => callback?.())
+            invokeFactoryResetEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
           }
         }]
       }
@@ -106,11 +116,21 @@ export const useEdgeActions = () => {
   }
 
   const deleteEdges = (data: EdgeStatus[], callback?: () => void) => {
-    const handleOk = () => (data.length ===1 ?
-      invokeDeleteEdge({ params: { serialNumber: data[0].serialNumber } })
-        .then(() => callback?.()) :
-      invokeDeleteEdge({ payload: data.map(item => item.serialNumber) })
-        .then(() => callback?.()))
+    const handleOk = () => {
+      const requests = []
+      if(data.length > 0) {
+        for(let item of data) {
+          requests.push(invokeDeleteEdge({
+            params: {
+              venueId: item.venueId,
+              edgeClusterId: item.clusterId,
+              serialNumber: item.serialNumber
+            }
+          }))
+        }
+      }
+      Promise.all(requests).then(() => callback?.())
+    }
     showDeleteModal(data, handleOk)
   }
 
@@ -120,8 +140,13 @@ export const useEdgeActions = () => {
       title: $t({ defaultMessage: 'Send OTP' }),
       content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
       onOk: () => {
-        invokeSendOtp({ params: { serialNumber: data.serialNumber } })
-          .then(() => callback?.())
+        invokeSendOtp({
+          params: {
+            venueId: data.venueId,
+            edgeClusterId: data.clusterId,
+            serialNumber: data.serialNumber
+          }
+        }).then(() => callback?.())
       }
     })
   }

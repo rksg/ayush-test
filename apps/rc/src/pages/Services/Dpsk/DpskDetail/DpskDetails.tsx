@@ -9,8 +9,7 @@ import {
   DpskDetailsTabKey,
   getServiceDetailsLink,
   ServiceOperation,
-  getServiceRoutePath,
-  getServiceListRoutePath
+  useServiceListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink, useNavigate } from '@acx-ui/react-router-dom'
 import { filterByAccess }                         from '@acx-ui/user'
@@ -23,6 +22,7 @@ export default function DpskDetails () {
   const { tenantId, activeTab, serviceId } = useParams()
   const { $t } = useIntl()
   const navigate = useNavigate()
+  const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
   const { data: dpskDetail } = useGetDpskQuery({ params: { tenantId, serviceId } })
   const { activePassphraseCount } = useGetEnhancedDpskPassphraseListQuery({
     params: { tenantId, serviceId },
@@ -66,14 +66,7 @@ export default function DpskDetails () {
     <>
       <PageHeader
         title={dpskDetail?.name}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) },
-          {
-            text: $t({ defaultMessage: 'DPSK' }),
-            link: getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
-          }
-        ]}
+        breadcrumb={breadcrumb}
         extra={filterByAccess([
           <TenantLink
             to={getServiceDetailsLink({

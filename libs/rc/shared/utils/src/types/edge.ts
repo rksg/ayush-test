@@ -12,6 +12,7 @@ export interface EdgeGeneralSetting {
   name: string
   serialNumber?: string
   venueId?: string
+  clusterId?: string
   tags: string[] // TODO when tags component is ready need to change type to array
 }
 

@@ -33,10 +33,10 @@ export default function CertificateStrengthSettings () {
         <Slider
           tooltipVisible={false}
           style={{ width: '240px' }}
-          min={512}
+          min={2048}
           max={4096}
           step={8}
-          marks={{ 512: '512', 4096: '4096' }}
+          marks={{ 2048: '2048', 4096: '4096' }}
         />
       </Form.Item>
       <Form.Item

@@ -136,6 +136,10 @@ export const SelectInterfaceDrawer = (props: SelectInterfaceDrawerProps) => {
               <UI.EdgeNameHeadLine>{item.name}</UI.EdgeNameHeadLine>
               <Form.Item
                 name={[item.serialNumber, 'port']}
+                dependencies={
+                  nodeList.filter(node => node.serialNumber !== item.serialNumber)
+                    .map(node => ([node.serialNumber, 'port']))
+                }
                 label={$t({ defaultMessage: 'Select Port' })}
                 rules={[
                   {

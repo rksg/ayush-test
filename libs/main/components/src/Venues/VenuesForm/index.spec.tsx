@@ -5,6 +5,7 @@ import { rest }       from 'msw'
 import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import {
   AdministrationUrlsInfo, CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
   VenueConfigTemplateUrlsInfo,
   useConfigTemplateLazyQueryFnSwitcher, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -61,9 +62,9 @@ const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   // eslint-disable-next-line max-len
-  useConfigTemplateMutationFnSwitcher: (...args: MutationFnSwitcherTypes) => mockedMutationFnSwitcher(...args),
+  useConfigTemplateMutationFnSwitcher: (props: MutationFnSwitcherTypes) => mockedMutationFnSwitcher(props),
   // eslint-disable-next-line max-len
-  useConfigTemplateLazyQueryFnSwitcher: (...args: LazyQueryFnSwitcherTypes) => mockedLazyQueryFnSwitcher(...args),
+  useConfigTemplateLazyQueryFnSwitcher: (props: LazyQueryFnSwitcherTypes) => mockedLazyQueryFnSwitcher(props),
   useConfigTemplate: () => mockedUseConfigTemplate()
 }))
 
@@ -101,8 +102,8 @@ describe('Venues Form', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    mockedMutationFnSwitcher.mockImplementation(fn1 => fn1())
-    mockedLazyQueryFnSwitcher.mockImplementation(fn1 => fn1())
+    mockedMutationFnSwitcher.mockImplementation(({ useMutationFn }) => useMutationFn())
+    mockedLazyQueryFnSwitcher.mockImplementation(({ useLazyQueryFn }) => useLazyQueryFn())
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
     mockedUseLocation.mockReturnValue({ pathname: '', search: '', hash: '', state: {}, key: '' })
   })
@@ -233,8 +234,10 @@ describe('Venues Form', () => {
 
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-    mockedMutationFnSwitcher.mockImplementation((fn1, fn2) => fn2())
-    mockedLazyQueryFnSwitcher.mockImplementation((fn1, fn2) => fn2())
+    // eslint-disable-next-line max-len
+    mockedMutationFnSwitcher.mockImplementation(({ useTemplateMutationFn }) => useTemplateMutationFn())
+    // eslint-disable-next-line max-len
+    mockedLazyQueryFnSwitcher.mockImplementation(({ useLazyTemplateQueryFn }) => useLazyTemplateQueryFn())
 
     const addTemplateFn = jest.fn()
     mockServer.use(
@@ -246,7 +249,7 @@ describe('Venues Form', () => {
         }
       ),
       rest.post(
-        VenueConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockVenueConfigTemplates))
       )
     )

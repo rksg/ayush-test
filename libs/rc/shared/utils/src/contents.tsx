@@ -138,10 +138,10 @@ export const WifiNetworkMessages = {
     defaultMessage: 'Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7'
   }),
   AP_VENUE_DHCP_DISABLED_TOOLTIP: defineMessage({
-    defaultMessage: 'Not allow to change Venue on DHCP AP.'
+    defaultMessage: 'Not allow to change <VenueSingular></VenueSingular> on DHCP AP.'
   }),
   AP_VENUE_MESH_DISABLED_TOOLTIP: defineMessage({
-    defaultMessage: 'Mesh AP cannot be moved to a different venue'
+    defaultMessage: 'Mesh AP cannot be moved to a different <venueSingular></venueSingular>'
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
@@ -166,7 +166,7 @@ export const VenueMessages = {
   }),
   CLI_PROFILE_NOTIFICATION: defineMessage({
     defaultMessage: `<ul>
-      <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
+      <li>Once CLI profiles are applied, the <venueSingular></venueSingular> can no longer accept regular profiles</li>
       <li>The selected CLI profiles cannot contain overlapping switch models</li>
     </ul>`
   }),
@@ -174,7 +174,7 @@ export const VenueMessages = {
     defaultMessage: 'SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100.'
   }),
   CLI_APPLIED: defineMessage({
-    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.'
+    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the <venueSingular></venueSingular>.'
   })
 }
 
@@ -192,7 +192,7 @@ export const ApErrorHandlingMessages = {
     defaultMessage: 'A configuration request is currently being executed and additional requests cannot be performed at this time.<br></br>Try again once the request has completed.'
   }),
   CELLULAR_AP_CANNOT_BE_MOVED: defineMessage({
-    defaultMessage: 'The cellular AP cannot be moved to the venue which doesn\'t enable DHCP service'
+    defaultMessage: 'The cellular AP cannot be moved to the <venueSingular></venueSingular> which doesn\'t enable DHCP service'
   }),
   ERROR_OCCURRED: defineMessage({
     defaultMessage: 'Error occurred while {action} AP'
@@ -216,19 +216,19 @@ export const EditPortMessages = {
     defaultMessage: 'The port must be a member of at least one VLAN'
   }),
   ADD_VLAN_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit VLANs'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit VLANs'
   }),
   ADD_ACL_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit ACL'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit ACL'
   }),
   ADD_LLDP_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit LLDP QoS'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit LLDP QoS'
   }),
   VOICE_VLAN_DISABLE: defineMessage({
     defaultMessage: 'No profile VLAN or VLAN option'
   }),
   USE_VENUE_SETTINGS_DISABLE: defineMessage({
-    defaultMessage: 'Venue settings default VLAN ID is the same as one of switch VLANs'
+    defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'

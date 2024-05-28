@@ -241,7 +241,7 @@ exports[`Timeline should render 1`] = `
                     class="styledComponents__StatusWrapper-sc-1wfjamk-3 jBbCHU"
                   >
                     <svg
-                      class="styledComponents__InProgressIcon-sc-1px55aj-3 dRYGR"
+                      class="styledComponents__InProgressIcon-sc-1px55aj-3 ivufmM"
                       data-testid="InProgress"
                     />
                     In progress
@@ -317,7 +317,7 @@ exports[`Timeline should render 1`] = `
                     class="styledComponents__StatusWrapper-sc-1wfjamk-3 jBbCHU"
                   >
                     <svg
-                      class="styledComponents__InProgressIcon-sc-1px55aj-3 dRYGR"
+                      class="styledComponents__InProgressIcon-sc-1px55aj-3 ivufmM"
                       data-testid="InProgress"
                     />
                     In progress

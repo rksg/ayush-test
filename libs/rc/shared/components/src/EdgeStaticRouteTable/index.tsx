@@ -3,9 +3,10 @@ import { useState } from 'react'
 import { cloneDeep } from 'lodash'
 import { useIntl }   from 'react-intl'
 
-import { Table, TableProps }         from '@acx-ui/components'
-import { EdgeStaticRoute }           from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { Table, TableProps }             from '@acx-ui/components'
+import { EdgeStaticRoute }               from '@acx-ui/rc/utils'
+import { EdgeScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { StaticRoutesDrawer } from './StaticRoutesDrawer'
 
@@ -40,6 +41,7 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
 
   const rowActions: TableProps<EdgeStaticRoute>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -47,6 +49,7 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => {
         onChange?.(value.filter(item => {
@@ -68,7 +71,11 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
   }
 
   const actionButtons = [
-    { label: $t({ defaultMessage: 'Add Route' }), onClick: () => openDrawer() }
+    {
+      scopeKey: [EdgeScopes.CREATE],
+      label: $t({ defaultMessage: 'Add Route' }),
+      onClick: () => openDrawer()
+    }
   ]
 
   const addRoute = (data: EdgeStaticRoute) => {
@@ -81,6 +88,10 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
     newRoutesData[editIndex] = data
     onChange?.([...newRoutesData])
   }
+
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE]
+  })
 
   return (
     <>
@@ -97,7 +108,7 @@ export const EdgeStaticRouteTable = (props: EdgeStaticRouteTableProps) => {
         columns={columns}
         rowActions={filterByAccess(rowActions)}
         dataSource={value}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         rowKey='id'
       />
     </>

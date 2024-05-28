@@ -383,7 +383,8 @@ export function FloorPlan () {
           { !(deviceList?.ap?.length + deviceList?.switches?.length)
           && <Space direction='vertical'>
             <Alert
-              message={$t({ defaultMessage: 'This venue contains no networking device' })}
+              // eslint-disable-next-line max-len
+              message={$t({ defaultMessage: 'This <venueSingular></venueSingular> contains no networking device' })}
               type='info'
               icon={<UI.BulbOutlinedIcon />}
               showIcon

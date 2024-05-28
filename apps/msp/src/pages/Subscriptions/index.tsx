@@ -39,6 +39,8 @@ import {
   sortProp
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                        from '@acx-ui/types'
+import { filterByAccess, hasRoles }                                         from '@acx-ui/user'
 
 import HspContext from '../../HspContext'
 
@@ -69,6 +71,7 @@ export function Subscriptions () {
   const [showDialog, setShowDialog] = useState(false)
   const [isAssignedActive, setActiveTab] = useState(false)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
   const {
     state
@@ -287,7 +290,11 @@ export function Subscriptions () {
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
 
-        <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
+        <SpaceWrapper
+          fullWidth
+          size={100}
+          justifycontent='flex-start'
+          style={{ marginBottom: '20px' }}>
           {
             subscriptionDeviceTypeList.map((item) => {
               const summary = summaryData[item.value]
@@ -331,7 +338,7 @@ export function Subscriptions () {
         <Table
           settingsId='msp-subscription-table'
           columns={columns}
-          actions={actions}
+          actions={filterByAccess(actions)}
           dataSource={subscriptionData}
           rowKey='id'
         />
@@ -382,7 +389,7 @@ export function Subscriptions () {
         extra={[
           <MspTenantLink to='/msplicenses/assign'>
             <Button
-              hidden={!isAssignedActive}
+              hidden={!isAssignedActive || !isAdmin}
               type='primary'>{$t({ defaultMessage: 'Assign MSP Subscriptions' })}</Button>
           </MspTenantLink>,
           !isHspSupportEnabled ? <TenantLink to='/dashboard'>
@@ -392,7 +399,6 @@ export function Subscriptions () {
       />
       <Tabs
         defaultActiveKey='mspSubscriptions'
-        type='card'
         onChange={onTabChange}
       >
         {

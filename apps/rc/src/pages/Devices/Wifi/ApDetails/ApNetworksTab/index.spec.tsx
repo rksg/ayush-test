@@ -18,7 +18,8 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useSdLanScopedVenueNetworks: jest.fn().mockReturnValue({
     sdLans: [],
-    scopedNetworkIds: []
+    scopedNetworkIds: [],
+    scopedGuestNetworkIds: []
   })
 }))
 
@@ -81,9 +82,11 @@ describe('Networks Table', () => {
     const mockedSdLanScopeData = {
       sdLans: [{
         ...mockedSdLanDataListP2[0],
-        networkIds: [list.data[0].id]
+        networkIds: [list.data[0].id],
+        guestNetworkIds: []
       }],
-      scopedNetworkIds: [list.data[0].id]
+      scopedNetworkIds: [list.data[0].id],
+      scopedGuestNetworkIds: []
     }
 
     const mockApListReq = jest.fn()
