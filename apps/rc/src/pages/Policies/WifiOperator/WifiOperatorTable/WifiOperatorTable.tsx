@@ -52,7 +52,7 @@ export default function WifiOperatorTable () {
   const doDelete = (selectedRows: WifiOperatorViewModel[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Policy' }),
+      $t({ defaultMessage: 'Profile(s)' }),
       selectedRows[0].name,
       [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () =>
