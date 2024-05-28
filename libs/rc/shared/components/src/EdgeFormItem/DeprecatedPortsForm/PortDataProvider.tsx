@@ -40,7 +40,7 @@ export const EdgePortsDataContextProvider = (props:EdgePortsDataContextProviderP
       filters: { serialNumber: [serialNumber] }
     } },
     {
-      skip: !!!serialNumber || !isEdgeLagEnabled,
+      skip: !!!serialNumber,
       selectFromResult: ({ data }) => ({
         venueId: data?.data[0].venueId,
         edgeClusterId: data?.data[0].clusterId

@@ -6,6 +6,7 @@ import _         from 'lodash'
 import { rest }  from 'msw'
 
 import {
+  EdgeGeneralFixtures,
   EdgeIpModeEnum,
   EdgeLag,
   EdgeLagFixtures,
@@ -32,6 +33,7 @@ import { EdgePortsDataContext, EdgePortsDataContextType }                       
 
 import PortsGeneral from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockPortInfo } = EdgePortConfigFixtures
 const { mockedEdgeLagList } = EdgeLagFixtures
 
@@ -95,6 +97,8 @@ const defaultContextData = {
   setFormControl: mockedSetFormControl
 }
 const defaultPortsContextdata = {
+  venueId: mockEdgeList.data[0].venueId,
+  edgeClusterId: mockEdgeList.data[0].clusterId,
   portData: mockEdgePortConfig.ports as EdgePort[],
   portStatus: mockPortInfo as EdgePortInfo[],
   lagData: mockedEdgeLagList.content as EdgeLag[],
@@ -149,7 +153,7 @@ describe('EditEdge ports - ports general', () => {
 
     mockServer.use(
       rest.patch(
-        EdgeUrlsInfo.updatePortConfigDeprecated.url,
+        EdgeUrlsInfo.updatePortConfig.url,
         (req, res, ctx) => {
           mockedUpdateReq(req.body)
           return res(ctx.status(202))
@@ -328,7 +332,7 @@ describe('EditEdge ports - ports general', () => {
 
       mockServer.use(
         rest.patch(
-          EdgeUrlsInfo.updatePortConfigDeprecated.url,
+          EdgeUrlsInfo.updatePortConfig.url,
           (_req, res, ctx) => res(ctx.status(500))
         )
       )
