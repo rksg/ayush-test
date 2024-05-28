@@ -111,8 +111,9 @@ export const LicenseUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   updateMspAssignment: {
-    method: 'PATCH',
-    url: '/tenants/:tenantId/entitlements/assignments/:assignmentId',
+    // method: 'PATCH',
+    method: 'put',
+    url: '/tenants/self/entitlements/assignments/:assignmentId',
     oldUrl: '/assignments',
     newApi: true
   }

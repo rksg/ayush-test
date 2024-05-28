@@ -66,9 +66,9 @@ export function AssignedSubscriptionTable () {
     },
     {
       title: $t({ defaultMessage: 'Starting Date' }),
-      dataIndex: 'dateEffective',
-      key: 'dateEffective',
-      sorter: { compare: sortProp('dateEffective', dateSort) },
+      dataIndex: isEntitlementRbacApiEnabled ? 'effectiveDate' : 'dateEffective',
+      key: 'effectiveDate',
+      sorter: { compare: sortProp('effectiveDate', dateSort) },
       render: function (_, row) {
         const effectiveDate = new Date(Date.parse(row.dateEffective))
         return formatter(DateFormatEnum.DateFormat)(effectiveDate)
@@ -120,7 +120,13 @@ export function AssignedSubscriptionTable () {
     const queryResults = useMspAssignmentHistoryQuery({ params: params },
       { skip: isEntitlementRbacApiEnabled })
     const subscriptionData = isEntitlementRbacApiEnabled
-      ? tableResults.data?.data
+      ? tableResults.data?.data.map(response => {
+        return {
+          ...response,
+          name: (response?.isTrial
+            ? $t({ defaultMessage: 'Trial' }) : $t({ defaultMessage: 'Paid' })) + ' Devices'
+        }
+      })
       : queryResults.data?.map(response => {
         const type = EntitlementUtil.getDeviceTypeText(getIntl().$t, response?.deviceType)
         return {

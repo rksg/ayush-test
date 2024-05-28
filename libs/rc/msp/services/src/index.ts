@@ -423,12 +423,11 @@ export const mspApi = baseMspApi.injectEndpoints({
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     mspAssignmentHistory: build.query<MspAssignmentHistory[], RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         const mspAssignmentHistoryReq =
           createHttpRequest(MspUrlsInfo.getMspAssignmentHistory, params)
         return {
-          ...mspAssignmentHistoryReq,
-          body: payload
+          ...mspAssignmentHistoryReq
         }
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]

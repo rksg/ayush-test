@@ -211,6 +211,7 @@ export interface MspAssignmentHistory {
   mspTenantId: string;
   trialAssignment: boolean;
   status: string;
+  isTrial?: boolean
 }
 
 export interface MspAssignmentSummary {

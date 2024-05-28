@@ -52,10 +52,15 @@ interface SubscriptionAssignmentForm {
 }
 
 interface MspAssignment {
-  ownAssignments: boolean
-  startDate: string
-  endDate: string
-  assignments: Assignment[]
+  ownAssignments?: boolean
+  startDate?: string
+  endDate?: string
+  assignments?: Assignment[]
+  effectiveDate?: string
+  expirationDate?: string
+  quantity?: number
+  licenseType?: string
+  trial?: boolean
 }
 
 interface Assignment {
@@ -94,7 +99,6 @@ export const entitlementAssignmentPayload = {
   sortOrder: 'DESC',
   filters: {
     createdBy: [],
-    isTrial: true,
     licenseType: [],
     status: [
       'VALID'
@@ -152,7 +156,7 @@ export function AssignMspLicense () {
   useEffect(() => {
     if (licenseSummary) {
       if (licenseAssignment) {
-        const assigned = licenseAssignment.filter(
+        const assigned = isEntitlementRbacApiEnabled ?licenseAssignment : licenseAssignment.filter(
           en => en.mspEcTenantId === tenantId && en.status === 'VALID')
         setAssignedLicense(assigned)
         const wifi =
@@ -161,13 +165,15 @@ export function AssignMspLicense () {
         const sw =
           assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_SWITCH)
         const sLic = sw.length > 0 ? sw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
-        const apsw =
-          assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
-            en.trialAssignment === false)
+        const apsw = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.isTrial === false)
+          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
+              en.trialAssignment === false)
         const apswLic = apsw.length > 0 ? apsw.reduce((acc, cur) => cur.quantity + acc, 0) : 0
 
-        const apswTrial =
-          assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
+        const apswTrial = isEntitlementRbacApiEnabled
+          ? assigned.filter(en => en.isTrial === true)
+          : assigned.filter(en => en.deviceType === EntitlementDeviceType.MSP_APSW &&
             en.trialAssignment === true)
         const apswTrialLic =
           apswTrial.length > 0 ? apswTrial.reduce((acc, cur) => cur.quantity + acc, 0) : 0
@@ -306,19 +312,33 @@ export function AssignMspLicense () {
           })
       }
       if (addAssignment.length > 0) {
-        const mspAssignments: MspAssignment = {
-          ownAssignments: true,
-          startDate: today,
-          endDate: expirationDate,
-          assignments: addAssignment
-        }
+        const mspAssignments: MspAssignment = isEntitlementRbacApiEnabled
+          ? {
+            effectiveDate: today,
+            expirationDate: expirationDate,
+            quantity: addAssignment[0].quantity,
+            licenseType: 'APSW',
+            trial: addAssignment[0].useTemporaryMspEntitlement ?? false
+          }: {
+            ownAssignments: true,
+            startDate: today,
+            endDate: expirationDate,
+            assignments: addAssignment
+          }
         await addMspSubscription(isEntitlementRbacApiEnabled
           ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: mspAssignments }
           : { payload: mspAssignments }).unwrap()
       }
       if (updateAssignment.length > 0) {
+        const assignId = updateAssignment[0].assignmentId.toString()
+        const updatePayload = isEntitlementRbacApiEnabled
+          ? {
+            quantity: updateAssignment[0].quantity,
+            expirationDate: expirationDate }
+          : updateAssignment
         await updateMspSubscription(isEntitlementRbacApiEnabled
-          ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: updateAssignment }
+          ? { params: { tenantId: tenantId, isRbacApi: 'true', assignmentId: assignId },
+            payload: updatePayload }
           : { payload: updateAssignment }).unwrap()
       }
       if (deleteAssignment.length > 0) {
