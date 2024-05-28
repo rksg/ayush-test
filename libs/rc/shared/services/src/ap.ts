@@ -890,8 +890,8 @@ export const apApi = baseApApi.injectEndpoints({
     getApMeshSettings: build.query<APMeshSettings, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getApMeshSettings, params, apiCustomHeader)
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApMeshSettings, params, customHeaders)
         return{
           ...req
         }
