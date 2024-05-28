@@ -409,8 +409,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
-              ? WifiUrlsInfo.getApGroupsList
-              : ApGroupConfigTemplateUrlsInfo.getApGroupsList, arg.params),
+              ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
+              : WifiUrlsInfo.getApGroupsList, arg.params),
             body: apGroupPayload
           }
 

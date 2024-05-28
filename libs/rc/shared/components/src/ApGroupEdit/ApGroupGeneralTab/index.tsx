@@ -303,7 +303,7 @@ export function ApGroupGeneralTab () {
               />
             </Col>
           </Row>
-          <Row>
+          {!isTemplate && <Row>
             <Col>
               <StepsFormLegacy.Title
                 style={{ padding: '10px 0px' }}>
@@ -328,7 +328,7 @@ export function ApGroupGeneralTab () {
                 />
               </Form.Item>
             </Col>
-          </Row>
+          </Row>}
         </Loader>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
