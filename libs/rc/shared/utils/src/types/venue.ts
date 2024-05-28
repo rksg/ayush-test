@@ -427,6 +427,7 @@ export interface Vlan {
   key?: number
 	inactiveRow?: boolean //ignore
   inactiveTooltip?: string //ignore
+	isDeletable?: boolean //ignore
 }
 
 export interface ConfigurationProfile {

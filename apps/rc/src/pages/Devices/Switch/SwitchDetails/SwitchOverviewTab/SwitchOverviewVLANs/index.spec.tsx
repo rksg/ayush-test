@@ -79,6 +79,9 @@ describe('Switch Overview VLAN', () => {
         rest.get(SwitchUrlsInfo.getLagList.url,
           (req, res, ctx) => res(ctx.json(lagList))
         ),
+        rest.post(SwitchUrlsInfo.getSwitchRoutedList.url,
+          (_, res, ctx) => res(ctx.json({}))
+        ),
         rest.post(SwitchUrlsInfo.addSwitchesVlans.url,
           (req, res, ctx) => {
             addVlanSpy()
@@ -166,7 +169,7 @@ describe('Switch Overview VLAN', () => {
       await userEvent.type(vlanIdInput, '10')
 
       await userEvent.click(await within(drawer).findByRole('button', { name: /Save/i }))
-      expect(addVlanSpy).toBeCalled()
+      expect(updateVlanSpy).toBeCalled()
     })
 
     it('should add VLAN correctly', async () => {

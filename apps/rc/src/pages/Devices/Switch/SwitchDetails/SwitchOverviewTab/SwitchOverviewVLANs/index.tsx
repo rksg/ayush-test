@@ -17,6 +17,7 @@ import { DefaultVlanDrawer, VlanSettingDrawer } from '@acx-ui/rc/components'
 import {
   useGetVlanListBySwitchLevelQuery,
   useGetLagListQuery,
+  useGetSwitchRoutedListQuery,
   useSwitchPortlistQuery,
   useAddSwitchesVlansMutation,
   useDeleteSwitchVlanMutation,
@@ -37,7 +38,8 @@ import {
   SWITCH_DEFAULT_VLAN_NAME,
   SwitchPortViewModelQueryFields,
   SwitchPortViewModel,
-  SwitchViewModel
+  SwitchViewModel,
+  VeViewModel
 } from '@acx-ui/rc/utils'
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
@@ -69,14 +71,14 @@ export function SwitchOverviewVLANs (props: {
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
   const [portSlotsData, setPortSlotsData] = useState([])
+  const [isDefaultVlanAppliedACL, setIsDefaultVlanAppliedACL] = useState(false)
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
   const [addSwitchesVlans] = useAddSwitchesVlansMutation()
   const [updateSwitchVlan] = useUpdateSwitchVlanMutation()
   const [deleteSwitchVlan] = useDeleteSwitchVlanMutation()
-
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = useTableQuery({
     useQuery: useGetVlanListBySwitchLevelQuery,
@@ -102,15 +104,29 @@ export function SwitchOverviewVLANs (props: {
         sortField: 'vlanId',
         sortOrder: 'ASC'
       }
-    },
+    }
+  }, {
     skip: !switchDetail?.venueId
   })
 
   const { data: lagList, isLoading: isLagListLoading }
     = useGetLagListQuery({
       params: { tenantId, switchId, venueId: switchDetail?.venueId },
-      enableRbac: isSwitchRbacEnabled,
-      skip: !switchDetail?.venueId
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
+    })
+
+  const { data: vePortsList, isLoading: isVePortsListLoading }
+    = useGetSwitchRoutedListQuery({
+      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      payload: {
+        sortField: 'name',
+        pageSize: 10000
+      },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
     })
 
   const { data: portsData } = useSwitchPortlistQuery({
@@ -176,29 +192,14 @@ export function SwitchOverviewVLANs (props: {
       switchId: switchId,
       enableAsDefaultVlan: true
     }
-    const isVlanExisted = vlanList?.filter(v => {
-      return Number(v.vlanId) === Number(values.vlanId)
-    })?.length > 0
 
-    // TODO: Default VLAN ID can't be changed
-    if (defaultVlan.id && isVlanExisted) {
-      try {
-        await updateSwitchVlan({
-          params: { tenantId, switchId, venueId: switchDetail?.venueId, vlanId: defaultVlan.id },
-          payload
-        }).unwrap()
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-      }
-    } else {
-      try {
-        await addSwitchesVlans({
-          params: { tenantId, switchId, venueId: switchDetail?.venueId, vlanId: defaultVlan.id },
-          payload: [payload]
-        }).unwrap()
-      } catch (error) {
-        console.log(error) // eslint-disable-line no-console
-      }
+    try {
+      await updateSwitchVlan({
+        params: { tenantId, switchId, venueId: switchDetail?.venueId, vlanId: defaultVlan.id },
+        payload
+      }).unwrap()
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
     }
   }
 
@@ -294,7 +295,7 @@ export function SwitchOverviewVLANs (props: {
       }
     },
     {
-      visible: (selectedRows) => selectedRows?.[0]?.vlanName !== SWITCH_DEFAULT_VLAN_NAME,
+      visible: (selectedRows) => selectedRows?.[0]?.isDeletable ?? true,
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         const vlanId = rows[0]?.vlanId?.toString()
@@ -359,7 +360,10 @@ export function SwitchOverviewVLANs (props: {
   }, [ portsData ])
 
   useEffect(() => {
-    if (tableQuery.data?.data && !isLagListLoading && !isVlanListLoading) {
+    const isDataReady
+      = tableQuery.data?.data && !isLagListLoading && !isVePortsListLoading && !isVlanListLoading
+
+    if (isDataReady) {
       const portsUsedByLagObj = lagList?.reduce((result, lag) => {
         const ports = lag.ports?.reduce((tmp, port) => ({
           ...tmp,
@@ -369,29 +373,48 @@ export function SwitchOverviewVLANs (props: {
       }, {})
       const portsUsedByLag = Object.keys(portsUsedByLagObj ?? {})
 
+      const veList = vePortsList?.data as VeViewModel[]
+      const vlansUsedByVe = veList?.filter(ve => ve.vlanId).map(ve => ve.vlanId)
+
       const vlanList = vlanListBySwitch?.data as Vlan[]
       const vlanTableData = tableQuery.data?.data.map(vlan => {
         const hasPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
           _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
             || _.intersection(port.untaggedPorts?.split(','), portsUsedByLag)?.length > 0
         )
+        const hasVlansUsedByVe = vlansUsedByVe?.includes(vlan.vlanId)
+        const isInactiveRow
+          = vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME && !!hasPortsUsedByLag?.length
+
         return {
           ...vlan,
-          inactiveRow: vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME && !!hasPortsUsedByLag?.length
+          inactiveRow: isInactiveRow,
+          inactiveTooltip: isInactiveRow
+            ? $t(SwitchMessages.LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED) : '',
+          isDeletable: !hasVlansUsedByVe && vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME
         }
       })
       const defaultVlan = vlanList?.filter(
         v => v.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.[0]
+
+      const isDefaultVlanAppliedACL = veList
+        ?.filter(ve => ve.vlanId === Number(defaultVlan.vlanId)
+        // eslint-disable-next-line max-len
+          && (ve.ingressAclName || ve.egressAclName || ve.vsixIngressAclName || ve.vsixEgressAclName)
+        )?.length > 0
 
       const usedUntagged = getUsedPorts(vlanList, 'untaggedPorts')
 
       setVlanList(vlanList)
       setUsedByLag(portsUsedByLagObj as Record<string, string>)
       setUsedUntaggedPorts(usedUntagged as Record<string, string>)
-      setVlanTableData(vlanTableData)
+      setVlanTableData(vlanTableData as Vlan[])
+      setIsDefaultVlanAppliedACL(isDefaultVlanAppliedACL)
       setDefaultVlan(defaultVlan)
     }
-  }, [tableQuery.data?.data, vlanListBySwitch, isLagListLoading, isVlanListLoading])
+  }, [tableQuery.data?.data, vlanListBySwitch,
+    isLagListLoading, isVePortsListLoading, isVlanListLoading
+  ])
 
   useEffect(() => {
     if (switchDetail) {
@@ -425,9 +448,7 @@ export function SwitchOverviewVLANs (props: {
             }),
             renderCell: (checked, record, index, originNode) => {
               return record?.inactiveRow
-                ? <Tooltip title={
-                  $t(SwitchMessages.LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED)}
-                >{originNode}</Tooltip>
+                ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
                 : originNode
             }
           }}
@@ -467,6 +488,7 @@ export function SwitchOverviewVLANs (props: {
         defaultVlan={defaultVlan}
         setDefaultVlan={applyDefaultVlan}
         isSwitchLevel={true}
+        isAppliedACL={isDefaultVlanAppliedACL}
         vlansList={vlanList}
       />}
 

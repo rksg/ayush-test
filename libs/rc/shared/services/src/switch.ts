@@ -579,7 +579,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
           // TODO: enable RBAC api
-          SwitchUrlsInfo.addSwitchesVlans, params //, customHeaders.v1
+          SwitchUrlsInfo.addSwitchesVlans, params, customHeaders.v1
         )
         return {
           ...req,

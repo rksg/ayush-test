@@ -21,12 +21,13 @@ export interface DefaultVlanDrawerProps {
   setVisible: (v: boolean) => void
   isRuleUnique?: (r: Vlan) => boolean
   isSwitchLevel?: boolean
+  isAppliedACL?: boolean
   vlansList: Vlan[]
 }
 
 export function DefaultVlanDrawer (props: DefaultVlanDrawerProps) {
   const { $t } = useIntl()
-  const { defaultVlan, setDefaultVlan, visible, setVisible, vlansList, isSwitchLevel } = props
+  const { defaultVlan, setDefaultVlan, visible, setVisible, vlansList, isSwitchLevel, isAppliedACL } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -46,6 +47,7 @@ export function DefaultVlanDrawer (props: DefaultVlanDrawerProps) {
           setDefaultVlan={setDefaultVlan}
           vlansList={vlansList}
           isSwitchLevel={isSwitchLevel}
+          isAppliedACL={isAppliedACL}
         />
       }
       footer={
@@ -75,12 +77,13 @@ interface DefaultVlanFormProps {
   setDefaultVlan: (r: Vlan) => void
   vlansList: Vlan[]
   isSwitchLevel?: boolean
+  isAppliedACL?: boolean
 }
 
 function DefaultVlanForm (props: DefaultVlanFormProps) {
   const { Option } = Select
   const { $t } = useIntl()
-  const { form, defaultVlan, setDefaultVlan, vlansList, isSwitchLevel } = props
+  const { form, defaultVlan, setDefaultVlan, vlansList, isSwitchLevel, isAppliedACL } = props
 
   useEffect(() => {
     if(defaultVlan){
@@ -129,7 +132,7 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
           { validator: (_, value) => validateVlanName(value) },
           { validator: (_, value) => validateDuplicateVlanName(value, vlansList) }
         ]}
-        children={<InputNumber />}
+        children={<InputNumber disabled={isAppliedACL} />}
       />
       <Form.Item
         name='spanningTreeProtocol'
