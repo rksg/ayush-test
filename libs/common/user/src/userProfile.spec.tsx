@@ -167,7 +167,13 @@ describe('filterByAccess', () => {
 })
 
 describe('hasRaiPermission', () => {
+  it('returns true in R1', () => {
+    jest.mocked(get).mockReturnValue('')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
+    expect(hasRaiPermission('READ_INCIDENTS')).toBe(true)
+  })
   it('checks if permission is present', () => {
+    jest.mocked(get).mockReturnValue('true')
     setRaiPermissions({ READ_INCIDENTS: true, READ_HEALTH: false } as RaiPermissions)
     expect(hasRaiPermission('READ_INCIDENTS')).toBe(true)
     expect(hasRaiPermission('READ_HEALTH')).toBe(false)
