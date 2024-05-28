@@ -100,7 +100,7 @@ export const setRaiPermissions = (perms: RaiPermissions) => {
 
 // use hasRaiPermission to enforce permission in RAI standalone
 export function hasRaiPermission (permission: RaiPermission) {
-  return permissions[permission]
+  return !get('IS_MLISA_SA') || permissions[permission]
 }
 
 /**
