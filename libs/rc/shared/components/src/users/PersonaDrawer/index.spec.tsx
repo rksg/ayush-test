@@ -3,7 +3,6 @@ import { rest }  from 'msw'
 
 import {
   MacRegListUrlsInfo,
-  NewPersonaBaseUrl,
   PersonaUrls
 } from '@acx-ui/rc/utils'
 import { Provider }                            from '@acx-ui/store'
@@ -31,8 +30,8 @@ describe('Persona Drawer', () => {
         PersonaUrls.getPersonaGroupById.url,
         (req, res, ctx) => res(ctx.json(mockPersonaGroup))
       ),
-      rest.get(
-        NewPersonaBaseUrl,
+      rest.post(
+        PersonaUrls.searchPersonaGroupList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockPersonaGroupList))
       ),
       rest.post(
@@ -47,8 +46,8 @@ describe('Persona Drawer', () => {
         PersonaUrls.addPersona.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPool.url,
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockMacRegistration))
       ),
       rest.patch(
