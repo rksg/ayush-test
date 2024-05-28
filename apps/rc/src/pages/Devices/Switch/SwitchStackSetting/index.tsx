@@ -11,7 +11,8 @@ import {
   isL3FunctionSupported,
   validateSwitchIpAddress,
   validateSwitchSubnetIpAddress,
-  validateSwitchGatewayIpAddress
+  validateSwitchGatewayIpAddress,
+  SwitchViewModel
 } from '@acx-ui/rc/utils'
 
 import StaticRoutes      from './StaticRoutes'
@@ -37,6 +38,7 @@ const spanningTreePriorityItem = [
 ]
 
 export function SwitchStackSetting (props: {
+  switchDetail?: SwitchViewModel,
   apGroupOption: DefaultOptionType[],
   readOnly: boolean,
   isIcx7650?: boolean,
@@ -44,7 +46,7 @@ export function SwitchStackSetting (props: {
   deviceOnline?: boolean
 }) {
   const { $t } = useIntl()
-  const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline } = props
+  const { apGroupOption, readOnly, isIcx7650, disableIpSetting, deviceOnline, switchDetail } = props
   const form = Form.useFormInstance()
 
   const [enableDhcp, setEnableDhcp] = useState(false)
@@ -279,7 +281,7 @@ export function SwitchStackSetting (props: {
         </Form.Item>
       </Form.Item>
       }
-      { isL3ConfigAllowed && <StaticRoutes readOnly={readOnly} /> }
+      { switchDetail && <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
     </>
   )
 }

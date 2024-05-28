@@ -103,8 +103,10 @@ export function getJwtTokenPayload () {
 
 export function getJwtHeaders ({ ignoreDelegation = false }: { ignoreDelegation?: boolean } = {}) {
   return {
-    ...(getJwtToken() && { Authorization: `Bearer ${getJwtToken()}` }),
-    ...(!ignoreDelegation && isDelegationMode() && { 'x-rks-tenantid': getTenantId() })
+    ...(getJwtToken() &&
+      { Authorization: `Bearer ${getJwtToken()}` }),
+    ...(!get('IS_MLISA_SA') && !ignoreDelegation && isDelegationMode() &&
+      { 'x-rks-tenantid': getTenantId() })
   }
 }
 
@@ -120,7 +122,7 @@ export function updateJwtCache (newJwt: string) {
   }
 }
 
-export async function loadImageWithJWT (imageId: string, requestUrl?: string) {
+export async function loadImageWithJWT (imageId: string, requestUrl?: string): Promise<string> {
   const headers = { 'mode': 'no-cors', 'Content-Type': 'application/json',
     'Accept': 'application/json', ...getJwtHeaders() }
   const url = getUrlWithNewDomain(requestUrl) || `/api/file/tenant/${getTenantId()}/${imageId}/url`
@@ -131,6 +133,10 @@ export async function loadImageWithJWT (imageId: string, requestUrl?: string) {
     const result = await response.json()
     return result.signedUrl
   }
+}
+
+export const getImageDownloadUrl = async (isFileUrl:boolean, data: string) => {
+  return isFileUrl ? data : await loadImageWithJWT(data)
 }
 
 function getUrlWithNewDomain (requestUrl?: string) {

@@ -69,7 +69,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       await form.validateFields()
       let payload = {
         region: form.getFieldValue(['region']),
-        startDate: formatter(DateFormatEnum.DateFormat)(form.getFieldValue(['startDate'])),
+        startDate: moment((form.getFieldValue(['startDate']))).format('YYYY-MM-DD'),
         orderAcxRegistrationCode: activationData?.orderAcxRegistrationCode
       }
 
@@ -164,7 +164,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
           format={formatter(DateFormatEnum.DateFormat)}
           disabled={isActivationEnddatePassed}
           disabledDate={(current) => {
-            return current && (current < moment().endOf('day') ||
+            return current && (current < moment().startOf('day') ||
             current > moment(activationData?.spaEndDate).endOf('day'))
           }}
           style={{ width: '300px' }}

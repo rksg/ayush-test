@@ -41,6 +41,8 @@ export default function MyServices () {
   const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
   const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const services = [
     {
@@ -108,12 +110,15 @@ export default function MyServices () {
     {
       type: ServiceType.PORTAL,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetEnhancedPortalProfileListQuery({ params, payload: { filters: {} } })
+      tableQuery: useGetEnhancedPortalProfileListQuery({
+        params, payload: { filters: {}, enableRbac: isEnabledRbacService } })
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
       categories: [RadioCardCategory.SWITCH],
-      tableQuery: useWebAuthTemplateListQuery({ params, payload: { ...defaultPayload } }, {
+      tableQuery: useWebAuthTemplateListQuery({
+        params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
+      }, {
         skip: !isEdgeEnabled || !networkSegmentationSwitchEnabled
       }),
       disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled

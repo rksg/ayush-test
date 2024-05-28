@@ -4,6 +4,7 @@ import { Col, Collapse, Form, Input, Row, Space, Switch, Typography } from 'antd
 import { useIntl, FormattedMessage }                                  from 'react-intl'
 
 import { cssStr, StepsForm, Table, TableProps, Loader, useStepFormContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { PlusSquareOutlined, MinusSquareOutlined }                          from '@acx-ui/icons'
 import { useGetVenuesQuery, useLazyGetSwitchListQuery }                     from '@acx-ui/rc/services'
 import { ApplySwitch, CliTemplateVenueSwitches, SwitchViewModel }           from '@acx-ui/rc/utils'
@@ -15,6 +16,7 @@ export function CliStepSwitches () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const { form, editMode } = useStepFormContext()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: venues } = useGetVenuesQuery({
     params: { tenantId }, payload: {
@@ -137,7 +139,9 @@ export function CliStepSwitches () {
 
           if (expandRow && !expandRow?.switches) {
             const list = (await getSwitchList({
-              params: { tenantId: tenantId }, payload: getSwitchListPayload(expandRow.id)
+              params: { tenantId: tenantId },
+              payload: getSwitchListPayload(expandRow.id),
+              enableRbac: isSwitchRbacEnabled
             }, false)).data?.data || []
 
             const switches = venueSwitches.map(v =>

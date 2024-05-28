@@ -279,7 +279,7 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={hasPermission() && {
+        rowSelection={hasPermission({ permission: 'WRITE_INCIDENTS' }) && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

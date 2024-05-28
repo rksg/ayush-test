@@ -1,7 +1,6 @@
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
-import { get } from '@acx-ui/config'
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { get }                    from '@acx-ui/config'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 
 export const productNames = get('IS_MLISA_SA')
@@ -160,19 +159,6 @@ export const categoryCodeMap = {
     ] as IncidentCode[]
   }
 }
-
-export const PERMISSION_VIEW_ANALYTICS = 'view-analytics'
-export const PERMISSION_VIEW_REPORT_CONTROLLER_INVENTORY = 'view-report-controller-inventory'
-export const PERMISSION_VIEW_DATA_EXPLORER = 'view-data-explorer'
-export const PERMISSION_MANAGE_SERVICE_GUARD = 'manage-service-guard'
-export const PERMISSION_MANAGE_MLISA = 'manage-mlisa'
-export const PERMISSION_MANAGE_CALL_MANAGER = 'manage-call-manager'
-export const PERMISSION_MANAGE_OCCUPANCY = 'manage-occupancy'
-export const PERMISSION_MANAGE_CONFIG_RECOMMENDATION = 'manage-config-recommendation'
-export const PERMISSION_MANAGE_LABEL = 'manage-label'
-export const PERMISSION_MANAGE_TENANT_SETTINGS = 'manage-tenant-settings'
-
-export const PERMISSION_FRANCHISOR = 'franchisor'
 
 export enum Roles {
   PRIME_ADMINISTRATOR = 'admin',

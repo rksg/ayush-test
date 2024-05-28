@@ -8,6 +8,7 @@ import {
   NetworkSegmentationGroup,
   NetworkSegmentationGroupViewData,
   NetworkSegmentationUrls,
+  NetworkSegmentationRbacUrls,
   NewTableResult,
   onActivityMessageReceived,
   onSocketActivityChanged,
@@ -22,6 +23,21 @@ import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { serviceApi } from './service'
+
+const customHeaders = {
+  v1: {
+    'Content-Type': 'application/vnd.ruckus.v1+json',
+    'Accept': 'application/vnd.ruckus.v1+json'
+  },
+  v1001: {
+    'Content-Type': 'application/vnd.ruckus.v1.1+json',
+    'Accept': 'application/vnd.ruckus.v1.1+json'
+  }
+}
+
+const getNsgUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? NetworkSegmentationRbacUrls : NetworkSegmentationUrls
+}
 
 export const nsgApi = baseNsgApi.injectEndpoints({
   endpoints: (build) => ({
@@ -129,8 +145,10 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     }),
 
     getWebAuthTemplate: build.query<WebAuthTemplate, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplate, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const nsgUrls = getNsgUrls(enableRbac)
+        const req = createHttpRequest( nsgUrls.getWebAuthTemplate, params, headers)
         return {
           ...req
         }
@@ -139,47 +157,58 @@ export const nsgApi = baseNsgApi.injectEndpoints({
     getWebAuthTemplateSwitches: build.query<{
       switchVenueInfos?: SwitchLite[]
     }, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateSwitches, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const nsgUrls = getNsgUrls(enableRbac)
+        const req = createHttpRequest( nsgUrls.getWebAuthTemplateSwitches, params, headers)
         return {
-          ...req
+          ...req,
+          body: JSON.stringify(payload)
         }
       }
     }),
     webAuthTemplateList: build.query<TableResult<WebAuthTemplateTableData>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.getWebAuthTemplateList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const nsgUrls = getNsgUrls(enableRbac)
+        const req = createHttpRequest( nsgUrls.getWebAuthTemplateList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'WebAuthNSG', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
     createWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.addWebAuthTemplate, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const nsgUrls = getNsgUrls(enableRbac)
+        const req = createHttpRequest( nsgUrls.addWebAuthTemplate, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'WebAuthNSG', id: 'LIST' }]
     }),
     updateWebAuthTemplate: build.mutation<WebAuthTemplate, RequestPayload<WebAuthTemplate>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.updateWebAuthTemplate, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const nsgUrls = getNsgUrls(enableRbac)
+        const req = createHttpRequest( nsgUrls.updateWebAuthTemplate, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'WebAuthNSG', id: 'LIST' }]
     }),
     deleteWebAuthTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest( NetworkSegmentationUrls.deleteWebAuthTemplate, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const nsgUrls = getNsgUrls(enableRbac)
+        const req = createHttpRequest( nsgUrls.deleteWebAuthTemplate, params, headers)
         return {
           ...req
         }

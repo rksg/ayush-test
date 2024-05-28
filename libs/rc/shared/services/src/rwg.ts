@@ -1,5 +1,6 @@
+import { isArray } from 'lodash'
+
 import {
-  CommonUrlsInfo,
   onSocketActivityChanged,
   onActivityMessageReceived,
   TableResult,
@@ -8,25 +9,48 @@ import {
   GatewayDashboard,
   GatewayTopProcess,
   GatewayFileSystem,
-  GatewayDetails
+  GatewayDetails,
+  CommonRbacUrlsInfo,
+  RWGRow,
+  RWGClusterNode
 } from '@acx-ui/rc/utils'
-import { baseRWGApi }        from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { baseRWGApi }                  from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 export const rwgApi = baseRWGApi.injectEndpoints({
   endpoints: (build) => ({
-    rwgList: build.query<TableResult<RWG>, RequestPayload>({
+    rwgList: build.query<TableResult<RWGRow>, RequestPayload>({
       query: ({ params, payload }) => {
-        const rwgListReq = createHttpRequest(CommonUrlsInfo.getRwgList, params)
+        const rwgListReq = createHttpRequest(CommonRbacUrlsInfo.getRwgList, params)
         return {
           ...rwgListReq,
           body: payload
         }
       },
       transformResponse: ({ response }) => {
+
+        const _res: RWGRow[] = response.items.map((rwg: RWG) => rwg.isCluster ? {
+          ...rwg,
+          ip: rwg.hostname,
+          rowId: rwg.rwgId,
+          children: rwg.clusterNodes?.map((node: RWGClusterNode) => {
+            return {
+              ip: node.ip,
+              name: node.name,
+              clusterName: rwg.name,
+              rwgId: node.id,
+              rowId: rwg.rwgId + '_' + node.id,
+              clusterId: rwg.rwgId,
+              status: rwg.status,
+              venueName: rwg.venueName,
+              venueId: rwg.venueId,
+              hostname: rwg.hostname + ' / ' + node.ip,
+              isNode: true } as RWGRow
+          })
+        } : { ...rwg, rwgId: rwg.rwgId })
         return {
-          data: response.items,
+          data: _res,
           totalCount: response.totalSizes,
           page: response.totalPages
         }
@@ -48,7 +72,7 @@ export const rwgApi = baseRWGApi.injectEndpoints({
     }),
     getRwg: build.query<RWG, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getGateway, params)
+        const req = createHttpRequest(CommonRbacUrlsInfo.getGateway, params)
         return{
           ...req
         }
@@ -58,26 +82,15 @@ export const rwgApi = baseRWGApi.injectEndpoints({
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     }),
-    deleteGateway: build.mutation<RWG, RequestPayload>({
-      query: ({ params, payload }) => {
-        if (payload) { //delete multiple rows
-          let req = createHttpRequest(CommonUrlsInfo.deleteGateways, params)
-          return {
-            ...req,
-            body: payload
-          }
-        } else { //delete single row
-          let req = createHttpRequest(CommonUrlsInfo.deleteGateway, params)
-          return {
-            ...req
-          }
-        }
+    batchDeleteGateway: build.mutation<RWG, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        return batchApi(CommonRbacUrlsInfo.deleteGateway, requests, fetchWithBQ)
       },
       invalidatesTags: [{ type: 'RWG', id: 'LIST' }]
     }),
     addGateway: build.mutation<RWG, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.addGateway, params)
+        const req = createHttpRequest(CommonRbacUrlsInfo.addGateway, params)
         return {
           ...req,
           body: payload
@@ -87,7 +100,7 @@ export const rwgApi = baseRWGApi.injectEndpoints({
     }),
     updateGateway: build.mutation<RWG, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.updateGateway, params)
+        const req = createHttpRequest(CommonRbacUrlsInfo.updateGateway, params)
         return {
           ...req,
           body: payload
@@ -96,10 +109,11 @@ export const rwgApi = baseRWGApi.injectEndpoints({
       invalidatesTags: [{ type: 'RWG', id: 'LIST' }]
     }),
     getGatewayAlarms: build.query<GatewayAlarms, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getGatewayAlarms, params)
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonRbacUrlsInfo.getGatewayAlarms, params)
         return{
-          ...req
+          ...req,
+          body: payload
         }
       },
       transformResponse: (data: { response: GatewayAlarms }) => {
@@ -109,19 +123,29 @@ export const rwgApi = baseRWGApi.injectEndpoints({
     }),
     getGatewayDashboard: build.query<GatewayDashboard, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getGatewayDashboard, params)
+        const req = createHttpRequest(
+          params?.clusterNodeId
+            ? CommonRbacUrlsInfo.getClusterGatewayDashboard
+            : CommonRbacUrlsInfo.getGatewayDashboard,
+          params)
         return{
           ...req
         }
       },
-      transformResponse: (data: { response: GatewayDashboard }) => {
-        return data?.response || {}
+      transformResponse: (data: { response: GatewayDashboard | GatewayDashboard[] }) => {
+        return isArray(data?.response)
+          ? data?.response[0] || {}
+          : data?.response || {}
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     }),
     getGatewayTopProcess: build.query<GatewayTopProcess[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getGatewayTopProcess, params)
+        const req = createHttpRequest(
+          params?.clusterNodeId
+            ? CommonRbacUrlsInfo.getClusterGatewayTopProcess
+            : CommonRbacUrlsInfo.getGatewayTopProcess
+          , params)
         return{
           ...req
         }
@@ -133,7 +157,11 @@ export const rwgApi = baseRWGApi.injectEndpoints({
     }),
     getGatewayFileSystems: build.query<GatewayFileSystem[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getGatewayFileSystems, params)
+        const req = createHttpRequest(
+          params?.clusterNodeId
+            ? CommonRbacUrlsInfo.getClusterGatewayFileSystems
+            : CommonRbacUrlsInfo.getGatewayFileSystems,
+          params)
         return{
           ...req
         }
@@ -145,13 +173,18 @@ export const rwgApi = baseRWGApi.injectEndpoints({
     }),
     getGatewayDetails: build.query<GatewayDetails, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getGatewayDetails, params)
+        const req = createHttpRequest(
+          params?.clusterNodeId
+            ? CommonRbacUrlsInfo.getClusterGatewayDetails
+            : CommonRbacUrlsInfo.getGatewayDetails, params)
         return{
           ...req
         }
       },
-      transformResponse: (data: { response: GatewayDetails }) => {
-        return data?.response
+      transformResponse: (data: { response: GatewayDetails | GatewayDetails[] }) => {
+        return isArray(data?.response)
+          ? data?.response[0] || {}
+          : data?.response || {}
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
     })
@@ -162,7 +195,7 @@ export const {
   useRwgListQuery,
   useLazyRwgListQuery,
   useGetRwgQuery,
-  useDeleteGatewayMutation,
+  useBatchDeleteGatewayMutation,
   useAddGatewayMutation,
   useUpdateGatewayMutation,
   useGetGatewayAlarmsQuery,

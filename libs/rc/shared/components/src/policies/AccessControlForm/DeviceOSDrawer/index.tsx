@@ -163,21 +163,25 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 
   const isAP70Allowed = useIsTierAllowed(TierFeatures.AP_70)
 
-  const [ createDevicePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useAddDevicePolicyMutation, useAddDevicePolicyTemplateMutation)
+  const [ createDevicePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddDevicePolicyMutation,
+    useTemplateMutationFn: useAddDevicePolicyTemplateMutation
+  })
 
-  const [ updateDevicePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateDevicePolicyMutation, useUpdateDevicePolicyTemplateMutation)
+  const [ updateDevicePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateDevicePolicyMutation,
+    useTemplateMutationFn: useUpdateDevicePolicyTemplateMutation
+  })
 
   const { deviceSelectOptions, deviceList } = useGetDeviceAclPolicyListInstance(editMode.isEdit)
 
-  const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher(
-    useGetDevicePolicyQuery,
-    useGetDevicePolicyTemplateQuery,
-    skipFetch,
-    {},
-    { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
-  )
+  const { data: devicePolicyInfo } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetDevicePolicyQuery,
+    useTemplateQueryFn: useGetDevicePolicyTemplateQuery,
+    skip: skipFetch,
+    payload: {},
+    extraParams: { devicePolicyId: isOnlyViewMode ? onlyViewMode.id : devicePolicyId }
+  })
 
   const setDrawerVisible = (status: boolean) => {
     if (status) {
@@ -711,12 +715,12 @@ export const DeviceOSDrawer = (props: DeviceOSDrawerProps) => {
 const useGetDeviceAclPolicyListInstance = (isEdit: boolean): {
   deviceSelectOptions: JSX.Element[], deviceList: string[]
 } => {
-  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<DevicePolicy>>(
-    useGetEnhancedDeviceProfileListQuery,
-    useGetDevicePolicyTemplateListQuery,
-    isEdit,
-    QUERY_DEFAULT_PAYLOAD
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<DevicePolicy>>({
+    useQueryFn: useGetEnhancedDeviceProfileListQuery,
+    useTemplateQueryFn: useGetDevicePolicyTemplateListQuery,
+    skip: isEdit,
+    payload: QUERY_DEFAULT_PAYLOAD
+  })
 
   return {
     deviceSelectOptions: data?.data?.map(

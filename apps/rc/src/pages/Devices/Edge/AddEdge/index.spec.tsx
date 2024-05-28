@@ -103,7 +103,7 @@ describe('AddEdge', () => {
     fireEvent.change(serialNumberInput, { target: { value: '9612345678901234567890123456789012345' } })
     await user.click(screen.getByRole('button', { name: 'Add' }))
     expect(await screen.findByText('SmartEdge Name must be up to 64 characters')).toBeVisible()
-    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 
   it('should be blocked when serial number is invalid', async () => {

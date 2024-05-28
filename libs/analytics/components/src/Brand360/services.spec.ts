@@ -1,8 +1,11 @@
+import { get }               from '@acx-ui/config'
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
 import { mockBrandTimeseries, franchisorZones } from './__tests__/fixtures'
 import { api, calcGranularityForBrand360 }      from './services'
+
+jest.mock('@acx-ui/config')
 
 describe('services', () => {
   beforeEach(() => {
@@ -37,12 +40,12 @@ describe('services', () => {
   }
 
   it('should handle fetching timeseries correctly', async () => {
-    const fetchPromise = chartKeys.map(async chartKey => {
+    const fetchPromise = chartKeys.map(async () => {
       mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
       const { status, data, error } = await store.dispatch(
         api.endpoints.fetchBrandTimeseries.initiate({
-          chartKey,
-          ...baseProps
+          ...baseProps,
+          tenantIds: ['1', '2']
         })
       )
       expect(error).toBeUndefined()
@@ -57,9 +60,9 @@ describe('services', () => {
       mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
       const { status, data, error } = await store.dispatch(
         api.endpoints.fetchBrandTimeseries.initiate({
-          chartKey: 'incident' as const,
           ...baseProps,
-          ...date
+          ...date,
+          tenantIds: []
         })
       )
       expect(error).toBeUndefined()
@@ -106,6 +109,8 @@ describe('services', () => {
         g: 'PT72H'
       }
     ]
+    // avoid rollup date check
+    jest.mocked(get).mockReturnValue('36500')
     dates.forEach(({ start, end, g }) => {
       expect(calcGranularityForBrand360(start, end)).toEqual(g)
     })

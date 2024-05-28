@@ -1,5 +1,6 @@
 import { IntlShape } from 'react-intl'
 
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetSwitchCurrentVersionsQuery
 } from '@acx-ui/rc/services'
@@ -15,7 +16,10 @@ import {
 import { noDataDisplay } from '@acx-ui/utils'
 
 export function useSwitchFirmwareUtils () {
-  const switchVersions = useGetSwitchCurrentVersionsQuery({}, {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const switchVersions = useGetSwitchCurrentVersionsQuery({
+    enableRbac: isSwitchRbacEnabled
+  }, {
     refetchOnMountOrArgChange: false
   })
 

@@ -19,7 +19,6 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchLatestFirmwareList: {
     method: 'get',
     url: '/switchFirmwares/versions/latest',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/latest',
     newApi: true
   },
   getSwitchDefaultFirmwareList: {
@@ -36,19 +35,16 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchVenueVersionList: {
     method: 'post',
     url: '/switchFirmwares/schedules/query',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue',
     newApi: true
   },
   getSwitchAvailableFirmwareList: {
     method: 'get',
     url: '/switchFirmwares/versions/release',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/version/release',
     newApi: true
   },
   getSwitchCurrentVersions: {
-    method: 'post',
+    method: 'get',
     url: '/switchFirmwares/currentVersions',
-    oldUrl: '/api/switch/tenant/:tenantId/switch/upgrade/venue/currentVersions',
     newApi: true
   },
   getSwitchFirmwareList: {
@@ -59,6 +55,16 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getSwitchFirmwareStatusList: {
     method: 'get',
     url: '/venues/:venueId/switchFirmwares/upgradeStatusDetails/query',
+    newApi: true
+  },
+  getSwitchFirmwarePredownload: {
+    method: 'get',
+    url: '/switchFirmwares/preDownload',
+    newApi: true
+  },
+  updateSwitchFirmwarePredownload: {
+    method: 'put',
+    url: '/switchFirmwares/preDownload',
     newApi: true
   }
 }

@@ -5,13 +5,14 @@ import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { AnchorContext, Loader }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
   useGetVenueDirectedMulticastQuery,
   useGetVenueTemplateDirectedMulticastQuery,
   useUpdateVenueDirectedMulticastMutation,
   useUpdateVenueTemplateDirectedMulticastMutation
 } from '@acx-ui/rc/services'
-import { VenueDirectedMulticast } from '@acx-ui/rc/utils'
+import { ApiVersionEnum, VenueDirectedMulticast, useConfigTemplate } from '@acx-ui/rc/utils'
 
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
 import { VenueEditContext }                                                                from '../../../index'
@@ -20,6 +21,10 @@ import { FieldLabel }                                                           
 export function DirectedMulticast () {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const rbacApiVersion = (isUseRbacApi && !isTemplate)? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -31,7 +36,8 @@ export function DirectedMulticast () {
 
   const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>(
     useGetVenueDirectedMulticastQuery,
-    useGetVenueTemplateDirectedMulticastQuery
+    useGetVenueTemplateDirectedMulticastQuery,
+    rbacApiVersion
   )
 
   const [updateVenueDirectedMulticast, { isLoading: isUpdatingVenueDirectedMulticast }] =
@@ -111,7 +117,8 @@ export function DirectedMulticast () {
       const payload = {
         wiredEnabled: isWiredEnabled,
         wirelessEnabled: isWirelessEnabled,
-        networkEnabled: isNetworkEnabled
+        networkEnabled: isNetworkEnabled,
+        rbacApiVersion
       }
 
       await updateVenueDirectedMulticast({

@@ -7,9 +7,9 @@ import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { Incident }      from '@acx-ui/analytics/utils'
-import { Tooltip }       from '@acx-ui/components'
-import { useDateFilter } from '@acx-ui/utils'
+import { Incident, overlapsRollup } from '@acx-ui/analytics/utils'
+import { Tooltip }                  from '@acx-ui/components'
+import { useDateFilter }            from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
 
@@ -28,7 +28,7 @@ import {
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
-import { TimelineChart }                   from './TimelineChart'
+import { TimelineChart, granularityText }  from './TimelineChart'
 import {
   transformEvents,
   transformConnectionQualities,
@@ -51,12 +51,17 @@ type TimeLineProps = {
   connectChart: (instance: ReactECharts) => void,
   sharedChartName: string,
   popoverRef: RefObject<HTMLDivElement>,
-  onChartReady: (instance: EChartsType) => void,
+  onChartReady: (instance: EChartsType) => void
 }
 
 type CoordDisplayEvent = DisplayEvent & {
   x: number,
   y: number
+}
+
+export const checkRollup = (value: string, startDate: string) => {
+  return overlapsRollup(startDate)
+  && (value === 'roaming' || value === 'connectionQuality')
 }
 
 export function TimeLine (props: TimeLineProps) {
@@ -94,12 +99,15 @@ export function TimeLine (props: TimeLineProps) {
       [type]: !toggle
     })
   const toggleIcon = (
-    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined
+    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined, druidRollup?: boolean
   ) => {
-    if (noData) {
+    if (noData || druidRollup) {
       return <Tooltip
-        title={$t({ defaultMessage: 'No APs Available' })}
-        placement='top'
+        title={<UI.TooltipTextWrapper>{noData
+          ? $t({ defaultMessage: 'No APs Available' })
+          : $t(granularityText)
+        }</UI.TooltipTextWrapper>}
+        placement='topLeft'
       >
         <UI.StyledDisabledPlusSquareOutline
           style={{ cursor: 'not-allowed' }}
@@ -112,12 +120,10 @@ export function TimeLine (props: TimeLineProps) {
         style={{ cursor: 'pointer' }}
         onClick={() => onExpandToggle(type, expandObj[type])}
       />
-    ) : (
-      <UI.StyledPlusSquareOutlined
-        style={{ cursor: 'pointer' }}
-        onClick={() => onExpandToggle(type, expandObj[type])}
-      />
-    )
+    ) : <UI.StyledPlusSquareOutlined
+      style={{ cursor: 'pointer' }}
+      onClick={() => onExpandToggle(type, expandObj[type])}
+    />
   }
 
   const TimelineData = getTimelineData(events, incidents, toggles)
@@ -137,15 +143,16 @@ export function TimeLine (props: TimeLineProps) {
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
-          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <React.Fragment key={index}>
+          {ClientTroubleShootingConfig.timeLine.map((config, index) => {
+            return <React.Fragment key={index}>
               <Col span={3}>
                 {toggleIcon(
                   expandObj[config?.value as keyof TimelineData],
                   config?.value as keyof TimelineData,
                   (config?.value === TYPES.ROAMING)
-                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData)
-                }
+                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
+                  checkRollup(config?.value, startDate)
+                )}
               </Col>
               <Col
                 span={17}
@@ -203,7 +210,7 @@ export function TimeLine (props: TimeLineProps) {
                   </React.Fragment>
                 ))}
             </React.Fragment>
-          ))}
+          })}
         </Row>
       </Col>
       <Col flex='auto'>
@@ -215,16 +222,15 @@ export function TimeLine (props: TimeLineProps) {
                 index={index}
                 style={{ width: 'auto', marginBottom: 8 }}
                 data={getChartData(
-        config?.value as keyof TimelineData,
-        TimelineData.connectionEvents.all,
-        expandObj[config?.value as keyof TimelineData],
-        !Array.isArray(qualities) ? qualities.all : [],
-        Array.isArray(incidents) ? incidents : [],
-        {
-          ...roamingEventsTimeSeries,
-          [ALL]: TimelineData.roaming.all
-        } as RoamingTimeSeriesData[]
-                )}
+                  config?.value as keyof TimelineData,
+                  TimelineData.connectionEvents.all,
+                  expandObj[config?.value as keyof TimelineData],
+                  !Array.isArray(qualities) ? qualities.all : [],
+                  Array.isArray(incidents) ? incidents : [],
+                  {
+                    ...roamingEventsTimeSeries,
+                    [ALL]: TimelineData.roaming.all
+                  } as RoamingTimeSeriesData[] )}
                 showResetZoom={config?.showResetZoom}
                 chartBoundary={chartBoundary}
                 hasXaxisLabel={config?.hasXaxisLabel}
@@ -249,6 +255,8 @@ export function TimeLine (props: TimeLineProps) {
                 sharedChartName={sharedChartName}
                 popoverRef={popoverRef}
                 onChartReady={onChartReady}
+                startDate={startDate}
+                value={config?.value}
               />
             </Col>
           ))}

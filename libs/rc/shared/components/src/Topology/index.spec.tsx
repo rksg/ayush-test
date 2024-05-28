@@ -3,14 +3,14 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                                                                   from '@acx-ui/rc/services'
-import { CommonUrlsInfo, TopologyDeviceStatus, DeviceTypes, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                            from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within }                                     from '@acx-ui/test-utils'
+import { venueApi }                                                from '@acx-ui/rc/services'
+import { CommonUrlsInfo, ShowTopologyFloorplanOn, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                         from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within }  from '@acx-ui/test-utils'
 
 import { TopologyTreeContext } from './TopologyTree/TopologyTreeContext'
 
-import { DeviceIcon, TopologyGraph } from '.'
+import { TopologyGraph } from '.'
 
 
 jest.mock('@acx-ui/analytics/components', () => ({
@@ -516,30 +516,5 @@ describe('Topology', () => {
     await userEvent.click(collapseButton[0])
     const expandButton = await screen.findAllByTestId('expandButton')
     await userEvent.click(expandButton[0])
-  })
-
-
-  it('should render device icons correctly', async () => {
-    const params = {
-      tenantId: 'fe892a451d7a486bbb3aee929d2dfcd1',
-      venueId: '7231da344778480d88f37f0cca1c534f'
-    }
-    const { container } = render(<Provider>
-      <DeviceIcon deviceType={DeviceTypes.Switch} deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.SwitchStack}
-        deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.Ap} deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.Cloud} deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.ApMesh} deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.ApMeshRoot}
-        deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.ApWired}
-        deviceStatus={TopologyDeviceStatus.Operational} />
-      <DeviceIcon deviceType={DeviceTypes.Unknown} deviceStatus={TopologyDeviceStatus.Unknown} />
-    </Provider>,{
-      route: { params }
-    })
-
-    expect(container).toMatchSnapshot()
   })
 })

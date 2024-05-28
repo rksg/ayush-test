@@ -7,7 +7,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Button, GridRow, Loader, NestedTableExpandableDefaultConfig, Table, TableProps }  from '@acx-ui/components'
 import { EdgeLagMemberStatus, EdgeLagStatus, EdgeLagTimeoutEnum, getEdgePortIpModeString } from '@acx-ui/rc/utils'
 import { useTenantLink }                                                                   from '@acx-ui/react-router-dom'
-import { hasAccess }                                                                       from '@acx-ui/user'
+import { EdgeScopes }                                                                      from '@acx-ui/types'
+import { hasPermission }                                                                   from '@acx-ui/user'
 import { getIntl }                                                                         from '@acx-ui/utils'
 
 interface LagsTabProps {
@@ -100,7 +101,7 @@ export const LagsTab = (props: LagsTabProps) => {
 
   return (
     <GridRow justify='end'>
-      {hasAccess() && isConfigurable &&
+      {hasPermission({ scopes: [EdgeScopes.UPDATE] }) && isConfigurable &&
       <Button
         size='small'
         type='link'

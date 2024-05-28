@@ -5,8 +5,8 @@ import { NetworkSegmentationUrls } from './networkSegmentationUrls'
 export const NetworkSegmentationRbacUrls: { [key: string]: ApiInfo } = {
   ...NetworkSegmentationUrls,
   getWebAuthTemplateSwitches: {
-    method: 'post',
+    method: 'get',
     newApi: true,
-    url: '/webAuthPageTemplates/:templateId/switches/query'
+    url: '/webAuthPageTemplates/:serviceId/switches/query'
   }
 }

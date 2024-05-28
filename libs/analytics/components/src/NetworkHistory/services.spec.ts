@@ -3,7 +3,7 @@ import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import { DateRange }            from '@acx-ui/utils'
 
-import { api, calcGranularity } from './services'
+import { api } from './services'
 
 describe('networkHistoryWidgetApi', () => {
   const props: AnalyticsFilter = {
@@ -54,20 +54,5 @@ describe('networkHistoryWidgetApi', () => {
     expect(status).toBe('rejected')
     expect(data).toBe(undefined)
     expect(error).not.toBe(undefined)
-  })
-  it('should return correct granularity', () => {
-    const data = [{
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-02T00:00:00+08:00' },
-      output: 'PT30M'
-    }, {
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-02-02T00:00:00+08:00' },
-      output: 'PT72H'
-    }, {
-      input: { start: '2022-01-01T00:00:00+08:00', end: '2022-01-01T00:10:00+08:00' },
-      output: 'PT180S'
-    }]
-    data.forEach(({ input, output }) =>
-      expect(calcGranularity(input.start, input.end)).toStrictEqual(output)
-    )
   })
 })

@@ -49,7 +49,6 @@ import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { AuthAccServerSetting }                                                                     from './AuthAccServerSetting'
 import { AuthAccServerSummary }                                                                     from './AuthAccServerSummary'
 import { DhcpCheckbox }                                                                             from './DhcpCheckbox'
 import { RedirectUrlInput }                                                                         from './RedirectUrlInput'
@@ -67,8 +66,6 @@ export function WISPrForm () {
     setData
   } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
-  const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
-  const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
   const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
@@ -599,7 +596,7 @@ export function WISPrForm () {
             </Checkbox>
           }
         />
-        {enableWISPREncryptMacIP && <Form.Item
+        <Form.Item
           name={['guestPortal','wisprPage', 'encryptMacIpEnabled']}
           valuePropName='checked'
           initialValue={true}
@@ -608,32 +605,30 @@ export function WISPrForm () {
               {$t({ defaultMessage: 'Enable the encryption for users’ MAC and IP addresses' })}
             </Checkbox>
           }
-        />}
+        />
         <DhcpCheckbox />
         <BypassCaptiveNetworkAssistantCheckbox />
         <WalledGardenTextArea
           enableDefaultWalledGarden={false} />
         {!regionOption &&
          isOtherProvider &&
-         (enableWISPRAlwaysAccept ?
-           <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
-             <WISPrAuthAccServer
-               onClickAuth={() => {
-                 dispatch(statesCollection.useOnlyAuth)
-                 let mutableData = _.cloneDeep(data) ?? {}
-                 _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.RADIUS)
-                 setData && setData(mutableData)
-               }}
-               onClickAllAccept={() => {
-                 dispatch(statesCollection.useAllAccept)
-                 let mutableData = _.cloneDeep(data) ?? {}
-                 _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.ALWAYS_ACCEPT)
-                 _.unset(mutableData, 'guestPortal.wisprPage.authRadius')
-                 setData && setData(mutableData)
-               }}
-             />
-           </WISPrAuthAccContext.Provider>
-           : <AuthAccServerSetting/>)
+          <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
+            <WISPrAuthAccServer
+              onClickAuth={() => {
+                dispatch(statesCollection.useOnlyAuth)
+                let mutableData = _.cloneDeep(data) ?? {}
+                _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.RADIUS)
+                setData && setData(mutableData)
+              }}
+              onClickAllAccept={() => {
+                dispatch(statesCollection.useAllAccept)
+                let mutableData = _.cloneDeep(data) ?? {}
+                _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.ALWAYS_ACCEPT)
+                _.unset(mutableData, 'guestPortal.wisprPage.authRadius')
+                setData && setData(mutableData)
+              }}
+            />
+          </WISPrAuthAccContext.Provider>
         }
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
       </GridCol>

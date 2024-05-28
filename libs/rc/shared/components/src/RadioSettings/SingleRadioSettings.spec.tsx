@@ -4,6 +4,7 @@ import { Form }  from 'antd'
 
 
 import { useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { Provider }                from '@acx-ui/store'
 import { cleanup, render, screen } from '@acx-ui/test-utils'
 
@@ -17,7 +18,7 @@ import { ApRadioTypeEnum,
 import { SingleRadioSettings } from './SingleRadioSettings'
 
 
-describe.skip('SignaleRadioSettings component', () => {
+describe('SignaleRadioSettings component', () => {
 
   const validRadioChannels = {
     '2.4GChannels': {
@@ -294,14 +295,16 @@ describe.skip('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <Provider>
-        <Form>
-          <SingleRadioSettings
-            radioType={radioType}
-            bandwidthOptions={bandwidthOptions}
-            supportChannels={supportCh}
-            onResetDefaultValue={resetToDefaultSpy}
-          />
-        </Form>
+        <Router>
+          <Form>
+            <SingleRadioSettings
+              radioType={radioType}
+              bandwidthOptions={bandwidthOptions}
+              supportChannels={supportCh}
+              onResetDefaultValue={resetToDefaultSpy}
+            />
+          </Form>
+        </Router>
       </Provider>
     )
 
@@ -341,14 +344,16 @@ describe.skip('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <Provider>
-        <Form>
-          <SingleRadioSettings
-            radioType={radioType}
-            bandwidthOptions={bandwidthOptions}
-            supportChannels={supportCh}
-            onResetDefaultValue={resetToDefaultSpy}
-          />
-        </Form>
+        <Router>
+          <Form>
+            <SingleRadioSettings
+              radioType={radioType}
+              bandwidthOptions={bandwidthOptions}
+              supportChannels={supportCh}
+              onResetDefaultValue={resetToDefaultSpy}
+            />
+          </Form>
+        </Router>
       </Provider>
     )
 
@@ -393,14 +398,16 @@ describe.skip('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <Provider>
-        <Form>
-          <SingleRadioSettings
-            radioType={radioType}
-            bandwidthOptions={bandwidthOptions}
-            supportChannels={supportCh}
-            onResetDefaultValue={resetToDefaultSpy}
-          />
-        </Form>
+        <Router>
+          <Form>
+            <SingleRadioSettings
+              radioType={radioType}
+              bandwidthOptions={bandwidthOptions}
+              supportChannels={supportCh}
+              onResetDefaultValue={resetToDefaultSpy}
+            />
+          </Form>
+        </Router>
       </Provider>
     )
 
@@ -437,15 +444,17 @@ describe.skip('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <Provider>
-        <Form>
-          <SingleRadioSettings
-            context='ap'
-            radioType={radioType}
-            bandwidthOptions={bandwidthOptions}
-            supportChannels={supportCh}
-            isUseVenueSettings={false}
-          />
-        </Form>
+        <Router>
+          <Form>
+            <SingleRadioSettings
+              context='ap'
+              radioType={radioType}
+              bandwidthOptions={bandwidthOptions}
+              supportChannels={supportCh}
+              isUseVenueSettings={false}
+            />
+          </Form>
+        </Router>
       </Provider>
     )
 
@@ -477,15 +486,17 @@ describe.skip('SignaleRadioSettings component', () => {
 
     const { asFragment } = render (
       <Provider>
-        <Form>
-          <SingleRadioSettings
-            context='ap'
-            radioType={radioType}
-            bandwidthOptions={bandwidthOptions}
-            supportChannels={supportCh}
-            isUseVenueSettings={false}
-          />
-        </Form>
+        <Router>
+          <Form>
+            <SingleRadioSettings
+              context='ap'
+              radioType={radioType}
+              bandwidthOptions={bandwidthOptions}
+              supportChannels={supportCh}
+              isUseVenueSettings={false}
+            />
+          </Form>
+        </Router>
       </Provider>
     )
 
@@ -524,13 +535,15 @@ describe.skip('SignaleRadioSettings component', () => {
 
     render (
       <Provider>
-        <Form>
-          <SingleRadioSettings
-            radioType={radioType}
-            bandwidthOptions={bandwidthOptions}
-            supportChannels={supportCh}
-          />
-        </Form>
+        <Router>
+          <Form>
+            <SingleRadioSettings
+              radioType={radioType}
+              bandwidthOptions={bandwidthOptions}
+              supportChannels={supportCh}
+            />
+          </Form>
+        </Router>
       </Provider>
     )
 

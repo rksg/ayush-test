@@ -5,9 +5,9 @@ import { CarouselRef }       from 'antd/lib/carousel'
 import _                     from 'lodash'
 import { useIntl }           from 'react-intl'
 
-import { defaultSort, sortProp }                   from '@acx-ui/analytics/utils'
-import { Button, Card, Loader, Table, TableProps } from '@acx-ui/components'
-import { getIntl }                                 from '@acx-ui/utils'
+import { defaultSort, overlapsRollup, sortProp }                      from '@acx-ui/analytics/utils'
+import { Button, Card, Loader, Table, TableProps, NoGranularityText } from '@acx-ui/components'
+import { getIntl }                                                    from '@acx-ui/utils'
 
 import { concatMismatchedVlans } from '../ImpactedSwitchVLANDetails'
 
@@ -21,28 +21,38 @@ import * as UI from './styledComponents'
 
 import type { ChartProps } from '../types.d'
 
-export function ImpactedSwitchVLANsTable ({ incident: { id } }: ChartProps) {
+export function ImpactedSwitchVLANsTable ({ incident }: ChartProps) {
   const { $t } = useIntl()
-  const response = useImpactedSwitchVLANsQuery({ id }, { selectFromResult: (response) => {
-    const filteredResponse = response.data?.reduce((agg, row) => {
-      const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
-      if (!agg[key]) agg[key] = { ...row, key }
-      return agg
-    }, {} as Record<string, ImpactedSwitchPortRow>) ?? {}
-    const result = Object.values(filteredResponse).map((item, index) => ({ ...item, index }))
-    const rows = result.map(concatMismatchedVlans)
-    return { ...response, data: rows }
-  } })
+  const { id } = incident
+  const druidRolledup = overlapsRollup(incident.endTime)
+
+  const response = useImpactedSwitchVLANsQuery({ id },
+    { skip: druidRolledup, selectFromResult: (response) => {
+      const filteredResponse = response.data?.reduce((agg, row) => {
+        const key = [row.portMac, row.connectedDevice.portMac].sort().join('-')
+        if (!agg[key]) agg[key] = { ...row, key }
+        return agg
+      }, {} as Record<string, ImpactedSwitchPortRow>) ?? {}
+      const result = Object.values(filteredResponse).map((item, index) => ({ ...item, index }))
+      const rows = result.map(concatMismatchedVlans)
+      return { ...response, data: rows }
+    } })
+
   const [selected, setSelected] = useState(0)
 
   return <Loader states={[response]}>
     <Card title={$t({ defaultMessage: 'Impacted Switches' })} type='no-border'>
-      <VLANsTable data={response.data!} {...{ selected, onChange: setSelected }} />
-      <MismatchConnectionCarousel
-        data={response.data!}
-        current={selected}
-        onChange={setSelected}
-      />
+      {druidRolledup
+        ? <NoGranularityText />
+        : <>
+          <VLANsTable data={response.data!} {...{ selected, onChange: setSelected }} />
+          <MismatchConnectionCarousel
+            data={response.data!}
+            current={selected}
+            onChange={setSelected}
+          />
+        </>
+      }
     </Card>
   </Loader>
 }

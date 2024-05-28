@@ -4,12 +4,25 @@ import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                                                                                          from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                                                                 from '../../models/EdgeEnum'
-import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeSerialNumber, EdgeStatus, PRODUCT_CODE_VIRTUAL_EDGE } from '../../types'
-import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                                                from '../../validator'
+import { IpUtilsService }                                                          from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
+import {
+  ClusterNetworkSettings,
+  EdgeAlarmSummary,
+  EdgeLag,
+  EdgeLagStatus,
+  EdgePort,
+  EdgePortStatus,
+  EdgePortWithStatus,
+  EdgeSerialNumber,
+  EdgeStatus,
+  EdgeSubInterface
+} from '../../types'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
 const Netmask = require('netmask').Netmask
+const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
+const physicalSmartEdgeSerialRegex = '(9[1-9]|[1-4][0-9]|5[0-2])\\d{10}'
 
 export const edgePhysicalPortInitialConfigs = {
   portType: EdgePortTypeEnum.UNCONFIGURED,
@@ -160,6 +173,16 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
   return payload
 }
 
+export const convertEdgeSubinterfaceToApiPayload = (formData: EdgeSubInterface) => {
+  const payload = { ...formData }
+  if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+    payload.ip = ''
+    payload.subnet = ''
+  }
+
+  return payload
+}
+
 export const getEdgePortDisplayName = (port: EdgePort | EdgePortStatus | undefined) => {
   return _.capitalize(port?.interfaceName)
 }
@@ -201,34 +224,22 @@ export const getSuggestedIpRange = (ipAddress?: string, subnetMask?: string) => 
 
 export const edgeSerialNumberValidator = async (value: string) => {
   const { $t } = getIntl()
-  if (value.startsWith(PRODUCT_CODE_VIRTUAL_EDGE)) {
-    return validateVirtualEdgeSerialNumber(value)
-  }
-  return Promise.reject($t(validationMessages.invalid))
-}
-
-const validateVirtualEdgeSerialNumber = (value: string) => {
-  const { $t } = getIntl()
-
-  if (!new RegExp(/^[0-9a-z]+$/i).test(value)) {
+  if (!new RegExp(`^(${vSmartEdgeSerialRegex}|${physicalSmartEdgeSerialRegex})$`,'i').test(value)) {
     return Promise.reject($t(validationMessages.invalid))
   }
-
-  if (value.length !== 34) {
-    return Promise.reject($t({
-      defaultMessage: 'Field must be exactly 34 characters'
-    }))
-  }
-
   return Promise.resolve()
 }
 
-const isVirtualEdgeSerial = (value: string) => {
+export const isVirtualEdgeSerial = (value: string) => {
   return new RegExp(/^96[0-9A-Z]{32}$/i).test(value)
 }
 
 export const deriveEdgeModel = (serial: string) => {
   return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
+}
+
+export const isOtpEnrollmentRequired = (serial: string) => {
+  return isVirtualEdgeSerial(serial)
 }
 
 export const optionSorter = (

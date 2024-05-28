@@ -248,7 +248,9 @@ export function ServiceGuardTable () {
         type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
-        rowSelection={hasPermission() && { type: 'radio' }}
+        rowSelection={
+          hasPermission({ permission: 'WRITE_SERVICE_VALIDATION' }) && { type: 'radio' }
+        }
         rowActions={filterByAccess(rowActions)}
         rowKey='id'
         showSorterTooltip={false}

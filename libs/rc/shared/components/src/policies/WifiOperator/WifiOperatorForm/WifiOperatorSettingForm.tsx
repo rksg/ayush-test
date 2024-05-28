@@ -2,10 +2,10 @@ import { Button, Form, Input, Space } from 'antd'
 import TextArea                       from 'antd/lib/input/TextArea'
 import { useIntl }                    from 'react-intl'
 
-import { Select, Subtitle }                                                from '@acx-ui/components'
-import { useGetWifiOperatorListQuery }                                     from '@acx-ui/rc/services'
-import { FriendlyName, domainNameWildcardRegExp, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
-import { useParams }                                                       from '@acx-ui/react-router-dom'
+import { Select, Subtitle }                                                                      from '@acx-ui/components'
+import { useGetWifiOperatorListQuery }                                                           from '@acx-ui/rc/services'
+import { FriendlyName, checkObjectNotExists, domainNameWildcardRegExp, servicePolicyNameRegExp } from '@acx-ui/rc/utils'
+import { useParams }                                                                             from '@acx-ui/react-router-dom'
 
 import { FriendlyNameEnum }        from '../constants'
 import { friendlyNameEnumOptions } from '../contentMaps'
@@ -13,14 +13,9 @@ import { friendlyNameEnumOptions } from '../contentMaps'
 import { DeleteOutlinedIcon } from './styledComponents'
 
 
-type WifiOperatorSettingFormProps = {
-  edit: boolean
-}
-
-const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
+const WifiOperatorSettingForm = () => {
   const { $t } = useIntl()
   const { useWatch } = Form
-  const { edit } = props
   const params = useParams()
 
   const [friendlyNames] = [useWatch<FriendlyName[]>('friendlyNames')]
@@ -28,6 +23,7 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
   const friendlyNameKeys = Object.keys(FriendlyNameEnum) as Array<keyof typeof FriendlyNameEnum>
   const friendlyNameLanguageOptions = friendlyNameKeys.map(key =>
     ( { value: key, label: $t(friendlyNameEnumOptions[FriendlyNameEnum[key]]) }))
+
   const { data } = useGetWifiOperatorListQuery({
     params,
     payload: {
@@ -36,31 +32,33 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
     }
   })
 
-  const nameValidator = async (_rule: unknown, value: string) => {
-    const policyId = edit ? params.policyId : ''
-    return new Promise<void>((resolve, reject) => {
-      if (!edit && value
-        && data?.data.length
-        && data?.data.filter(item => item.id !== policyId)
-          .findIndex((wifiOperator) => wifiOperator.name === value) !== -1
-      ) {
-        return reject(
-          $t({ defaultMessage: 'The Wi-Fi Operator with that name already exists' })
-        )
-      }
-      return resolve()
-    })
+  const nameValidator = (value: string) => {
+    if (data?.data && value) {
+      const list = data.data
+        .filter(n => n.id !== params.policyId)
+        .map(n => n.name)
+
+      return checkObjectNotExists(list, value, $t({ defaultMessage: 'Wi-Fi Operator' }))
+    }
+    return Promise.resolve()
   }
 
+  const domainNamesValidator = (value: string) => {
+    if (value) {
+      let namesSplit: string[] = value.split(/\r?\n/)
+      return domainNameWildcardRegExp(namesSplit)
+    }
+    return Promise.resolve()
+  }
+
+
   const validateDuplicateLangauage = (langCode: string) => {
-    return new Promise<void>((resolve, reject) => {
-      if (friendlyNames.filter(item => {return item.language === langCode}).length > 1) {
-        return reject(
-          $t({ defaultMessage: 'Duplicate language' })
-        )
+    if (langCode) {
+      if (friendlyNames.filter(item => item.language === langCode).length > 1) {
+        return Promise.reject($t({ defaultMessage: 'Duplicate language' }))
       }
-      return resolve()
-    })
+    }
+    return Promise.resolve()
   }
 
   return (
@@ -72,8 +70,8 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
           { required: true },
           { min: 2 },
           { max: 32 },
-          { validator: nameValidator },
-          { validator: (_, value) => servicePolicyNameRegExp(value) }
+          { validator: (_, value) => servicePolicyNameRegExp(value) },
+          { validator: (_, value) => nameValidator(value) }
         ]}
         validateFirst
         hasFeedback
@@ -85,14 +83,10 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
         label={$t({ defaultMessage: 'Domain' })}
         rules={[
           { required: true },
-          { validator: (_, value) => {
-            let namesSplit: string[] = value.split(/\r?\n/)
-            return domainNameWildcardRegExp(namesSplit)
-          }
-          }
+          { validator: (_, value) => domainNamesValidator(value) }
         ]}
         initialValue={''}
-        children={<TextArea rows={8} placeholder={$t({ defaultMessage: 'On domain per line' })}/>}
+        children={<TextArea rows={8} placeholder={$t({ defaultMessage: 'One domain per line' })}/>}
       />
       <Subtitle level={3}>
         { $t({ defaultMessage: 'Operator Friendly Name' }) }
@@ -138,14 +132,16 @@ const WifiOperatorSettingForm = (props: WifiOperatorSettingFormProps) => {
                 }
               </Space>
             )}
-            <Button type='link'
-              data-testid='addFriendlyNameBtn'
-              style={{ textAlign: 'left' }}
-              onClick={() => {
-                add(undefined, fields.length)
-              }}>
-              {$t({ defaultMessage: 'Add another name' })}
-            </Button>
+            {(fields.length < friendlyNameKeys.length) &&
+              <Button type='link'
+                data-testid='addFriendlyNameBtn'
+                style={{ textAlign: 'left' }}
+                onClick={() => {
+                  add(undefined, fields.length)
+                }}>
+                {$t({ defaultMessage: 'Add another name' })}
+              </Button>
+            }
           </>
         )}
       </Form.List>

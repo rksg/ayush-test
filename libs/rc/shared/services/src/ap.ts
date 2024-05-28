@@ -58,7 +58,10 @@ import {
   ApGroupViewModel,
   ApManagementVlan,
   ApFeatureSet,
-  ApAntennaTypeSettings
+  ApAntennaTypeSettings,
+  ApiVersionType,
+  GetApiVersionHeader,
+  WifiRbacUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -717,8 +720,11 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApDirectedMulticast: build.query<ApDirectedMulticast, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApDirectedMulticast, params)
+      query: ({ params, payload }) => {
+        const { rbacApiVersion } = (payload || {}) as ApiVersionType
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req
         }
@@ -738,14 +744,20 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     updateApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApDirectedMulticast, params)
+        const { rbacApiVersion, ...config } = payload as (ApiVersionType & ApDirectedMulticast)
+        const urlsInfo = rbacApiVersion ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const configPayload = rbacApiVersion ? JSON.stringify(config) : config
+
+        const req = createHttpRequest(urlsInfo.updateApDirectedMulticast, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: configPayload
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }]
     }),
+    // deprecated! RBAC API will use the updateApDirectedMulticast to replace.
     resetApDirectedMulticast: build.mutation<ApDirectedMulticast, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.resetApDirectedMulticast, params)

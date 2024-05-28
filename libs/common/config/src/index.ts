@@ -15,6 +15,7 @@ type commonEnvironment = {
   STATIC_ASSETS: string
   SPLIT_PROXY_ENDPOINT: string
   DRUID_RETAIN_PERIOD_DAYS: string
+  DRUID_ROLLUP_DAYS: string
 }
 
 type R1Environment = {
@@ -40,7 +41,6 @@ type RAEnvironment = {
   MLISA_VERSION: string
   MLISA_UI_USER_TRACKING: string
   MLISA_LOGOUT_URL: string
-  DRUID_ROLLUP_DAYS: string
   ENABLED_FEATURES: string
 }
 

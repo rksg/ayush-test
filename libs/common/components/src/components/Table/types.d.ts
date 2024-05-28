@@ -162,6 +162,7 @@ export type RecordWithChildren <RecordType> = RecordType & {
 
 export type TableAction = {
   key?: string
+  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[]
   label: string
   disabled?: boolean
   tooltip?: string

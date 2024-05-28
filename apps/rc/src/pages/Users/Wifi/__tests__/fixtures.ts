@@ -1,4 +1,4 @@
-export const GuestClient = {
+export const GuestList = {
   totalCount: 34,
   page: 1,
   data: [
@@ -9,12 +9,12 @@ export const GuestClient = {
       expiryDate: '0',
       emailAddress: '',
       guestType: 'type',
-      ssid: 'guest pass wlan',
-      networkId: '',
+      wifiNetworkId: 'tenant-id',
       passDurationHours: 1,
       guestStatus: 'Expired',
       notes: '',
-      maxNumberOfClients: -1
+      maxNumberOfClients: -1,
+      devicesMac: []
     },
     {
       name: 'test2',
@@ -24,12 +24,12 @@ export const GuestClient = {
       mobilePhoneNumber: '+12015550123',
       emailAddress: '',
       guestType: 'SelfSign',
-      ssid: 'guest pass wlan',
-      networkId: 'tenant-id',
+      wifiNetworkId: 'tenant-id',
       passDurationHours: '',
       guestStatus: 'Not Applicable',
       notes: '',
-      maxNumberOfClients: ''
+      maxNumberOfClients: '',
+      devicesMac: []
     },
     {
       name: 'test3',
@@ -38,12 +38,12 @@ export const GuestClient = {
       expiryDate: '2022-12-28T08:15:14.695Z',
       emailAddress: '',
       guestType: 'HostGuest',
-      ssid: 'guest pass wlan',
-      networkId: 'tenant-id',
+      wifiNetworkId: 'tenant-id',
       passDurationHours: 720,
       guestStatus: 'Offline',
       notes: '',
-      maxNumberOfClients: 3
+      maxNumberOfClients: 3,
+      devicesMac: []
     },
     {
       name: 'test4',
@@ -52,33 +52,31 @@ export const GuestClient = {
       mobilePhoneNumber: '+886933222333',
       emailAddress: 'a@email.com',
       guestType: 'GuestPass',
-      ssid: 'guest pass wlan',
-      networkId: 'tenant-id',
+      wifiNetworkId: 'tenant-id',
       passDurationHours: 168,
       guestStatus: 'Online (1)',
       notes: '',
       maxNumberOfClients: 2,
-      clients: [
-        {
-          osType: 'ios',
-          healthCheckStatus: 'good',
-          clientMac: 'AA:AA:AA:AA:AA:AA',
-          ipAddress: '1.1.1.1',
-          username: 'user',
-          hostname: 'host',
-          venueId: '0004e252a9d04180855813131d007aca',
-          venueName: 'testVenue',
-          apMac: 'BB:BB:BB:BB:BB:BB',
-          apSerialNumber: '422039000038',
-          apName: 'testAp',
-          switchSerialNumber: '',
-          switchName: '',
-          networkId: 'tenant-id',
-          networkName: 'guest pass wlan',
-          networkSsid: 'guest pass wlan',
-          connectSince: '2022-11-28T14:55:15.924Z'
-        }
-      ]
+      devicesMac: ['AA:AA:AA:AA:AA:AA'],
+      clients: [{
+        osType: 'ios',
+        healthCheckStatus: 'good',
+        clientMac: 'AA:AA:AA:AA:AA:AA',
+        ipAddress: '1.1.1.1',
+        username: 'user',
+        hostname: 'host',
+        venueId: '0004e252a9d04180855813131d007aca',
+        venueName: 'testVenue',
+        apMac: 'BB:BB:BB:BB:BB:BB',
+        apSerialNumber: '422039000038',
+        apName: 'testAp',
+        switchSerialNumber: '',
+        switchName: '',
+        networkId: 'tenant-id',
+        networkName: 'guest pass wlan',
+        networkSsid: 'guest pass wlan',
+        connectSince: '2022-11-28T14:55:15.924Z'
+      }]
     },
     {
       name: 'disable_client',
@@ -87,27 +85,53 @@ export const GuestClient = {
       expiryDate: '2022-12-28T08:15:14.695Z',
       emailAddress: '',
       guestType: 'GuestPass',
-      ssid: 'guest pass wlan',
-      networkId: '3f04e252a9d04180855813131d007000',
+      wifiNetworkId: '3f04e252a9d04180855813131d007000',
       passDurationHours: 168,
       guestStatus: 'Disabled',
       notes: '',
-      maxNumberOfClients: 3
+      maxNumberOfClients: 3,
+      devicesMac: []
     },
     {
       name: 'test5',
       id: '37a626e9-5d97-4349-b7a5-8822c62d3bf5',
       creationDate: '2022-11-28T08:15:14.690Z',
-      expiryDate: '2022-12-28T08:15:14.695Z',
+      expiryDate: '2025-12-28T08:15:14.695Z',
       mobilePhoneNumber: '+12015550321',
       emailAddress: '',
       guestType: 'GuestPass',
-      ssid: 'guest pass wlan',
-      networkId: 'tenant-id',
+      wifiNetworkId: 'tenant-id',
       passDurationHours: 720,
       guestStatus: 'Offline',
       notes: '',
-      maxNumberOfClients: 3
+      maxNumberOfClients: 3,
+      devicesMac: []
+    }
+  ]
+}
+
+export const GuestClients = {
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      osType: 'ios',
+      healthCheckStatus: 'good',
+      clientMac: 'AA:AA:AA:AA:AA:AA',
+      ipAddress: '1.1.1.1',
+      username: 'user',
+      hostname: 'host',
+      venueId: '0004e252a9d04180855813131d007aca',
+      venueName: 'testVenue',
+      apMac: 'BB:BB:BB:BB:BB:BB',
+      apSerialNumber: '422039000038',
+      apName: 'testAp',
+      switchSerialNumber: '',
+      switchName: '',
+      networkId: 'tenant-id',
+      networkName: 'guest pass wlan',
+      networkSsid: 'guest pass wlan',
+      connectSince: '2022-11-28T14:55:15.924Z'
     }
   ]
 }
@@ -141,27 +165,6 @@ export const UserProfile = {
   dogfood: false
 }
 
-export const GuestNetworkList = {
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      name: 'NMS-app6-GUEST',
-      id: '0189575828434f94a7c0b0e611379d26',
-      vlan: 1,
-      nwSubType: 'guest',
-      captiveType: 'GuestPass',
-      ssid: 'NMS-app6-GUEST',
-      venues: {
-        count: 1,
-        names: ['UI-TEST-VENUE']
-      },
-      aps: 3,
-      clients: 0
-    }
-  ]
-}
-
 export const RegenerateGuestPassword = {
   requestId: '96dcffb7-583a-499a-8305-def359adf8b4',
   response: {
@@ -188,20 +191,48 @@ export const RegenerateGuestPassword = {
   }
 }
 
+export const VenueList = {
+  fields: ['name', 'id'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '0004e252a9d04180855813131d007aca',
+      name: 'testVenue'
+    }
+  ]
+}
+
 export const AllowedNetworkList = {
-  fields: ['name', 'id', 'defaultGuestCountry'],
+  fields: ['name', 'id', 'defaultGuestCountry', 'captiveType'],
   totalCount: 2,
   page: 1,
   data: [
     {
       name: 'guest pass wlan1',
       id: 'tenant-id',
-      defaultGuestCountry: 'United States'
+      defaultGuestCountry: 'United States',
+      captiveType: 'GuestPass'
     },
     {
       name: 'guest pass wlan2',
       id: 'dasjk12359552a9d041813131d007aca',
-      defaultGuestCountry: 'United States'
+      defaultGuestCountry: 'United States',
+      captiveType: 'GuestPass'
+    }
+  ]
+}
+
+export const AllowedNetworkSingleList = {
+  fields: ['name', 'id', 'defaultGuestCountry', 'captiveType'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      name: 'guest pass wlan1',
+      id: 'tenant-id',
+      defaultGuestCountry: 'United States',
+      captiveType: 'GuestPass'
     }
   ]
 }
@@ -245,74 +276,57 @@ export const userProfile =
   varTenantId: '3061bd56e37445a8993ac834c01e2710'
 }
 
-export const AllowedNetworkSingleList = {
-  fields: ['name', 'id', 'defaultGuestCountry'],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      name: 'guest pass wlan1',
-      id: 'tenant-id',
-      defaultGuestCountry: 'United States'
-    }
-  ]
-}
-
 export const AddGuestPassResponse = {
   requestId: '3ba9cec3-38a9-4485-af84-4ff76473e10e',
-  response: [
-    {
-      id: '41272f2e-05e8-45ae-bfea-c6a1111c604a',
-      createdDate: 1670312604329,
-      lastModified: 1670312604329,
-      name: 'wifitest',
-      disabled: false,
-      networkId: 'tenant-id',
-      notes: '',
-      email: '',
-      mobilePhoneNumber: '+12052220123',
-      maxDevices: 3,
-      ssid: 'guest pass wlan',
-      deliveryMethods: ['PRINT'],
-      guestUserType: 'GuestPass',
-      expiration: {
-        activationType: 'Creation',
-        duration: 7,
-        unit: 'Day'
-      },
-      locale: 'en',
-      password: '796022',
-      expirationDate: 1670917404337
-    }
-  ]
+  response: {
+    id: '41272f2e-05e8-45ae-bfea-c6a1111c604a',
+    createdDate: 1670312604329,
+    lastModified: 1670312604329,
+    name: 'wifitest',
+    disabled: false,
+    wifiNetworkId: 'tenant-id',
+    notes: '',
+    email: '',
+    mobilePhoneNumber: '+12052220123',
+    maxDevices: 3,
+    ssid: 'guest pass wlan',
+    deliveryMethods: ['PRINT'],
+    guestUserType: 'GuestPass',
+    expiration: {
+      activationType: 'Creation',
+      duration: 7,
+      unit: 'Day'
+    },
+    locale: 'en',
+    password: '796022',
+    expirationDate: 1670917404337
+  }
 }
 
 export const AddGuestPassWihtoutExpirationResponse = {
   requestId: '3ba9cec3-38a9-4485-af84-4ff76473e10e',
-  response: [
-    {
-      id: '41272f2e-05e8-45ae-bfea-c6a1111c604a',
-      createdDate: 1670312604329,
-      lastModified: 1670312604329,
-      name: 'wifitest',
-      disabled: false,
-      networkId: 'tenant-id',
-      notes: '',
-      email: '',
-      mobilePhoneNumber: '+12052220123',
-      maxDevices: 3,
-      ssid: 'guest pass wlan',
-      deliveryMethods: ['PRINT'],
-      guestUserType: 'GuestPass',
-      expiration: {
-        activationType: 'Creation',
-        duration: 24,
-        unit: 'Hour'
-      },
-      locale: 'en',
-      password: '796022'
-    }
-  ]
+  response: {
+    id: '41272f2e-05e8-45ae-bfea-c6a1111c604a',
+    createdDate: 1670312604329,
+    lastModified: 1670312604329,
+    name: 'wifitest',
+    disabled: false,
+    wifiNetworkId: 'tenant-id',
+    notes: '',
+    email: '',
+    mobilePhoneNumber: '+12052220123',
+    maxDevices: 3,
+    ssid: 'guest pass wlan',
+    deliveryMethods: ['PRINT'],
+    guestUserType: 'GuestPass',
+    expiration: {
+      activationType: 'Creation',
+      duration: 24,
+      unit: 'Hour'
+    },
+    locale: 'en',
+    password: '796022'
+  }
 }
 
 

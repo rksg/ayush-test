@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps }                                  from '@acx-ui/components'
-import { SimpleListTooltip }                                        from '@acx-ui/rc/components'
 import { useGetWifiOperatorListQuery, useWifiNetworkListQuery }     from '@acx-ui/rc/services'
 import { NetworkType, NetworkTypeEnum, WifiNetwork, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                    from '@acx-ui/react-router-dom'
@@ -29,7 +28,7 @@ const WifiOperatorNetworkDetail = () => {
   const [networkFilters, setNetworkFilters] = useState<{ id: string[] }>({ id: [] })
 
   const defaultWifiOperatorPayload = {
-    fields: ['id', 'networkIds', 'friendlyNames', 'friendlyNameCount'],
+    fields: ['id', 'wifiNetworkIds', 'friendlyNames', 'friendlyNameCount'],
     searchString: '',
     filters: { id: [policyId] }
   }
@@ -64,11 +63,11 @@ const WifiOperatorNetworkDetail = () => {
       key: 'venues',
       sorter: true,
       render: (_, row) => {
-        if (!row.venueApGroups || row.venueApGroups?.length === 0) return 0
-
-        return <SimpleListTooltip
-          items={row.venueApGroups.map(v => v.venueId)}
-          displayText={row.venueApGroups.length} />
+        const venueCount = row.venueApGroups?.length
+        return <TenantLink
+          to={`/networks/wireless/${row.id}/network-details/venues`}
+          children={venueCount || 0}
+        />
       }
     }
   ]

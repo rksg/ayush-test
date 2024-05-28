@@ -49,6 +49,10 @@ describe('ApLldpNeighbors', () => {
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })

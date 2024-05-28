@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 
 import { renderHook, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { EdgePortTabEnum } from '../PortsForm'
+import { EdgePortTabEnum } from '../DeprecatedPortsForm'
 
 import { EditEdgeFormControlType, showUnsavedModal } from '.'
 

@@ -9,25 +9,38 @@ import {
   Loader,
   Drawer
 } from '@acx-ui/components'
-import { useGetSwitchAclsQuery }                                              from '@acx-ui/rc/services'
-import { Acl, AclTypeEnum, transformIPv6, transformTitleCase, useTableQuery } from '@acx-ui/rc/utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useGetSwitchAclsQuery }  from '@acx-ui/rc/services'
+import {
+  Acl,
+  AclTypeEnum,
+  SwitchViewModel,
+  transformIPv6,
+  transformTitleCase,
+  useTableQuery
+} from '@acx-ui/rc/utils'
 
 import { AclDetail } from './aclDetail'
 
-export function SwitchOverviewACLs () {
+export function SwitchOverviewACLs (props: {
+  switchDetail?: SwitchViewModel
+}) {
   const { $t } = useIntl()
+  const { switchDetail } = props
   const [currentRow, setCurrentRow] = useState({} as Acl)
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = useTableQuery({
     useQuery: useGetSwitchAclsQuery,
     defaultPayload: {},
+    enableRbac: isSwitchRbacEnabled,
+    apiParams: { venueId: (switchDetail?.venueId || '') as string },
     sorter: {
       sortField: 'name',
       sortOrder: 'ASC'
     }
   })
-
 
   const onClose = () => {
     setDrawerVisible(false)

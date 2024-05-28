@@ -1,88 +1,43 @@
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
-
-import { renderHook } from '@acx-ui/test-utils'
-
-import { getTenantId, useTenantId } from './getTenantId'
-
-const getWrapper = (initialEntries: string, appendedPath: string = '') =>
-  ({ children }: { children: React.ReactElement }) => (
-    <MemoryRouter initialEntries={[initialEntries]}>
-      <Routes>
-        <Route path={`/:tenantId/t${'/' + appendedPath}`} element={children} />
-        <Route path={`/:tenantId/v${'/' + appendedPath}`} element={children} />
-        <Route path='*' element={children} />
-      </Routes>
-    </MemoryRouter>
-  )
+import { getTenantId } from './getTenantId'
 
 describe('useTenantId', () => {
   const tenantId = '8b9e8338c81d404e986c1d651ca7fed0'
   const initPath = `/${tenantId}/t`
-
   beforeEach(() => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        ...window.location,
-        pathname: initPath
-      }
-    })})
-
-  it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual(tenantId)
+    jest.resetModules()
+    jest.doMock('@acx-ui/config', () => ({
+      get: jest.fn().mockReturnValue('')
+    }))
+    jest.doMock('react-router-dom', () => ({
+      useLocation: jest.fn().mockReturnValue({ pathname: initPath }),
+      useSearchParams: jest.fn().mockReturnValue([
+        new URLSearchParams('?selectedTenants=WyIwMDE1MDAwMDAwR2xJN1NBQVYiXQ==')
+      ])
+    }))
   })
-
-  it('tenant type t', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(initPath) }
-    )
-    expect(result.current).toEqual(tenantId)
+  it('returns URL tenantId by window.location', () => {
+    expect(require('./getTenantId').useTenantId()).toEqual(tenantId)
   })
-
-  it('other path', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(initPath, '/another/path') }
-    )
-
-    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
+  it('returns from parameter', () => {
+    expect(require('./getTenantId').useTenantId(initPath)).toEqual(tenantId)
   })
-})
-
-describe('tenant type v', () => {
-  const initPath = '/8b9e8338c81d404e986c1d651ca7fed0/v'
-  const { location } = window
-
-  beforeEach(() => {
-    Object.defineProperty(window, 'location', {
-      writable: true,
-      value: {
-        ...location,
-        pathname: initPath
-      }
-    })
+  it('returns tenantId for RAI', () => {
+    jest.doMock('@acx-ui/config', () => ({
+      get: jest.fn().mockReturnValue('true')
+    }))
+    expect(require('./getTenantId').useTenantId()).toEqual('0015000000GlI7SAAV')
   })
-
-  it('return URL tenantId by window.location', () => {
-    expect(getTenantId()).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
-  })
-
-  it('tenant type v', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(initPath) }
-    )
-    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
-  })
-
-  it('other path', () => {
-    const { result } = renderHook(
-      () => useTenantId(),
-      { wrapper: getWrapper(initPath, '/another/path') }
-    )
-
-    expect(result.current).toEqual('8b9e8338c81d404e986c1d651ca7fed0')
+  it('returns empty tenantId for RAI init', () => {
+    jest.doMock('@acx-ui/config', () => ({
+      get: jest.fn().mockReturnValue('true')
+    }))
+    jest.doMock('react-router-dom', () => ({
+      useLocation: jest.fn().mockReturnValue(() => ({ pathname: initPath })),
+      useSearchParams: jest.fn().mockReturnValue([
+        new URLSearchParams('?abc=1')
+      ])
+    }))
+    expect(require('./getTenantId').useTenantId()).toEqual(null)
   })
 })
 

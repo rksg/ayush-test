@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { Col, Row } from 'antd'
-import _            from 'lodash'
-import { useIntl }  from 'react-intl'
+import { Col, Row }            from 'antd'
+import _, { get, union, uniq } from 'lodash'
+import { useIntl }             from 'react-intl'
 
 import { Table, TableProps, Tooltip, showActionModal } from '@acx-ui/components'
 import {
@@ -17,7 +17,8 @@ import {
   isInterfaceInVRRPSetting,
   sortProp
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { LagDrawer } from './LagDrawer'
 
@@ -35,13 +36,15 @@ interface EdgeLagTableProps {
   onAdd: (serialNumber: string, data: EdgeLag) => Promise<void>
   onEdit: (serialNumber: string, data: EdgeLag) => Promise<void>
   onDelete: (serialNumber: string, id: string) => Promise<void>
+  actionScopes?: { [key in string]: ScopeKeys }
 }
 
 export const EdgeLagTable = (props: EdgeLagTableProps) => {
   const {
     clusterId = '', serialNumber = '', lagList,
     lagStatusList, portList, vipConfig = [],
-    onAdd, onEdit, onDelete
+    onAdd, onEdit, onDelete,
+    actionScopes
   } = props
   const { $t } = useIntl()
   const [lagDrawerVisible, setLagDrawerVisible] = useState(false)
@@ -161,6 +164,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
 
   const actionButtons = [
     {
+      scopeKey: get(actionScopes, 'add') ?? [EdgeScopes.CREATE],
       label: $t({ defaultMessage: 'Add LAG' }),
       onClick: () => {
         openDrawer()
@@ -177,14 +181,19 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     return false
   }
 
+  const editPermissionScopes = get(actionScopes, 'edit') ?? [EdgeScopes.UPDATE]
+  const deletePermissionScopes = get(actionScopes, 'delete') ?? [EdgeScopes.DELETE]
+
   const rowActions: TableProps<EdgeLagTableType>['rowActions'] = [
     {
+      scopeKey: editPermissionScopes,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (rows) => {
         openDrawer(rows[0])
       }
     },
     {
+      scopeKey: deletePermissionScopes,
       label: $t({ defaultMessage: 'Delete' }),
       disabled: (rows) => checkInterfacesInVRRPSetting(rows),
       tooltip: (rows) => {
@@ -211,6 +220,10 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: uniq(union(editPermissionScopes, deletePermissionScopes))
+  })
+
   return (
     <>
       <Table<EdgeLagTableType>
@@ -218,7 +231,7 @@ export const EdgeLagTable = (props: EdgeLagTableProps) => {
         dataSource={transToTableData(lagList, lagStatusList)}
         columns={columns}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && {
+        rowSelection={isSelectionVisible && {
           type: 'radio'
         }}
         rowKey='id'
