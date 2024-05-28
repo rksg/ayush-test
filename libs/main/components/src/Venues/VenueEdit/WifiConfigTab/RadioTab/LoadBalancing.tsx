@@ -45,11 +45,11 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const { setIsLoadOrBandBalaningEnabled } = props
-  const getLoadBalancing = useVenueConfigTemplateQueryFnSwitcher<VenueLoadBalancing>(
-    useGetVenueLoadBalancingQuery,
-    useGetVenueTemplateLoadBalancingQuery,
-    isWifiRbacEnabled
-  )
+  const getLoadBalancing = useVenueConfigTemplateQueryFnSwitcher<VenueLoadBalancing>({
+    useQueryFn: useGetVenueLoadBalancingQuery,
+    useTemplateQueryFn: useGetVenueTemplateLoadBalancingQuery,
+    enableRbac: isWifiRbacEnabled
+  })
 
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] = useVenueConfigTemplateMutationFnSwitcher(
     useUpdateVenueLoadBalancingMutation,

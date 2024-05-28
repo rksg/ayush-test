@@ -3,7 +3,7 @@ import { createContext, useEffect, useState } from 'react'
 import { showActionModal, CustomButtonProps, Loader }                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { useApViewModelQuery, useGetApCapabilitiesQuery, useGetApQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApModel, ApViewModel, VenueExtended }                                     from '@acx-ui/rc/utils'
+import { ApDeep,  ApViewModel, CapabilitiesApModel, VenueExtended }                        from '@acx-ui/rc/utils'
 import { useParams }                                                                       from '@acx-ui/react-router-dom'
 import { goToNotFound }                                                                    from '@acx-ui/user'
 import { getIntl }                                                                         from '@acx-ui/utils'
@@ -26,7 +26,7 @@ const tabs = {
 
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
-  apCapabilities?: ApModel
+  apCapabilities?: CapabilitiesApModel,
   venueData?: VenueExtended
 })
 
@@ -82,7 +82,7 @@ export function ApEdit () {
   const [apViewContextData, setApViewContextData] = useState({} as ApViewModel)
 
   const [apData, setApData] = useState<ApDeep>()
-  const [apCapabilities, setApCapabilities] = useState<ApModel>()
+  const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
   const {
@@ -94,6 +94,7 @@ export function ApEdit () {
       fields: ['name', 'serialNumber', 'venueId'],
       filters: { serialNumber: [params.serialNumber] }
     } }, { skip: !isWifiRbacEnabled })
+
   const {
     data: getedApData,
     isLoading: isGetApLoading
@@ -124,7 +125,7 @@ export function ApEdit () {
           const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
 
           setApData(getedApData)
-          setApCapabilities(curApCapabilities)
+          setApCapabilities(curApCapabilities as CapabilitiesApModel)
 
           setIsLoaded(true)
         }

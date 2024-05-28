@@ -39,4 +39,5 @@ describe('ReportList', () => {
       search: ''
     })
   })
+
 })

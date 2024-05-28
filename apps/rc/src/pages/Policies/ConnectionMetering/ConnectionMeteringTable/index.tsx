@@ -40,7 +40,8 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel
@@ -182,7 +183,8 @@ export default function ConnectionMeteringTable () {
         })
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1)
+      disabled: (selectedItems => selectedItems.length > 1),
+      scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -210,7 +212,8 @@ export default function ConnectionMeteringTable () {
                 console.log(e)
               })
           })
-      }
+      },
+      scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE]
     }
   ]
 
@@ -244,6 +247,7 @@ export default function ConnectionMeteringTable () {
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.CREATE
             })}
+            scopeKey={[WifiScopes.CREATE, EdgeScopes.CREATE]}
           >
             <Button type='primary'>
               { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
@@ -254,13 +258,15 @@ export default function ConnectionMeteringTable () {
       <Table
         enableApiFilter
         columns={useColumns(venueMap, propertyMap)}
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowSelection={{ type: 'radio' }}
+        rowSelection={hasPermission({
+          scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+        }) && { type: 'radio' }}
       />
     </Loader>
   )

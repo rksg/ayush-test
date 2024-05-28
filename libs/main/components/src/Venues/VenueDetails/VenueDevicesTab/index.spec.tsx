@@ -223,4 +223,5 @@ describe('Venue device tab', () => {
       search: ''
     })
   })
+
 })

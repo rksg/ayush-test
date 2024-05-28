@@ -58,11 +58,11 @@ export function ClientAdmissionControlSettings (props: { isLoadOrBandBalaningEna
 
   const { isLoadOrBandBalaningEnabled } = props
   // eslint-disable-next-line max-len
-  const getClientAdmissionControl = useVenueConfigTemplateQueryFnSwitcher<VenueClientAdmissionControl>(
-    useGetVenueClientAdmissionControlQuery,
-    useGetVenueTemplateClientAdmissionControlQuery,
-    isUseRbacApi
-  )
+  const getClientAdmissionControl = useVenueConfigTemplateQueryFnSwitcher<VenueClientAdmissionControl>({
+    useQueryFn: useGetVenueClientAdmissionControlQuery,
+    useTemplateQueryFn: useGetVenueTemplateClientAdmissionControlQuery,
+    enableRbac: isUseRbacApi
+  })
   const [ updateClientAdmissionControl, { isLoading: isUpdatingClientAdmissionControl }] =
     useVenueConfigTemplateMutationFnSwitcher(
       useUpdateVenueClientAdmissionControlMutation,

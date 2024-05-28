@@ -116,11 +116,11 @@ export function SecurityTab () {
     useTemplateMutationFn: useUpdateVenueRogueApTemplateMutation
   })
 
-  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
-    useGetDenialOfServiceProtectionQuery,
-    useGetVenueTemplateDoSProtectionQuery,
-    isUseRbacApi
-  )
+  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>({
+    useQueryFn: useGetDenialOfServiceProtectionQuery,
+    useTemplateQueryFn: useGetVenueTemplateDoSProtectionQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetVenueRogueApQuery,

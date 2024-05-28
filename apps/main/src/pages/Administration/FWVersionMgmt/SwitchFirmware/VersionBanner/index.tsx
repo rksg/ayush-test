@@ -2,6 +2,7 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetSwitchDefaultFirmwareListQuery,
@@ -14,10 +15,17 @@ import { getReleaseFirmware } from '../../FirmwareUtils'
 
 export const VersionBanner = () => {
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { $t } = useIntl()
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
-  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({ params })
+  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
 

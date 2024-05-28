@@ -8,6 +8,7 @@ import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }   
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { VenueUtilityContext }           from '..'
 import { VenueEditContext, EditContext } from '../..'
 import {
   venueData,
@@ -34,6 +35,15 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
+const mockAdvancedTab = (
+  <VenueUtilityContext.Provider value={{
+    venueApCaps: venueCaps,
+    isLoadingVenueApCaps: false
+  }}>
+    <AdvancedTab />
+  </VenueUtilityContext.Provider>
+)
 
 describe('AdvancedTab', () => {
   beforeEach(() => {
@@ -93,7 +103,7 @@ describe('AdvancedTab', () => {
           setEditContextData,
           editAdvancedContextData,
           setEditAdvancedContextData }}>
-          <AdvancedTab />
+          {mockAdvancedTab}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
@@ -118,7 +128,7 @@ describe('AdvancedTab', () => {
           setEditContextData,
           editAdvancedContextData,
           setEditAdvancedContextData }}>
-          <AdvancedTab />
+          {mockAdvancedTab}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
@@ -155,7 +165,7 @@ describe('AdvancedTab', () => {
           setEditContextData,
           editAdvancedContextData,
           setEditAdvancedContextData }}>
-          <AdvancedTab />
+          {mockAdvancedTab}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
@@ -183,7 +193,7 @@ describe('AdvancedTab', () => {
         editAdvancedContextData: advanceSettingContext,
         setEditAdvancedContextData: jest.fn()
       }}>
-        <AdvancedTab />
+        {mockAdvancedTab}
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -212,7 +222,7 @@ describe('AdvancedTab', () => {
         editAdvancedContextData: advanceSettingContext,
         setEditAdvancedContextData: jest.fn()
       }}>
-        <AdvancedTab />
+        {mockAdvancedTab}
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))

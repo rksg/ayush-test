@@ -193,7 +193,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/apMeshSettings',
     // url: '/venues/:venueId/meshSettings',
-    // oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh',
     newApi: true
   },
   /*
@@ -208,11 +207,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/aps/query/csvFiles',
     oldUrl: '/aps/query/csvFiles',
     newApi: true
-  },
-  getService: {
-    // no use
-    method: 'get',
-    url: '/api/tenant/:tenantId/service/:serviceId'
   },
   getFloorplan: {
     method: 'get',
@@ -304,7 +298,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelLedSettings',
     newApi: true
   },
-  /*
   getVenueApModelBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/apModelBandModeSettings',
@@ -315,26 +308,29 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelBandModeSettings',
     newApi: true
   },
+  /*
   getVenueBssColoring: {
     method: 'get',
-    url: '/venues/:venueId/bssColoringSettings',
+    //url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   updateBssColoring: {
     method: 'put',
-    url: '/venues/:venueId/bssColoringSettings',
+    //url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   getVenueLanPorts: {
     method: 'get',
-    url: '/venues/:venueId/lanPortSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port',
+    //url: '/venues/:venueId/lanPortSettings',
+    url: '/venues/:venueId/apModelLanPortSettings',
     newApi: true
   },
   updateVenueLanPorts: {
     method: 'put',
-    url: '/venues/:venueId/lanPortSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port',
+    //url: '/venues/:venueId/lanPortSettings',
+    url: '/venues/:venueId/apModelLanPortSettings',
     newApi: true
   },
   getVenueNetworkList: {
@@ -456,13 +452,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getApDetailHeader: {
     method: 'get',
     url: '/aps/:serialNumber/headerDetails',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
     newApi: true
   },
   getHistoricalClientList: {
     method: 'post',
     url: '/historicalClients/query',
-    oldUrl: '/api/eventalarmapi/:tenantId/event/hist_client_list',
     newApi: true
   },
   getGuestsList: {
@@ -563,6 +557,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/rwgs',
     newApi: true
   },
+  */
+  deleteGateway: {
+    method: 'delete',
+    url: '/venues/:venueId/rwgs/:rwgId',
+    newApi: true
+  },
+  /*
   getGatewayAlarms: {
     method: 'get',
     url: '/rwgs/:gatewayId/alarms',
@@ -613,10 +614,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/alarms',
     newApi: true
-  },
-  deleteGateway: {
-    method: 'delete',
-    url: '/venues/:venueId/rwgs/:rwgId',
-    newApi: true
   }
+
 }

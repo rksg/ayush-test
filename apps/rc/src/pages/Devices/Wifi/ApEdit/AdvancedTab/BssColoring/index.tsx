@@ -6,6 +6,7 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
 import { useGetApBssColoringQuery, useLazyGetVenueBssColoringQuery, useUpdateApBssColoringMutation } from '@acx-ui/rc/services'
 import { ApBssColoringSettings, VenueBssColoring }                                                   from '@acx-ui/rc/utils'
 
@@ -18,6 +19,7 @@ export function BssColoring () {
 
   const { $t } = useIntl()
   const { serialNumber } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -28,10 +30,13 @@ export function BssColoring () {
 
 
   const { venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
 
   const formRef = useRef<StepsFormLegacyInstance<ApBssColoringSettings>>()
 
-  const getApBssColoring = useGetApBssColoringQuery({ params: { serialNumber } })
+  const getApBssColoring = useGetApBssColoringQuery({
+    params: { venueId, serialNumber }, enableRbac: isUseRbacApi
+  }, { skip: !venueId })
 
   const [updateApBssColoring, { isLoading: isUpdatingBssColoring }]
     = useUpdateApBssColoringMutation()
@@ -43,19 +48,16 @@ export function BssColoring () {
   const [initData, setInitData] = useState({} as ApBssColoringSettings)
   const [apBssColoring, setApBssColoring] = useState({})
   const [venueBssColoring, setVenueBssColoring] = useState({} as VenueBssColoring)
-  // const [venue, setVenue] = useState({} as VenueExtended)
   const [formInitializing, setFormInitializing] = useState(true)
-  const venueId = venueData?.id
 
   useEffect(() => {
     const apBssColoringData = getApBssColoring?.data
-    if (apBssColoringData) {
-      // const venueId = apDetails.venueId
+    if (apBssColoringData && venueId) {
       const setData = async () => {
-        // const apVenue = (await getVenue({
-        //   params: { tenantId, venueId } }, true).unwrap())
         const venueBssColoringData = (await getVenueBssColoring({
-          params: { venueId } }, true).unwrap())
+          params: { venueId },
+          enableRbac: isUseRbacApi
+        }).unwrap())
 
         // setVenue(apVenue)
         setVenueBssColoring(venueBssColoringData)
@@ -111,10 +113,9 @@ export function BssColoring () {
         ...values,
         useVenueSettings: isUseVenue
       }
-      await updateApBssColoring({
-        params: { serialNumber },
-        payload
-      }).unwrap()
+      await updateApBssColoring(
+        { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+      ).unwrap()
 
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

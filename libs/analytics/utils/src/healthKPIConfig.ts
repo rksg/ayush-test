@@ -173,7 +173,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP sucessful bindings' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
       thresholdFormatter: null,
       pillSuffix: pillSuffix.success,

@@ -32,7 +32,8 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { EdgeScopes, WifiScopes }   from '@acx-ui/types'
+import { filterByAccess, hasScope } from '@acx-ui/user'
 
 interface CardDataProps {
   type: PolicyType
@@ -99,6 +100,7 @@ function useCardData (): CardDataProps[] {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   return [
     {
@@ -184,7 +186,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetApSnmpViewModelQuery({
-        params, payload: defaultPayload
+        params, enableRbac: isUseRbacApi, payload: defaultPayload
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST }))
@@ -207,7 +209,8 @@ function useCardData (): CardDataProps[] {
       }, { skip: !isConnectionMeteringEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
-      disabled: !isConnectionMeteringEnabled
+      disabled: !isConnectionMeteringEnabled ||
+        !hasScope([WifiScopes.READ, EdgeScopes.READ])
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,

@@ -1,11 +1,10 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 
 import { Form, Select, Space, Switch, Button } from 'antd'
 import { isEqual }                             from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { Loader, StepsFormLegacy, showToast, showActionModal, AnchorContext } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { ApSnmpMibsDownloadInfo }                                             from '@acx-ui/rc/components'
 import {
   useGetApSnmpPolicyListQuery,
@@ -31,8 +30,9 @@ export function ApSnmp () {
   const { tenantId, venueId } = useParams()
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
+  const profileIdRef = useRef<string>('')
 
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isUseRbacApi = false //useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -71,6 +71,7 @@ export function ApSnmp () {
 
   const handleApSnmpSwitchEnableChange = (newState: boolean) => {
     setEnableApSnmp(newState)
+    profileIdRef.current = RetrievedVenueApSnmpAgentProfileId
     const newVenueApSnmpSetting =
     { apSnmpAgentProfileId: RetrievedVenueApSnmpAgentProfileId, enableApSnmp: newState }
 
@@ -92,6 +93,7 @@ export function ApSnmp () {
   const handleVenueApSnmpOptionChange = (ApSnmpAgentProfileId : string) => {
     const newVenueApSnmpSetting =
     { apSnmpAgentProfileId: ApSnmpAgentProfileId, enableApSnmp: stateOfEnableApSnmp }
+    profileIdRef.current = ApSnmpAgentProfileId
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
@@ -130,7 +132,10 @@ export function ApSnmp () {
       const payload = data?.enableApSnmp === true ? { ...data } : { enableApSnmp: data?.enableApSnmp }
 
       if (payload) {
-        await updateApSnmpSettings({ params: { venueId } , payload }).unwrap()
+        await updateApSnmpSettings({ params: {
+          venueId,
+          profileId: profileIdRef.current
+        }, enableRbac: isUseRbacApi, payload }).unwrap()
       }
     } catch (error) {
       showToast({

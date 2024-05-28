@@ -6,6 +6,7 @@ import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                           from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
 import { useGetApLedQuery, useLazyGetVenueLedOnQuery, useResetApLedMutation, useUpdateApLedMutation } from '@acx-ui/rc/services'
 import { ApLedSettings, VenueLed }                                                                    from '@acx-ui/rc/utils'
 
@@ -17,6 +18,7 @@ import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 export function ApLed () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -26,10 +28,13 @@ export function ApLed () {
   } = useContext(ApEditContext)
 
   const { apData: apDetails, venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
 
   const formRef = useRef<StepsFormLegacyInstance<ApLedSettings>>()
 
-  const getApLed = useGetApLedQuery({ params: { serialNumber } })
+  const getApLed = useGetApLedQuery({
+    params: { venueId, serialNumber }, enableRbac: isUseRbacApi
+  })
 
   const [updateApLed, { isLoading: isUpdatingApLed }] = useUpdateApLedMutation()
   const [resetApLed, { isLoading: isResetApLed }] = useResetApLedMutation()
@@ -41,15 +46,15 @@ export function ApLed () {
   const [initData, setInitData] = useState({} as ApLedSettings)
   const [apLed, setApLed] = useState({} as ApLedSettings)
   const [venueLed, setVenueLed] = useState({} as VenueLed)
-  // const [venue, setVenue] = useState({} as VenueExtended)
   const [formInitializing, setFormInitializing] = useState(true)
 
   useEffect(() => {
     const apLedData = getApLed?.data
     if (apDetails && apLedData) {
-      const venueId = apDetails.venueId
       const setData = async () => {
-        const venueLed = await getVenueLed({ params: { tenantId, venueId } }, true).unwrap()
+        const venueLed = await getVenueLed(
+          { params: { tenantId, venueId }, enableRbac: isUseRbacApi }, true).unwrap()
+
         setVenueLed(venueLed?.find(apModel => apModel.model === apDetails?.model)
           || { ledEnabled: true } as VenueLed)
         setIsUseVenueSettings(apLedData.useVenueSettings)
@@ -101,19 +106,23 @@ export function ApLed () {
       const isUseVenue = isUseVenueSettingsRef.current
 
       if (isUseVenue) {
-        await resetApLed({
-          params: { serialNumber }
-        }).unwrap()
+        if (isUseRbacApi) {
+          await updateApLed(
+            { params: { venueId, serialNumber },
+              payload: { useVenueSettings: true },
+              enableRbac: isUseRbacApi }).unwrap()
+        } else {
+          await resetApLed({ params: { serialNumber } }).unwrap()
+        }
       } else {
         const payload = {
           ...values,
           useVenueSettings: false
         }
 
-        await updateApLed({
-          params: { serialNumber },
-          payload
-        }).unwrap()
+        await updateApLed(
+          { params: { venueId, serialNumber }, payload, enableRbac: isUseRbacApi }
+        ).unwrap()
       }
 
     } catch (error) {
