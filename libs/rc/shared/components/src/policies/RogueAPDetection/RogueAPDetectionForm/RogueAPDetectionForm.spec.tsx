@@ -13,9 +13,9 @@ import {
   RogueRuleType,
   RogueVenue
 } from '@acx-ui/rc/utils'
-import { Path }                                  from '@acx-ui/react-router-dom'
-import { Provider }                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { Path }                                                   from '@acx-ui/react-router-dom'
+import { Provider }                                               from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedRogueApPoliciesList, policyListContent, venueTable } from '../__tests__/fixtures'
 import RogueAPDetectionContext                                      from '../RogueAPDetectionContext'
@@ -251,20 +251,7 @@ describe('RogueAPDetectionForm', () => {
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
-      ),
-      rest.post(
-        RogueApUrls.addRoguePolicyRbac.url,
-        (_, res, ctx) => res(
-          ctx.json(addPolicyRbacResponse)
-        )
-      ),
-      rest.put(
-        RogueApUrls.activateRoguePolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(policyResponse)
-        )
-      )
-    )
+      ))
   })
   it('should render RogueAPDetectionForm successfully and edit rule', async () => {
     render(
@@ -493,29 +480,71 @@ describe('RogueAPDetectionForm', () => {
 
   it('add policy is successful when enableRbac is true', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
-
-    render(<RogueAPDetectionForm edit={false} />)
-
+    const mockAddRoguePolicy = jest.fn()
+    const mockActivateRoguePolicy = jest.fn()
     mockServer.use(
-      rest.get(
-        RogueApUrls.addRoguePolicy.url,
+      rest.post(
+        RogueApUrls.addRoguePolicyRbac.url,
         (_, res, ctx) => res(
-          ctx.json(detailContent)
+          mockAddRoguePolicy(),
+          ctx.json(addPolicyRbacResponse)
         )
-      ), rest.put(
-        RogueApUrls.updateRoguePolicy.url,
+      ),
+      rest.put(
+        RogueApUrls.activateRoguePolicy.url,
         (_, res, ctx) => res(
+          mockActivateRoguePolicy(),
           ctx.json(policyResponse)
         )
-      ))
+      )
+    )
 
-    // Click on the submit button
-    await userEvent.click(screen.getByRole('button', { name: /submit/i }))
+    render(
+      <RogueAPDetectionContext.Provider value={{
+        state: initState,
+        dispatch: setRogueAPConfigure
+      }}>
+        <RogueAPDetectionForm edit={false}/>
+      </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
 
-    // Wait for the success message to appear on the screen
-    await screen.findByText(/policy added successfully/i)
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+    expect(screen.getAllByText('Summary')).toBeTruthy()
 
-    // Assert that the new policy is added to the list
-    expect(screen.getByText(/newPolicyId/i)).toBeInTheDocument()
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'test policy' } })
+
+    await addRuleWithoutEdit('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
+
+    await screen.findByText('rule1')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('test-venue')).toBeVisible()
+
+    const row = screen.getByRole('row', {
+      name: /test-venue 10 0 OFF/i
+    })
+
+    await userEvent.click(within(row).getByRole('switch'))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByText(/Venues \(1\)/i)
+
+    await screen.findByRole('heading', { name: 'Summary' })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(mockAddRoguePolicy).toBeCalled())
+    await waitFor(() => expect(mockActivateRoguePolicy).toBeCalled())
   })
 })

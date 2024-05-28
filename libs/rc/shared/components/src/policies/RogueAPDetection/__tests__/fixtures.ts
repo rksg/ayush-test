@@ -13,6 +13,12 @@ export const mockedRogueApPoliciesList = {
       name: 'My Rogue AP Detection 1',
       numOfRules: 5,
       venueIds: []
+    },
+    {
+      id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+      name: 'Default profile',
+      numOfRules: 5,
+      venueIds: []
     }
   ]
 }
