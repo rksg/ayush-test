@@ -124,6 +124,7 @@ export enum Features {
   SWITCH_SUPPORT_ICX8100= 'acx-ui-switch-support-icx8100-toggle',
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
+  SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
@@ -165,7 +166,8 @@ export enum Features {
   WIFI_8021X_MAC_AUTH_TOGGLE = 'wifi-fr-8021x-mac-toggle',
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
-  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024'
+  WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
+  RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
