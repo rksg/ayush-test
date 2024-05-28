@@ -41,7 +41,6 @@ export function NetworkingTab (props: {
 
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
   const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
-  const enable80211D = useIsSplitOn(Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE)
 
   const [
     enableFastRoaming,
@@ -112,7 +111,6 @@ export function NetworkingTab (props: {
         />
       </UI.FieldLabel>
 
-      {enable80211D &&
       <UI.FieldLabel width={labelWidth}>
         <Space>
           {$t({ defaultMessage: 'Enable 802.11d' })}
@@ -131,7 +129,6 @@ export function NetworkingTab (props: {
           children={<Switch />}
         />
       </UI.FieldLabel>
-      }
 
       {isFastBssVisible &&
         <UI.FieldLabel width={labelWidth}>
