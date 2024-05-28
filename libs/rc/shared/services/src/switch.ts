@@ -449,7 +449,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(switchUrls.convertToStack, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),

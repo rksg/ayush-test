@@ -504,21 +504,29 @@ export function StackForm () {
 
   const handleSaveStackSwitches = async (values: SwitchViewModel) => {
     try {
+      const enableRbac = isSwitchRbacEnabled
       const activeSwitchModel = getSwitchModel(activeSerialNumber)
       const isIcx7650 = activeSwitchModel?.includes('ICX7650')
-      const payload = {
+      const payload = enableRbac ? {
         name: values.name || '',
-        venueId: venueId,
-        activeSwitch: activeSerialNumber,
-        memberSwitch: tableData
+        memberSerials: tableData
           ?.filter((item) => item.id && item.id !== activeSerialNumber)
           ?.map((item) => item.id),
         ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
-      }
+      }:
+        {
+          name: values.name || '',
+          venueId: venueId,
+          activeSwitch: activeSerialNumber,
+          memberSwitch: tableData
+            ?.filter((item) => item.id && item.id !== activeSerialNumber)
+            ?.map((item) => item.id),
+          ...(isIcx7650 && { rearModule: values.rearModuleOption ? 'stack-40g' : 'none' })
+        }
       await convertToStack({
-        params: { tenantId, venueId },
+        params: { tenantId, venueId, switchId: activeSerialNumber },
         payload,
-        enableRbac: isSwitchRbacEnabled
+        enableRbac
       }).unwrap()
       navigate({
         ...basePath,
