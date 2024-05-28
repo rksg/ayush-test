@@ -16,7 +16,7 @@ export function VersionBannerPerApModel () {
   const { $t } = useIntl()
   const [ shownMoreFirmwaresInBanner, setShownMoreFirmwaresInBanner ] = useState(false)
   const { updateGroupsWithLatestVersion } = useGetAllApModelFirmwareListQuery({}, {
-    refetchOnMountOrArgChange: 60,
+    refetchOnMountOrArgChange: 300,
     selectFromResult ({ data, isLoading }) {
       if (!data || isLoading) return { updateGroupsWithLatestVersion: [] }
 
