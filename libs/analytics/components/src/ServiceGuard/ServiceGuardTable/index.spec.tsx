@@ -13,8 +13,8 @@ import {
   findTBody,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { RolesEnum }                                                         from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
 import * as fixtures            from '../__tests__/fixtures'
 import { ServiceGuardTableRow } from '../services'
@@ -127,6 +127,7 @@ describe('Service Validation Table', () => {
   it('should only allow edit for same user', async () => {
     mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
       { data: fixtures.fetchAllServiceGuardSpecs })
+    setRaiPermissions({ WRITE_SERVICE_VALIDATION: true } as RaiPermissions)
     render(<ServiceGuardTable/>, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
