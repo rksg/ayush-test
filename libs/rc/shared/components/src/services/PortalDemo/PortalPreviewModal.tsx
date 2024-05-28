@@ -19,27 +19,8 @@ export default function PortalPreviewModal (props:{
   portalId?: string,
   id?: string
 }) {
-  useEffect(()=>{
-    if(props.portalLang.accept&&props.fromPortalList&&props.portalId===props.id){
-      const content = <Provider><PortalDemo value={demoValue}
-        isPreview={true}
-        viewPortalLang={props.portalLang}
-      /></Provider>
-      showActionModal({
-        type: 'confirm',
-        content: content,
-        okCancel: false,
-        closable: true,
-        width: '100%',
-        okButtonProps: { style: { display: 'none' } },
-        bodyStyle: { padding: 0 },
-        className: UI.modalClassName
-      })
-    }
-  }, [props.portalLang])
   const { $t } = useIntl()
-  const { demoValue } = props
-  const getContent = <Provider><PortalDemo value={demoValue}
+  const getContent = <Provider><PortalDemo value={props.demoValue}
     isPreview={true}
     viewPortalLang={props.portalLang}
   /></Provider>
@@ -55,6 +36,25 @@ export default function PortalPreviewModal (props:{
       className: UI.modalClassName
     })
   }
+
+  useEffect(()=>{
+    if(props.portalLang.accept&&props.fromPortalList&&props.portalId===props.id){
+      const content = <Provider><PortalDemo value={props.demoValue}
+        isPreview={true}
+        viewPortalLang={props.portalLang}
+      /></Provider>
+      showActionModal({
+        type: 'confirm',
+        content: content,
+        okCancel: false,
+        closable: true,
+        width: '100%',
+        okButtonProps: { style: { display: 'none' } },
+        bodyStyle: { padding: 0 },
+        className: UI.modalClassName
+      })
+    }
+  }, [props.portalLang, props.demoValue])
   return (
     <UI.Button onClick={()=>openModal()} type='default' size='small'>
       <UI.ModalStyle />
