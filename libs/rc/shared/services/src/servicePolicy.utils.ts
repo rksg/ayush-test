@@ -1,4 +1,6 @@
-import { AAARbacViewModalType, AAAViewModalType, Radius, TableResult } from '@acx-ui/rc/utils'
+import { AAARbacViewModalType, AAAViewModalType, ApiVersionEnum, GetApiVersionHeader, Radius, TableResult } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                   from '@acx-ui/types'
+import { ApiInfo, createHttpRequest }                                                                       from '@acx-ui/utils'
 
 // eslint-disable-next-line max-len
 export function convertRbacDataToAAAViewModelPolicyList (input: TableResult<AAARbacViewModalType>): TableResult<AAAViewModalType> {
@@ -29,5 +31,24 @@ export function covertAAAViewModalTypeToRadius (data: AAAViewModalType): Radius 
       ip: splitSecondary[0],
       port: Number(splitSecondary[1])
     } : {})
+  }
+}
+
+interface CreateFetchArgsBasedOnRbacProps {
+  apiInfo: ApiInfo
+  rbacApiInfo?: ApiInfo
+  rbacApiVersionKey: ApiVersionEnum
+  queryArgs: RequestPayload
+}
+export function createFetchArgsBasedOnRbac (props: CreateFetchArgsBasedOnRbacProps) {
+  const { apiInfo, rbacApiInfo = apiInfo, rbacApiVersionKey, queryArgs } = props
+  const enableRbac = queryArgs.enableRbac ?? false
+  const resolvedApiInfo = enableRbac ? rbacApiInfo : apiInfo
+  const apiVersionHeaders = GetApiVersionHeader(enableRbac ? rbacApiVersionKey : undefined)
+  const resolvedPayload = enableRbac ? JSON.stringify(queryArgs.payload) : queryArgs.payload
+
+  return {
+    ...createHttpRequest(resolvedApiInfo, queryArgs.params, apiVersionHeaders),
+    body: resolvedPayload
   }
 }

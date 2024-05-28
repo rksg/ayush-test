@@ -25,11 +25,13 @@ import {
   ConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo,
   VenueConfigTemplateUrlsInfo,
-  NetworkRadiusSettings
+  NetworkRadiusSettings,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
-import { baseNetworkApi }                                            from '@acx-ui/store'
-import { RequestPayload }                                            from '@acx-ui/types'
-import { createHttpRequest, getApiVersionHeaders, ignoreErrorModal } from '@acx-ui/utils'
+import { baseNetworkApi }                      from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 
 const RKS_NEW_UI = {
@@ -699,21 +701,21 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     activateRadiusServer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.activateRadiusServer, params, getApiVersionHeaders('v1'))
+          ...createHttpRequest(WifiRbacUrlsInfo.activateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
         }
       }
     }),
     deactivateRadiusServer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params, getApiVersionHeaders('v1'))
+          ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
         }
       }
     }),
     updateRadiusServerSettings: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.updateRadiusServerSettings, params, getApiVersionHeaders('v1')),
+          ...createHttpRequest(WifiRbacUrlsInfo.updateRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1)),
           body: JSON.stringify(payload)
         }
       }
@@ -721,7 +723,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     getRadiusServerSettings: build.query<NetworkRadiusSettings, RequestPayload>({
       query: ({ params }) => {
         return {
-          ...createHttpRequest(WifiRbacUrlsInfo.getRadiusServerSettings, params, getApiVersionHeaders('v1'))
+          ...createHttpRequest(WifiRbacUrlsInfo.getRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1))
         }
       }
     })

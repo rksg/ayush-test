@@ -26,13 +26,15 @@ import {
   transferToNewTablePaginationParams,
   CertificateUrls, CertificateTemplate, CertificateAuthority,
   Certificate, downloadFile, CertificateTemplateMutationResult,
-  downloadCertExtension, CertificateAcceptType, AAARbacViewModalType
+  downloadCertExtension, CertificateAcceptType, AAARbacViewModalType,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }                                                                 from '@acx-ui/store'
-import { RequestPayload }                                                                from '@acx-ui/types'
-import { batchApi, createFetchArgsBasedOnRbac, createHttpRequest, getApiVersionHeaders } from '@acx-ui/utils'
+import { basePolicyApi }               from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { convertRbacDataToAAAViewModelPolicyList } from './servicePolicy.utils'
+import { convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -671,7 +673,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       query: (queryArgs) => {
         return createFetchArgsBasedOnRbac({
           apiInfo: AaaUrls.addAAAPolicy,
-          rbacApiVersionKey: 'v1_1',
+          rbacApiVersionKey: ApiVersionEnum.v1_1,
           queryArgs
         })
       },
@@ -684,7 +686,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         if (enableRbac) {
           const requests = args.payload!.map(policyId => ({ params: { policyId } }))
           return batchApi(
-            AaaUrls.deleteAAAPolicy, requests, baseQuery, getApiVersionHeaders('v1_1')
+            AaaUrls.deleteAAAPolicy, requests, baseQuery, GetApiVersionHeader(ApiVersionEnum.v1_1)
           )
         } else {
           return baseQuery({
@@ -700,7 +702,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const resolvedFetchArgs = createFetchArgsBasedOnRbac({
           apiInfo: AaaUrls.getAAAPolicyViewModelList,
           rbacApiInfo: AaaUrls.queryAAAPolicyList,
-          rbacApiVersionKey: 'v1',
+          rbacApiVersionKey: ApiVersionEnum.v1,
           queryArgs
         })
 
@@ -735,7 +737,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           ...createHttpRequest(
             AaaUrls.getAAAPolicy,
             params,
-            getApiVersionHeaders('v1_1', enableRbac)
+            GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
           )
         }
       },
@@ -745,7 +747,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       query: (queryArgs) => {
         return createFetchArgsBasedOnRbac({
           apiInfo: AaaUrls.updateAAAPolicy,
-          rbacApiVersionKey: 'v1_1',
+          rbacApiVersionKey: ApiVersionEnum.v1_1,
           queryArgs
         })
       },
