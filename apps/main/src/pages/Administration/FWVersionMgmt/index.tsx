@@ -51,8 +51,7 @@ const FWVersionMgmt = () => {
       latestEdgeReleaseVersion: data?.[0]
     })
   })
-  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
-    { skip: false })
+  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
   const isApFirmwareAvailable = useIsApFirmwareAvailable()
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
@@ -115,8 +114,7 @@ const FWVersionMgmt = () => {
         {isAPPLibraryAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
-      content: <ApplicationPolicyMgmt />,
-      visible: true
+      content: <ApplicationPolicyMgmt />
     }
   }
 
@@ -136,7 +134,6 @@ const FWVersionMgmt = () => {
     >
       {
         Object.entries(tabs).map((item) =>
-          item[1].visible &&
           <Tabs.TabPane
             key={item[0]}
             tab={item[1].title}
