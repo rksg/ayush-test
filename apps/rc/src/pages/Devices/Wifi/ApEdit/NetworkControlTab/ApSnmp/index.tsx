@@ -182,13 +182,13 @@ export function ApSnmp () {
         // eslint-disable-next-line max-len
         await resetApSnmpSettings({ params: {
           serialNumber,
-          venueId: apDetails?.venueId
+          venueId
         },
         enableRbac: isUseRbacApi }).unwrap()
       } else {
         await updateApSnmpSettings({ params: {
           serialNumber,
-          venueId: apDetails?.venueId,
+          venueId,
           profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
         },
         enableRbac: isUseRbacApi,
