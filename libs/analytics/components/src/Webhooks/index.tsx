@@ -140,7 +140,7 @@ export const useWebhooks = () => {
       searchableWidth={450}
       actions={filterByAccess(actions)}
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasPermission() && {
+      rowSelection={hasPermission({ permission: 'WRITE_WEBHOOKS' }) && {
         type: 'radio',
         selectedRowKeys: selectedId ? [selectedId] : []
       }}
