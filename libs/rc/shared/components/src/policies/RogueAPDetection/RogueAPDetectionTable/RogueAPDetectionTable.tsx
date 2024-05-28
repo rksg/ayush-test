@@ -73,7 +73,7 @@ const defaultPayload = {
 }
 
 export function RogueAPDetectionTable () {
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()

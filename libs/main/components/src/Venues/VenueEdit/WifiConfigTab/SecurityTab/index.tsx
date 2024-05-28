@@ -93,7 +93,7 @@ export function SecurityTab () {
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {

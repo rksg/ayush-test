@@ -492,7 +492,7 @@ describe('RogueAPDetectionForm', () => {
   })
 
   it('add policy is successful when enableRbac is true', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     render(<RogueAPDetectionForm edit={false} />)
 

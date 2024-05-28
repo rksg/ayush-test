@@ -185,7 +185,7 @@ describe('RuleTable', () => {
   })
 
   it('should render RuleTable successfully with RBAC turned on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     mockServer.use(
       rest.get(RogueApUrls.getRoguePolicyRbac.url,

@@ -100,7 +100,7 @@ function useCardData (): CardDataProps[] {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   return [
     {

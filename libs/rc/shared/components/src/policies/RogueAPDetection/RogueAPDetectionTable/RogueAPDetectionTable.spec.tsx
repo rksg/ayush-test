@@ -147,7 +147,7 @@ describe('RogueAPDetectionTable', () => {
   })
 
   it('should render table with rbac enabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     render(
       <Provider>
         <RogueAPDetectionTable />
@@ -163,7 +163,7 @@ describe('RogueAPDetectionTable', () => {
   })
 
   it('should delete selected row with rbac enabled', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     const deleteFn = jest.fn()
 
     mockServer.use(

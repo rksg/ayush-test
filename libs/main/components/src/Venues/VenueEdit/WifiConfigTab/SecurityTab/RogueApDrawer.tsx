@@ -14,7 +14,7 @@ const RogueApDrawer = (props: {
   setVisible: (visible: boolean) => void,
   policyId: string
 }) => {
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const { visible, setVisible, policyId } = props
 

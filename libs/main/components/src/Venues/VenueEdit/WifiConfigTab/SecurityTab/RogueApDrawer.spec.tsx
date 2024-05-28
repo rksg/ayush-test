@@ -21,7 +21,7 @@ const mockRoguePolicyQuery = jest.fn()
 
 describe('RogueApDrawer', () => {
   it('uses RogueApUrls.getRoguePolicyRbac.url when enableRbac is true', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     mockServer.use(
       rest.get(RogueApUrls.getRoguePolicyRbac.url, (req, res, ctx) => {

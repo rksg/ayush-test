@@ -31,7 +31,7 @@ type DragItemProps = {
 }
 
 const RuleTable = (props: RuleTableProps) => {
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const { edit } = props
 

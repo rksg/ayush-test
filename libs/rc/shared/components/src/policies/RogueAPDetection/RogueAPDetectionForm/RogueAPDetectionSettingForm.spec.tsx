@@ -152,7 +152,7 @@ describe('RogueAPDetectionSettingForm', () => {
   it('updates state correctly when enableRbac is true', async () => {
     const mockGetRoguePolicy = jest.fn()
     const mockGetRoguePolicyList = jest.fn()
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     mockServer.use(rest.get(
       RogueApUrls.getRoguePolicyRbac.url,

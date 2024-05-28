@@ -112,7 +112,7 @@ describe('MyPolicies', () => {
   })
 
   it('should render Rogue AP with RBAC on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     render(
       <Provider>

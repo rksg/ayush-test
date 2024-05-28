@@ -42,7 +42,7 @@ type RogueAPDetectionFormProps = {
 }
 
 export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len

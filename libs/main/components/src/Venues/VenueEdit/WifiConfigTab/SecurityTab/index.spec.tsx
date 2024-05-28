@@ -229,7 +229,7 @@ describe('SecurityTab', () => {
   })
 
   it('should render correctly with RogueApProfile settings with RBAC turned on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SERVICE_POLICY_RBAC)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     render(
       <Provider>

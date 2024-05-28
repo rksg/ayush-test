@@ -10,7 +10,7 @@ import { useConfigTemplateQueryFnSwitcher }                    from '@acx-ui/rc/
 import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
 const RogueAPDetectionDetailContent = () => {
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
 
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher({
