@@ -155,11 +155,12 @@ export function RadioSettingsForm (props:{
         style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false)) ?
           { display: 'none' } : { display: 'flex' }}>
         <div style={{ float: 'left' }}>
-          <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
+          <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable Indoor AFC:' })}</p>
         </div>
         <Form.Item
           style={{ width: '160px' }}
-          name={enableAfcFieldName}
+          // No need to bring enableAfc property when AP is outdoor ap
+          name={LPIButtonText?.isAPOutdoor? '' : enableAfcFieldName}
           valuePropName={'checked'}
           initialValue={true}
           rules={[
