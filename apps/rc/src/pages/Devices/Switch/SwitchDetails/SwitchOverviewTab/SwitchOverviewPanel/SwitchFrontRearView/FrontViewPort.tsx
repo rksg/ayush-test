@@ -9,6 +9,8 @@ import { getInactiveTooltip }     from '@acx-ui/rc/components'
 import { useLazyGetLagListQuery } from '@acx-ui/rc/services'
 import { Lag, SwitchPortStatus }  from '@acx-ui/rc/utils'
 import { useParams }              from '@acx-ui/react-router-dom'
+import { SwitchScopes }           from '@acx-ui/types'
+import { hasPermission }          from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -110,8 +112,10 @@ export function FrontViewPort (props:{
     </div>
   }
 
+  const editable = hasPermission({ scopes: [SwitchScopes.UPDATE] })
+
   const showEditIcon = () => {
-    if(!editPortsFromPanelEnabled) {
+    if(!editPortsFromPanelEnabled || !editable) {
       return false
     }
     if(portIcon ==='LagMember'){
@@ -128,7 +132,7 @@ export function FrontViewPort (props:{
   }
 
   const onPortClick = () => {
-    if(!showEditIcon() || disabledClick) {
+    if(!showEditIcon() || disabledClick || !editable) {
       return
     }
     setEditLagModalVisible(false)

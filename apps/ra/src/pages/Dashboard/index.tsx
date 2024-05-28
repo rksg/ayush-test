@@ -16,9 +16,7 @@ import {
   AppInsights
 } from '@acx-ui/analytics/components'
 import {
-  PERMISSION_MANAGE_CONFIG_RECOMMENDATION,
-  useAnalyticsFilter,
-  getUserProfile
+  useAnalyticsFilter
 } from '@acx-ui/analytics/utils'
 import {
   PageHeader,
@@ -27,6 +25,7 @@ import {
   useLayoutContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
+import { hasPermission }                                                                               from '@acx-ui/user'
 import { AnalyticsFilter, DateFilter, DateRange, getDatePickerValues, getDateRangeFilter, PathFilter } from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
@@ -79,12 +78,11 @@ type DashboardViewProps = {
 
 const DashboardView = ({ filters, pathFilters }: DashboardViewProps) => {
   const height = useMonitorHeight(536)
-  const userProfile = getUserProfile()
   const enableAppInsights = useIsSplitOn(Features.APP_INSIGHTS)
-  const hasRecommendation =
-    userProfile.selectedTenant.permissions[
-      PERMISSION_MANAGE_CONFIG_RECOMMENDATION
-    ]
+  const hasRecommendation = (
+    hasPermission({ permission: 'READ_AI_OPERATIONS' }) ||
+    hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })
+  )
   if (!hasRecommendation) {
     return (
       <UI.NetworkAdminGrid style={{ height }}>

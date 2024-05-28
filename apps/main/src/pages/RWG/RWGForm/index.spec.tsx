@@ -2,10 +2,10 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { rwgApi }          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { rwgApi }                                                 from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -62,10 +62,11 @@ const gatewayResponse = {
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    hostname: 'rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxxxxxxxxxx',
-    status: null
-  }
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 const rwgList = {
@@ -78,10 +79,11 @@ const rwgList = {
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
       name: 'ruckusdemos',
-      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+      hostname: 'rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      status: null
-    }]
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
   }
 }
 
@@ -102,14 +104,14 @@ describe('Gateway Form', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
-      rest.post(CommonUrlsInfo.getRwgList.url,
+      rest.post(CommonRbacUrlsInfo.getRwgList.url,
         (req, res, ctx) => res(ctx.json(rwgList))),
-      rest.post(CommonUrlsInfo.addGateway.url,
+      rest.post(CommonRbacUrlsInfo.addGateway.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
         }),
-      rest.post(CommonUrlsInfo.updateGateway.url,
+      rest.post(CommonRbacUrlsInfo.updateGateway.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
@@ -142,7 +144,7 @@ describe('Gateway Form', () => {
     fireEvent.blur(gatewayInput)
 
     const URLInput = screen.getByLabelText('FQDN / IP')
-    await fireEvent.change(URLInput, { target: { value: 'https://test.com' } })
+    await fireEvent.change(URLInput, { target: { value: 'test.com' } })
 
     const passwordInput = screen.getByLabelText('API Key')
     await fireEvent.change(passwordInput, { target: { value: 'Temp!2345' } })
@@ -158,7 +160,7 @@ describe('Gateway Form', () => {
     const mockFn = jest.fn()
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getGateway.url,
+      rest.get(CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => {
           mockFn()
           return res(ctx.json(gatewayResponse))
@@ -219,7 +221,7 @@ describe('Gateway Form', () => {
     fireEvent.change(password, { target: { value: 'x' } })
     fireEvent.blur(password)
 
-    expect(await screen.findByText('Please enter a valid URL')).toBeVisible()
+    expect(await screen.findByText('Please enter a valid FQDN / IP')).toBeVisible()
 
   })
 
@@ -252,7 +254,7 @@ describe('Gateway Form', () => {
     }
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getGateway.url,
+      rest.get(CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => {
           mockFn()
           return res(ctx.json(gatewayResponse))

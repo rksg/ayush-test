@@ -45,7 +45,6 @@ export default function SelectPolicyForm () {
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -54,7 +53,7 @@ export default function SelectPolicyForm () {
     payload: {
       fields: ['id']
     }
-  }, { skip: !supportApSnmp }).data?.totalCount || 0
+  }).data?.totalCount || 0
   const WifiOperatorTotalCount = useGetWifiOperatorListQuery({
     params,
     payload: {
@@ -89,17 +88,13 @@ export default function SelectPolicyForm () {
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
-  ]
-
-  if (supportApSnmp) {
-    // AP SNMP Policy is limited to 64, so disable the radio card if the total count is 64
-    sets.push({
+    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] },
+    {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       disabled: (ApSnmpPolicyTotalCount >= 64)
-    })
-  }
+    }
+  ]
 
   if (supportHotspot20R1) {
     sets.push({

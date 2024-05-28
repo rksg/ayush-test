@@ -10,10 +10,11 @@ import * as UI from '../styledComponents'
 
 export default function TopSystemProcess () {
   const { $t } = useIntl()
-  const { tenantId, gatewayId } = useParams()
+  const { tenantId, gatewayId, venueId, clusterNodeId } = useParams()
 
   const { data: topProcessData, isLoading: isTopprocessLoading, isFetching: isTopprocessFetching } =
-    useGetGatewayTopProcessQuery({ params: { tenantId, gatewayId } }, { skip: !gatewayId })
+    useGetGatewayTopProcessQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
+      { skip: !gatewayId })
 
   function getTopProcessDonutChartData (data: GatewayTopProcess[]): DonutChartData[] {
     const chartData: DonutChartData[] = []

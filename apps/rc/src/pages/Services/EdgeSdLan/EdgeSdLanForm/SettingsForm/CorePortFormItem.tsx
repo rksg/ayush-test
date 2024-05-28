@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { Typography, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr, Modal, ModalType }                        from '@acx-ui/components'
-import { EdgeEditContext, EdgePortsForm, EdgePortTabEnum } from '@acx-ui/rc/components'
-import { EdgePort }                                        from '@acx-ui/rc/utils'
+import { cssStr, Modal, ModalType }                                  from '@acx-ui/components'
+import { EdgeEditContext, DeprecatedEdgePortsForm, EdgePortTabEnum } from '@acx-ui/rc/components'
+import { EdgePort }                                                  from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -76,7 +76,7 @@ const PortsFormEditContextProvider = (props: {
       formControl,
       setFormControl
     }}>
-      <EdgePortsForm
+      <DeprecatedEdgePortsForm
         // for BC phase1 & phase2
         clusterId=''
         serialNumber={edgeId}

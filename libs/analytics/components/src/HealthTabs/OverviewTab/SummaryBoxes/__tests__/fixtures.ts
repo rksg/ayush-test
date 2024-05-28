@@ -20,15 +20,18 @@ export const summaryDataFixture = {
       apIncidentCount: 461,
       switchIncidentCount: 8,
       apTotalTraffic: 1189597336,
-      switchTotalTraffic: 2333440,
       portCount: 636,
       totalPortCount: 14229,
       avgPerAPClientCount: 643,
       poeUnderPoweredApCount: 1,
       apCount: 8,
       poeUnderPoweredSwitchCount: 2,
-      poeThresholdSwitchCount: 2
-
+      poeThresholdSwitchCount: 2,
+      timeSeries: {
+        switchTotalTraffic: [
+          131775066761
+        ]
+      }
     }
   }
 }
@@ -52,14 +55,18 @@ export const summaryNoDataFixture = {
       apIncidentCount: 0,
       switchIncidentCount: 0,
       apTotalTraffic: null,
-      switchTotalTraffic: null,
       portCount: 0,
       totalPortCount: 0,
       avgPerAPClientCount: 0,
       poeUnderPoweredApCount: 0,
       apCount: 0,
       poeUnderPoweredSwitchCount: 0,
-      poeThresholdSwitchCount: 0
+      poeThresholdSwitchCount: 0,
+      timeSeries: {
+        switchTotalTraffic: [
+          null
+        ]
+      }
     }
   }
 }

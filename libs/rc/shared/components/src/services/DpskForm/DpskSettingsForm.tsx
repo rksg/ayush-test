@@ -47,9 +47,10 @@ export default function DpskSettingsForm (props: DpskSettingsFormProps) {
   const passphraseFormat = Form.useWatch<PassphraseFormatEnum>('passphraseFormat', form)
   const id = Form.useWatch<string>('id', form)
   const { Option } = Select
-  const [ getDpskList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<DpskSaveData>>(
-    useLazyGetDpskListQuery, useLazyGetEnhancedDpskTemplateListQuery
-  )
+  const [ getDpskList ] = useConfigTemplateLazyQueryFnSwitcher<TableResult<DpskSaveData>>({
+    useLazyQueryFn: useLazyGetDpskListQuery,
+    useLazyTemplateQueryFn: useLazyGetEnhancedDpskTemplateListQuery
+  })
   const { isTemplate } = useConfigTemplate()
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA) && !isTemplate
 

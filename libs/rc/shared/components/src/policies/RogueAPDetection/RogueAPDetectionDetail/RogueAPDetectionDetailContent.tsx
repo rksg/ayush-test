@@ -11,9 +11,10 @@ import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 const RogueAPDetectionDetailContent = () => {
   const { $t } = useIntl()
 
-  const { data, isLoading } = useConfigTemplateQueryFnSwitcher(
-    useRoguePolicyQuery, useGetRoguePolicyTemplateQuery
-  )
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery
+  })
 
   const { setFiltersId, setPolicyName } = useContext(RogueAPDetailContext)
 
