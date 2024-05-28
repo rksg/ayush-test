@@ -104,7 +104,6 @@ export interface ApTableProps<T>
   filterables?: { [key: string]: ColumnType['filterable'] }
   enableGroups?: boolean,
   enableApCompatibleCheck?: boolean
-  ref?: Ref<ApTableRefType>
 }
 
 export const ApTable = forwardRef((props : ApTableProps<APExtended|NewAPModelExtended>, ref?: Ref<ApTableRefType>) => {

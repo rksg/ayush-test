@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { ReactNode, useContext, useEffect, useImperativeHandle, useMemo, useState } from 'react'
+import React, { ReactNode, Ref, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
 import { Badge }               from 'antd'
@@ -63,7 +63,7 @@ import {
 import { ApsTabContext } from './context'
 import { useExportCsv }  from './useExportCsv'
 
-import { APStatus, ApTableProps, channelTitleMap, retriedApIds, transformMeshRole } from '.'
+import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, retriedApIds, transformMeshRole } from '.'
 
 const newApPayload = {
   searchString: '',
@@ -76,7 +76,7 @@ const newApPayload = {
   ]
 }
 
-export const NewApTable = (props: ApTableProps<NewAPModelExtended>) => {
+export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
@@ -573,7 +573,7 @@ export const NewApTable = (props: ApTableProps<NewAPModelExtended>) => {
     }
   },[importResult])
 
-  useImperativeHandle(props.ref, () => ({
+  useImperativeHandle(ref, () => ({
     openImportDrawer: () => {
       setImportVisible(true)
     }
@@ -696,4 +696,4 @@ export const NewApTable = (props: ApTableProps<NewAPModelExtended>) => {
       />
     </Loader>
   )
-}
+})
