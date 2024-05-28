@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { FetchBaseQueryError }   from '@reduxjs/toolkit/query/react'
 import { cloneDeep, omit, uniq } from 'lodash'
 
-import { DateFormatEnum, formatter }                  from '@acx-ui/formatter'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -970,11 +970,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
               body: { filters: { venueIds: [params?.venueId] }, fields: ['id'] }
             })
             const roguePolicy = response.data as TableResult<EnhancedRoguePolicyType>
-            console.log(JSON.stringify({
-              enabled: roguePolicy.totalCount > 0,
-              roguePolicyId: (roguePolicy.totalCount > 0) ? roguePolicy.data[0].id : null,
-              reportThreshold: roguePolicySetting.reportThreshold
-            }))
             return {
               data: {
                 enabled: roguePolicy.totalCount > 0,
