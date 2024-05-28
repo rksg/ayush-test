@@ -3,7 +3,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { venueApi }                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                      from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo }                  from '@acx-ui/rc/utils'
 import { Provider, store }                     from '@acx-ui/store'
 import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -37,23 +37,23 @@ describe('RWGDetails GatewayOverview', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGateway.url,
+        CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse))
       ),
       rest.get(
-        CommonUrlsInfo.getGatewayTopProcess.url,
+        CommonRbacUrlsInfo.getGatewayTopProcess.url,
         (req, res, ctx) => res(ctx.json({ response: [] }))
       ),
       rest.get(
-        CommonUrlsInfo.getGatewayFileSystems.url,
+        CommonRbacUrlsInfo.getGatewayFileSystems.url,
         (req, res, ctx) => res(ctx.json({ response: [] }))
       ),
       rest.get(
-        CommonUrlsInfo.getGatewayDashboard.url,
+        CommonRbacUrlsInfo.getGatewayDashboard.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
-      rest.get(
-        CommonUrlsInfo.getGatewayAlarms.url,
+      rest.post(
+        CommonRbacUrlsInfo.getGatewayAlarms.url,
         (req, res, ctx) => res(ctx.json({
           total: 720
         }))

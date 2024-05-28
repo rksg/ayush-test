@@ -70,6 +70,7 @@ const searches = [
       component: <VenueTable tableQuery={result} searchable={false} />
     }
   },
+
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<Network, RequestPayload<unknown>, unknown>({
       useQuery: useNetworkListQuery,
@@ -88,6 +89,7 @@ const searches = [
       component: <NetworkTable tableQuery={result} />
     }
   },
+
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<AP, RequestPayload<unknown>, ApExtraParams>({
       useQuery: useApListQuery,
@@ -106,6 +108,7 @@ const searches = [
       component: <ApTable tableQuery={result} searchable={false} />
     }
   },
+
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useEventsTableQuery(
       { entity_type: undefined },
@@ -144,6 +147,7 @@ const searches = [
       component: <SwitchTable tableQuery={result} searchable={false}/>
     }
   },
+
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<ClientList, RequestPayload<unknown>, unknown>({
       useQuery: useGetClientListQuery,
@@ -178,6 +182,7 @@ const searches = [
       component: <GlobalSearchHistoricalClientsTable tableQuery={result} />
     }
   },
+
   (searchString: string, $t: IntlShape['$t']) => {
     const result = useTableQuery<SwitchClient, RequestPayload<unknown>, unknown>({
       useQuery: useGetSwitchClientListQuery,

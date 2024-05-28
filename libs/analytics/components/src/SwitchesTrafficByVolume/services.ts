@@ -23,7 +23,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     switchesTrafficByVolume: build.query<
     SwitchesTrafficByVolumeData,
-      AnalyticsFilter
+      AnalyticsFilter & { selectedPorts: string[] }
     >({
       query: (payload) => ({
         document: gql`
@@ -33,16 +33,17 @@ export const api = dataApi.injectEndpoints({
             $end: DateTime
             $granularity: String
             $filter: FilterInput
+            $ports: [String]
           ) {
             network(start: $start, end: $end, filter : $filter) {
               hierarchyNode(path: $path) {
-                timeSeries(granularity: $granularity) {
-                  time
-                  switchTotalTraffic: switchTotalTraffic
-                  switchTotalTraffic_tx: switchTotalTraffic(direction: "tx")
-                  switchTotalTraffic_rx: switchTotalTraffic(direction: "rx")
-                }
+              timeSeries(granularity: $granularity) {
+                time
+                switchTotalTraffic: switchTotalTraffic(portNumbers: $ports)
+                switchTotalTraffic_tx: switchTotalTraffic(direction: "tx", portNumbers: $ports)
+                switchTotalTraffic_rx: switchTotalTraffic(direction: "rx", portNumbers: $ports)
               }
+            }
             }
           }
         `,
@@ -50,6 +51,7 @@ export const api = dataApi.injectEndpoints({
           start: payload.startDate,
           end: payload.endDate,
           granularity: calculateGranularity(payload.startDate, payload.endDate, 'PT15M'),
+          ports: payload.selectedPorts,
           ...getFilterPayload(payload)
         }
       }),

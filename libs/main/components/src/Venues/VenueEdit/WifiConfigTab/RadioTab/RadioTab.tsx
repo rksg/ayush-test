@@ -32,7 +32,6 @@ export function RadioTab () {
   const [isLoadOrBandBalaningEnabled, setIsLoadOrBandBalaningEnabled] = useState<boolean>(false)
   const basePath = usePathBasedOnConfigTemplate('/venues/')
 
-  const supportLoadBalancing = useIsSplitOn(Features.LOAD_BALANCING)
   const supportAntennaTypeSelection = useIsSplitOn(Features.WIFI_ANTENNA_TYPE_TOGGLE)
 
   const wifiSettingLink = $t({ defaultMessage: 'Wi-Fi Radio' })
@@ -54,7 +53,7 @@ export function RadioTab () {
       </>
     )
   },
-  ...(supportLoadBalancing? [{
+  {
     title: loadBalancingTitle,
     content: (
       <>
@@ -64,7 +63,7 @@ export function RadioTab () {
         <LoadBalancing setIsLoadOrBandBalaningEnabled={setIsLoadOrBandBalaningEnabled} />
       </>
     )
-  }] : []),
+  },
   {
     title: clientAdmissionControlTitle,
     content: (
