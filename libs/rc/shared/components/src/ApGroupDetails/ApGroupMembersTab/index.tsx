@@ -1,5 +1,4 @@
-
-import { ApTable } from '@acx-ui/rc/components'
+import { ApTable } from '../../ApTable'
 
 export default function ApGroupMembersTab () {
 
