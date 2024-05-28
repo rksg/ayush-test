@@ -189,7 +189,9 @@ export const PortalForm = (props: {
   const handleAddPortalService = async (data: Portal) => {
     try {
 
-      const imageContent = isEnabledRbacService ? {} : {
+      const imageContent = isEnabledRbacService ? {
+        logo: '', photo: '', poweredImg: '', bgImage: ''
+      } : {
         logo:
         data?.content?.logo &&
         data?.content?.logo.indexOf('https://storage') >= 0
