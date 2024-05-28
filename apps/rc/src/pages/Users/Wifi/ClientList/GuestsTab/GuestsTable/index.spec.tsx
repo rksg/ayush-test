@@ -15,6 +15,7 @@ import {
   within,
   fireEvent
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
@@ -458,5 +459,58 @@ describe('Guest Table', () => {
     await openGuestDetailsAndClickAction('test5')
     await userEvent.click(await screen.findByRole('menuitem', { name: /download information/i }))
     await waitFor(() => expect(mockedDownloadReq).toBeCalledTimes(1))
+  })
+
+  describe('ABAC permission', () => {
+    it('should dispaly with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.CREATE]
+      })
+
+      render(
+        <Provider>
+          <GuestTabContext.Provider value={{ setGuestCount }}>
+            <GuestsTable />
+          </GuestTabContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/guests' }
+        })
+
+      expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
+      const table = await screen.findByRole('table')
+      expect(await within(table).findByText('test1')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
+      const dialog = await screen.findByRole('dialog')
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('should correctly hide with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.DELETE]
+      })
+
+      render(
+        <Provider>
+          <GuestTabContext.Provider value={{ setGuestCount }}>
+            <GuestsTable />
+          </GuestTabContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/guests' }
+        })
+      expect(screen.queryByRole('button', { name: 'Add Guest' })).toBeNull()
+    })
   })
 })

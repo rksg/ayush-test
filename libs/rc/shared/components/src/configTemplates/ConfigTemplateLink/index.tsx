@@ -145,6 +145,8 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${targetTab}`} children={name} />
   } else if (type === ConfigTemplateType.VENUE) {
     return <ConfigTemplateLink to={`venues/${id}/venue-details/${targetTab}`} children={name} />
+  } else if (type === ConfigTemplateType.AP_GROUP) {
+    return <ConfigTemplateLink to={`devices/apgroups/${id}/details/networks`} children={name} />
   }
 
   return <span>{name}</span>

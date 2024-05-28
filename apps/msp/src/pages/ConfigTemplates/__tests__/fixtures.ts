@@ -155,7 +155,7 @@ export const mockPortalList = {
 }
 export const mockPortalDetailResult = {
   id: 1,
-  serviceName: 'test',
+  name: 'test',
   content: {
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: '#333333',
@@ -202,58 +202,6 @@ export const mockPortalDetailResult = {
   }
 }
 
-export const mockPortalDetailChangeResult = {
-  id: 1,
-  serviceName: 'test',
-  content: {
-    welcomeText: 'Welcome to the Guest Access login page',
-    welcomeColor: '#333333',
-    bgColor: '#FFFFFF',
-    welcomeSize: 14,
-    logo: 'logo',
-    photo: 'photo',
-    bgImage: 'bgimage',
-    poweredImg: 'poweredimg',
-    photoRatio: 170,
-
-    logoRatio: 105,
-    secondaryText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing' +
-      ' elit. Aenean euismod bibendum laoreet.',
-    secondaryColor: '#333333',
-    secondarySize: 14,
-    buttonColor: '#EC7100',
-    poweredBgColor: '#FFFFFF',
-    poweredColor: '#333333',
-    poweredSize: 14,
-    poweredImgRatio: 50,
-    wifi4EUNetworkId: '',
-    termsCondition: '',
-    componentDisplay: {
-      logo: true,
-      welcome: true,
-      photo: true,
-      secondaryText: true,
-      termsConditions: false,
-      poweredBy: true,
-      wifi4eu: true
-    },
-    displayLangCode: 'en',
-
-    alternativeLang: {
-      cs: true,
-      zh_TW: false,
-      fi: true,
-      fr: true,
-      de: true,
-      el: true,
-      hu: true,
-      it: false
-    }
-  },
-  networkIds: [1, 2]
-}
-
 export const mockedNetworkTemplates = {
   fields: [
     'id',
@@ -284,6 +232,6 @@ export const mockedNetworkTemplates = {
 }
 
 export const mockedEnhancedPortalList = {
-  content: [{ id: 'test', name: 'test', wifiNetworkIds: ['networkId'] }],
+  data: [{ id: 'test', name: 'test', displayLangCode: 'en', wifiNetworkIds: ['networkId'] }],
   paging: { page: 1, pageSize: 10, totalCount: 1 }
 }
