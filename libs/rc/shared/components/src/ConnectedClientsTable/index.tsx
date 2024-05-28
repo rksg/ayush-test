@@ -199,7 +199,6 @@ export const ConnectedClientsTable = (props: {
     const { $t } = useIntl()
     const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
     const { tenantId, venueId, apId, networkId } = useParams()
-    const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
 
     const clientStatuses = () => [
       { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
@@ -349,7 +348,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Switch' }),
         dataIndex: 'switchName',
         sorter: true,
-        render: (_, row) => {
+        render: (_: React.ReactNode, row: ClientList) => {
           return AsyncLoadingInColumn(row.apName, row.venueName, () => {
             if(!row.switchName){
               return noDataDisplay
@@ -367,7 +366,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'ssid',
         sorter: true,
         filterKey: 'ssid',
-        filterable: networkId ? false : listOfClientsPerWlanFlag ? GetNetworkFilterOptions(tenantId) : false,
+        filterable: networkId ? false : GetNetworkFilterOptions(tenantId),
         render: (_: React.ReactNode, row: ClientList) => {
           return AsyncLoadingInColumn(row.apName, row.venueName, () => {
             if (!row.healthCheckStatus) {

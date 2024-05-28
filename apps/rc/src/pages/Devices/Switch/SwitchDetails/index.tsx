@@ -8,7 +8,7 @@ import { Features, useIsSplitOn }                                               
 import { useSwitchDetailHeaderQuery, useGetSwitchQuery, useGetSwitchListQuery } from '@acx-ui/rc/services'
 import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
 import { UseQueryResult }                                                       from '@acx-ui/types'
-import { goToNotFound, hasAccess }                                              from '@acx-ui/user'
+import { goToNotFound, hasPermission }                                          from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                    from '@acx-ui/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
@@ -22,7 +22,7 @@ import { SwitchTroubleshootingTab } from './SwitchTroubleshootingTab'
 
 const tabs = {
   overview: SwitchOverviewTab,
-  incidents: () => hasAccess() ? <SwitchIncidentsTab/> : null,
+  incidents: () => hasPermission() ? <SwitchIncidentsTab/> : null,
   troubleshooting: SwitchTroubleshootingTab,
   clients: SwitchClientsTab,
   configuration: SwitchConfigurationTab,

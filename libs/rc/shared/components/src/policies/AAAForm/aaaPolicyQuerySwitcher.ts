@@ -20,7 +20,7 @@ export function useGetAAAPolicyInstanceList (props: useGetAAAPolicyInstanceListP
     ? 1024
     : AAA_LIMIT_NUMBER
 
-  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const requestPayload = {
     params,

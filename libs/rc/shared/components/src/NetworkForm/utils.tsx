@@ -154,7 +154,7 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
 export function useUpdateRadiusServer () {
   const [ activateRadiusServer ] = useActivateRadiusServerMutation()
   const [ deactivateRadiusServer ] = useDeactivateRadiusServerMutation()
-  const enableServicePolicyRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {

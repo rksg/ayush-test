@@ -148,10 +148,19 @@ export interface RWG {
   isCluster: boolean
 }
 
-export interface RWGClusterNode {
+export interface RWGClusterNode{
   id: string
   name: string
   ip: string
+}
+
+export interface RWGRow extends RWG {
+  clusterId?: string
+  clusterName?: string
+  isNode?: boolean
+  children?: RWGRow[]
+  ip?: string
+  rowId: string
 }
 
 export interface GatewayAlarms {
@@ -188,8 +197,7 @@ export interface GatewayDetailsGeneral {
   venueName: string,
   venueId: string,
   hostname: string,
-  username: string,
-  password: string,
+  apiKey: string,
   uptimeInSeconds: string,
   bootedAt: string,
   temperature: string,
@@ -219,15 +227,6 @@ export interface GatewayDetailsHardware {
   systemFamily: string
 }
 
-export interface GatewayDetailsOs {
-  architecture: string,
-  branch: string,
-  kernel: string,
-  name: string,
-  release: string,
-  version: string
-}
-
 export interface GatewayDetailsDiskMemory {
   diskDevice: string,
   diskTotalSpaceInGb: number,
@@ -240,7 +239,6 @@ export interface GatewayDetailsDiskMemory {
 export interface GatewayDetails {
   gatewayDetailsGeneral: GatewayDetailsGeneral
   gatewayDetailsHardware: GatewayDetailsHardware
-  gatewayDetailsOs: GatewayDetailsOs
   gatewayDetailsDiskMemory: GatewayDetailsDiskMemory
 }
 

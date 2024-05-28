@@ -46,9 +46,6 @@ export function MeshNetwork () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isFeatureOnMeshEnhancement
-
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
   const [apList] = useLazyApListQuery()
@@ -265,7 +262,7 @@ export function MeshNetwork () {
     try {
       let meshData: Mesh = { enabled: meshEnabled }
 
-      if (meshEnabled && supportMeshEnhancement) {
+      if (meshEnabled) {
         meshData = { ...meshData,
           ssid: meshSsid,
           passphrase: meshPassphrase,
@@ -334,7 +331,7 @@ export function MeshNetwork () {
         />
       }
     </StepsFormLegacy.FieldLabel>
-    {(supportMeshEnhancement && meshEnabled) && <>
+    {meshEnabled && <>
       <MeshInfoBlock>
         <ul>
           <li>

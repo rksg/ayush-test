@@ -10,10 +10,11 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
 import {
-  useGetSwitchUpgradePreferencesQuery,
-  useUpdateSwitchUpgradePreferencesMutation,
+  useGetSwitchUpgradePreferencesQuery, //TODO
+  useUpdateSwitchUpgradePreferencesMutation, //TODO
   useGetSwitchVenueVersionListQuery,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
@@ -29,10 +30,10 @@ import {
   usePollingTableQuery,
   SwitchFirmwareStatusType
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { noDataDisplay }             from '@acx-ui/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { noDataDisplay }                 from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -65,13 +66,17 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const {
     getSwitchNextScheduleTplTooltip,
     getSwitchFirmwareList,
     getSwitchVenueAvailableVersions,
     sortAvailableVersionProp
   } = useSwitchFirmwareUtils()
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
   const [updateStatusDrawerVisible, setUpdateStatusDrawerVisible] = useState(false)
@@ -86,7 +91,10 @@ export const VenueFirmwareTable = (
   const [selectedRowKeys, setSelectedRowKeys] = useState([])
   const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
 
-  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({ params })
+  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
+    params,
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
@@ -113,13 +121,13 @@ export const VenueFirmwareTable = (
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      key: 'name',
-      dataIndex: 'name',
-      sorter: { compare: sortProp('name', defaultSort) },
+      key: isSwitchRbacEnabled ? 'venueName' : 'name',
+      dataIndex: isSwitchRbacEnabled ? 'venueName' : 'name',
+      sorter: { compare: sortProp(isSwitchRbacEnabled ? 'venueName' : 'name', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return row.name
+        return isSwitchRbacEnabled ? row.venueName : row.name
       }
     },
     {
@@ -233,6 +241,7 @@ export const VenueFirmwareTable = (
 
   const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Now' }),
+    scopeKey: [SwitchScopes.UPDATE],
     visible: hasAvailableSwitchFirmware(),
     disabled: !hasAvailableSwitchFirmware(),
     onClick: (selectedRows) => {
@@ -243,6 +252,7 @@ export const VenueFirmwareTable = (
   },
   {
     label: $t({ defaultMessage: 'Change Update Schedule' }),
+    scopeKey: [SwitchScopes.UPDATE],
     visible: hasAvailableSwitchFirmware(),
     disabled: !hasAvailableSwitchFirmware(),
     onClick: (selectedRows) => {
@@ -253,6 +263,7 @@ export const VenueFirmwareTable = (
   },
   {
     label: $t({ defaultMessage: 'Skip Update' }),
+    scopeKey: [SwitchScopes.UPDATE],
     disabled: (selectedRows) => {
       let disabledUpdate = false
       selectedRows.forEach((row) => {
@@ -270,6 +281,10 @@ export const VenueFirmwareTable = (
     }
   }]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [SwitchScopes.UPDATE]
+  })
+
   return (
     <Loader states={[tableQuery,
       { isLoading: false }
@@ -282,12 +297,12 @@ export const VenueFirmwareTable = (
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='id'
-        rowActions={rowActions}
-        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={filterByAccess([{
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
+        actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
-        }])}
+        }] : []}
       />
 
       <SwitchUpgradeWizard
@@ -321,16 +336,21 @@ export const VenueFirmwareTable = (
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
-  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({
+    params: useParams(),
+    enableRbac: isSwitchRbacEnabled
+  }, {
     selectFromResult ({ data }) {
       let versionList = data?.currentVersions
       if (data?.currentVersionsAboveTen && versionList) {
@@ -339,7 +359,7 @@ export function VenueFirmwareList () {
 
       return {
         // eslint-disable-next-line max-len
-        versionFilterOptions: versionList?.map(v=>({ key: v, value: parseSwitchVersion(v) })) || true
+        versionFilterOptions: versionList?.map(v => ({ key: v, value: parseSwitchVersion(v) })) || true
       }
     }
   })

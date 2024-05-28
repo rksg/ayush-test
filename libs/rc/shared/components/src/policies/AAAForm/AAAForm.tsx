@@ -47,7 +47,7 @@ export const AAAForm = (props: AAAFormProps) => {
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
-  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useAaaPolicyQuery,
     useTemplateQueryFn: useGetAAAPolicyTemplateQuery,

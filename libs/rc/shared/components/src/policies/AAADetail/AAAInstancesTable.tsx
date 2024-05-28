@@ -77,7 +77,7 @@ export default function AAAInstancesTable () {
 
 function useAaaInstanceTableQuery () {
   const { isTemplate } = useConfigTemplate()
-  const enableRbac = useIsSplitOn(Features.ACX_UI_RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const params = useParams()
   const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
     customPayload: { filters: { id: [ params?.policyId ] } }
