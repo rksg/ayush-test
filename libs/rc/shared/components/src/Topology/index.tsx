@@ -343,16 +343,18 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         setModalVisible(true)
       })
 
-      const _formattedNodes = nodes.map(node => ({
-        value: (node.name as string || node.id as string).toString(),
-        key: (node.id as string).toString(),
-        label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
-          {node.name as string}</Typography.Title>
-        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text>
-        <Typography.Text type='secondary'> ({(node.ipAddress as string)})</Typography.Text></div>,
-        children: node.label,
-        item: node
-      })) as OptionType[]
+      const _formattedNodes = nodes.map((node, index) =>
+      {
+        return {
+          value: (node.name as string || node.id as string).toString()+'\u200b'.repeat(index),
+          key: (node.id as string).toString(),
+          label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
+            {node.name as string}</Typography.Title>
+          <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text>
+          <Typography.Text type='secondary'> ({(node.ipAddress as string)})</Typography.Text></div>,
+          children: node.label,
+          item: node
+        }}) as OptionType[]
 
       setFilterNodes(_formattedNodes)
 
