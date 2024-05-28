@@ -48,9 +48,10 @@ export function VenueSetting () {
     defaultPayload
   })
 
-  const { data: venueAppliedToCli } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>(
-    useGetCliFamilyModelsQuery, useGetSwitchTemplateCliFamilyModelsQuery
-  )
+  const { data: venueAppliedToCli } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>({
+    useQueryFn: useGetCliFamilyModelsQuery,
+    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery
+  })
   const [tableData, setTableData] = useState(defaultArray)
   const [venueList, setVenueList] = useState<string[]>([])
 

@@ -35,9 +35,10 @@ export default function BasicInfo () {
   const params = useParams()
   const locationState = (useLocation() as LocationExtended)?.state
 
-  const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueDHCPProfileMutation, useUpdateVenueTemplateDhcpProfileMutation
-  )
+  const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueDHCPProfileMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateDhcpProfileMutation
+  })
 
   const [visible, setVisible] = useState(!!locationState?.from?.returnParams?.showConfig)
   const { $t } = useIntl()
@@ -46,13 +47,15 @@ export default function BasicInfo () {
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
-  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
-    useGetVenueSettingsQuery, useGetVenueTemplateSettingsQuery
-  )
+  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
+  })
 
-  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
-    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
-  )
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery
+  })
 
   const getSelectedDHCPMode = (dhcpServiceID:string)=> {
     if(dhcpProfileList && dhcpServiceID){

@@ -5,7 +5,6 @@ import {
   ApPacketCaptureStateEnum,
   ApPosition,
   BandModeEnum,
-  CapabilitiesApModel,
   DeviceGps,
   DhcpApInfo,
   ExternalAntenna,
@@ -369,7 +368,7 @@ export interface LanPort {
   vni: number
 }
 
-export interface ApModel {
+export interface CapabilitiesApModel {
   allowDfsCountry: string[],
   canSupportCellular: boolean,
   canSupportLacp: boolean,

@@ -27,36 +27,36 @@ export const ApSnmpRbacUrls: { [key: string]: ApiInfo } = {
     url: '/snmpAgentProfiles/:profileId',
     newApi: true
   },
-  // getApSnmpPolicyList: {
-  //   method: 'get',
-  //   url: '/apSnmpAgentProfiles',
-  //   newApi: true
-  // },
-  // getVenueApSnmpSettings: { //venue instances
-  //   method: 'get',
-  //   url: '/venues/:venueId/snmpAgentSettings',
-  //   newApi: true
-  // },
-  // updateVenueApSnmpSettings: { //venue instances
-  //   method: 'put',
-  //   url: '/venues/:venueId/snmpAgentSettings',
-  //   newApi: true
-  // },
+  updateVenueApSnmpSettings: { //venue instances
+    method: 'put',
+    url: '/venues/:venueId/snmpAgentProfiles/:profileId',
+    newApi: true
+  },
+  resetVenueApSnmpSettings: { //venue instances
+    method: 'delete',
+    url: '/venues/:venueId/snmpAgentProfiles/:profileId',
+    newApi: true
+  },
   getApSnmpSettings: { //ap instances
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfileSettings',
     newApi: true
   },
-  // updateApSnmpSettings: { //ap instances
-  //   method: 'put',
-  //   url: '/venues/aps/:serialNumber/snmpAgentSettings',
-  //   newApi: true
-  // },
-  // resetApSnmpSettings: { //ap instances - use venue setting
-  //   method: 'delete',
-  //   url: '/venues/aps/:serialNumber/snmpAgentSettings',
-  //   newApi: true
-  // },
+  resetApSnmpSettings: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfileSettings',
+    newApi: true
+  },
+  updateApSnmpSettings: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfiles/:profileId',
+    newApi: true
+  },
+  disableApSnmp: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:serialNumber/snmpAgentProfiles/:profileId',
+    newApi: true
+  },
   getApSnmpFromViewModel: {
     method: 'post',
     url: '/snmpAgentProfiles/query',

@@ -41,11 +41,11 @@ export function RadiusOptions () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const form = Form.useFormInstance()
-  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>(
-    useGetVenueRadiusOptionsQuery,
-    useGetVenueTemplateRadiusOptionsQuery,
-    isUseRbacApi
-  )
+  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>({
+    useQueryFn: useGetVenueRadiusOptionsQuery,
+    useTemplateQueryFn: useGetVenueTemplateRadiusOptionsQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const [updateVenueRadiusOptions, { isLoading: isUpdatingVenueRadiusOptions }] =
     useVenueConfigTemplateMutationFnSwitcher(

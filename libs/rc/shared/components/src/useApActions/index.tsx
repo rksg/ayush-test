@@ -23,7 +23,7 @@ import {
   ApDeviceStatusEnum,
   ApDhcpRoleEnum,
   APExtended,
-  CountdownNode, DhcpAp, DhcpApResponse,
+  CountdownNode, DhcpAp,
   DhcpApInfo,
   NewAPModel
 } from '@acx-ui/rc/utils'
@@ -35,8 +35,6 @@ const blinkLedCount = 30
 
 export function useApActions () {
   const { $t } = useIntl()
-  const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
-  const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ downloadApLog ] = useDownloadApLogMutation()
   const [ getDhcpAp ] = useLazyGetDhcpApQuery()
@@ -157,7 +155,7 @@ export function useApActions () {
       payload: rows.map(row => row.serialNumber)
     }, true).unwrap()
 
-    if (hasDhcpAps(dhcpAps, wifiEdaflag || wifiEdaGatewayflag)) {
+    if (hasDhcpAps(dhcpAps)) {
       showActionModal({
         type: 'warning',
         content: $t({ defaultMessage: 'Not allow to delete DHCP APs' })
@@ -264,14 +262,8 @@ const hasInvalidAp = (selectedRows: (AP|NewAPModel)[]) => {
     })
 }
 
-const hasDhcpAps = (dhcpAps: DhcpAp, featureFlag: boolean) => {
-  let res: DhcpApInfo[] = []
-  if (dhcpAps && featureFlag) {
-    res = dhcpAps as DhcpApInfo[]
-  } else {
-    const response = dhcpAps as DhcpApResponse
-    res = Array.isArray(response.response) ? response.response : []
-  }
+const hasDhcpAps = (dhcpAps: DhcpAp) => {
+  const res: DhcpApInfo[] = Array.isArray(dhcpAps)? dhcpAps : []
 
   const dhcpApMap = res.filter(dhcpAp =>
     dhcpAp.venueDhcpEnabled === true &&

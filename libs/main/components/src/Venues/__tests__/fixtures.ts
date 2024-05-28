@@ -1750,7 +1750,8 @@ export const triBandApCap = {
       supportMesh: true,
       version: '6.2.1.103.2554'
     }
-  ]
+  ],
+  version: '7.2.0.0'
 }
 
 export const emptyList = {

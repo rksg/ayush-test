@@ -2,10 +2,10 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { rwgApi }          from '@acx-ui/rc/services'
-import { CommonUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
+import { rwgApi }                             from '@acx-ui/rc/services'
+import { CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -62,10 +62,11 @@ const gatewayResponse = {
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    hostname: 'rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxxxxxxxxxx',
-    status: null
-  }
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 const rwgList = {
@@ -78,10 +79,11 @@ const rwgList = {
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
       name: 'ruckusdemos',
-      hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
+      hostname: 'rxgs5-vpoc.ruckusdemos.net',
       apiKey: 'xxxxxxxxxxxxxxxxxxx',
-      status: null
-    }]
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false
+    }] as RWG[]
   }
 }
 
@@ -142,7 +144,7 @@ describe('Gateway Form', () => {
     fireEvent.blur(gatewayInput)
 
     const URLInput = screen.getByLabelText('FQDN / IP')
-    await fireEvent.change(URLInput, { target: { value: 'https://test.com' } })
+    await fireEvent.change(URLInput, { target: { value: 'test.com' } })
 
     const passwordInput = screen.getByLabelText('API Key')
     await fireEvent.change(passwordInput, { target: { value: 'Temp!2345' } })
@@ -219,7 +221,7 @@ describe('Gateway Form', () => {
     fireEvent.change(password, { target: { value: 'x' } })
     fireEvent.blur(password)
 
-    expect(await screen.findByText('Please enter a valid URL')).toBeVisible()
+    expect(await screen.findByText('Please enter a valid FQDN / IP')).toBeVisible()
 
   })
 

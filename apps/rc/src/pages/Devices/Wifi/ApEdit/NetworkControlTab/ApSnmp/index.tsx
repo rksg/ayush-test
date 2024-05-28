@@ -67,6 +67,7 @@ export function ApSnmp () {
 
   const formRef = useRef<StepsFormLegacyInstance<ApSnmpSettings>>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
+  const profileIdRef = useRef<string>('')
 
   const [apSnmpSettings, setApSnmpSettings] = useState(defaultApSnmpSettings)
   const [venueApSnmpSettings, setVenueApSnmpSettings] = useState(defaultVenueApSnmpSettings)
@@ -76,7 +77,9 @@ export function ApSnmp () {
   const [formInitializing, setFormInitializing] = useState(true)
   // eslint-disable-next-line max-len
   const getApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
-  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber } })
+  // eslint-disable-next-line max-len
+  const getApSnmpSettings = useGetApSnmpSettingsQuery({ params: { serialNumber, venueId: apDetails?.venueId }, enableRbac: isUseRbacApi })
+
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }]
    = useUpdateApSnmpSettingsMutation()
 
@@ -97,9 +100,9 @@ export function ApSnmp () {
 
         // Get current Venue AP SNMP settings
         const venueApSnmpSetting = (await getVenueApSnmpSettings({
-          params: { tenantId, venueId: apDetails?.venueId } }, true).unwrap()
+          params: { tenantId, venueId: apDetails?.venueId },
+          enableRbac: isUseRbacApi }, true).unwrap()
         )
-
         setApSnmpSettings({ ...defaultApSnmpSettings, ...apSnmp })
         setVenueApSnmpSettings(venueApSnmpSetting)
         setVenue(apVenue)
@@ -181,9 +184,20 @@ export function ApSnmp () {
       })
 
       if (useVenueSettings === true) {
-        await resetApSnmpSettings({ params: { serialNumber } }).unwrap()
+        // eslint-disable-next-line max-len
+        await resetApSnmpSettings({ params: {
+          serialNumber,
+          venueId: apDetails?.venueId
+        },
+        enableRbac: isUseRbacApi }).unwrap()
       } else {
-        await updateApSnmpSettings({ params: { serialNumber }, payload }).unwrap()
+        await updateApSnmpSettings({ params: {
+          serialNumber,
+          venueId: apDetails?.venueId,
+          profileId: payload?.apSnmpAgentProfileId || profileIdRef.current
+        },
+        enableRbac: isUseRbacApi,
+        payload }).unwrap()
       }
 
     } catch (error) {
@@ -191,6 +205,12 @@ export function ApSnmp () {
         type: 'error',
         content: $t({ defaultMessage: 'An error occurred' })
       })
+    }
+  }
+
+  const memorizeProfileIdWhenApSnmpOff = (state: boolean) => {
+    if (state === false) {
+      profileIdRef.current = formRef.current?.getFieldValue('apSnmpAgentProfileId')
     }
   }
 
@@ -254,6 +274,9 @@ export function ApSnmp () {
                     disabled={isUseVenueSettings}
                     data-testid='snmp-switch'
                     style={{ marginLeft: '20px' }}
+                    onChange={(state) => {
+                      memorizeProfileIdWhenApSnmpOff(state)
+                    }}
                   />
                 </Form.Item>
               </StepsFormLegacy.FieldLabel>

@@ -131,21 +131,25 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     useWatch<string>([...inputName, 'l2AclPolicyId'])
   ]
 
-  const [ createL2AclPolicy ] = useConfigTemplateMutationFnSwitcher(
-    useAddL2AclPolicyMutation, useAddL2AclPolicyTemplateMutation)
+  const [ createL2AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddL2AclPolicyMutation,
+    useTemplateMutationFn: useAddL2AclPolicyTemplateMutation
+  })
 
-  const [ updateL2AclPolicy ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateL2AclPolicyMutation, useUpdateL2AclPolicyTemplateMutation)
+  const [ updateL2AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateL2AclPolicyMutation,
+    useTemplateMutationFn: useUpdateL2AclPolicyTemplateMutation
+  })
 
   const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(editMode.isEdit)
 
-  const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher(
-    useGetL2AclPolicyQuery,
-    useGetL2AclPolicyTemplateQuery,
-    skipFetch,
-    {},
-    { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
-  )
+  const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetL2AclPolicyQuery,
+    useTemplateQueryFn: useGetL2AclPolicyTemplateQuery,
+    skip: skipFetch,
+    payload: {},
+    extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
+  })
 
   const isViewMode = () => {
     if (queryPolicyId === '') {
@@ -729,12 +733,12 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
 const useGetL2AclPolicyListInstance = (isEdit: boolean): {
   layer2SelectOptions: JSX.Element[], layer2List: string[]
 } => {
-  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L2AclPolicy>>(
-    useGetEnhancedL2AclProfileListQuery,
-    useGetL2AclPolicyTemplateListQuery,
-    isEdit,
-    QUERY_DEFAULT_PAYLOAD
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L2AclPolicy>>({
+    useQueryFn: useGetEnhancedL2AclProfileListQuery,
+    useTemplateQueryFn: useGetL2AclPolicyTemplateListQuery,
+    skip: isEdit,
+    payload: QUERY_DEFAULT_PAYLOAD
+  })
 
   return {
     layer2SelectOptions: data?.data?.map(
