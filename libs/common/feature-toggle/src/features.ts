@@ -3,7 +3,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 /* eslint-disable max-len */
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
-  ADDITIONAL_REGULATORY_DOMAINS_TOGGLE = 'wifi-eda-additional-regulatory-domains-toggle',
   AI_CRRM = 'acx-ui-ai-crrm-toggle',
   AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
@@ -136,12 +135,10 @@ export enum Features {
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
   WIFI_EDA_MULTICAST_FILTER_TOGGLE = 'wifi-eda-multicast-filter-toggle',
-  WIFI_EDA_NEIGHBORS_TOGGLE = 'wifi-eda-neighbors-toggle',
   WIFI_EDA_NON_PROXY_DPSK_TOGGLE = 'wifi-eda-non-proxy-dpsk-toggle',
   WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
   WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
   WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
-  WIFI_EDA_QOS_MAP_SET_TOGGLE = 'wifi-eda-qos-map-set-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
