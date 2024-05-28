@@ -688,7 +688,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             }
             return { data: {} as CommonResult }
           } else {
-            const req = createHttpRequest(RogueApUrls.deleteRoguePolicy, params)
+            const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
             const res = await fetchWithBQ(req)
             return { data: res.data as CommonResult }
           }
