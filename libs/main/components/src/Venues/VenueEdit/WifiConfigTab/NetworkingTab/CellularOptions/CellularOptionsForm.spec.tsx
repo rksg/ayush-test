@@ -2,13 +2,13 @@ import '@testing-library/jest-dom'
 
 import { rest } from 'msw'
 
-import { venueApi }                                                                                                           from '@acx-ui/rc/services'
-import { CellularNetworkSelectionEnum, CommonUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                                                    from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                                 from '@acx-ui/test-utils'
+import { venueApi }                                                                                                                               from '@acx-ui/rc/services'
+import { CellularNetworkSelectionEnum, CommonUrlsInfo, CommonRbacUrlsInfo, LteBandRegionEnum, WanConnectionEnum, WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                                        from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                                                                     from '@acx-ui/test-utils'
 
 import {
-  venueSetting
+  venueSetting, venueData
 } from '../../../../__tests__/fixtures'
 
 import { CellularOptionsForm } from './CellularOptionsForm'
@@ -74,6 +74,8 @@ describe('CellularOptionsForm', () => {
       rest.put(WifiUrlsInfo.updateVenueCellularSettings.url,
         (_, res, ctx) => res(ctx.json({}))),
       // RBAC API
+      rest.get(CommonRbacUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(WifiRbacUrlsInfo.getAvailableLteBands.url,
         (_, res, ctx) => res(ctx.json(availableLteBandsResponse))),
       rest.get(WifiRbacUrlsInfo.getVenueApModelCellular.url,

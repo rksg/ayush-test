@@ -80,7 +80,7 @@ export function CellularOptionsForm () {
   const availableLteBands = useGetAvailableLteBandsQuery(
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
   const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
-  const venueCountryCodeData = useGetVenueQuery(
+  const venueInfoData = useGetVenueQuery(
     { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
   const [currentRegion, setCurrentRegion] = useState('')
   const [availableLteBandsArray, setAvailableLteBandsArray] =
@@ -92,7 +92,7 @@ export function CellularOptionsForm () {
     let availableLteBandsData = _.cloneDeep(availableLteBands.data)
     let venueApModelCellularData = _.cloneDeep(venueApModelCellular.data)
     const countryCode = isUseRbacApi
-      ? venueCountryCodeData.currentData?.address.countryCode
+      ? venueInfoData.currentData?.address.countryCode
       : _.get(venueData, 'data.countryCode')
 
     if (availableLteBandsData && countryCode && venueApModelCellularData) {
@@ -145,7 +145,7 @@ export function CellularOptionsForm () {
       setReadyToScroll?.(r => [...(new Set(r.concat('Cellular-Options')))])
     }
 
-  }, [availableLteBands, venueApModelCellular, venueData, form])
+  }, [availableLteBands, venueApModelCellular, venueData, venueInfoData, form])
   const onChange = () =>{
     setEditContextData && setEditContextData({
       ...editContextData,
@@ -202,7 +202,7 @@ export function CellularOptionsForm () {
               editData={editData}
               simCardNumber={1}
               countryCode={isUseRbacApi
-                ? venueCountryCodeData.currentData?.address.countryCode
+                ? venueInfoData.currentData?.address.countryCode
                 : _.get(venueData, 'data.countryCode')}
               legend={$t({ defaultMessage: 'Primary SIM' })}
               regionCountriesMap={regionCountriesMap}
@@ -216,7 +216,7 @@ export function CellularOptionsForm () {
             legend={$t({ defaultMessage: 'Secondary SIM' })}
             regionCountriesMap={regionCountriesMap}
             countryCode={isUseRbacApi
-              ? venueCountryCodeData.currentData?.address.countryCode
+              ? venueInfoData.currentData?.address.countryCode
               : _.get(venueData, 'data.countryCode')}
             currentRegion={currentRegion}
             availableLteBands={availableLteBandsArray}
