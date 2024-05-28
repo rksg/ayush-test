@@ -144,12 +144,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/venue/:venueId',
     newApi: true
   },
+  */
   getVenue: {
     method: 'get',
     url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
     newApi: true
   },
+  /*
   deleteVenue: {
     method: 'delete',
     url: '/venues/:venueId',

@@ -221,8 +221,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenue: build.query<VenueExtended, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getVenue, params, apiCustomHeader)
         return{
           ...req
         }
