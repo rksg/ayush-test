@@ -1,5 +1,6 @@
-import { Provider }       from '@acx-ui/store'
-import { screen, render } from '@acx-ui/test-utils'
+import { Provider }           from '@acx-ui/store'
+import { screen, render }     from '@acx-ui/test-utils'
+import { raiPermissionsList } from '@acx-ui/user'
 
 import Layout from '.'
 
@@ -10,22 +11,11 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 }))
 
 describe('Layout', () => {
+  const permissions = Object.keys(raiPermissionsList)
+    .reduce((permissions, name) => ({ ...permissions, [name]: true }), {})
   beforeEach(() => {
     jest.restoreAllMocks()
   })
-  const permissions = {
-    'view-analytics': true,
-    'view-report-controller-inventory': true,
-    'view-data-explorer': true,
-    'manage-service-guard': true,
-    'manage-call-manager': true,
-    'manage-mlisa': true,
-    'manage-occupancy': true,
-    'manage-label': true,
-    'manage-tenant-settings': true,
-    'manage-config-recommendation': true,
-    'franchisor': true
-  }
   it('should render layout correctly with multiple accounts', async () => {
     mockedProfile.mockImplementation(() => ({
       accountId: '0015000000GlI7SAAV',

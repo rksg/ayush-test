@@ -217,7 +217,7 @@ export function VideoCallQoeTable () {
         dataSource={meetingList}
         rowActions={filterByAccess(actions)}
         rowKey='id'
-        rowSelection={hasPermission() && { type: 'radio' }}
+        rowSelection={hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE' }) && { type: 'radio' }}
         pagination={{
           pageSize: TABLE_DEFAULT_PAGE_SIZE,
           defaultPageSize: TABLE_DEFAULT_PAGE_SIZE
