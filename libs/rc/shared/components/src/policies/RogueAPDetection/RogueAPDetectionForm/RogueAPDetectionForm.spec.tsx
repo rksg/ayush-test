@@ -1,10 +1,9 @@
 import React from 'react'
 
-import { waitFor } from '@testing-library/react'
-import userEvent   from '@testing-library/user-event'
-import { rest }    from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
-import {Features, useIsSplitOn} from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonResult,
   RogueAPDetectionContextType,
@@ -19,7 +18,7 @@ import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { mockedRogueApPoliciesList, policyListContent, venueTable } from '../__tests__/fixtures'
-import RogueAPDetectionContext                                                               from '../RogueAPDetectionContext'
+import RogueAPDetectionContext                                      from '../RogueAPDetectionContext'
 
 import { RogueAPDetectionForm } from './RogueAPDetectionForm'
 
