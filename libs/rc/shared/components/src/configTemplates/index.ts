@@ -41,7 +41,8 @@ export function useConfigTemplateVisibilityMap (): Record<ConfigTemplateType, bo
     [ConfigTemplateType.CLIENT_ISOLATION]: false, // Not supported in the current scope
     [ConfigTemplateType.ROGUE_AP_DETECTION]: isGA,
     [ConfigTemplateType.SWITCH_REGULAR]: isExtraScope,
-    [ConfigTemplateType.SWITCH_CLI]: isExtraScope
+    [ConfigTemplateType.SWITCH_CLI]: isExtraScope,
+    [ConfigTemplateType.AP_GROUP]: isExtraScope
   }
 
   return visibilityMap

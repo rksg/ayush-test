@@ -17,7 +17,6 @@ export enum QoSMirroringScope {
 
 function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
-  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
   const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
@@ -27,7 +26,7 @@ function QoS ({ wlanData }: { wlanData: NetworkSaveData | null }) {
         {$t({ defaultMessage: 'QoS' })}
       </UI.Subtitle>
       { qosMirroringFlag && enableAP70 && <QoSMirroring wlanData={wlanData} /> }
-      { qosMapSetFlag && <QosMapSetForm /> }
+      <QosMapSetForm />
     </>
   )
 }

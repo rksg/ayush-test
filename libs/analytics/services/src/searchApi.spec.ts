@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import { store, dataApiSearchURL, dataApiURL } from '@acx-ui/store'
 import { mockGraphqlQuery }                    from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }   from '@acx-ui/user'
 
 import {
   apListFixture,
@@ -16,6 +17,13 @@ describe('Search API', () => {
 
   beforeEach(() => {
     store.dispatch(searchApi.util.resetApiState())
+    setRaiPermissions({
+      READ_ACCESS_POINTS_LIST: true,
+      READ_INCIDENTS: true,
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_SWITCH_LIST: true,
+      READ_WIFI_NETWORKS_LIST: true
+    } as RaiPermissions)
   })
 
   it('search api should return the data', async () => {
@@ -48,9 +56,15 @@ describe('Search API', () => {
       start: '2023-04-06T15:26:21+05:30',
       end: '2023-04-06T15:29:48+05:30',
       query: 'sometext',
-      limit: 100,
-      isReportOnly: true
+      limit: 100
     }
+    setRaiPermissions({
+      READ_ACCESS_POINTS_LIST: true,
+      READ_INCIDENTS: true,
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_SWITCH_LIST: false,
+      READ_WIFI_NETWORKS_LIST: true
+    } as RaiPermissions)
     const { status, data, error } = await store.dispatch(
       searchApi.endpoints.search.initiate(searchPayload))
 

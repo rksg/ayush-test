@@ -47,11 +47,6 @@ jest.mock('./ApNeighbors', () => ({
   ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
 }))
 
-jest.mock('./ApNeighbors/useApNeighbors', () => ({
-  ...jest.requireActual('./ApNeighbors/useApNeighbors'),
-  useIsApNeighborsOn: () => true
-}))
-
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
