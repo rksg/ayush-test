@@ -3,9 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Radio, RadioChangeEvent, Row, Space }                from 'antd'
-import { cloneDeep, dropRight, includes, isEmpty, isEqual, isUndefined } from 'lodash'
-import { FormattedMessage, useIntl }                                     from 'react-intl'
+import { Col, Form, Radio, RadioChangeEvent, Row, Space }                         from 'antd'
+import { cloneDeep, dropRight, includes, isEmpty, isEqual, isUndefined, flatten } from 'lodash'
+import { FormattedMessage, useIntl }                                              from 'react-intl'
 
 import {
   AnchorContext,
@@ -825,6 +825,25 @@ export function RadioSettings () {
   }
 
   const handleUpdateRadioSettings = async (form: StepsFormLegacyInstance) => {
+    try {
+      await validationFields() as any
+    } catch (error: any) {
+      showActionModal({
+        type: 'error',
+        width: 450,
+        title: $t({ defaultMessage: 'You Have Invalid Changes' }),
+        content: $t({ defaultMessage: 'You have invalid changes, please see technical detail for more information.' }),
+        customContent: {
+          action: 'SHOW_ERRORS',
+          errorDetails: {
+            error: flatten(error.errorFields.map((errorFields: any) => errorFields.errors[0])) as unknown as string
+          }
+        }
+      })
+      return
+    }
+
+
     const updateRadioParams = (radioParams: any, supportCh: any) => {
       if (!radioParams) {
         return

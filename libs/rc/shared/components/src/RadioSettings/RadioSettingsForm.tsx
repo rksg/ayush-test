@@ -158,13 +158,13 @@ export function RadioSettingsForm (props:{
           <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
         </div>
         <Form.Item
-          style={{ width: '50px' }}
+          style={{ width: '160px' }}
           name={enableAfcFieldName}
           valuePropName={'checked'}
           initialValue={true}
           rules={[
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            { validator: (_, value) => AFCEnableValidation() ? Promise.reject() : Promise.resolve() }
+            { validator: (_, value) => AFCEnableValidation() ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
           ]}>
           {isUseVenueSettings ?
             LPIButtonText?.buttonText :
