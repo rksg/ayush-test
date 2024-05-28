@@ -109,7 +109,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       providesTags: [{ type: 'Edge', id: 'LIST' }],
       transformResponse: (result: TableResult<EdgeStatus>) => {
-        EdgeStatusTransformer(result.data)
+        edgeStatusTransformer(result.data)
         return result
       },
       async onCacheEntryAdded (requestArgs, api) {
@@ -161,7 +161,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       },
       transformResponse (result: TableResult<EdgeStatus>) {
-        EdgeStatusTransformer(result.data)
+        edgeStatusTransformer(result.data)
         return result.data[0]
       }
     }),
@@ -296,7 +296,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Edge', id: 'ROUTES' }]
     }),
-    getEdgePortsStatusList: build.query<EdgePortStatus[], RequestPayload>({
+    getEdgePortsStatusList: build.query<TableResult<EdgePortStatus>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgePortStatusList, params)
         return {
@@ -304,12 +304,9 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse (result: TableResult<EdgePortStatus>) {
-        return result?.data
-      },
       providesTags: [{ type: 'Edge', id: 'PORT' }]
     }),
-    getEdgeSubInterfacesStatusList: build.query<TableResult<EdgePortStatus>, RequestPayload>({
+    getEdgeSubInterfacesStatusList: build.query<TableResult<EdgePortInfo>, RequestPayload>({
       query: ({ payload }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getEdgeSubInterfacesStatusList)
         return {
@@ -317,7 +314,24 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      transformResponse (result: TableResult<EdgePortStatus>) {
+        return {
+          ...result,
+          data: convertToEdgePortInfo(result?.data)
+        }
+      },
+      providesTags: [{ type: 'Edge', id: 'SUB_INTERFACE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update sub-interfaces'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'SUB_INTERFACE' }]))
+          })
+        })
+      }
     }),
     rebootEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
@@ -620,7 +634,8 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Update LAG sub-interface'
+            'Update LAG sub-interface',
+            'Update LAG sub-interfaces'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
@@ -671,7 +686,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
       }
     }),
-    getEdgeLagSubInterfacesStatusList: build.query<TableResult<EdgeLagStatus>, RequestPayload>({
+    getEdgeLagSubInterfacesStatusList: build.query<TableResult<EdgePortInfo>, RequestPayload>({
       query: ({ payload, params }) => {
         const req = createHttpRequest(EdgeUrlsInfo.getLagSubInterfacesStatus, params)
         return {
@@ -679,10 +694,17 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
           body: payload
         }
       },
+      transformResponse (result: TableResult<EdgeLagStatus>) {
+        return {
+          ...result,
+          data: convertToEdgePortInfo(result?.data)
+        }
+      },
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
-            'Update LAG sub-interface'
+            'Update LAG sub-interface',
+            'Update LAG sub-interfaces'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'LAG_SUB_INTERFACE' }]))
@@ -737,7 +759,7 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
             if (tmp.children.length < 2)
               // remove the HA status for 1 node case
               tmp.children.forEach((edgeStat: EdgeStatus) => delete edgeStat.haStatus)
-            EdgeStatusTransformer(tmp.children)
+            edgeStatusTransformer(tmp.children)
           }
           return tmp
         })
@@ -884,12 +906,26 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
         }
 
         return { data: result }
+      },
+      providesTags: [{ type: 'Edge', id: 'PORT_STATUS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'Update LAG, port and virtual IP settings',
+            'Add LAG',
+            'Update LAG',
+            'Delete LAG'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(edgeApi.util.invalidateTags([{ type: 'Edge', id: 'PORT_STATUS' }]))
+          })
+        })
       }
     })
   })
 })
 
-const EdgeStatusTransformer = (data: EdgeStatus[]) => {
+const edgeStatusTransformer = (data: EdgeStatus[]) => {
   data.forEach(item => {
     if (item?.memoryUsedKb)
       item.memoryUsed = item?.memoryUsedKb * 1024
@@ -938,6 +974,8 @@ const convertToEdgePortInfo = (interfaces: (EdgePortStatus | EdgeLagStatus)[], p
       ip: item.ip ?? '',
       mac: item.mac ?? '',
       subnet: item.subnet ?? '',
+      vlan: item.vlan,
+      status: item.status,
       isCorePort: item.isCorePort === 'Enabled',
       portEnabled: item.adminStatus === 'Enabled'
     }

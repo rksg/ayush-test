@@ -103,6 +103,8 @@ export function KpiSection (props: {
     moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
+  useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
+
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
   return (
     <>
@@ -140,7 +142,7 @@ export function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
-                disabled={!hasPermission()}
+                disabled={!hasPermission({ permission: 'WRITE_HEALTH' })}
               />
             ) : (
               <BarChart
