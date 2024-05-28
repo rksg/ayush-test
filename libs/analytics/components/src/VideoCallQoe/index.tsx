@@ -53,7 +53,7 @@ export function useVideoCallQoe () {
 
   return {
     title: $t(title, { count }),
-    headerExtra: hasPermission() ? headerExtra : [],
+    headerExtra: hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE' }) ? headerExtra : [],
     component
   }
 }
