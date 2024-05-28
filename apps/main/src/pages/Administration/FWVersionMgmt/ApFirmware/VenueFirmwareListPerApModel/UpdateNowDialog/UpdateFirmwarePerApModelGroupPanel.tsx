@@ -9,11 +9,12 @@ import { useGetAllApModelFirmwareListQuery } from '@acx-ui/rc/services'
 import { FirmwareVenuePerApModel }           from '@acx-ui/rc/utils'
 import { getIntl }                           from '@acx-ui/utils'
 
-import { getVersionLabel }                from '../../../FirmwareUtils'
-import * as UI                            from '../../VenueFirmwareList/styledComponents'
+import { compareVersions, getVersionLabel } from '../../../FirmwareUtils'
+import * as UI                              from '../../VenueFirmwareList/styledComponents'
 import {
   ApFirmwareUpdateGroupType,
-  convertApModelFirmwaresToUpdateGroups
+  convertApModelFirmwaresToUpdateGroups,
+  findExtremeFirmwareBasedOnApModel
 } from '../venueFirmwareListPerApModelUtils'
 
 import { UpdateFirmwarePerApModelGroup }      from './UpdateFirmwarePerApModelGroup'
@@ -30,7 +31,7 @@ type DisplayDataType = {
 export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApModelPanelProps) {
   const { selectedVenuesFirmwares, updatePayload, initialPayload } = props
   const { data: apModelFirmwares, isLoading } = useGetAllApModelFirmwareListQuery({}, {
-    refetchOnMountOrArgChange: 60
+    refetchOnMountOrArgChange: 300
   })
   const [ displayData, setDisplayData ] = useState<DisplayDataType[]>()
   const targetFirmwaresRef = useRef<UpdateFirmwarePerApModelFirmware>()
@@ -40,7 +41,7 @@ export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApMo
 
     const updateGrps = convertApModelFirmwaresToUpdateGroups(apModelFirmwares)
     const venuesBasedUpdateGrps = filterByVenues(selectedVenuesFirmwares, updateGrps)
-    const displayData = convertToDisplayData(venuesBasedUpdateGrps, initialPayload)
+    const displayData = convertToApModelGroupDisplayData(venuesBasedUpdateGrps, initialPayload)
 
     if (!targetFirmwaresRef.current) { // Ensure that 'updatePayload' only call once when the componnent intializes
       targetFirmwaresRef.current = convertToPayload(displayData)
@@ -71,7 +72,7 @@ export function UpdateFirmwarePerApModelGroupPanel (props: UpdateFirmwarePerApMo
 }
 
 // eslint-disable-next-line max-len
-function convertToDisplayData (data: ApFirmwareUpdateGroupType[], initialPayload?: UpdateFirmwarePerApModelFirmware): DisplayDataType[] {
+function convertToApModelGroupDisplayData (data: ApFirmwareUpdateGroupType[], initialPayload?: UpdateFirmwarePerApModelFirmware): DisplayDataType[] {
   const intl = getIntl()
 
   return data.map((item: ApFirmwareUpdateGroupType) => ({
@@ -80,14 +81,14 @@ function convertToDisplayData (data: ApFirmwareUpdateGroupType[], initialPayload
       value: firmware.name,
       label: getVersionLabel(intl, firmware)
     })),
-    defaultVersion: getInitialFirmwareValue(item, initialPayload)
+    defaultVersion: getDefaultFirmwareFromPayload(item, initialPayload)
   }))
 }
 
 // Returns the firmware if all AP models in the initialValues have the same firmware version.
 // If not, it returns the first firmware in the update group.
 // eslint-disable-next-line max-len
-function getInitialFirmwareValue (updateGroup: ApFirmwareUpdateGroupType, initialValues?: UpdateFirmwarePerApModelFirmware): string {
+function getDefaultFirmwareFromPayload (updateGroup: ApFirmwareUpdateGroupType, initialValues?: UpdateFirmwarePerApModelFirmware): string {
   if (!initialValues || initialValues.length === 0) return updateGroup.firmwares[0].name
 
   const targetFirmwares = initialValues.filter(fw => updateGroup.apModels.includes(fw.apModel))
@@ -128,23 +129,35 @@ function patchPayload (
 
 function filterByVenues (
   venuesFirmwares: FirmwareVenuePerApModel[],
-  updateGroups: ApFirmwareUpdateGroupType[]
+  updateGroupList: ApFirmwareUpdateGroupType[]
 ): ApFirmwareUpdateGroupType[] {
-  const allVenueApModels = _.uniq(
+
+  const unhandledApModels = _.uniq(
     _.compact(venuesFirmwares.map(venueFw => venueFw.currentApFirmwares))
       .flat().map(currentApFw => currentApFw.apModel)
   )
 
   const result: ApFirmwareUpdateGroupType[] = []
-  updateGroups.forEach(updateGroup => {
-    const intersectionApModels = _.intersection(updateGroup.apModels, allVenueApModels)
+
+  for (const updateGroup of updateGroupList) {
+    if (unhandledApModels.length === 0) break
+
+    const intersectionApModels = _.intersection(updateGroup.apModels, unhandledApModels)
     if (intersectionApModels.length > 0) {
       result.push({
         ...updateGroup,
         apModels: intersectionApModels
       })
     }
-  })
+    _.pullAll(unhandledApModels, intersectionApModels)
+  }
 
-  return result
+  // Verify that AP models in the updateGroup are already at the maximum firmware
+  const maxFirmwareBasedOnApModel = findExtremeFirmwareBasedOnApModel(venuesFirmwares)
+  return result.filter(updateGroup => {
+    return updateGroup.apModels.some(apModel => {
+      const maxFirmware = maxFirmwareBasedOnApModel[apModel]
+      return maxFirmware && compareVersions(updateGroup.firmwares[0].name, maxFirmware) > 0
+    })
+  })
 }
