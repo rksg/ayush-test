@@ -19,11 +19,15 @@ export interface SummaryResult {
   totalPortCount?: number
   avgPerAPClientCount: number
   apTotalTraffic: number
-  switchTotalTraffic?: number
   poeUnderPoweredApCount: number
   apCount: number
   poeUnderPoweredSwitchCount?: number
   poeThresholdSwitchCount?: number
+  timeSeries?: {
+    switchTotalTraffic: [
+        number
+    ]
+  }
 }
 
 export interface SwitchCount {
@@ -49,7 +53,9 @@ const wiredFields = `
       code: $code
       type: "switchId"
   }),
-  switchTotalTraffic
+  timeSeries(granularity: "all") {
+    switchTotalTraffic
+  },
   totalPortCount
   portCount
   poeUnderPoweredSwitchCount
