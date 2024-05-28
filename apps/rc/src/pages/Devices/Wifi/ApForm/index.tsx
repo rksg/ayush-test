@@ -29,7 +29,6 @@ import {
   useUpdateApMutation,
   useVenuesListQuery,
   useWifiCapabilitiesQuery,
-  useGetVenueVersionListQuery,
   useLazyGetVenueApEnhancedKeyQuery,
   useLazyGetVenueApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
@@ -59,15 +58,15 @@ import {
 import {
   useNavigate,
   useTenantLink,
-  useParams, TenantLink,
+  useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { compareVersions, validationMessages } from '@acx-ui/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
-import * as UI                from './styledComponents'
-import { VersionChangeAlert } from './VersionChangeAlert'
+import * as UI                      from './styledComponents'
+import { VenueFirmwareInformation } from './VenueFirmwareInformation'
 
 const defaultPayload = {
   fields: ['name', 'country', 'countryCode', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -82,14 +81,12 @@ const defaultApPayload = {
 }
 
 export function ApForm () {
-  const params = useParams()
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
   const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
-  const supportUpgradeByModel = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const { tenantId, action, serialNumber='' } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -105,8 +102,6 @@ export function ApForm () {
     // eslint-disable-next-line max-len
     = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
   const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
-  const { data: venueVersionList, isLoading: isVenueVersionsLoading }
-    = useGetVenueVersionListQuery({ params })
 
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
@@ -119,7 +114,6 @@ export function ApForm () {
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
-  const [venueFwVersion, setVenueFwVersion] = useState('-')
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
@@ -133,13 +127,10 @@ export function ApForm () {
   const [changeTlsEnhancedKey, setChangeTlsEnhancedKey] = useState(false)
 
   const cellularApModels = useRef<string[]>([])
-  const triApModels = useRef<string[]>([])
 
   const location = useLocation()
   const venueFromNavigate = location.state as { venueId?: string }
 
-
-  const BASE_VERSION = '6.2.1'
 
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
@@ -147,52 +138,11 @@ export function ApForm () {
     return result[0]
   }
 
-  const getVenueInfos = (venueFwVersion: string) => {
-    const curTriApModels = triApModels.current
-    const contentInfo = $t({
-      defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
-        // eslint-disable-next-line max-len
-        'please update the firmware in this <venueSingular></venueSingular> to <b>{baseVersion}</b> or greater. ' +
-        'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
-      b: chunks => <strong>{chunks}</strong>,
-      apModels: curTriApModels.length > 1 ? curTriApModels.slice(0, -1).join(',') : 'R560',
-      lastApModel: curTriApModels.length > 1 ? curTriApModels.slice(-1) : 'R760',
-      baseVersion: BASE_VERSION,
-      fwManagementLink: (<TenantLink to={'/administration/fwVersionMgmt'}>
-        { $t({ defaultMessage: 'Firmware Management' }) }
-      </TenantLink>)
-    })
-
-    return <Space direction='vertical' style={{ margin: '8px 0' }}>
-      { !supportUpgradeByModel && // eslint-disable-next-line max-len
-        $t({ defaultMessage: '<VenueSingular></VenueSingular> Firmware Version: {fwVersion}' }, { fwVersion: venueFwVersion })
-      }
-      { !supportUpgradeByModel && checkTriApModelsAndBaseFwVersion(venueFwVersion) &&
-        <span>{contentInfo}</span>
-      }
-      { isEditMode && apDetails &&
-        <VersionChangeAlert targetVersion={venueFwVersion} existingVersion={apDetails.firmware}/>
-      }
-    </Space>
-  }
-
-  const checkTriApModelsAndBaseFwVersion = (version: string) => {
-    if (version === '-') return false
-    if (isEditMode && apDetails) {
-      if (!triApModels.current.includes(apDetails.model)) return false
-    }
-    return compareVersions(version, BASE_VERSION) < 0
-  }
-
   useEffect(() => {
     const apModels = wifiCapabilities?.data?.apModels
     if (!wifiCapabilities?.isLoading && apModels) {
       cellularApModels.current = apModels
         .filter(apModel => apModel.canSupportCellular)
-        .map(apModel => apModel.model) ?? []
-
-      triApModels.current = apModels
-        .filter(apModel => apModel.supportTriRadio)
         .map(apModel => apModel.model) ?? []
     }
   }, [wifiCapabilities])
@@ -250,15 +200,6 @@ export function ApForm () {
       }
     }
   }, [venuesList, isVenuesListLoading])
-
-  useEffect(() => {
-    if (selectedVenue.hasOwnProperty('id') && !isVenueVersionsLoading) {
-      const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
-      setVenueFwVersion(venueInfo && venueInfo.hasOwnProperty('versions')
-        ? venueInfo.versions[0].version
-        : '-')
-    }
-  }, [selectedVenue, venueVersionList, isVenueVersionsLoading])
 
   useEffect(() => {
     handleUpdateContext()
@@ -587,7 +528,11 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              { getVenueInfos(venueFwVersion) }
+              <VenueFirmwareInformation
+                isEditMode={isEditMode}
+                venue={selectedVenue}
+                apDetails={apDetails}
+              />
               { displayAFCGeolocation() && isVenueSameCountry &&
                   <Alert message={
                     $t({ defaultMessage:

@@ -53,7 +53,7 @@ export default function IdentityProviderTable () {
   const doDelete = (selectedRows: IdentityProviderViewModel[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Policy' }),
+      $t({ defaultMessage: 'Profile(s)' }),
       selectedRows[0].name,
       [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () => {
@@ -264,7 +264,7 @@ function useColumns () {
       title: $t({ defaultMessage: 'Networks' }),
       dataIndex: 'networkCount',
       align: 'center',
-      filterKey: 'networkIds',
+      filterKey: 'wifiNetworkIds',
       filterable: networkNameMap,
       sorter: false,
       render: (_, { wifiNetworkIds }) => {
