@@ -90,7 +90,6 @@ import {
   ApiVersionType,
   CommonRbacUrlsInfo,
   ApGroupConfigTemplateUrlsInfo,
-  CommonRbacUrlsInfo,
   RogueApUrls,
   EnhancedRoguePolicyType
 } from '@acx-ui/rc/utils'
