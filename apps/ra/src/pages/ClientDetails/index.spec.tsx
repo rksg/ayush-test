@@ -1,4 +1,3 @@
-import { getUserProfile }       from '@acx-ui/analytics/utils'
 import { Provider, dataApiURL } from '@acx-ui/store'
 import {
   render,
@@ -6,6 +5,7 @@ import {
   fireEvent,
   mockGraphqlQuery
 } from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import ClientDetails from '.'
 
@@ -29,13 +29,6 @@ jest.mock('@acx-ui/reports/components', () => ({
   EmbeddedReport: () => <div data-testid='report'></div>
 }))
 
-jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/analytics/utils'),
-  getUserProfile: jest.fn(),
-  updateSelectedTenant: jest.fn()
-}))
-const userProfile = getUserProfile as jest.Mock
-
 describe('ClientDetails', () => {
   const params = {
     clientId: 'mockClientId',
@@ -58,17 +51,8 @@ describe('ClientDetails', () => {
       }
     }
   }
-  const defaultUserProfile = {
-    accountId: 'aid',
-    tenants: [],
-    invitations: [],
-    selectedTenant: {
-      id: 'aid',
-      role: 'admin'
-    }
-  }
   beforeEach(() => {
-    userProfile.mockReturnValue(defaultUserProfile)
+    setRaiPermissions({ READ_CLIENT_TROUBLESHOOTING: true } as RaiPermissions)
   })
   it('should render correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
@@ -147,13 +131,7 @@ describe('ClientDetails', () => {
   })
 
   it('should render for report-only user correctly', async () => {
-    userProfile.mockReturnValue({
-      ...defaultUserProfile,
-      selectedTenant: {
-        ...defaultUserProfile.selectedTenant,
-        role: 'report-only'
-      }
-    })
+    setRaiPermissions({ READ_CLIENT_TROUBLESHOOTING: false } as RaiPermissions)
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: clientsList
     })

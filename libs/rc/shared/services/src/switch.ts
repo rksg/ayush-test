@@ -811,7 +811,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(switchUrls.addSwitch, params, headers)
         return {
           ...req,
-          body: [payload]
+          body: JSON.stringify([payload])
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]

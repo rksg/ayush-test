@@ -26,23 +26,24 @@ export function UpdateNowPerApModelDialog (props: UpdateNowPerApModelDialogProps
   const { onCancel, afterSubmit, selectedVenuesFirmwares } = props
   const [ disableSave, setDisableSave ] = useState(false)
   const [ payload, setPayload ] = useState<UpdateFirmwarePerApModelFirmware>([])
-  const [ updateVenueApModelFirmwares ] = usePatchVenueApModelFirmwaresMutation()
+  // eslint-disable-next-line max-len
+  const [ updateVenueApModelFirmwares, { isLoading: isUpdating } ] = usePatchVenueApModelFirmwaresMutation()
 
   const triggerSubmit = async () => {
     try {
-      const requests = selectedVenuesFirmwares.filter(v => !v.isFirmwareUpToDate).map(venueFw => {
-        return updateVenueApModelFirmwares({
-          params: { venueId: venueFw.id },
-          payload: { targetFirmwares: payload }
-        }).unwrap()
-      })
-
-      await Promise.all(requests)
+      await updateVenueApModelFirmwares({ payload: createRequestPayload() }).unwrap()
 
       onModalCancel()
       afterSubmit()
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
+    }
+  }
+
+  const createRequestPayload = (): UpdateFirmwarePerApModelPayload => {
+    return {
+      venueIds: selectedVenuesFirmwares.map(v => v.id),
+      targetFirmwares: payload.filter(fw => fw.firmware)
     }
   }
 
@@ -60,11 +61,11 @@ export function UpdateNowPerApModelDialog (props: UpdateNowPerApModelDialogProps
     <Modal
       title={$t({ defaultMessage: 'Update Now' })}
       visible={true}
-      width={560}
+      width={580}
       okText={$t({ defaultMessage: 'Update Firmware' })}
       onOk={triggerSubmit}
       onCancel={onModalCancel}
-      okButtonProps={{ disabled: disableSave }}
+      okButtonProps={{ disabled: disableSave, loading: isUpdating }}
       destroyOnClose={true}
     >
       <UpdateFirmwarePerApModelPanel
