@@ -24,7 +24,6 @@ import {
 } from '@acx-ui/icons'
 import {
   useImportApMutation,
-  useImportApOldMutation,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyImportResultQuery,

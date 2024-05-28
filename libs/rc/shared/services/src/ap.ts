@@ -313,22 +313,6 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
-    importApOld: build.mutation<ImportErrorRes, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.addAp, params, {
-          ...apiCustomHeader,
-          'Content-Type': undefined,
-          ...(enableRbac ? {} : { Accept: '*/*' })
-        })
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
-    }),
     importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -1179,7 +1163,6 @@ export const {
   useRebootApMutation,
   useBlinkLedApMutation,
   useFactoryResetApMutation,
-  useImportApOldMutation,
   useImportApMutation,
   useLazyImportResultQuery,
   useLazyGetDhcpApQuery,
