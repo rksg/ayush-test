@@ -10,6 +10,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                          from '@acx-ui/feature-toggle'
 import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation } from '@acx-ui/rc/services'
 import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                      from '@acx-ui/rc/utils'
 
@@ -37,6 +38,7 @@ export function CellularOptionsForm () {
   const { tenantId, venueId } = useParams()
   const formRef = useRef<StepsFormLegacyInstance>()
   const form = Form.useFormInstance()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -73,8 +75,10 @@ export function CellularOptionsForm () {
   }
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
 
-  const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
-  const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
+  const venueApModelCellular = useGetVenueApModelCellularQuery(
+    { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
+  const availableLteBands = useGetAvailableLteBandsQuery(
+    { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
   const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
   const [currentRegion, setCurrentRegion] = useState('')
   const [availableLteBandsArray, setAvailableLteBandsArray] =
@@ -176,7 +180,8 @@ export function CellularOptionsForm () {
       value.secondarySim.lteBands = genLteBands(lteBand.secondarySim)
 
       await updateVenueCellularSettings({ params,
-        payload: { ...payload, ...value } })
+        payload: { ...payload, ...value },
+        enableRbac: isUseRbacApi })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
