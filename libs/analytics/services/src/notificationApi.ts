@@ -19,6 +19,7 @@ export type AnalyticsPreferences = {
     '30D': NotificationMethod[]
     '7D': NotificationMethod[]
   }
+  recipients?: string[]
 }
 
 type IncidentPreferencePayload = {

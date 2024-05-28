@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 
+import { Form }                   from 'antd'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { NotificationSettings } from '@acx-ui/analytics/components'
@@ -51,11 +52,13 @@ export const AINotificationDrawer = ({
   >
     <UI.IncidentNotificationWrapper>
       <div>{$t(title)}</div>
-      <NotificationSettings
-        tenantId={user.profile.tenantId}
-        showLicense={false}
-        apply={apply}
-      />
+      <Form layout='vertical' autoComplete='off'>
+        <NotificationSettings
+          tenantId={user.profile.tenantId}
+          showLicense={false}
+          apply={apply}
+        />
+      </Form>
     </UI.IncidentNotificationWrapper>
   </Drawer>
 }
