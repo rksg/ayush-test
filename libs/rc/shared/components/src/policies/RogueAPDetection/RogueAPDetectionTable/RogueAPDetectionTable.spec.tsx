@@ -132,7 +132,7 @@ describe('RogueAPDetectionTable', () => {
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 
-    await userEvent.click(await screen.findByRole('button', { name: /Edit/ }))
+    await userEvent.click(screen.getByRole('button', { name: /Edit/ }))
 
     const editPath = getPolicyDetailsLink({
       type: PolicyType.ROGUE_AP_DETECTION,

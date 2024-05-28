@@ -15,7 +15,7 @@ export const mockedRogueApPoliciesList = {
       venueIds: []
     },
     {
-      id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+      id: 'cc080e33-26a7-4d34-870f-b7f312fcfccc',
       name: 'Default profile',
       numOfRules: 5,
       venueIds: []

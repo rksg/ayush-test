@@ -977,7 +977,6 @@ export const venueApi = baseVenueApi.injectEndpoints({
               } as VenueRogueAp
             }
           } else {
-            debugger
             const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params)
             const res = await fetchWithBQ(req)
             // Ensure the return type is QueryReturnValue

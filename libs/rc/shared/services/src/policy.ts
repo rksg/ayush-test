@@ -152,9 +152,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) =>{
-        if (!enableRbac) {
-          debugger
-        }
         if (!payload) {
           // eslint-disable-next-line max-len
           return { error: { status: 'CUSTOM_ERROR', error: 'Payload is required' } as FetchBaseQueryError }
@@ -195,9 +192,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        if (!enableRbac) {
-          debugger
-        }
         const url = enableRbac ? RogueApUrls.deleteRoguePolicyRbac : RogueApUrls.deleteRoguePolicy
         const req = createHttpRequest(url, params)
         return {
@@ -676,9 +670,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        if (!enableRbac) {
-          debugger
-        }
         try {
           if (enableRbac) {
             const policyIds = payload as string[]
@@ -700,9 +691,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        if (!enableRbac) {
-          debugger
-        }
         const url = enableRbac ? RogueApUrls.getRoguePolicyRbac : RogueApUrls.getRoguePolicy
         const req = createHttpRequest(url, params)
         return {
@@ -714,9 +702,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
     // eslint-disable-next-line max-len
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) =>{
-        if (!enableRbac) {
-          debugger
-        }
         if (!payload) {
           // eslint-disable-next-line max-len
           return { error: { status: 'CUSTOM_ERROR', error: 'Payload is required' } as FetchBaseQueryError }
@@ -790,10 +775,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        // eslint-disable-next-line max-len
-        if (!enableRbac) {
-          debugger
-        }
         // eslint-disable-next-line max-len
         const url = enableRbac ? RogueApUrls.getRoguePolicyListRbac : RogueApUrls.getEnhancedRoguePolicyList
         const req = createHttpRequest(url, params)
