@@ -1,15 +1,15 @@
 
 import { gql } from 'graphql-request'
 
-import { dataApiSearch, dataApi }   from '@acx-ui/store'
-import { NetworkPath, NodesFilter } from '@acx-ui/utils'
+import { dataApiSearch, dataApi }          from '@acx-ui/store'
+import { hasRaiPermission, RaiPermission } from '@acx-ui/user'
+import { NetworkPath, NodesFilter }        from '@acx-ui/utils'
 
 export interface RequestPayload {
   start: string
   end: string
   query: string
-  limit: number,
-  isReportOnly?: boolean
+  limit: number
 }
 
 export interface ListPayload extends RequestPayload {
@@ -97,6 +97,9 @@ export interface ClientList {
   clientsByTraffic: ClientByTraffic[]
 }
 
+const addQueryPart = (permission: RaiPermission, query: string) =>
+  hasRaiPermission('READ_REPORTS') || hasRaiPermission(permission) ? query : ''
+
 export const searchApi = dataApiSearch.injectEndpoints({
   endpoints: (build) => ({
     search: build.query<SearchResponse, RequestPayload>({
@@ -109,6 +112,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
           $limit: Int
         ) {
           search(start: $start, end: $end, query: $query, limit: $limit) {
+            ${addQueryPart('READ_ACCESS_POINTS_LIST', `
             aps {
               apName,
               macAddress,
@@ -117,7 +121,9 @@ export const searchApi = dataApiSearch.injectEndpoints({
               version,
               apZone
               networkPath {name type}
-            },
+            }
+            `)}
+            ${addQueryPart('READ_INCIDENTS', `
             networkHierarchy {
               name
               root
@@ -125,7 +131,9 @@ export const searchApi = dataApiSearch.injectEndpoints({
               apCount
               networkPath {name type}
               switchCount
-            },
+            }
+            `)}
+            ${addQueryPart('READ_CLIENT_TROUBLESHOOTING', `
             clients {
               hostname
               username
@@ -135,16 +143,16 @@ export const searchApi = dataApiSearch.injectEndpoints({
               lastActiveTime
               manufacturer
             }
-            ${payload.isReportOnly
-          ? ''
-          : `
-            ,
+            `)}
+            ${addQueryPart('READ_SWITCH_LIST', `
             switches {
               switchName
               switchMac: switchId
               switchModel
               switchVersion: switchFirmware
-            },
+            }
+            `)}
+            ${addQueryPart('READ_WIFI_NETWORKS_LIST', `
             wifiNetworks {
               name
               apCount
@@ -154,7 +162,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               rxBytes
               txBytes
             }
-              `}
+            `)}
           }
         }
         `,

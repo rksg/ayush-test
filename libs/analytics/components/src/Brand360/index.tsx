@@ -98,7 +98,7 @@ export function Brand360 () {
     { params: { tenantId }, payload: getlspPayload(parentTenantid) }, { skip: !isLSP
       && !Boolean(parentTenantid) })
   const propertiesData = isLSP ? lspPropertiesData : mspPropertiesData
-
+  const propertiesLoading = Boolean(propertiesData?.isLoading)
   const lookupAndMappingData = propertiesData?.data
     ? transformLookupAndMappingData(propertiesData.data)
     : {}
@@ -106,24 +106,42 @@ export function Brand360 () {
   const tableResults = venuesData.data && lookupAndMappingData
     ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
     : []
+  const tenantIds = tableResults?.map(({ tenantId }) => tenantId)
+  /*
+      skip timeseries query if
+      - ssid regex still loading
+      - rc api for properties still loading
+      - no tenantids implies no data in table
+  */
+  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length
   const {
     data: chartData,
     ...chartResults
-  } = useFetchBrandTimeseriesQuery(chartPayload, { skip: ssidSkip })
+  } = useFetchBrandTimeseriesQuery(
+    { ...chartPayload, tenantIds },
+    { skip: skipTSQuery }
+  )
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {
     data: prevData,
     ...prevResults
   } = useFetchBrandTimeseriesQuery({
     ...chartPayload,
+    tenantIds,
     start: pastStart,
     end: pastEnd,
     granularity: 'all' },
-  { skip: ssidSkip })
+  { skip: skipTSQuery })
   const {
     data: currData,
     ...currResults
-  } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' }, { skip: ssidSkip })
+  } = useFetchBrandTimeseriesQuery({
+    ...chartPayload,
+    tenantIds,
+    granularity: 'all'
+  },
+  { skip: skipTSQuery }
+  )
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
   return <Loader states={[settingsQuery, propertiesData, venuesData]}>
     <PageHeader

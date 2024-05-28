@@ -41,7 +41,10 @@ export const RecommendationDetails = () => {
         { text: $t(recommendationTypeMapping.aiOps.title),
           link: recommendationTypeMapping.aiOps.link }
       ]}
-      extra={hasPermission() ? [<RecommendationSetting recommendationDetails={details} />] : []}
+      extra={hasPermission({ permission: 'WRITE_AI_OPERATIONS' })
+        ? [<RecommendationSetting recommendationDetails={details} />]
+        : []
+      }
     />}
     <GridRow>
       <GridCol col={{ span: 4 }}>

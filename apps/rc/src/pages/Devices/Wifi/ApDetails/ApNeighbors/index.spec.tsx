@@ -24,11 +24,6 @@ jest.mock('./ApRfNeighbors', () => () => {
   return <div data-testid='ap-rf-neighbors' />
 })
 
-jest.mock('./useApNeighbors', () => ({
-  ...jest.requireActual('./useApNeighbors'),
-  useIsApNeighborsOn: () => true
-}))
-
 const wrapper = (props: { children: JSX.Element }) => <Provider>
   <ApContextProvider {...props} />
 </Provider>
