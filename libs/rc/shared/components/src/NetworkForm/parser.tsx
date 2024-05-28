@@ -523,3 +523,16 @@ export function updateClientIsolationAllowlist (data: NetworkSaveData): NetworkS
     venues: updatedVenues
   }
 }
+
+// eslint-disable-next-line max-len
+export function transferSaveDataToFormFieldsValue (data: NetworkSaveData, cloneMode: boolean) {
+  return {
+    ...data,
+    name: cloneMode ? data.name + ' - copy' : data.name,
+    isCloudpathEnabled: data.authRadius ? true : false,
+    // eslint-disable-next-line max-len
+    enableAccountingService: (data.accountingRadius || data.guestPortal?.wisprPage?.accountingRadius)
+      ? true
+      : false
+  }
+}

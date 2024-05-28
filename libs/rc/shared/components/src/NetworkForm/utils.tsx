@@ -1,11 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { useCallback } from 'react'
+import { useEffect, useState } from 'react'
 
 import _ from 'lodash'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                   from '@acx-ui/feature-toggle'
-import { useActivateRadiusServerMutation, useDeactivateRadiusServerMutation, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import {
+  covertAAAViewModalTypeToRadius,
+  useActivateRadiusServerMutation,
+  useDeactivateRadiusServerMutation,
+  useGetAAAPolicyViewModelListQuery,
+  useGetRadiusServerSettingsQuery,
+  useGetTunnelProfileViewDataListQuery,
+  useUpdateRadiusServerSettingsMutation
+} from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
   GuestNetworkTypeEnum,
@@ -20,6 +27,7 @@ import {
   configTemplateServiceTypeMap,
   CommonResult
 } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
 import { useIsConfigTemplateEnabledByType } from '../configTemplates'
 
@@ -151,10 +159,52 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
   return false
 }
 
-export function useUpdateRadiusServer () {
+export function useRadiusServer () {
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { networkId } = useParams()
   const [ activateRadiusServer ] = useActivateRadiusServerMutation()
   const [ deactivateRadiusServer ] = useDeactivateRadiusServerMutation()
-  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [ updateRadiusServerSettings ] = useUpdateRadiusServerSettingsMutation()
+  const { data: radiusServerProfiles } = useGetAAAPolicyViewModelListQuery({
+    payload: { filters: { networkIds: [networkId] } },
+    enableRbac: enableServicePolicyRbac
+  }, { skip: !networkId || !enableServicePolicyRbac })
+  const { data: radiusServerSettings } = useGetRadiusServerSettingsQuery({
+    params: { networkId }
+  }, { skip: !networkId || !enableServicePolicyRbac })
+  // eslint-disable-next-line max-len
+  const [ radiusServerConfigurations, setRadiusServerConfigurations ] = useState<Partial<NetworkSaveData>>()
+
+  useEffect(() => {
+    if (!radiusServerProfiles || !radiusServerSettings) return
+
+
+    const resolvedResult: Partial<NetworkSaveData> = {
+      enableAccountingProxy: radiusServerSettings.enableAccountingProxy,
+      enableAuthProxy: radiusServerSettings.enableAuthProxy,
+      wlan: {
+        macAddressAuthenticationConfiguration: {
+          macAuthMacFormat: radiusServerSettings.macAuthMacFormat
+        }
+      }
+    }
+
+    radiusServerProfiles.data.forEach(profile => {
+      const { id, type } = profile
+      const radius = covertAAAViewModalTypeToRadius(profile)
+
+      if (type === 'ACCOUNTING') {
+        resolvedResult.accountingRadiusId = id
+        resolvedResult.accountingRadius = radius
+      } else if (type === 'AUTHENTICATION') {
+        resolvedResult.authRadiusId = id
+        resolvedResult.authRadius = radius
+      }
+    })
+
+    setRadiusServerConfigurations(resolvedResult)
+  }, [radiusServerProfiles, radiusServerSettings])
+
 
   // eslint-disable-next-line max-len
   const updateProfile = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
@@ -179,7 +229,29 @@ export function useUpdateRadiusServer () {
     return await Promise.all(mutations)
   }
 
+  const updateSettings = async (saveData: NetworkSaveData, networkId?: string) => {
+    if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+
+    return await updateRadiusServerSettings({
+      params: { networkId },
+      payload: {
+        enableAccountingProxy: saveData.enableAccountingProxy,
+        enableAuthProxy: saveData.enableAuthProxy,
+        macAuthMacFormat: saveData.wlan?.macAddressAuthenticationConfiguration?.macAuthMacFormat
+      }
+    }).unwrap()
+  }
+
+  // eslint-disable-next-line max-len
+  const updateRadiusServer = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+    return Promise.all([
+      updateProfile(saveData, oldSaveData, networkId),
+      updateSettings(saveData, networkId)
+    ])
+  }
+
   return {
-    updateProfile: useCallback(updateProfile, [])
+    updateRadiusServer,
+    radiusServerConfigurations
   }
 }

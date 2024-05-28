@@ -24,7 +24,8 @@ import {
   WifiNetwork,
   ConfigTemplateUrlsInfo,
   WifiRbacUrlsInfo,
-  VenueConfigTemplateUrlsInfo
+  VenueConfigTemplateUrlsInfo,
+  NetworkRadiusSettings
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                                            from '@acx-ui/store'
 import { RequestPayload }                                            from '@acx-ui/types'
@@ -708,6 +709,21 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params, getApiVersionHeaders('v1'))
         }
       }
+    }),
+    updateRadiusServerSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.updateRadiusServerSettings, params, getApiVersionHeaders('v1')),
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    getRadiusServerSettings: build.query<NetworkRadiusSettings, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.getRadiusServerSettings, params, getApiVersionHeaders('v1'))
+        }
+      }
     })
   })
 })
@@ -1195,7 +1211,9 @@ export const {
   useExternalProvidersQuery,
   useActivateCertificateTemplateMutation,
   useActivateRadiusServerMutation,
-  useDeactivateRadiusServerMutation
+  useDeactivateRadiusServerMutation,
+  useUpdateRadiusServerSettingsMutation,
+  useGetRadiusServerSettingsQuery
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
