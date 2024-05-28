@@ -164,7 +164,7 @@ describe('WifiOperatorTable', () => {
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     // eslint-disable-next-line max-len
-    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Profile\(s\)/i }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => {
