@@ -1,11 +1,12 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { showActionModal, CustomButtonProps }       from '@acx-ui/components'
-import { useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApModel, ApViewModel }             from '@acx-ui/rc/utils'
-import { useParams }                                from '@acx-ui/react-router-dom'
-import { goToNotFound }                             from '@acx-ui/user'
-import { getIntl }                                  from '@acx-ui/utils'
+import { showActionModal, CustomButtonProps }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { useApViewModelQuery, useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
+import { ApDeep, ApModel, ApViewModel }                                  from '@acx-ui/rc/utils'
+import { useParams }                                                     from '@acx-ui/react-router-dom'
+import { goToNotFound }                                                  from '@acx-ui/user'
+import { getIntl }                                                       from '@acx-ui/utils'
 
 
 import { AdvancedTab, ApAdvancedContext }             from './AdvancedTab'
@@ -64,6 +65,7 @@ export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 export function ApEdit () {
   const params = useParams()
   const { activeTab } = params
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   const [previousPath, setPreviousPath] = useState('')
@@ -82,7 +84,22 @@ export function ApEdit () {
   const [apCapabilities, setApCapabilities] = useState<ApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({ params })
+  const apViewModelPayload = {
+    entityType: 'aps',
+    fields: ['venueId'],
+    filters: { serialNumber: [params.serialNumber] }
+  }
+  const { venueId } = useApViewModelQuery({ params, payload: apViewModelPayload },
+    {
+      skip: !isUseWifiRbacApi,
+      selectFromResult: ({ data }) => {
+        return { venueId: data?.venueId }
+      }
+    })
+  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
+    params: { ...params, venueId },
+    enableRbac: isUseWifiRbacApi
+  }, { skip: isUseWifiRbacApi && !venueId })
   const {
     data: capabilities,
     isLoading: isGetApCapsLoading
@@ -124,12 +141,10 @@ export function ApEdit () {
     apViewContextData,
     setApViewContextData
   }}>
-    <ApEditPageHeader />
-    { Tab &&
     <ApDataContext.Provider value={{ apData, apCapabilities }}>
-      <Tab />
+      <ApEditPageHeader />
+      { Tab && <Tab /> }
     </ApDataContext.Provider>
-    }
   </ApEditContext.Provider>
 }
 

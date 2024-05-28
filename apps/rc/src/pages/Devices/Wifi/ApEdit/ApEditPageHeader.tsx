@@ -1,27 +1,30 @@
+import { useContext } from 'react'
+
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader } from '@acx-ui/components'
-import { useGetApQuery }      from '@acx-ui/rc/services'
 import {
   useNavigate,
-  useTenantLink,
-  useParams
+  useParams,
+  useTenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import ApEditTabs from './ApEditTabs'
 
+import { ApDataContext } from '.'
+
 function ApEditPageHeader () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
-  const { data } = useGetApQuery({ params: { tenantId, serialNumber } })
+  const { serialNumber } = useParams()
+  const { apData } = useContext(ApDataContext)
 
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}`)
 
   return (
     <PageHeader
-      title={data?.name || ''}
+      title={apData?.name || ''}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },

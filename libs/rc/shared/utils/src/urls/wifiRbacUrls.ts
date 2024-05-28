@@ -159,12 +159,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/aps/:serialNumber/channels',
     newApi: true
-  },
+  },*/
   getWifiCapabilities: {
     method: 'get',
-    url: '/venues/aps/capabilities',
+    // url: '/venues/aps/capabilities',
+    url: '/venues/apModelCapabilities',
     newApi: true
-  },*/
+  },
   addAp: {
     method: 'post',
     // url: '/venues/aps',
@@ -187,12 +188,14 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/apGroups',
     newApi: true
-  },
+  },*/
   getApGroupsList: {
     method: 'post',
-    url: '/apGroups/query',
+    // url: '/apGroups/query',
+    url: '/venues/apGroups/query',
     newApi: true
   },
+  /*
   addApGroup: {
     method: 'post',
     url: '/venues/:venueId/apGroups',
