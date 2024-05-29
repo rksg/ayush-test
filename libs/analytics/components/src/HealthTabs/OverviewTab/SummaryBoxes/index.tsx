@@ -59,10 +59,12 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
   !wirelessOnly && traffic.push(
     {
       title: defineMessage({ defaultMessage: 'Wired' }),
-      value: summaryData?.switchTotalTraffic ?
-        formatter('bytesFormat')(summaryData?.switchTotalTraffic).split(' ')[0] : noDataDisplay,
-      suffix: summaryData?.switchTotalTraffic ?
-        formatter('bytesFormat')(summaryData?.switchTotalTraffic).split(' ')[1] : undefined
+      value: summaryData?.timeSeries?.switchTotalTraffic[0] ?
+        formatter('bytesFormat')(
+          summaryData?.timeSeries?.switchTotalTraffic[0]).split(' ')[0] : noDataDisplay,
+      suffix: summaryData?.timeSeries?.switchTotalTraffic[0] ?
+        formatter('bytesFormat')(
+          summaryData?.timeSeries?.switchTotalTraffic[0]).split(' ')[1] : undefined
     }
   )
   const powerUtilization = [{

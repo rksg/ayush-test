@@ -72,26 +72,37 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSubInterfaces: {
     method: 'get',
-    url: '/edges/:serialNumber/ports/:portId/subInterfaces',
-    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces',
+    // url: '/edges/:serialNumber/ports/:portId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/ports/:portId/subInterfaces',
     newApi: true
   },
   addSubInterfaces: {
     method: 'post',
-    url: '/edges/:serialNumber/ports/:portId/subInterfaces',
-    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces',
+    // url: '/edges/:serialNumber/ports/:portId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/ports/:portId/subInterfaces',
     newApi: true
   },
   updateSubInterfaces: {
     method: 'PATCH',
-    url: '/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
-    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces/:subInterfaceId',
+    // url: '/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
     newApi: true
   },
   deleteSubInterfaces: {
     method: 'delete',
-    url: '/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
-    oldUrl: '/api/edges/:serialNumber/port/:portId/subInterfaces/:subInterfaceId',
+    // url: '/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/ports/:portId/subInterfaces/:subInterfaceId',
+    newApi: true
+  },
+  importSubInterfacesCSV: {
+    method: 'post',
+    // url: '/edges/:serialNumber/ports/:portId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/ports/:portId/subInterfaces',
     newApi: true
   },
   getStaticRoutes: {
@@ -194,11 +205,6 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/passwordDetails',
     newApi: true
   },
-  importSubInterfacesCSV: {
-    method: 'post',
-    url: '/edges/:serialNumber/ports/:portId/subInterfaces',
-    newApi: true
-  },
   getEdgeLagStatusList: {
     method: 'post',
     url: '/edges/:serialNumber/linkAggregationGroups/query',
@@ -230,7 +236,9 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getLagSubInterfaces: {
     method: 'get',
-    url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    // url: '/edges/:serialNumber/linkAggregationGroups/:lagId/subInterfaces',
+    // eslint-disable-next-line max-len
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/lags/:lagId/subInterfaces',
     newApi: true
   },
   addLagSubInterfaces: {
