@@ -173,6 +173,8 @@ export default function RcRoutes () {
 }
 
 function DeviceRoutes () {
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -218,7 +220,6 @@ function DeviceRoutes () {
         path='devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab/:categoryTab'
         element={<SwitchDetails />}
       />
-      <Route path='devices/upload_image_to_edge' element={<RuckathonEdgeTestForm />} />
       <Route path='devices/edge' element={<Edges />} />
       <Route
         path='devices/edge/add'
@@ -297,7 +298,12 @@ function DeviceRoutes () {
         } />
 
       <Route path='devices/edge' element={<Edges />} />
+
+      {(isEdgeHaReady && isEdgeFirewallHaReady
+        && <Route path='devices/upload_image_to_edge' element={<RuckathonEdgeTestForm />} />) }
     </Route>
+
+
   )
 }
 
