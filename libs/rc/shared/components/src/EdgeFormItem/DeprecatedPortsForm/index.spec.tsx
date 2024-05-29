@@ -1,9 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi }                                               from '@acx-ui/rc/services'
-import { EdgeUrlsInfo, EdgePortConfigFixtures, EdgeLagFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                       from '@acx-ui/store'
+import { edgeApi }                                                                    from '@acx-ui/rc/services'
+import { EdgeUrlsInfo, EdgePortConfigFixtures, EdgeLagFixtures, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                            from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -13,8 +13,9 @@ import {
 
 import { EditContext } from '../EdgeEditContext'
 
-import { EdgePortsForm, EdgePortTabEnum } from '.'
+import { DeprecatedEdgePortsForm, EdgePortTabEnum } from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
 
@@ -68,8 +69,12 @@ describe('EditEdge ports', () => {
     store.dispatch(edgeApi.util.resetApiState())
 
     mockServer.use(
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeList))
+      ),
       rest.get(
-        EdgeUrlsInfo.getPortConfigDeprecated.url,
+        EdgeUrlsInfo.getPortConfig.url,
         (_req, res, ctx) => res(ctx.json(mockEdgePortConfig))
       ),
       rest.post(
@@ -89,7 +94,7 @@ describe('EditEdge ports', () => {
         <EditContext.Provider
           value={defaultContextData}
         >
-          <EdgePortsForm
+          <DeprecatedEdgePortsForm
             clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
@@ -110,7 +115,7 @@ describe('EditEdge ports', () => {
         <EditContext.Provider
           value={defaultContextData}
         >
-          <EdgePortsForm
+          <DeprecatedEdgePortsForm
             clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={jest.fn()}
@@ -134,7 +139,7 @@ describe('EditEdge ports', () => {
         <EditContext.Provider
           value={defaultContextData}
         >
-          <EdgePortsForm
+          <DeprecatedEdgePortsForm
             clusterId={mockedEdgeClusterID}
             serialNumber={mockedEdgeID}
             onTabChange={handleTabChange}

@@ -43,7 +43,14 @@ const PortsGeneral = (props: PortsGeneralProps) => {
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const [activeTab, setActiveTab] = useState<string|undefined>()
   const editEdgeContext = useContext(EditContext)
-  const { portData, portStatus, lagData, isFetching } = useContext(EdgePortsDataContext)
+  const {
+    portData,
+    portStatus,
+    lagData,
+    isFetching,
+    venueId,
+    edgeClusterId
+  } = useContext(EdgePortsDataContext)
   const [updatePortConfig] = useUpdatePortConfigMutation()
 
   const {
@@ -129,7 +136,7 @@ const PortsGeneral = (props: PortsGeneralProps) => {
 
     try {
       await updatePortConfig({
-        params: { serialNumber },
+        params: { venueId, edgeClusterId, serialNumber },
         payload: { ports: formData } }).unwrap()
       handleFinishPostProcess()
     } catch (error) {

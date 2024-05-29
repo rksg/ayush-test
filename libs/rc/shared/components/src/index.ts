@@ -136,8 +136,8 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
 export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
-export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
-export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'
+export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
+export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
