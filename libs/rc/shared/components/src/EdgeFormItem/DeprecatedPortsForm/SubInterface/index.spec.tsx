@@ -4,6 +4,7 @@ import { IntlProvider }                             from 'react-intl'
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { edgeApi }      from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
   EdgeLagFixtures,
@@ -14,7 +15,7 @@ import {
   EdgeSubInterfaceFixtures,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -32,7 +33,7 @@ import { EdgePortsDataContext }           from '../PortDataProvider'
 
 import SubInterface from '.'
 
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeData } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockPortInfo } = EdgePortConfigFixtures
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
@@ -80,7 +81,9 @@ const defaultEmptyPortsContextdata = {
 const defaultPortsContextdata = {
   ...defaultEmptyPortsContextdata,
   portData: mockEdgePortConfig.ports as EdgePort[],
-  portStatus: mockPortInfo as EdgePortInfo[]
+  portStatus: mockPortInfo as EdgePortInfo[],
+  venueId: mockEdgeData.venueId,
+  edgeClusterId: mockEdgeData.clusterId
 }
 
 describe('EditEdge ports - sub-interface', () => {
@@ -91,6 +94,8 @@ describe('EditEdge ports - sub-interface', () => {
   }
 
   beforeEach(() => {
+    store.dispatch(edgeApi.util.resetApiState())
+
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
@@ -255,7 +260,7 @@ describe('EditEdge ports - sub-interface', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.importSubInterfacesCSV.url,
-        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+        (_req, res, ctx) => res(ctx.status(201), ctx.json({}))
       )
     )
 
@@ -354,7 +359,7 @@ describe('EditEdge ports - sub-interface', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.importLagSubInterfacesCSV.url,
-        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+        (_req, res, ctx) => res(ctx.status(201), ctx.json({}))
       )
     )
 
