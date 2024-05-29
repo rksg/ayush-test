@@ -3,6 +3,7 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { EdgeEditContext } from '@acx-ui/rc/components'
+import { edgeApi }         from '@acx-ui/rc/services'
 import {
   EdgeGeneralFixtures,
   EdgeLagFixtures,
@@ -11,7 +12,7 @@ import {
   EdgeSubInterfaceFixtures,
   EdgeUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -25,7 +26,7 @@ import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataPro
 
 import SubInterfaces from '.'
 
-const { mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeData } = EdgeGeneralFixtures
 const { mockEdgePortConfig, mockEdgePortStatus } = EdgePortConfigFixtures
 const { mockEdgeSubInterfaces } = EdgeSubInterfaceFixtures
 const { mockEdgeLagStatusList } = EdgeLagFixtures
@@ -66,9 +67,27 @@ const defaultContextData = {
   setFormControl: jest.fn()
 }
 
+const defaultEditEdgeClusterCtxData = {
+  portData: mockEdgePortConfig.ports,
+  portStatus: mockEdgePortStatus,
+  lagStatus: mockEdgeLagStatusList.data,
+  generalSettings: mockEdgeData,
+  isPortDataFetching: false,
+  isPortStatusFetching: false,
+  isLagStatusFetching: false,
+  isCluster: true
+} as unknown as EditEdgeDataContextType
+
+const defaultEditEdgeSingleNodeCtxData = {
+  ...defaultEditEdgeClusterCtxData,
+  isCluster: false
+} as unknown as EditEdgeDataContextType
+
 describe('EditEdge ports - sub-interface', () => {
   let params: { tenantId: string, serialNumber: string }
   beforeEach(() => {
+    store.dispatch(edgeApi.util.resetApiState())
+
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -110,6 +129,7 @@ describe('EditEdge ports - sub-interface', () => {
               portData: [],
               portStatus: [],
               lagStatus: [],
+              generalSettings: mockEdgeData,
               isPortDataFetching: false,
               isPortStatusFetching: false,
               isLagStatusFetching: false,
@@ -133,15 +153,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: true
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeClusterCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>
@@ -161,15 +173,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: false
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeSingleNodeCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>
@@ -195,15 +199,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: false
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeSingleNodeCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>
@@ -225,7 +221,7 @@ describe('EditEdge ports - sub-interface', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.importSubInterfacesCSV.url,
-        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+        (_req, res, ctx) => res(ctx.status(201), ctx.json({}))
       )
     )
 
@@ -235,15 +231,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: false
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeSingleNodeCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>
@@ -275,15 +263,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: false
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeSingleNodeCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>
@@ -303,15 +283,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: false
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeSingleNodeCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>
@@ -333,15 +305,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: false
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeSingleNodeCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>
@@ -364,7 +328,7 @@ describe('EditEdge ports - sub-interface', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.importLagSubInterfacesCSV.url,
-        (req, res, ctx) => res(ctx.status(201), ctx.json({}))
+        (_req, res, ctx) => res(ctx.status(201), ctx.json({}))
       )
     )
 
@@ -374,15 +338,7 @@ describe('EditEdge ports - sub-interface', () => {
           value={defaultContextData}
         >
           <EditEdgeDataContext.Provider
-            value={{
-              portData: mockEdgePortConfig.ports,
-              portStatus: mockEdgePortStatus,
-              lagStatus: mockEdgeLagStatusList.data,
-              isPortDataFetching: false,
-              isPortStatusFetching: false,
-              isLagStatusFetching: false,
-              isCluster: false
-            } as unknown as EditEdgeDataContextType}
+            value={defaultEditEdgeSingleNodeCtxData}
           >
             <SubInterfaces />
           </EditEdgeDataContext.Provider>

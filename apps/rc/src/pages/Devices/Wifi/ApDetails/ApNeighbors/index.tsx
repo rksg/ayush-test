@@ -7,11 +7,10 @@ import { useApContext }     from '@acx-ui/rc/utils'
 import { useTenantLink }    from '@acx-ui/react-router-dom'
 import { getIntl }          from '@acx-ui/utils'
 
-import ApLldpNeighbors        from './ApLldpNeighbors'
-import ApRfNeighbors          from './ApRfNeighbors'
-import { ApNeighborTypes }    from './constants'
-import * as UI                from './styledComponents'
-import { useIsApNeighborsOn } from './useApNeighbors'
+import ApLldpNeighbors     from './ApLldpNeighbors'
+import ApRfNeighbors       from './ApRfNeighbors'
+import { ApNeighborTypes } from './constants'
+import * as UI             from './styledComponents'
 
 export function ApNeighborsTab () {
   const { $t } = useIntl()
@@ -39,7 +38,6 @@ export function ApNeighborsTab () {
 
   const { activeSubTab = tabs[0].key, serialNumber } = useApContext()
   const navigate = useNavigate()
-  const isApNeighborsOn = useIsApNeighborsOn()
   const basePath = useTenantLink(`/devices/wifi/${serialNumber}/details/neighbors/`)
   const onTabChange = (tab: string) => {
     navigate({
@@ -48,19 +46,16 @@ export function ApNeighborsTab () {
     })
   }
 
-  return (isApNeighborsOn
-    ? <Tabs
-      onChange={onTabChange}
-      destroyInactiveTabPane={true}
-      activeKey={activeSubTab}
-      type='card'
-    >
-      {tabs.map(({ key, title, component }) =>
-        <Tabs.TabPane key={key} tab={title}>{component}</Tabs.TabPane>)
-      }
-    </Tabs>
-    : null
-  )
+  return <Tabs
+    onChange={onTabChange}
+    destroyInactiveTabPane={true}
+    activeKey={activeSubTab}
+    type='card'
+  >
+    {tabs.map(({ key, title, component }) =>
+      <Tabs.TabPane key={key} tab={title}>{component}</Tabs.TabPane>)
+    }
+  </Tabs>
 }
 
 

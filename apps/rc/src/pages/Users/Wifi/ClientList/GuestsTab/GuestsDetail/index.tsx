@@ -26,9 +26,9 @@ import {
   GuestTypesEnum,
   transformDisplayText
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload } from '@acx-ui/types'
-import { hasRoles }                  from '@acx-ui/user'
+import { TenantLink, useParams }                 from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload, WifiScopes } from '@acx-ui/types'
+import { hasRoles, hasPermission }               from '@acx-ui/user'
 
 import {
   renderAllowedNetwork,
@@ -208,23 +208,31 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
           label: $t({ defaultMessage: 'Download Information' }),
           key: 'downloadInformation'
         }
-      ] : [
-        {
-          label: $t({ defaultMessage: 'Generate New Password' }),
-          key: 'generatePassword'
-        }, {
-          label: $t({ defaultMessage: 'Download Information' }),
-          key: 'downloadInformation'
-        }, {
-          label: $t({ defaultMessage: 'Disable Guest' }),
-          key: 'disableGuest'
-        }, {
-          label: $t({ defaultMessage: 'Enable Guest' }),
-          key: 'enableGuest'
-        }, {
-          label: $t({ defaultMessage: 'Delete Guest' }),
-          key: 'deleteGuest'
-        }].filter((item) => {
+      ] : [{
+        label: $t({ defaultMessage: 'Generate New Password' }),
+        key: 'generatePassword',
+        scopeKey: [WifiScopes.UPDATE]
+      }, {
+        label: $t({ defaultMessage: 'Download Information' }),
+        key: 'downloadInformation',
+        scopeKey: [WifiScopes.READ]
+      },
+      {
+        label: $t({ defaultMessage: 'Disable Guest' }),
+        key: 'disableGuest',
+        scopeKey: [WifiScopes.UPDATE]
+      }, {
+        label: $t({ defaultMessage: 'Enable Guest' }),
+        key: 'enableGuest',
+        scopeKey: [WifiScopes.UPDATE]
+      }, {
+        label: $t({ defaultMessage: 'Delete Guest' }),
+        key: 'deleteGuest',
+        scopeKey: [WifiScopes.DELETE]
+      }].filter((item) => {
+        if (!hasPermission({ scopes: item.scopeKey })){
+          return false
+        }
         if (item.key === 'enableGuest' &&
         guestDetail.guestStatus !== GuestStatusEnum.DISABLED) {
           return false
