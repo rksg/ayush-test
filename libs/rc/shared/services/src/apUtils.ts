@@ -1,9 +1,22 @@
-import _ from "lodash"
-import { ApExtraParams, ApGroup, Capabilities, NewAPModel, NewAPModelExtended, Venue } from "../../utils/src/types"
-import { TableResult } from "../../utils/src/useTableQuery"
-import { ApRadioBands } from "../../utils/src/constants"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable max-len */
+import { find } from 'lodash'
 
-export const transformApListFromNewModel = (result: TableResult<NewAPModelExtended, ApExtraParams>) => {
+import {
+  ApRadioBands,
+  ApExtraParams,
+  ApGroup,
+  Capabilities,
+  NewAPModel,
+  NewAPModelExtended,
+  Venue,
+  TableResult
+} from '@acx-ui/rc/utils'
+
+
+export const transformApListFromNewModel = (
+  result: TableResult<NewAPModelExtended, ApExtraParams>
+) => {
   let channelColumnStatus = {
     channel24: false,
     channel50: false,
@@ -30,16 +43,20 @@ export const transformApListFromNewModel = (result: TableResult<NewAPModelExtend
   return result
 }
 
-const setAPRadioInfo = (row: NewAPModelExtended, APRadio: NewAPModel['radioStatuses'], channelColumnShow: any) => {
+const setAPRadioInfo = (
+  row: NewAPModelExtended,
+  APRadio: NewAPModel['radioStatuses'],
+  channelColumnShow: any
+) => {
 
-  const apRadio24 = _.find(APRadio, r => r.band === ApRadioBands.band24)
-  const apRadioU50 = _.find(APRadio,
+  const apRadio24 = find(APRadio, r => r.band === ApRadioBands.band24)
+  const apRadioU50 = find(APRadio,
     r => r.band === ApRadioBands.band50 && r.id === 2)
-  const apRadio50 = !apRadioU50 &&_.find(APRadio,
+  const apRadio50 = !apRadioU50 && find(APRadio,
     r => r.band === ApRadioBands.band50 && r.id === 1)
-  const apRadio60 = !apRadioU50 && _.find(APRadio,
+  const apRadio60 = !apRadioU50 && find(APRadio,
     r => r.id === 2)
-  const apRadioL50 = apRadioU50 && _.find(APRadio,
+  const apRadioL50 = apRadioU50 && find(APRadio,
     r => r.band === ApRadioBands.band50 && r.id === 1)
 
   row.channel24 = apRadio24?.channel || undefined
@@ -59,13 +76,16 @@ const setAPRadioInfo = (row: NewAPModelExtended, APRadio: NewAPModel['radioStatu
 
 }
 
-const setPoEPortStatus = (row: NewAPModelExtended, lanPortStatus: NewAPModel['lanPortStatuses']) => {
-  console.log(row, lanPortStatus)
+const setPoEPortStatus = (
+  row: NewAPModelExtended,
+  lanPortStatus: NewAPModel['lanPortStatuses']
+) => {
+  //console.log(row, lanPortStatus)
   if (!lanPortStatus) {
     return
   }
 
-  const poeStatus = _.find(lanPortStatus, status => status.id === row.poePort)
+  const poeStatus = find(lanPortStatus, status => status.id === row.poePort)
   if (poeStatus) {
     const [poeStatusUp, poePortInfo] = poeStatus.physicalLink.split(' ')
     row.hasPoeStatus = !!poeStatus
@@ -75,25 +95,25 @@ const setPoEPortStatus = (row: NewAPModelExtended, lanPortStatus: NewAPModel['la
 }
 
 export const aggregateVenueInfo = (
-  apList: TableResult<NewAPModelExtended, ApExtraParams>, 
+  apList: TableResult<NewAPModelExtended, ApExtraParams>,
   venueList: TableResult<Venue>
 ) => {
   const apListData = apList.data
   const venueListData = venueList.data
   apListData.forEach(apItem => {
-    apItem.venueName = venueListData.find(venueItem => 
+    apItem.venueName = venueListData.find(venueItem =>
       venueItem.id === apItem.venueId)?.name
   })
 }
 
 export const aggregatePoePortInfo = (
-  apList: TableResult<NewAPModelExtended, ApExtraParams>, 
+  apList: TableResult<NewAPModelExtended, ApExtraParams>,
   capabilities: Capabilities
 ) => {
   const apListData = apList.data
   const apModels = capabilities.apModels
   apListData.forEach(apItem => {
-    const portId = apModels.find(apModelItem => 
+    const portId = apModels.find(apModelItem =>
       apModelItem.model === apItem.model)?.lanPorts
       .find(lanPort => lanPort.isPoePort)?.id
     apItem.poePort = String(Number(portId) - 1)
@@ -101,13 +121,13 @@ export const aggregatePoePortInfo = (
 }
 
 export const aggregateApGroupInfo = (
-  apList: TableResult<NewAPModelExtended, ApExtraParams>, 
+  apList: TableResult<NewAPModelExtended, ApExtraParams>,
   apGroupList: TableResult<ApGroup>
 ) => {
   const apListData = apList.data
   const apGroupListData = apGroupList.data
   apListData.forEach(apItem => {
-    apItem.apGroupName = apGroupListData.find(apGroupItem => 
+    apItem.apGroupName = apGroupListData.find(apGroupItem =>
       apGroupItem.id === apItem.apGroupId)?.name
   })
 }
