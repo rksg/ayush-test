@@ -1,5 +1,15 @@
-import { useAddSubInterfacesMutation, useDeleteSubInterfacesMutation, useGetSubInterfacesQuery, useImportSubInterfacesCSVMutation, useUpdateSubInterfacesMutation } from '@acx-ui/rc/services'
-import { EdgeSubInterface, useTableQuery }                                                                                                                          from '@acx-ui/rc/utils'
+import { useContext } from 'react'
+
+import {
+  useAddSubInterfacesMutation,
+  useDeleteSubInterfacesMutation,
+  useGetSubInterfacesQuery,
+  useImportSubInterfacesCSVMutation,
+  useUpdateSubInterfacesMutation
+} from '@acx-ui/rc/services'
+import { EdgeSubInterface, useTableQuery } from '@acx-ui/rc/utils'
+
+import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
 import { SubInterfaceTable } from './SubInterfaceTable'
 
@@ -12,13 +22,19 @@ interface PortSubInterfaceTableProps {
 }
 
 export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
-
   const { serialNumber, portId } = props
+  const { generalSettings } = useContext(EditEdgeDataContext)
+  const { venueId, clusterId: edgeClusterId } = generalSettings!
 
   const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetSubInterfacesQuery,
     defaultPayload: {},
-    apiParams: { serialNumber, portId }
+    apiParams: {
+      venueId: venueId!,
+      edgeClusterId: edgeClusterId!,
+      serialNumber,
+      portId
+    }
   })
   const [addSubInterface] = useAddSubInterfacesMutation()
   const [updateSubInterface] = useUpdateSubInterfacesMutation()
@@ -27,7 +43,12 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
 
   const handleAdd = async (data: EdgeSubInterface) => {
     const requestPayload = {
-      params: { serialNumber, portId, subInterfaceId: data?.id },
+      params: {
+        venueId,
+        edgeClusterId,
+        serialNumber,
+        portId
+      },
       payload: data
     }
     await addSubInterface(requestPayload).unwrap()
@@ -35,7 +56,13 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
 
   const handleUpdate = async (data: EdgeSubInterface) => {
     const requestPayload = {
-      params: { serialNumber, portId, subInterfaceId: data?.id },
+      params: {
+        venueId,
+        edgeClusterId,
+        serialNumber,
+        portId,
+        subInterfaceId: data?.id
+      },
       payload: data
     }
     await updateSubInterface(requestPayload).unwrap()
@@ -44,6 +71,8 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
   const handleDelete = async (data: EdgeSubInterface) => {
     return await deleteSubInterfaces({
       params: {
+        venueId,
+        edgeClusterId,
         serialNumber,
         portId,
         subInterfaceId: data?.id }
@@ -52,7 +81,12 @@ export const PortSubInterfaceTable = (props: PortSubInterfaceTableProps) => {
 
   const handleUpload = async (formData: FormData) => {
     await uploadCSV({
-      params: { serialNumber , portId },
+      params: {
+        venueId,
+        edgeClusterId,
+        serialNumber,
+        portId
+      },
       payload: formData
     }).unwrap()
   }
