@@ -13,7 +13,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  EnhancedRoguePolicyType, PolicyType, policyTypeLabelMapping,
+  EnhancedRoguePolicyType,
+  PolicyType,
+  policyTypeLabelMapping,
+  RogueApConstant,
   RogueAPDetectionActionTypes,
   servicePolicyNameRegExp,
   TableResult,
@@ -34,7 +37,6 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
   const { edit } = props
 
   const form = Form.useFormInstance()
-  const DEFAULT_PROFILE = 'Default profile'
 
   const {
     state, dispatch
@@ -76,7 +78,8 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
   useEffect(() => {
     if (edit && policyData && policyList) {
       const policy = policyList.data?.find(p => p.id === policyData?.id)
-      const defaultPolicyId = policyList.data?.find(p => p.name === DEFAULT_PROFILE)?.id
+      // eslint-disable-next-line max-len
+      const defaultPolicyId = policyList.data?.find(p => p.name === RogueApConstant.DefaultProfile)?.id
       if (!defaultPolicyId) {
         throw new Error('Default profile not found')
       }

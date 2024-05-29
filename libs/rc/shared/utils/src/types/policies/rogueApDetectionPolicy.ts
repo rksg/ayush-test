@@ -225,3 +225,11 @@ export interface RoguePolicyRequest {
   oldVenues: RogueVenue[],
   defaultPolicyId: string
 }
+
+export interface RogueApSettingsRequest {
+  enabled: boolean | undefined,
+  reportThreshold: number | undefined,
+  roguePolicyId: string | undefined,
+  currentReportThreshold: number | undefined,
+  currentRoguePolicyId: string | undefined
+}

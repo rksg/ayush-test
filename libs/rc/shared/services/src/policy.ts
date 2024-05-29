@@ -77,9 +77,9 @@ import {
   CertificateAcceptType,
   RoguePolicyRequest
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }     from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { basePolicyApi }               from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -148,27 +148,34 @@ const defaultCertTempVersioningHeaders = {
   'Accept': 'application/vnd.ruckus.v1+json'
 }
 
+const customHeaders = {
+  v1: {
+    'Content-Type': 'application/vnd.ruckus.v1+json',
+    'Accept': 'application/vnd.ruckus.v1+json'
+  },
+  v1001: {
+    'Content-Type': 'application/vnd.ruckus.v1.1+json',
+    'Accept': 'application/vnd.ruckus.v1.1+json'
+  }
+}
+
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) =>{
-        if (!payload) {
-          // eslint-disable-next-line max-len
-          return { error: { status: 'CUSTOM_ERROR', error: 'Payload is required' } as FetchBaseQueryError }
-        }
         try {
           // eslint-disable-next-line max-len
-          const { name, description, rules, venues } = payload
-
+          const { name, description, rules, venues } = payload!
+          const headers = enableRbac ? customHeaders.v1 : {}
           const res = await fetchWithBQ({
             // eslint-disable-next-line max-len
-            ...createHttpRequest(enableRbac ? RogueApUrls.addRoguePolicyRbac : RogueApUrls.addRoguePolicy, params),
-            body: {
+            ...createHttpRequest(enableRbac ? RogueApUrls.addRoguePolicyRbac : RogueApUrls.addRoguePolicy, params, headers),
+            body: JSON.stringify({
               name,
               description,
               rules,
               venues
-            }
+            })
           })
           // Ensure the return type is QueryReturnValue
           if (res.error) {
@@ -177,10 +184,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
           if (enableRbac) { // Continue with venue activation if RBAC is enabled
             const { response } = res.data as CommonResult
-            for (const venue of venues) {
-              // eslint-disable-next-line max-len
-              await fetchWithBQ(createHttpRequest(RogueApUrls.activateRoguePolicy, { policyId: response?.id, venueId: venue.id }))
-            }
+            const requests = venues.map(venue => ({
+              params: { policyId: response?.id, venueId: venue.id }
+            }))
+            await batchApi(RogueApUrls.activateRoguePolicy, requests, fetchWithBQ, customHeaders.v1)
           }
 
           return { data: res.data as CommonResult }
@@ -192,8 +199,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
         const url = enableRbac ? RogueApUrls.deleteRoguePolicyRbac : RogueApUrls.deleteRoguePolicy
-        const req = createHttpRequest(url, params)
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req
         }
@@ -670,29 +678,23 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          if (enableRbac) {
-            const policyIds = payload as string[]
-            for (const policyId of policyIds) {
-              // eslint-disable-next-line max-len
-              await fetchWithBQ(createHttpRequest(RogueApUrls.deleteRoguePolicyRbac, { policyId }))
-            }
-            return { data: {} as CommonResult }
-          } else {
-            const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
-            const res = await fetchWithBQ(req)
-            return { data: res.data as CommonResult }
-          }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
+        if (enableRbac) {
+          const policyIds = payload as string[]
+          const requests = policyIds.map(policyId => ({ params: { policyId }, payload: {} }))
+          // eslint-disable-next-line max-len
+          return batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ, customHeaders.v1)
+        } else {
+          const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
+          return fetchWithBQ(req)
         }
       },
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
         const url = enableRbac ? RogueApUrls.getRoguePolicyRbac : RogueApUrls.getRoguePolicy
-        const req = createHttpRequest(url, params)
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req
         }
@@ -701,46 +703,44 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) =>{
-        if (!payload) {
-          // eslint-disable-next-line max-len
-          return { error: { status: 'CUSTOM_ERROR', error: 'Payload is required' } as FetchBaseQueryError }
-        }
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
+          const headers = enableRbac ? customHeaders.v1 : {}
           // eslint-disable-next-line max-len
-          const { id: policyId, name, description, rules, venues, oldVenues, defaultPolicyId } = payload
+          const { id: policyId, name, description, rules, venues, oldVenues, defaultPolicyId } = payload!
 
           const res = await fetchWithBQ({
             // eslint-disable-next-line max-len
-            ...createHttpRequest(enableRbac ? RogueApUrls.updateRoguePolicyRbac : RogueApUrls.updateRoguePolicy, params),
-            body: {
+            ...createHttpRequest(enableRbac ? RogueApUrls.updateRoguePolicyRbac : RogueApUrls.updateRoguePolicy, params, headers),
+            body: JSON.stringify({
               policyId,
               name,
               description,
               rules,
               venues
-            }
+            })
           })
           // Ensure the return type is QueryReturnValue
           if (res.error) {
             return { error: res.error as FetchBaseQueryError }
           }
 
-          if (enableRbac) { // Continue with venue activation if RBAC is enabled
-            // eslint-disable-next-line max-len
-            const deactivatedVenues = oldVenues.filter((oldVenue) => !venues.some((venue) => venue.id === oldVenue.id))
-            // eslint-disable-next-line max-len
-            const activatedVenues = venues.filter((venue) => !oldVenues.some((oldVenue) => oldVenue.id === venue.id))
+          if (enableRbac) {
+            const deactivateRequests = oldVenues
+              .filter(oldVenue => !venues.some(venue => venue.id === oldVenue.id))
+              .map(venue => ({ params: { policyId: defaultPolicyId, venueId: venue.id } }))
 
-            // Reset the policy to the default policy
-            for (const venue of deactivatedVenues) {
-              // eslint-disable-next-line max-len
-              await fetchWithBQ(createHttpRequest(RogueApUrls.activateRoguePolicy, { policyId: defaultPolicyId, venueId: venue.id }))
-            }
+            const activateRequests = venues
+              .filter(venue => !oldVenues.some(oldVenue => oldVenue.id === venue.id))
+              .map(venue => ({ params: { policyId, venueId: venue.id } }))
 
-            for (const venue of activatedVenues) {
-              // eslint-disable-next-line max-len
-              await fetchWithBQ(createHttpRequest(RogueApUrls.activateRoguePolicy, { policyId, venueId: venue.id }))
+            const [deactivationRes, activationRes] = await Promise.all([
+              batchApi(RogueApUrls.activateRoguePolicy, deactivateRequests, fetchWithBQ, headers),
+              batchApi(RogueApUrls.activateRoguePolicy, activateRequests, fetchWithBQ, headers)
+            ])
+
+            if (deactivationRes.error || activationRes.error) {
+              return { error: deactivationRes.error || activationRes.error as FetchBaseQueryError }
             }
           }
 
