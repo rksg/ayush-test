@@ -150,33 +150,37 @@ export function RadioSettingsForm (props:{
 
   return (
     <>
-      { AFC_Featureflag && ApRadioTypeEnum.Radio6G === radioType && <FieldLabel width='180px'
-        // Hide the label when afcEnable is false or ap is outdoor under ap context
-        style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false)) ?
-          { display: 'none' } : { display: 'flex' }}>
-        <div style={{ float: 'left' }}>
-          <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable AFC:' })}</p>
-        </div>
-        <Form.Item
-          style={{ width: '50px' }}
-          name={enableAfcFieldName}
-          valuePropName={'checked'}
-          initialValue={true}
-          rules={[
+      {
+        (AFC_Featureflag) &&
+        (ApRadioTypeEnum.Radio6G === radioType) &&
+        // No need to bring enableAfc property when AP is outdoor ap and AFC is no enabled.
+        // Also no need to show on the page.
+        !(LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false) &&
+        <FieldLabel width='180px'
+          style={(context === 'ap') ? { display: 'none' } : { display: 'flex' }}>
+          <div style={{ float: 'left' }}>
+            <p style={{ width: '180px' }}>{$t({ defaultMessage: 'Enable Indoor AFC:' })}</p>
+          </div>
+          <Form.Item
+            style={{ width: '160px' }}
+            name={enableAfcFieldName}
+            valuePropName={'checked'}
+            initialValue={true}
+            rules={[
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            { validator: (_, value) => AFCEnableValidation() ? Promise.reject() : Promise.resolve() }
-          ]}>
-          {isUseVenueSettings ?
-            LPIButtonText?.buttonText :
-            <Switch
-              disabled={!isAFCEnabled || isUseVenueSettings}
-              onChange={() => {
-                onChangedByCustom('enableAfc')
-                form.validateFields()
-              }}
-            />}
-        </Form.Item>
-      </FieldLabel>
+              { validator: (_, value) => AFCEnableValidation() ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
+            ]}>
+            {isUseVenueSettings ?
+              LPIButtonText?.buttonText :
+              <Switch
+                disabled={!isAFCEnabled || isUseVenueSettings}
+                onChange={() => {
+                  onChangedByCustom('enableAfc')
+                  form.validateFields()
+                }}
+              />}
+          </Form.Item>
+        </FieldLabel>
       }
       {
         (AFC_Featureflag) &&

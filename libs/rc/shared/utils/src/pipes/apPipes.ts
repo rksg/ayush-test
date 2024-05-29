@@ -239,13 +239,13 @@ export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
   else if (powerMode === AFCPowerMode.LOW_POWER) {
     switch(afcInfo?.afcStatus) {
       case AFCStatus.WAIT_FOR_LOCATION:
-        displayList.push($t({ defaultMessage: 'AFC Geo-Location not set' }))
+        displayList.push($t({ defaultMessage: 'Wait for location' }))
         break
       case AFCStatus.REJECTED:
-        displayList.push($t({ defaultMessage: 'Rejected by FCC DB due to no available channels' }))
+        displayList.push($t({ defaultMessage: 'Rejected' }))
         break
       case AFCStatus.WAIT_FOR_RESPONSE:
-        displayList.push($t({ defaultMessage: 'Wait for AFC server response' }))
+        displayList.push($t({ defaultMessage: 'Wait for response' }))
         break
       case AFCStatus.AFC_NOT_REQUIRED:
         displayList.push($t({ defaultMessage: 'N/A' }))
