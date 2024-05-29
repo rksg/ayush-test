@@ -576,6 +576,16 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
+  },
+  getVenueRogueAp: {
+    method: 'get',
+    url: '/venues/:venueId/roguePolicySettings',
+    newApi: true
+  },
+  updateVenueRogueAp: {
+    method: 'put',
+    url: '/venues/:venueId/roguePolicySettings',
+    newApi: true
   }
 
 }

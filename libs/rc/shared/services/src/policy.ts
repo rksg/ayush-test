@@ -1,4 +1,5 @@
-import { Params } from 'react-router-dom'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
+import { Params }              from 'react-router-dom'
 
 import {
   MacRegistration,
@@ -73,11 +74,12 @@ import {
   downloadFile,
   CertificateTemplateMutationResult,
   downloadCertExtension,
-  CertificateAcceptType
+  CertificateAcceptType,
+  RoguePolicyRequest
 } from '@acx-ui/rc/utils'
-import { basePolicyApi }     from '@acx-ui/store'
-import { RequestPayload }    from '@acx-ui/types'
-import { createHttpRequest } from '@acx-ui/utils'
+import { basePolicyApi }               from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -146,21 +148,60 @@ const defaultCertTempVersioningHeaders = {
   'Accept': 'application/vnd.ruckus.v1+json'
 }
 
+const customHeaders = {
+  v1: {
+    'Content-Type': 'application/vnd.ruckus.v1+json',
+    'Accept': 'application/vnd.ruckus.v1+json'
+  },
+  v1001: {
+    'Content-Type': 'application/vnd.ruckus.v1.1+json',
+    'Accept': 'application/vnd.ruckus.v1.1+json'
+  }
+}
+
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
-    addRoguePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.addRoguePolicy, params)
-        return {
-          ...req,
-          body: payload
+    addRoguePolicy: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) =>{
+        try {
+          // eslint-disable-next-line max-len
+          const { name, description, rules, venues } = payload!
+          const headers = enableRbac ? customHeaders.v1 : {}
+          const res = await fetchWithBQ({
+            // eslint-disable-next-line max-len
+            ...createHttpRequest(enableRbac ? RogueApUrls.addRoguePolicyRbac : RogueApUrls.addRoguePolicy, params, headers),
+            body: JSON.stringify({
+              name,
+              description,
+              rules,
+              venues
+            })
+          })
+          // Ensure the return type is QueryReturnValue
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+
+          if (enableRbac) { // Continue with venue activation if RBAC is enabled
+            const { response } = res.data as CommonResult
+            const requests = venues.map(venue => ({
+              params: { policyId: response?.id, venueId: venue.id }
+            }))
+            await batchApi(RogueApUrls.activateRoguePolicy, requests, fetchWithBQ, customHeaders.v1)
+          }
+
+          return { data: res.data as CommonResult }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicy, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const url = enableRbac ? RogueApUrls.deleteRoguePolicyRbac : RogueApUrls.deleteRoguePolicy
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req
         }
@@ -492,7 +533,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UpdateRogueApPolicyProfile',
             'DeleteRogueApPolicyProfile',
             'UpdateVenueRogueAp',
-            'UpdateDenialOfServiceProtection'
+            'UpdateDenialOfServiceProtection',
+            'DeleteRoguePolicy',
+            'AddRoguePolicy',
+            'UpdateRoguePolicy'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'RogueAp', id: 'LIST' }]))
           })
@@ -633,30 +677,76 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     delRoguePolicies: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const policyIds = payload as string[]
+          const requests = policyIds.map(policyId => ({ params: { policyId }, payload: {} }))
+          // eslint-disable-next-line max-len
+          return batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ, customHeaders.v1)
+        } else {
+          const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
+          return fetchWithBQ(req)
         }
       },
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(RogueApUrls.getRoguePolicy, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const url = enableRbac ? RogueApUrls.getRoguePolicyRbac : RogueApUrls.getRoguePolicy
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req
         }
       },
       providesTags: [{ type: 'RogueAp', id: 'DETAIL' }]
     }),
-    updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.updateRoguePolicy, params)
-        return {
-          ...req,
-          body: payload
+    // eslint-disable-next-line max-len
+    updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const headers = enableRbac ? customHeaders.v1 : {}
+          // eslint-disable-next-line max-len
+          const { id: policyId, name, description, rules, venues, oldVenues, defaultPolicyId } = payload!
+
+          const res = await fetchWithBQ({
+            // eslint-disable-next-line max-len
+            ...createHttpRequest(enableRbac ? RogueApUrls.updateRoguePolicyRbac : RogueApUrls.updateRoguePolicy, params, headers),
+            body: JSON.stringify({
+              policyId,
+              name,
+              description,
+              rules,
+              venues
+            })
+          })
+          // Ensure the return type is QueryReturnValue
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+
+          if (enableRbac) {
+            const deactivateRequests = oldVenues
+              .filter(oldVenue => !venues.some(venue => venue.id === oldVenue.id))
+              .map(venue => ({ params: { policyId: defaultPolicyId, venueId: venue.id } }))
+
+            const activateRequests = venues
+              .filter(venue => !oldVenues.some(oldVenue => oldVenue.id === venue.id))
+              .map(venue => ({ params: { policyId, venueId: venue.id } }))
+
+            const [deactivationRes, activationRes] = await Promise.all([
+              batchApi(RogueApUrls.activateRoguePolicy, deactivateRequests, fetchWithBQ, headers),
+              batchApi(RogueApUrls.activateRoguePolicy, activateRequests, fetchWithBQ, headers)
+            ])
+
+            if (deactivationRes.error || activationRes.error) {
+              return { error: deactivationRes.error || activationRes.error as FetchBaseQueryError }
+            }
+          }
+
+          return { data: res.data as RogueAPDetectionTempType }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
@@ -684,8 +774,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(RogueApUrls.getEnhancedRoguePolicyList, params)
+      query: ({ params, payload, enableRbac }) => {
+        // eslint-disable-next-line max-len
+        const url = enableRbac ? RogueApUrls.getRoguePolicyListRbac : RogueApUrls.getEnhancedRoguePolicyList
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: payload

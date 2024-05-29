@@ -165,19 +165,20 @@ export const PortalForm = (props: {
     return fileId
   }
 
-  const uploadFile = async (data: Portal) => {
+  const uploadFile = async (data: Portal, serviceId?:string) => {
     try {
+      const currentParams = { ...params, serviceId: params.serviceId || serviceId }
       if (data.bgFile) {
-        await uploadBgImage({ params, payload: { image: await getImageBase64(data.bgFile) } }).unwrap()
+        await uploadBgImage({ params: currentParams, payload: { image: await getImageBase64(data.bgFile) } }).unwrap()
       }
       if (data.logoFile) {
-        await uploadLogo({ params, payload: { image: await getImageBase64(data.logoFile) } }).unwrap()
+        await uploadLogo({ params: currentParams, payload: { image: await getImageBase64(data.logoFile) } }).unwrap()
       }
       if (data.photoFile) {
-        await uploadPhoto({ params, payload: { image: await getImageBase64(data.photoFile) } }).unwrap()
+        await uploadPhoto({ params: currentParams, payload: { image: await getImageBase64(data.photoFile) } }).unwrap()
       }
       if (data.poweredFile) {
-        await uploadPoweredImg({ params, payload: { image: await getImageBase64(data.poweredFile) } }).unwrap()
+        await uploadPoweredImg({ params: currentParams, payload: { image: await getImageBase64(data.poweredFile) } }).unwrap()
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -188,7 +189,9 @@ export const PortalForm = (props: {
   const handleAddPortalService = async (data: Portal) => {
     try {
 
-      const imageContent = isEnabledRbacService ? {} : {
+      const imageContent = isEnabledRbacService ? {
+        logo: '', photo: '', poweredImg: '', bgImage: ''
+      } : {
         logo:
         data?.content?.logo &&
         data?.content?.logo.indexOf('https://storage') >= 0
@@ -256,7 +259,7 @@ export const PortalForm = (props: {
           }).unwrap() as { response: { id: string } }
           // upload files
           if (isEnabledRbacService) {
-            await uploadFile(data)
+            await uploadFile(portalData, result.response?.id)
           }
 
           data.id = result.response?.id
