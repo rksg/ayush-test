@@ -51,30 +51,37 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
   },
   getRoguePolicyListRbac: {
     method: 'post',
-    url: '/roguePolicies/query'
+    url: '/roguePolicies/query',
+    newApi: true
   },
   addRoguePolicyRbac: {
     method: 'post',
-    url: '/roguePolicies'
+    url: '/roguePolicies',
+    newApi: true
   },
   getRoguePolicyRbac: {
     method: 'get',
-    url: '/roguePolicies/:policyId'
+    url: '/roguePolicies/:policyId',
+    newApi: true
   },
   updateRoguePolicyRbac: {
     method: 'put',
-    url: '/roguePolicies/:policyId'
+    url: '/roguePolicies/:policyId',
+    newApi: true
   },
   deleteRoguePolicyRbac: {
     method: 'delete',
-    url: '/roguePolicies/:policyId'
+    url: '/roguePolicies/:policyId',
+    newApi: true
   },
   activateRoguePolicy: {
     method: 'put',
-    url: '/venues/:venueId/roguePolicies/:policyId'
+    url: '/venues/:venueId/roguePolicies/:policyId',
+    newApi: true
   },
   deactivateRoguePolicy: {
     method: 'delete',
-    url: '/venues/:venueId/roguePolicies/:policyId'
+    url: '/venues/:venueId/roguePolicies/:policyId',
+    newApi: true
   }
 }

@@ -579,11 +579,13 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueRogueAp: {
     method: 'get',
-    url: '/venues/:venueId/roguePolicySettings'
+    url: '/venues/:venueId/roguePolicySettings',
+    newApi: true
   },
   updateVenueRogueAp: {
     method: 'put',
-    url: '/venues/:venueId/roguePolicySettings'
+    url: '/venues/:venueId/roguePolicySettings',
+    newApi: true
   }
 
 }
