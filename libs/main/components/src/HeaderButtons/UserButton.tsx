@@ -1,15 +1,18 @@
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { LayoutUI, Dropdown }      from '@acx-ui/components'
-import { get }                     from '@acx-ui/config'
-import { AccountCircleSolid }      from '@acx-ui/icons'
-import { TenantLink, useLocation } from '@acx-ui/react-router-dom'
-import { useUserProfileContext }   from '@acx-ui/user'
-import { userLogout }              from '@acx-ui/utils'
+import { LayoutUI, Dropdown }              from '@acx-ui/components'
+import { get }                             from '@acx-ui/config'
+import { AccountCircleSolid }              from '@acx-ui/icons'
+import { TenantLink, useLocation }         from '@acx-ui/react-router-dom'
+import { RolesEnum }                       from '@acx-ui/types'
+import { hasRoles, useUserProfileContext } from '@acx-ui/user'
+import { userLogout }                      from '@acx-ui/utils'
 
 const UserButton = () => {
   const { $t } = useIntl()
+  const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+
   const { data: userProfile } = useUserProfileContext()
   const location = useLocation()
 
@@ -33,13 +36,13 @@ const UserButton = () => {
         }
       }}
       items={[
-        {
+        ...(isDPSKAdmin ? [] : [{
           key: 'user-profile',
           label: <TenantLink
             state={{ from: location.pathname }}
-            to='/userprofile/'>{useIntl().$t({ defaultMessage: 'User Profile' })}
+            to='/userprofile/'>{$t({ defaultMessage: 'User Profile' })}
           </TenantLink>
-        },
+        }]),
         {
           key: 'change-password',
           label: $t({ defaultMessage: 'Change Password' })
