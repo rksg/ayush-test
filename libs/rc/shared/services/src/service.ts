@@ -81,16 +81,6 @@ const defaultDpskVersioningHeaders = {
   'Accept': 'application/vnd.ruckus.v2+json'
 }
 
-const getV1orV1_1Headers = (payload:unknown) => {
-  const currentPayload = payload ?? {}
-  const enableRbac: boolean =
-  (currentPayload != null && typeof currentPayload === 'object' && 'enableRbac' in currentPayload) ?
-    (currentPayload as { enableRbac: boolean }).enableRbac : false
-  return enableRbac ?
-    GetApiVersionHeader(ApiVersionEnum.v1_1) :
-    GetApiVersionHeader(ApiVersionEnum.v1)
-}
-
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({
     cloudpathList: build.query<CloudpathServer[], RequestPayload>({
@@ -775,10 +765,13 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getPortal: build.query<Portal, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
+
         const req = createHttpRequest(PortalUrlsInfo.getPortal,
           params,
-          getV1orV1_1Headers(payload))
+          customHeaders)
         return { ...req }
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }]
@@ -793,37 +786,43 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     updatePortal: build.mutation<Service, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
         const req = createHttpRequest(PortalUrlsInfo.updatePortal,
           params,
-          getV1orV1_1Headers(payload))
+          customHeaders)
         return {
           ...req,
-          body: JSON.stringify({ ...(_.omit(payload as Portal, ['enableRbac'])) })
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     createPortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
+
         const req = createHttpRequest(
-          PortalUrlsInfo.createPortal, params, getV1orV1_1Headers(payload)
+          PortalUrlsInfo.createPortal, params, customHeaders
         )
         return {
           ...req,
-          body: JSON.stringify({ ...(_.omit(payload as Portal, ['enableRbac'])) })
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getEnhancedPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const enableRbac = payload && (payload as { enableRbac: boolean }).enableRbac
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
         const req = createHttpRequest(PortalUrlsInfo.getEnhancedPortalProfileList,
-          params, getV1orV1_1Headers(payload))
+          params, customHeaders)
         const portalTablePayload = enableRbac ?
-          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total', 'enableRbac']) :
-          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total', 'fields', 'enableRbac'])
+          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total']) :
+          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total', 'fields'])
         return {
           ...req,
           body: JSON.stringify({ ...portalTablePayload })

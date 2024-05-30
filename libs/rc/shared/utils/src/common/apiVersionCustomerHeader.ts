@@ -16,3 +16,28 @@ export function GetApiVersionHeader (version: ApiVersionEnum | undefined) {
 
   return apiCustomHeader
 }
+
+export function GetUploadApiVersionHeader (version: ApiVersionEnum | undefined) {
+  if (!version) return undefined
+
+  const apiCustomHeader = {
+    'Content-Type': undefined,
+    'Accept': `application/vnd.ruckus.${version}+json`
+  }
+
+  return apiCustomHeader
+}
+
+export function GetDownloadCsvApiVersionHeader (version: ApiVersionEnum | undefined) {
+  if (!version) return undefined
+
+  const contentType = `application/vnd.ruckus.${version}+json`
+  const accept = `text/vnd.ruckus.${version}+csv`
+
+  const apiCustomHeader = {
+    'Content-Type': contentType,
+    'Accept': accept
+  }
+
+  return apiCustomHeader
+}
