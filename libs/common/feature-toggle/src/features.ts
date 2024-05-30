@@ -104,7 +104,6 @@ export enum Features {
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   SERVICES = 'acx-ui-services',
   SSO = 'ADMN-SSO',
-  STICKY_CLIENT_STEERING = 'wifi-eda-sticky-client-steering-toggle',
   SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE = 'acx-ui-support-to-msp-dashboard-toggle',
   SUPPORT_SWITCH_TWO_VERSION_UPGRADE = 'switch-consumer-support-two-fw-upgrade-toggle',
   SUPPORT_SWITCH_V6_ACL = 'switch-support-v6-acl-toggle',

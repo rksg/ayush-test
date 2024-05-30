@@ -6,7 +6,6 @@ import { defineMessage, useIntl }                                    from 'react
 import { useParams }                                                 from 'react-router-dom'
 
 import { AnchorContext, Loader, Tooltip }       from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }           from '@acx-ui/icons'
 import {
   useGetVenueLoadBalancingQuery, useGetVenueTemplateLoadBalancingQuery,
@@ -53,9 +52,6 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     useUpdateVenueLoadBalancingMutation,
     useUpdateVenueTemplateLoadBalancingMutation
   )
-
-  const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
-  const supportStickyClient = stickyClientFlag
 
   const loadBalancingMethods = [
     {
@@ -235,7 +231,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     </Row>
     }
 
-    {supportStickyClient && enabled &&
+    {enabled &&
     <Row>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
@@ -258,7 +254,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     </Row>
     }
 
-    {supportStickyClient && enabled && stickyClientSteeringEnabled &&
+    {enabled && stickyClientSteeringEnabled &&
     <Row>
       <Col span={colSpan}>
         <Space>
