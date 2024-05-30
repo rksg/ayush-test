@@ -13,7 +13,6 @@ import {
 import { useIntl } from 'react-intl'
 
 import { Fieldset, Tooltip }                 from '@acx-ui/components'
-import { useIsSplitOn, Features }            from '@acx-ui/feature-toggle'
 import { NetworkSaveData, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
@@ -43,7 +42,6 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
   const form = Form.useFormInstance()
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
 
-  const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
   const [switchMulticastRateLimitingDisabled, setSwitchMulticastRateLimitingDisabled] = useState(false)
   const multicastFilterTooltipContent = (
     <div>
@@ -106,162 +104,161 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
         />
       </UI.FieldLabel>
 
-      { multicastRateLimitFlag &&
+      <>
+        <UI.FieldLabel width='250px'>
+          <Space>
+            {$t({ defaultMessage: 'Multicast Rate Limiting' })}
+            <Tooltip.Question
+              title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
+              placement='right'
+              iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+            />
+          </Space>
+          <Form.Item
+            name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}
+            style={{ marginBottom: '10px' }}
+            valuePropName='checked'
+          >
+            <Switch
+              data-testid='multicastRateLimitSwitch'
+              disabled={switchMulticastRateLimitingDisabled}
+            />
+          </Form.Item>
+        </UI.FieldLabel>
+
+        {enableMulticastRateLimiting &&
         <>
-          <UI.FieldLabel width='250px'>
-            <Space>
-              {$t({ defaultMessage: 'Multicast Rate Limiting' })}
-              <Tooltip.Question
-                title={$t({ defaultMessage: 'Note that enabling Directed Multicast in <VenueSingular></VenueSingular>/AP settings, which converting multicast packets to unicast, will impact the functionality of Multicast Rate Limiting.' })}
-                placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          <Fieldset
+            label={$t({ defaultMessage: '2.4 GHz & 5 GHz' })}
+            checked={true}
+            switchStyle={{ display: 'none' }}
+            style={{ width: 'max-content', marginLeft: '-8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
+              <UI.FormItemNoLabel
+                name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']}
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+                children={
+                  <Checkbox data-testid='enableMulticastUpLimit'
+                    children={$t({ defaultMessage: 'Upload Limit' })} />}
               />
-            </Space>
-            <Form.Item
-              name={['wlan', 'advancedCustomization', 'enableMulticastRateLimiting']}
-              style={{ marginBottom: '10px' }}
-              valuePropName='checked'
-            >
-              <Switch
-                data-testid='multicastRateLimitSwitch'
-                disabled={switchMulticastRateLimitingDisabled}
+              {
+                enableMulticastUpLimit ?
+                  <UI.FormItemNoLabel
+                    name={['wlan', 'advancedCustomization', 'multicastUplinkRateLimiting']}
+                    children={
+                      <Slider
+                        tooltipVisible={false}
+                        style={{ width: '245px', marginRight: '10px' }}
+                        defaultValue={20}
+                        min={1}
+                        max={100}
+                        marks={{
+                          1: { label: '1 Mbps' },
+                          100: { label: '100 Mbps' }
+                        }}
+                      />
+                    }
+                  /> :
+                  <Unlimited />
+              }
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
+              <UI.FormItemNoLabel
+                name={['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting']}
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+                children={
+                  <Checkbox data-testid='enableMulticastDownLimit'
+                    children={<Space>
+                      {$t({ defaultMessage: 'Download Limit' })}
+                      <Tooltip.Question
+                        title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
+                        placement='bottom'
+                        iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+                      />
+                    </Space>}
+                  />}
               />
-            </Form.Item>
-          </UI.FieldLabel>
+              {
+                enableMulticastDownLimit ?
+                  <UI.FormItemNoLabel
+                    name={['wlan', 'advancedCustomization', 'multicastDownlinkRateLimiting']}
+                    children={
+                      <Slider
+                        tooltipVisible={false}
+                        style={{ width: '245px', marginRight: '10px' }}
+                        defaultValue={getDownloadMaxValue()}
+                        min={1}
+                        max={getDownloadMaxValue()}
+                        marks={{
+                          1: { label: '1 Mbps' },
+                          [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
+                        }}
+                      />
+                    }
+                  /> : <Unlimited />
+              }
+            </div>
+          </Fieldset>
 
-          {enableMulticastRateLimiting &&
-          <>
-            <Fieldset
-              label={$t({ defaultMessage: '2.4 GHz & 5 GHz' })}
-              checked={true}
-              switchStyle={{ display: 'none' }}
-              style={{ width: 'max-content', marginLeft: '-8px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
-                <UI.FormItemNoLabel
-                  name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting']}
-                  valuePropName='checked'
-                  initialValue={false}
-                  style={{ lineHeight: '50px' }}
-                  children={
-                    <Checkbox data-testid='enableMulticastUpLimit'
-                      children={$t({ defaultMessage: 'Upload Limit' })} />}
-                />
-                {
-                  enableMulticastUpLimit ?
-                    <UI.FormItemNoLabel
-                      name={['wlan', 'advancedCustomization', 'multicastUplinkRateLimiting']}
-                      children={
-                        <Slider
-                          tooltipVisible={false}
-                          style={{ width: '245px', marginRight: '10px' }}
-                          defaultValue={20}
-                          min={1}
-                          max={100}
-                          marks={{
-                            1: { label: '1 Mbps' },
-                            100: { label: '100 Mbps' }
-                          }}
-                        />
-                      }
-                    /> :
-                    <Unlimited />
-                }
-              </div>
+          <Fieldset
+            label={$t({ defaultMessage: '6 GHz' })}
+            checked={true}
+            switchStyle={{ display: 'none' }}
+            style={{ width: 'max-content', marginLeft: '-8px' }}
+          >
 
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
-                <UI.FormItemNoLabel
-                  name={['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting']}
-                  valuePropName='checked'
-                  initialValue={false}
-                  style={{ lineHeight: '50px' }}
-                  children={
-                    <Checkbox data-testid='enableMulticastDownLimit'
-                      children={<Space>
-                        {$t({ defaultMessage: 'Download Limit' })}
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
+              <UI.FormItemNoLabel
+                name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting6G']}
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+                children={
+                  <Checkbox data-testid='enableMulticastUpLimit6G'
+                    disabled={isNotWPA3orOWE(wlanData)}
+                    children={<Space>
+                      {$t({ defaultMessage: 'Upload Limit' })}
+                      {isNotWPA3orOWE(wlanData) &&
                         <Tooltip.Question
-                          title={$t({ defaultMessage: 'The multicast download rate limiting should remain below 50% of the BSS minimum rate' })}
-                          placement='bottom'
-                          iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-                        />
-                      </Space>}
-                    />}
-                />
-                {
-                  enableMulticastDownLimit ?
-                    <UI.FormItemNoLabel
-                      name={['wlan', 'advancedCustomization', 'multicastDownlinkRateLimiting']}
-                      children={
-                        <Slider
-                          tooltipVisible={false}
-                          style={{ width: '245px', marginRight: '10px' }}
-                          defaultValue={getDownloadMaxValue()}
-                          min={1}
-                          max={getDownloadMaxValue()}
-                          marks={{
-                            1: { label: '1 Mbps' },
-                            [`${getDownloadMaxValue()}`]: { label: getDownloadMaxValue().toString() + ' Mbps' }
-                          }}
-                        />
+                          title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
+                          placement='right'
+                          iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
                       }
-                    /> : <Unlimited />
-                }
-              </div>
-            </Fieldset>
+                    </Space>}
+                  />}
+              />
+            </div>
 
-            <Fieldset
-              label={$t({ defaultMessage: '6 GHz' })}
-              checked={true}
-              switchStyle={{ display: 'none' }}
-              style={{ width: 'max-content', marginLeft: '-8px' }}
-            >
+            <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
+              <UI.FormItemNoLabel
+                name={['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting6G']}
+                valuePropName='checked'
+                initialValue={false}
+                style={{ lineHeight: '50px' }}
+                children={
+                  <Checkbox data-testid='enableMulticastDownLimit6G'
+                    disabled={isNotWPA3orOWE(wlanData)}
+                    children={<Space>
+                      {$t({ defaultMessage: 'Download Limit' })}
+                      {isNotWPA3orOWE(wlanData) &&
+                        <Tooltip.Question
+                          title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
+                          placement='right'
+                          iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
+                      }
+                    </Space>}
+                  />}
+              />
+            </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
-                <UI.FormItemNoLabel
-                  name={['wlan', 'advancedCustomization', 'enableMulticastUplinkRateLimiting6G']}
-                  valuePropName='checked'
-                  initialValue={false}
-                  style={{ lineHeight: '50px' }}
-                  children={
-                    <Checkbox data-testid='enableMulticastUpLimit6G'
-                      disabled={isNotWPA3orOWE(wlanData)}
-                      children={<Space>
-                        {$t({ defaultMessage: 'Upload Limit' })}
-                        {isNotWPA3orOWE(wlanData) &&
-                          <Tooltip.Question
-                            title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
-                            placement='right'
-                            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
-                        }
-                      </Space>}
-                    />}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '175px 261px' }}>
-                <UI.FormItemNoLabel
-                  name={['wlan', 'advancedCustomization', 'enableMulticastDownlinkRateLimiting6G']}
-                  valuePropName='checked'
-                  initialValue={false}
-                  style={{ lineHeight: '50px' }}
-                  children={
-                    <Checkbox data-testid='enableMulticastDownLimit6G'
-                      disabled={isNotWPA3orOWE(wlanData)}
-                      children={<Space>
-                        {$t({ defaultMessage: 'Download Limit' })}
-                        {isNotWPA3orOWE(wlanData) &&
-                          <Tooltip.Question
-                            title={$t({ defaultMessage: '6GHz only works when this network is using WPA3 or OWE encryption.' })}
-                            placement='right'
-                            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }} />
-                        }
-                      </Space>}
-                    />}
-                />
-              </div>
-
-            </Fieldset>
-          </>}
+          </Fieldset>
         </>}
+      </>
     </>
   )
 }
