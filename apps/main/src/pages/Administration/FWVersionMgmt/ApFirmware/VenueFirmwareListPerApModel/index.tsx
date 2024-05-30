@@ -4,19 +4,20 @@ import { useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Loader, Table, TableProps, Tooltip }                                      from '@acx-ui/components'
-import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery }   from '@acx-ui/rc/services'
-import { FirmwareVenuePerApModel, dateSort, defaultSort, sortProp, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                               from '@acx-ui/user'
-import { noDataDisplay }                                                           from '@acx-ui/utils'
+import { Loader, Table, TableProps, Tooltip, showActionModal }                                                            from '@acx-ui/components'
+import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
+import { FirmwareType, FirmwareVenuePerApModel, Schedule, dateSort, defaultSort, sortProp, useTableQuery }                from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                                                                                      from '@acx-ui/user'
+import { noDataDisplay }                                                                                                  from '@acx-ui/utils'
 
 import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
 import { PreferencesDialog }                                                                          from '../../PreferencesDialog'
 import * as UI                                                                                        from '../../styledComponents'
 
-import { ChangeSchedulePerApModelDialog }                                                                                  from './ChangeScheduleDialog'
-import { UpdateNowPerApModelDialog }                                                                                       from './UpdateNowDialog'
-import { renderCurrentFirmwaresColumn, useChangeScheduleVisiblePerApModel, useUpdateNowPerApModel, useUpgradePerferences } from './venueFirmwareListPerApModelUtils'
+import { ChangeSchedulePerApModelDialog }                                                                                                          from './ChangeScheduleDialog'
+import { DowngradePerApModelDialog }                                                                                                               from './DowngradeDialog'
+import { UpdateNowPerApModelDialog }                                                                                                               from './UpdateNowDialog'
+import { renderCurrentFirmwaresColumn, useChangeScheduleVisiblePerApModel, useUpdateNowPerApModel, useUpgradePerferences, useDowngradePerApModel } from './venueFirmwareListPerApModelUtils'
 
 export function VenueFirmwareListPerApModel () {
   const { $t } = useIntl()
@@ -28,18 +29,38 @@ export function VenueFirmwareListPerApModel () {
   const [ selectedRows, setSelectedRows ] = useState<FirmwareVenuePerApModel[]>([])
   const { updateNowVisible, setUpdateNowVisible, handleUpdateNowCancel } = useUpdateNowPerApModel()
   // eslint-disable-next-line max-len
+  const { downgradeVisible, setDowngradeVisible, handleDowngradeCancel, canDowngrade } = useDowngradePerApModel()
+  // eslint-disable-next-line max-len
   const { changeScheduleVisible, setChangeScheduleVisible, handleChangeScheduleCancel } = useChangeScheduleVisiblePerApModel()
   const {
     preferencesModalVisible, setPreferencesModalVisible, preferences,
     handlePreferencesModalCancel, handlePreferencesModalSubmit
   } = useUpgradePerferences()
+  const [ skipVenueSchedulesUpgrade ] = useSkipVenueSchedulesPerApModelMutation()
 
   const clearSelection = () => {
     setSelectedRowKeys([])
   }
 
-  const afterUpdateModalSubmit = () => {
+  const afterAction = () => {
     clearSelection()
+  }
+
+  const doSkipSchedules = (selectedRows: FirmwareVenuePerApModel[], callback: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      width: 460,
+      title: $t({ defaultMessage: 'Skip This Update?' }),
+      // eslint-disable-next-line max-len
+      content: $t({ defaultMessage: 'Please confirm that you wish to exclude the selected <venuePlural></venuePlural> from this scheduled update' }),
+      okText: $t({ defaultMessage: 'Skip' }),
+      cancelText: $t({ defaultMessage: 'Cancel' }),
+      onOk () {
+        skipVenueSchedulesUpgrade({
+          payload: { venueIds: selectedRows.map((row) => row.id) }
+        }).then(callback)
+      }
+    })
   }
 
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
@@ -47,7 +68,7 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
-        setSelectedRows(rows)
+        setSelectedRows(rows.filter(row => !row.isFirmwareUpToDate))
         setUpdateNowVisible(true)
       }
     },
@@ -55,8 +76,24 @@ export function VenueFirmwareListPerApModel () {
       visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
-        setSelectedRows(rows)
+        setSelectedRows(rows.filter(row => !row.isFirmwareUpToDate))
         setChangeScheduleVisible(true)
+      }
+    },
+    {
+      visible: (rows) => rows.every(row => hasApSchedule(row)),
+      label: $t({ defaultMessage: 'Skip Update' }),
+      onClick: (rows, clearSelection) => {
+        doSkipSchedules(rows, clearSelection)
+      }
+    },
+    {
+      visible: (rows) => canDowngrade(rows),
+      // eslint-disable-next-line max-len
+      label: $t({ defaultMessage: 'Downgrade' }),
+      onClick: (rows) => {
+        setSelectedRows(rows)
+        setDowngradeVisible(true)
       }
     }
   ]
@@ -80,12 +117,17 @@ export function VenueFirmwareListPerApModel () {
     </Loader>
     {updateNowVisible && selectedRows && <UpdateNowPerApModelDialog
       onCancel={handleUpdateNowCancel}
-      afterSubmit={afterUpdateModalSubmit}
+      afterSubmit={afterAction}
       selectedVenuesFirmwares={selectedRows}
     />}
     {changeScheduleVisible && selectedRows && <ChangeSchedulePerApModelDialog
       onCancel={handleChangeScheduleCancel}
-      afterSubmit={afterUpdateModalSubmit}
+      afterSubmit={afterAction}
+      selectedVenuesFirmwares={selectedRows}
+    />}
+    {downgradeVisible && selectedRows && <DowngradePerApModelDialog
+      onCancel={handleDowngradeCancel}
+      afterSubmit={afterAction}
       selectedVenuesFirmwares={selectedRows}
     />}
     <PreferencesDialog
@@ -176,4 +218,10 @@ function useVersionFilterOptions () {
   })
 
   return versionFilterOptions
+}
+
+function hasApSchedule (venue: { nextSchedules?: Schedule[] }): boolean {
+  return !!venue.nextSchedules &&
+    // eslint-disable-next-line max-len
+    venue.nextSchedules.some(schedule => schedule?.versionInfo?.type === FirmwareType.AP_FIRMWARE_UPGRADE)
 }

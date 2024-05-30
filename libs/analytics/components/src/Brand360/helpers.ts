@@ -250,7 +250,8 @@ export const transformVenuesData = (
       avgTTC: sumData(tenantData?.map(v => v.timeToConnectSLA), [0, 0]) as [number, number],
       avgClientThroughput: sumData(
         tenantData?.map(v => v.clientThroughputSLA), [0, 0]
-      ) as [number, number]
+      ) as [number, number],
+      tenantId
     })
     return newObj
   }, [] as Response[])

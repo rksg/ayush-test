@@ -142,7 +142,7 @@ export function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
-                disabled={!hasPermission()}
+                disabled={!hasPermission({ permission: 'WRITE_HEALTH' })}
               />
             ) : (
               <BarChart

@@ -1,11 +1,15 @@
+import { useContext } from 'react'
+
 import {
   useAddLagSubInterfacesMutation,
-  useDeleteLagSubInterfacesMutation, useGetEdgeListQuery,
+  useDeleteLagSubInterfacesMutation,
   useGetLagSubInterfacesQuery,
   useImportLagSubInterfacesCSVMutation,
   useUpdateLagSubInterfacesMutation
 } from '@acx-ui/rc/services'
-import { EdgeSubInterface, useTableQuery } from '@acx-ui/rc/utils'
+import { EdgeSubInterface, convertEdgeSubinterfaceToApiPayload, useTableQuery } from '@acx-ui/rc/utils'
+
+import { EditEdgeDataContext } from '../EditEdgeDataProvider'
 
 import { SubInterfaceTable } from './SubInterfaceTable'
 
@@ -18,32 +22,19 @@ interface LagSubInterfaceTableProps {
 }
 
 export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
-
   const { serialNumber, lagId } = props
-
-  const { venueId, clusterId } = useGetEdgeListQuery(
-    { payload: {
-      fields: [
-        'name',
-        'serialNumber',
-        'venueId',
-        'clusterId'
-      ],
-      filters: { serialNumber: [serialNumber] }
-    } },
-    {
-      skip: !!!serialNumber,
-      selectFromResult: ({ data }) => ({
-        venueId: data?.data[0].venueId,
-        clusterId: data?.data[0].clusterId
-      })
-    }
-  )
+  const { generalSettings } = useContext(EditEdgeDataContext)
+  const { venueId, clusterId: edgeClusterId } = generalSettings!
 
   const tableQuery = useTableQuery<EdgeSubInterface>({
     useQuery: useGetLagSubInterfacesQuery,
     defaultPayload: {},
-    apiParams: { serialNumber, lagId: lagId.toString() }
+    apiParams: {
+      venueId: venueId!,
+      edgeClusterId: edgeClusterId!,
+      serialNumber,
+      lagId: lagId.toString()
+    }
   })
   const [addSubInterface] = useAddLagSubInterfacesMutation()
   const [updateSubInterface] = useUpdateLagSubInterfacesMutation()
@@ -53,24 +44,24 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const handleAdd = async (data: EdgeSubInterface) => {
     const requestPayload = {
       params: {
-        venueId: venueId,
-        edgeClusterId: clusterId,
-        serialNumber: serialNumber,
-        lagId: lagId.toString(),
-        subInterfaceId: data?.id },
+        venueId,
+        edgeClusterId,
+        serialNumber,
+        lagId: lagId.toString()
+      },
       payload: data
     }
     await addSubInterface(requestPayload).unwrap()
   }
 
   const handleUpdate = async (data: EdgeSubInterface) => {
-    const { id, ...payloadData } = data
+    const { id, ...payloadData } = convertEdgeSubinterfaceToApiPayload(data)
 
     const requestPayload = {
       params: {
-        venueId: venueId,
-        edgeClusterId: clusterId,
-        serialNumber: serialNumber,
+        venueId,
+        edgeClusterId,
+        serialNumber,
         lagId: lagId.toString(),
         subInterfaceId: id },
       payload: payloadData
@@ -82,9 +73,9 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const handleDelete = async (data: EdgeSubInterface) => {
     return await deleteSubInterfaces({
       params: {
-        venueId: venueId,
-        edgeClusterId: clusterId,
-        serialNumber: serialNumber,
+        venueId,
+        edgeClusterId,
+        serialNumber,
         lagId: lagId.toString(),
         subInterfaceId: data?.id }
     }).unwrap()
@@ -93,9 +84,9 @@ export const LagSubInterfaceTable = (props: LagSubInterfaceTableProps) => {
   const handleUpload = async (formData: FormData) => {
     await uploadCSV({
       params: {
-        venueId: venueId,
-        edgeClusterId: clusterId,
-        serialNumber: serialNumber,
+        venueId,
+        edgeClusterId,
+        serialNumber,
         lagId: lagId.toString() },
       payload: formData
     }).unwrap()

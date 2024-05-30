@@ -82,12 +82,12 @@ function Layout () {
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
   const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
     getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
@@ -146,7 +146,7 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={<TenantNavLink to={indexPath} children={logo} />}
+      logo={isDPSKAdmin ? logo : <TenantNavLink to={indexPath} children={logo} />}
       menuConfig={useMenuConfig()}
       content={
         <>
