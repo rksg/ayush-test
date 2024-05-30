@@ -96,13 +96,14 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldMethod: 'delete',
     oldUrl: '/api/eventalarmapi/:tenantId/alarm/clear/:alarmId',
     newApi: true
-  },
+  },*/
   getApsList: {
     method: 'post',
-    url: '/aps/query',
-    oldUrl: '/api/viewmodel/:tenantId/aps',
+    // url: '/aps/query',
+    url: '/venues/aps/query',
     newApi: true
   },
+  /*
   getApGroupsListByGroup: {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
@@ -182,12 +183,19 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId',
     newApi: true
   },
-  updateVenueMesh: {
-    method: 'put',
-    url: '/venues/:venueId/meshSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/mesh',
+  */
+  getVenueMesh: {
+    method: 'get',
+    url: '/venues/:venueId/apMeshSettings',
     newApi: true
   },
+  updateVenueMesh: {
+    method: 'put',
+    url: '/venues/:venueId/apMeshSettings',
+    // url: '/venues/:venueId/meshSettings',
+    newApi: true
+  },
+  /*
   getMeshAps: {
     method: 'post',
     url: '/aps/query?mesh=true',
@@ -199,11 +207,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/aps/query/csvFiles',
     oldUrl: '/aps/query/csvFiles',
     newApi: true
-  },
-  getService: {
-    // no use
-    method: 'get',
-    url: '/api/tenant/:tenantId/service/:serviceId'
   },
   getFloorplan: {
     method: 'get',
@@ -282,16 +285,17 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/ap-models',
     newApi: true
   },
+  */
   getVenueLedOn: {
     method: 'get',
-    url: '/venues/:venueId/ledSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
+    // url: '/venues/:venueId/ledSettings',
+    url: '/venues/:venueId/apModelLedSettings',
     newApi: true
   },
   updateVenueLedOn: {
     method: 'put',
-    url: '/venues/:venueId/ledSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/led',
+    // url: '/venues/:venueId/ledSettings',
+    url: '/venues/:venueId/apModelLedSettings',
     newApi: true
   },
   getVenueApModelBandModeSettings: {
@@ -304,26 +308,29 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelBandModeSettings',
     newApi: true
   },
+  /*
   getVenueBssColoring: {
     method: 'get',
-    url: '/venues/:venueId/bssColoringSettings',
+    //url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   updateBssColoring: {
     method: 'put',
-    url: '/venues/:venueId/bssColoringSettings',
+    //url: '/venues/:venueId/bssColoringSettings',
+    url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
   getVenueLanPorts: {
     method: 'get',
-    url: '/venues/:venueId/lanPortSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port',
+    //url: '/venues/:venueId/lanPortSettings',
+    url: '/venues/:venueId/apModelLanPortSettings',
     newApi: true
   },
   updateVenueLanPorts: {
     method: 'put',
-    url: '/venues/:venueId/lanPortSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/lan-port',
+    //url: '/venues/:venueId/lanPortSettings',
+    url: '/venues/:venueId/apModelLanPortSettings',
     newApi: true
   },
   getVenueNetworkList: {
@@ -356,24 +363,32 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/tenant/:tenantId/wifi/network/get/deep'
   },
+  */
   getDenialOfServiceProtection: {
     method: 'get',
-    url: '/venues/:venueId/dosProtectionSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection',
+    // url: '/venues/:venueId/dosProtectionSettings',
+    url: '/venues/:venueId/apDosProtectionSettings',
     newApi: true
   },
   updateDenialOfServiceProtection: {
     method: 'put',
-    url: '/venues/:venueId/dosProtectionSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dos-protection',
+    // url: '/venues/:venueId/dosProtectionSettings',
+    url: '/venues/:venueId/apDosProtectionSettings',
     newApi: true
   },
   getVenueRogueAp: {
     method: 'get',
-    url: '/venues/:venueId/rogueApSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
+    //url: '/venues/:venueId/rogueApSettings',
+    url: '/venues/:venueId/roguePolicySettings',
     newApi: true
   },
+  updateVenueRogueAp: {
+    method: 'put',
+    //url: '/venues/:venueId/rogueApSettings',
+    url: '/venues/:venueId/roguePolicySettings',
+    newApi: true
+  },
+  /*
   getRogueApLocation: {
     method: 'get',
     url: '/venues/:venueId/rogueLocations?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
@@ -385,12 +400,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/rogueAps/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap',
-    newApi: true
-  },
-  updateVenueRogueAp: {
-    method: 'put',
-    url: '/venues/:venueId/rogueApSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
     newApi: true
   },
   getVenueApEnhancedKey: {
@@ -443,13 +452,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getApDetailHeader: {
     method: 'get',
     url: '/aps/:serialNumber/headerDetails',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/ap/:serialNumber/detailheader',
     newApi: true
   },
   getHistoricalClientList: {
     method: 'post',
     url: '/historicalClients/query',
-    oldUrl: '/api/eventalarmapi/:tenantId/event/hist_client_list',
     newApi: true
   },
   getGuestsList: {
@@ -499,19 +506,19 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/topology',
     newApi: true
   },
+  */
   getVenueMdnsFencingPolicy: {
     method: 'get',
-    url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
+    //url: '/venues/:venueId/mDnsFencingSettings',
+    url: '/venues/:venueId/apMulticastDnsFencingSettings',
     newApi: true
   },
   updateVenueMdnsFencingPolicy: {
     method: 'put',
-    url: '/venues/:venueId/mDnsFencingSettings',
-    oldUrl: '/api/venues/:venueId/mDnsFencingSettings',
+    //url: '/venues/:venueId/mDnsFencingSettings',
+    url: '/venues/:venueId/apMulticastDnsFencingSettings',
     newApi: true
   },
-  */
   getVenueRadiusOptions: {
     method: 'get',
     //url: '/venues/:venueId/radiusOptions',
@@ -525,56 +532,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
-  getRwgList: {
-    method: 'post',
-    url: '/rwgs/query',
-    newApi: true
-  },
-  deleteGateways: {
-    method: 'delete',
-    url: '/rwgs',
-    newApi: true
-  },
-  getGateway: {
-    method: 'get',
-    url: '/venues/:venueId/rwgs/:gatewayId',
-    newApi: true
-  },
-  updateGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  addGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  getGatewayAlarms: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/alarms',
-    newApi: true
-  },
-  getGatewayDashboard: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dashboards',
-    newApi: true
-  },
-  getGatewayTopProcess: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/topprocess',
-    newApi: true
-  },
-  getGatewayFileSystems: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/filesystems',
-    newApi: true
-  },
-  getGatewayDetails: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/details',
-    newApi: true
-  },
   addExportSchedules: {
     method: 'post',
     url: '/reports/exportSchedules',

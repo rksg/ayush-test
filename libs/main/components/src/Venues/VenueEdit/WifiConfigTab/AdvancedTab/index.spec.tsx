@@ -4,10 +4,11 @@ import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                              from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo }        from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { VenueUtilityContext }           from '..'
 import { VenueEditContext, EditContext } from '../..'
 import {
   venueData,
@@ -35,6 +36,15 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const mockAdvancedTab = (
+  <VenueUtilityContext.Provider value={{
+    venueApCaps: venueCaps,
+    isLoadingVenueApCaps: false
+  }}>
+    <AdvancedTab />
+  </VenueUtilityContext.Provider>
+)
+
 describe('AdvancedTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -58,6 +68,15 @@ describe('AdvancedTab', () => {
       rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
         (_, res, ctx) => res(ctx.json({ venueApManagementVlan }))),
       rest.put(WifiUrlsInfo.updateVenueApManagementVlan.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      // RBAC API
+      rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json(venueLed))),
+      rest.put(CommonRbacUrlsInfo.updateVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
+        (_, res, ctx) => res(ctx.json(venueBssColoring))),
+      rest.put(WifiRbacUrlsInfo.updateVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -84,7 +103,7 @@ describe('AdvancedTab', () => {
           setEditContextData,
           editAdvancedContextData,
           setEditAdvancedContextData }}>
-          <AdvancedTab />
+          {mockAdvancedTab}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
@@ -109,7 +128,7 @@ describe('AdvancedTab', () => {
           setEditContextData,
           editAdvancedContextData,
           setEditAdvancedContextData }}>
-          <AdvancedTab />
+          {mockAdvancedTab}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab' }
@@ -146,7 +165,7 @@ describe('AdvancedTab', () => {
           setEditContextData,
           editAdvancedContextData,
           setEditAdvancedContextData }}>
-          <AdvancedTab />
+          {mockAdvancedTab}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
@@ -174,7 +193,7 @@ describe('AdvancedTab', () => {
         editAdvancedContextData: advanceSettingContext,
         setEditAdvancedContextData: jest.fn()
       }}>
-        <AdvancedTab />
+        {mockAdvancedTab}
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
@@ -203,7 +222,7 @@ describe('AdvancedTab', () => {
         editAdvancedContextData: advanceSettingContext,
         setEditAdvancedContextData: jest.fn()
       }}>
-        <AdvancedTab />
+        {mockAdvancedTab}
       </VenueEditContext.Provider>
     </Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))

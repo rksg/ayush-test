@@ -10,20 +10,17 @@ import { Features, useIsSplitOn }                                          from 
 import {
   useGetApDirectedMulticastQuery,
   useLazyGetVenueDirectedMulticastQuery,
-  useLazyGetVenueQuery,
   useResetApDirectedMulticastMutation,
   useUpdateApDirectedMulticastMutation
 } from '@acx-ui/rc/services'
 import {
   ApDirectedMulticast,
-  ApiVersionEnum,
-  VenueDirectedMulticast,
-  VenueExtended } from '@acx-ui/rc/utils'
+  VenueDirectedMulticast
+} from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { FieldLabel }                   from '../../styledComponents'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
-
 
 
 export function DirectedMulticast () {
@@ -31,7 +28,6 @@ export function DirectedMulticast () {
   const { tenantId, serialNumber } = useParams()
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = (isUseRbacApi)? ApiVersionEnum.v1 : undefined
 
   const {
     editContextData,
@@ -40,13 +36,13 @@ export function DirectedMulticast () {
     setEditNetworkingContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
-  const { venueId } = apDetails || {}
+  const venueId = venueData?.id
 
   const directedMulticast = useGetApDirectedMulticastQuery({
     params: { venueId, serialNumber },
-    payload: { rbacApiVersion }
+    enableRbac: isUseRbacApi
   }, { skip: !venueId })
 
   const [updateApDirectedMulticast, { isLoading: isUpdatingApDirectedMulticast }] =
@@ -54,13 +50,11 @@ export function DirectedMulticast () {
   const [resetApDirectedMulticast, { isLoading: isResetApDirectedMulticast }] =
     useResetApDirectedMulticastMutation()
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueDirectedMulticast] = useLazyGetVenueDirectedMulticastQuery()
 
   const formRef = useRef<StepsFormLegacyInstance<ApDirectedMulticast>>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
 
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [initData, setInitData] = useState({} as ApDirectedMulticast)
   const [apDirectedMulticast, setApDirectedMulticast] = useState({} as ApDirectedMulticast)
   const [venueDirectedMulticast, setVenueDirectedMulticast] = useState({} as VenueDirectedMulticast)
@@ -89,16 +83,14 @@ export function DirectedMulticast () {
 
   useEffect(() => {
     const directedMulticastData = directedMulticast?.data
+
     if (venueId && directedMulticastData) {
       const setData = async () => {
-        const apVenue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
         const venueDirectedMulticastData = (await getVenueDirectedMulticast({
           params: { tenantId, venueId },
-          payload: { rbacApiVersion }
+          enableRbac: isUseRbacApi
         }, true).unwrap())
 
-        setVenue(apVenue)
         setVenueDirectedMulticast(venueDirectedMulticastData)
         setIsUseVenueSettings(directedMulticastData.useVenueSettings)
         isUseVenueSettingsRef.current = directedMulticastData.useVenueSettings
@@ -156,8 +148,7 @@ export function DirectedMulticast () {
       const isUseVenue = isUseVenueSettingsRef.current
       const payload = {
         ...values,
-        useVenueSettings: isUseVenue,
-        rbacApiVersion
+        useVenueSettings: isUseVenue
       }
 
       if (isUseVenue && !isUseRbacApi) {
@@ -167,7 +158,8 @@ export function DirectedMulticast () {
       } else {
         await updateApDirectedMulticast({
           params: { venueId, serialNumber },
-          payload
+          payload,
+          enableRbac: isUseRbacApi
         }).unwrap()
       }
 
@@ -210,7 +202,7 @@ export function DirectedMulticast () {
       onFormChange={handleChange}
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
-        <VenueSettingsHeader venue={venue}
+        <VenueSettingsHeader venue={venueData}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting} />
         <Row gutter={0} style={{ height: '40px' }}>
