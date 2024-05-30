@@ -124,10 +124,10 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return (
             <div>
               {row.apUpRssi && <span style={{ paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
-                <UpIcon style={{ transform: 'rotate(180deg)' }} />{row.apUpRssi}
+                <UpIcon style={{ transform: 'rotate(180deg)', width: '18px', height: '18px' }} />{row.apUpRssi}
               </span>}
               {row.apDownRssi && <span style={{ fill: getSNRColor(row.apDownRssi) }}>
-                <DownIcon />{row.apDownRssi}</span>}
+                <DownIcon style={{ width: '18px', height: '18px' }} />{row.apDownRssi}</span>}
             </div>
           )
         }
