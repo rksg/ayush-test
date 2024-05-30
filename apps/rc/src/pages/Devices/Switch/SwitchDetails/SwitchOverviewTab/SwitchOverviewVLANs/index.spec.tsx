@@ -18,7 +18,7 @@ import {
 import {
   lagList,
   portList,
-  portList7150_C12P,
+  portList_7150_C12P,
   switchDetails,
   transformdPortViewData,
   transformdPortViewData_7150_C12P,
@@ -125,6 +125,10 @@ describe('Switch Overview VLAN', () => {
       expect(await screen.findByText(/Default VLAN settings/i)).toBeVisible()
       expect(await screen.findByText(/111/i)).toBeVisible()
       expect(await screen.findAllByRole('radio')).toHaveLength(6)
+
+      const vlan555 = await screen.findByRole('row', { name: /555/i }) // LAG
+      await userEvent.click(await within(vlan555).findByRole('radio'))
+      expect(screen.queryByRole('button', { name: 'Delete' })).toBeNull()
     })
 
     it('should edit DEFAULT VLAN by using Default VLAN settings button correctly', async () => {
@@ -310,7 +314,7 @@ describe('Switch Overview VLAN', () => {
   describe('getPortViewData', () => {
     it('test getPortViewData', async () => {
       expect(getPortViewData(portList?.data)).toStrictEqual(transformdPortViewData)
-      expect(getPortViewData(portList7150_C12P?.data)).toStrictEqual(
+      expect(getPortViewData(portList_7150_C12P?.data)).toStrictEqual(
         transformdPortViewData_7150_C12P
       )
     })

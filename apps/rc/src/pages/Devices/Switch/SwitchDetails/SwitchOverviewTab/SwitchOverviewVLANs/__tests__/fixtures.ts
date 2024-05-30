@@ -653,7 +653,7 @@ export const portList = {
   }]
 }
 
-export const portList7150_C12P = {
+export const portList_7150_C12P = {
   data: [{
     cloudPort: true,
     stack: true,

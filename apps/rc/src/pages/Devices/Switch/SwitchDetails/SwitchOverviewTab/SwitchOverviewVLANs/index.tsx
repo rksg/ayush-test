@@ -366,24 +366,31 @@ export function SwitchOverviewVLANs (props: {
       = tableQuery.data?.data && !isLagListLoading && !isVePortsListLoading && !isVlanListLoading
 
     if (isDataReady) {
-      const portsUsedByLag = lagList?.reduce((result, lag) => {
+      const portsUsedByLagObj = lagList?.reduce((result, lag) => {
         const ports = lag.ports?.reduce((tmp, port) => ({
           ...tmp,
           [port]: lag.name
         }), {})
         return { ...result, ...ports }
       }, {})
+      const portsUsedByLag = Object.keys(portsUsedByLagObj ?? {})
 
       const veList = vePortsList?.data as VeViewModel[]
       const vlansUsedByVe = veList?.filter(ve => ve.vlanId).map(ve => ve.vlanId)
 
       const vlanList = vlanListBySwitch?.data as Vlan[]
       const vlanTableData = tableQuery.data?.data.map(vlan => {
+        const hasPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
+          _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
+            || _.intersection(port.untaggedPorts?.split(','), portsUsedByLag)?.length > 0
+        )?.length
         const hasVlansUsedByVe = vlansUsedByVe?.includes(vlan.vlanId)
 
         return {
           ...vlan,
-          isDeletable: !hasVlansUsedByVe && vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME
+          isDeletable: !hasVlansUsedByVe
+            && !hasPortsUsedByLag
+            && (vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
         }
       })
       const defaultVlan = vlanList?.filter(
@@ -398,7 +405,7 @@ export function SwitchOverviewVLANs (props: {
       const usedUntagged = getUsedPorts(vlanList, 'untaggedPorts')
 
       setVlanList(vlanList)
-      setUsedByLag(portsUsedByLag as Record<string, string>)
+      setUsedByLag(portsUsedByLagObj as Record<string, string>)
       setUsedUntaggedPorts(usedUntagged as Record<string, string>)
       setVlanTableData(vlanTableData as Vlan[])
       setIsDefaultVlanAppliedACL(isDefaultVlanAppliedACL)
