@@ -7,7 +7,7 @@ import { useUpdatePreferencesMutation }                                         
 import { useRoles, getUserProfile }                                                   from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs, UserProfileSection as BasicUserProfileSection } from '@acx-ui/components'
 import { useNavigate, useParams, useTenantLink }                                      from '@acx-ui/react-router-dom'
-import { hasPermission }                                                              from '@acx-ui/user'
+import { hasRaiPermission }                                                           from '@acx-ui/user'
 
 import { NotificationSettings } from '../NotificationSettings'
 
@@ -67,17 +67,16 @@ const SettingsTab = ({ navigate }: { navigate: () => void }) => {
 // eslint-disable-next-line max-len
 const intro = defineMessage({ defaultMessage: 'We\'ll always let you know about important changes, but pick what else you want to hear about.' })
 
-export const NotificationSettingsTab = ({ navigate }: { navigate: () => void }) => {
+const NotificationSettingsTab = ({ navigate }: { navigate: () => void }) => {
   const { $t } = useIntl()
   const { selectedTenant: { id } } = getUserProfile()
-  const close = (): Promise<boolean | void> => new Promise(resolve => resolve(false))
-  const apply = useRef<() => Promise<boolean | void>>(close)
+  const apply = useRef<() => Promise<boolean | void>>()
   return <>
     <div style={{ padding: '10px 0 20px' }}>{$t(intro)}</div>
     <StepsForm
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
       onFinish={async () => {
-        await apply.current()
+        await apply.current?.()
         navigate()
       }}
       onCancel={navigate}
@@ -108,7 +107,7 @@ const useTabs = () : Tab[] => {
     title: $t({ defaultMessage: 'Notifications' }),
     component: <NotificationSettingsTab navigate={navigateToDefaultPath} />
   }
-  return hasPermission({ permission: 'READ_INCIDENTS' })
+  return hasRaiPermission('READ_INCIDENTS')
     ? [ settingsTab, notificationsTab ]
     : [ settingsTab ]
 }

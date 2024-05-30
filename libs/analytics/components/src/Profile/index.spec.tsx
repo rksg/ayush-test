@@ -3,6 +3,7 @@ import { rest }  from 'msw'
 
 import { Provider, store, rbacApi, rbacApiURL } from '@acx-ui/store'
 import { render, screen, waitFor, mockServer }  from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }    from '@acx-ui/user'
 
 import { Profile, ProfileTabEnum } from '.'
 
@@ -28,6 +29,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
   useLocation: () => ({ state: { from: '/test' } })
 }))
 
+
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn(() => true)
+}))
+
 jest.mock('@acx-ui/analytics/utils', () => ({
   ...jest.requireActual('@acx-ui/analytics/utils'),
   getUserProfile: jest.fn(() => (sampleProfile))
@@ -37,28 +43,44 @@ jest.mock('./PreferredLanguageFormItem', () => ({
   PreferredLanguageFormItem: () => <div data-testid={'PreferredLanguageFormItem'}/>
 }))
 
+jest.mock('../NotificationSettings', () => ({
+  NotificationSettings: () => <div data-testid={'NotificationSettings'}/>
+}))
+
 describe('Profile', () => {
   beforeEach(() => {
     store.dispatch(rbacApi.util.resetApiState())
+    mockedUsedNavigate.mockReset()
+    setRaiPermissions({ READ_INCIDENTS: true } as RaiPermissions)
   })
-  it('should render', async () => {
+  it('should render with notifications', async () => {
     render(<Profile />,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByText('Settings')).toBeVisible()
+    expect(await screen.findByText('Notifications')).toBeVisible()
+  })
+  it('should render without notifications and tabs', async () => {
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
+    render(<Profile />,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(screen.queryByText('Settings')).toBeNull()
+    expect(screen.queryByText('Notifications')).toBeNull()
   })
   it('should handle tab click', async () => {
     render(<Profile tab={ProfileTabEnum.NOTIFICATIONS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Settings'))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: '/tenant-id/t/analytics/profile/settings', hash: '', search: ''
+      pathname: '//profile/settings', hash: '', search: ''
     })
   })
   it('should handle opening tabs in new window', async () => {
     render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Notifications'))
-    expect(window.open).toHaveBeenCalledWith('/analytics/profile/settings', '_blank')
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '//profile/notifications', hash: '', search: ''
+    })
   })
   it('should handle apply', async () => {
     mockServer.use(
@@ -73,13 +95,28 @@ describe('Profile', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Apply Settings'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
-      { pathname: '/test' }, { replace: true }))
+      { pathname: '/', hash: '', search: '' }, { replace: true }))
+  })
+  it('should handle save', async () => {
+    mockServer.use(
+      rest.put(
+        `${rbacApiURL}/users/${sampleProfile.userId}`,
+        (_, res, ctx) => {
+          return res(ctx.json(sampleProfile.preferences))
+        }
+      )
+    )
+    render(<Profile tab={ProfileTabEnum.NOTIFICATIONS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('Save'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
+      { pathname: '/', hash: '', search: '' }, { replace: true }))
   })
   it('should handle cancel', async () => {
     render(<Profile tab={ProfileTabEnum.SETTINGS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Cancel'))
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
-      { pathname: '/test' }, { replace: true }))
+      { pathname: '/', hash: '', search: '' }, { replace: true }))
   })
 })

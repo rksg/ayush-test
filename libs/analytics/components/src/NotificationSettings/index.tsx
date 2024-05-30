@@ -74,7 +74,7 @@ const validateEmail = (email: string) => emailRegExp.test(String(email).toLowerC
 
 export const NotificationSettings = ({ tenantId, apply }: {
   tenantId: string,
-  apply: MutableRefObject<() => Promise<boolean | void>>
+  apply: MutableRefObject<undefined | (() => Promise<boolean | void>)>
 }) => {
   const { $t } = useIntl()
   const query = useGetPreferencesQuery({ tenantId })
