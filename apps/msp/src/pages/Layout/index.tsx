@@ -20,13 +20,13 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import { useGetTenantDetailQuery, useMspEntitlementListQuery }                      from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
-import { ConfigTemplateContext }                                                    from '@acx-ui/rc/utils'
-import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }       from '@acx-ui/utils'
+import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
+import { ConfigTemplateContext }                                                        from '@acx-ui/rc/utils'
+import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink }     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                    from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
+import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }           from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -69,6 +69,10 @@ function Layout () {
     isBrand360Enabled &&
     (tenantType === AccountType.MSP_INTEGRATOR ||
     tenantType === AccountType.MSP_NON_VAR)
+
+  const isTechPartner =
+    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isTechPartner })
 
   const indexPath = isGuestManager
     ? '/users/guestsManager'
@@ -150,7 +154,10 @@ function Layout () {
             <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton
+          isMspEc={isTechPartner}
+          mspBrandData={mspBrandData}
+          supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />
