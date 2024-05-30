@@ -262,7 +262,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE, SwitchScopes.DELETE],
+    scopeKey: [[WifiScopes.DELETE, EdgeScopes.DELETE, SwitchScopes.DELETE]],
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -302,7 +302,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasPermission({
           scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE,
-            WifiScopes.DELETE, EdgeScopes.DELETE, SwitchScopes.DELETE]
+            [WifiScopes.DELETE, EdgeScopes.DELETE, SwitchScopes.DELETE]]
         }) && rowSelection}
       />
     </Loader>
