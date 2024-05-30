@@ -86,18 +86,31 @@ const getGranularity = (start: string, end: string, kpi: string) => {
   const { timeseries: { minGranularity } } = config
   return calculateGranularity(start, end, minGranularity)
 }
-const getHistogramQuery = (kpi: string) => {
+const getHistogramQuery =
+({ kpi, enableSwitchFirmwareFilter }: KpiPayload) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { apiMetric, splits } = Object(config).histogram
+  const additionalArgs = enableSwitchFirmwareFilter
+    ? ', $enableSwitchFirmwareFilter: Boolean'
+    : ''
+  const additionalFields = enableSwitchFirmwareFilter
+    ? 'enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter'
+    : ''
+
   return `
     query histogramKPI(
-      $path: [HierarchyNodeInput], $start: DateTime, $end: DateTime, $filter: FilterInput,
-      $enableSwitchFirmwareFilter: Boolean,
-    ) {
+      $path: [HierarchyNodeInput]
+      $start: DateTime
+      $end: DateTime
+      $filter: FilterInput
+      ${additionalArgs}) {
       network(filter: $filter) {
-        histogram: histogram(path: $path, start: $start, end: $end,
-           enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
-          data: ${apiMetric}(splits: [${splits.join(', ')}])
+        histogram: histogram(
+          path: $path
+          start: $start
+          end: $end
+          ${additionalFields}) {
+            data: ${apiMetric}(splits: [${splits.join(', ')}])
         }
       }
     }
@@ -140,31 +153,29 @@ export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
 }
 
 export const constructTimeSeriesQuery = (payload: Omit<KpiPayload, 'range'>) => {
-  let additionalArgs = ''
-  let additionalFields = ''
-
-  if (payload.enableSwitchFirmwareFilter) {
-    additionalArgs += ', $enableSwitchFirmwareFilter: Boolean'
-    additionalFields += 'enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter'
-  }
+  const { kpi, threshold, enableSwitchFirmwareFilter } = payload
+  const additionalArgs = enableSwitchFirmwareFilter
+    ? '$enableSwitchFirmwareFilter: Boolean'
+    : ''
+  const additionalFields = enableSwitchFirmwareFilter
+    ? 'enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter'
+    : ''
 
   return gql`
     query timeseriesKPI(
-      $start: DateTime,
-      $end: DateTime,
-      $granularity: String,
+      $start: DateTime
+      $end: DateTime
+      $granularity: String
       $filter: FilterInput
-      ${additionalArgs}
-    ) {
+      ${additionalArgs}) {
       network(filter: $filter) {
         timeSeries: timeSeries(
           start: $start
           end: $end
           granularity: $granularity
-          ${additionalFields}
-        ) {
+          ${additionalFields}) {
           time
-          data: ${getKPIMetric(payload.kpi, payload.threshold)}
+          data: ${getKPIMetric(kpi, threshold)}
         }
       }
     }
@@ -194,7 +205,7 @@ export const healthApi = dataApi.injectEndpoints({
       KpiPayload
     >({
       query: (payload) => ({
-        document: gql`${getHistogramQuery(payload.kpi)}`,
+        document: gql`${getHistogramQuery(payload)}`,
         variables: {
           start: payload.startDate,
           end: payload.endDate,

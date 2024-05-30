@@ -3,19 +3,17 @@
 exports[`Services for health kpis constructTimeSeriesQuery should return time series query 1`] = `
 "
     query timeseriesKPI(
-      $start: DateTime,
-      $end: DateTime,
-      $granularity: String,
+      $start: DateTime
+      $end: DateTime
+      $granularity: String
       $filter: FilterInput
-      
-    ) {
+      ) {
       network(filter: $filter) {
         timeSeries: timeSeries(
           start: $start
           end: $end
           granularity: $granularity
-          
-        ) {
+          ) {
           time
           data: connectionSuccessAndAttemptCount
         }
@@ -27,19 +25,17 @@ exports[`Services for health kpis constructTimeSeriesQuery should return time se
 exports[`Services for health kpis constructTimeSeriesQuery should return time series query with additional args 1`] = `
 "
     query timeseriesKPI(
-      $start: DateTime,
-      $end: DateTime,
-      $granularity: String,
+      $start: DateTime
+      $end: DateTime
+      $granularity: String
       $filter: FilterInput
-      , $enableSwitchFirmwareFilter: Boolean
-    ) {
+      $enableSwitchFirmwareFilter: Boolean) {
       network(filter: $filter) {
         timeSeries: timeSeries(
           start: $start
           end: $end
           granularity: $granularity
-          enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
-        ) {
+          enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
           time
           data: connectionSuccessAndAttemptCount
         }
