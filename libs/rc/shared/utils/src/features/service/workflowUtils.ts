@@ -2,6 +2,8 @@ import { MessageDescriptor }      from '@formatjs/intl'
 import { defineMessage, useIntl } from 'react-intl'
 import { Node }                   from 'reactflow'
 
+import { AccessPointOutlined, EnvelopOpenOutlined, PoliciesOutlined } from '@acx-ui/icons'
+
 import {
   ActionType,
   AupActionContext,
@@ -95,11 +97,28 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'Split Option Node' })
 }
 
+export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
+  [ActionType.AUP]: AccessPointOutlined,
+  [ActionType.DATA_PROMPT]: PoliciesOutlined,
+  [ActionType.DISPLAY_MESSAGE]: EnvelopOpenOutlined,
+
+  [ActionType.USER_SELECTION_SPLIT]: AccessPointOutlined
+}
+
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'Display an Acceptable Use Policy (AUP)' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Prompt the user for information' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Display message' }),
+  [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
+  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
   // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a Ruckus DPSK' }),
+
+  [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'User selection split' })
+}
+
+export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
+  [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
+  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
+  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in Ruckus WLAN controllers as "External DPSK") or via a Ruckus WLAN controller.' }),
 
   [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'User selection split' })
 }
@@ -122,15 +141,6 @@ export const ActionTypeNewTemplateTerms: Record<ActionType, MessageDescriptor | 
   // [ActionType.DPSK]: undefined,
 
   [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'A new user selection split option created from a standard template.' })
-}
-
-export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'Displays a message to the user and requires that they signal their acceptance. This is normally used for an acceptable use policy (AUP) or end-user license agreement (EULA).' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields.' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Display message' }),
-  // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in Ruckus WLAN controllers as "External DPSK") or via a Ruckus WLAN controller.' }),
-
-  [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'User selection split' })
 }
 
 export const AupActionDefaultValue: {
