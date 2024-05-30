@@ -6,14 +6,19 @@ import {
   AccessControlForm,
   AccessControlTable,
   AdaptivePolicySetForm,
+  ApGroupDetails,
   ApGroupEdit,
   CertificateAuthorityForm,
   CertificateTemplateForm,
+  CliProfileForm,
+  CliTemplateForm,
   ClientIsolationForm,
+  ConfigurationProfileForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
   DHCPForm,
   DpskForm,
+  IdentityProviderForm,
   MacRegistrationListForm,
   NetworkForm,
   PortalForm,
@@ -22,17 +27,14 @@ import {
   RogueAPDetectionForm,
   RogueAPDetectionTable,
   SyslogDetailView, SyslogForm,
-  VLANPoolForm,
   VLANPoolDetail,
+  VLANPoolForm,
   WifiCallingConfigureForm, WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm,
-  ConfigurationProfileForm,
-  CliTemplateForm,
-  CliProfileForm,
-  IdentityProviderForm
+  WifiOperatorForm
 } from '@acx-ui/rc/components'
 import {
+  CertificateCategoryType,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
@@ -44,12 +46,11 @@ import {
   getSelectServiceRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
-  getServiceRoutePath,
-  CertificateCategoryType
+  getServiceRoutePath
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
-import { EdgeScopes, WifiScopes, SwitchScopes }        from '@acx-ui/types'
+import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
 import { AuthRoute }                                   from '@acx-ui/user'
 
 import Edges                                        from './pages/Devices/Edge'
@@ -68,7 +69,6 @@ import { AccessPointList, WifiTabsEnum }            from './pages/Devices/Wifi'
 import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
-import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
 import Wired                                        from './pages/Networks/wired'
 import { NetworkTabsEnum, NetworksList }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
@@ -142,6 +142,7 @@ import PortalServiceDetail                  from './pages/Services/Portal/Portal
 import PortalTable                          from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 import ResidentPortalTable                  from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
+import RuckathonEdgeTestForm                from './pages/Services/Ruckathon'
 import SelectServiceForm                    from './pages/Services/SelectServiceForm'
 import ServiceCatalog                       from './pages/Services/ServiceCatalog'
 import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
@@ -172,6 +173,8 @@ export default function RcRoutes () {
 }
 
 function DeviceRoutes () {
+  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -295,7 +298,12 @@ function DeviceRoutes () {
         } />
 
       <Route path='devices/edge' element={<Edges />} />
+
+      {(isEdgeHaReady && isEdgeFirewallHaReady
+        && <Route path='devices/upload_image_to_edge' element={<RuckathonEdgeTestForm />} />) }
     </Route>
+
+
   )
 }
 
@@ -1045,16 +1053,24 @@ function UserRoutes () {
       <Route path='users/switch/clients/:clientId'
         element={<SwitchClientDetailsPage />} />
       {(isCloudpathBetaEnabled)
-        ? <><Route
-          path='users/identity-management'
-          element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}/><Route
-          path='users/identity-management/:activeTab'
-          element={<PersonaPortal/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId'
-          element={<PersonaGroupDetails/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-          element={<PersonaDetails/>}/></>
-        : <></>}
+        ? <>
+          <Route
+            path='users/identity-management'
+            element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}
+          />
+          <Route
+            path='users/identity-management/:activeTab'
+            element={<PersonaPortal/>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId'
+            element={<PersonaGroupDetails/>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+            element={<PersonaDetails/>}
+          />
+        </> : <></>}
     </Route>
   )
 }

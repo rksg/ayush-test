@@ -59,9 +59,9 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   useEffect(() => {
     if (editMode && data) {
       const policyName = data.name || data.policyName
+      const newData = cloneDeep(data)
       // update state from API data
       if (state.policyName === '') {
-        const newData = cloneDeep(data)
         const payload = {
           state: {
             ...state,
@@ -76,7 +76,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
       }
 
       if (form) {
-        form.setFieldsValue(data)
+        form.setFieldsValue({ ...newData, policyName })
       }
     }
   }, [form, editMode, data])

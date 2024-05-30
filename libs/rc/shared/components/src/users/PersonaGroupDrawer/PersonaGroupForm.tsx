@@ -4,12 +4,27 @@ import { Col, Form, FormInstance, Input, Row, Select, Space } from 'antd'
 import TextArea                                               from 'antd/lib/input/TextArea'
 import { useIntl }                                            from 'react-intl'
 
-import { Button, Modal, ModalType, Subtitle }                                           from '@acx-ui/components'
-import { useGetDpskListQuery, useLazySearchPersonaGroupListQuery, useMacRegListsQuery } from '@acx-ui/rc/services'
-import { DpskSaveData, PersonaGroup, checkObjectNotExists, trailingNorLeadingSpaces }   from '@acx-ui/rc/utils'
+import { Button, Modal, ModalType, Subtitle }                                                         from '@acx-ui/components'
+import { useGetEnhancedDpskListQuery, useLazySearchPersonaGroupListQuery, useSearchMacRegListsQuery } from '@acx-ui/rc/services'
+import { DpskSaveData, PersonaGroup, checkObjectNotExists, trailingNorLeadingSpaces }                 from '@acx-ui/rc/utils'
 
 import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
 import { DpskForm }                from '../../services/DpskForm/DpskForm'
+
+const macRegSearchDefaultPayload = {
+  dataOption: 'all',
+  searchCriteriaList: [
+    {
+      filterKey: 'name',
+      operation: 'cn',
+      value: ''
+    }
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10000
+}
 
 export function PersonaGroupForm (props: {
   form: FormInstance,
@@ -22,10 +37,12 @@ export function PersonaGroupForm (props: {
   const onMacModalClose = () => setMacModalVisible(false)
   const onDpskModalClose = () => setDpskModalVisible(false)
 
-  const dpskPoolList = useGetDpskListQuery({})
-
-  const { data: macRegistrationPoolList } = useMacRegListsQuery({
+  const dpskPoolList = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
+  })
+
+  const { data: macRegistrationPoolList } = useSearchMacRegListsQuery({
+    payload: macRegSearchDefaultPayload
   })
 
   const [searchPersonaGroupList] = useLazySearchPersonaGroupListQuery()

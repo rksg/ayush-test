@@ -152,10 +152,12 @@ export function RadioSettingsForm (props:{
   return (
     <>
       { showAfcItems &&
+        // No need to bring enableAfc property when AP is outdoor ap and AFC is no enabled.
+        // Also no need to show on the page.
+        !(LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false) &&
         <FieldLabel width='150px'
         // Hide the label when afcEnable is false or ap is outdoor under ap context
-          style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false)) ?
-            { display: 'none' } : undefined}>
+          style={(context === 'ap') ? { display: 'none' } : undefined}>
           {$t({ defaultMessage: 'Enable AFC:' })}
           <Form.Item
             style={{ width: '50px' }}
@@ -163,7 +165,8 @@ export function RadioSettingsForm (props:{
             valuePropName={'checked'}
             initialValue={true}
             rules={[
-              { validator: () => AFCEnableValidation()? Promise.reject() : Promise.resolve() }
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              { validator: (_, value) => AFCEnableValidation() ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
               LPIButtonText?.buttonText :

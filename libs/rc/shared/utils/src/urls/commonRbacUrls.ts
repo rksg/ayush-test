@@ -185,6 +185,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   */
+  getVenueMesh: {
+    method: 'get',
+    url: '/venues/:venueId/apMeshSettings',
+    newApi: true
+  },
   updateVenueMesh: {
     method: 'put',
     url: '/venues/:venueId/apMeshSettings',
@@ -530,63 +535,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
-  getRwgList: {
-    method: 'post',
-    url: '/rwgs/query',
-    newApi: true
-  },
-  deleteGateways: {
-    method: 'delete',
-    url: '/rwgs',
-    newApi: true
-  },
-  getGateway: {
-    method: 'get',
-    url: '/venues/:venueId/rwgs/:gatewayId',
-    newApi: true
-  },
-  updateGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  addGateway: {
-    method: 'post',
-    url: '/venues/:venueId/rwgs',
-    newApi: true
-  },
-  */
-  deleteGateway: {
-    method: 'delete',
-    url: '/venues/:venueId/rwgs/:rwgId',
-    newApi: true
-  },
-  /*
-  getGatewayAlarms: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/alarms',
-    newApi: true
-  },
-  getGatewayDashboard: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/dashboards',
-    newApi: true
-  },
-  getGatewayTopProcess: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/topprocess',
-    newApi: true
-  },
-  getGatewayFileSystems: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/filesystems',
-    newApi: true
-  },
-  getGatewayDetails: {
-    method: 'get',
-    url: '/rwgs/:gatewayId/details',
-    newApi: true
-  },
   addExportSchedules: {
     method: 'post',
     url: '/reports/exportSchedules',
@@ -612,6 +560,75 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/alarms',
     newApi: true
+  },
+  deleteGateway: {
+    method: 'delete',
+    url: '/venues/:venueId/rwgs/:rwgId',
+    newApi: true
+  },
+  addGateway: {
+    method: 'post',
+    url: '/venues/:venueId/rwgs',
+    newApi: true
+  },
+  updateGateway: {
+    method: 'post',
+    url: '/venues/:venueId/rwgs',
+    newApi: true
+  },
+  getRwgList: {
+    method: 'post',
+    url: '/rwgs/query',
+    newApi: true
+  },
+  getGatewayDashboard: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/dashboards',
+    newApi: true
+  },
+  getClusterGatewayDashboard: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/dashboards/nodes/:clusterNodeId',
+    newApi: true
+  },
+  getGatewayAlarms: {
+    method: 'post',
+    url: '/venues/:venueId/rwgs/:gatewayId/alarms/query',
+    newApi: true
+  },
+  getGatewayFileSystems: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/filesystems',
+    newApi: true
+  },
+  getClusterGatewayFileSystems: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/filesystems/nodes/:clusterNodeId',
+    newApi: true
+  },
+  getGatewayTopProcess: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/topprocess',
+    newApi: true
+  },
+  getClusterGatewayTopProcess: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/topprocess/nodes/:clusterNodeId',
+    newApi: true
+  },
+  getGateway: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId',
+    newApi: true
+  },
+  getGatewayDetails: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/details',
+    newApi: true
+  },
+  getClusterGatewayDetails: {
+    method: 'get',
+    url: '/venues/:venueId/rwgs/:gatewayId/details/nodes/:clusterNodeId',
+    newApi: true
   }
-
 }

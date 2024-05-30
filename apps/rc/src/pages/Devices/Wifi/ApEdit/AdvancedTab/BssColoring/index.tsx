@@ -5,10 +5,10 @@ import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                          from '@acx-ui/feature-toggle'
-import { useGetApBssColoringQuery, useLazyGetVenueBssColoringQuery, useLazyGetVenueQuery, useUpdateApBssColoringMutation } from '@acx-ui/rc/services'
-import { ApBssColoringSettings, VenueBssColoring, VenueExtended }                                                          from '@acx-ui/rc/utils'
+import { Loader, StepsFormLegacy, StepsFormLegacyInstance }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                    from '@acx-ui/feature-toggle'
+import { useGetApBssColoringQuery, useLazyGetVenueBssColoringQuery, useUpdateApBssColoringMutation } from '@acx-ui/rc/services'
+import { ApBssColoringSettings, VenueBssColoring }                                                   from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { FieldLabel }                   from '../../styledComponents'
@@ -18,7 +18,7 @@ import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 export function BssColoring () {
 
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
@@ -29,41 +29,37 @@ export function BssColoring () {
   } = useContext(ApEditContext)
 
 
-  const { apData: apDetails } = useContext(ApDataContext)
-  const venueId = apDetails?.venueId
+  const { venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
 
   const formRef = useRef<StepsFormLegacyInstance<ApBssColoringSettings>>()
 
   const getApBssColoring = useGetApBssColoringQuery({
     params: { venueId, serialNumber }, enableRbac: isUseRbacApi
-  })
+  }, { skip: !venueId })
 
   const [updateApBssColoring, { isLoading: isUpdatingBssColoring }]
     = useUpdateApBssColoringMutation()
 
   const [getVenueBssColoring] = useLazyGetVenueBssColoringQuery()
 
-  const [getVenue] = useLazyGetVenueQuery()
-
   const isUseVenueSettingsRef = useRef<boolean>(false)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
   const [initData, setInitData] = useState({} as ApBssColoringSettings)
   const [apBssColoring, setApBssColoring] = useState({})
   const [venueBssColoring, setVenueBssColoring] = useState({} as VenueBssColoring)
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [formInitializing, setFormInitializing] = useState(true)
 
   useEffect(() => {
     const apBssColoringData = getApBssColoring?.data
-    if (apDetails && apBssColoringData) {
-      const venueId = apDetails.venueId
+    if (apBssColoringData && venueId) {
       const setData = async () => {
-        const apVenue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
         const venueBssColoringData = (await getVenueBssColoring({
-          params: { tenantId, venueId }, enableRbac: isUseRbacApi }, true).unwrap())
+          params: { venueId },
+          enableRbac: isUseRbacApi
+        }).unwrap())
 
-        setVenue(apVenue)
+        // setVenue(apVenue)
         setVenueBssColoring(venueBssColoringData)
         setIsUseVenueSettings(apBssColoringData.useVenueSettings)
         isUseVenueSettingsRef.current = apBssColoringData.useVenueSettings
@@ -74,7 +70,7 @@ export function BssColoring () {
 
       setData()
     }
-  }, [ apDetails, getApBssColoring?.data ])
+  }, [ venueId, getApBssColoring?.data, getVenueBssColoring ])
 
   const handleVenueSetting = () => {
     let isUseVenue = !isUseVenueSettings
@@ -161,7 +157,7 @@ export function BssColoring () {
       onFormChange={handleChange}
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
-        <VenueSettingsHeader venue={venue}
+        <VenueSettingsHeader venue={venueData}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting} />
         <Row gutter={0} style={{ height: '40px' }}>
