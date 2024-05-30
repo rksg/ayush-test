@@ -82,14 +82,25 @@ export const NotificationSettings = ({ tenantId, apply }: {
   const [updatePrefrences] = useSetNotificationMutation()
   const { email } = getUserProfile()
   useEffect(() => { setState(query.data!) }, [query.data])
-  apply.current = (): Promise<boolean | void> => updatePrefrences({ tenantId, preferences })
-    .unwrap()
-    .then(({ success }) => {
-      showToast({ type: success ? 'success' : 'error', content: $t(getApplyMsg(success)) })
-    })
-    .catch(() => {
-      showToast({ type: 'error', content: $t(getApplyMsg()) })
-    })
+  apply.current = async (): Promise<boolean | void> => {
+    if (preferences.recipients?.length === 0) {
+      showToast({
+        type: 'error',
+        content: $t({ defaultMessage: 'Please select at least one recipient.' })
+      })
+      return false
+    }
+    return updatePrefrences({ tenantId, preferences })
+      .unwrap()
+      .then(({ success }) => {
+        showToast({ type: success ? 'success' : 'error', content: $t(getApplyMsg(success)) })
+        return success
+      })
+      .catch(() => {
+        showToast({ type: 'error', content: $t(getApplyMsg()) })
+        return false
+      })
+  }
   return <Loader states={[query]}>
     <Form.Item label={$t({ defaultMessage: 'Incidents' })}>
       <OptionsList preferences={preferences} setState={setState} type='incident' />

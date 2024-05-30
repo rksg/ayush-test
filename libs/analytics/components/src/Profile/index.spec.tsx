@@ -109,8 +109,7 @@ describe('Profile', () => {
     render(<Profile tab={ProfileTabEnum.NOTIFICATIONS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     await userEvent.click(await screen.findByText('Save'))
-    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
-      { pathname: '/', hash: '', search: '' }, { replace: true }))
+    expect(mockedUsedNavigate).not.toHaveBeenCalled()
   })
   it('should handle cancel', async () => {
     render(<Profile tab={ProfileTabEnum.SETTINGS}/>,

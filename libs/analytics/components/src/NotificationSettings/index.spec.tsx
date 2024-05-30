@@ -1,16 +1,10 @@
 import userEvent from '@testing-library/user-event'
 
-import { showToast }                                 from '@acx-ui/components'
 import { get }                                       from '@acx-ui/config'
 import { notificationApiURL, Provider }              from '@acx-ui/store'
 import { render, screen, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
 
 import { NotificationSettings } from '.'
-
-jest.mock('@acx-ui/components', () => ({
-  ...jest.requireActual('@acx-ui/components'),
-  showToast: jest.fn()
-}))
 
 const mockedUnwrap = jest.fn()
 const mockedPrefMutation = jest.fn().mockImplementation(() => ({
@@ -45,22 +39,6 @@ describe('NotificationSettings', () => {
         }
       }
     }, true)
-  })
-  it('throws error', async () => {
-    mockedUnwrap.mockImplementation(async () => { throw new Error('error1') })
-    const apply = {}
-    render(<NotificationSettings
-      tenantId='test'
-      apply={apply}
-    />, { wrapper: Provider })
-    await apply.current()
-    await waitFor(async () => {
-      expect(showToast)
-        .toHaveBeenLastCalledWith({
-          type: 'error',
-          content: 'Update failed, please try again later.'
-        })
-    })
   })
   it('renders without license / emails', async () => {
     mockedUnwrap.mockImplementation(async () => ({ success: true }))

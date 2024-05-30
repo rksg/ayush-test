@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { showToast }    from '@acx-ui/components'
+import { showToast } from '@acx-ui/components'
 import {
   notificationApi,
   notificationApiURL,

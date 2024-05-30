@@ -75,10 +75,7 @@ const NotificationSettingsTab = ({ navigate }: { navigate: () => void }) => {
     <div style={{ padding: '10px 0 20px' }}>{$t(intro)}</div>
     <StepsForm
       buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
-      onFinish={async () => {
-        await apply.current?.()
-        navigate()
-      }}
+      onFinish={async () => { if (await apply.current?.()) navigate() }}
       onCancel={navigate}
     >
       <StepsForm.StepForm>
