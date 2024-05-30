@@ -5,9 +5,9 @@ import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
-import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                            from '@acx-ui/icons'
+import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }  from '@acx-ui/icons'
 import {
   ApGroupTable,
   ApTable,
