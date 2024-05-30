@@ -36,8 +36,8 @@ const PortalSettingForm = (props: { resetDemoField: () => void }) => {
   })
   const nameValidator = async (value: string) => {
     const list = await getPortalList({
-      params, payload: { ...templatePayload,
-        enableRbac: isEnabledRbacService } }).unwrap()
+      params, payload: { ...templatePayload },
+      enableRbac: isEnabledRbacService }).unwrap()
     const result = list.data?.filter((n:Portal) => n.id !== params.serviceId)
       .map((n:Portal) => n.serviceName ?? n.name)
 

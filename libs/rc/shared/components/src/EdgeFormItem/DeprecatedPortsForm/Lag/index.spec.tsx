@@ -35,6 +35,8 @@ jest.mock('antd', () => {
 })
 
 const defaultPortsContextdata = {
+  venueId: mockEdgeList.data[0].venueId,
+  edgeClusterId: mockEdgeList.data[0].clusterId,
   portData: [],
   lagData: mockedEdgeLagList.content as EdgeLag[],
   portStatus: mockPortInfo as EdgePortInfo[],

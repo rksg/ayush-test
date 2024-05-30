@@ -135,7 +135,7 @@ const EdgePhysicalPortsForm = (props: EdgePortsFormProps) => {
   )
 }
 
-export const EdgePortsForm = (props: EdgePortsFormProps) => {
+export const DeprecatedEdgePortsForm = (props: EdgePortsFormProps) => {
   return <EdgePortsDataContextProvider serialNumber={props.serialNumber}>
     <EdgePhysicalPortsForm {...props}/>
   </EdgePortsDataContextProvider>

@@ -4,6 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer, Table, TableProps }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { rogueRuleLabelMapping }                                        from '@acx-ui/rc/components'
 import { useGetRoguePolicyTemplateQuery, useRoguePolicyQuery }          from '@acx-ui/rc/services'
 import { RogueAPRule, RogueRuleType, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
@@ -13,6 +14,7 @@ const RogueApDrawer = (props: {
   setVisible: (visible: boolean) => void,
   policyId: string
 }) => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const { visible, setVisible, policyId } = props
 
@@ -23,7 +25,8 @@ const RogueApDrawer = (props: {
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
-    extraParams: { policyId: policyId }
+    extraParams: { policyId: policyId },
+    enableRbac
   })
 
   const basicColumns: TableProps<RogueAPRule>['columns'] = [
