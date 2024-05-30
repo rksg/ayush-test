@@ -432,10 +432,12 @@ export function SingleRadioSettings (props:{
           <Col span={14}>
             <div style={{ color: cssStr('--acx-neutrals-50') }}>
               {
-                $t(
-                  // eslint-disable-next-line max-len
+                $t(// eslint-disable-next-line max-len
                   { defaultMessage: 'Selected channels will be available for radio broadcasting in this {context}. Hover to see overlapping channels' },
-                  { context: (context === 'venue')? 'venue' : 'AP' }
+                  { context: (context === 'venue')?
+                    $t({ defaultMessage: '<venueSingular></venueSingular>' }) :
+                    $t({ defaultMessage: 'AP' })
+                  }
                 )
               }
             </div>
