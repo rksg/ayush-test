@@ -108,6 +108,7 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   },
   getDhcpUsagesRbac: {
     method: 'get',
-    url: '/venues/:venueId/wifiDhcpPoolUsages'
+    url: '/venues/:venueId/wifiDhcpPoolUsages',
+    newApi: true
   }
 }

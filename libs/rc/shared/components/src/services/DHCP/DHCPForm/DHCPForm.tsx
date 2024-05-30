@@ -17,7 +17,8 @@ import {
   ServiceOperation, ServiceType,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
-  useServicePreviousPath
+  useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams, useNavigate } from '@acx-ui/react-router-dom'
 
@@ -36,6 +37,7 @@ export function DHCPForm (props: DHCPFormProps) {
   const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
   const navigate = useNavigate()
   const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
@@ -69,7 +71,7 @@ export function DHCPForm (props: DHCPFormProps) {
         dhcpPools: formData.dhcpPools.map(({ id, allowWired, ...pool })=>{
           return {
             ...pool,
-            ...(id.indexOf('_NEW_')!==-1 || enableRbac) ? {} : { id }
+            ...(id.indexOf('_NEW_')!==-1 || (enableRbac && !isTemplate)) ? {} : { id }
           }
         })
       }

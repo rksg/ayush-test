@@ -95,7 +95,8 @@ import {
   EnhancedRoguePolicyType,
   RogueApSettingsRequest,
   WifiDHCPClientLeases,
-  WifiDhcpPoolUsages
+  WifiDhcpPoolUsages,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -1101,16 +1102,22 @@ export const venueApi = baseVenueApi.injectEndpoints({
           return res.data ? { data: (res.data as VenueDHCPProfile) } : { error: res.error as FetchBaseQueryError }
         } else {
           // query viewmodel to get serviceId
-          const viewmodelReq = { ...createHttpRequest(DHCPUrls.queryDHCPProfiles), body: { filters: { venueIds: [params?.venueId] } } }
+          const viewmodelReq = {
+            ...createHttpRequest(DHCPUrls.queryDHCPProfiles, params, GetApiVersionHeader(ApiVersionEnum.v1)),
+            body: JSON.stringify({ filters: { venueIds: [params?.venueId] } }) }
           const result = await fetchWithBQ(viewmodelReq)
           const viewmodelData = result.data as TableResult<DHCPSaveData>
           if (viewmodelData && viewmodelData.data.length > 0) {
             // query venue DHCP profile by serviceId
             const serviceId = viewmodelData.data[0].id
-            const req = { ...createHttpRequest(DHCPUrls.getVenueDHCPServiceProfileRbac, { ...params, serviceId }) }
+            const req = { ...createHttpRequest(DHCPUrls.getVenueDHCPServiceProfileRbac, { ...params, serviceId }, GetApiVersionHeader(ApiVersionEnum.v1)) }
             const res = await fetchWithBQ(req)
             const venueDhcpProfile = res.data as VenueDHCPProfile
-            const data = { ...venueDhcpProfile, serviceProfileId: serviceId || '', enabled: (venueDhcpProfile.activeDhcpPoolNames || []).length > 0, id: params?.venueId || '' }
+            const data = {
+              ...venueDhcpProfile,
+              serviceProfileId: serviceId || '',
+              enabled: (venueDhcpProfile.activeDhcpPoolNames || []).length > 0,
+              id: params?.venueId || '' }
             return res.data ? { data } : { error: res.error as FetchBaseQueryError }
           } else {
             return { data: { enabled: false, serviceProfileId: '', id: '' } }
@@ -1135,34 +1142,46 @@ export const venueApi = baseVenueApi.injectEndpoints({
     venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.getDhcpUsagesRbac : DHCPUrls.getVenueActivePools
-        const req = createHttpRequest(url, params, RKS_NEW_UI)
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req
         }
       },
       transformResponse: (response: WifiDhcpPoolUsages | VenueDHCPPoolInst[], _meta, arg) => {
         if (arg.enableRbac) {
-          const data = (arg.payload as { venueDHCPProfile?: VenueDHCPProfile, dhcpProfile?: DHCPSaveData })
-          const dhcpPoolUsages = (response as WifiDhcpPoolUsages).wifiDhcpPoolUsages
-          const dhcpPoolsMap = keyBy(dhcpPoolUsages, 'name')
+          const payload = (arg.payload as { venueDHCPProfile?: VenueDHCPProfile, dhcpProfile?: DHCPSaveData })
+          const dhcpPoolUsagesMap = keyBy((response as WifiDhcpPoolUsages).wifiDhcpPoolUsages, 'name')
           // merge data
-          const activePoolNames = data.venueDHCPProfile?.activeDhcpPoolNames
-          const mergedPools = data.dhcpProfile?.dhcpPools.map((dhcpPool) => {
-            const matchedPool = dhcpPoolsMap[dhcpPool.name]
-            const mergePool = assign({}, dhcpPool, matchedPool)
-            if (activePoolNames?.find(name => dhcpPool.name === name)) mergePool.active = true
-            return mergePool
+          const activePoolNames = payload.venueDHCPProfile?.activeDhcpPoolNames
+          const mergedPools = payload.dhcpProfile?.dhcpPools.map((dhcpPool) => {
+            const matchedPool = dhcpPoolUsagesMap[dhcpPool.name]
+            const mergedPool = assign({}, dhcpPool, matchedPool)
+            if (activePoolNames?.find(name => dhcpPool.name === name)) mergedPool.active = true
+            return mergedPool
           })
           return mergedPools as VenueDHCPPoolInst[]
         }
         return response as VenueDHCPPoolInst[]
       },
-      providesTags: [{ type: 'Venue', id: 'poolList' }]
+      providesTags: [{ type: 'Venue', id: 'poolList' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'DeactivateVenueDhcpPool',
+            'ActivateVenueDhcpPool'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'poolList' }]))
+          })
+        })
+      }
     }),
     venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.getVenueLeasesRbac : DHCPUrls.getVenueLeases
-        const leasesList = createHttpRequest(url, params, RKS_NEW_UI)
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const leasesList = createHttpRequest(url, params, headers)
         return {
           ...leasesList
         }
@@ -1176,31 +1195,34 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     activateDHCPPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        let url = enableRbac ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.activeVenueDHCPPool
-        const req = createHttpRequest(url, params, RKS_NEW_UI)
+        const url = enableRbac ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.activeVenueDHCPPool
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req,
-          ...(enableRbac ? { body: payload } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       }
     }),
     deactivateDHCPPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        let url = enableRbac ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.deactivateVenueDHCPPool
-        const req = createHttpRequest(url, params, RKS_NEW_UI)
+        const url = enableRbac ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.deactivateVenueDHCPPool
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req,
-          ...(enableRbac ? { body: payload } : {})
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
         }
       }
     }),
     updateVenueDHCPProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac, enableService }) => {
-        let url = !enableRbac ? DHCPUrls.updateVenueDHCPProfile : (enableService ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.unbindVenueDhcpProfile)
-        const req = createHttpRequest(url, params)
+        const url = !enableRbac ? DHCPUrls.updateVenueDHCPProfile : (enableService ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.unbindVenueDhcpProfile)
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req,
-          ...(enableRbac && !enableService ? {} : { body: payload })
+          ...(enableRbac && !enableService ? {} : { body: JSON.stringify(payload) })
         }
       }
     }),

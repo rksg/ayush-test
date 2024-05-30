@@ -61,12 +61,12 @@ const VenueDHCPForm = (props: {
     useQueryFn: useVenueDHCPProfileQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
     extraParams: params,
-    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+    enableRbac
   })
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
-    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+    enableRbac
   })
   const { data: apList } = useApListQuery({
     params,
@@ -87,7 +87,7 @@ const VenueDHCPForm = (props: {
   const [ getDhcpProfile ] = useLazyGetDHCPProfileQuery()
   const getSelectedDHCPMode = async ()=> {
     if(dhcpProfileList && dhcpServiceID){
-      if(enableRbac) {
+      if(enableRbac && !isTemplate) {
         // eslint-disable-next-line max-len
         const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID }, enableRbac }).unwrap()
         return result?.dhcpMode

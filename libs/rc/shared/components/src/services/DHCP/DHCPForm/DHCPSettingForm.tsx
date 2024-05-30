@@ -81,7 +81,7 @@ export function SettingForm (props: DHCPFormProps) {
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !editMode,
-    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+    enableRbac
   })
 
   const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME

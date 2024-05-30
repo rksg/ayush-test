@@ -19,6 +19,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
@@ -36,7 +37,7 @@ interface DHCPFormRefType {
 export default function BasicInfo () {
   const params = useParams()
   const locationState = (useLocation() as LocationExtended)?.state
-
+  const { isTemplate } = useConfigTemplate()
   const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateVenueDHCPProfileMutation,
     useTemplateMutationFn: useUpdateVenueTemplateDhcpProfileMutation
@@ -64,7 +65,7 @@ export default function BasicInfo () {
   const [getDhcpProfile] = useLazyGetDHCPProfileQuery()
 
   const getSelectedDHCP = async (dhcpServiceID:string)=> {
-    if(enableRbac) {
+    if(enableRbac && !isTemplate) {
       // eslint-disable-next-line max-len
       const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID }, enableRbac }).unwrap()
       return result
@@ -212,7 +213,7 @@ export default function BasicInfo () {
                 delete payload.serviceProfileId
               }
             }
-            if (enableRbac) {
+            if (enableRbac && !isTemplate) {
               payload.activeDhcpPoolNames = selectedDhcp?.dhcpPools.map(pool => pool.name) || []
               delete payload.serviceProfileId
               delete payload.enabled

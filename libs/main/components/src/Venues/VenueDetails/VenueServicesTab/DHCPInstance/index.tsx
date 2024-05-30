@@ -42,14 +42,16 @@ const DHCPInstance = () => {
     return item.status === DHCPLeasesStatusEnum.ONLINE
   })
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+  // eslint-disable-next-line max-len
+  const { data: venueDHCPProfile, isFetching: isVenueDhcpFetching } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
     useQueryFn: useVenueDHCPProfileQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
     extraParams: params,
     enableRbac
   })
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+  // eslint-disable-next-line max-len
+  const { data: dhcpProfile, isFetching: isProfileFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !venueDHCPProfile?.serviceProfileId,
@@ -75,6 +77,7 @@ const DHCPInstance = () => {
           <PoolTable
             venueDHCPProfile={venueDHCPProfile}
             dhcpProfile={dhcpProfile}
+            isFetching={isVenueDhcpFetching || isProfileFetching}
           />}</GridCol>
     },
     {

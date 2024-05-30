@@ -17,24 +17,29 @@ import {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation
 } from '@acx-ui/rc/services'
-import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { hasAccess }                                                                                                                                from '@acx-ui/user'
+import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { hasAccess }                                                                                                                                                   from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
+interface VenuePoolTableProps {
+  venueDHCPProfile?: VenueDHCPProfile,
+  dhcpProfile?: DHCPSaveData,
+  isFetching?: boolean }
+
 export default function VenuePoolTable (
-  { venueDHCPProfile, dhcpProfile }:
-  { venueDHCPProfile?: VenueDHCPProfile, dhcpProfile?: DHCPSaveData }){
+  { venueDHCPProfile, dhcpProfile, isFetching }: VenuePoolTableProps){
   const params = useParams()
   const { $t } = useIntl()
   const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
+  const { isTemplate } = useConfigTemplate()
 
   // eslint-disable-next-line max-len
   const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>({
     useQueryFn: useVenueDHCPPoolsQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpPoolsQuery,
-    skip: false,
+    skip: !isTemplate ? isFetching : false,
     payload: { venueDHCPProfile, dhcpProfile },
     enableRbac
   })
@@ -85,7 +90,7 @@ export default function VenuePoolTable (
     if(venueDHCPPools.data){
       setTableData(venueDHCPPools.data)
     }
-  }, [venueDHCPPools.data])
+  }, [venueDHCPPools.data, isFetching])
 
   const columns: TableProps<VenueDHCPPoolInst>['columns'] = [
     {
@@ -206,7 +211,7 @@ export default function VenuePoolTable (
   return (
     <Loader states={[{
       isLoading: venueDHCPPools.isLoading,
-      isFetching: venueDHCPPools.isFetching
+      isFetching: venueDHCPPools.isFetching || isFetching
     }]}>
       <Table
         settingsId='venue-dhcp-pool-table'
