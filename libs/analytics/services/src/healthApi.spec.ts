@@ -6,7 +6,7 @@ import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange, NetworkPath }                from '@acx-ui/utils'
 import type { AnalyticsFilter }                  from '@acx-ui/utils'
 
-import { healthApi, getHealthFilter } from '.'
+import { healthApi, getHealthFilter, constructTimeSeriesQuery } from '.'
 
 describe('Services for health kpis', () => {
   const store = configureStore({
@@ -203,7 +203,7 @@ describe('Services for health kpis', () => {
       })
       const { status, data, error } = await store.dispatch(
         healthApi.endpoints.getKpiThresholds.initiate({ ...props, filter: {
-          networkNodes: [[{ type: 'zoneName', name: 'z1' }]]
+          networkNodes: [[{ type: 'zone', name: 'z1' }]]
         } })
       )
       expect(status).toBe('fulfilled')
@@ -242,15 +242,15 @@ describe('Services for health kpis', () => {
       expect(error).not.toBe(undefined)
     })
   })
-  describe('getHealthFilter',()=>{
-    it('should return health filter for firmware filter as boolean',()=>{
+  describe('getHealthFilter', () => {
+    it('should return health filter for firmware filter as boolean', () => {
       const filter=getHealthFilter({ ...props, kpi: 'someKpi', enableSwitchFirmwareFilter: true })
       expect(filter).toEqual({
         filter: {},
         enableSwitchFirmwareFilter: true
       })
     })
-    it('should return health filter for firmware filter as function',()=>{
+    it('should return health filter for firmware filter as function', () => {
       const filter=getHealthFilter({ ...props, kpi: 'someKpi',
         enableSwitchFirmwareFilter: () => true })
       expect(filter).toEqual({
@@ -258,12 +258,32 @@ describe('Services for health kpis', () => {
         enableSwitchFirmwareFilter: true
       })
     })
-    it('should return health filter for without firmware filter passed',()=>{
+    it('should return health filter if firmware filter is not passed', () => {
       const filter=getHealthFilter({ ...props, kpi: 'someKpi' })
       expect(filter).toEqual({
-        filter: {},
-        enableSwitchFirmwareFilter: false
+        filter: {}
       })
+    })
+  })
+  describe('constructTimeSeriesQuery', () => {
+    it('should return time series query', () => {
+      const query = constructTimeSeriesQuery({
+        filter: {},
+        kpi: 'connectionSuccess',
+        startDate: '',
+        endDate: ''
+      })
+      expect(query).toMatchSnapshot()
+    })
+    it('should return time series query with additional args', () => {
+      const query = constructTimeSeriesQuery({
+        filter: {},
+        kpi: 'connectionSuccess',
+        startDate: '',
+        endDate: '',
+        enableSwitchFirmwareFilter: true
+      })
+      expect(query).toMatchSnapshot()
     })
   })
 })

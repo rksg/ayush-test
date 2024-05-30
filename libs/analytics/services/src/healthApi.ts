@@ -129,40 +129,58 @@ export type KpiThresholdPayload = AnalyticsFilter & { kpis?: KpisHavingThreshold
 
 export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
   const { filter: { ssids, networkNodes, switchNodes } } = getFilterPayload(payload)
-  let { enableSwitchFirmwareFilter=false } = payload
-  if(typeof enableSwitchFirmwareFilter === 'function'){
-    enableSwitchFirmwareFilter = enableSwitchFirmwareFilter()
+  const enableSwitchFirmwareFilter = typeof payload.enableSwitchFirmwareFilter === 'function'
+    ? payload.enableSwitchFirmwareFilter()
+    : payload.enableSwitchFirmwareFilter
+
+  return {
+    filter: { ssids, networkNodes, switchNodes },
+    ...(enableSwitchFirmwareFilter !== undefined && { enableSwitchFirmwareFilter })
   }
-  return { filter: { ssids, networkNodes, switchNodes }, enableSwitchFirmwareFilter }
+}
+
+export const constructTimeSeriesQuery = (payload: Omit<KpiPayload, 'range'>) => {
+  let additionalArgs = ''
+  let additionalFields = ''
+
+  if (payload.enableSwitchFirmwareFilter) {
+    additionalArgs += ', $enableSwitchFirmwareFilter: Boolean'
+    additionalFields += 'enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter'
+  }
+
+  return gql`
+    query timeseriesKPI(
+      $start: DateTime,
+      $end: DateTime,
+      $granularity: String,
+      $filter: FilterInput
+      ${additionalArgs}
+    ) {
+      network(filter: $filter) {
+        timeSeries: timeSeries(
+          start: $start
+          end: $end
+          granularity: $granularity
+          ${additionalFields}
+        ) {
+          time
+          data: ${getKPIMetric(payload.kpi, payload.threshold)}
+        }
+      }
+    }
+  `
 }
 
 export const healthApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     kpiTimeseries: build.query<KPITimeseriesResponse, Omit<KpiPayload, 'range'>>({
       query: (payload) => ({
-        document: gql`
-        query timeseriesKPI(
-          $start: DateTime, $end: DateTime, $granularity: String, $filter: FilterInput,
-          $enableSwitchFirmwareFilter: Boolean
-        ) {
-          network(filter: $filter) {
-            timeSeries: timeSeries(
-              start: $start
-              end: $end
-              granularity: $granularity
-              enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
-            ) {
-              time
-              data: ${getKPIMetric(payload.kpi, payload.threshold)}
-            }
-          }
-        }
-      `,
+        document: constructTimeSeriesQuery(payload),
         variables: {
           start: payload.startDate,
           end: payload.endDate,
           granularity: payload.granularity ||
-          getGranularity(payload.startDate, payload.endDate, payload.kpi),
+            getGranularity(payload.startDate, payload.endDate, payload.kpi),
           ...getHealthFilter(payload)
         }
       }),
