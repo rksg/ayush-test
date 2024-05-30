@@ -37,6 +37,7 @@ const MeshInfoIcon = () => {
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -76,10 +77,10 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
-    useGetVenueSettingsQuery,
-    useGetVenueTemplateSettingsQuery
-  )
+  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
+  })
 
   useEffect(() => {
     if (data) {
@@ -285,7 +286,7 @@ export function MeshNetwork () {
         }
       }
 
-      await updateVenueMesh({ params, payload: meshData })
+      await updateVenueMesh({ params, payload: meshData, enableRbac: isWifiRbacEnabled })
 
       setIsSsidEditMode(false)
       setIsPassphraseEditMode(false)

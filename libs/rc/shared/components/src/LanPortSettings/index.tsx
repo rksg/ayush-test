@@ -4,7 +4,6 @@ import { FormattedMessage, useIntl }                       from 'react-intl'
 import { cssStr, Tooltip } from '@acx-ui/components'
 import {
   ApLanPortTypeEnum,
-  ApModel,
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
@@ -41,7 +40,7 @@ export function LanPortSettings (props: {
   selectedPortCaps: LanPort,
   setSelectedPortCaps: (data: LanPort) => void,
   selectedModel: VenueLanPorts | WifiApSetting,
-  selectedModelCaps: ApModel | CapabilitiesApModel,
+  selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
   isTrunkPortUntaggedVlanEnabled?: boolean,

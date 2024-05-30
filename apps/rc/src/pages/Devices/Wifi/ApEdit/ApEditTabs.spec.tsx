@@ -8,13 +8,15 @@ import { Provider, store }              from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
   apDetailsList,
   deviceAps,
-  venueCaps
+  venueCaps,
+  venueData
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from '.'
@@ -38,7 +40,10 @@ describe('ApEditTabs', () => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     mockServer.use(
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
         (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.post(CommonUrlsInfo.getApsList.url,
@@ -65,8 +70,10 @@ describe('ApEditTabs', () => {
     })
 
     await screen.findByRole('heading', { name: 'test ap', level: 1 })
+    await waitFor(async () => {
+      expect(await screen.findAllByRole('tab')).toHaveLength(5)
+    })
 
-    expect(await screen.findAllByRole('tab')).toHaveLength(5)
     expect(await screen.findByTestId('ApForm')).toBeVisible()
 
     await userEvent.click(await screen.findByRole('tab', { name: 'Radio' }))
