@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useRef } from 'react'
 
 import { Form, Select, Space, Switch, Button } from 'antd'
 import { isEqual }                             from 'lodash'
@@ -30,7 +30,9 @@ export function ApSnmp () {
   const { tenantId, venueId } = useParams()
   const navigate = useNavigate()
   const toPolicyPath = useTenantLink('')
+  const profileIdRef = useRef<string>('')
 
+  const isUseRbacApi = false //useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -44,11 +46,13 @@ export function ApSnmp () {
   const [stateOfVenueApSnmpSettings, setStateOfVenueApSnmpSettings] =
   useState({} as VenueApSnmpSettings)
 
-  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId } })
+  // eslint-disable-next-line max-len
+  const RetrievedVenueApSnmpAgentList = useGetApSnmpPolicyListQuery({ params: { tenantId }, enableRbac: isUseRbacApi })
   const RetrievedVenueApSnmpAgentOptions =
    RetrievedVenueApSnmpAgentList?.data?.map(m => ({ label: m.policyName, value: m.id })) ?? []
 
-  const RetrievedVenueApSnmpSettings = useGetVenueApSnmpSettingsQuery({ params: { venueId } })
+  // eslint-disable-next-line max-len
+  const RetrievedVenueApSnmpSettings = useGetVenueApSnmpSettingsQuery({ params: { venueId }, enableRbac: isUseRbacApi })
   const RetrievedVenueApSnmpAgentProfileId =
    RetrievedVenueApSnmpSettings?.data?.apSnmpAgentProfileId ?? ''
   const [updateApSnmpSettings, { isLoading: isUpdatingApSnmpSettings }] =
@@ -67,6 +71,7 @@ export function ApSnmp () {
 
   const handleApSnmpSwitchEnableChange = (newState: boolean) => {
     setEnableApSnmp(newState)
+    profileIdRef.current = RetrievedVenueApSnmpAgentProfileId
     const newVenueApSnmpSetting =
     { apSnmpAgentProfileId: RetrievedVenueApSnmpAgentProfileId, enableApSnmp: newState }
 
@@ -88,6 +93,7 @@ export function ApSnmp () {
   const handleVenueApSnmpOptionChange = (ApSnmpAgentProfileId : string) => {
     const newVenueApSnmpSetting =
     { apSnmpAgentProfileId: ApSnmpAgentProfileId, enableApSnmp: stateOfEnableApSnmp }
+    profileIdRef.current = ApSnmpAgentProfileId
     setEditContextData({
       ...editContextData,
       unsavedTabKey: 'servers',
@@ -104,9 +110,7 @@ export function ApSnmp () {
   }
 
   const updateVenueApSnmpSetting = async (data?: VenueApSnmpSettings) => {
-
     try {
-
       // Condition guard, if user didn't change anything, don't send API
       if (data?.enableApSnmp === true && data?.apSnmpAgentProfileId === '') {
         showActionModal({
@@ -128,7 +132,10 @@ export function ApSnmp () {
       const payload = data?.enableApSnmp === true ? { ...data } : { enableApSnmp: data?.enableApSnmp }
 
       if (payload) {
-        await updateApSnmpSettings({ params: { venueId } , payload }).unwrap()
+        await updateApSnmpSettings({ params: {
+          venueId,
+          profileId: profileIdRef.current
+        }, enableRbac: isUseRbacApi, payload }).unwrap()
       }
     } catch (error) {
       showToast({
@@ -141,6 +148,7 @@ export function ApSnmp () {
   const discardVenuedApSnmpChanges = async (oldData : VenueApSnmpSettings) => {
     setEnableApSnmp(oldData.enableApSnmp ?? false)
   }
+
   return ( <Loader states={[{
     isLoading: RetrievedVenueApSnmpAgentList.isLoading,
     isFetching: isUpdatingApSnmpSettings
