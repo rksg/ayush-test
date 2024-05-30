@@ -11,7 +11,7 @@ import { EdgeStatusSeverityEnum } from '../models'
 import { NetworkVenue }           from '../models/NetworkVenue'
 import { TrustedCAChain }         from '../models/TrustedCAChain'
 
-import { ApModel }                               from './ap'
+import { CapabilitiesApModel }                   from './ap'
 import { EdgeStatusSeverityStatistic }           from './edge'
 import { EPDG }                                  from './services'
 import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
@@ -41,6 +41,7 @@ export * from './googleMaps'
 export * from './applicationPolicy'
 export * from './configTemplate'
 export * from './topology'
+export * from './mDnsFencingServie'
 
 export interface CommonResult {
   requestId: string
@@ -518,7 +519,7 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-  apModels: ApModel[]
+  apModels: CapabilitiesApModel[]
   version: string
 }
 
@@ -607,6 +608,5 @@ export const RWGStatusMap = {
   [RWGStatusEnum.INVALID_CERTIFICATE]: defineMessage({ defaultMessage: 'Invalid Certificate' }),
   [RWGStatusEnum.INVALID_HOSTNAME]: defineMessage({ defaultMessage: 'Invalid Hostname' }),
   [RWGStatusEnum.RWG_STATUS_UNKNOWN]: defineMessage({ defaultMessage: 'RWG Status Unknown' }),
-  [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' }),
-  [RWGStatusEnum.STAGING]: defineMessage({ defaultMessage: 'Staging' })
+  [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' })
 }
