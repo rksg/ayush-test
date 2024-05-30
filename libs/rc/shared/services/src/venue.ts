@@ -1022,8 +1022,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueRogueAp: build.query<VenueRogueAp, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const customHeaders = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
           if (enableRbac) {
+            const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
             const [venueRogueApResponse, roguePolicyResponse] = await Promise.all([
               fetchWithBQ(createHttpRequest(CommonRbacUrlsInfo.getVenueRogueAp, params, customHeaders)),
               fetchWithBQ({
@@ -1042,7 +1042,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
               } as VenueRogueAp
             }
           } else {
-            const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params, customHeaders)
+            const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params)
             const res = await fetchWithBQ(req)
             // Ensure the return type is QueryReturnValue
             if (res.error) {
