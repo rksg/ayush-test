@@ -44,6 +44,28 @@ exports[`Services for health kpis constructTimeSeriesQuery should return time se
   "
 `;
 
+exports[`Services for health kpis constructTimeSeriesQuery should return time series query with additional fields 1`] = `
+"
+    query timeseriesKPI(
+      $start: DateTime
+      $end: DateTime
+      $granularity: String
+      $filter: FilterInput
+      $enableSwitchFirmwareFilter: Boolean) {
+      network(filter: $filter) {
+        timeSeries: timeSeries(
+          start: $start
+          end: $end
+          granularity: $granularity
+          enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
+          time
+          data: connectionSuccessAndAttemptCount
+        }
+      }
+    }
+  "
+`;
+
 exports[`Services for health kpis getHistogramQuery should return histogram query 1`] = `
 "
     query histogramKPI(
@@ -51,13 +73,13 @@ exports[`Services for health kpis getHistogramQuery should return histogram quer
       $start: DateTime
       $end: DateTime
       $filter: FilterInput
-      , $enableSwitchFirmwareFilter: Boolean) {
+      ) {
       network(filter: $filter) {
         histogram: histogram(
           path: $path
           start: $start
           end: $end
-          enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
+          ) {
             data: rss(splits: [-100, -90, -85, -80, -75, -70, -65, -60, -50])
         }
       }
@@ -72,7 +94,28 @@ exports[`Services for health kpis getHistogramQuery should return histogram quer
       $start: DateTime
       $end: DateTime
       $filter: FilterInput
-      , $enableSwitchFirmwareFilter: Boolean) {
+      $enableSwitchFirmwareFilter: Boolean) {
+      network(filter: $filter) {
+        histogram: histogram(
+          path: $path
+          start: $start
+          end: $end
+          enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
+            data: rss(splits: [-100, -90, -85, -80, -75, -70, -65, -60, -50])
+        }
+      }
+    }
+  "
+`;
+
+exports[`Services for health kpis getHistogramQuery should return histogram query with additional fields 1`] = `
+"
+    query histogramKPI(
+      $path: [HierarchyNodeInput]
+      $start: DateTime
+      $end: DateTime
+      $filter: FilterInput
+      $enableSwitchFirmwareFilter: Boolean) {
       network(filter: $filter) {
         histogram: histogram(
           path: $path

@@ -285,12 +285,21 @@ describe('Services for health kpis', () => {
       })
       expect(query).toMatchSnapshot()
     })
+    it('should return time series query with additional fields', () => {
+      const query = constructTimeSeriesQuery({
+        filter: {},
+        kpi: 'connectionSuccess',
+        startDate: '',
+        endDate: '',
+        enableSwitchFirmwareFilter: () => true
+      })
+      expect(query).toMatchSnapshot()
+    })
   })
   describe('getHistogramQuery', () => {
     it('should return histogram query', () => {
       const query = getHistogramQuery({
         kpi: 'rss',
-        enableSwitchFirmwareFilter: true,
         startDate: '2021-01-01',
         endDate: '2021-12-31',
         filter: {}
@@ -304,6 +313,17 @@ describe('Services for health kpis', () => {
         startDate: '',
         endDate: '',
         enableSwitchFirmwareFilter: true
+      } as KpiPayload)
+      expect(query).toMatchSnapshot()
+    })
+    it('should return histogram query with additional fields', () => {
+      const query = getHistogramQuery({
+        filter: {},
+        kpi: 'rss',
+        startDate: '',
+        endDate: '',
+        range: DateRange.last24Hours, // Add the appropriate DateRange value
+        enableSwitchFirmwareFilter: () => true
       } as KpiPayload)
       expect(query).toMatchSnapshot()
     })

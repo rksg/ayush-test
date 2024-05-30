@@ -95,7 +95,7 @@ export const getHistogramQuery =
     ? enableSwitchFirmwareFilter()
     : enableSwitchFirmwareFilter
   const additionalArgs = shouldEnableFirmwareFilter
-    ? ', $enableSwitchFirmwareFilter: Boolean'
+    ? '$enableSwitchFirmwareFilter: Boolean'
     : ''
   const additionalFields = shouldEnableFirmwareFilter
     ? 'enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter'
