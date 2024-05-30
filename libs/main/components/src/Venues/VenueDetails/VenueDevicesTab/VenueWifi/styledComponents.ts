@@ -3,9 +3,7 @@ import styled from 'styled-components/macro'
 import { Tabs, Alert as UIAlert } from '@acx-ui/components'
 import {
   ArrowCorner,
-  SignalDown,
   SignalLeft,
-  SignalUp,
   Wired
 } from '@acx-ui/icons'
 
@@ -31,23 +29,22 @@ export const ApSingleIcon = styled(SignalLeft)`
   }
 `
 
-export const SignalDownIcon = styled(SignalDown)`
-  width: 20px;
-  height: 20px;
-  vertical-align: text-top;
-  path {
-    stroke: var(--acx-primary-black);
+export const SignalDownSpan = styled.span`
+  svg {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-top;
+  }
+`
+export const SignalUpSpan = styled.span`
+  svg {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-top;
+    transform: rotate(180deg)
   }
 `
 
-export const SignalUpIcon = styled(SignalUp)`
-  width: 20px;
-  height: 20px;
-  vertical-align: text-top;
-  path {
-    stroke: var(--acx-primary-black);
-  }
-`
 
 export const WiredIcon = styled(Wired)`
   width: 20px;

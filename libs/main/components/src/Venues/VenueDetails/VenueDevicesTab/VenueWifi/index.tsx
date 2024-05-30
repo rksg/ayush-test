@@ -34,7 +34,9 @@ import {
   WiredIcon,
   SpanStyle,
   IconThirdTab,
-  AlertNote
+  AlertNote,
+  SignalDownSpan,
+  SignalUpSpan
 } from './styledComponents'
 
 
@@ -123,11 +125,14 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           const DownIcon = getSNRIcon(row.apDownRssi as number)
           return (
             <div>
-              {row.apUpRssi && <span style={{ paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
-                <UpIcon style={{ transform: 'rotate(180deg)', width: '18px', height: '18px' }} />{row.apUpRssi}
-              </span>}
-              {row.apDownRssi && <span style={{ fill: getSNRColor(row.apDownRssi) }}>
-                <DownIcon style={{ width: '18px', height: '18px' }} />{row.apDownRssi}</span>}
+              {row.apUpRssi && <SignalUpSpan style={{ paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
+                <UpIcon />
+                {row.apUpRssi}
+              </SignalUpSpan>}
+              {row.apDownRssi && <SignalDownSpan style={{ fill: getSNRColor(row.apDownRssi) }}>
+                <DownIcon />
+                {row.apDownRssi}
+              </SignalDownSpan>}
             </div>
           )
         }
