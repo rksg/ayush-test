@@ -437,7 +437,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   downloadSwitchsCSV: {
     method: 'post',
-    url: '/venues/switches/csvFiles',
+    url: '/venues/switches/query/csvFiles',
     newApi: true
   },
   getSwitchPortlist: {

@@ -2,10 +2,10 @@ import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { rwgApi }                             from '@acx-ui/rc/services'
-import { CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                    from '@acx-ui/store'
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
+import { rwgApi }                                                 from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                                        from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -104,14 +104,14 @@ describe('Gateway Form', () => {
     mockServer.use(
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
-      rest.post(CommonUrlsInfo.getRwgList.url,
+      rest.post(CommonRbacUrlsInfo.getRwgList.url,
         (req, res, ctx) => res(ctx.json(rwgList))),
-      rest.post(CommonUrlsInfo.addGateway.url,
+      rest.post(CommonRbacUrlsInfo.addGateway.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
         }),
-      rest.post(CommonUrlsInfo.updateGateway.url,
+      rest.post(CommonRbacUrlsInfo.updateGateway.url,
         (_, res, ctx) => {
           mockedReqFn()
           return res(ctx.status(200), ctx.json(successResponse))
@@ -160,7 +160,7 @@ describe('Gateway Form', () => {
     const mockFn = jest.fn()
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getGateway.url,
+      rest.get(CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => {
           mockFn()
           return res(ctx.json(gatewayResponse))
@@ -254,7 +254,7 @@ describe('Gateway Form', () => {
     }
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getGateway.url,
+      rest.get(CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => {
           mockFn()
           return res(ctx.json(gatewayResponse))

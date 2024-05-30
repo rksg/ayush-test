@@ -17,6 +17,7 @@ export { ApGroupTable, defaultApGroupPayload } from './ApGroupTable'
 export { ApGroupEdit } from './ApGroupEdit'
 export { ApGroupNetworksTable } from './ApGroupNetworkTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
+export { ApGroupDetails } from './ApGroupDetails'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
@@ -136,8 +137,8 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
 export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
-export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
-export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'
+export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
+export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
