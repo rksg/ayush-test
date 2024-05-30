@@ -205,8 +205,6 @@ export const defaultVlan = [{
   }]
 }]
 
-
-
 export const switchVlanUnion = {
   profileVlan: [
     { vlanConfigName: 'vlan name', profileLevel: true, defaultVlan: false, vlanId: 6 },

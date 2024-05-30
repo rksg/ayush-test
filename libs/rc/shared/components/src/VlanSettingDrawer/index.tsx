@@ -63,7 +63,6 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
 
   return (
     <Drawer
-      data-testid='vlan-setting-drawer'
       title={
         editMode
           ? $t({ defaultMessage: 'Edit VLAN' })

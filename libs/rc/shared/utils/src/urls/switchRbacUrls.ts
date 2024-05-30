@@ -166,7 +166,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addSwitchesVlans: {
     method: 'post',
-    url: '/venues/:venueId/switches/vlans',
+    url: '/venues/:venueId/vlans',
     newApi: true
   },
   deleteSwitchVlans: {

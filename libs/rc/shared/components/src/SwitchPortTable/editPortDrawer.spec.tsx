@@ -53,7 +53,7 @@ const editPortVlans = async (
   if (checkPortsModel) {
     await userEvent.click(await within(dialog).findByRole('button', { name: /Add VLAN/i }))
     const dialogs = await screen.findAllByRole('dialog')
-    const drawer = dialogs[2] //await screen.findByTestId('vlan-setting-drawer')
+    const drawer = dialogs[2]
     expect(await within(drawer).findByText(/Add Model/i)).toBeVisible()
     expect(within(drawer).queryByText(/Add Ports/i)).toBeNull()
     await userEvent.click(await within(drawer).findByRole('button', { name: /Cancel/i }))
@@ -576,7 +576,7 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await within(dialog).findByRole('button', { name: /Add VLAN/i }))
 
       const dialogs = await screen.findAllByRole('dialog')
-      const drawer = dialogs[2] //await screen.findByTestId('vlan-setting-drawer')
+      const drawer = dialogs[2]
       expect(within(drawer).queryByText(/Add Ports/i)).toBeNull()
       expect(within(drawer).queryByText(/Add Model/i)).toBeNull()
       await userEvent.type(await within(drawer).findByLabelText('VLAN ID'), '777')

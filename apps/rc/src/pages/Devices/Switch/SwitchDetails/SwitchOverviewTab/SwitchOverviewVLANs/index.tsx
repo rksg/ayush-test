@@ -9,7 +9,6 @@ import {
   Loader,
   Drawer,
   Table,
-  Tooltip,
   showActionModal
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
@@ -31,7 +30,6 @@ import {
   isStrictOperationalSwitch,
   transformDisplayOnOff,
   SpanningTreeProtocolName,
-  SwitchMessages,
   SwitchStatusEnum,
   SwitchSlot,
   SwitchModel,
@@ -70,7 +68,7 @@ export function SwitchOverviewVLANs (props: {
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
-  const [portSlotsData, setPortSlotsData] = useState([])
+  const [portSlotsData, setPortSlotsData] = useState([] as SwitchSlot[])
   const [isDefaultVlanAppliedACL, setIsDefaultVlanAppliedACL] = useState(false)
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -106,7 +104,7 @@ export function SwitchOverviewVLANs (props: {
       }
     }
   }, {
-    skip: !switchDetail?.venueId
+    skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
   })
 
   const { data: lagList, isLoading: isLagListLoading }
@@ -148,11 +146,15 @@ export function SwitchOverviewVLANs (props: {
   }
 
   const applyVlan = async (values: Vlan) => {
+    const portData = values?.switchFamilyModels?.[0]
+    const hasPortData = portData
+      && (portData?.taggedPorts?.length || portData?.untaggedPorts?.length)
+
     const payload = {
       ...(_.omit(values, ['switchFamilyModels'])),
       vlanId: Number(values.vlanId),
       switchId: switchId,
-      ...( values?.switchFamilyModels?.length
+      ...( hasPortData
         ? { switchVlanPortModels: values?.switchFamilyModels?.map(switchFamily => {
           return {
             switchModel: switchFamilyModel,
@@ -364,33 +366,23 @@ export function SwitchOverviewVLANs (props: {
       = tableQuery.data?.data && !isLagListLoading && !isVePortsListLoading && !isVlanListLoading
 
     if (isDataReady) {
-      const portsUsedByLagObj = lagList?.reduce((result, lag) => {
+      const portsUsedByLag = lagList?.reduce((result, lag) => {
         const ports = lag.ports?.reduce((tmp, port) => ({
           ...tmp,
           [port]: lag.name
         }), {})
         return { ...result, ...ports }
       }, {})
-      const portsUsedByLag = Object.keys(portsUsedByLagObj ?? {})
 
       const veList = vePortsList?.data as VeViewModel[]
       const vlansUsedByVe = veList?.filter(ve => ve.vlanId).map(ve => ve.vlanId)
 
       const vlanList = vlanListBySwitch?.data as Vlan[]
       const vlanTableData = tableQuery.data?.data.map(vlan => {
-        const hasPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
-          _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
-            || _.intersection(port.untaggedPorts?.split(','), portsUsedByLag)?.length > 0
-        )
         const hasVlansUsedByVe = vlansUsedByVe?.includes(vlan.vlanId)
-        const isInactiveRow
-          = vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME && !!hasPortsUsedByLag?.length
 
         return {
           ...vlan,
-          inactiveRow: isInactiveRow,
-          inactiveTooltip: isInactiveRow
-            ? $t(SwitchMessages.LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED) : '',
           isDeletable: !hasVlansUsedByVe && vlan.vlanName !== SWITCH_DEFAULT_VLAN_NAME
         }
       })
@@ -406,7 +398,7 @@ export function SwitchOverviewVLANs (props: {
       const usedUntagged = getUsedPorts(vlanList, 'untaggedPorts')
 
       setVlanList(vlanList)
-      setUsedByLag(portsUsedByLagObj as Record<string, string>)
+      setUsedByLag(portsUsedByLag as Record<string, string>)
       setUsedUntaggedPorts(usedUntagged as Record<string, string>)
       setVlanTableData(vlanTableData as Vlan[])
       setIsDefaultVlanAppliedACL(isDefaultVlanAppliedACL)
@@ -442,15 +434,7 @@ export function SwitchOverviewVLANs (props: {
         rowActions={filterByAccess(rowActions)}
         rowSelection={
           hasAccess() && isSwitchLevelVlanEnabled && !cliApplied && isSwitchOperational && {
-            type: 'radio',
-            getCheckboxProps: (record) => ({
-              disabled: record?.inactiveRow
-            }),
-            renderCell: (checked, record, index, originNode) => {
-              return record?.inactiveRow
-                ? <Tooltip title={record?.inactiveTooltip}>{originNode}</Tooltip>
-                : originNode
-            }
+            type: 'radio'
           }}
         actions={isSwitchLevelVlanEnabled ? filterByAccess(tableActions) : []}
       />
@@ -496,45 +480,35 @@ export function SwitchOverviewVLANs (props: {
   )
 }
 
-function getPortViewData (portsData: SwitchPortViewModel[] ) {
-  const portStatusData = {
-    slots: [] as SwitchSlot[]
+export function getPortViewData (
+  portsData: SwitchPortViewModel[]): { slots: SwitchSlot[] } {
+  const tmpSlots = portsData.reduce((acc, port) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, slotStr, portNumberStr] = port.portIdentifier.split('/')
+    const slotNumber = Number(slotStr)
+    const portNumber = Number(portNumberStr)
+
+    const updatedPort = {
+      ...port,
+      portnumber: portNumberStr,
+      portNumber: portNumberStr,
+      usedInUplink: port.cloudPort
+    }
+
+    if (!acc[slotNumber]) {
+      acc[slotNumber] = { portStatus: [], portCount: 0, portNumber: 0, portTagged: '' }
+    }
+
+    acc[slotNumber].portStatus.push(updatedPort)
+    acc[slotNumber].portCount++
+    acc[slotNumber].portNumber = portNumber
+    acc[slotNumber].slotNumber = slotNumber
+
+    return acc
+
+  }, {} as { [key: number]: SwitchSlot })
+
+  return {
+    slots: Object.values(tmpSlots)
   }
-  const tmpSlots: { [key:string]:SwitchSlot } = {}
-
-  portsData.forEach(item => {
-    const port = { ...item }
-    const portNumber = port.portIdentifier.split('/')[2]
-    port.portnumber = portNumber
-    port.portNumber = portNumber
-    port.usedInUplink = port.cloudPort
-    const slot = Number(port.portIdentifier.split('/')[1])
-
-    if(tmpSlots[slot]){
-      tmpSlots[slot].portStatus.push(port)
-      tmpSlots[slot].portCount++
-      tmpSlots[slot].portNumber = Number(portNumber)
-      tmpSlots[slot].portTagged = ''
-    }else {
-      tmpSlots[slot] = {
-        portStatus: [port],
-        portCount: 1,
-        portNumber: Number(portNumber),
-        portTagged: ''
-      }
-    }
-  })
-
-  Object.keys(tmpSlots).forEach(key => {
-    portStatusData.slots.push(tmpSlots[key])
-  })
-
-  const tmpPortView = JSON.parse(JSON.stringify(portStatusData))
-  tmpPortView.slots.forEach((slot:SwitchSlot) => {
-    if (slot.portStatus !== undefined) {
-      slot.slotNumber = Number(slot.portStatus[0].portIdentifier.split('/')[1])
-    }
-  })
-
-  return tmpPortView
 }

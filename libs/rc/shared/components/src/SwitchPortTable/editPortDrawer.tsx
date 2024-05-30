@@ -41,6 +41,7 @@ import {
   SwitchPortViewModel,
   SwitchVlanUnion,
   SWITCH_DEFAULT_VLAN_NAME,
+  ProfileTypeEnum,
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
@@ -353,7 +354,7 @@ export function EditPortDrawer ({
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
         ?.find((item) => item?.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.vlanId ?? 1
-      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
+      const isCliApplied = !!switchProfile?.find(p => p.profileType === ProfileTypeEnum.CLI)
 
       setDefaultVlan(defaultVlan)
       setProfileDefaultVlan(profileDefaultVlan)
@@ -367,10 +368,9 @@ export function EditPortDrawer ({
       setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
       setHasSwitchProfile(!!switchProfile?.length)
-      setCliApplied(switchProfile?.filter(p => p.profileType === 'CLI')?.length > 0)
-      setDisabledUseVenueSetting(
-        profileDefaultVlan ? await getUseVenueSettingDisabled(profileDefaultVlan) : false
-      )
+      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
+      setCliApplied(isCliApplied)
+      setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
 
       isMultipleEdit
         ? await getMultiplePortsValue(vlansByVenue, defaultVlan)
@@ -386,9 +386,11 @@ export function EditPortDrawer ({
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible, switchDetail])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible])
 
-  const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
+  const getSinglePortValue = async (
+    portSpeed: string[],
+    defaultVlan: string,
     vlansByVenue: Vlan[]
   ) => {
     const portSettingArray = await getPortSetting({

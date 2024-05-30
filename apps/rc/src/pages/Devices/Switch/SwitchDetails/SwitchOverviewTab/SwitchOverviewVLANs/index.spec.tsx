@@ -15,9 +15,17 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { lagList, portList, switchDetails, vlanList } from './__tests__/fixtures'
+import {
+  lagList,
+  portList,
+  portList7150_C12P,
+  switchDetails,
+  transformdPortViewData,
+  transformdPortViewData_7150_C12P,
+  vlanList
+} from './__tests__/fixtures'
 
-import { SwitchOverviewVLANs } from '.'
+import { SwitchOverviewVLANs, getPortViewData } from '.'
 
 describe('Switch Overview VLAN', () => {
   const params = {
@@ -117,9 +125,6 @@ describe('Switch Overview VLAN', () => {
       expect(await screen.findByText(/Default VLAN settings/i)).toBeVisible()
       expect(await screen.findByText(/111/i)).toBeVisible()
       expect(await screen.findAllByRole('radio')).toHaveLength(6)
-
-      const vlan555 = await screen.findByRole('row', { name: /555/i })
-      expect(await within(vlan555).findByRole('radio')).toBeDisabled()
     })
 
     it('should edit DEFAULT VLAN by using Default VLAN settings button correctly', async () => {
@@ -299,6 +304,15 @@ describe('Switch Overview VLAN', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(await screen.findByText(/111/i)).toBeVisible()
       expect(screen.queryAllByRole('radio')).toHaveLength(0)
+    })
+  })
+
+  describe('getPortViewData', () => {
+    it('test getPortViewData', async () => {
+      expect(getPortViewData(portList?.data)).toStrictEqual(transformdPortViewData)
+      expect(getPortViewData(portList7150_C12P?.data)).toStrictEqual(
+        transformdPortViewData_7150_C12P
+      )
     })
   })
 })

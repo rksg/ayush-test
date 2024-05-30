@@ -625,7 +625,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({ ////
+    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1185,7 +1185,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    updateDhcpServerState: build.mutation<{}, RequestPayload>({ ////
+    updateDhcpServerState: build.mutation<{}, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
