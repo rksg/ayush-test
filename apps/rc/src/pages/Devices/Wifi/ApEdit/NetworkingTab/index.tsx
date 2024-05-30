@@ -48,7 +48,6 @@ export function NetworkingTab () {
 
   const { apCapabilities } = useContext(ApDataContext)
 
-  const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
   const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const [isSupportMesh, setIsSupportMesh] = useState(false)
@@ -65,7 +64,7 @@ export function NetworkingTab () {
   const direcedtMulticastTitle = $t({ defaultMessage: 'Directed Multicast' })
 
   const anchorItems = [
-    ...(supportStaticIpSettings? [{
+    {
       title: ipSettingTitle,
       content: (
         <>
@@ -75,7 +74,7 @@ export function NetworkingTab () {
           <IpSettings />
         </>
       )
-    }] : []),
+    },
     {
       title: lanPortsTitle,
       content: (

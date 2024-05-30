@@ -12,7 +12,6 @@ export enum Features {
   AP_GROUP_TOGGLE = 'wifi-eda-ap-group-table-toggle',
   AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE = 'wifi-ap-mgmt-vlan-ap-level-toggle',
   AP_MESH_TOPOLOGY = 'acx-ui-ap-mesh-topology',
-  AP_STATIC_IP = 'wifi-consumer-ap-static-ip-toggle',
   AP_UPTIME_TOGGLE = 'ap-uptime-toggle',
   APP_INSIGHTS = 'acx-ui-app-insights-toggle',
   ASSIGN_MULTI_EC_TO_MSP_ADMINS = 'mspservice-assign-multi-ec-to-multi-msp-admin',
