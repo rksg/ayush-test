@@ -159,6 +159,18 @@ export function useServicePolicyEnabledWithConfigTemplate (configTemplateType: C
   return false
 }
 
+// eslint-disable-next-line max-len
+export function deriveFieldsFromServerData (data: NetworkSaveData): NetworkSaveData {
+  return {
+    ...data,
+    isCloudpathEnabled: data.authRadius ? true : false,
+    // eslint-disable-next-line max-len
+    enableAccountingService: (data.accountingRadius || data.guestPortal?.wisprPage?.accountingRadius)
+      ? true
+      : false
+  }
+}
+
 export function useRadiusServer () {
   const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { networkId } = useParams()

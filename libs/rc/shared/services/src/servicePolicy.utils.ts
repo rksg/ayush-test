@@ -37,7 +37,7 @@ export function covertAAAViewModalTypeToRadius (data: AAAViewModalType): Radius 
 interface CreateFetchArgsBasedOnRbacProps {
   apiInfo: ApiInfo
   rbacApiInfo?: ApiInfo
-  rbacApiVersionKey: ApiVersionEnum
+  rbacApiVersionKey?: ApiVersionEnum
   queryArgs: RequestPayload
 }
 export function createFetchArgsBasedOnRbac (props: CreateFetchArgsBasedOnRbacProps) {

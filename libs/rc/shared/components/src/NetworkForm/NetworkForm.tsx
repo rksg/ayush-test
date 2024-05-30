@@ -68,9 +68,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                                        from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo, useRadiusServer } from './utils'
-import { Venues }                                            from './Venues/Venues'
+import PortalInstance                                                                    from './PortalInstance'
+import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer } from './utils'
+import { Venues }                                                                        from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -207,35 +207,30 @@ export function NetworkForm (props:{
 
   useEffect(() => {
     if(data){
-      let name = data.name
+      const resolvedData = deriveFieldsFromServerData(data)
+
       if (cloneMode) {
-        name = data.name + ' - copy'
         formRef.current?.resetFields()
-        formRef.current?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
-      }else if(editMode){
+        formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+      } else if (editMode) {
         form?.resetFields()
-        form?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
+        form?.setFieldsValue(resolvedData)
       }
-      updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-        enableAccountingService: (data.accountingRadius||
-          data.guestPortal?.wisprPage?.accountingRadius)?true:false, certificateTemplateId })
+      updateSaveData({ ...resolvedData, certificateTemplateId })
     }
   }, [data, certificateTemplateId])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
 
+    const fullNetworkSaveData = _.merge({}, saveState, radiusServerConfigurations)
+    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+
     form.setFieldsValue({
-      ...radiusServerConfigurations
+      ...resolvedNetworkSaveData
     })
 
-    updateSaveData(radiusServerConfigurations)
+    updateSaveData(resolvedNetworkSaveData)
   }, [radiusServerConfigurations])
 
   useEffect(() => {
