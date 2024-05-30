@@ -125,7 +125,6 @@ export const PortalForm = (props: {
     useQueryFn: useGetPortalQuery,
     useTemplateQueryFn: useGetPortalTemplateQuery,
     skip: !editMode,
-    payload: { enableRbac: isEnabledRbacService },
     enableRbac: isEnabledRbacService
   })
   const [ createPortal ] = useConfigTemplateMutationFnSwitcher({
@@ -244,7 +243,8 @@ export const PortalForm = (props: {
       if (editMode) {
         await updatePortal({
           params: { tenantId: params.tenantId, serviceId: params.serviceId },
-          payload: { ...payload, enableRbac: isEnabledRbacService }
+          payload,
+          enableRbac: isEnabledRbacService
         }).unwrap()
 
         if (backToNetwork) {
@@ -255,7 +255,8 @@ export const PortalForm = (props: {
         try {
           const result = await createPortal({
             params: { tenantId: params.tenantId },
-            payload: { ...payload, enableRbac: isEnabledRbacService }
+            payload,
+            enableRbac: isEnabledRbacService
           }).unwrap() as { response: { id: string } }
           // upload files
           if (isEnabledRbacService) {
