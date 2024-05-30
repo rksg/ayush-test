@@ -28,8 +28,10 @@ export function covertAAAViewModalTypeToRadius (data: AAAViewModalType): Radius 
       port: Number(splitPrimary[1])
     },
     ...(splitSecondary.length > 1 ? {
-      ip: splitSecondary[0],
-      port: Number(splitSecondary[1])
+      secondary: {
+        ip: splitSecondary[0],
+        port: Number(splitSecondary[1])
+      }
     } : {})
   }
 }

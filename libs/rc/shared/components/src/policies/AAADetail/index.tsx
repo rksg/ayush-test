@@ -2,6 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, Button, GridRow, Loader, GridCol }    from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { useAaaPolicyQuery, useGetAAAPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
@@ -20,9 +21,11 @@ import AAAOverview       from './AAAOverview'
 export function AAAPolicyDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const queryResults = useConfigTemplateQueryFnSwitcher<AAAPolicyType>({
     useQueryFn: useAaaPolicyQuery,
-    useTemplateQueryFn: useGetAAAPolicyTemplateQuery
+    useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
+    enableRbac
   })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
 
@@ -51,9 +54,7 @@ export function AAAPolicyDetail () {
           </Loader>
         </GridCol>
         <GridCol col={{ span: 24 }}>
-          <Loader states={[queryResults]}>
-            <AAAInstancesTable />
-          </Loader>
+          <AAAInstancesTable />
         </GridCol>
       </GridRow>
     </>
