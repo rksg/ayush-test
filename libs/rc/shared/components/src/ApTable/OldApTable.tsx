@@ -439,7 +439,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
           <>
             {status.columnText}
             {/* eslint-disable-next-line*/}
-            {(status.columnText !== '--' && status.columnText === 'Low power' && status.tooltipText) && <Tooltip.Info
+            {(status.columnText !== '--' && status.columnText === 'Low Power Indoor' && status.tooltipText) && <Tooltip.Info
               placement='bottom'
               iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
               title={status.tooltipText}

@@ -376,13 +376,19 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apDosProtectionSettings',
     newApi: true
   },
-  /*
   getVenueRogueAp: {
     method: 'get',
-    url: '/venues/:venueId/rogueApSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
+    //url: '/venues/:venueId/rogueApSettings',
+    url: '/venues/:venueId/roguePolicySettings',
     newApi: true
   },
+  updateVenueRogueAp: {
+    method: 'put',
+    //url: '/venues/:venueId/rogueApSettings',
+    url: '/venues/:venueId/roguePolicySettings',
+    newApi: true
+  },
+  /*
   getRogueApLocation: {
     method: 'get',
     url: '/venues/:venueId/rogueLocations?rogueMac=:rogueMac&numLocatingAps=:numLocatingAps',
@@ -394,12 +400,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/:venueId/rogueAps/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue/:venueId/rogue/ap',
-    newApi: true
-  },
-  updateVenueRogueAp: {
-    method: 'put',
-    url: '/venues/:venueId/rogueApSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/rogue/ap',
     newApi: true
   },
   getVenueApEnhancedKey: {

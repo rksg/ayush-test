@@ -3474,3 +3474,43 @@ export const mockVenueConfigTemplates = {
     }
   ]
 }
+
+export const mockRogueApPoliciesListRbac = {
+  fields: [
+    'numOfRules',
+    'venueCount',
+    'name',
+    'description',
+    'rule',
+    'rules',
+    'id',
+    'venueIds'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '6015cbb1000f419bb08a04bc6c8fe70c',
+      name: 'a123',
+      description: '',
+      numOfRules: 1,
+      venueIds: [
+        'b51e7420c87b49cba652ac980476a489',
+        '8f0ec2f60f6a4a4d8457b1dacbac9e4f'
+      ]
+    }
+  ]
+}
+
+export const mockedRogueApPolicyRbac = {
+  name: 'a123',
+  rules: [
+    {
+      name: '123123',
+      type: 'AdhocRule',
+      classification: 'Malicious',
+      priority: 1
+    }
+  ],
+  id: '6015cbb1000f419bb08a04bc6c8fe70c'
+}
