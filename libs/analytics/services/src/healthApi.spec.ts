@@ -6,7 +6,7 @@ import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange, NetworkPath }                from '@acx-ui/utils'
 import type { AnalyticsFilter }                  from '@acx-ui/utils'
 
-import { healthApi, getHealthFilter, constructTimeSeriesQuery } from '.'
+import { healthApi, getHealthFilter, constructTimeSeriesQuery, getHistogramQuery, KpiPayload } from '.'
 
 describe('Services for health kpis', () => {
   const store = configureStore({
@@ -283,6 +283,28 @@ describe('Services for health kpis', () => {
         endDate: '',
         enableSwitchFirmwareFilter: true
       })
+      expect(query).toMatchSnapshot()
+    })
+  })
+  describe('getHistogramQuery', () => {
+    it('should return histogram query', () => {
+      const query = getHistogramQuery({
+        kpi: 'rss',
+        enableSwitchFirmwareFilter: true,
+        startDate: '2021-01-01',
+        endDate: '2021-12-31',
+        filter: {}
+      } as KpiPayload)
+      expect(query).toMatchSnapshot()
+    })
+    it('should return histogram query with additional args', () => {
+      const query = getHistogramQuery({
+        filter: {},
+        kpi: 'rss',
+        startDate: '',
+        endDate: '',
+        enableSwitchFirmwareFilter: true
+      } as KpiPayload)
       expect(query).toMatchSnapshot()
     })
   })

@@ -43,3 +43,45 @@ exports[`Services for health kpis constructTimeSeriesQuery should return time se
     }
   "
 `;
+
+exports[`Services for health kpis getHistogramQuery should return histogram query 1`] = `
+"
+    query histogramKPI(
+      $path: [HierarchyNodeInput]
+      $start: DateTime
+      $end: DateTime
+      $filter: FilterInput
+      , $enableSwitchFirmwareFilter: Boolean) {
+      network(filter: $filter) {
+        histogram: histogram(
+          path: $path
+          start: $start
+          end: $end
+          enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
+            data: rss(splits: [-100, -90, -85, -80, -75, -70, -65, -60, -50])
+        }
+      }
+    }
+  "
+`;
+
+exports[`Services for health kpis getHistogramQuery should return histogram query with additional args 1`] = `
+"
+    query histogramKPI(
+      $path: [HierarchyNodeInput]
+      $start: DateTime
+      $end: DateTime
+      $filter: FilterInput
+      , $enableSwitchFirmwareFilter: Boolean) {
+      network(filter: $filter) {
+        histogram: histogram(
+          path: $path
+          start: $start
+          end: $end
+          enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter) {
+            data: rss(splits: [-100, -90, -85, -80, -75, -70, -65, -60, -50])
+        }
+      }
+    }
+  "
+`;

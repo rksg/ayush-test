@@ -86,14 +86,18 @@ const getGranularity = (start: string, end: string, kpi: string) => {
   const { timeseries: { minGranularity } } = config
   return calculateGranularity(start, end, minGranularity)
 }
-const getHistogramQuery =
+export const getHistogramQuery =
 ({ kpi, enableSwitchFirmwareFilter }: KpiPayload) => {
   const config = kpiConfig[kpi as keyof typeof kpiConfig]
   const { apiMetric, splits } = Object(config).histogram
-  const additionalArgs = enableSwitchFirmwareFilter
+
+  const shouldEnableFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
+    ? enableSwitchFirmwareFilter()
+    : enableSwitchFirmwareFilter
+  const additionalArgs = shouldEnableFirmwareFilter
     ? ', $enableSwitchFirmwareFilter: Boolean'
     : ''
-  const additionalFields = enableSwitchFirmwareFilter
+  const additionalFields = shouldEnableFirmwareFilter
     ? 'enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter'
     : ''
 
@@ -154,10 +158,14 @@ export const getHealthFilter = (payload: Omit<KpiPayload, 'range'>) => {
 
 export const constructTimeSeriesQuery = (payload: Omit<KpiPayload, 'range'>) => {
   const { kpi, threshold, enableSwitchFirmwareFilter } = payload
-  const additionalArgs = enableSwitchFirmwareFilter
+
+  const shouldEnableFirmwareFilter = typeof enableSwitchFirmwareFilter === 'function'
+    ? enableSwitchFirmwareFilter()
+    : enableSwitchFirmwareFilter
+  const additionalArgs = shouldEnableFirmwareFilter
     ? '$enableSwitchFirmwareFilter: Boolean'
     : ''
-  const additionalFields = enableSwitchFirmwareFilter
+  const additionalFields = shouldEnableFirmwareFilter
     ? 'enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter'
     : ''
 
