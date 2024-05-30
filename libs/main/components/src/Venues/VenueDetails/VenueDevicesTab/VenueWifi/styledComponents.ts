@@ -46,8 +46,6 @@ export const SignalUpSpan = styled.span`
     transform: rotate(180deg)
   }
 `
-
-
 export const WiredIcon = styled(Wired)`
   width: 20px;
   height: 20px;

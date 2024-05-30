@@ -128,15 +128,19 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           const downTooltip = getSignalStrengthTooltip(intl, row.apDownRssi as number)
           return (
             <div>
-              {row.apUpRssi && <SignalUpSpan style={{
-                paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
-                <UpIcon title={upTooltip} />
-                {row.apUpRssi}
-              </SignalUpSpan>}
-              {row.apDownRssi && <SignalDownSpan style={{ fill: getSNRColor(row.apDownRssi) }}>
-                <DownIcon title={downTooltip} />
-                {row.apDownRssi}
-              </SignalDownSpan>}
+              {row.apUpRssi && <Tooltip placement='bottom' title={upTooltip}>
+                <SignalUpSpan style={{
+                  paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
+                  <UpIcon />
+                  {row.apUpRssi}
+                </SignalUpSpan>
+              </Tooltip>}
+              {row.apDownRssi && <Tooltip placement='bottom' title={downTooltip}>
+                <SignalDownSpan style={{ fill: getSNRColor(row.apDownRssi) }}>
+                  <DownIcon />
+                  {row.apDownRssi}
+                </SignalDownSpan>
+              </Tooltip>}
             </div>
           )
         }
