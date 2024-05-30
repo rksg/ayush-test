@@ -4,25 +4,28 @@ import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/q
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
-  CommonUrlsInfo,
-  NetworkVenue,
-  NetworkSaveData,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  TableResult,
-  Dashboard,
-  Network,
-  Venue,
-  NetworkDetailHeader,
-  CommonResult,
-  NetworkDetail,
-  WifiUrlsInfo,
-  ExternalProviders,
   ApCompatibility,
   ApCompatibilityResponse,
-  transformNetwork,
+  ApiVersionEnum,
+  CommonRbacUrlsInfo,
+  CommonResult,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  Dashboard,
+  ExternalProviders,
+  GetApiVersionHeader,
+  Network,
+  NetworkDetail,
+  NetworkDetailHeader,
+  NetworkSaveData,
+  NetworkVenue,
+  TableResult,
+  Venue,
   WifiNetwork,
-  ConfigTemplateUrlsInfo
+  WifiUrlsInfo,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  transformNetwork
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -677,8 +680,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
-      query: ({ params }) => {
-        const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const externalProvidersReq = createHttpRequest(urlsInfo.getExternalProviders, params, apiCustomHeader)
         return {
           ...externalProvidersReq
         }
