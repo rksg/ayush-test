@@ -8,7 +8,14 @@ import { useIntl } from 'react-intl'
 import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                           from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
 import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                            from '@acx-ui/icons'
-import { ApGroupTable, ApTable, ApCompatibilityDrawer, retrievedCompatibilitiesOptions }                      from '@acx-ui/rc/components'
+import {
+  ApGroupTable,
+  ApTable,
+  ApCompatibilityDrawer,
+  retrievedCompatibilitiesOptions,
+  getSNRColor,
+  getSNRIcon
+} from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -24,8 +31,6 @@ import { EmbeddedReport, ReportType }            from '@acx-ui/reports/component
 import {
   ArrowCornerIcon,
   ApSingleIcon,
-  SignalDownIcon,
-  SignalUpIcon,
   WiredIcon,
   SpanStyle,
   IconThirdTab,
@@ -114,12 +119,15 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       width: 160,
       render: function (_, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
+          const UpIcon = getSNRIcon(row.apUpRssi as number)
+          const DownIcon = getSNRIcon(row.apDownRssi as number)
           return (
             <div>
-              {row.apUpRssi && <span style={{ paddingRight: '30px' }}>
-                <SignalDownIcon />{row.apUpRssi}
+              {row.apUpRssi && <span style={{ paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
+                <UpIcon style={{ transform: 'rotate(180deg)' }} />{row.apUpRssi}
               </span>}
-              {row.apDownRssi && <span><SignalUpIcon />{row.apDownRssi}</span>}
+              {row.apDownRssi && <span style={{ fill: getSNRColor(row.apDownRssi) }}>
+                <DownIcon />{row.apDownRssi}</span>}
             </div>
           )
         }

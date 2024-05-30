@@ -22,7 +22,10 @@ export const snrColorMap: Record<SignalStrengthLevel, string> = {
   [SignalStrengthLevel.POOR]: '#ED1C24'
 }
 
-export const snrIconMap: Record<SignalStrengthLevel, React.FunctionComponent> = {
+export const snrIconMap: Record<
+  SignalStrengthLevel, React.FunctionComponent<React.SVGProps<SVGSVGElement> & {
+    title?: string | undefined;
+}>> = {
   [SignalStrengthLevel.EXCELLENT]: APMeshSignalExcellent,
   [SignalStrengthLevel.GOOD]: APMeshSignalGood,
   [SignalStrengthLevel.LOW]: APMeshSignalLow,
