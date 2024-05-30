@@ -12,7 +12,7 @@ import {
   useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import { EdgePortStatus, isEdgeConfigurable } from '@acx-ui/rc/utils'
+import { isEdgeConfigurable } from '@acx-ui/rc/utils'
 
 import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
@@ -85,12 +85,15 @@ export const EdgeOverview = () => {
   }
 
   const {
-    data: portStatusList = [],
-    isLoading: isPortListLoading
+    portStatusList,
+    isPortListLoading
   } = useGetEdgePortsStatusListQuery({
     params: { serialNumber },
     payload: edgePortStatusPayload
-  })
+  }, { selectFromResult: ({ data, isLoading }) => ({
+    portStatusList: data?.data ?? [],
+    isPortListLoading: isLoading
+  }) })
 
   const {
     lagStatusList = [],
@@ -156,7 +159,7 @@ export const EdgeOverview = () => {
     children: <EdgeSubInterfacesTab
       isConfigurable={isConfigurable}
       isLoading={isPortListLoading || isLagListLoading}
-      ports={portStatusList as EdgePortStatus[]}
+      ports={portStatusList}
       lags={lagStatusList}
     />
   }].filter(i => i.value !== 'monitor' || isEdgeReady)

@@ -151,10 +151,11 @@ export const mockEdgeSubInterfacesStatus = {
       ip: '192.168.5.3/25',
       ipMode: 'Static',
       subnet: '255.255.255.128',
-      vlan: '4'
+      vlan: '4',
+      interfaceName: 'port1'
     },{
       serialNumber: 'edge-serialnum',
-      sortIdx: 0,
+      sortIdx: 1,
       name: '',
       status: 'Up',
       type: 'LAN',
@@ -162,7 +163,8 @@ export const mockEdgeSubInterfacesStatus = {
       ip: '',
       ipMode: 'DHCP',
       subnet: '',
-      vlan: '3'
+      vlan: '3',
+      interfaceName: 'port2'
     }]
 }
 
