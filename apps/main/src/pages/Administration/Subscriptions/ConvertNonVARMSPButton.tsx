@@ -163,7 +163,7 @@ export const ConvertNonVARMSPButton = () => {
 
   const canInitCheck = useCallback(() => {
     const user = userProfileCtx.data
-    if (!user) return false
+    if (!user || removeNonVarConversionButton) return false
 
     const mspUtils = MSPUtils()
     const isPrimeAdminUser = userProfileCtx.isPrimeAdmin()
