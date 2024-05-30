@@ -4,11 +4,11 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { venueApi }                                      from '@acx-ui/rc/services'
-import { CommonUrlsInfo, RogueApUrls, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }           from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { venueApi }                                        from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }             from '@acx-ui/test-utils'
 
 import { VenueEditContext }     from '../..'
 import {
@@ -91,6 +91,13 @@ describe('SecurityTab', () => {
         (_, res, ctx) => {
           return res(ctx.json(venueRoguePolicyList))
         }),
+      // RBAC API
+      rest.get(
+        CommonRbacUrlsInfo.getDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json(venueDosProtection))),
+      rest.put(
+        CommonRbacUrlsInfo.updateDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         RogueApUrls.getRoguePolicyListRbac.url,
         (req, res, ctx) => res(
@@ -98,7 +105,7 @@ describe('SecurityTab', () => {
         )
       ),
       rest.get(
-        WifiRbacUrlsInfo.getVenueRogueAp.url,
+        CommonRbacUrlsInfo.getVenueRogueAp.url,
         (_, res, ctx) => res(
           mockGetRoguePolicy(),
           ctx.json({ reportThreshold: 0 }))
