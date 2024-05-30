@@ -1,6 +1,6 @@
-import { useState, useEffect, Dispatch, SetStateAction, MutableRefObject, useRef } from 'react'
+import { useState, useEffect, Dispatch, SetStateAction, MutableRefObject } from 'react'
 
-import { Col, Row, Form }                       from 'antd'
+import { Form, Checkbox }                       from 'antd'
 import {  cloneDeep, get, set, unset, isEmpty } from 'lodash'
 import { defineMessage, useIntl }               from 'react-intl'
 
@@ -10,10 +10,9 @@ import {
   useGetPreferencesQuery,
   useSetNotificationMutation
 } from '@acx-ui/analytics/services'
-import { getUserProfile }                       from '@acx-ui/analytics/utils'
-import { Select, showToast, Loader, StepsForm } from '@acx-ui/components'
-
-import * as UI from './styledComponents'
+import { getUserProfile }            from '@acx-ui/analytics/utils'
+import { Select, showToast, Loader } from '@acx-ui/components'
+import * as config                   from '@acx-ui/config'
 
 const labels = {
   incident: {
@@ -46,9 +45,10 @@ function OptionsList ({ preferences, setState, type }: {
 }) {
   const { $t } = useIntl()
   return <>{Object.entries(labels[type]).map(([key, label]) => <div key={key}>
-    <UI.Checkbox
+    <Checkbox
       id={key}
       name={key}
+      style={{ padding: '5px' }}
       checked={get(preferences, [type, key], []).includes('email')}
       onChange={(e: { target: { checked: boolean } }) =>
         setState((p: AnalyticsPreferences) => {
@@ -72,13 +72,8 @@ function OptionsList ({ preferences, setState, type }: {
 const emailRegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 const validateEmail = (email: string) => emailRegExp.test(String(email).toLowerCase())
 
-export const NotificationSettings = ({
-  tenantId,
-  showLicenseAndEmail,
-  apply
-}: {
+export const NotificationSettings = ({ tenantId, apply }: {
   tenantId: string,
-  showLicenseAndEmail: boolean,
   apply: MutableRefObject<() => Promise<boolean | void>>
 }) => {
   const { $t } = useIntl()
@@ -102,7 +97,7 @@ export const NotificationSettings = ({
     <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
       <OptionsList preferences={preferences} setState={setState} type='configRecommendation' />
     </Form.Item>
-    {showLicenseAndEmail && <>
+    {config.get('IS_MLISA_SA') && <>
       <Form.Item label={$t({ defaultMessage: 'Licenses' })}>
         <OptionsList preferences={preferences} setState={setState} type='licenses' />
       </Form.Item>
@@ -117,33 +112,4 @@ export const NotificationSettings = ({
       </Form.Item>
     </>}
   </Loader>
-}
-
-// eslint-disable-next-line max-len
-const intro = defineMessage({ defaultMessage: 'We\'ll always let you know about important changes, but pick what else you want to hear about.' })
-
-export const NotificationSettingsPage = () => {
-  const { $t } = useIntl()
-  const { selectedTenant: { id } } = getUserProfile()
-  const close = (): Promise<boolean | void> => new Promise(resolve => resolve(false))
-  const apply = useRef<() => Promise<boolean | void>>(close)
-  return <>
-    <UI.Intro>{$t(intro)}</UI.Intro>
-    <StepsForm
-      buttonLabel={{
-        submit: $t({ defaultMessage: 'Save' }),
-        cancel: $t({ defaultMessage: 'Reset' })
-      }}
-      onFinish={apply.current}
-      onCancel={() => {}}
-    >
-      <StepsForm.StepForm>
-        <Row gutter={20}>
-          <Col span={8}>
-            <NotificationSettings tenantId={id} showLicenseAndEmail={true} apply={apply} />
-          </Col>
-        </Row>
-      </StepsForm.StepForm>
-    </StepsForm>
-  </>
 }

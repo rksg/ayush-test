@@ -55,7 +55,6 @@ export const AINotificationDrawer = ({
       <Form layout='vertical' autoComplete='off'>
         <NotificationSettings
           tenantId={user.profile.tenantId}
-          showLicense={false}
           apply={apply}
         />
       </Form>
