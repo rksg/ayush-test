@@ -2,11 +2,11 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
-import { venueApi }                                                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                   from '@acx-ui/rc/utils'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { venueApi }                                                           from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo, CommonRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 
 import {
   venueApsList,
@@ -77,6 +77,13 @@ describe('NetworkingTab', () => {
       rest.get(
         WifiUrlsInfo.getVenueApModelCellular.url,
         (_req, res, ctx) => res(ctx.json(mockCellularSettings))
+      ),
+      rest.get(
+        CommonRbacUrlsInfo.getVenueRadiusOptions.url,
+        (_, res, ctx) => res(ctx.json(mockRadiusOptions))
+      ),
+      rest.get(WifiRbacUrlsInfo.getVenueDirectedMulticast.url,
+        (_, res, ctx) => res(ctx.json(mockDirectedMulticast))
       )
     )
   })
