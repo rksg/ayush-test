@@ -119,7 +119,7 @@ export interface EdgeStaticRouteConfig {
 }
 
 export interface EdgePortStatus {
-  type: EdgePortTypeEnum.UNCONFIGURED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
+  type: EdgePortTypeEnum
   portId: string
   name: string
   status: string
@@ -407,6 +407,8 @@ export interface EdgePortInfo {
   isLag: boolean
   isLagMember: boolean
   portEnabled: boolean
+  status?: string // Up, Down
+  vlan?: string
 }
 
 export type EdgeNodesPortsInfo = Record<EdgeSerialNumber, EdgePortInfo[]>
