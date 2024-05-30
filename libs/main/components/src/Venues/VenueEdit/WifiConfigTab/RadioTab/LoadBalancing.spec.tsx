@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { venueApi }           from '@acx-ui/rc/services'
 import { WifiUrlsInfo }       from '@acx-ui/rc/utils'
 import { Provider, store }    from '@acx-ui/store'
@@ -35,7 +34,6 @@ describe('Venue Load Balancing', () => {
   })
 
   it('should render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(
       <Provider>
         <Form>
