@@ -14,7 +14,8 @@ import {
   ApCompatibilityDrawer,
   retrievedCompatibilitiesOptions,
   getSNRColor,
-  getSNRIcon
+  getSNRIcon,
+  getSignalStrengthTooltip
 } from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
@@ -123,14 +124,17 @@ function getCols (intl: ReturnType<typeof useIntl>) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
           const UpIcon = getSNRIcon(row.apUpRssi as number)
           const DownIcon = getSNRIcon(row.apDownRssi as number)
+          const upTooltip = getSignalStrengthTooltip(intl, row.apUpRssi as number)
+          const downTooltip = getSignalStrengthTooltip(intl, row.apDownRssi as number)
           return (
             <div>
-              {row.apUpRssi && <SignalUpSpan style={{ paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
-                <UpIcon />
+              {row.apUpRssi && <SignalUpSpan style={{
+                paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
+                <UpIcon title={upTooltip} />
                 {row.apUpRssi}
               </SignalUpSpan>}
               {row.apDownRssi && <SignalDownSpan style={{ fill: getSNRColor(row.apDownRssi) }}>
-                <DownIcon />
+                <DownIcon title={downTooltip} />
                 {row.apDownRssi}
               </SignalDownSpan>}
             </div>
