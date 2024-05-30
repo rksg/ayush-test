@@ -44,7 +44,6 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue('bssMinimumPhyRate'))
 
   const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
-  const multicastFilterFlag = useIsSplitOn(Features.WIFI_EDA_MULTICAST_FILTER_TOGGLE)
   const [switchMulticastRateLimitingDisabled, setSwitchMulticastRateLimitingDisabled] = useState(false)
   const multicastFilterTooltipContent = (
     <div>
@@ -85,29 +84,27 @@ export function MulticastForm (props: { wlanData: NetworkSaveData | null }) {
 
   return (
     <>
-      {multicastFilterFlag &&
-          <UI.FieldLabel width='250px'>
-            <Space>
-              {$t({ defaultMessage: 'Multicast Filter' })}
-              <Tooltip.Question
-              // eslint-disable-next-line max-len
-                title={multicastFilterTooltipContent}
-                placement='right'
-                iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
-              />
-            </Space>
-            <Form.Item
-              name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
-              style={{ marginBottom: '10px' }}
-              valuePropName='checked'
-              initialValue={false}
-              children={<Switch
-                data-testid='multicast-filter-enabled'
-                onChange={handleMulticastFilterOnChange}
-              />}
-            />
-          </UI.FieldLabel>
-      }
+      <UI.FieldLabel width='250px'>
+        <Space>
+          {$t({ defaultMessage: 'Multicast Filter' })}
+          <Tooltip.Question
+          // eslint-disable-next-line max-len
+            title={multicastFilterTooltipContent}
+            placement='right'
+            iconStyle={{ height: '16px', width: '16px', marginBottom: '-3px' }}
+          />
+        </Space>
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'multicastFilterEnabled']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch
+            data-testid='multicast-filter-enabled'
+            onChange={handleMulticastFilterOnChange}
+          />}
+        />
+      </UI.FieldLabel>
 
       { multicastRateLimitFlag &&
         <>
