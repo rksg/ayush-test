@@ -1022,11 +1022,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueRogueAp: build.query<VenueRogueAp, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
+          const customHeaders = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
           if (enableRbac) {
             const [venueRogueApResponse, roguePolicyResponse] = await Promise.all([
-              fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getVenueRogueAp, params, customHeaders.v1)),
+              fetchWithBQ(createHttpRequest(CommonRbacUrlsInfo.getVenueRogueAp, params, customHeaders)),
               fetchWithBQ({
-                ...createHttpRequest(RogueApUrls.getRoguePolicyListRbac, params, customHeaders.v1),
+                ...createHttpRequest(RogueApUrls.getRoguePolicyListRbac, params, customHeaders),
                 body: JSON.stringify({ filters: { venueIds: [params?.venueId] }, fields: ['id'] })
               })
             ])
@@ -1041,7 +1042,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
               } as VenueRogueAp
             }
           } else {
-            const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params, customHeaders.v1)
+            const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params, customHeaders)
             const res = await fetchWithBQ(req)
             // Ensure the return type is QueryReturnValue
             if (res.error) {
@@ -1090,6 +1091,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
+          const customHeaders = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined) 
           if (enableRbac) {
             const { enabled, reportThreshold, roguePolicyId, currentRoguePolicyId, currentReportThreshold } = payload!
             if (enabled) {
@@ -1098,13 +1100,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
                 const activateRoguePolicyPromise = fetchWithBQ(createHttpRequest(RogueApUrls.activateRoguePolicy, {
                   policyId: roguePolicyId,
                   venueId: params?.venueId
-                }, customHeaders.v1))
+                }, customHeaders))
                 promises.push(activateRoguePolicyPromise)
               }
 
               if (currentReportThreshold !== reportThreshold) {
                 const updateVenueRogueApPromise = fetchWithBQ({
-                  ...createHttpRequest(WifiRbacUrlsInfo.updateVenueRogueAp, params, customHeaders.v1),
+                  ...createHttpRequest(CommonRbacUrlsInfo.updateVenueRogueAp, params, customHeaders),
                   body: { reportThreshold }
                 })
                 promises.push(updateVenueRogueApPromise)
@@ -1112,7 +1114,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
 
               await Promise.all(promises)
             } else {
-              await fetchWithBQ(createHttpRequest(RogueApUrls.deactivateRoguePolicy, { policyId: currentRoguePolicyId, venueId: params?.venueId }, customHeaders.v1))
+              await fetchWithBQ(createHttpRequest(RogueApUrls.deactivateRoguePolicy, { policyId: currentRoguePolicyId, venueId: params?.venueId }, customHeaders))
             }
             return { data: { enabled, reportThreshold, roguePolicyId } as VenueRogueAp }
           } else {
