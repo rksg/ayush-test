@@ -1,13 +1,12 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { CustomButtonProps, showActionModal }                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
-import { useApViewModelQuery, useGetApCapabilitiesQuery, useGetApQuery } from '@acx-ui/rc/services'
-import { ApDeep, ApViewModel, CapabilitiesApModel }                      from '@acx-ui/rc/utils'
-import { useParams }                                                     from '@acx-ui/react-router-dom'
-import { goToNotFound }                                                  from '@acx-ui/user'
-import { getIntl }                                                       from '@acx-ui/utils'
-
+import { CustomButtonProps, Loader, showActionModal }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { useApViewModelQuery, useGetApCapabilitiesQuery, useGetApQuery, useGetVenueQuery } from '@acx-ui/rc/services'
+import { ApDeep, ApViewModel, CapabilitiesApModel, VenueExtended }                         from '@acx-ui/rc/utils'
+import { useParams }                                                                       from '@acx-ui/react-router-dom'
+import { goToNotFound }                                                                    from '@acx-ui/user'
+import { getIntl }                                                                         from '@acx-ui/utils'
 
 import { AdvancedTab, ApAdvancedContext }             from './AdvancedTab'
 import ApEditPageHeader                               from './ApEditPageHeader'
@@ -26,7 +25,8 @@ const tabs = {
 
 export const ApDataContext = createContext({} as {
   apData?: ApDeep,
-  apCapabilities?: CapabilitiesApModel
+  apCapabilities?: CapabilitiesApModel,
+  venueData?: VenueExtended
 })
 
 export interface ApEditContextType {
@@ -63,6 +63,7 @@ export interface ApEditContextExtendedProps extends ApEditContextProps {
 export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 
 export function ApEdit () {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const params = useParams()
   const { activeTab } = params
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
@@ -84,26 +85,37 @@ export function ApEdit () {
   const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const apViewModelPayload = {
-    entityType: 'aps',
-    fields: ['venueId'],
-    filters: { serialNumber: [params.serialNumber] }
-  }
-  const { venueId } = useApViewModelQuery({ params, payload: apViewModelPayload },
-    {
-      skip: !isUseWifiRbacApi,
-      selectFromResult: ({ data }) => {
-        return { venueId: data?.venueId }
-      }
-    })
+  const {
+    data: apViewmodel
+  } = useApViewModelQuery({
+    params,
+    payload: {
+      entityType: 'aps',
+      fields: ['name', 'serialNumber', 'venueId'],
+      filters: { serialNumber: [params.serialNumber] }
+    } }, { skip: !isWifiRbacEnabled })
+
   const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
-    params: { ...params, venueId },
+    params: { ...params, venueId: apViewmodel?.venueId },
     enableRbac: isUseWifiRbacApi
-  }, { skip: isUseWifiRbacApi && !venueId })
+  }, { skip: isUseWifiRbacApi && !apViewmodel?.venueId })
+
   const {
     data: capabilities,
     isLoading: isGetApCapsLoading
   } = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
+
+  // venueId is not exist in RBAC version AP data
+  const targetVenueId = isWifiRbacEnabled ? apViewmodel?.venueId : getedApData?.venueId
+
+  // fetch venueName
+  const {
+    data: venueData
+  } = useGetVenueQuery({
+    params: {
+      venueId: targetVenueId
+    } }, { skip: !targetVenueId } )
+
 
   useEffect(() => {
     if (!isGetApLoading && !isGetApCapsLoading) {
@@ -123,29 +135,33 @@ export function ApEdit () {
     }
   }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
-  return <ApEditContext.Provider value={{
-    editContextData,
-    setEditContextData,
-    previousPath,
-    setPreviousPath,
-    isOnlyOneTab,
-    setIsOnlyOneTab,
-    editRadioContextData,
-    setEditRadioContextData,
-    editNetworkingContextData,
-    setEditNetworkingContextData,
-    editNetworkControlContextData,
-    setEditNetworkControlContextData,
-    editAdvancedContextData,
-    setEditAdvancedContextData,
-    apViewContextData,
-    setApViewContextData
-  }}>
-    <ApDataContext.Provider value={{ apData, apCapabilities }}>
-      <ApEditPageHeader />
-      { Tab && <Tab /> }
-    </ApDataContext.Provider>
-  </ApEditContext.Provider>
+  const isLoading = !targetVenueId
+
+  return <ApDataContext.Provider value={{ apData, apCapabilities, venueData }}>
+    <ApEditContext.Provider value={{
+      editContextData,
+      setEditContextData,
+      previousPath,
+      setPreviousPath,
+      isOnlyOneTab,
+      setIsOnlyOneTab,
+      editRadioContextData,
+      setEditRadioContextData,
+      editNetworkingContextData,
+      setEditNetworkingContextData,
+      editNetworkControlContextData,
+      setEditNetworkControlContextData,
+      editAdvancedContextData,
+      setEditAdvancedContextData,
+      apViewContextData,
+      setApViewContextData
+    }}>
+      <Loader states={[{ isLoading }]}>
+        <ApEditPageHeader />
+        { Tab && <Tab />}
+      </Loader>
+    </ApEditContext.Provider>
+  </ApDataContext.Provider>
 }
 
 interface ApEditSettingsProps {

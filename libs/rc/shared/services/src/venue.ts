@@ -87,7 +87,9 @@ import {
   WifiRbacUrlsInfo,
   GetApiVersionHeader,
   CommonRbacUrlsInfo,
-  ApiVersionEnum
+  ApiVersionEnum,
+  Mesh,
+  ApGroupConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -154,7 +156,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
         const venueListQuery = await fetchWithBQ(venueListReq)
         const venueList = venueListQuery.data as TableResult<Venue>
-        const venueIds = venueList?.data?.map(v => v.id) || []
+        const venuesData = venueList.data as Venue[]
+        const venueIds = venuesData?.filter(v => {
+          if (v.aggregatedApStatus) {
+            return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
+          }
+          return false
+        }).map(v => v.id) || []
+
         const venueIdsToIncompatible:{ [key:string]: number } = {}
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -303,7 +312,31 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateVenueApMeshSettings' // new api used activity
           ]
           onActivityMessageReceived(msg, activities, () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'WIFI_SETTINGS' }]))
+            api.dispatch(venueApi.util.invalidateTags([
+              { type: 'Venue', id: 'WIFI_SETTINGS' },
+              { type: 'Venue', id: 'VENUE_MESH_SETTINGS' }
+            ]))
+          })
+        })
+      }
+    }),
+    // only exist in v1(RBAC version)
+    getVenueMesh: build.query<Mesh, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CommonRbacUrlsInfo.getVenueMesh, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Venue', id: 'VENUE_MESH_SETTINGS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateVenueApMeshSettings'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'Venue', id: 'VENUE_MESH_SETTINGS' }]))
           })
         })
       }
@@ -318,7 +351,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }]
+      invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }, { type: 'Venue', id: 'VENUE_MESH_SETTINGS' }]
     }),
     updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
       query: ({ params, payload }) => {
@@ -382,7 +415,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
 
-        const payloadData = arg.payload as { venueId: string, networkId: string }[]
+        const payloadData = arg.payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
           venueId: item.venueId,
           networkId: item.networkId
@@ -403,7 +436,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
           }
 
           const apGroupListInfo = {
-            ...createHttpRequest(WifiUrlsInfo.getApGroupsList, arg.params),
+            ...createHttpRequest(payloadData[0].isTemplate
+              ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
+              : WifiUrlsInfo.getApGroupsList, arg.params),
             body: apGroupPayload
           }
 
@@ -1678,6 +1713,7 @@ export const {
   useGetVenueCityListQuery,
   useGetVenueSettingsQuery,
   useLazyGetVenueSettingsQuery,
+  useGetVenueMeshQuery,
   useUpdateVenueMeshMutation,
   useUpdateVenueCellularSettingsMutation,
   useMeshApsQuery,

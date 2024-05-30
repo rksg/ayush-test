@@ -29,13 +29,13 @@ const mockApBssColoringSettings = {
 
 
 describe('AP BSS Coloring', () => {
+  const defaultR760ApCtxData = { apData: r760Ap, venueData }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(CommonUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(mockVenueBssColoringSettings))),
       rest.get(WifiUrlsInfo.getApBssColoring.url,
@@ -53,7 +53,7 @@ describe('AP BSS Coloring', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <BssColoring />
         </ApDataContext.Provider>
       </Provider>, {
@@ -85,7 +85,7 @@ describe('AP BSS Coloring', () => {
           },
           setEditAdvancedContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <BssColoring />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -118,7 +118,7 @@ describe('AP BSS Coloring', () => {
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <BssColoring />
         </ApDataContext.Provider>
       </Provider>, {

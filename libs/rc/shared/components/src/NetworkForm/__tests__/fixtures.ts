@@ -15,10 +15,6 @@ import {
   NetworkHotspot20Settings
 } from '@acx-ui/rc/utils'
 
-import Photo   from '../assets/images/portal-demo/PortalPhoto.svg'
-import Powered from '../assets/images/portal-demo/PoweredLogo.svg'
-import Logo    from '../assets/images/portal-demo/RuckusCloud.svg'
-
 export const networksResponse = {
   fields: ['name', 'id'],
   totalCount: 0,
@@ -1045,9 +1041,9 @@ export const portalTemaplteResponse = {
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: 'var(--acx-primary-black)',
     welcomeSize: 16,
-    photo: Photo,
+    photo: '',
     photoRatio: 170,
-    logo: Logo,
+    logo: '',
     logoRatio: 105,
     secondaryText: 'Lorem ipsum dolor sit amet, '+
       'consectetur adipiscing elit. Aenean euismod bibendum laoreet.',
@@ -1057,7 +1053,7 @@ export const portalTemaplteResponse = {
     poweredBgColor: 'var(--acx-primary-white)',
     poweredColor: 'var(--acx-primary-black)',
     poweredSize: 14,
-    poweredImg: Powered,
+    poweredImg: '',
     poweredImgRatio: 50,
     termsCondition: '',
     componentDisplay: {

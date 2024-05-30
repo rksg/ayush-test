@@ -3,16 +3,19 @@ import { useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
 import { PortalPreviewModal, SimpleListTooltip, getLanguage, initialPortalData } from '@acx-ui/rc/components'
 import {
   useDeletePortalMutation,
   useGetEnhancedPortalProfileListQuery,
-  useNetworkListQuery,
+  useWifiNetworkListQuery,
+  useLazyGetPortalQuery,
   useGetPortalLangMutation
 } from '@acx-ui/rc/services'
 import {
   ServiceType,
   useTableQuery,
+  useConfigTemplate,
   getServiceDetailsLink,
   ServiceOperation,
   getServiceRoutePath,
@@ -23,8 +26,10 @@ import {
   PORTAL_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
-import { loadImageWithJWT }                                        from '@acx-ui/utils'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
+import { getImageDownloadUrl }                                     from '@acx-ui/utils'
+
 
 import Photo   from '../../../../assets/images/portal-demo/PortalPhoto.svg'
 import Powered from '../../../../assets/images/portal-demo/PoweredLogo.svg'
@@ -33,26 +38,34 @@ import Logo    from '../../../../assets/images/portal-demo/RuckusCloud.svg'
 export default function PortalTable () {
   const intl = useIntl()
   const navigate = useNavigate()
+  const params = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isNewDefined = isTemplate || isEnabledRbacService
   const tenantBasePath: Path = useTenantLink('')
   const [ deletePortal ] = useDeletePortalMutation()
   const [getPortalLang] = useGetPortalLangMutation()
+  const [getPortal] = useLazyGetPortalQuery()
   const [portalLang, setPortalLang]=useState({} as { [key:string]:string })
   const [portalId, setPortalId]=useState('')
   const [newDemo, setNewDemo]=useState({} as Demo)
+
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedPortalProfileListQuery,
     defaultPayload: {
       filters: {}
     },
+    enableRbac: isEnabledRbacService,
     search: {
       searchTargetFields: ['serviceName'],
       searchString: ''
     }
   })
-  const params = useParams()
+
   const rowActions: TableProps<Portal>['rowActions'] = [
     {
       label: intl.$t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: ([{ id, serviceName }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -69,6 +82,7 @@ export default function PortalTable () {
     },
     {
       label: intl.$t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: ([{ id }]) => {
         navigate({
           ...tenantBasePath,
@@ -82,7 +96,7 @@ export default function PortalTable () {
     }
   ]
   const emptyNetworks: { key: string, value: string }[] = []
-  const { networkNameMap } = useNetworkListQuery({
+  const { networkNameMap } = useWifiNetworkListQuery({
     params: { tenantId: params.tenantId },
     payload: {
       fields: ['name', 'id'],
@@ -115,7 +129,7 @@ export default function PortalTable () {
               oper: ServiceOperation.DETAIL,
               serviceId: row.id!
             })}>
-            {row.serviceName}
+            {row.serviceName ?? row.name}
           </TenantLink>
         )
       }
@@ -125,6 +139,9 @@ export default function PortalTable () {
       title: intl.$t({ defaultMessage: 'Language' }),
       dataIndex: 'language',
       render: (_, row) =>{
+        if (isNewDefined) {
+          return getLanguage((row?.displayLangCode||'en')as keyof typeof PortalLanguageEnum )
+        }
         return getLanguage((row.content?.displayLangCode||'en')as keyof typeof PortalLanguageEnum )
       }
     },
@@ -136,13 +153,20 @@ export default function PortalTable () {
       render: (_, row) =>{
         return (<div aria-label={row.id}
           onClick={async (e)=>{
-            const demoValue = { ...row.content }
-            const tempDemo = { ...initialPortalData.content, ...demoValue,
+            const portalData = await getPortal({
+              params: { serviceId: row.id as string },
+              enableRbac: isEnabledRbacService }).unwrap() as Portal
+            const demoValue = portalData.content as Demo
+            const initDemo = { ...initialPortalData.content, ...demoValue } as Demo
+            const tempDemo = { ...initDemo,
               poweredImg: demoValue.poweredImg?
-                await loadImageWithJWT(demoValue.poweredImg):Powered,
-              logo: demoValue.logo?await loadImageWithJWT(demoValue.logo):Logo,
-              photo: demoValue.photo?await loadImageWithJWT(demoValue.photo): Photo,
-              bgImage: demoValue.bgImage?await loadImageWithJWT(demoValue.bgImage):'' }
+                await getImageDownloadUrl(isEnabledRbacService, demoValue.poweredImg):Powered,
+              logo: demoValue.logo?
+                await getImageDownloadUrl(isEnabledRbacService, demoValue.logo):Logo,
+              photo: demoValue.photo?
+                await getImageDownloadUrl(isEnabledRbacService, demoValue.photo): Photo,
+              bgImage: demoValue.bgImage?
+                await getImageDownloadUrl(isEnabledRbacService, demoValue.bgImage):'' }
             setNewDemo(tempDemo)
             getPortalLang({ params: { ...params, messageName:
               tempDemo.displayLangCode+'.json' } }).unwrap().then(res=>{
@@ -160,14 +184,14 @@ export default function PortalTable () {
       }
     },
     {
-      key: 'networkIds',
+      key: isNewDefined ? 'wifiNetworkIds' : 'networkIds',
       title: intl.$t({ defaultMessage: 'Networks' }),
-      dataIndex: 'networkIds',
+      dataIndex: isNewDefined ? 'wifiNetworkIds' : 'networkIds',
       align: 'center',
       filterable: networkNameMap,
       render: (_,row) =>{
-        if (!row.networkIds || row.networkIds.length === 0) return 0
-        const networkIds = row.networkIds
+        const networkIds = isNewDefined ? row.wifiNetworkIds : row.networkIds
+        if (!networkIds || networkIds.length === 0) return 0
         // eslint-disable-next-line max-len
         const tooltipItems = networkNameMap.filter(v => networkIds!.includes(v.key)).map(v => v.value)
         return <SimpleListTooltip items={tooltipItems} displayText={networkIds.length} />
@@ -190,7 +214,10 @@ export default function PortalTable () {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}>
+          <TenantLink
+            to={getServiceRoutePath({ type: ServiceType.PORTAL, oper: ServiceOperation.CREATE })}
+            scopeKey={[WifiScopes.CREATE]}
+          >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= PORTAL_LIMIT_NUMBER
@@ -206,7 +233,10 @@ export default function PortalTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] })
+            && { type: 'radio' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

@@ -3,24 +3,25 @@ import { useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, PageHeader, Subtitle, GridRow, GridCol, SummaryCard } from '@acx-ui/components'
+import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard } from '@acx-ui/components'
 import { Features, TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import {
+  BasePersonaTable,
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  VenueLink,
   PersonaGroupDrawer,
-  BasePersonaTable
+  VenueLink
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueQuery,
-  useLazyGetDpskQuery,
   useGetPersonaGroupByIdQuery,
+  useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetVenueQuery
 } from '@acx-ui/rc/services'
 import { PersonaGroup }   from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { noDataDisplay }  from '@acx-ui/utils'
 
@@ -33,7 +34,7 @@ function PersonaGroupDetailsPageHeader (props: {
   const { title, onClick } = props
 
   const extra = filterByAccess([
-    <Button type={'primary'} onClick={onClick}>
+    <Button type={'primary'} onClick={onClick} scopeKey={[WifiScopes.UPDATE]}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
   ])

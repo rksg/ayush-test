@@ -29,7 +29,6 @@ import {
   useDeleteApRadioCustomizationMutation,
   useGetApRadioCustomizationQuery,
   useGetApValidChannelQuery,
-  useLazyGetVenueQuery,
   useLazyGetVenueRadioCustomizationQuery,
   useUpdateApRadioCustomizationMutation,
   useLazyGetVenueApModelBandModeSettingsQuery,
@@ -281,7 +280,7 @@ export const isHasRadio5G = (isSupportTriBandRadioAp: boolean, isDual5gMode: boo
 export const isHasRadioDual5G = (isSupportDual5GAp: boolean, isDual5gMode: boolean) => isSupportDual5GAp && isDual5gMode
 export const isHasRadio6G = (isSupportTriBandRadioAp: boolean, isDual5gMode: boolean, lengthOfBandwidth6GOptions: number) => (isSupportTriBandRadioAp && !isDual5gMode) && lengthOfBandwidth6GOptions > 0
 
-export function VenueNameDisplay ({ venue }: { venue: VenueExtended }) {
+export function VenueNameDisplay ({ venue }: { venue: VenueExtended | undefined }) {
   return (venue ?
     <TenantLink
       to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
@@ -312,8 +311,8 @@ export function RadioSettings () {
   const isEnablePerApRadioCustomizationFlag = useIsSplitOn(Features.WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE)
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
-  const { apData, apCapabilities } = useContext(ApDataContext)
-  const venueId = apData?.venueId
+  const { apData, apCapabilities, venueData } = useContext(ApDataContext)
+  const venueId = venueData?.id
 
   const {
     has160MHzChannelBandwidth = false,
@@ -367,8 +366,6 @@ export function RadioSettings () {
   const [isEnable6g, setIsEnable6g] = useState(true)
   const [isEnableLower5g, setIsEnableLower5g] = useState(true)
   const [isEnableUpper5g, setIsEnableUpper5g] = useState(true)
-
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [venueBandMode, setVenueBandMode] = useState(BandModeEnum.DUAL)
   const [venueRadioData, setVenueRadioData] = useState({} as VenueRadioCustomization)
 
@@ -395,12 +392,12 @@ export function RadioSettings () {
     useDeleteApRadioCustomizationMutation()
 
   const { data: apBandModeSavedData } =
-    useGetApBandModeSettingsQuery({ params: { venueId: venue.id, serialNumber } }, { skip: isSupportDual5GAp || !isSupportBandManagementAp })
+    useGetApBandModeSettingsQuery({ params: { venueId, serialNumber } },
+      { skip: !venueId || isSupportDual5GAp || !isSupportBandManagementAp })
 
   const [ updateApBandMode, { isLoading: isUpdatingApBandMode } ] =
     useUpdateApBandModeSettingsMutation()
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
   const [getVenueApModelBandModeSettings] = useLazyGetVenueApModelBandModeSettingsQuery()
 
@@ -504,7 +501,6 @@ export function RadioSettings () {
 
   useEffect(() => {
     const availableChannels = getApAvailableChannels.data
-    const venueId = apData?.venueId
     if (!isApDataLoaded && venueId && availableChannels) {
       const setData = async () => {
         if (isSupportBandManagementAp && !isSupportDual5GAp) {
@@ -514,10 +510,6 @@ export function RadioSettings () {
           setVenueBandMode(venueApModelBandModeSettings?.find(apModelBandMode => apModelBandMode.model === apData?.model)?.bandMode || apCapabilities?.defaultBandCombination as BandModeEnum)
         }
 
-        const apVenue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
-
-        setVenue(apVenue)
         setIsApDataLoaded(true)
       }
 
@@ -525,10 +517,10 @@ export function RadioSettings () {
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
-  }, [apData, getApAvailableChannels, isApDataLoaded, setReadyToScroll, isWifiSwitchableRfEnabled, supportWifi7_320MHz, getVenue, tenantId, afcFeatureflag, apViewContextData.apStatusData?.afcInfo, getVenueApModelBandModeSettings, isSupportBandManagementAp, isSupportDual5GAp, apCapabilities?.defaultBandCombination])
+  }, [apData, getApAvailableChannels, isApDataLoaded, setReadyToScroll, getVenueApModelBandModeSettings, isSupportBandManagementAp, isSupportDual5GAp, apCapabilities?.defaultBandCombination, venueId])
 
   useEffect(() => {
-    if (isEmpty(venue)) {
+    if (isEmpty(venueData)) {
       return
     }
 
@@ -582,7 +574,7 @@ export function RadioSettings () {
       }
 
       const venueRadioData = (await getVenueCustomization({
-        params: { tenantId, venueId: venue.id },
+        params: { venueId },
         enableRbac: isUseRbacApi
       }, true).unwrap())
 
@@ -596,7 +588,7 @@ export function RadioSettings () {
     }
 
     setData()
-  }, [isSupportBandManagementAp, isSupportDual5GAp, venue, apModelType, getVenueCustomization, tenantId])
+  }, [isSupportBandManagementAp, isSupportDual5GAp, venueId, apModelType, getVenueCustomization, tenantId])
 
   const updateFormData = (data: ApRadioCustomization) => {
     formRef?.current?.setFieldsValue(data)
@@ -912,7 +904,7 @@ export function RadioSettings () {
 
       if (isSupportBandManagementAp && !isSupportDual5GAp) {
         await updateApBandMode({
-          params: { venueId: venue.id, serialNumber },
+          params: { venueId, serialNumber },
           payload: currentApBandModeData
         }).unwrap()
       }
@@ -1025,9 +1017,9 @@ export function RadioSettings () {
                   <FormattedMessage
                     defaultMessage={'Currently using radio settings of the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
                     values={{
-                      venuelink: () => venue?
+                      venuelink: () => venueData?
                         <TenantLink
-                          to={`venues/${venue.id}/venue-details/overview`}>{venue?.name}
+                          to={`venues/${venueData.id}/venue-details/overview`}>{venueData?.name}
                         </TenantLink> : ''
                     }}
                   />
@@ -1063,7 +1055,7 @@ export function RadioSettings () {
                       defaultMessage={'Currently <radioTypeName></radioTypeName> settings as the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
                       values={{
                         radioTypeName: () => getRadioTypeDisplayName(currentTab),
-                        venuelink: () => venue ? <VenueNameDisplay venue={venue} /> : ''
+                        venuelink: () => venueData ? <VenueNameDisplay venue={venueData} /> : ''
                       }}
                     />
                   </span>
@@ -1111,7 +1103,7 @@ export function RadioSettings () {
               </Col>
               { isEnablePerApRadioCustomizationFlag &&
               <>
-                {stateOfUseVenueEnabled && <Col span={2}><VenueNameDisplay venue={venue} /></Col>}
+                {stateOfUseVenueEnabled && <Col span={2}><VenueNameDisplay venue={venueData} /></Col>}
                 <Col span={3}>
                   <Form.Item
                     name={['apRadioParamsDual5G', 'useVenueEnabled']}
@@ -1165,7 +1157,7 @@ export function RadioSettings () {
             </>
             }
             <ApBandManagement
-              venue={venue}
+              venue={venueData}
               venueBandMode={venueBandMode}
               isSupportDual5GAp={isSupportDual5GAp}
               isSupportTriBandRadioAp={isSupportTriBandRadioAp}
@@ -1223,7 +1215,7 @@ export function RadioSettings () {
                 isUseVenueSettings={isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, RadioType.Normal5GHz)}
               />
             </div>
-            <VenueRadioContext.Provider value={{ venue, venueRadio: venueRadioData }}>
+            <VenueRadioContext.Provider value={{ venue: venueData, venueRadio: venueRadioData }}>
               <div style={{ display: currentTab === RadioType.Normal6GHz ? 'block' : 'none' }}>
                 <ApSingleRadioSettings
                   isEnabled={isEnable6g}
