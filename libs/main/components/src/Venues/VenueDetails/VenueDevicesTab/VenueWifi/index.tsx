@@ -46,8 +46,7 @@ import {
   SpanStyle,
   IconThirdTab,
   AlertNote,
-  SignalDownSpan,
-  SignalUpSpan
+  MeshSignalSpan
 } from './styledComponents'
 
 
@@ -154,16 +153,16 @@ function getCols (intl: ReturnType<typeof useIntl>) {
           return (
             <div>
               {row.apUpRssi && <Tooltip placement='bottom' title={upTooltip}>
-                <SignalUpSpan style={{ paddingRight: '30px' }}>
+                <MeshSignalSpan style={{ paddingRight: '30px' }}>
                   <UpIcon />
                   {row.apUpRssi}
-                </SignalUpSpan>
+                </MeshSignalSpan>
               </Tooltip>}
               {row.apDownRssi && <Tooltip placement='bottom' title={downTooltip}>
-                <SignalDownSpan>
+                <MeshSignalSpan>
                   <DownIcon />
                   {row.apDownRssi}
-                </SignalDownSpan>
+                </MeshSignalSpan>
               </Tooltip>}
             </div>
           )

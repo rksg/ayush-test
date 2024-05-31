@@ -29,13 +29,7 @@ export const ApSingleIcon = styled(SignalLeft)`
   }
 `
 
-export const SignalDownSpan = styled.span`
-  svg {
-    vertical-align: text-bottom;
-    margin-right: 2px;
-  }
-`
-export const SignalUpSpan = styled.span`
+export const MeshSignalSpan = styled.span`
   svg {
     vertical-align: text-top;
     margin-right: 2px;

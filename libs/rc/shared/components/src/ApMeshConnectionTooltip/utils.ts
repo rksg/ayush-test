@@ -1,4 +1,3 @@
-import { useIntl } from 'react-intl'
 
 import { ApMeshLink, SignalStrengthLevel } from '@acx-ui/rc/utils'
 
