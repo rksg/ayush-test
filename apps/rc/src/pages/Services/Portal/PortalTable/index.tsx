@@ -53,9 +53,9 @@ export default function PortalTable () {
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedPortalProfileListQuery,
     defaultPayload: {
-      filters: {},
-      enableRbac: isEnabledRbacService
+      filters: {}
     },
+    enableRbac: isEnabledRbacService,
     search: {
       searchTargetFields: ['serviceName'],
       searchString: ''
@@ -155,7 +155,7 @@ export default function PortalTable () {
           onClick={async (e)=>{
             const portalData = await getPortal({
               params: { serviceId: row.id as string },
-              payload: { enableRbac: isEnabledRbacService } }).unwrap() as Portal
+              enableRbac: isEnabledRbacService }).unwrap() as Portal
             const demoValue = portalData.content as Demo
             const initDemo = { ...initialPortalData.content, ...demoValue } as Demo
             const tempDemo = { ...initDemo,
