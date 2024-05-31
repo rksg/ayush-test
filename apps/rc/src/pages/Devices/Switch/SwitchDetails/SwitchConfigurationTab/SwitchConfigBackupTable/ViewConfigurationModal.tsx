@@ -5,6 +5,8 @@ import { useIntl }                from 'react-intl'
 import { Dropdown, CaretDownSolidIcon, Button, Descriptions } from '@acx-ui/components'
 import { CodeMirrorWidget }                                   from '@acx-ui/rc/components'
 import { ConfigurationBackup }                                from '@acx-ui/rc/utils'
+import { SwitchScopes }                                       from '@acx-ui/types'
+import { hasPermission }                                      from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -79,20 +81,20 @@ export function ViewConfigurationModal (props:{
                       label: $t({ defaultMessage: 'Compare' }),
                       key: 'Compare'
                     },
-                    {
+                    ...(hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? [{
                       label: $t({ defaultMessage: 'Restore' }),
                       key: 'Restore',
                       disabled: !enabledButton.find(item => item === 'Restore')
-                    },
-                    {
+                    }] : []),
+                    ...(hasPermission() ? [{
                       label: $t({ defaultMessage: 'Download' }),
                       key: 'Download'
-                    },
-                    {
+                    }] : []),
+                    ...(hasPermission({ scopes: [SwitchScopes.DELETE] }) ? [{
                       label: $t({ defaultMessage: 'Delete' }),
                       key: 'Delete',
                       disabled: !enabledButton.find(item => item === 'Delete')
-                    }
+                    }] : [])
                   ]}
                 />
               }
