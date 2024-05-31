@@ -83,8 +83,7 @@ export function GeneralSettingForm () {
     useQueryFn: useConfigProfilesQuery,
     useTemplateQueryFn: useGetSwitchConfigProfileTemplatesQuery,
     skip: isProfileDisabled,
-    payload: {},
-    enableRbac: isSwitchRbacEnabled
+    payload: {}
   })
 
   // eslint-disable-next-line max-len
