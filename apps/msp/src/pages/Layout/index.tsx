@@ -42,6 +42,7 @@ function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
+  const reportsAdminBasePath = useTenantLink('/dataStudio')
   const navigate = useNavigate()
   const params = useParams()
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
@@ -52,6 +53,7 @@ function Layout () {
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
@@ -89,7 +91,13 @@ function Layout () {
         pathname: `${dpskBasePath.pathname}`
       })
     }
-  }, [isGuestManager, isDPSKAdmin, params['*']])
+    if (isReportsAdmin && params['*'] !== 'dataStudio') {
+      navigate({
+        ...reportsAdminBasePath,
+        pathname: `${reportsAdminBasePath.pathname}`
+      })
+    }
+  }, [isGuestManager, isDPSKAdmin, isReportsAdmin, params['*']])
 
   useEffect(() => {
     if (data && userProfile) {
