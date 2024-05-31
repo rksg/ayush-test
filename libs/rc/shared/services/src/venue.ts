@@ -749,11 +749,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     configProfiles: build.query<ConfigurationProfile[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getConfigProfiles, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? customHeaders.v1001 : {}
+        const req = createHttpRequest(SwitchUrlsInfo.getProfiles, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       transformResponse (result: { data: ConfigurationProfile[] }) {
