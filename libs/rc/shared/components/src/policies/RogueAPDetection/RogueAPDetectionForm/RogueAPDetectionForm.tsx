@@ -7,10 +7,12 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import {
   useAddRoguePolicyMutation,
   useAddRoguePolicyTemplateMutation,
-  useUpdateRoguePolicyMutation, useUpdateRoguePolicyTemplateMutation
+  useUpdateRoguePolicyMutation,
+  useUpdateRoguePolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   RogueAPDetectionContextType,
@@ -20,9 +22,10 @@ import {
   PolicyOperation,
   CommonResult,
   usePolicyListBreadcrumb,
-  generatePolicyPageHeaderTitle,
-  useConfigTemplate,
-  useConfigTemplateMutationFnSwitcher, usePolicyPreviousPath
+  usePolicyPageHeaderTitle,
+  useConfigTemplateMutationFnSwitcher,
+  usePolicyPreviousPath,
+  RoguePolicyRequest
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -39,8 +42,8 @@ type RogueAPDetectionFormProps = {
 }
 
 export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
-  const { isTemplate } = useConfigTemplate()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.LIST)
@@ -53,24 +56,30 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     tags: [] as string[],
     description: '',
     rules: [] as RogueAPRule[],
-    venues: [] as RogueVenue[]
+    venues: [] as RogueVenue[],
+    defaultPolicyId: ''
   })
 
-  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useAddRoguePolicyMutation, useAddRoguePolicyTemplateMutation
-  )
+  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRoguePolicyMutation,
+    useTemplateMutationFn: useAddRoguePolicyTemplateMutation
+  })
 
-  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateRoguePolicyMutation, useUpdateRoguePolicyTemplateMutation
-  )
+  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateRoguePolicyMutation,
+    useTemplateMutationFn: useUpdateRoguePolicyTemplateMutation
+  })
 
-  const transformPayload = (state: RogueAPDetectionContextType, edit: boolean) => {
+  // eslint-disable-next-line max-len
+  const transformPayload = (state: RogueAPDetectionContextType, edit: boolean) : RoguePolicyRequest => {
     return {
       id: edit ? params.policyId : '',
       name: state.policyName,
       description: state.description,
       rules: state.rules,
-      venues: state.venues
+      venues: state.venues,
+      oldVenues: state.oldVenues || [],
+      defaultPolicyId: state.defaultPolicyId ?? ''
     }
   }
 
@@ -80,12 +89,14 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
       if (!edit) {
         results = await createRoguePolicy({
           params,
-          payload: transformPayload(state, false)
+          payload: transformPayload(state, false),
+          enableRbac
         }).unwrap()
       } else {
         await updateRoguePolicy({
           params,
-          payload: transformPayload(state, true)
+          payload: transformPayload(state, true),
+          enableRbac
         }).unwrap()
       }
       const response = results.response as { id: string }
@@ -100,11 +111,12 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
   }
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.ROGUE_AP_DETECTION)
+  const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.ROGUE_AP_DETECTION)
 
   return (
     <RogueAPDetectionContext.Provider value={{ state, dispatch }}>
       {!modalMode && <PageHeader
-        title={generatePolicyPageHeaderTitle(edit, isTemplate, PolicyType.ROGUE_AP_DETECTION)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <StepsForm<RogueAPDetectionContextType>

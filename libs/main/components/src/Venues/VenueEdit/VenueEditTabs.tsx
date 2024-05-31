@@ -2,16 +2,18 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                                from '@acx-ui/components'
-import { Features, useIsTierAllowed }                          from '@acx-ui/feature-toggle'
-import { useIsConfigTemplateGA, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
-import { useConfigTemplate, type LocationExtended }            from '@acx-ui/rc/utils'
+import { Tabs }                                     from '@acx-ui/components'
+import { Features, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { usePathBasedOnConfigTemplate }             from '@acx-ui/rc/components'
+import { useConfigTemplate, type LocationExtended } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
   useParams,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -88,10 +90,12 @@ function VenueEditTabs () {
       {/* eslint-disable-next-line max-len */}
       <Tabs.TabPane tab={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })} key='details' />
       <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
-      <Tabs.TabPane
-        key='switch'
-        tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
-      />
+      {hasPermission({ scopes: [SwitchScopes.UPDATE] }) &&
+        <Tabs.TabPane
+          key='switch'
+          tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
+        />
+      }
       {enablePropertyManagement &&
         <Tabs.TabPane
           tab={intl.$t({ defaultMessage: 'Property Management' })}
@@ -108,11 +112,4 @@ function usePropertyManagementEnabled () {
   const { isTemplate } = useConfigTemplate()
 
   return enablePropertyManagement && !isTemplate
-}
-
-export function useSwitchConfigurationEnabled () {
-  const { isTemplate } = useConfigTemplate()
-  const isConfigTemplateGA = useIsConfigTemplateGA()
-
-  return !isTemplate || isConfigTemplateGA
 }

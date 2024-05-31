@@ -3,11 +3,12 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { venueApi }                                                                               from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                                           from '@acx-ui/rc/utils'
-import { Provider, store }                                                                        from '@acx-ui/store'
-import { act, fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi }                                                                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }                                                      from '@acx-ui/rc/utils'
+import { Provider, store }                                                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, within, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
+import { VenueUtilityContext } from '../..'
 import {
   venueData,
   venueCaps,
@@ -22,6 +23,17 @@ const params = {
   activeTab: 'wifi',
   activeSubTab: 'networking'
 }
+
+const mockLanPorts = (
+  <VenueUtilityContext.Provider value={{
+    venueApCaps: venueCaps,
+    isLoadingVenueApCaps: false
+  }} >
+    <Form>
+      <LanPorts />
+    </Form>
+  </VenueUtilityContext.Provider>
+)
 
 describe('LanPortsForm', () => {
   beforeEach(() => {
@@ -45,9 +57,7 @@ describe('LanPortsForm', () => {
   it('should render correctly', async () => {
     render(
       <Provider>
-        <Form>
-          <LanPorts />
-        </Form>
+        {mockLanPorts}
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
@@ -59,9 +69,7 @@ describe('LanPortsForm', () => {
   it('should handle tab and model changed', async () => {
     render(
       <Provider>
-        <Form>
-          <LanPorts />
-        </Form>
+        {mockLanPorts}
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
@@ -94,12 +102,11 @@ describe('LanPortsForm', () => {
 
     fireEvent.mouseDown(within(tabPanel2).getByLabelText(/Port type/))
     await userEvent.click(await screen.getAllByText('GENERAL')[1])
-    expect(within(tabPanel2).getByLabelText(/VLAN member/)).not.toBeDisabled()
-    // eslint-disable-next-line testing-library/no-unnecessary-act
-    await act(() => {
-      fireEvent.change(within(tabPanel2).getByLabelText(/VLAN member/), { target: { value: '2' } })
-    })
-    expect(within(tabPanel2).getByLabelText(/VLAN member/)).toHaveValue('2')
+    const vlanMemberInput = within(tabPanel2).getByLabelText(/VLAN member/)
+    expect(vlanMemberInput).not.toBeDisabled()
+
+    await userEvent.clear(vlanMemberInput)
+    await userEvent.type(vlanMemberInput, '2')
 
     await fireEvent.click(await screen.findByRole('tab', { name: 'LAN 3' }))
     const tabPanel3 = screen.getByRole('tabpanel', { hidden: false })
@@ -109,9 +116,7 @@ describe('LanPortsForm', () => {
   it('should handle Port type, PoE Mode and PoE Out changed', async () => {
     render(
       <Provider>
-        <Form>
-          <LanPorts />
-        </Form>
+        {mockLanPorts}
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
       })
@@ -134,7 +139,8 @@ describe('LanPortsForm', () => {
 
     const untagInput = within(tabPanel).getByLabelText(/VLAN untag ID/)
     expect(untagInput).not.toBeDisabled()
-    fireEvent.change(untagInput, { target: { value: 2 } })
+    await userEvent.clear(untagInput)
+    await userEvent.type(untagInput, '2')
     expect(within(tabPanel).getByLabelText(/VLAN member/)).toHaveValue('2')
   })
 })

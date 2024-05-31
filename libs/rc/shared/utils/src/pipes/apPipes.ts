@@ -1,4 +1,4 @@
-import _                      from 'lodash'
+import { uniq, without }      from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
@@ -239,13 +239,13 @@ export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
   else if (powerMode === AFCPowerMode.LOW_POWER) {
     switch(afcInfo?.afcStatus) {
       case AFCStatus.WAIT_FOR_LOCATION:
-        displayList.push($t({ defaultMessage: 'AFC Geo-Location not set' }))
+        displayList.push($t({ defaultMessage: 'Wait for location' }))
         break
       case AFCStatus.REJECTED:
-        displayList.push($t({ defaultMessage: 'Rejected by FCC DB due to no available channels' }))
+        displayList.push($t({ defaultMessage: 'Rejected' }))
         break
       case AFCStatus.WAIT_FOR_RESPONSE:
-        displayList.push($t({ defaultMessage: 'Wait for AFC server response' }))
+        displayList.push($t({ defaultMessage: 'Wait for response' }))
         break
       case AFCStatus.AFC_NOT_REQUIRED:
         displayList.push($t({ defaultMessage: 'N/A' }))
@@ -268,11 +268,15 @@ export const ChannelButtonTextRender = ({ $t }: IntlShape, channels: number[], i
   let message = isChecked
     ? $t({ defaultMessage: 'Disable this channel' })
     : $t({ defaultMessage: 'Enable this channel' })
-  const afcAvailableChannel = _.uniq(afcProps?.afcInfo?.availableChannels).sort((a, b) => a-b)
-  // Only add AFC tooltip when all channels are in AFC available channel
-  const difference = _.without(channels, ...afcAvailableChannel)
-  if(difference.length === 0 && afcProps?.afcInfo?.afcStatus === AFCStatus.PASSED && afcProps?.featureFlag) {
-    message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
+
+  const { featureFlag: afcFeatrueFlag, afcInfo } = afcProps || {}
+  if (afcFeatrueFlag && afcInfo && afcInfo.afcStatus === AFCStatus.PASSED) {
+    const afcAvailableChannel = uniq(afcInfo.availableChannels).sort((a, b) => a-b)
+    // Only add AFC tooltip when all channels are in AFC available channel
+    const difference = without(channels, ...afcAvailableChannel)
+    if (difference.length === 0) {
+      message = $t({ defaultMessage: 'Allowed by AFC' }) + '\n' + message
+    }
   }
   return message
 }

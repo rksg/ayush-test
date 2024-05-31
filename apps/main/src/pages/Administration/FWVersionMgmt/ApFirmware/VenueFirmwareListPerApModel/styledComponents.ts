@@ -45,3 +45,11 @@ export const ScheduleModal = styled(Modal)`
     max-height: initial;
   }
 `
+export const Ul = styled.ul`
+  list-style-type: none;
+  padding-left: 0;
+`
+
+export const Li = styled.li`
+  margin-top: 5px;
+`

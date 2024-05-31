@@ -1,13 +1,16 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { EdgeDhcpUrls }                                          from '@acx-ui/rc/utils'
-import { Provider }                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitForElementToBeRemoved }             from '@acx-ui/test-utils'
 
-import { mockedEdgeDhcpData, mockEdgeDhcpHostStats } from './__tests__/fixtures'
+import { mockEdgeDhcpHostStats } from './__tests__/fixtures'
 
 import { EdgeDhcpLeaseTable } from '.'
+
+const { mockDhcpStatsData, mockEdgeDhcpDataList } = EdgeDHCPFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
 
 describe('EdgeDhcpLeaseTable', () => {
 
@@ -19,8 +22,16 @@ describe('EdgeDhcpLeaseTable', () => {
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpHostStats))
       ),
       rest.get(
-        EdgeDhcpUrls.getDhcpByEdgeId.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeDhcpData))
+        EdgeDhcpUrls.getDhcp.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList.content[0]))
+      ),
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeList.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeList))
       )
     )
   })

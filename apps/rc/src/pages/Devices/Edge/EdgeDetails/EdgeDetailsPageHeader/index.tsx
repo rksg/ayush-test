@@ -71,13 +71,13 @@ export const EdgeDetailsPageHeader = () => {
 
   const menuConfig = [
     {
-      scopeKey: [EdgeScopes.UPDATE],
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
       showupstatus: rebootableEdgeStatuses
     },
     {
-      scopeKey: [EdgeScopes.UPDATE],
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reset & Recover' }),
       key: 'factoryReset',
       showupstatus: resettabaleEdgeStatuses

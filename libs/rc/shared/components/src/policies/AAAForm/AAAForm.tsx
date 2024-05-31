@@ -17,10 +17,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   AAAPolicyType,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   PolicyOperation,
   PolicyType,
-  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb,
@@ -45,18 +44,22 @@ export const AAAForm = (props: AAAFormProps) => {
   const { type, edit, networkView, backToNetwork } = props
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<AAAPolicyType>>()
-  const { isTemplate } = useConfigTemplate()
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.AAA)
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useAaaPolicyQuery,
-    useGetAAAPolicyTemplateQuery,
-    !isEdit
-  )
+  const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.AAA)
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useAaaPolicyQuery,
+    useTemplateQueryFn: useGetAAAPolicyTemplateQuery,
+    skip: !isEdit
+  })
 
-  // eslint-disable-next-line max-len
-  const [ createInstance ] = useConfigTemplateMutationFnSwitcher(useAddAAAPolicyMutation, useAddAAAPolicyTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher(useUpdateAAAPolicyMutation, useUpdateAAAPolicyTemplateMutation)
+  const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddAAAPolicyMutation,
+    useTemplateMutationFn: useAddAAAPolicyTemplateMutation
+  })
+  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAAAPolicyMutation,
+    useTemplateMutationFn: useUpdateAAAPolicyTemplateMutation
+  })
   const [saveState, setSaveState] = useState<AAAPolicyType>({ name: '' })
 
   useEffect(() => {
@@ -89,7 +92,7 @@ export const AAAForm = (props: AAAFormProps) => {
   return (
     <>
       {!networkView && <PageHeader
-        title={generatePolicyPageHeaderTitle(isEdit, isTemplate, PolicyType.AAA)}
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<AAAPolicyType>

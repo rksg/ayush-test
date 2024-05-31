@@ -94,7 +94,6 @@ function SettingsForm () {
   const { disableMLO } = useContext(MLOContext)
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
   const useCertificateTemplate = useWatch('useCertificateTemplate')
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
@@ -150,24 +149,22 @@ function SettingsForm () {
     <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
       <div>
         <StepsFormLegacy.Title>{ $t({ defaultMessage: 'AAA Settings' }) }</StepsFormLegacy.Title>
-        {triBandRadioFeatureFlag &&
-          <Form.Item
-            label='Security Protocol'
-            name={['wlan', 'wlanSecurity']}
-            extra={
-              wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-                ? wpa2Description
-                : wpa3Description
-            }
-          >
-            <Select onChange={handleWlanSecurityChanged}>
-              <Option value={WlanSecurityEnum.WPA2Enterprise}>
-                { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
-              </Option>
-              <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
-            </Select>
-          </Form.Item>
-        }
+        <Form.Item
+          label='Security Protocol'
+          name={['wlan', 'wlanSecurity']}
+          extra={
+            wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+              ? wpa2Description
+              : wpa3Description
+          }
+        >
+          <Select onChange={handleWlanSecurityChanged}>
+            <Option value={WlanSecurityEnum.WPA2Enterprise}>
+              { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
+            </Option>
+            <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
+          </Select>
+        </Form.Item>
         <Form.Item name={['wlan', 'managementFrameProtection']} noStyle>
           <Input type='hidden' />
         </Form.Item>

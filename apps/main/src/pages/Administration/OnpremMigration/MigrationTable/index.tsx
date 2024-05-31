@@ -48,6 +48,7 @@ const defaultPayload = {
     'lastStateUpdateTime',
     'errorMessage',
     'fileName',
+    'systemName',
     'venueName',
     'venueId',
     'address',
@@ -97,6 +98,16 @@ const MigrationTable = () => {
       sorter: true,
       render: (_, row) => {
         return row.fileName ?? '--'
+      }
+    },
+    {
+      title: $t({ defaultMessage: 'ZD System Name' }),
+      key: 'systemName',
+      dataIndex: 'systemName',
+      searchable: true,
+      sorter: true,
+      render: (_, row) => {
+        return row.systemName ?? '--'
       }
     },
     {

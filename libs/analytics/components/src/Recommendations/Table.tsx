@@ -314,7 +314,9 @@ export function RecommendationTable (
   )
   const data = switchPath ? [] : queryResults?.data?.filter((row) => (showMuted || !row.isMuted))
   const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
-
+  const writePermission = hasPermission({
+    permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS'
+  })
   useEffect(() => {
     setSelectedRowData([])
   }, [queryResults.data])
@@ -448,7 +450,7 @@ export function RecommendationTable (
           <Switch
             defaultChecked
             checked={preferences.crrmFullOptimization}
-            disabled={!canToggle || record.isMuted || !hasPermission()}
+            disabled={!canToggle || record.isMuted || !writePermission}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,
@@ -471,7 +473,7 @@ export function RecommendationTable (
         dataSource={showCrrm ? data : noCrrmData}
         columns={columns}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasPermission() && {
+        rowSelection={writePermission && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

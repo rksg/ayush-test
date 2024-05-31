@@ -1,8 +1,9 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
 import { venueApi }                              from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
 import { generatePath }                          from '@acx-ui/react-router-dom'
 import { Provider, store  }                      from '@acx-ui/store'
 import { mockServer, fireEvent, render, screen } from '@acx-ui/test-utils'
@@ -47,7 +48,14 @@ describe('VenueOverviewTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(url, (_, res, ctx) => res(ctx.json(venueDetailHeaderData)))
+      rest.get(url, (_, res, ctx) => res(ctx.json(venueDetailHeaderData))),
+      rest.get(
+        WifiUrlsInfo.getVenueTripleBandRadioSettings.url,
+        (_, res, ctx) => res(ctx.json({ enabled: true }))),
+      rest.get(
+        WifiUrlsInfo.getVenueRadioCustomization.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
     )
   })
 
@@ -59,6 +67,7 @@ describe('VenueOverviewTab', () => {
   })
 
   it('switches between tabs', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
 
     const wifiWidgets = [
@@ -84,10 +93,12 @@ describe('VenueOverviewTab', () => {
   })
 
   it('should switch tab correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_PORT_TRAFFIC)
     render(<Provider><VenueOverviewTab /></Provider>, { route: { params } })
 
     fireEvent.click(await screen.findByText('Switch'))
     expect(await screen.findAllByTestId(/^analytics/)).toHaveLength(7)
     expect(await screen.findAllByTestId(/^rc/)).toHaveLength(3)
   })
+
 })

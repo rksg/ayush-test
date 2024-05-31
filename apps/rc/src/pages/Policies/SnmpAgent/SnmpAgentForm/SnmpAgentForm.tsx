@@ -6,6 +6,7 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { PageHeader, showActionModal, StepsForm } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useAddApSnmpPolicyMutation,
   useGetApSnmpPolicyQuery,
@@ -14,7 +15,7 @@ import {
 import {
   ApSnmpActionType,
   ApSnmpPolicy,
-  generatePolicyPageHeaderTitle,
+  usePolicyPageHeaderTitle,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
@@ -35,14 +36,15 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })
   const linkToPolicies = useTenantLink(tablePath)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const params = useParams()
   const { editMode } = props
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.SNMP_AGENT)
-  const pageTitle = generatePolicyPageHeaderTitle(editMode, false, PolicyType.SNMP_AGENT)
-
-  const { data } = useGetApSnmpPolicyQuery({ params }, { skip: !editMode })
+  const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.SNMP_AGENT)
+  //eslint-disable-next-line
+  const { data } = useGetApSnmpPolicyQuery({ params, enableRbac: isUseRbacApi }, { skip: !editMode })
   const [ createApSnmpPolicy ] = useAddApSnmpPolicyMutation()
   const [ updateApSnmpPolicy ] = useUpdateApSnmpPolicyMutation()
 
@@ -56,13 +58,15 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   useEffect(() => {
     if (editMode && data) {
+      const policyName = data.name || data.policyName
+      const newData = cloneDeep(data)
       // update state from API data
       if (state.policyName === '') {
-        const newData = cloneDeep(data)
         const payload = {
           state: {
             ...state,
-            ...newData
+            ...newData,
+            policyName
           } }
 
         dispatch({
@@ -72,7 +76,7 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
       }
 
       if (form) {
-        form.setFieldsValue(data)
+        form.setFieldsValue({ ...newData, policyName })
       }
     }
   }, [form, editMode, data])
@@ -95,14 +99,14 @@ const SnmpAgentForm = (props: SnmpAgentFormProps) => {
 
   const handleSaveApSnmpAgentPolicy = async () => {
     try {
-      const payload = cloneDeep(state)
-      if (isDataValid(payload)) {
+      const clonedData = cloneDeep(state)
+      if (isDataValid(clonedData)) {
+        const { policyName, ...others } = clonedData
+        const payload = (isUseRbacApi) ? { ...others, name: policyName } : clonedData
         if (!editMode) {
-          await createApSnmpPolicy({ params, payload }).unwrap()
-          // const results = await createApSnmpPolicy({ params, payload }).unwrap()
-          // const response = results.response as { id: string }
+          await createApSnmpPolicy({ params, payload, enableRbac: isUseRbacApi }).unwrap()
         } else {
-          await updateApSnmpPolicy({ params, payload }).unwrap()
+          await updateApSnmpPolicy({ params, payload, enableRbac: isUseRbacApi }).unwrap()
         }
 
         navigate(linkToPolicies, { replace: true })

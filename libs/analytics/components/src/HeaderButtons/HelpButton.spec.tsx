@@ -26,7 +26,7 @@ describe('HelpButton', () => {
       { text: 'License Information', href: 'https://docs.cloud.ruckuswireless.com/RUCKUS-AI/licensingguide/index.html' },
       { text: 'Contact Support', href: 'https://support.ruckuswireless.com/contact-us' },
       { text: 'Open a Case', href: 'https://support.ruckuswireless.com/cases/new' },
-      { text: 'Privacy', href: 'https://support.ruckuswireless.com/ruckus-cloud-privacy-policy' }
+      { text: 'Privacy', href: 'https://www.commscope.com/about-us/privacy-statement/' }
     ]
     items.forEach((item, i) => {
       expect(links[i]).toHaveTextContent(item.text)

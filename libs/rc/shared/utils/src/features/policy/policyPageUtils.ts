@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { MessageDescriptor, defineMessage } from 'react-intl'
+import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
 import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                  from '@acx-ui/types'
@@ -16,9 +16,9 @@ import { generateDpskManagementBreadcrumb }                    from '../service/
 import { policyTypeLabelMapping }                                      from './contentsMap'
 import { PolicyOperation, getPolicyListRoutePath, getPolicyRoutePath } from './policyRouteUtils'
 
-// eslint-disable-next-line max-len
-export function generatePolicyPageHeaderTitle (isEdit: boolean, isTemplate: boolean, policyType: PolicyType) {
-  const { $t } = getIntl()
+export function usePolicyPageHeaderTitle (isEdit: boolean, policyType: PolicyType) {
+  const { isTemplate } = useConfigTemplate()
+  const { $t } = useIntl()
   return generatePageHeaderTitle({
     isEdit,
     isTemplate,
