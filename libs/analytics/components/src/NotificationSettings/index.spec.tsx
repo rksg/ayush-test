@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { get }                                       from '@acx-ui/config'
 import { notificationApiURL, Provider }              from '@acx-ui/store'
 import { render, screen, mockRestApiQuery, waitFor } from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }         from '@acx-ui/user'
 
 import { NotificationSettings } from '.'
 
@@ -30,6 +31,12 @@ const mockGet = jest.mocked(get)
 
 describe('NotificationSettings', () => {
   beforeEach(() => {
+    setRaiPermissions({
+      READ_INCIDENTS: true,
+      READ_AI_OPERATIONS: true,
+      READ_AI_DRIVEN_RRM: true,
+      READ_LICENSES: true
+    } as RaiPermissions)
     mockGet.mockClear()
     mockedUnwrap.mockImplementation(async () => {})
     mockedPrefMutation.mockClear()

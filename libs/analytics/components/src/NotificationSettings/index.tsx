@@ -13,6 +13,7 @@ import {
 import { getUserProfile }            from '@acx-ui/analytics/utils'
 import { Select, showToast, Loader } from '@acx-ui/components'
 import * as config                   from '@acx-ui/config'
+import { hasRaiPermission }          from '@acx-ui/user'
 
 const labels = {
   incident: {
@@ -102,16 +103,22 @@ export const NotificationSettings = ({ tenantId, apply }: {
       })
   }
   return <Loader states={[query]}>
-    <Form.Item label={$t({ defaultMessage: 'Incidents' })}>
-      <OptionsList preferences={preferences} setState={setState} type='incident' />
-    </Form.Item>
-    <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
-      <OptionsList preferences={preferences} setState={setState} type='configRecommendation' />
-    </Form.Item>
-    {config.get('IS_MLISA_SA') && <>
-      <Form.Item label={$t({ defaultMessage: 'Licenses' })}>
-        <OptionsList preferences={preferences} setState={setState} type='licenses' />
+    {hasRaiPermission('READ_INCIDENTS') &&
+      <Form.Item label={$t({ defaultMessage: 'Incidents' })}>
+        <OptionsList preferences={preferences} setState={setState} type='incident' />
       </Form.Item>
+    }
+    {hasRaiPermission('READ_AI_OPERATIONS') &&
+      <Form.Item label={$t({ defaultMessage: 'Recommendations' })}>
+        <OptionsList preferences={preferences} setState={setState} type='configRecommendation' />
+      </Form.Item>
+    }
+    {config.get('IS_MLISA_SA') && <>
+      {hasRaiPermission('READ_LICENSES') &&
+        <Form.Item label={$t({ defaultMessage: 'Licenses' })}>
+          <OptionsList preferences={preferences} setState={setState} type='licenses' />
+        </Form.Item>
+      }
       <Form.Item label={$t({ defaultMessage: 'Recipients' })}>
         <Select
           mode='tags'
