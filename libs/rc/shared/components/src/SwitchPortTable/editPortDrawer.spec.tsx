@@ -3,10 +3,10 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { switchApi }              from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }         from '@acx-ui/rc/utils'
-import { Provider, store }        from '@acx-ui/store'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { switchApi }                          from '@acx-ui/rc/services'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -202,7 +202,7 @@ describe('EditPortDrawer', () => {
       rest.post(SwitchUrlsInfo.portsPowerCycle.url,
         (_, res, ctx) => res(ctx.json({}))
       ),
-      rest.post(SwitchUrlsInfo.addSwitchesVlans.url,
+      rest.post(SwitchRbacUrlsInfo.addSwitchesVlans.url,
         (_, res, ctx) => {
           mockedAddSwitchVlan()
           return res(ctx.json({}))
