@@ -29,10 +29,3 @@ function getSignalStrengthLevel (snr: number): SignalStrengthLevel {
   if (snr > 15) return SignalStrengthLevel.LOW
   return SignalStrengthLevel.POOR
 }
-
-export function getSignalStrengthTooltip (i: ReturnType<typeof useIntl>, snr: number): string {
-  if (snr > 40) return i.$t({ defaultMessage: 'Excellent' })
-  if (snr > 25) return i.$t({ defaultMessage: 'Good' })
-  if (snr > 15) return i.$t({ defaultMessage: 'Low' })
-  return i.$t({ defaultMessage: 'Poor' })
-}

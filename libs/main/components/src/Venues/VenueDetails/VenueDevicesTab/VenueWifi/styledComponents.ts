@@ -31,19 +31,14 @@ export const ApSingleIcon = styled(SignalLeft)`
 
 export const SignalDownSpan = styled.span`
   svg {
-    width: 20px;
-    height: 20px;
     vertical-align: text-bottom;
     margin-right: 2px;
   }
 `
 export const SignalUpSpan = styled.span`
   svg {
-    width: 20px;
-    height: 20px;
     vertical-align: text-top;
     margin-right: 2px;
-    transform: rotate(180deg)
   }
 `
 export const WiredIcon = styled(Wired)`

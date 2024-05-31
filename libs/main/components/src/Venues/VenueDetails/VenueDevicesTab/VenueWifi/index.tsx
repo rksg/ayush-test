@@ -7,15 +7,25 @@ import { useIntl } from 'react-intl'
 
 import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }  from '@acx-ui/icons'
+import {
+  ApSignalExcellentDown,
+  ApSignalExcellentUp,
+  ApSignalGoodDown,
+  ApSignalGoodUp,
+  ApSignalLowDown,
+  ApSignalLowUp,
+  ApSignalPoorDown,
+  ApSignalPoorUp,
+  DevicesOutlined,
+  LineChartOutline,
+  ListSolid,
+  MeshSolid
+}  from '@acx-ui/icons'
 import {
   ApGroupTable,
   ApTable,
   ApCompatibilityDrawer,
-  retrievedCompatibilitiesOptions,
-  getSNRColor,
-  getSNRIcon,
-  getSignalStrengthTooltip
+  retrievedCompatibilitiesOptions
 } from '@acx-ui/rc/components'
 import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
@@ -99,6 +109,21 @@ const getNamesTooltip = (object: { count: number, names: string[] },
   return
 }
 
+function getSnrIcon (snr: number, isUpRssi: boolean):
+React.FunctionComponent<React.SVGProps<SVGSVGElement>> {
+  if (snr > 40) return isUpRssi ? ApSignalExcellentDown : ApSignalExcellentUp
+  if (snr > 25) return isUpRssi ? ApSignalGoodDown : ApSignalGoodUp
+  if (snr > 15) return isUpRssi ? ApSignalLowDown : ApSignalLowUp
+  return isUpRssi ? ApSignalPoorDown : ApSignalPoorUp
+}
+
+function getSignalStrengthTooltip (i: ReturnType<typeof useIntl>, snr: number): string {
+  if (snr > 40) return i.$t({ defaultMessage: 'Excellent' })
+  if (snr > 25) return i.$t({ defaultMessage: 'Good' })
+  if (snr > 15) return i.$t({ defaultMessage: 'Low' })
+  return i.$t({ defaultMessage: 'Poor' })
+}
+
 function getCols (intl: ReturnType<typeof useIntl>) {
   const columns: TableProps<APMesh>['columns'] = [
     {
@@ -122,21 +147,20 @@ function getCols (intl: ReturnType<typeof useIntl>) {
       width: 160,
       render: function (_, row) {
         if(row.meshRole !== APMeshRole.RAP && row.meshRole !== APMeshRole.EMAP){
-          const UpIcon = getSNRIcon(row.apUpRssi as number)
-          const DownIcon = getSNRIcon(row.apDownRssi as number)
+          const UpIcon = getSnrIcon(row.apUpRssi as number, true)
+          const DownIcon = getSnrIcon(row.apDownRssi as number, false)
           const upTooltip = getSignalStrengthTooltip(intl, row.apUpRssi as number)
           const downTooltip = getSignalStrengthTooltip(intl, row.apDownRssi as number)
           return (
             <div>
               {row.apUpRssi && <Tooltip placement='bottom' title={upTooltip}>
-                <SignalUpSpan style={{
-                  paddingRight: '30px' , fill: getSNRColor(row.apUpRssi) }}>
+                <SignalUpSpan style={{ paddingRight: '30px' }}>
                   <UpIcon />
                   {row.apUpRssi}
                 </SignalUpSpan>
               </Tooltip>}
               {row.apDownRssi && <Tooltip placement='bottom' title={downTooltip}>
-                <SignalDownSpan style={{ fill: getSNRColor(row.apDownRssi) }}>
+                <SignalDownSpan>
                   <DownIcon />
                   {row.apDownRssi}
                 </SignalDownSpan>
