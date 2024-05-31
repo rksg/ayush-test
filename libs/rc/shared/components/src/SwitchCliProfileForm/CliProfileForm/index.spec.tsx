@@ -71,7 +71,7 @@ describe('Cli Profile Form', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json({ data: venues }))
       ),
-      rest.post(SwitchUrlsInfo.getProfiles.url,
+      rest.post(CommonUrlsInfo.getConfigProfiles.url,
         (_, res, ctx) => res(ctx.json({ data: profiles }))
       ),
       rest.get(SwitchUrlsInfo.getCliConfigExamples.url,

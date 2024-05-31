@@ -108,7 +108,7 @@ describe('SwitchConfigTab', () => {
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json(venueSwitchSetting))
       ),
-      rest.post(SwitchUrlsInfo.getProfiles.url,
+      rest.post(CommonUrlsInfo.getConfigProfiles.url,
         (_, res, ctx) => res(ctx.json({ data: profiles }))
       ),
       rest.get(SwitchUrlsInfo.getAaaSetting.url, (req, res, ctx) =>

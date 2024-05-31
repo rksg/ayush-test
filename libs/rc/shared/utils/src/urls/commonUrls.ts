@@ -396,6 +396,12 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/rogue-policy',
     newApi: true
   },
+  getConfigProfiles: {
+    method: 'post',
+    url: '/switchProfiles/query',
+    oldUrl: '/api/switch/tenant/:tenantId/profiles/query',
+    newApi: true
+  },
   getVenueSwitchSetting: {
     method: 'get',
     url: '/venues/:venueId/switchSettings',
