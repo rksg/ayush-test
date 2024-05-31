@@ -22,7 +22,7 @@ import { ApDataContext } from '../..'
 import { VenueNameDisplay } from './RadioSettings'
 
 export interface ApBandManagementPorps {
-  venue: VenueExtended
+  venue: VenueExtended | undefined
   venueBandMode: BandModeEnum
   isSupportDual5GAp: boolean
   isSupportTriBandRadioAp: boolean
