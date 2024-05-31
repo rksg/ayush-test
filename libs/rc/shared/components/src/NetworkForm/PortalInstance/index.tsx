@@ -78,7 +78,7 @@ const PortalInstance = (props: {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal|PortalDetail>>({
     useQueryFn: useGetEnhancedPortalProfileListQuery,
     useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
-    payload: { ...defaultPayload, enableRbac: isEnabledRbacService },
+    payload: { ...defaultPayload },
     enableRbac: isEnabledRbacService
   })
 
@@ -93,13 +93,13 @@ const PortalInstance = (props: {
     list: (Portal|PortalDetail)[], isEnabledRbac: boolean
   ) => (await getPortal({
     params: { serviceId },
-    payload: { enableRbac: isEnabledRbac } })
+    enableRbac: isEnabledRbac })
     .unwrap())?.content as Demo
 
   const getTemplateContent = async (serviceId: string) =>
   (await getPortalTemplate({
     params: { serviceId },
-    payload: { enableRbac: isEnabledRbacService } })
+    enableRbac: isEnabledRbacService })
     .unwrap())?.content as Demo
 
   const getCurrentPortalContent = async (isTemplateMode: boolean, serviceId: string,

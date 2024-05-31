@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -19,7 +20,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockedRogueApPoliciesList, mockVenueRogueApResult } from '../__tests__/fixtures'
+import { mockedRogueApPoliciesList, mockedRogueApPoliciesListRbac, mockVenueRogueApResult } from '../__tests__/fixtures'
 
 import { RogueAPDetectionTable } from './RogueAPDetectionTable'
 
@@ -54,6 +55,10 @@ describe('RogueAPDetectionTable', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueRogueApResult))
+      ),
+      rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesListRbac))
       )
     )
   })
@@ -138,6 +143,64 @@ describe('RogueAPDetectionTable', () => {
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${editPath}`
+    })
+  })
+
+  it('should render table with rbac enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    render(
+      <Provider>
+        <RogueAPDetectionTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetName = mockedRogueApPoliciesListRbac.data[0].name
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('button', { name: /Add Rogue AP Detection Policy/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
+  })
+
+  it('should delete selected row with rbac enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        RogueApUrls.deleteRoguePolicyRbac.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <RogueAPDetectionTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockedRogueApPoliciesListRbac.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
+
+    const dialog = await screen.findByRole('dialog')
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
     })
   })
 })
