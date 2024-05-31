@@ -578,8 +578,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     addSwitchesVlans: build.mutation<Vlan[], RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(
-          // TODO: enable RBAC api
-          SwitchUrlsInfo.addSwitchesVlans, params, customHeaders.v1
+          SwitchRbacUrlsInfo.addSwitchesVlans, params, customHeaders.v1
         )
         return {
           ...req,
