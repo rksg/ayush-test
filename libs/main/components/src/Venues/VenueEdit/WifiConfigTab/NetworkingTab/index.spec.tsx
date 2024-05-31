@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                                                           from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, CommonRbacUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                    from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 
@@ -77,6 +77,7 @@ describe('NetworkingTab', () => {
         WifiUrlsInfo.getVenueApModelCellular.url,
         (_req, res, ctx) => res(ctx.json(mockCellularSettings))
       ),
+      // rbac
       rest.get(
         CommonRbacUrlsInfo.getVenueRadiusOptions.url,
         (_, res, ctx) => res(ctx.json(mockRadiusOptions))

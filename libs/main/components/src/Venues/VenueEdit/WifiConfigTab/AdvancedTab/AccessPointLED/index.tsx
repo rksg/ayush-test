@@ -5,15 +5,17 @@ import { isEqual }               from 'lodash'
 import { useIntl }               from 'react-intl'
 
 import { Button, Table, TableProps, Loader, showToast } from '@acx-ui/components'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }                           from '@acx-ui/icons'
 import {
   useGetVenueLedOnQuery,
   useGetVenueApModelsQuery,
-  useUpdateVenueLedOnMutation,
-  useGetVenueApCapabilitiesQuery } from '@acx-ui/rc/services'
+  useUpdateVenueLedOnMutation
+} from '@acx-ui/rc/services'
 import { VenueLed }               from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
+import { VenueUtilityContext }           from '../..'
 import { VenueEditContext, EditContext } from '../../../index'
 
 export interface ModelOption {
@@ -22,12 +24,16 @@ export interface ModelOption {
   }
 
 export function AccessPointLED () {
-
   const { $t } = useIntl()
   const { tenantId, venueId, activeSubTab } = useParams()
   const navigate = useNavigate()
-  const venueCaps = useGetVenueApCapabilitiesQuery({ params: { tenantId, venueId } })
-  const venueLed = useGetVenueLedOnQuery({ params: { tenantId, venueId } })
+
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
+
+  const venueLed = useGetVenueLedOnQuery(
+    { params: { tenantId, venueId }, enableRbac: isUseRbacApi }
+  )
   const venueApModels = useGetVenueApModelsQuery({ params: { tenantId, venueId } })
   const [updateVenueLedOn, { isLoading: isUpdatingVenueLedOn }] = useUpdateVenueLedOnMutation()
   const {
@@ -75,9 +81,8 @@ export function AccessPointLED () {
 
 
   useEffect(() => {
-    const apModels = venueCaps?.data?.apModels
+    const apModels = venueApCaps?.apModels
     if (apModels?.length) {
-      // @ts-ignore
       const supportModels: string[] = apModels?.filter(apModel => apModel.ledOn)
         .map(apModel => apModel.model)
       const venueApLeds = venueLed?.data?.map((item: VenueLed) => ({
@@ -97,7 +102,7 @@ export function AccessPointLED () {
       setSelectedModels(existingModels as string[])
       setModelOptions(availableModels)
     }
-  }, [venueLed.data, venueCaps.data])
+  }, [venueLed.data, venueApCaps])
 
   useEffect(() => {
     setEditContextData({
@@ -224,7 +229,8 @@ export function AccessPointLED () {
         })
         await updateVenueLedOn({
           params: { tenantId, venueId },
-          payload: tableData.filter(data => data.model)
+          payload: tableData.filter(data => data.model),
+          enableRbac: isUseRbacApi
         })
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
@@ -234,7 +240,7 @@ export function AccessPointLED () {
 
   return (
     <Loader states={[{
-      isLoading: venueLed.isLoading || venueCaps.isLoading,
+      isLoading: isLoadingVenueApCaps || venueLed.isLoading,
       isFetching: isUpdatingVenueLedOn
     }]}>
       <Space size={8} direction='vertical'>
