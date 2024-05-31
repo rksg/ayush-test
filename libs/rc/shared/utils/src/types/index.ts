@@ -166,7 +166,7 @@ export interface RWGRow extends RWG {
   isNode?: boolean
   children?: RWGRow[]
   ip?: string
-  rowId: string
+  rowId?: string
 }
 
 export interface GatewayAlarms {

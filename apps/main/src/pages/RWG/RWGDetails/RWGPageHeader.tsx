@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react'
 
-import { Badge }   from 'antd'
+import { Badge, Menu, MenuProps }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, cssStr, PageHeader }                       from '@acx-ui/components'
+import { Button, cssStr, Dropdown, PageHeader }             from '@acx-ui/components'
+import { useRwgActions }                                    from '@acx-ui/rc/components'
 import { useGetRwgQuery }                                   from '@acx-ui/rc/services'
 import { getRwgStatus, RWG, RWGClusterNode, RWGStatusEnum } from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,
   useTenantLink,
-  useParams
+  useParams,
+  TenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import { useRwgActions } from '../useRwgActions'
-
 import RWGTabs from './RWGTabs'
+import { CaretDownIcon } from 'libs/rc/msp/components/src/styledComponents'
+import MenuItem from 'antd/lib/menu/MenuItem'
 
 
 function RWGPageHeader () {
@@ -63,6 +65,34 @@ function RWGPageHeader () {
       }
     })}
 
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+
+    if (e.key === 'configure-rwg') {
+      window.open('https://' + (gatewayData?.hostname)?.toString() + '/admin',
+        '_blank')
+    } else {
+      window.open('https://' + (gatewayData?.hostname)?.toString() + '/conferences',
+        '_blank')
+    }
+
+  }
+
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      items={
+        [{
+          key: 'configure-rwg',
+          label: $t({ defaultMessage: 'Configure RWG' })
+        }, {
+          key: 'configure-conference',
+          label: $t({ defaultMessage: 'Configure Conferences' })
+        }]
+      }
+    />
+  )
+
   return (
     <PageHeader
       title={gatewayData?.name}
@@ -85,13 +115,12 @@ function RWGPageHeader () {
           }
           disabled={!!clusterNodeId}
         >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
-        <Button
-          type='primary'
-          onClick={() =>
-            window.open('https://' + (gatewayData?.hostname)?.toString(),
-              '_blank')
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>])
+        <Dropdown
+          overlay={menu}>
+          { () => <Button
+            type='primary'
+          >{$t({ defaultMessage: 'Configure' })} <CaretDownIcon /></Button> }
+        </Dropdown>])
       ]}
       footer={<RWGTabs gatewayDetail={gatewayData as RWG} />}
     />
