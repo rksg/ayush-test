@@ -18,6 +18,9 @@ data:
         initialDelaySeconds: 120
         periodSeconds: 5
         health: /health
+      resources:
+        requests:
+          cpu: 200m
       hpa:
         enabled: True
         minReplicas: 2
