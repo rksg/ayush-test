@@ -564,7 +564,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/meshSettings',
     // url: '/venues/aps/:serialNumber/meshSettings',
     newApi: true
-  }
+  },
   /*
   getMeshUplinkAPs: {
     method: 'post',
