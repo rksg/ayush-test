@@ -5,6 +5,8 @@ import { Provider, store, rbacApi, rbacApiURL } from '@acx-ui/store'
 import { render, screen, waitFor, mockServer }  from '@acx-ui/test-utils'
 import { RaiPermissions, setRaiPermissions }    from '@acx-ui/user'
 
+import { NotificationSettings } from '../NotificationSettings'
+
 import { Profile, ProfileTabEnum } from '.'
 
 const sampleProfile = {
@@ -22,7 +24,6 @@ const sampleProfile = {
 }
 
 const mockedUsedNavigate = jest.fn()
-
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUsedNavigate,
@@ -44,8 +45,9 @@ jest.mock('./PreferredLanguageFormItem', () => ({
 }))
 
 jest.mock('../NotificationSettings', () => ({
-  NotificationSettings: () => <div data-testid={'NotificationSettings'}/>
+  NotificationSettings: jest.fn(() => <div data-testid={'NotificationSettings'}/>)
 }))
+const notification = jest.mocked(NotificationSettings)
 
 describe('Profile', () => {
   beforeEach(() => {
@@ -98,6 +100,29 @@ describe('Profile', () => {
       { pathname: '/', hash: '', search: '' }, { replace: true }))
   })
   it('should handle save', async () => {
+    notification.mockImplementation(({ apply }) => {
+      apply.current = () => true
+      return <div data-testid={'NotificationSettings'}/>
+    })
+    mockServer.use(
+      rest.put(
+        `${rbacApiURL}/users/${sampleProfile.userId}`,
+        (_, res, ctx) => {
+          return res(ctx.json(sampleProfile.preferences))
+        }
+      )
+    )
+    render(<Profile tab={ProfileTabEnum.NOTIFICATIONS}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    await userEvent.click(await screen.findByText('Save'))
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith(
+      { pathname: '/', hash: '', search: '' }, { replace: true }))
+  })
+  it('should handle save with error', async () => {
+    notification.mockImplementation(({ apply }) => {
+      apply.current = () => false
+      return <div data-testid={'NotificationSettings'}/>
+    })
     mockServer.use(
       rest.put(
         `${rbacApiURL}/users/${sampleProfile.userId}`,
