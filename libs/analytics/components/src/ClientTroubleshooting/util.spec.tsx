@@ -406,6 +406,21 @@ describe('util', () => {
             type: 'connectionEvents'
           },
           desc: 'EAPOL Failure: PSK Failure (passphrase mismatch) - Invalid MIC @ R750-11-112 5 GHz'
+        },
+        {
+          event: {
+            event: 'CCD_REASON_AAA_WISPR_MAC_AUTH_FAIL',
+            mac: '94:B3:4F:3C:EE:20',
+            apName: 'AP4',
+            code: null,
+            state: 'normal',
+            failedMsgId: '3',
+            radio: '5',
+            start: 1668407707441,
+            end: 1668407707441,
+            category: 'connectionEvents'
+          },
+          desc: 'AAA MAC address authentication failure @ AP4 (94:B3:4F:3C:EE:20) 5 GHz'
         }
       ]
       data.forEach(({ event, desc }) => {
