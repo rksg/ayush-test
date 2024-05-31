@@ -13,7 +13,10 @@ import {
   useGetVenueTemplateRadiusOptionsQuery,
   useUpdateVenueTemplateRadiusOptionsMutation
 } from '@acx-ui/rc/services'
-import { ApiVersionEnum, ApiVersionType, VenueRadiusOptions } from '@acx-ui/rc/utils'
+import {
+  VenueRadiusOptions,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 
 import { VenueEditContext }               from '../../..'
 import {
@@ -26,8 +29,8 @@ const { useWatch } = Form
 export function RadiusOptions () {
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
-  const rbacApiVersion = isUseRbacApi? ApiVersionEnum.v1 : undefined
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
   const {
     editContextData,
@@ -38,11 +41,11 @@ export function RadiusOptions () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const form = Form.useFormInstance()
-  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>(
-    useGetVenueRadiusOptionsQuery,
-    useGetVenueTemplateRadiusOptionsQuery,
-    rbacApiVersion
-  )
+  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>({
+    useQueryFn: useGetVenueRadiusOptionsQuery,
+    useTemplateQueryFn: useGetVenueTemplateRadiusOptionsQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const [updateVenueRadiusOptions, { isLoading: isUpdatingVenueRadiusOptions }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -66,15 +69,14 @@ export function RadiusOptions () {
   const handleUpdateRadiusOptions = async () => {
     try {
       const formData = form.getFieldsValue()
-      let payload: (ApiVersionType & VenueRadiusOptions) = {
+      let payload: VenueRadiusOptions = {
         overrideEnabled: formData.overrideEnabled,
         nasIdType: formData.nasIdType,
         nasRequestTimeoutSec: formData.nasRequestTimeoutSec,
         nasMaxRetry: formData.nasMaxRetry,
         nasReconnectPrimaryMin: formData.nasReconnectPrimaryMin,
         calledStationIdType: formData.calledStationIdType,
-        singleSessionIdAccounting: formData.singleSessionIdAccounting,
-        rbacApiVersion
+        singleSessionIdAccounting: formData.singleSessionIdAccounting
       }
 
       if (formData.nasIdDelimiter) {
@@ -87,7 +89,8 @@ export function RadiusOptions () {
 
       await updateVenueRadiusOptions({
         params: { venueId },
-        payload: payload
+        payload: payload,
+        enableRbac: isUseRbacApi
       }).unwrap()
 
     } catch (error) {

@@ -22,7 +22,7 @@ export default function PortalServiceDetail () {
   const { $t } = useIntl()
   const params = useParams()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const queryResults = useGetPortalQuery({ params, payload: { enableRbac: isEnabledRbacService } })
+  const queryResults = useGetPortalQuery({ params, enableRbac: isEnabledRbacService })
 
   return (
     <>

@@ -110,6 +110,38 @@ describe('EdgeClusterSettingForm', () => {
     expect(screen.getByRole('button', { name: 'delete' })).toBeDisabled()
   })
 
+  it('should derive vSmartEdge model correctly', async () => {
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <EdgeClusterSettingForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    await userEvent.click(addBtn)
+    await waitFor(async () =>
+      expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(2)
+    )
+    await waitFor(async () =>
+      expect((await screen.findAllByRole('textbox', { name: 'Serial Number' })).length).toBe(2)
+    )
+    await userEvent.type(
+      screen.getAllByRole('textbox', { name: 'Serial Number' })[0],
+      '968E1BDBCED13611EE9078AE968A3B9E8B'
+    )
+    await userEvent.type(
+      screen.getAllByRole('textbox', { name: 'Serial Number' })[1],
+      '190000000001'
+    )
+    expect((await screen.findAllByText('vSmartEdge')).length).toBe(1)
+    expect((await screen.findAllByText('-')).length).toBe(1)
+  })
+
   it('should show edit data correctly', async () => {
     let mockData = mockEdgeClusterList.data[0]
     mockData.edgeList[0].serialNumber = '968E1BDBCED13611EE9078AE968A3B9E8B'
@@ -143,8 +175,8 @@ describe('EdgeClusterSettingForm', () => {
     expect(serialNumbers[1]).toHaveValue('serialNumber-2')
     expect(serialNumbers[0]).toBeDisabled()
     expect(serialNumbers[1]).toBeDisabled()
-    expect((await screen.findAllByText('-')).length).toBe(1)
-    expect((await screen.findAllByText('vSmartEdge')).length).toBe(1)
+    expect((await screen.findAllByText('model 1')).length).toBe(1)
+    expect((await screen.findAllByText('model 2')).length).toBe(1)
     expect(screen.queryByText(/The cluster function will operate/i)).not.toBeInTheDocument()
   })
 
