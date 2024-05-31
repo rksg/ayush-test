@@ -437,7 +437,7 @@ export function SwitchOverviewVLANs (props: {
         onChange={tableQuery.handleTableChange}
         pagination={tableQuery.pagination}
         dataSource={vlanTableData}
-        rowKey='vlanId'
+        rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={
           hasAccess() && isSwitchLevelVlanEnabled && !cliApplied && isSwitchOperational && {

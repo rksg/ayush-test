@@ -234,6 +234,7 @@ export function VlanSetting () {
         setVisible={setVlanDrawerVisible}
         vlan={(drawerFormRule)}
         setVlan={handleSetVlan}
+        isProfileLevel={true}
         vlansList={vlanTable.filter(item=>item.vlanId !== drawerFormRule?.vlanId)}
       />
       <DefaultVlanDrawer

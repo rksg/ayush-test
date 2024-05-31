@@ -105,8 +105,8 @@ export function UntaggedPortsStep () {
       tmpUntaggedSelectedItem = []
       const scrollAwareBox: Box = {
         ...box,
-        top: box.top + window.scrollY,
-        left: box.left + window.scrollX
+        top: box.top,
+        left: box.left
       }
 
       Array.from({ length: portsModule1.length }).forEach((_,i) => {

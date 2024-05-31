@@ -20,7 +20,6 @@ import {
   SwitchSlot,
   PortStatusMessages,
   validateDuplicateVlanId,
-  validateVlanName,
   validateVlanNameWithoutDVlans,
   Vlan
 } from '@acx-ui/rc/utils'
@@ -44,6 +43,7 @@ export interface VlanSettingDrawerProps {
   visible: boolean
   setVisible: (v: boolean) => void
   vlansList: Vlan[]
+  isProfileLevel?: boolean
   enablePortModelConfigure?: boolean
   switchFamilyModel?: string
   portSlotsData?: SwitchSlot[]
@@ -53,7 +53,7 @@ export interface VlanSettingDrawerProps {
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
-    vlansList, switchFamilyModel,
+    vlansList, isProfileLevel, switchFamilyModel,
     enablePortModelConfigure = true, portSlotsData, portsUsedBy } = props
   const [form] = Form.useForm<Vlan>()
 
@@ -78,6 +78,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           vlan={vlan}
           setVlan={setVlan}
           vlansList={vlansList || []}
+          isProfileLevel={isProfileLevel}
           enablePortModelConfigure={enablePortModelConfigure}
           switchFamilyModel={switchFamilyModel}
           portSlotsData={portSlotsData}
@@ -114,6 +115,7 @@ interface VlanSettingFormProps {
   vlan?: Vlan
   setVlan: (r: Vlan) => void
   vlansList: Vlan[]
+  isProfileLevel?: boolean
   switchFamilyModel?: string
   enablePortModelConfigure?: boolean
   portSlotsData?: SwitchSlot[]
@@ -129,7 +131,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
-  const { form, vlan, setVlan, vlansList, editMode,
+  const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
     switchFamilyModel, portSlotsData, enablePortModelConfigure = true, portsUsedBy } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
@@ -273,7 +275,6 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           validateFirst
           rules={[
             { required: true },
-            { validator: (_, value) => validateVlanName(value) },
             { validator: (_, value) => validateDuplicateVlanId(
               value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
             ) }
@@ -300,7 +301,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           />
         </UI.FieldLabel>
         <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
-          {ipv4DhcpSnooping &&
+          {ipv4DhcpSnooping && isProfileLevel &&
             <label>{
               $t({ defaultMessage:
                 'If DHCP Snooping is turned ON, you must select trusted ports' }) }
@@ -317,7 +318,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           />
         </UI.FieldLabel>
         <UI.FieldLabel width='500px' style={{ marginTop: '-10px', paddingBottom: '10px' }}>
-          {arpInspection &&
+          {arpInspection && isProfileLevel &&
             <label>{
               $t({ defaultMessage:
                 'If ARP Inspection is turned ON, you must select trusted ports' }) }
