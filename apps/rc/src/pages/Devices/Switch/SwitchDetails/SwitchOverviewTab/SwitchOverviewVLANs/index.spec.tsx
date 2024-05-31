@@ -90,7 +90,7 @@ describe('Switch Overview VLAN', () => {
         rest.post(SwitchUrlsInfo.getSwitchRoutedList.url,
           (_, res, ctx) => res(ctx.json({}))
         ),
-        rest.post(SwitchUrlsInfo.addSwitchesVlans.url,
+        rest.post(SwitchRbacUrlsInfo.addSwitchesVlans.url,
           (req, res, ctx) => {
             addVlanSpy()
             return res(ctx.json({}))
