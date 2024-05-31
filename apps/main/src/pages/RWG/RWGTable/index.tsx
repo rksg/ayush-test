@@ -166,6 +166,14 @@ export function RWGTable () {
     }
   },
   {
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Configure' }),
+    onClick: (selectedRows) => {
+      window.open('https://' + (selectedRows[0]?.hostname)?.toString() + '/admin',
+        '_blank')
+    }
+  },
+  {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
       rwgActions.deleteGateways(rows, tenantId, clearSelection)

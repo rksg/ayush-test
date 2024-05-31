@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { Badge, Menu, MenuProps }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Badge, Menu, MenuProps } from 'antd'
+import { useIntl }                from 'react-intl'
 
 import { Button, cssStr, Dropdown, PageHeader }             from '@acx-ui/components'
+import { CaretDownOutlined }                                from '@acx-ui/icons'
 import { useRwgActions }                                    from '@acx-ui/rc/components'
 import { useGetRwgQuery }                                   from '@acx-ui/rc/services'
 import { getRwgStatus, RWG, RWGClusterNode, RWGStatusEnum } from '@acx-ui/rc/utils'
@@ -11,14 +12,11 @@ import {
   useLocation,
   useNavigate,
   useTenantLink,
-  useParams,
-  TenantLink
+  useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
 import RWGTabs from './RWGTabs'
-import { CaretDownIcon } from 'libs/rc/msp/components/src/styledComponents'
-import MenuItem from 'antd/lib/menu/MenuItem'
 
 
 function RWGPageHeader () {
@@ -119,7 +117,7 @@ function RWGPageHeader () {
           overlay={menu}>
           { () => <Button
             type='primary'
-          >{$t({ defaultMessage: 'Configure' })} <CaretDownIcon /></Button> }
+          >{$t({ defaultMessage: 'Configure' })} <CaretDownOutlined /></Button> }
         </Dropdown>])
       ]}
       footer={<RWGTabs gatewayDetail={gatewayData as RWG} />}
