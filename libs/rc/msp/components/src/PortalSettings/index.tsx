@@ -26,6 +26,7 @@ import {
   GridCol,
   GridRow
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddMspLabelMutation,
   useGetMspBaseURLQuery,
@@ -79,6 +80,7 @@ export function PortalSettings () {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const params = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
@@ -109,7 +111,7 @@ export function PortalSettings () {
   const [addMspLabel] = useAddMspLabelMutation()
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
-  const { data: provider } = useExternalProvidersQuery({ params })
+  const { data: provider } = useExternalProvidersQuery({ params, enableRbac: isUseRbacApi })
   const { data: baseUrl } = useGetMspBaseURLQuery({ params })
   const { data: mspLabel } = useGetMspLabelQuery({ params })
 
