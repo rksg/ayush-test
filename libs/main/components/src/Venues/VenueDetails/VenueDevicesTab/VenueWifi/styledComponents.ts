@@ -31,10 +31,11 @@ export const ApSingleIcon = styled(SignalLeft)`
 
 export const MeshSignalSpan = styled.span`
   svg {
-    vertical-align: text-top;
+    vertical-align: middle;
     margin-right: 2px;
   }
 `
+
 export const WiredIcon = styled(Wired)`
   width: 20px;
   height: 20px;
