@@ -1,4 +1,3 @@
-
 import { ApMeshLink, SignalStrengthLevel } from '@acx-ui/rc/utils'
 
 import { snrColorMap, snrIconMap } from './contents'
