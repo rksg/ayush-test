@@ -11,6 +11,10 @@ const mockedPrefMutation = jest.fn().mockImplementation(() => ({
   unwrap: mockedUnwrap
 }))
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  getUserProfile: () => ({ email: 'test1@email.com' })
+}))
+
 jest.mock('@acx-ui/analytics/services', () => ({
   ...jest.requireActual('@acx-ui/analytics/services'),
   useSetNotificationMutation: () => [
@@ -84,9 +88,20 @@ describe('NotificationSettings', () => {
         preferences: {
           configRecommendation: { aiOps: ['email'] },
           incident: { P1: ['email'] },
-          recipients: ['test@email.com']
+          recipients: ['test1@email.com', 'test@email.com']
         }
       })
     })
+  })
+  it('does not submit with empty recipients', async () => {
+    mockGet.mockReturnValue('true')
+    const apply = {}
+    render(<NotificationSettings
+      tenantId='test'
+      apply={apply}
+    />, { wrapper: Provider })
+    await userEvent.click(await screen.findByTitle('test1@email.com'))
+    await userEvent.click((await screen.findAllByTitle('test1@email.com'))[1])
+    expect(await apply.current()).toEqual(false)
   })
 })
