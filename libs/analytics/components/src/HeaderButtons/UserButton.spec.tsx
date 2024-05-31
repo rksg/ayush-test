@@ -21,18 +21,6 @@ jest.mock('@acx-ui/utils', () => ({
   userLogout: jest.fn()
 }))
 
-const mockPermissions = {
-  'view-analytics': true,
-  'view-report-controller-inventory': true,
-  'view-data-explorer': true,
-  'manage-service-guard': false,
-  'manage-call-manager': false,
-  'manage-mlisa': true,
-  'manage-occupancy': true,
-  'manage-label': true,
-  'manage-tenant-settings': true,
-  'manage-config-recommendation': false
-}
 const mockUserProfile = {
   accountId: 'accountId',
   firstName: 'firstName',
@@ -42,10 +30,10 @@ const mockUserProfile = {
   role: '',
   support: false,
   invitations: [] as Invitation[],
-  selectedTenant: { id: 'accountId', permissions: mockPermissions } as Tenant,
+  selectedTenant: { id: 'accountId', permission: {} } as unknown as Tenant,
   tenants: [
-    { id: 'accountId', permissions: mockPermissions },
-    { id: 'accountId2', permissions: [] }
+    { id: 'accountId', permissions: {} },
+    { id: 'accountId2', permissions: {} }
   ] as Tenant[]
 }
 describe('UserButton', () => {
@@ -112,26 +100,5 @@ describe('UserButton', () => {
       { route: { params } }
     )
     expect(screen.getByRole('button')).toHaveTextContent('')
-  })
-
-  it('should not render My Profile if view-analytics is false', async () => {
-    const permissions = { ...mockPermissions, 'view-analytics': false }
-    userProfile.mockReturnValue({
-      ...mockUserProfile,
-      accountId: 'accountId1',
-      selectedTenant: { id: 'accountId1', permissions } as Tenant,
-      tenants: [
-        { id: 'accountId1', permissions }
-      ] as Tenant[]
-    })
-    render(
-      <Provider>
-        <UserButton />
-      </Provider>,
-      { route: { params } }
-    )
-
-    await userEvent.click(screen.getByRole('button'))
-    expect(screen.queryByRole('link', { name: 'My Profile' })).toBeNull()
   })
 })

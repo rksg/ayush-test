@@ -9,26 +9,27 @@ import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@
 import {
   ConnectionMeteringLink,
   DpskPoolLink,
+  IdentityGroupLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  IdentityGroupLink,
-  PropertyUnitLink,
   PassphraseViewer,
   PersonaDrawer,
+  PropertyUnitLink,
   usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetDpskQuery,
+  useAllocatePersonaVniMutation,
   useGetPersonaByIdQuery,
-  useLazyGetMacRegListQuery,
-  useLazyGetPersonaGroupByIdQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
-  useLazyGetPropertyUnitByIdQuery,
   useLazyGetConnectionMeteringByIdQuery,
-  useUpdatePersonaMutation,
-  useAllocatePersonaVniMutation
+  useLazyGetDpskQuery,
+  useLazyGetMacRegListQuery,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetPersonaGroupByIdQuery,
+  useLazyGetPropertyUnitByIdQuery,
+  useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
+import { WifiScopes }                       from '@acx-ui/types'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
@@ -387,7 +388,12 @@ function PersonaDetailsPageHeader (props: {
   }
 
   const extra = filterByAccess([
-    <Button type='primary' onClick={showRevokedModal} disabled={!allowed}>
+    <Button
+      type='primary'
+      onClick={showRevokedModal}
+      disabled={!allowed}
+      scopeKey={[WifiScopes.UPDATE]}
+    >
       {$t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
@@ -395,7 +401,7 @@ function PersonaDetailsPageHeader (props: {
         description: 'Translation strings - Unblock, Block Identity'
       }, { revokedStatus })}
     </Button>,
-    <Button type={'primary'} onClick={onClick}>
+    <Button type={'primary'} onClick={onClick} scopeKey={[WifiScopes.UPDATE]}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
   ])

@@ -1,7 +1,7 @@
 import React, { CSSProperties, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
-import _                                                           from 'lodash'
+import { isEmpty }                                                 from 'lodash'
 import { FormattedMessage, useIntl }                               from 'react-intl'
 import styled                                                      from 'styled-components'
 
@@ -93,6 +93,9 @@ export function SecurityTab () {
   // eslint-disable-next-line max-len
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
@@ -108,21 +111,48 @@ export function SecurityTab () {
       useUpdateVenueTemplateDoSProtectionMutation
     )
 
-  const [updateVenueRogueAp, {
-    isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueRogueApMutation,
-    useUpdateVenueRogueApTemplateMutation
-  )
+  // eslint-disable-next-line max-len
+  const [updateVenueRogueAp, { isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueRogueApMutation,
+    useTemplateMutationFn: useUpdateVenueRogueApTemplateMutation
+  })
 
-  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
-    useGetDenialOfServiceProtectionQuery,
-    useGetVenueTemplateDoSProtectionQuery
-  )
+  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>({
+    useQueryFn: useGetDenialOfServiceProtectionQuery,
+    useTemplateQueryFn: useGetVenueTemplateDoSProtectionQuery,
+    enableRbac: isUseRbacApi
+  })
 
-  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher(
-    useGetVenueRogueApQuery,
-    useGetVenueRogueApTemplateQuery
-  )
+  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVenueRogueApQuery,
+    useTemplateQueryFn: useGetVenueRogueApTemplateQuery,
+    enableRbac
+  })
+
+  // eslint-disable-next-line max-len
+  const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
+    const { data } = useConfigTemplateQueryFnSwitcher({
+      useQueryFn: useEnhancedRoguePoliciesQuery,
+      useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
+      payload: DEFAULT_PAYLOAD,
+      enableRbac
+    })
+
+    if (data?.totalCount === 0) {
+      return {
+        selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
+        selected: DEFAULT_OPTIONS.find((item) =>
+          item.id === DEFAULT_POLICY_ID
+        )
+      }
+    }
+    return {
+      selectOptions: data?.data.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
+      selected: data?.data.find((item) =>
+        item.id === policyId
+      )
+    }
+  }
 
   const [updateVenueApEnhancedKey, {
     isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
@@ -142,7 +172,7 @@ export function SecurityTab () {
 
   useEffect(() => {
     if (selectOptions.length > 0) {
-      if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
+      if (isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
         // eslint-disable-next-line max-len
         const defaultProfile = selectOptions.find(option => option.props.children === DEFAULT_PROFILE_NAME)
         formRef.current?.setFieldValue('roguePolicyId', defaultProfile?.key)
@@ -196,7 +226,11 @@ export function SecurityTab () {
           checkPeriod: data?.checkPeriod,
           failThreshold: data?.failThreshold
         }
-        await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
+        await updateDenialOfServiceProtection({
+          params,
+          payload: dosProtectionPayload,
+          enableRbac: isUseRbacApi
+        })
         setTriggerDoSProtection(false)
       }
 
@@ -204,9 +238,11 @@ export function SecurityTab () {
         const rogueApPayload = {
           enabled: data?.rogueApEnabled,
           reportThreshold: data?.reportThreshold,
-          roguePolicyId: data?.roguePolicyId
+          roguePolicyId: data?.roguePolicyId,
+          currentRoguePolicyId: venueRogueApData?.roguePolicyId,
+          currentReportThreshold: venueRogueApData?.reportThreshold
         }
-        await updateVenueRogueAp({ params, payload: rogueApPayload })
+        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac })
         setTriggerRogueAPDetection(false)
       }
 
@@ -487,27 +523,3 @@ const FieldsetItem = ({
     onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>
 
-// eslint-disable-next-line max-len
-const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useEnhancedRoguePoliciesQuery,
-    useGetRoguePolicyTemplateListQuery,
-    false,
-    DEFAULT_PAYLOAD
-  )
-
-  if (data?.totalCount === 0) {
-    return {
-      selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
-      selected: DEFAULT_OPTIONS.find((item) =>
-        item.id === DEFAULT_POLICY_ID
-      )
-    }
-  }
-  return {
-    selectOptions: data?.data.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
-    selected: data?.data.find((item) =>
-      item.id === policyId
-    )
-  }
-}

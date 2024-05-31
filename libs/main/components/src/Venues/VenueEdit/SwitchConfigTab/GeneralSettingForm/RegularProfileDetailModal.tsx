@@ -23,13 +23,11 @@ export function RegularProfileDetailModal (props: {
 }) {
   const { $t } = getIntl()
   const { formState, setFormState, formData } = props
-  const { data } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>(
-    useGetSwitchConfigProfileQuery,
-    useGetSwitchConfigProfileTemplateQuery,
-    false,
-    undefined,
-    { profileId: formData?.profileId?.[0] as string }
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
+    useQueryFn: useGetSwitchConfigProfileQuery,
+    useTemplateQueryFn: useGetSwitchConfigProfileTemplateQuery,
+    extraParams: { profileId: formData?.profileId?.[0] as string }
+  })
 
   const vlansColumns: TableProps<Vlan>['columns']= [{
     title: $t({ defaultMessage: 'VLAN ID' }),

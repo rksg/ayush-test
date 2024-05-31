@@ -35,6 +35,11 @@ jest.mock('./DirectedMulticast', () => ({
 }))
 
 describe('AP Networking Tab', () => {
+  const defaultT750SeApCtxData = {
+    apData: ApData_T750SE,
+    apCapabilities: ApCap_T750SE
+  }
+
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
@@ -42,9 +47,7 @@ describe('AP Networking Tab', () => {
   it('should render correctly',async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{
-          apData: ApData_T750SE,
-          apCapabilities: ApCap_T750SE }} >
+        <ApDataContext.Provider value={defaultT750SeApCtxData}>
           <NetworkingTab />
         </ApDataContext.Provider>
       </Provider>, {
@@ -98,9 +101,7 @@ describe('AP Networking Tab', () => {
           editNetworkingContextData: newEditNetworkingContextData,
           setEditNetworkingContextData: jest.fn()
         }} >
-          <ApDataContext.Provider value={{
-            apData: ApData_T750SE,
-            apCapabilities: ApCap_T750SE }} >
+          <ApDataContext.Provider value={defaultT750SeApCtxData}>
             <NetworkingTab />
           </ApDataContext.Provider>
         </ApEditContext.Provider>

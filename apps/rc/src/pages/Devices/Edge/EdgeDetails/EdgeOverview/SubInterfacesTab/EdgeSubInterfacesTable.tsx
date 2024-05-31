@@ -1,7 +1,7 @@
-import { Loader }                                       from '@acx-ui/components'
-import { useGetEdgeSubInterfacesStatusListQuery }       from '@acx-ui/rc/services'
-import { EdgeLagStatus, EdgePortStatus, useTableQuery } from '@acx-ui/rc/utils'
-import { RequestPayload }                               from '@acx-ui/types'
+import { Loader }                                 from '@acx-ui/components'
+import { useGetEdgeSubInterfacesStatusListQuery } from '@acx-ui/rc/services'
+import { EdgePortInfo, useTableQuery }            from '@acx-ui/rc/utils'
+import { RequestPayload }                         from '@acx-ui/types'
 
 import { SubInterfaceTable } from './SubInterfaceTable'
 
@@ -29,8 +29,7 @@ export const EdgeSubInterfacesTable = ({ serialNumber, ifName }:
     sortOrder: 'ASC'
   }
 
-  // eslint-disable-next-line max-len
-  const tableQuery = useTableQuery<EdgePortStatus | EdgeLagStatus, RequestPayload<unknown>, unknown>({
+  const tableQuery = useTableQuery<EdgePortInfo, RequestPayload<unknown>, unknown>({
     useQuery: useGetEdgeSubInterfacesStatusListQuery,
     defaultPayload: defaultPayload,
     sorter: {

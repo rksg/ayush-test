@@ -184,9 +184,9 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
   // VLAN fields state
   const enableGuestVlan = useWatch('enableGuestVlan', form)
 
-  const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
+  const isConnectionMeteringAvailable = useIsSplitOn(Features.CONNECTION_METERING)
   const connectionMeteringListQuery = useGetConnectionMeteringListQuery(
-    { payload: { pageSize: '2147483647', page: '1' } }, { skip: !isConnectionMeteringEnabled }
+    { payload: { pageSize: '2147483647', page: '1' } }, { skip: !isConnectionMeteringAvailable }
   )
 
 
@@ -280,7 +280,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
             }
           }
 
-          if (isConnectionMeteringEnabled) {
+          if (isConnectionMeteringAvailable) {
             unitFormFields = {
               ...unitFormFields,
               meteringProfileId,
@@ -353,11 +353,11 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       }
     ]
 
-    const profileId = isConnectionMeteringEnabled ?
+    const profileId = isConnectionMeteringAvailable ?
       meteringProfileId !== qosSetting?.profileId ? meteringProfileId ?? null : undefined
       : undefined
 
-    let newExpirationDate = isConnectionMeteringEnabled ?
+    let newExpirationDate = isConnectionMeteringAvailable ?
       meteringProfileId ?
         expirationDate && expirationDate.startOf('day') !== qosSetting?.expirationDate ?
           expirationDate.startOf('day').toISOString() : undefined
@@ -415,7 +415,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
       }))
       : undefined
 
-    const trafficControl = isConnectionMeteringEnabled && meteringProfileId && expirationDate ?
+    const trafficControl = isConnectionMeteringAvailable && meteringProfileId && expirationDate ?
       {
         meteringProfileId: meteringProfileId,
         profileExpiry: expirationDate.startOf('day').toISOString()
@@ -666,7 +666,7 @@ export function PropertyUnitDrawer (props: PropertyUnitDrawerProps) {
                 />}
               validateFirst
             />
-            {isConnectionMeteringEnabled &&
+            {isConnectionMeteringAvailable &&
               <ConnectionMeteringSettingForm
                 data={connectionMeteringList}
                 isEdit
