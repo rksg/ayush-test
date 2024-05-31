@@ -154,7 +154,7 @@ export const ccdReasonCodes = [
   {
     id: 30,
     code: 'CCD_REASON_AAA_WISPR_MAC_AUTH_FAIL',
-    text: defineMessage({ defaultMessage: 'AAA MAC address authentication failure' })
+    text: defineMessage({ defaultMessage: 'WISPR MAC Auth Failure' })
   },
   {
     id: 31,
