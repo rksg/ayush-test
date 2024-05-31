@@ -141,7 +141,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         try {
           // eslint-disable-next-line max-len
           const { name, description, rules, venues } = payload!
-          const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
           const res = await fetchWithBQ({
             // eslint-disable-next-line max-len
             ...createHttpRequest(enableRbac ? RogueApUrls.addRoguePolicyRbac : RogueApUrls.addRoguePolicy, params, headers),
@@ -175,7 +175,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const url = enableRbac ? RogueApUrls.deleteRoguePolicyRbac : RogueApUrls.deleteRoguePolicy
         const req = createHttpRequest(url, params, headers)
         return {
@@ -671,7 +671,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const url = enableRbac ? RogueApUrls.getRoguePolicyRbac : RogueApUrls.getRoguePolicy
         const req = createHttpRequest(url, params, headers)
         return {
@@ -684,7 +684,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
           // eslint-disable-next-line max-len
           const { id: policyId, name, description, rules, venues, oldVenues, defaultPolicyId } = payload!
 
