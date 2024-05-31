@@ -695,7 +695,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
           return batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ, customHeaders.v1)
         } else {
           const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
-          return fetchWithBQ(req)
+          return fetchWithBQ({
+            ...req,
+            body: payload
+          })
         }
       },
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
