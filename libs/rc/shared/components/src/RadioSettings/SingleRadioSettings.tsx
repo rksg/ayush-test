@@ -1,14 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { useEffect, useRef, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Row, Form, Switch } from 'antd'
 import { isEmpty }                from 'lodash'
 import { useIntl }                from 'react-intl'
 
-import { Button, cssStr }                                         from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { AFCProps }                                               from '@acx-ui/rc/utils'
+import { Button, cssStr } from '@acx-ui/components'
+import { AFCProps }       from '@acx-ui/rc/utils'
 
 import { RadioSettingsChannels }       from '../RadioSettingsChannels'
 import { findIsolatedGroupByChannel }  from '../RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -22,10 +19,10 @@ import {
   ApRadioTypeDataKeyMap,
   ApRadioTypeEnum, ChannelBars,
   RadioChannel,
-  SelectItemOption,
   split5GChannels,
   VenueRadioTypeDataKeyMap,
-  LPIButtonText
+  LPIButtonText,
+  SupportRadioChannelsContext
 } from './RadioSettingsContents'
 import { RadioSettingsForm } from './RadioSettingsForm'
 
@@ -57,13 +54,10 @@ export function SingleRadioSettings (props:{
   disable?: boolean,
   inherit5G?: boolean,
   radioType: ApRadioTypeEnum,
-  bandwidthOptions: SelectItemOption[],
-  supportChannels: any,
   handleChanged?: () => void,
   onResetDefaultValue?: Function,
   testId?: string,
   isUseVenueSettings?: boolean,
-  supportDfsChannels?: any,
   LPIButtonText?: LPIButtonText,
   afcProps?: AFCProps
 }) {
@@ -80,12 +74,18 @@ export function SingleRadioSettings (props:{
     afcProps
   } = props
 
+  const { radioType, handleChanged } = props
+
   const {
-    radioType,
-    supportChannels,
-    bandwidthOptions,
-    handleChanged,
-    supportDfsChannels } = props
+    bandwidthRadioOptions,
+    supportRadioChannels,
+    supportRadioDfsChannels
+  } = useContext(SupportRadioChannelsContext)
+
+  const bandwidthOptions = bandwidthRadioOptions[radioType]
+  const supportChannels = supportRadioChannels[radioType]
+  // eslint-disable-next-line max-len
+  const supportDfsChannels = supportRadioDfsChannels? supportRadioDfsChannels[radioType]: undefined
 
   const isSupportRadio = bandwidthOptions?.length > 0
   const radioDataKey = (context === 'venue') ?
@@ -123,11 +123,6 @@ export function SingleRadioSettings (props:{
   let allowIndoorForOutdoor = false
   let hasIndoorForOutdoor = false
 
-  const allowIndoorForOutdoorFeatureFlag = useIsSplitOn(Features.ALLOW_INDOOR_CHANNEL_TOGGLE)
-  const wifi7_320Mhz_FeatureFlag = useIsSplitOn(Features.WIFI_EDA_WIFI7_320MHZ)
-  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-
-
   if (context === 'venue') {
     const { indoor, outdoor, indoorForOutdoorAp } = supportChannels
     hasIndoorBandwidth = !isEmpty(indoor)
@@ -135,8 +130,7 @@ export function SingleRadioSettings (props:{
     hasIndoorForOutdoor = !isEmpty(indoorForOutdoorAp)
 
     allowIndoorForOutdoor = (radioType === ApRadioTypeEnum.Radio5G
-                             && hasIndoorForOutdoor === true
-                             && allowIndoorForOutdoorFeatureFlag)
+                             && hasIndoorForOutdoor === true)
 
   } else {// context === 'ap'
     //bandwidthList = Object.keys(supportChannels)
@@ -333,7 +327,7 @@ export function SingleRadioSettings (props:{
   }
 
   const selectRadioChannelSelectionType = () => {
-    if(channelBandwidth === '320MHz' && (wifi7_320Mhz_FeatureFlag && enableAP70)) {
+    if(channelBandwidth === '320MHz') {
       if (channelMethod === 'MANUAL' && context === 'ap') {
         return (
           <Row gutter={20}>

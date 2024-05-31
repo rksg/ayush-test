@@ -53,16 +53,16 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
         (_, res, ctx) => res(ctx.json({ data: mockEdgePortStatus }))
       ),
       rest.get(
-        EdgeUrlsInfo.getPortConfigDeprecated.url,
-        (req, res, ctx) => res(ctx.json(mockEdgePortConfig))
+        EdgeUrlsInfo.getPortConfig.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgePortConfig))
       ),
       rest.patch(
-        EdgeUrlsInfo.updatePortConfigDeprecated.url,
-        (req, res, ctx) => res(ctx.status(202))
+        EdgeUrlsInfo.updatePortConfig.url,
+        (_req, res, ctx) => res(ctx.status(202))
       ),
       rest.get(
         EdgeUrlsInfo.getEdgeLagList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeLagList))
+        (_req, res, ctx) => res(ctx.json(mockedEdgeLagList))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeLagStatusList.url,
@@ -116,6 +116,7 @@ describe('Edge centrailized forwarding form: CorePortFormItem', () => {
     await click(await within(formBody).findByText('SmartEdge\'s Port configuration'))
     await waitFor(async () => expect(await screen.findByRole('dialog')).toBeVisible())
     const dialog = screen.getByRole('dialog')
+    expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()
     expect(within(dialog).queryByText('Smart Edge 3')).toBeValid()
     await click(await within(dialog).findByRole('button', { name: 'Cancel' }))
     await waitFor(() => expect(dialog).not.toBeVisible())

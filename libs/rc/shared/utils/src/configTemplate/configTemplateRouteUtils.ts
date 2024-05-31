@@ -31,6 +31,12 @@ export function getConfigTemplateEditPath (type: ConfigTemplateType, id: string)
     path = `networks/wireless/${id}/edit`
   } else if (type === ConfigTemplateType.VENUE) {
     path = `venues/${id}/edit/details`
+  } else if (type === ConfigTemplateType.SWITCH_REGULAR) {
+    path = `networks/wired/profiles/regular/${id}/edit`
+  } else if (type === ConfigTemplateType.SWITCH_CLI) {
+    path = `networks/wired/profiles/cli/${id}/edit`
+  } else if (type === ConfigTemplateType.AP_GROUP) {
+    path = `devices/apgroups/${id}/edit/general`
   }
 
   return getConfigTemplatePath(path)

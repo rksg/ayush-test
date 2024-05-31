@@ -8,6 +8,7 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
 import {
@@ -37,6 +38,8 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     getSwitchScheduleTpl
   } = useSwitchFirmwareUtils()
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListQuery({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })
@@ -45,7 +48,9 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      payload: { venueIdList: [props.data.id] }
+      params: { venueId: props.data.id },
+      payload: { venueIdList: [props.data.id] },
+      enableRbac: isSwitchRbacEnabled
     }, false)).data?.data
     if (switchList) {
       const filterSwitchList = switchList.filter(row => row.isSwitchLevelSchedule)

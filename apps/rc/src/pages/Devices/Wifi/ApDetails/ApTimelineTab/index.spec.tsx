@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                               from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider }                                     from '@acx-ui/store'
 import { mockServer, render, screen, mockRestApiQuery } from '@acx-ui/test-utils'
 
@@ -23,6 +23,14 @@ const wrapper = (props: { children: JSX.Element }) => <Provider>
 </Provider>
 
 describe('ApTimelineTab', ()=>{
+  beforeEach(() => {
+    mockServer.use(
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
+    )
+  })
   it('should render', async () => {
     const ap = {
       serialNumber: '000000000001',

@@ -7,7 +7,6 @@ import { useParams }                                              from 'react-ro
 import {
   useGetAvailableSwitchesQuery,
   useGetDpskQuery,
-  useGetEdgeDhcpListQuery,
   useGetEdgeListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useGetPersonaGroupByIdQuery,
@@ -66,11 +65,6 @@ type ProviderProps = React.PropsWithChildren<{
   venueId?: string
 }>
 
-const dhcpDefaultPayload = {
-  page: 1,
-  pageSize: 10000
-}
-
 const venueOptionsDefaultPayload = {
   fields: [
     'name',
@@ -92,6 +86,7 @@ const tunnelProfileDefaultPayload = {
   sortOrder: 'ASC'
 }
 
+// TODO This data provider needs to be fixed when doing PIN RBAC task
 export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) => {
   const params = useParams()
   const [venueId, setVenueId] = useState('')
@@ -173,24 +168,6 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         }
       }
     })
-  const {
-    dhcpProfles,
-    dhcpOptions,
-    isLoading: isDhcpOptionsLoading,
-    poolMap
-  } = useGetEdgeDhcpListQuery(
-    { params, payload: dhcpDefaultPayload },
-    {
-      selectFromResult: ({ data, isLoading }) => {
-        return {
-          dhcpProfles: data?.content,
-          dhcpOptions: data?.content.map(item => ({ label: item.serviceName, value: item.id })),
-          poolMap: data?.content.reduce((acc, item) =>
-            ({ ...acc, [item.id]: item.dhcpPools }), {}) as { [key: string]: EdgeDhcpPool[] },
-          isLoading
-        }
-      }
-    })
   const { tunnelProfileOptions, isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
@@ -260,13 +237,11 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
   }
 
   const getDhcpName = (value: string) => {
-    return dhcpOptions?.find(item => item.value === value)?.label ?? ''
+    return value
   }
 
   const getDhcpPoolName = (dhcpId: string, poolId: string) => {
-    return !!poolMap ?
-      (poolMap[dhcpId]?.find(item => item.id === poolId)?.poolName || poolId) :
-      ''
+    return dhcpId + poolId
   }
 
   const getTunnelProfileName = (value: string) => {
@@ -293,10 +268,10 @@ export const PersonalIdentityNetworkFormDataProvider = (props: ProviderProps) =>
         isDpskLoading,
         edgeOptions,
         isEdgeOptionsLoading,
-        dhcpProfles,
-        dhcpOptions,
-        poolMap,
-        isDhcpOptionsLoading,
+        dhcpProfles: [],
+        dhcpOptions: [],
+        poolMap: {},
+        isDhcpOptionsLoading: false,
         tunnelProfileOptions,
         isTunnelLoading,
         networkOptions,

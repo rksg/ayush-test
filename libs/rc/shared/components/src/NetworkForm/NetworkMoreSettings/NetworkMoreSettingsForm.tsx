@@ -167,7 +167,7 @@ export function MoreSettingsTabs (props: {
     </div>
     }
     <div style={{ display: currentTab === 'networkControl' ? 'block' : 'none' }}>
-      <NetworkControlTab wlanData={wlanData} />
+      <NetworkControlTab/>
     </div>
     <div style={{ display: currentTab === 'radio' ? 'block' : 'none' }}>
       <RadioTab />

@@ -55,7 +55,10 @@ export function ServiceGuardDetails () {
           }
         ]}
         extra={[
-          ...(hasPermission() ? [ <ReRunButton key='re-run' /> ] : []),
+          ...(hasPermission({ permission: 'WRITE_SERVICE_VALIDATION' })
+            ? [ <ReRunButton key='re-run' /> ]
+            : []
+          ),
           <TestRunButton key='past-tests' />
         ]}
         footer={

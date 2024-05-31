@@ -3,7 +3,8 @@ import React, { useContext, useEffect } from 'react'
 import { Col, Form, Input, Row } from 'antd'
 import { useIntl }               from 'react-intl'
 
-import { StepsForm }    from '@acx-ui/components'
+import { StepsForm }              from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useEnhancedRoguePoliciesQuery,
   useGetRoguePolicyTemplateListQuery,
@@ -12,7 +13,10 @@ import {
 } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
-  EnhancedRoguePolicyType, PolicyType, policyTypeLabelMapping,
+  EnhancedRoguePolicyType,
+  PolicyType,
+  policyTypeLabelMapping,
+  RogueApConstant,
   RogueAPDetectionActionTypes,
   servicePolicyNameRegExp,
   TableResult,
@@ -28,6 +32,7 @@ type RogueAPDetectionSettingFormProps = {
 }
 
 export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const { edit } = props
 
@@ -37,19 +42,20 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     state, dispatch
   } = useContext(RogueAPDetectionContext)
 
-  const { data: policyData } = useConfigTemplateQueryFnSwitcher(
-    useRoguePolicyQuery,
-    useGetRoguePolicyTemplateQuery,
-    !edit
-  )
+  const { data: policyData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
+    skip: !edit,
+    enableRbac
+  })
 
   // eslint-disable-next-line max-len
-  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<EnhancedRoguePolicyType>>(
-    useEnhancedRoguePoliciesQuery,
-    useGetRoguePolicyTemplateListQuery,
-    false,
-    { page: 1, pageSize: 10000 }
-  )
+  const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<EnhancedRoguePolicyType>>({
+    useQueryFn: useEnhancedRoguePoliciesQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
+    payload: { page: 1, pageSize: 10000 },
+    enableRbac
+  })
 
   const handlePolicyName = (policyName: string) => {
     dispatch({
@@ -70,23 +76,34 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
   }
 
   useEffect(() => {
-    if (edit && policyData) {
-      dispatch({
-        type: RogueAPDetectionActionTypes.UPDATE_STATE,
-        payload: {
-          state: {
-            ...state,
-            description: policyData.description ?? '',
-            policyName: policyData.name ?? '',
-            venues: policyData.venues ?? [],
-            rules: policyData.rules ?? []
+    if (edit && policyData && policyList) {
+      const policy = policyList.data?.find(p => p.id === policyData?.id)
+      // eslint-disable-next-line max-len
+      const defaultPolicyId = policyList.data?.find(p => p.name === RogueApConstant.DefaultProfile)?.id
+      if (!defaultPolicyId) {
+        throw new Error('Default profile not found')
+      }
+      if (policy) {
+        dispatch({
+          type: RogueAPDetectionActionTypes.UPDATE_STATE,
+          payload: {
+            state: {
+              ...state,
+              id: policyData.id,
+              description: policyData.description ?? '',
+              policyName: policyData.name ?? '',
+              venues: policy.venueIds.map((id: string) => ({ id, name: '' })),
+              oldVenues: policy.venueIds.map((id: string) => ({ id, name: '' })),
+              rules: policyData.rules ?? [],
+              defaultPolicyId: defaultPolicyId
+            }
           }
-        }
-      })
+        })
+      }
       form.setFieldValue('policyName', policyData.name ?? '')
       form.setFieldValue('description', policyData.description ?? '')
     }
-  }, [policyData])
+  }, [policyData, policyList])
 
   const nameValidator = (value: string) => {
     const list = (policyList?.data ?? [])

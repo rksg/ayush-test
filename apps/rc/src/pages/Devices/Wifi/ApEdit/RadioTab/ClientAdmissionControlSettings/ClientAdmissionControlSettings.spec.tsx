@@ -4,7 +4,7 @@ import { rest } from 'msw'
 
 import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { venueApi, apApi }                from '@acx-ui/rc/services'
-import { WifiUrlsInfo, CommonUrlsInfo }   from '@acx-ui/rc/utils'
+import { WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
 import {
   mockServer,
@@ -38,6 +38,7 @@ const mockApClientAdmissionControl = {
 
 
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
+const venueData = venuelist.data[0]
 
 describe('Ap Client Admission Control', () => {
   beforeEach(() => {
@@ -45,10 +46,8 @@ describe('Ap Client Admission Control', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
+
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venuelist.data[0]))),
       rest.get(
         WifiUrlsInfo.getVenueClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
@@ -60,6 +59,16 @@ describe('Ap Client Admission Control', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.delete(
         WifiUrlsInfo.deleteApClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      // RBAC API
+      rest.get(
+        WifiRbacUrlsInfo.getVenueClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockVenueClientAdmissionControl))),
+      rest.get(
+        WifiRbacUrlsInfo.getApClientAdmissionControl.url,
+        (_, res, ctx) => res(ctx.json(mockApClientAdmissionControl))),
+      rest.put(
+        WifiRbacUrlsInfo.updateApClientAdmissionControl.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -77,7 +86,7 @@ describe('Ap Client Admission Control', () => {
           setEditContextData: jest.fn()
         }}
         >
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={{ apData: r760Ap, venueData }}>
             <Form>
               <ClientAdmissionControlSettings />
             </Form>
@@ -97,6 +106,8 @@ describe('Ap Client Admission Control', () => {
   })
 
   it('should render correctly when use custom settings', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
+
     mockServer.use(
       rest.get(
         WifiUrlsInfo.getApClientAdmissionControl.url,
@@ -118,7 +129,7 @@ describe('Ap Client Admission Control', () => {
           setEditContextData: jest.fn()
         }}
         >
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={{ apData: r760Ap, venueData }}>
             <Form>
               <ClientAdmissionControlSettings />
             </Form>

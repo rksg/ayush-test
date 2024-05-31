@@ -34,13 +34,7 @@ import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFil
 import { CliVariableModal } from './CliVariableModal'
 import * as UI              from './styledComponents'
 
-import { tooltip } from './'
-
-export enum VariableType {
-  ADDRESS = 'ADDRESS',
-  RANGE = 'RANGE',
-  STRING = 'STRING'
-}
+import { tooltip, getVariableSeparator, VariableType } from './'
 
 interface codeMirrorElement {
   current: {
@@ -154,7 +148,16 @@ export function CliStepConfiguration () {
   useEffect(() => {
     const data = form?.getFieldsValue(true)
     if (data) {
-      setVariableList((data?.variables ?? []) as CliTemplateVariable[])
+      const transformVariables = !isSwitchRbacEnabled
+        ? data?.variables
+        : data?.variables.map((variable: CliTemplateVariable) => {
+          return {
+            ...variable,
+            value: transformToV1Variables(variable)
+          }
+        })
+
+      setVariableList((transformVariables ?? []) as CliTemplateVariable[])
       setInitVariableList(true)
     }
   }, [])
@@ -497,7 +500,7 @@ function CliTemplateExampleList (props: {
 
 function transformVariableValue (vtype: string, value: string) {
   const type = vtype.toUpperCase()
-  const separator = type === VariableType.RANGE ? ':' : (type === VariableType.ADDRESS ? '_' : '*')
+  const separator = getVariableSeparator(type)
   const values = value.split(separator)
 
   switch (type) {
@@ -507,6 +510,17 @@ function transformVariableValue (vtype: string, value: string) {
       return `${values[0]} ~ ${values[1]}`
     default:
       return values[0]
+  }
+}
+
+function transformToV1Variables (variable: CliTemplateVariable) {
+  switch (variable.type) {
+    case VariableType.ADDRESS:
+      return `${variable?.ipAddressStart}_${variable?.ipAddressEnd}_${variable?.subMask}`
+    case VariableType.RANGE:
+      return `${variable?.rangeStart}:${variable?.rangeEnd}`
+    default:
+      return variable?.value
   }
 }
 

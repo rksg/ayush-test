@@ -1,10 +1,11 @@
+import _          from 'lodash'
 import { Params } from 'react-router-dom'
 
 import {
   CommonResult, DHCPSaveData, DpskMutationResult, DpskSaveData,
   ServicesConfigTemplateUrlsInfo, TableResult, onActivityMessageReceived,
-  onSocketActivityChanged, Portal, PortalSaveData, PortalDetail,
-  WifiCallingFormContextType, WifiCallingSetting
+  onSocketActivityChanged, Portal, PortalSaveData,
+  WifiCallingFormContextType, WifiCallingSetting, GetApiVersionHeader, ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
@@ -132,13 +133,15 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
-    getPortalTemplate: build.query<PortalSaveData, RequestPayload>({
-      query: ({ params, payload }) => {
+    getPortalTemplate: build.query<Portal, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
         // eslint-disable-next-line max-len
-        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getPortal, params)
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getPortal,
+          params, customHeaders)
         return {
-          ...req,
-          body: JSON.stringify(payload)
+          ...req
         }
       },
       providesTags: [{ type: 'PortalTemplate', id: 'DETAIL' }]
@@ -146,7 +149,8 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     createPortalTemplate: build.mutation<PortalSaveData, RequestPayload<Portal>>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.addPortal, params)
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.addPortal,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -156,9 +160,12 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
     }),
     updatePortalTemplate: build.mutation<CommonResult, RequestPayload<Portal>>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
         // eslint-disable-next-line max-len
-        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.updatePortal, params)
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.updatePortal,
+          params, customHeaders)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -168,30 +175,27 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
     }),
     deletePortalTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params }) => {
         // eslint-disable-next-line max-len
-        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.deletePortal, params)
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.deletePortal,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
         return {
-          ...req,
-          body: JSON.stringify(payload)
+          ...req
         }
       },
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
     }),
-    getEnhancedPortalTemplateList: build.query<TableResult<PortalDetail>, RequestPayload>({
+    getEnhancedPortalTemplateList: build.query<TableResult<Portal>, RequestPayload>({
       query: ({ params, payload }) => {
         // eslint-disable-next-line max-len
-        const req = createDpskTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedPortalList, params)
-        const defaultPayload = {
-          page: 1,
-          pageSize: 10,
-          sortField: 'name',
-          sortOrder: 'ASC'
-        }
+        const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getEnhancedPortalList,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
-          body: JSON.stringify(payload ?? defaultPayload)
+          body: JSON.stringify({
+            ...(_.omit(payload as Portal, ['enableRbac']))
+          })
         }
       },
       providesTags: [{ type: 'PortalTemplate', id: 'LIST' }],
@@ -203,6 +207,46 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
             ]))
           })
         })
+      }
+    }),
+    uploadPhotoTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.uploadPhoto,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadLogoTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.uploadLogo,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadBgImageTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.uploadBgImage,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadPoweredImgTemplate: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ServicesConfigTemplateUrlsInfo.uploadPoweredImg,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
       }
     }),
     createWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
@@ -285,6 +329,10 @@ export const {
   useDeletePortalTemplateMutation,
   useGetEnhancedPortalTemplateListQuery,
   useLazyGetEnhancedPortalTemplateListQuery,
+  useUploadBgImageTemplateMutation,
+  useUploadLogoTemplateMutation,
+  useUploadPhotoTemplateMutation,
+  useUploadPoweredImgTemplateMutation,
   useCreateWifiCallingServiceTemplateMutation,
   useGetWifiCallingServiceTemplateQuery,
   useGetWifiCallingServiceTemplateListQuery,

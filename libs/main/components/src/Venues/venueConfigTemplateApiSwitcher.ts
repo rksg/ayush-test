@@ -6,7 +6,6 @@ import {
   useGetVenueTemplateQuery
 } from '@acx-ui/rc/services'
 import {
-  ApiVersionEnum,
   VenueExtended,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher
@@ -14,16 +13,30 @@ import {
 import { useParams }                from '@acx-ui/react-router-dom'
 import { RequestPayload, UseQuery } from '@acx-ui/types'
 
+interface UseVenueConfigTemplateQueryFnSwitcherProps<ResultType> {
+  useQueryFn: UseQuery<ResultType, RequestPayload>
+  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>
+  skip?: boolean
+  enableRbac?: boolean
+  enableTemplateRbac?: boolean
+}
+
 export function useVenueConfigTemplateQueryFnSwitcher<ResultType> (
-  useQueryFn: UseQuery<ResultType, RequestPayload>,
-  useTemplateQueryFn: UseQuery<ResultType, RequestPayload>,
-  rbacApiVersion?: ApiVersionEnum
+  props: UseVenueConfigTemplateQueryFnSwitcherProps<ResultType>
 ): ReturnType<typeof useQueryFn> {
   const { venueId } = useParams()
+  const {
+    useQueryFn, useTemplateQueryFn, skip = false,
+    enableRbac, enableTemplateRbac
+  } = props
 
-  return useConfigTemplateQueryFnSwitcher(useQueryFn, useTemplateQueryFn, !venueId,
-    rbacApiVersion? { rbacApiVersion } : undefined
-  )
+  return useConfigTemplateQueryFnSwitcher({
+    useQueryFn,
+    useTemplateQueryFn,
+    skip: skip || !venueId,
+    enableRbac,
+    enableTemplateRbac
+  })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,12 +45,12 @@ export function useVenueConfigTemplateMutationFnSwitcher (
   useMutationFn: UseMutation<VenueMutationDefinition>,
   useTemplateMutationFn: UseMutation<VenueMutationDefinition>
 ) {
-  return useConfigTemplateMutationFnSwitcher(useMutationFn, useTemplateMutationFn)
+  return useConfigTemplateMutationFnSwitcher({ useMutationFn, useTemplateMutationFn })
 }
 
 export function useGetVenueInstance () {
-  return useVenueConfigTemplateQueryFnSwitcher<VenueExtended>(
-    useGetVenueQuery,
-    useGetVenueTemplateQuery
-  )
+  return useVenueConfigTemplateQueryFnSwitcher<VenueExtended>({
+    useQueryFn: useGetVenueQuery,
+    useTemplateQueryFn: useGetVenueTemplateQuery
+  })
 }

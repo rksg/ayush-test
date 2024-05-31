@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
@@ -81,8 +82,12 @@ describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff !== Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+
     mockServer.use(
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
@@ -109,6 +114,13 @@ describe('ApEdit', () => {
       ),
       rest.get(FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(venueVersionList))
+      ),
+      rest.get(WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
       )
     )
   })
@@ -142,7 +154,7 @@ describe('ApEdit', () => {
     it('Should render correctly when ap has not connected to the cloud', async () => {
       mockServer.use(
         rest.post(CommonUrlsInfo.getApsList.url,
-          (_, res, ctx) => res(ctx.json({
+          (_req, res, ctx) => res(ctx.json({
             ...deviceAps,
             data: [{
               ...(_.omit(deviceAps?.data?.[0], ['model']))

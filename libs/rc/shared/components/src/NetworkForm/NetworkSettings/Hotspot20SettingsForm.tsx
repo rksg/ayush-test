@@ -14,8 +14,7 @@ import {
   Select,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { InformationSolid }       from '@acx-ui/icons'
+import { InformationSolid }     from '@acx-ui/icons'
 import {
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
@@ -80,7 +79,6 @@ function Hotspot20Form () {
   const { editMode, cloneMode } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
   const wlanSecurity = useWatch(['wlan', 'wlanSecurity'])
-  const triBandRadioFeatureFlag = useIsSplitOn(Features.TRI_RADIO)
   const wpa2Description = <FormattedMessage
     /* eslint-disable max-len */
     defaultMessage={`
@@ -134,24 +132,22 @@ function Hotspot20Form () {
     <>
       <StepsFormLegacy.Title>{
         $t({ defaultMessage: 'Hotspot 2.0 Settings' }) }</StepsFormLegacy.Title>
-      {triBandRadioFeatureFlag &&
-          <Form.Item
-            label='Security Protocol'
-            name={['wlan', 'wlanSecurity']}
-            extra={
-              wlanSecurity === WlanSecurityEnum.WPA2Enterprise
-                ? wpa2Description
-                : wpa3Description
-            }
-          >
-            <Select onChange={handleWlanSecurityChanged}>
-              <Option value={WlanSecurityEnum.WPA2Enterprise}>
-                { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
-              </Option>
-              <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
-            </Select>
-          </Form.Item>
-      }
+      <Form.Item
+        label='Security Protocol'
+        name={['wlan', 'wlanSecurity']}
+        extra={
+          wlanSecurity === WlanSecurityEnum.WPA2Enterprise
+            ? wpa2Description
+            : wpa3Description
+        }
+      >
+        <Select onChange={handleWlanSecurityChanged}>
+          <Option value={WlanSecurityEnum.WPA2Enterprise}>
+            { $t({ defaultMessage: 'WPA2 (Recommended)' }) }
+          </Option>
+          <Option value={WlanSecurityEnum.WPA3}>{ $t({ defaultMessage: 'WPA3' }) }</Option>
+        </Select>
+      </Form.Item>
       <Form.Item name={['wlan', 'managementFrameProtection']} noStyle>
         <Input type='hidden' />
       </Form.Item>

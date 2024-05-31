@@ -16,10 +16,10 @@ import { SyslogDetailContext } from './SyslogDetailView'
 const SyslogDetailContent = () => {
   const { $t } = useIntl()
 
-  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>(
-    useGetSyslogPolicyQuery,
-    useGetSyslogPolicyTemplateQuery
-  )
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
+    useQueryFn: useGetSyslogPolicyQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery
+  })
 
   const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)
 

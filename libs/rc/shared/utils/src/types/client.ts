@@ -59,7 +59,7 @@ export interface Guest {
     id: string
     userState: string
     guestType: string
-    networkId: string
+    wifiNetworkId: string
     expiration: string
     mobilePhoneNumber: string
     emailAddress: string
@@ -76,7 +76,9 @@ export interface Guest {
     clients?: GuestClient[],
     langCode?: string,
     socialLogin?: string,
-    hostApprovalEmail?: string
+    hostApprovalEmail?: string,
+    devicesMac?: string[],
+    locale?: string
 }
 
 export interface GuestClient {

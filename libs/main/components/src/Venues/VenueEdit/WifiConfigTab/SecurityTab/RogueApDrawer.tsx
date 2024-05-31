@@ -1,30 +1,33 @@
 import React from 'react'
 
-import { Form }      from 'antd'
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { Form }    from 'antd'
+import { useIntl } from 'react-intl'
 
-import { Drawer, Table, TableProps }  from '@acx-ui/components'
-import { rogueRuleLabelMapping }      from '@acx-ui/rc/components'
-import { useRoguePolicyQuery }        from '@acx-ui/rc/services'
-import { RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
+import { Drawer, Table, TableProps }                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { rogueRuleLabelMapping }                                        from '@acx-ui/rc/components'
+import { useGetRoguePolicyTemplateQuery, useRoguePolicyQuery }          from '@acx-ui/rc/services'
+import { RogueAPRule, RogueRuleType, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
 const RogueApDrawer = (props: {
   visible: boolean,
   setVisible: (visible: boolean) => void,
   policyId: string
 }) => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
-  const params = useParams()
   const { visible, setVisible, policyId } = props
 
   const handleRogueApDrawerClose = () => {
     setVisible(false)
   }
 
-  const { data } = useRoguePolicyQuery({ params: {
-    ...params, policyId: policyId
-  } })
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
+    extraParams: { policyId: policyId },
+    enableRbac
+  })
 
   const basicColumns: TableProps<RogueAPRule>['columns'] = [
     {

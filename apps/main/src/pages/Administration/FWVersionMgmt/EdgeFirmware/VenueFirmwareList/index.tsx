@@ -182,7 +182,7 @@ export function VenueFirmwareList () {
   if(isScheduleUpdateReady) {
     rowActions.push(...[
       {
-        scopeKey: [EdgeScopes.CREATE],
+        scopeKey: [EdgeScopes.UPDATE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
@@ -198,7 +198,7 @@ export function VenueFirmwareList () {
         }
       },
       {
-        scopeKey: [EdgeScopes.DELETE],
+        scopeKey: [EdgeScopes.UPDATE],
         visible: (selectedRows: EdgeVenueFirmware[]) => {
           return selectedRows.every(row => hasSchedule(row))
         },
