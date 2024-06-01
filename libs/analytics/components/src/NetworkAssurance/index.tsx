@@ -20,8 +20,6 @@ import { HealthTabs }      from '../HealthTabs'
 import { useServiceGuard } from '../ServiceGuard'
 import { useVideoCallQoe } from '../VideoCallQoe'
 
-import type { UseHeaderExtraProps } from '../Header'
-
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
   SERVICE_GUARD = 'serviceGuard',
@@ -39,8 +37,6 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const location = useLocation()
-  const basePath = useTenantLink('/analytics')
 
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
   const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
@@ -49,31 +45,17 @@ const useTabs = () : Tab[] => {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
 
-  const getHeaderExtraOptions = (): Partial<UseHeaderExtraProps> => {
-    const path = location.pathname.replace(basePath.pathname, '').split('/').slice(0, 3).join('/')
-    switch (path) {
-      case `/${NetworkAssuranceTabEnum.HEALTH}/overview`:
-        return {
-          shouldQuerySwitch: true,
-          shouldShowOnlyDomains: true
-        }
-      case `/${NetworkAssuranceTabEnum.HEALTH}/wired`:
-        return {
-          shouldQueryAp: false,
-          shouldQuerySwitch: true
-        }
-      case `/${NetworkAssuranceTabEnum.HEALTH}/wireless`:
-      default:
-        return {}
-    }
-  }
-
   const useHealthTab = () => ({
     key: NetworkAssuranceTabEnum.HEALTH,
     title: $t({ defaultMessage: 'Health' }),
     component: isSwitchHealthEnabled ? <HealthTabs /> : <HealthPage/>,
     headerExtra: useHeaderExtra({
-      ...(isSwitchHealthEnabled ? getHeaderExtraOptions() : { shouldQuerySwitch: false }),
+      ...(isSwitchHealthEnabled
+        ? {
+          shouldQuerySwitch: true,
+          shouldShowOnlyDomains: true
+        }
+        : { shouldQuerySwitch: false }),
       withIncidents: false
     })
   })
