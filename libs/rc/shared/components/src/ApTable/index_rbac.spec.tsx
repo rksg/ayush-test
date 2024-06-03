@@ -86,17 +86,25 @@ describe('Aps', () => {
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
         (req, res, ctx) => res(ctx.json(getApGroupsList))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
   const params = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    venueId: 'test-venue'
   }
 
   it('should render correctly', async () => {
-    render(<Provider><ApTable /></Provider>, {
-      route: { params, path: '/:tenantId' }
-    })
+    render(
+      <Provider>
+        <ApTable enableApCompatibleCheck />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:venueId' }
+      })
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
@@ -107,6 +115,10 @@ describe('Aps', () => {
     for (const [index, item] of Object.entries(mockAPList.data)) {
       expect(await within(rows[Number(index)]).findByText(item.name)).toBeVisible()
     }
+    await userEvent.click(screen.getByTestId('SettingsOutlined'))
+    await userEvent.click(await screen.findByText('Feature Compatibility'))
+    expect(await screen.findByText('Fully compatible')).toBeVisible()
+    expect(await screen.findByText('Partially incompatible')).toBeVisible()
   })
 
   it('Table action bar Download Log and Reboot', async () => {

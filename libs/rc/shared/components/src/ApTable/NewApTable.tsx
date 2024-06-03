@@ -465,7 +465,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
       filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
       filterValueArray: true,
       dataIndex: 'incompatible',
-      filterKey: 'fwVersion',
+      filterKey: 'firmwareVersion',
       width: 200,
       filterableWidth: 200,
       filterable: showFeatureCompatibilitiy && filterables ? filterables['featureIncompatible']: false,
