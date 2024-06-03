@@ -512,7 +512,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      keepUnusedDataFor: 5,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlanUnionByVenue: build.query<SwitchVlan[], RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -545,8 +547,49 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: 5,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    addSwitchVlans: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchRbacUrlsInfo.addSwitchVlans, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    deleteSwitchVlan: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchRbacUrlsInfo.deleteSwitchVlan, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    updateSwitchVlan: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchRbacUrlsInfo.updateSwitchVlan, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    addSwitchesVlans: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchRbacUrlsInfo.addSwitchesVlans, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchesVlan: build.query<SwitchVlanUnion, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -557,7 +600,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      keepUnusedDataFor: 5,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
@@ -583,7 +628,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({ ////
+    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
@@ -784,7 +829,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -1142,7 +1188,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    updateDhcpServerState: build.mutation<{}, RequestPayload>({ ////
+    updateDhcpServerState: build.mutation<{}, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1646,6 +1692,10 @@ export const {
   useLazyGetSwitchVlanQuery,
   useGetSwitchVlansQuery,
   useLazyGetSwitchVlansQuery,
+  useAddSwitchVlansMutation,
+  useDeleteSwitchVlanMutation,
+  useUpdateSwitchVlanMutation,
+  useAddSwitchesVlansMutation,
   useGetSwitchesVlanQuery,
   useLazyGetSwitchesVlanQuery,
   useGetTaggedVlansByVenueQuery,
