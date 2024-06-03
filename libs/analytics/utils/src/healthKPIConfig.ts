@@ -173,10 +173,10 @@ export const kpiConfig = {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
-      apiMetric: 'switchDHCPAttemptAndSuccessCount',
+      apiMetric: 'switchDHCPSuccessAndAttemptCount',
       minGranularity: 'PT5M'
     },
-    barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
+    barChart: createBarChartConfig('switchDHCPSuccessAndAttemptCount'),
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
