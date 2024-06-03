@@ -5,11 +5,11 @@ import { flatten }            from 'lodash'
 import { IntlShape, useIntl } from 'react-intl'
 import AutoSizer              from 'react-virtualized-auto-sizer'
 
-import { get }                       from '@acx-ui/config'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
-import { ArrowCollapse }             from '@acx-ui/icons'
-import { TenantLink }                from '@acx-ui/react-router-dom'
-import { hasAccess }                 from '@acx-ui/user'
+import { get }                         from '@acx-ui/config'
+import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { ArrowCollapse }               from '@acx-ui/icons'
+import { TenantLink }                  from '@acx-ui/react-router-dom'
+import { hasAccess, hasRaiPermission } from '@acx-ui/user'
 
 import {
   DisplayEvent,
@@ -73,7 +73,7 @@ const transformData = (clientInfo: ClientInfoData, filters: Filters, intl: IntlS
       event
     }
   }),
-  ...incidents
+  ...(hasRaiPermission('READ_INCIDENTS') ? incidents : [])
   ].sort((a,b) => a.start - b.start)
 }
 

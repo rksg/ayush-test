@@ -5,6 +5,7 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { PasswordInput, StepsForm, Subtitle } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useAaaPolicyQuery }                  from '@acx-ui/rc/services'
 import { AAAPolicyType }                      from '@acx-ui/rc/utils'
 
@@ -18,15 +19,18 @@ const SummaryForm = () => {
   const { state } = useContext(IdentityProviderFormContext)
   const [authRadius, setAuthRadius] = useState<AAAPolicyType>()
   const [accountingRadius, setAccountingRadius] = useState<AAAPolicyType>()
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data: authRadiusData } = useAaaPolicyQuery({
-    params: { ...params, policyId: state.authRadiusId }
+    params: { ...params, policyId: state.authRadiusId },
+    enableRbac: enableServicePolicyRbac
   }, {
     skip: !state.authRadiusId
   })
 
   const { data: accountingRadiusData } = useAaaPolicyQuery({
-    params: { ...params, policyId: state.accountingRadiusId }
+    params: { ...params, policyId: state.accountingRadiusId },
+    enableRbac: enableServicePolicyRbac
   }, {
     skip: !state.accountingRadiusEnabled || !state.accountingRadiusId
   })
