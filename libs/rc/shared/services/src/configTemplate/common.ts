@@ -3,7 +3,6 @@ import {
   AAAPolicyType,
   AAAViewModalType,
   CommonResult,
-  CommonResultWithEntityResponse,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
   Network,
@@ -83,7 +82,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
-    addAAAPolicyTemplate: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
+    addAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),

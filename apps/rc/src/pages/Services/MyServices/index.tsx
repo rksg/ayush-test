@@ -111,7 +111,7 @@ export default function MyServices () {
       type: ServiceType.PORTAL,
       categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedPortalProfileListQuery({
-        params, payload: { filters: {}, enableRbac: isEnabledRbacService } })
+        params, payload: { filters: {} }, enableRbac: isEnabledRbacService })
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,

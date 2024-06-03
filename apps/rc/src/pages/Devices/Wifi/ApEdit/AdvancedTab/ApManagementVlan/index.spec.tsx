@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                   from '@acx-ui/rc/utils'
+import { WifiUrlsInfo }                                                   from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -33,6 +33,8 @@ const resetApLedSpy = jest.fn()
 const getVenueApManagementVlanSpy = jest.fn()
 
 describe('ApManagementVlanForm', () => {
+  const defaultR760ApCtxData = { apData: r760Ap, venueData }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
@@ -40,8 +42,6 @@ describe('ApManagementVlanForm', () => {
     resetApLedSpy.mockClear()
     getVenueApManagementVlanSpy.mockClear()
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(WifiUrlsInfo.getVenueApManagementVlan.url,
         (_, res, ctx) => {
           getVenueApManagementVlanSpy()
@@ -56,7 +56,7 @@ describe('ApManagementVlanForm', () => {
     render(
       <Provider>
         <Form>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <ApManagementVlanForm />
           </ApDataContext.Provider>
         </Form>
@@ -90,7 +90,7 @@ describe('ApManagementVlanForm', () => {
             },
             setEditAdvancedContextData: jest.fn()
           }}>
-            <ApDataContext.Provider value={{ apData: r760Ap }}>
+            <ApDataContext.Provider value={defaultR760ApCtxData}>
               <ApManagementVlanForm />
             </ApDataContext.Provider>
           </ApEditContext.Provider>

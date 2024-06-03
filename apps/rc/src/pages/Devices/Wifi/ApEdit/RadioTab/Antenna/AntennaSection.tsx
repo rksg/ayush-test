@@ -10,10 +10,9 @@ import { ApAntennaTypeSelector }           from '@acx-ui/rc/components'
 import {
   useLazyGetApAntennaTypeSettingsQuery,
   useLazyGetVenueAntennaTypeQuery,
-  useLazyGetVenueQuery,
   useUpdateApAntennaTypeSettingsMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, ApAntennaTypeSettings, VenueExtended, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import { ApAntennaTypeEnum, ApAntennaTypeSettings, VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
@@ -33,7 +32,7 @@ export function AntennaSection () {
     setEditRadioContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { apData: apDetails, venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
   const { tenantId, serialNumber } = useParams()
 
@@ -45,20 +44,20 @@ export function AntennaSection () {
   const paramsRef = useRef<paramsType>()
 
   const [antennaType, setAntennaType] = useState({} as ApAntennaTypeSettings)
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [formInitializing, setFormInitializing] = useState(true)
   const [isUseVenueSettings, setIsUseVenueSettings] = useState(true)
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueAntennaType] = useLazyGetVenueAntennaTypeQuery()
   const [getApAntennaType] = useLazyGetApAntennaTypeSettingsQuery()
 
   const [updateApAntTypeSettings, { isLoading: isUpdatingAntTypeSettings }]
    = useUpdateApAntennaTypeSettingsMutation()
 
+  const venueId = venueData?.id
+
   useEffect(() => {
-    if (apDetails) {
-      const { venueId, model } = apDetails
+    if (apDetails && venueId) {
+      const { model } = apDetails
       paramsRef.current = {
         tenantId: tenantId!,
         venueId: venueId,
@@ -67,8 +66,6 @@ export function AntennaSection () {
       const setData = async () => {
         const apAntType = (await getApAntennaType({ params: { venueId, serialNumber } }).unwrap())
         customAntennaTypeRef.current = cloneDeep(apAntType)
-
-        const apVenue = (await getVenue({ params: { tenantId, venueId } }, true).unwrap())
 
         const venueAntType = (await getVenueAntennaType({ params: { venueId } }, true).unwrap())
         if (venueAntType) {
@@ -83,14 +80,13 @@ export function AntennaSection () {
         isUseVenueSettingsRef.current = apAntType.useVenueSettings
 
         setAntennaType(apAntType)
-        setVenue(apVenue)
         setFormInitializing(false)
         setReadyToScroll?.(r => [...(new Set(r.concat('Antenna')))])
       }
       setData()
     }
 
-  }, [apDetails])
+  }, [venueId, apDetails])
 
   const handleVenueSetting = async () => {
     let isUseVenue = !isUseVenueSettings
@@ -147,7 +143,7 @@ export function AntennaSection () {
     isLoading: formInitializing,
     isFetching: isUpdatingAntTypeSettings
   }]}>
-    <VenueSettingsHeader venue={venue}
+    <VenueSettingsHeader venue={venueData}
       isUseVenueSettings={isUseVenueSettings}
       handleVenueSetting={handleVenueSetting} />
     <Row gutter={20}>

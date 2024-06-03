@@ -48,5 +48,40 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
     url: '/enhancedRogueApPolicyProfiles/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedRogueApPolicyProfiles/query',
     newApi: true
+  },
+  getRoguePolicyListRbac: {
+    method: 'post',
+    url: '/roguePolicies/query',
+    newApi: true
+  },
+  addRoguePolicyRbac: {
+    method: 'post',
+    url: '/roguePolicies',
+    newApi: true
+  },
+  getRoguePolicyRbac: {
+    method: 'get',
+    url: '/roguePolicies/:policyId',
+    newApi: true
+  },
+  updateRoguePolicyRbac: {
+    method: 'put',
+    url: '/roguePolicies/:policyId',
+    newApi: true
+  },
+  deleteRoguePolicyRbac: {
+    method: 'delete',
+    url: '/roguePolicies/:policyId',
+    newApi: true
+  },
+  activateRoguePolicy: {
+    method: 'put',
+    url: '/venues/:venueId/roguePolicies/:policyId',
+    newApi: true
+  },
+  deactivateRoguePolicy: {
+    method: 'delete',
+    url: '/venues/:venueId/roguePolicies/:policyId',
+    newApi: true
   }
 }

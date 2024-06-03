@@ -194,7 +194,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 2',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'model 2',
           serialNumber: 'serialNumber-2',
           ip: '0.0.0.0',
           ports: '3',
