@@ -9,9 +9,11 @@ import {
 import { Row, Col, Form, Typography, Checkbox, Input } from 'antd'
 import _                                               from 'lodash'
 
-import { Card, Tooltip }                                 from '@acx-ui/components'
-import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel } from '@acx-ui/rc/utils'
-import { getIntl }                                       from '@acx-ui/utils'
+import { Card, Tooltip }                                                     from '@acx-ui/components'
+import { SwitchSlot2 as SwitchSlot, getSwitchPortLabel, PortStatusMessages } from '@acx-ui/rc/utils'
+import { getIntl }                                                           from '@acx-ui/utils'
+
+import { getTooltipTemplate } from '../'
 
 import * as UI          from './styledComponents'
 import VlanPortsContext from './VlanPortsContext'
@@ -24,7 +26,9 @@ export interface PortsType {
 export function TaggedPortsStep () {
   const { $t } = getIntl()
   const form = Form.useFormInstance()
-  const { vlanSettingValues, setVlanSettingValues, vlanList } = useContext(VlanPortsContext)
+  const {
+    vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
+  } = useContext(VlanPortsContext)
 
   const [portsModule1, setPortsModule1] = useState<PortsType[]>([])
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
@@ -101,8 +105,8 @@ export function TaggedPortsStep () {
       tmpTaggedSelectedItem = []
       const scrollAwareBox: Box = {
         ...box,
-        top: box.top + window.scrollY,
-        left: box.left + window.scrollX
+        top: box.top,
+        left: box.left
       }
 
       Array.from({ length: portsModule1.length }).forEach((_,i) => {
@@ -206,7 +210,11 @@ export function TaggedPortsStep () {
     const untaggedPorts =
         vlanSettingValues.switchFamilyModels?.untaggedPorts?.toString().split(',') || []
 
-    const disabledPorts = untaggedPorts.includes(timeslot) || false
+    const disabledPorts
+      = untaggedPorts.includes(timeslot)
+      || Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)
+      || false
+
     return disabledPorts
   }
 
@@ -225,23 +233,13 @@ export function TaggedPortsStep () {
         switchModel.taggedPorts?.split(',').includes(timeslot))) : []
 
     if(untaggedPorts.includes(timeslot)){
-      return <div>{$t({ defaultMessage: 'Port set as untagged' })}</div>
-    }else{
-      return <div>
-        <div>{$t({ defaultMessage: 'Networks on this port:' })}</div>
-        <div>
-          <UI.TagsOutlineIcon />
-          <UI.PortSpan>
-            {untaggedModel[0] ? untaggedModel[0].vlanId : '-'}
-          </UI.PortSpan>
-        </div>
-        <div>
-          <UI.TagsSolidIcon />
-          <UI.PortSpan>
-            {taggedModel.length > 0 ? taggedModel.map(item => item.vlanId).join(',') : '-'}
-          </UI.PortSpan>
-        </div>
-      </div>
+      return <div>{$t(PortStatusMessages.SET_AS_UNTAGGED)}</div>
+    } else if (Object.keys(portsUsedBy?.lag ?? {})?.includes(timeslot)) {
+      return <div>{
+        $t(PortStatusMessages.USED_BY_LAG, { lagName: portsUsedBy?.lag?.[timeslot] })
+      }</div>
+    } else {
+      return getTooltipTemplate(untaggedModel, taggedModel)
     }
   }
 
@@ -256,9 +254,12 @@ export function TaggedPortsStep () {
       <Row gutter={20}>
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
-            {$t({ defaultMessage:
-                'Select the tagged ports (trunk ports) for this model ({family}-{model}):' },
-            { family: vlanSettingValues.family, model: vlanSettingValues.model })}
+            {isSwitchLevel
+              ? $t({ defaultMessage: 'Select the tagged ports (trunk ports)' })
+              : $t({ defaultMessage:
+                  'Select the tagged ports (trunk ports) for this model ({family}-{model}):' },
+              { family: vlanSettingValues.family, model: vlanSettingValues.model })
+            }
           </label>
         </Col>
       </Row>
