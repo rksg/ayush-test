@@ -45,7 +45,7 @@ describe('GeneralSettingForm', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.post(CommonUrlsInfo.getConfigProfiles.url,
+      rest.post(SwitchUrlsInfo.getProfiles.url,
         (_, res, ctx) => res(ctx.json({ data: configProfiles } ))),
       rest.get(CommonUrlsInfo.getVenueSwitchSetting.url,
         (_, res, ctx) => res(ctx.json(venueSwitchSetting[0]))),
