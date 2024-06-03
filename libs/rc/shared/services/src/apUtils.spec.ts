@@ -1,9 +1,21 @@
+/* eslint-disable max-len */
 import { cloneDeep } from 'lodash'
-import { ApExtraParams, ApGroup, Capabilities, NewAPModelExtended, Venue } from '../../utils/src/types'
-import { TableResult } from '../../utils/src/useTableQuery'
+
+import {
+  APGeneralFixtures,
+  APGroupFixtures,
+  ApExtraParams,
+  ApGroup,
+  Capabilities,
+  NewAPModelExtended,
+  TableResult,
+  Venue
+} from '@acx-ui/rc/utils'
+
 import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel } from './apUtils'
-import { mockAPList, mockAPModels } from '../../utils/src/features/wifi/_tests_/fixtures/general'
-import { mockAPGroupList } from '../../utils/src/features/wifi/_tests_/fixtures/APGroup'
+
+const { mockAPList, mockAPModels } = APGeneralFixtures
+const { mockAPGroupList } = APGroupFixtures
 
 const mockAPListWithExtraInfo = {
   ...mockAPList,
@@ -19,21 +31,21 @@ const mockAPListWithExtraInfo = {
   ]
 }
 const mockVenueList = {
-  "fields": [
-      "name",
-      "id"
+  fields: [
+    'name',
+    'id'
   ],
-  "totalCount": 2,
-  "page": 1,
-  "data": [
-      {
-          "id": "0e2f68ab79154ffea64aa52c5cc48826",
-          "name": "My-Venue"
-      },
-      {
-          "id": "991eb992ece042a183b6945a2398ddb9",
-          "name": "joe-test"
-      }
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '0e2f68ab79154ffea64aa52c5cc48826',
+      name: 'My-Venue'
+    },
+    {
+      id: '991eb992ece042a183b6945a2398ddb9',
+      name: 'joe-test'
+    }
   ]
 }
 
