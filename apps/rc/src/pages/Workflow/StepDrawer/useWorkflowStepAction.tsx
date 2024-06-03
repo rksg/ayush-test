@@ -52,26 +52,13 @@ export function useWorkflowStepActions () {
     priorNodeId?: string,
     onClose?: () => void
   ) => {
-    let mockActionId: string
-    switch (actionType) {
-      case ActionType.AUP:
-        mockActionId = '74cb7994-dc41-485d-beab-652a9a156fed'
-        break
-      case ActionType.DISPLAY_MESSAGE:
-        mockActionId = '23296df8-374d-4db1-a37e-6bdc68ea5701'
-        break
-      default:
-        mockActionId = '74cb7994-dc41-485d-beab-652a9a156fed'
-        break
-    }
 
     return await createAction({
       payload: { ...formData, actionType },
       callback: (response: AsyncResponse) => {
-        // FIXME: Replace to use the response.id
-        if (response.requestId) {
+        if (response.id) {
           onClose?.()
-          createStepCallback(serviceId, actionType, mockActionId, priorNodeId)
+          createStepCallback(serviceId, actionType, response.id, priorNodeId)
         }
       } }).unwrap()
   }
