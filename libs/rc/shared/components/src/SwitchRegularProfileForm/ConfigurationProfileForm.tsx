@@ -236,22 +236,27 @@ export function ConfigurationProfileForm () {
 
   const proceedData = (data: SwitchConfigurationProfile) => {
     if(data.trustedPorts){
-      if(ipv4DhcpSnooping || arpInspection){
-        const vlanModels = data.vlans.map(
-          item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
+      const vlanModels = data.vlans.map(
+        item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
 
-        if(vlanModels.length > 0 && vlanModels[0] !== undefined){
-          data.trustedPorts = data.trustedPorts.filter(
-            tpItem => !data.vlans.some(item =>
-              (!item.ipv4DhcpSnooping && !item.arpInspection) &&
+      if(vlanModels.length > 0){
+        data.trustedPorts = data.trustedPorts.filter(
+          tpItem => data.vlans.some(item =>
+            (item.ipv4DhcpSnooping || item.arpInspection) &&
               (item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))
-            )).map(
-            item => { return {
-              ...item,
-              ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
-            }})
-        } else {
-          data.trustedPorts = []
+          )).map(
+          item => { return {
+            ...item,
+            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+          }})
+        const { manualAddedTrustedPorts } = data
+        if(manualAddedTrustedPorts && manualAddedTrustedPorts.length > 0) {
+          data.trustedPorts = [
+            ...data.trustedPorts,
+            ...manualAddedTrustedPorts.filter(mtpItem =>
+              !data.trustedPorts.map(tpItem => tpItem.model).includes(mtpItem.model)
+            )
+          ]
         }
       } else {
         data.trustedPorts = []
@@ -269,6 +274,9 @@ export function ConfigurationProfileForm () {
     }
     if(data.voiceVlanConfigs && !data.voiceVlanConfigs.length) {
       delete data.voiceVlanConfigs
+    }
+    if(data.manualAddedTrustedPorts) {
+      delete data.manualAddedTrustedPorts
     }
     return data
   }

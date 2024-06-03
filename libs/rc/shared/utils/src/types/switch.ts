@@ -763,6 +763,7 @@ export interface SwitchConfigurationProfile {
   vlans: Vlan[]
   description: string
   trustedPorts: TrustedPort[]
+  manualAddedTrustedPorts?: TrustedPort[]
   voiceVlanOptions?: VoiceVlanOption[]
   voiceVlanConfigs?: VoiceVlanConfig[]
 }

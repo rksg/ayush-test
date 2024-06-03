@@ -80,6 +80,9 @@ export function TrustedPorts () {
   useEffect(() => {
     const trustedPortModels = generateTrustedPortsModels(currentData)
     form.setFieldValue('trustedPorts', trustedPortModels)
+    form.setFieldValue('manualAddedTrustedPorts', trustedPortModels.filter(
+      tpItem => !currentData.vlans.some(item =>
+        item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))) as TrustedPort[])
     setRuleList(trustedPortModels as TrustedPort[])
   }, [currentData, form])
 
@@ -159,6 +162,8 @@ export function TrustedPorts () {
     ]
     setRuleList(mergedRuleList)
     form.setFieldValue('trustedPorts', mergedRuleList)
+    form.setFieldValue('manualAddedTrustedPorts',
+      [...form.getFieldValue('manualAddedTrustedPorts'), proceedData.trustedPorts])
     setSelected(undefined)
     setOpenModal(false)
   }
@@ -210,6 +215,12 @@ export function TrustedPorts () {
             (port: Partial<TrustedPort>) => port.trustPorts && port.trustPorts.length === 0) ?
             Promise.reject() : Promise.resolve() }
         ]}
+      />
+      <Form.Item
+        name='manualAddedTrustedPorts'
+        initialValue={[]}
+        hidden={true}
+        children={<Input />}
       />
       <TrustedPortsModal
         open={openModal}
