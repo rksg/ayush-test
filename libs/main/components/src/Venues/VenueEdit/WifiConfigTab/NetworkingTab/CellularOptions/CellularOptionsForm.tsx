@@ -9,9 +9,10 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                 from '@acx-ui/components'
-import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation } from '@acx-ui/rc/services'
-import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                      from '@acx-ui/rc/utils'
+import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance }                                                                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                                            from '@acx-ui/feature-toggle'
+import { useGetAvailableLteBandsQuery, useGetVenueApModelCellularQuery, useGetVenueSettingsQuery, useUpdateVenueCellularSettingsMutation, useGetVenueQuery } from '@acx-ui/rc/services'
+import { AvailableLteBands, LteBandRegionEnum, VenueApModelCellular }                                                                                        from '@acx-ui/rc/utils'
 
 import { VenueEditContext } from '../../../index'
 
@@ -37,6 +38,7 @@ export function CellularOptionsForm () {
   const { tenantId, venueId } = useParams()
   const formRef = useRef<StepsFormLegacyInstance>()
   const form = Form.useFormInstance()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -73,9 +75,13 @@ export function CellularOptionsForm () {
   }
   let regionCountriesMap = _.cloneDeep(LteBandLockCountriesJson)
 
-  const venueApModelCellular = useGetVenueApModelCellularQuery({ params: { tenantId, venueId } })
-  const availableLteBands = useGetAvailableLteBandsQuery({ params: { tenantId, venueId } })
+  const venueApModelCellular = useGetVenueApModelCellularQuery(
+    { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
+  const availableLteBands = useGetAvailableLteBandsQuery(
+    { params: { tenantId, venueId }, enableRbac: isUseRbacApi })
   const venueData = useGetVenueSettingsQuery({ params: { tenantId, venueId } })
+  const venueInfoData = useGetVenueQuery(
+    { params: { tenantId, venueId }, enableRbac: isUseRbacApi }, { skip: !isUseRbacApi })
   const [currentRegion, setCurrentRegion] = useState('')
   const [availableLteBandsArray, setAvailableLteBandsArray] =
     useState(defaultAvailableLteBandsArray)
@@ -85,7 +91,9 @@ export function CellularOptionsForm () {
   useEffect(() => {
     let availableLteBandsData = _.cloneDeep(availableLteBands.data)
     let venueApModelCellularData = _.cloneDeep(venueApModelCellular.data)
-    const countryCode = _.get(venueData, 'data.countryCode')
+    const countryCode = isUseRbacApi
+      ? venueInfoData.currentData?.address.countryCode
+      : _.get(venueData, 'data.countryCode')
 
     if (availableLteBandsData && countryCode && venueApModelCellularData) {
 
@@ -137,7 +145,7 @@ export function CellularOptionsForm () {
       setReadyToScroll?.(r => [...(new Set(r.concat('Cellular-Options')))])
     }
 
-  }, [availableLteBands, venueApModelCellular, venueData, form])
+  }, [availableLteBands, venueApModelCellular, venueData, venueInfoData, form])
   const onChange = () =>{
     setEditContextData && setEditContextData({
       ...editContextData,
@@ -176,7 +184,8 @@ export function CellularOptionsForm () {
       value.secondarySim.lteBands = genLteBands(lteBand.secondarySim)
 
       await updateVenueCellularSettings({ params,
-        payload: { ...payload, ...value } })
+        payload: { ...payload, ...value },
+        enableRbac: isUseRbacApi })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -192,7 +201,9 @@ export function CellularOptionsForm () {
             <CellularRadioSimSettings
               editData={editData}
               simCardNumber={1}
-              countryCode={_.get(venueData, 'data.countryCode')}
+              countryCode={isUseRbacApi
+                ? venueInfoData.currentData?.address.countryCode
+                : _.get(venueData, 'data.countryCode')}
               legend={$t({ defaultMessage: 'Primary SIM' })}
               regionCountriesMap={regionCountriesMap}
               currentRegion={currentRegion}
@@ -204,7 +215,9 @@ export function CellularOptionsForm () {
             simCardNumber={2}
             legend={$t({ defaultMessage: 'Secondary SIM' })}
             regionCountriesMap={regionCountriesMap}
-            countryCode={_.get(venueData, 'data.countryCode')}
+            countryCode={isUseRbacApi
+              ? venueInfoData.currentData?.address.countryCode
+              : _.get(venueData, 'data.countryCode')}
             currentRegion={currentRegion}
             availableLteBands={availableLteBandsArray}
             formControlName={'secondarySim'} />
