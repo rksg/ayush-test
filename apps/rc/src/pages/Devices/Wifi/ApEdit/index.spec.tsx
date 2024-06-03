@@ -83,7 +83,9 @@ describe('ApEdit', () => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+      ff !== Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE &&
+      ff !== Features.WIFI_RBAC_API
+    )
 
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenue.url,
@@ -121,6 +123,10 @@ describe('ApEdit', () => {
       rest.get(
         CommonUrlsInfo.getVenueApEnhancedKey.url,
         (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_req, res, ctx) => res(ctx.json([]))
       )
     )
   })

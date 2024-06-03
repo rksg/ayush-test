@@ -70,6 +70,47 @@ export interface AP {
   apRadioDeploy?: string
 }
 
+export interface NewAPModel {
+  serialNumber: string
+  name: string
+  apGroupId: string
+  venueId: string
+  tags: string[]
+  model: string
+  supportSecureBoot: boolean
+  macAddress: string
+  firmwareVersion: string
+  uptime: number
+  lastUpdatedTime: Date
+  lastSeenTime: Date
+  statusSeverity: ApVenueStatusEnum
+  status: ApDeviceStatusEnum
+  meshRole: string
+  networkStatus: {
+    ipAddress: string
+    externalIpAddress: string
+    ipAddressType: string
+    netmask: string
+    gateway: string
+    primaryDnsServer: string
+    secondaryDnsServer: string
+    managementTrafficVlan: number
+  }
+  lanPortStatuses: {
+    id: string
+    physicalLink: string
+  }[]
+  radioStatuses: {
+    id: number
+    band: string
+    transmitterPower: string
+    channel: number
+    channelBandwidth: string
+    rssi: number
+  }[]
+  afcStatus: NewAFCInfo
+}
+
 export interface ApViewModel extends AP {
   channel24?: RadioProperties,
   channel50?: RadioProperties,
@@ -100,6 +141,33 @@ export interface APExtended extends AP {
   switchId?: string,
   switchName?: string,
   rogueCategory?: { [key: string]: number },
+  incompatible?: number
+}
+
+export interface NewAPModelExtended extends NewAPModel {
+  venueName?: string
+  poePort?: string
+  apGroupName?: string
+  channel24?: string | number
+  channel50?: string | number
+  channelL50?: string | number
+  channelU50?: string | number
+  channel60?: string | number
+  hasPoeStatus?: boolean
+  isPoEStatusUp?: boolean
+  poePortInfo?: string
+  xPercent?: number
+  yPercent?: number
+  members?: number
+  incidents?: number
+  clients?: number
+  networks?: {
+    count?: number
+  }
+  switchSerialNumber?: string
+  switchId?: string
+  switchName?: string
+  rogueCategory?: { [key: string]: number }
   incompatible?: number
 }
 
@@ -549,6 +617,15 @@ export type AFCInfo = {
   powerMode?: AFCPowerMode,
   minPowerDbm?: number,
   maxPowerDbm?: number
+}
+
+export type NewAFCInfo = {
+  afcState?: AFCStatus,
+  availableChannels?: number[]
+  geoLocationSource?: string
+  hasGeoLocation?: boolean
+  maxPower?: number
+  powerState?: AFCPowerMode
 }
 
 export interface GeoLocation {

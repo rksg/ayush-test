@@ -44,18 +44,10 @@ export const tunnelProfileApi = baseTunnelProfileApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     deleteTunnelProfile: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        if(payload){ //delete multiple rows
-          const req = createHttpRequest(TunnelProfileUrls.batchDeleteTunnelProfile)
-          return {
-            ...req,
-            body: payload
-          }
-        }else{ //delete single row
-          const req = createHttpRequest(TunnelProfileUrls.deleteTunnelProfile, params)
-          return {
-            ...req
-          }
+      query: ({ params }) => {
+        const req = createHttpRequest(TunnelProfileUrls.deleteTunnelProfile, params)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'TunnelProfile', id: 'LIST' }]

@@ -31,7 +31,7 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData, afcEnabled } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled, venueId } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   const apAction = useApActions()
   const { activeTab } = useParams()
@@ -58,6 +58,9 @@ function ApPageHeader () {
 
     if (e.key === 'delete') {
       actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
+    } else if(e.key === 'reboot' || e.key === 'blinkLed') {
+      // eslint-disable-next-line max-len
+      (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
     } else {
       actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
     }

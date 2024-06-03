@@ -139,8 +139,9 @@ export const getRecommendationsText = (
         configuration continues to be monitored and adjusted for further optimization.} other {}}`
       }, {
         isApplied: status === 'applied',
-        scopeType: get('IS_MLISA_SA')
-          ? $t({ defaultMessage: 'zone' }) : $t({ defaultMessage: 'venue' })
+        scopeType: get('IS_MLISA_SA') ?
+          $t({ defaultMessage: 'zone' }) :
+          $t({ defaultMessage: '<venueSingular></venueSingular>' })
       })
     }
   }
