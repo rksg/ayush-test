@@ -775,7 +775,7 @@ export const mockRecommendationProbeflexApplied = {
   id: '49c8ec53-a266-4dc1-a872-91a242791a53',
   code: 'c-probeflex-24g',
   status: 'applied',
-  appliedTime: null,
+  appliedTime: '2024-03-17T00:00:00.000Z',
   isMuted: false,
   originalValue: null,
   currentValue: false,
