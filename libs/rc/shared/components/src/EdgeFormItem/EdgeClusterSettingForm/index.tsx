@@ -67,7 +67,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         smartEdges: editData.edgeList?.map(item => ({
           name: item.name,
           serialNumber: item.serialNumber,
-          model: deriveEdgeModel(item.serialNumber),
+          model: item.model ?? deriveEdgeModel(item.serialNumber),
           isEdit: true
         }))
       })
