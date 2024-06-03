@@ -184,8 +184,8 @@ export function Hotspot20Tab () {
   }]
 
   const isValidConnectionCapability = (index: number, protocolNumber: number, port: number) => {
-    const mapIdx = connectionCapibilityMap.current?.get(protocolNumber + '_' + port)as number
-    const key = protocolNumber + '_' + port
+    const key = `${protocolNumber}_${port}`
+    const mapIdx = connectionCapibilityMap.current?.get(key) as number
     return index > -1 ? (mapIdx === index || !connectionCapibilityMap.current?.has(key)) :
       !connectionCapibilityMap.current?.has(key)
   }
