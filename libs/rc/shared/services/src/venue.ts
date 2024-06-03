@@ -1091,7 +1091,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const customHeaders = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined) 
+          const customHeaders = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
           if (enableRbac) {
             const { enabled, reportThreshold, roguePolicyId, currentRoguePolicyId, currentReportThreshold } = payload!
             if (enabled) {
