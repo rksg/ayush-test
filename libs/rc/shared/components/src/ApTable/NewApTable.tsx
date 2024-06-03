@@ -116,7 +116,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
   })
   const tableQuery = props.tableQuery || apListTableQuery
 
-
   useEffect(() => {
     const fetchApCompatibilitiesAndSetData = async () => {
       const result:React.SetStateAction<NewAPModelExtended[]> = []

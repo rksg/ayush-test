@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable max-len */
 import { find } from 'lodash'
 
@@ -46,6 +45,7 @@ export const transformApListFromNewModel = (
 const setAPRadioInfo = (
   row: NewAPModelExtended,
   APRadio: NewAPModel['radioStatuses'],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   channelColumnShow: any
 ) => {
 

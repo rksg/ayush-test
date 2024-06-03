@@ -1,0 +1,88 @@
+import { cloneDeep } from 'lodash'
+import { ApExtraParams, ApGroup, Capabilities, NewAPModelExtended, Venue } from '../../utils/src/types'
+import { TableResult } from '../../utils/src/useTableQuery'
+import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel } from './apUtils'
+import { mockAPList, mockAPModels } from '../../utils/src/features/wifi/_tests_/fixtures/general'
+import { mockAPGroupList } from '../../utils/src/features/wifi/_tests_/fixtures/APGroup'
+
+const mockAPListWithExtraInfo = {
+  ...mockAPList,
+  data: [
+    {
+      ...mockAPList.data[0],
+      poePort: '1'
+    },
+    {
+      ...mockAPList.data[1],
+      poePort: '2'
+    }
+  ]
+}
+const mockVenueList = {
+  "fields": [
+      "name",
+      "id"
+  ],
+  "totalCount": 2,
+  "page": 1,
+  "data": [
+      {
+          "id": "0e2f68ab79154ffea64aa52c5cc48826",
+          "name": "My-Venue"
+      },
+      {
+          "id": "991eb992ece042a183b6945a2398ddb9",
+          "name": "joe-test"
+      }
+  ]
+}
+
+describe('Test apUtils', () => {
+  it('test transformApListFromNewModel', async () => {
+    const cloneData = cloneDeep(mockAPListWithExtraInfo) as unknown as TableResult<NewAPModelExtended, ApExtraParams>
+    const result = transformApListFromNewModel(cloneData)
+    const dataList = result.data
+    expect(dataList[0].channel24).toBe(8)
+    expect(dataList[0].channel50).toBe(64)
+    expect(dataList[0].channel60).toBe(undefined)
+    expect(dataList[0].channelL50).toBe(undefined)
+    expect(dataList[0].channelU50).toBe(undefined)
+    expect(dataList[0].hasPoeStatus).toBeTruthy()
+    expect(dataList[0].isPoEStatusUp).toBeTruthy()
+    expect(dataList[0].poePortInfo).toBe('1000Mbps')
+    expect(dataList[1].channel24).toBe(3)
+    expect(dataList[1].channel50).toBe(128)
+    expect(dataList[1].channel60).toBe(undefined)
+    expect(dataList[1].channelL50).toBe(undefined)
+    expect(dataList[1].channelU50).toBe(undefined)
+    expect(dataList[1].hasPoeStatus).toBeTruthy()
+    expect(dataList[1].isPoEStatusUp).toBeTruthy()
+    expect(dataList[1].poePortInfo).toBe('100Mbps')
+    expect(result.extra?.channel24).toBeTruthy()
+    expect(result.extra?.channel50).toBeTruthy()
+    expect(result.extra?.channel60).toBeFalsy()
+    expect(result.extra?.channelL50).toBeFalsy()
+    expect(result.extra?.channelU50).toBeFalsy()
+  })
+
+  it('test aggregateVenueInfo', async () => {
+    const cloneData = cloneDeep(mockAPList) as unknown as TableResult<NewAPModelExtended, ApExtraParams>
+    aggregateVenueInfo(cloneData, mockVenueList as unknown as TableResult<Venue>)
+    expect(cloneData.data[0].venueName).toBe('My-Venue')
+    expect(cloneData.data[1].venueName).toBe('joe-test')
+  })
+
+  it('test aggregatePoePortInfo', async () => {
+    const cloneData = cloneDeep(mockAPList) as unknown as TableResult<NewAPModelExtended, ApExtraParams>
+    aggregatePoePortInfo(cloneData, mockAPModels as unknown as Capabilities)
+    expect(cloneData.data[0].poePort).toBe('1')
+    expect(cloneData.data[1].poePort).toBe('2')
+  })
+
+  it('test aggregateApGroupInfo', async () => {
+    const cloneData = cloneDeep(mockAPList) as unknown as TableResult<NewAPModelExtended, ApExtraParams>
+    aggregateApGroupInfo(cloneData, mockAPGroupList as unknown as TableResult<ApGroup>)
+    expect(cloneData.data[0].apGroupName).toBe('joe-apg-02')
+    expect(cloneData.data[1].apGroupName).toBe('joe-apg-01')
+  })
+})

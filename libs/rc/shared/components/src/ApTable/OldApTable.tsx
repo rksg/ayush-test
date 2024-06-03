@@ -108,7 +108,6 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   })
   const tableQuery = props.tableQuery || apListTableQuery
 
-
   useEffect(() => {
     const fetchApCompatibilitiesAndSetData = async () => {
       const result:React.SetStateAction<(APExtended|APExtendedGrouped)[]> = []
