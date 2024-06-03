@@ -174,7 +174,7 @@ export const useRoles = (forceAllRoles = true): Record<string, MessageDescriptor
   const newRoles = {
     [Roles.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Prime Administrator' }),
     [Roles.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
-    [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Bussiness Insights User' }),
+    [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Business Insights User' }),
     [Roles.IT_HELPDESK]: defineMessage({ defaultMessage: 'IT Helpdesk' }),
     [Roles.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
     [Roles.REPORTS_USER]: defineMessage({ defaultMessage: 'Reports User' }),
