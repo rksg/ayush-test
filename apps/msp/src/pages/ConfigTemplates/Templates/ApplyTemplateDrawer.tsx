@@ -84,17 +84,20 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     }
   }
 
-  const hasReachedTheMaxRecord = (mspEcId: string): boolean => {
+  const hasReachedTheMaxRecord = (): boolean => {
     return selectedRows.length >= MAX_APPLICABLE_EC_TENANTS
-      && !selectedRows.find(row => row.id === mspEcId)
   }
 
-  const hasAlreadyAppliedEcTenant = (mspEcId: string): boolean => {
-    return selectedTemplate.appliedOnTenants.includes(mspEcId)
+  const isRecordDisabledAtMax = (mspEcId: string): boolean => {
+    return hasReachedTheMaxRecord() && !selectedRows.find(row => row.id === mspEcId)
+  }
+
+  const isRecordApplied = (mspEcId: string): boolean => {
+    return (selectedTemplate.appliedOnTenants ?? []).includes(mspEcId)
   }
 
   const isRecordDisabled = (mspEcId: string): boolean => {
-    return hasReachedTheMaxRecord(mspEcId) || hasAlreadyAppliedEcTenant(mspEcId)
+    return isRecordDisabledAtMax(mspEcId) || isRecordApplied(mspEcId)
   }
 
   const columns: TableProps<MspEc>['columns'] = [
@@ -125,7 +128,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
-    { selectedRows.length >= MAX_APPLICABLE_EC_TENANTS &&
+    { hasReachedTheMaxRecord() &&
       <UI.Warning>{
         // eslint-disable-next-line max-len
         $t({ defaultMessage: 'You have reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
