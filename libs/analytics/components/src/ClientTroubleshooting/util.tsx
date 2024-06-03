@@ -125,8 +125,8 @@ export const transformEvents = (
 export const formatEventDesc = (evtObj: DisplayEvent, intl: IntlShape): string => {
   const { code, apName, mac, radio, state, event } = evtObj
   const ap = [apName, mac ? `(${mac})` : ''].filter(Boolean).join(' ')
-  const checkText = typeof (clientEventDescription(event, state)) === 'string'
-    ? clientEventDescription(event, state) : intl.$t(clientEventDescription(event, state))
+  const description = clientEventDescription(event, state)
+  const checkText = typeof (description) === 'string' ? description : intl.$t(description)
   return [
     code ? `${mapCodeToFailureText(code, intl)}:` : '',
     `${checkText} @`,
