@@ -29,20 +29,18 @@ import { useEcFilters } from './templateUtils'
 
 interface ApplyTemplateDrawerProps {
   setVisible: (visible: boolean) => void
-  selectedTemplates: ConfigTemplate[]
+  selectedTemplate: ConfigTemplate
 }
 
 export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const { $t } = useIntl()
-  const { setVisible, selectedTemplates } = props
+  const { setVisible, selectedTemplate } = props
   const ecFilters = useEcFilters()
   const [ selectedRows, setSelectedRows ] = useState<MspEc[]>([])
   const [ confirmationDrawerVisible, setConfirmationDrawerVisible ] = useState(false)
   const [ applyConfigTemplate ] = useApplyConfigTemplateMutation()
   const mspUtils = MSPUtils()
-
   const ecNames = useMemo(() => selectedRows.map(r => r.name), [selectedRows])
-  const templateNames = useMemo(() => selectedTemplates.map(t => t.name), [selectedTemplates])
 
   const mspPayload = {
     filters: ecFilters,
@@ -73,7 +71,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const onApply = async () => {
     const allRequests = selectedRows.map(ec => {
       return applyConfigTemplate({
-        params: { templateId: selectedTemplates[0].id, tenantId: ec.id },
+        params: { templateId: selectedTemplate.id, tenantId: ec.id },
         payload: {}
       }).unwrap()
     })
@@ -86,12 +84,17 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     }
   }
 
-  const hasReachedTheMaxRecord = (): boolean => {
+  const hasReachedTheMaxRecord = (mspEcId: string): boolean => {
     return selectedRows.length >= MAX_APPLICABLE_EC_TENANTS
+      && !selectedRows.find(row => row.id === mspEcId)
+  }
+
+  const hasAlreadyAppliedEcTenant = (mspEcId: string): boolean => {
+    return selectedTemplate.appliedOnTenants.includes(mspEcId)
   }
 
   const isRecordDisabled = (mspEcId: string): boolean => {
-    return hasReachedTheMaxRecord() && !selectedRows.find(row => row.id === mspEcId)
+    return hasReachedTheMaxRecord(mspEcId) || hasAlreadyAppliedEcTenant(mspEcId)
   }
 
   const columns: TableProps<MspEc>['columns'] = [
@@ -122,10 +125,10 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
-    { hasReachedTheMaxRecord() &&
+    { selectedRows.length >= MAX_APPLICABLE_EC_TENANTS &&
       <UI.Warning>{
         // eslint-disable-next-line max-len
-        $t({ defaultMessage: 'You has reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
+        $t({ defaultMessage: 'You have reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
       }
       </UI.Warning>
     }
@@ -181,7 +184,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       {confirmationDrawerVisible &&
       <ApplyTemplateConfirmationDrawer
         ecNames={ecNames}
-        templateNames={templateNames}
+        templateName={selectedTemplate.name}
         onBack={() => setConfirmationDrawerVisible(false)}
         onApply={onApply}
         onCancel={onClose}
@@ -192,14 +195,14 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
 interface ApplyTemplateConfirmationDrawerProps {
   ecNames: string[]
-  templateNames: string[]
+  templateName: string
   onBack: () => void
   onApply: () => void
   onCancel: () => void
 }
 
 function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
-  const { ecNames, templateNames, onBack, onApply, onCancel } = props
+  const { ecNames, templateName, onBack, onApply, onCancel } = props
   const { $t } = useIntl()
   const [loading, setLoading ] = useState(false)
 
@@ -210,7 +213,7 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
       <p>{ $t({ defaultMessage: 'Are you sure you want to continue?' }) }</p>
       <UI.EcListContainer>{ ecNames.map(name => <li key={name}>{name}</li>) }</UI.EcListContainer>
       {/* eslint-disable-next-line max-len */}
-      <UI.TemplateListContainer>{ templateNames.map(name => <li key={name}>- {name}</li>) }</UI.TemplateListContainer>
+      <UI.TemplateListContainer><li key={templateName}>- {templateName}</li></UI.TemplateListContainer>
     </Space>
 
   const footer =<div>

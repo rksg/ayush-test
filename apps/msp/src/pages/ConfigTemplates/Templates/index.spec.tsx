@@ -110,6 +110,11 @@ describe('ConfigTemplateList component', () => {
     const targetEcRow = await within(applyTemplateDrawer).findByRole('row', { name: /ec-1/i })
     await userEvent.click(within(targetEcRow).getByRole('checkbox'))
 
+    // Check if the limitation of disallowing re-apply to the same customers is working
+    const reApplyRow = await within(applyTemplateDrawer).findByRole('row', { name: /Chill-Tel/i })
+    expect(within(reApplyRow).getByRole('checkbox')).toBeDisabled()
+
+
     // Check if the maximum limitation is working
     const targetEcRow2 = await within(applyTemplateDrawer).findByRole('row', { name: /Tal-Tel/i })
     await userEvent.click(within(targetEcRow2).getByRole('checkbox'))

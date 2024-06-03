@@ -9,7 +9,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 1',
       createdOn: 1690598400000,
       createdBy: 'Author 1',
-      appliedOnTenants: ['t1', 't2'],
+      appliedOnTenants: ['t1', '1969e24ce9af4348833968096ff6cb47'],
       type: 'NETWORK',
       lastModified: 1690598400000,
       lastApplied: 1690598405000
@@ -118,7 +118,7 @@ export const mockedMSPCustomerList = {
     },
     {
       id: '1969e24ce9af4348833968096ff6cb47',
-      name: 'chiawei-ec-test',
+      name: 'Chill-Tel',
       streetAddress: 'No. 7, Section 5, Xinyi Rd, Xinyi District, Taipei City, Taiwan 110',
       mspAdminCount: 1,
       mspEcAdminCount: 0,

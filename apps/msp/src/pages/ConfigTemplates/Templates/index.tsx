@@ -156,7 +156,7 @@ export function ConfigTemplateList () {
       {applyTemplateDrawerVisible &&
       <ApplyTemplateDrawer
         setVisible={setApplyTemplateDrawerVisible}
-        selectedTemplates={selectedTemplates}
+        selectedTemplate={selectedTemplates[0]}
       />}
       {appliedToTenantDrawerVisible &&
       <AppliedToTenantDrawer
