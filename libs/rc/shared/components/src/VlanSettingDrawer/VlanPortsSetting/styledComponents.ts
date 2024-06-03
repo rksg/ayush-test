@@ -1,4 +1,6 @@
-import styled from 'styled-components/macro'
+import { Space } from 'antd'
+import styled    from 'styled-components/macro'
+
 
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
 
@@ -159,22 +161,40 @@ export const Module = styled.div`
 `
 
 export const TagsOutlineIcon = styled(TagsOutline)`
-  width: 12px;
-  height: 14px;
+  display: flex;
+  width: 16px;
+  height: auto;
   path {
     fill: var(--acx-primary-white);
   }
-  position: absolute;
 `
 
 export const TagsSolidIcon = styled(TagsSolid)`
-  width: 12px;
-  height: 14px;
+  display: flex;
+  width: 16px;
+  height: auto;
   path {
     fill: var(--acx-primary-white);
   }
-  position: absolute;
 `
-export const PortSpan = styled.span`
-  padding-left: 15px;
+
+export const TooltipTitle = styled(Space)`
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  color: var(--acx-neutrals-40);  
+`
+
+export const TagsTitle = styled(Space)`
+  display: flex;
+  padding: 4px 0;
+  gap: 4px !important;
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  color: var(--acx-neutrals-40);
+`
+
+export const PortSpan = styled.div`
+  font-size: var(--acx-body-5-font-size);
+  line-height: var(--acx-body-5-line-height);
+  padding-left: 20px;
 `

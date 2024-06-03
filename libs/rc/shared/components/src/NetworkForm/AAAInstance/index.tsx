@@ -7,6 +7,7 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { Tooltip, PasswordInput }               from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { AaaServerOrderEnum, AAAViewModalType } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
@@ -33,6 +34,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
   const radiusIdName = props.type + 'Id'
   const watchedRadius = Form.useWatch(props.type) || form.getFieldValue(props.type)
   const watchedRadiusId = Form.useWatch(radiusIdName) || form.getFieldValue(radiusIdName)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
     queryOptions: { refetchOnMountOrArgChange: 10 }
@@ -66,7 +68,7 @@ export const AAAInstance = (props: AAAInstanceProps) => {
     if (watchedRadiusId === watchedRadius?.id) return
 
     if (watchedRadiusId) {
-      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId } })
+      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId }, enableRbac })
         .unwrap()
         .then(aaaPolicy => form.setFieldValue(props.type, aaaPolicy))
         // eslint-disable-next-line no-console
