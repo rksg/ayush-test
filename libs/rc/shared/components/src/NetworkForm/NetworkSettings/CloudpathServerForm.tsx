@@ -3,15 +3,13 @@ import { useContext, useEffect } from 'react'
 import {
   Form,
   Switch,
-  Space,
-  Typography
+  Space
 } from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Subtitle, Tooltip }      from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { NetworkTypeEnum }        from '@acx-ui/rc/utils'
+import { Subtitle, Tooltip } from '@acx-ui/components'
+import { NetworkTypeEnum }   from '@acx-ui/rc/utils'
 
 import { AAAInstance }    from '../AAAInstance'
 import NetworkFormContext from '../NetworkFormContext'
@@ -54,9 +52,6 @@ export function CloudpathServerForm () {
 
   const enableAccountingService = useWatch('enableAccountingService')
 
-  const disableDPSKProxyService = !useIsSplitOn(Features.WIFI_EDA_NON_PROXY_DPSK_TOGGLE)
-  && data?.type === NetworkTypeEnum.DPSK
-
   const authProxyNetworkTypes = [NetworkTypeEnum.OPEN, NetworkTypeEnum.AAA, NetworkTypeEnum.DPSK]
   const accountingProxyNetworkTypes = [NetworkTypeEnum.OPEN, NetworkTypeEnum.AAA]
 
@@ -78,16 +73,10 @@ export function CloudpathServerForm () {
             initialValue={false}
             children={<Switch
               data-testid='enable-auth-proxy'
-              disabled={disableDPSKProxyService}
               onChange={(value) => onProxyChange(value,'enableAuthProxy')}
             />}
           />
         </UI.FieldLabel>}
-        { disableDPSKProxyService &&
-        <Typography.Text disabled className='ant-form-item-extra'>
-          { $t({ defaultMessage:
-              'DPSK Network with Non-Proxy mode is not supported at this moment!' })}
-        </Typography.Text> }
       </div>
       <div>
         <UI.FieldLabel width={labelWidth}>

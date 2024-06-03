@@ -3,10 +3,11 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { venueApi }                                                               from '@acx-ui/rc/services'
-import { WifiUrlsInfo }                                                           from '@acx-ui/rc/utils'
+import { Capabilities, WifiRbacUrlsInfo, WifiUrlsInfo }                           from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
+import { VenueUtilityContext }                                                    from '..'
 import { VenueEditContext }                                                       from '../..'
 import { externalAntennaApModels, venueExternalAntenna, venueExternalAntennaCap } from '../../../__tests__/fixtures'
 
@@ -20,6 +21,17 @@ const params = {
   activeSubTab: 'radio'
 }
 
+const mockExternalAntennaSection = (
+  <VenueUtilityContext.Provider value={{
+    venueApCaps: venueExternalAntennaCap as Capabilities,
+    isLoadingVenueApCaps: false
+  }}>
+    <Form>
+      <ExternalAntennaSection />
+    </Form>
+  </VenueUtilityContext.Provider>
+)
+
 describe('Venue External Antenna Settings', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
@@ -32,6 +44,13 @@ describe('Venue External Antenna Settings', () => {
         (_, res, ctx) => res(ctx.json(venueExternalAntennaCap))),
       rest.put(
         WifiUrlsInfo.updateVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      // RBAC API
+      rest.get(
+        WifiRbacUrlsInfo.getVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json(venueExternalAntenna))),
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueExternalAntenna.url,
         (_, res, ctx) => res(ctx.json({})))
     )})
 
@@ -46,9 +65,7 @@ describe('Venue External Antenna Settings', () => {
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()
         }}>
-          <Form>
-            <ExternalAntennaSection />
-          </Form>
+          {mockExternalAntennaSection}
         </VenueEditContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
@@ -105,9 +122,7 @@ describe('Venue External Antenna Settings', () => {
         setEditContextData: jest.fn(),
         setEditRadioContextData: jest.fn()
       }}>
-        <Form>
-          <ExternalAntennaSection />
-        </Form>
+        { mockExternalAntennaSection }
       </VenueEditContext.Provider>
     </Provider>, {
       route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }

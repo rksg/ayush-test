@@ -408,7 +408,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     getCliTemplates: build.query<TableResult<SwitchCliTemplateModel>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.getCliTemplates, params, headers)
         return {
@@ -449,7 +449,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         const req = createHttpRequest(switchUrls.convertToStack, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),

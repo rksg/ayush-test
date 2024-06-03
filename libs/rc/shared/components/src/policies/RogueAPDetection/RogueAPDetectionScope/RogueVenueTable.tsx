@@ -42,7 +42,7 @@ export const RogueVenueTable = () => {
 
   const activateVenue = (selectRows: VenueRoguePolicyType[]) => {
     if (selectRows.filter(row =>
-      row.hasOwnProperty('rogueDetection') && row.rogueDetection !== undefined
+      row.rogueDetection?.enabled && row.rogueDetection?.policyId !== state.id
     ).length > 0) {
       showActionModal({
         type: 'warning',
