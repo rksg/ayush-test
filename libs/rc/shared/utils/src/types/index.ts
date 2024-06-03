@@ -50,11 +50,6 @@ export interface CommonResult {
   }
 }
 
-export interface CommonResultWithEntityResponse<EntityType> {
-  requestId: string
-  response: EntityType
-}
-
 export interface CommonErrorsResult<T> {
   data: {
     errors: T[];
