@@ -11,6 +11,11 @@ import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fi
 
 import { ConfigTemplateList } from '.'
 
+jest.mock('../constants', () => ({
+  ...jest.requireActual('../constants'),
+  MAX_APPLICABLE_EC_TENANTS: 2
+}))
+
 const mockedUsedNavigate = jest.fn()
 const mockedLocation = '/test'
 jest.mock('@acx-ui/react-router-dom', () => ({
@@ -101,9 +106,16 @@ describe('ConfigTemplateList component', () => {
     await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
 
     const applyTemplateDrawer = await screen.findByRole('dialog')
-    const targetEcRow = await within(applyTemplateDrawer).findByRole('row', { name: /ec-1/i })
 
+    const targetEcRow = await within(applyTemplateDrawer).findByRole('row', { name: /ec-1/i })
     await userEvent.click(within(targetEcRow).getByRole('checkbox'))
+
+    // Check if the maximum limitation is working
+    const targetEcRow2 = await within(applyTemplateDrawer).findByRole('row', { name: /Tal-Tel/i })
+    await userEvent.click(within(targetEcRow2).getByRole('checkbox'))
+    const targetEcRow3 = await within(applyTemplateDrawer).findByRole('row', { name: /Camel-Tel/i })
+    expect(within(targetEcRow3).getByRole('checkbox')).toBeDisabled()
+
     await userEvent.click(await screen.findByRole('button', { name: /Next/ }))
 
     await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
@@ -113,7 +125,7 @@ describe('ConfigTemplateList component', () => {
     // eslint-disable-next-line max-len
     await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Apply Template/ }))
 
-    await waitFor(() => expect(applyFn).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(applyFn).toHaveBeenCalledTimes(2))
 
     await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(0))
   })

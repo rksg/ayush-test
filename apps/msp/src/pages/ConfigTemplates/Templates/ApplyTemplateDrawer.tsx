@@ -22,9 +22,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { hasAccess } from '@acx-ui/user'
 
+import { MAX_APPLICABLE_EC_TENANTS } from '../constants'
+
 import * as UI          from './styledComponents'
 import { useEcFilters } from './templateUtils'
-
 
 interface ApplyTemplateDrawerProps {
   setVisible: (visible: boolean) => void
@@ -85,6 +86,14 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     }
   }
 
+  const hasReachedTheMaxRecord = (): boolean => {
+    return selectedRows.length >= MAX_APPLICABLE_EC_TENANTS
+  }
+
+  const isRecordDisabled = (mspEcId: string): boolean => {
+    return hasReachedTheMaxRecord() && !selectedRows.find(row => row.id === mspEcId)
+  }
+
   const columns: TableProps<MspEc>['columns'] = [
     {
       title: $t({ defaultMessage: 'Customers' }),
@@ -113,6 +122,13 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
+    { hasReachedTheMaxRecord() &&
+      <UI.Warning>{
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'You has reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
+      }
+      </UI.Warning>
+    }
     <Loader states={[tableQuery]}>
       <Table<MspEc>
         columns={columns}
@@ -124,10 +140,14 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
         rowKey='id'
         enableApiFilter={true}
         rowSelection={hasAccess() && {
+          hideSelectAll: true,
           type: 'checkbox',
           onChange (selectedRowKeys, selRows) {
             setSelectedRows(selRows)
-          }
+          },
+          getCheckboxProps: (record: MspEc) => ({
+            disabled: isRecordDisabled(record.id)
+          })
         }}
       />
     </Loader>
