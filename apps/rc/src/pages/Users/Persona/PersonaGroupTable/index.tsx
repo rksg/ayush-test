@@ -4,7 +4,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
@@ -13,6 +12,7 @@ import {
   NetworkSegmentationLink,
   PersonaGroupDrawer,
   usePersonaAsyncHeaders,
+  useIsEdgePINEnabled,
   VenueLink
 } from '@acx-ui/rc/components'
 import {
@@ -65,7 +65,7 @@ function useColumns (
   nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgePINEnabled()
 
   const { data: dpskPool } = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
@@ -216,7 +216,7 @@ export function PersonaGroupTable () {
     defaultPayload: { keyword: '' },
     pagination: { settingsId }
   })
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgePINEnabled()
 
   useEffect(() => {
     if (tableQuery.isLoading) return

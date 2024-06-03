@@ -4,13 +4,14 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, PageHeader, Subtitle, SummaryCard } from '@acx-ui/components'
-import { Features, TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
 import {
   BasePersonaTable,
   DpskPoolLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupDrawer,
+  useIsEdgePINEnabled,
   VenueLink
 } from '@acx-ui/rc/components'
 import {
@@ -62,7 +63,7 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgePINEnabled()
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()

@@ -5,7 +5,7 @@ import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import {
   ConnectionMeteringLink,
   DpskPoolLink,
@@ -15,6 +15,7 @@ import {
   PassphraseViewer,
   PersonaDrawer,
   PropertyUnitLink,
+  useIsEdgePINEnabled,
   usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
@@ -41,7 +42,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgePINEnabled()
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
