@@ -27,9 +27,10 @@ export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
-export const hasFirmwareFilterForPoe = () => {
-  return window.location.pathname.includes('/health/wired')
-}
+export const shouldAddFirmwareFilter = () =>
+  window.location.pathname.includes('/health/wired')
+    ? true
+    : undefined
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -172,10 +173,10 @@ export const kpiConfig = {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
-      apiMetric: 'switchDHCPAttemptAndSuccessCount',
+      apiMetric: 'switchDHCPSuccessAndAttemptCount',
       minGranularity: 'PT5M'
     },
-    barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
+    barChart: createBarChartConfig('switchDHCPSuccessAndAttemptCount'),
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
@@ -430,7 +431,7 @@ export const kpiConfig = {
   },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
-    enableSwitchFirmwareFilter: hasFirmwareFilterForPoe,
+    enableSwitchFirmwareFilter: shouldAddFirmwareFilter,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',

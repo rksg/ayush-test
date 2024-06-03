@@ -7,6 +7,7 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { PasswordInput, Tooltip }               from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { AAAViewModalType, AaaServerOrderEnum } from '@acx-ui/rc/utils'
 
 
@@ -47,6 +48,7 @@ export const AaaInstance = (props: AaaInstanceProps) => {
   const [ getAaaPolicy ] = useLazyGetAAAPolicyInstance()
   // eslint-disable-next-line max-len
   const [ aaaDropdownItems, setAaaDropdownItems ]= useState(convertAaaListToDropdownItems(radiusType, aaaListQuery?.data))
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   useEffect(()=>{
     if (aaaListQuery?.data) {
@@ -60,7 +62,7 @@ export const AaaInstance = (props: AaaInstanceProps) => {
     if (watchedRadiusId === watchedRadius?.id) return
 
     if (watchedRadiusId) {
-      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId } })
+      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId }, enableRbac })
         .unwrap()
         .then(aaaPolicy => form.setFieldValue(type, aaaPolicy))
       // eslint-disable-next-line no-console

@@ -8,7 +8,9 @@ import { crrmStates } from '../config'
 import {
   mockedRecommendationFirmware,
   mockedRecommendationApFirmware,
-  mockedRecommendationCRRM
+  mockedRecommendationCRRM,
+  mockedRecommendationCRRMApplied,
+  mockRecommendationProbeflexApplied
 } from './__tests__/fixtures'
 import { api, BasicRecommendation, EnhancedRecommendation, RecommendationAp } from './services'
 
@@ -241,4 +243,57 @@ describe('recommendation services', () => {
       }
     ])
   })
+
+  it('should return recommendation details with monitoring data for CRRM', async () => {
+    const appliedTime = mockedRecommendationCRRMApplied.appliedTime
+    jest.spyOn(Date, 'now').mockImplementation(() => {
+      return new Date(appliedTime).getTime()
+    })
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+      data: {
+        recommendation: mockedRecommendationCRRMApplied
+      }
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.recommendationDetails.initiate({
+        ...recommendationPayload, isCrrmPartialEnabled: true
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(error).toBeUndefined()
+    expect(data).toEqual<EnhancedRecommendation>(
+      expect.objectContaining({
+        code: 'c-crrm-channel5g-auto',
+        monitoring: {
+          until: '2023-06-26T00:00:25.772Z'
+        }
+      })
+    )
+  })
+
+  it('should return recommendation details without monitoring data for AirFlex', async () => {
+    const appliedTime = mockRecommendationProbeflexApplied.appliedTime
+    jest.spyOn(Date, 'now').mockImplementation(() => {
+      return new Date(appliedTime).getTime()
+    })
+    mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
+      data: {
+        recommendation: mockRecommendationProbeflexApplied
+      }
+    })
+    const { status, data, error } = await store.dispatch(
+      api.endpoints.recommendationDetails.initiate({
+        ...recommendationPayload, isCrrmPartialEnabled: false
+      })
+    )
+    expect(status).toBe('fulfilled')
+    expect(error).toBeUndefined()
+    expect(data).toEqual<EnhancedRecommendation>(
+      expect.objectContaining({
+        code: 'c-probeflex-24g',
+        monitoring: null
+      })
+    )
+  })
+
 })
