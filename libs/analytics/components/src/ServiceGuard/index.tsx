@@ -26,7 +26,7 @@ export function useServiceGuard () {
     description: 'Translation string - Service Validation'
   })
 
-  const extra = hasPermission () ? [
+  const extra = hasPermission({ permission: 'WRITE_SERVICE_VALIDATION' }) ? [
     <TenantLink to='/analytics/serviceValidation/add' key='add'>
       <Button type='primary'
         children={$t({ defaultMessage: 'Create Test' })}

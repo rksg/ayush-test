@@ -208,7 +208,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
           rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
             (_, res, ctx) => res(ctx.json({}))
           ),
-          rest.post(CommonUrlsInfo.getConfigProfiles.url,
+          rest.post(SwitchUrlsInfo.getProfiles.url,
             (_, res, ctx) => res(ctx.json({ data: configProfiles } ))
           ),
           rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,

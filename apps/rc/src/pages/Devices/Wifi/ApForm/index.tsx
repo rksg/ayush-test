@@ -670,7 +670,7 @@ export function ApForm () {
           {$t({ defaultMessage: '{latitude}, {longitude} {status}' }, {
             latitude: deviceGps?.latitude || selectedVenue?.latitude,
             longitude: deviceGps?.longitude || selectedVenue?.longitude,
-            status: sameAsVenue ? '(As venue)' : ''
+            status: sameAsVenue ? $t({ defaultMessage: '(As <venueSingular></venueSingular>)' }):''
           })}
           <Space size={0} split={<UI.Divider />} >
             <Button

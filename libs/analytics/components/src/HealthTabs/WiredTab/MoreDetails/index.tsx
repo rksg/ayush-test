@@ -45,7 +45,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
     },
     {
       type: 'portStorm',
-      title: $t({ defaultMessage: 'Port Storm' }),
+      title: $t({ defaultMessage: 'Multicast Storm Ports' }),
       pieTitle: 'Storm'
     },
     {

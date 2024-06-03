@@ -461,8 +461,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     ...(enableApCompatibleCheck ? [{
       key: 'incompatible',
       tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
-      title: $t({ defaultMessage: 'Feature Compatibility' }),
-      filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
+      title: $t({ defaultMessage: 'Feature Incompatibility' }),
+      filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
       filterValueArray: true,
       dataIndex: 'incompatible',
       filterKey: 'firmwareVersion',

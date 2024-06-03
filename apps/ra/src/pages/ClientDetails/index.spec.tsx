@@ -52,7 +52,10 @@ describe('ClientDetails', () => {
     }
   }
   beforeEach(() => {
-    setRaiPermissions({ READ_CLIENT_TROUBLESHOOTING: true } as RaiPermissions)
+    setRaiPermissions({
+      READ_WIRELESS_CLIENTS_REPORT: true,
+      READ_CLIENT_TROUBLESHOOTING: true
+    } as RaiPermissions)
   })
   it('should render correctly', async () => {
     mockGraphqlQuery(dataApiURL, 'Network', {
@@ -130,8 +133,11 @@ describe('ClientDetails', () => {
     expect(await screen.findByTestId('troubleshooting')).toBeVisible()
   })
 
-  it('should render for report-only user correctly', async () => {
-    setRaiPermissions({ READ_CLIENT_TROUBLESHOOTING: false } as RaiPermissions)
+  it('should render for BI (previous report-only) user correctly', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_WIRELESS_CLIENTS_REPORT: true
+    } as RaiPermissions)
     mockGraphqlQuery(dataApiURL, 'Network', {
       data: clientsList
     })
@@ -145,9 +151,28 @@ describe('ClientDetails', () => {
         path: '/users/wifi/clients/:clientId/details/:activeTab'
       }
     })
-    expect(screen.queryByRole('tab', { name: 'Troubleshooting' }))
-      .toBeNull()
-    expect(screen.queryByTestId('troubleshooting')).toBeNull()
-    expect(await screen.findByRole('tab', { name: 'Reports', selected: true })).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Troubleshooting' })).toBeVisible()
+    expect(await screen.findByRole('tab', { name: 'Reports' })).toBeVisible()
+  })
+  it('should not render tabs for reports user', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: false,
+      READ_WIRELESS_CLIENTS_REPORT: false
+    } as RaiPermissions)
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'reports'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Reports' })).toBeNull()
   })
 })

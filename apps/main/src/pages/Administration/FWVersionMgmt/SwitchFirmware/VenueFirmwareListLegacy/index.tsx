@@ -436,13 +436,15 @@ export const VenueFirmwareTable = (
 export function VenueFirmwareListLegacy () {
   const venuePayload = useDefaultVenuePayload()
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = useTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListQuery,
     defaultPayload: venuePayload,
     search: {
       searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
+    },
+    enableRbac: isSwitchRbacEnabled
   })
 
   const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({ params: useParams() }, {

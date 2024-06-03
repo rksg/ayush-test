@@ -23,11 +23,14 @@ function ClientDetailTabs () {
             key='troubleshooting'
           />
           : <></>
+      } {
+        hasPermission({ permission: 'READ_WIRELESS_CLIENTS_REPORT' })
+          ? <Tabs.TabPane
+            tab={$t({ defaultMessage: 'Reports' })}
+            key='reports'
+          />
+          : <></>
       }
-      <Tabs.TabPane
-        tab={$t({ defaultMessage: 'Reports' })}
-        key='reports'
-      />
     </Tabs>
   )
 }
