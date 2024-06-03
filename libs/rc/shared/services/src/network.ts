@@ -22,7 +22,12 @@ import {
   ApCompatibilityResponse,
   transformNetwork,
   WifiNetwork,
-  ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo,
+  WifiRbacUrlsInfo,
+  VenueConfigTemplateUrlsInfo,
+  NetworkRadiusSettings,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -692,6 +697,39 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    activateRadiusServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.activateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
+    }),
+    deactivateRadiusServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
+    }),
+    updateRadiusServerSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.updateRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1)),
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
+    }),
+    getRadiusServerSettings: build.query<NetworkRadiusSettings, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.getRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        }
+      },
+      providesTags: [{ type: 'NetworkRadiusServer', id: 'DETAIL' }]
     })
   })
 })
@@ -1177,7 +1215,11 @@ export const {
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
-  useActivateCertificateTemplateMutation
+  useActivateCertificateTemplateMutation,
+  useActivateRadiusServerMutation,
+  useDeactivateRadiusServerMutation,
+  useUpdateRadiusServerSettingsMutation,
+  useGetRadiusServerSettingsQuery
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,
