@@ -397,7 +397,7 @@ export function SwitchOverviewVLANs (props: {
         v => v.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.[0]
 
       const isDefaultVlanAppliedACL = veList
-        ?.filter(ve => ve.vlanId === Number(defaultVlan.vlanId)
+        ?.filter(ve => ve.vlanId === Number(defaultVlan?.vlanId)
         // eslint-disable-next-line max-len
           && (ve.ingressAclName || ve.egressAclName || ve.vsixIngressAclName || ve.vsixEgressAclName)
         )?.length > 0
