@@ -564,7 +564,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/meshSettings',
     // url: '/venues/aps/:serialNumber/meshSettings',
     newApi: true
-  }
+  },
   /*
   getMeshUplinkAPs: {
     method: 'post',
@@ -642,4 +642,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   }
   */
+  activateRadiusServer: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
+    newApi: true
+  },
+  deactivateRadiusServer: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/radiusServerProfiles/:radiusId',
+    newApi: true
+  },
+  updateRadiusServerSettings: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
+    newApi: true
+  },
+  getRadiusServerSettings: {
+    method: 'get',
+    url: '/wifiNetworks/:networkId/radiusServerProfileSettings',
+    newApi: true
+  }
 }
