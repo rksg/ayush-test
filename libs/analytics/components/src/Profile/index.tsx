@@ -1,11 +1,15 @@
-import { Col, Row } from 'antd'
-import { useIntl }  from 'react-intl'
+import { useRef } from 'react'
+
+import { Col, Row }               from 'antd'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { useUpdatePreferencesMutation }                                               from '@acx-ui/analytics/services'
 import { useRoles, getUserProfile }                                                   from '@acx-ui/analytics/utils'
 import { PageHeader, StepsForm, Tabs, UserProfileSection as BasicUserProfileSection } from '@acx-ui/components'
-import { useLocation, useNavigate, useParams, useTenantLink }                         from '@acx-ui/react-router-dom'
-import { hasPermission }                                                              from '@acx-ui/user'
+import { useNavigate, useParams, useTenantLink }                                      from '@acx-ui/react-router-dom'
+import { hasRaiPermission }                                                           from '@acx-ui/user'
+
+import { NotificationSettings } from '../NotificationSettings'
 
 import { PreferredLanguageFormItem } from './PreferredLanguageFormItem'
 
@@ -14,10 +18,6 @@ interface Tab {
   title: string | JSX.Element,
   component?: JSX.Element,
   url?: string
-}
-
-interface fromLoc {
-  from: string
 }
 
 export enum ProfileTabEnum {
@@ -39,25 +39,19 @@ const UserProfileSection = () => {
     roleStringMap={roles}/>
 }
 
-const SettingsTab = () => {
+const SettingsTab = ({ navigate }: { navigate: () => void }) => {
   const { $t } = useIntl()
-  const navigate = useNavigate()
   const [ updatePreferences ] = useUpdatePreferencesMutation()
-  const location = useLocation().state as fromLoc
-  const dashboardPath = useTenantLink('/dashboard')
-  const backPathname = location?.from ?? dashboardPath.pathname
   const { userId } = getUserProfile()
-
   return (
     <StepsForm
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply Settings' }) }}
       onFinish={async (data: { preferredLanguage: string }) => {
-        await updatePreferences({ userId, preferences: data }).then(()=>{
-          navigate({ pathname: backPathname }, { replace: true })
-          window.location.reload()
-        })
+        await updatePreferences({ userId, preferences: data })
+        navigate()
+        window.location.reload()
       }}
-      onCancel={() => navigate({ pathname: backPathname }, { replace: true })}
+      onCancel={navigate}
     >
       <StepsForm.StepForm>
         <Row gutter={20}>
@@ -70,20 +64,47 @@ const SettingsTab = () => {
   )
 }
 
+// eslint-disable-next-line max-len
+const intro = defineMessage({ defaultMessage: 'We\'ll always let you know about important changes, but pick what else you want to hear about.' })
+
+const NotificationSettingsTab = ({ navigate }: { navigate: () => void }) => {
+  const { $t } = useIntl()
+  const { selectedTenant: { id } } = getUserProfile()
+  const apply = useRef<() => Promise<boolean | void>>()
+  return <>
+    <div style={{ padding: '10px 0 20px' }}>{$t(intro)}</div>
+    <StepsForm
+      buttonLabel={{ submit: $t({ defaultMessage: 'Save' }) }}
+      onFinish={async () => { if (await apply.current?.()) navigate() }}
+      onCancel={navigate}
+    >
+      <StepsForm.StepForm>
+        <Row gutter={20}>
+          <Col span={8}>
+            <NotificationSettings tenantId={id} apply={apply} />
+          </Col>
+        </Row>
+      </StepsForm.StepForm>
+    </StepsForm>
+  </>
+}
+
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
+  const navigate = useNavigate()
+  const defaultPage = useTenantLink('/')
+  const navigateToDefaultPath = () => { navigate(defaultPage, { replace: true }) }
   const settingsTab = {
     key: ProfileTabEnum.SETTINGS,
     title: $t({ defaultMessage: 'Settings' }),
-    component: <SettingsTab />
+    component: <SettingsTab navigate={navigateToDefaultPath} />
   }
   const notificationsTab = {
     key: ProfileTabEnum.NOTIFICATIONS,
     title: $t({ defaultMessage: 'Notifications' }),
-    url: '/analytics/profile/settings'
+    component: <NotificationSettingsTab navigate={navigateToDefaultPath} />
   }
-
-  return hasPermission({ permission: 'READ_INCIDENTS' })
+  return hasRaiPermission('READ_INCIDENTS')
     ? [ settingsTab, notificationsTab ]
     : [ settingsTab ]
 }
@@ -95,10 +116,6 @@ export function Profile ({ tab }:{ tab?: ProfileTabEnum }) {
   const tabs = useTabs()
   const onTabChange = (tabKey: string) => {
     const tab = tabs.find(({ key }) => key === tabKey)
-    if (tab?.url) {
-      window.open(tab.url, '_blank')
-      return
-    }
     tab && navigate({
       ...basePath,
       pathname: `${basePath.pathname}/profile/${tab.key}`
