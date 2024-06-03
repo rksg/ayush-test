@@ -792,8 +792,16 @@ export const mockRecommendationProbeflexApplied = {
   },
   path: [
     {
+      type: 'system',
+      name: 'vsz34'
+    },
+    {
+      type: 'domain',
+      name: '23-IND-BNG-D23-Keshav-Home'
+    },
+    {
       type: 'zone',
-      name: 'Divya-REC-Venue-AX-APs'
+      name: '23A-IND-BNG-D23-Keshav-Home'
     }
   ],
   statusTrail: [
@@ -810,4 +818,4 @@ export const mockRecommendationProbeflexApplied = {
     current: 364395419,
     projected: null
   }
-}
+} as unknown as RecommendationDetails

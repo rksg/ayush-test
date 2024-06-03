@@ -6,7 +6,8 @@ import {
   mockedRecommendationCRRM,
   mockedRecommendationFirmware,
   mockedRecommendationApFirmware,
-  mockedRecommendationClientLoad
+  mockedRecommendationClientLoad,
+  mockRecommendationProbeflexApplied
 } from './__tests__/fixtures'
 import { Overview }                 from './Overview'
 import { transformDetailsResponse } from './services'
@@ -141,5 +142,19 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('Fong@Home')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('New')).toBeVisible()
+  })
+
+  it('should render correctly for AirFlexAI', async () => {
+    const probeflexDetails = transformDetailsResponse(mockRecommendationProbeflexApplied)
+    mockGet.mockReturnValue(false)
+    render(<Overview details={probeflexDetails} />, { wrapper: Provider })
+    expect(await screen.findByText('Priority')).toBeVisible()
+    expect(await screen.findByText('Medium')).toBeVisible()
+    expect(await screen.findByText('Category')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi Client Experience')).toBeVisible()
+    expect(await screen.findByText('Status')).toBeVisible()
+    expect(await screen.findByText('Applied')).toBeVisible()
+    expect(await screen.findByText('Networks')).toBeVisible()
+    expect(await screen.findByText('23A-IND-BNG-D23-Keshav-Home')).toBeVisible()
   })
 })

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
+import { formattedPath, impactedArea }                                  from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Table, TableProps, recommendationBandMapping } from '@acx-ui/components'
 import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
@@ -77,6 +78,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const {
+    path,
     category,
     sliceValue,
     status,
@@ -89,6 +91,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   } = details
   const { kpis } = codes[code]
   const isRrm = code.includes('crrm')
+  const isFlexAI = code.startsWith('c-probeflex')
 
   const fields = [
     (isRrm && {
@@ -124,7 +127,12 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     {
       label: $t({ defaultMessage: 'Status' }),
       children: $t(statusTrailMsgs[status])
-    }
+    },
+    (!isRrm && isFlexAI && {
+      label: $t({ defaultMessage: 'Networks' }),
+      children: impactedArea(path, sliceValue),
+      popover: formattedPath(path, sliceValue) + '\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest'
+    })
   ].filter(truthy)
 
   const hasAp = Boolean(kpis.filter(kpi => kpi.showAps).length)
