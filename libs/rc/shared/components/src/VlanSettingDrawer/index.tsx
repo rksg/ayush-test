@@ -10,6 +10,7 @@ import {
   Select,
   Switch
 } from 'antd'
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Drawer, showActionModal, Table, TableProps } from '@acx-ui/components'
@@ -131,6 +132,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [multicastVersionDisabled, setMulticastVersionDisabled] = useState(true)
   const [selected, setSelected] = useState<SwitchModelPortData>()
   const [ruleList, setRuleList] = useState<SwitchModelPortData[]>([])
+  const [hasPortsUsedByLag, setHasPortsUsedByLag] = useState(false)
+
   const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
     switchFamilyModel, portSlotsData, enablePortModelConfigure = true, portsUsedBy } = props
 
@@ -156,7 +159,19 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     }else{
       form.resetFields()
     }
-  }, [])
+  }, [vlan])
+
+  useEffect(() => {
+    if(vlan){
+      const portsUsedByLag = Object.keys(portsUsedBy?.lag ?? {})
+      const isPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
+        _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
+          || _.intersection(port.untaggedPorts?.split(','), portsUsedByLag)?.length > 0
+      )?.length
+
+      setHasPortsUsedByLag(!!isPortsUsedByLag)
+    }
+  }, [vlan, portsUsedBy])
 
   const columns: TableProps<SwitchModelPortData>['columns'] = [
     ...(!isSwitchLevel ? [{
@@ -197,6 +212,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      visible: !hasPortsUsedByLag,
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
