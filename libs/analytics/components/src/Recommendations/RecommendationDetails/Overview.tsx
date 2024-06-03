@@ -3,7 +3,6 @@ import { useState } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { formattedPath, impactedArea }                                  from '@acx-ui/analytics/utils'
 import { Drawer, Loader, Table, TableProps, recommendationBandMapping } from '@acx-ui/components'
 import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
@@ -78,7 +77,6 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const {
-    path,
     category,
     sliceValue,
     status,
@@ -87,9 +85,11 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     priority,
     crrmOptimizedState,
     crrmInterferingLinksText,
-    updatedAt
+    updatedAt,
+    metadata
   } = details
   const { kpis } = codes[code]
+  const { wlans } = metadata
   const isRrm = code.includes('crrm')
   const isFlexAI = code.startsWith('c-probeflex')
 
@@ -130,8 +130,8 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
     },
     (!isRrm && isFlexAI && {
       label: $t({ defaultMessage: 'Networks' }),
-      children: impactedArea(path, sliceValue),
-      popover: formattedPath(path, sliceValue) + '\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest\n>TestTestTestTest'
+      children: $t({ defaultMessage: '{count} networks selected' }, { count: wlans?.length ?? 0 }),
+      popover: wlans?.map(wlan => wlan.name).join('\n')
     })
   ].filter(truthy)
 

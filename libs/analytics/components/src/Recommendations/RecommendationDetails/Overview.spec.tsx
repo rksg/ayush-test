@@ -142,11 +142,13 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('Fong@Home')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('New')).toBeVisible()
+    expect(screen.queryByText('Networks')).toBeNull()
   })
 
   it('should render correctly for AirFlexAI', async () => {
     const probeflexDetails = transformDetailsResponse(mockRecommendationProbeflexApplied)
     mockGet.mockReturnValue(false)
+    const { wlans } = probeflexDetails.metadata
     render(<Overview details={probeflexDetails} />, { wrapper: Provider })
     expect(await screen.findByText('Priority')).toBeVisible()
     expect(await screen.findByText('Medium')).toBeVisible()
@@ -155,6 +157,6 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('Applied')).toBeVisible()
     expect(await screen.findByText('Networks')).toBeVisible()
-    expect(await screen.findByText('23A-IND-BNG-D23-Keshav-Home')).toBeVisible()
+    expect(await screen.findByText(`${wlans?.length} networks selected`)).toBeVisible()
   })
 })

@@ -781,7 +781,17 @@ export const mockRecommendationProbeflexApplied = {
   currentValue: false,
   recommendedValue: true,
   metadata: {
-    dataEndTime: 1710720000000
+    dataEndTime: 1710720000000,
+    wlans: [
+      {
+        name: 'GKSS',
+        ssid: 'GKSS'
+      },
+      {
+        name: 'Shine',
+        ssid: 'Shine'
+      }
+    ]
   },
   sliceType: 'zone',
   sliceValue: 'Divya-REC-Venue-AX-APs',
@@ -791,14 +801,6 @@ export const mockRecommendationProbeflexApplied = {
     crrmFullOptimization: true
   },
   path: [
-    {
-      type: 'system',
-      name: 'vsz34'
-    },
-    {
-      type: 'domain',
-      name: '23-IND-BNG-D23-Keshav-Home'
-    },
     {
       type: 'zone',
       name: '23A-IND-BNG-D23-Keshav-Home'
