@@ -100,6 +100,7 @@ function useCardData (): CardDataProps[] {
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   return [
     {
@@ -169,7 +170,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SYSLOG,
       categories: [RadioCardCategory.WIFI],
       totalCount: useSyslogPolicyListQuery({
-        params, payload: { }
+        params, payload: { }, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }))
