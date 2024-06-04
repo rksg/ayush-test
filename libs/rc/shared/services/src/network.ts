@@ -4,25 +4,31 @@ import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/q
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
 
 import {
-  CommonUrlsInfo,
-  NetworkVenue,
-  NetworkSaveData,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  TableResult,
-  Dashboard,
-  Network,
-  Venue,
-  NetworkDetailHeader,
-  CommonResult,
-  NetworkDetail,
-  WifiUrlsInfo,
-  ExternalProviders,
   ApCompatibility,
   ApCompatibilityResponse,
-  transformNetwork,
+  ApiVersionEnum,
+  CommonRbacUrlsInfo,
+  CommonResult,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  Dashboard,
+  ExternalProviders,
+  GetApiVersionHeader,
+  Network,
+  NetworkDetail,
+  NetworkDetailHeader,
+  NetworkRadiusSettings,
+  NetworkSaveData,
+  NetworkVenue,
+  TableResult,
+  Venue,
+  VenueConfigTemplateUrlsInfo,
   WifiNetwork,
-  ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  transformNetwork
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -677,8 +683,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
-      query: ({ params }) => {
-        const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const externalProvidersReq = createHttpRequest(urlsInfo.getExternalProviders, params, apiCustomHeader)
         return {
           ...externalProvidersReq
         }
@@ -692,6 +702,39 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    activateRadiusServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.activateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
+    }),
+    deactivateRadiusServer: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.deactivateRadiusServer, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
+    }),
+    updateRadiusServerSettings: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.updateRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1)),
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Network', id: 'DETAIL' }, { type: 'NetworkRadiusServer', id: 'DETAIL' }]
+    }),
+    getRadiusServerSettings: build.query<NetworkRadiusSettings, RequestPayload>({
+      query: ({ params }) => {
+        return {
+          ...createHttpRequest(WifiRbacUrlsInfo.getRadiusServerSettings, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        }
+      },
+      providesTags: [{ type: 'NetworkRadiusServer', id: 'DETAIL' }]
     })
   })
 })
@@ -1177,7 +1220,11 @@ export const {
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
-  useActivateCertificateTemplateMutation
+  useActivateCertificateTemplateMutation,
+  useActivateRadiusServerMutation,
+  useDeactivateRadiusServerMutation,
+  useUpdateRadiusServerSettingsMutation,
+  useGetRadiusServerSettingsQuery
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

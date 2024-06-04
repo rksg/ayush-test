@@ -1,13 +1,12 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { showActionModal, CustomButtonProps, Loader }                                      from '@acx-ui/components'
+import { CustomButtonProps, Loader, showActionModal }                                      from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { useApViewModelQuery, useGetApCapabilitiesQuery, useGetApQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import { ApDeep,  ApViewModel, CapabilitiesApModel, VenueExtended }                        from '@acx-ui/rc/utils'
+import { ApDeep, ApViewModel, CapabilitiesApModel, VenueExtended }                         from '@acx-ui/rc/utils'
 import { useParams }                                                                       from '@acx-ui/react-router-dom'
 import { goToNotFound }                                                                    from '@acx-ui/user'
 import { getIntl }                                                                         from '@acx-ui/utils'
-
 
 import { AdvancedTab, ApAdvancedContext }             from './AdvancedTab'
 import ApEditPageHeader                               from './ApEditPageHeader'
@@ -67,6 +66,7 @@ export function ApEdit () {
   const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const params = useParams()
   const { activeTab } = params
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   const [previousPath, setPreviousPath] = useState('')
@@ -95,10 +95,10 @@ export function ApEdit () {
       filters: { serialNumber: [params.serialNumber] }
     } }, { skip: !isWifiRbacEnabled })
 
-  const {
-    data: getedApData,
-    isLoading: isGetApLoading
-  } = useGetApQuery({ params })
+  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
+    params: { ...params, venueId: apViewmodel?.venueId },
+    enableRbac: isUseWifiRbacApi
+  }, { skip: isUseWifiRbacApi && !apViewmodel?.venueId })
 
   const {
     data: capabilities,

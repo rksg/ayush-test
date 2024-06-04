@@ -24,7 +24,8 @@ import {
   ApDhcpRoleEnum,
   APExtended,
   CountdownNode, DhcpAp,
-  DhcpApInfo
+  DhcpApInfo,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -34,6 +35,7 @@ const blinkLedCount = 30
 
 export function useApActions () {
   const { $t } = useIntl()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ downloadApLog ] = useDownloadApLogMutation()
   const [ getDhcpAp ] = useLazyGetDhcpApQuery()
   const [ getApList ] = useLazyApListQuery()
@@ -45,7 +47,12 @@ export function useApActions () {
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
-  const showRebootAp = (serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+  const showRebootAp = (
+    serialNumber: string,
+    tenantId?: string,
+    venueId?: string,
+    callBack?: ()=>void
+  ) => {
 
     showActionModal({
       type: 'confirm',
@@ -62,8 +69,9 @@ export function useApActions () {
           closeAfterAction: true,
           handler: () => {
             rebootAp({
-              params: { tenantId: tenantId, serialNumber },
-              payload: { action: 'reboot' }
+              params: { tenantId: tenantId, serialNumber, venueId },
+              payload: { action: 'reboot' },
+              enableRbac: isUseWifiRbacApi
             })
             callBack && callBack()
           }
@@ -108,14 +116,14 @@ export function useApActions () {
   const showDeleteAp = async ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
     const payload = {
       entityType: 'apsList',
-      fields: ['serialNumber', 'name', 'deviceStatus', 'fwVersion'],
+      fields: ['serialNumber', 'name', 'deviceStatus', 'fwVersion', 'venueId'],
       filters: {
         serialNumber: [serialNumber]
       },
       pageSize: 1
     }
     const apList = await getApList({
-      params: { tenantId }, payload
+      params: { tenantId }, payload, enableRbac: isUseWifiRbacApi
     }, true).unwrap()
     showDeleteAps(apList.data, tenantId, callBack)
   }
@@ -137,7 +145,11 @@ export function useApActions () {
     })
   }
 
-  const showDeleteAps = async ( rows: AP[], tenantId?: string, callBack?: ()=>void ) => {
+  const showDeleteAps = async (
+    rows: (AP|NewAPModel)[],
+    tenantId?: string,
+    callBack?: ()=>void
+  ) => {
     const dhcpAps = await getDhcpAp({
       params: { tenantId: tenantId },
       payload: rows.map(row => row.serialNumber)
@@ -153,18 +165,40 @@ export function useApActions () {
 
     genDeleteModal(rows, deleteSoloFlag, (resetType) => {
       const deleteApApi = resetType === 'solo' ? deleteSoloAp : deleteAp
-      rows.length === 1 ?
-        deleteApApi({ params: { tenantId: tenantId, serialNumber: rows[0].serialNumber } })
-          .then(callBack) :
-        deleteApApi({
-          params: { tenantId },
-          payload: rows.map(row => row.serialNumber)
-        }).then(callBack)
+      if(isUseWifiRbacApi) {
+        const requestArr = []
+        for(let apInfo of rows) {
+          requestArr.push(deleteApApi({
+            params: {
+              venueId: apInfo.venueId, serialNumber: apInfo.serialNumber
+            },
+            enableRbac: true
+          }))
+        }
+        Promise.all(requestArr).then(callBack)
+      } else {
+        rows.length === 1 ?
+          deleteApApi({ params: { tenantId: tenantId, serialNumber: rows[0].serialNumber } })
+            .then(callBack) :
+          deleteApApi({
+            params: { tenantId },
+            payload: rows.map(row => row.serialNumber)
+          }).then(callBack)
+      }
     })
   }
 
-  const showBlinkLedAp = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
-    blinkLedAp({ params: { tenantId, serialNumber }, payload: { action: 'blinkLed' } })
+  const showBlinkLedAp = (
+    serialNumber: string,
+    tenantId?: string,
+    venueId?: string,
+    callBack?: ()=>void
+  ) => {
+    blinkLedAp({
+      params: { tenantId, serialNumber, venueId },
+      payload: { action: 'blinkLed' },
+      enableRbac: isUseWifiRbacApi
+    })
       .unwrap().then(() => {
         let count = blinkLedCount
         const interval = setInterval(() => {
@@ -188,26 +222,44 @@ export function useApActions () {
   }
 }
 
-const hasContactedAp = (selectedRows: AP[]) => {
-  return !selectedRows.every(selectedAp =>
-    selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+const hasContactedAp = (selectedRows: (AP|NewAPModel)[]) => {
+  return isNewDataModel(selectedRows) ?
+    !(selectedRows as NewAPModel[]).every(selectedAp =>
+      selectedAp.status === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+    selectedAp.status === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD) :
+    !(selectedRows as AP[]).every(selectedAp =>
+      selectedAp.deviceStatus === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
     selectedAp.deviceStatus === ApDeviceStatusEnum.DISCONNECTED_FROM_CLOUD)
 }
-const allOperationalAp = (selectedRows: AP[]) => {
-  return selectedRows.every(ap =>
-    ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
-  )
+const allOperationalAp = (selectedRows: (AP|NewAPModel)[]) => {
+  return isNewDataModel(selectedRows) ?
+    (selectedRows as NewAPModel[]).every(ap =>
+      ap.status === ApDeviceStatusEnum.OPERATIONAL
+    ) :
+    (selectedRows as AP[]).every(ap =>
+      ap.deviceStatus === ApDeviceStatusEnum.OPERATIONAL
+    )
 }
-const hasInvalidAp = (selectedRows: AP[]) => {
-  return !selectedRows.every(ap => {
-    if (ap.fwVersion === undefined) {
-      return true
-    }
-    else {
-      return ap.fwVersion.localeCompare('6.2.0.103.486',
-        undefined, { numeric: true, sensitivity: 'base' }) >= 0
-    }
-  })
+const hasInvalidAp = (selectedRows: (AP|NewAPModel)[]) => {
+  return isNewDataModel(selectedRows) ?
+    !(selectedRows as NewAPModel[]).every(ap => {
+      if (ap.firmwareVersion === undefined) {
+        return true
+      }
+      else {
+        return ap.firmwareVersion.localeCompare('6.2.0.103.486',
+          undefined, { numeric: true, sensitivity: 'base' }) >= 0
+      }
+    }) :
+    !(selectedRows as AP[]).every(ap => {
+      if (ap.fwVersion === undefined) {
+        return true
+      }
+      else {
+        return ap.fwVersion.localeCompare('6.2.0.103.486',
+          undefined, { numeric: true, sensitivity: 'base' }) >= 0
+      }
+    })
 }
 
 const hasDhcpAps = (dhcpAps: DhcpAp) => {
@@ -222,7 +274,7 @@ const hasDhcpAps = (dhcpAps: DhcpAp) => {
 }
 
 const genDeleteModal = (
-  rows: AP[],
+  rows: (AP|NewAPModel)[],
   deleteSoloFlag: boolean,
   okHandler: (resetType: string) => void
 ) => {
@@ -335,4 +387,8 @@ const genBlinkLedToast = (countdown: number, interval: ReturnType<typeof setInte
       clearInterval(interval)
     }
   })
+}
+
+const isNewDataModel = (selectedRows: (AP|NewAPModel)[]) => {
+  return selectedRows.filter(item => item.hasOwnProperty('status')).length > 0
 }

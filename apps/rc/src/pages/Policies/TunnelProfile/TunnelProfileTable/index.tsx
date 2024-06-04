@@ -196,11 +196,8 @@ const TunnelProfileTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            rows.length === 1 ?
-              deleteTunnelProfile({ params: { id: rows[0].id } })
-                .then(clearSelection) :
-              deleteTunnelProfile({ payload: rows.map(item => item.id) })
-                .then(clearSelection)
+            Promise.all(rows.map(row => deleteTunnelProfile({ params: { id: row.id } })))
+              .then(clearSelection)
           }
         })
       }
