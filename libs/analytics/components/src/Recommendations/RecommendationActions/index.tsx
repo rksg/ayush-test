@@ -137,7 +137,7 @@ function ApplyCalendar ({
   statusEnum
 }: ActionButtonProps) {
   const { $t } = useIntl()
-  const wlanStatus = ['new', 'scheduled'].includes(statusEnum)
+  const wlanStatus = ['new', 'applyscheduled'].includes(statusEnum)
   const needsWlans = code.startsWith('c-probeflex-') && wlanStatus
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const isMlisa = Boolean(get('IS_MLISA_SA'))
