@@ -239,6 +239,11 @@ export function ConfigurationProfileForm () {
       const vlanModels = data.vlans.map(
         item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
 
+      const ipv4DhcpSnoopingBool = data.vlans?.some(
+        (item: Partial<Vlan>) => item.ipv4DhcpSnooping)
+      const arpInspectionBool = data.vlans?.some(
+        (item: Partial<Vlan>) => item.arpInspection)
+
       if(vlanModels.length > 0){
         data.trustedPorts = data.trustedPorts.filter(
           tpItem => data.vlans.some(item =>
@@ -258,7 +263,7 @@ export function ConfigurationProfileForm () {
             )
           ]
         }
-      } else if(!ipv4DhcpSnooping && !arpInspection) {
+      } else if(!ipv4DhcpSnoopingBool && !arpInspectionBool) {
         data.trustedPorts = []
       } else {
         data.trustedPorts = []
