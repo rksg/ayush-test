@@ -16,6 +16,7 @@ describe('Connection Capability Drawer', () => {
       <Provider>
         <ConnectionCapabilityDrawer
           visible={true}
+          isValidCallBack={jest.fn()}
           editData={null as unknown as Hotspot20ConnectionCapability}
         />
       </Provider>, {
@@ -37,6 +38,7 @@ describe('Connection Capability Drawer', () => {
       <Provider>
         <ConnectionCapabilityDrawer
           visible={true}
+          isValidCallBack={jest.fn()}
           editData={
             {
               protocol: 'test',

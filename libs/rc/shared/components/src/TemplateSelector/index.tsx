@@ -1,101 +1,118 @@
 import { useEffect, useMemo } from 'react'
 
 import { Form, FormItemProps } from 'antd'
-import _                       from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Loader }                            from '@acx-ui/components'
-import { useGetAllTemplatesByTemplateScopeIdQuery,
-  useGetTemplateScopeWithRegistrationQuery } from '@acx-ui/rc/services'
+import { Loader }               from '@acx-ui/components'
+import { useGetAllTemplateGroupsByCategoryIdQuery,
+  useGetCategoryQuery,
+  useGetRegistrationByIdQuery } from '@acx-ui/rc/services'
 
-import { templateNames, templateScopeLabels } from './msgTemplateLocalizedMessages'
-import { TemplateSelect }                     from './TemplateSelect'
+import { TemplateSelect } from './TemplateSelect'
 
 
 export interface TemplateSelectorProps {
   formItemProps?: FormItemProps,
   placeholder?: string,
-  scopeId: string,
-  registrationId: string
+  categoryId: string,
+  emailRegistrationId: string,
+  smsRegistrationId: string
 }
 
 export function TemplateSelector (props: TemplateSelectorProps) {
   const { $t } = useIntl()
 
   const {
-    scopeId,
-    registrationId,
+    categoryId,
+    emailRegistrationId,
+    // eslint-disable-next-line
+    smsRegistrationId,
     placeholder = $t({ defaultMessage: 'Select Template...' })
   } = props
 
-  const templateScopeData = useGetTemplateScopeWithRegistrationQuery(
-    { params: { templateScopeId: scopeId, registrationId: registrationId } })
+  const msgCategoryData = useGetCategoryQuery({ params: { categoryId: categoryId } })
+  const templateGroupData =
+    useGetAllTemplateGroupsByCategoryIdQuery({ params: { categoryId: categoryId }, payload: {} })
 
-
-  const templateDataRequest = useGetAllTemplatesByTemplateScopeIdQuery(
-    { params: { templateScopeId: scopeId } })
+  const emailRegistrationData = useGetRegistrationByIdQuery({ params: {
+    templateScopeId: msgCategoryData.data?.emailTemplateScopeId,
+    registrationId: emailRegistrationId } }, { skip: !msgCategoryData.data?.emailTemplateScopeId })
 
   const form = Form.useFormInstance()
 
   const formItemProps = {
-    name: props.scopeId + 'templateId',
+    name: props.categoryId + 'templateId',
     ...props.formItemProps
   }
 
   // Generate form data from data request
-  const { templateOptions, scopeLabel, initialOption } = useMemo(() => {
-    if(!templateScopeData.data || !templateDataRequest.data) {
-      return { templateOptions: [],
-        scopeLabel: $t({ defaultMessage: 'Loading Templates...' }),
-        initialOption: undefined }
+  const { groupOptions, categoryLabel, initialOptionValue } = useMemo(() => {
+    if(!msgCategoryData.data || !templateGroupData.data ||
+      (!emailRegistrationData.isError && !emailRegistrationData.isSuccess)) {
+
+      return {
+        groupOptions: [],
+        categoryLabel: $t({ defaultMessage: 'Loading Templates...' }),
+        initialOptionValue: undefined
+      }
     }
 
-    const templateOptions = templateDataRequest.data?.content.map((t) =>
-      ({ value: t.id,
-        label: (t.userProvidedName?
-          t.userProvidedName : $t(_.get(templateNames, t.nameLocalizationKey))) }))
 
-    const scopeLabel = templateScopeData.data?.nameLocalizationKey ?
-      $t(_.get(templateScopeLabels, templateScopeData.data.nameLocalizationKey))
-      : $t({ defaultMessage: 'Loading Templates...' })
+    const emailTemplateScopeId = msgCategoryData.data?.emailTemplateScopeId
+    const smsTemplateScopeId = msgCategoryData.data?.smsTemplateScopeId
+    // value contains necessary information to save registrations
+    const groupOptions = templateGroupData.data?.data.map((g) => ({
+      value: emailTemplateScopeId+','+g.emailTemplateId+','+smsTemplateScopeId+','+g.smsTemplateId,
+      label: g.name }))
 
+    const categoryLabel = msgCategoryData.data?.name ?
+      msgCategoryData.data?.name : $t({ defaultMessage: 'Loading Templates...' })
 
-    let selectedTemplateId = templateScopeData.data?.defaultTemplateId
-    if(templateScopeData.data?.registrations?.length) {
-      selectedTemplateId = templateScopeData.data.registrations[0].templateId
+    let selectedGroup = undefined
+    if(emailRegistrationData.data && emailRegistrationData.data?.templateId) {
+      selectedGroup = templateGroupData.data?.data.find(g =>
+        (emailRegistrationData.data && g.emailTemplateId === emailRegistrationData.data.templateId))
     }
 
-    const initialOption = selectedTemplateId ?
-      templateOptions.find(t => t.value === selectedTemplateId)
+    if(!selectedGroup) {
+      selectedGroup = templateGroupData.data.data.find(g =>
+        g.id === msgCategoryData.data?.defaultTemplateGroupId)
+    }
+
+    const initialOptionValue = selectedGroup ?
+      emailTemplateScopeId+','+selectedGroup.emailTemplateId+','
+      +smsTemplateScopeId+','+selectedGroup.smsTemplateId
       : undefined
 
     return {
-      templateOptions,
-      scopeLabel,
-      initialOption
+      groupOptions,
+      categoryLabel,
+      initialOptionValue
     }
-  }, [templateScopeData.data, templateDataRequest.data])
+  }, [msgCategoryData.data, templateGroupData.data, emailRegistrationData])
 
   // Set initial selected value
   useEffect(() => {
     let currentFormValue = form.getFieldValue(formItemProps.name)
 
-    if(!currentFormValue && initialOption) {
-      form.setFieldValue(formItemProps.name, initialOption.value)
+    if(!currentFormValue && initialOptionValue) {
+      form.setFieldValue(formItemProps.name, initialOptionValue)
     }
-  }, [initialOption, templateOptions])
+  }, [initialOptionValue, groupOptions])
 
   // RENDER //////////////////////////////////////////////////////
   return (
     <Loader style={{ height: 'auto', minHeight: 45 }}
-      states={[templateDataRequest, templateScopeData]}>
+      states={[templateGroupData, msgCategoryData,
+        { isLoading: emailRegistrationData.isLoading,
+          isFetching: emailRegistrationData.isFetching }]}>
       <Form.Item {...formItemProps}
-        label={scopeLabel}>
+        label={categoryLabel}>
         <TemplateSelect
           placeholder={placeholder}
-          options={templateOptions}
-          templateType={templateScopeData.data?.messageType}
-          templates={templateDataRequest.data?.content}
+          options={groupOptions}
+          msgCategory={msgCategoryData.data}
+          templateGroups={templateGroupData.data?.data}
         />
       </Form.Item>
     </Loader>
