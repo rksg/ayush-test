@@ -17,13 +17,13 @@ import {
   showToast,
   showActionModal
 } from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import { WifiScopes }                         from '@acx-ui/types'
-import { filterByAccess, hasPermission }      from '@acx-ui/user'
-import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
+import { get }                                                       from '@acx-ui/config'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
+import { TenantLink, useParams }                                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import { getIntl, noDataDisplay, PathFilter }                        from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
@@ -257,11 +257,11 @@ export function RecommendationTable (
           }
         }): []),
     {
+      key: getShowWithoutRbacCheckKey('mute'),
       label: $t(selectedRecommendation?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })
       ),
-      scopeKey: [WifiScopes.UPDATE],
       onClick: async () => {
         const { id, isMuted } = selectedRecommendation
         await toggleMuteFn(id, !isMuted, muteRecommendation, () => setSelectedRowData([]) )
