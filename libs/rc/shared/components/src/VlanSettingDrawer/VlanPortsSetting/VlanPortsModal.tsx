@@ -8,8 +8,12 @@ import { Modal, ModalType, StepsForm } from '@acx-ui/components'
 import {
   SwitchModelPortData,
   TrustedPort,
-  Vlan
+  Vlan,
+  SwitchSlot,
+  SwitchSlot2
 } from '@acx-ui/rc/utils'
+
+import { PortsUsedByProps } from '..'
 
 import { SelectModelStep }   from './SelectModelStep'
 import { TaggedPortsStep }   from './TaggedPortsStep'
@@ -34,10 +38,14 @@ export function VlanPortsModal (props: {
   onCancel?: ()=>void,
   editRecord?: SwitchModelPortData,
   currrentRecords?: SwitchModelPortData[],
-  vlanList: Vlan[]
+  vlanList: Vlan[],
+  switchFamilyModel?: string,
+  portSlotsData?: SwitchSlot[]
+  portsUsedBy?: PortsUsedByProps
 }) {
   const { $t } = useIntl()
-  const { open, editRecord, onSave, onCancel, vlanList } = props
+  const { open, editRecord, onSave, onCancel,
+    vlanList, switchFamilyModel, portSlotsData = [], portsUsedBy } = props
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
@@ -48,10 +56,41 @@ export function VlanPortsModal (props: {
       trustedPorts: []
     })
 
+  const isSwitchLevel = !!switchFamilyModel
+
   useEffect(()=>{
     setEditMode(open && !!editRecord)
 
-    if (open && editRecord) {
+    if (open && isSwitchLevel) {
+      const [ family, model ] = switchFamilyModel.split('-')
+      const enableSlot2 = checkSlotEnabled(portSlotsData, 2)
+      const enableSlot3 = checkSlotEnabled(portSlotsData, 3)
+      const initValues = {
+        family, model, enableSlot2, enableSlot3,
+        slots: portSlotsData as unknown as SwitchSlot2[],
+        switchFamilyModels: {
+          id: '',
+          model: switchFamilyModel,
+          slots: portSlotsData as unknown as SwitchSlot2[],
+          taggedPorts: [],
+          untaggedPorts: []
+        },
+        trustedPorts: []
+      }
+
+      if (editRecord) {
+        setVlanSettingValues({
+          ...initValues,
+          switchFamilyModels: {
+            ...initValues.switchFamilyModels,
+            ..._.omit(editRecord, 'slots')
+          }
+        })
+      } else {
+        form.setFieldsValue(initValues)
+        setVlanSettingValues(initValues)
+      }
+    } else if (open && editRecord) {
       const family = editRecord.model.split('-')[0]
       const model = editRecord.model.split('-')[1]
       setVlanSettingValues({ family, model, switchFamilyModels: editRecord, trustedPorts: [] })
@@ -59,6 +98,10 @@ export function VlanPortsModal (props: {
       setVlanSettingValues({ family: '', model: '', trustedPorts: [] })
     }
   }, [form, open, editRecord])
+
+  const checkSlotEnabled = (portSlotsData: SwitchSlot[], slotNumber: number) => {
+    return portSlotsData?.filter(port => port.slotNumber === slotNumber)?.length > 0
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveModel = async (data: any) => {
@@ -115,20 +158,27 @@ export function VlanPortsModal (props: {
       title: '',
       vlanConfigName: ''
     }
+    const enableSlot2 = isSwitchLevel
+      ? vlanSettingValues?.enableSlot2 : data.enableSlot2
+    const enableSlot3 = isSwitchLevel
+      ? vlanSettingValues?.enableSlot3 : data.enableSlot3
+    const slots = isSwitchLevel
+      ? vlanSettingValues.switchFamilyModels?.slots : data.switchFamilyModels.slots
 
     const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
-      .filter((value: string) => value.startsWith('1/1/') ||
-        (data.enableSlot2 && value.startsWith('1/2/')) ||
-        (data.enableSlot3 && value.startsWith('1/3/')))
+      ?.filter((value: string) => value.startsWith('1/1/') ||
+        (enableSlot2 && value.startsWith('1/2/')) ||
+        (enableSlot3 && value.startsWith('1/3/')))
 
     const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
-      .filter((value: string) => value.startsWith('1/1/') ||
-        (data.enableSlot2 && value.startsWith('1/2/')) ||
-        (data.enableSlot3 && value.startsWith('1/3/')))
+      ?.filter((value: string) => value.startsWith('1/1/') ||
+        (enableSlot2 && value.startsWith('1/2/')) ||
+        (enableSlot3 && value.startsWith('1/3/')))
 
-    switchFamilyModelsData.model = data.family + '-' + data.model
-    switchFamilyModelsData.slots = data.switchFamilyModels.slots.map(
-      (slot: { slotNumber: number; enable: boolean }) => ({
+    switchFamilyModelsData.model
+      = isSwitchLevel ? switchFamilyModel : data.family + '-' + data.model
+    switchFamilyModelsData.slots
+      = slots?.map((slot: { slotNumber: number; enable: boolean }) => ({
         slotNumber: slot.slotNumber,
         enable: slot.enable,
         option: slot.slotNumber !== 1 ? _.get(slot, 'slotPortInfo') : ''
@@ -147,18 +197,31 @@ export function VlanPortsModal (props: {
       destroyOnClose={true}
       closable={true}
       type={ModalType.ModalStepsForm}
-      title={$t({ defaultMessage: 'Select Ports By Model' })}
+      title={isSwitchLevel
+        ? $t({ defaultMessage: '{action} Ports for {switchFamilyModel}' }, {
+          action: editMode ? $t({ defaultMessage: 'Edit' }) : $t({ defaultMessage: 'Add' }),
+          switchFamilyModel
+        })
+        : $t({ defaultMessage: 'Select Ports By Model' })
+      }
       data-testid='vlanSettingModal'
     >
       <VlanPortsContext.Provider value={{
-        vlanSettingValues, setVlanSettingValues, vlanList, editMode }}>
+        vlanSettingValues, setVlanSettingValues,
+        vlanList,
+        editMode,
+        isSwitchLevel,
+        switchFamilyModel,
+        portSlotsData,
+        portsUsedBy
+      }}>
         <StepsForm
           editMode={editMode}
           onCancel={onCancel}
           onFinish={onFinish}
           style={{ paddingBlockEnd: 0 }}
         >
-          <StepsForm.StepForm
+          { !isSwitchLevel && <StepsForm.StepForm
             title={$t({ defaultMessage: 'Select Model' })}
             onFinish={onSaveModel}
           >
@@ -173,7 +236,7 @@ export function VlanPortsModal (props: {
               </Typography.Text>
             }
             <SelectModelStep editMode={editRecord !== undefined}/>
-          </StepsForm.StepForm>
+          </StepsForm.StepForm>}
           <StepsForm.StepForm
             title={$t({ defaultMessage: 'Untagged Ports' })}
             onFinish={onSaveUntagged}

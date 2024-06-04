@@ -73,3 +73,43 @@ export const smsTemplate = {
   nameLocalizationKey: '',
   editable: true
 }
+
+export const mockedCategoryNoDefault = {
+  id: '6341459f-595f-458b-a214-02d6544fa2fa',
+  name: 'Mocked Category',
+  emailTemplateScopeId: '0ac469cd-de25-4983-a59f-60cc26500597',
+  smsTemplateScopeId: 'a15b8dcf-4bc1-4b7e-8715-749b3b38025a'
+}
+
+export const mockedCategory = {
+  id: '6341459f-595f-458b-a214-02d6544fa2fa',
+  name: 'Mocked Category',
+  emailTemplateScopeId: '0ac469cd-de25-4983-a59f-60cc26500597',
+  smsTemplateScopeId: 'a15b8dcf-4bc1-4b7e-8715-749b3b38025a',
+  defaultTemplateGroupId: '5128ee1e-ea44-47fd-944a-78e30385566e'
+}
+
+export const mockedTemplateGroups = {
+  paging: {
+    totalCount: 9,
+    page: 0,
+    pageSize: 10,
+    pageCount: 1
+  },
+  content: [
+    {
+      id: '5128ee1e-ea44-47fd-944a-78e30385566e',
+      name: 'Template Group 1',
+      emailTemplateId: 'f97a6168-fded-465d-803d-89bcc1b42498',
+      smsTemplateId: 'ac52effa-2f4f-4774-9256-4c5a726c10ba',
+      editable: true
+    },
+    {
+      id: '8267f197-0669-4519-b587-d1dac984f221',
+      name: 'Template Group 2',
+      emailTemplateId: '44305c2c-9cb0-48cc-a967-c735e9a8cfbd',
+      smsTemplateId: 'f62bf568-301f-49b9-8148-0e90c71a4552',
+      editable: true
+    }
+  ]
+}
