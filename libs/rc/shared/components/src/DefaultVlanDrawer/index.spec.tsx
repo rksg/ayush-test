@@ -6,9 +6,13 @@ import { SwitchConfigurationProfile }        from '@acx-ui/rc/utils'
 import { Provider }                          from '@acx-ui/store'
 import { fireEvent, render, screen, within } from '@acx-ui/test-utils'
 
-import { ConfigurationProfileFormContext, ConfigurationProfileType } from '../../ConfigurationProfileFormContext'
-import { VlanSetting }                                               from '../index'
-
+import {
+  ConfigurationProfileFormContext,
+  ConfigurationProfileType
+} from '../SwitchRegularProfileForm/ConfigurationProfileFormContext'
+import {
+  VlanSetting
+}                                               from '../SwitchRegularProfileForm/VlanSetting'
 
 const currentData = {
   name: 'test-profile',
