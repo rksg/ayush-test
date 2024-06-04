@@ -205,11 +205,6 @@ export function VlanSetting () {
             rowSelection={hasAccess() && {
               type: 'radio',
               selectedRowKeys: selectedRows
-              // onChange: (keys: React.Key[]) => {
-              //   setDrawerFormRule(
-              //     vlanTable?.find((i: { vlanId: number }) => i.vlanId === keys[0])
-              //   )
-              // }
             }}
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add VLAN' }),

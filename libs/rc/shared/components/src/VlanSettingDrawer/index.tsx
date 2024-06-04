@@ -141,6 +141,10 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const isSwitchLevel = !!switchFamilyModel
 
   useEffect(() => {
+    form.resetFields()
+  }, [])
+
+  useEffect(() => {
     if(vlan && editMode){
       form.resetFields()
       form.setFieldsValue(vlan)
@@ -160,7 +164,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   }, [vlan])
 
   useEffect(() => {
-    if(vlan){
+    if(vlan && isSwitchLevelVlanEnabled){
       const portsUsedByLag = Object.keys(portsUsedBy?.lag ?? {})
       const isPortsUsedByLag = vlan?.switchVlanPortModels?.filter(port =>
         _.intersection(port.taggedPorts?.split(','), portsUsedByLag)?.length > 0
@@ -169,7 +173,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
 
       setHasPortsUsedByLag(!!isPortsUsedByLag)
     }
-  }, [vlan, portsUsedBy])
+  }, [vlan, portsUsedBy, isSwitchLevelVlanEnabled])
 
   const columns: TableProps<SwitchModelPortData>['columns'] = [
     ...(!isSwitchLevel ? [{
