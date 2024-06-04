@@ -30,7 +30,8 @@ import {
   ConfigurationProfileForm,
   CliTemplateForm,
   CliProfileForm,
-  IdentityProviderForm
+  IdentityProviderForm,
+  ApGroupDetails
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -68,7 +69,6 @@ import { AccessPointList, WifiTabsEnum }            from './pages/Devices/Wifi'
 import ApDetails                                    from './pages/Devices/Wifi/ApDetails'
 import { ApEdit }                                   from './pages/Devices/Wifi/ApEdit'
 import { ApForm }                                   from './pages/Devices/Wifi/ApForm'
-import ApGroupDetails                               from './pages/Devices/Wifi/ApGroupDetails'
 import Wired                                        from './pages/Networks/wired'
 import { NetworkTabsEnum, NetworksList }            from './pages/Networks/wireless'
 import NetworkDetails                               from './pages/Networks/wireless/NetworkDetails'
@@ -1045,16 +1045,24 @@ function UserRoutes () {
       <Route path='users/switch/clients/:clientId'
         element={<SwitchClientDetailsPage />} />
       {(isCloudpathBetaEnabled)
-        ? <><Route
-          path='users/identity-management'
-          element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}/><Route
-          path='users/identity-management/:activeTab'
-          element={<PersonaPortal/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId'
-          element={<PersonaGroupDetails/>}/><Route
-          path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
-          element={<PersonaDetails/>}/></>
-        : <></>}
+        ? <>
+          <Route
+            path='users/identity-management'
+            element={<TenantNavigate replace to='/users/identity-management/identity-group'/>}
+          />
+          <Route
+            path='users/identity-management/:activeTab'
+            element={<PersonaPortal/>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId'
+            element={<PersonaGroupDetails/>}
+          />
+          <Route
+            path='users/identity-management/identity-group/:personaGroupId/identity/:personaId'
+            element={<PersonaDetails/>}
+          />
+        </> : <></>}
     </Route>
   )
 }

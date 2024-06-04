@@ -577,5 +577,4 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   }
-
 }

@@ -31,10 +31,14 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/enhancedRadiusServerProfiles/query',
     newApi: true
   },
-  getAAANetworkInstances: {
+  queryAAAPolicyList: {
     method: 'post',
-    oldUrl: '/api/radius/:policyId/networks',
-    url: '/radiusServerProfiles/:policyId/networks',
+    url: '/radiusServerProfiles/query',
+    newApi: true
+  },
+  deleteAAAPolicy: {
+    method: 'delete',
+    url: '/radiusServerProfiles/:policyId',
     newApi: true
   }
 }

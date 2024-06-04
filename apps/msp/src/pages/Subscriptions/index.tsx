@@ -40,7 +40,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { MspTenantLink, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                        from '@acx-ui/types'
-import { hasRoles }                                                         from '@acx-ui/user'
+import { filterByAccess, hasRoles }                                         from '@acx-ui/user'
 
 import HspContext from '../../HspContext'
 
@@ -290,7 +290,11 @@ export function Subscriptions () {
           {$t({ defaultMessage: 'Subscription Utilization' })}
         </Subtitle>
 
-        <SpaceWrapper fullWidth size={100} justifycontent='flex-start'>
+        <SpaceWrapper
+          fullWidth
+          size={100}
+          justifycontent='flex-start'
+          style={{ marginBottom: '20px' }}>
           {
             subscriptionDeviceTypeList.map((item) => {
               const summary = summaryData[item.value]
@@ -334,7 +338,7 @@ export function Subscriptions () {
         <Table
           settingsId='msp-subscription-table'
           columns={columns}
-          actions={actions}
+          actions={filterByAccess(actions)}
           dataSource={subscriptionData}
           rowKey='id'
         />

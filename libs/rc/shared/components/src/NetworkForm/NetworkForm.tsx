@@ -41,7 +41,9 @@ import {
   WlanSecurityEnum,
   useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -66,9 +68,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                       from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo } from './utils'
-import { Venues }                           from './Venues/Venues'
+import PortalInstance                                                                    from './PortalInstance'
+import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer } from './utils'
+import { Venues }                                                                        from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -118,7 +120,7 @@ export function NetworkForm (props:{
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
-  const linkToNetworks = useTenantLink('/networks')
+  const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
@@ -140,6 +142,7 @@ export function NetworkForm (props:{
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
+  const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -204,26 +207,31 @@ export function NetworkForm (props:{
 
   useEffect(() => {
     if(data){
-      let name = data.name
+      const resolvedData = deriveFieldsFromServerData(data)
+
       if (cloneMode) {
-        name = data.name + ' - copy'
         formRef.current?.resetFields()
-        formRef.current?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
-      }else if(editMode){
+        formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+      } else if (editMode) {
         form?.resetFields()
-        form?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
+        form?.setFieldsValue(resolvedData)
       }
-      updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-        enableAccountingService: (data.accountingRadius||
-          data.guestPortal?.wisprPage?.accountingRadius)?true:false, certificateTemplateId })
+      updateSaveData({ ...resolvedData, certificateTemplateId })
     }
   }, [data, certificateTemplateId])
+
+  useEffect(() => {
+    if (!radiusServerConfigurations) return
+
+    const fullNetworkSaveData = _.merge({}, saveState, radiusServerConfigurations)
+    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+
+    form.setFieldsValue({
+      ...resolvedNetworkSaveData
+    })
+
+    updateSaveData(resolvedNetworkSaveData)
+  }, [radiusServerConfigurations])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -488,6 +496,7 @@ export function NetworkForm (props:{
       const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
+      await updateRadiusServer(saveState, data, networkId)
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
@@ -571,6 +580,7 @@ export function NetworkForm (props:{
       await updateNetworkInstance({ params, payload }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
+      await updateRadiusServer(formData, data, payload.id)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }

@@ -160,19 +160,6 @@ export const categoryCodeMap = {
   }
 }
 
-export const PERMISSION_VIEW_ANALYTICS = 'view-analytics'
-export const PERMISSION_VIEW_REPORT_CONTROLLER_INVENTORY = 'view-report-controller-inventory'
-export const PERMISSION_VIEW_DATA_EXPLORER = 'view-data-explorer'
-export const PERMISSION_MANAGE_SERVICE_GUARD = 'manage-service-guard'
-export const PERMISSION_MANAGE_MLISA = 'manage-mlisa'
-export const PERMISSION_MANAGE_CALL_MANAGER = 'manage-call-manager'
-export const PERMISSION_MANAGE_OCCUPANCY = 'manage-occupancy'
-export const PERMISSION_MANAGE_CONFIG_RECOMMENDATION = 'manage-config-recommendation'
-export const PERMISSION_MANAGE_LABEL = 'manage-label'
-export const PERMISSION_MANAGE_TENANT_SETTINGS = 'manage-tenant-settings'
-
-export const PERMISSION_FRANCHISOR = 'franchisor'
-
 export enum Roles {
   PRIME_ADMINISTRATOR = 'admin',
   ADMINISTRATOR = 'network-admin',
@@ -187,7 +174,7 @@ export const useRoles = (forceAllRoles = true): Record<string, MessageDescriptor
   const newRoles = {
     [Roles.PRIME_ADMINISTRATOR]: defineMessage({ defaultMessage: 'Prime Administrator' }),
     [Roles.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
-    [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Bussiness Insights User' }),
+    [Roles.BUSINESS_INSIGHTS_USER]: defineMessage({ defaultMessage: 'Business Insights User' }),
     [Roles.IT_HELPDESK]: defineMessage({ defaultMessage: 'IT Helpdesk' }),
     [Roles.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
     [Roles.REPORTS_USER]: defineMessage({ defaultMessage: 'Reports User' }),

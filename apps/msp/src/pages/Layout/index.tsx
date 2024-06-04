@@ -20,13 +20,13 @@ import {
   HeaderContext,
   RegionButton
 } from '@acx-ui/main/components'
-import { useGetTenantDetailQuery, useMspEntitlementListQuery }                      from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                                       from '@acx-ui/rc/components'
-import { ConfigTemplateContext }                                                    from '@acx-ui/rc/utils'
-import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink } from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                                from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                          from '@acx-ui/user'
-import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }       from '@acx-ui/utils'
+import { useGetBrandingDataQuery, useGetTenantDetailQuery, useMspEntitlementListQuery } from '@acx-ui/msp/services'
+import { CloudMessageBanner }                                                           from '@acx-ui/rc/components'
+import { ConfigTemplateContext }                                                        from '@acx-ui/rc/utils'
+import { Outlet, useParams, useNavigate, useTenantLink, TenantNavLink, TenantLink }     from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                    from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                              from '@acx-ui/user'
+import { getJwtTokenPayload, isDelegationMode, AccountType, AccountVertical }           from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -42,6 +42,7 @@ function Layout () {
   const [supportStatus,setSupportStatus] = useState('')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
+  const reportsAdminBasePath = useTenantLink('/dataStudio')
   const navigate = useNavigate()
   const params = useParams()
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
@@ -52,6 +53,7 @@ function Layout () {
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const { data: mspEntitlement } = useMspEntitlementListQuery({ params })
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
@@ -69,6 +71,10 @@ function Layout () {
     isBrand360Enabled &&
     (tenantType === AccountType.MSP_INTEGRATOR ||
     tenantType === AccountType.MSP_NON_VAR)
+
+  const isTechPartner =
+    tenantType === AccountType.MSP_INTEGRATOR || tenantType === AccountType.MSP_INSTALLER
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isTechPartner })
 
   const indexPath = isGuestManager
     ? '/users/guestsManager'
@@ -89,7 +95,13 @@ function Layout () {
         pathname: `${dpskBasePath.pathname}`
       })
     }
-  }, [isGuestManager, isDPSKAdmin, params['*']])
+    if (isReportsAdmin && params['*'] !== 'dataStudio') {
+      navigate({
+        ...reportsAdminBasePath,
+        pathname: `${reportsAdminBasePath.pathname}`
+      })
+    }
+  }, [isGuestManager, isDPSKAdmin, isReportsAdmin, params['*']])
 
   useEffect(() => {
     if (data && userProfile) {
@@ -150,7 +162,10 @@ function Layout () {
             <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton
+          isMspEc={isTechPartner}
+          mspBrandData={mspBrandData}
+          supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />

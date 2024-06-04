@@ -7,7 +7,7 @@ import { TenantLink }    from '@acx-ui/react-router-dom'
 
 
 export function VenueSettingsHeader (props: {
-  venue: VenueExtended,
+  venue: VenueExtended | undefined,
   isUseVenueSettings: boolean,
   handleVenueSetting: () => void
 }) {
