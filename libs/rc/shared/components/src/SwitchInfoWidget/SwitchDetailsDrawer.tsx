@@ -64,7 +64,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
   const dnsParser = (dns:string) => {
     const dnsList = dns.split(',').slice(0, 4)
     return (<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-      {dnsList.map(val => <li>{val}</li>)}</ul>)
+      {dnsList.map((val) => <li key={val}>{val}</li>)}</ul>)
   }
   return <Drawer
     width={'450px'}
