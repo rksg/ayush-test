@@ -27,10 +27,12 @@ import {
   TableQuery,
   usePollingTableQuery, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                   from '@acx-ui/react-router-dom'
-import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes } from '@acx-ui/types'
-import { filterByAccess, hasPermission }                        from '@acx-ui/user'
-import { transformToCityListOptions }                           from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams }                              from '@acx-ui/react-router-dom'
+import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum } from '@acx-ui/types'
+import { filterByAccess, hasPermission, hasRoles }                         from '@acx-ui/user'
+import { transformToCityListOptions }                                      from '@acx-ui/utils'
+
+import { usePropertyManagementEnabled } from '../VenueEdit/VenueEditTabs'
 
 function useColumns (
   searchable?: boolean,
@@ -245,7 +247,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
-
+  const enablePropertyManagement = usePropertyManagementEnabled()
   const columns = useColumns(searchable, filterables)
   const [
     deleteVenue,
@@ -257,12 +259,22 @@ export const VenueTable = ({ settingsId = 'venues-table',
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
-      navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
+      let path = `${selectedRows[0].id}/edit/`
+      if(hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) {
+        path = path + 'details'
+      } else if(hasPermission({ scopes: [WifiScopes.UPDATE] })) {
+        path = path + 'wifi'
+      } else if(hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
+        path = path + 'switch'
+      } else if(enablePropertyManagement) {
+        path = path + 'property'
+      }
+      navigate(path, { replace: false })
     }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
-    scopeKey: [[WifiScopes.DELETE, EdgeScopes.DELETE, SwitchScopes.DELETE]],
+    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -333,11 +345,11 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={filterByAccess([
-          <TenantLink to='/venues/add' scopeKey={[WifiScopes.CREATE, EdgeScopes.CREATE, SwitchScopes.CREATE]}>
+        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && [
+          <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>
-        ])}
+        ]}
       />
       <VenueTable settingsId={settingsId}
         tableQuery={tableQuery}
