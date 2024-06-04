@@ -41,11 +41,18 @@ export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
   const { venueId } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const venueFilter = {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
-  const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
+
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery({
+    params: { venueId },
+    enableRbac: isUseRbacApi
+  })
+
   const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [

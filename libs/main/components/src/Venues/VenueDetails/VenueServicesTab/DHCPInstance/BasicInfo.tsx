@@ -51,9 +51,10 @@ export default function BasicInfo () {
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
   const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
-  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
-    useGetVenueSettingsQuery, useGetVenueTemplateSettingsQuery
-  )
+  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
+  })
 
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,

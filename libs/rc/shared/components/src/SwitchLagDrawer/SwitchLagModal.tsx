@@ -70,6 +70,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
   const switchId = urlParams.switchId || props.params?.switchMac || props.params?.serialNumber
@@ -625,6 +627,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             children={lagForm}
           />
       }
+
       {
         selectModalVisible &&
           <SelectVlanModal
@@ -639,11 +642,22 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             taggedVlans={taggedVlans}
             untaggedVlan={untaggedVlan}
             vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+            cliApplied={cliApplied}
             hasSwitchProfile={hasSwitchProfile}
             profileId={switchConfigurationProfileId}
+            switchIds={switchId ? [switchId] : []}
+            venueId={switchDetailHeader?.venueId}
             updateSwitchVlans={async (values: Vlan) =>
-              updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+              updateSwitchVlans(
+                values,
+                switchVlans,
+                setSwitchVlans,
+                venueVlans,
+                setVenueVlans,
+                isSwitchLevelVlanEnabled
+              )
             }
+
           />
       }
     </>

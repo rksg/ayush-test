@@ -1,7 +1,7 @@
 import React, { CSSProperties, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
 import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
-import _                                                           from 'lodash'
+import { isEmpty }                                                 from 'lodash'
 import { FormattedMessage, useIntl }                               from 'react-intl'
 import styled                                                      from 'styled-components'
 
@@ -95,6 +95,8 @@ export function SecurityTab () {
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
     previousPath,
@@ -115,10 +117,11 @@ export function SecurityTab () {
     useTemplateMutationFn: useUpdateVenueRogueApTemplateMutation
   })
 
-  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
-    useGetDenialOfServiceProtectionQuery,
-    useGetVenueTemplateDoSProtectionQuery
-  )
+  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>({
+    useQueryFn: useGetDenialOfServiceProtectionQuery,
+    useTemplateQueryFn: useGetVenueTemplateDoSProtectionQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetVenueRogueApQuery,
@@ -169,7 +172,7 @@ export function SecurityTab () {
 
   useEffect(() => {
     if (selectOptions.length > 0) {
-      if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
+      if (isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
         // eslint-disable-next-line max-len
         const defaultProfile = selectOptions.find(option => option.props.children === DEFAULT_PROFILE_NAME)
         formRef.current?.setFieldValue('roguePolicyId', defaultProfile?.key)
@@ -223,7 +226,11 @@ export function SecurityTab () {
           checkPeriod: data?.checkPeriod,
           failThreshold: data?.failThreshold
         }
-        await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
+        await updateDenialOfServiceProtection({
+          params,
+          payload: dosProtectionPayload,
+          enableRbac: isUseRbacApi
+        })
         setTriggerDoSProtection(false)
       }
 

@@ -44,7 +44,7 @@ export function PortalInstancesTable (){
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<Portal>>({
     useQueryFn: useGetEnhancedPortalProfileListQuery,
     useTemplateQueryFn: useGetEnhancedPortalTemplateListQuery,
-    payload: { ...defaultPayload, enableRbac: isEnabledRbacService },
+    payload: { ...defaultPayload },
     enableRbac: isEnabledRbacService
   })
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
