@@ -4,7 +4,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
   AI_CRRM = 'acx-ui-ai-crrm-toggle',
-  AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle',
   AP_AFC_TOGGLE = 'ap-afc-toggle',

@@ -26,7 +26,6 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
@@ -59,7 +58,7 @@ const useTabs = () : Tab[] => {
       }
     } else { // R1
       crrmEnabled && recommendationTabs.push(crrmTab as Tab)
-      recommendationsEnabled && recommendationTabs.push(aiOpsTab as Tab)
+      recommendationTabs.push(aiOpsTab as Tab)
     }
     return recommendationTabs
   }

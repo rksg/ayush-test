@@ -30,7 +30,6 @@ export default function AnalyticsRoutes () {
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (hasRoles([RolesEnum.GUEST_MANAGER, RolesEnum.DPSK_ADMIN]) ) return <React.Fragment />
@@ -54,8 +53,7 @@ export default function AnalyticsRoutes () {
         <Route path='tab/:categoryTab' element={HealthComponent} />
       </Route>
       <Route path='analytics/health/tab/:categoryTab' element={HealthComponent} />
-      {recommendationsEnabled &&
-      <Route path='analytics/recommendations/'>
+      {<Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
         {crrmEnabled && <Route path='crrm/:id' element={<CrrmDetails />} />}

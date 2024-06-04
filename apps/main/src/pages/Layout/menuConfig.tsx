@@ -52,7 +52,6 @@ export function useMenuConfig () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
@@ -86,10 +85,10 @@ export function useMenuConfig () {
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
             }] : []),
-            ...(recommendationsEnabled ? [{
+            ...([{
               uri: '/analytics/recommendations/aiOps',
               label: $t({ defaultMessage: 'AI Operations' })
-            }] : [])
+            }])
           ]
         },
         {
