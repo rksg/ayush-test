@@ -214,7 +214,7 @@ export function DeviceInventory () {
       }
     },
     {
-      title: $t({ defaultMessage: "Customer'sVenue" }),
+      title: $t({ defaultMessage: "Customer's <VenueSingular></VenueSingular>" }),
       dataIndex: 'venueName',
       sorter: true,
       filterable: customerVenue?.map(inv => ({ key: inv, value: inv })),

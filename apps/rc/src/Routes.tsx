@@ -6,19 +6,14 @@ import {
   AccessControlForm,
   AccessControlTable,
   AdaptivePolicySetForm,
-  ApGroupDetails,
   ApGroupEdit,
   CertificateAuthorityForm,
   CertificateTemplateForm,
-  CliProfileForm,
-  CliTemplateForm,
   ClientIsolationForm,
-  ConfigurationProfileForm,
   ConnectionMeteringFormMode,
   DHCPDetail,
   DHCPForm,
   DpskForm,
-  IdentityProviderForm,
   MacRegistrationListForm,
   NetworkForm,
   PortalForm,
@@ -27,14 +22,18 @@ import {
   RogueAPDetectionForm,
   RogueAPDetectionTable,
   SyslogDetailView, SyslogForm,
-  VLANPoolDetail,
   VLANPoolForm,
+  VLANPoolDetail,
   WifiCallingConfigureForm, WifiCallingDetailView,
   WifiCallingForm,
-  WifiOperatorForm
+  WifiOperatorForm,
+  ConfigurationProfileForm,
+  CliTemplateForm,
+  CliProfileForm,
+  IdentityProviderForm,
+  ApGroupDetails
 } from '@acx-ui/rc/components'
 import {
-  CertificateCategoryType,
   PolicyOperation,
   PolicyType,
   ServiceOperation,
@@ -46,11 +45,12 @@ import {
   getSelectServiceRoutePath,
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
-  getServiceRoutePath
+  getServiceRoutePath,
+  CertificateCategoryType
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
-import { EdgeScopes, SwitchScopes, WifiScopes }        from '@acx-ui/types'
+import { EdgeScopes, WifiScopes, SwitchScopes }        from '@acx-ui/types'
 import { AuthRoute }                                   from '@acx-ui/user'
 
 import Edges                                        from './pages/Devices/Edge'
@@ -142,7 +142,6 @@ import PortalServiceDetail                  from './pages/Services/Portal/Portal
 import PortalTable                          from './pages/Services/Portal/PortalTable'
 import ResidentPortalDetail                 from './pages/Services/ResidentPortal/ResidentPortalDetail/ResidentPortalDetail'
 import ResidentPortalTable                  from './pages/Services/ResidentPortal/ResidentPortalTable/ResidentPortalTable'
-import RuckathonEdgeTestForm                from './pages/Services/Ruckathon'
 import SelectServiceForm                    from './pages/Services/SelectServiceForm'
 import ServiceCatalog                       from './pages/Services/ServiceCatalog'
 import WifiCallingTable                     from './pages/Services/WifiCalling/WifiCallingTable/WifiCallingTable'
@@ -173,8 +172,6 @@ export default function RcRoutes () {
 }
 
 function DeviceRoutes () {
-  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
-  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
   return rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
@@ -298,12 +295,7 @@ function DeviceRoutes () {
         } />
 
       <Route path='devices/edge' element={<Edges />} />
-
-      {(isEdgeHaReady && isEdgeFirewallHaReady
-        && <Route path='devices/upload_image_to_edge' element={<RuckathonEdgeTestForm />} />) }
     </Route>
-
-
   )
 }
 
@@ -735,19 +727,35 @@ function PolicyRoutes () {
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.DETAIL })}
-          element={<MacRegistrationListDetails />} />
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <MacRegistrationListDetails />
+            </AuthRoute>}
+        />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.LIST })}
-          element={<MacRegistrationListsTable />} />
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <MacRegistrationListsTable />
+            </AuthRoute>}
+        />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.CREATE })}
-          element={<MacRegistrationListForm />} />
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <MacRegistrationListForm />
+            </AuthRoute>
+          } />
         <Route
         // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.MAC_REGISTRATION_LIST, oper: PolicyOperation.EDIT })}
-          element={<MacRegistrationListForm editMode={true} />}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <MacRegistrationListForm editMode={true}/>
+            </AuthRoute>
+          }
         /> </> : <></> }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
@@ -913,59 +921,97 @@ function PolicyRoutes () {
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.LIST })}
-          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <AdaptivePolicyList tabKey={AdaptivePolicyTabKey.RADIUS_ATTRIBUTE_GROUP}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.CREATE })}
-          element={<RadiusAttributeGroupForm />}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <RadiusAttributeGroupForm />
+            </AuthRoute>
+          }
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.EDIT })}
-          element={<RadiusAttributeGroupForm editMode={true}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <RadiusAttributeGroupForm editMode={true}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.RADIUS_ATTRIBUTE_GROUP, oper: PolicyOperation.DETAIL })}
-          element={<RadiusAttributeGroupDetail />} />
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <RadiusAttributeGroupDetail />
+            </AuthRoute>}
+        />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })}
-          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.CREATE })}
-          element={<AdaptivePolicyForm/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <AdaptivePolicyForm/>
+            </AuthRoute>}
         />
         <Route
           path={getAdaptivePolicyDetailRoutePath(PolicyOperation.EDIT)}
-          element={<AdaptivePolicyForm editMode={true}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <AdaptivePolicyForm editMode={true}/>
+            </AuthRoute>}
         />
         <Route
           path={getAdaptivePolicyDetailRoutePath(PolicyOperation.DETAIL)}
-          element={<AdaptivePolicyDetail/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <AdaptivePolicyDetail/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.CREATE })}
-          element={<AdaptivePolicySetForm/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.CREATE]}>
+              <AdaptivePolicySetForm/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.EDIT })}
-          element={<AdaptivePolicySetForm editMode={true}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.UPDATE]}>
+              <AdaptivePolicySetForm editMode={true}/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.DETAIL })}
-          element={<AdaptivePolicySetDetail/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <AdaptivePolicySetDetail/>
+            </AuthRoute>}
         />
         <Route
           // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })}
-          element={<AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>}
+          element={
+            <AuthRoute scopes={[WifiScopes.READ]}>
+              <AdaptivePolicyList tabKey={AdaptivePolicyTabKey.ADAPTIVE_POLICY_SET}/>
+            </AuthRoute>}
         /> </>
       }
       {isCertificateTemplateEnabled && <>

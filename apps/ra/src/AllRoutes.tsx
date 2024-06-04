@@ -197,10 +197,18 @@ function AllRoutes () {
           element={<Wired tab={AISwitchTabsEnum.WIRED_REPORT}/>} />
         <Route path=':switchId/serial/details/:activeTab' element={<SwitchDetails/>} />
       </Route>
-      <Route path='users' element={check('READ_WIRELESS_CLIENTS_LIST')}>
-        <Route path='wifi/clients' element={<Clients tab={AIClientsTabEnum.CLIENTS}/>} />
-        <Route path='wifi/reports' element={<Clients tab={AIClientsTabEnum.REPORTS}/>} />
-        <Route path='wifi/clients/:clientId'>
+      <Route path='users'>
+        <Route path='wifi/clients'
+          element={check(
+            'READ_WIRELESS_CLIENTS_LIST',
+            <Clients tab={AIClientsTabEnum.CLIENTS}/>
+          )} />
+        <Route path='wifi/reports'
+          element={check(
+            'READ_WIRELESS_CLIENTS_REPORT',
+            <Clients tab={AIClientsTabEnum.REPORTS}/>
+          )} />
+        <Route path='wifi/clients/:clientId' element={check('READ_CLIENT_TROUBLESHOOTING')}>
           <Route path=':activeTab'>
             <Route path=':activeTab' element={<ClientDetails />} />
             <Route path=':activeTab/:activeSubTab' element={<ClientDetails />} />

@@ -1,13 +1,23 @@
 import { Incident }                                from '@acx-ui/analytics/utils'
+import { get }                                     from '@acx-ui/config'
 import { Provider }                                from '@acx-ui/store'
 import { act, render, screen, fireEvent, cleanup } from '@acx-ui/test-utils'
 import { RolesEnum }                               from '@acx-ui/types'
-import { getUserProfile, setUserProfile }          from '@acx-ui/user'
+import {
+  getUserProfile,
+  setUserProfile,
+  RaiPermissions,
+  setRaiPermissions
+} from '@acx-ui/user'
 
 import { connectionEvents } from './__tests__/fixtures'
 import { History }          from './EventsHistory'
 
 import { Filters } from '.'
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
 
 const incidents = [{
   id: '9cf271f8-fe98-4725-9ee3-baf89119164a',
@@ -28,6 +38,9 @@ const incidents = [{
 const params = { tenantId: 'tenant-id', clientId: 'clientMac', activeTab: 'troubleshooting' }
 
 describe('EventsHistory', () => {
+  beforeEach(() => {
+    mockGet.mockReturnValue(false)
+  })
   afterEach(() => {
     jest.restoreAllMocks()
     cleanup()
@@ -282,6 +295,38 @@ describe('EventsHistory', () => {
     expect(await screen.findByText('History')).toBeVisible()
     expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
     expect(screen.getByText('Connection (Time To Connect)')).toBeVisible()
+    expect(screen.queryByRole('link')).toBeNull()
+  })
+  it('should hide incidents when role when user doesnt have permission', async () => {
+    mockGet.mockReturnValue(true)
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
+    const data = {
+      connectionEvents,
+      incidents,
+      connectionDetailsByAp: [],
+      connectionQualities: []
+    }
+    const onPanelCallback = jest.fn(() => ({ onClick: () => {}, selected: () => false }))
+    render(
+      <Provider>
+        <History
+          data={data}
+          filters={{}}
+          historyContentToggle
+          setHistoryContentToggle={jest.fn()}
+          onPanelCallback={onPanelCallback}
+        />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/users/wifi/clients/:clientId/details/:activeTab'
+        }
+      }
+    )
+    expect(await screen.findByText('History')).toBeVisible()
+    expect(screen.getByText('11/14/2022 06:33:31')).toBeVisible()
+    expect(screen.queryByText('Connection (Time To Connect)')).toBeNull()
     expect(screen.queryByRole('link')).toBeNull()
   })
 })
