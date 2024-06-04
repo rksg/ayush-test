@@ -11,8 +11,8 @@ import {
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
   PersonaGroupDrawer,
-  useIsEdgePINEnabled,
-  VenueLink
+  VenueLink,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   useGetPersonaGroupByIdQuery,
@@ -63,7 +63,7 @@ function PersonaGroupDetailsPageHeader (props: {
 function PersonaGroupDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsEdgePINEnabled()
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const { personaGroupId, tenantId } = useParams()
   const [editVisible, setEditVisible] = useState(false)
   const [venueDisplay, setVenueDisplay] = useState<{ id?: string, name?: string }>()

@@ -21,11 +21,11 @@ import { exportMessageMapping }                                        from '@ac
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
+import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
 import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
 import { PersonaBlockedIcon }                                       from '../styledComponents'
-import { useIsEdgePINEnabled }                                      from '../useIsEdgePINEnabled'
 import { usePersonaAsyncHeaders }                                   from '../usePersonaAsyncHeaders'
 
 const IdentitiesContext = createContext({} as {
@@ -38,7 +38,7 @@ function useColumns (
   venueId: string
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsEdgePINEnabled()
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {

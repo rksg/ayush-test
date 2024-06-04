@@ -15,7 +15,7 @@ import {
   PassphraseViewer,
   PersonaDrawer,
   PropertyUnitLink,
-  useIsEdgePINEnabled,
+  useIsEdgeFeatureReady,
   usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
@@ -42,7 +42,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsEdgePINEnabled()
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
