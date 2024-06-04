@@ -313,8 +313,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasPermission({
-          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE,
-            [WifiScopes.DELETE, EdgeScopes.DELETE, SwitchScopes.DELETE]]
+          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]
         }) && rowSelection}
       />
     </Loader>
