@@ -50,7 +50,7 @@ export default function BasicInfo () {
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
     useQueryFn: useGetVenueSettingsQuery,
     useTemplateQueryFn: useGetVenueTemplateSettingsQuery

@@ -14,7 +14,7 @@ export default function useDHCPInfo () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
     useQueryFn: useVenueDHCPProfileQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,

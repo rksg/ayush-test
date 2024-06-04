@@ -35,7 +35,7 @@ export function DHCPDetail () {
   const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
-    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   })
   const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
     useQueryFn: useVenuesListQuery,

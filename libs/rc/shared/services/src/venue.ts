@@ -103,10 +103,6 @@ import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { handleCallbackWhenActivitySuccess } from './utils'
 
-const RKS_NEW_UI = {
-  'x-rks-new-ui': true
-}
-
 const customHeaders = {
   v1: {
     'Content-Type': 'application/vnd.ruckus.v1+json',
@@ -1206,7 +1202,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     venueDHCPPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.getDhcpUsagesRbac : DHCPUrls.getVenueActivePools
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(url, params, headers)
         return {
           ...req
@@ -1244,7 +1240,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     venuesLeasesList: build.query<DHCPLeases[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.getVenueLeasesRbac : DHCPUrls.getVenueLeases
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const leasesList = createHttpRequest(url, params, headers)
         return {
           ...leasesList
@@ -1260,7 +1256,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     activateDHCPPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.activeVenueDHCPPool
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(url, params, headers)
         return {
           ...req,
@@ -1271,7 +1267,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     deactivateDHCPPool: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.deactivateVenueDHCPPool
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : RKS_NEW_UI
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(url, params, headers)
         return {
           ...req,
@@ -1282,7 +1278,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     updateVenueDHCPProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac, enableService }) => {
         const url = !enableRbac ? DHCPUrls.updateVenueDHCPProfile : (enableService ? DHCPUrls.bindVenueDhcpProfile : DHCPUrls.unbindVenueDhcpProfile)
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const req = createHttpRequest(url, params, headers)
         return {
           ...req,

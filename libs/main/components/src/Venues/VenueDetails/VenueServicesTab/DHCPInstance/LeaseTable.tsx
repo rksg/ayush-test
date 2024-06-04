@@ -15,7 +15,7 @@ import {
 export default function VenueLeaseTable (){
   const params = useParams()
   const { $t } = useIntl()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data: leasesList } = useVenuesLeasesListQuery({ params, enableRbac })
 

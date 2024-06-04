@@ -34,7 +34,7 @@ const DHCPInstance = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data: leasesList } = useVenuesLeasesListQuery(
     { params, enableRbac }, { skip: isTemplate })
 

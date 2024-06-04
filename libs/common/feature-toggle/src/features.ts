@@ -125,7 +125,6 @@ export enum Features {
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
-  SERVICE_POLICY_RBAC = 'acx-ui-rbac-service-policy-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',

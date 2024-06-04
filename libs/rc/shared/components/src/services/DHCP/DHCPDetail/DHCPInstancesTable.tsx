@@ -20,7 +20,7 @@ export default function DHCPInstancesTable (){
   const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
-    enableRbac: useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   })
 
   const tableQuery = useTableQuery({

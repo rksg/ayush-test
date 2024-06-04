@@ -17,8 +17,8 @@ import {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation
 } from '@acx-ui/rc/services'
-import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { hasAccess }                                                                                                                                                   from '@acx-ui/user'
+import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { hasAccess }                                                                                                                                from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
@@ -31,15 +31,14 @@ export default function VenuePoolTable (
   { venueDHCPProfile, dhcpProfile, isFetching }: VenuePoolTableProps){
   const params = useParams()
   const { $t } = useIntl()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
-  const { isTemplate } = useConfigTemplate()
 
   // eslint-disable-next-line max-len
   const venueDHCPPools = useConfigTemplateQueryFnSwitcher<VenueDHCPPoolInst[]>({
     useQueryFn: useVenueDHCPPoolsQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpPoolsQuery,
-    skip: !isTemplate ? isFetching : false,
+    skip: isFetching,
     payload: { venueDHCPProfile, dhcpProfile },
     enableRbac
   })

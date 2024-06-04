@@ -61,7 +61,7 @@ export function SettingForm (props: DHCPFormProps) {
 
   const types = isTemplate ? [DHCPConfigTypeEnum.SIMPLE] : Object.values(DHCPConfigTypeEnum)
   const params = useParams()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ getDHCPProfileList ] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData[]>({
     useLazyQueryFn: useLazyGetDHCPProfileListQuery,
     useLazyTemplateQueryFn: useLazyGetDhcpTemplateListQuery

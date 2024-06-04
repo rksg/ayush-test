@@ -27,7 +27,7 @@ export default function DHCPTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {

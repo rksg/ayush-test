@@ -36,7 +36,7 @@ export function DHCPForm (props: DHCPFormProps) {
   const { editMode = false } = props
   const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
   const navigate = useNavigate()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)

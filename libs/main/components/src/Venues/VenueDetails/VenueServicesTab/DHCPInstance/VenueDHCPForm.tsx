@@ -50,7 +50,7 @@ const VenueDHCPForm = (props: {
   const form = props.form
   const dhcpInfo = useDHCPInfo()
   const { isTemplate } = useConfigTemplate()
-  const enableRbac = useIsSplitOn(Features.SERVICE_POLICY_RBAC)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const addDhcpPath = usePathBasedOnConfigTemplate(
     getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })
   )
@@ -112,10 +112,8 @@ const VenueDHCPForm = (props: {
         const primaryServer = getAPDetail(form.getFieldsValue().primaryServerSN)
         const secondary = getAPDetail(form.getFieldsValue().backupServerSN)
         const resetField = (server: APExtended | undefined, fieldName:string)=>{
-          if(server
-            && server.apStatusData
-            && server.apStatusData.lanPortStatus
-            && server.apStatusData.lanPortStatus?.length <= 1){
+          const lanPortStatus = server?.apStatusData?.lanPortStatus
+          if (lanPortStatus && lanPortStatus.length <= 1) {
             form.setFieldValue(fieldName, '')
           }
         }
