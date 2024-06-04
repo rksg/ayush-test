@@ -196,7 +196,8 @@ export function TrustedPorts () {
               onChange: (keys: React.Key[]) => {
                 const selected = ruleList?.find((i: { model: string }) => i.model === keys[0])
                 const notDeletable = currentData.vlans?.some(v => {
-                  return v.switchFamilyModels?.some(sf => sf.model === selected?.model)
+                  return (v.ipv4DhcpSnooping || v.arpInspection) &&
+                    v.switchFamilyModels?.some(sf => sf.model === selected?.model)
                 })
                 setSelected(selected)
                 setNotDeletable(notDeletable)
