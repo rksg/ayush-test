@@ -37,23 +37,25 @@ export default function useApsTable () {
         venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
       })
     })
-  const { apgroupFilterOptions } = useApGroupsListQuery(
-    {
-      params: { tenantId },
-      payload: {
-        fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-        pageSize: 10000,
-        sortField: 'name',
-        sortOrder: 'ASC',
-        filters: { isDefault: [false] }
-      }
-    },
-    {
-      selectFromResult: ({ data }) => ({
-        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
-      })
-    }
-  )
+
+  const apgroupFilterOptions = useApGroupsFilterOpts()
+  // const { apgroupFilterOptions } = useApGroupsListQuery(
+  //   {
+  //     params: { tenantId },
+  //     payload: {
+  //       fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
+  //       pageSize: 10000,
+  //       sortField: 'name',
+  //       sortOrder: 'ASC',
+  //       filters: { isDefault: [false] }
+  //     }
+  //   },
+  //   {
+  //     selectFromResult: ({ data }) => ({
+  //       apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
+  //     })
+  //   }
+  // )
 
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,

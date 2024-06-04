@@ -6,6 +6,7 @@ import { useApGroupsListQuery, useGetApCompatibilitiesNetworkQuery } from '@acx-
 
 import { retrievedCompatibilitiesOptions } from '../../ApCompatibility'
 import { ApTable }                         from '../../ApTable'
+import { useApGroupsFilterOpts }           from '../../useApGroupActions'
 
 
 
@@ -22,23 +23,24 @@ export function NetworkApsTab () {
       selectFromResult: ({ data }) => (retrievedCompatibilitiesOptions(data))
     })
 
-  const { apgroupFilterOptions } = useApGroupsListQuery(
-    {
-      params: { tenantId },
-      payload: {
-        fields: ['name', 'id'],
-        pageSize: 10000,
-        sortField: 'name',
-        sortOrder: 'ASC',
-        filters: { isDefault: [false] }
-      }
-    },
-    {
-      selectFromResult: ({ data }) => ({
-        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
-      })
-    }
-  )
+  const apgroupFilterOptions = useApGroupsFilterOpts()
+  // const { apgroupFilterOptions } = useApGroupsListQuery(
+  //   {
+  //     params: { tenantId },
+  //     payload: {
+  //       fields: ['name', 'id'],
+  //       pageSize: 10000,
+  //       sortField: 'name',
+  //       sortOrder: 'ASC',
+  //       filters: { isDefault: [false] }
+  //     }
+  //   },
+  //   {
+  //     selectFromResult: ({ data }) => ({
+  //       apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
+  //     })
+  //   }
+  // )
 
   return (
     <ApTable settingsId='network-ap-table'

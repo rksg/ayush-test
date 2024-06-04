@@ -5,11 +5,17 @@ import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 
 
-import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr }                                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
-import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }                                            from '@acx-ui/icons'
-import { ApGroupTable, ApTable, ApCompatibilityDrawer, retrievedCompatibilitiesOptions }                      from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
+import { Table, TableProps, Loader, Tooltip, Tabs, Button, cssStr } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { DevicesOutlined, LineChartOutline, ListSolid, MeshSolid }  from '@acx-ui/icons'
+import {
+  ApGroupTable,
+  ApTable,
+  ApCompatibilityDrawer,
+  retrievedCompatibilitiesOptions,
+  useApGroupsFilterOpts
+} from '@acx-ui/rc/components'
+import { useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
@@ -219,19 +225,20 @@ export function VenueWifi () {
       selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
     })
 
-  const { apgroupFilterOptions } = useApGroupsListQuery({
-    params: { tenantId: params.tenantId }, payload: {
-      fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: { isDefault: [false], venueId: [params.venueId] }
-    }
-  }, {
-    selectFromResult: ({ data }) => ({
-      apgroupFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
-    })
-  })
+  const apgroupFilterOptions = useApGroupsFilterOpts({ isDefault: [false], venueId: [params.venueId] })
+  // const { apgroupFilterOptions } = useApGroupsListQuery({
+  //   params: { tenantId: params.tenantId }, payload: {
+  //     fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
+  //     pageSize: 10000,
+  //     sortField: 'name',
+  //     sortOrder: 'ASC',
+  //     filters: { isDefault: [false], venueId: [params.venueId] }
+  //   }
+  // }, {
+  //   selectFromResult: ({ data }) => ({
+  //     apgroupFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
+  //   })
+  // })
 
   useEffect(() => {
     if (venueWifiSetting) {

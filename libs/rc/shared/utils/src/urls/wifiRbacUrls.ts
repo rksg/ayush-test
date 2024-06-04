@@ -192,17 +192,19 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/importResults',
     newApi: true
   },
+  // no longer supported after v1, use getApGroupsList as replacement
   getVenueDefaultApGroup: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
     newApi: true
   },
+  */
   getApGroupsList: {
     method: 'post',
-    url: '/apGroups/query',
+    // url: '/apGroups/query',
+    url: '/venues/apGroups/query',
     newApi: true
   },
-  */
   addApGroup: {
     method: 'post',
     url: '/venues/:venueId/apGroups',

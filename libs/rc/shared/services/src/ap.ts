@@ -45,6 +45,8 @@ import {
   ImportErrorRes,
   LanPortStatusProperties,
   MeshUplinkAp,
+  NewApGroupViewModel,
+  NewApGroupViewModelExtended,
   PacketCaptureOperationResponse,
   PacketCaptureState,
   PingAp,
@@ -55,9 +57,11 @@ import {
   SupportCcdApGroup,
   SupportCcdVenue,
   TableResult,
+  Venue,
   VenueDefaultApGroup,
   VenueDefaultRegulatoryChannels,
   WifiApSetting,
+  WifiNetwork,
   WifiRbacUrlsInfo,
   WifiUrlsInfo,
   downloadFile,
@@ -67,6 +71,8 @@ import {
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+import { aggregateApGroupApInfo, aggregateApGroupNetworkInfo, aggregateApGroupVenueInfo } from './apGroupUtils'
 
 export type ApsExportPayload = {
   filters: Filter
@@ -132,11 +138,13 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const apGroupListReq = createHttpRequest(WifiUrlsInfo.getApGroupsList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const apGroupListReq = createHttpRequest(urlsInfo.getApGroupsList, params, customHeaders)
         return {
           ...apGroupListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       keepUnusedDataFor: 0,
@@ -151,6 +159,99 @@ export const apApi = baseApApi.injectEndpoints({
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'ApGroup', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    newApGroupsViewModelList: build.query<TableResult<NewApGroupViewModelExtended>, RequestPayload>({
+      async queryFn ({ params, payload }, _queryApi, _extraOptions, fetchWithBQ) {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, customHeaders)
+        const apGroupListQuery = await fetchWithBQ({
+          ...apGroupListReq,
+          body: JSON.stringify(payload)
+        })
+        const apGroups = apGroupListQuery.data as TableResult<NewApGroupViewModelExtended>
+
+        if (apGroups.data.length) {
+          const defaultIdNamePayload = {
+            fields: ['name', 'id'],
+            pageSize: 10000
+          }
+
+          // fetch venue name
+          const venueIds = _.uniq(apGroups.data.map(item => item.venueId))
+          const venueListQuery = await fetchWithBQ({
+            ...createHttpRequest(CommonUrlsInfo.getVenuesList),
+            body: { ...defaultIdNamePayload, filters: { id: venueIds } }
+          })
+          const venueList = venueListQuery.data as TableResult<Venue>
+          aggregateApGroupVenueInfo(apGroups, venueList)
+
+          // fetch networks name
+          const networkIds = _.uniq(apGroups.data.flatMap(item => item.wifiNetworkIds))
+          if (networkIds.length) {
+            const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, customHeaders)
+            const networkListQuery = await fetchWithBQ({
+              ...networkListReq,
+              body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: networkIds } })
+            })
+            const networks = networkListQuery.data as TableResult<WifiNetwork>
+            aggregateApGroupNetworkInfo(apGroups, networks)
+          }
+
+          // fetch aps name
+          const apIds = _.uniq(apGroups.data.flatMap(item => item.apSerialNumbers))
+          if (apIds.length) {
+            const apsListQuery = await fetchWithBQ({
+              ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
+              body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: apIds } })
+            })
+            const aps = apsListQuery.data as TableResult<NewAPModel>
+            aggregateApGroupApInfo(apGroups, aps)
+          }
+        }
+
+        return { data: apGroups }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'ApGroup', id: 'LIST_NEW' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddApGroup',
+            'UpdateApGroup',
+            'DeleteApGroups',
+            'AddApGroupLegacy'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'ApGroup', id: 'LIST_NEW' }]))
+          })
+        })
+      }
+    }),
+    newApGroupsList: build.query<TableResult<NewApGroupViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, customHeaders)
+        return {
+          ...apGroupListReq,
+          body: JSON.stringify(payload)
+        }
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'ApGroup', id: 'LIST_NEW' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'AddApGroup',
+            'UpdateApGroup',
+            'DeleteApGroups',
+            'AddApGroupLegacy'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(apApi.util.invalidateTags([{ type: 'ApGroup', id: 'LIST_NEW' }]))
           })
         })
       }
@@ -221,6 +322,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
+    // no longer supported after v1, use getApGroupsList as replacement
     venueDefaultApGroup: build.query<VenueDefaultApGroup[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)
@@ -1096,6 +1198,8 @@ export const {
   useLazyApGroupListByVenueQuery,
   useApGroupsListQuery,
   useLazyApGroupsListQuery,
+  useNewApGroupsListQuery,
+  useNewApGroupsViewModelListQuery,
   useWifiCapabilitiesQuery,
   useVenueDefaultApGroupQuery,
   useLazyVenueDefaultApGroupQuery,

@@ -196,6 +196,24 @@ export interface ApGroupViewModel extends ApGroup {
   incidents?: unknown
 }
 
+export interface NewApGroupViewModel {
+  id?: string,
+  name?: string,
+  description?: string,
+  isDefault?: boolean,
+  venueId?: string,
+  apSerialNumbers?: string[],
+  wifiNetworkIds?: string[],
+  clientCount?: number,
+}
+
+export interface NewApGroupViewModelExtended extends NewApGroupViewModel {
+  venueName?: string,
+  networkInfos?: Record<string, string>,
+  apInfos?: Record<string, string>,
+  incidents?: unknown
+}
+
 export interface AddApGroup {
   venueId: string,
   apSerialNumbers?: unknown[],
