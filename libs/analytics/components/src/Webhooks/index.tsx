@@ -13,7 +13,7 @@ import {
   showToast
 } from '@acx-ui/components'
 import { get }                           from '@acx-ui/config'
-import { SwitchScopes, SwitchScopes, WifiScopes }                    from '@acx-ui/types'
+import { SwitchScopes, WifiScopes }      from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { useDeleteWebhookMutation, useWebhooksQuery, useResourceGroups, handleError } from './services'
