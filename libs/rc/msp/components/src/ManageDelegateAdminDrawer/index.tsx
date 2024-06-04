@@ -22,6 +22,7 @@ import {
 } from '@acx-ui/msp/utils'
 import { useGetMspEcPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
+  CustomGroupType,
   PrivilegeGroup,
   defaultSort,
   roleDisplayText,
@@ -90,7 +91,9 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
     }
     setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
     if (ecPrivilegeGroupList?.data) {
-      setEcPrivilegeGroups(ecPrivilegeGroupList?.data)
+      const groupList = ecPrivilegeGroupList?.data.filter((ecPrivGroup: PrivilegeGroup)=>
+        ecPrivGroup.type === CustomGroupType.SYSTEM)
+      setEcPrivilegeGroups(groupList)
     }
   }, [queryResults?.data, delegatedAdmins?.data, ecPrivilegeGroupList?.data])
 
