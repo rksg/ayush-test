@@ -2,11 +2,9 @@ import { RadiusServer } from '../../models/RadiusServer'
 export interface AAAPolicyType{
   id?: string,
   name: string,
-  tags?: string[],
   primary?: RadiusServer,
   secondary?: RadiusServer,
-  type?: 'ACCOUNTING' | 'AUTHENTICATION',
-  networkIds?: string[]
+  type?: 'ACCOUNTING' | 'AUTHENTICATION'
 }
 
 export interface AAATacacsServer{
@@ -29,9 +27,11 @@ export enum AAAPurposeEnum{
   AUTHORIZATION = 'Authorization',
   ACCOUNTING = 'Accounting RADIUS Server'
 }
-export interface AAAPolicyNetwork {
-  networkId: string,
-  networkName: string,
-  networkType: string,
-  guestNetworkType?: string
+export interface AAARbacViewModalType {
+  id?: string,
+  name: string,
+  primary: string, // Primary server IP:Port
+  secondary?: string, // Secondary server IP:Port
+  type: 'ACCOUNTING' | 'AUTHENTICATION',
+  wifiNetworkIds?: string[]
 }

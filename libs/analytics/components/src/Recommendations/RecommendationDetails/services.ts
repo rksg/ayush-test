@@ -85,6 +85,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   const appliedPlus24h = moment(appliedTime).add(24, 'hours')
   const monitoring = (
     status === 'applied' &&
+    !code.startsWith('c-probeflex-') &&
     appliedTime &&
     Date.now() < appliedPlus24h.valueOf()
   )

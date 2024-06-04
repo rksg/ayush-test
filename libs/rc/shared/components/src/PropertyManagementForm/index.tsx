@@ -5,9 +5,9 @@ import { Col, Form, FormInstance, Input, Row, Select, Space, Switch, Typography 
 import { useIntl }                                                                from 'react-intl'
 import { useParams }                                                              from 'react-router-dom'
 
-import { Button, Card, Loader, StepsForm, Subtitle, Tabs, Tooltip } from '@acx-ui/components'
-import { Features, useIsTierAllowed }                               from '@acx-ui/feature-toggle'
-import { InformationSolid }                                         from '@acx-ui/icons'
+import { Button, Card, Loader, StepsForm, Subtitle, Tooltip } from '@acx-ui/components'
+import { Features, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
+import { InformationSolid }                                   from '@acx-ui/icons'
 import {
   useGetPersonaGroupByIdQuery,
   useGetPropertyConfigsQuery,
@@ -66,20 +66,16 @@ const defaultPropertyConfigs: PropertyConfigs = {
   }
 }
 
-const templateScopeIds = {
-  email: [
-    '648269aa-23c7-41da-baa4-811e92d89ed1',
-    '45b68446-c970-4ade-9d64-5ee71f5555d9',
-    'b9139125-5c15-469c-a5a8-43c2b3fd6151',
-    'e0220126-6e6c-4e10-88ba-42713bddd2a1'
-  ],
-  sms: [
-    '2baa7cc6-f036-462a-a531-fefb9e531d27',
-    'c4a8d5bd-ae48-42d9-b86c-0641942a0ae3',
-    '88553d8d-c2bc-4bc8-90b5-cda6b0ff2fb4',
-    '6eb696cd-fd12-4c20-930d-65550a1e3eca'
-  ]
-}
+const msgCategoryIds = [
+  // Unit assigned
+  '96672ee0-86df-4819-bca4-3b39ef611e37',
+  // Guest Passphrase Reset
+  '8817c288-7e8e-4125-8a73-531c205a9e16',
+  // Port Assigned
+  '4bdc8eb0-864a-4c7d-b99c-157a59520796',
+  // Access Reset
+  '08c28d2d-5ceb-4b5d-adc4-2c0fb744517e'
+]
 
 export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
 
@@ -199,29 +195,56 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
   ]
 
   const registerMessageTemplates = async () => {
-    const registerPromises = [...templateScopeIds.email, ...templateScopeIds.sms]
-      .map(scopeId => {
-        let selectedOption = form.getFieldValue(scopeId)
+    const registerPromises = [...msgCategoryIds]
+      // eslint-disable-next-line
+      .flatMap((msgCategoryId):Promise<any>[] => {
+        let selectedOption = form.getFieldValue(msgCategoryId)
 
-        if(selectedOption && selectedOption !== '') {
-          return updateRegistration({
+        if(!selectedOption || selectedOption === '') {
+          return [Promise.resolve()]
+        }
+
+        // 1 - emailTemplateScopeId 2 - g.emailTemplateId 3 - smsTemplateScopeId 4- g.smsTemplateId,
+        let idArray = selectedOption.split(',')
+
+        if(idArray.length < 4) {
+          return [Promise.resolve()]
+        }
+
+        return [
+          // email
+          updateRegistration({
             params: {
-              templateScopeId: scopeId,
+              templateScopeId: idArray[0],
               associatedResource: AssociatedResource.VENUE,
               associatedResourceId: venueId,
               registrationId: venueId
             },
             payload: {
-              id: scopeId,
-              templateId: selectedOption,
+              id: venueId,
+              templateId: idArray[1],
               usageLocalizationKey: 'venue.property.management',
               usageDescriptionFieldOne: venueData?.name ?? venueId,
               usageDescriptionFieldTwo: venueId
             }
-          })
-        } else {
-          return Promise.resolve()
-        }
+          }),
+          // sms
+          updateRegistration({
+            params: {
+              templateScopeId: idArray[2],
+              associatedResource: AssociatedResource.VENUE,
+              associatedResourceId: venueId,
+              registrationId: venueId
+            },
+            payload: {
+              id: venueId,
+              templateId: idArray[3],
+              usageLocalizationKey: 'venue.property.management',
+              usageDescriptionFieldOne: venueData?.name ?? venueId,
+              usageDescriptionFieldTwo: venueId
+            }
+          })]
+
       })
 
     await Promise.all(registerPromises)
@@ -481,34 +504,14 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
                         valuePropName={'checked'}
                         children={<Switch/>}/>
                     </StepsForm.FieldLabel>
-                    <Tabs
-                      defaultActiveKey={'email'}
-                    >
-                      <Tabs.TabPane
-                        forceRender
-                        key={'email'}
-                        tab={$t({ defaultMessage: 'Email' })}
-                        children={templateScopeIds.email.map(id => venueId &&
+                    {msgCategoryIds.map(categoryId => venueId &&
                         <TemplateSelector
-                          key={id}
-                          formItemProps={{ name: id }}
-                          scopeId={id}
-                          registrationId={venueId}
+                          key={categoryId}
+                          formItemProps={{ name: categoryId }}
+                          categoryId={categoryId}
+                          emailRegistrationId={venueId}
+                          smsRegistrationId={venueId}
                         />)}
-                      />
-                      <Tabs.TabPane
-                        forceRender
-                        key={'sms'}
-                        tab={$t({ defaultMessage: 'SMS' })}
-                        children={templateScopeIds.sms.map(id => venueId &&
-                        <TemplateSelector
-                          key={id}
-                          formItemProps={{ name: id }}
-                          scopeId={id}
-                          registrationId={venueId}
-                        />)}
-                      />
-                    </Tabs>
                   </>
                 }
               </Col>

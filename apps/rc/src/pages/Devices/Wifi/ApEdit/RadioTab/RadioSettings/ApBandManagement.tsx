@@ -22,7 +22,7 @@ import { ApDataContext } from '../..'
 import { VenueNameDisplay } from './RadioSettings'
 
 export interface ApBandManagementPorps {
-  venue: VenueExtended
+  venue: VenueExtended | undefined
   venueBandMode: BandModeEnum
   isSupportDual5GAp: boolean
   isSupportTriBandRadioAp: boolean
@@ -75,7 +75,11 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
       <Col span={4}>
         Band Management
       </Col>
-      { currentApBandModeData.useVenueSettings && <Col span={4}>(as venue: <VenueNameDisplay venue={venue} />)</Col> }
+      { currentApBandModeData.useVenueSettings && <Col span={4}>
+        {$t({ defaultMessage: '(as <venueSingular></venueSingular>: <venuelink></venuelink>)' }, {
+          venuelink: () => venue ? <VenueNameDisplay venue={venue} /> : ''
+        })}
+      </Col> }
     </Row>
     <Row gutter={20} style={{ alignItems: 'center', padding: '5px 0' }}>
       <Col span={8}>

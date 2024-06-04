@@ -8,6 +8,7 @@ import { venueApi }               from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   VenueRadioCustomization,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -20,7 +21,8 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { VenueEditContext } from '../..'
+import { VenueUtilityContext } from '..'
+import { VenueEditContext }    from '../..'
 import {
   defaultRadioCustomizationData,
   radioCustomizationData,
@@ -38,6 +40,17 @@ const params = {
   activeTab: 'wifi',
   activeSubTab: 'radio'
 }
+
+const mockRadioSetting = (
+  <VenueUtilityContext.Provider value={{
+    venueApCaps: triBandApCap,
+    isLoadingVenueApCaps: false
+  }}>
+    <Form>
+      <RadioSettings />
+    </Form>
+  </VenueUtilityContext.Provider>
+)
 
 describe('Venue Radio Settings', () => {
   beforeEach(() => {
@@ -75,7 +88,11 @@ describe('Venue Radio Settings', () => {
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(
         CommonUrlsInfo.getApsList.url,
-        (_, res, ctx) => res(ctx.json({ data: [] })))
+        (_, res, ctx) => res(ctx.json({ data: [] }))),
+      // rbac
+      rest.put(
+        WifiRbacUrlsInfo.updateVenueExternalAntenna.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
   it.skip('should render Wi-Fi Radio Settings correctly when on/off tri-band button', async () => {
@@ -195,9 +212,7 @@ describe('Venue Radio Settings', () => {
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()
         }}>
-          <Form>
-            <RadioSettings />
-          </Form>
+          { mockRadioSetting }
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
@@ -269,7 +284,7 @@ describe('Venue Radio Settings', () => {
           setEditContextData: jest.fn(),
           setEditRadioContextData: jest.fn()
         }}>
-          <RadioSettings />
+          { mockRadioSetting }
         </VenueEditContext.Provider>
       </Provider>, { route: { params } })
 
