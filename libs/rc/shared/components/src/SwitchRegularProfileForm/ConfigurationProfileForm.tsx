@@ -244,27 +244,29 @@ export function ConfigurationProfileForm () {
       const arpInspectionBool = data.vlans?.some(
         (item: Partial<Vlan>) => item.arpInspection)
 
-      if(vlanModels.length > 0){
-        data.trustedPorts = data.trustedPorts.filter(
-          tpItem => data.vlans.some(item =>
-            (item.ipv4DhcpSnooping || item.arpInspection) &&
+      if(vlanModels.length > 0) {
+        if(ipv4DhcpSnoopingBool || arpInspectionBool) {
+          data.trustedPorts = data.trustedPorts.filter(
+            tpItem => data.vlans.some(item =>
+              (item.ipv4DhcpSnooping || item.arpInspection) &&
               (item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))
-          )).map(
-          item => { return {
-            ...item,
-            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
-          }})
-        const { manualAddedTrustedPorts } = data
-        if(manualAddedTrustedPorts && manualAddedTrustedPorts.length > 0) {
-          data.trustedPorts = [
-            ...data.trustedPorts,
-            ...manualAddedTrustedPorts.filter(mtpItem =>
-              !data.trustedPorts.map(tpItem => tpItem.model).includes(mtpItem.model)
-            )
-          ]
+            )).map(
+            item => { return {
+              ...item,
+              ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+            }})
+          const { manualAddedTrustedPorts } = data
+          if(manualAddedTrustedPorts && manualAddedTrustedPorts.length > 0) {
+            data.trustedPorts = [
+              ...data.trustedPorts,
+              ...manualAddedTrustedPorts.filter(mtpItem =>
+                !data.trustedPorts.map(tpItem => tpItem.model).includes(mtpItem.model)
+              )
+            ]
+          }
+        } else {
+          data.trustedPorts = []
         }
-      } else if(!ipv4DhcpSnoopingBool && !arpInspectionBool) {
-        data.trustedPorts = []
       } else {
         data.trustedPorts = []
       }
