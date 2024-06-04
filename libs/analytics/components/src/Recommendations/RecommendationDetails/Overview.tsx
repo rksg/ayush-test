@@ -92,6 +92,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { wlans } = metadata
   const isRrm = code.includes('crrm')
   const isFlexAI = code.startsWith('c-probeflex')
+  const needsWlans = isFlexAI && wlans && wlans.length > 0
 
   const fields = [
     (isRrm && {
@@ -128,9 +129,9 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       label: $t({ defaultMessage: 'Status' }),
       children: $t(statusTrailMsgs[status])
     },
-    (isFlexAI && {
+    (needsWlans && {
       label: $t({ defaultMessage: 'Networks' }),
-      children: $t({ defaultMessage: '{count} networks selected' }, { count: wlans?.length ?? 0 }),
+      children: $t({ defaultMessage: '{count} networks selected' }, { count: wlans.length }),
       popover: wlans?.map(wlan => wlan.name).join('\n')
     })
   ].filter(truthy)
