@@ -48,7 +48,7 @@ export function DevicesWidget (props: {
   const clickWifiHandler = useNavigateToPath(getNavigatePath('wifi'))
   const clickSwitchHandler = useNavigateToPath(getNavigatePath('switch'))
   const clickSmartEdgeHandler = useNavigateToPath(getNavigatePath('edge'))
-  const clickRwgHandler = useNavigateToPath('/ruckus-wan-gateway')
+  const clickRwgHandler = useNavigateToPath(getNavigatePath('rwg'))
 
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
