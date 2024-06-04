@@ -16,7 +16,8 @@ import {
   PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
+import { WifiScopes }                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 
 export default function AdaptivePolicyTable () {
@@ -113,7 +114,8 @@ export default function AdaptivePolicyTable () {
           templateId: templateIdMap.get(selectedRows[0].policyType) ?? ''
         })
       })
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -141,7 +143,8 @@ export default function AdaptivePolicyTable () {
             })
         }
       )
-    }
+    },
+    scopeKey: [WifiScopes.DELETE]
   }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
@@ -165,7 +168,8 @@ export default function AdaptivePolicyTable () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        // eslint-disable-next-line max-len
+        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Policy' }),
           onClick: () => {
@@ -176,7 +180,8 @@ export default function AdaptivePolicyTable () {
                 oper: PolicyOperation.CREATE
               })
             })
-          }
+          },
+          scopeKey: [WifiScopes.CREATE]
         }])}
       />
     </Loader>
