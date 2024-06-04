@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { zip }                 from 'lodash'
 import { Params }              from 'react-router-dom'
@@ -1263,37 +1264,41 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     addWifiOperator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiOperatorUrls.addWifiOperator, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiOperatorUrls.addWifiOperator, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
     }),
     updateWifiOperator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiOperatorUrls.updateWifiOperator, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiOperatorUrls.updateWifiOperator, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
     }),
     deleteWifiOperator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiOperatorUrls.deleteWifiOperator, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiOperatorUrls.deleteWifiOperator, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
     }),
     getWifiOperator: build.query<WifiOperator, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiOperatorUrls.getWifiOperator, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiOperatorUrls.getWifiOperator, params, customHeaders)
         return {
           ...req
         }
@@ -1302,10 +1307,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getWifiOperatorList: build.query<TableResult<WifiOperatorViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiOperatorUrls.getWifiOperatorList, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiOperatorUrls.getWifiOperatorList, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'WifiOperator', id: 'LIST' }],
@@ -1323,8 +1329,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     activateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          WifiOperatorUrls.activateWifiOperatorOnWifiNetwork, params)
+          WifiOperatorUrls.activateWifiOperatorOnWifiNetwork, params, customHeaders)
         return {
           ...req
         }
@@ -1332,8 +1339,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deactivateWifiOperatorOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          WifiOperatorUrls.deactivateWifiOperatorOnWifiNetwork, params)
+          WifiOperatorUrls.deactivateWifiOperatorOnWifiNetwork, params, customHeaders)
         return {
           ...req
         }
@@ -1341,10 +1349,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getIdentityProviderList: build.query<TableResult<IdentityProviderViewModel>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
@@ -1361,69 +1370,82 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getIdentityProvider: build.query<IdentityProvider, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(IdentityProviderUrls.getIdentityProvider, params)
-        return {
-          ...req
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { params } = arg
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+
+        const identityProviderReq = {
+          ...createHttpRequest(IdentityProviderUrls.getIdentityProvider, params, customHeaders)
         }
+        const identityProviderQuery = await fetchWithBQ(identityProviderReq)
+        const identityProviderData = identityProviderQuery.data as IdentityProvider
+        const { accountingRadiusEnabled } = identityProviderData
+
+
+        // Get authRadiusId and accountingRadiusId from ViewModel data
+        const viewmodelPayload = {
+          fields: ['id', 'authRadiusId', 'accountingRadiusId'],
+          searchString: '',
+          filters: { id: [params!.policyId] }
+        }
+        const identityProviderListReq = {
+          ...createHttpRequest(IdentityProviderUrls.getIdentityProviderList, params, customHeaders),
+          body: JSON.stringify(viewmodelPayload)
+        }
+        const identityProviderListQuery = await fetchWithBQ(identityProviderListReq)
+        const identityProviderListData = identityProviderListQuery.data as TableResult<IdentityProviderViewModel>
+        const { authRadiusId, accountingRadiusId } = identityProviderListData.data[0]
+
+        const combineData = {
+          ...identityProviderData,
+          authRadiusId,
+          ...((accountingRadiusEnabled && accountingRadiusId) &&
+            { accountingRadiusId: accountingRadiusId } )
+        }
+
+        return identityProviderQuery.data
+          ? { data: combineData }
+          : { error: identityProviderQuery.error as FetchBaseQueryError }
+
       },
       providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
     addIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.addIdentityProvider, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.addIdentityProvider, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
     updateIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.updateIdentityProvider, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.updateIdentityProvider, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
     deleteIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProvider, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.deleteIdentityProvider, params, customHeaders)
         return {
           ...req
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
     }),
-    getRadiusServers: build.query<TableResult<AAAViewModalType>,RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(IdentityProviderUrls.getRadiusServers, params)
-        return {
-          ...req,
-          body: payload
-        }
-      }/*,
-      providesTags: [{ type: 'IdentityProvider', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, IdentityProviderMutationUseCases, () => {
-            api.dispatch(policyApi.util.invalidateTags([
-              { type: 'Policy', id: 'LIST' },
-              { type: 'IdentityProvider', id: 'LIST' }
-            ]))
-          })
-        })
-      },
-      extraOptions: { maxRetries: 5 }
-      */
-    }),
-
     activateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(IdentityProviderUrls.activateIdentityProviderRadius, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.activateIdentityProviderRadius, params, customHeaders)
         return {
           ...req
         }
@@ -1431,7 +1453,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deactivateIdentityProviderRadius: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(IdentityProviderUrls.deactivateIdentityProviderRadius, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(IdentityProviderUrls.deactivateIdentityProviderRadius, params, customHeaders)
         return {
           ...req
         }
@@ -1439,8 +1462,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     activateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          IdentityProviderUrls.activateIdentityProviderOnWifiNetwork, params)
+          IdentityProviderUrls.activateIdentityProviderOnWifiNetwork, params, customHeaders)
         return {
           ...req
         }
@@ -1448,8 +1472,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     deactivateIdentityProviderOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
-          IdentityProviderUrls.deactivateIdentityProviderOnWifiNetwork, params)
+          IdentityProviderUrls.deactivateIdentityProviderOnWifiNetwork, params, customHeaders)
         return {
           ...req
         }
@@ -2966,7 +2991,6 @@ export const {
   useAddIdentityProviderMutation,
   useUpdateIdentityProviderMutation,
   useDeleteIdentityProviderMutation,
-  useGetRadiusServersQuery,
   useActivateIdentityProviderRadiusMutation,
   useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,
