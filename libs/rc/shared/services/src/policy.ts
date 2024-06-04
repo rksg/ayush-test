@@ -3,42 +3,17 @@ import { zip }                 from 'lodash'
 import { Params }              from 'react-router-dom'
 
 import {
-  MacRegistration,
-  MacRegistrationPool,
-  MacRegListUrlsInfo,
-  RogueApUrls,
-  RogueAPDetectionContextType,
-  RogueAPDetectionTempType,
-  SyslogUrls,
-  SyslogContextType,
-  SyslogPolicyDetailType,
-  SyslogPolicyListType,
-  VenueSyslogPolicyType,
-  VenueSyslogSettingType,
-  VenueRoguePolicyType,
+  MacRegistration, MacRegistrationPool, MacRegListUrlsInfo,
+  RogueApUrls, RogueAPDetectionContextType, RogueAPDetectionTempType,
+  SyslogUrls, SyslogContextType, SyslogPolicyDetailType, SyslogPolicyListType,
+  VenueSyslogPolicyType, VenueSyslogSettingType, VenueRoguePolicyType,
   VLANPoolPolicyType, VLANPoolViewModelType, VlanPoolUrls, VLANPoolVenues,
-  TableResult,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  CommonResult,
-  devicePolicyInfoType,
-  DevicePolicy,
-  NewTableResult,
-  transferToTableResult,
-  AAAPolicyType,
-  AaaUrls,
-  AAAViewModalType,
-  l3AclPolicyInfoType,
-  l2AclPolicyInfoType,
-  L2AclPolicy,
-  L3AclPolicy,
-  AvcCategory,
-  AvcApp,
+  TableResult, onSocketActivityChanged, onActivityMessageReceived, CommonResult,
+  devicePolicyInfoType, DevicePolicy, NewTableResult,
+  transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
+  l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
-  VlanPool,
-  WifiUrlsInfo,
-  AccessControlUrls,
-  ClientIsolationSaveData, ClientIsolationUrls,
+  VlanPool, WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
@@ -47,7 +22,6 @@ import {
   WifiOperatorViewModel,
   IdentityProviderUrls,
   IdentityProviderViewModel,
-  AAAPolicyNetwork,
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
   ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
@@ -67,7 +41,6 @@ import {
   Assignment,
   NewAPITableResult, transferNewResToTableResult,
   transferToNewTablePaginationParams,
-  CommonResultWithEntityResponse,
   CertificateUrls,
   CertificateTemplate,
   CertificateAuthority,
@@ -85,11 +58,14 @@ import {
   convertOldPolicyToRbacFormat,
   asyncConvertRbacSnmpPolicyToOldFormat,
   convertToCountAndNumber,
-  RoguePolicyRequest
+  RoguePolicyRequest,
+  AAARbacViewModalType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
+
+import { convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -158,17 +134,6 @@ const defaultCertTempVersioningHeaders = {
   'Accept': 'application/vnd.ruckus.v1+json'
 }
 
-const customHeaders = {
-  v1: {
-    'Content-Type': 'application/vnd.ruckus.v1+json',
-    'Accept': 'application/vnd.ruckus.v1+json'
-  },
-  v1001: {
-    'Content-Type': 'application/vnd.ruckus.v1.1+json',
-    'Accept': 'application/vnd.ruckus.v1.1+json'
-  }
-}
-
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
@@ -176,7 +141,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
         try {
           // eslint-disable-next-line max-len
           const { name, description, rules, venues } = payload!
-          const headers = enableRbac ? customHeaders.v1 : {}
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
           const res = await fetchWithBQ({
             // eslint-disable-next-line max-len
             ...createHttpRequest(enableRbac ? RogueApUrls.addRoguePolicyRbac : RogueApUrls.addRoguePolicy, params, headers),
@@ -197,7 +162,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
             const requests = venues.map(venue => ({
               params: { policyId: response?.id, venueId: venue.id }
             }))
-            await batchApi(RogueApUrls.activateRoguePolicy, requests, fetchWithBQ, customHeaders.v1)
+            // eslint-disable-next-line max-len
+            await batchApi(RogueApUrls.activateRoguePolicy, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
           }
 
           return { data: res.data as CommonResult }
@@ -209,7 +175,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const url = enableRbac ? RogueApUrls.deleteRoguePolicyRbac : RogueApUrls.deleteRoguePolicy
         const req = createHttpRequest(url, params, headers)
         return {
@@ -692,7 +658,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const policyIds = payload as string[]
           const requests = policyIds.map(policyId => ({ params: { policyId }, payload: {} }))
           // eslint-disable-next-line max-len
-          return batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ, customHeaders.v1)
+          return batchApi(RogueApUrls.deleteRoguePolicyRbac, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
         } else {
           const req = createHttpRequest(RogueApUrls.deleteRogueApPolicies, params)
           return fetchWithBQ({
@@ -705,7 +671,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const url = enableRbac ? RogueApUrls.getRoguePolicyRbac : RogueApUrls.getRoguePolicy
         const req = createHttpRequest(url, params, headers)
         return {
@@ -718,7 +684,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const headers = enableRbac ? customHeaders.v1 : {}
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
           // eslint-disable-next-line max-len
           const { id: policyId, name, description, rules, venues, oldVenues, defaultPolicyId } = payload!
 
@@ -817,32 +783,52 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    addAAAPolicy: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.addAAAPolicy, params)
-        return {
-          ...req,
-          body: payload
-        }
+    addAAAPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: (queryArgs) => {
+        return createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.addAAAPolicy,
+          rbacApiVersionKey: ApiVersionEnum.v1_1,
+          queryArgs
+        })
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
-    deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.deleteAAAPolicyList, params)
-        return {
-          ...req,
-          body: payload
+    deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload<string[]>>({
+      async queryFn (args, _queryApi, _extraOptions, baseQuery) {
+        const { params, payload, enableRbac = false } = args
+
+        if (enableRbac) {
+          const requests = args.payload!.map(policyId => ({ params: { policyId } }))
+          return batchApi(
+            AaaUrls.deleteAAAPolicy, requests, baseQuery, GetApiVersionHeader(ApiVersionEnum.v1_1)
+          )
+        } else {
+          return baseQuery({
+            ...createHttpRequest(AaaUrls.deleteAAAPolicyList, params),
+            body: payload
+          })
         }
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicyViewModelList, params)
+      async queryFn (queryArgs, _queryApi, _extraOptions, baseQuery) {
+        const resolvedFetchArgs = createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.getAAAPolicyViewModelList,
+          rbacApiInfo: AaaUrls.queryAAAPolicyList,
+          rbacApiVersionKey: ApiVersionEnum.v1,
+          queryArgs
+        })
+
+        const result = await baseQuery(resolvedFetchArgs)
+
+        if (result.error) return { error: result.error as FetchBaseQueryError }
+
         return {
-          ...req,
-          body: payload
+          data: queryArgs.enableRbac
+            // eslint-disable-next-line max-len
+            ? convertRbacDataToAAAViewModelPolicyList(result.data as TableResult<AAARbacViewModalType>)
+            : result.data as TableResult<AAAViewModalType>
         }
       },
       providesTags: [{ type: 'AAA', id: 'LIST' }],
@@ -860,43 +846,26 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(AaaUrls.getAAAPolicy, params)
+      query: ({ params, enableRbac }) => {
         return {
-          ...req
+          ...createHttpRequest(
+            AaaUrls.getAAAPolicy,
+            params,
+            GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+          )
         }
       },
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
-    updateAAAPolicy: build.mutation<AAAPolicyType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AaaUrls.updateAAAPolicy, params)
-        return {
-          ...req,
-          body: payload
-        }
+    updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
+      query: (queryArgs) => {
+        return createFetchArgsBasedOnRbac({
+          apiInfo: AaaUrls.updateAAAPolicy,
+          rbacApiVersionKey: ApiVersionEnum.v1_1,
+          queryArgs
+        })
       },
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
-    }),
-    aaaNetworkInstances: build.query<TableResult<AAAPolicyNetwork>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const instancesRes = createHttpRequest(AaaUrls.getAAANetworkInstances, params)
-        return {
-          ...instancesRes,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'AAA', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
-    getAAAProfileDetail: build.query<AAAPolicyType | undefined, RequestPayload>({
-      query: ({ params }) => {
-        const aaaDetailReq = createHttpRequest(AaaUrls.getAAAPolicy, params)
-        return {
-          ...aaaDetailReq
-        }
-      },
-      providesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({
       query: ({ params }) => {
@@ -1182,6 +1151,28 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return {
           ...req,
           body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    updateAdaptivePolicySetToMacList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(MacRegListUrlsInfo.updateAdaptivePolicySet, params, headers)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
+    }),
+    deleteAdaptivePolicySetFromMacList: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, customHeaders }) => {
+        const headers = { ...defaultMacListVersioningHeaders, ...customHeaders }
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(MacRegListUrlsInfo.deleteAdaptivePolicySet, params, headers)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
@@ -2890,6 +2881,8 @@ export const {
   useUpdateMacRegistrationMutation,
   useAddMacRegListMutation,
   useUpdateMacRegListMutation,
+  useUpdateAdaptivePolicySetToMacListMutation,
+  useDeleteAdaptivePolicySetFromMacListMutation,
   useAvcCategoryListQuery,
   useAvcAppListQuery,
   useAddRoguePolicyMutation,
@@ -2942,8 +2935,6 @@ export const {
   useUpdateAAAPolicyMutation,
   useAaaPolicyQuery,
   useLazyAaaPolicyQuery,
-  useAaaNetworkInstancesQuery,
-  useGetAAAProfileDetailQuery,
   useAddVLANPoolPolicyMutation,
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,

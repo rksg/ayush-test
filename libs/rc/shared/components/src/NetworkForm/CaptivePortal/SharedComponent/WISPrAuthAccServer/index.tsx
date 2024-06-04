@@ -13,6 +13,7 @@ import { useParams }                 from 'react-router-dom'
 
 import { Subtitle, Tooltip, PasswordInput }   from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { AaaServerOrderEnum, AuthRadiusEnum } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../../../policies/AAAForm/aaaPolicyQuerySwitcher'
@@ -53,6 +54,8 @@ export function WISPrAuthAccServer (props : {
     useWatch('authRadiusId'),
     useWatch('accountingRadius')
   ]
+
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const onAccountingServiceChange = (enabled: boolean) => {
     if(!enabled){
@@ -108,7 +111,7 @@ export function WISPrAuthAccServer (props : {
 
   useEffect(() => {
     if (selectedAuthProfileId) {
-      getAaaPolicy({ params: { ...params, policyId: selectedAuthProfileId } })
+      getAaaPolicy({ params: { ...params, policyId: selectedAuthProfileId }, enableRbac })
         .unwrap()
         .then((data) => form.setFieldValue('authRadius', data))
     } else {

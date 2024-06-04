@@ -1,42 +1,30 @@
 export const aaaServerNetworkList = {
-  fields: [
-    'networkId',
-    'networkName'
-  ],
-  totalCount: 4,
+  fields: ['name', 'id', 'nwSubType', 'captiveType'],
+  totalCount: 3,
   page: 1,
   data: [
     {
-      id: 1,
-      networkId: '6',
-      networkName: 'Network A',
-      networkType: 'OPEN'
+      name: 'NotOnlyAAA',
+      id: 'b0f7392bf29b42ec8a42f6ac70bfd960',
+      nwSubType: 'aaa'
     },
     {
-      id: 2,
-      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
-      networkName: 'Network B',
-      networkType: 'GUEST',
-      guestNetworkType: 'WISPr'
+      name: 'capTemp - copy',
+      id: '2e69f425bbf84272a8e7b1be1c097a22',
+      nwSubType: 'guest',
+      captiveType: 'Cloudpath'
     },
     {
-      id: 3,
-      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
-      networkName: 'Network C',
-      networkType: 'AAA'
-    },
-    {
-      id: 4,
-      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
-      networkName: 'Network E',
-      networkType: 'GUEST',
-      guestNetworkType: 'Cloudpath'
+      name: '000Jacky11',
+      id: 'fda58a3106b34eaf9caad5320dfeab21',
+      nwSubType: 'guest',
+      captiveType: 'WISPr'
     }
   ]
 }
+
 export const aaaServerDetail = {
   id: 1,
-  networkIds: [] as string[],
   name: 'test',
   type: 'AUTHENTICATION',
   primary: {
@@ -48,6 +36,48 @@ export const aaaServerDetail = {
     ip: '2.2.2.2',
     port: 102,
     sharedSecret: 'xxxxxxxx'
-  },
-  tags: ['123','345']
+  }
 }
+
+export const mockAAAPolicyViewModelListResponse = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      name: 'Auth',
+      type: 'AUTHENTICATION',
+      primary: '11.11.11.1:1812',
+      id: '1',
+      networkIds: []
+    },
+    {
+      name: 'Acct',
+      type: 'ACCOUNTING',
+      primary: '12.12.12.1:1011',
+      secondary: '12.12.12.2:1187',
+      id: '2'
+    }
+  ]
+}
+
+export const mockAAAPolicyTemplateListResponse = {
+  page: 1,
+  totalCount: 2,
+  data: [
+    {
+      name: 'AAA-Template1',
+      type: 'AUTHENTICATION',
+      primary: '11.11.11.1:1812',
+      id: '1'
+    },
+    {
+      name: 'AAA-Template2',
+      type: 'ACCOUNTING',
+      primary: '12.12.12.1:1011',
+      secondary: '12.12.12.2:1187',
+      id: '2'
+    }
+  ]
+}
+
+export const mockAAAPolicyTemplateResponse = mockAAAPolicyTemplateListResponse.data[1]
