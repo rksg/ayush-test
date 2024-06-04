@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { SummaryCard }       from '@acx-ui/components'
-import { useAaaPolicyQuery } from '@acx-ui/rc/services'
+import { SummaryCard }            from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useAaaPolicyQuery }      from '@acx-ui/rc/services'
 import { IdentityProviderViewModel,
   PolicyOperation,
   PolicyType,
@@ -14,15 +15,18 @@ export function IdentityProviderOverview (props: { data: IdentityProviderViewMod
   const { $t } = useIntl()
   const { data } = props
   const params = useParams()
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data: authRadiusData } = useAaaPolicyQuery({
-    params: { ...params, policyId: data.authRadiusId }
+    params: { ...params, policyId: data.authRadiusId },
+    enableRbac: enableServicePolicyRbac
   }, {
     skip: !data?.authRadiusId
   })
 
   const { data: accountingRadiusData } = useAaaPolicyQuery({
-    params: { ...params, policyId: data.accountingRadiusId }
+    params: { ...params, policyId: data.accountingRadiusId },
+    enableRbac: enableServicePolicyRbac
   }, {
     skip: !data?.accountingRadiusId
   })

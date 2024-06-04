@@ -494,6 +494,7 @@ export interface SwitchPortViewModel extends GridDataRow {
   SwitchPortStackingPortField: boolean;
   mediaType?: string;
   portnumber?: string;
+  portNumber?: string;
   usedInUplink?: boolean;
   id?: string;
   venueId: string;
@@ -517,6 +518,8 @@ export interface SwitchSlot {
     type: string
     status: string
   }
+  portNumber?: number;
+  portTagged?: string;
 }
 
 export interface SwitchPortModuleInfo {
@@ -628,6 +631,7 @@ export interface VePortRouted {
 export interface SwitchDefaultVlan {
   defaultVlanId: number
   switchId: string
+  vlanList: SwitchVlans[]
 }
 
 

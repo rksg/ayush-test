@@ -29,6 +29,7 @@ export {
   networkDisplayTransformer,
   isEqualCaptivePortal
 } from './ConnectedClientsTable'
+export { DefaultVlanDrawer } from './DefaultVlanDrawer'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
@@ -231,6 +232,7 @@ export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
+export * from './RadioSettings/RadioSettingsUtils'
 export * from './SimpleListTooltip'
 export * from './VlanSettingDrawer'
 export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -245,3 +247,6 @@ export * from './SwitchBlinkLEDsDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
 export * from './SwitchCliProfileForm'
 export * from './SwitchCliTemplateForm'
+export {
+  useRwgActions
+} from './useRwgActions'
