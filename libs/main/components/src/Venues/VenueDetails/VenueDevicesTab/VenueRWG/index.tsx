@@ -1,14 +1,12 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                          from '@acx-ui/components'
+import { ColumnType, Loader, Table, TableProps }                                                                              from '@acx-ui/components'
 import { useRwgActions }                                                                                                      from '@acx-ui/rc/components'
 import { useGetVenuesQuery, useRwgListQuery }                                                                                 from '@acx-ui/rc/services'
 import { defaultSort, FILTER, getRwgStatus, RWGRow, SEARCH, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                                                 from '@acx-ui/react-router-dom'
+import { TenantLink, useNavigate, useParams, useTenantLink }                                                                  from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                                                                                          from '@acx-ui/user'
-import { TABLE_DEFAULT_PAGE_SIZE }                                                                                            from '@acx-ui/utils'
-
 
 
 function useColumns (
@@ -82,23 +80,6 @@ function useColumns (
       }
     },
     {
-      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      dataIndex: 'venueName',
-      key: 'venueName',
-      filterMultiple: false,
-      filterValueNullable: true,
-      filterKey: 'venueName',
-      filterable: filterables ? filterables['venueName'] : false,
-      sorter: { compare: sortProp('venueName', defaultSort) },
-      render: function (_, row) {
-        return !row.isCluster ? (
-          <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
-            {row.venueName}
-          </TenantLink>
-        ) : <></>
-      }
-    },
-    {
       title: $t({ defaultMessage: 'FQDN / IP' }),
       dataIndex: 'hostname',
       key: 'hostname',
@@ -113,10 +94,10 @@ function useColumns (
   return columns
 }
 
-export function RWGTable () {
+export function VenueRWG () {
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const { tenantId } = useParams()
+  const { tenantId, venueId } = useParams()
   const rwgActions = useRwgActions()
 
   const rwgPayload = {
@@ -158,11 +139,16 @@ export function RWGTable () {
       }
     }) })
 
+  const basePath = useTenantLink(`/ruckus-wan-gateway/${venueId}/`)
+
   const rowActions: TableProps<RWGRow>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1 && !selectedRows[0].isCluster,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
-      navigate(`${selectedRows[0].venueId}/${selectedRows[0].rwgId}/edit`, { replace: false })
+      navigate({ ...basePath,
+        pathname: `${basePath.pathname}/${selectedRows[0].rwgId}/edit`
+      },
+      { replace: false })
     }
   },
   {
@@ -195,34 +181,21 @@ export function RWGTable () {
 
 
   return (
-    <>
-      <PageHeader
-        title={$t({ defaultMessage: 'RUCKUS WAN Gateway' })}
-        extra={filterByAccess([
-          <TenantLink to='/ruckus-wan-gateway/add'>
-            <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>
-          </TenantLink>
-        ])}
+    <Loader states={[
+      tableQuery
+    ]}>
+      <Table
+        settingsId='rgw-table'
+        columns={columns}
+        dataSource={tableQuery?.data?.data}
+        pagination={{
+          pageSize: tableQuery?.data?.page || 0
+        }}
+        onFilterChange={handleFilterChange}
+        rowKey='rowId'
+        rowActions={filterByAccess(rowActions)}
+        rowSelection={hasAccess() && { ...rowSelection() }}
       />
-      <Loader states={[
-        tableQuery
-      ]}>
-        <Table
-          settingsId='rgw-table'
-          columns={columns}
-          dataSource={tableQuery?.data?.data}
-          pagination={{
-            defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
-            pageSize: tableQuery?.data?.page,
-            showSizeChanger: false,
-            showQuickJumper: false
-          }}
-          onFilterChange={handleFilterChange}
-          rowKey='rowId'
-          rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { ...rowSelection() }}
-        />
-      </Loader>
-    </>
+    </Loader>
   )
 }
