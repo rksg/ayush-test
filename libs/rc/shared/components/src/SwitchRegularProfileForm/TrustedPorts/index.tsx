@@ -82,6 +82,7 @@ export function TrustedPorts () {
     form.setFieldValue('trustedPorts', trustedPortModels)
     form.setFieldValue('manualAddedTrustedPorts', trustedPortModels.filter(
       tpItem => !currentData.vlans.some(item =>
+        (item.ipv4DhcpSnooping || item.arpInspection) &&
         item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))) as TrustedPort[])
     setRuleList(trustedPortModels as TrustedPort[])
   }, [currentData, form])
