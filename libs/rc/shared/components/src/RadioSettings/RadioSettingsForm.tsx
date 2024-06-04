@@ -108,8 +108,9 @@ export function RadioSettingsForm (props:{
   }, [] )
 
   useEffect(()=> {
-    if(LPIButtonText?.LPIModeState !== enableAfc) {
-      LPIButtonText?.LPIModeOnChange(enableAfc)
+    const transformedEnableAfc = enableAfc ?? false
+    if(LPIButtonText?.LPIModeState !== transformedEnableAfc) {
+      LPIButtonText?.LPIModeOnChange(transformedEnableAfc)
     }
   }, [enableAfc])
 
@@ -133,16 +134,16 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
-  const AFCEnableValidation = () => {
+  const AFCEnableValidation = (ignoreFloorValidation: boolean) => {
     return [
       (AFC_Featureflag),
       (ApRadioTypeEnum.Radio6G === radioType),
       (context === 'ap'),
-      (enableAfc),
-      (
+      (enableAfc ?? true),
+      ((
         (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined) ||
         (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined)
-      )
+      ) || ignoreFloorValidation)
     ].every(Boolean)
   }
 
@@ -168,7 +169,7 @@ export function RadioSettingsForm (props:{
             initialValue={true}
             rules={[
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              { validator: (_, value) => AFCEnableValidation() ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
+              { validator: (_, value) => AFCEnableValidation(true) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
               LPIButtonText?.buttonText :
@@ -183,9 +184,7 @@ export function RadioSettingsForm (props:{
         </FieldLabel>
       }
       {
-        (AFC_Featureflag) &&
-        (ApRadioTypeEnum.Radio6G === radioType) &&
-        (enableAfc) && (
+        AFCEnableValidation(true) && (
           <Alert
             type='info'
             message={<>
@@ -204,7 +203,7 @@ export function RadioSettingsForm (props:{
         )
       }
       {
-        AFCEnableValidation() && (
+        AFCEnableValidation(false) && (
           <Alert
             type='error'
             message={<>
