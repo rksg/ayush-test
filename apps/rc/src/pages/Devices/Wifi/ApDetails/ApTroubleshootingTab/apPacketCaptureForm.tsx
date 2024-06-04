@@ -6,6 +6,7 @@ import _                                           from 'lodash'
 import { useIntl }                                 from 'react-intl'
 
 import { Button, Loader, showToast, showActionModal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
   useGetApCapabilitiesQuery,
   useGetApLanPortsQuery,
@@ -31,13 +32,17 @@ export enum CaptureInterfaceEnumExtended {
 
 export function ApPacketCaptureForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useApContext()
+  const { tenantId, serialNumber, venueId } = useApContext()
   const [packetCaptureForm] = Form.useForm()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [startPacketCapture] = useStartPacketCaptureMutation()
   const [stopPacketCapture] = useStopPacketCaptureMutation()
   const packetCaptureState = useGetPacketCaptureStateQuery({ params: { tenantId, serialNumber } })
-  const getAp = useGetApQuery({ params: { tenantId, serialNumber } })
+  const getAp = useGetApQuery({
+    params: { tenantId, serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi
+  })
   const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
   const getApLanPorts = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
   const getApRadioCustomization =
