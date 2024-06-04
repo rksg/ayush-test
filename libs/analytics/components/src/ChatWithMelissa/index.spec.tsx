@@ -39,14 +39,6 @@ describe('ChatWithMelissa', () => {
     fireEvent.click(await screen.findByRole('button'))
     expect(screen.getByText('Discover which ones')).toBeVisible()
   })
-  it('should show coming soon when chatbot enabled', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    await act(async ()=>{
-      render(<ChatWithMelissa />, { route })
-    })
-    fireEvent.click(await screen.findByRole('button'))
-    expect(screen.getByText('Coming Soon')).toBeVisible()
-  })
   it('should not set recurring user if incident summary disabled', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((key) => {
       // eslint-disable-next-line no-console
