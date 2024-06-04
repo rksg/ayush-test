@@ -258,6 +258,8 @@ export function ConfigurationProfileForm () {
             )
           ]
         }
+      } else if(!ipv4DhcpSnooping && !arpInspection) {
+        data.trustedPorts = []
       } else {
         data.trustedPorts = []
       }
