@@ -89,6 +89,15 @@ export const SwitchMessages = {
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
     defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
   }),
+  NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
+  }),
+  STACKING_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a stacking port and can not be configured'
+  }),
+  LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a LAG member port and can not be configured'
+  }),
   PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI: defineMessage({
     defaultMessage: 'Please check the invalid field values under the settings tab and modify it via CLI'
   }),
@@ -255,6 +264,28 @@ export const MultipleEditPortMessages = {
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
   })
 }
+
+export const PortStatusMessages = {
+  SET_AS_TAGGED: defineMessage({
+    defaultMessage: 'Port set as tagged'
+  }),
+  SET_AS_UNTAGGED: defineMessage({
+    defaultMessage: 'Port set as untagged'
+  }),
+  USED_BY_LAG: defineMessage({
+    defaultMessage: 'Port is member of LAG – {lagName}'
+  }),
+  USED_UNTAGGED_VLAN: defineMessage({
+    defaultMessage: 'Port is already an untagged member of VLAN {vlanId}'
+  }),
+  USED_BY_OTHERS: defineMessage({
+    defaultMessage: 'Port used by other VLAN setting'
+  }),
+  CURRENT: defineMessage({
+    defaultMessage: 'VLANs'
+  })
+}
+
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {
