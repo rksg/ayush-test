@@ -153,7 +153,8 @@ export function MacRegistrationsTab () {
           payload: { revoked: false },
           customHeaders
         }).then(clearSelection)
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   }]
 
   const columns: TableProps<MacRegistration>['columns'] = [
