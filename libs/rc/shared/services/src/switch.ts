@@ -425,7 +425,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     deleteCliTemplates: build.mutation<SwitchCliTemplateModel, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.deleteCliTemplates, params, headers)
         return {
