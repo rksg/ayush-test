@@ -199,6 +199,9 @@ describe('Layout', () => {
     services.useGetGlobalValuesQuery = jest.fn().mockImplementation(() => {
       return { data: {} }
     })
+    services.useGetBrandingDataQuery = jest.fn().mockImplementation(() => {
+      return { data: { msp_label: '', name: '' } }
+    })
 
     mockServer.use(
       rest.get(
