@@ -128,7 +128,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
       label: $t({ defaultMessage: 'Status' }),
       children: $t(statusTrailMsgs[status])
     },
-    (!isRrm && isFlexAI && {
+    (isFlexAI && {
       label: $t({ defaultMessage: 'Networks' }),
       children: $t({ defaultMessage: '{count} networks selected' }, { count: wlans?.length ?? 0 }),
       popover: wlans?.map(wlan => wlan.name).join('\n')
