@@ -27,7 +27,6 @@ import { hasRoles }                                 from '@acx-ui/user'
 
 export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
-  const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -83,7 +82,7 @@ export default function AnalyticsRoutes () {
             </Route>
           </Route>
         </Route>
-        {isVideoCallQoeEnabled && <Route path='analytics/videoCallQoe/*' >
+        {<Route path='analytics/videoCallQoe/*' >
           <Route index
             element={<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />} />
           <Route path=':testId' element={<VideoCallQoeDetails/>} />

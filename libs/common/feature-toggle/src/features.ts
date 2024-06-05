@@ -122,7 +122,6 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
   VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
-  VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_DYNAMIC_VLAN_TOGGLE = 'wifi-dynamic-vlan-toggle',

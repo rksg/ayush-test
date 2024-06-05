@@ -41,7 +41,6 @@ export function useMenuConfig () {
   const tenantID = useTenantId()
   const { data: userProfileData } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
-  const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
@@ -106,7 +105,7 @@ export function useMenuConfig () {
               uri: '/analytics/configChange',
               label: $t({ defaultMessage: 'Config Change' })
             }] : []),
-            ...(isAnltAdvTier && showVideoCallQoe ? [{
+            ...(isAnltAdvTier ? [{
               uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
