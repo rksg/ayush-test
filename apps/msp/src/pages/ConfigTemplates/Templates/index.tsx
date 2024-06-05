@@ -52,9 +52,10 @@ import {
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import { AppliedToTenantDrawer }   from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }     from './ApplyTemplateDrawer'
-import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }      from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }        from './ApplyTemplateDrawer'
+import { getConfigTemplateTypeLabel } from './templateUtils'
+import { useAddTemplateMenuProps }    from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -155,7 +156,7 @@ export function ConfigTemplateList () {
       {applyTemplateDrawerVisible &&
       <ApplyTemplateDrawer
         setVisible={setApplyTemplateDrawerVisible}
-        selectedTemplates={selectedTemplates}
+        selectedTemplate={selectedTemplates[0]}
       />}
       {appliedToTenantDrawerVisible &&
       <AppliedToTenantDrawer
@@ -187,7 +188,7 @@ function useColumns (props: TemplateColumnProps) {
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
   const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
-    ({ key: type[1], value: type[0] })
+    ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
   ))
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
@@ -223,7 +224,10 @@ function useColumns (props: TemplateColumnProps) {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
       filterable: typeFilterOptions,
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        return getConfigTemplateTypeLabel(row.type)
+      }
     },
     {
       key: 'appliedOnTenants',

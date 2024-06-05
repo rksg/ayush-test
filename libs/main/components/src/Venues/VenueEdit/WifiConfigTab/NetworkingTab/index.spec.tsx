@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import { venueApi }                                                           from '@acx-ui/rc/services'
 import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                    from '@acx-ui/store'
@@ -120,7 +119,6 @@ describe('NetworkingTab', () => {
   })
 
   it('should show Directed Multicast if feature flag is On', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => screen.findByText('AP Model'))
@@ -132,7 +130,6 @@ describe('NetworkingTab', () => {
   })
 
   it('should show Radius Options if feature flag is On', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<Provider><NetworkingTab /></Provider>, { route: { params } })
     await waitForElementToBeRemoved(() => screen.queryAllByLabelText('loader'))
     await waitFor(() => expect(mockGetApsList).toBeCalled())

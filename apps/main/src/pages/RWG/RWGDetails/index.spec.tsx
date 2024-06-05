@@ -72,6 +72,7 @@ describe('RWGDetails', () => {
     expect(screen.getAllByRole('tab')).toHaveLength(1)
 
     await fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+    await fireEvent.click(screen.getByRole('menuitem', { name: 'Configure RWG' }))
 
     await expect(window.open).toBeCalledTimes(1)
 

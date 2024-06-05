@@ -575,6 +575,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/rwgs/query',
     newApi: true
   },
+  getRwgListByVenueId: {
+    method: 'post',
+    url: '/venues/:venueId/rwgs/query',
+    newApi: true
+  },
   getGatewayDashboard: {
     method: 'get',
     url: '/venues/:venueId/rwgs/:gatewayId/dashboards',
