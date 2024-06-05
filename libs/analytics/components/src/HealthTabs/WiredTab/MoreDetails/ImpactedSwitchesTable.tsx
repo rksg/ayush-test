@@ -105,7 +105,9 @@ export const ImpactedSwitchesTable = ({
       dataIndex: metricField,
       key: metricField,
       sorter: { compare: sortProp(metricField, defaultSort) },
-      render: (value) => { return formatter('countFormat')(value) }
+      render: (value) => {
+        return <div style={{ textAlign: 'right' }}>{formatter('countFormat')(value)}</div>
+      }
     }
   ]
 
