@@ -143,12 +143,20 @@ export function RadioSettingsForm (props:{
   const AFCEnableValidation = (ignoreFloorValidation: boolean) => {
     const { maxFloor, minFloor } = venueRadio?.radioParams6G?.venueHeight || {}
 
-    return [
-      (showAfcItems),
-      (context === 'ap'),
-      (enableAfc),
-      ((maxFloor === undefined || minFloor === undefined) || ignoreFloorValidation)
-    ].every(Boolean)
+    if (ignoreFloorValidation) {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc)
+      ].every(Boolean)
+    } else {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc),
+        (maxFloor === undefined || minFloor === undefined)
+      ].every(Boolean)
+    }
   }
 
 
@@ -175,7 +183,7 @@ export function RadioSettingsForm (props:{
             initialValue={false}
             rules={[
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              { validator: (_, value) => AFCEnableValidation(true) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
+              { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
               LPIButtonText?.buttonText :
@@ -190,7 +198,7 @@ export function RadioSettingsForm (props:{
         </FieldLabel>
       }
       {
-        AFCEnableValidation(false) && (
+        AFCEnableValidation(true) && (
           <Alert
             type='info'
             message={<>
@@ -209,7 +217,7 @@ export function RadioSettingsForm (props:{
         )
       }
       {
-        AFCEnableValidation(true) && (
+        AFCEnableValidation(false) && (
           <Alert
             type='error'
             message={<>
