@@ -432,6 +432,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     //   dataIndex: ['apStatusData','afcInfo','powerMode'],
     //   show: false,
     //   sorter: false,
+    //   width: 200,
     //   render: (data: ReactNode, row: NewAPModelExtended) => {
     //     return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
     //   }
@@ -442,6 +443,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     //   dataIndex: ['apStatusData','afcInfo','powerMode'],
     //   show: false,
     //   sorter: false,
+    //   width: 200,
     //   render: (data: ReactNode, row: NewAPModelExtended) => {
     //     const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
     //     return (
@@ -461,7 +463,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     ...(enableApCompatibleCheck ? [{
       key: 'incompatible',
       tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
-      title: $t({ defaultMessage: 'Feature Incompatibility' }),
+      title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
       filterValueArray: true,
       dataIndex: 'incompatible',

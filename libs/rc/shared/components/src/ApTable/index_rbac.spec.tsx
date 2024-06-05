@@ -116,7 +116,7 @@ describe('Aps', () => {
       expect(await within(rows[Number(index)]).findByText(item.name)).toBeVisible()
     }
     await userEvent.click(screen.getByTestId('SettingsOutlined'))
-    await userEvent.click(await screen.findByText('Feature Incompatibility'))
+    await userEvent.click(await screen.findByText('Feature Compatibility'))
     expect(await screen.findByText('Fully compatible')).toBeVisible()
     expect(await screen.findByText('Partially incompatible')).toBeVisible()
   })
