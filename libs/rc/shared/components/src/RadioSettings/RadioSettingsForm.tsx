@@ -164,7 +164,7 @@ export function RadioSettingsForm (props:{
             style={{ width: '50px' }}
             name={enableAfcFieldName}
             valuePropName={'checked'}
-            initialValue={true}
+            initialValue={false}
             rules={[
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
               { validator: (_, value) => AFCEnableValidation(true) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
