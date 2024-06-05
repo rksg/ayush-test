@@ -47,13 +47,13 @@ export function LowPowerBannerAndModal (props: {
       messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
 
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        messageList.push($t({ defaultMessage: '(Geo Location not set)' }))
+        messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        messageList.push($t({ defaultMessage: '(No channels available)' }))
+        messageList.push($t({ defaultMessage: '(Rejected by FCC DB due to no available channels)' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        messageList.push($t({ defaultMessage: '(Pending response from the AFC server)' }))
+        messageList.push($t({ defaultMessage: '(Wait for AFC server response)' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.PASSED) {
         messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))

@@ -17,12 +17,12 @@ import {
   showToast,
   showActionModal
 } from '@acx-ui/components'
-import { get }                                from '@acx-ui/config'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
-import { TenantLink, useParams }              from '@acx-ui/react-router-dom'
-import { filterByAccess, hasPermission }      from '@acx-ui/user'
-import { getIntl, noDataDisplay, PathFilter } from '@acx-ui/utils'
+import { get }                                                       from '@acx-ui/config'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
+import { TenantLink, useParams }                                     from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import { getIntl, noDataDisplay, PathFilter }                        from '@acx-ui/utils'
 
 import { getParamString } from '../AIDrivenRRM/extra'
 
@@ -250,7 +250,7 @@ export function RecommendationTable (
         .map((action, i) => {
           return {
             label: action.icon as unknown as string,
-            key: i as unknown as string,
+            key: getShowWithoutRbacCheckKey(String(i)),
             onClick: () => {},
             disabled: false
           }

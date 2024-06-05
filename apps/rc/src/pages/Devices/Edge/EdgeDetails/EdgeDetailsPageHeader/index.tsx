@@ -21,9 +21,9 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes, SwitchScopes } from '@acx-ui/types'
-import { filterByAccess, hasPermission }        from '@acx-ui/user'
-import { useDateFilter }                        from '@acx-ui/utils'
+import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useDateFilter }                 from '@acx-ui/utils'
 
 import { HaStatusBadge } from '../../HaStatusBadge'
 
@@ -89,7 +89,7 @@ export const EdgeDetailsPageHeader = () => {
       showupstatus: [...Object.values(EdgeStatusEnum)]
     }
   ] as {
-    scopeKey: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopeKey: ScopeKeys,
     label: string,
     key: string,
     showupstatus?: EdgeStatusEnum[]
