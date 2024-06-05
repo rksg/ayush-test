@@ -583,7 +583,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchUplinkPortUtilization',
-      splits: [0, 20, 40, 60, 80, 100],
+      splits: [20, 40, 60, 80, 100],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -613,7 +613,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchPortUtilization',
-      splits: [0, 20, 40, 60, 80, 100],
+      splits: [20, 40, 60, 80, 100],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -657,12 +657,12 @@ export const kpiConfig = {
     },
     histogram: {
       highlightAbove: false,
-      initialThreshold: 80,
+      initialThreshold: 2000,
       apiMetric: 'switchPortStormCount',
-      splits: [0, 20, 40, 60, 80, 100],
-      xUnit: '%',
+      splits: [1000, 2000, 3000, 4000, 5000, 6000],
+      xUnit: defineMessage({ defaultMessage: 'packets/sec' }),
       yUnit: 'Ports',
-      shortXFormat: noFormat,
+      shortXFormat: formatter('countFormatRound'),
       longXFormat: noFormat,
       reFormatFromBarChart: noFormat
     },
@@ -670,10 +670,10 @@ export const kpiConfig = {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports do not experiment Storm' }),
       thresholdDesc: [
         defineMessage({ defaultMessage: 'above' }),
-        defineMessage({ defaultMessage: '{threshold}' })
+        defineMessage({ defaultMessage: '{threshold} Packets' })
       ],
       pillSuffix: pillSuffix.meetGoal,
-      thresholdFormatter: numberWithPercentSymbol,
+      thresholdFormatter: noFormat,
       tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
     }
   }
