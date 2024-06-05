@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { get }                     from '@acx-ui/config'
-import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
-import { render, renderHook, screen }          from '@acx-ui/test-utils'
+import { get }                        from '@acx-ui/config'
+import { BrowserRouter as Router }    from '@acx-ui/react-router-dom'
+import { render, renderHook, screen } from '@acx-ui/test-utils'
 import {
   ScopeKeys,
   RolesEnum,
