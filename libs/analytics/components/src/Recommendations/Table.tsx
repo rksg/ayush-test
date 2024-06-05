@@ -248,10 +248,11 @@ export function RecommendationTable (
         true
       )
         .filter(action => !action.icon.props.disabled)
-        .map((action) => {
+        .map((action, i) => {
           return {
             scopeKey: [WifiScopes.UPDATE],
             label: action.icon as unknown as string,
+            key: i as unknown as string,
             onClick: () => {},
             disabled: false
           }
