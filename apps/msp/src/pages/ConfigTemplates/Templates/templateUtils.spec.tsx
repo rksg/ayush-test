@@ -1,9 +1,10 @@
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { ConfigTemplateType }     from '@acx-ui/rc/utils'
 import { renderHook }             from '@acx-ui/test-utils'
 import { hasRoles }               from '@acx-ui/user'
 import { isDelegationMode }       from '@acx-ui/utils'
 
-import { useEcFilters } from './templateUtils'
+import { getConfigTemplateTypeLabel, useEcFilters } from './templateUtils'
 
 const userProfileContextMockValues = {
   region: '[NA, EU, ASIA]',
@@ -92,6 +93,25 @@ describe('TemplateUtils', () => {
     expect(result.current).toEqual({
       mspAdmins: [userProfileContextMockValues.adminId],
       tenantType: ['MSP_EC']
+    })
+  })
+
+  describe('getConfigTemplateTypeLabel', () => {
+    it('should return the policy type label if it exists', () => {
+      expect(getConfigTemplateTypeLabel(ConfigTemplateType.RADIUS)).toBe('RADIUS Server')
+    })
+
+    it('should return the service type label if it exists', () => {
+      expect(getConfigTemplateTypeLabel(ConfigTemplateType.DPSK)).toBe('DPSK')
+    })
+
+    // eslint-disable-next-line max-len
+    it('should return the default label if policy and service types do not exist but rest type label exists', () => {
+      expect(getConfigTemplateTypeLabel(ConfigTemplateType.AP_GROUP)).toBe('AP Group')
+    })
+
+    it('should return the configTemplateType if no mappings exist', () => {
+      expect(getConfigTemplateTypeLabel('UNKNOWN_TYPE' as ConfigTemplateType)).toBe('UNKNOWN_TYPE')
     })
   })
 })

@@ -4,7 +4,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, TierFeatures, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import {
   useDeletePersonasMutation,
@@ -21,6 +21,7 @@ import { exportMessageMapping }                                        from '@ac
 
 import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
+import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
 import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
 import { PersonaDrawer }                                            from '../PersonaDrawer'
 import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
@@ -37,7 +38,7 @@ function useColumns (
   venueId: string
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
