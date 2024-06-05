@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
+import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
@@ -190,8 +190,4 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
   [Role.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' }),
   [Role.TEMPLATES_ADMIN]: defineMessage({ defaultMessage: 'Templates Management' }),
   [Role.REPORTS_ADMIN]: defineMessage({ defaultMessage: 'Reports Admin' })
-}
-
-export function getRoleString (role: string, { $t }: IntlShape): string {
-  return roleStringMap[role as Role] ? $t(roleStringMap[role as Role]) : ''
 }
