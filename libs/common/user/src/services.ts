@@ -53,16 +53,14 @@ export const UserUrlsInfo = {
   getAllUserSettings: {
     method: 'get',
     url: '/admins/settings/ui',
-    // url: '/admins/admins-settings/ui',
-    oldUrl: '/api/tenant/:tenantId/admin-settings/ui',
+    oldUrl: '/admins/admins-settings/ui',
     newApi: true
   },
   saveUserSettings: {
     // method: 'put',
     method: 'PATCH',
     url: '/admins/settings/ui/:productKey',
-    // url: '/admins/admins-settings/ui/:productKey',
-    oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
+    oldUrl: '/admins/admins-settings/ui/:productKey',
     newApi: true
   },
   wifiAllowedOperations: {
@@ -166,7 +164,6 @@ export const UserRbacUrlsInfo = {
   getAccountTier: {
     method: 'get',
     url: '/tenants/self/query?accountTier',
-    // url: '/tenants/accountTier',
     oldUrl: '/tenants/accountTier',
     newApi: true
   },
@@ -184,8 +181,7 @@ export const UserRbacUrlsInfo = {
   // },
   getBetaStatus: {
     method: 'get',
-    // url: '/tenants/self/query',
-    url: '/tenants/betaStatus',
+    url: '/tenants/self/query?betaStatus',
     oldUrl: '/tenants/betaStatus',
     newApi: true
   },
