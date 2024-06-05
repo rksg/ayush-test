@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   PersonaUrls,
   MacRegListUrlsInfo,
@@ -96,6 +96,7 @@ const mockNsgSwitchInfoData: {
 }
 
 // To enable NSG PLM FF and allow to call api
+jest.mocked(useIsSplitOn).mockReturnValue(true)
 jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
 describe.skip('Persona Group Table', () => {
