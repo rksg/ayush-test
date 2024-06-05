@@ -108,12 +108,15 @@ export function RadioSettingsForm (props:{
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
+
+    if (props?.isAFCEnabled === false) {
+      form.setFieldValue(enableAfcFieldName, false)
+    }
   }, [] )
 
   useEffect(()=> {
-    const transformedEnableAfc = enableAfc ?? false
-    if(LPIButtonText?.LPIModeState !== transformedEnableAfc) {
-      LPIButtonText?.LPIModeOnChange(transformedEnableAfc)
+    if(LPIButtonText?.LPIModeState !== enableAfc) {
+      LPIButtonText?.LPIModeOnChange(enableAfc)
     }
   }, [enableAfc])
 
@@ -153,13 +156,18 @@ export function RadioSettingsForm (props:{
   return (
     <>
       { showAfcItems &&
-        // No need to bring enableAfc property when AP is outdoor ap and AFC is no enabled.
-        // Also no need to show on the page.
-        !(LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false) &&
-        <FieldLabel width='150px'
+        <FieldLabel width='180px'
         // Hide the label when afcEnable is false or ap is outdoor under ap context
-          style={(context === 'ap') ? { display: 'none' } : undefined}>
-          {$t({ defaultMessage: 'Enable AFC:' })}
+          style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props?.isAFCEnabled === false)) ?
+            { display: 'none' } : { display: 'flex' }}>
+          <div style={{ float: 'left' }}>
+            <p style={{ width: '180px' }}>
+              {context === 'ap' ?
+                $t({ defaultMessage: 'Enable AFC:' }) :
+                $t({ defaultMessage: 'Enable Indoor AFC:' })
+              }
+            </p>
+          </div>
           <Form.Item
             style={{ width: '50px' }}
             name={enableAfcFieldName}
