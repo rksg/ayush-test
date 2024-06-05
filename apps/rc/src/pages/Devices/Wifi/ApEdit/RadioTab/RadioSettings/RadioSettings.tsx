@@ -15,8 +15,8 @@ import {
   Tabs,
   Tooltip,
   showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
-import { SupportRadioChannelsContext, VenueRadioContext }         from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }               from '@acx-ui/feature-toggle'
+import { CorrectRadioChannels, SupportRadioChannelsContext, VenueRadioContext } from '@acx-ui/rc/components'
 import {
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
@@ -514,10 +514,8 @@ export function RadioSettings () {
       }
 
       setData()
-
-      setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
-  }, [apData, getApAvailableChannels, isApDataLoaded, setReadyToScroll, getVenueApModelBandModeSettings, isSupportBandManagementAp, isSupportDual5GAp, apCapabilities?.defaultBandCombination, venueId])
+  }, [apData, getApAvailableChannels, isApDataLoaded, getVenueApModelBandModeSettings, isSupportBandManagementAp, isSupportDual5GAp, apCapabilities?.defaultBandCombination, venueId])
 
   useEffect(() => {
     if (isEmpty(venueData)) {
@@ -596,7 +594,52 @@ export function RadioSettings () {
 
   useEffect(() => {
     if (apRadioSavedData){
-      const apRadioData = cloneDeep(apRadioSavedData)
+
+      const correctApiRadioChannelData = (apiData: ApRadioCustomization) => {
+        const data = cloneDeep(apiData)
+        const { apRadioParams24G, apRadioParams50G, apRadioParams6G, apRadioParamsDual5G } = data
+
+
+        if (apRadioParams24G) {
+          const supportCh24g = supportRadioChannels[ApRadioTypeEnum.Radio24G]
+          data.apRadioParams24G = CorrectRadioChannels(apRadioParams24G, supportCh24g)
+        }
+
+        if (apRadioParams50G) {
+          const supportCh5g = supportRadioChannels[ApRadioTypeEnum.Radio5G]
+          data.apRadioParams50G = CorrectRadioChannels(apRadioParams50G, supportCh5g)
+        }
+
+        if (apRadioParams6G) {
+          const supportCh6g = supportRadioChannels[ApRadioTypeEnum.Radio6G]
+          data.apRadioParams6G = CorrectRadioChannels(apRadioParams6G, supportCh6g)
+        }
+
+        if (apRadioParamsDual5G) {
+          const {
+            enabled,
+            lower5gEnabled,
+            upper5gEnabled,
+            radioParamsLower5G,
+            radioParamsUpper5G
+          } = apRadioParamsDual5G
+
+          if (enabled) {
+            if (lower5gEnabled && radioParamsLower5G) {
+              const supportChLower5g = supportRadioChannels[ApRadioTypeEnum.RadioLower5G]
+              data.apRadioParamsDual5G!.radioParamsLower5G = CorrectRadioChannels(radioParamsLower5G, supportChLower5g)
+            }
+
+            if (upper5gEnabled === false && radioParamsUpper5G) {
+              const supportChUpper5g = supportRadioChannels[ApRadioTypeEnum.RadioUpper5G]
+              data.apRadioParamsDual5G!.radioParamsUpper5G = CorrectRadioChannels(radioParamsUpper5G, supportChUpper5g)
+            }
+          }
+        }
+
+        return data
+      }
+
       const updateRadioFormData = (radioParams: any) => {
         if (!radioParams) {
           return
@@ -607,6 +650,8 @@ export function RadioSettings () {
           radioParams.allowedChannels = [manualChannel.toString()]
         }
       }
+
+      const apRadioData = correctApiRadioChannelData(apRadioSavedData)
 
       const {
         apRadioParams24G,
@@ -638,8 +683,10 @@ export function RadioSettings () {
           bandMode: apRadioParamsDual5G?.enabled ? BandModeEnum.DUAL : BandModeEnum.TRIPLE })
         setIsApBandModeDataInitializing(false)
       }
+
+      setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
-  }, [apRadioSavedData, isSupportBandManagementAp, isSupportDual5GAp])
+  }, [apRadioSavedData, isSupportBandManagementAp, isSupportDual5GAp, setReadyToScroll, supportRadioChannels])
 
   useEffect(() => {
     if (apBandModeSavedData) {
@@ -919,6 +966,10 @@ export function RadioSettings () {
       }
       else {
         delete payload.apRadioParamsDual5G
+      }
+
+      if (!afcProps.isAFCEnabled) {
+        delete payload.apRadioParams6G.enableAfc
       }
 
       if (isSupportBandManagementAp && !isSupportDual5GAp) {

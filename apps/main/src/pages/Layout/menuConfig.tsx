@@ -39,7 +39,7 @@ import { useTenantId }                     from '@acx-ui/utils'
 export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
-  const { data: userProfileData } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
@@ -328,11 +328,15 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Account Management' }),
           children: [
-            {
-              uri: '/administration/accountSettings',
-              label: $t({ defaultMessage: 'Settings' })
-            },
-            ...(isAdministratorAccessible ? [
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/accountSettings',
+                  label: $t({ defaultMessage: 'Settings' })
+                }
+              ] : []
+            ),
+            ...(isAdministratorAccessible && !isCustomRole ? [
               isAbacToggleEnabled ? {
                 uri: '/administration/userPrivileges',
                 label: $t({ defaultMessage: 'Users & Privileges' })
@@ -341,27 +345,35 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Administrators' })
               }
             ] : []),
-            {
-              uri: '/administration/notifications',
-              label: $t({ defaultMessage: 'Notifications' })
-            },
-            {
-              uri: '/administration/subscriptions',
-              label: $t({ defaultMessage: 'Subscriptions' })
-            },
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/notifications',
+                  label: $t({ defaultMessage: 'Notifications' })
+                },
+                {
+                  uri: '/administration/subscriptions',
+                  label: $t({ defaultMessage: 'Subscriptions' })
+                }
+              ] : []
+            ),
             {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
             },
-            {
-              uri: '/administration/webhooks',
-              label: $t({ defaultMessage: 'Webhooks' })
-            },
-            {
-              uri: '/administration/onpremMigration',
-              label: $t({ defaultMessage: 'ZD Migration' })
-            },
-            ...(isRadiusClientEnabled ? [{
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/webhooks',
+                  label: $t({ defaultMessage: 'Webhooks' })
+                },
+                {
+                  uri: '/administration/onpremMigration',
+                  label: $t({ defaultMessage: 'ZD Migration' })
+                }
+              ] : []
+            ),
+            ...(isRadiusClientEnabled && !isCustomRole ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])

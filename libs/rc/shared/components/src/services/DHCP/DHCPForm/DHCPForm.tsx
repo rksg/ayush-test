@@ -9,6 +9,7 @@ import {
   StepsFormLegacyInstance,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                              from '@acx-ui/feature-toggle'
 import { useCreateOrUpdateDhcpTemplateMutation, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useSaveOrUpdateDHCPMutation } from '@acx-ui/rc/services'
 import {
   DHCPSaveData,
@@ -16,7 +17,8 @@ import {
   ServiceOperation, ServiceType,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher, useServiceListBreadcrumb,
-  useServicePreviousPath
+  useServicePreviousPath,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams, useNavigate } from '@acx-ui/react-router-dom'
 
@@ -34,12 +36,15 @@ export function DHCPForm (props: DHCPFormProps) {
   const { editMode = false } = props
   const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
   const navigate = useNavigate()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { isTemplate } = useConfigTemplate()
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
-    skip: !editMode
+    skip: !editMode,
+    enableRbac
   })
 
   // eslint-disable-next-line max-len
@@ -63,15 +68,14 @@ export function DHCPForm (props: DHCPFormProps) {
       convertLeashTimeforBackend(formData)
       const payload = {
         ...formData,
-        dhcpPools: formData.dhcpPools.map((pool)=>{
-          delete pool.allowWired
+        dhcpPools: formData.dhcpPools.map(({ id, allowWired, ...pool })=>{
           return {
             ...pool,
-            id: pool.id.indexOf('_NEW_')!==-1 ? '' : pool.id
+            ...(id.indexOf('_NEW_')!==-1 || (enableRbac && !isTemplate)) ? {} : { id }
           }
         })
       }
-      await saveOrUpdateDHCP({ params, payload }).unwrap()
+      await saveOrUpdateDHCP({ params, payload, enableRbac }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

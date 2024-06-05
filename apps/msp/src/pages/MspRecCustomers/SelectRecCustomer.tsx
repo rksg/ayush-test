@@ -34,6 +34,7 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
   const { visible, setVisible, setSelected, multiSelectionEnabled } = props
   const [resetField, setResetField] = useState(false)
   const [selectedRows, setSelectedRows] = useState<MspRecCustomer[]>([])
+  const MAX_ALLOWED_SELECTED_PROPERTIES = 100
 
   const queryResults = useGetAvailableMspRecCustomersQuery({ params: useParams() })
 
@@ -93,8 +94,15 @@ export const SelectRecCustomerDrawer = (props: SelectRecCustomerDrawerProps) => 
     </Space>
 
   const footer =<div>
+    <div style={{ marginBottom: '18px', color: 'red' }}>
+      {selectedRows.length > MAX_ALLOWED_SELECTED_PROPERTIES &&
+      <label>{$t({ defaultMessage:
+        'Maximum allowed selection is {MAX_ALLOWED_SELECTED_PROPERTIES}' },
+      { MAX_ALLOWED_SELECTED_PROPERTIES })}</label>}
+    </div>
+
     <Button
-      disabled={selectedRows.length === 0}
+      disabled={selectedRows.length === 0 || selectedRows.length > MAX_ALLOWED_SELECTED_PROPERTIES}
       onClick={() => handleSave()}
       type='primary'
     >
