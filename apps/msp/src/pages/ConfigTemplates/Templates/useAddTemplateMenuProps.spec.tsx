@@ -27,7 +27,8 @@ const mockedConfigTemplateVisibilityMap: Record<ConfigTemplateType, boolean> = {
   [ConfigTemplateType.CLIENT_ISOLATION]: false,
   [ConfigTemplateType.ROGUE_AP_DETECTION]: false,
   [ConfigTemplateType.SWITCH_REGULAR]: false,
-  [ConfigTemplateType.SWITCH_CLI]: false
+  [ConfigTemplateType.SWITCH_CLI]: false,
+  [ConfigTemplateType.AP_GROUP]: false
 }
 
 describe('useAddTemplateMenuProps', () => {
