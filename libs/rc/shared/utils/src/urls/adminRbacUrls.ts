@@ -305,7 +305,7 @@ export const AdminRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //     newApi: true
   //   },
   updateMspAggregations: {
-    method: 'put',
+    method: 'PATCH',
     url: '/tenants/settings',
     oldUrl: '/tenants/notificationAggregations',
     newApi: true

@@ -39,10 +39,15 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   }
 
   const onSubmit = async () => {
-    const payload = {
-      aggregation: mspAggregationChecked,
-      ecExclusionEnabled: ecExclusionChecked
-    }
+    const payload = isPtenantRbacApiEnabled
+      ? {
+        AggregationDTO: { enable: ecExclusionChecked }
+      }
+      : {
+        aggregation: mspAggregationChecked,
+        ecExclusionEnabled: ecExclusionChecked
+      }
+
     try {
       await form.validateFields()
       updateMspAggregations(isPtenantRbacApiEnabled
