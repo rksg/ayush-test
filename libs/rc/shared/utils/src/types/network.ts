@@ -97,6 +97,7 @@ export type ClientIsolationVenue = Pick<NetworkVenue, 'venueId' | 'clientIsolati
 export interface NetworkSaveData {
   id?: string
   name?: string
+  ssid?: string
   tenantId?: string
   description?: string
   type?: NetworkTypeEnum

@@ -41,6 +41,7 @@ export type RecommendationDetails = {
     crrmFullOptimization: boolean;
   },
   trigger: string
+  idPath: NetworkPath;
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
