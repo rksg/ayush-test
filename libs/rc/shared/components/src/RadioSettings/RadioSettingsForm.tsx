@@ -127,7 +127,6 @@ export function RadioSettingsForm (props:{
   }
 
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
-  const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
 
   const handleBSSMinRateOnChange = (value: unknown) => {
     if (value) {
@@ -385,7 +384,7 @@ export function RadioSettingsForm (props:{
           />
         </Form.Item>
 
-        {multicastRateLimitFlag && <>
+        <>
           <FieldLabel width='175px'>
             <Space style={{ marginBottom: '10px' }}>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
@@ -494,7 +493,7 @@ export function RadioSettingsForm (props:{
               }
             </div>
           </>}
-        </>}
+        </>
       </>
       }
     </>
