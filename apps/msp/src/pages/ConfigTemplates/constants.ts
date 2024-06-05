@@ -1,0 +1,1 @@
+export const MAX_APPLICABLE_EC_TENANTS = 10
