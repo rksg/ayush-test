@@ -127,4 +127,40 @@ describe('Edge Detail Drawer', () => {
     expect(await screen.findByText('Login Password')).toBeVisible()
     expect(await screen.findByText('Enable Password')).toBeVisible()
   })
+
+  it('should render "vCPUs" as the unit for virtual Edge serial', async () => {
+    const edgeWithVirtualSerial = { ...currentEdge }
+    edgeWithVirtualSerial.serialNumber = '96B341ADD6C16C11ED8B8B000C296600F2'
+
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={() => {}}
+        currentEdge={edgeWithVirtualSerial}
+        currentCluster={mockCluster}
+        dnsServers={edgeDnsServers}
+        passwordDetail={passwordDetail}
+      />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('2 vCPUs')).toBeVisible()
+  })
+
+  it('should render "CPUs" as the unit for physical Edge serial', async () => {
+    const edgeWithPhysicalSerial = { ...currentEdge }
+    edgeWithPhysicalSerial.serialNumber = '190000000001'
+
+    render(<Provider>
+      <EdgeDetailsDrawer
+        visible={true}
+        setVisible={() => {}}
+        currentEdge={edgeWithPhysicalSerial}
+        currentCluster={mockCluster}
+        dnsServers={edgeDnsServers}
+        passwordDetail={passwordDetail}
+      />
+    </Provider>, { route: { params } })
+
+    expect(await screen.findByText('2 CPUs')).toBeVisible()
+  })
 })

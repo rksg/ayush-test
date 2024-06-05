@@ -24,9 +24,9 @@ import { VenueEdit } from './index'
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
 }))
-jest.mock('./WifiConfigTab/NetworkingTab/DirectedMulticast', () => () => {
-  return <div data-testid='DirectedMulticast' />
-})
+jest.mock('./WifiConfigTab/NetworkingTab/DirectedMulticast', () => ({
+  DirectedMulticast: () => <div data-testid='DirectedMulticast' />
+}))
 jest.mock('./WifiConfigTab/NetworkingTab/CellularOptions/CellularOptionsForm', () => ({
   CellularOptionsForm: () => <div data-testid='CellularOptionsForm' />
 }))
