@@ -49,7 +49,6 @@ jest.mock('@acx-ui/utils', () => ({
 }))
 
 const mockedSingleDeleteApi = jest.fn()
-const mockedBulkDeleteApi = jest.fn()
 
 describe('TunnelProfileList', () => {
   let params: { tenantId: string }
@@ -64,30 +63,24 @@ describe('TunnelProfileList', () => {
     store.dispatch(tunnelProfileApi.util.resetApiState())
     store.dispatch(nsgApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
+    mockedSingleDeleteApi.mockClear()
 
     mockServer.use(
       rest.post(
         TunnelProfileUrls.getTunnelProfileViewDataList.url,
-        (req, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
+        (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData))
       ),
       rest.post(
         NetworkSegmentationUrls.getNetworkSegmentationStatsList.url,
-        (req, res, ctx) => res(ctx.json(mockedNsgOptions))
+        (_, res, ctx) => res(ctx.json(mockedNsgOptions))
       ),
       rest.post(
         CommonUrlsInfo.getVMNetworksList.url,
-        (req, res, ctx) => res(ctx.json(mockedNetworkOptions))
-      ),
-      rest.delete(
-        TunnelProfileUrls.batchDeleteTunnelProfile.url,
-        (req, res, ctx) => {
-          mockedBulkDeleteApi()
-          return res(ctx.status(202))
-        }
+        (_, res, ctx) => res(ctx.json(mockedNetworkOptions))
       ),
       rest.delete(
         TunnelProfileUrls.deleteTunnelProfile.url,
-        (req, res, ctx) => {
+        (_, res, ctx) => {
           mockedSingleDeleteApi()
           return res(ctx.status(202))
         }
@@ -214,7 +207,7 @@ describe('TunnelProfileList', () => {
     await within(dialog).findByText('Delete "2 Policy"?')
     await user.click(within(dialog).getByRole('button', { name: 'Delete Policy' }))
     await waitFor(() => {
-      expect(mockedBulkDeleteApi).toBeCalledTimes(1)
+      expect(mockedSingleDeleteApi).toBeCalledTimes(2)
     })
     await waitFor(() => {
       expect(dialog).not.toBeVisible()

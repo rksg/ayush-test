@@ -27,13 +27,17 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('AP Lan port settings', () => {
+  const defaultT750SeApCtxData = {
+    apData: ApData_T750SE,
+    apCapabilities: ApCap_T750SE,
+    venueData
+  }
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
+
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(CommonUrlsInfo.getVenueLanPorts.url,
@@ -62,9 +66,7 @@ describe('AP Lan port settings', () => {
           editNetworkingContextData: {} as ApNetworkingContext,
           setEditNetworkingContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{
-            apData: ApData_T750SE,
-            apCapabilities: ApCap_T750SE }}>
+          <ApDataContext.Provider value={defaultT750SeApCtxData}>
             <LanPorts />
           </ApDataContext.Provider>
         </ApEditContext.Provider>

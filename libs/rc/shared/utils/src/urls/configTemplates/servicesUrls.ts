@@ -76,6 +76,46 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/portalServiceProfiles/query',
     newApi: true
   },
+  uploadPhoto: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/photos',
+    newApi: true
+  },
+  uploadLogo: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/logos',
+    newApi: true
+  },
+  uploadBgImage: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/backgroundImages',
+    newApi: true
+  },
+  uploadPoweredImg: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/poweredImages',
+    newApi: true
+  },
+  deletePhoto: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/photos',
+    newApi: true
+  },
+  deleteLogo: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/logos',
+    newApi: true
+  },
+  deleteBgImage: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/backgroundImages',
+    newApi: true
+  },
+  deletePoweredImg: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/poweredImages',
+    newApi: true
+  },
   getWifiCalling: {
     method: 'get',
     url: '/templates/wifiCallingServiceProfiles/:serviceId',

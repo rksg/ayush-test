@@ -9,6 +9,7 @@ import {
 import { RolesEnum } from '@acx-ui/types'
 
 import { UserRbacUrlsInfo, UserUrlsInfo } from './services'
+import { UserProfile }                    from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,
@@ -20,7 +21,18 @@ jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   useTenantId: () => tenantId
 }))
+const services = require('./services')
 
+function transformResponse (userProfile: UserProfile) {
+  const { firstName, lastName } = userProfile
+  userProfile.fullName = ''
+
+  if (firstName && lastName) {
+    userProfile.initials = `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`
+    userProfile.fullName = `${firstName} ${lastName}`
+  }
+  return userProfile
+}
 const mockedUserProfile = {
   firstName: 'First',
   lastName: 'Last',
@@ -54,11 +66,14 @@ describe('UserProfileContext', () => {
 
   beforeEach(async () => {
     store.dispatch(userApi.util.resetApiState())
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      return { data: transformResponse(mockedUserProfile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': false,
+        'allowed-operations-toggle': false } }
+    })
     mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json(mockedUserProfile))
-      ),
       rest.get(UserUrlsInfo.wifiAllowedOperations.url.replace('?service=wifi', ''),
         (_req, res, ctx) => res(ctx.json(['some-operation']))),
       rest.get(UserUrlsInfo.switchAllowedOperations.url.replace('?service=switch', ''),
@@ -80,11 +95,36 @@ describe('UserProfileContext', () => {
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
         res(ctx.status(200))),
       rest.put(UserUrlsInfo.toggleBetaStatus.url,
-        (_req, res, ctx) => res(ctx.json({}))),
-      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
-          'allowed-operations-toggle': false })))
+        (_req, res, ctx) => res(ctx.json({})))
     )
+  })
+
+  it('user profile undefined firstName/lastName', async () => {
+    const emptyNameProfile = {
+      ...mockedUserProfile,
+      firstName: undefined,
+      lastName: undefined
+    }
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = transformResponse(emptyNameProfile as unknown as UserProfile)
+      return { data: profile }
+    })
+
+    const TestUndefinedUserName = (props: TestUserProfileChildComponentProps) => {
+      const { data, betaEnabled, accountTier } = props.userProfileCtx
+      return <>
+        <div>{`initials:${data?.initials}`}</div>
+        <div>{`betaEnabled:${betaEnabled}`}</div>
+        <div>{`accountTier:${accountTier}`}</div>
+      </>
+    }
+
+    render(<TestUserProfile ChildComponent={TestUndefinedUserName}/>, { wrapper, route })
+    expect(await screen.findByText(/some-operation/)).toBeVisible()
+    expect(await screen.findByText(/venueOps/)).toBeVisible()
+    expect(screen.queryByText('initials:undefined')).toBeVisible()
+    expect(screen.queryByText('betaEnabled:false')).toBeVisible()
+    expect(screen.queryByText('accountTier:Gold')).toBeVisible()
   })
 
   it('requests for user profile and stores in context', async () => {
@@ -106,15 +146,13 @@ describe('UserProfileContext', () => {
   })
 
   it('user profile hasRole()', async () => {
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json({
-          ...mockedUserProfile,
-          roles: [RolesEnum.ADMINISTRATOR]
-        }))
-      )
-    )
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        roles: [RolesEnum.ADMINISTRATOR]
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
 
     const TestUserRole = (props: TestUserProfileChildComponentProps) => {
       const { hasRole } = props.userProfileCtx
@@ -129,42 +167,10 @@ describe('UserProfileContext', () => {
     expect(await screen.findByText('false')).toBeVisible()
   })
 
-  it('user profile undefined firstName/lastName', async () => {
-    const emptyNameProfile = {
-      ...mockedUserProfile,
-      firstName: undefined,
-      lastName: undefined
-    }
-
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json(emptyNameProfile))
-      )
-    )
-
-    const TestUndefinedUserName = (props: TestUserProfileChildComponentProps) => {
-      const { data, betaEnabled, accountTier } = props.userProfileCtx
-      return <>
-        <div>{`initials:${data?.initials}`}</div>
-        <div>{`betaEnabled:${betaEnabled}`}</div>
-        <div>{`accountTier:${accountTier}`}</div>
-      </>
-    }
-
-    render(<TestUserProfile ChildComponent={TestUndefinedUserName}/>, { wrapper, route })
-    expect(await screen.findByText(/some-operation/)).toBeVisible()
-    expect(await screen.findByText(/venueOps/)).toBeVisible()
-    expect(screen.queryByText('initials:undefined')).toBeVisible()
-    expect(screen.queryByText('betaEnabled:false')).toBeVisible()
-    expect(screen.queryByText('accountTier:Gold')).toBeVisible()
-  })
-
   it('user profile beta enabled case', async () => {
-    mockServer.use(
-      rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
-        res(ctx.json({ enabled: 'true' })))
-    )
+    services.useGetBetaStatusQuery = jest.fn().mockImplementation(() => {
+      return { data: { enabled: 'true' } }
+    })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
       const { betaEnabled } = props.userProfileCtx
@@ -177,20 +183,19 @@ describe('UserProfileContext', () => {
   })
 
   it('user profile abac enabled case', async () => {
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json({
-          ...mockedUserProfile,
-          scope: ['switch-r'],
-          customRoleName: 'CUSTOM_USER',
-          customRoleType: 'Custom'
-        }))
-      ),
-      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': true,
-          'allowed-operations-toggle': false })))
-    )
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        scopes: ['switch-r'],
+        customRoleName: 'CUSTOM_USER',
+        customRoleType: 'Custom'
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': true,
+        'allowed-operations-toggle': false } }
+    })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
       const { abacEnabled, isCustomRole } = props.userProfileCtx
@@ -207,22 +212,21 @@ describe('UserProfileContext', () => {
   })
 
   it('user profile special abac disabled case with custom role', async () => {
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json({
-          ...mockedUserProfile,
-          role: 'CUSTOM_ROLE',
-          roles: ['CUSTOM_ROLE'],
-          scope: ['switch-r'],
-          customRoleName: 'CUSTOM_USER',
-          customRoleType: 'Custom'
-        }))
-      ),
-      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
-          'allowed-operations-toggle': false })))
-    )
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        role: 'CUSTOM_ROLE',
+        roles: ['CUSTOM_ROLE'],
+        scopes: ['switch-r'],
+        customRoleName: 'CUSTOM_USER',
+        customRoleType: 'Custom'
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': false,
+        'allowed-operations-toggle': false } }
+    })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
       const { abacEnabled, isCustomRole } = props.userProfileCtx
@@ -239,22 +243,21 @@ describe('UserProfileContext', () => {
   })
 
   it('user profile special abac disabled case with default role (PRIME_ADMIN)', async () => {
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json({
-          ...mockedUserProfile,
-          role: 'PRIME_ADMIN',
-          roles: ['PRIME_ADMIN'],
-          scope: ['switch-r'],
-          customRoleName: 'PRIME_ADMIN',
-          customRoleType: 'Custom'
-        }))
-      ),
-      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
-          'allowed-operations-toggle': false })))
-    )
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        role: 'PRIME_ADMIN',
+        roles: ['PRIME_ADMIN'],
+        scopes: ['switch-r'],
+        customRoleName: 'PRIME_ADMIN',
+        customRoleType: 'Custom'
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': false,
+        'allowed-operations-toggle': false } }
+    })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
       const { abacEnabled, isCustomRole } = props.userProfileCtx
@@ -271,21 +274,20 @@ describe('UserProfileContext', () => {
   })
 
   it('user profile special abac disabled case with default role (READ_ONLY)', async () => {
-    mockServer.use(
-      rest.get(
-        UserUrlsInfo.getUserProfile.url,
-        (_req, res, ctx) => res(ctx.json({
-          ...mockedUserProfile,
-          role: 'READ_ONLY',
-          roles: ['READ_ONLY'],
-          scope: ['switch-r'],
-          customRoleName: 'READ_ONLY'
-        }))
-      ),
-      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'abac-policies-toggle': false,
-          'allowed-operations-toggle': false })))
-    )
+    services.useGetUserProfileQuery = jest.fn().mockImplementation(() => {
+      const profile = {
+        ...mockedUserProfile,
+        role: 'READ_ONLY',
+        roles: ['READ_ONLY'],
+        scopes: ['switch-r'],
+        customRoleName: 'READ_ONLY'
+      }
+      return { data: transformResponse(profile as UserProfile) }
+    })
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'abac-policies-toggle': false,
+        'allowed-operations-toggle': false } }
+    })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
       const { abacEnabled, isCustomRole } = props.userProfileCtx
@@ -302,26 +304,9 @@ describe('UserProfileContext', () => {
   })
 
   it('should handle abacEnabled value correctly', async () => {
-    mockServer.use(
-      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'allowed-operations-toggle': false })))
-    )
-
-    const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
-      const { abacEnabled } = props.userProfileCtx
-      return <div>{`abacEnabled:${abacEnabled}`}</div>
-    }
-
-    render(<TestUserProfile ChildComponent={TestBetaEnabled}/>, { wrapper, route })
-    await checkDataRendered()
-    expect(screen.queryByText('abacEnabled:false')).toBeVisible()
-  })
-
-  it('should handle rcgAllowedOperationsEnabled value correctly', async () => {
-    mockServer.use(
-      rest.post(UserUrlsInfo.getFeatureFlagStates.url,
-        (_req, res, ctx) => res(ctx.json({ 'allowed-operations-toggle': true })))
-    )
+    services.useFeatureFlagStatesQuery = jest.fn().mockImplementation(() => {
+      return { data: { 'allowed-operations-toggle': false } }
+    })
 
     const TestBetaEnabled = (props: TestUserProfileChildComponentProps) => {
       const { abacEnabled } = props.userProfileCtx

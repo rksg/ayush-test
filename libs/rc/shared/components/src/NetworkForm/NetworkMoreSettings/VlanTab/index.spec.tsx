@@ -1,7 +1,6 @@
 import { Form } from 'antd'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                                                                                                        from '@acx-ui/feature-toggle'
 import { BasicServiceSetPriorityEnum, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, OpenWlanAdvancedCustomization, TunnelProfileUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                                            from '@acx-ui/store'
 import { mockServer, render, screen, within }                                                                                                                  from '@acx-ui/test-utils'
@@ -84,7 +83,6 @@ describe('Network More settings - Vlan Tab', () => {
   })
 
   it('should visible Dynamic VLAN on OPEN WLAN with Mac Authentication', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const network = {
       type: NetworkTypeEnum.OPEN,
       wlan: {
@@ -112,7 +110,6 @@ describe('Network More settings - Vlan Tab', () => {
   })
 
   it('should visible Dynamic VLAN on CaptivePortal WLAN with Mac Auth Bypass', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const network = {
       type: NetworkTypeEnum.CAPTIVEPORTAL,
       guestPortal: {

@@ -9,7 +9,7 @@ export const mockedConfigTemplateList = {
       name: 'Template 1',
       createdOn: 1690598400000,
       createdBy: 'Author 1',
-      appliedOnTenants: ['t1', 't2'],
+      appliedOnTenants: ['t1', '1969e24ce9af4348833968096ff6cb47'],
       type: 'NETWORK',
       lastModified: 1690598400000,
       lastApplied: 1690598405000
@@ -82,6 +82,58 @@ export const mockedMSPCustomerList = {
       tenantType: 'MSP_EC',
       installerCount: 0,
       integratorCount: 0
+    },
+    {
+      id: 'a48e45a0331b4c7cac85965e3a72021e',
+      name: 'Tal-Tel',
+      streetAddress: '337, Taiwan, Taoyuan City, Dayuan District, Hangzhan S Rd, No. 15',
+      mspAdminCount: 1,
+      mspEcAdminCount: 1,
+      entitlements: [],
+      status: 'Active',
+      creationDate: '1715654961625',
+      tenantType: 'MSP_EC',
+      installerCount: 0,
+      integratorCount: 0,
+      accountTier: 'Gold'
+    },
+    {
+      id: '20bbe08b90124a26983e6ef811127e6f',
+      name: 'Camel-Tel',
+      streetAddress: 'San Francisco, CA',
+      mspAdminCount: 1,
+      mspEcAdminCount: 0,
+      entitlements: [],
+      status: 'Active',
+      accountType: 'PAID',
+      creationDate: '1711531105649',
+      wifiLicenses: 0,
+      switchLicenses: 0,
+      edgeLicenses: 0,
+      apSwLicenses: 1,
+      tenantType: 'MSP_EC',
+      installerCount: 0,
+      integratorCount: 0,
+      accountTier: 'Gold'
+    },
+    {
+      id: '1969e24ce9af4348833968096ff6cb47',
+      name: 'Chill-Tel',
+      streetAddress: 'No. 7, Section 5, Xinyi Rd, Xinyi District, Taipei City, Taiwan 110',
+      mspAdminCount: 1,
+      mspEcAdminCount: 0,
+      entitlements: [],
+      status: 'Active',
+      accountType: 'TRIAL',
+      creationDate: '1713755484585',
+      wifiLicenses: 0,
+      switchLicenses: 0,
+      edgeLicenses: 0,
+      apSwLicenses: 50,
+      tenantType: 'MSP_EC',
+      installerCount: 0,
+      integratorCount: 0,
+      accountTier: 'Platinum'
     }
   ]
 }
@@ -155,7 +207,7 @@ export const mockPortalList = {
 }
 export const mockPortalDetailResult = {
   id: 1,
-  serviceName: 'test',
+  name: 'test',
   content: {
     welcomeText: 'Welcome to the Guest Access login page',
     welcomeColor: '#333333',
@@ -202,58 +254,6 @@ export const mockPortalDetailResult = {
   }
 }
 
-export const mockPortalDetailChangeResult = {
-  id: 1,
-  serviceName: 'test',
-  content: {
-    welcomeText: 'Welcome to the Guest Access login page',
-    welcomeColor: '#333333',
-    bgColor: '#FFFFFF',
-    welcomeSize: 14,
-    logo: 'logo',
-    photo: 'photo',
-    bgImage: 'bgimage',
-    poweredImg: 'poweredimg',
-    photoRatio: 170,
-
-    logoRatio: 105,
-    secondaryText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing' +
-      ' elit. Aenean euismod bibendum laoreet.',
-    secondaryColor: '#333333',
-    secondarySize: 14,
-    buttonColor: '#EC7100',
-    poweredBgColor: '#FFFFFF',
-    poweredColor: '#333333',
-    poweredSize: 14,
-    poweredImgRatio: 50,
-    wifi4EUNetworkId: '',
-    termsCondition: '',
-    componentDisplay: {
-      logo: true,
-      welcome: true,
-      photo: true,
-      secondaryText: true,
-      termsConditions: false,
-      poweredBy: true,
-      wifi4eu: true
-    },
-    displayLangCode: 'en',
-
-    alternativeLang: {
-      cs: true,
-      zh_TW: false,
-      fi: true,
-      fr: true,
-      de: true,
-      el: true,
-      hu: true,
-      it: false
-    }
-  },
-  networkIds: [1, 2]
-}
-
 export const mockedNetworkTemplates = {
   fields: [
     'id',
@@ -284,6 +284,6 @@ export const mockedNetworkTemplates = {
 }
 
 export const mockedEnhancedPortalList = {
-  content: [{ id: 'test', name: 'test', wifiNetworkIds: ['networkId'] }],
+  data: [{ id: 'test', name: 'test', displayLangCode: 'en', wifiNetworkIds: ['networkId'] }],
   paging: { page: 1, pageSize: 10, totalCount: 1 }
 }

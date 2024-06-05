@@ -6,8 +6,7 @@ import { useIntl }                       from 'react-intl'
 import { StepsForm, Subtitle }        from '@acx-ui/components'
 import { IdentityProviderActionType } from '@acx-ui/rc/utils'
 
-import { AAAInstance } from '../../../NetworkForm/AAAInstance'
-
+import { AaaInstance }             from './AaaInstance'
 import IdentityProviderFormContext from './IdentityProviderFormContext'
 
 const { useWatch } = Form
@@ -59,7 +58,8 @@ const AaaSettingsForm = () => {
       <Space direction='vertical' size='middle' style={{ display: 'flex' }}>
         <StepsForm.Title>{$t({ defaultMessage: 'AAA Settings' })}</StepsForm.Title>
         <Subtitle level={3}>{ $t({ defaultMessage: 'Authentication Service' }) }</Subtitle>
-        <AAAInstance serverLabel={$t({ defaultMessage: 'Authentication Server' })}
+        <AaaInstance key='identity-provider-auth'
+          serverLabel={$t({ defaultMessage: 'Authentication Server' })}
           type='authRadius'/>
         <div style={{ display: 'grid', gridTemplateColumns: '250px 50px' }}>
           <Subtitle level={3}>{ $t({ defaultMessage: 'Accounting Service' }) }</Subtitle>
@@ -74,7 +74,8 @@ const AaaSettingsForm = () => {
           />
         </div>
         {accountingRadiusEnabled && (
-          <AAAInstance serverLabel={$t({ defaultMessage: 'Accounting Server' })}
+          <AaaInstance key='identity-provider-acounting'
+            serverLabel={$t({ defaultMessage: 'Accounting Server' })}
             type='accountingRadius'/>
         )}
 

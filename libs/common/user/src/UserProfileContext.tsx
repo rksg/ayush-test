@@ -4,7 +4,6 @@ import { RolesEnum as Role } from '@acx-ui/types'
 import { useTenantId }       from '@acx-ui/utils'
 
 import {
-  useAllowedOperationsQuery,
   useGetAccountTierQuery,
   useGetBetaStatusQuery,
   useGetUserProfileQuery,
@@ -43,12 +42,11 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
 
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
-  const allowedOperationsFF = 'allowed-operations-toggle'
   const ptenantRbacFF = 'acx-ui-rbac-api-ptenant-toggle'
 
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF, allowedOperationsFF, ptenantRbacFF] },
+      { params: { tenantId }, payload: [abacFF, ptenantRbacFF] },
       { skip: !Boolean(profile) }
     )
   // test for now
@@ -63,24 +61,9 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     { skip: !Boolean(profile) })
   const accountTier = accTierResponse?.acx_account_tier
 
-  // const allowedOperationsFF = 'allowed-operations-toggle'
-
-  // let abacEnabled = false, isCustomRole = false
-  // const abacFF = 'abac-policies-toggle'
-  // const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
-  //   = useFeatureFlagStatesQuery(
-  //     { params: { tenantId }, payload: [abacFF, allowedOperationsFF] }, { skip: !Boolean(profile) }
-  //   )
-
-  const rcgAllowedOperationsEnabled = featureFlagStates?.[allowedOperationsFF]
-  const { data: allAllowedOperations } = useAllowedOperationsQuery(tenantId!,
-    { skip: !Boolean(profile) || rcgAllowedOperationsEnabled !== false })
-
   const { data: rcgAllowedOperations } = useRcgAllowedOperationsQuery(tenantId!,
-    { skip: !Boolean(profile) || rcgAllowedOperationsEnabled !== true })
-
-  const allowedOperations =
-      rcgAllowedOperationsEnabled ? rcgAllowedOperations : allAllowedOperations
+    { skip: !Boolean(profile) })
+  const allowedOperations = rcgAllowedOperations
 
   if (allowedOperations && accountTier && !isFeatureFlagStatesLoading) {
     isCustomRole = profile?.customRoleType?.toLocaleLowerCase()?.includes('custom') ?? false

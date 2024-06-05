@@ -69,7 +69,8 @@ export enum FirmwareCategory {
   RECOMMENDED = 'RECOMMENDED',
   CRITICAL = 'CRITICAL',
   BETA = 'BETA',
-  REGULAR = 'REGULAR'
+  REGULAR = 'REGULAR',
+  LATEST = 'LATEST'
 }
 
 export enum UpdateAdvice {
@@ -310,6 +311,9 @@ export const firmwareTypeTrans = ($t: IntlShape['$t']) => {
     }, {
       type: $t({ defaultMessage: 'Release' }),
       value: FirmwareCategory.REGULAR
+    }, {
+      type: $t({ defaultMessage: 'Latest' }),
+      value: FirmwareCategory.LATEST
     }
   ]
 
@@ -353,11 +357,11 @@ export interface ApModelFirmware {
 }
 
 export interface UpdateFirmwarePerApModelPayload {
-  targetFirmwares: { apModel: string, firmware: string }[]
+  venueIds: string[];
+  targetFirmwares: { apModel: string, firmware: string }[];
 }
 
-export interface UpdateFirmwareSchedulePerApModelPayload {
+export interface UpdateFirmwareSchedulePerApModelPayload extends UpdateFirmwarePerApModelPayload {
   date: string;
   time: string;
-  targetFirmwares: { apModel: string, firmware: string }[]
 }

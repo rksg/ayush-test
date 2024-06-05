@@ -82,7 +82,7 @@ export function RWGForm () {
       return Promise.reject($t(validationMessages.name))
     }
     const payload = { ...gatewayListPayload, searchString: value }
-    const list = (await gatewayList({ params, payload }, true)
+    const list = (await gatewayList({ params: { gatewayId, tenantId }, payload }, true)
       .unwrap()).data.filter(n => n.rwgId !== data?.rwgId).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Gateway' }))
   }
@@ -179,7 +179,7 @@ export function RWGForm () {
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
-                    { max: 32, transform: (value) => value.trim() },
+                    { max: 255, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     {
                       validator: (_, value) => nameValidator(value)
