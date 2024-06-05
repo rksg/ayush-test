@@ -784,11 +784,11 @@ export const mockRecommendationProbeflexApplied = {
     dataEndTime: 1710720000000,
     wlans: [
       {
-        name: 'GKSS',
+        name: '985a2e7fca3f43db8deb9eaf7a9c25d8',
         ssid: 'GKSS'
       },
       {
-        name: 'Shine',
+        name: 'e1304efc68ed48fa9e7477fe1bffe7b2',
         ssid: 'Shine'
       }
     ]
@@ -821,3 +821,26 @@ export const mockRecommendationProbeflexApplied = {
     projected: null
   }
 } as unknown as RecommendationDetails
+
+
+export const mockWifiNetworkList = {
+  fields: [
+    'name',
+    'id',
+    'ssid'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'GKSS',
+      id: '985a2e7fca3f43db8deb9eaf7a9c25d8',
+      ssid: 'GKSS'
+    },
+    {
+      name: 'Shine',
+      id: 'e1304efc68ed48fa9e7477fe1bffe7b2',
+      ssid: 'Shine'
+    }
+  ]
+}
