@@ -15,7 +15,7 @@ import {
   CancelCircleSolid,
   CheckMarkCircleOutline
 } from '@acx-ui/icons'
-import { useVenueNetworkListV2Query } from '@acx-ui/rc/services'
+import { useVenueNetworkListV2Query, useWifiNetworkListQuery } from '@acx-ui/rc/services'
 
 import { codes }                      from '../config'
 import {
@@ -123,6 +123,31 @@ function useWlansSelection (
     select: (ids: string[]) =>
       setWlans(wlans.map(wlan => ({ ...wlan, excluded: !ids.includes(wlan.id) })))
   }
+}
+
+export function useWlanRecords (
+  originalWlans: RecommendationWlan[] | undefined,
+  isMlisa: boolean,
+  needsWlans: boolean
+) {
+  const [wlans, setWlans] = useState<Array<RecommendationWlan>>(originalWlans ?? [])
+  const r1NetworksQuery = useWifiNetworkListQuery({
+    payload: {
+      deep: true,
+      fields: ['id', 'name', 'ssid'],
+      filters: { id: originalWlans?.map(wlan => wlan.name) },
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10_000
+    }
+  }, { skip: !needsWlans || isMlisa })
+  useEffect(() => {
+    if (r1NetworksQuery.data?.data) {
+      setWlans(r1NetworksQuery.data.data)
+    }
+  }, [r1NetworksQuery])
+  return wlans
 }
 
 function ApplyCalendar ({
