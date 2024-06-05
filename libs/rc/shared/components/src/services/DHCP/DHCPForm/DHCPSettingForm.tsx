@@ -3,6 +3,7 @@ import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
 
 import { StepsFormLegacy }                                                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
 import { useGetDhcpTemplateQuery, useLazyGetDHCPProfileListQuery, useLazyGetDhcpTemplateListQuery } from '@acx-ui/rc/services'
 import { useGetDHCPProfileQuery }                                                                   from '@acx-ui/rc/services'
 import {
@@ -60,6 +61,7 @@ export function SettingForm (props: DHCPFormProps) {
 
   const types = isTemplate ? [DHCPConfigTypeEnum.SIMPLE] : Object.values(DHCPConfigTypeEnum)
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ getDHCPProfileList ] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData[]>({
     useLazyQueryFn: useLazyGetDHCPProfileListQuery,
     useLazyTemplateQueryFn: useLazyGetDhcpTemplateListQuery
@@ -68,7 +70,7 @@ export function SettingForm (props: DHCPFormProps) {
   const id = Form.useWatch<string>('id', form)
 
   const nameValidator = async (value: string) => {
-    const list = (await getDHCPProfileList({ params }).unwrap())
+    const list = (await getDHCPProfileList({ params, enableRbac }).unwrap())
       .filter(dhcpProfile => dhcpProfile.id !== id)
       .map(dhcpProfile => ({ serviceName: dhcpProfile.serviceName }))
     // eslint-disable-next-line max-len
@@ -78,7 +80,8 @@ export function SettingForm (props: DHCPFormProps) {
   const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
-    skip: !editMode
+    skip: !editMode,
+    enableRbac
   })
 
   const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME
