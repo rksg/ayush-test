@@ -146,7 +146,7 @@ export function RadioSettingsForm (props:{
     return [
       (showAfcItems),
       (context === 'ap'),
-      (enableAfc ?? true),
+      (enableAfc),
       ((maxFloor === undefined || minFloor === undefined) || ignoreFloorValidation)
     ].every(Boolean)
   }
