@@ -393,7 +393,8 @@ export function EmbeddedReport (props: ReportProps) {
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
       username: isRA ? userId : externalId,
       isReadOnly: isRA
-        ? selectedTenant.role === RolesEnumRA.BUSINESS_INSIGHTS_USER
+        ? !(selectedTenant.role === RolesEnumRA.PRIME_ADMINISTRATOR
+            || selectedTenant.role === RolesEnumRA.ADMINISTRATOR)
         : !(roles.includes(RolesEnumR1.PRIME_ADMIN) || roles.includes(RolesEnumR1.ADMINISTRATOR)),
       locale // i18n locale from R1
     })
