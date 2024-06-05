@@ -351,3 +351,10 @@ export interface VenueObjectList
 {
   'com.ruckus.cloud.venue.model.venue'?: string[]
 }
+
+export enum NotificationType {
+  apFirmware = 'DEVICE_AP_FIRMWARE',
+  switchFirmware = 'DEVICE_SWITCH_FIRMWARE',
+  edgeFirmware = 'DEVICE_EDGE_FIRMWARE',
+  apiChanges = 'NEW_API_PUBLISH'
+}
