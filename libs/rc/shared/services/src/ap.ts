@@ -67,7 +67,8 @@ import {
   WifiUrlsInfo,
   downloadFile,
   onActivityMessageReceived,
-  onSocketActivityChanged
+  onSocketActivityChanged,
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -269,9 +270,14 @@ export const apApi = baseApApi.injectEndpoints({
           // fetch aps name
           const apIds = _.uniq(apGroups.data.flatMap(item => item.apSerialNumbers))
           if (apIds.length) {
+            const apQueryPayload = {
+              fields: ['name', 'serialNumber'],
+              pageSize: 10000,
+              filters: { id: apIds }
+            }
             const apsListQuery = await fetchWithBQ({
               ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
-              body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: apIds } })
+              body: JSON.stringify(apQueryPayload)
             })
             const aps = apsListQuery.data as TableResult<NewAPModel>
             aggregateApGroupApInfo(apGroups, aps)

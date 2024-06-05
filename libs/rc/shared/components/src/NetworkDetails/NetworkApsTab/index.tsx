@@ -1,8 +1,8 @@
 
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { useApGroupsListQuery, useGetApCompatibilitiesNetworkQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { useGetApCompatibilitiesNetworkQuery } from '@acx-ui/rc/services'
 
 import { retrievedCompatibilitiesOptions } from '../../ApCompatibility'
 import { ApTable }                         from '../../ApTable'
@@ -11,7 +11,7 @@ import { useApGroupsFilterOpts }           from '../../useApGroupActions'
 
 
 export function NetworkApsTab () {
-  const { tenantId, networkId } = useParams()
+  const { networkId } = useParams()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const { compatibilitiesFilterOptions } = useGetApCompatibilitiesNetworkQuery(
     {

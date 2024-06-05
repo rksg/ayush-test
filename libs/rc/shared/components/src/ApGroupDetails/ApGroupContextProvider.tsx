@@ -55,6 +55,7 @@ const useApGroupsListInstance = () => {
     searchString: apGroupId
   }
 
+  // TODO:RBAC
   const apGroupsListNonTemplate = useApGroupsListQuery({
     params: { tenantId },
     payload: apGroupsListPayload,

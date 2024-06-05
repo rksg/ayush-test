@@ -5,40 +5,33 @@ import _                                       from 'lodash'
 import { IntlShape, useIntl }                  from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }                    from '@acx-ui/analytics/components'
-import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
-import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                     from '@acx-ui/rc/services'
-import {
-  CountAndNames,
-  FILTER,
-  NewApGroupViewModelExtended,
-  TableQuery,
-  getFilters,
-  transformDisplayNumber,
-  usePollingTableQuery
-} from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }     from '@acx-ui/react-router-dom'
-import { RequestPayload }                from '@acx-ui/types'
-import { filterByAccess }                from '@acx-ui/user'
-import { DateRange, getDateRangeFilter } from '@acx-ui/utils'
+import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }        from '@acx-ui/analytics/components'
+import { Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
+import { useApGroupsListQuery, useDeleteApGroupsMutation }                                         from '@acx-ui/rc/services'
+import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
+import { filterByAccess }                                                                          from '@acx-ui/user'
+import { DateRange, getDateRangeFilter }                                                           from '@acx-ui/utils'
 
-import { CountAndNamesTooltip } from '..'
+import { ApGroupsTabContext }   from '../'
+import { CountAndNamesTooltip } from '../..'
+import { ApGroupTableProps }    from '../types'
 
-import { ApGroupsTabContext } from './context'
 
-export const defaultNewApGroupPayload = {
-  fields: ['id', 'name', 'venueId', 'apSerialNumbers', 'wifiNetworkIds', 'clientCount'],
+export const defaultNonRbacApGroupPayload = {
+  fields: ['id', 'name', 'venueId', 'venueName', 'members', 'networks', 'clients'],
   searchTargetFields: ['name'],
-  sortField: 'name',
+  sortField: 'venueName',
   sortOrder: 'ASC',
   filters: { isDefault: [false] }
 }
 
-const genIncidentsPayload = (apGroupsData: NewApGroupViewModelExtended[]) => {
+const genIncidentsPayload = (apGroupsData: ApGroupViewModel[]) => {
   const { startDate, endDate } = getDateRangeFilter(DateRange.last24Hours)
 
-  const paths: Record<string, { type: string,name?: string }[]> = {}
-  apGroupsData.forEach((apg: NewApGroupViewModelExtended, index: number) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const paths: any = {}
+  apGroupsData.forEach((apg: ApGroupViewModel, index: number) => {
     const path = [
       { type: 'network', name: 'Network' },
       { type: 'apGroup', name: apg.id }
@@ -55,19 +48,9 @@ const genIncidentsPayload = (apGroupsData: NewApGroupViewModelExtended[]) => {
   return { paths, variables }
 }
 
+const defaultTableData: ApGroupViewModel[] = []
 
-// eslint-disable-next-line max-len
-interface ApGroupTableRbacProps extends Omit<TableProps<NewApGroupViewModelExtended>, 'columns'> {
-  // eslint-disable-next-line max-len
-  tableQuery?: TableQuery<NewApGroupViewModelExtended, RequestPayload<unknown>, unknown>
-  enableActions?: boolean
-  searchable?: boolean
-  filterables?: { [key: string]: ColumnType['filterable'] }
-}
-
-const defaultTableData: NewApGroupViewModelExtended[] = []
-
-export const ApGroupTableRbac = (props : ApGroupTableRbacProps) => {
+export const ApGroupTableNonRbac = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const intl = useIntl()
   const { $t } = intl
   const toggles = useIncidentToggles()
@@ -80,20 +63,19 @@ export const ApGroupTableRbac = (props : ApGroupTableRbacProps) => {
   const apGroupListTableQuery = usePollingTableQuery({
     useQuery: useApGroupsListQuery,
     defaultPayload: {
-      ...defaultNewApGroupPayload,
-      filters: { ...filters, ...defaultNewApGroupPayload.filters }
+      ...defaultNonRbacApGroupPayload,
+      filters: { ...filters, ...defaultNonRbacApGroupPayload.filters }
     },
     search: {
-      searchTargetFields: defaultNewApGroupPayload.searchTargetFields
+      searchTargetFields: defaultNonRbacApGroupPayload.searchTargetFields
     },
     sorter: {
-      sortField: (params.venueId) ? 'name' : defaultNewApGroupPayload.sortField,
-      sortOrder: defaultNewApGroupPayload.sortOrder
+      sortField: (params.venueId) ? 'name' : defaultNonRbacApGroupPayload.sortField,
+      sortOrder: defaultNonRbacApGroupPayload.sortOrder
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name'],
-    pagination: { settingsId },
-    enableRbac: true
+    pagination: { settingsId }
   })
 
   const tableQuery = props.tableQuery || apGroupListTableQuery
@@ -131,7 +113,7 @@ export const ApGroupTableRbac = (props : ApGroupTableRbacProps) => {
 
   const linkToEditApGroup = useTenantLink('/devices/apgroups')
 
-  const showDeleteApGroups = async (rows: NewApGroupViewModelExtended[],
+  const showDeleteApGroups = async (rows: ApGroupViewModel[],
     tenantId?: string, callBack?: () => void) => {
     const numOfEntities = rows.length
     const entityValue = numOfEntities === 1 ? rows[0].name : undefined
@@ -144,11 +126,7 @@ export const ApGroupTableRbac = (props : ApGroupTableRbacProps) => {
         numOfEntities
       },
       onOk: () => {
-        deleteApGroups({
-          params: { tenantId },
-          payload: rows.map(row => row.id),
-          enableRbac: true
-        })
+        deleteApGroups({ params: { tenantId }, payload: rows.map(row => row.id) })
           .then(callBack)
       }
     })
@@ -158,7 +136,7 @@ export const ApGroupTableRbac = (props : ApGroupTableRbacProps) => {
 
 
 
-  const rowActions: TableProps<NewApGroupViewModelExtended>['rowActions'] = [{
+  const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
@@ -178,7 +156,7 @@ export const ApGroupTableRbac = (props : ApGroupTableRbacProps) => {
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<NewApGroupViewModelExtended>
+      <Table<ApGroupViewModel>
         {...props}
         settingsId={settingsId}
         columns={columns}
@@ -210,39 +188,31 @@ export const ApGroupTableRbac = (props : ApGroupTableRbacProps) => {
 }
 
 // eslint-disable-next-line max-len
-const getTableColumns = (intl: IntlShape, props : ApGroupTableRbacProps, venueId: string | undefined) => {
+const getTableColumns = (intl: IntlShape, props : ApGroupTableProps<ApGroupViewModel>, venueId: string | undefined) => {
   const { $t } = intl
   const { searchable, filterables } = props
 
-  let columns1: TableProps<NewApGroupViewModelExtended>['columns']
-  const columns2: TableProps<NewApGroupViewModelExtended>['columns'] = [{
+  let columns1: TableProps<ApGroupViewModel>['columns']
+  const columns2: TableProps<ApGroupViewModel>['columns'] = [{
     key: 'members',
     title: $t({ defaultMessage: 'Members' }),
     dataIndex: 'members',
     align: 'center',
-    render: (_data, row: NewApGroupViewModelExtended) => {
-      const data: CountAndNames = {
-        count: row.apSerialNumbers?.length ?? 0,
-        names: _.values(row.apInfos)
-      }
-      return <CountAndNamesTooltip data={data}
+    render: (_, row: ApGroupViewModel) => (
+      <CountAndNamesTooltip data={row.members}
         linkUrl={`/devices/apgroups/${row.id}/details/members`}
       />
-    }
+    )
   }, {
     key: 'networks',
     title: $t({ defaultMessage: 'Networks' }),
     dataIndex: 'networks',
     align: 'center',
-    render: (_data, row: NewApGroupViewModelExtended) => {
-      const data: CountAndNames = {
-        count: row.wifiNetworkIds?.length ?? 0,
-        names: _.values(row.networkInfos)
-      }
-      return <CountAndNamesTooltip data={data}
+    render: (_, row: ApGroupViewModel) => (
+      <CountAndNamesTooltip data={row.networks}
         linkUrl={`/devices/apgroups/${row.id}/details/networks`}
       />
-    }
+    )
   }, {
     key: 'incidents',
     title: () => (<>
@@ -252,7 +222,7 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableRbacProps, venueId
     dataIndex: 'incidents',
     align: 'center',
     sorter: false,
-    render: (_data, row: NewApGroupViewModelExtended) => {
+    render: (data, row: ApGroupViewModel) => {
       const incidents = row?.incidents as IncidentsBySeverityData
       const { P1=0, P2=0, P3=0, P4=0 } = incidents || {}
       let total = P1 + P2 + P3 + P4
@@ -292,8 +262,8 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableRbacProps, venueId
     dataIndex: 'clients',
     align: 'center',
     sorter: true,
-    render: (_data, row: NewApGroupViewModelExtended) => {
-      return transformDisplayNumber(row.clientCount)
+    render: (_, row: ApGroupViewModel) => {
+      return transformDisplayNumber(row.clients)
     }
   }]
 
@@ -306,7 +276,7 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableRbacProps, venueId
       defaultSortOrder: 'ascend',
       fixed: 'left',
       searchable: searchable,
-      render: (_data, row: NewApGroupViewModelExtended, __, highlightFn) => (
+      render: (_, row: ApGroupViewModel, __, highlightFn) => (
         <TenantLink to={`/devices/apgroups/${row.id}/details/members`}>
           {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
       )
@@ -319,7 +289,7 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableRbacProps, venueId
       sorter: true,
       fixed: 'left',
       searchable: searchable,
-      render: (_data, row: NewApGroupViewModelExtended, __, highlightFn) => (
+      render: (_, row: ApGroupViewModel, __, highlightFn) => (
         <TenantLink to={`/devices/apgroups/${row.id}/details/members`}>
           {searchable ? highlightFn(row.name || '--') : row.name}</TenantLink>
       )
@@ -330,7 +300,9 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableRbacProps, venueId
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
-      render: (_data: React.ReactNode, row: NewApGroupViewModelExtended) => (
+      sorter: true,
+      defaultSortOrder: 'ascend',
+      render: (_: React.ReactNode, row: ApGroupViewModel) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}
         </TenantLink>

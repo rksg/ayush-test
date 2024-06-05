@@ -7,10 +7,10 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
-  useApGroupsListQuery,
+  // useApGroupsListQuery,
   useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'

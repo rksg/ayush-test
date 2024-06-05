@@ -25,9 +25,10 @@ import {
   ApGroupTable,
   ApTable,
   ApCompatibilityDrawer,
-  retrievedCompatibilitiesOptions
+  retrievedCompatibilitiesOptions,
+  useApGroupsFilterOpts
 } from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
+import { useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
