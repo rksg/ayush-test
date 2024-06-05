@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelL2AclPoliciesMutation,
@@ -47,6 +48,8 @@ const Layer2Component = () => {
   const [networkFilterOptions, setNetworkFilterOptions] = useState([] as AclOptionType[])
   const [networkIds, setNetworkIds] = useState([] as string[])
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const networkTableQuery = useTableQuery<Network>({
     useQuery: useNetworkListQuery,
     defaultPayload: {
@@ -65,7 +68,8 @@ const Layer2Component = () => {
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedL2AclProfileListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   useEffect(() => {
@@ -112,7 +116,11 @@ const Layer2Component = () => {
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () => deleteFn({
+        params,
+        payload: selectedRows.map(row => row.id),
+        enableRbac
+      }).then(callback)
     )
   }
 
@@ -188,12 +196,13 @@ function useColumns (
       sorter: true
     },
     {
-      key: 'macAddressCount',
+      key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Addresses' }),
-      dataIndex: 'macAddressCount',
+      dataIndex: 'macAddress',
       align: 'center',
       sorter: true,
-      sortDirections: ['descend', 'ascend', 'descend']
+      sortDirections: ['descend', 'ascend', 'descend'],
+      render: (_, row) => row.macAddress?.length
     },
     {
       key: 'networkIds',

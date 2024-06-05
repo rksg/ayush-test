@@ -15,6 +15,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { DeleteSolid, DownloadOutlined } from '@acx-ui/icons'
 import {
   useAddL2AclPolicyMutation,
@@ -117,6 +118,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   const [contentForm] = Form.useForm()
   const MAC_ADDRESS_LIMIT = 128
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { lockScroll, unlockScroll } = useScrollLock()
 
   const [
@@ -141,14 +144,17 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
     useTemplateMutationFn: useUpdateL2AclPolicyTemplateMutation
   })
 
-  const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(editMode.isEdit)
+  const { layer2SelectOptions, layer2List } = useGetL2AclPolicyListInstance(
+    editMode.isEdit, enableRbac
+  )
 
   const { data: layer2PolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetL2AclPolicyQuery,
     useTemplateQueryFn: useGetL2AclPolicyTemplateQuery,
     skip: skipFetch,
     payload: {},
-    extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId }
+    extraParams: { l2AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l2AclPolicyId },
+    enableRbac
   })
 
   const isViewMode = () => {
@@ -420,7 +426,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       if (!edit) {
         const l2AclRes: CommonResult = await createL2AclPolicy({
           params: params,
-          payload: convertToPayload()
+          payload: convertToPayload(),
+          enableRbac
         }).unwrap()
         // let responseData = l2AclRes.response as {
         //   [key: string]: string
@@ -432,7 +439,8 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       } else {
         await updateL2AclPolicy({
           params: { ...params, l2AclPolicyId: queryPolicyId },
-          payload: convertToPayload(queryPolicyId)
+          payload: convertToPayload(queryPolicyId),
+          enableRbac
         }).unwrap()
       }
     } catch (error) {
@@ -730,14 +738,15 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
   )
 }
 
-const useGetL2AclPolicyListInstance = (isEdit: boolean): {
+const useGetL2AclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
   layer2SelectOptions: JSX.Element[], layer2List: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L2AclPolicy>>({
     useQueryFn: useGetEnhancedL2AclProfileListQuery,
     useTemplateQueryFn: useGetL2AclPolicyTemplateListQuery,
     skip: isEdit,
-    payload: QUERY_DEFAULT_PAYLOAD
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
   })
 
   return {

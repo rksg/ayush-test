@@ -4,6 +4,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { PageHeader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import {
   useAddAccessControlProfileMutation,
   useAddAccessControlProfileTemplateMutation,
@@ -139,6 +140,8 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
   const linkToInstanceList = usePathBasedOnConfigTemplate(tablePath, '')
   const { editMode } = props
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 
   const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher({
@@ -159,12 +162,15 @@ export const AccessControlForm = (props: AccessControlFormProps) => {
       if (!editMode) {
         await createAclProfile({
           params: params,
-          payload: convertToPayload(false, aclPayloadObject, params.policyId)
+          payload: convertToPayload(false, aclPayloadObject, params.policyId),
+          enableRbac
         }).unwrap()
       } else {
         await updateAclProfile({
           params: params,
-          payload: convertToPayload(true, aclPayloadObject, params.policyId)
+          payload: convertToPayload(true, aclPayloadObject, params.policyId),
+          oldPayload: formRef.current?.getFieldValue('oldPayload'),
+          enableRbac
         }).unwrap()
       }
 

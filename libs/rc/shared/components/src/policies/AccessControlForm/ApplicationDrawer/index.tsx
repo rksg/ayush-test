@@ -15,6 +15,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddAppPolicyMutation,
   useAvcAppListQuery,
@@ -189,6 +190,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   const [drawerForm] = Form.useForm()
   const [contentForm] = Form.useForm()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const { lockScroll, unlockScroll } = useScrollLock()
 
   const [
@@ -211,7 +214,9 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useTemplateMutationFn: useUpdateAppPolicyTemplateMutation
   })
 
-  const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(editMode.isEdit)
+  const { appSelectOptions, appList, appIdList } = useGetAppAclPolicyListInstance(
+    editMode.isEdit, enableRbac
+  )
 
   const { data: appPolicyInfo } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetAppPolicyQuery,
@@ -219,7 +224,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     // eslint-disable-next-line max-len
     skip: skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
     payload: {},
-    extraParams: { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId }
+    extraParams: { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId },
+    enableRbac
   })
 
   const [categoryAppMap, setCategoryAppMap] = useState({} as {
@@ -483,13 +489,14 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             rules: transformedRules,
             description: description,
             tenantId: params.tenantId
-          }
+          },
+          enableRbac
         }).unwrap()
-        // let responseData = appRes.response as {
-        //   [key: string]: string
-        // }
-        // form.setFieldValue([...inputName, 'applicationPolicyId'], responseData.id)
-        // setQueryPolicyId(responseData.id)
+        let responseData = appRes.response as {
+          [key: string]: string
+        }
+        form.setFieldValue([...inputName, 'applicationPolicyId'], responseData.id)
+        setQueryPolicyId(responseData.id)
         setRequestId(appRes.requestId)
         setQueryPolicyName(policyName)
       } else {
@@ -501,7 +508,8 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
             rules: transformedRules,
             description: description,
             tenantId: params.tenantId
-          }
+          },
+          enableRbac
         }).unwrap()
       }
     } catch (error) {
@@ -737,14 +745,15 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   )
 }
 
-const useGetAppAclPolicyListInstance = (isEdit: boolean): {
+const useGetAppAclPolicyListInstance = (isEdit: boolean, enableRbac: boolean): {
   appSelectOptions: JSX.Element[], appList: string[], appIdList: string[]
 } => {
   const { data } = useConfigTemplateQueryFnSwitcher<TableResult<ApplicationPolicy>>({
     useQueryFn: useGetEnhancedApplicationProfileListQuery,
     useTemplateQueryFn: useGetAppPolicyTemplateListQuery,
     skip: isEdit,
-    payload: QUERY_DEFAULT_PAYLOAD
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac: enableRbac
   })
 
   return {

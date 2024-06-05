@@ -23,6 +23,7 @@ export interface RequestPayload <Payload = unknown> extends Record<string,unknow
   payload?: Payload
   customHeaders?: Record<string,unknown>
   enableRbac?: boolean
+  oldPayload?: Payload
 }
 
 // Needed for Browser language detection

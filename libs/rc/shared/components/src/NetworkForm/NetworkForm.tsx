@@ -68,9 +68,14 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                                                                    from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer } from './utils'
-import { Venues }                                                                        from './Venues/Venues'
+import PortalInstance          from './PortalInstance'
+import {
+  useNetworkVxLanTunnelProfileInfo,
+  deriveFieldsFromServerData,
+  useRadiusServer,
+  useAccessControlActivation
+} from './utils'
+import { Venues } from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -143,6 +148,7 @@ export function NetworkForm (props:{
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
+  const { updateAccessControl } = useAccessControlActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -581,6 +587,7 @@ export function NetworkForm (props:{
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
+      await updateAccessControl(formData, data)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -963,3 +970,4 @@ function useUpdateHotspot20Activation () {
 
   return updateHotspot20Activations
 }
+

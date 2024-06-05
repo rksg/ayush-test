@@ -13,6 +13,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
     newApi: true
   },
+  updateL2AclPolicy: {
+    method: 'put',
+    url: '/l2AclPolicies/:l2AclPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
+    newApi: true
+  },
   delL2AclPolicy: {
     method: 'delete',
     url: '/l2AclPolicies/:l2AclPolicyId',
@@ -25,12 +31,6 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy',
     newApi: true
   },
-  updateL2AclPolicy: {
-    method: 'put',
-    url: '/l2AclPolicies/:l2AclPolicyId',
-    oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
-    newApi: true
-  },
   addL3AclPolicy: {
     method: 'post',
     url: '/l3AclPolicies',
@@ -39,6 +39,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   getL3AclPolicy: {
     method: 'get',
+    url: '/l3AclPolicies/:l3AclPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
+    newApi: true
+  },
+  updateL3AclPolicy: {
+    method: 'put',
     url: '/l3AclPolicies/:l3AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
     newApi: true
@@ -55,12 +61,6 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy',
     newApi: true
   },
-  updateL3AclPolicy: {
-    method: 'put',
-    url: '/l3AclPolicies/:l3AclPolicyId',
-    oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
-    newApi: true
-  },
   addAppPolicy: {
     method: 'post',
     url: '/applicationPolicies',
@@ -69,6 +69,12 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   },
   getAppPolicy: {
     method: 'get',
+    url: '/applicationPolicies/:applicationPolicyId',
+    oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
+    newApi: true
+  },
+  updateAppAclPolicy: {
+    method: 'put',
     url: '/applicationPolicies/:applicationPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
     newApi: true
@@ -85,16 +91,15 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy',
     newApi: true
   },
-  updateAppAclPolicy: {
-    method: 'put',
-    url: '/applicationPolicies/:applicationPolicyId',
-    oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
-    newApi: true
-  },
   getL2AclPolicyList: {
     method: 'get',
     url: '/l2AclPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy',
+    newApi: true
+  },
+  getL2AclPolicyListQuery: {
+    method: 'post',
+    url: '/l2AclPolicies/query',
     newApi: true
   },
   getEnhancedL2AclPolicies: {
@@ -107,6 +112,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/l3AclPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy',
+    newApi: true
+  },
+  getL3AclPolicyListQuery: {
+    method: 'post',
+    url: '/l3AclPolicies/query',
     newApi: true
   },
   getEnhancedL3AclPolicies: {
@@ -152,6 +162,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/accessControlProfiles',
     oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile',
+    newApi: true
+  },
+  getAccessControlProfileQueryList: {
+    method: 'post',
+    url: '/accessControlProfiles/query',
     newApi: true
   },
   getEnhancedAccessControlProfiles: {
@@ -224,6 +239,46 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/enhancedDevicePolicies/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedDevicePolicies/query',
+    newApi: true
+  },
+  activateL2AclOnAccessControlProfile: {
+    method: 'put',
+    url: '/accessControlProfiles/:policyId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true
+  },
+  deactivateL2AclOnAccessControlProfile: {
+    method: 'delete',
+    url: '/accessControlProfiles/:policyId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true
+  },
+  activateL2AclOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true
+  },
+  deactivateL2AclOnWifiNetwork: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/l2AclPolicies/:l2AclPolicyId',
+    newApi: true
+  },
+  activateL3AclOnAccessControlProfile: {
+    method: 'put',
+    url: '/accessControlProfiles/:policyId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true
+  },
+  deactivateL3AclOnAccessControlProfile: {
+    method: 'delete',
+    url: '/accessControlProfiles/:policyId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true
+  },
+  activateL3AclOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true
+  },
+  deactivateL3AclOnWifiNetwork: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/l3AclPolicies/:l3AclPolicyId',
     newApi: true
   }
 }

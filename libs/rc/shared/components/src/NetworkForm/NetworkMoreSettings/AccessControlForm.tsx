@@ -14,6 +14,7 @@ import _, { get }              from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import { Button, Modal, ModalType, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
   useDevicePolicyListQuery,
   useL2AclPolicyListQuery,
@@ -188,6 +189,8 @@ function AddAcProfileModal (props: AcProfileModalProps) {
   const { modalStatus, setModalStatus, updateSelectedACProfile } = props
   const { visible=false, embeddedObject } = modalStatus
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+
   const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddAccessControlProfileMutation,
     useTemplateMutationFn: useAddAccessControlProfileTemplateMutation
@@ -217,7 +220,8 @@ function AddAcProfileModal (props: AcProfileModalProps) {
             )
             const responseData = await createAclProfile({
               params: params,
-              payload: convertToPayload(false, aclPayloadObject, params.policyId)
+              payload: convertToPayload(false, aclPayloadObject, params.policyId),
+              enableRbac
             }).unwrap()
 
             const profileId = responseData?.response?.id
