@@ -1,6 +1,5 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { Provider }       from '@acx-ui/store'
 import { render, screen } from '@acx-ui/test-utils'
 
@@ -39,10 +38,6 @@ describe('AP Networking Tab', () => {
     apData: ApData_T750SE,
     apCapabilities: ApCap_T750SE
   }
-
-  beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-  })
 
   it('should render correctly',async () => {
     render(

@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
-import _          from 'lodash'
-import { Params } from 'react-router-dom'
+import { FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import _                      from 'lodash'
+import { Params }             from 'react-router-dom'
+import { v4 as uuidv4 }       from 'uuid'
 
 import {
   CommonUrlsInfo,
@@ -49,6 +51,7 @@ import {
   DpskNewFlowPassphraseClient,
   CloudpathServer,
   ApplicationPolicy,
+  DHCP_LIMIT_NUMBER,
   ApiVersionEnum,
   GetApiVersionHeader
 } from '@acx-ui/rc/utils'
@@ -125,13 +128,21 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DHCPUrls.getDHCPProfiles,
-          params)
-
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfiles
+        const req = createHttpRequest(url, params)
         return {
-          ...req
+          ...req,
+          ...(enableRbac ? { body: { pageSize: DHCP_LIMIT_NUMBER } } : {})
         }
+      },
+      // eslint-disable-next-line max-len
+      transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {
+        if(arg.enableRbac) {
+          // eslint-disable-next-line max-len
+          return (response as TableResult<DHCPSaveData>).data.map((item) => ({ ...item, serviceName: item.name || '' }))
+        }
+        return response as DHCPSaveData[]
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -151,9 +162,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(DHCPUrls.getDHCPProfilesViewModel, params)
-
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfilesViewModel
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: payload
@@ -178,8 +189,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
-      query: ({ params }) => {
-        const dhcpDetailReq = createHttpRequest(DHCPUrls.getDHCProfileDetail, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
+        const dhcpDetailReq = createHttpRequest(DHCPUrls.getDHCProfileDetail, params, headers)
         return {
           ...dhcpDetailReq
         }
@@ -188,23 +200,23 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
-      query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
-        let dhcpReq
-        if(_.isEmpty(params.serviceId)){
-          dhcpReq = createHttpRequest(DHCPUrls.addDHCPService, params)
-        }else{
-          dhcpReq = createHttpRequest(DHCPUrls.updateDHCPService, params)
-        }
+      query: ({ params, payload, enableRbac } :
+        { params:Params, payload:DHCPSaveData, enableRbac: boolean }) => {
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
+        // eslint-disable-next-line max-len
+        const url = _.isEmpty(params.serviceId) ? DHCPUrls.addDHCPService : DHCPUrls.updateDHCPService
+        const dhcpReq = createHttpRequest(url, params, headers)
         return {
           ...dhcpReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }]
     }),
     deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params)
+      query: ({ params, enableRbac }) => {
+        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
+        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params, headers)
         return {
           ...req
         }
@@ -913,6 +925,7 @@ export const {
   useCloudpathListQuery,
   useApplicationPolicyListQuery,
   useGetDHCPProfileQuery,
+  useLazyGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
   useGetDHCPProfileListQuery,
@@ -993,8 +1006,12 @@ export function createDpskHttpRequest (
   )
 }
 
-export function transformDhcpResponse (dhcpProfile: DHCPSaveData) {
+// eslint-disable-next-line max-len
+export function transformDhcpResponse (dhcpProfile: DHCPSaveData, _meta: FetchBaseQueryMeta, arg: RequestPayload) {
   _.each(dhcpProfile.dhcpPools, (pool)=>{
+    if (arg.enableRbac && !pool.id) {
+      pool.id = uuidv4()
+    }
     if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
       pool.leaseUnit = LeaseUnit.MINUTES
       pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
