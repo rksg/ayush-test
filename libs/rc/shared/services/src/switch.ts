@@ -397,7 +397,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     batchDeleteProfiles: build.mutation<void, RequestPayload[]>({ // RBAC only
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
-        return batchApi(SwitchRbacUrlsInfo.deleteSwitchProfile, requests, fetchWithBQ)
+        return batchApi(SwitchRbacUrlsInfo.deleteSwitchProfile, requests, fetchWithBQ,
+          customHeaders.v1001)
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
