@@ -1,5 +1,5 @@
 import { useParams }                                     from '@acx-ui/react-router-dom'
-import { EdgeScopes, SwitchScopes, WifiScopes }          from '@acx-ui/types'
+import { EdgeScopes, ScopeKeys }                         from '@acx-ui/types'
 import { goToNoPermission, goToNotFound, hasPermission } from '@acx-ui/user'
 
 import { EdgeDetailsDataProvider } from './EdgeDetailsDataProvider'
@@ -30,7 +30,7 @@ const tabs = {
 } as {
   [key in string]: {
     content: () => JSX.Element
-    scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopeKey?: ScopeKeys,
   }
 }
 
