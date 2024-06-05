@@ -95,7 +95,6 @@ export enum Features {
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
-  RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   SERVICES = 'acx-ui-services',
