@@ -654,7 +654,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortStormCountAndPortCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     histogram: {
       highlightAbove: false,
