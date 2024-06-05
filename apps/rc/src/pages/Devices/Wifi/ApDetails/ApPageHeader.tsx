@@ -58,11 +58,9 @@ function ApPageHeader () {
 
     if (e.key === 'delete') {
       actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
-    } else if(e.key === 'reboot' || e.key === 'blinkLed') {
+    } else {
       // eslint-disable-next-line max-len
       (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
-    } else {
-      actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
     }
   }
 

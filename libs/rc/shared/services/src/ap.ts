@@ -180,7 +180,8 @@ export const apApi = baseApApi.injectEndpoints({
             'DeleteAp',
             'DeleteAps',
             'AddApGroup',
-            'AddApGroupLegacy'
+            'AddApGroupLegacy',
+            'ImportVenueApsCsv'
           ]
           onActivityMessageReceived(msg, activities, () => {
             api.dispatch(apApi.util.invalidateTags([{ type: 'Ap', id: 'LIST' }]))
@@ -332,7 +333,7 @@ export const apApi = baseApApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
-            if (response && msg.useCase === 'ImportApsCsv'
+            if (response && (msg.useCase === 'ImportApsCsv' || msg.useCase === 'ImportVenueApsCsv')
             && ((msg.steps?.find((step) => {
               return step.id === 'PostProcessedImportAps'
             })?.status !== 'IN_PROGRESS'))) {
@@ -344,11 +345,13 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     importResult: build.query<ImportErrorRes, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const { requestId } = payload as { requestId: string }
-        const api:ApiInfo = { ...WifiUrlsInfo.getImportResult }
+        const api:ApiInfo = { ...urlsInfo.getImportResult }
         api.url += `?requestId=${requestId}`
-        const req = createHttpRequest(api, params)
+        const req = createHttpRequest(api, params, apiCustomHeader)
         return {
           ...req
         }
@@ -467,9 +470,11 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    downloadApLog: build.mutation<{ fileURL: string }, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.downloadApLog, params)
+    downloadApLog: build.mutation<{ fileURL: string, fileUrl: string }, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.downloadApLog, params, customHeaders)
         return {
           ...req
         }
