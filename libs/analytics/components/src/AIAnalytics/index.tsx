@@ -2,7 +2,6 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { hasPermission }                               from '@acx-ui/user'
 import { DateRange }                                   from '@acx-ui/utils'
@@ -26,7 +25,6 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
@@ -57,7 +55,7 @@ const useTabs = () : Tab[] => {
         recommendationTabs.push(aiOpsTab as Tab)
       }
     } else { // R1
-      crrmEnabled && recommendationTabs.push(crrmTab as Tab)
+      recommendationTabs.push(crrmTab as Tab)
       recommendationTabs.push(aiOpsTab as Tab)
     }
     return recommendationTabs

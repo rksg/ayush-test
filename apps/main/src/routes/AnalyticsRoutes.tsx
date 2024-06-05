@@ -29,7 +29,6 @@ export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
-  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (hasRoles([RolesEnum.GUEST_MANAGER, RolesEnum.DPSK_ADMIN]) ) return <React.Fragment />
@@ -56,8 +55,8 @@ export default function AnalyticsRoutes () {
       {<Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
-        {crrmEnabled && <Route path='crrm/:id' element={<CrrmDetails />} />}
-        {crrmEnabled && <Route path='crrm/unknown/*' element={<UnknownDetails />} />}
+        {<Route path='crrm/:id' element={<CrrmDetails />} />}
+        {<Route path='crrm/unknown/*' element={<UnknownDetails />} />}
       </Route>}
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'
