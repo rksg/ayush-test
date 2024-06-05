@@ -52,13 +52,16 @@ export const UserUrlsInfo = {
   },
   getAllUserSettings: {
     method: 'get',
-    url: '/admins/admins-settings/ui',
+    url: '/admins/settings/ui',
+    // url: '/admins/admins-settings/ui',
     oldUrl: '/api/tenant/:tenantId/admin-settings/ui',
     newApi: true
   },
   saveUserSettings: {
-    method: 'put',
-    url: '/admins/admins-settings/ui/:productKey',
+    // method: 'put',
+    method: 'PATCH',
+    url: '/admins/settings/ui/:productKey',
+    // url: '/admins/admins-settings/ui/:productKey',
     oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
     newApi: true
   },
@@ -162,25 +165,23 @@ export const UserUrlsInfo = {
 export const UserRbacUrlsInfo = {
   getAccountTier: {
     method: 'get',
-    // url: '/tenants/self/query',
-    url: '/tenants/accountTier',
+    url: '/tenants/self/query?accountTier',
+    // url: '/tenants/accountTier',
     oldUrl: '/tenants/accountTier',
     newApi: true
   },
-  getAllUserSettings: {
-    method: 'get',
-    // url: '/admins/settings/ui',
-    url: '/admins/admins-settings/ui',
-    oldUrl: '/admins/admins-settings/ui',
-    newApi: true
-  },
-  saveUserSettings: {
-    method: 'put',
-    // url: '/admins/settings/ui/:productKey',
-    url: '/admins/admins-settings/ui/:productKey',
-    oldUrl: '/admins/admins-settings/ui/:productKey',
-    newApi: true
-  },
+  // getAllUserSettings: {
+  //   method: 'get',
+  //   url: '/admins/settings/ui',
+  //   oldUrl: '/admins/admins-settings/ui',
+  //   newApi: true
+  // },
+  // saveUserSettings: {
+  //   method: 'put',
+  //   url: '/admins/settings/ui/:productKey',
+  //   oldUrl: '/admins/admins-settings/ui/:productKey',
+  //   newApi: true
+  // },
   getBetaStatus: {
     method: 'get',
     // url: '/tenants/self/query',
@@ -189,9 +190,10 @@ export const UserRbacUrlsInfo = {
     newApi: true
   },
   toggleBetaStatus: {
-    // method: 'put',
-    method: 'PATCH',
-    url: '/tenants/settings',
+    // method: 'PATCH',
+    // url: '/tenants/settings',
+    method: 'put',
+    url: '/tenants/betaStatus/:enable',
     oldUrl: '/tenants/betaStatus/:enable',
     newApi: true
   }
@@ -227,12 +229,7 @@ export const {
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(UserUrlsInfo.getAllUserSettings, params)
-        return {
-          ...req
-        }
-      },
+      query: ({ params }) => createHttpRequest(UserUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
         let result:UserSettingsUIModel = {}
         Object.keys(userSettings).forEach((key: string) => {
