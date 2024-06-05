@@ -5,7 +5,6 @@ import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
 import { AnchorLayout, StepsFormLegacy, Tooltip }     from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
 import { usePathBasedOnConfigTemplate }               from '@acx-ui/rc/components'
 import { useLazyApListQuery }                         from '@acx-ui/rc/services'
@@ -38,8 +37,6 @@ export function NetworkingTab () {
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { tenantId, venueId } = useParams()
-
-  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
 
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
@@ -98,7 +95,7 @@ export function NetworkingTab () {
       <MeshNetwork />
     </>
   },
-  ...(supportDirectedMulticast? [{
+  {
     title: $t({ defaultMessage: 'Directed Multicast' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='directed-multicast'>
@@ -117,7 +114,7 @@ export function NetworkingTab () {
         }
       </StepsFormLegacy.SectionTitle>
       <DirectedMulticast />
-    </> }] : []),
+    </> },
   ...(hasCellularAps? [{
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: <>
