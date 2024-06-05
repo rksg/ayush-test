@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Table, TableProps }        from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import { useVenuesLeasesListQuery } from '@acx-ui/rc/services'
 import {
   DHCPLeases,
@@ -14,8 +15,9 @@ import {
 export default function VenueLeaseTable (){
   const params = useParams()
   const { $t } = useIntl()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const { data: leasesList } = useVenuesLeasesListQuery({ params })
+  const { data: leasesList } = useVenuesLeasesListQuery({ params, enableRbac })
 
   const columns: TableProps<DHCPLeases>['columns'] = [
     {
