@@ -35,7 +35,6 @@ export function NetworkingTab (props: {
     Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
 
-  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
 
@@ -379,19 +378,16 @@ export function NetworkingTab (props: {
         </div>
       </>}
 
-      {gtkRekeyFlag &&
-        <UI.FieldLabel width={labelWidth}>
-          {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch/>}/>
-        </UI.FieldLabel>
-      }
+      <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch/>}/>
+      </UI.FieldLabel>
 
-      {gtkRekeyFlag &&
       <UI.FieldLabel width={labelWidth}>
         <Space>
           {$t({ defaultMessage: 'GTK Rekey' })}
@@ -409,7 +405,6 @@ export function NetworkingTab (props: {
           initialValue={true}
           children={<Switch/>}/>
       </UI.FieldLabel>
-      }
 
       <MulticastForm wlanData={wlanData}/>
 
