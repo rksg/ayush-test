@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData, DHCPOption, DHCPPool, DHCPUsage } from '@acx-ui/rc/utils'
 import { Provider }                                                                    from '@acx-ui/store'
 import {
@@ -75,6 +76,41 @@ const dhcpProfilesList = [
   }
 ]
 
+const dhcpProfileRbac = {
+  dhcpPools: [
+    {
+      startIpAddress: '192.168.1.1',
+      endIpAddress: '192.168.1.62',
+      name: 'poo1',
+      vlanId: 300,
+      subnetAddress: '192.168.1.0',
+      subnetMask: '255.255.255.192',
+      leaseTimeHours: 24,
+      leaseTimeMinutes: 0
+    },
+    {
+      startIpAddress: '192.168.2.1',
+      endIpAddress: '192.168.2.30',
+      name: 'poo2',
+      vlanId: 1,
+      subnetAddress: '192.168.2.0',
+      subnetMask: '255.255.255.128',
+      leaseTimeHours: 24,
+      leaseTimeMinutes: 0
+    }
+  ],
+  dhcpMode: 'EnableOnEachAPs',
+  usage: [
+    {
+      venueId: '9d1c33dcba0e4fce946e7ad7b790dda1',
+      totalIpCount: 0,
+      usedIpCount: 0
+    }
+  ],
+  serviceName: 'dhcpProfile1',
+  id: 'b9de168c00b2443bb383c1bb18ef2348'
+}
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -130,5 +166,32 @@ describe('DHCPForm', () => {
 
     const validating = await screen.findByRole('img', { name: 'loading' })
     await waitFor(() => expect(validating).not.toBeVisible())
+  })
+
+  it('should call rbac api and render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const getDhcpProfile = jest.fn()
+    const queryProfile = jest.fn()
+    mockServer.use(
+      rest.get(DHCPUrls.getDHCProfileDetail.url,(_,res,ctx) => {
+        getDhcpProfile()
+        return res(ctx.json(dhcpProfileRbac))
+      }),
+      rest.post(DHCPUrls.queryDHCPProfiles.url,(_,res,ctx) => {
+        queryProfile()
+        return res(ctx.json({ data: [] }))
+      })
+    )
+    const params = { serviceId: 'serviceID', tenantId: 'tenant-id' }
+    render(<Provider><DHCPForm editMode={true}/></Provider>, {
+      route: { params }
+    })
+
+    expect(await screen.findByLabelText('Service Name')).toHaveValue('dhcpProfile1')
+    expect(getDhcpProfile).toHaveBeenCalled()
+    const insertInput = screen.getByLabelText('Service Name')
+    userEvent.type(insertInput, '123')
+    await userEvent.click(screen.getByText('Finish'))
+    expect(queryProfile).toBeCalledTimes(1)
   })
 })

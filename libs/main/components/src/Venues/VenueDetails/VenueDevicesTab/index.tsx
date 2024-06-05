@@ -1,10 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { useIsTierAllowed, TierFeatures }        from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { Tabs }                                                   from '@acx-ui/components'
+import { useIsTierAllowed, TierFeatures, useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
 
 import { VenueEdge }   from './VenueEdge'
+import { VenueRWG }    from './VenueRWG'
 import { VenueSwitch } from './VenueSwitch'
 import { VenueWifi }   from './VenueWifi'
 
@@ -38,6 +39,12 @@ export function VenueDevicesTab () {
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',
         children: <VenueEdge />
+      }]: []),
+    ...(useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+      ? [{
+        label: $t({ defaultMessage: 'RWG' }),
+        value: 'rwg',
+        children: <VenueRWG />
       }]: [])
   ]
 
