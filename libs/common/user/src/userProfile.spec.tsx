@@ -1,8 +1,7 @@
-import { useIntl } from 'react-intl'
 
-import { get }                        from '@acx-ui/config'
-import { BrowserRouter as Router }    from '@acx-ui/react-router-dom'
-import { render, renderHook, screen } from '@acx-ui/test-utils'
+import { get }                     from '@acx-ui/config'
+import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
+import { render, screen }          from '@acx-ui/test-utils'
 import {
   ScopeKeys,
   RolesEnum,
@@ -20,8 +19,7 @@ import {
   setRaiPermissions,
   setUserProfile,
   WrapIfAccessible,
-  hasRaiPermission,
-  getRoleString
+  hasRaiPermission
 } from './userProfile'
 
 import type { RaiPermissions } from './types'
@@ -308,25 +306,4 @@ describe('AuthRoute', () => {
     )
     expect(await screen.findByText('test page')).toBeVisible()
   })
-})
-describe('getRoleString', () => {
-  it('should return the correct role string for a known role', () => {
-    const role = 'PRIME_ADMIN'
-    const { result } = renderHook(() => getRoleString(role, useIntl()))
-    expect(result).toEqual({ current: 'Prime Admin' })
-  })
-
-  it('should return an empty string for an unknown role', () => {
-    const role = 'UNKNOWN_ROLE'
-    const { result } = renderHook(() => getRoleString(role, useIntl()))
-    expect(result).toEqual({ current: '' })
-  })
-
-  it('should return the correct role string for another known role', () => {
-    const role = 'ADMIN'
-
-    const { result } = renderHook(() => getRoleString(role, useIntl()))
-    expect(result).toEqual({ current: 'Administrator' })
-  })
-
 })
