@@ -193,5 +193,5 @@ export const roleStringMap: Record<Role, MessageDescriptor> = {
 }
 
 export function getRoleString (role: string, { $t }: IntlShape): string {
-  return role in Role ? $t(roleStringMap[role as Role]) : ''
+  return roleStringMap[role as Role] ? $t(roleStringMap[role as Role]) : ''
 }
