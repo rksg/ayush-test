@@ -1,7 +1,7 @@
 import { Typography }                 from 'antd'
 import { MessageDescriptor, useIntl } from 'react-intl'
 
-import { UserProfile } from '@acx-ui/user'
+import { UserProfile, getRoleString } from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -14,7 +14,7 @@ interface UserProfileSectionProps {
 }
 
 export const UserProfileSection = (props: UserProfileSectionProps) => {
-  const { $t } = useIntl()
+  const intl = useIntl()
   const { Paragraph } = Typography
   return (
     <UI.UserDataWrapper>
@@ -23,7 +23,7 @@ export const UserProfileSection = (props: UserProfileSectionProps) => {
         {props.userProfile && <div>
           <UI.UserName>{props.userProfile?.fullName}</UI.UserName>
           <UI.UserRole>
-            {$t(props.roleStringMap[props.userProfile?.role])}
+            {getRoleString(props.userProfile?.role, intl)}
           </UI.UserRole>
           <UI.UserAttributes>
             <div>
