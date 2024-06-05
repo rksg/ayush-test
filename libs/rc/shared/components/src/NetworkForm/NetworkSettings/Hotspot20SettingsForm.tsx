@@ -158,7 +158,7 @@ function Hotspot20Form () {
 
   function Hotspot20Service () {
     const { $t } = useIntl()
-    const { editMode, cloneMode } = useContext(NetworkFormContext)
+    const { editMode, cloneMode, data } = useContext(NetworkFormContext)
     const params = useParams()
     const { networkId } = params
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
@@ -197,13 +197,15 @@ function Hotspot20Form () {
       })
 
     useEffect(() => {
-      if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedOperatorId) {
+      if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedOperatorId &&
+       !data?.hotspot20Settings?.originalOperator) {
         form.setFieldValue(['hotspot20Settings', 'wifiOperator'], selectedOperatorId)
       }
     }, [cloneMode, editMode, selectedOperatorId])
 
     useEffect(() => {
-      if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedProviderIds) {
+      if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedProviderIds &&
+        !data?.hotspot20Settings?.originalProviders) {
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], selectedProviderIds)
       }
     }, [cloneMode, editMode, selectedProviderIds])
