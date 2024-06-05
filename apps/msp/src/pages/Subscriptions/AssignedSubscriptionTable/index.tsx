@@ -64,42 +64,81 @@ export function AssignedSubscriptionTable () {
         return row.quantity
       }
     },
-    {
-      title: $t({ defaultMessage: 'Starting Date' }),
-      dataIndex: isEntitlementRbacApiEnabled ? 'effectiveDate' : 'dateEffective',
-      key: 'effectiveDate',
-      sorter: { compare: sortProp('effectiveDate', dateSort) },
-      render: function (_, row) {
-        const effectiveDate = new Date(Date.parse(row.dateEffective))
-        return formatter(DateFormatEnum.DateFormat)(effectiveDate)
+    ...(isEntitlementRbacApiEnabled ? [
+      {
+        title: $t({ defaultMessage: 'Starting Date' }),
+        dataIndex: 'effectiveDate',
+        key: 'effectiveDate',
+        sorter: { compare: sortProp('effectiveDate', dateSort) },
+        render: function (_: React.ReactNode, row: MspAssignmentHistory) {
+          const effectiveDate = new Date(Date.parse(row.effectiveDate as string))
+          return formatter(DateFormatEnum.DateFormat)(effectiveDate)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Expiration Date' }),
+        dataIndex: 'expirationDate',
+        key: 'expirationDate',
+        sorter: { compare: sortProp('expirationDate', dateSort) },
+        render: function (_: React.ReactNode, row: MspAssignmentHistory) {
+          const expirationDate = new Date(Date.parse(row.expirationDate as string))
+          return formatter(DateFormatEnum.DateFormat)(expirationDate)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Time left' }),
+        dataIndex: 'expirationDate',
+        // key needs to be unique
+        key: 'timeLeft',
+        sorter: { compare: sortProp('expirationDate', dateSort) },
+        // active license should be first
+        // defaultSortOrder: 'descend',
+        render: function (_: React.ReactNode, row: MspAssignmentHistory) {
+          const remainingDays = EntitlementUtil.timeLeftInDays(row.dateExpires)
+          const TimeLeftWrapper = (remainingDays <= 60 ? UI.Warning : Space)
+          return <TimeLeftWrapper>{
+            EntitlementUtil.timeLeftValues(remainingDays)
+          }</TimeLeftWrapper>
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Expiration Date' }),
-      dataIndex: 'dateExpires',
-      key: 'dateExpires',
-      sorter: { compare: sortProp('dateExpires', dateSort) },
-      render: function (_, row) {
-        const expirationDate = new Date(Date.parse(row.dateExpires))
-        return formatter(DateFormatEnum.DateFormat)(expirationDate)
+    ] : [
+      {
+        title: $t({ defaultMessage: 'Starting Date' }),
+        dataIndex: isEntitlementRbacApiEnabled ? 'effectiveDate' : 'dateEffective',
+        key: 'effectiveDate',
+        sorter: { compare: sortProp('effectiveDate', dateSort) },
+        render: function (_: React.ReactNode, row: MspAssignmentHistory) {
+          const effectiveDate = new Date(Date.parse(row.dateEffective))
+          return formatter(DateFormatEnum.DateFormat)(effectiveDate)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Expiration Date' }),
+        dataIndex: 'dateExpires',
+        key: 'dateExpires',
+        sorter: { compare: sortProp('dateExpires', dateSort) },
+        render: function (_: React.ReactNode, row: MspAssignmentHistory) {
+          const expirationDate = new Date(Date.parse(row.dateExpires))
+          return formatter(DateFormatEnum.DateFormat)(expirationDate)
+        }
+      },
+      {
+        title: $t({ defaultMessage: 'Time left' }),
+        dataIndex: 'dateExpires',
+        // key needs to be unique
+        key: 'timeLeft',
+        sorter: { compare: sortProp('dateExpires', dateSort) },
+        // active license should be first
+        // defaultSortOrder: 'descend',
+        render: function (_: React.ReactNode, row: MspAssignmentHistory) {
+          const remainingDays = EntitlementUtil.timeLeftInDays(row.dateExpires)
+          const TimeLeftWrapper = (remainingDays <= 60 ? UI.Warning : Space)
+          return <TimeLeftWrapper>{
+            EntitlementUtil.timeLeftValues(remainingDays)
+          }</TimeLeftWrapper>
+        }
       }
-    },
-    {
-      title: $t({ defaultMessage: 'Time left' }),
-      dataIndex: 'dateExpires',
-      // key needs to be unique
-      key: 'timeLeft',
-      sorter: { compare: sortProp('dateExpires', dateSort) },
-      // active license should be first
-      defaultSortOrder: 'descend',
-      render: function (_, row) {
-        const remainingDays = EntitlementUtil.timeLeftInDays(row.dateExpires)
-        const TimeLeftWrapper = (remainingDays <= 60 ? UI.Warning : Space)
-        return <TimeLeftWrapper>{
-          EntitlementUtil.timeLeftValues(remainingDays)
-        }</TimeLeftWrapper>
-      }
-    },
+    ]),
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
