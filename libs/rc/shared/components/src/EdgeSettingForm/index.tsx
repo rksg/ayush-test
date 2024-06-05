@@ -98,6 +98,8 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
               <Form.Item
                 name='clusterId'
                 label={$t({ defaultMessage: 'Cluster' })}
+                // eslint-disable-next-line max-len
+                extra={$t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using SmartEdge’s name by default.' })}
               >
                 <Select options={[
                   {

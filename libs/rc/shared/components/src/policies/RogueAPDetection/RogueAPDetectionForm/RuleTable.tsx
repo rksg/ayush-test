@@ -5,6 +5,7 @@ import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
 
 import { showActionModal, Table, TableProps }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
 import { Drag }                                                from '@acx-ui/icons'
 import { useGetRoguePolicyTemplateQuery, useRoguePolicyQuery } from '@acx-ui/rc/services'
 import {
@@ -30,6 +31,7 @@ type DragItemProps = {
 }
 
 const RuleTable = (props: RuleTableProps) => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const { edit } = props
 
@@ -38,7 +40,8 @@ const RuleTable = (props: RuleTableProps) => {
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
-    skip: !edit
+    skip: !edit,
+    enableRbac
   })
 
   const [ruleName, setRuleName] = useState('')

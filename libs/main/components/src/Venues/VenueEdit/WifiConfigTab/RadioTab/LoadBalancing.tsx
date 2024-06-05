@@ -25,6 +25,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const colSpan = 8
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const form = Form.useFormInstance()
   const [enabled, loadBalancingMethod, stickyClientSteeringEnabled, snrThreshold, percentageThreshold, bandBalancingEnabled ] = [
     useWatch('enabled'),
@@ -44,18 +45,16 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const { setIsLoadOrBandBalaningEnabled } = props
-  const getLoadBalancing = useVenueConfigTemplateQueryFnSwitcher<VenueLoadBalancing>(
-    useGetVenueLoadBalancingQuery,
-    useGetVenueTemplateLoadBalancingQuery
-  )
+  const getLoadBalancing = useVenueConfigTemplateQueryFnSwitcher<VenueLoadBalancing>({
+    useQueryFn: useGetVenueLoadBalancingQuery,
+    useTemplateQueryFn: useGetVenueTemplateLoadBalancingQuery,
+    enableRbac: isWifiRbacEnabled
+  })
 
   const [updateVenueLoadBalancing, { isLoading: isUpdatingVenueLoadBalancing }] = useVenueConfigTemplateMutationFnSwitcher(
     useUpdateVenueLoadBalancingMutation,
     useUpdateVenueTemplateLoadBalancingMutation
   )
-
-  const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
-  const supportStickyClient = stickyClientFlag
 
   const loadBalancingMethods = [
     {
@@ -130,6 +129,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
       await updateVenueLoadBalancing({
         params: { venueId },
         payload,
+        enableRbac: isWifiRbacEnabled,
         callback: callback
       }).unwrap()
 
@@ -235,7 +235,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     </Row>
     }
 
-    {supportStickyClient && enabled &&
+    {enabled &&
     <Row>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
@@ -258,7 +258,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     </Row>
     }
 
-    {supportStickyClient && enabled && stickyClientSteeringEnabled &&
+    {enabled && stickyClientSteeringEnabled &&
     <Row>
       <Col span={colSpan}>
         <Space>

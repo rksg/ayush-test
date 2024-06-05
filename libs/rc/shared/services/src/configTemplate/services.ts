@@ -134,10 +134,12 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getPortalTemplate: build.query<Portal, RequestPayload>({
-      query: ({ params, payload }) => {
+      query: ({ params, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
         // eslint-disable-next-line max-len
         const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.getPortal,
-          params, getV1orV1_1Headers(payload))
+          params, customHeaders)
         return {
           ...req
         }
@@ -151,24 +153,22 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
           params, GetApiVersionHeader(ApiVersionEnum.v1))
         return {
           ...req,
-          body: JSON.stringify({
-            ...(_.omit(payload as Portal, ['enableRbac']))
-          })
+          body: JSON.stringify(payload)
         }
       },
       // eslint-disable-next-line max-len
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'PortalTemplate', id: 'LIST' }]
     }),
     updatePortalTemplate: build.mutation<CommonResult, RequestPayload<Portal>>({
-      query: ({ params, payload }) => {
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
         // eslint-disable-next-line max-len
         const req = createPortalTemplateHttpRequest(ServicesConfigTemplateUrlsInfo.updatePortal,
-          params, getV1orV1_1Headers(payload))
+          params, customHeaders)
         return {
           ...req,
-          body: JSON.stringify({
-            ...(_.omit(payload as Portal, ['enableRbac']))
-          })
+          body: JSON.stringify(payload)
         }
       },
       // eslint-disable-next-line max-len
@@ -348,16 +348,6 @@ const v1TemplateHeaders = {
 }
 function createDpskTemplateHttpRequest (apiInfo: ApiInfo, params?: Params<string>) {
   return createDpskHttpRequest(apiInfo, params, v1TemplateHeaders)
-}
-
-const getV1orV1_1Headers = (payload:unknown) => {
-  const currentPayload = payload ?? {}
-  const enableRbac: boolean =
-  (currentPayload != null && typeof currentPayload === 'object' && 'enableRbac' in currentPayload) ?
-    (currentPayload as { enableRbac: boolean }).enableRbac : false
-  return enableRbac ?
-    GetApiVersionHeader(ApiVersionEnum.v1_1) :
-    GetApiVersionHeader(ApiVersionEnum.v1)
 }
 
 const createPortalTemplateHttpRequest = (

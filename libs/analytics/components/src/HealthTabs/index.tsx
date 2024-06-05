@@ -37,7 +37,7 @@ export function HealthTabs () {
 
   return <Tabs
     onChange={onTabChange}
-    // destroyInactiveTabPane
+    destroyInactiveTabPane
     activeKey={activeSubTab}
     defaultActiveKey='overview'
     type='card'

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader }  from '@acx-ui/components'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { IDENTITY_PROVIDER_MAX_COUNT, SimpleListTooltip } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -130,6 +131,7 @@ function useColumns () {
   const { $t } = useIntl()
   const params = useParams()
   const emptyResult: KeyValue<string, string>[] = []
+  const enableServicePolicyRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   // eslint-disable-next-line max-len
   const { networkNameMap }: { networkNameMap: KeyValue<string, string>[] } = useNetworkListQuery({
     params: { tenantId: params.tenantId },
@@ -157,7 +159,8 @@ function useColumns () {
       sortOrder: 'ASC',
       page: 1,
       pageSize: 10000
-    }
+    },
+    enableRbac: enableServicePolicyRbac
   }, {
     selectFromResult: ({ data }: { data?: { data: AAAViewModalType[] } }) => ({
       radiusNameMap: data?.data
