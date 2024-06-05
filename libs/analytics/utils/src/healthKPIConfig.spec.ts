@@ -1,6 +1,6 @@
 import { multipleBy1000, divideBy100, noFormat,
   kpisForTab, wiredKPIsForTab,
-  numberWithPercentSymbol, hasFirmwareFilterForPoe } from './healthKPIConfig'
+  numberWithPercentSymbol, shouldAddFirmwareFilter } from './healthKPIConfig'
 
 describe('Health KPI', () => {
   const mockGet = jest.fn()
@@ -39,11 +39,6 @@ describe('Health KPI', () => {
     expect(kpiConfig.apToSZLatency.histogram.splits)
       .toEqual([5, 10, 20, 40, 60, 100, 200, 500])
   })
-
-  it('should return false if path name doesn\'t have wired',()=>{
-    expect(hasFirmwareFilterForPoe()).toBe(false)
-  })
-
   it('should return correct config for RA', () => {
     expect(kpisForTab('true')).toMatchObject({
       infrastructure: {
@@ -99,6 +94,24 @@ describe('Health KPI', () => {
           'switchPoeUtilization'
         ]
       }
+    })
+  })
+  describe('shouldAddFirmwareFilter', () => {
+    const mockPathname = jest.fn()
+    Object.defineProperty(window, 'location', {
+      value: {
+        get pathname () {
+          return mockPathname()
+        }
+      }
+    })
+    it('should return undefined if path name does not have wired', () => {
+      mockPathname.mockReturnValue('/health/overview')
+      expect(shouldAddFirmwareFilter()).toBe(undefined)
+    })
+    it('should return true if path name has wired', () => {
+      mockPathname.mockReturnValue('/health/wired')
+      expect(shouldAddFirmwareFilter()).toBe(true)
     })
   })
 })

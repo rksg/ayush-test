@@ -133,10 +133,12 @@ function ApplyCalendar ({
   metadata,
   initialDate,
   sliceValue,
-  showTextOnly
+  showTextOnly,
+  statusEnum
 }: ActionButtonProps) {
   const { $t } = useIntl()
-  const needsWlans = code.startsWith('c-probeflex-')
+  const wlanStatus = ['new', 'applyscheduled'].includes(statusEnum)
+  const needsWlans = code.startsWith('c-probeflex-') && wlanStatus
   const [scheduleRecommendation] = useScheduleRecommendationMutation()
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const isRecommendationRevertEnabled = useIsSplitOn(Features.RECOMMENDATION_REVERT) || isMlisa

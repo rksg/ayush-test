@@ -4,12 +4,11 @@ export class ApRadioParamsDual5G {
   enabled?: boolean
 
   useVenueEnabled?: boolean
-  // True if lower 5 GHz is enabled
 
+  // True if lower 5 GHz is enabled
   lower5gEnabled?: boolean
 
   // True if upper 5 GHz is enabled
-
   upper5gEnabled?: boolean
 
   radioParamsLower5G?: ApRadioParams50G

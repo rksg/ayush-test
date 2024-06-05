@@ -17,6 +17,7 @@ import {
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
+  SwitchMessages,
   SwitchViewModel,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
@@ -377,17 +378,15 @@ export function getInactiveTooltip (port: SwitchPortViewModel): string {
   const { $t } = getIntl()
 
   if (!isOperationalSwitchPort(port)) {
-    return $t({
-      defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
-    })
+    return $t(SwitchMessages.NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED)
   }
 
   if (isStackPort(port)) {
-    return $t({ defaultMessage: 'This is a stacking port and can not be configured' })
+    return $t(SwitchMessages.STACKING_PORT_NOT_SUPPORT_CONFIGURED)
   }
 
   if (isLAGMemberPort(port)) {
-    return $t({ defaultMessage: 'This is a LAG member port and can not be configured' })
+    return $t(SwitchMessages.LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED)
   }
 
   return ''

@@ -5,30 +5,32 @@ import { useIntl }                          from 'react-intl'
 import { useParams }                        from 'react-router-dom'
 
 import { Button, cssStr, Loader, PageHeader, showActionModal, Subtitle } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }        from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                      from '@acx-ui/feature-toggle'
 import {
   ConnectionMeteringLink,
   DpskPoolLink,
+  IdentityGroupLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  IdentityGroupLink,
-  PropertyUnitLink,
   PassphraseViewer,
   PersonaDrawer,
+  PropertyUnitLink,
+  useIsEdgeFeatureReady,
   usePersonaAsyncHeaders
 } from '@acx-ui/rc/components'
 import {
-  useLazyGetDpskQuery,
+  useAllocatePersonaVniMutation,
   useGetPersonaByIdQuery,
-  useLazyGetMacRegListQuery,
-  useLazyGetPersonaGroupByIdQuery,
-  useLazyGetNetworkSegmentationGroupByIdQuery,
-  useLazyGetPropertyUnitByIdQuery,
   useLazyGetConnectionMeteringByIdQuery,
-  useUpdatePersonaMutation,
-  useAllocatePersonaVniMutation
+  useLazyGetDpskQuery,
+  useLazyGetMacRegListQuery,
+  useLazyGetNetworkSegmentationGroupByIdQuery,
+  useLazyGetPersonaGroupByIdQuery,
+  useLazyGetPropertyUnitByIdQuery,
+  useUpdatePersonaMutation
 } from '@acx-ui/rc/services'
 import { ConnectionMetering, PersonaGroup } from '@acx-ui/rc/utils'
+import { WifiScopes }                       from '@acx-ui/types'
 import { filterByAccess }                   from '@acx-ui/user'
 import { noDataDisplay }                    from '@acx-ui/utils'
 
@@ -40,7 +42,7 @@ import { PersonaDevicesTable } from './PersonaDevicesTable'
 function PersonaDetails () {
   const { $t } = useIntl()
   const propertyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const { tenantId, personaGroupId, personaId } = useParams()
   const [personaGroupData, setPersonaGroupData] = useState<PersonaGroup>()
   const [connectionMetering, setConnectionMetering] = useState<ConnectionMetering>()
@@ -387,7 +389,12 @@ function PersonaDetailsPageHeader (props: {
   }
 
   const extra = filterByAccess([
-    <Button type='primary' onClick={showRevokedModal} disabled={!allowed}>
+    <Button
+      type='primary'
+      onClick={showRevokedModal}
+      disabled={!allowed}
+      scopeKey={[WifiScopes.UPDATE]}
+    >
       {$t({
         defaultMessage: `{revokedStatus, select,
         true {Unblock}
@@ -395,7 +402,7 @@ function PersonaDetailsPageHeader (props: {
         description: 'Translation strings - Unblock, Block Identity'
       }, { revokedStatus })}
     </Button>,
-    <Button type={'primary'} onClick={onClick}>
+    <Button type={'primary'} onClick={onClick} scopeKey={[WifiScopes.UPDATE]}>
       {$t({ defaultMessage: 'Configure' })}
     </Button>
   ])

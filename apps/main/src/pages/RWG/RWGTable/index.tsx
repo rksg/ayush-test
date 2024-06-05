@@ -1,13 +1,14 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                       from '@acx-ui/components'
-import { useGetVenuesQuery, useRwgListQuery }                                                                              from '@acx-ui/rc/services'
-import { defaultSort, FILTER, getRwgStatus, RWG, SEARCH, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                                              from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                       from '@acx-ui/user'
+import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                          from '@acx-ui/components'
+import { useRwgActions }                                                                                                      from '@acx-ui/rc/components'
+import { useGetVenuesQuery, useRwgListQuery }                                                                                 from '@acx-ui/rc/services'
+import { defaultSort, FILTER, getRwgStatus, RWGRow, SEARCH, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                                                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                                          from '@acx-ui/user'
+import { TABLE_DEFAULT_PAGE_SIZE }                                                                                            from '@acx-ui/utils'
 
-import { useRwgActions } from '../useRwgActions'
 
 
 function useColumns (
@@ -16,7 +17,7 @@ function useColumns (
 ) {
   const { $t } = useIntl()
 
-  const columns: TableProps<RWG>['columns'] = [
+  const columns: TableProps<RWGRow>['columns'] = [
     {
       title: $t({ defaultMessage: 'Gateway' }),
       key: 'name',
@@ -26,11 +27,37 @@ function useColumns (
       searchable: searchable,
       defaultSortOrder: 'ascend',
       render: function (_, row, __, highlightFn) {
-        return (
+        return row?.isCluster ? highlightFn(row.name) : (
           <TenantLink
-            to={`/ruckus-wan-gateway/${row.venueId}/${row.rwgId}/gateway-details/overview`}>
-            {searchable ? highlightFn(row.name) : row.name}</TenantLink>
+            to={
+              row?.isNode
+                // eslint-disable-next-line max-len
+                ? `/ruckus-wan-gateway/${row.venueId}/${row.clusterId}/gateway-details/overview/${row.rwgId}`
+                : `/ruckus-wan-gateway/${row.venueId}/${row.rwgId}/gateway-details/overview`}>
+            {highlightFn(row.name)}</TenantLink>
         )
+      }
+    },{
+      title: $t({ defaultMessage: 'Cluster Status' }),
+      dataIndex: 'status',
+      key: 'status',
+      filterMultiple: false,
+      filterValueNullable: true,
+      filterKey: 'status',
+      filterable: filterables ? filterables['status'] : false,
+      sorter: { compare: sortProp('status', defaultSort) },
+      render: function (_, row) {
+        const { name, color } = getRwgStatus(row.status)
+
+        return row.isCluster ?
+          (
+            <span>
+              <Badge
+                color={`var(${color})`}
+                text={transformDisplayText(name)}
+              />
+            </span>
+          ) : <></>
       }
     },
     {
@@ -44,14 +71,14 @@ function useColumns (
       sorter: { compare: sortProp('status', defaultSort) },
       render: function (_, row) {
         const { name, color } = getRwgStatus(row.status)
-        return (
+        return !row.isCluster ? (
           <span>
             <Badge
               color={`var(${color})`}
               text={transformDisplayText(name)}
             />
           </span>
-        )
+        ) : <></>
       }
     },
     {
@@ -64,11 +91,11 @@ function useColumns (
       filterable: filterables ? filterables['venueName'] : false,
       sorter: { compare: sortProp('venueName', defaultSort) },
       render: function (_, row) {
-        return (
+        return !row.isCluster ? (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
             {row.venueName}
           </TenantLink>
-        )
+        ) : <></>
       }
     },
     {
@@ -78,7 +105,7 @@ function useColumns (
       filterMultiple: false,
       sorter: false,
       render: function (_, row) {
-        return row.hostname
+        return !row.isCluster ? row.hostname : ''
       }
     }
   ]
@@ -131,11 +158,19 @@ export function RWGTable () {
       }
     }) })
 
-  const rowActions: TableProps<RWG>['rowActions'] = [{
-    visible: (selectedRows) => selectedRows.length === 1,
+  const rowActions: TableProps<RWGRow>['rowActions'] = [{
+    visible: (selectedRows) => selectedRows.length === 1 && !selectedRows[0].isCluster,
     label: $t({ defaultMessage: 'Edit' }),
     onClick: (selectedRows) => {
       navigate(`${selectedRows[0].venueId}/${selectedRows[0].rwgId}/edit`, { replace: false })
+    }
+  },
+  {
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Configure' }),
+    onClick: (selectedRows) => {
+      window.open('https://' + (selectedRows[0]?.hostname)?.toString() + '/admin',
+        '_blank')
     }
   },
   {
@@ -148,6 +183,14 @@ export function RWGTable () {
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
     tableQuery.setPayload(payload)
+  }
+
+  const rowSelection = () => {
+    return {
+      getCheckboxProps: (record: RWGRow) => ({
+        disabled: !!record.isNode
+      })
+    }
   }
 
 
@@ -168,10 +211,16 @@ export function RWGTable () {
           settingsId='rgw-table'
           columns={columns}
           dataSource={tableQuery?.data?.data}
+          pagination={{
+            defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
+            pageSize: tableQuery?.data?.page,
+            showSizeChanger: false,
+            showQuickJumper: false
+          }}
           onFilterChange={handleFilterChange}
-          rowKey='rwgId'
+          rowKey='rowId'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={hasAccess() && { ...rowSelection() }}
         />
       </Loader>
     </>
