@@ -6,6 +6,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { formatter }            from '@acx-ui/formatter'
 import { TenantLink }           from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 
@@ -103,7 +104,8 @@ export const ImpactedSwitchesTable = ({
       title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
       dataIndex: metricField,
       key: metricField,
-      sorter: { compare: sortProp(metricField, defaultSort) }
+      sorter: { compare: sortProp(metricField, defaultSort) },
+      render: (value) => { return formatter('countFormat')(value) }
     }
   ]
 
