@@ -322,6 +322,10 @@ export function RecommendationTable (
   const writePermission = hasPermission({
     permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS'
   })
+  const fullOptimizationPermission = hasPermission({
+    permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS',
+    scopes: [WifiScopes.UPDATE]
+  })
   useEffect(() => {
     setSelectedRowData([])
   }, [queryResults.data])
@@ -455,7 +459,7 @@ export function RecommendationTable (
           <Switch
             defaultChecked
             checked={preferences.crrmFullOptimization}
-            disabled={!canToggle || record.isMuted || !writePermission}
+            disabled={!canToggle || record.isMuted || !fullOptimizationPermission}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,
