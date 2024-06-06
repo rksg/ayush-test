@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Col, Row, Space } from 'antd'
-import { useIntl }               from 'react-intl'
+import { Form, Col, List, Row, Space, Typography } from 'antd'
+import { useIntl }                                 from 'react-intl'
+import AutoSizer                                   from 'react-virtualized-auto-sizer'
 
 
-import { Button, Card, showActionModal, Tooltip } from '@acx-ui/components'
+import { Button, Card, cssStr, DonutChart, showActionModal, Tooltip } from '@acx-ui/components'
 import {
   useDeleteTenantAuthenticationsMutation
 } from '@acx-ui/rc/services'
@@ -49,10 +50,18 @@ const SmsProviderItem = (props: SmsProviderProps) => {
     }
   }, [ssoData])
 
+  const data = [
+    { value: 30000, name: 'In Setup Phase', color: cssStr('--acx-accents-blue-50') },
+    { value: 3322, name: 'Temporarily Degraded', color: cssStr('--acx-neutrals-50') },
+    { value: 800, name: 'Requires Attention', color: cssStr('--acx-semantics-red-70') },
+    { value: 4322, name: 'Temporarily Degraded', color: cssStr('--acx-neutrals-50') }
+  ]
+
   return ( <>
     <Row gutter={24} style={{ marginBottom: '15px' }}>
       <Col span={10}>
         <Form.Item
+          style={{ marginBottom: 0 }}
           colon={false}
           label={<>
             {$t({ defaultMessage: 'SMS Provider' })}
@@ -146,6 +155,62 @@ const SmsProviderItem = (props: SmsProviderProps) => {
           </Card>
         </Col>
         }
+
+        {/* <Form.Item
+          style={{ marginTop: '10px', marginBottom: 0 }}
+          colon={false}
+          label={$t({ defaultMessage: 'The SMS pool provided by RUCKUS has been depleted. We recommend'
+           + 'setting up an SMS provider promptly.' })}
+        /> */}
+        <List
+          style={{ marginTop: '15px', marginBottom: 0 }}
+          split={false}
+          dataSource={[
+            $t({ defaultMessage:
+                    'The SMS pool provided by RUCKUS has been depleted. We recommend' }),
+            $t({ defaultMessage: 'setting up an SMS provider promptly.' })
+          ]}
+          renderItem={(item) => (
+            <List.Item>
+              <Typography.Text className='description greyText'>
+                {item}
+              </Typography.Text>
+            </List.Item>
+          )}
+        />
+
+        <Form.Item
+          style={{ marginTop: '10px', marginBottom: 0 }}
+          colon={false}
+          label={$t({ defaultMessage: 'Free SMS Pool' })}
+        />
+        {<Col style={{ width: '341px', paddingLeft: 0 }}>
+          <Card type='solid-bg' >
+            <div style={{ width: 100, height: 100 }}>
+              {/* <Card title='Venues'> */}
+              <AutoSizer>
+                {({ height, width }) => (
+                  <DonutChart
+                    showLegend={false}
+                    style={{ width, height }}
+                    title='66 / 100'
+                    // subTitle={'This is very long subtitle and it should go to next line'}
+                    //   tooltipFormat={defineMessage({
+                    //     defaultMessage: `{name}: <b>{formattedValue} {value, plural,
+                    //       one {Client}
+                    //       other {Clients}
+                    //     }</b> ({formattedPercent})`
+                    //   })}
+                    // dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
+                    data={data}/>
+                )}
+              </AutoSizer>
+              {/* </Card> */}
+            </div>
+          </Card>
+        </Col>
+        }
+
       </Col>
     </Row>
 
