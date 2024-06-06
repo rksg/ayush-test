@@ -87,7 +87,6 @@ export enum Features {
   PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
-  RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',

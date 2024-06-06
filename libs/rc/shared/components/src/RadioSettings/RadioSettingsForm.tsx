@@ -45,7 +45,6 @@ export function RadioSettingsForm (props:{
   LPIButtonText?: LPIButtonText
 }) {
   const { $t } = useIntl()
-  const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const afcFeatureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const {
     radioType,
@@ -357,7 +356,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('txPower')}
         />
       </Form.Item>
-      {(radioType === ApRadioTypeEnum.Radio6G && radio6GRateControlFeatureFlag) &&
+      {radioType === ApRadioTypeEnum.Radio6G &&
       <>
         <Form.Item
           label={$t({ defaultMessage: 'BSS Min Rate:' })}
