@@ -496,6 +496,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
+      width: 200,
       render: (data: React.ReactNode, row: APExtended) => {
         return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
@@ -506,6 +507,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
+      width: 200,
       render: (data: React.ReactNode, row: APExtended) => {
         const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
         return (

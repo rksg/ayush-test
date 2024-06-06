@@ -6,11 +6,13 @@ import {
   FormInstance,
   Space
 } from 'antd'
+import { useWatch }        from 'antd/lib/form/Form'
 import _                   from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams, Link } from 'react-router-dom'
 
 import { GridRow, Button }              from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { DeleteOutlinedIcon }           from '@acx-ui/icons'
 import { usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
@@ -18,7 +20,8 @@ import {
   useVenueDHCPProfileQuery,
   useApListQuery,
   useGetVenueTemplateDhcpProfileQuery,
-  useGetDhcpTemplateListQuery
+  useGetDhcpTemplateListQuery,
+  useLazyGetDHCPProfileQuery
 } from '@acx-ui/rc/services'
 import {
   DHCPProfileAps, DHCPSaveData, DHCPConfigTypeEnum,
@@ -47,6 +50,7 @@ const VenueDHCPForm = (props: {
   const form = props.form
   const dhcpInfo = useDHCPInfo()
   const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const addDhcpPath = usePathBasedOnConfigTemplate(
     getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })
   )
@@ -55,11 +59,14 @@ const VenueDHCPForm = (props: {
 
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
     useQueryFn: useVenueDHCPProfileQuery,
-    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
+    extraParams: params,
+    enableRbac
   })
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
-    useTemplateQueryFn: useGetDhcpTemplateListQuery
+    useTemplateQueryFn: useGetDhcpTemplateListQuery,
+    enableRbac
   })
   const { data: apList } = useApListQuery({
     params,
@@ -72,14 +79,19 @@ const VenueDHCPForm = (props: {
   const [selectedAPs, setSelectedAPs] = useState<string[]>([])
 
   const [gateways, setGateways] = useState<DHCPProfileAps[]>()
-  const [dhcpServiceID, setDHCPServiceID] = useState('')
+  const dhcpServiceID = useWatch('serviceProfileId', form)
   const [isSimpleMode, setIsSimpleMode] = useState(true)
   const [isHierarchical, setIsHierarchical] = useState(false)
 
   const [serviceEnabled, setServiceEnabled] = useState<boolean|undefined>(true)
-
-  const getSelectedDHCPMode = ()=> {
+  const [ getDhcpProfile ] = useLazyGetDHCPProfileQuery()
+  const getSelectedDHCPMode = async ()=> {
     if(dhcpProfileList && dhcpServiceID){
+      if(enableRbac && !isTemplate) {
+        // eslint-disable-next-line max-len
+        const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID }, enableRbac }).unwrap()
+        return result?.dhcpMode
+      }
       return dhcpProfileList[_.findIndex(dhcpProfileList,
         { id: dhcpServiceID })].dhcpMode
     }else{
@@ -92,8 +104,26 @@ const VenueDHCPForm = (props: {
   const hasAddDhcpPermission = hasPermission({ scopes: [WifiScopes.CREATE] })
 
   useEffect(() => {
-    setIsSimpleMode(getSelectedDHCPMode() === DHCPConfigTypeEnum.SIMPLE)
-    setIsHierarchical(getSelectedDHCPMode() === DHCPConfigTypeEnum.HIERARCHICAL)
+    async function fetchData () {
+      const dhcpMode = await getSelectedDHCPMode()
+      setIsSimpleMode(dhcpMode === DHCPConfigTypeEnum.SIMPLE)
+      setIsHierarchical(dhcpMode === DHCPConfigTypeEnum.HIERARCHICAL)
+      if(dhcpMode === DHCPConfigTypeEnum.HIERARCHICAL){
+        const primaryServer = getAPDetail(form.getFieldsValue().primaryServerSN)
+        const secondary = getAPDetail(form.getFieldsValue().backupServerSN)
+        const resetField = (server: APExtended | undefined, fieldName:string)=>{
+          const lanPortStatus = server?.apStatusData?.lanPortStatus
+          if (lanPortStatus && lanPortStatus.length <= 1) {
+            form.setFieldValue(fieldName, '')
+          }
+        }
+        resetField(primaryServer, 'primaryServerSN')
+        resetField(secondary, 'backupServerSN')
+        form.setFieldValue('gateways', undefined)
+      }
+      refreshList()
+    }
+    fetchData()
   },[dhcpServiceID, dhcpProfileList])
 
   let natGatewayList = _.groupBy(venueDHCPProfile?.dhcpServiceAps, 'role').NatGateway || []
@@ -102,7 +132,6 @@ const VenueDHCPForm = (props: {
     setGateways(initVal.gateways ?? [])
     form.setFieldsValue(initVal)
     setServiceEnabled(initVal.enabled)
-    setDHCPServiceID(dhcpInfo.id as string)
     refreshList()
   }, [venueDHCPProfile, form, dhcpInfo.id, dhcpInfo.primaryDHCP.serialNumber,
     dhcpInfo.secondaryDHCP.serialNumber, apList])
@@ -113,7 +142,6 @@ const VenueDHCPForm = (props: {
     setGateways(initVal.gateways ?? [])
     form.setFieldsValue(initVal)
     setServiceEnabled(initVal.enabled)
-    setDHCPServiceID(dhcpInfo.id as string)
     refreshList()
   }
   useImperativeHandle(ref, () => ({
@@ -149,7 +177,6 @@ const VenueDHCPForm = (props: {
   const getOptionList = (sn:string, notForGateway?:boolean)=>{
     if(apList?.data) {
       return _.filter(apList?.data, (o) => {
-        const isHierarchical = getSelectedDHCPMode() === DHCPConfigTypeEnum.HIERARCHICAL
         let skipForH = false
         if(notForGateway===true
           && isHierarchical && o.apStatusData
@@ -272,7 +299,6 @@ const VenueDHCPForm = (props: {
         defaultChecked={venueDHCPProfile?.enabled}
         checked={venueDHCPProfile?.enabled}/>
     </StyledForm.Item>
-
     <StyledForm.Item label={$t({ defaultMessage: 'DHCP service' })}
       hidden={!serviceEnabled}>
       <Space>
@@ -281,28 +307,8 @@ const VenueDHCPForm = (props: {
           noStyle
           rules={[{ required: true, message: $t({ defaultMessage: 'DHCP service is required' }) }]}
         >
-          <AntSelect onChange={(val)=>{
-            setDHCPServiceID(val as string)
-            // eslint-disable-next-line max-len
-            const mode = dhcpProfileList && dhcpProfileList[_.findIndex(dhcpProfileList, { id: val as string })].dhcpMode
-            if(mode === DHCPConfigTypeEnum.HIERARCHICAL){
-              const primaryServer = getAPDetail(form.getFieldsValue().primaryServerSN)
-              const secondary = getAPDetail(form.getFieldsValue().backupServerSN)
-              const resetField = (server: APExtended | undefined, fieldName:string)=>{
-                if(server
-                  && server.apStatusData
-                  && server.apStatusData.lanPortStatus
-                  && server.apStatusData.lanPortStatus?.length <= 1){
-                  form.setFieldValue(fieldName, '')
-                }
-              }
-              resetField(primaryServer, 'primaryServerSN')
-              resetField(secondary, 'backupServerSN')
-              form.setFieldValue('gateways', undefined)
-            }
-            refreshList()
-          }}
-          placeholder={$t({ defaultMessage: 'Select Service...' })}>
+          <AntSelect
+            placeholder={$t({ defaultMessage: 'Select Service...' })}>
             {dhcpProfileList?.map( (dhcp:DHCPSaveData) =>
               <Option key={dhcp.id} value={dhcp.id}>
                 {dhcp.serviceName}
