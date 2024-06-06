@@ -83,11 +83,10 @@ interface ErrorDetails {
 export const entitlementAssignmentPayload = {
   fields: [
     'id',
-    'mspTenantId',
     'licenseType',
     'quantity',
     'effectiveDate',
-    'expiresDate',
+    'expirationDate',
     'isTrial',
     'createdDate',
     'revokedDate',
@@ -95,7 +94,7 @@ export const entitlementAssignmentPayload = {
   ],
   page: 1,
   pageSize: 20,
-  sortField: 'expiresDate',
+  sortField: 'expirationDate',
   sortOrder: 'DESC',
   filters: {
     createdBy: [],

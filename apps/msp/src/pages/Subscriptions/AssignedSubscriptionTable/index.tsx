@@ -94,7 +94,7 @@ export function AssignedSubscriptionTable () {
         // active license should be first
         // defaultSortOrder: 'descend',
         render: function (_: React.ReactNode, row: MspAssignmentHistory) {
-          const remainingDays = EntitlementUtil.timeLeftInDays(row.dateExpires)
+          const remainingDays = EntitlementUtil.timeLeftInDays(row.expirationDate as string)
           const TimeLeftWrapper = (remainingDays <= 60 ? UI.Warning : Space)
           return <TimeLeftWrapper>{
             EntitlementUtil.timeLeftValues(remainingDays)
