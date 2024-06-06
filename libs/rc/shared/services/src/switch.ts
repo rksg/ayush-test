@@ -206,8 +206,10 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
     deleteStackMember: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.deleteStackMember, params)
+      query: ({ params, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.deleteStackMember, params, headers)
         return {
           ...req
         }
@@ -215,11 +217,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
       invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
     }),
     acknowledgeSwitch: build.mutation<SwitchRow, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SwitchUrlsInfo.acknowledgeSwitch, params)
+      query: ({ params, payload, enableRbac }) => {
+        const switchUrls = getSwitchUrls(enableRbac)
+        const headers = enableRbac ? customHeaders.v1 : {}
+        const req = createHttpRequest(switchUrls.acknowledgeSwitch, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Switch', id: 'DETAIL' }, { type: 'Switch', id: 'StackMemberList' }]
@@ -393,7 +397,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     batchDeleteProfiles: build.mutation<void, RequestPayload[]>({ // RBAC only
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
-        return batchApi(SwitchRbacUrlsInfo.deleteSwitchProfile, requests, fetchWithBQ)
+        return batchApi(SwitchRbacUrlsInfo.deleteSwitchProfile, requests, fetchWithBQ,
+          customHeaders.v1001)
       },
       invalidatesTags: [{ type: 'Switch', id: 'LIST' }]
     }),
@@ -421,7 +426,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
     }),
     deleteCliTemplates: build.mutation<SwitchCliTemplateModel, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const switchUrls = getSwitchUrls(enableRbac)
         const req = createHttpRequest(switchUrls.deleteCliTemplates, params, headers)
         return {
@@ -508,7 +513,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      keepUnusedDataFor: 5,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchVlanUnionByVenue: build.query<SwitchVlan[], RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -541,8 +548,49 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req
         }
       },
-      keepUnusedDataFor: 0,
+      keepUnusedDataFor: 5,
       providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    addSwitchVlans: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchRbacUrlsInfo.addSwitchVlans, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    deleteSwitchVlan: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(SwitchRbacUrlsInfo.deleteSwitchVlan, params, customHeaders.v1)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    updateSwitchVlan: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(SwitchRbacUrlsInfo.updateSwitchVlan, params, customHeaders.v1)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
+    }),
+    addSwitchesVlans: build.mutation<Vlan[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(
+          SwitchRbacUrlsInfo.addSwitchesVlans, params, customHeaders.v1
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchesVlan: build.query<SwitchVlanUnion, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -553,7 +601,9 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           ...req,
           body: JSON.stringify(payload)
         }
-      }
+      },
+      keepUnusedDataFor: 5,
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getTaggedVlansByVenue: build.query<SwitchVlans[], RequestPayload>({
       query: ({ params }) => {
@@ -579,7 +629,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({ ////
+    savePortsSetting: build.mutation<SaveSwitchProfile[], RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
@@ -780,7 +830,8 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      providesTags: [{ type: 'SwitchVlan', id: 'LIST' }]
     }),
     getSwitchAcls: build.query<TableResult<Acl>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -1138,7 +1189,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
         }
       }
     }),
-    updateDhcpServerState: build.mutation<{}, RequestPayload>({ ////
+    updateDhcpServerState: build.mutation<{}, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
         const switchUrls = getSwitchUrls(enableRbac)
@@ -1642,6 +1693,10 @@ export const {
   useLazyGetSwitchVlanQuery,
   useGetSwitchVlansQuery,
   useLazyGetSwitchVlansQuery,
+  useAddSwitchVlansMutation,
+  useDeleteSwitchVlanMutation,
+  useUpdateSwitchVlanMutation,
+  useAddSwitchesVlansMutation,
   useGetSwitchesVlanQuery,
   useLazyGetSwitchesVlanQuery,
   useGetTaggedVlansByVenueQuery,

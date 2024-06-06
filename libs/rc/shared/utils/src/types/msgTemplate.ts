@@ -1,5 +1,21 @@
 // Message Template Service Types
 
+export interface MsgCategory {
+    id: string,
+    name: string,
+    defaultTemplateGroupId: string,
+    emailTemplateScopeId: string,
+    smsTemplateScopeId: string
+}
+
+export interface TemplateGroup {
+    id: string,
+    name: string,
+    editable: boolean,
+    emailTemplateId: string,
+    smsTemplateId: string
+}
+
 export interface TemplateScope {
     id: string,
     messageType: MessageType,

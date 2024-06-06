@@ -56,9 +56,6 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     useUpdateVenueTemplateLoadBalancingMutation
   )
 
-  const stickyClientFlag = useIsSplitOn(Features.STICKY_CLIENT_STEERING)
-  const supportStickyClient = stickyClientFlag
-
   const loadBalancingMethods = [
     {
       method: LoadBalancingMethodEnum.CLIENT_COUNT,
@@ -238,7 +235,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     </Row>
     }
 
-    {supportStickyClient && enabled &&
+    {enabled &&
     <Row>
       <Col span={colSpan}>
         <FieldLabel width='200px'>
@@ -261,7 +258,7 @@ export function LoadBalancing (props: { setIsLoadOrBandBalaningEnabled?: (isLoad
     </Row>
     }
 
-    {supportStickyClient && enabled && stickyClientSteeringEnabled &&
+    {enabled && stickyClientSteeringEnabled &&
     <Row>
       <Col span={colSpan}>
         <Space>
