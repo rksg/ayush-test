@@ -104,9 +104,10 @@ export const ImpactedSwitchesTable = ({
       title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
       dataIndex: metricField,
       key: metricField,
+      align: 'right',
       sorter: { compare: sortProp(metricField, defaultSort) },
       render: (value) => {
-        return <div style={{ textAlign: 'right' }}>{formatter('countFormat')(value)}</div>
+        return formatter('countFormat')(value)
       }
     }
   ]
