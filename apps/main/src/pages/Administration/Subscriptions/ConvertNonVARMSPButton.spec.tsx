@@ -4,7 +4,6 @@ import React from 'react'
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
-import { MspUrlsInfo }                        from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
 import { Provider }                           from '@acx-ui/store'
 import {
@@ -108,6 +107,8 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
+const services = require('@acx-ui/msp/services')
+
 describe('Convert NonVAR MSP Button', () => {
   beforeEach(() => {
     mockedTenantFn.mockClear()
@@ -117,15 +118,12 @@ describe('Convert NonVAR MSP Button', () => {
     mockedGetDelegationFn.mockClear()
 
     setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+    services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+      mockedMSPEcProfileFn()
+      return { data: fakeNonMspEcProfile }
+    })
 
     mockServer.use(
-      rest.get(
-        MspUrlsInfo.getMspEcProfile.url,
-        (_req, res, ctx) => {
-          mockedMSPEcProfileFn()
-          return res(ctx.json(fakeNonMspEcProfile))
-        }
-      ),
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (_req, res, ctx) => {
@@ -358,14 +356,10 @@ describe('Convert NonVAR MSP Button', () => {
   describe('Should not render convert nonVAR MSP button', () => {
     it('when it is MSP EC user', async () => {
       let mockedmspFn = jest.fn()
-      mockServer.use(
-        rest.get(
-          MspUrlsInfo.getMspEcProfile.url,
-          (_req, res, ctx) => {
-            mockedmspFn()
-            return res(ctx.json(fakeMspEcProfile))
-          }
-        ))
+      services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+        mockedmspFn()
+        return { data: fakeMspEcProfile }
+      })
 
       render(
         <Provider>

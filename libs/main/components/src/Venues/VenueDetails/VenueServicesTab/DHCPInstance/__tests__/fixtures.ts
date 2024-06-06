@@ -262,6 +262,78 @@ export const mockVenueData = {
   }
 }
 export const successResponse = { requestId: 'request-id' }
+export const venueDhcpProfileRbacData = {
+  wanPortSelectionMode: 'Dynamic',
+  activeDhcpPoolNames: ['fff'],
+  dhcpServiceAps: [
+    {
+      serialNumber: '922102020872',
+      role: 'PrimaryServer',
+      dhcpIps: [
+        '192.168.1.1',
+        '192.168.2.1'
+      ]
+    }
+  ],
+  deviceIpMode: 'IPV4'
+}
+
+const queryDhcpProfileData = {
+  fields: null,
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'c51d9d180de24d6cb3a75ace5ce63c2a',
+      name: 'abcd',
+      dhcpPools: [
+        {
+          startAddress: '192.168.3.1',
+          endAddress: '192.168.3.14',
+          name: 'fff2',
+          networkAddress: '192.168.3.0'
+        },
+        {
+          startAddress: '192.168.2.1',
+          endAddress: '192.168.2.30',
+          name: 'fff',
+          networkAddress: '192.168.2.0'
+        }
+      ],
+      venueIds: [
+        '7bf824f4b7f949f2b64e18fb6d05b0f4'
+      ]
+    }
+  ]
+}
+
+const wifiDhcpClientLeases = {
+  wifiDhcpClientLeases: [
+    {
+      leaseExpiration: '2024-05-22T07:55:34Z',
+      dhcpPoolName: 'fff',
+      hostname: 'd6:51:9f:5c:d6:a2',
+      ipAddress: '192.168.1.43',
+      macAddress: 'd6:51:9f:5c:d6:a2',
+      status: 'Online'
+    }
+  ]
+}
+
+const wifiDhcpPoolUsagesData = {
+  wifiDhcpPoolUsages: [
+    {
+      name: 'fff',
+      totalIpCount: 52,
+      usedIpCount: 0
+    },
+    {
+      name: 'fff2',
+      totalIpCount: 20,
+      usedIpCount: 0
+    }
+  ]
+}
 
 const handlers:Array<RestHandler> = [
   rest.post(CommonUrlsInfo.getApsList.url,(_,res,ctx) =>
@@ -293,6 +365,19 @@ const handlers:Array<RestHandler> = [
   ),
   rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
-  )]
+  ),
+  rest.get(DHCPUrls.getVenueDHCPServiceProfileRbac.url, (_, res, ctx) =>
+    res(ctx.json(venueDhcpProfileRbacData))
+  ),
+  rest.post(DHCPUrls.queryDHCPProfiles.url, (_, res, ctx) =>
+    res(ctx.json(queryDhcpProfileData))
+  ),
+  rest.get(DHCPUrls.getVenueLeasesRbac.url, (_, res, ctx) =>
+    res(ctx.json(wifiDhcpClientLeases))
+  ),
+  rest.get(DHCPUrls.getDhcpUsagesRbac.url, (_, res, ctx) =>
+    res(ctx.json(wifiDhcpPoolUsagesData))
+  )
+]
 
 export default handlers

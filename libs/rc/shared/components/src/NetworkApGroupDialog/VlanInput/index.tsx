@@ -7,9 +7,8 @@ import {
   Space,
   Select
 } from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Button
@@ -17,7 +16,7 @@ import {
 import {
   getVlanString,
   NetworkApGroup,
-  NetworkSaveData, useConfigTemplate,
+  NetworkSaveData, useConfigTemplate, VlanPool,
   VlanType
 } from '@acx-ui/rc/utils'
 
@@ -26,7 +25,7 @@ import { VlanDate } from '../index'
 export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
   apgroup: NetworkApGroup,
   wlan?: NetworkSaveData['wlan'],
-  vlanPoolSelectOptions?: DefaultOptionType[],
+  vlanPoolSelectOptions?: VlanPool[],
   onChange: (data: VlanDate) => void
 }) {
   const { $t } = useIntl()
