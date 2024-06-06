@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
@@ -6,11 +6,12 @@ import { useIntl } from 'react-intl'
 import { Drawer, Loader, Table, TableProps, recommendationBandMapping } from '@acx-ui/components'
 import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
+import { useWifiNetworkListQuery }                                      from '@acx-ui/rc/services'
 import { truthy }                                                       from '@acx-ui/utils'
 
 import { DescriptionSection }          from '../../DescriptionSection'
 import { codes, statusTrailMsgs }      from '../config'
-import { useWlanRecords }              from '../RecommendationActions'
+import { RecommendationWlan }          from '../services'
 import { PriorityIcon, OptimizedIcon } from '../styledComponents'
 
 import { DownloadRRMComparison }                                    from './Graph/DownloadRRMComparison'
@@ -74,6 +75,27 @@ const ImpactedApsDrawer = ({ id, aps, visible, onClose }:
   />
 }
 
+function useWlanRecords (originalWlans: RecommendationWlan[] | undefined, skip: boolean) {
+  const [wlans, setWlans] = useState<Array<RecommendationWlan>>(originalWlans ?? [])
+  const r1NetworksQuery = useWifiNetworkListQuery({
+    payload: {
+      deep: true,
+      fields: ['id', 'name', 'ssid'],
+      filters: { id: originalWlans?.map(wlan => wlan.name) },
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10_000
+    }
+  }, { skip })
+  useEffect(() => {
+    if (r1NetworksQuery.data?.data) {
+      setWlans(r1NetworksQuery.data.data)
+    }
+  }, [r1NetworksQuery])
+  return wlans
+}
+
 export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
@@ -95,8 +117,7 @@ export const Overview = ({ details }:{ details: EnhancedRecommendation }) => {
   const isFlexAI = code.startsWith('c-probeflex')
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const needsWlans = isFlexAI && wlans && wlans.length > 0
-  const wlanRecords = useWlanRecords(wlans, isMlisa, !!needsWlans)
-
+  const wlanRecords = useWlanRecords(wlans, !needsWlans || isMlisa)
   const fields = [
     (isRrm && {
       label: get('IS_MLISA_SA')
