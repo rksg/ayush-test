@@ -1432,7 +1432,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (args, api) {
+        await onSocketActivityChanged(args, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (args.callback && response && msg.useCase === 'AddHotspot20IdentityProvider' &&
+              msg.status === TxStatus.SUCCESS) {
+              (args.callback as Function)(response.data)
+            }
+          } catch {}
+        })
+      }
     }),
     updateIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

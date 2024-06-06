@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Input, Space } from 'antd'
 import {
@@ -14,7 +14,7 @@ import {
   Select,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { InformationSolid }     from '@acx-ui/icons'
+import { InformationSolid }      from '@acx-ui/icons'
 import {
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
@@ -164,6 +164,8 @@ function Hotspot20Form () {
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
     const [showProviderDrawer, setShowProviderDrawer] = useState(false)
     const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
+    const [skipQueryProviders, setSkipQueryProviders] = useState(false)
+    const newSelectedProviders = useRef<string[]>([])
     const defaultPayload = {
       fields: ['name', 'id', 'wifiNetworkIds'],
       pageSize: 100,
@@ -183,16 +185,18 @@ function Hotspot20Form () {
         }
       })
 
-    const { providerSelectOptions, selectedProviderIds } = useGetIdentityProviderListQuery(
+    const { providerSelectOptions } = useGetIdentityProviderListQuery(
       { payload: defaultPayload }, {
+        skip: skipQueryProviders,
         selectFromResult: ({ data }) => {
           const d = data?.data
-          const providerOptions = d?.map(item => ({ label: item.name, value: item.id })) ?? []
-          const selectedProviderIds = networkId && d?.filter(item => item.wifiNetworkIds
+          const providerOptions = d?.map(item => ({ label: item.name, value: item.id,
+            disabled: disabledSelectProviders &&
+            !newSelectedProviders.current?.includes(item.id as string) } )) ?? []
+          const seletedIds = networkId && d?.filter(item => item.wifiNetworkIds
             ?.includes(networkId)).map(item => item.id)
-          form.setFieldValue(['hotspot20Settings', 'originalProviders'], selectedProviderIds)
-          return { providerSelectOptions: providerOptions,
-            selectedProviderIds: selectedProviderIds }
+          form.setFieldValue(['hotspot20Settings', 'originalProviders'], seletedIds)
+          return { providerSelectOptions: providerOptions }
         }
       })
 
@@ -206,6 +210,7 @@ function Hotspot20Form () {
     useEffect(() => {
       if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedProviderIds &&
         !data?.hotspot20Settings?.identityProviders) {
+        newSelectedProviders.current = selectedProviderIds as string[]
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], selectedProviderIds)
       }
     }, [cloneMode, editMode, selectedProviderIds])
@@ -227,10 +232,13 @@ function Hotspot20Form () {
 
     const handleSaveIdentityProvider = (id?: string) => {
       const identityProviders = form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
-      if (id && !identityProviders.includes(id)) {
-        const newIdentityProviders = cloneDeep(identityProviders)
+      if (id && !identityProviders.includes(id) &&
+      identityProviders.length < NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
+        const newIdentityProviders = cloneDeep(newSelectedProviders.current)
         newIdentityProviders.push(id)
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], newIdentityProviders)
+        newSelectedProviders.current = newIdentityProviders
+        setSkipQueryProviders(true)
       }
       setShowProviderDrawer(false)
     }
@@ -265,13 +273,15 @@ function Hotspot20Form () {
               { required: true,
                 message: $t({ defaultMessage: 'Please select Identity Provider(s)' })
               }
-            ]}>
+            ]}
+            extra={$t({ defaultMessage: 'Select up to 6' })}>
             <Select
               mode='multiple'
-              open={disabledSelectProviders ? false : undefined}
               style={{ width: '280px' }}
+              showArrow
               options={providerSelectOptions}
               onChange={(newProviders: string[]) => {
+                newSelectedProviders.current = newProviders
                 if (newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
                   setDisabledSelectProviders(true)
                 } else {
