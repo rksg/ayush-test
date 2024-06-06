@@ -107,6 +107,7 @@ export function ApForm () {
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
   const [getDhcpAp] = useLazyGetDhcpApQuery()
+  // TODO: should be replaced with apGroup viewmodel API
   const [apGroupList] = useLazyApGroupListByVenueQuery()
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
   const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()

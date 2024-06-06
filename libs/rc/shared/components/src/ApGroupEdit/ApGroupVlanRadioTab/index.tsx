@@ -69,6 +69,7 @@ export function ApGroupVlanRadioTab () {
     `${basePath.pathname}/wifi/apgroups` :
     `${basePath.pathname}/wifi`
 
+  // TODO: rbac
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,

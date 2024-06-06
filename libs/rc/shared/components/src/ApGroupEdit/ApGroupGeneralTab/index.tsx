@@ -8,9 +8,12 @@ import { useIntl }                             from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
-  useGetApGroupQuery, useGetApGroupTemplateQuery, useGetVenuesTemplateListQuery,
+  useGetApGroupQuery,
+  useGetApGroupTemplateQuery,
+  useGetVenuesTemplateListQuery,
   useLazyApGroupsListQuery, useLazyGetApGroupsTemplateListQuery,
   useLazyGetVenueTemplateDefaultApGroupQuery,
   useLazyVenueDefaultApGroupQuery,
@@ -51,6 +54,7 @@ const apGroupsListPayload = {
 
 export function ApGroupGeneralTab () {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { tenantId, action, apGroupId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
@@ -74,17 +78,21 @@ export function ApGroupGeneralTab () {
   })
 
   const [venueDefaultApGroup] = useConfigTemplateLazyQueryFnSwitcher({
+    // TODO: should be replaced with AP group viewmodel
     useLazyQueryFn: useLazyVenueDefaultApGroupQuery,
     useLazyTemplateQueryFn: useLazyGetVenueTemplateDefaultApGroupQuery
   })
+
   const [apGroupsList] = useConfigTemplateLazyQueryFnSwitcher({
     useLazyQueryFn: useLazyApGroupsListQuery,
     useLazyTemplateQueryFn: useLazyGetApGroupsTemplateListQuery
   })
+
   const [addApGroup] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddApGroupMutation,
     useTemplateMutationFn: useAddApGroupTemplateMutation
   })
+
   const [updateApGroup] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateApGroupMutation,
     useTemplateMutationFn: useUpdateApGroupTemplateMutation
@@ -97,7 +105,8 @@ export function ApGroupGeneralTab () {
     useTemplateQueryFn: useGetApGroupTemplateQuery,
     skip: !isEditMode,
     payload: null,
-    extraParams: { tenantId, apGroupId }
+    extraParams: { tenantId, apGroupId },
+    enableRbac: isWifiRbacEnabled
   })
 
   const locationState = location.state as { venueId?: string, history?: string }
@@ -180,9 +189,17 @@ export function ApGroupGeneralTab () {
       }
 
       if (isEditMode) {
-        await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
+        await updateApGroup({
+          params: { tenantId, venueId, apGroupId },
+          payload,
+          enableRbac: isWifiRbacEnabled
+        }).unwrap()
       } else {
-        await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
+        await addApGroup({
+          params: { tenantId, venueId },
+          payload,
+          enableRbac: isWifiRbacEnabled
+        }).unwrap()
       }
 
       setEditContextData({

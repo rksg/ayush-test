@@ -1,4 +1,6 @@
 import {
+  ApGroupViewModel,
+  CountAndNames,
   NewAPModel,
   NewApGroupViewModelExtended,
   TableResult,
@@ -7,40 +9,45 @@ import {
 } from '@acx-ui/rc/utils'
 
 export const aggregateApGroupVenueInfo = (
-  apGroupList: TableResult<NewApGroupViewModelExtended>,
+  apGroupList: TableResult<ApGroupViewModel>,
   venueList: TableResult<Venue>
 ) => {
-  const apGroupListData = apGroupList.data
   const venueListData = venueList.data
-  apGroupListData.forEach(apGroupItem => {
+  apGroupList.data.forEach(apGroupItem => {
     apGroupItem.venueName = venueListData.find(venueItem =>
       venueItem.id === apGroupItem.venueId)?.name
   })
 }
 
 export const aggregateApGroupNetworkInfo = (
-  apGroupList: TableResult<NewApGroupViewModelExtended>,
+  apGroupList: TableResult<ApGroupViewModel>,
+  rbacApGroupList: TableResult<NewApGroupViewModelExtended>,
   networks: TableResult<WifiNetwork>
 ) => {
   apGroupList.data.forEach(apGroupItem => {
-    apGroupItem.networkInfos = apGroupItem.wifiNetworkIds?.reduce(
-      (result, currentValue) => {
-        result[currentValue] = networks.data?.find(n => n.id === currentValue)?.name || ''
-        return result
-      }, {} as Record<string, string>)
+    const groupItem = rbacApGroupList.data.find(item => item.id === apGroupItem.id)
+    apGroupItem.members = {
+      count: groupItem?.wifiNetworkIds?.length ?? 0,
+      names: groupItem?.wifiNetworkIds?.map((id) => {
+        return networks.data?.find(n => n.id === id)?.name
+      }).filter(i => !!i)
+    } as CountAndNames
   })
 }
 
 export const aggregateApGroupApInfo = (
-  apGroupList: TableResult<NewApGroupViewModelExtended>,
+  apGroupList: TableResult<ApGroupViewModel>,
+  rbacApGroupList: TableResult<NewApGroupViewModelExtended>,
   apList: TableResult<NewAPModel>
 ) => {
   apGroupList.data.forEach(apGroupItem => {
-    apGroupItem.apInfos = apGroupItem.apSerialNumbers?.reduce(
-      (result, apSerialNumber) => {
-        result[apSerialNumber] = apList.data
-          ?.find(n => n.serialNumber === apSerialNumber)?.name || ''
-        return result
-      }, {} as Record<string, string>)
+    const groupItem = rbacApGroupList.data.find(item => item.id === apGroupItem.id)
+    apGroupItem.networks = {
+      count: groupItem?.apSerialNumbers?.length ?? 0,
+      names: groupItem?.apSerialNumbers?.map((apSerialNumber) => {
+        return apList.data
+          ?.find(n => n.serialNumber === apSerialNumber)?.name
+      }).filter(i => !!i)
+    } as CountAndNames
   })
 }

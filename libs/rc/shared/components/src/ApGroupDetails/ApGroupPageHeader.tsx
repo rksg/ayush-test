@@ -19,14 +19,14 @@ import { ApGroupDetailSubTitle } from './styledComponents'
 function ApGroupPageHeader () {
   const { $t } = useIntl()
 
-  const { apGroupId, activeTab, name, venueName, members, networks } = useApGroupContext()
+  const { apGroupId, activeTab, name, venueName, membersCount, networksCount } = useApGroupContext()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
 
   const apgHeaderData = {
-    title: name || '',
+    title: name,
     headers: {
-      members: members?.count || 0,
-      networks: networks?.count || 0
+      members: membersCount,
+      networks: networksCount
     }
   }
 
