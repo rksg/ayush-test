@@ -968,6 +968,10 @@ export function RadioSettings () {
         delete payload.apRadioParamsDual5G
       }
 
+      if (!afcProps.isAFCEnabled) {
+        delete payload.apRadioParams6G.enableAfc
+      }
+
       if (isSupportBandManagementAp && !isSupportDual5GAp) {
         await updateApBandMode({
           params: { venueId, serialNumber },
