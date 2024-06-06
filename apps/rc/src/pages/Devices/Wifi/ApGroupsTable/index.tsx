@@ -35,7 +35,7 @@ export default function useApGroupsTable () {
     }
   )
 
-  const apGroupListTableQuery = usePollingTableQuery<NewApGroupViewModel | ApGroupViewModel>({
+  const apGroupListTableQuery = usePollingTableQuery<ApGroupViewModel>({
     useQuery: useApGroupsListQuery,
     defaultPayload: {
       fields: ['id', 'name'],
