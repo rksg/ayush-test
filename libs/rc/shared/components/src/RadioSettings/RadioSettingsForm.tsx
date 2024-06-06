@@ -108,6 +108,10 @@ export function RadioSettingsForm (props:{
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
+
+    if (props?.isAFCEnabled === false) {
+      form.setFieldValue(enableAfcFieldName, false)
+    }
   }, [] )
 
   useEffect(()=> {
@@ -135,15 +139,23 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
-  const AFCEnableValidation = () => {
+  const AFCEnableValidation = (ignoreFloorValidation: boolean) => {
     const { maxFloor, minFloor } = venueRadio?.radioParams6G?.venueHeight || {}
 
-    return [
-      (showAfcItems),
-      (context === 'ap'),
-      (enableAfc),
-      (maxFloor === undefined || minFloor === undefined)
-    ].every(Boolean)
+    if (ignoreFloorValidation) {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc)
+      ].every(Boolean)
+    } else {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc),
+        (maxFloor === undefined || minFloor === undefined)
+      ].every(Boolean)
+    }
   }
 
 
@@ -151,21 +163,26 @@ export function RadioSettingsForm (props:{
   return (
     <>
       { showAfcItems &&
-        // No need to bring enableAfc property when AP is outdoor ap and AFC is no enabled.
-        // Also no need to show on the page.
-        !(LPIButtonText?.isAPOutdoor || isAFCEnabled === false) &&
-        <FieldLabel width='150px'
+        <FieldLabel width='180px'
         // Hide the label when afcEnable is false or ap is outdoor under ap context
-          style={(context === 'ap') ? { display: 'none' } : undefined}>
-          {$t({ defaultMessage: 'Enable AFC:' })}
+          style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props?.isAFCEnabled === false)) ?
+            { display: 'none' } : { display: 'flex' }}>
+          <div style={{ float: 'left' }}>
+            <p style={{ width: '180px' }}>
+              {context === 'ap' ?
+                $t({ defaultMessage: 'Enable AFC:' }) :
+                $t({ defaultMessage: 'Enable Indoor AFC:' })
+              }
+            </p>
+          </div>
           <Form.Item
             style={{ width: '50px' }}
             name={enableAfcFieldName}
             valuePropName={'checked'}
-            initialValue={true}
+            initialValue={false}
             rules={[
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              { validator: (_, value) => AFCEnableValidation() ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
+              { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
               LPIButtonText?.buttonText :
@@ -179,42 +196,54 @@ export function RadioSettingsForm (props:{
           </Form.Item>
         </FieldLabel>
       }
-      {showAfcItems && enableAfc &&
-        <Alert type='info'
-          showIcon={true}
-          message={<>
-            <span style={{ marginRight: '30px' }}>
-              {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
-            </span>
-            <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
-              target='_blank'
-              rel='noreferrer'>
-              {$t({ defaultMessage: 'How to configure?' })}
-            </a>
-          </>
-          }
-        />
-      }
-      { AFCEnableValidation() &&
-        <Alert type='error'
-          showIcon={true}
-          message={<>
-            <span style={{ marginRight: '30px' }}>
-              {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
-            </span>
-            <Button type='link'
-              data-testid='set-it-up-button'
-              onClick={() => {
-                navigate(detailsPath, { state: { from: location } })
-              }}
-            >
-              <span style={{ fontSize: '12px' }}>
-                {$t({ defaultMessage: 'Set it up now' })}
+      {
+        AFCEnableValidation(true) && (
+          <Alert
+            type='info'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
               </span>
-            </Button>
-          </>
-          }
-        />
+              <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
+                target='_blank'
+                rel='noreferrer'>
+                {$t({ defaultMessage: 'How to configure?' })}
+              </a>
+            </>
+            }
+            showIcon={true}
+          />
+        )
+      }
+      {
+        AFCEnableValidation(false) && (
+          <Alert
+            type='error'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
+              </span>
+              <Button type='link'
+                data-testid='set-it-up-button'
+                onClick={() => {
+                  navigate(detailsPath, {
+                    state: {
+                      from: location
+                    }
+                  })
+                }}
+              >
+                <span style={{
+                  fontSize: '12px'
+                }}>
+                  {$t({ defaultMessage: 'Set it up now' })}
+                </span>
+              </Button>
+            </>
+            }
+            showIcon={true}
+          />
+        )
       }
       {showAfcItems && context === 'venue' &&
         <FieldLabel width='150px'>
