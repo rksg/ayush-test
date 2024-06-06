@@ -174,7 +174,8 @@ function transformCatAppConfigForPayload (
     applicationId: number, applicationName: string, category: string, categoryId: number
   }
 
-  const [catName, appName] = rule.ruleSettings.appNameSystemDefined!.split('_')
+  const [firstSection, ...restSection] = rule.ruleSettings.appNameSystemDefined!.split('_')
+  const [catName, appName] = [firstSection, restSection.join('_')]
   let catAppMapping: { catId: number, appId: number }
 
   if (appName === 'All') {
