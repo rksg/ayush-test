@@ -668,10 +668,10 @@ export const kpiConfig = {
       reFormatFromBarChart: noFormat
     },
     pill: {
-      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports do not experiment Storm' }),
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports' }),
       thresholdDesc: [
-        defineMessage({ defaultMessage: 'above' }),
-        defineMessage({ defaultMessage: '{threshold} Packets' })
+        defineMessage({ defaultMessage: 'below' }),
+        defineMessage({ defaultMessage: '{threshold} packets/sec' })
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: noFormat,
