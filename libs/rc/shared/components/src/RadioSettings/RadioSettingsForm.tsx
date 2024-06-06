@@ -167,14 +167,22 @@ export function RadioSettingsForm (props:{
         // Hide the label when afcEnable is false or ap is outdoor under ap context
           style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props?.isAFCEnabled === false)) ?
             { display: 'none' } : { display: 'flex' }}>
-          <div style={{ float: 'left' }}>
-            <p style={{ width: '180px' }}>
-              {context === 'ap' ?
-                $t({ defaultMessage: 'Enable AFC:' }) :
-                $t({ defaultMessage: 'Enable Indoor AFC:' })
+          <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+            {context === 'ap' ?
+              $t({ defaultMessage: 'Enable AFC:' }) :
+              $t({ defaultMessage: 'Enable Indoor AFC:' })
+            }
+            { (context === 'venue') && <Tooltip
+              title={
+                (!isAFCEnabled) ?
+                  $t({ defaultMessage: 'Your country does not support AFC.' }):
+                  $t({ defaultMessage: 'For outdoor APs, outdoor AFC will be enabled automatically.' })
               }
-            </p>
-          </div>
+              placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
+            </Tooltip>
+            }
+          </Space>
           <Form.Item
             style={{ width: '50px' }}
             name={enableAfcFieldName}
@@ -265,6 +273,7 @@ export function RadioSettingsForm (props:{
                   controls={false}
                   min={0}
                   precision={0}
+                  disabled={!isAFCEnabled}
                   placeholder={$t({ defaultMessage: 'Minimum Floor' })}
                   onChange={() => form.validateFields()}
                 />
@@ -283,15 +292,16 @@ export function RadioSettingsForm (props:{
                   controls={false}
                   min={0}
                   precision={0}
+                  disabled={!isAFCEnabled}
                   placeholder={$t({ defaultMessage: 'Maximum Floor' })}
                   onChange={() => {form.validateFields()}}
                 />
               </Form.Item>
               <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor</p>
               <Tooltip
-                title={$t({ defaultMessage: 'When grand floor=0' })}
+                title={$t({ defaultMessage: 'Please enter the min and max floors, with the ground floor set to 0.' })}
                 placement='bottom'>
-                <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
+                <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
               </Tooltip>
             </Input.Group>
           </Form.Item>
