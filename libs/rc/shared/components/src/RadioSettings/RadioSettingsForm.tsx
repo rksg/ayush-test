@@ -146,7 +146,8 @@ export function RadioSettingsForm (props:{
       return [
         (showAfcItems),
         (context === 'ap'),
-        (enableAfc)
+        (enableAfc),
+        (!LPIButtonText?.isAPOutdoor)
       ].every(Boolean)
     } else {
       return [
