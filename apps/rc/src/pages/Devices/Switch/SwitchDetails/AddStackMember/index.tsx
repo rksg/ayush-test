@@ -117,8 +117,6 @@ function AddMemberForm (props: DefaultVlanFormProps) {
   const [rowKey, setRowKey] = useState(1)
 
   const [updateSwitch] = useUpdateSwitchMutation()
-  const { data: switchData } =
-    useGetSwitchQuery({ params: { tenantId, switchId } })
 
   const defaultArray: SwitchTable[] = [
     { key: '1', id: '', model: '', disabled: false }
@@ -127,6 +125,9 @@ function AddMemberForm (props: DefaultVlanFormProps) {
 
   const isBlockingTsbSwitch = useIsSplitOn(Features.SWITCH_FIRMWARE_RELATED_TSB_BLOCKING_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const { data: switchData } =
+    useGetSwitchQuery({ params: { tenantId, switchId }, enableRbac: isSwitchRbacEnabled })
 
   const columns: TableProps<SwitchTable>['columns'] = [
     {

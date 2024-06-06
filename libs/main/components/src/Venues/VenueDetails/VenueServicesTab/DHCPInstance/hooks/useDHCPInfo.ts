@@ -1,6 +1,7 @@
 import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }                                                                                                         from '@acx-ui/feature-toggle'
 import { useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useApListQuery, useGetVenueTemplateDhcpProfileQuery, useGetDhcpTemplateQuery } from '@acx-ui/rc/services'
 import { DHCPConfigTypeMessages, DHCPProfileAps, DHCPSaveData, VenueDHCPProfile, useConfigTemplate, useConfigTemplateQueryFnSwitcher }    from '@acx-ui/rc/utils'
 
@@ -13,9 +14,12 @@ export default function useDHCPInfo () {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
 
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
     useQueryFn: useVenueDHCPProfileQuery,
-    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
+    extraParams: params,
+    enableRbac
   })
 
   // eslint-disable-next-line max-len
@@ -27,7 +31,8 @@ export default function useDHCPInfo () {
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !venueDHCPProfile?.serviceProfileId,
-    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId }
+    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId },
+    enableRbac
   })
 
   let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]
