@@ -683,7 +683,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchAuthCountAndAttemptCount',
-      minGranularity: 'PT15M'
+      minGranularity: 'PT5M'
     },
     barChart: createBarChartConfig('switchAuthCountAndAttemptCount'),
     pill: {
