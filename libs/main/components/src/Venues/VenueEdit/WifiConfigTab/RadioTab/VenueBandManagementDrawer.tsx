@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Form, FormItemProps }                       from 'antd'
 import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
 
-import { Drawer, Select }                             from '@acx-ui/components'
+import { Drawer, Select, cssStr }                     from '@acx-ui/components'
 import { BandModeEnum, VenueApModelBandModeSettings } from '@acx-ui/rc/utils'
 
 const DrawerFormItem = (props: FormItemProps) => {
@@ -101,7 +101,7 @@ export const VenueBandManagementDrawer = ({ visible, setVisible,
               label: $t(bandCombinationLabelMapping[bandMode]), value: bandMode }))}
         />}
       />
-      <span style={{ color: 'red' }}>
+      <span style={{ color: cssStr('--acx-semantics-red-50') }}>
         {$t({
           // eslint-disable-next-line max-len
           defaultMessage: 'Modifying the Dual/Tri Band Mode will reboot the AP, the mesh connection will also be disconnected when rebooting.'
