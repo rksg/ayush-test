@@ -1,5 +1,5 @@
-import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
-import { useApGroupsListQuery, useNewApGroupsListQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { useApGroupsListQuery }   from '@acx-ui/rc/services'
 
 const defaultApGroupsFilterOptsPayload = {
   fields: ['name', 'id'],
@@ -18,23 +18,14 @@ export const useApGroupsFilterOpts =
       ...(filters && { filters })
     }
 
-    const { apGroupOptions: apGroupOptionsRbac } = useNewApGroupsListQuery({
-      payload
+    const { apGroupOptions } = useApGroupsListQuery({
+      payload,
+      enableRbac: isWifiRbacEnabled
     }, {
-      skip: !isWifiRbacEnabled,
-      selectFromResult: ({ data }) => ({
-        apGroupOptions: data?.data.map((v) => ({ key: v.id!, value: v.name! })) || true
-      })
-    })
-
-    const { apGroupOptions: apGroupOptionsNonRbac } = useApGroupsListQuery({
-      payload
-    }, {
-      skip: isWifiRbacEnabled,
       selectFromResult: ({ data }) => ({
         apGroupOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
       })
     })
 
-    return isWifiRbacEnabled ? apGroupOptionsRbac : apGroupOptionsNonRbac
+    return apGroupOptions
   }

@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Button }                                                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { ApGroupTable, ApGroupsTabContext }                                  from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useNewApGroupsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
-import { ApGroupViewModel, NewApGroupViewModel, usePollingTableQuery }       from '@acx-ui/rc/utils'
-import { TenantLink }                                                        from '@acx-ui/react-router-dom'
-import { filterByAccess }                                                    from '@acx-ui/user'
+import { Button }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ApGroupTable, ApGroupsTabContext }         from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { ApGroupViewModel, usePollingTableQuery }   from '@acx-ui/rc/utils'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { filterByAccess }                           from '@acx-ui/user'
 
 
 export default function useApGroupsTable () {
@@ -36,11 +36,12 @@ export default function useApGroupsTable () {
   )
 
   const apGroupListTableQuery = usePollingTableQuery<NewApGroupViewModel | ApGroupViewModel>({
-    useQuery: isWifiRbacEnabled ? useNewApGroupsListQuery : useApGroupsListQuery,
+    useQuery: useApGroupsListQuery,
     defaultPayload: {
       fields: ['id', 'name'],
       filters: { isDefault: [false] }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   useEffect(() => {

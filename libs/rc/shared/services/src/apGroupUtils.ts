@@ -2,7 +2,7 @@ import {
   ApGroupViewModel,
   CountAndNames,
   NewAPModel,
-  NewApGroupViewModelExtended,
+  NewApGroupViewModelResponseType,
   TableResult,
   Venue,
   WifiNetwork
@@ -21,7 +21,7 @@ export const aggregateApGroupVenueInfo = (
 
 export const aggregateApGroupNetworkInfo = (
   apGroupList: TableResult<ApGroupViewModel>,
-  rbacApGroupList: TableResult<NewApGroupViewModelExtended>,
+  rbacApGroupList: TableResult<NewApGroupViewModelResponseType>,
   networks: TableResult<WifiNetwork>
 ) => {
   apGroupList.data.forEach(apGroupItem => {
@@ -37,7 +37,7 @@ export const aggregateApGroupNetworkInfo = (
 
 export const aggregateApGroupApInfo = (
   apGroupList: TableResult<ApGroupViewModel>,
-  rbacApGroupList: TableResult<NewApGroupViewModelExtended>,
+  rbacApGroupList: TableResult<NewApGroupViewModelResponseType>,
   apList: TableResult<NewAPModel>
 ) => {
   apGroupList.data.forEach(apGroupItem => {
