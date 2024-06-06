@@ -124,6 +124,14 @@ or for Ruckus Analytics:
 npx nx run ra:serve
 ```
 
+Use the DEV tool Chrome Extension to copy all Dev cookies to localhost:
+  1. Install chrome extension 
+  - Navigate to `tools/dev/chrome-extract-cookie` to install the extension.
+  - You can select the source domain (Dev or other environments) in the extension options. The default is set to 'Dev'.
+  2. Use the Extension 
+  - When you have a valid login session on https://dev.ruckus.cloud/, click the extension button to map the session to localhost.
+  - You will see the cookies displayed under the localhost domain.
+
 ### Run tests
 
 ```sh
