@@ -108,7 +108,6 @@ export function VenueNetworksTab () {
     pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -221,7 +220,7 @@ export function VenueNetworksTab () {
   }
 
   const isSystemCreatedNetwork = (row: Network) => {
-    return supportOweTransition && row?.isOweMaster === false && row?.owePairNetworkId !== undefined
+    return row?.isOweMaster === false && row?.owePairNetworkId !== undefined
   }
 
   const getTenantLink = (row: Network) => {

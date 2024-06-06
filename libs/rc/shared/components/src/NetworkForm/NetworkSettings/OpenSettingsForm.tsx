@@ -156,7 +156,6 @@ function SettingsForm () {
 
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
   const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
     <Option key={key}>
@@ -185,7 +184,7 @@ function SettingsForm () {
               children={<Switch onChange={onOweChange} />}
             />
           </UI.FieldLabel>
-          {enableOwe && supportOweTransition &&
+          {enableOwe &&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               {$t({ defaultMessage: 'OWE Transition mode' })}
