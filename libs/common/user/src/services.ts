@@ -186,10 +186,8 @@ export const UserRbacUrlsInfo = {
     newApi: true
   },
   toggleBetaStatus: {
-    // method: 'PATCH',
-    // url: '/tenants/settings',
-    method: 'put',
-    url: '/tenants/betaStatus/:enable',
+    method: 'PATCH',
+    url: '/tenants/settings',
     oldUrl: '/tenants/betaStatus/:enable',
     newApi: true
   }
@@ -379,12 +377,13 @@ export const {
       providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, payload }) => {
         const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
         const req = createHttpRequest(rbacApiEnabled
           ? UserRbacUrlsInfo.toggleBetaStatus : UserUrlsInfo.toggleBetaStatus, params)
         return {
-          ...req
+          ...req,
+          body: payload
         }
       },
       invalidatesTags: [{ type: 'Beta', id: 'DETAIL' }]

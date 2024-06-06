@@ -4,6 +4,7 @@ import { Col, Form, Row, Typography, Checkbox, Tooltip } from 'antd'
 import { useIntl }                                       from 'react-intl'
 
 import { Loader, showActionModal }                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { SpaceWrapper }                                       from '@acx-ui/rc/components'
 import { useUserProfileContext, useToggleBetaStatusMutation } from '@acx-ui/user'
 import { userLogout }                                         from '@acx-ui/utils'
@@ -31,6 +32,8 @@ function EnableR1Beta (props: EnableR1BetaProps) {
   const [checked, setChecked] = useState(betaEnabled)
   const [toggleBetaStatus, { isLoading: isUpdating }] = useToggleBetaStatusMutation()
   const isDisabled = isUpdating
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
+
 
   const openR1BetaTermsConditionDrawer = () => {
     setBetaTermsConditionDrawer(true)
@@ -49,11 +52,10 @@ function EnableR1Beta (props: EnableR1BetaProps) {
         cancelText: $t({ defaultMessage: 'Keep Early Access Features' }),
         onOk: async () => {
           try {
-            await toggleBetaStatus({
-              params: {
-                enable: isChecked + ''
-              }
-            }).unwrap()
+            await toggleBetaStatus(isPtenantRbacApiEnabled
+              ? { params: { isRbacApi: 'true' }, payload: { enabled: isChecked } }
+              : { params: { enable: isChecked + '' }
+              }).unwrap()
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }
