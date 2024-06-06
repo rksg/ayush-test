@@ -10,17 +10,20 @@ import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { ApAntennaTypeSelector }                  from '@acx-ui/rc/components'
 import {
   useGetVenueAntennaTypeQuery,
-  useGetVenueApCapabilitiesQuery,
   useGetVenueExternalAntennaQuery,
-  useGetVenueTemplateApCapabilitiesQuery,
   useGetVenueTemplateExternalAntennaQuery,
   useUpdateVenueAntennaTypeMutation,
   useUpdateVenueExternalAntennaMutation,
   useUpdateVenueTemplateExternalAntennaMutation
 } from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, CapabilitiesApModel, ExternalAntenna, VeuneApAntennaTypeSettings, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useParams }                                                                                              from '@acx-ui/react-router-dom'
+import {
+  ApAntennaTypeEnum,
+  CapabilitiesApModel,
+  ExternalAntenna,
+  VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
+import { useParams } from '@acx-ui/react-router-dom'
 
+import { VenueUtilityContext }                                                             from '..'
 import { VenueEditContext }                                                                from '../..'
 import ApModelPlaceholder                                                                  from '../../../assets/images/aps/ap-model-placeholder.png'
 import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
@@ -41,6 +44,8 @@ export function ExternalAntennaSection () {
     editRadioContextData,
     setEditRadioContextData } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const { venueApCaps, isLoadingVenueApCaps } = useContext(VenueUtilityContext)
+  const allApModelCapabilities = venueApCaps?.apModels
 
   const [handledApExternalAntennas, setHandledApExternalAntennas] = useState([] as ExternalAntenna[])
   const [selectOptions, setSelectOptions] = useState([])
@@ -50,13 +55,14 @@ export function ExternalAntennaSection () {
   const [antennaTypeModels, setAntennaTypeModels] = useState([] as VeuneApAntennaTypeSettings[])
   const [selectedApAntennaType, setSelectedApAntennaType] = useState(null as VeuneApAntennaTypeSettings | null)
 
-  const { allApModelCapabilities, isLoadingCapabilities } = useGetVenueApCapabilitiesQueryFnSwitcher()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { data: allApExternalAntennas, isLoading: isLoadingExternalAntenna } =
-    useVenueConfigTemplateQueryFnSwitcher<ExternalAntenna[]>(
-      useGetVenueExternalAntennaQuery,
-      useGetVenueTemplateExternalAntennaQuery
-    )
+    useVenueConfigTemplateQueryFnSwitcher<ExternalAntenna[]>({
+      useQueryFn: useGetVenueExternalAntennaQuery,
+      useTemplateQueryFn: useGetVenueTemplateExternalAntennaQuery,
+      enableRbac: isUseRbacApi
+    })
 
   const [updateVenueExternalAntenna, { isLoading: isUpdatingExternalAntenna }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -69,7 +75,11 @@ export function ExternalAntennaSection () {
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
     try {
-      await updateVenueExternalAntenna({ params, payload: [ ...data ] })
+      await updateVenueExternalAntenna({
+        params,
+        payload: [ ...data ],
+        enableRbac: isUseRbacApi
+      })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -219,7 +229,7 @@ export function ExternalAntennaSection () {
 
   return (
     <Loader states={[{
-      isLoading: isLoadingCapabilities || isLoadingExternalAntenna,
+      isLoading: isLoadingVenueApCaps || isLoadingExternalAntenna,
       isFetching: isUpdatingExternalAntenna || isUpdateAntennaType }]}
     >
       <Row gutter={24} data-testid='external-antenna-section'>
@@ -257,29 +267,4 @@ export function ExternalAntennaSection () {
       </Row>
     </Loader>
   )
-}
-
-function useGetVenueApCapabilitiesQueryFnSwitcher () {
-  const { isTemplate } = useConfigTemplate()
-  const params = useParams()
-
-  const result = useGetVenueApCapabilitiesQuery({ params }, {
-    skip: isTemplate,
-    selectFromResult: selectApModelCapabilitiesFromResult
-  })
-  const templateResult = useGetVenueTemplateApCapabilitiesQuery({ params }, {
-    skip: !isTemplate,
-    selectFromResult: selectApModelCapabilitiesFromResult
-  })
-
-  return isTemplate ? templateResult : result
-}
-
-function selectApModelCapabilitiesFromResult (
-  { data, isLoading }: { data?: { version: string, apModels: CapabilitiesApModel[] }, isLoading: boolean }
-) {
-  return {
-    allApModelCapabilities: data?.apModels,
-    isLoadingCapabilities: isLoading
-  }
 }

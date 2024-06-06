@@ -13,14 +13,14 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
-import { DateFormatEnum, userDateTimeFormat }              from '@acx-ui/formatter'
+import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
   useAccessControlSubPolicyVisible,
   ACCESS_CONTROL_SUB_POLICY_INIT_STATE,
   isAccessControlSubPolicy,
   AccessControlSubPolicyDrawers,
-  AccessControlSubPolicyVisibility, subPolicyMappingType
+  AccessControlSubPolicyVisibility, subPolicyMappingType, isNotAllowToApplyPolicy
 } from '@acx-ui/rc/components'
 import {
   useDeleteDpskTemplateMutation,
@@ -39,7 +39,8 @@ import {
   useDelVlanPoolPolicyTemplateMutation,
   useDelSyslogPolicyTemplateMutation,
   useDelRoguePolicyTemplateMutation,
-  useDeleteSwitchConfigProfileTemplateMutation
+  useDeleteSwitchConfigProfileTemplateMutation,
+  useDeleteApGroupsTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   useTableQuery,
@@ -51,9 +52,10 @@ import {
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }               from '@acx-ui/user'
 
-import { AppliedToTenantDrawer }   from './AppliedToTenantDrawer'
-import { ApplyTemplateDrawer }     from './ApplyTemplateDrawer'
-import { useAddTemplateMenuProps } from './useAddTemplateMenuProps'
+import { AppliedToTenantDrawer }      from './AppliedToTenantDrawer'
+import { ApplyTemplateDrawer }        from './ApplyTemplateDrawer'
+import { getConfigTemplateTypeLabel } from './templateUtils'
+import { useAddTemplateMenuProps }    from './useAddTemplateMenuProps'
 
 export function ConfigTemplateList () {
   const { $t } = useIntl()
@@ -95,7 +97,7 @@ export function ConfigTemplateList () {
     },
     {
       label: $t({ defaultMessage: 'Apply Template' }),
-      disabled: (selectedRows) => selectedRows.some(row => isAccessControlSubPolicy(row.type)),
+      disabled: (selectedRows) => selectedRows.some(row => isNotAllowToApplyPolicy(row.type)),
       onClick: (rows: ConfigTemplate[]) => {
         setSelectedTemplates(rows)
         setApplyTemplateDrawerVisible(true)
@@ -154,7 +156,7 @@ export function ConfigTemplateList () {
       {applyTemplateDrawerVisible &&
       <ApplyTemplateDrawer
         setVisible={setApplyTemplateDrawerVisible}
-        selectedTemplates={selectedTemplates}
+        selectedTemplate={selectedTemplates[0]}
       />}
       {appliedToTenantDrawerVisible &&
       <AppliedToTenantDrawer
@@ -186,7 +188,7 @@ function useColumns (props: TemplateColumnProps) {
   const dateFormat = userDateTimeFormat(DateFormatEnum.DateTimeFormatWithSeconds)
 
   const typeFilterOptions = Object.entries(ConfigTemplateType).map((type =>
-    ({ key: type[1], value: type[0] })
+    ({ key: type[1], value: getConfigTemplateTypeLabel(type[1]) })
   ))
 
   const columns: TableProps<ConfigTemplate>['columns'] = [
@@ -222,7 +224,10 @@ function useColumns (props: TemplateColumnProps) {
       title: $t({ defaultMessage: 'Type' }),
       dataIndex: 'type',
       filterable: typeFilterOptions,
-      sorter: true
+      sorter: true,
+      render: function (_, row) {
+        return getConfigTemplateTypeLabel(row.type)
+      }
     },
     {
       key: 'appliedOnTenants',
@@ -301,6 +306,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
   const [ deleteSyslogTemplate ] = useDelSyslogPolicyTemplateMutation()
   const [ deleteRogueAPTemplate ] = useDelRoguePolicyTemplateMutation()
   const [ deleteSwitchConfigProfileTemplate ] = useDeleteSwitchConfigProfileTemplateMutation()
+  const [ deleteApGroupTemplate ] = useDeleteApGroupsTemplateMutation()
 
   return {
     [ConfigTemplateType.NETWORK]: deleteNetworkTemplate,
@@ -319,6 +325,7 @@ function useDeleteMutation (): Partial<Record<ConfigTemplateType, MutationTrigge
     [ConfigTemplateType.SYSLOG]: deleteSyslogTemplate,
     [ConfigTemplateType.ROGUE_AP_DETECTION]: deleteRogueAPTemplate,
     [ConfigTemplateType.SWITCH_REGULAR]: deleteSwitchConfigProfileTemplate,
-    [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate
+    [ConfigTemplateType.SWITCH_CLI]: deleteSwitchConfigProfileTemplate,
+    [ConfigTemplateType.AP_GROUP]: deleteApGroupTemplate
   }
 }

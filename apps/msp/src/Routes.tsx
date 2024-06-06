@@ -22,7 +22,7 @@ import {
   SyslogForm,
   SyslogDetailView,
   ConfigurationProfileForm,
-  CliProfileForm
+  CliProfileForm, ApGroupDetails, ApGroupEdit
 } from '@acx-ui/rc/components'
 import {
   CONFIG_TEMPLATE_LIST_PATH,
@@ -82,6 +82,7 @@ export default function MspRoutes () {
   const brand360PLMEnabled = useIsTierAllowed(Features.MSP_HSP_360_PLM_FF)
   const isHspSupportEnabled = useIsSplitOn(Features.MSP_HSP_SUPPORT) && isHspPlmFeatureOn
   const isDataStudioEnabled = useIsSplitOn(Features.MSP_DATA_STUDIO) && brand360PLMEnabled
+  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
 
   const { tenantType } = getJwtTokenPayload()
 
@@ -153,7 +154,7 @@ export default function MspRoutes () {
   return (
     <Loader states={[{ isLoading: !loadMspRoute }]}>
       <HspContext.Provider value={{ state, dispatch }}>
-        <ConfigProvider>
+        <ConfigProvider supportReSkinning={supportReSkinning}>
           <Provider children={routes} />
         </ConfigProvider>
       </HspContext.Provider>
@@ -407,6 +408,13 @@ export function ConfigTemplatesRoutes () {
               </AuthRoute>
             }
           />
+        </>}
+        {configTemplateVisibilityMap[ConfigTemplateType.AP_GROUP] && <>
+          {/* eslint-disable-next-line max-len */}
+          <Route path='devices/apgroups/:apGroupId/details/:activeTab' element={<ApGroupDetails />}/>
+          <Route path='devices/apgroups/:apGroupId/:action/:activeTab' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:apGroupId/:action' element={<ApGroupEdit />} />
+          <Route path='devices/apgroups/:action' element={<ApGroupEdit />} />
         </>}
       </Route>
     </Route>

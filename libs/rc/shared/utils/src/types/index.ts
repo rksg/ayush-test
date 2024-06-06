@@ -11,7 +11,7 @@ import { EdgeStatusSeverityEnum } from '../models'
 import { NetworkVenue }           from '../models/NetworkVenue'
 import { TrustedCAChain }         from '../models/TrustedCAChain'
 
-import { ApModel }                               from './ap'
+import { CapabilitiesApModel }                   from './ap'
 import { EdgeStatusSeverityStatistic }           from './edge'
 import { EPDG }                                  from './services'
 import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
@@ -41,17 +41,13 @@ export * from './googleMaps'
 export * from './applicationPolicy'
 export * from './configTemplate'
 export * from './topology'
+export * from './mDnsFencingServie'
 
 export interface CommonResult {
   requestId: string
   response?: {
     id?: string
   }
-}
-
-export interface CommonResultWithEntityResponse<EntityType> {
-  requestId: string
-  response: EntityType
 }
 
 export interface CommonErrorsResult<T> {
@@ -153,10 +149,19 @@ export interface RWG {
   isCluster: boolean
 }
 
-export interface RWGClusterNode {
+export interface RWGClusterNode{
   id: string
   name: string
   ip: string
+}
+
+export interface RWGRow extends RWG {
+  clusterId?: string
+  clusterName?: string
+  isNode?: boolean
+  children?: RWGRow[]
+  ip?: string
+  rowId?: string
 }
 
 export interface GatewayAlarms {
@@ -193,8 +198,7 @@ export interface GatewayDetailsGeneral {
   venueName: string,
   venueId: string,
   hostname: string,
-  username: string,
-  password: string,
+  apiKey: string,
   uptimeInSeconds: string,
   bootedAt: string,
   temperature: string,
@@ -224,15 +228,6 @@ export interface GatewayDetailsHardware {
   systemFamily: string
 }
 
-export interface GatewayDetailsOs {
-  architecture: string,
-  branch: string,
-  kernel: string,
-  name: string,
-  release: string,
-  version: string
-}
-
 export interface GatewayDetailsDiskMemory {
   diskDevice: string,
   diskTotalSpaceInGb: number,
@@ -245,7 +240,6 @@ export interface GatewayDetailsDiskMemory {
 export interface GatewayDetails {
   gatewayDetailsGeneral: GatewayDetailsGeneral
   gatewayDetailsHardware: GatewayDetailsHardware
-  gatewayDetailsOs: GatewayDetailsOs
   gatewayDetailsDiskMemory: GatewayDetailsDiskMemory
 }
 
@@ -520,7 +514,7 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-  apModels: ApModel[]
+  apModels: CapabilitiesApModel[]
   version: string
 }
 
@@ -609,6 +603,5 @@ export const RWGStatusMap = {
   [RWGStatusEnum.INVALID_CERTIFICATE]: defineMessage({ defaultMessage: 'Invalid Certificate' }),
   [RWGStatusEnum.INVALID_HOSTNAME]: defineMessage({ defaultMessage: 'Invalid Hostname' }),
   [RWGStatusEnum.RWG_STATUS_UNKNOWN]: defineMessage({ defaultMessage: 'RWG Status Unknown' }),
-  [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' }),
-  [RWGStatusEnum.STAGING]: defineMessage({ defaultMessage: 'Staging' })
+  [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' })
 }

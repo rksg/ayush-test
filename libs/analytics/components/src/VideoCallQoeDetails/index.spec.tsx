@@ -9,8 +9,8 @@ import {
   mockGraphqlQuery, render, screen, waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { RolesEnum }                      from '@acx-ui/types'
-import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { RolesEnum }                                                         from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
 import {
   callQoeTestDetailsFixtures1,
@@ -60,7 +60,7 @@ describe('VideoCallQoe Details Page', () => {
     get.mockReturnValue('true')
     mockGraphqlQuery(r1VideoCallQoeURL, 'CallQoeTestDetails',
       { data: callQoeTestDetailsFixtures1 })
-
+    setRaiPermissions({ WRITE_VIDEO_CALL_QOE: true } as RaiPermissions)
     const { asFragment } = render(
       <Provider>
         <VideoCallQoeDetails />

@@ -22,6 +22,7 @@ export interface RequestPayload <Payload = unknown> extends Record<string,unknow
   params?: Params<string>
   payload?: Payload
   customHeaders?: Record<string,unknown>
+  enableRbac?: boolean
 }
 
 // Needed for Browser language detection
@@ -64,5 +65,5 @@ export enum EdgeScopes {
   UPDATE = 'edge-u',
   DELETE = 'edge-d'
 }
-
-export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes)[]
+// eslint-disable-next-line max-len
+export type ScopeKeys = (WifiScopes|SwitchScopes|EdgeScopes|(WifiScopes|SwitchScopes|EdgeScopes)[])[]

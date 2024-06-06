@@ -1,3 +1,5 @@
+import type { RaiPermission } from '@acx-ui/user'
+
 import { Roles } from '../constants'
 
 export type UserProfile = {
@@ -32,24 +34,9 @@ export type Tenant = {
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
-  permissions: Permissions
+  permissions: Record<RaiPermission, boolean>
   settings: Settings
 }
-
-export type Permissions = {
-  'view-analytics': boolean
-  'view-report-controller-inventory': boolean
-  'view-data-explorer': boolean
-  'manage-service-guard': boolean
-  'manage-call-manager': boolean
-  'manage-mlisa': boolean
-  'manage-occupancy': boolean
-  'manage-label': boolean
-  'manage-tenant-settings': boolean
-  'manage-config-recommendation': boolean
-  'franchisor': boolean
-}
-
 
 export type Settings = {
   'sla-p1-incidents-count': string

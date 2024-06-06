@@ -1,8 +1,9 @@
+
 import { get }                     from '@acx-ui/config'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
 import {
-  EdgeScopes,
+  ScopeKeys,
   RolesEnum,
   SwitchScopes,
   WifiScopes }               from '@acx-ui/types'
@@ -15,12 +16,16 @@ import {
   hasAccess,
   hasRoles,
   hasPermission,
+  setRaiPermissions,
   setUserProfile,
-  WrapIfAccessible
+  WrapIfAccessible,
+  hasRaiPermission
 } from './userProfile'
 
+import type { RaiPermissions } from './types'
+
 function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
-  scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[]) {
+  scopes?:ScopeKeys) {
   const profile = getUserProfile()
   setUserProfile({
     ...profile,
@@ -60,6 +65,10 @@ describe('hasAccess', () => {
       expect(hasAccess()).toBe(false)
       setRole(RolesEnum.READ_ONLY)
       expect(hasAccess()).toBe(false)
+    })
+    it('returns true for IS_MLISA_SA', () => {
+      jest.mocked(get).mockReturnValue('true')
+      expect(hasAccess()).toBe(true)
     })
   })
 
@@ -158,6 +167,20 @@ describe('filterByAccess', () => {
   })
 })
 
+describe('hasRaiPermission', () => {
+  it('returns true in R1', () => {
+    jest.mocked(get).mockReturnValue('')
+    setRaiPermissions({ READ_INCIDENTS: false } as RaiPermissions)
+    expect(hasRaiPermission('READ_INCIDENTS')).toBe(true)
+  })
+  it('checks if permission is present', () => {
+    jest.mocked(get).mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: true, READ_HEALTH: false } as RaiPermissions)
+    expect(hasRaiPermission('READ_INCIDENTS')).toBe(true)
+    expect(hasRaiPermission('READ_HEALTH')).toBe(false)
+  })
+})
+
 describe('hasPermission', () => {
   beforeEach(() => setRole(RolesEnum.ADMINISTRATOR))
 
@@ -189,7 +212,7 @@ describe('hasPermission', () => {
     })
 
     it('check CUSTOM user permission', () => {
-      setRole('CUSTOM USER' as RolesEnum, true, true,[SwitchScopes.READ])
+      setRole('CUSTOM USER' as RolesEnum, true, true,[SwitchScopes.READ, WifiScopes.READ])
       expect(hasPermission()).toBe(true)
       expect(hasPermission({ allowedOperations: 'GET:/switches' })).toBe(true)
       expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
@@ -201,7 +224,23 @@ describe('hasPermission', () => {
       expect(
         hasPermission({ scopes: [SwitchScopes.DELETE], allowedOperations: 'GET:/switches' })
       ).toBe(false)
+      expect(
+        hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.READ]] })
+      ).toBe(true)
+      expect(
+        hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.READ], SwitchScopes.DELETE] })
+      ).toBe(true)
+      expect(
+        hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.UPDATE]] })
+      ).toBe(false)
     })
+  })
+  it('checks RAI permissions', () => {
+    jest.mocked(get).mockReturnValue('true')
+    setRaiPermissions({ READ_INCIDENTS: true } as RaiPermissions)
+    expect(hasPermission()).toBe(false)
+    expect(hasPermission({ permission: 'READ_INCIDENTS' })).toBe(true)
+    expect(hasPermission({ permission: 'WRITE_INCIDENTS' })).toBe(false)
   })
 })
 

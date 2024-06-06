@@ -2,11 +2,11 @@
 import { Divider, Form } from 'antd'
 import { useIntl }       from 'react-intl'
 
-import { Drawer, PasswordInput }                                                                                   from '@acx-ui/components'
-import { formatter }                                                                                               from '@acx-ui/formatter'
-import { EdgeClusterStatus, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, transformDisplayText } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                              from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                                                                   from '@acx-ui/user'
+import { Drawer, PasswordInput }                                                                                                        from '@acx-ui/components'
+import { formatter }                                                                                                                    from '@acx-ui/formatter'
+import { EdgeClusterStatus, EdgeDnsServers, EdgePasswordDetail, EdgeStatus, EdgeStatusEnum, isVirtualEdgeSerial, transformDisplayText } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                   from '@acx-ui/react-router-dom'
+import { useUserProfileContext }                                                                                                        from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
@@ -142,7 +142,7 @@ const EdgeDetailsDrawer = (props: EdgeDetailsDrawerProps) => {
       <Form.Item
         label={$t({ defaultMessage: 'CPU' })}
         children={
-          (currentEdge?.cpuCores ? `${currentEdge?.cpuCores} vCPUs` : '--' )
+          (currentEdge?.cpuCores ? `${currentEdge?.cpuCores} ${isVirtualEdgeSerial(currentEdge?.serialNumber) ? 'vCPUs' : 'CPUs'}` : '--' )
         }
       />
       <Form.Item

@@ -496,6 +496,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
+      width: 200,
       render: (data: React.ReactNode, row: APExtended) => {
         return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
@@ -506,13 +507,14 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
+      width: 200,
       render: (data: React.ReactNode, row: APExtended) => {
         const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
         return (
           <>
             {status.columnText}
             {/* eslint-disable-next-line*/}
-            {(status.columnText !== '--' && status.columnText === 'Low power' && status.tooltipText) && <Tooltip.Info
+            {(status.columnText !== '--' && status.columnText === 'Low Power Indoor' && status.tooltipText) && <Tooltip.Info
               placement='bottom'
               iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
               title={status.tooltipText}
@@ -526,7 +528,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       key: 'incompatible',
       tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
       title: $t({ defaultMessage: 'Feature Compatibility' }),
-      filterPlaceholder: $t({ defaultMessage: 'Feature Compatibility' }),
+      filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
       filterValueArray: true,
       dataIndex: 'incompatible',
       filterKey: 'fwVersion',

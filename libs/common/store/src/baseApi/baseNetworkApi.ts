@@ -5,7 +5,7 @@ import { baseQuery } from './baseQuery'
 export const baseNetworkApi = createApi({
   baseQuery: baseQuery,
   reducerPath: 'networkApi',
-  tagTypes: ['Network', 'Venue'],
+  tagTypes: ['Network', 'Venue', 'NetworkRadiusServer'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })
 })

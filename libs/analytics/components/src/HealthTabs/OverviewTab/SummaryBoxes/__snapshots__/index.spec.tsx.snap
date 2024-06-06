@@ -231,18 +231,13 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                     <span
                       class="ant-statistic-content-value-int"
                     >
-                      2
-                    </span>
-                    <span
-                      class="ant-statistic-content-value-decimal"
-                    >
-                      .23
+                      123
                     </span>
                   </span>
                   <span
                     class="ant-statistic-content-suffix"
                   >
-                    MB
+                    GB
                   </span>
                 </div>
               </div>

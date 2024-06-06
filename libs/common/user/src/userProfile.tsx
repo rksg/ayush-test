@@ -6,11 +6,9 @@ import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
   RolesEnum as Role,
-  EdgeScopes,
-  SwitchScopes,
-  WifiScopes } from '@acx-ui/types'
+  ScopeKeys } from '@acx-ui/types'
 
-import { UserProfile } from './types'
+import type { UserProfile, RaiPermission, RaiPermissions } from './types'
 
 type Profile = {
   profile: UserProfile
@@ -18,7 +16,7 @@ type Profile = {
   accountTier?: string
   betaEnabled?: boolean
   abacEnabled?: boolean
-  scopes?: (WifiScopes|SwitchScopes|EdgeScopes)[]
+  scopes?: ScopeKeys
   isCustomRole?: boolean
 }
 const userProfile: Profile = {
@@ -32,10 +30,10 @@ const userProfile: Profile = {
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 interface FilterItemType {
-  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
+  scopeKey?: ScopeKeys,
   key?: string,
   props?: {
-    scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopeKey?: ScopeKeys,
     key?: string
   }
 }
@@ -81,40 +79,77 @@ function hasAllowedOperations (id:string) {
 }
 
 export function filterByAccess <Item> (items: Item[]) {
-  return items.filter(item => {
-    const filterItem = item as FilterItemType
-    const allowedOperations = filterItem?.key
-    const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
-    return hasPermission({ scopes, allowedOperations })
-  })
+  if (get('IS_MLISA_SA')) {
+    return items
+  } else {
+    return items.filter(item => {
+      const filterItem = item as FilterItemType
+      const allowedOperations = filterItem?.key
+      const scopes = filterItem?.scopeKey || filterItem?.props?.scopeKey || []
+      return hasPermission({ scopes, allowedOperations })
+    })
+  }
+}
+
+let permissions: RaiPermissions = {} as RaiPermissions
+export const setRaiPermissions = (perms: RaiPermissions) => {
+  permissions = perms
+}
+
+// use hasRaiPermission to enforce permission in RAI standalone
+export function hasRaiPermission (permission: RaiPermission) {
+  return !get('IS_MLISA_SA') || permissions[permission]
 }
 
 /**
+* use hasPermission when enforcing for both R1 and RAI standalone at the same time
 * IMPORTANT: Suggest using hasPermission for action items, as it will always return FALSE for Role.READ_ONLY.
 */
 export function hasPermission (props?: {
-    scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[],
+    // RAI
+    permission?: RaiPermission,
+    // R1
+    scopes?: ScopeKeys,
     allowedOperations?:string
-  }) {
-  const { abacEnabled, isCustomRole } = getUserProfile()
-  const { scopes = [], allowedOperations } = props || {}
-  if(!abacEnabled) {
-    return hasAccess(allowedOperations)
-  }else {
-    if(isCustomRole){
-      const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
-      const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
-      return isScopesValid && isOperationsValid
-    } else {
+}): boolean {
+  const { scopes = [], allowedOperations, permission } = props || {}
+  if (get('IS_MLISA_SA')) {
+    return !!(permission && permissions[permission])
+  } else {
+    const { abacEnabled, isCustomRole } = getUserProfile()
+    if(!abacEnabled) {
       return hasAccess(allowedOperations)
+    }else {
+      if(isCustomRole){
+        const isScopesValid = scopes.length > 0 ? hasScope(scopes): true
+        const isOperationsValid = allowedOperations ? hasAllowedOperations(allowedOperations): true
+        return !!(isScopesValid && isOperationsValid)
+      } else {
+        return hasAccess(allowedOperations)
+      }
     }
   }
 }
 
-export function hasScope (userScopes: (WifiScopes|SwitchScopes|EdgeScopes)[]) {
-  const { abacEnabled, scopes, isCustomRole } = getUserProfile()
+/**
+ * Check if the user has the required scopes based on the user's profile.
+ *
+ * @param userScopes The scopes to check against the user's profile.
+ *
+ *  WifiScopes|SwitchScopes|EdgeScopes: means the scope is optional, and the user can have any one of these scopes.
+ * (WifiScopes|SwitchScopes|EdgeScopes)[]: means the user must have these specific scopes.
+ *
+ */
+export function hasScope (userScopes: ScopeKeys) {
+  const { abacEnabled, scopes = [], isCustomRole } = getUserProfile()
   if(abacEnabled && isCustomRole) {
-    return scopes?.some(scope => userScopes.includes(scope))
+    return userScopes?.some(scope => {
+      if(Array.isArray(scope)) {
+        return scope.every(i => scopes.includes(i))
+      } else {
+        return scopes.includes(scope)
+      }
+    })
   }
   return true
 }
@@ -129,7 +164,7 @@ export function hasRoles (roles: string | string[]) {
 }
 
 export function AuthRoute (props: {
-    scopes: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopes: ScopeKeys,
     children: ReactElement
   }) {
   const { scopes, children } = props
