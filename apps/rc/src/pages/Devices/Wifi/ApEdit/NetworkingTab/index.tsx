@@ -5,7 +5,6 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { AnchorLayout, StepsFormLegacy } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }    from '@acx-ui/icons'
 import { redirectPreviousPage }          from '@acx-ui/rc/utils'
 import { useTenantLink }                 from '@acx-ui/react-router-dom'
@@ -48,11 +47,6 @@ export function NetworkingTab () {
 
   const { apCapabilities } = useContext(ApDataContext)
 
-  const supportStaticIpSettings = useIsSplitOn(Features.AP_STATIC_IP)
-  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isFeatureOnMeshEnhancement
-  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
-
   const [isSupportMesh, setIsSupportMesh] = useState(false)
 
   useEffect(() => {
@@ -67,7 +61,7 @@ export function NetworkingTab () {
   const direcedtMulticastTitle = $t({ defaultMessage: 'Directed Multicast' })
 
   const anchorItems = [
-    ...(supportStaticIpSettings? [{
+    {
       title: ipSettingTitle,
       content: (
         <>
@@ -77,7 +71,7 @@ export function NetworkingTab () {
           <IpSettings />
         </>
       )
-    }] : []),
+    },
     {
       title: lanPortsTitle,
       content: (
@@ -89,7 +83,7 @@ export function NetworkingTab () {
         </>
       )
     },
-    ...((supportMeshEnhancement && isSupportMesh)? [{
+    ...(isSupportMesh? [{
       title: meshTitle,
       content: (
         <>
@@ -101,7 +95,7 @@ export function NetworkingTab () {
       )
 
     }] : []),
-    ...(supportDirectedMulticast? [{
+    {
       title: direcedtMulticastTitle,
       content: (
         <>
@@ -123,7 +117,7 @@ export function NetworkingTab () {
           <DirectedMulticast />
         </>
       )
-    }]: [])
+    }
   ]
 
   const resetEditContextData = () => {

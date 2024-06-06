@@ -469,6 +469,10 @@ export const validationMessages = {
   VenueMaxFloorLessThanMinFloor: defineMessage({
     defaultMessage: 'Max floor can\'t be less than min floor',
     description: 'Validation - Venue minimum floor checks'
+  }),
+  EnableAFCButNoVenueHeight: defineMessage({
+    defaultMessage: 'Enable AFC but no venue height was set.',
+    description: 'Validation - Enable AFC venue height checks'
   })
 }
 

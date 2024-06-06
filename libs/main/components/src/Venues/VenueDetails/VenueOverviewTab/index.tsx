@@ -7,7 +7,7 @@ import {
   ConnectedClientsOverTime,
   IncidentBySeverity,
   NetworkHistory,
-  SwitchesTrafficByVolume,
+  SwitchesTrafficByVolumeLegacy,
   TopSwitchModels,
   TopApplicationsByTraffic,
   TopSSIDsByClient,
@@ -16,7 +16,8 @@ import {
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TrafficByVolume,
-  VenueHealth
+  VenueHealth,
+  SwitchesTrafficByVolume
 } from '@acx-ui/analytics/components'
 import {
   GridRow,
@@ -24,6 +25,7 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
 import {
   useGetVenueRadioCustomizationQuery,
@@ -39,11 +41,18 @@ export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
   const { venueId } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const venueFilter = {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
-  const { data: venueRadio } = useGetVenueRadioCustomizationQuery( { params: { venueId } })
+
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery({
+    params: { venueId },
+    enableRbac: isUseRbacApi
+  })
+
   const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
@@ -140,10 +149,15 @@ function ApWidgets (props: { filters: AnalyticsFilter }) {
 
 function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   const filters = props.filters
+  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={filters} />
+        {
+          supportPortTraffic ?
+            <SwitchesTrafficByVolume filters={filters} />
+            :<SwitchesTrafficByVolumeLegacy filters={filters} />
+        }
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={filters} />

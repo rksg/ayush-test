@@ -11,11 +11,6 @@ export const TunnelProfileUrls: { [key: string]: ApiInfo } = {
     url: '/tunnelServiceProfiles/query',
     newApi: true
   },
-  batchDeleteTunnelProfile: {
-    method: 'delete',
-    url: '/tunnelServiceProfiles',
-    newApi: true
-  },
   deleteTunnelProfile: {
     method: 'delete',
     url: '/tunnelServiceProfiles/:id',

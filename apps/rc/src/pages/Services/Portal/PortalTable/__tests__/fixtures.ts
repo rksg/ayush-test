@@ -65,3 +65,45 @@ export const networksResponse = {
     id: '4'
   }]
 }
+
+export const mockDetailResult = {
+  id: 1,
+  serviceName: 'test',
+  content: {
+    welcomeText: 'Welcome to the Guest Access login page',
+    welcomeColor: '#333333',
+    bgImage: '',
+    bgColor: '#FFFFFF',
+    welcomeSize: 14,
+
+    photoRatio: 170,
+
+    logoRatio: 105,
+    secondaryText: 'Lorem ipsum dolor sit amet, consectetur adipiscing'+
+      ' elit. Aenean euismod bibendum laoreet.',
+    secondaryColor: '#333333',
+    secondarySize: 14,
+    buttonColor: '#EC7100',
+    poweredBgColor: '#FFFFFF',
+    poweredColor: '#333333',
+    poweredSize: 14,
+    poweredImgRatio: 50,
+    wifi4EUNetworkId: '',
+    termsCondition: '',
+    componentDisplay: {
+      logo: true,
+      welcome: true,
+      photo: true,
+      secondaryText: true,
+      termsConditions: false,
+      poweredBy: true,
+      wifi4eu: false
+    },
+    displayLangCode: 'en',
+
+    alternativeLang:
+
+        { cs: true, zh_TW: false, fi: true,
+          fr: true, de: true, el: true, hu: true, it: false }
+  }
+}

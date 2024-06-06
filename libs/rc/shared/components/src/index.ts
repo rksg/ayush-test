@@ -17,6 +17,7 @@ export { ApGroupTable, defaultApGroupPayload } from './ApGroupTable'
 export { ApGroupEdit } from './ApGroupEdit'
 export { ApGroupNetworksTable } from './ApGroupNetworkTable'
 export { ApGroupsTabContext } from './ApGroupTable/context'
+export { ApGroupDetails } from './ApGroupDetails'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
 export { ClientHealthIcon } from './ClientHealthIcon'
@@ -28,6 +29,7 @@ export {
   networkDisplayTransformer,
   isEqualCaptivePortal
 } from './ConnectedClientsTable'
+export { DefaultVlanDrawer } from './DefaultVlanDrawer'
 export { DevicesDashboardWidget, DevicesDashboardWidgetV2 } from './DevicesDashboardWidget'
 export { DevicesWidget, seriesMappingAP } from './DevicesWidget'
 export { EdgeSettingForm } from './EdgeSettingForm'
@@ -135,8 +137,8 @@ export { GroupedStatsTables as EdgeFirewallGroupedStatsTables }
 export { EdgePortsGeneralBase } from './EdgeFormItem/EdgePortsGeneralBase'
 export type { EdgePortConfigFormType } from './EdgeFormItem/EdgePortsGeneralBase'
 export { EdgeEditContext }
-export { EdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/PortsForm'
-export type { EdgePortsFormProps } from './EdgeFormItem/PortsForm'
+export { DeprecatedEdgePortsForm, EdgePortTabEnum } from './EdgeFormItem/DeprecatedPortsForm'
+export type { EdgePortsFormProps } from './EdgeFormItem/DeprecatedPortsForm'
 
 export { TunnelProfileForm } from './TunnelProfile/TunnelProfileForm'
 export { useTunnelProfileActions } from './TunnelProfile/TunnelProfileForm/useTunnelProfileActions'
@@ -230,6 +232,7 @@ export * from './EdgeStatisticWidget'
 export * from './pipes/apGroupPipes'
 export * from './ExpirationDateSelector'
 export * from './RadioSettings/RadioSettingsContents'
+export * from './RadioSettings/RadioSettingsUtils'
 export * from './SimpleListTooltip'
 export * from './VlanSettingDrawer'
 export * from './RadioSettingsChannels/320Mhz/ChannelComponentStates'
@@ -244,3 +247,6 @@ export * from './SwitchBlinkLEDsDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
 export * from './SwitchCliProfileForm'
 export * from './SwitchCliTemplateForm'
+export {
+  useRwgActions
+} from './useRwgActions'

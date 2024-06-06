@@ -267,7 +267,7 @@ export function EditPrivilegeGroup () {
       form.setFieldValue('mspcustomers', ecCustomersWithVenue.length > 0
         ? ChoiceCustomerEnum.SPECIFIC_CUSTOMER : ChoiceCustomerEnum.ALL_CUSTOMERS)
       const memberCount = privilegeGroup?.memberCount || 0
-      setDisableNameChange(memberCount > 0)
+      setDisableNameChange(memberCount > 0 && !isClone)
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 

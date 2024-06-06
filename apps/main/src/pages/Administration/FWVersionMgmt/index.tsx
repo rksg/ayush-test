@@ -36,7 +36,6 @@ const FWVersionMgmt = () => {
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: latestSwitchReleaseVersions } =
@@ -52,8 +51,7 @@ const FWVersionMgmt = () => {
       latestEdgeReleaseVersion: data?.[0]
     })
   })
-  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
-    { skip: !enableSigPackUpgrade })
+  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
   const isApFirmwareAvailable = useIsApFirmwareAvailable()
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
@@ -116,8 +114,7 @@ const FWVersionMgmt = () => {
         {isAPPLibraryAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
-      content: <ApplicationPolicyMgmt />,
-      visible: enableSigPackUpgrade
+      content: <ApplicationPolicyMgmt />
     }
   }
 
@@ -137,7 +134,6 @@ const FWVersionMgmt = () => {
     >
       {
         Object.entries(tabs).map((item) =>
-          item[1].visible &&
           <Tabs.TabPane
             key={item[0]}
             tab={item[1].title}
