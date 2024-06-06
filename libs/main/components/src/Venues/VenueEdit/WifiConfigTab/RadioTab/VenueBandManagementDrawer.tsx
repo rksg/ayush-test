@@ -85,7 +85,7 @@ export const VenueBandManagementDrawer = ({ visible, setVisible,
         ]}
       />}
     />
-    {selectedModel &&
+    {selectedModel && <>
       <DrawerFormItem
         name='bandMode'
         label={dual5gApModels.includes(selectedModel) ?
@@ -101,7 +101,13 @@ export const VenueBandManagementDrawer = ({ visible, setVisible,
               label: $t(bandCombinationLabelMapping[bandMode]), value: bandMode }))}
         />}
       />
-    }
+      <span style={{ color: 'red' }}>
+        {$t({
+          // eslint-disable-next-line max-len
+          defaultMessage: 'Modifying the Dual/Tri Band Mode will reboot the AP, the mesh connection will also be disconnected when rebooting.'
+        })}
+      </span>
+    </>}
   </Form>
 
   return (

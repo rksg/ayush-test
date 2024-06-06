@@ -153,7 +153,7 @@ export function RadioSettingsForm (props:{
       { showAfcItems &&
         // No need to bring enableAfc property when AP is outdoor ap and AFC is no enabled.
         // Also no need to show on the page.
-        !(LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false) &&
+        !(LPIButtonText?.isAPOutdoor || isAFCEnabled === false) &&
         <FieldLabel width='150px'
         // Hide the label when afcEnable is false or ap is outdoor under ap context
           style={(context === 'ap') ? { display: 'none' } : undefined}>
