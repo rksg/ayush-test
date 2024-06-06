@@ -3,7 +3,6 @@ import { useContext, useEffect } from 'react'
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Features, useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { ConfigTemplateType, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
 import { validationMessages }                                                         from '@acx-ui/utils'
 
@@ -32,8 +31,6 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   const form = Form.useFormInstance()
   const { wlanData } = props
 
-  const supportMacAuthDynamicVlan = useIsSplitOn(Features.WIFI_DYNAMIC_VLAN_TOGGLE)
-
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
     data.guestPortal?.guestNetworkType !== GuestNetworkTypeEnum.Cloudpath
@@ -48,10 +45,9 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK ||
-    (supportMacAuthDynamicVlan &&
-      ((data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-        data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
-      (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication)))
+    ((data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+      data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
+    (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication))
 
   const { enableVxLan: pureVxLanEnabled } = useNetworkVxLanTunnelProfileInfo(wlanData)
   // eslint-disable-next-line max-len
