@@ -156,7 +156,7 @@ describe('Test useApActions', () => {
     const callback = jest.fn()
 
     act(() => {
-      showDownloadApLog(serialNumber, tenantId, callback)
+      showDownloadApLog(serialNumber, tenantId, venueId, callback)
     })
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('Preparing log')

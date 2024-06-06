@@ -56,7 +56,7 @@ export default function useApsTable () {
       })
     }
   )
-
+  // TODO This query needs to be updated after apViewModel changes to the RBAC api
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {

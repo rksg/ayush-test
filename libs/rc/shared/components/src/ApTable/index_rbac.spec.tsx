@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
@@ -33,23 +34,25 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
-}))
+const rcUtils = require('@acx-ui/rc/utils')
+
+const FormComponent = ({ children }: React.PropsWithChildren) => {
+  return <Form>{children}</Form>
+}
 
 type MockDrawerProps = React.PropsWithChildren<{
   visible: boolean
-  importRequest: () => void
+  importRequest: (formData: FormData, values: Object) => void
   onClose: () => void
 }>
 jest.mock('../ImportFileDrawer', () => ({
   ...jest.requireActual('../ImportFileDrawer'),
-  ImportFileDrawer: ({ importRequest, onClose, visible }: MockDrawerProps) =>
+  ImportFileDrawer: ({ importRequest, onClose, visible, children }: MockDrawerProps) =>
     visible && <div data-testid={'ImportFileDrawer'}>
+      <FormComponent>{children}</FormComponent>
       <button onClick={(e)=>{
         e.preventDefault()
-        importRequest()
+        importRequest({} as FormData, { venueId: 'test-venue-id' })
       }}>Import</button>
       <button onClick={(e)=>{
         e.preventDefault()
@@ -71,9 +74,10 @@ describe('Aps', () => {
       store.dispatch(networkApi.util.resetApiState())
     })
 
-    utils.usePollingTableQuery = jest.fn().mockImplementation(() => {
+    jest.spyOn(rcUtils, 'usePollingTableQuery').mockImplementation(() => {
       return { data: mockAPList }
     })
+
     mockServer.use(
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesVenue.url,
@@ -140,8 +144,8 @@ describe('Aps', () => {
         (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
       ),
       rest.get(
-        WifiUrlsInfo.downloadApLog.url,
-        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl }))
+        WifiRbacUrlsInfo.downloadApLog.url,
+        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
       )
     )
 
@@ -279,11 +283,15 @@ describe('Aps', () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
       return ff === Features.AP_GPS || ff === Features.WIFI_RBAC_API
     })
+    const importAPSpy = jest.fn()
 
     mockServer.use(
       rest.post(
-        WifiUrlsInfo.addAp.url,
-        (req, res, ctx) => res(ctx.json({}))
+        WifiRbacUrlsInfo.addAp.url,
+        (req, res, ctx) => {
+          importAPSpy()
+          return res(ctx.status(202))
+        }
       )
     )
     render(<Provider><ApTable enableActions={true} /></Provider>, {
@@ -300,8 +308,9 @@ describe('Aps', () => {
     const drawer = await screen.findByTestId('ImportFileDrawer')
     expect(drawer).toBeVisible()
 
+    expect(within(drawer).getByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
-    await waitFor(() => expect(drawer).toBeVisible())
+    await waitFor(() => expect(importAPSpy).toHaveBeenCalled())
   })
 
   it.skip('Should render the low power warning messages', async () => {

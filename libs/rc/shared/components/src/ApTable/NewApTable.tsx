@@ -1,16 +1,18 @@
 /* eslint-disable max-len */
 import React, { ReactNode, Ref, forwardRef, useContext, useEffect, useImperativeHandle, useMemo, useState } from 'react'
 
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Badge }               from 'antd'
-import { find }                from 'lodash'
-import { useIntl }             from 'react-intl'
+import { FetchBaseQueryError }  from '@reduxjs/toolkit/dist/query'
+import { Badge, Divider, Form } from 'antd'
+import { find }                 from 'lodash'
+import { useIntl }              from 'react-intl'
 
 import {
   ColumnState,
   Loader,
+  Select,
   Table,
   TableProps,
+  cssStr,
   showToast
 } from '@acx-ui/components'
 import {
@@ -50,7 +52,7 @@ import {
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
-import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
+import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType } from '../ApCompatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
@@ -64,6 +66,10 @@ import { ApsTabContext } from './context'
 import { useExportCsv }  from './useExportCsv'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, retriedApIds, transformMeshRole } from '.'
+
+interface ImportFileFormType {
+  venueId: string
+}
 
 const newApPayload = {
   searchString: '',
@@ -187,6 +193,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     key, value: name, label: <Badge color={color} text={name} />
   }))
   const linkToEditAp = useTenantLink('/devices/wifi/')
+  const venueOptions = filterables?.['venueId'] instanceof Array ?
+    filterables?.['venueId'].map(item => ({ label: item.value, value: item.key })) :
+    []
 
   const columns = useMemo(() => {
     const extraParams = tableQuery?.data?.extra ?? {
@@ -502,7 +511,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     return visible
   }
 
-
   const rowActions: TableProps<NewAPModelExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
@@ -543,7 +551,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     label: $t({ defaultMessage: 'Download Log' }),
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL, ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED ] }),
     onClick: (rows) => {
-      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId)
+      apAction.showDownloadApLog(rows[0].serialNumber, params.tenantId, rows[0].venueId)
     }
   }]
 
@@ -554,13 +562,9 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const { acx_account_vertical } = getJwtTokenPayload()
-  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
-  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning ?
-    AccountVertical.HOSPITALITY.toLowerCase() + '_' : ''
   const importTemplateLink = apGpsFlag ?
-    `assets/templates/${isHospitality}aps_import_template_with_gps.csv` :
-    `assets/templates/${isHospitality}aps_import_template.csv`
+    'assets/templates/new_aps_import_template_with_gps.csv' :
+    'assets/templates/new_aps_import_template.csv'
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<NewAPModelExtended>(tableQuery as TableQuery<NewAPModelExtended, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
@@ -669,19 +673,37 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
         visible={importVisible}
         isLoading={isImportResultLoading}
         importError={importErrors}
-        importRequest={(formData) => {
+        importRequest={(formData, values) => {
           setIsImportResultLoading(true)
-          importCsv({ params: {}, payload: formData,
+          importCsv({
+            params: { venueId: (values as ImportFileFormType).venueId },
+            payload: formData,
             callback: async (res: CommonResult) => {
               const result = await importQuery(
-                { payload: { requestId: res.requestId } }, true)
+                {
+                  params: { venueId: (values as ImportFileFormType).venueId },
+                  payload: { requestId: res.requestId },
+                  enableRbac: true
+                }, true)
                 .unwrap()
               setImportResult(result)
-            } }).unwrap().catch(() => {
+            },
+            enableRbac: true
+          }).unwrap().catch(() => {
             setIsImportResultLoading(false)
           })
         }}
-        onClose={() => setImportVisible(false)}/>
+        onClose={() => setImportVisible(false)}>
+        <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
+        <Form.Item
+          name={'venueId'}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+          rules={[{ required: true }]}
+          children={
+            <Select options={venueOptions} />
+          }
+        />
+      </ImportFileDrawer>
       <ApCompatibilityDrawer
         visible={compatibilitiesDrawerVisible}
         type={params.venueId?ApCompatibilityType.VENUE:ApCompatibilityType.NETWORK}
