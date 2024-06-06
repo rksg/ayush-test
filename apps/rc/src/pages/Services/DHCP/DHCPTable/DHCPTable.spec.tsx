@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -69,6 +70,10 @@ describe('DHCPTable', () => {
     mockServer.use(
       rest.post(
         DHCPUrls.getDHCPProfilesViewModel.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
+        DHCPUrls.queryDHCPProfiles.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
@@ -147,6 +152,47 @@ describe('DHCPTable', () => {
       expect(screen.queryByRole('dialog')).toBeNull()
     })
   })
+
+  it('should call rbac api and render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        DHCPUrls.deleteDHCPProfile.url,
+        (req, res, ctx) => {
+          if (req.headers.get('content-type')==='application/vnd.ruckus.v1.1+json'
+          && req.headers.get('accept') === 'application/vnd.ruckus.v1.1+json') {
+            deleteFn(req.body)
+            return res(ctx.json({ requestId: '12345' }))
+          }
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const target = mockTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+
 
   it('should navigate to the Edit view', async () => {
     render(
