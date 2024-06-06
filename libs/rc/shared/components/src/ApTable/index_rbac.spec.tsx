@@ -18,7 +18,6 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
-import { AccountVertical } from '@acx-ui/utils'
 
 import {
   apCompatibilities,
@@ -36,7 +35,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const rcUtils = require('@acx-ui/rc/utils')
-const utils = require('@acx-ui/utils')
 
 const FormComponent = ({ children }: React.PropsWithChildren) => {
   return <Form>{children}</Form>
@@ -147,7 +145,7 @@ describe('Aps', () => {
       ),
       rest.get(
         WifiRbacUrlsInfo.downloadApLog.url,
-        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl }))
+        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
       )
     )
 
@@ -313,29 +311,6 @@ describe('Aps', () => {
     expect(within(drawer).getByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
     await waitFor(() => expect(importAPSpy).toHaveBeenCalled())
-  })
-
-  it('should show Space in import drawer when the tenant is HOSPITALITY', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.AP_GPS ||
-        ff === Features.WIFI_RBAC_API ||
-        ff === Features.VERTICAL_RE_SKINNING
-    })
-    jest.spyOn(utils, 'getJwtTokenPayload').mockImplementation(() => ({
-      acx_account_vertical: AccountVertical.HOSPITALITY
-    }))
-
-    render(<Provider><ApTable enableActions={true} /></Provider>, {
-      route: { params, path: '/:tenantId/t' }
-    })
-
-    expect(await screen.findByText('Import APs')).toBeVisible()
-    await userEvent.click(await screen.findByRole('button', { name: 'Import APs' }))
-
-    const drawer = await screen.findByTestId('ImportFileDrawer')
-    expect(drawer).toBeVisible()
-
-    expect(within(drawer).getByRole('combobox', { name: 'Space' })).toBeInTheDocument()
   })
 
   it.skip('Should render the low power warning messages', async () => {

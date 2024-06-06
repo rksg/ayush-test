@@ -52,7 +52,7 @@ import {
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
-import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
+import { exportMessageMapping }                                           from '@acx-ui/utils'
 
 import { ApCompatibilityDrawer, ApCompatibilityFeature, ApCompatibilityQueryTypes, ApCompatibilityType } from '../ApCompatibility'
 import { seriesMappingAP }                                                                               from '../DevicesWidget/helper'
@@ -562,9 +562,6 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
   const [ importResult, setImportResult ] = useState<ImportErrorRes>({} as ImportErrorRes)
   const [ importErrors, setImportErrors ] = useState<FetchBaseQueryError>({} as FetchBaseQueryError)
   const apGpsFlag = useIsSplitOn(Features.AP_GPS)
-  const { acx_account_vertical } = getJwtTokenPayload()
-  const supportReSkinning = useIsSplitOn(Features.VERTICAL_RE_SKINNING)
-  const isHospitality = acx_account_vertical === AccountVertical.HOSPITALITY && supportReSkinning
   const importTemplateLink = apGpsFlag ?
     'assets/templates/new_aps_import_template_with_gps.csv' :
     'assets/templates/new_aps_import_template.csv'
@@ -700,7 +697,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
         <Divider style={{ margin: '4px 0px 20px', background: cssStr('--acx-neutrals-30') }}/>
         <Form.Item
           name={'venueId'}
-          label={isHospitality ? $t({ defaultMessage: 'Space' }) : $t({ defaultMessage: 'Venue' })}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           rules={[{ required: true }]}
           children={
             <Select options={venueOptions} />
