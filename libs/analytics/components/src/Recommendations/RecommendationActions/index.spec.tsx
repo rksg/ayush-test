@@ -1,10 +1,10 @@
 import userEvent       from '@testing-library/user-event'
 import { MomentInput } from 'moment-timezone'
 
-import { get }                                     from '@acx-ui/config'
-import { useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
-import { Provider, recommendationUrl }             from '@acx-ui/store'
+import { get }                              from '@acx-ui/config'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
+import { Provider, recommendationUrl }      from '@acx-ui/store'
 import {
   mockGraphqlMutation,
   render,
@@ -51,8 +51,16 @@ jest.mock('../services', () => ({
     ssid: 's3'
   }] })
 }))
+jest.mock('@acx-ui/rc/utils', () => ({
+  RadioTypeEnum: {
+    _2_4_GHz: '2.4-GHz',
+    _5_GHz: '5-GHz',
+    _6_GHz: '6-GHz'
+  }
+}))
+
 jest.mock('@acx-ui/rc/services', () => ({
-  useVenueNetworkActivationsDataListQuery: jest.fn().mockReturnValue({ data: [{
+  useVenueRadioActiveNetworksQuery: jest.fn().mockReturnValue({ data: [{
     id: 'i4',
     name: 'n4',
     ssid: 's4'
@@ -375,7 +383,7 @@ describe('RecommendationActions', () => {
   it('handles empty wlans response', async () => {
     const schedule = jest.fn()
     jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
-    jest.mocked(useVenueNetworkActivationsDataListQuery).mockReturnValue({})
+    jest.mocked(useVenueRadioActiveNetworksQuery).mockReturnValue({})
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(

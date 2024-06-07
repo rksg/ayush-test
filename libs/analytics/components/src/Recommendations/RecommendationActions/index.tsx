@@ -15,7 +15,8 @@ import {
   CancelCircleSolid,
   CheckMarkCircleOutline
 } from '@acx-ui/icons'
-import { useVenueNetworkActivationsDataListQuery } from '@acx-ui/rc/services'
+import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
+import { RadioTypeEnum }                    from '@acx-ui/rc/utils'
 
 import { codes }                      from '../config'
 import {
@@ -74,8 +75,15 @@ type ActionButtonProps = RecommendationActionType & {
 
 type WlanSelection = RecommendationWlan & { id: string, excluded?: boolean }
 
+const codeToRadio: Record<string, RadioTypeEnum> = {
+  'c-probeflex-24g': RadioTypeEnum._2_4_GHz,
+  'c-probeflex-5g': RadioTypeEnum._5_GHz,
+  'c-probeflex-6g': RadioTypeEnum._6_GHz
+}
+
 function useWlansSelection (
   id: string,
+  code: string,
   venueId: string,
   savedWlans: RecommendationWlan[] | undefined,
   isMlisa: boolean,
@@ -84,11 +92,12 @@ function useWlansSelection (
   const [wlans, setWlans] = useState<Array<WlanSelection>>([])
   const selected = wlans.filter(wlan => !wlan.excluded)
   const wlansQuery = useRecommendationWlansQuery({ id }, { skip: !needsWlans || !isMlisa })
-  const r1Networks = useVenueNetworkActivationsDataListQuery({
+  const r1Networks = useVenueRadioActiveNetworksQuery({
     params: { venueId },
+    radio: codeToRadio[code],
     payload: {
       venueId,
-      fields: ['id', 'name', 'ssid', 'venues'],
+      fields: ['id', 'name', 'ssid'],
       page: 1,
       sortField: 'name',
       sortOrder: 'ASC',
@@ -100,9 +109,7 @@ function useWlansSelection (
     if (isMlisa && wlansQuery.data) {
       available = wlansQuery.data.map(wlan => ({ ...wlan, id: wlan.name })) // RA does not have ID
     } else if (!isMlisa && r1Networks.data) {
-      // TODO venues.apGroups.radioTypes filter radio
-      available = r1Networks.data.map(({ id, name, ssid }) =>
-        ({ id: id ?? '', name: name ?? '', ssid: ssid ?? '' }))
+      available = r1Networks.data
     }
     if (available) {
       if (savedWlans) {
@@ -115,7 +122,7 @@ function useWlansSelection (
         setWlans(available)
       }
     }
-  }, [isMlisa, r1Networks, savedWlans, venueId, wlansQuery])
+  }, [r1Networks.data, code, isMlisa, savedWlans, venueId, wlansQuery])
   return {
     states: [r1Networks, wlansQuery],
     available: wlans,
@@ -133,8 +140,8 @@ function ApplyCalendar ({
   metadata,
   initialDate,
   showTextOnly,
-  statusEnum,
-  idPath
+  idPath,
+  statusEnum
 }: ActionButtonProps) {
   const { $t } = useIntl()
   const wlanStatus = ['new', 'applyscheduled'].includes(statusEnum)
@@ -143,7 +150,7 @@ function ApplyCalendar ({
   const isMlisa = Boolean(get('IS_MLISA_SA'))
   const isRecommendationRevertEnabled = useIsSplitOn(Features.RECOMMENDATION_REVERT) || isMlisa
   const venueId = idPath?.filter(({ type }) => type === 'zone')?.[0].name
-  const wlans = useWlansSelection(id, venueId, metadata.wlans, isMlisa, needsWlans)
+  const wlans = useWlansSelection(id, code, venueId, metadata.wlans, isMlisa, needsWlans)
   const onApply = (date: Moment) => {
     const futureTime = getFutureTime(moment().seconds(0).milliseconds(0))
     if (futureTime <= date){
