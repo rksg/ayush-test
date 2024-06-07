@@ -172,6 +172,7 @@ export const kpiConfig = {
   switchDhcp: {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchDHCPSuccessAndAttemptCount',
       minGranularity: 'PT5M'
