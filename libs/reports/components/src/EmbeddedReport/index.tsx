@@ -391,10 +391,10 @@ export function EmbeddedReport (props: ReportProps) {
       },
       // debug: true, // Enable this for debugging
       authToken: jwtToken ? `Bearer ${jwtToken}` : undefined,
-      // username: isRA ? userId : externalId,
-      // isReadOnly: isRA
-      //   ? selectedTenant.role === RolesEnumRA.BUSINESS_INSIGHTS_USER
-      //   : !(roles.includes(RolesEnumR1.PRIME_ADMIN) || roles.includes(RolesEnumR1.ADMINISTRATOR)),
+      username: isRA ? userId : externalId,
+      isReadOnly: isRA
+        ? selectedTenant.role === RolesEnumRA.BUSINESS_INSIGHTS_USER
+        : !(roles.includes(RolesEnumR1.PRIME_ADMIN) || roles.includes(RolesEnumR1.ADMINISTRATOR)),
       locale // i18n locale from R1
     })
     embeddedObj.then(async (embObj) => {

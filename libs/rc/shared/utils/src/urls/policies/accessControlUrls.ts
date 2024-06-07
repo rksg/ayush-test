@@ -131,6 +131,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy',
     newApi: true
   },
+  getApplicationPolicyListQuery: {
+    method: 'post',
+    url: '/applicationPolicies/query',
+    newApi: true
+  },
   getEnhancedApplicationPolicies: {
     method: 'post',
     url: '/enhancedApplicationPolicies/query',
@@ -143,13 +148,22 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/capabilities/avc-cat',
     url: '/applicationPolicies/capabilities/categories',
     newApi: true
-
+  },
+  getAvcCategoryRbac: {
+    method: 'get',
+    url: '/applicationLibraries/:applicationLibraryId/categories',
+    newApi: true
   },
   getAvcApp: {
     // [New API] private api
     method: 'get',
     oldUrl: '/api/tenant/:tenantId/wifi/capabilities/avc-app',
     url: '/applicationPolicies/capabilities/applications',
+    newApi: true
+  },
+  getAvcAppRbac: {
+    method: 'get',
+    url: '/applicationLibraries/:applicationLibraryId/categories/:categoryId/applications',
     newApi: true
   },
   getAccessControlProfile: {
@@ -235,6 +249,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy',
     newApi: true
   },
+  getDevicePolicyListQuery: {
+    method: 'post',
+    url: '/devicePolicies/query',
+    newApi: true
+  },
   getEnhancedDevicePolicies: {
     method: 'post',
     url: '/enhancedDevicePolicies/query',
@@ -279,6 +298,61 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   deactivateL3AclOnWifiNetwork: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/l3AclPolicies/:l3AclPolicyId',
+    newApi: true
+  },
+  activateDevicePolicyOnAccessControlProfile: {
+    method: 'put',
+    url: '/accessControlProfiles/:policyId/devicePolicies/:devicePolicyId',
+    newApi: true
+  },
+  deactivateDevicePolicyOnAccessControlProfile: {
+    method: 'delete',
+    url: '/accessControlProfiles/:policyId/devicePolicies/:devicePolicyId',
+    newApi: true
+  },
+  activateDevicePolicyOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/devicePolicies/:devicePolicyId',
+    newApi: true
+  },
+  deactivateDevicePolicyOnWifiNetwork: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/devicePolicies/:devicePolicyId',
+    newApi: true
+  },
+  activateApplicationPolicyOnAccessControlProfile: {
+    method: 'put',
+    url: '/accessControlProfiles/:policyId/applicationPolicies/:applicationPolicyId',
+    newApi: true
+  },
+  deactivateApplicationPolicyOnAccessControlProfile: {
+    method: 'delete',
+    url: '/accessControlProfiles/:policyId/applicationPolicies/:applicationPolicyId',
+    newApi: true
+  },
+  activateApplicationPolicyOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/applicationPolicies/:applicationPolicyId',
+    newApi: true
+  },
+  deactivateApplicationPolicyOnWifiNetwork: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/applicationPolicies/:applicationPolicyId',
+    newApi: true
+  },
+  applicationLibrarySettings: {
+    method: 'get',
+    url: '/applicationLibrarySettings',
+    newApi: true
+  },
+  applicationLibrariesCategoryList: {
+    method: 'get',
+    url: '/applicationLibraries/:applicationLibraryId/categories',
+    newApi: true
+  },
+  applicationLibrariesApplicationList: {
+    method: 'get',
+    url: '/applicationLibraries/:applicationLibraryId/categories/:categoryId/applications',
     newApi: true
   }
 }

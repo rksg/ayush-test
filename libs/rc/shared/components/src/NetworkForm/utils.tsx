@@ -6,8 +6,12 @@ import { Params } from 'react-router-dom'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
-  actionItem, comparePayload, comparisonObjectType,
-  covertAAAViewModalTypeToRadius, profilePayload, updateActionItem,
+  actionItem,
+  comparePayload,
+  comparisonObjectType,
+  covertAAAViewModalTypeToRadius,
+  profilePayload,
+  updateActionItem,
   useActivateL2AclOnWifiNetworkMutation,
   useDeactivateL2AclOnWifiNetworkMutation,
   useActivateRadiusServerMutation,
@@ -18,7 +22,11 @@ import {
   useUpdateRadiusServerSettingsMutation,
   wifiActionMapType,
   useActivateL3AclOnWifiNetworkMutation,
-  useDeactivateL3AclOnWifiNetworkMutation
+  useDeactivateL3AclOnWifiNetworkMutation,
+  useActivateDeviceOnWifiNetworkMutation,
+  useDeactivateDeviceOnWifiNetworkMutation,
+  useActivateApplicationPolicyOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -282,6 +290,10 @@ export function useAccessControlActivation () {
   const [ deactivateL2Acl ] = useDeactivateL2AclOnWifiNetworkMutation()
   const [ activateL3Acl ] = useActivateL3AclOnWifiNetworkMutation()
   const [ deactivateL3Acl ] = useDeactivateL3AclOnWifiNetworkMutation()
+  const [ activateDevice ] = useActivateDeviceOnWifiNetworkMutation()
+  const [ deactivateDevice ] = useDeactivateDeviceOnWifiNetworkMutation()
+  const [ activateApplication ] = useActivateApplicationPolicyOnWifiNetworkMutation()
+  const [ deactivateApplication ] = useDeactivateApplicationPolicyOnWifiNetworkMutation()
   const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
@@ -312,6 +324,34 @@ export function useAccessControlActivation () {
           activateL3Acl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
+    },
+    devicePolicyId: {
+      added: (params: Params<string>) => {
+        return activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          deactivateDevice({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          activateDevice({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
+    },
+    applicationPolicyId: {
+      added: (params: Params<string>) => {
+        return activateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          activateApplication({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
     }
   }
 
@@ -325,6 +365,16 @@ export function useAccessControlActivation () {
     if (data.wlan?.advancedCustomization?.hasOwnProperty('l3AclPolicyId')
       && data.wlan?.advancedCustomization.l3AclEnable) {
       object['l3AclPolicyId'] = { id: data.wlan.advancedCustomization.l3AclPolicyId }
+    }
+
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('devicePolicyId')
+      && data.enableDeviceOs) {
+      object['devicePolicyId'] = { id: data.wlan.advancedCustomization.devicePolicyId }
+    }
+
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
+      && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
+      object['applicationPolicyId'] = { id: data.wlan.advancedCustomization.applicationPolicyId }
     }
 
     return object
@@ -395,6 +445,8 @@ export function useAccessControlActivation () {
 
   const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
     if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
+
+    console.log(formData, data)
 
     const comparisonResult = comparePayload(
       filterForAccessControlComparison(formData),

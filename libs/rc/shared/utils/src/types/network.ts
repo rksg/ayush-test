@@ -114,6 +114,7 @@ export interface NetworkSaveData {
   authRadiusId?: string | null
   accountingRadiusId?: string
   enableDhcp?: boolean
+  enableDeviceOs?: boolean
   wlan?: {
     ssid?: string
     vlanId?: number

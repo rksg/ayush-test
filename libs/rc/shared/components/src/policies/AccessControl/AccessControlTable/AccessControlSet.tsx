@@ -271,7 +271,9 @@ function useColumns (networkFilterOptions: AclOptionType[]) {
       filterable: networkFilterOptions,
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
-      render: (_, row) => row.networkIds.length
+      render: (_, row) => {
+        return row.networkIds?.length || 0
+      }
     }
   ]
 

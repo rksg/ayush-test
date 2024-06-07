@@ -220,6 +220,66 @@ export const accessControlActionMap = {
         )
       ]
     }
+  },
+  devicePolicyId: {
+    added: (params: Params<string>) => {
+      return createHttpRequest(
+        AccessControlUrls.activateDevicePolicyOnAccessControlProfile,
+        params,
+        GetApiVersionHeader(ApiVersionEnum.v1)
+      )
+    },
+    removed: (params: Params<string>) => {
+      return createHttpRequest(
+        AccessControlUrls.deactivateDevicePolicyOnAccessControlProfile,
+        params,
+        GetApiVersionHeader(ApiVersionEnum.v1)
+      )
+    },
+    updated: (oldParams: Params<string>, params: Params<string>) => {
+      return [
+        createHttpRequest(
+          AccessControlUrls.deactivateDevicePolicyOnAccessControlProfile,
+          oldParams,
+          GetApiVersionHeader(ApiVersionEnum.v1)
+        ),
+        createHttpRequest(
+          AccessControlUrls.activateDevicePolicyOnAccessControlProfile,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1)
+        )
+      ]
+    }
+  },
+  applicationPolicyId: {
+    added: (params: Params<string>) => {
+      return createHttpRequest(
+        AccessControlUrls.activateApplicationPolicyOnAccessControlProfile,
+        params,
+        GetApiVersionHeader(ApiVersionEnum.v1)
+      )
+    },
+    removed: (params: Params<string>) => {
+      return createHttpRequest(
+        AccessControlUrls.deactivateApplicationPolicyOnAccessControlProfile,
+        params,
+        GetApiVersionHeader(ApiVersionEnum.v1)
+      )
+    },
+    updated: (oldParams: Params<string>, params: Params<string>) => {
+      return [
+        createHttpRequest(
+          AccessControlUrls.deactivateApplicationPolicyOnAccessControlProfile,
+          oldParams,
+          GetApiVersionHeader(ApiVersionEnum.v1)
+        ),
+        createHttpRequest(
+          AccessControlUrls.activateApplicationPolicyOnAccessControlProfile,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1)
+        )
+      ]
+    }
   }
 } as actionMapType
 
@@ -255,7 +315,6 @@ export const operateAction = async (
   const updateActions: MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>[] = []
   for(const updatedObject of comparisonObject.updated) {
     Object.entries(updatedObject).forEach(([key, value]) => {
-      console.log('update', key, value, actionMap)
       if (key in actionMap) {
         // eslint-disable-next-line max-len
         const updatedActionRequests = actionMap[key].updated(value.oldAction, value.action)
@@ -265,6 +324,5 @@ export const operateAction = async (
       }
     })
   }
-  console.log(updateActions)
   await Promise.all(updateActions)
 }

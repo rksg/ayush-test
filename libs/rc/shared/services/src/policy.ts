@@ -60,7 +60,8 @@ import {
   asyncConvertRbacSnmpPolicyToOldFormat,
   convertToCountAndNumber,
   RoguePolicyRequest,
-  AAARbacViewModalType
+  AAARbacViewModalType,
+  ApplicationLibrarySettingType
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -599,11 +600,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     addDevicePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addDevicePolicy, params)
+      query: ({ params, payload, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.addDevicePolicy,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
         return {
           ...req,
-          body: payload
+          body: enableRbac ? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
@@ -642,7 +647,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delDevicePolicies: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const policyIds = payload as string[]
+          // eslint-disable-next-line max-len
+          const requests = policyIds.map(policyId => ({ params: { devicePolicyId: policyId }, payload: {} }))
+          return batchApi(
+            AccessControlUrls.delDevicePolicy,
+            requests,
+            fetchWithBQ,
+            GetApiVersionHeader(ApiVersionEnum.v1_1)
+          )
+        }
+
         const req = createHttpRequest(AccessControlUrls.delDevicePolicies, params)
         return {
           ...req,
@@ -652,21 +669,80 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     updateDevicePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.updateDevicePolicy, params)
+      query: ({ params, payload, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.updateDevicePolicy,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+        )
         return {
           ...req,
-          body: payload
+          body: enableRbac ? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
+    activateDeviceOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.activateDevicePolicyOnAccessControlProfile,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    deactivateDeviceOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(
+          AccessControlUrls.deactivateDevicePolicyOnAccessControlProfile,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    activateDeviceOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.activateDevicePolicyOnWifiNetwork,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateDeviceOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.deactivateDevicePolicyOnWifiNetwork,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      }
+    }),
     addAppPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.addAppPolicy, params)
+      query: ({ params, payload, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.addAppPolicy,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+        )
         return {
           ...req,
-          body: payload
+          body: enableRbac ? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
@@ -705,7 +781,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     delAppPolicies: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const policyIds = payload as string[]
+          // eslint-disable-next-line max-len
+          const requests = policyIds.map(policyId => ({ params: { applicationPolicyId: policyId }, payload: {} }))
+          return batchApi(
+            AccessControlUrls.delAppAclPolicy,
+            requests,
+            fetchWithBQ,
+            GetApiVersionHeader(ApiVersionEnum.v1_1)
+          )
+        }
+
         const req = createHttpRequest(AccessControlUrls.delAppAclPolicies, params)
         return {
           ...req,
@@ -715,11 +803,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
     }),
     updateAppPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.updateAppAclPolicy, params)
+      query: ({ params, payload, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.updateAppAclPolicy,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+        )
         return {
           ...req,
-          body: payload
+          body: enableRbac ? JSON.stringify(payload) : payload
         }
       },
       invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
@@ -744,6 +836,57 @@ export const policyApi = basePolicyApi.injectEndpoints({
             ]))
           }, params.requestId as string)
         })
+      }
+    }),
+    activateApplicationPolicyOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.activateApplicationPolicyOnAccessControlProfile,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    deactivateApplicationPolicyOnAccessControlProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(
+          AccessControlUrls.deactivateApplicationPolicyOnAccessControlProfile,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'AccessControl', id: 'LIST' }]
+    }),
+    activateApplicationPolicyOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.activateApplicationPolicyOnWifiNetwork,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateApplicationPolicyOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.deactivateApplicationPolicyOnWifiNetwork,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
       }
     }),
     getRoguePolicyList: build.query<RogueAPDetectionTempType[], RequestPayload>({
@@ -799,12 +942,49 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getEnhancedAccessControlProfileList: build.query<TableResult<EnhancedAccessControlInfoType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.getEnhancedAccessControlProfiles, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const aclPolicyListInfo = createFetchArgsBasedOnRbac({
+          apiInfo: AccessControlUrls.getEnhancedAccessControlProfiles,
+          rbacApiInfo: AccessControlUrls.getAccessControlProfileQueryList,
+          rbacApiVersionKey: ApiVersionEnum.v1,
+          queryArgs: { params, payload, enableRbac }
+        })
+
+        const aclPolicyListInfoQuery = await fetchWithBQ(aclPolicyListInfo)
+        const aclPolicyList = aclPolicyListInfoQuery.data as TableResult<EnhancedAccessControlInfoType>
+
+        // fill in the mac addresses
+        const processFn = async (policy: EnhancedAccessControlInfoType) => {
+          if (!enableRbac) return policy
+
+          try {
+            // eslint-disable-next-line max-len
+            const aclPolicyDetail = createHttpRequest(
+              AccessControlUrls.getAccessControlProfile,
+              { policyId: policy.id },
+              enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+            )
+            const acl = await fetchWithBQ(aclPolicyDetail)
+            const aclData = acl.data as EnhancedAccessControlInfoType
+
+            return {
+              ...policy,
+              networkIds: aclData.networkIds
+            }
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(`AccessControlProfile ${policy.id} get additional attribute error:`, e)
+            return {
+              ...policy
+            }
+          }
         }
+
+        const result = await fetchAdditionalData(aclPolicyList, processFn)
+
+        return aclPolicyListInfoQuery.data
+          ? { data: result.data }
+          : { error: aclPolicyListInfoQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -912,7 +1092,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             }
           } catch (e) {
             // eslint-disable-next-line no-console
-            console.error(`l3AclPolicy ${policy.id} getMacAddresses error:`, e)
+            console.error(`l3AclPolicy ${policy.id} get additional attribute error:`, e)
             return {
               ...policy
             }
@@ -920,8 +1100,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
 
         const result = await fetchAdditionalData(l3AclPolicyList, processFn)
-
-        console.log(result, l3AclPolicyList)
 
         return l3AclPolicyListInfoQuery.data
           ? { data: result.data }
@@ -940,12 +1118,48 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getEnhancedDeviceProfileList: build.query<TableResult<DevicePolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.getEnhancedDevicePolicies, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const devicePolicyListInfo = createFetchArgsBasedOnRbac({
+          apiInfo: AccessControlUrls.getEnhancedDevicePolicies,
+          rbacApiInfo: AccessControlUrls.getDevicePolicyListQuery,
+          rbacApiVersionKey: ApiVersionEnum.v1,
+          queryArgs: { params, payload, enableRbac }
+        })
+
+        const devicePolicyListInfoQuery = await fetchWithBQ(devicePolicyListInfo)
+        const devicePolicyList = devicePolicyListInfoQuery.data as TableResult<DevicePolicy>
+
+        // fill in rules and network data
+        const processFn = async (policy: DevicePolicy) => {
+          if (!enableRbac) return policy
+
+          try {
+            const devicePolicyDetail = createHttpRequest(
+              AccessControlUrls.getDevicePolicy,
+              { devicePolicyId: policy.id },
+              GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+            )
+            const devicePolicy = await fetchWithBQ(devicePolicyDetail)
+            const deviceData = devicePolicy.data as devicePolicyInfoType
+
+            return {
+              ...policy,
+              added_check: deviceData
+            }
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(`DevicePolicy ${policy.id} get additional attribute error:`, e)
+            return {
+              ...policy
+            }
+          }
         }
+
+        const result = await fetchAdditionalData(devicePolicyList, processFn)
+
+        return devicePolicyListInfoQuery.data
+          ? { data: result.data }
+          : { error: devicePolicyListInfoQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -960,12 +1174,48 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getEnhancedApplicationProfileList: build.query<TableResult<ApplicationPolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AccessControlUrls.getEnhancedApplicationPolicies, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const applicationPolicyListInfo = createFetchArgsBasedOnRbac({
+          apiInfo: AccessControlUrls.getEnhancedApplicationPolicies,
+          rbacApiInfo: AccessControlUrls.getApplicationPolicyListQuery,
+          rbacApiVersionKey: ApiVersionEnum.v1,
+          queryArgs: { params, payload, enableRbac }
+        })
+
+        const applicationPolicyListInfoQuery = await fetchWithBQ(applicationPolicyListInfo)
+        const applicationPolicyList = applicationPolicyListInfoQuery.data as TableResult<ApplicationPolicy>
+
+        // fill in rules and network data
+        const processFn = async (policy: ApplicationPolicy) => {
+          if (!enableRbac) return policy
+
+          try {
+            const applicationPolicyDetail = createHttpRequest(
+              AccessControlUrls.getAppPolicy,
+              { applicationPolicyId: policy.id },
+              GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+            )
+            const applicationPolicy = await fetchWithBQ(applicationPolicyDetail)
+            const applicationData = applicationPolicy.data as appPolicyInfoType
+
+            return {
+              ...policy,
+              added_check: applicationData
+            }
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(`ApplicationPolicy ${policy.id} get additional attribute error:`, e)
+            return {
+              ...policy
+            }
+          }
         }
+
+        const result = await fetchAdditionalData(applicationPolicyList, processFn)
+
+        return applicationPolicyListInfoQuery.data
+          ? { data: result.data }
+          : { error: applicationPolicyListInfoQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'AccessControl', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -1929,24 +2179,149 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'MacRegistration', id: 'LIST' }]
     }),
     avcCategoryList: build.query<AvcCategory[], RequestPayload>({
-      query: ({ params, payload }) => {
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          try {
+            const categoryListReq = createHttpRequest(
+              AccessControlUrls.applicationLibrariesCategoryList,
+              params,
+              GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+            )
+            const categoryListRes = await fetchWithBQ(categoryListReq)
+
+            if (categoryListRes.error) {
+              return { error: categoryListRes.error as FetchBaseQueryError }
+            }
+
+            const categoryListResData = (categoryListRes.data as { categories: { id: string, name: string }[] }).categories
+            return { data: categoryListResData.map(categoryList => {
+              return {
+                catId: categoryList.id as string,
+                catName: categoryList.name as string,
+                appNames: []
+              }
+            }) as unknown as AvcCategory[] }
+          } catch (error) {
+            return { error: error as FetchBaseQueryError }
+          }
+        }
+
         const avcCatListReq = createHttpRequest(AccessControlUrls.getAvcCategory, params)
-        return {
+        const avcCatListRes = await fetchWithBQ({
           ...avcCatListReq,
+          body: payload
+        })
+
+        if (avcCatListRes.error) {
+          return { error: avcCatListRes.error as FetchBaseQueryError }
+        }
+
+        return { data: avcCatListRes.data as AvcCategory[] }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    applicationLibrariesCategoryList: build.query<CommonResult, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const categoryListReq = createHttpRequest(
+          AccessControlUrls.applicationLibrariesCategoryList,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...categoryListReq,
           body: payload
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     avcAppList: build.query<AvcApp[], RequestPayload>({
-      query: ({ params, payload }) => {
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          try {
+            const categoryListReq = createHttpRequest(
+              AccessControlUrls.applicationLibrariesCategoryList,
+              params,
+              GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+            )
+            const categoryListRes = await fetchWithBQ(categoryListReq)
+
+            const appListData = await Promise.all(
+              (categoryListRes.data as { categories: { id: string, name: string }[] }).categories.map(async (category) => {
+                try {
+                  const applicationPolicyDetail = createHttpRequest(
+                    AccessControlUrls.applicationLibrariesApplicationList,
+                    {
+                      ...params,
+                      categoryId: category.id
+                    },
+                    GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+                  )
+                  const applicationPolicy = await fetchWithBQ(applicationPolicyDetail)
+                  const applicationData = applicationPolicy.data as { applications: { id: string, name: string }[] }
+
+                  return applicationData.applications.map(app => {
+                    return {
+                      appName: app.name,
+                      avcAppAndCatId: {
+                        catId: category.id,
+                        appId: app.id
+                      }
+                    }
+                  })
+                } catch (e) {
+                  // eslint-disable-next-line no-console
+                  console.error(`ApplicationPolicy ${category.id} get an error:`, e)
+                  return { error: e as FetchBaseQueryError }
+                }
+              })
+            )
+
+            return { data: appListData.flat() as unknown as AvcApp[] }
+          } catch (error) {
+            return { error: error as FetchBaseQueryError }
+          }
+        }
+
         const avcAppListReq = createHttpRequest(AccessControlUrls.getAvcApp, params)
-        return {
+        const avcAppListRes = await fetchWithBQ({
           ...avcAppListReq,
+          body: payload
+        })
+
+        if (avcAppListRes.error) {
+          return { error: avcAppListRes.error as FetchBaseQueryError }
+        }
+
+        return { data: avcAppListRes.data as AvcApp[] }
+      },
+      providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    applicationLibrariesApplicationList: build.query<CommonResult, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const applicationListReq = createHttpRequest(
+          AccessControlUrls.applicationLibrariesApplicationList,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...applicationListReq,
           body: payload
         }
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
+    }),
+    applicationLibrarySettings: build.query<ApplicationLibrarySettingType, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const applicationLibrarySettingsReq = createHttpRequest(
+          AccessControlUrls.applicationLibrarySettings,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...applicationLibrarySettingsReq,
+          body: payload
+        }
+      }
     }),
     addSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
       query: ({ params, payload }) => {
@@ -3235,7 +3610,10 @@ export const {
   useUpdateAdaptivePolicySetToMacListMutation,
   useDeleteAdaptivePolicySetFromMacListMutation,
   useAvcCategoryListQuery,
+  useApplicationLibrariesCategoryListQuery,
   useAvcAppListQuery,
+  useApplicationLibrariesApplicationListQuery,
+  useApplicationLibrarySettingsQuery,
   useAddRoguePolicyMutation,
   useDelRoguePolicyMutation,
   useDelRoguePoliciesMutation,
@@ -3251,6 +3629,8 @@ export const {
   useDelAppPolicyMutation,
   useDelAppPoliciesMutation,
   useUpdateAppPolicyMutation,
+  useActivateApplicationPolicyOnWifiNetworkMutation,
+  useDeactivateApplicationPolicyOnWifiNetworkMutation,
   useAddL3AclPolicyMutation,
   useGetL3AclPolicyQuery,
   useActivateL3AclOnWifiNetworkMutation,
@@ -3271,6 +3651,8 @@ export const {
   useDelDevicePoliciesMutation,
   useUpdateDevicePolicyMutation,
   useDevicePolicyListQuery,
+  useActivateDeviceOnWifiNetworkMutation,
+  useDeactivateDeviceOnWifiNetworkMutation,
   useAppPolicyListQuery,
   useGetRoguePolicyListQuery,
   useGetAccessControlProfileListQuery,

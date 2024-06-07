@@ -17,7 +17,7 @@ import {
 } from '@acx-ui/components'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
-  useAddAppPolicyMutation,
+  useAddAppPolicyMutation, useApplicationLibrarySettingsQuery,
   useAvcAppListQuery,
   useAvcCategoryListQuery,
   useGetAppPolicyQuery,
@@ -204,6 +204,10 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     useWatch<string>([...inputName, 'applicationPolicyId'])
   ]
 
+  const { data: librarySettings } = useApplicationLibrarySettingsQuery({
+    enableRbac
+  })
+
   const [ createAppPolicy ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddAppPolicyMutation,
     useTemplateMutationFn: useAddAppPolicyTemplateMutation
@@ -224,7 +228,9 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
     // eslint-disable-next-line max-len
     skip: skipFetch || (applicationPolicyId !== undefined && !appIdList.some(appId => appId === applicationPolicyId)),
     payload: {},
-    extraParams: { applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId },
+    extraParams: {
+      applicationPolicyId: isOnlyViewMode ? onlyViewMode.id : applicationPolicyId
+    },
     enableRbac
   })
 
@@ -233,11 +239,21 @@ export const ApplicationDrawer = (props: ApplicationDrawerProps) => {
   })
 
   const { data: avcCategoryList } = useAvcCategoryListQuery({
-    params: params
+    params: {
+      ...params,
+      applicationLibraryId: librarySettings?.version
+    },
+    enableRbac
+  }, {
+    skip: !librarySettings?.version
   })
 
   const { data: avcAppList } = useAvcAppListQuery({
-    params: params
+    params: {
+      ...params,
+      applicationLibraryId: librarySettings?.version
+    },
+    enableRbac
   }, {
     skip: !avcCategoryList
   })
