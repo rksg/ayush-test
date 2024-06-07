@@ -26,7 +26,8 @@ import {
   ipv6RegExp,
   validateTags,
   multicastIpAddressRegExp,
-  URLProtocolRegExp
+  URLProtocolRegExp,
+  URIValidation
 } from './validator'
 
 describe('validator', () => {
@@ -75,6 +76,41 @@ describe('validator', () => {
     })
     it('Should display error message if ip address values incorrectly', async () => {
       const result = URLProtocolRegExp('000.000.000.000')
+      await expect(result).rejects.toEqual('Please enter a valid URL')
+    })
+  })
+
+  describe('URIValidation', () => {
+    it('Should take care of uri value correctlty, follow RFC3986 standard', async () => {
+      const result = URIValidation('schema://auth:pass@domain.com:1111/path/a/b/c?query=AAA')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    // eslint-disable-next-line max-len
+    it('Should take care of uri protocol and domain name values correctly with top domain name is more than 5 characters', async () => {
+      const result = URIValidation('http://test.comcomcom')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    // eslint-disable-next-line max-len
+    it('Should display error message if url protocol or domain name values incorrectly', async () => {
+      const result = URIValidation('testcom')
+      await expect(result).rejects.toEqual('Please enter a valid URL')
+    })
+
+    // should also cover ipv4 validation
+    it('Should take care of ip address values correctly', async () => {
+      const result = URIValidation('http://111.111.111.111')
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error message if ip address values incorrectly', async () => {
+      const result = URIValidation('000.000.000.000')
+      await expect(result).rejects.toEqual('Please enter a valid URL')
+    })
+    it('Should take care of uri if schema provided', async () => {
+      const result = URIValidation('ftp://domain.com', ['ftp'])
+      await expect(result).resolves.toEqual(undefined)
+    })
+    it('Should display error meesage if schema not expected', async () => {
+      const result = URIValidation('ftp://domain.com', ['http', 'https'])
       await expect(result).rejects.toEqual('Please enter a valid URL')
     })
   })
