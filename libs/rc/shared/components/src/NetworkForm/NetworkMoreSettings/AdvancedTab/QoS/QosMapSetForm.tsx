@@ -9,7 +9,8 @@ import { useIntl }                                       from 'react-intl'
 
 import { Drawer, Table, TableProps }         from '@acx-ui/components'
 import { QosMapRule, sortProp, defaultSort } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }         from '@acx-ui/user'
+import { WifiScopes }                        from '@acx-ui/types'
+import { filterByAccess, hasPermission }     from '@acx-ui/user'
 import { validationMessages }                from '@acx-ui/utils'
 
 import NetworkFormContext from '../../../../NetworkForm/NetworkFormContext'
@@ -87,6 +88,7 @@ export function QosMapSetForm () {
   const rowActions: TableProps<QosMapRule>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (selectedRows) => {
         setDrawerFormRule(selectedRows[0])
         setQosMapRuleDrawerVisible(true)
@@ -117,7 +119,7 @@ export function QosMapSetForm () {
             type={'tall'}
             dataSource={qosMapSetOptionTable.map((item, index) => ({ ...item, key: index }))}
             rowActions={filterByAccess(rowActions)}
-            rowSelection={hasAccess() && {
+            rowSelection={hasPermission() && {
               type: 'radio',
               selectedRowKeys: selectedRows,
               onChange: (keys: React.Key[]) => {
