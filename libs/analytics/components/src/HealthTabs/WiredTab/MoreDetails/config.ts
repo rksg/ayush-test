@@ -26,6 +26,23 @@ export type SwitchDetails = {
   numOfPorts: number
 } & SwitchName
 
+export type ImpactedClientsDetails = {
+  deviceName: string,
+  deviceMac: string,
+  devicePort: string,
+  devicePortMac: string,
+  devicePortType: string,
+  isRuckusAp: boolean,
+  localPortName: string,
+  metricValue: number,
+  metricName: string
+}
+
+export type ImpactedClientsResult = {
+  wiredDevicesExpStorm: ImpactedClientsDetails[],
+  wiredDevicesExpCongestion: ImpactedClientsDetails[]
+} & SwitchName
+
 export type TopNByCPUUsageResult = {
   cpuUtilization: number
 } & SwitchDetails
@@ -46,8 +63,9 @@ export interface RequestPayload {
   filter: NodesFilter
   start: string
   end: string
-  n: number
   type: WidgetType
+  switchIds?: string[]
+  n?: number
 }
 
 export const topImpactedSwitchesLimit = 10

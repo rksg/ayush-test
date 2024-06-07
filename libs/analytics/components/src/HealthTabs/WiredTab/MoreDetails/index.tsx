@@ -6,6 +6,7 @@ import { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { WidgetType }            from './config'
 import { MoreDetailsPieChart }   from './HealthPieChart'
+import { ImpactedClientsTable }  from './ImpactedClientsTable'
 import { ImpactedSwitchesTable } from './ImpactedSwitchesTable'
 import * as UI                   from './styledComponents'
 
@@ -81,6 +82,12 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
               activeWidgetMapping?.type === 'cpuUsage') &&
             <GridCol col={{ span: 15 }} key={`table-${activeWidgetMapping?.type}`}>
               <ImpactedSwitchesTable filters={filters} queryType={activeWidgetMapping?.type}/>
+            </GridCol>
+          }
+          {
+            activeWidgetMapping?.type === 'portStorm' &&
+            <GridCol col={{ span: 15 }} key={`table-${activeWidgetMapping?.type}`}>
+              <ImpactedClientsTable filters={filters} queryType={activeWidgetMapping?.type}/>
             </GridCol>
           }
         </GridRow>

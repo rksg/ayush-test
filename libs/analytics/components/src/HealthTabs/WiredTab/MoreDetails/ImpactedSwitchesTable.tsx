@@ -13,8 +13,8 @@ import {
   WidgetType, PieChartResult, SwitchDetails,
   showTopResult, topImpactedSwitchesLimit
 } from './config'
-import { useImpactedSwitchesDataQuery, fieldsMap } from './services'
-import { ChartTitle }                              from './styledComponents'
+import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
+import { ChartTitle }                                                from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
@@ -32,8 +32,10 @@ export const ImpactedSwitchesTable = ({
   }
   const getTableData = (data: PieChartResult, type: WidgetType) => {
     if (!data) return []
-    return type === 'cpuUsage' ? data.topNSwitchesByCpuUsage : data.topNSwitchesByDhcpFailure
+    return data[topNQueryMapping[type] as keyof PieChartResult]
   }
+
+
   const queryResults = useImpactedSwitchesDataQuery(
     {
       ...payload,
@@ -125,7 +127,7 @@ export const ImpactedSwitchesTable = ({
       </ChartTitle>
       <Table
         columns={columns}
-        dataSource={queryResults.data}
+        dataSource={queryResults.data as SwitchDetails[]}
         rowKey='mac'
         type='compactBordered'
       />
