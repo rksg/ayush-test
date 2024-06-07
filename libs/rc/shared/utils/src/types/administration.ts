@@ -1,4 +1,5 @@
-import { RolesEnum } from '@acx-ui/types'
+import { RolesEnum }   from '@acx-ui/types'
+import { AccountTier } from '@acx-ui/utils'
 
 import {
   EntitlementDeviceType,
@@ -96,6 +97,13 @@ export interface TenantMspEc {
   serviceExpirationDate: string;
 }
 
+export interface NotificationPreference {
+  DEVICE_AP_FIRMWARE?: boolean;
+  DEVICE_SWITCH_FIRMWARE?: boolean;
+  DEVICE_EDGE_FIRMWARE?: boolean;
+  DEVICE_API_CHANGES?: boolean;
+}
+
 export interface TenantDetails {
   createdDate: string;
   entitlementId: string;
@@ -114,6 +122,8 @@ export interface TenantDetails {
   tenantMFA?: {
     mfaStatus: string
   }
+  accountTier?: AccountTier;
+  subscribes?: NotificationPreference;
 }
 
 export enum AdministrationDelegationType {

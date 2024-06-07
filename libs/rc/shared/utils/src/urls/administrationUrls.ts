@@ -7,6 +7,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId',
     newApi: true
   },
+  updateTenantSelf: {
+    method: 'PATCH',
+    url: '/tenants/self',
+    newApi: true
+  },
   getRegisteredUsersList: {
     method: 'get',
     url: '/admins/registered',
