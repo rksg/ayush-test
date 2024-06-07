@@ -146,7 +146,8 @@ export function RadioSettingsForm (props:{
       return [
         (showAfcItems),
         (context === 'ap'),
-        (enableAfc)
+        (enableAfc),
+        (!LPIButtonText?.isAPOutdoor)
       ].every(Boolean)
     } else {
       return [
@@ -158,6 +159,35 @@ export function RadioSettingsForm (props:{
     }
   }
 
+  const displayEnableAFCFormItemTag = () => {
+    if (context === 'venue') {
+      if(isAFCEnabled) {
+        return (
+          <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+            {$t({ defaultMessage: 'Enable Indoor AFC:' })}
+            <Tooltip
+              title={$t({ defaultMessage: 'For outdoor APs, outdoor AFC will be enabled automatically.' })}
+              placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
+            </Tooltip>
+          </Space>
+        )
+      } else {
+        return (
+          <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+            {$t({ defaultMessage: 'Enable Indoor AFC:' })}
+          </Space>
+        )
+      }
+    }
+
+    return (
+      <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+        {$t({ defaultMessage: 'Enable AFC:' })}
+      </Space>
+    )
+  }
+
 
 
   return (
@@ -167,14 +197,7 @@ export function RadioSettingsForm (props:{
         // Hide the label when afcEnable is false or ap is outdoor under ap context
           style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props?.isAFCEnabled === false)) ?
             { display: 'none' } : { display: 'flex' }}>
-          <div style={{ float: 'left' }}>
-            <p style={{ width: '180px' }}>
-              {context === 'ap' ?
-                $t({ defaultMessage: 'Enable AFC:' }) :
-                $t({ defaultMessage: 'Enable Indoor AFC:' })
-              }
-            </p>
-          </div>
+          {displayEnableAFCFormItemTag()}
           <Form.Item
             style={{ width: '50px' }}
             name={enableAfcFieldName}
@@ -185,14 +208,25 @@ export function RadioSettingsForm (props:{
               { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
-              LPIButtonText?.buttonText :
-              <Switch
-                disabled={!isAFCEnabled || isUseVenueSettings}
-                onChange={() => {
-                  onChangedByCustom('enableAfc')
-                  form.validateFields()
-                }}
-              />}
+              LPIButtonText?.buttonText : (
+                <Tooltip
+                  title={
+                    (isAFCEnabled ? undefined :
+                      <div style={{ textAlign: 'center' }}>
+                        <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
+                      </div>
+                    )
+                  }
+                >
+                  <Switch
+                    disabled={!isAFCEnabled || isUseVenueSettings}
+                    onChange={() => {
+                      onChangedByCustom('enableAfc')
+                      form.validateFields()
+                    }}
+                  />
+                </Tooltip>)
+            }
           </Form.Item>
         </FieldLabel>
       }
@@ -246,7 +280,9 @@ export function RadioSettingsForm (props:{
         )
       }
       {showAfcItems && context === 'venue' &&
-        <FieldLabel width='150px'>
+        <FieldLabel width='150px'
+          style={(isAFCEnabled === false) ? { display: 'none' } : {}}
+        >
           {$t({ defaultMessage: 'AFC <VenueSingular></VenueSingular> Height:' })}
           <Form.Item>
             <Input.Group compact
@@ -289,9 +325,9 @@ export function RadioSettingsForm (props:{
               </Form.Item>
               <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor</p>
               <Tooltip
-                title={$t({ defaultMessage: 'When grand floor=0' })}
+                title={$t({ defaultMessage: 'Please enter the min and max floors, with the ground floor set to 0.' })}
                 placement='bottom'>
-                <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
+                <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
               </Tooltip>
             </Input.Group>
           </Form.Item>
