@@ -146,7 +146,8 @@ export function RadioSettingsForm (props:{
       return [
         (showAfcItems),
         (context === 'ap'),
-        (enableAfc)
+        (enableAfc),
+        (!LPIButtonText?.isAPOutdoor)
       ].every(Boolean)
     } else {
       return [
@@ -174,15 +175,7 @@ export function RadioSettingsForm (props:{
       } else {
         return (
           <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
-            <Tooltip
-              title={
-                <div style={{ textAlign: 'center' }}>
-                  <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
-                </div>
-              }
-            >
-              {$t({ defaultMessage: 'Enable Indoor AFC:' })}
-            </Tooltip>
+            {$t({ defaultMessage: 'Enable Indoor AFC:' })}
           </Space>
         )
       }
@@ -215,14 +208,25 @@ export function RadioSettingsForm (props:{
               { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
-              LPIButtonText?.buttonText :
-              <Switch
-                disabled={!isAFCEnabled || isUseVenueSettings}
-                onChange={() => {
-                  onChangedByCustom('enableAfc')
-                  form.validateFields()
-                }}
-              />}
+              LPIButtonText?.buttonText : (
+                <Tooltip
+                  title={
+                    (isAFCEnabled ? undefined :
+                      <div style={{ textAlign: 'center' }}>
+                        <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
+                      </div>
+                    )
+                  }
+                >
+                  <Switch
+                    disabled={!isAFCEnabled || isUseVenueSettings}
+                    onChange={() => {
+                      onChangedByCustom('enableAfc')
+                      form.validateFields()
+                    }}
+                  />
+                </Tooltip>)
+            }
           </Form.Item>
         </FieldLabel>
       }
@@ -277,7 +281,7 @@ export function RadioSettingsForm (props:{
       }
       {showAfcItems && context === 'venue' &&
         <FieldLabel width='150px'
-          style={(isAFCEnabled === false) ? { display: 'none' } : { display: 'flex' }}
+          style={(isAFCEnabled === false) ? { display: 'none' } : {}}
         >
           {$t({ defaultMessage: 'AFC <VenueSingular></VenueSingular> Height:' })}
           <Form.Item>

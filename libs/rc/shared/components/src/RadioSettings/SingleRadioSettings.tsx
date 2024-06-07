@@ -380,8 +380,7 @@ export function SingleRadioSettings (props:{
 
   return (
     <>
-      {
-        isSupportRadio &&
+      {isSupportRadio &&
       <>
         <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
