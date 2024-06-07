@@ -32,7 +32,7 @@ export function ConfigTemplateVenueOverride (props: ConfigTemplateVenueOverrideP
   />
 }
 
-function transformOverrideValueToDisplay (venue: Partial<VenueExtended>) {
+export function transformVenueOverrideValueToDisplay (venue: Partial<VenueExtended>) {
   const { $t } = getIntl()
   return [
     { name: $t({ defaultMessage: 'Name' }), value: venue.name },
@@ -46,7 +46,7 @@ function transformOverrideValueToDisplay (venue: Partial<VenueExtended>) {
 }
 
 export function VenueOverrideDisplayView ({ entity: venue }: { entity: Partial<VenueExtended> }) {
-  const displayValue = transformOverrideValueToDisplay(venue)
+  const displayValue = transformVenueOverrideValueToDisplay(venue)
 
   return (
     <Tooltip
