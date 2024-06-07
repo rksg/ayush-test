@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { ButtonProps as AntButtonProps, TooltipProps } from 'antd'
 
-import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/types'
+import { ScopeKeys } from '@acx-ui/types'
 
 import { Tooltip } from '../Tooltip'
 
@@ -10,7 +10,7 @@ import * as UI from './styledComponents'
 
 export interface ButtonProps extends Omit<AntButtonProps, 'type'> {
   type?: 'default' | 'primary' | 'link'
-  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[]
+  scopeKey?: ScopeKeys
 }
 
 export function Button ({ type = 'default', scopeKey, ...props }: ButtonProps) {

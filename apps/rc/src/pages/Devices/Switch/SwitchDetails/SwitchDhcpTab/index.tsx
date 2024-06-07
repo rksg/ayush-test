@@ -33,7 +33,10 @@ export function SwitchDhcpTab () {
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const { switchDetailHeader: switchDetail } = switchDetailsContextData
 
-  const { data: switchData, isLoading } = useGetSwitchQuery({ params: { switchId, tenantId } })
+  const { data: switchData, isLoading } = useGetSwitchQuery({
+    params: { switchId, tenantId },
+    enableRbac: isSwitchRbacEnabled
+  })
   const [ updateDhcpServerState ] = useUpdateDhcpServerStateMutation()
 
   const isOperational = switchDetail?.deviceStatus ?
