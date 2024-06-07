@@ -15,7 +15,10 @@ const IdentityProviderDrawer = (props: IdentityProviderDrawerProps) => {
   const { $t } = useIntl()
   const { visible, setVisible, handleSave } = props
 
-  const content = <IdentityProviderForm modalMode={true} modalCallBack={handleSave} />
+  const content = <IdentityProviderForm
+    modalMode={true}
+    modalCallBack={handleSave}
+    setModalVisible={setVisible} />
 
   const handleClose = () => {
     setVisible(false)

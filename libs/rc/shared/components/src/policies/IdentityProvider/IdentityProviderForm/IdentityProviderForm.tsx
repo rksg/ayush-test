@@ -35,6 +35,7 @@ import SummaryForm                                  from './SummaryForm'
 type IdentityProviderFormProps = {
    editMode?: boolean,
    modalMode?: boolean,
+   setModalVisible?: (v: boolean) => void,
    modalCallBack?: (id?: string) => void
 }
 
@@ -51,7 +52,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
   const origAuthId = useRef<string>()
   const origAccountingId = useRef<string | undefined>()
 
-  const { editMode = false, modalMode, modalCallBack } = props
+  const { editMode = false, modalMode, modalCallBack, setModalVisible } = props
 
 
   const { data } = useGetIdentityProviderQuery({ params }, { skip: !editMode })
@@ -153,7 +154,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
         await activateRadius({ params: accountingParams }).unwrap()
       }
 
-      !modalMode && navigate(linkToPolicies, { replace: true })
+      modalMode ? setModalVisible?.(false) : navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

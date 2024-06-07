@@ -12,9 +12,10 @@ import {
   GridCol,
   GridRow,
   Select,
-  StepsFormLegacy
+  StepsFormLegacy,
+  Tooltip
 } from '@acx-ui/components'
-import { InformationSolid }      from '@acx-ui/icons'
+import { InformationSolid }     from '@acx-ui/icons'
 import {
   useGetIdentityProviderListQuery,
   useGetWifiOperatorListQuery
@@ -163,9 +164,9 @@ function Hotspot20Form () {
     const { networkId } = params
     const [showOperatorDrawer, setShowOperatorDrawer] = useState(false)
     const [showProviderDrawer, setShowProviderDrawer] = useState(false)
-    const [disabledSelectProviders, setDisabledSelectProviders] = useState(false)
-    const [skipQueryProviders, setSkipQueryProviders] = useState(false)
-    const newSelectedProviders = useRef<string[]>([])
+    const [disabledSelectProvider, setDisabledSelectProvider] = useState(false)
+    const disabledAddProvider = useRef<boolean>(false)
+    const isInitProviders = useRef<boolean>(true)
     const defaultPayload = {
       fields: ['name', 'id', 'wifiNetworkIds'],
       pageSize: 100,
@@ -185,18 +186,16 @@ function Hotspot20Form () {
         }
       })
 
-    const { providerSelectOptions } = useGetIdentityProviderListQuery(
+    const { providerSelectOptions, selectedProviderIds } = useGetIdentityProviderListQuery(
       { payload: defaultPayload }, {
-        skip: skipQueryProviders,
         selectFromResult: ({ data }) => {
           const d = data?.data
-          const providerOptions = d?.map(item => ({ label: item.name, value: item.id,
-            disabled: disabledSelectProviders &&
-            !newSelectedProviders.current?.includes(item.id as string) } )) ?? []
           const seletedIds = networkId && d?.filter(item => item.wifiNetworkIds
             ?.includes(networkId)).map(item => item.id)
+          const providerOptions = d?.map(item => ({ label: item.name, value: item.id } )) ?? []
           form.setFieldValue(['hotspot20Settings', 'originalProviders'], seletedIds)
-          return { providerSelectOptions: providerOptions }
+          disabledAddProvider.current = providerOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
+          return { providerSelectOptions: providerOptions, selectedProviderIds: seletedIds }
         }
       })
 
@@ -209,8 +208,7 @@ function Hotspot20Form () {
 
     useEffect(() => {
       if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedProviderIds &&
-        !data?.hotspot20Settings?.identityProviders) {
-        newSelectedProviders.current = selectedProviderIds as string[]
+        !data?.hotspot20Settings?.identityProviders && isInitProviders.current) {
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], selectedProviderIds)
       }
     }, [cloneMode, editMode, selectedProviderIds])
@@ -234,13 +232,12 @@ function Hotspot20Form () {
       const identityProviders = form.getFieldValue(['hotspot20Settings', 'identityProviders']) ?? []
       if (id && !identityProviders.includes(id) &&
       identityProviders.length < NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
-        const newIdentityProviders = cloneDeep(newSelectedProviders.current)
+        isInitProviders.current = false
+        let newIdentityProviders = cloneDeep(identityProviders)
         newIdentityProviders.push(id)
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], newIdentityProviders)
-        newSelectedProviders.current = newIdentityProviders
-        setSkipQueryProviders(true)
+        disabledAddProvider.current = providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
       }
-      setShowProviderDrawer(false)
     }
 
     return (
@@ -278,23 +275,23 @@ function Hotspot20Form () {
             <Select
               mode='multiple'
               style={{ width: '280px' }}
-              showArrow
+              open={disabledSelectProvider ? false : undefined}
               options={providerSelectOptions}
               onChange={(newProviders: string[]) => {
-                newSelectedProviders.current = newProviders
-                if (newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT) {
-                  setDisabledSelectProviders(true)
-                } else {
-                  setDisabledSelectProviders(false)
-                }
+                setDisabledSelectProvider(
+                  newProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
               }}
             />
           </Form.Item>
-          <Button type='link'
-            disabled={providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT}
-            onClick={handleAddProvider}
-            children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '10px' }} />
+          <Tooltip placement='bottom'
+            title={disabledAddProvider.current ? $t({ defaultMessage: 'Maximum is 16' }) : ''}>
+            <span><Button type='link'
+              disabled={disabledAddProvider.current}
+              onClick={handleAddProvider}
+              style={{ paddingTop: '10px' }}>
+              {$t({ defaultMessage: 'Add' })}
+            </Button></span>
+          </Tooltip>
         </Space>
 
         {editMode &&
