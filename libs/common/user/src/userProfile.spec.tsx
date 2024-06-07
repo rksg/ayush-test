@@ -1,8 +1,9 @@
+
 import { get }                     from '@acx-ui/config'
 import { BrowserRouter as Router } from '@acx-ui/react-router-dom'
 import { render, screen }          from '@acx-ui/test-utils'
 import {
-  EdgeScopes,
+  ScopeKeys,
   RolesEnum,
   SwitchScopes,
   WifiScopes }               from '@acx-ui/types'
@@ -24,7 +25,7 @@ import {
 import type { RaiPermissions } from './types'
 
 function setRole (role: RolesEnum, abacEnabled?: boolean, isCustomRole?:boolean,
-  scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[]) {
+  scopes?:ScopeKeys) {
   const profile = getUserProfile()
   setUserProfile({
     ...profile,
@@ -211,7 +212,7 @@ describe('hasPermission', () => {
     })
 
     it('check CUSTOM user permission', () => {
-      setRole('CUSTOM USER' as RolesEnum, true, true,[SwitchScopes.READ])
+      setRole('CUSTOM USER' as RolesEnum, true, true,[SwitchScopes.READ, WifiScopes.READ])
       expect(hasPermission()).toBe(true)
       expect(hasPermission({ allowedOperations: 'GET:/switches' })).toBe(true)
       expect(hasPermission({ allowedOperations: 'GET:/edges' })).toBe(false)
@@ -222,6 +223,15 @@ describe('hasPermission', () => {
       ).toBe(true)
       expect(
         hasPermission({ scopes: [SwitchScopes.DELETE], allowedOperations: 'GET:/switches' })
+      ).toBe(false)
+      expect(
+        hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.READ]] })
+      ).toBe(true)
+      expect(
+        hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.READ], SwitchScopes.DELETE] })
+      ).toBe(true)
+      expect(
+        hasPermission({ scopes: [[SwitchScopes.READ, WifiScopes.UPDATE]] })
       ).toBe(false)
     })
   })

@@ -156,6 +156,23 @@ describe('Administration page', () => {
     expect(tabs.length).toBe(8)
   })
 
+  it('should have correct tabs amount for custom role', async () => {
+    params.activeTab = 'fwVersionMgmt'
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={{ ...userProfileContextValues, isCustomRole: true }}
+        >
+          <Administration />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+    const tab = screen.queryByRole('tab', { name: /Version Management/ })
+    expect(tab).not.toBeInTheDocument()
+    expect(await screen.findByTestId('mocked-FWVersionMgmt')).toBeVisible()
+  })
+
   it('should handle tab changes', async () => {
     render(
       <Provider>
