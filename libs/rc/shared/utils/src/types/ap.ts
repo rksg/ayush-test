@@ -275,8 +275,16 @@ export interface NewApGroupViewModelResponseType {
   clientCount?: number,
 }
 
+export interface NewGetApGroupResponseType {
+  id: string,
+  name: string,
+  description: string,
+  isDefault: boolean,
+  apSerialNumbers?: string[],  // undefined: when no ap associated
+}
+
 export interface AddApGroup {
-  venueId: string,
+  venueId: string,  // deprecated in v1.1
   apSerialNumbers?: unknown[],
   name: string,
   id?: string

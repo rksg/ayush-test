@@ -7,7 +7,8 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }        from '@acx-ui/analytics/components'
 import { Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
-import { useApGroupsListQuery, useDeleteApGroupsMutation }                                         from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
+import { useApGroupsListQuery, useDeleteApGroupMutation }                                          from '@acx-ui/rc/services'
 import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
 import { filterByAccess }                                                                          from '@acx-ui/user'
@@ -53,6 +54,7 @@ const defaultTableData: ApGroupViewModel[] = []
 export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const intl = useIntl()
   const { $t } = intl
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const toggles = useIncidentToggles()
   const navigate = useNavigate()
   const location = useLocation()
@@ -75,11 +77,12 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name'],
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isWifiRbacEnabled
   })
 
   const tableQuery = props.tableQuery || apGroupListTableQuery
-  const [ deleteApGroups ] = useDeleteApGroupsMutation()
+  const [ deleteApGroup ] = useDeleteApGroupMutation()
   const [ getIncidentsList ] = useLazyIncidentsListBySeverityQuery()
 
   const [tableData, setTableData] = useState(defaultTableData)
@@ -113,8 +116,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
 
   const linkToEditApGroup = useTenantLink('/devices/apgroups')
 
-  const showDeleteApGroups = async (rows: ApGroupViewModel[],
-    tenantId?: string, callBack?: () => void) => {
+  const showDeleteApGroups = async (rows: ApGroupViewModel[], callBack?: () => void) => {
     const numOfEntities = rows.length
     const entityValue = numOfEntities === 1 ? rows[0].name : undefined
     showActionModal({
@@ -126,7 +128,15 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
         numOfEntities
       },
       onOk: () => {
-        deleteApGroups({ params: { tenantId }, payload: rows.map(row => row.id) })
+        const actions = rows.map(row => deleteApGroup({
+          params: {
+            venueId: row.venueId,
+            apGroupId: row.id
+          },
+          enableRbac: isWifiRbacEnabled
+        }))
+
+        Promise.all(actions)
           .then(callBack)
       }
     })
@@ -147,7 +157,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   }, {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: async (selectedRows, clearSelection) => {
-      showDeleteApGroups(selectedRows, params.tenantId, clearSelection)
+      showDeleteApGroups(selectedRows, clearSelection)
     }
   }]
 

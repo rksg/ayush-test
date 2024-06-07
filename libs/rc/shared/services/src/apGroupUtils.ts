@@ -1,12 +1,41 @@
+import { omit } from 'lodash'
+
 import {
+  ApGroup,
   ApGroupViewModel,
   CountAndNames,
   NewAPModel,
   NewApGroupViewModelResponseType,
+  NewGetApGroupResponseType,
   TableResult,
   Venue,
   WifiNetwork
 } from '@acx-ui/rc/utils'
+
+export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
+  switch(oldFieldName) {
+    case 'members':
+      return'apSerialNumbers'
+    case 'networks':
+      return 'wifiNetworkIds'
+    case 'clients':
+      return 'clientCount'
+    default:
+      return oldFieldName
+  }
+}
+
+export const getNewApGroupViewmodelFieldsFromOld = (oldFields?: string[]) => {
+  return oldFields?.map(field => getApGroupNewFieldFromOld(field))
+}
+
+export const transformApGroupFromNewType = (newApGroup: NewGetApGroupResponseType,
+  apsList: TableResult<NewAPModel>)=> {
+  return {
+    ...omit(newApGroup, ['apSerialNumbers']),
+    aps: apsList.data
+  } as unknown as ApGroup
+}
 
 export const aggregateApGroupVenueInfo = (
   apGroupList: TableResult<ApGroupViewModel>,

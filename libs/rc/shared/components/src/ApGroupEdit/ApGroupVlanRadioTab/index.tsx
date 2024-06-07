@@ -23,7 +23,7 @@ import {
 
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
 import { usePathBasedOnConfigTemplate }                  from '../../configTemplates'
-import { ApGroupEditContext }                            from '../index'
+import { ApGroupEditContext }                            from '../context'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'
