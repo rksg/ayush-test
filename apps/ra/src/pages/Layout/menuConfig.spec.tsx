@@ -169,7 +169,7 @@ describe('useMenuConfig', () => {
     const match = find(flattenConfig(result.current), target)
     expect(match).toBeUndefined()
   })
-  it('should return zones menu items if ruckus-ai-zones-toggle is enabled', () => {
+  it('should return zones menu items', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {

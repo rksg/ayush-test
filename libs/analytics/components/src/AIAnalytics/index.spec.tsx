@@ -85,7 +85,7 @@ describe('NetworkAssurance', () => {
     expect(screen.queryByTestId('HeaderExtra')).not.toBeInTheDocument()
     expect(screen.queryByTestId('Recommendations')).not.toBeInTheDocument()
   })
-  it('should render config recommendation tab for R1 when feature flag is ON', async () => {
+  it('should render config recommendation tab for R1', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(mockGet).mockReturnValue(false)
     render(<AIAnalytics />, {
