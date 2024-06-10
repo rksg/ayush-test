@@ -14,7 +14,7 @@ export type WidgetType =
   | 'portStorm'
   | 'cpuUsage'
 
-export type SwitchName = {
+export type Switch = {
   mac: string
   name: string
 }
@@ -24,9 +24,11 @@ export type SwitchDetails = {
   status: string
   firmware: string
   numOfPorts: number
-} & SwitchName
+} & Switch
 
-export type ImpactedClientsDetails = {
+export type ImpactedClients = {
+  switchName: string,
+  switchId: string,
   deviceName: string,
   deviceMac: string,
   devicePort: string,
@@ -39,9 +41,9 @@ export type ImpactedClientsDetails = {
 }
 
 export type ImpactedClientsResult = {
-  wiredDevicesExpStorm: ImpactedClientsDetails[],
-  wiredDevicesExpCongestion: ImpactedClientsDetails[]
-} & SwitchName
+  wiredDevicesExpStorm: ImpactedClients[],
+  wiredDevicesExpCongestion: ImpactedClients[]
+}
 
 export type TopNByCPUUsageResult = {
   cpuUtilization: number
@@ -53,11 +55,11 @@ export type TopNByDHCPFailureResult = {
 
 export type TopNByPortCongestionResult = {
   congestedPortCount: number
-} & SwitchName
+} & Switch
 
 export type TopNByStormPortCountResult = {
   stormPortCount: number
-} & SwitchName
+} & Switch
 
 export interface RequestPayload {
   filter: NodesFilter

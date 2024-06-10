@@ -6,19 +6,19 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { TenantLink }           from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter } from '@acx-ui/utils'
+import { formatter, FormatterType } from '@acx-ui/formatter'
+import { TenantLink }               from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter }     from '@acx-ui/utils'
 
 import {
-  WidgetType, PieChartResult, SwitchDetails,
+  WidgetType, PieChartResult,
   showTopResult, topImpactedSwitchesLimit,
-  ImpactedClientsResult
+  ImpactedClientsResult, ImpactedClients
 } from './config'
 import {
   usePieChartDataQuery,
   useImpactedClientsDataQuery,
   wiredDevicesQueryMapping,
-  fieldsMap,
   topNQueryMapping }              from './services'
 import { ChartTitle } from './styledComponents'
 
@@ -46,7 +46,22 @@ export const ImpactedClientsTable = ({
     return data[wiredDevicesQueryMapping[type] as keyof ImpactedClientsResult]
   }
 
-  const { data: impactedSwitches } = usePieChartDataQuery({
+  const metricTableColLabelMapping: Record<Exclude<WidgetType, 'cpuUsage' | 'dhcpFailure'>, {
+    title: string
+    formatterType: FormatterType
+  }> = {
+    congestion: {
+      title: $t({ defaultMessage: 'Out Utilization' }),
+      formatterType: 'percentFormat'
+    },
+    portStorm: {
+      title: $t({ defaultMessage: 'Multicast Pkt Count' }),
+      formatterType: 'countFormat'
+    }
+  }
+
+  // Get the list of impacted switches
+  const impactedSwitches = usePieChartDataQuery({
     ...payload,
     type: queryType,
     n: topImpactedSwitchesLimit
@@ -59,14 +74,13 @@ export const ImpactedClientsTable = ({
       }
     }
   })
-  console.log('impactedSwitches', impactedSwitches)
 
-  const queryResults = useImpactedClientsDataQuery({
+  const impactedClients = useImpactedClientsDataQuery({
     ...payload,
     type: queryType,
-    switchIds: impactedSwitches?.map(s => s.mac)
+    switchIds: impactedSwitches.data?.map(s => s.mac)
   }, {
-    skip: impactedSwitches?.length === 0,
+    skip: impactedSwitches.data?.length === 0,
     selectFromResult: ({ data, ...rest }) => {
       return {
         data: pickWiredDevicesData(data!, queryType),
@@ -74,88 +88,101 @@ export const ImpactedClientsTable = ({
       }
     }
   })
-  console.log('useImpactedClientsDataQuery', queryResults?.data)
 
-  // const metricTableColLabelMapping: Record<Exclude<WidgetType,
-  //   'congestion' | 'portStorm'>, string> = {
-  //     cpuUsage: $t({ defaultMessage: 'CPU Usage' }),
-  //     dhcpFailure: $t({ defaultMessage: 'DHCP Failure Count' })
-  //   }
+  const {
+    title: metricTitle,
+    formatterType
+  } = metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping]
 
-  const metricField = fieldsMap[queryType as keyof typeof fieldsMap]
-  // const columns: TableProps<SwitchDetails>['columns'] = [
-  //   {
-  //     title: $t({ defaultMessage: 'Name' }),
-  //     dataIndex: 'name',
-  //     key: 'name',
-  //     render: (_, row: SwitchDetails) => (
-  //       <TenantLink to={`/devices/switch/${row.mac}/serial/details/incidents`}>
-  //         {row.name}
-  //       </TenantLink>
-  //     ),
-  //     sorter: { compare: sortProp('name', defaultSort) }
-  //   },
-  //   {
-  //     title: $t({ defaultMessage: 'MAC Address' }),
-  //     dataIndex: 'mac',
-  //     key: 'mac',
-  //     sorter: { compare: sortProp('mac', defaultSort) }
-  //   },
-  //   {
-  //     title: $t({ defaultMessage: 'Serial' }),
-  //     dataIndex: 'serial',
-  //     key: 'serial',
-  //     sorter: { compare: sortProp('serial', defaultSort) }
-  //   },
-  //   {
-  //     title: $t({ defaultMessage: 'Model' }),
-  //     dataIndex: 'model',
-  //     key: 'model',
-  //     sorter: { compare: sortProp('model', defaultSort) }
-  //   },
-  //   {
-  //     title: $t({ defaultMessage: 'Status' }),
-  //     dataIndex: 'status',
-  //     key: 'status',
-  //     sorter: { compare: sortProp('status', defaultSort) }
-  //   },
-  //   {
-  //     title: $t({ defaultMessage: 'Firmware' }),
-  //     dataIndex: 'firmware',
-  //     key: 'firmware',
-  //     sorter: { compare: sortProp('firmware', defaultSort) }
-  //   },
-  //   {
-  //     title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
-  //     dataIndex: metricField,
-  //     key: metricField,
-  //     sorter: { compare: sortProp(metricField, defaultSort) }
-  //   }
-  // ]
+  const columns: TableProps<ImpactedClients>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Switch Name' }),
+      dataIndex: 'switchName',
+      key: 'switchName',
+      render: (_, row: ImpactedClients) => (
+        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/incidents`}>
+          {row.switchName}
+        </TenantLink>
+      ),
+      sorter: { compare: sortProp('switchName', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'MAC Address' }),
+      dataIndex: 'switchId',
+      key: 'switchId',
+      sorter: { compare: sortProp('switchId', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Name' }),
+      dataIndex: 'deviceName',
+      key: 'deviceName',
+      sorter: { compare: sortProp('deviceName', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Mac Address' }),
+      dataIndex: 'deviceMac',
+      key: 'deviceMac',
+      sorter: { compare: sortProp('deviceMac', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Port Name' }),
+      dataIndex: 'devicePort',
+      key: 'devicePort',
+      sorter: { compare: sortProp('devicePort', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Local Port Name' }),
+      dataIndex: 'localPortName',
+      key: 'localPortName',
+      sorter: { compare: sortProp('localPortName', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Port MAC' }),
+      dataIndex: 'devicePortMac',
+      key: 'devicePortMac',
+      sorter: { compare: sortProp('devicePortMac', defaultSort) }
+    },
+    {
+      title: $t({ defaultMessage: 'Port Type' }),
+      dataIndex: 'devicePortType',
+      key: 'devicePortType',
+      sorter: { compare: sortProp('devicePortType', defaultSort) }
+    },
+    {
+      title: metricTitle,
+      dataIndex: 'metricValue',
+      key: 'metricValue',
+      sorter: { compare: sortProp('metricValue', defaultSort) },
+      render: (_, { metricValue }) => {
+        return formatter(formatterType)(
+          formatterType === 'percentFormat' ? (metricValue as number/100) : metricValue)
+      }
+    }
+  ]
 
-  // const totalCount = queryResults?.data?.length
+  const totalCount = impactedClients?.data?.length
   return (
-  //   <Loader states={[queryResults]}>
-  //     <ChartTitle>
-  //       <FormattedMessage
-  //         defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-  //           one {Switch}
-  //           other {Switches}
-  //         }`}
-  //         values={{
-  //           count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
-  //           totalCount,
-  //           b: (chunk) => <b>{chunk}</b>
-  //         }}
-  //       />
-  //     </ChartTitle>
-  //     <Table
-  //       columns={columns}
-  //       dataSource={queryResults.data}
-  //       rowKey='mac'
-  //       type='compactBordered'
-  //     />
-  //   </Loader>
-    <div>TODO</div>
+    <Loader states={[impactedClients, impactedSwitches]}>
+      <ChartTitle>
+        <FormattedMessage
+          defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
+            one {Client}
+            other {Clients}
+          }`}
+          values={{
+            count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
+            totalCount,
+            b: (chunk) => <b>{chunk}</b>
+          }}
+        />
+      </ChartTitle>
+      <Table
+        settingsId='switch-health-impacted-clients-table'
+        columns={columns}
+        dataSource={impactedClients.data}
+        rowKey='deviceMac'
+        type='tall'
+      />
+    </Loader>
   )
 }

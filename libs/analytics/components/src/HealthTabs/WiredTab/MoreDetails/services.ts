@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, defaultNetworkPath } from '@acx-ui/analytics/utils'
-import { dataApi }                              from '@acx-ui/store'
+import { getFilterPayload } from '@acx-ui/analytics/utils'
+import { dataApi }          from '@acx-ui/store'
 
 import { ImpactedClientsResult, PieChartResult, RequestPayload, WidgetType } from './config'
 
@@ -42,20 +42,6 @@ export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
   const queryName = topNQueryMapping[type as keyof typeof topNQueryMapping]
 
   return `${queryName}(n: $n) { ${detailed ? detailedFields : baseFields} }`
-}
-
-const getFilterPayloadForWiredDevices = ({ switchIds }: RequestPayload) => {
-  return {
-    path: defaultNetworkPath,
-    filter: {
-      switchNodes: [
-        [{
-          list: switchIds,
-          type: 'switch'
-        }]
-      ]
-    }
-  }
 }
 
 export const moreDetailsApi = dataApi.injectEndpoints({
@@ -124,7 +110,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
     }),
     impactedClientsData: build.query<ImpactedClientsResult, RequestPayload>({
       query: payload => {
-        const { type, start, end } = payload
+        const { type } = payload
         const queryName = wiredDevicesQueryMapping[type]
         return ({
           document: gql`
@@ -134,6 +120,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
             $start: DateTime
             $filter: FilterInput
             $metric: String
+            $switchIds: [String]
             $enableSwitchFirmwareFilter: Boolean
           ) {
             network(
@@ -143,30 +130,26 @@ export const moreDetailsApi = dataApi.injectEndpoints({
               enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
             ) {
               hierarchyNode(path: $path) {
-                switches {
-                  name
-                  mac
-                  ${queryName}(metric: $metric) {
-                    deviceName
-                    deviceMac
-                    devicePort
-                    devicePortMac
-                    devicePortType
-                    isRuckusAp
-                    localPortName
-                    metricValue
-                    metricName
-                  }
+                ${queryName}(metric: $metric, switchIds: $switchIds) {
+                  switchName
+                  switchId
+                  deviceName
+                  deviceMac
+                  devicePort
+                  devicePortMac
+                  devicePortType
+                  isRuckusAp
+                  localPortName
+                  metricValue
+                  metricName
                 }
               }
             }
           }`,
           variables: {
             ...payload,
-            // ...getFilterPayload(payload),
-            ...getFilterPayloadForWiredDevices(payload),
-            metric: wiredDevicesMetricMapping[payload.type],
-            enableSwitchFirmwareFilter: true
+            ...getFilterPayload(payload),
+            metric: wiredDevicesMetricMapping[payload.type]
           }
         })
       },

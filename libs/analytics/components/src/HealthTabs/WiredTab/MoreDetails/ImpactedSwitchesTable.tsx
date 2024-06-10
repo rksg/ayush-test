@@ -126,10 +126,11 @@ export const ImpactedSwitchesTable = ({
         />
       </ChartTitle>
       <Table
+        settingsId='switch-health-impacted-switches-table'
         columns={columns}
         dataSource={queryResults.data as SwitchDetails[]}
         rowKey='mac'
-        type='compactBordered'
+        type='tall'
       />
     </Loader>
   )
