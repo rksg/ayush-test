@@ -104,9 +104,9 @@ export function AssignedSubscriptionTable () {
     ] : [
       {
         title: $t({ defaultMessage: 'Starting Date' }),
-        dataIndex: isEntitlementRbacApiEnabled ? 'effectiveDate' : 'dateEffective',
+        dataIndex: 'dateEffective',
         key: 'effectiveDate',
-        sorter: { compare: sortProp('effectiveDate', dateSort) },
+        sorter: { compare: sortProp('dateEffective', dateSort) },
         render: function (_: React.ReactNode, row: MspAssignmentHistory) {
           const effectiveDate = new Date(Date.parse(row.dateEffective))
           return formatter(DateFormatEnum.DateFormat)(effectiveDate)

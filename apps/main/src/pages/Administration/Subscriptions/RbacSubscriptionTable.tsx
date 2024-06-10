@@ -8,8 +8,7 @@ import { IntlShape, useIntl }   from 'react-intl'
 import {
   Loader,
   Table,
-  TableProps,
-  showToast
+  TableProps
 } from '@acx-ui/components'
 import { get }                                                    from '@acx-ui/config'
 import { useIsTierAllowed, Features, TierFeatures, useIsSplitOn } from '@acx-ui/feature-toggle'
@@ -19,14 +18,12 @@ import { MSPUtils }                                               from '@acx-ui/
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
-  useInternalRefreshEntitlementsMutation,
   useRbacEntitlementListQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementUtil,
   Entitlement,
   EntitlementDeviceType,
-  AdministrationUrlsInfo,
   sortProp,
   defaultSort,
   dateSort
@@ -110,9 +107,7 @@ export const RbacSubscriptionTable = () => {
 
   const queryResults = useGetEntitlementsListQuery({ params },
     { skip: isEntitlementRbacApiEnabled })
-  const isNewApi = AdministrationUrlsInfo.refreshLicensesData.newApi
   const [ refreshEntitlement ] = useRefreshEntitlementsMutation()
-  const [ internalRefreshEntitlement ] = useInternalRefreshEntitlementsMutation()
   const licenseTypeOpts = subscriptionTypeFilterOpts($t)
   const mspUtils = MSPUtils()
   const { data: mspProfile } = useGetMspProfileQuery({ params })
@@ -244,15 +239,7 @@ export const RbacSubscriptionTable = () => {
   const refreshFunc = async () => {
     setBannerRefreshLoading(true)
     try {
-      await (isNewApi ? refreshEntitlement : internalRefreshEntitlement)({ params }).unwrap()
-      if (isNewApi === false) {
-        showToast({
-          type: 'success',
-          content: $t({
-            defaultMessage: 'Successfully refreshed.'
-          })
-        })
-      }
+      await (refreshEntitlement)({ params }).unwrap()
       setBannerRefreshLoading(false)
     } catch (error) {
       setBannerRefreshLoading(false)
