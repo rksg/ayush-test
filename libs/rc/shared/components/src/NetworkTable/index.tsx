@@ -21,10 +21,10 @@ import {
   checkVenuesNotInSetup,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess }            from '@acx-ui/user'
-import { getIntl, noDataDisplay }    from '@acx-ui/utils'
+import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
+import { getIntl, noDataDisplay }     from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
@@ -349,6 +349,7 @@ export function NetworkTable ({
   const rowActions: TableProps<Network>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
@@ -357,6 +358,7 @@ export function NetworkTable ({
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
+      scopeKey: [WifiScopes.CREATE],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
@@ -365,6 +367,7 @@ export function NetworkTable ({
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: async ([selected], clearSelection) => {
         const isDeletingDPSK = isSelectedDpskNetwork([selected])
         const isDeletingGuestPass = isSelectedGuestNetwork([selected])

@@ -23,6 +23,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
@@ -109,16 +110,19 @@ function ApPageHeader () {
           />
           : <></>,
         ...filterByAccess([
-          <Dropdown overlay={menu}>{()=>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <CaretDownSolidIcon />
-              </Space>
-            </Button>
-          }</Dropdown>,
+          <Dropdown
+            scopeKey={[WifiScopes.DELETE, WifiScopes.UPDATE]}
+            overlay={menu}>{()=>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>}
+          </Dropdown>,
           <Button
             type='primary'
+            scopeKey={[WifiScopes.UPDATE]}
             onClick={() => {
               navigate({
                 ...basePath,

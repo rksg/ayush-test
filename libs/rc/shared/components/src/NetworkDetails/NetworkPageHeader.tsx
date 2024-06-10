@@ -8,6 +8,7 @@ import { Features, useIsSplitOn }                                               
 import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
 import { TenantType }                                                                       from '@acx-ui/react-router-dom'
 import { useLocation, useNavigate, useTenantLink, useParams }                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                       from '@acx-ui/types'
 import { filterByAccess }                                                                   from '@acx-ui/user'
 import { useDateFilter }                                                                    from '@acx-ui/utils'
 
@@ -80,6 +81,7 @@ function NetworkPageHeader ({
           : <></>,
         ...filterByAccess([
           <Button
+            scopeKey={[WifiScopes.UPDATE]}
             type='primary'
             hidden={disableConfigure}
             onClick={() =>
