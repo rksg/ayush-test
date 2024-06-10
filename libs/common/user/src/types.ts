@@ -147,7 +147,11 @@ export interface MfaAuthApp {
 
 export interface CommonResult {
   requestId: string
-  response?:{}
+  response?: CommonResponse
+}
+
+export interface CommonResponse {
+  id?: string
 }
 
 export interface BetaStatus {
