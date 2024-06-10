@@ -238,6 +238,7 @@ function Hotspot20Form () {
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], newIdentityProviders)
         disabledAddProvider.current = providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
       }
+      setShowProviderDrawer(false)
     }
 
     return (

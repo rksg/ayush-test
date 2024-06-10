@@ -17,8 +17,7 @@ const IdentityProviderDrawer = (props: IdentityProviderDrawerProps) => {
 
   const content = <IdentityProviderForm
     modalMode={true}
-    modalCallBack={handleSave}
-    setModalVisible={setVisible} />
+    modalCallBack={handleSave} />
 
   const handleClose = () => {
     setVisible(false)
