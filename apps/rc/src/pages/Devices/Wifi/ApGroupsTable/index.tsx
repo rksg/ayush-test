@@ -8,7 +8,7 @@ import { ApGroupTable, ApGroupsTabContext, defaultApGroupPayload } from '@acx-ui
 import { useApGroupsListQuery, useVenuesListQuery }                from '@acx-ui/rc/services'
 import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
 import { TenantLink }                                              from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
 
 
 export default function useApGroupsTable () {
@@ -49,13 +49,14 @@ export default function useApGroupsTable () {
     description: 'Translation strings - AP Group List'
   })
 
-  const extra = filterByAccess([
-    <TenantLink to='devices/apgroups/add'>
+  const extra = [
+    <TenantLink to='devices/apgroups/add'
+      scopeKey={[WifiScopes.CREATE]}>
       <Button type='primary'>
         {$t({ defaultMessage: 'Add' })}
       </Button>
     </TenantLink>
-  ])
+  ]
 
 
   const component = (
