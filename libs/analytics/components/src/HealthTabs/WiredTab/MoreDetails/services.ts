@@ -114,7 +114,7 @@ export const moreDetailsApi = dataApi.injectEndpoints({
         const queryName = wiredDevicesQueryMapping[type]
         return ({
           document: gql`
-          query Network(
+          query SwitchClients(
             $path: [HierarchyNodeInput]
             $end: DateTime
             $start: DateTime

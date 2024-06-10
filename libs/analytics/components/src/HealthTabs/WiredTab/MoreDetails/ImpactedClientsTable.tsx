@@ -19,7 +19,8 @@ import {
   usePieChartDataQuery,
   useImpactedClientsDataQuery,
   wiredDevicesQueryMapping,
-  topNQueryMapping }              from './services'
+  topNQueryMapping
+} from './services'
 import { ChartTitle } from './styledComponents'
 
 export const ImpactedClientsTable = ({
