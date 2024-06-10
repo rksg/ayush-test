@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 
 import { Button, Card, defaultRichTextFormatValues } from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import { useLocation }                               from '@acx-ui/react-router-dom'
 
 import { BOT_NAME } from '../MelissaBot'
@@ -19,9 +18,7 @@ export function ChatWithMelissa () {
   const { search } = useLocation()
   const [summary,setSummary] = useState<string|null>('')
   const [isRecurringUser,setIsRecurringUser] = useState(localStorage.getItem('isRecurringUser'))
-  const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
-  const isIncidentSummaryEnabled = useIsSplitOn(Features.RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE)
-  const showIncidentSummary = isIncidentSummaryEnabled && isRecurringUser === 'true'
+  const showIncidentSummary = (isRecurringUser === 'true')
   useEffect(()=>{
     if(showIncidentSummary){
       setSummary('')
@@ -36,7 +33,6 @@ export function ChatWithMelissa () {
   },[showIncidentSummary,search])
   const askAnything = $t({ defaultMessage: 'Ask Anything' })
   const discover = $t({ defaultMessage: 'Discover which ones' })
-  const comingSoon = $t({ defaultMessage: 'Coming Soon' })
   const noSummaryText = $t({ defaultMessage: 'No incidents indentified for last day.' })
   const subTitleFirstTime = <FormattedMessage
     defaultMessage='Chat with <b>{botName}</b><br></br>
@@ -59,7 +55,7 @@ export function ChatWithMelissa () {
       <img src={graphic} alt='graphic' /><br />
       {showIncidentSummary ? subTitleIncidents : subTitleFirstTime }
     </p>
-    {isMelissaBotEnabled && <Button size='small'
+    {<Button size='small'
       loading={showIncidentSummary && summary===''}
       disabled={showIncidentSummary && summary===''}
       onClick={()=>{
@@ -69,11 +65,8 @@ export function ChatWithMelissa () {
             summary: summary || noSummaryText
           } })
         window.dispatchEvent(event)
-        if(isIncidentSummaryEnabled){
-          setIsRecurringUser('true')
-          localStorage.setItem('isRecurringUser', 'true')
-        }
+        setIsRecurringUser('true')
+        localStorage.setItem('isRecurringUser', 'true')
       }}>{showIncidentSummary ? discover : askAnything}</Button>}
-    {!isMelissaBotEnabled && <Button size='small' disabled>{comingSoon}</Button>}
   </Card></UI.Wrapper>
 }
