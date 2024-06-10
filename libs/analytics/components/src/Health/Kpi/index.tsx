@@ -38,6 +38,7 @@ export const defaultThreshold: KpiThresholdType = {
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
   switchMemoryUtilization: kpiConfig.switchMemoryUtilization.histogram.initialThreshold,
   switchCpuUtilization: kpiConfig.switchCpuUtilization.histogram.initialThreshold,
+  switchStormControl: kpiConfig.switchStormControl.histogram.initialThreshold,
   switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
   switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold

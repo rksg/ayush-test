@@ -15,15 +15,17 @@ import {
   Tabs,
   Tooltip,
   showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures }               from '@acx-ui/feature-toggle'
-import { CorrectRadioChannels, SupportRadioChannelsContext, VenueRadioContext } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import {
+  CorrectRadioChannels,
+  GetSupportBandwidth,
+  SupportRadioChannelsContext,
+  VenueRadioContext,
   ApRadioTypeEnum,
   channelBandwidth24GOptions,
   channelBandwidth5GOptions,
   channelBandwidth6GOptions,
-  findIsolatedGroupByChannel,
-  SelectItemOption
+  findIsolatedGroupByChannel
 } from '@acx-ui/rc/components'
 import {
   useDeleteApRadioCustomizationMutation,
@@ -401,23 +403,6 @@ export function RadioSettings () {
   const [getVenueCustomization] = useLazyGetVenueRadioCustomizationQuery()
   const [getVenueApModelBandModeSettings] = useLazyGetVenueApModelBandModeSettingsQuery()
 
-  const getSupportBandwidth = (bandwidthOptions: SelectItemOption[],
-    availableChannels: any, isSupport160Mhz = false, isSupport320Mhz = false) => {
-    const bandwidthList = Object.keys(availableChannels)
-    return bandwidthOptions.filter((option: SelectItemOption) => {
-      const bandwidth = (option.value === 'AUTO') ? 'auto' : option.value
-
-      if (bandwidth === '160MHz') {
-        return isSupport160Mhz && includes(bandwidthList, bandwidth)
-      }
-
-      if (bandwidth === '320MHz') {
-        return isSupport320Mhz && includes(bandwidthList, bandwidth)
-      }
-
-      return includes(bandwidthList, bandwidth)
-    })
-  }
 
   const { apModelType, supportRadioChannels, supportRadioDfsChannels, bandwidthRadioOptions } = useMemo(() => {
     const apModelType = (isOutdoor)? 'outdoor' : 'indoor'
@@ -428,29 +413,38 @@ export function RadioSettings () {
 
     // 2.4G
     const supportCh24g = (availableChannels && availableChannels['2.4GChannels']) || {}
-    const bandwidth24G = getSupportBandwidth(channelBandwidth24GOptions, supportCh24g)
+    const bandwidth24G = GetSupportBandwidth(channelBandwidth24GOptions, supportCh24g)
 
     // 5G
     const availableCh5g = (availableChannels && availableChannels['5GChannels'])
     const supportCh5g = (availableCh5g && availableCh5g[apModelType]) || {}
     const supportDfsCh5g = (availableCh5g && availableCh5g.dfs) || {}
-    const bandwidth5g = getSupportBandwidth(channelBandwidth5GOptions, supportCh5g, is5GHas160Mhz)
+    const bandwidth5g = GetSupportBandwidth(channelBandwidth5GOptions, supportCh5g, {
+      isSupport160Mhz: is5GHas160Mhz
+    })
 
     // dual 5g - lower
     const availableChLower5g = (availableChannels && availableChannels['5GLowerChannels'])
     const supportChLower5g = (availableChLower5g && availableChLower5g[apModelType]) || {}
     const supportDfsChLower5g = (availableChLower5g && availableChLower5g.dfs) || {}
-    const bandwidthLower5g = getSupportBandwidth(channelBandwidth5GOptions, supportChLower5g, is5GHas160Mhz)
+    const bandwidthLower5g = GetSupportBandwidth(channelBandwidth5GOptions, supportChLower5g, {
+      isSupport160Mhz: is5GHas160Mhz
+    })
 
     // dual 5g - Upper
     const availableChUpper5g = (availableChannels && availableChannels['5GUpperChannels'])
     const supportChUpper5g = (availableChUpper5g && availableChUpper5g[apModelType]) || {}
     const supportDfsChUpper5g = (availableChUpper5g && availableChUpper5g.dfs) || {}
-    const bandwidthUpper5g = getSupportBandwidth(channelBandwidth5GOptions, supportChUpper5g, is5GHas160Mhz)
+    const bandwidthUpper5g = GetSupportBandwidth(channelBandwidth5GOptions, supportChUpper5g, {
+      isSupport160Mhz: is5GHas160Mhz
+    })
 
     // 6G
     const supportCh6g = (availableChannels && availableChannels['6GChannels']) || {}
-    const bandwidth6g = getSupportBandwidth(channelBandwidth6GOptions, supportCh6g, is6GHas160Mhz, is6GHas320Mhz)
+    const bandwidth6g = GetSupportBandwidth(channelBandwidth6GOptions, supportCh6g, {
+      isSupport160Mhz: is6GHas160Mhz,
+      isSupport320Mhz: is6GHas320Mhz
+    })
 
     const supportRadioChannels = {
       [ApRadioTypeEnum.Radio24G]: supportCh24g,
