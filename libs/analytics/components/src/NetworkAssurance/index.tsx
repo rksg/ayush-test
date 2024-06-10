@@ -13,14 +13,12 @@ import { useNavigate, useTenantLink, useLocation } from '@acx-ui/react-router-do
 import { hasRaiPermission }                        from '@acx-ui/user'
 import { DateRange }                               from '@acx-ui/utils'
 
-import { ConfigChange }    from '../ConfigChange'
-import { useHeaderExtra }  from '../Header'
-import { HealthPage }      from '../Health'
-import { HealthTabs }      from '../HealthTabs'
-import { useServiceGuard } from '../ServiceGuard'
-import { useVideoCallQoe } from '../VideoCallQoe'
-
-import type { UseHeaderExtraProps } from '../Header'
+import { ConfigChange }                        from '../ConfigChange'
+import { UseHeaderExtraProps, useHeaderExtra } from '../Header'
+import { HealthPage }                          from '../Health'
+import { HealthTabs }                          from '../HealthTabs'
+import { useServiceGuard }                     from '../ServiceGuard'
+import { useVideoCallQoe }                     from '../VideoCallQoe'
 
 export enum NetworkAssuranceTabEnum {
   HEALTH = 'health',
@@ -58,13 +56,12 @@ const useTabs = () : Tab[] => {
           shouldShowOnlyDomains: true
         }
       case `/${NetworkAssuranceTabEnum.HEALTH}/wired`:
-        return {
-          shouldQueryAp: false,
-          shouldQuerySwitch: true
-        }
       case `/${NetworkAssuranceTabEnum.HEALTH}/wireless`:
       default:
-        return {}
+        return {
+          shouldQueryAp: true,
+          shouldQuerySwitch: true
+        }
     }
   }
 
