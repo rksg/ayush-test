@@ -51,12 +51,12 @@ export default function AnalyticsRoutes () {
         <Route path='tab/:categoryTab' element={HealthComponent} />
       </Route>
       <Route path='analytics/health/tab/:categoryTab' element={HealthComponent} />
-      {<Route path='analytics/recommendations/'>
+      <Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
         {<Route path='crrm/:id' element={<CrrmDetails />} />}
         {<Route path='crrm/unknown/*' element={<UnknownDetails />} />}
-      </Route>}
+      </Route>
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE} />} />}
@@ -82,12 +82,12 @@ export default function AnalyticsRoutes () {
             </Route>
           </Route>
         </Route>
-        {<Route path='analytics/videoCallQoe/*' >
+        <Route path='analytics/videoCallQoe/*' >
           <Route index
             element={<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />} />
           <Route path=':testId' element={<VideoCallQoeDetails/>} />
           <Route path='add' element={<VideoCallQoeForm />} />
-        </Route>}
+        </Route>
       </Route>}
     </Route>
   )

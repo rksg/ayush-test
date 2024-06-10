@@ -79,14 +79,14 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...([{
+            {
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
-            }]),
-            ...([{
+            },
+            {
               uri: '/analytics/recommendations/aiOps',
               label: $t({ defaultMessage: 'AI Operations' })
-            }])
+            }
           ]
         },
         {
