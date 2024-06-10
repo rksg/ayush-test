@@ -41,7 +41,6 @@ const useTabs = () : Tab[] => {
   const basePath = useTenantLink('/analytics')
 
   const configChangeEnable = useIsSplitOn(Features.CONFIG_CHANGE)
-  const videoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -104,7 +103,7 @@ const useTabs = () : Tab[] => {
   if (hasRaiPermission('READ_CONFIG_CHANGE') && (get('IS_MLISA_SA') || configChangeEnable)) {
     tabs.push(useConfigChangeTab)
   }
-  if (hasRaiPermission('READ_VIDEO_CALL_QOE') && !get('IS_MLISA_SA') && videoCallQoeEnabled) {
+  if (hasRaiPermission('READ_VIDEO_CALL_QOE') && !get('IS_MLISA_SA')) {
     tabs.push(useVideoCallQoeTab)
   }
   return tabs.map(tab => tab()) // prevent calling API we do not need to call (permissions)
