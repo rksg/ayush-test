@@ -108,19 +108,19 @@ export const ImpactedClientsTable = ({
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'MAC Address' }),
+      title: $t({ defaultMessage: 'Switch MAC' }),
       dataIndex: 'switchId',
       key: 'switchId',
       sorter: { compare: sortProp('switchId', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Name' }),
+      title: $t({ defaultMessage: 'Device Name' }),
       dataIndex: 'deviceName',
       key: 'deviceName',
       sorter: { compare: sortProp('deviceName', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Mac Address' }),
+      title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'deviceMac',
       key: 'deviceMac',
       sorter: { compare: sortProp('deviceMac', defaultSort) }
