@@ -362,6 +362,7 @@ export function NetworkVenuesTab () {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: activation,
       onClick: (rows, clearSelection) => {
         const networkVenues = activateSelected(rows)
@@ -370,6 +371,7 @@ export function NetworkVenuesTab () {
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: activation,
       onClick: (rows, clearSelection) => {
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, rows.map(item => item.id), () => {

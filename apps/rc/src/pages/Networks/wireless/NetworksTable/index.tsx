@@ -8,6 +8,7 @@ import { NetworkTabContext, NetworkTable, defaultNetworkPayload } from '@acx-ui/
 import { useNetworkListQuery, useNetworkTableQuery }              from '@acx-ui/rc/services'
 import { Network, usePollingTableQuery }                          from '@acx-ui/rc/utils'
 import { TenantLink }                                             from '@acx-ui/react-router-dom'
+import { WifiScopes }                                             from '@acx-ui/types'
 
 export default function useNetworksTable () {
   const { $t } = useIntl()
@@ -30,7 +31,8 @@ export default function useNetworksTable () {
   })
 
   const extra = [
-    <TenantLink to='/networks/wireless/add'>
+    <TenantLink to='/networks/wireless/add'
+      scopeKey={[WifiScopes.CREATE]}>
       <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
     </TenantLink>
   ]
