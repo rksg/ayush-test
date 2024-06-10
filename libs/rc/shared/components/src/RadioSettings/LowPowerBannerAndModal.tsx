@@ -46,20 +46,25 @@ export function LowPowerBannerAndModal (props: {
 
       messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
 
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))
-      }
-      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        messageList.push($t({ defaultMessage: '(Rejected by FCC DB due to no available channels)' }))
-      }
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        messageList.push($t({ defaultMessage: '(Wait for AFC server response)' }))
-      }
-      if (afcInfo?.afcStatus === AFCStatus.PASSED) {
-        messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))
-      }
-      if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
-        messageList.push($t({ defaultMessage: '(AFC Server failure)' }))
+      switch(afcInfo?.afcStatus) {
+        case AFCStatus.WAIT_FOR_LOCATION:
+          messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))
+          break
+        case AFCStatus.REJECTED:
+          messageList.push($t({ defaultMessage: '(Rejected by FCC DB due to no available channels)' }))
+          break
+        case AFCStatus.WAIT_FOR_RESPONSE:
+          messageList.push($t({ defaultMessage: '(Wait for AFC server response)' }))
+          break
+        case AFCStatus.PASSED:
+          messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))
+          break
+        case AFCStatus.AFC_SERVER_FAILURE:
+          messageList.push($t({ defaultMessage: '(AFC Server failure)' }))
+          break
+        default:
+          messageList.push($t({ defaultMessage: '(6 GHz radio has been turned off.)' }))
+          break
       }
 
       modalMessage = messageList.join(' ')
@@ -67,7 +72,7 @@ export function LowPowerBannerAndModal (props: {
     }
 
     setBannerText(modalMessage)
-  }, [])
+  }, [afcInfo])
 
   return <Row
     data-testid='low-power-banner'
