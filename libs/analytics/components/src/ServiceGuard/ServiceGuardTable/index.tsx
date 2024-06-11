@@ -14,6 +14,7 @@ import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@a
 import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
 import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                   from '@acx-ui/types'
 import { useUserProfileContext, filterByAccess, hasPermission }         from '@acx-ui/user'
 import { noDataDisplay }                                                from '@acx-ui/utils'
 
@@ -82,6 +83,7 @@ export function ServiceGuardTable () {
   const rowActions: TableProps<ServiceGuardTableRow>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: ([{ id }], clearSelection) => {
         runTest({ id })
         clearSelection()
@@ -99,6 +101,7 @@ export function ServiceGuardTable () {
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (selectedRows) => {
         navigate({
           ...serviceGuardPath,
@@ -120,10 +123,12 @@ export function ServiceGuardTable () {
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
+      scopeKey: [WifiScopes.CREATE],
       onClick: ([{ id }]) => setClone(id)
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Delete' })),
+      scopeKey: [WifiScopes.DELETE],
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',

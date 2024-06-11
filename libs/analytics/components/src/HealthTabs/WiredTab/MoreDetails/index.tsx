@@ -6,6 +6,7 @@ import { AnalyticsFilter }          from '@acx-ui/utils'
 
 import { WidgetType }            from './config'
 import { MoreDetailsPieChart }   from './HealthPieChart'
+import { ImpactedClientsTable }  from './ImpactedClientsTable'
 import { ImpactedSwitchesTable } from './ImpactedSwitchesTable'
 import * as UI                   from './styledComponents'
 
@@ -45,7 +46,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
     },
     {
       type: 'portStorm',
-      title: $t({ defaultMessage: 'Port Storm' }),
+      title: $t({ defaultMessage: 'Multicast Storm Ports' }),
       pieTitle: 'Storm'
     },
     {
@@ -54,14 +55,14 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       pieTitle: 'High CPU'
     }
   ]
-  const activeWidgetMapping = mapping.filter(item => item.type === widget)[0]
 
+  const { title, pieTitle, type } = mapping.filter(item => item.type === widget)[0]
   return (
     <Drawer
       title={
         <UI.DrawerTitle>
           <Typography.Title level={2}>
-            {activeWidgetMapping?.title}
+            {title}
           </Typography.Title>
         </UI.DrawerTitle>
       }
@@ -70,17 +71,22 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       onClose={onClose}
       children={
         <GridRow style={{ paddingTop: 20 }}>
-          <GridCol col={{ span: 9 }} key={`pie-${activeWidgetMapping?.type}`}>
+          <GridCol col={{ span: 8 }} key={`pie-${type}`} style={{ height: 220, minWidth: 380 }}>
             <MoreDetailsPieChart
               filters={filters}
-              queryType={activeWidgetMapping?.type}
-              title={activeWidgetMapping?.pieTitle}/>
+              queryType={type}
+              title={pieTitle}/>
           </GridCol>
           {
-            (activeWidgetMapping?.type === 'dhcpFailure' ||
-              activeWidgetMapping?.type === 'cpuUsage') &&
-            <GridCol col={{ span: 15 }} key={`table-${activeWidgetMapping?.type}`}>
-              <ImpactedSwitchesTable filters={filters} queryType={activeWidgetMapping?.type}/>
+            (type === 'dhcpFailure' || type === 'cpuUsage') &&
+            <GridCol col={{ span: 16 }} key={`table-${type}`}>
+              <ImpactedSwitchesTable filters={filters} queryType={type}/>
+            </GridCol>
+          }
+          {
+            (type === 'portStorm' || type === 'congestion') &&
+            <GridCol col={{ span: 16 }} key={`table-${type}`}>
+              <ImpactedClientsTable filters={filters} queryType={type}/>
             </GridCol>
           }
         </GridRow>

@@ -42,6 +42,23 @@ Array [
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
     },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Zones",
+      },
+    ],
+    "uri": "/zones",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
     "children": Array [
       Object {
         "children": Array [
@@ -341,6 +358,23 @@ Array [
         "value": "AI Assurance",
       },
     ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Zones",
+      },
+    ],
+    "uri": "/zones",
   },
   Object {
     "activeIcon": Object {
@@ -846,6 +880,23 @@ Array [
       "$$typeof": Symbol(react.forward_ref),
       "render": [Function],
     },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Zones",
+      },
+    ],
+    "uri": "/zones",
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
     "children": Array [
       Object {
         "children": Array [
@@ -1329,6 +1380,23 @@ Array [
         "value": "App Experience",
       },
     ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Zones",
+      },
+    ],
+    "uri": "/zones",
   },
   Object {
     "activeIcon": Object {
@@ -1828,6 +1896,23 @@ Array [
         "value": "App Experience",
       },
     ],
+  },
+  Object {
+    "activeIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "inactiveIcon": Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "render": [Function],
+    },
+    "label": Array [
+      Object {
+        "type": 0,
+        "value": "Zones",
+      },
+    ],
+    "uri": "/zones",
   },
   Object {
     "activeIcon": Object {

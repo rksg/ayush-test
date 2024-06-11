@@ -80,5 +80,35 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/dhcpConfigServiceProfileSettings',
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile',
     newApi: true
+  },
+  queryDHCPProfiles: {
+    method: 'post',
+    url: '/dhcpConfigServiceProfiles/query',
+    newApi: true
+  },
+  bindVenueDhcpProfile: {
+    method: 'PUT',
+    url: '/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  unbindVenueDhcpProfile: {
+    method: 'delete',
+    url: '/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  getVenueDHCPServiceProfileRbac: {
+    method: 'get',
+    url: '/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  getVenueLeasesRbac: {
+    method: 'get',
+    url: '/venues/:venueId/wifiDhcpClientLeases',
+    newApi: true
+  },
+  getDhcpUsagesRbac: {
+    method: 'get',
+    url: '/venues/:venueId/wifiDhcpPoolUsages',
+    newApi: true
   }
 }

@@ -107,7 +107,8 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.AAA,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetAAAPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      totalCount: useGetAAAPolicyViewModelListQuery({ params, payload: {}, enableRbac }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }))
     },
@@ -171,7 +172,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SYSLOG,
       categories: [RadioCardCategory.WIFI],
       totalCount: useSyslogPolicyListQuery({
-        params, payload: { }
+        params, payload: { }, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }))

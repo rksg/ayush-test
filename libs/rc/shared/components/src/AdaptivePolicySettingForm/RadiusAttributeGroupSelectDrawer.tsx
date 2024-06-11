@@ -6,7 +6,8 @@ import {  useIntl }           from 'react-intl'
 import { Card, Descriptions, Drawer, Loader, Table, TableProps }    from '@acx-ui/components'
 import { useRadiusAttributeGroupListByQueryQuery }                  from '@acx-ui/rc/services'
 import { AttributeAssignment, RadiusAttributeGroup, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                from '@acx-ui/user'
+import { WifiScopes }                                               from '@acx-ui/types'
+import { filterByAccess }                                           from '@acx-ui/user'
 
 import { RadiusAttributeGroupFormDrawer } from './RadiusAttributeGroupFormDrawer'
 
@@ -130,7 +131,7 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
             dataSource={tableQuery.data?.data}
             showHeader={false}
             tableAlertRender={false}
-            rowSelection={hasAccess() && {
+            rowSelection={{
               type: 'radio',
               onChange: onSelectChange,
               selectedRowKeys: selectedRowKeys }}
@@ -140,7 +141,8 @@ export function RadiusAttributeGroupSelectDrawer (props: RadiusAttributeDrawerPr
               label: $t({ defaultMessage: 'Add Group' }),
               onClick: () => {
                 setRadiusAttributeGroupFormDrawerVisible(true)
-              }
+              },
+              scopeKey: [WifiScopes.CREATE]
             }])}
           />
         </Loader>

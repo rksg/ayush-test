@@ -9,14 +9,15 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
-  Switch } from 'antd'
+  Switch
+} from 'antd'
 import {
-  includes,
   isEmpty,
   isEqual,
   dropRight,
   uniq,
-  flatten
+  flatten,
+  cloneDeep
 } from 'lodash'
 import { useIntl } from 'react-intl'
 import styled      from 'styled-components/macro'
@@ -28,11 +29,17 @@ import {
 import { Features, useIsSplitOn, useIsTierAllowed, TierFeatures } from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
 import {
-  SingleRadioSettings, channelBandwidth24GOptions,
+  SingleRadioSettings,
+  channelBandwidth24GOptions,
   channelBandwidth5GOptions,
-  channelBandwidth6GOptions, ApRadioTypeEnum,
-  SelectItemOption, split5GChannels, findIsolatedGroupByChannel,
-  SupportRadioChannelsContext
+  channelBandwidth6GOptions,
+  ApRadioTypeEnum,
+  split5GChannels,
+  findIsolatedGroupByChannel,
+  SupportRadioChannelsContext,
+  CorrectRadioChannels,
+  GetSupportBandwidth,
+  GetSupportIndoorOutdoorBandwidth
 } from '@acx-ui/rc/components'
 import {
   useLazyApListQuery,
@@ -195,27 +202,7 @@ export function RadioSettings () {
 
   const [ apList ] = useLazyApListQuery()
 
-  const getSupportBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
-    const bandwidthList = Object.keys(availableChannels)
-    return bandwidthOptions.filter((option: SelectItemOption) => {
-      const bandwidth = (option.value === 'AUTO') ? 'auto' : option.value
-
-      return includes(bandwidthList, bandwidth)
-    })
-  }
-
-  const getSupport5GBandwidth = (bandwidthOptions: SelectItemOption[], availableChannels: any) => {
-    const { indoor = {}, outdoor = {} } = availableChannels
-    const indoorBandwidthList = Object.keys(indoor)
-    const outdoorBandwidthList = Object.keys(outdoor)
-    return bandwidthOptions.filter((option: SelectItemOption) => {
-      const bandwidth = (option.value === 'AUTO') ? 'auto' : option.value
-
-      return includes(indoorBandwidthList, bandwidth) || includes(outdoorBandwidthList, bandwidth)
-    })
-  }
-
-  const { supportRadioChannels, bandwidthRadioOptions } = useMemo(() => {
+  const { supportRadioChannels, bandwidthRadioOptions, isSupport6GCountry } = useMemo(() => {
     const supportCh24g = (supportChannelsData && supportChannelsData['2.4GChannels']) || {}
     const supportCh5g = (supportChannelsData && supportChannelsData['5GChannels']) || {}
     const supportCh6g = (supportChannelsData && supportChannelsData['6GChannels']) || {}
@@ -235,21 +222,22 @@ export function RadioSettings () {
       : dropRight(channelBandwidth6GOptions)
 
     const bandwidthRadioOptions = {
-      [ApRadioTypeEnum.Radio24G]: getSupportBandwidth(channelBandwidth24GOptions, supportCh24g),
-      [ApRadioTypeEnum.Radio5G]: getSupport5GBandwidth(channelBandwidth5GOptions, supportCh5g),
-      [ApRadioTypeEnum.Radio6G]: getSupportBandwidth(radio6GBandwidth, supportCh6g),
-      [ApRadioTypeEnum.RadioLower5G]: getSupport5GBandwidth(channelBandwidth5GOptions, supportChLower5g),
-      [ApRadioTypeEnum.RadioUpper5G]: getSupport5GBandwidth(channelBandwidth5GOptions, supportChUpper5g)
+      [ApRadioTypeEnum.Radio24G]: GetSupportBandwidth(channelBandwidth24GOptions, supportCh24g),
+      [ApRadioTypeEnum.Radio5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportCh5g),
+      [ApRadioTypeEnum.Radio6G]: GetSupportBandwidth(radio6GBandwidth, supportCh6g),
+      [ApRadioTypeEnum.RadioLower5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChLower5g),
+      [ApRadioTypeEnum.RadioUpper5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChUpper5g)
     }
+
+    const isSupport6GCountry = bandwidthRadioOptions[ApRadioTypeEnum.Radio6G].length > 0
 
     return {
       supportRadioChannels,
-      bandwidthRadioOptions
+      bandwidthRadioOptions,
+      isSupport6GCountry
     }
   }, [supportChannelsData, supportWifi7_320MHz])
 
-
-  const isSupport6GCountry = bandwidthRadioOptions[ApRadioTypeEnum.Radio6G].length > 0
 
   const afcProps = useMemo(() => {
     return {
@@ -331,6 +319,51 @@ export function RadioSettings () {
   }, [isWifiSwitchableRfEnabled, tripleBandRadioSettingsData, venueTriBandApModels])
 
   useEffect(() => {
+    const correctApiRadioChannelData = (apiData: VenueRadioCustomization) => {
+      const data = cloneDeep(apiData)
+      const { radioParams24G, radioParams50G, radioParams6G, radioParamsDual5G } = data
+
+
+      if (radioParams24G) {
+        const supportCh24g = supportRadioChannels[ApRadioTypeEnum.Radio24G]
+        data.radioParams24G = CorrectRadioChannels(radioParams24G, supportCh24g)
+      }
+
+      if (radioParams50G) {
+        const supportCh5g = supportRadioChannels[ApRadioTypeEnum.Radio5G]
+        data.radioParams50G = CorrectRadioChannels(radioParams50G, supportCh5g)
+      }
+
+      if (radioParams6G) {
+        const supportCh6g = supportRadioChannels[ApRadioTypeEnum.Radio6G]
+        data.radioParams6G = CorrectRadioChannels(radioParams6G, supportCh6g)
+      }
+
+      if (radioParamsDual5G) {
+        const {
+          enabled,
+          inheritParamsLower5G,
+          inheritParamsUpper5G,
+          radioParamsLower5G,
+          radioParamsUpper5G
+        } = radioParamsDual5G
+
+        if (enabled) {
+          if (inheritParamsLower5G === false && radioParamsLower5G) {
+            const supportChLower5g = supportRadioChannels[ApRadioTypeEnum.RadioLower5G]
+            data.radioParamsDual5G!.radioParamsLower5G = CorrectRadioChannels(radioParamsLower5G, supportChLower5g)
+          }
+
+          if (inheritParamsUpper5G === false && radioParamsUpper5G) {
+            const supportChUpper5g = supportRadioChannels[ApRadioTypeEnum.RadioUpper5G]
+            data.radioParamsDual5G!.radioParamsUpper5G = CorrectRadioChannels(radioParamsUpper5G, supportChUpper5g)
+          }
+        }
+      }
+
+      return data
+    }
+
     const setRadioFormData = (data: VenueRadioCustomization) => {
       setEditRadioContextData({ radioData: data })
       formRef?.current?.setFieldsValue(data)
@@ -349,12 +382,13 @@ export function RadioSettings () {
       })
     }
 
-    if (!isLoadingVenueData && venueSavedChannelsData && formRef?.current) {
-      setRadioFormData(venueSavedChannelsData)
+    if (!isLoadingVenueData && venueSavedChannelsData && formRef?.current && supportRadioChannels) {
+      const correctedData = correctApiRadioChannelData(venueSavedChannelsData)
+      setRadioFormData(correctedData)
 
       setReadyToScroll?.(r => [...(new Set(r.concat('Wi-Fi-Radio')))])
     }
-  }, [isLoadingVenueData, venueSavedChannelsData, formRef?.current])
+  }, [isLoadingVenueData, venueSavedChannelsData, formRef?.current, supportRadioChannels])
 
   useEffect(() => {
     if (!isWifiSwitchableRfEnabled || !venueBandModeSavedData) {
@@ -634,7 +668,7 @@ export function RadioSettings () {
       } else {
         delete data.radioParamsDual5G
       }
-      if (isTriBandRadioEnabled) {
+      if (isSupport6GCountry) {
         update6gData(data)
       } else {
         delete data.radioParams6G

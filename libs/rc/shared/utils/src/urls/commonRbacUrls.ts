@@ -418,12 +418,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/rogue-policy',
     newApi: true
   },
-  getConfigProfiles: {
-    method: 'post',
-    url: '/switchProfiles/query',
-    oldUrl: '/api/switch/tenant/:tenantId/profiles/query',
-    newApi: true
-  },
   getVenueSwitchSetting: {
     method: 'get',
     url: '/venues/:venueId/switchSettings',
@@ -576,6 +570,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getRwgList: {
     method: 'post',
     url: '/rwgs/query',
+    newApi: true
+  },
+  getRwgListByVenueId: {
+    method: 'post',
+    url: '/venues/:venueId/rwgs/query',
     newApi: true
   },
   getGatewayDashboard: {

@@ -22,7 +22,10 @@ export const rwgApi = baseRWGApi.injectEndpoints({
   endpoints: (build) => ({
     rwgList: build.query<TableResult<RWGRow>, RequestPayload>({
       query: ({ params, payload }) => {
-        const rwgListReq = createHttpRequest(CommonRbacUrlsInfo.getRwgList, params)
+        const rwgListReq = createHttpRequest(
+          params?.venueId
+            ? CommonRbacUrlsInfo.getRwgListByVenueId
+            : CommonRbacUrlsInfo.getRwgList, params)
         return {
           ...rwgListReq,
           body: payload

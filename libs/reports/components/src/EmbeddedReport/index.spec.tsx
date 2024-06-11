@@ -1,14 +1,15 @@
 import { rest } from 'msw'
 
-import { RadioBand }                         from '@acx-ui/components'
-import { showActionModal }                   from '@acx-ui/components'
-import * as config                           from '@acx-ui/config'
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import {  ReportUrlsInfo, reportsApi }       from '@acx-ui/reports/services'
-import type { GuestToken, EmbeddedResponse } from '@acx-ui/reports/services'
-import { Provider, store, rbacApiURL }       from '@acx-ui/store'
-import { render, mockServer, act, waitFor }  from '@acx-ui/test-utils'
-import { NetworkPath, useLocaleContext }     from '@acx-ui/utils'
+import { getUserProfile, Roles as RolesEnumRA } from '@acx-ui/analytics/utils'
+import { RadioBand }                            from '@acx-ui/components'
+import { showActionModal }                      from '@acx-ui/components'
+import * as config                              from '@acx-ui/config'
+import { useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import {  ReportUrlsInfo, reportsApi }          from '@acx-ui/reports/services'
+import type { GuestToken, EmbeddedResponse }    from '@acx-ui/reports/services'
+import { Provider, store, rbacApiURL }          from '@acx-ui/store'
+import { render, mockServer, act, waitFor }     from '@acx-ui/test-utils'
+import { NetworkPath, useLocaleContext }        from '@acx-ui/utils'
 
 import { ReportType } from '../mapping/reportsMapping'
 
@@ -56,6 +57,12 @@ jest.mock('@acx-ui/components', () => ({
 }))
 const actionModal = jest.mocked(showActionModal)
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
+
 const guestTokenReponse = {
   token: 'some token'
 } as GuestToken
@@ -87,7 +94,9 @@ const embeddedResponse2 = {
     tenant_ids: [
       '1235'
     ],
-    tenant_id: '1234'
+    tenant_id: '1234',
+    own_tenant_id: '1234',
+    cache_key: 'cache-key'
   }
 } as EmbeddedResponse
 
@@ -122,12 +131,42 @@ describe('EmbeddedDashboard', () => {
   afterEach(() => {
     process.env = oldEnv
     store.dispatch(reportsApi.util.resetApiState())
-    get.mockReturnValue('')
+    jest.clearAllMocks()
     embedDashboardSpy.mockClear()
   })
 
   const params = { tenantId: 'tenant-id' }
-  it('should render the dashboard', async () => {
+  it.each([
+    RolesEnumRA.PRIME_ADMINISTRATOR, RolesEnumRA.ADMINISTRATOR, RolesEnumRA.READ_ONLY
+  ])('should render the dashboard for SA', async (role) => {
+    get.mockReturnValue('true')
+    userProfile.mockReturnValue({
+      accountId: 'account-id',
+      tenants: [],
+      invitations: [],
+      selectedTenant: {
+        id: 'tenant-id',
+        permissions: {},
+        role
+      }
+    })
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    localeContext.mockReturnValue({
+      messages: { locale: null as unknown as string },
+      lang: 'en-US',
+      setLang: () => {}
+    })
+
+    render(<Provider>
+      <EmbeddedReport
+        reportName={ReportType.AP_DETAIL} />
+    </Provider>, { route: { params } })
+
+    await waitFor(() => expect(embedDashboardSpy).toHaveBeenCalledTimes(1))
+  })
+
+  it('should render the dashboard for ALTO', async () => {
+    get.mockReturnValue('')
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     localeContext.mockReturnValue({
       messages: { locale: null as unknown as string },
