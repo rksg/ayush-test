@@ -99,60 +99,58 @@ export const ImpactedClientsTable = ({
     {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
-      key: 'switchName',
+      key: '1',
       render: (_, row: ImpactedClients) => (
         <TenantLink to={`/devices/switch/${row.switchId}/serial/details/incidents`}>
           {row.switchName}
         </TenantLink>
       ),
+      disable: true,
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Switch MAC' }),
-      dataIndex: 'switchId',
-      key: 'switchId',
-      sorter: { compare: sortProp('switchId', defaultSort) }
+      title: $t({ defaultMessage: 'Local Port' }),
+      dataIndex: 'localPortName',
+      key: '2',
+      disable: true,
+      sorter: { compare: sortProp('localPortName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Name' }),
       dataIndex: 'deviceName',
-      key: 'deviceName',
+      key: '3',
       sorter: { compare: sortProp('deviceName', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'MAC Address' }),
+      title: $t({ defaultMessage: 'Device MAC' }),
       dataIndex: 'deviceMac',
-      key: 'deviceMac',
+      key: '4',
       sorter: { compare: sortProp('deviceMac', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Port Name' }),
+      title: $t({ defaultMessage: 'Device Port' }),
       dataIndex: 'devicePort',
-      key: 'devicePort',
+      key: '5',
+      show: false,
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Local Port Name' }),
-      dataIndex: 'localPortName',
-      key: 'localPortName',
-      sorter: { compare: sortProp('localPortName', defaultSort) }
-    },
-    {
-      title: $t({ defaultMessage: 'Port MAC' }),
+      title: $t({ defaultMessage: 'Device Port MAC' }),
       dataIndex: 'devicePortMac',
-      key: 'devicePortMac',
+      key: '6',
+      show: false,
       sorter: { compare: sortProp('devicePortMac', defaultSort) }
     },
     {
-      title: $t({ defaultMessage: 'Port Type' }),
+      title: $t({ defaultMessage: 'Device Port Type' }),
       dataIndex: 'devicePortType',
-      key: 'devicePortType',
+      key: '7',
       sorter: { compare: sortProp('devicePortType', defaultSort) }
     },
     {
       title: metricTitle,
       dataIndex: 'metricValue',
-      key: 'metricValue',
+      key: '8',
       sorter: { compare: sortProp('metricValue', defaultSort) },
       render: (_, { metricValue }) => {
         return formatter(formatterType)(
@@ -167,8 +165,8 @@ export const ImpactedClientsTable = ({
       <ChartTitle>
         <FormattedMessage
           defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-            one {Client}
-            other {Clients}
+            one {Device}
+            other {Devices}
           }`}
           values={{
             count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
@@ -178,7 +176,7 @@ export const ImpactedClientsTable = ({
         />
       </ChartTitle>
       <Table
-        settingsId='switch-health-impacted-clients-table'
+        settingsId='switch-health-impacted-devices-table'
         columns={columns}
         dataSource={impactedClients.data}
         rowKey='deviceMac'

@@ -71,7 +71,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       onClose={onClose}
       children={
         <GridRow style={{ paddingTop: 20 }}>
-          <GridCol col={{ span: 9 }} key={`pie-${type}`}>
+          <GridCol col={{ span: 8 }} key={`pie-${type}`} style={{ height: 220, minWidth: 380 }}>
             <MoreDetailsPieChart
               filters={filters}
               queryType={type}
@@ -79,13 +79,13 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
           </GridCol>
           {
             (type === 'dhcpFailure' || type === 'cpuUsage') &&
-            <GridCol col={{ span: 15 }} key={`table-${type}`}>
+            <GridCol col={{ span: 16 }} key={`table-${type}`}>
               <ImpactedSwitchesTable filters={filters} queryType={type}/>
             </GridCol>
           }
           {
             (type === 'portStorm' || type === 'congestion') &&
-            <GridCol col={{ span: 15 }} key={`table-${type}`}>
+            <GridCol col={{ span: 16 }} key={`table-${type}`}>
               <ImpactedClientsTable filters={filters} queryType={type}/>
             </GridCol>
           }
