@@ -15,8 +15,8 @@ import {
   showActionModal,
   showToast
 } from '@acx-ui/components'
-import { get }           from '@acx-ui/config'
-import { URIValidation } from '@acx-ui/rc/utils'
+import { get }               from '@acx-ui/config'
+import { URLProtocolRegExp } from '@acx-ui/rc/utils'
 
 import {
   useCreateWebhookMutation,
@@ -152,7 +152,7 @@ export function WebhookForm (props: {
           label={$t({ defaultMessage: 'Webhook URL' })}
           rules={[
             { required: true },
-            { validator: (_, value) => URIValidation(value, ['http', 'https']) }
+            { validator: (_, value) => URLProtocolRegExp(value) }
           ]}
           children={<Input type='url' />}
         />
