@@ -9,7 +9,7 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features }                     from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
@@ -54,7 +54,7 @@ export function VenueFirmwareList () {
   const intl = useIntl()
   const { $t } = intl
   const params = useParams()
-  const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const transform = firmwareTypeTrans($t)
   const [venueIds, setVenueIds] = useState<string[]>([])
   const [selectedRowKeys, setSelectedRowKeys] = useState([])

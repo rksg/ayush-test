@@ -2,7 +2,6 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, EdgeServiceStatusLight }                           from '@acx-ui/rc/components'
 import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery }                     from '@acx-ui/rc/services'
 import { EdgeDhcpHostStatus, LeaseTimeType, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
@@ -12,7 +11,7 @@ const EdgeDhcpTab = () => {
 
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeReady = useIsEdgeReady()
 
   const edgeDataPayload = {
     filters: { venueId: [venueId] }

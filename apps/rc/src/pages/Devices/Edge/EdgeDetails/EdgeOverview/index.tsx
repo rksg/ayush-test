@@ -4,9 +4,9 @@ import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, Tabs }           from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { EdgeInfoWidget }          from '@acx-ui/rc/components'
+import { GridRow, Tabs }                         from '@acx-ui/components'
+import { Features }                              from '@acx-ui/feature-toggle'
+import { EdgeInfoWidget, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterQuery,
   useGetEdgeLagsStatusListQuery,
@@ -35,8 +35,8 @@ export const EdgeOverview = () => {
     currentEdgeStatus: currentEdge,
     isEdgeStatusLoading: isLoadingEdgeStatus
   } = useContext(EdgeDetailsDataContext)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const isEdgeLagEnabled = useIsSplitOn(Features.EDGE_LAG)
+  const isEdgeReady = useIsEdgeReady()
+  const isEdgeLagEnabled = useIsEdgeFeatureReady(Features.EDGE_LAG)
 
   const { data: currentCluster } = useGetEdgeClusterQuery({
     params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }

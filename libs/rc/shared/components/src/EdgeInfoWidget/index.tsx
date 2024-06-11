@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 import styled      from 'styled-components'
 
 import { Button, GridCol, GridRow }                             from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { useGetDnsServersQuery, useGetEdgePasswordDetailQuery } from '@acx-ui/rc/services'
 import {
   EdgeClusterStatus,
@@ -44,7 +43,7 @@ export const EdgeInfoWidget = styled((props: EdgeInfoWidgetProps) => {
   const { $t } = useIntl()
   const { serialNumber } = useParams()
   const [visible, setVisible] = React.useState(false)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeReady = useIsEdgeReady()
   const moreDetailsHandler = () => {
     setVisible(true)
   }

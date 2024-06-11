@@ -3,7 +3,8 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Tabs }                                                                                                              from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                    from '@acx-ui/feature-toggle'
+import { Features }                                                                                                                  from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                                                     from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetEdgeListQuery, useGetEdgeSdLanP2ViewDataListQuery, useGetNetworkSegmentationViewDataListQuery } from '@acx-ui/rc/services'
 import { EdgeStatus, PolicyType, ServiceType, useConfigTemplate }                                                                    from '@acx-ui/rc/utils'
 
@@ -20,14 +21,13 @@ import { VenueRogueAps }        from './VenueRogueAps'
 export function VenueServicesTab () {
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES) && !isTemplate
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE) && !isTemplate
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
-  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
-  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE) && !isTemplate
-  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
-  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE) && !isTemplate
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE) && !isTemplate
+  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE) && !isTemplate
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE) && !isTemplate
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE) && !isTemplate
+  // eslint-disable-next-line max-len
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE) && !isTemplate
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE) && !isTemplate
 
   const { $t } = useIntl()
 
@@ -41,7 +41,7 @@ export function VenueServicesTab () {
       filters: { venueId: [venueId] }
     } },
     {
-      skip: !!!venueId || !isEdgeEnabled,
+      skip: !!!venueId || !isEdgeHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         edgeData: data?.data[0],
         isEdgeLoading: isLoading
@@ -60,7 +60,7 @@ export function VenueServicesTab () {
     {
       // Before Edge GA, need to hide the service not support HA
       // skip: !!!edgeData?.serialNumber || !isEdgeEnabled,
-      skip: !Boolean(edgeData?.clusterId) || !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady,
+      skip: !Boolean(edgeData?.clusterId) || !isEdgeHaReady || !isEdgeDhcpHaReady,
       selectFromResult: ({ data, isLoading }) => ({
         hasEdgeDhcp: Boolean(data?.data?.[0]?.id),
         isEdgeDhcpLoading: isLoading
@@ -73,7 +73,7 @@ export function VenueServicesTab () {
       filters: { venueInfoIds: [venueId] }
     }
   }, {
-    skip: !!!venueId || !isEdgeEnabled || !isEdgePinReady,
+    skip: !!!venueId || !isEdgePinReady,
     selectFromResult: ({ data, isLoading }) => {
       return {
         hasNsg: data?.data[0]?.id,
@@ -104,7 +104,7 @@ export function VenueServicesTab () {
       ],
       filters: { venueId: [venueId] }
     } }, {
-      skip: !isEdgeEnabled || !(isEdgeSdLanReady || isEdgeSdLanHaEnabled),
+      skip: !(isEdgeSdLanReady || isEdgeSdLanHaEnabled),
       selectFromResult: ({ data }) => {
         return { edgeSdLanData: data?.data?.[0] }
       }
@@ -125,7 +125,7 @@ export function VenueServicesTab () {
               <DHCPInstance/>
             </Tabs.TabPane>
             {
-              isEdgeEnabled && isEdgeHaReady && isEdgeDhcpHaReady &&
+              isEdgeHaReady && isEdgeDhcpHaReady &&
             <Tabs.TabPane
               tab={$t({ defaultMessage: 'SmartEdge' })}
               key={'smartEdge'}
@@ -137,7 +137,7 @@ export function VenueServicesTab () {
           </Tabs>
         </Tabs.TabPane>
         {
-          isEdgeEnabled && isEdgeReady && hasNsg && isEdgePinReady &&
+          hasNsg && isEdgePinReady &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Personal Identity Network' })}
             key={ServiceType.NETWORK_SEGMENTATION}
@@ -165,7 +165,7 @@ export function VenueServicesTab () {
           </>
         }
         {
-          isEdgeEnabled && isEdgeHaReady && isEdgeFirewallHaReady && isAppliedFirewall &&
+          isEdgeHaReady && isEdgeFirewallHaReady && isAppliedFirewall &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'Firewall' })}
             key={ServiceType.EDGE_FIREWALL}
@@ -174,7 +174,7 @@ export function VenueServicesTab () {
           </Tabs.TabPane>
         }
         {
-          edgeSdLanData && isEdgeEnabled && isEdgeReady &&
+          edgeSdLanData &&
           <Tabs.TabPane
             tab={$t({ defaultMessage: 'SD-LAN' })}
             key={ServiceType.EDGE_SD_LAN}
