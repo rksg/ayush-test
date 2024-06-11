@@ -60,7 +60,8 @@ import {
   asyncConvertRbacSnmpPolicyToOldFormat,
   convertToCountAndNumber,
   RoguePolicyRequest,
-  AAARbacViewModalType
+  AAARbacViewModalType,
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -1271,7 +1272,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }],
+      async onCacheEntryAdded (args, api) {
+        await onSocketActivityChanged(args, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (args.callback && response && msg.useCase === 'AddHotspot20Operator' &&
+              msg.status === TxStatus.SUCCESS) {
+              (args.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
     }),
     updateWifiOperator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1419,7 +1432,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (args, api) {
+        await onSocketActivityChanged(args, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (args.callback && response && msg.useCase === 'AddHotspot20IdentityProvider' &&
+              msg.status === TxStatus.SUCCESS) {
+              (args.callback as Function)(response.data)
+            }
+          } catch {}
+        })
+      }
     }),
     updateIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
