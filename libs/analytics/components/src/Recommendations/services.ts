@@ -246,7 +246,7 @@ export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
       CrrmList,
-      PathFilter & { n: number }
+      PathFilter & { n: number } & { selectedTenants?: string | null }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm

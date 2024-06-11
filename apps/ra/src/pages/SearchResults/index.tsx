@@ -25,7 +25,6 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
 import { useParams, TenantLink }                                           from '@acx-ui/react-router-dom'
 import { hasRaiPermission }                                                from '@acx-ui/user'
@@ -38,7 +37,6 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
-  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const { timeRange } = useDateRange()
   const results = useSearchQuery({
     start: timeRange[0].format(),
@@ -217,7 +215,7 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: NetworkHierarchy) => {
         const networkPath = row.networkPath.slice(1)
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const defaultPath = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
+        const defaultPath = row.type.toLowerCase() === 'zone'
           ? `/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`
           : `/incidents?${filter}`
         const reportOnly = row.type.toLowerCase().includes('switch')
