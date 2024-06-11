@@ -1662,7 +1662,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const requests = venues?.map(venue => ({
             params: { policyId: response?.id, venueId: venue.id }
           }))
-          // eslint-disable-next-line max-len
           await batchApi(SyslogUrls.bindVenueSyslog, requests ?? [], fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
         }
 
@@ -1684,7 +1683,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         if (enableRbac) {
           const requests = (payload as string[]).map(policyId => ({ params: { policyId } }))
-          // eslint-disable-next-line max-len
           await batchApi(SyslogUrls.deleteSyslogPolicy, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
           return { data: {} as CommonResult }
         } else {
@@ -1716,9 +1714,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             params: { policyId: id, venueId: venue.id }
           }))
           await Promise.all([
-            // eslint-disable-next-line max-len
             batchApi(SyslogUrls.unbindVenueSyslog, unbindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1)),
-            // eslint-disable-next-line max-len
             batchApi(SyslogUrls.bindVenueSyslog, bindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
           ])
         }
@@ -1740,14 +1736,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getSyslogPolicy: build.query<SyslogPolicyDetailType, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         if (enableRbac) {
-          //eslint-disable-next-line max-len
           const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params, GetApiVersionHeader(ApiVersionEnum.v1_1))
-          const viewmodelReq = createHttpRequest(SyslogUrls.querySyslog, params)
+          const viewmodelReq = createHttpRequest(SyslogUrls.querySyslog, params, GetApiVersionHeader(ApiVersionEnum.v1))
           const [res, viewmodelRes] = await Promise.all([
             fetchWithBQ(req),
             fetchWithBQ({
               ...viewmodelReq,
-              body: { filters: { id: [params!.policyId] } }
+              body: JSON.stringify({ filters: { id: [params!.policyId] } })
             })
           ])
           if (res.error || viewmodelRes.error) {
@@ -1781,7 +1776,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
             body: JSON.stringify({ filters: { venueIds: [params!.venueId] } }) } : {}
         }
       },
-      // eslint-disable-next-line max-len
       transformResponse: (response: VenueSyslogSettingType | TableResult<SyslogPolicyListType>, _meta, arg: RequestPayload) => {
         if (arg.enableRbac) {
           const res = response as TableResult<SyslogPolicyListType>
@@ -1803,7 +1797,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         })
       }
     }),
-    // eslint-disable-next-line max-len
     updateVenueSyslogAp: build.mutation<VenueSyslogSettingType, RequestPayload<VenueSyslogSettingType>>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ?
@@ -1860,7 +1853,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const req = createHttpRequest(url, params, headers)
         return {
           ...req,
-          // eslint-disable-next-line max-len
           body: JSON.stringify(payload)
         }
       },
