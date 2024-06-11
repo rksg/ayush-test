@@ -947,7 +947,7 @@ export function RadioSettings () {
         delete payload.apRadioParamsDual5G
       }
 
-      if (!afcProps.isAFCEnabled) {
+      if (hasRadio6G && !afcProps.isAFCEnabled) {
         delete payload.apRadioParams6G.enableAfc
       }
 
