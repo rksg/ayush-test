@@ -162,11 +162,6 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) :
             columnText: $t({ defaultMessage: 'Low Power Indoor' }),
             tooltipText: $t({ defaultMessage: 'AP is working on LPI channel' })
           }
-        default:
-          return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
-            tooltipText: $t({ defaultMessage: '6 GHz radio off' })
-          }
       }
     } else {
       return {
@@ -217,9 +212,6 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
         break
       case AFCStatus.AFC_SERVER_FAILURE:
         displayList.push($t({ defaultMessage: '[AFC Server failure]' }))
-        break
-      default:
-        displayList.push($t({ defaultMessage: '[6 GHz radio off]' }))
         break
     }
   }
