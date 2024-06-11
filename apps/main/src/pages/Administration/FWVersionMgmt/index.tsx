@@ -114,7 +114,8 @@ const FWVersionMgmt = () => {
         {isAPPLibraryAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
-      content: <ApplicationPolicyMgmt />
+      content: <ApplicationPolicyMgmt />,
+      visible: true
     }
   }
 
@@ -134,6 +135,7 @@ const FWVersionMgmt = () => {
     >
       {
         Object.entries(tabs).map((item) =>
+          item[1].visible &&
           <Tabs.TabPane
             key={item[0]}
             tab={item[1].title}
