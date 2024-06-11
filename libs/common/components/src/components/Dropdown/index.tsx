@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import { WifiScopes, SwitchScopes, EdgeScopes } from '@acx-ui/types'
+import { ScopeKeys } from '@acx-ui/types'
 
 import * as UI from './styledComponents'
 
@@ -11,7 +11,7 @@ import type {
 
 export interface DropdownProps extends Omit<AntDropdownProps, 'overlay' | 'trigger' | 'children'> {
   overlay: React.ReactElement<AntMenuProps>
-  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
+  scopeKey?: ScopeKeys,
   children: (selectedKeys: string | null) => React.ReactElement
 }
 

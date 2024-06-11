@@ -151,8 +151,15 @@ export const updateSwitchVlans = (
       ...(vlan?.vlanName ? { vlanConfigName: vlan?.vlanName } : {})
     }] as SwitchVlan[]
 
-  setSwitchVlans({
+  const filteredSwitchVlans = {
     ...switchVlans,
+    switchVlan: switchVlans.switchVlan?.filter(
+      v => Number(v.vlanId) !== Number(vlan.vlanId)
+    )
+  }
+
+  setSwitchVlans({
+    ...filteredSwitchVlans,
     ...(isSwitchLevelVlanEnabled ? { switchVlan } : { profileVlan })
   })
   setVenueVlans([ ...venueVlans, vlan ])

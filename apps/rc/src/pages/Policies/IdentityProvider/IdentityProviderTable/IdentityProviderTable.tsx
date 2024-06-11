@@ -23,7 +23,8 @@ import {
   AAAViewModalType
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name',
@@ -67,12 +68,14 @@ export default function IdentityProviderTable () {
   const rowActions: TableProps<IdentityProviderViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: (selectedRows: IdentityProviderViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -100,7 +103,8 @@ export default function IdentityProviderTable () {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.CREATE })}
+            scopeKey={[WifiScopes.CREATE]}>
             <Button
               type='primary'
               disabled={tableQuery.data?.totalCount! >= IDENTITY_PROVIDER_MAX_COUNT}>
@@ -118,7 +122,7 @@ export default function IdentityProviderTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={hasPermission() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
