@@ -254,6 +254,7 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
     const {
       unitConfig,
       residentPortalType,
+      communicationConfig,
       ...formValues
     } = values
 
@@ -275,6 +276,20 @@ export const PropertyManagementForm = (props: PropertyManagementFormProps) => {
             unitConfig: {
               ...unitConfig,
               ...toResidentPortalPayload(residentPortalType as ResidentPortalType)
+            },
+            communicationConfig: {
+              ...communicationConfig,
+              // these values must match the registration id in th TemplateSelector form items
+              unitAssignmentHtmlRegId: venueId,
+              unitAssignmentTextRegId: venueId,
+              unitPassphraseChangeHtmlRegId: venueId,
+              unitPassphraseChangeTextRegId: venueId,
+              guestPassphraseChangeHtmlRegId: venueId,
+              guestPassphraseChangeTextRegId: venueId,
+              portalAccessResetHtmlRegId: venueId,
+              portalAccessResetTextRegId: venueId,
+              portAssignmentHtmlRegId: venueId,
+              portAssignmentTextRegId: venueId
             }
           }
         }).unwrap()
