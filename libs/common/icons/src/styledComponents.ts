@@ -28,6 +28,7 @@ export const DeleteOutlinedDisabledIcon = styled(DeleteOutlined)`
 `
 
 export const LeafSolidIcon = styled(LeafSolid)`
+  vertical-align: middle;
   path {
     fill: var(--acx-semantics-green-50);
   }

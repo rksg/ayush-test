@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useMemo, useContext, useImperativeHandle, forwardRef, Ref } from 'react'
 
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
-import { Badge }               from 'antd'
+import { Badge, Space }        from 'antd'
 import { find }                from 'lodash'
 import { useIntl }             from 'react-intl'
+
 
 import {
   Loader,
@@ -20,7 +21,8 @@ import {
   Features, TierFeatures,
   useIsSplitOn, useIsTierAllowed
 } from '@acx-ui/feature-toggle'
-import { formatter } from '@acx-ui/formatter'
+import { formatter }     from '@acx-ui/formatter'
+import { LeafSolidIcon } from '@acx-ui/icons'
 import {
   CheckMark,
   DownloadOutlined
@@ -51,7 +53,8 @@ import {
   FILTER,
   SEARCH,
   ApCompatibility,
-  ApCompatibilityResponse
+  ApCompatibilityResponse,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload }                                                 from '@acx-ui/types'
@@ -76,7 +79,7 @@ export const defaultApPayload = {
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
     'apStatusData', 'tags', 'serialNumber',
-    'venueId', 'poePort', 'fwVersion', 'apRadioDeploy'
+    'venueId', 'poePort', 'fwVersion', 'apRadioDeploy', 'powerSavingStatus'
   ]
 }
 
@@ -117,16 +120,30 @@ const retriedApIds = (result: TableResult<APExtended | APExtendedGrouped, ApExtr
 }
 
 export const APStatus = (
-  { status, showText = true }: { status: ApDeviceStatusEnum, showText?: boolean }
+  { status, showText = true, powerSavingStatus = PowerSavingStatusEnum.NORMAL }: { status: ApDeviceStatusEnum, showText?: boolean, powerSavingStatus?: PowerSavingStatusEnum }
 ) => {
   const intl = useIntl()
+  const { $t } = useIntl()
   const apStatus = transformApStatus(intl, status, APView.AP_LIST)
+  const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
+  const powerSavingModeEnabled =
+    !(status === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+      status === ApDeviceStatusEnum.INITIALIZING ||
+      status === ApDeviceStatusEnum.OFFLINE) &&
+      powerSavingStatus === PowerSavingStatusEnum.POWER_SAVING
+
   return (
-    <span>
+    <Space>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
         text={showText ? apStatus.message : ''}
       />
-    </span>
+      {isSupportPowerSavingMode && powerSavingModeEnabled && <Tooltip
+        title={$t({ defaultMessage: 'AI-Driven GreenFlex mode. Radio may not be broadcasting' })}
+        placement='bottom'
+      >
+        <LeafSolidIcon/>
+      </Tooltip>}
+    </Space>
   )
 }
 
@@ -284,7 +301,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
+      render: (_, { deviceStatus, powerSavingStatus }) =>
+        <APStatus status={deviceStatus as ApDeviceStatusEnum} powerSavingStatus={powerSavingStatus as PowerSavingStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
