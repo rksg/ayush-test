@@ -451,11 +451,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
-
           const res = await fetchWithBQ({
             // eslint-disable-next-line max-len
-            ...createHttpRequest(DpskUrls.addDpsk, params, headers),
+            ...createHttpRequest(DpskUrls.addDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
             body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
           })
           // Ensure the return type is QueryReturnValue
@@ -482,9 +480,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
           const res = await fetchWithBQ({
-            ...createHttpRequest(DpskUrls.updateDpsk, params, headers),
+            ...createHttpRequest(DpskUrls.updateDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
             body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
           })
           // Ensure the return type is QueryReturnValue
