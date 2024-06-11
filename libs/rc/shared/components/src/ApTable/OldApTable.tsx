@@ -117,8 +117,8 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
-          const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
-          apIds = retriedApIds(aps, !!hasGroupBy)
+          const aps = tableQuery.data as TableResult<APExtended|APExtendedGrouped, ApExtraParams>
+          apIds = retriedApIds(aps, hasGroupBy)
           try {
             if (apIds.length > 0) {
               if (params.venueId) {
@@ -188,7 +188,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       channel60: false
     }
 
-    const columns: TableProps<APExtended | APExtendedGrouped>['columns'] = [{
+    const columns: TableProps<APExtended|APExtendedGrouped>['columns'] = [{
       key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
@@ -337,7 +337,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
             transformDisplayText(row[key] as string)
         })
         return acc
-      }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
+      }, [] as TableProps<APExtended|APExtendedGrouped>['columns'])
     },
     ...(apUptimeFlag ? [
       {
@@ -601,7 +601,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<APExtended | APExtendedGrouped>
+      <Table<APExtended|APExtendedGrouped>
         {...props}
         settingsId={settingsId}
         columns={columns}

@@ -21,6 +21,7 @@ import {
   APMeshRole,
   APView,
   DeviceConnectionStatus,
+  NewAPExtendedGrouped,
   NewAPModelExtended,
   TableQuery,
   TableResult,
@@ -68,7 +69,10 @@ export const transformMeshRole = (value: APMeshRole) => {
   return transformDisplayText(meshRole)
 }
 
-export const retriedApIds = (result: TableResult<APExtended | NewAPModelExtended | APExtendedGrouped, ApExtraParams>, hasGroupBy:boolean) => {
+export const retriedApIds = (
+  result: TableResult<APExtended|NewAPModelExtended|APExtendedGrouped|NewAPExtendedGrouped, ApExtraParams>,
+  hasGroupBy:boolean
+) => {
   const apIds:string[] = []
   if (hasGroupBy) {
     result.data?.forEach(item => {

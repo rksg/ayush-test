@@ -350,7 +350,7 @@ export const apApi = baseApApi.injectEndpoints({
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const { requestId } = payload as { requestId: string }
         const api:ApiInfo = { ...urlsInfo.getImportResult }
-        api.url += `?requestId=${requestId}`
+        api.url += `?${enableRbac ? 'operationRequestId' : 'requestId'}=${requestId}`
         const req = createHttpRequest(api, params, apiCustomHeader)
         return {
           ...req
