@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import _                      from 'lodash'
-import { Params }             from 'react-router-dom'
-import { v4 as uuidv4 }       from 'uuid'
+import { FetchBaseQueryMeta, FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import _                                           from 'lodash'
+import { Params }                                  from 'react-router-dom'
+import { v4 as uuidv4 }                            from 'uuid'
 
 import {
   CommonUrlsInfo,
@@ -449,21 +449,76 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        const createDpskReq = createDpskHttpRequest(DpskUrls.addDpsk, params)
-        return {
-          ...createDpskReq,
-          body: JSON.stringify(payload)
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+
+          const res = await fetchWithBQ({
+            // eslint-disable-next-line max-len
+            ...createHttpRequest(DpskUrls.addDpsk, params, headers),
+            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
+          })
+          // Ensure the return type is QueryReturnValue
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+          const { id } = res.data as DpskMutationResult
+
+          if (enableRbac && payload!.policySetId) {
+            await fetchWithBQ({
+              ...createHttpRequest(DpskUrls.updateDpskPolicySet, {
+                serviceId: id,
+                policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
+            })
+          }
+
+          return { data: res.data as DpskMutationResult }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        const updateDpskReq = createDpskHttpRequest(DpskUrls.updateDpsk, params)
-        return {
-          ...updateDpskReq,
-          body: JSON.stringify(payload)
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+          const res = await fetchWithBQ({
+            ...createHttpRequest(DpskUrls.updateDpsk, params, headers),
+            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
+          })
+          // Ensure the return type is QueryReturnValue
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+
+          if (enableRbac) {
+            // Get the current Dpsk Service data
+            const getDpskRes = await fetchWithBQ({
+              ...createHttpRequest(DpskUrls.getDpsk, params)
+            })
+
+            if (getDpskRes.error) {
+              return { error: getDpskRes.error as FetchBaseQueryError }
+            }
+
+            const currentDpsk = getDpskRes.data as DpskSaveData
+            if (payload!.policySetId !== currentDpsk.policySetId) {
+              if (payload!.policySetId) {
+                await fetchWithBQ({
+                  ...createHttpRequest(DpskUrls.updateDpskPolicySet, { ...params, policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
+                })
+              } else {
+                await fetchWithBQ({
+                  ...createHttpRequest(DpskUrls.deleteDpskPolicySet, { ...params, policySetId: currentDpsk.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
+                })
+              }
+            }
+          }
+
+          return { data: res.data as DpskMutationResult }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]

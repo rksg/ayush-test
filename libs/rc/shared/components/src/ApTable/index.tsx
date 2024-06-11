@@ -54,7 +54,7 @@ import {
   ApCompatibilityResponse
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                 from '@acx-ui/types'
+import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
 
@@ -569,12 +569,14 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
 
   const rowActions: TableProps<APExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [WifiScopes.DELETE],
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -586,6 +588,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     //   }
     // }, {
     label: $t({ defaultMessage: 'Reboot' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
@@ -690,6 +693,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
         rowActions={filterByAccess(rowActions)}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,
@@ -698,6 +702,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           }
         }, {
           label: $t({ defaultMessage: 'Add AP Group' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,
@@ -709,6 +714,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
           }
         }, {
           label: $t({ defaultMessage: 'Import APs' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             setImportVisible(true)
           }
