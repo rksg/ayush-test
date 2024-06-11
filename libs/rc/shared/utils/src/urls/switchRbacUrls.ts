@@ -149,14 +149,24 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/vlans/switch/:switchId',
     newApi: true
   },
-  addSwitchVlan: {
-    method: 'post',
-    url: '/venues/:venueId/vlans',
+  deleteSwitchVlan: {
+    method: 'delete',
+    url: '/venues/:venueId/switches/:switchId/vlans/:vlanId',
+    newApi: true
+  },
+  updateSwitchVlan: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/vlans/:vlanId',
     newApi: true
   },
   addSwitchVlans: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/vlans',
+    newApi: true
+  },
+  addSwitchesVlans: {
+    method: 'post',
+    url: '/venues/:venueId/vlans',
     newApi: true
   },
   deleteSwitchVlans: {

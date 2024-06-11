@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { Provider } from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import { mockServer,
   render,
   screen
@@ -43,4 +44,22 @@ describe('Venue DHCP Instance', () => {
     expect(radioButton).toBeChecked()
   })
 
+  it('should call rbac apis and render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      ...handlers
+    )
+
+    const params = { tenantId: 'tenant-id', venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4' }
+    render(<Provider><DHCPInstance /></Provider>, {
+      route: { params, path: '/:tenantId/t/venues/:venueId/venue-details/services' }
+    })
+
+    expect(await screen.findByText('abcd')).toBeVisible()
+    expect(screen.getByText('Multiple APs')).toBeVisible()
+    expect(screen.getByText('ON')).toBeVisible()
+    expect(screen.getByText('922102020872')).toBeVisible()
+    expect(screen.getByRole('radio', { name: 'Pools (2)' })).toBeVisible()
+    expect(screen.getByRole('radio', { name: 'Lease Table (1 Online)' })).toBeVisible()
+  })
 })

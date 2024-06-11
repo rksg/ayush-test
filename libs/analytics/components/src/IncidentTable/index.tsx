@@ -24,7 +24,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
-import { filterByAccess, hasPermission }                               from '@acx-ui/user'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission }   from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
@@ -143,6 +143,7 @@ export function IncidentTable ({ filters }: {
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
+      key: getShowWithoutRbacCheckKey('mute'),
       label: $t(selectedIncident?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })

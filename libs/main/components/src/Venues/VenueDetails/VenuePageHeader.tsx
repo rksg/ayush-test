@@ -14,6 +14,7 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes, EdgeScopes, SwitchScopes }       from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
 import { useDateFilter }                              from '@acx-ui/utils'
 
@@ -59,6 +60,7 @@ function VenuePageHeader () {
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
           type='primary'
+          scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
             navigate(detailsPath, {
               state: {
