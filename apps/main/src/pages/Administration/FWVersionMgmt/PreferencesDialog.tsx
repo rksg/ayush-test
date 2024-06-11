@@ -7,6 +7,7 @@ import { useIntl }                                          from 'react-intl'
 import {
   Modal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useUpdateSwitchFirmwarePredownloadMutation
 } from '@acx-ui/rc/services'
@@ -36,6 +37,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const params = useParams()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, isSwitch, preDownload } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [updateSwitchFirmwarePredownload] = useUpdateSwitchFirmwarePredownloadMutation()
   // eslint-disable-next-line max-len
   const [scheduleMode, setScheduleMode] = useState(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
@@ -106,7 +108,10 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const triggerSubmit = async () => {
     if (isSwitch) {
       try {
-        await updateSwitchFirmwarePredownload({ params, payload: checked }).unwrap()
+        await updateSwitchFirmwarePredownload({
+          params, payload: checked,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
       }

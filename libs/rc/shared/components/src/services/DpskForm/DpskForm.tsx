@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useCreateDpskTemplateMutation,
@@ -89,6 +90,7 @@ export function DpskForm (props: DpskFormProps) {
   }
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   function isModalMode (): boolean {
     return modalMode && !editMode
@@ -120,11 +122,13 @@ export function DpskForm (props: DpskFormProps) {
       if (editMode) {
         result = await updateDpsk({
           params: { ...params },
-          payload: _.omit(dpskSaveData, 'id')
+          payload: _.omit(dpskSaveData, 'id'),
+          enableRbac
         }).unwrap()
       } else {
         result = await createDpsk({
-          payload: dpskSaveData
+          payload: dpskSaveData,
+          enableRbac
         }).unwrap()
       }
 

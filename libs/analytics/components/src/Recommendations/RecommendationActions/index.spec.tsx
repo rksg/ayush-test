@@ -1,11 +1,18 @@
 import userEvent       from '@testing-library/user-event'
 import { MomentInput } from 'moment-timezone'
 
-import { get }                                                  from '@acx-ui/config'
-import { useIsSplitOn }                                         from '@acx-ui/feature-toggle'
-import { useVenueNetworkListV2Query }                           from '@acx-ui/rc/services'
-import { Provider, recommendationUrl }                          from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, cleanup, within } from '@acx-ui/test-utils'
+import { get }                              from '@acx-ui/config'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
+import { Provider, recommendationUrl }      from '@acx-ui/store'
+import {
+  mockGraphqlMutation,
+  render,
+  screen,
+  cleanup,
+  within,
+  waitFor
+}                                                               from '@acx-ui/test-utils'
 
 import { recommendationListResult }                                                  from '../__tests__/fixtures'
 import { Recommendation, RecommendationListItem, useScheduleRecommendationMutation } from '../services'
@@ -44,23 +51,28 @@ jest.mock('../services', () => ({
     ssid: 's3'
   }] })
 }))
+jest.mock('@acx-ui/rc/utils', () => ({
+  RadioTypeEnum: {
+    _2_4_GHz: '2.4-GHz',
+    _5_GHz: '5-GHz',
+    _6_GHz: '6-GHz'
+  }
+}))
+
 jest.mock('@acx-ui/rc/services', () => ({
-  useVenueNetworkListV2Query: jest.fn().mockReturnValue({ data: { data: [{
+  useVenueRadioActiveNetworksQuery: jest.fn().mockReturnValue({ data: [{
     id: 'i4',
     name: 'n4',
-    ssid: 's4',
-    venues: { names: ['zone-1', 'zone-2'] }
+    ssid: 's4'
   }, {
     id: 'i5',
     name: 'n5',
-    ssid: 's5',
-    venues: { names: ['zone-1'] }
+    ssid: 's5'
   }, {
     id: 'i6',
     name: 'n6',
-    ssid: 's6',
-    venues: { names: [] }
-  }] } })
+    ssid: 's6'
+  }] })
 }))
 
 jest.mock('@acx-ui/config')
@@ -247,7 +259,7 @@ describe('RecommendationActions', () => {
       isRecommendationRevertEnabled: false,
       scheduledAt: '2023-07-15T14:45:00.000Z',
       type: 'Apply',
-      wlans: [{ name: 'i5', ssid: 's5' }]
+      wlans: [{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
     })
   })
   it('allows wlans selection for airflexai in R1', async () => {
@@ -276,8 +288,38 @@ describe('RecommendationActions', () => {
       isRecommendationRevertEnabled: false,
       scheduledAt: '2023-07-15T14:45:00.000Z',
       type: 'Apply',
-      wlans: [{ name: 'i5', ssid: 's5' }]
+      wlans: [{ name: 'i5', ssid: 's5' }, { name: 'i6', ssid: 's6' }]
     })
+  })
+  it('hides wlans selection for airflexai in R1 for non-new', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        status: 'Applied',
+        statusEnum: 'applied' as 'applied',
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    expect(screen.queryByText('Networks')).toBeNull()
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByTestId('Reload'))
+    await user.click(await screen.findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: false,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Revert'
+    }))
   })
   it('allows wlans selection for airflexai in RAI', async () => {
     const schedule = jest.fn()
@@ -307,10 +349,41 @@ describe('RecommendationActions', () => {
       wlans: [{ name: 'n1', ssid: 's1' }]
     })
   })
+  it('allows wlans selection for airflexai in RAI for non-new', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    jest.mocked(get).mockReturnValue('true')
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        status: 'Applied',
+        statusEnum: 'applied' as 'applied',
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    expect(screen.queryByText('Networks')).toBeNull()
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByTestId('Reload'))
+    await user.click((await screen.findAllByText('Apply'))[0])
+    await waitFor(() => expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: true,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Revert'
+    }))
+  })
   it('handles empty wlans response', async () => {
     const schedule = jest.fn()
     jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
-    jest.mocked(useVenueNetworkListV2Query).mockReturnValue({})
+    jest.mocked(useVenueRadioActiveNetworksQuery).mockReturnValue({})
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(

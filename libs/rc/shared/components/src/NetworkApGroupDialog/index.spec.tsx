@@ -122,7 +122,7 @@ describe('NetworkApGroupDialog', () => {
 
     expect(within(dialog).getByLabelText('Select specific AP groups', { exact: false, selector: 'input' })).toBeChecked()
 
-    await waitFor(() => expect(dialog).toHaveTextContent('VLAN Pool: (Custom)'))
+    await waitFor(() => expect(dialog).toHaveTextContent(`VLAN Pool: ${vlanPoolList[0].name} (Custom)`))
   })
 
   it('should has 6 GHz and could click apply', async () => {

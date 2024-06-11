@@ -199,6 +199,9 @@ describe('Layout', () => {
     services.useGetGlobalValuesQuery = jest.fn().mockImplementation(() => {
       return { data: {} }
     })
+    services.useGetBrandingDataQuery = jest.fn().mockImplementation(() => {
+      return { data: { msp_label: '', name: '' } }
+    })
 
     mockServer.use(
       rest.get(
@@ -396,7 +399,7 @@ describe('Layout', () => {
         <Layout />
       </Provider>, { route: { params } })
 
-    expect(await screen.findByRole('menuitem', { name: 'Config Templates' })).toBeVisible()
+    expect(await screen.findByRole('menuitem', { name: 'Templates' })).toBeVisible()
   })
   it('should render layout correctly for MSP_INSTALLER', async () => {
     services.useGetTenantDetailQuery = jest.fn().mockImplementation(() => {

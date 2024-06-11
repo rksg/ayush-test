@@ -126,7 +126,7 @@ export function useMenuConfig (tenantType: string, hasLicense: boolean, isDogfoo
     ...(isConfigTemplateEnabled
       ? [{
         uri: '/' + getConfigTemplatePath(),
-        label: $t({ defaultMessage: 'Config Templates' }),
+        label: $t({ defaultMessage: 'Templates' }),
         tenantType: 'v' as TenantType,
         inactiveIcon: CopyOutlined,
         activeIcon: CopySolid

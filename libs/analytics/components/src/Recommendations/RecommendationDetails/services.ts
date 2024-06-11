@@ -6,8 +6,8 @@ import { MessageDescriptor }   from 'react-intl'
 import { recommendationApi } from '@acx-ui/store'
 import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail, ConfigurationValue } from '../config'
-import { getCrrmOptimizedState, getCrrmInterferingLinksText }           from '../services'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue }           from '../config'
+import { getCrrmOptimizedState, getCrrmInterferingLinksText, RecommendationWlan } from '../services'
 
 
 export type BasicRecommendation = {
@@ -30,7 +30,7 @@ export type RecommendationDetails = {
   originalValue: ConfigurationValue;
   currentValue: ConfigurationValue;
   recommendedValue: string;
-  metadata: object & { scheduledAt: string };
+  metadata: object & { scheduledAt: string, wlans?: RecommendationWlan[] };
   sliceType: string;
   sliceValue: string;
   path: NetworkPath;
@@ -41,6 +41,7 @@ export type RecommendationDetails = {
     crrmFullOptimization: boolean;
   },
   trigger: string
+  idPath: NetworkPath;
 } & Partial<RecommendationKpi>
 
 export type EnhancedRecommendation = RecommendationDetails & {
@@ -85,6 +86,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   const appliedPlus24h = moment(appliedTime).add(24, 'hours')
   const monitoring = (
     status === 'applied' &&
+    !code.startsWith('c-probeflex-') &&
     appliedTime &&
     Date.now() < appliedPlus24h.valueOf()
   )

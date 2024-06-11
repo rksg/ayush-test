@@ -27,9 +27,10 @@ export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
 export const numberWithPercentSymbol = (x: number) => `${x}%`
 
-export const hasFirmwareFilterForPoe = () => {
-  return window.location.pathname.includes('/health/wired')
-}
+export const shouldAddFirmwareFilter = () =>
+  window.location.pathname.includes('/health/wired')
+    ? true
+    : undefined
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -172,10 +173,10 @@ export const kpiConfig = {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
     timeseries: {
-      apiMetric: 'switchDHCPAttemptAndSuccessCount',
+      apiMetric: 'switchDHCPSuccessAndAttemptCount',
       minGranularity: 'PT5M'
     },
-    barChart: createBarChartConfig('switchDHCPAttemptAndSuccessCount'),
+    barChart: createBarChartConfig('switchDHCPSuccessAndAttemptCount'),
     pill: {
       description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
       thresholdDesc: [],
@@ -430,7 +431,7 @@ export const kpiConfig = {
   },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
-    enableSwitchFirmwareFilter: hasFirmwareFilterForPoe,
+    enableSwitchFirmwareFilter: shouldAddFirmwareFilter,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
@@ -583,7 +584,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchUplinkPortUtilization',
-      splits: [0, 20, 40, 60, 80, 100],
+      splits: [20, 40, 60, 80, 100],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -613,7 +614,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchPortUtilization',
-      splits: [0, 20, 40, 60, 80, 100],
+      splits: [20, 40, 60, 80, 100],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -645,6 +646,36 @@ export const kpiConfig = {
       pillSuffix: '',
       thresholdFormatter: null,
       tooltip: defineMessage({ defaultMessage: 'Anomalies refer to unexpected and abnormal networking behaviour can occur due to cable issues, failed negotiation, and MTU Errors, Input errors contributing to bad user minutes.' })
+    }
+  },
+  switchStormControl: {
+    text: defineMessage({ defaultMessage: 'MC Traffic' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchPortStormCountAndPortCount',
+      minGranularity: 'PT5M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 2000,
+      apiMetric: 'switchPortStormCount',
+      splits: [1000, 2000, 3000, 4000, 5000, 6000],
+      xUnit: defineMessage({ defaultMessage: 'packets/sec' }),
+      yUnit: 'Ports',
+      shortXFormat: formatter('countFormatRound'),
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'below' }),
+        defineMessage({ defaultMessage: '{threshold} packets/sec' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: noFormat,
+      tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
     }
   }
 }
@@ -707,8 +738,8 @@ export const wiredKPIsForTab = () => {
       kpis: [
         'switchPortUtilization',
         'switchUplinkPortUtilization',
-        'switchInterfaceAnomalies'
-        // 'bcmcTraffic'
+        'switchInterfaceAnomalies',
+        'switchStormControl'
       ]
     },
     infrastructure: {

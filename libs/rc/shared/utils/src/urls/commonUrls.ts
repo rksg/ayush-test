@@ -198,11 +198,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/aps/query/csvFiles',
     newApi: true
   },
-  getService: {
-    // no use
-    method: 'get',
-    url: '/api/tenant/:tenantId/service/:serviceId'
-  },
   getFloorplan: {
     method: 'get',
     url: '/venues/:venueId/floorplans/:floorPlanId',
@@ -399,12 +394,6 @@ export const CommonUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/roguePolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/rogue-policy',
-    newApi: true
-  },
-  getConfigProfiles: {
-    method: 'post',
-    url: '/switchProfiles/query',
-    oldUrl: '/api/switch/tenant/:tenantId/profiles/query',
     newApi: true
   },
   getVenueSwitchSetting: {
