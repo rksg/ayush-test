@@ -4,8 +4,8 @@ import { rest }         from 'msw'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { fireEvent, mockServer, render, screen, waitFor }                                                from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, FloorPlanDto, NetworkDeviceType, RWGStatusEnum, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { fireEvent, mockServer, render, screen, waitFor }                                                               from '@acx-ui/test-utils'
 
 import { NetworkDeviceContext } from '..'
 
@@ -112,7 +112,17 @@ const networkDevices: {
     LTEAP: [],
     RogueAP: [],
     cloudpath: [],
-    DP: []
+    DP: [],
+    rwg: [{
+      deviceStatus: RWGStatusEnum.ONLINE,
+      floorplanId: '94bed28abef24175ab58a3800d01e24a',
+      id: 'bbc41563473348d29a36b76e95c50381',
+      serialNumber: '',
+      name: 'rwg-device',
+      xPercent: 30.20548,
+      yPercent: 29.839357,
+      networkDeviceType: NetworkDeviceType.rwg
+    }]
   }
 }
 
