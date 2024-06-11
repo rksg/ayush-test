@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Button, GridRow, Loader, GridCol }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery } from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
@@ -20,9 +21,11 @@ import VLANPoolOverview       from './VLANPoolOverview'
 export function VLANPoolDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const queryResults = useConfigTemplateQueryFnSwitcher<VLANPoolPolicyType>({
     useQueryFn: useGetVLANPoolPolicyDetailQuery,
-    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery,
+    enableRbac: isPolicyRbacEnabled
   })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
 

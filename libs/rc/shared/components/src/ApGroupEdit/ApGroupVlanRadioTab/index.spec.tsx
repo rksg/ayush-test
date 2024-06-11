@@ -63,6 +63,10 @@ describe('AP Group vlan & radio tab', () => {
       rest.get(
         WifiUrlsInfo.getVlanPools.url,
         (req, res, ctx) => res(ctx.json([...vlanPoolList]))
+      ),
+      rest.post(
+        WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })

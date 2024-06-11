@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import _                                           from 'lodash'
 
 import {
   CommonUrlsInfo,
@@ -22,7 +23,9 @@ import {
   ApCompatibilityResponse,
   transformNetwork,
   WifiNetwork,
-  ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo
+  ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -192,12 +195,74 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     updateNetworkVenue: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac = false }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const promises = []
+          promises.push(fetchWithBQ({ ...createHttpRequest(WifiUrlsInfo.updateNetworkVenue, params, RKS_NEW_UI), body: JSON.stringify(_.omit(payload as Object, ['oldNetworkVenue'])) }))
+          if (enableRbac) {
+            const { oldNetworkVenue } = payload as { oldNetworkVenue: NetworkVenue }
+            if (oldNetworkVenue) {
+              let oldData = oldNetworkVenue as NetworkVenue
+              let newData = payload as NetworkVenue
+              if (newData.isAllApGroups && !oldData.isAllApGroups) {
+                oldData.apGroups?.filter(group => group.vlanPoolId !== undefined)
+                  .forEach(group => {
+                    promises.push(fetchWithBQ(
+                      createHttpRequest(WifiUrlsInfo.deactivateApGroupVlanPool, {
+                        apGroupId: group.apGroupId,
+                        profileId: group.vlanPoolId,
+                        networkId: oldData.networkId,
+                        venueId: oldData.venueId
+                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
+                  })
+              } else if (!newData.isAllApGroups && oldData.isAllApGroups ) {
+                newData.apGroups?.filter(group => group.vlanPoolId !== undefined)
+                  .forEach(group => {
+                    promises.push(fetchWithBQ(
+                      createHttpRequest(WifiUrlsInfo.activateApGroupVlanPool, {
+                        apGroupId: group.apGroupId,
+                        profileId: group.vlanPoolId,
+                        networkId: newData.networkId,
+                        venueId: newData.venueId
+                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
+                  })
+              } else if (!newData.isAllApGroups && !oldData.isAllApGroups) {
+                const oldMapping = new Map<string, string>()
+                oldData.apGroups?.filter(group => group.vlanPoolId !== undefined)
+                  .forEach(group => oldMapping.set(group.apGroupId!!, group.vlanPoolId!!))
+                const newMapping = new Map<string, string>()
+                newData.apGroups?.filter(group => group.vlanPoolId !== undefined)
+                  .forEach(group => newMapping.set(group.apGroupId!!, group.vlanPoolId!!))
+                newMapping.forEach((vlanPoolId, groupId ) => {
+                  if (!oldMapping.has(groupId) || oldMapping.get(groupId) !== vlanPoolId) {
+                    promises.push(fetchWithBQ(
+                      createHttpRequest(WifiUrlsInfo.activateApGroupVlanPool, {
+                        apGroupId: groupId,
+                        profileId: vlanPoolId,
+                        networkId: newData.networkId,
+                        venueId: newData.venueId
+                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
+                  }
+                })
+                oldMapping.forEach((vlanPoolId, groupId) => {
+                  if (!newMapping.has(groupId)) {
+                    promises.push(fetchWithBQ(
+                      createHttpRequest(WifiUrlsInfo.deactivateApGroupVlanPool, {
+                        apGroupId: groupId,
+                        profileId: vlanPoolId,
+                        networkId: newData.networkId,
+                        venueId: newData.venueId
+                      }, GetApiVersionHeader(ApiVersionEnum.v1))))
+                  }
+                })
+              }
+            }
+          }
+          await Promise.all(promises)
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
+        return { data: {} as CommonResult }
       },
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
@@ -692,7 +757,50 @@ export const networkApi = baseNetworkApi.injectEndpoints({
           body: payload
         }
       }
-    })
+    }),
+    activateVlanPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiUrlsInfo.activateVlanPool, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateNetwork'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
+    }),
+    deactivateVlanPool: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiUrlsInfo.deactivateVlanPool, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      extraOptions: { maxRetries: 5 },
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'UpdateNetwork'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'DETAIL' }]))
+          })
+        })
+      }
+    }
+    )
   })
 })
 
@@ -1177,7 +1285,9 @@ export const {
   useDashboardOverviewQuery,
   useDashboardV2OverviewQuery,
   useExternalProvidersQuery,
-  useActivateCertificateTemplateMutation
+  useActivateCertificateTemplateMutation,
+  useActivateVlanPoolMutation,
+  useDeactivateVlanPoolMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

@@ -158,6 +158,7 @@ export interface NetworkSaveData {
   useCertificateTemplate?: boolean
   certificateTemplateId?: string
   accountingInterimUpdates?: number
+  originalVlanPoolId?: string
 }
 
 export enum MaxRateEnum {

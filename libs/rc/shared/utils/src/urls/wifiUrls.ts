@@ -586,6 +586,30 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/venues/:venueId/roguePolicySettings',
     newApi: true
+  },
+  activateVlanPool: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  deactivateVlanPool: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  activateApGroupVlanPool: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  deactivateApGroupVlanPool: {
+    method: 'delete',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  queryWifiNetworks: {
+    method: 'post',
+    url: '/wifiNetworks/query',
+    newApi: true
   }
-
 }

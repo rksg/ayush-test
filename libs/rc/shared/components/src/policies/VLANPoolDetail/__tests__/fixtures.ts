@@ -34,3 +34,44 @@ export const vlanPoolDetail = {
   vlanMembers: ['2-6','7-9'],
   id: '9461e5412c1b424f975cd4aee2b1eca2'
 }
+
+export const vlanPoolRbacDetail = {
+  name: 'test',
+  vlanMembers: ['2-6','7-9'],
+  id: '9461e5412c1b424f975cd4aee2b1eca2',
+  wifiNetworkIds: ['51134687bde947cb86a0426995fdd442'],
+  wifiNetworkVenueApGroups: [{
+    venueId: 'ebcccef6b366415dbb85073e5aa7248c',
+    isAllGroups: false,
+    apGroupIds: [
+      '33e6a901d4a8492eb4a1f2b75de75af3',
+      '81134687bde947cb86a0426995fdd442'
+    ]
+  }]
+}
+
+export const wifiNetworkList = [
+  {
+    id: '51134687bde947cb86a0426995fdd442',
+    venueApGroups: [
+      {
+        venueId: '2df3c129c00e4686b11cf70dac845367',
+        isAllApGroups: true,
+        apGroupIds: []
+      }
+    ]
+  }
+]
+
+export const venueList = [
+  {
+    id: '2df3c129c00e4686b11cf70dac845367',
+    name: 'My-Venue',
+    aggregatedApStatus: [{}]
+  },
+  {
+    id: 'ebcccef6b366415dbb85073e5aa7248c',
+    name: 'tVenue1',
+    aggregatedApStatus: [{}]
+  }
+]

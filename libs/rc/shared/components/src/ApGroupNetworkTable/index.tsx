@@ -207,7 +207,7 @@ export function useApGroupNetworkColumns (
 const useGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
   const { tenantId } = useParams()
   const { isTemplate } = useConfigTemplate()
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
     vlanPoolingNameMap: data?.data
       ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
@@ -224,7 +224,8 @@ const useGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
 
   const vlanPoolingNonTemplate: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId },
-    payload: vlanPoolPayload
+    payload: vlanPoolPayload,
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: !tableData.length && isTemplate,
     selectFromResult: transformVlanPoolData

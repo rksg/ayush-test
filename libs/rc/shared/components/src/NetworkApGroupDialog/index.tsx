@@ -94,7 +94,7 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
   const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<DefaultOptionType[]>()
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [form] = Form.useForm()
 
   const open = !!props.visible
@@ -167,7 +167,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     payload: {
       fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   })
 
   useEffect(() => {
