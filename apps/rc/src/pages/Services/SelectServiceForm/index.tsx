@@ -13,9 +13,11 @@ import {
   ServiceType,
   getServiceListRoutePath,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  radioCategoryToScopeKey
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { hasScope }                         from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -129,22 +131,26 @@ export default function SelectServiceForm () {
             <Radio.Group style={{ width: '100%' }}>
               {sets.map(set => {
                 const isAllDisabled = set.items.every(item => item.disabled)
-                return !isAllDisabled &&
+                const scopeKeys = radioCategoryToScopeKey(set.items.map(s => s.categories).flat())
+
+                return !isAllDisabled && hasScope(scopeKeys) &&
                 <UI.CategoryContainer key={$t(set.title)}>
                   <Typography.Title level={3}>
                     { $t(set.title) }
                   </Typography.Title>
                   <GridRow>
-                    {set.items.map(item => item.disabled
-                      ? null
-                      : <GridCol key={item.type} col={{ span: 6 }}>
-                        <ServiceCard
-                          key={item.type}
-                          serviceType={item.type}
-                          categories={item.categories}
-                          type={'radio'}
-                        />
-                      </GridCol>)}
+                    {// eslint-disable-next-line max-len
+                      set.items.map(item => item.disabled || !hasScope(radioCategoryToScopeKey(item.categories))
+                        ? null
+                        : <GridCol key={item.type} col={{ span: 6 }}>
+                          <ServiceCard
+                            key={item.type}
+                            serviceType={item.type}
+                            categories={item.categories}
+                            type={'radio'}
+                          />
+                        </GridCol>)
+                    }
                   </GridRow>
                 </UI.CategoryContainer>
               })}

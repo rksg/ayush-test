@@ -17,6 +17,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
+  radioCategoryToScopeKey,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -134,6 +135,7 @@ export default function MyServices () {
     }
   ]
 
+  const scopeKeys = radioCategoryToScopeKey(services.map(s => s.categories).flat())
 
   return (
     <>
@@ -141,7 +143,7 @@ export default function MyServices () {
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
-          <TenantLink to={getSelectServiceRoutePath(true)}>
+          <TenantLink to={getSelectServiceRoutePath(true)} scopeKey={scopeKeys}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
         ])}

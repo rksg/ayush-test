@@ -3,6 +3,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { RadioCard, RadioCardProps } from '@acx-ui/components'
 import {
   getServiceRoutePath,
+  radioCategoryToScopeKey,
   ServiceOperation,
   ServiceType,
   serviceTypeDescMapping,
@@ -10,7 +11,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                               from '@acx-ui/types'
-import { hasRoles }                                from '@acx-ui/user'
+import { hasRoles, hasScope }                      from '@acx-ui/user'
 
 export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
   serviceType: ServiceType
@@ -20,13 +21,18 @@ export type ServiceCardProps = Pick<RadioCardProps, 'type' | 'categories'> & {
 export function ServiceCard (props: ServiceCardProps) {
   const { $t } = useIntl()
   const location = useLocation()
-  const { serviceType, type: cardType, categories, count } = props
+  const { serviceType, type: cardType, categories = [], count } = props
   // eslint-disable-next-line max-len
   const linkToCreate = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.CREATE }))
   // eslint-disable-next-line max-len
   const linkToList = useTenantLink(getServiceRoutePath({ type: serviceType, oper: ServiceOperation.LIST }))
   const navigate = useNavigate()
   const isReadOnly = !hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
+
+  const isAddButtonAllowed = () => {
+    const scopeKeys = radioCategoryToScopeKey(categories)
+    return cardType === 'button' && !isReadOnly && hasScope(scopeKeys)
+  }
 
   const formatServiceName = () => {
     const name = $t(serviceTypeLabelMapping[serviceType])
@@ -39,7 +45,7 @@ export function ServiceCard (props: ServiceCardProps) {
   return (
     <RadioCard
       type={cardType}
-      buttonText={(cardType === 'button' && !isReadOnly)
+      buttonText={isAddButtonAllowed()
         ? defineMessage({ defaultMessage: 'Add' })
         : undefined
       }
@@ -49,7 +55,7 @@ export function ServiceCard (props: ServiceCardProps) {
       description={$t(serviceTypeDescMapping[serviceType])}
       categories={categories}
       onClick={() => {
-        if (cardType === 'button') {
+        if (isAddButtonAllowed()) {
           navigate(linkToCreate, {
             state: {
               from: location

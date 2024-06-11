@@ -23,7 +23,8 @@ import {
   getSelectPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  policyTypeLabelMapping, policyTypeDescMapping
+  policyTypeLabelMapping, policyTypeDescMapping,
+  radioCategoryToScopeKey
 } from '@acx-ui/rc/utils'
 import {
   Path,
@@ -53,13 +54,15 @@ export default function MyPolicies () {
 
   const policies: CardDataProps[] = useCardData()
 
+  const scopeKeys = radioCategoryToScopeKey(policies.map(p => p.categories).flat())
+
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
-          <TenantLink to={getSelectPolicyRoutePath(true)}>
+          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={scopeKeys}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
         ])}
