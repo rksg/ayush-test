@@ -28,7 +28,6 @@ import {
   findIsolatedGroupByChannel
 } from '@acx-ui/rc/components'
 import {
-  useDeleteApRadioCustomizationMutation,
   useGetApRadioCustomizationQuery,
   useGetApValidChannelQuery,
   useLazyGetVenueRadioCustomizationQuery,
@@ -133,17 +132,7 @@ export const summarizedStateOfIsUseVenueSettings = (state: StateOfIsUseVenueSett
 
 }
 
-export const toggleState = (state: StateOfIsUseVenueSettings, radioType: RadioType, isEnablePerApRadioCustomizationFlag: boolean): StateOfIsUseVenueSettings => {
-  if (!isEnablePerApRadioCustomizationFlag) {
-    return {
-      isUseVenueSettings24G: undefined,
-      isUseVenueSettings5G: undefined,
-      isUseVenueSettings6G: undefined,
-      isUseVenueSettingsUpper5G: undefined,
-      isUseVenueSettingsLower5G: undefined
-    }
-  }
-
+export const toggleState = (state: StateOfIsUseVenueSettings, radioType: RadioType): StateOfIsUseVenueSettings => {
   switch (radioType) {
     case RadioType.Normal24GHz:
       return { ...state, isUseVenueSettings24G: !state.isUseVenueSettings24G }
@@ -160,7 +149,7 @@ export const toggleState = (state: StateOfIsUseVenueSettings, radioType: RadioTy
   }
 }
 
-export const createCacheSettings = (currentSettings: ApRadioCustomization | undefined, cacheSettings: ApRadioCustomization | undefined, radioType: RadioType, isEnablePerApRadioCustomizationFlag: boolean): ApRadioCustomization | undefined => {
+export const createCacheSettings = (currentSettings: ApRadioCustomization | undefined, cacheSettings: ApRadioCustomization | undefined, radioType: RadioType): ApRadioCustomization | undefined => {
   if (!currentSettings && !cacheSettings) {
     return undefined
   }
@@ -169,7 +158,7 @@ export const createCacheSettings = (currentSettings: ApRadioCustomization | unde
     return cacheSettings
   }
 
-  if (!isEnablePerApRadioCustomizationFlag || !cacheSettings) {
+  if (!cacheSettings) {
     return currentSettings
   }
 
@@ -211,12 +200,12 @@ export const createCacheSettings = (currentSettings: ApRadioCustomization | unde
   }
 }
 
-export const applySettings = (currentSettings: ApRadioCustomization | undefined, applySettings: ApRadioCustomization, radioType: RadioType, isEnablePerApRadioCustomizationFlag: boolean): ApRadioCustomization | undefined => {
+export const applySettings = (currentSettings: ApRadioCustomization | undefined, applySettings: ApRadioCustomization, radioType: RadioType): ApRadioCustomization | undefined => {
   if (!currentSettings && !applySettings) {
     return
   }
 
-  if (!isEnablePerApRadioCustomizationFlag || !currentSettings) {
+  if (!currentSettings) {
     return applySettings
   }
 
@@ -310,7 +299,6 @@ export function RadioSettings () {
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
-  const isEnablePerApRadioCustomizationFlag = useIsSplitOn(Features.WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE)
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { apData, apCapabilities, venueData } = useContext(ApDataContext)
@@ -389,9 +377,6 @@ export function RadioSettings () {
 
   const [ updateApRadio, { isLoading: isUpdatingApRadio } ] =
     useUpdateApRadioCustomizationMutation()
-
-  const [ deleteApRadio, { isLoading: isDeletingApRadio } ] =
-    useDeleteApRadioCustomizationMutation()
 
   const { data: apBandModeSavedData } =
     useGetApBandModeSettingsQuery({ params: { venueId, serialNumber } },
@@ -973,14 +958,10 @@ export function RadioSettings () {
         }).unwrap()
       }
 
-      if (!isEnablePerApRadioCustomizationFlag && payload.useVenueSettings) {
-        await deleteApRadio({ params: { tenantId, serialNumber } }).unwrap()
-      } else {
-        await updateApRadio({
-          params: { tenantId, serialNumber },
-          payload: payload
-        }).unwrap()
-      }
+      await updateApRadio({
+        params: { tenantId, serialNumber },
+        payload: payload
+      }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -1016,7 +997,7 @@ export function RadioSettings () {
   const handleStateOfIsUseVenueSettingsChange = () => {
     // 1. set updatedState
     const updatedState = summarizedStateOfIsUseVenueSettings(
-      toggleState(stateOfIsUseVenueSettings, currentTab, isEnablePerApRadioCustomizationFlag))
+      toggleState(stateOfIsUseVenueSettings, currentTab))
     setStateOfIsUseVenueSettings(updatedState)
 
     const currentSettings = formRef?.current?.getFieldsValue()
@@ -1024,11 +1005,11 @@ export function RadioSettings () {
     // (that means toggle radio settings from useCustomize to useVenue, therefore we save current customized settings to cache for restoring later)
     const isUseVenue= isCurrentTabUseVenueSettings(updatedState, currentTab)
     if (isUseVenue) {
-      cachedDataRef.current = createCacheSettings(currentSettings, cachedDataRef.current, currentTab, isEnablePerApRadioCustomizationFlag)
+      cachedDataRef.current = createCacheSettings(currentSettings, cachedDataRef.current, currentTab)
     }
     // 3. update data
     const useSettings = isUseVenue ? venueRef.current : cachedDataRef.current
-    const updatedSettings = useSettings ? applySettings(currentSettings, useSettings, currentTab, isEnablePerApRadioCustomizationFlag) : undefined
+    const updatedSettings = useSettings ? applySettings(currentSettings, useSettings, currentTab) : undefined
     if (updatedSettings) {
       updateFormData(applyState(updatedState, updatedSettings))
     }
@@ -1066,43 +1047,7 @@ export function RadioSettings () {
 
   const displayVenueSettingAndCustomize = (position: string) => {
 
-    if (!isEnablePerApRadioCustomizationFlag && position === 'onTriBand') {
-      return (
-        <Row gutter={20}>
-          <Col span={12}>
-            <Space style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              fontSize: '14px',
-              paddingBottom: '20px' }}
-            >
-              {
-                isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab) ?
-                  <FormattedMessage
-                    defaultMessage={'Currently using radio settings of the <venueSingular></venueSingular> (<venuelink></venuelink>)'}
-                    values={{
-                      venuelink: () => venueData?
-                        <TenantLink
-                          to={`venues/${venueData.id}/venue-details/overview`}>{venueData?.name}
-                        </TenantLink> : ''
-                    }}
-                  />
-                  :$t({ defaultMessage: 'Custom radio settings' })
-              }
-            </Space>
-          </Col>
-          <Col span={8}>
-            <Button type='link' onClick={handleStateOfIsUseVenueSettingsChange}>
-              {isCurrentTabUseVenueSettings(stateOfIsUseVenueSettings, currentTab) ?
-                $t({ defaultMessage: 'Customize' }):$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
-              }
-            </Button>
-          </Col>
-        </Row>
-      )
-    }
-
-    if (isEnablePerApRadioCustomizationFlag && position === 'underTab') {
+    if (position === 'underTab') {
       return (
         <Row gutter={20}>
           <Col span={12}>
@@ -1152,7 +1097,7 @@ export function RadioSettings () {
   return (
     <Loader states={[{
       isLoading: !isApDataLoaded || isApRadioDataInitializing || (isSupportBandManagementAp && isApBandModeDataInitializing),
-      isFetching: isUpdatingApRadio || isDeletingApRadio || (isWifiSwitchableRfEnabled && isUpdatingApBandMode)
+      isFetching: isUpdatingApRadio || (isWifiSwitchableRfEnabled && isUpdatingApBandMode)
     }]}>
       <StepsFormLegacy
         formRef={formRef}
@@ -1165,7 +1110,6 @@ export function RadioSettings () {
               <Col span={5}>
                 <span>{$t({ defaultMessage: 'How to handle tri-band radio?' })}</span>
               </Col>
-              { isEnablePerApRadioCustomizationFlag &&
               <>
                 {stateOfUseVenueEnabled && <Col span={2}><VenueNameDisplay venue={venueData} /></Col>}
                 <Col span={3}>
@@ -1179,7 +1123,6 @@ export function RadioSettings () {
                   </Button>
                 </Col>
               </>
-              }
               <Col span={2}>
                 <Tooltip.Question
                   title={$t({ defaultMessage: 'This applies only to AP models that support tri-band, such as the R760' })}
@@ -1206,13 +1149,11 @@ export function RadioSettings () {
           <>
             { isSupportDual5GAp &&
             <>
-              { isEnablePerApRadioCustomizationFlag &&
               <Form.Item
                 name={['apRadioParamsDual5G', 'useVenueEnabled']}
                 hidden
                 children={<></>}
               />
-              }
               <Form.Item
                 name={['apRadioParamsDual5G', 'enabled']}
                 hidden
