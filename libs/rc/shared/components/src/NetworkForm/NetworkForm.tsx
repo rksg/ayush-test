@@ -72,9 +72,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                       from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo } from './utils'
-import { Venues }                           from './Venues/Venues'
+import PortalInstance                                                                    from './PortalInstance'
+import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer } from './utils'
+import { Venues }                                                                        from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -148,6 +148,7 @@ export function NetworkForm (props:{
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const activateVlanPool = useVlanPoolActivation()
   const deactivateVlanPool = useVlanPoolDeactivation()
+  const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -226,27 +227,31 @@ export function NetworkForm (props:{
 
   useEffect(() => {
     if(data){
-      let name = data.name
+      const resolvedData = deriveFieldsFromServerData(data)
+
       if (cloneMode) {
-        name = data.name + ' - copy'
         formRef.current?.resetFields()
-        formRef.current?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
-      }else if(editMode){
+        formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+      } else if (editMode) {
         form?.resetFields()
-        form?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
+        form?.setFieldsValue(resolvedData)
       }
-      updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-        enableAccountingService: (data.accountingRadius||
-          data.guestPortal?.wisprPage?.accountingRadius)?true:false, certificateTemplateId
-        , originalVlanPoolId: vlanPoolId })
+      updateSaveData({ ...resolvedData, certificateTemplateId, originalVlanPoolId: vlanPoolId })
     }
   }, [data, certificateTemplateId, vlanPoolId])
+
+  useEffect(() => {
+    if (!radiusServerConfigurations) return
+
+    const fullNetworkSaveData = _.merge({}, saveState, radiusServerConfigurations)
+    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+
+    form.setFieldsValue({
+      ...resolvedNetworkSaveData
+    })
+
+    updateSaveData(resolvedNetworkSaveData)
+  }, [radiusServerConfigurations])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -515,6 +520,7 @@ export function NetworkForm (props:{
         const vlanPool = saveState.wlan?.advancedCustomization?.vlanPool
         await activateVlanPool(vlanPool, networkId, vlanPool.id)
       }
+      await updateRadiusServer(saveState, data, networkId)
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
@@ -597,6 +603,7 @@ export function NetworkForm (props:{
       await updateNetworkInstance({ params, payload }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
+      await updateRadiusServer(formData, data, payload.id)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -910,12 +917,14 @@ function useAddHotspot20Activation () {
   const activateHotspot20NetworkProvider = useIdentityProviderActivation()
   const addHotspot20Activations =
     async (network?: NetworkSaveData, networkId?: string) => {
-      if (network?.type === NetworkTypeEnum.HOTSPOT20 && networkId) {
-        await activateHotspot20NetworkOperator(
-          networkId, network.hotspot20Settings?.wifiOperator)
-        network.hotspot20Settings?.identityProviders?.forEach(async (id) => {
-          await activateHotspot20NetworkProvider(networkId, id)
-        })
+      if (network?.type === NetworkTypeEnum.HOTSPOT20 && networkId &&
+        network?.hotspot20Settings) {
+        const hotspot20 = network?.hotspot20Settings
+        await activateHotspot20NetworkOperator(networkId, hotspot20.wifiOperator)
+        if (hotspot20.identityProviders) {
+          await Promise.allSettled(hotspot20.identityProviders.map(id =>
+            activateHotspot20NetworkProvider(networkId, id)))
+        }
       }
       return
     }

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls, CommonUrlsInfo }                                                from '@acx-ui/rc/utils'
+import { ApSnmpUrls }                                                                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -41,15 +41,13 @@ describe('Ap Snmp', () => {
       }),
       rest.post(ApSnmpUrls.updateVenueApSnmpSettings.url, (req, res, ctx) => {
         return res(ctx.json(resultOfUpdateApSnmpAgentSettings))
-      }),
-      rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData)))
+      })
     )
   })
   it('Should Retrive Initial Data From Server and Render', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: apDetails }}>
+        <ApDataContext.Provider value={{ apData: apDetails, venueData }}>
           <ApSnmp />
         </ApDataContext.Provider>
       </Provider>, {
@@ -76,7 +74,7 @@ describe('Ap Snmp', () => {
           setEditContextData: jest.fn(),
           setEditNetworkControlContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: apDetails }}>
+          <ApDataContext.Provider value={{ apData: apDetails, venueData }}>
             <ApSnmp />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -116,7 +114,7 @@ describe('Ap Snmp', () => {
           setEditContextData: jest.fn(),
           setEditNetworkControlContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: apDetails }}>
+          <ApDataContext.Provider value={{ apData: apDetails, venueData }}>
             <ApSnmp />
           </ApDataContext.Provider>
         </ApEditContext.Provider>

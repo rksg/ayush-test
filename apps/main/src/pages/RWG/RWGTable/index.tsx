@@ -2,12 +2,13 @@ import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                          from '@acx-ui/components'
+import { useRwgActions }                                                                                                      from '@acx-ui/rc/components'
 import { useGetVenuesQuery, useRwgListQuery }                                                                                 from '@acx-ui/rc/services'
 import { defaultSort, FILTER, getRwgStatus, RWGRow, SEARCH, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                                                                                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                                                                                          from '@acx-ui/user'
+import { TABLE_DEFAULT_PAGE_SIZE }                                                                                            from '@acx-ui/utils'
 
-import { useRwgActions } from '../useRwgActions'
 
 
 function useColumns (
@@ -165,6 +166,14 @@ export function RWGTable () {
     }
   },
   {
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Configure' }),
+    onClick: (selectedRows) => {
+      window.open('https://' + (selectedRows[0]?.hostname)?.toString() + '/admin',
+        '_blank')
+    }
+  },
+  {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
       rwgActions.deleteGateways(rows, tenantId, clearSelection)
@@ -202,6 +211,12 @@ export function RWGTable () {
           settingsId='rgw-table'
           columns={columns}
           dataSource={tableQuery?.data?.data}
+          pagination={{
+            defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
+            pageSize: tableQuery?.data?.page,
+            showSizeChanger: false,
+            showQuickJumper: false
+          }}
           onFilterChange={handleFilterChange}
           rowKey='rowId'
           rowActions={filterByAccess(rowActions)}

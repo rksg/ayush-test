@@ -6,7 +6,10 @@ import { Router }              from 'react-router-dom'
 
 import {
   ApRadioTypeEnum,
-  channelBandwidth24GOptions
+  SupportRadioChannelsContext,
+  channelBandwidth24GOptions,
+  channelBandwidth5GOptions,
+  channelBandwidth6GOptions
 } from '@acx-ui/rc/components'
 import {
   AFCStatus,
@@ -31,6 +34,22 @@ jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   SingleRadioSettings: () => <div data-testid='SingleRadioSettings' />
 }))
+
+const bandwidthRadioOptions = {
+  [ApRadioTypeEnum.Radio24G]: channelBandwidth24GOptions,
+  [ApRadioTypeEnum.Radio5G]: channelBandwidth5GOptions,
+  [ApRadioTypeEnum.Radio6G]: channelBandwidth6GOptions,
+  [ApRadioTypeEnum.RadioLower5G]: channelBandwidth5GOptions,
+  [ApRadioTypeEnum.RadioUpper5G]: channelBandwidth5GOptions
+}
+
+const supportRadioChannels = {
+  [ApRadioTypeEnum.Radio24G]: validRadioChannels['2.4GChannels'],
+  [ApRadioTypeEnum.Radio5G]: validRadioChannels['5GChannels'],
+  [ApRadioTypeEnum.Radio6G]: validRadioChannels['6GChannels'],
+  [ApRadioTypeEnum.RadioLower5G]: validRadioChannels['5GLowerChannels'],
+  [ApRadioTypeEnum.RadioUpper5G]: validRadioChannels['5GUpperChannels']
+}
 
 describe('ApSingleRadioSettings', ()=> {
   const useStateSpy = jest.spyOn(React, 'useState')
@@ -60,18 +79,21 @@ describe('ApSingleRadioSettings', ()=> {
         apCapabilities: r760Cap
       }}>
         <Form>
-          <ApSingleRadioSettings
-            isUseVenueSettings={false}
-            isEnabled={true}
-            radioTypeName={'2.4 GHz'}
-            useVenueSettingsFieldName={['apRadioParams24G', 'useVenueSettings']}
-            enabledFieldName={['enable24G']}
-            onEnableChanged={jest.fn()}
-            radioType={ApRadioTypeEnum.Radio24G}
-            supportChannels={validRadioChannels['2.4GChannels']}
-            bandwidthOptions={channelBandwidth24GOptions}
-            handleChanged={jest.fn()}
-          />
+          <SupportRadioChannelsContext.Provider value={{
+            bandwidthRadioOptions,
+            supportRadioChannels
+          }}>
+            <ApSingleRadioSettings
+              isUseVenueSettings={false}
+              isEnabled={true}
+              radioTypeName={'2.4 GHz'}
+              useVenueSettingsFieldName={['apRadioParams24G', 'useVenueSettings']}
+              enabledFieldName={['enable24G']}
+              onEnableChanged={jest.fn()}
+              radioType={ApRadioTypeEnum.Radio24G}
+              handleChanged={jest.fn()}
+            />
+          </SupportRadioChannelsContext.Provider>
         </Form>
       </ApDataContext.Provider>
     </ApEditContext.Provider>

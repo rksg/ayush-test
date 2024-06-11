@@ -1,4 +1,4 @@
-import { Venue, VenueDetail } from '..'
+import { MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -223,4 +223,10 @@ export type SchedulingModalState = {
   networkVenue?: NetworkVenue,
   venue?: Venue | VenueDetail
   network?: Network
+}
+
+export interface NetworkRadiusSettings {
+  enableAccountingProxy?: boolean
+  enableAuthProxy?: boolean
+  macAuthMacFormat?: MacAuthMacFormatEnum
 }

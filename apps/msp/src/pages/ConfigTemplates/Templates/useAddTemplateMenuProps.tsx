@@ -19,10 +19,10 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import * as UI                        from './styledComponents'
+import { getConfigTemplateTypeLabel } from './templateUtils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
-  const { $t } = useIntl()
   const visibilityMap = useConfigTemplateVisibilityMap()
   const wifiMenuItems = useWiFiMenuItems()
   const policyMenuItems = usePolicyMenuItems()
@@ -33,7 +33,7 @@ export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
     (visibilityMap[ConfigTemplateType.VENUE] ? {
       key: 'add-venue',
       label: <ConfigTemplateLink to='venues/add'>
-        {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+        {getConfigTemplateTypeLabel(ConfigTemplateType.VENUE)}
       </ConfigTemplateLink>
     } : null),
     switchMenuItems,
@@ -129,13 +129,13 @@ export function useSwitchMenuItems (): ItemType | null {
       (visibilityMap[ConfigTemplateType.SWITCH_REGULAR] ? {
         key: 'add-switch-regular-profile',
         label: <ConfigTemplateLink to='networks/wired/profiles/add'>
-          {$t({ defaultMessage: 'Regular Profile' })}
+          {getConfigTemplateTypeLabel(ConfigTemplateType.SWITCH_REGULAR)}
         </ConfigTemplateLink>
       } : null),
       (visibilityMap[ConfigTemplateType.SWITCH_CLI] ? {
         key: 'add-switch-cli-profile',
         label: <ConfigTemplateLink to='networks/wired/profiles/cli/add'>
-          {$t({ defaultMessage: 'CLI Profile' })}
+          {getConfigTemplateTypeLabel(ConfigTemplateType.SWITCH_CLI)}
         </ConfigTemplateLink>
       } : null)
     ]
@@ -156,13 +156,13 @@ export function useWiFiMenuItems (): ItemType | null {
       (visibilityMap[ConfigTemplateType.NETWORK] ? {
         key: 'add-wifi-network',
         label: <ConfigTemplateLink to='networks/wireless/add'>
-          {$t({ defaultMessage: 'Wi-Fi Network' })}
+          {getConfigTemplateTypeLabel(ConfigTemplateType.NETWORK)}
         </ConfigTemplateLink>
       } : null),
       (visibilityMap[ConfigTemplateType.AP_GROUP] ? {
         key: 'add-ap-group',
         label: <ConfigTemplateLink to='devices/apgroups/add'>
-          {$t({ defaultMessage: 'Ap Group' })}
+          {getConfigTemplateTypeLabel(ConfigTemplateType.AP_GROUP)}
         </ConfigTemplateLink>
       } : null)
     ]

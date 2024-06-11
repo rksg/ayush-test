@@ -13,9 +13,8 @@ import {
   Space,
   Spin
 } from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Modal,
@@ -93,8 +92,10 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
-  const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<DefaultOptionType[]>()
+
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
+
   const [form] = Form.useForm()
 
   const open = !!props.visible
@@ -173,7 +174,9 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
 
   useEffect(() => {
     if (instanceListResult) {
-      setVlanPoolSelectOptions(instanceListResult.data.map(m => ({ label: m.name, value: m.id })))
+      setVlanPoolSelectOptions(instanceListResult.data.map(m => {
+        return { name: m.name, id: m.id } as VlanPool
+      }) as VlanPool[])
     }
   },[instanceListResult])
 
