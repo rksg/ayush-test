@@ -172,6 +172,7 @@ export const kpiConfig = {
   switchDhcp: {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchDHCPSuccessAndAttemptCount',
       minGranularity: 'PT5M'
@@ -677,6 +678,22 @@ export const kpiConfig = {
       thresholdFormatter: noFormat,
       tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
     }
+  },
+  switchAuthentication: {
+    text: defineMessage({ defaultMessage: 'Authentication' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchAuthCountAndAttemptCount',
+      minGranularity: 'PT5M'
+    },
+    barChart: createBarChartConfig('switchAuthCountAndAttemptCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} of auth succeeded' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Metric of authentication events amongst success and failed categories.' })
+    }
   }
 }
 export const kpisForTab = (isMLISA? : string) => {
@@ -730,7 +747,7 @@ export const wiredKPIsForTab = () => {
     },
     connection: {
       kpis: [
-        // 'authentication',
+        'switchAuthentication',
         'switchDhcp'
       ]
     },
