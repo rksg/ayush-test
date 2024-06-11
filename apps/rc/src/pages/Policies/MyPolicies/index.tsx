@@ -172,7 +172,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SYSLOG,
       categories: [RadioCardCategory.WIFI],
       totalCount: useSyslogPolicyListQuery({
-        params, payload: { }
+        params, payload: { }, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }))

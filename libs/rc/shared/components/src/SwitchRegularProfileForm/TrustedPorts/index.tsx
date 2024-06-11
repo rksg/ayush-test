@@ -54,16 +54,15 @@ export const generateTrustedPortsModels = (profile: Partial<SwitchConfigurationP
         }
       })
     })
+  }
 
-    if(profile.trustedPorts){
-      const filterTrustedPortModels = models
-        .filter(item => profile.trustedPorts && !profile.trustedPorts.map(
-          tpItem => tpItem.model).includes(item.model)) || []
-
-      mergedTrustPorts = [...profile.trustedPorts, ...filterTrustedPortModels]
-    } else {
-      mergedTrustPorts = models
-    }
+  if(profile.trustedPorts){
+    const filterTrustedPortModels = models
+      .filter(item => profile.trustedPorts && !profile.trustedPorts.map(
+        tpItem => tpItem.model).includes(item.model)) || []
+    mergedTrustPorts = [...profile.trustedPorts, ...filterTrustedPortModels]
+  } else {
+    mergedTrustPorts = models
   }
   return mergedTrustPorts
 }
@@ -191,7 +190,8 @@ export function TrustedPorts () {
               onChange: (keys: React.Key[]) => {
                 const selected = ruleList?.find((i: { model: string }) => i.model === keys[0])
                 const notDeletable = currentData.vlans?.some(v => {
-                  return v.switchFamilyModels?.some(sf => sf.model === selected?.model)
+                  return (v.ipv4DhcpSnooping || v.arpInspection) &&
+                    v.switchFamilyModels?.some(sf => sf.model === selected?.model)
                 })
                 setSelected(selected)
                 setNotDeletable(notDeletable)

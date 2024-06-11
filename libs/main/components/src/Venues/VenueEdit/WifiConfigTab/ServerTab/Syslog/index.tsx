@@ -5,6 +5,7 @@ import { isEqual }                                         from 'lodash'
 import { useIntl }                                         from 'react-intl'
 
 import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
 import {
   useGetSyslogPolicyTemplateListQuery,
@@ -57,6 +58,7 @@ export function Syslog () {
     setEditServerContextData
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const {
     data: syslogPolicyList,
@@ -64,7 +66,8 @@ export function Syslog () {
   } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
     useQueryFn: useSyslogPolicyListQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
-    payload: { page: 1, pageSize: 10000 }
+    payload: { page: 1, pageSize: 10000 },
+    enableRbac
   })
 
   const {
@@ -72,7 +75,8 @@ export function Syslog () {
     isLoading: isVenueSyslogSettingsLoading
   } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>({
     useQueryFn: useGetVenueSyslogApQuery,
-    useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery
+    useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery,
+    enableRbac
   })
 
   const [
@@ -151,7 +155,8 @@ export function Syslog () {
       if (payload) {
         await updateVenueSyslog({
           params: { venueId },
-          payload
+          payload,
+          enableRbac
         }).unwrap()
       }
     } catch (error) {

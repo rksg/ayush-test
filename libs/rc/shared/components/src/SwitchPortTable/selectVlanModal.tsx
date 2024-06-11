@@ -275,6 +275,14 @@ export function SelectVlanModal (props: {
     }
   }
 
+  const getVlanList = () => {
+    const vlans = isSwitchLevelVlanEnabled ? props.switchVlans : props.venueVlans
+    return [
+      ...vlans,
+      ...(defaultVlan ? [{ vlanId: Number(defaultVlan) }] : [])
+    ] as Vlan[]
+  }
+
   return <>
     <Modal
       data-testid='select-port-vlans'
@@ -411,10 +419,7 @@ export function SelectVlanModal (props: {
       switchFamilyModel={switchFamilyModel}
       enablePortModelConfigure={false}
       setVlan={applyVlan}
-      vlansList={(isSwitchLevelVlanEnabled
-        ? props.switchVlans
-        : props.venueVlans
-      ) as unknown as Vlan[]}
+      vlansList={getVlanList()}
     />}
 
   </>

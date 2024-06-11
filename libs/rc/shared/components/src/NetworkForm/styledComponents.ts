@@ -8,7 +8,8 @@ import {
   ConfigurationSolid as UIConfigurationSolid,
   SMSToken as UISMSToken, Google as UIGoogle,
   Facebook as UIFacebook, Twitter as UITwitter,
-  LinkedIn as UILinkedIn, InformationSolid
+  LinkedIn as UILinkedIn, InformationSolid,
+  EnvelopClosedSolid as UIEmailOTP
 } from '@acx-ui/icons'
 export const Diagram = styled.div`
   width: 358px;
@@ -64,6 +65,11 @@ const socialIconStyle=css`
 export const SMSToken = styled(UISMSToken)`
   ${socialIconStyle}
 `
+
+export const EMailOTP = styled(UIEmailOTP)`
+  ${socialIconStyle}
+`
+
 export const Google = styled(UIGoogle)`
 width: 16px;
 height: 16px;
