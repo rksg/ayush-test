@@ -66,6 +66,7 @@ export function FloorPlan () {
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
   const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const defaultDevices = {
     ap: [],
@@ -187,7 +188,7 @@ export function FloorPlan () {
     { isLoading: isUpdateCloudpathServerPosition }
   ] = useUpdateCloudpathServerPositionMutation()
 
-  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
+  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params, enableRbac })
 
   const galleryViewHandler = () => {
     setShowGalleryView(true)

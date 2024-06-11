@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   DpskUrls,
   websocketServerUrl,
@@ -20,7 +20,7 @@ import {
   waitFor
 } from '@acx-ui/test-utils'
 
-import{
+import {
   createPath,
   editPath,
   mockedCreateFormData,
@@ -211,5 +211,104 @@ describe('DpskForm', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
     expect(mockedModalCallBack).toHaveBeenCalled()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should create a DPSK service profile with an update request to policySetId with RBAC enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.CLOUDPATH_BETA)
+    const updateFn = jest.fn()
+
+    mockServer.use(
+      rest.put(
+        DpskUrls.updateDpskPolicySet.url,
+        (req, res, ctx) => res(
+          updateFn(),
+          ctx.json({ requestId: '12345' })
+        )
+      ),
+      rest.post(
+        DpskUrls.addDpsk.url,
+        (req, res, ctx) => res(ctx.json({ id: '12345', requestId: '12345' }))
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskForm />
+      </Provider>, {
+        route: { params: { tenantId: mockedTenantId }, path: createPath }
+      }
+    )
+
+    // Set Service Name
+    await userEvent.type(
+      await screen.findByRole('textbox', { name: /Service Name/i }),
+      'FakeDPSK'
+    )
+
+    await userEvent.click(screen.getByRole('combobox', { name: /Adaptive Policy Set/i }))
+
+    // wait for the policy set list to be loaded
+    await userEvent.click(await screen.findByText(policySetList.content[0].name))
+
+    await userEvent.click(screen.getAllByRole('button', { name: 'Add' })[1])
+    await waitFor(() => expect(updateFn).toBeCalled())
+  })
+
+  it('should invoke policySet API when editing the DPSK profile with RBAC enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    jest.mocked(useIsTierAllowed).mockImplementation(ff => ff === Features.CLOUDPATH_BETA)
+    const getFn = jest.fn()
+    const updateFn = jest.fn()
+    const getPolicySetsFn = jest.fn()
+
+    mockServer.use(
+      rest.get(
+        DpskUrls.getDpsk.url,
+        (req, res, ctx) => res(
+          getFn(),
+          ctx.json({ ...mockedEditFormData }))
+      ),
+      rest.put(
+        DpskUrls.updateDpsk.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '12345' }))
+      ),
+      rest.get(
+        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+        (req, res, ctx) => res(
+          getPolicySetsFn(),
+          ctx.json(policySetList)
+        )
+      ),
+      rest.put(
+        DpskUrls.updateDpskPolicySet.url,
+        (req, res, ctx) => res(
+          updateFn(),
+          ctx.json({ requestId: '12345' })
+        )
+      )
+    )
+
+    render(
+      <Provider>
+        <DpskForm editMode={true}/>
+      </Provider>, {
+        route: {
+          params: { tenantId: mockedTenantId, serviceId: mockedServiceId },
+          path: editPath
+        }
+      }
+    )
+
+    await waitFor(() => expect(getPolicySetsFn).toBeCalled())
+
+    await userEvent.click(screen.getByRole('combobox', { name: /Adaptive Policy Set/i }))
+    await userEvent.click(await screen.findByText(policySetList.content[0].name))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Finish' }))
+
+    await waitFor(() => expect(getFn).toBeCalled())
+    await waitFor(() => expect(updateFn).toBeCalled())
   })
 })
