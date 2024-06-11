@@ -7,7 +7,6 @@ import { useIntl }         from 'react-intl'
 import { useLocation }     from 'react-router-dom'
 
 import { Conversation, FulfillmentMessage, Content } from '@acx-ui/components'
-import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggle'
 import { MelissaHeaderIcon, MelissaIcon }            from '@acx-ui/icons'
 
 import { AskMelissaBody, queryAskMelissa, uploadFile } from './services'
@@ -44,7 +43,6 @@ const initialState:MelissaBotState = {
 export function MelissaBot (){
   const { $t } = useIntl()
   const GENERIC_ERROR_MSG= $t({ defaultMessage: 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.' })
-  const isMelissaBotEnabled = useIsSplitOn(Features.RUCKUS_AI_CHATBOT_TOGGLE)
   const { pathname, search } = useLocation()
   const inputRef = useRef<InputRef>(null)
   const isSummaryLatest = useRef(false)
@@ -124,7 +122,7 @@ export function MelissaBot (){
   const betaSuperScriptText = 'ᴮᴱᵀᴬ'
   const title = <><Title>{BOT_NAME}</Title><SubTitle>{subTitleText} {betaSuperScriptText}</SubTitle></>
   const askMelissa = (body:AskMelissaBody) => {
-    isMelissaBotEnabled && queryAskMelissa(body).then(async (json)=>{
+    queryAskMelissa(body).then(async (json)=>{
       isSummaryLatest.current = false
       setState({ ...state,
         responseCount: state.responseCount+1,
@@ -238,7 +236,7 @@ export function MelissaBot (){
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
-  return (isMelissaBotEnabled ? <>{state.showFloatingButton && <MelissaIcon
+  return (<>{state.showFloatingButton && <MelissaIcon
     onClick={showDrawer}
     style={{
       width: '56px',
@@ -294,5 +292,5 @@ export function MelissaBot (){
       listCallback={askMelissa}
       style={{ height: 410, width: 350, whiteSpace: 'pre-line' }} />
   </MelissaDrawer></>
-    : <div/>)
+  )
 }
