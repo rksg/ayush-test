@@ -841,21 +841,37 @@ function PolicyRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
-        element={<ClientIsolationForm editMode={false}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <ClientIsolationForm editMode={false}/>
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.EDIT })}
-        element={<ClientIsolationForm editMode={true}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <ClientIsolationForm editMode={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })}
-        element={<ClientIsolationTable />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <ClientIsolationTable />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.DETAIL })}
-        element={<ClientIsolationDetail />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <ClientIsolationDetail />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })}
