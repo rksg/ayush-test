@@ -808,19 +808,35 @@ function PolicyRoutes () {
         /> </> : <></> }
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
-        element={<VLANPoolForm edit={false}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <VLANPoolForm edit={false}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.EDIT })}
-        element={<VLANPoolForm edit={true}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <VLANPoolForm edit={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.DETAIL })}
-        element={<VLANPoolDetail/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <VLANPoolDetail/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })}
-        element={<VLANPoolTable />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <VLANPoolTable/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}

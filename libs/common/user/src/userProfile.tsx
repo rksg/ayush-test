@@ -55,7 +55,8 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.abacEnabled = true
   userProfile.isCustomRole = true
   // userProfile.scopes = [WifiScopes.READ, WifiScopes.UPDATE]
-  userProfile.scopes = [EdgeScopes.READ, EdgeScopes.UPDATE, SwitchScopes.READ, SwitchScopes.UPDATE]
+  // eslint-disable-next-line max-len
+  userProfile.scopes = [EdgeScopes.READ, EdgeScopes.UPDATE, SwitchScopes.READ, SwitchScopes.UPDATE, WifiScopes.READ, WifiScopes.UPDATE]
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
