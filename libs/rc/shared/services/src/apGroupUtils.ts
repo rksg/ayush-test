@@ -55,7 +55,7 @@ export const aggregateApGroupNetworkInfo = (
 ) => {
   apGroupList.data.forEach(apGroupItem => {
     const groupItem = rbacApGroupList.data.find(item => item.id === apGroupItem.id)
-    apGroupItem.members = {
+    apGroupItem.networks = {
       count: groupItem?.wifiNetworkIds?.length ?? 0,
       names: groupItem?.wifiNetworkIds?.map((id) => {
         return networks.data?.find(n => n.id === id)?.name
@@ -71,7 +71,7 @@ export const aggregateApGroupApInfo = (
 ) => {
   apGroupList.data.forEach(apGroupItem => {
     const groupItem = rbacApGroupList.data.find(item => item.id === apGroupItem.id)
-    apGroupItem.networks = {
+    apGroupItem.members = {
       count: groupItem?.apSerialNumbers?.length ?? 0,
       names: groupItem?.apSerialNumbers?.map((apSerialNumber) => {
         return apList.data
