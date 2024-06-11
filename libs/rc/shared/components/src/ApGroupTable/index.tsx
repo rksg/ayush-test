@@ -145,9 +145,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
     })
   }
 
-  const columns = getTableColumns(intl, props, params?.venueId)
-
-
+  const columns = getTableColumns(intl, props, params?.venueId, isWifiRbacEnabled)
 
   const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
@@ -201,7 +199,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
 }
 
 // eslint-disable-next-line max-len
-const getTableColumns = (intl: IntlShape, props : ApGroupTableProps<ApGroupViewModel>, venueId: string | undefined) => {
+const getTableColumns = (intl: IntlShape, props : ApGroupTableProps<ApGroupViewModel>, venueId: string | undefined, isWifiRbacEnabled: boolean) => {
   const { $t } = intl
   const { searchable, filterables } = props
 
@@ -313,8 +311,8 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableProps<ApGroupViewM
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
-      sorter: true,
-      defaultSortOrder: 'ascend',
+      sorter: !isWifiRbacEnabled,
+      defaultSortOrder: isWifiRbacEnabled ? undefined : 'ascend',
       render: (_: React.ReactNode, row: ApGroupViewModel) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}

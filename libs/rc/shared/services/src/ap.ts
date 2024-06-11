@@ -74,8 +74,8 @@ import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { aggregateApGroupApInfo, aggregateApGroupNetworkInfo, aggregateApGroupVenueInfo, getApGroupNewFieldFromOld, getNewApGroupViewmodelFieldsFromOld, transformApGroupFromNewType } from './apGroupUtils'
-import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel }                                                                                 from './apUtils'
+import { aggregateApGroupApInfo, aggregateApGroupNetworkInfo, aggregateApGroupVenueInfo, getApGroupNewFieldFromOld, getNewApGroupViewmodelPayloadFromOld, transformApGroupFromNewType } from './apGroupUtils'
+import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel }                                                                                  from './apUtils'
 
 
 export type ApsExportPayload = {
@@ -212,9 +212,7 @@ export const apApi = baseApApi.injectEndpoints({
 
         let apGroups: TableResult<ApGroupViewModel>
         if (enableRbac) {
-          const newPayload = _.cloneDeep(payload) as Record<string, unknown>
-          newPayload.fields = getNewApGroupViewmodelFieldsFromOld((payload as Record<string, unknown>).fields as string[])
-
+          const newPayload = getNewApGroupViewmodelPayloadFromOld(payload as Record<string, unknown>)
           const apGroupListQuery = await fetchWithBQ({
             ...apGroupListReq,
             body: JSON.stringify(newPayload)

@@ -360,12 +360,20 @@ export function ApForm () {
       const { data: apGroupOptions } = await rbacApGroupList({
         payload: {
           ...defaultApGroupsFilterOptsPayload,
-          filters: { isDefault: [false], venueId: [venueId] }
+          fields: ['name', 'id', 'isDefault'],
+          filters: { venueId: [venueId] }
         },
         enableRbac: isUseWifiRbacApi
       }).unwrap()
 
-      result = apGroupOptions.map((v) => ({ label: v.name, value: v.id })) || []
+      result = result.concat(apGroupOptions.filter(item => {
+        // set default group id
+        if (item.isDefault)
+          result[0].value = item.id
+
+        return !item.isDefault
+      }).map((v) => ({ label: v.name, value: v.id })) || [])
+
     } else {
       const list = venueId ? (await apGroupList({ params: { tenantId, venueId } })).data : []
       if (venueId && list?.length) {

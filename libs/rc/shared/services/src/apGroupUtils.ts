@@ -1,4 +1,5 @@
 import { omit } from 'lodash'
+import _        from 'lodash'
 
 import {
   ApGroup,
@@ -25,9 +26,16 @@ export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
   }
 }
 
-export const getNewApGroupViewmodelFieldsFromOld = (oldFields?: string[]) => {
-  return oldFields?.map(field => getApGroupNewFieldFromOld(field))
+export const getNewApGroupViewmodelPayloadFromOld = (payload: Record<string, unknown>) => {
+  const newPayload = _.cloneDeep(payload) as Record<string, unknown>
+
+  // eslint-disable-next-line max-len
+  newPayload.fields = (newPayload.fields as string[])?.map(field => getApGroupNewFieldFromOld(field))
+  newPayload.sortField = getApGroupNewFieldFromOld(payload.sortField as string)
+
+  return newPayload
 }
+
 
 export const transformApGroupFromNewType = (newApGroup: NewGetApGroupResponseType,
   apsList: TableResult<NewAPModel>)=> {
