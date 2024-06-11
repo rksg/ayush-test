@@ -1,5 +1,5 @@
 import { Form, Radio, Typography } from 'antd'
-import { defineMessage, useIntl }  from 'react-intl'
+import { useIntl }                 from 'react-intl'
 
 import {
   GridCol,
@@ -14,10 +14,11 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   ServiceOperation,
-  radioCategoryToScopeKey
+  ServicePolicyCardData,
+  isServicePolicyCardVisible,
+  isServicePolicyCardSetVisible
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { hasScope }                         from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -50,9 +51,9 @@ export default function SelectServiceForm () {
     })
   }
 
-  const sets = [
+  const sets: { title: string, items: ServicePolicyCardData<ServiceType>[] }[] = [
     {
-      title: defineMessage({ defaultMessage: 'Connectivity' }),
+      title: $t({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
         {
@@ -74,7 +75,7 @@ export default function SelectServiceForm () {
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'Security' }),
+      title: $t({ defaultMessage: 'Security' }),
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
@@ -83,14 +84,14 @@ export default function SelectServiceForm () {
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'Application' }),
+      title: $t({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },
     {
-      title: defineMessage({ defaultMessage: 'Guests & Residents' }),
+      title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
         {
@@ -129,27 +130,24 @@ export default function SelectServiceForm () {
             rules={[{ required: true }]}
           >
             <Radio.Group style={{ width: '100%' }}>
-              {sets.map(set => {
-                const isAllDisabled = set.items.every(item => item.disabled)
-                const scopeKeys = radioCategoryToScopeKey(set.items.map(s => s.categories).flat())
-
-                return !isAllDisabled && hasScope(scopeKeys) &&
-                <UI.CategoryContainer key={$t(set.title)}>
+              {sets.filter(set => isServicePolicyCardSetVisible(set, 'create')).map(set => {
+                return <UI.CategoryContainer key={set.title}>
                   <Typography.Title level={3}>
-                    { $t(set.title) }
+                    { set.title }
                   </Typography.Title>
                   <GridRow>
-                    {// eslint-disable-next-line max-len
-                      set.items.map(item => item.disabled || !hasScope(radioCategoryToScopeKey(item.categories))
-                        ? null
-                        : <GridCol key={item.type} col={{ span: 6 }}>
+                    {
+                      // eslint-disable-next-line max-len
+                      set.items.filter(item => isServicePolicyCardVisible(item, 'create')).map(item => {
+                        return <GridCol key={item.type} col={{ span: 6 }}>
                           <ServiceCard
                             key={item.type}
                             serviceType={item.type}
                             categories={item.categories}
                             type={'radio'}
                           />
-                        </GridCol>)
+                        </GridCol>
+                      })
                     }
                   </GridRow>
                 </UI.CategoryContainer>

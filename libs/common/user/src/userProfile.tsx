@@ -8,6 +8,7 @@ import {
   EdgeScopes,
   RolesEnum as Role,
   ScopeKeys,
+  SwitchScopes,
   WifiScopes
 } from '@acx-ui/types'
 
@@ -53,7 +54,8 @@ export const setUserProfile = (profile: Profile) => {
   // userProfile.scopes = profile?.scopes
   userProfile.abacEnabled = true
   userProfile.isCustomRole = true
-  userProfile.scopes = [WifiScopes.READ, EdgeScopes.CREATE]
+  // userProfile.scopes = [WifiScopes.READ, WifiScopes.UPDATE]
+  userProfile.scopes = [EdgeScopes.READ, EdgeScopes.UPDATE, SwitchScopes.READ, SwitchScopes.UPDATE]
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {

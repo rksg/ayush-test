@@ -30,8 +30,8 @@ export function ServiceCard (props: ServiceCardProps) {
   const isReadOnly = !hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
 
   const isAddButtonAllowed = () => {
-    const scopeKeys = radioCategoryToScopeKey(categories)
-    return cardType === 'button' && !isReadOnly && hasScope(scopeKeys)
+    const createScopeKeys = radioCategoryToScopeKey(categories, 'create')
+    return cardType === 'button' && !isReadOnly && hasScope(createScopeKeys)
   }
 
   const formatServiceName = () => {

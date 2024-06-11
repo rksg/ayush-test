@@ -17,7 +17,9 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
+  isServicePolicyCardVisible,
   radioCategoryToScopeKey,
+  ServicePolicyCardData,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
@@ -45,97 +47,101 @@ export default function MyServices () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const services = [
+  const services: ServicePolicyCardData<ServiceType>[] = [
     {
       type: ServiceType.MDNS_PROXY,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetEnhancedMdnsProxyListQuery({ params, payload: defaultPayload })
+      totalCount: useGetEnhancedMdnsProxyListQuery({
+        params, payload: defaultPayload
+      }).data?.totalCount
     },
     {
       type: ServiceType.DHCP,
       categories: [RadioCardCategory.WIFI],
-      // eslint-disable-next-line max-len
-      tableQuery: useGetDHCPProfileListViewModelQuery({ params, payload: defaultPayload, enableRbac: isEnabledRbacService })
+      totalCount: useGetDHCPProfileListViewModelQuery({
+        params, payload: defaultPayload, enableRbac: isEnabledRbacService
+      }).data?.totalCount
     },
     {
       type: ServiceType.EDGE_DHCP,
       categories: [RadioCardCategory.EDGE],
-      tableQuery: useGetDhcpStatsQuery({
+      totalCount: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
         skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
-      }),
+      }).data?.totalCount,
       disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
     },
     {
       type: ServiceType.NETWORK_SEGMENTATION,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-      tableQuery: useGetNetworkSegmentationViewDataListQuery({
+      totalCount: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
         skip: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
-      }),
+      }).data?.totalCount,
       disabled: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
     },
     {
       type: ServiceType.EDGE_SD_LAN,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-      tableQuery: useGetEdgeSdLanP2ViewDataListQuery({
+      totalCount: useGetEdgeSdLanP2ViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
         skip: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
-      }),
+      }).data?.totalCount,
       disabled: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
     },
     {
       type: ServiceType.EDGE_FIREWALL,
       categories: [RadioCardCategory.EDGE],
-      tableQuery: useGetEdgeFirewallViewDataListQuery({
+      totalCount: useGetEdgeFirewallViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
         skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
-      }),
+      }).data?.totalCount,
       disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
     },
     {
       type: ServiceType.DPSK,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetDpskListQuery({})
+      totalCount: useGetDpskListQuery({}).data?.totalCount
     },
     {
       type: ServiceType.WIFI_CALLING,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetEnhancedWifiCallingServiceListQuery({
+      totalCount: useGetEnhancedWifiCallingServiceListQuery({
         params, payload: defaultPayload
-      })
+      }).data?.totalCount
     },
     {
       type: ServiceType.PORTAL,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetEnhancedPortalProfileListQuery({
-        params, payload: { filters: {} }, enableRbac: isEnabledRbacService })
+      totalCount: useGetEnhancedPortalProfileListQuery({
+        params, payload: { filters: {} }, enableRbac: isEnabledRbacService
+      }).data?.totalCount
     },
     {
       type: ServiceType.WEBAUTH_SWITCH,
       categories: [RadioCardCategory.SWITCH],
-      tableQuery: useWebAuthTemplateListQuery({
+      totalCount: useWebAuthTemplateListQuery({
         params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
       }, {
         skip: !isEdgeEnabled || !networkSegmentationSwitchEnabled
-      }),
+      }).data?.totalCount,
       disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled
     },
     {
       type: ServiceType.RESIDENT_PORTAL,
       categories: [RadioCardCategory.WIFI],
-      tableQuery: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
+      totalCount: useGetResidentPortalListQuery({ params, payload: { filters: {} } }, {
         skip: !propertyManagementEnabled
-      }),
+      }).data?.totalCount,
       disabled: !propertyManagementEnabled
     }
   ]
 
-  const scopeKeys = radioCategoryToScopeKey(services.map(s => s.categories).flat())
+  const createScopeKeys = radioCategoryToScopeKey(services.map(s => s.categories).flat(), 'create')
 
   return (
     <>
@@ -143,21 +149,20 @@ export default function MyServices () {
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
-          <TenantLink to={getSelectServiceRoutePath(true)} scopeKey={scopeKeys}>
+          <TenantLink to={getSelectServiceRoutePath(true)} scopeKey={createScopeKeys}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
         ])}
       />
       <GridRow>
-        {services.map(service => {
+        {services.filter(s => isServicePolicyCardVisible(s)).map(service => {
           return (
-            !service.disabled &&
             <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
                 key={service.type}
                 serviceType={service.type}
                 categories={service.categories}
-                count={service.tableQuery.data?.totalCount}
+                count={service.totalCount}
                 type={'default'}
               />
             </GridCol>

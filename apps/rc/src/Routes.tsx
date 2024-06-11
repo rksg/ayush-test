@@ -727,19 +727,35 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
-        element={<AAAForm edit={false}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <AAAForm edit={false}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.EDIT })}
-        element={<AAAForm edit={true}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <AAAForm edit={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.DETAIL })}
-        element={<AAAPolicyDetail/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AAAPolicyDetail/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST })}
-        element={<AAATable />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AAATable />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
