@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { MspUrlsInfo }            from '@acx-ui/msp/utils'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }               from '@acx-ui/store'
 import {
@@ -35,6 +34,8 @@ jest.mock('./AdministratorsTable', () => ({
     return <div data-testid='mocked-AdministratorsTable'></div>
   }
 }))
+const services = require('@acx-ui/msp/services')
+
 describe('Administrators', () => {
   let params: { tenantId: string }
 
@@ -45,14 +46,14 @@ describe('Administrators', () => {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
 
+    services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeMspEcProfile }
+    })
+
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getTenantDetails.url,
         (req, res, ctx) => res(ctx.json(fakeTenantDetails))
-      ),
-      rest.get(
-        MspUrlsInfo.getMspEcProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
       ),
       rest.get(
         AdministrationUrlsInfo.getTenantAuthentications.url,
