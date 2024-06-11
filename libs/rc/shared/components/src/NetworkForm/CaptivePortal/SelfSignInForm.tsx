@@ -54,6 +54,7 @@ export function SelfSignInForm () {
     allowedDomainsCheckbox,
     socialDomains,
     enableSmsLogin,
+    enableEmailLogin,
     facebook,
     google,
     twitter,
@@ -62,6 +63,7 @@ export function SelfSignInForm () {
     useWatch('allowedDomainsCheckbox'),
     useWatch(['guestPortal', 'socialDomains']),
     useWatch(['guestPortal', 'enableSmsLogin']),
+    useWatch(['guestPortal', 'enableEmailLogin']),
     useWatch(['guestPortal', 'socialIdentities', 'facebook']),
     useWatch(['guestPortal', 'socialIdentities', 'google']),
     useWatch(['guestPortal', 'socialIdentities', 'twitter']),
@@ -90,6 +92,8 @@ export function SelfSignInForm () {
       ' to ensure that your service is not interrupted.'
   })
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
+  const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
+
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
     if (!checked) {
@@ -149,6 +153,9 @@ export function SelfSignInForm () {
       const allowedSignValueTemp = []
       if (data.guestPortal?.enableSmsLogin) {
         allowedSignValueTemp.push('enableSmsLogin')
+      }
+      if (data.guestPortal?.enableEmailLogin) {
+        allowedSignValueTemp.push('enableEmailLogin')
       }
       if (data.guestPortal?.socialIdentities?.facebook) {
         allowedSignValueTemp.push('facebook')
@@ -210,6 +217,27 @@ export function SelfSignInForm () {
                 </Tooltip>
               </>
             </Form.Item>
+            { isEnabledEmailOTP && <Form.Item name={['guestPortal', 'enableEmailLogin']}
+              initialValue={false}
+              style={SelfSignInAppStyle}>
+              <>
+                <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
+                  ['guestPortal', 'enableEmailLogin'])}
+                checked={enableEmailLogin}>
+                  <UI.EMailOTP />
+                  {$t({ defaultMessage: 'Email' })}
+                </UI.Checkbox>
+                <Tooltip title={$t({
+                  defaultMessage: 'Self-service signup ' +
+                  'using one time token sent to an email address'
+                })}
+                placement='bottom'>
+                  <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+                </Tooltip>
+              </>
+            </Form.Item>
+
+            }
             <Form.Item name={['guestPortal', 'socialIdentities', 'facebook']}
               initialValue={false}
               style={SelfSignInAppStyle}>
