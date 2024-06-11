@@ -35,6 +35,7 @@ export const AINotificationDrawer = ({
   const user = getUserProfile()
   const close = () => setShowDrawer(false)
   const apply = useRef(close)
+  const applyR1 = useRef(close)
   const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
 
   const titleNotification = notificationChannelEnabled
@@ -52,6 +53,9 @@ export const AINotificationDrawer = ({
         <Button
           type='primary'
           onClick={() => {
+            if (notificationChannelEnabled) {
+              applyR1.current()
+            }
             apply.current()
             close()
           }}>
@@ -68,7 +72,7 @@ export const AINotificationDrawer = ({
       <Form layout='vertical'>
         {notificationChannelEnabled && <R1NotificationSettings
           tenantId={user.profile.tenantId}
-          apply={apply}
+          apply={applyR1}
         />}
         <NotificationSettings
           tenantId={user.profile.tenantId}

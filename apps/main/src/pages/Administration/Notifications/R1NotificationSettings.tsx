@@ -19,13 +19,11 @@ const labels = {
 const defaultNotification: NotificationPreference = {
   DEVICE_AP_FIRMWARE: true,
   DEVICE_SWITCH_FIRMWARE: true,
-  DEVICE_EDGE_FIRMWARE: false,
+  DEVICE_EDGE_FIRMWARE: true,
   DEVICE_API_CHANGES: true
 }
-const getApplyMsg = (success?: boolean) => {
-  return success
-    ? defineMessage({ defaultMessage: 'Incident notifications updated succesfully.' })
-    : defineMessage({ defaultMessage: 'Update failed, please try again later.' })
+const getApplyErrorMsg = () => {
+  return defineMessage({ defaultMessage: 'Update failed, please try again later.' })
 }
 
 function OptionsList ({ preferences, setState }: {
@@ -74,7 +72,7 @@ export const R1NotificationSettings = ({ tenantId, apply }: {
         return true
       })
       .catch(() => {
-        showToast({ type: 'error', content: $t(getApplyMsg()) })
+        showToast({ type: 'error', content: $t(getApplyErrorMsg()) })
         return false
       })
   }
