@@ -195,6 +195,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
+    // deprecated: use getApGroupsList as replacement
     apGroupListByVenue: build.query<ApGroup[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(CommonUrlsInfo.getApGroupListByVenue, params)
@@ -213,6 +214,7 @@ export const apApi = baseApApi.injectEndpoints({
         if (enableRbac) {
           const newPayload = _.cloneDeep(payload) as Record<string, unknown>
           newPayload.fields = getNewApGroupViewmodelFieldsFromOld((payload as Record<string, unknown>).fields as string[])
+
           const apGroupListQuery = await fetchWithBQ({
             ...apGroupListReq,
             body: JSON.stringify(newPayload)
@@ -403,7 +405,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
-    // no longer supported after v1, use getApGroupsList as replacement
+    // TODO: no longer supported after v1, use getApGroupsList as replacement
     venueDefaultApGroup: build.query<VenueDefaultApGroup[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(WifiUrlsInfo.getVenueDefaultApGroup, params)

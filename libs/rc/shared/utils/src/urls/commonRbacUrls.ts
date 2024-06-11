@@ -11,13 +11,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/network',
     newApi: true
   },
-  */
   getWifiNetworksList: {
     method: 'post',
     url: '/wifiNetworks/query',
     newApi: true
   },
-  /*
   getNetworksDetailHeader: {
     // [New API] Path variable not match
     // method: 'get',
@@ -29,7 +27,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getNetworksVenuesList: {
     method: 'post',
-    url: '/networks/:networkId/venues',
+  url: '/networks/:networkId/venues',
     oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
     newApi: true
   },
@@ -110,6 +108,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
+  // deprecated:  use getApGroupsList as replacement
   getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',

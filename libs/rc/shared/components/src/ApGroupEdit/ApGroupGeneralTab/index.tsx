@@ -104,7 +104,7 @@ export function ApGroupGeneralTab () {
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !isEditMode || !venueId,
+    skip: !isEditMode || (isWifiRbacEnabled && !venueId),
     payload: null,
     extraParams: { tenantId, venueId, apGroupId },
     enableRbac: isWifiRbacEnabled

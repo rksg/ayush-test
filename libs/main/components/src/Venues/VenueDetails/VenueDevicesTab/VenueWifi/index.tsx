@@ -265,19 +265,6 @@ export function VenueWifi () {
     })
 
   const apgroupFilterOptions = useApGroupsFilterOpts({ isDefault: [false], venueId: [params.venueId] })
-  // const { apgroupFilterOptions } = useApGroupsListQuery({
-  //   params: { tenantId: params.tenantId }, payload: {
-  //     fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-  //     pageSize: 10000,
-  //     sortField: 'name',
-  //     sortOrder: 'ASC',
-  //     filters: { isDefault: [false], venueId: [params.venueId] }
-  //   }
-  // }, {
-  //   selectFromResult: ({ data }) => ({
-  //     apgroupFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
-  //   })
-  // })
 
   useEffect(() => {
     if (venueWifiSetting) {

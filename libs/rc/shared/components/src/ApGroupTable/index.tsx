@@ -62,6 +62,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const filters = getFilters(params) as FILTER
   const { settingsId = 'ap-group-table' } = props
   const { setApGroupsCount } = useContext(ApGroupsTabContext)
+
   const apGroupListTableQuery = usePollingTableQuery({
     useQuery: useApGroupsListQuery,
     defaultPayload: {
@@ -72,7 +73,9 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
       searchTargetFields: defaultNonRbacApGroupPayload.searchTargetFields
     },
     sorter: {
-      sortField: (params.venueId) ? 'name' : defaultNonRbacApGroupPayload.sortField,
+      sortField: (params.venueId || isWifiRbacEnabled)
+        ? 'name'
+        : defaultNonRbacApGroupPayload.sortField,
       sortOrder: defaultNonRbacApGroupPayload.sortOrder
     },
     option: { skip: Boolean(props.tableQuery) },

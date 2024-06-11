@@ -33,7 +33,7 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
   const isEditMode = action === 'edit'
   const [previousPath, setPreviousPath] = useState('')
   const [editContextData, setEditContextData] = useState({} as ApGroupEditContextType)
-  const apInfo = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
+  const apGroupInfo = useConfigTemplateQueryFnSwitcher<TableResult<ApGroupViewModel>>({
     useQueryFn: useApGroupsListQuery,
     useTemplateQueryFn: useGetApGroupsTemplateListQuery,
     payload: {
@@ -53,7 +53,7 @@ export const ApGroupEditContextProvider = (props: React.PropsWithChildren) => {
       isWifiRbacEnabled,
       previousPath, setPreviousPath,
       editContextData, setEditContextData,
-      venueId: apInfo?.data?.data?.[0]?.venueId
+      venueId: apGroupInfo?.data?.data?.[0]?.venueId
     }} >
       {props.children}
     </ApGroupEditContext.Provider>

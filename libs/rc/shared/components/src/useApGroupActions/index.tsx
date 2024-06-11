@@ -1,7 +1,7 @@
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { useApGroupsListQuery }   from '@acx-ui/rc/services'
 
-const defaultApGroupsFilterOptsPayload = {
+export const defaultApGroupsFilterOptsPayload = {
   fields: ['name', 'id'],
   pageSize: 10000,
   sortField: 'name',
