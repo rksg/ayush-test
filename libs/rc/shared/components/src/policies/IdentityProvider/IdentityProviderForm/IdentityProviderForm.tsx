@@ -20,7 +20,8 @@ import {
   PolicyType,
   usePolicyPageHeaderTitle,
   getPolicyRoutePath,
-  usePolicyListBreadcrumb
+  usePolicyListBreadcrumb,
+  CommonResult
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
 
@@ -131,7 +132,13 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
     try {
       const { authRadiusId, accountingRadiusEnabled, accountingRadiusId } = state
       const payload = transformPayload(state)
-      const results = await createIdentityProvider({ params, payload }).unwrap()
+      const results = await createIdentityProvider({
+        params, payload, callback: async (res: CommonResult) => {
+          if (modalMode) {
+            const id = res.response?.id
+            modalCallBack?.(id)
+          }
+        } }).unwrap()
       const response = results.response as { id: string }
       const providerId = response.id
 
@@ -146,7 +153,7 @@ export const IdentityProviderForm = (props: IdentityProviderFormProps) => {
         await activateRadius({ params: accountingParams }).unwrap()
       }
 
-      modalMode? modalCallBack?.(providerId) : navigate(linkToPolicies, { replace: true })
+      !modalMode && navigate(linkToPolicies, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

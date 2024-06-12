@@ -2,11 +2,11 @@ import { List }    from 'antd'
 import { useIntl } from 'react-intl'
 import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { isSwitchPath }                     from '@acx-ui/analytics/utils'
-import { Loader, Card, Tooltip, ColorPill } from '@acx-ui/components'
-import { formatter, intlFormats }           from '@acx-ui/formatter'
-import { TenantLink, useNavigateToPath }    from '@acx-ui/react-router-dom'
-import type { PathFilter }                  from '@acx-ui/utils'
+import { isSwitchPath }                                   from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, ColorPill }               from '@acx-ui/components'
+import { formatter, intlFormats }                         from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath, useSearchParams } from '@acx-ui/react-router-dom'
+import type { PathFilter }                                from '@acx-ui/utils'
 
 import { states }                                   from '../Recommendations/config'
 import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
@@ -30,9 +30,14 @@ function AIDrivenRRMWidget ({
   pathFilters
 }: AIDrivenRRMProps) {
   const { $t } = useIntl()
+  // pass selectedTenants to query to prevent error on account switch
+  const [search] = useSearchParams()
+  const selectedTenants = search.get('selectedTenants')
   const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...pathFilters, n: 12 }, { skip: switchPath })
+  const queryResults = useCrrmListQuery(
+    { ...pathFilters, n: 12, selectedTenants },
+    { skip: switchPath })
   const data = switchPath
     ? {
       crrmCount: 0,
