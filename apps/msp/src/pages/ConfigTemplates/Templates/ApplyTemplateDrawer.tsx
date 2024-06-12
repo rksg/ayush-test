@@ -1,29 +1,14 @@
 import { useState } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Divider, Space } from 'antd'
+import { useIntl }        from 'react-intl'
 
-import {
-  Button,
-  Drawer,
-  GridCol,
-  GridRow,
-  Loader,
-  Table,
-  TableProps
-} from '@acx-ui/components'
-import { useMspCustomerListQuery } from '@acx-ui/msp/services'
-import {
-  MSPUtils,
-  MspEc
-} from '@acx-ui/msp/utils'
-import { useApplyConfigTemplateMutation } from '@acx-ui/rc/services'
-import {
-  ConfigTemplate,
-  ConfigTemplateType,
-  useTableQuery
-} from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { Button, Drawer, Loader, Table, TableProps }         from '@acx-ui/components'
+import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
+import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
+import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
+import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                         from '@acx-ui/user'
 
 import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
 import { ConfigTemplateOverrideModal }                                                    from '../Overrides'
@@ -259,6 +244,7 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
         templateType={selectedTemplate.type}
         overrideValues={props.overrideValues}
       />
+      <Divider />
       <UI.TemplateListContainer>
         <li key={selectedTemplate.name}>- {selectedTemplate.name}</li>
       </UI.TemplateListContainer>
@@ -309,25 +295,17 @@ function AppliedMspEcListView (props: AppliedMspEcListProps) {
   const { targetMspEcs, templateType, overrideValues } = props
   const OverrideDisplayView = overrideDisplayViewMap[templateType]
 
-  // return (View && entity) ? <View entity={entity} /> : null
-
   return <Space direction='vertical'>
     {targetMspEcs.map(mspEc => {
       const overrideEntity = overrideValues?.[mspEc.id]
       const hasOverrideDisplayView = !!OverrideDisplayView && !!overrideEntity
 
-      return <div key={mspEc.id}>
-        <GridRow>
-          <GridCol col={{ span: hasOverrideDisplayView ? 6 : 24 }}>
-            <span style={{ fontWeight: 'bold' }}>{mspEc.name}</span>
-          </GridCol>
-          {hasOverrideDisplayView &&
-            <GridCol col={{ span: 16 }}>
-              <OverrideDisplayView entity={overrideEntity} />
-            </GridCol>
-          }
-        </GridRow>
-      </div>
+      return <Space direction='vertical' key={mspEc.id}>
+        <span style={{ fontWeight: 'bold' }}>{mspEc.name}</span>
+        {hasOverrideDisplayView &&
+          <div style={{ marginLeft: '12px' }}><OverrideDisplayView entity={overrideEntity} /></div>
+        }
+      </Space>
     })}
   </Space>
 }
