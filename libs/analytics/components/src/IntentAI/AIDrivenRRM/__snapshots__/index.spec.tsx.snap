@@ -180,7 +180,12 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                   <span
                     class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
                   >
-                    Intent:Throughput vs Client Density
+                    <span>
+                      Intent:
+                      <b>
+                        Throughput vs Client Density
+                      </b>
+                    </span>
                   </span>
                   <span
                     class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
@@ -190,7 +195,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                   <span
                     class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
                   >
-                    Date:2020-01-01
+                    Date:May 20 2024 14:45
                   </span>
                 </div>
                 <div
@@ -232,7 +237,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                 class="styledComponents__Wrapper-sc-4zzubw-0 gRbsuR"
               >
                 <div
-                  class="styledComponents__SideNote-sc-4zzubw-6 hnAQpJ"
+                  class="styledComponents__SideNote-sc-4zzubw-6 eBBLPk"
                 >
                   <div
                     class="styledComponents__SideNoteHeader-sc-4zzubw-7 gobUNj"
@@ -262,6 +267,24 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                   >
                     Resources:
                   </div>
+                  <span
+                    class="styledComponents__SideNoteContent-sc-4zzubw-9 kmFhts"
+                  >
+                    <a
+                      class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
+                      href="https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi"
+                      target="_blank"
+                    >
+                      RUCKUS AI - AI-Driven RRM Demo
+                    </a>
+                    <a
+                      class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
+                      href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
+                      target="_blank"
+                    >
+                      RUCKUS AI User Guide
+                    </a>
+                  </span>
                 </div>
               </div>
             </div>
