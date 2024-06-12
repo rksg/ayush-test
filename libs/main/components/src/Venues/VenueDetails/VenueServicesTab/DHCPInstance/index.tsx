@@ -8,6 +8,7 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useVenuesLeasesListQuery,
   useGetDHCPProfileQuery,
@@ -33,23 +34,29 @@ const DHCPInstance = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-
-  const { data: leasesList } = useVenuesLeasesListQuery({ params }, { skip: isTemplate })
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data: leasesList } = useVenuesLeasesListQuery(
+    { params, enableRbac }, { skip: isTemplate })
 
   const onlineList = _.filter(leasesList, (item)=>{
     return item.status === DHCPLeasesStatusEnum.ONLINE
   })
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+  // eslint-disable-next-line max-len
+  const { data: venueDHCPProfile, isFetching: isVenueDhcpFetching } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
     useQueryFn: useVenueDHCPProfileQuery,
-    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
+    extraParams: params,
+    enableRbac
   })
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+  // eslint-disable-next-line max-len
+  const { data: dhcpProfile, isFetching: isProfileFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !venueDHCPProfile?.serviceProfileId,
-    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId }
+    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId },
+    enableRbac
   })
 
   const leaseContent = $t({ defaultMessage: 'Lease Table ({count} Online)' },
@@ -65,7 +72,13 @@ const DHCPInstance = () => {
       label: $t({ defaultMessage: 'Pools ({count})' },
         { count: dhcpProfile?.dhcpPools.length || 0 }),
       value: 'pools',
-      children: <GridCol col={{ span: 24 }}><PoolTable /></GridCol>
+      children: <GridCol col={{ span: 24 }}>
+        {venueDHCPProfile && dhcpProfile &&
+          <PoolTable
+            venueDHCPProfile={venueDHCPProfile}
+            dhcpProfile={dhcpProfile}
+            isFetching={isVenueDhcpFetching || isProfileFetching}
+          />}</GridCol>
     },
     {
       label: leaseLabel,

@@ -15,24 +15,6 @@ import { Select, showToast, Loader } from '@acx-ui/components'
 import * as config                   from '@acx-ui/config'
 import { hasRaiPermission }          from '@acx-ui/user'
 
-const labels = {
-  incident: {
-    P1: defineMessage({ defaultMessage: 'P1 Incidents' }),
-    P2: defineMessage({ defaultMessage: 'P2 Incidents' }),
-    P3: defineMessage({ defaultMessage: 'P3 Incidents' }),
-    P4: defineMessage({ defaultMessage: 'P4 Incidents' })
-  },
-  configRecommendation: {
-    crrm: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
-    aiOps: defineMessage({ defaultMessage: 'AI Operations' })
-  },
-  licenses: {
-    '60D': defineMessage({ defaultMessage: 'Licenses expiring in 60 days' }),
-    '30D': defineMessage({ defaultMessage: 'Licenses expiring in 30 days' }),
-    '7D': defineMessage({ defaultMessage: 'Licenses expiring in 7 days' })
-  }
-}
-
 const getApplyMsg = (success?: boolean) => {
   return success
     ? defineMessage({ defaultMessage: 'Incident notifications updated succesfully.' })
@@ -45,6 +27,27 @@ function OptionsList ({ preferences, setState, type }: {
   type: AnalyticsPreferenceType
 }) {
   const { $t } = useIntl()
+  const labels = {
+    incident: {
+      P1: defineMessage({ defaultMessage: 'P1 Incidents' }),
+      P2: defineMessage({ defaultMessage: 'P2 Incidents' }),
+      P3: defineMessage({ defaultMessage: 'P3 Incidents' }),
+      P4: defineMessage({ defaultMessage: 'P4 Incidents' })
+    },
+    configRecommendation: config.get('IS_MLISA_SA')
+      ? {
+        all: defineMessage({ defaultMessage: 'All config recommendations' })
+      }
+      : {
+        crrm: defineMessage({ defaultMessage: 'AI-Driven RRM' }),
+        aiOps: defineMessage({ defaultMessage: 'AI Operations' })
+      },
+    licenses: {
+      '60D': defineMessage({ defaultMessage: 'Licenses expiring in 60 days' }),
+      '30D': defineMessage({ defaultMessage: 'Licenses expiring in 30 days' }),
+      '7D': defineMessage({ defaultMessage: 'Licenses expiring in 7 days' })
+    }
+  }
   return <>{Object.entries(labels[type]).map(([key, label]) => <div key={key}>
     <Checkbox
       id={key}

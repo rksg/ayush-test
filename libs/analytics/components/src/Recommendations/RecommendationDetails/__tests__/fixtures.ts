@@ -781,7 +781,17 @@ export const mockRecommendationProbeflexApplied = {
   currentValue: false,
   recommendedValue: true,
   metadata: {
-    dataEndTime: 1710720000000
+    dataEndTime: 1710720000000,
+    wlans: [
+      {
+        name: '985a2e7fca3f43db8deb9eaf7a9c25d8',
+        ssid: 'GKSS'
+      },
+      {
+        name: 'e1304efc68ed48fa9e7477fe1bffe7b2',
+        ssid: 'Shine'
+      }
+    ]
   },
   sliceType: 'zone',
   sliceValue: 'Divya-REC-Venue-AX-APs',
@@ -793,7 +803,7 @@ export const mockRecommendationProbeflexApplied = {
   path: [
     {
       type: 'zone',
-      name: 'Divya-REC-Venue-AX-APs'
+      name: '23A-IND-BNG-D23-Keshav-Home'
     }
   ],
   statusTrail: [
@@ -810,4 +820,27 @@ export const mockRecommendationProbeflexApplied = {
     current: 364395419,
     projected: null
   }
+} as unknown as RecommendationDetails
+
+
+export const mockWifiNetworkList = {
+  fields: [
+    'name',
+    'id',
+    'ssid'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'GKSS',
+      id: '985a2e7fca3f43db8deb9eaf7a9c25d8',
+      ssid: 'GKSS'
+    },
+    {
+      name: 'Shine',
+      id: 'e1304efc68ed48fa9e7477fe1bffe7b2',
+      ssid: 'Shine'
+    }
+  ]
 }

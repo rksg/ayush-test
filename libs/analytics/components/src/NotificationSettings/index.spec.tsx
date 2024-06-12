@@ -84,6 +84,7 @@ describe('NotificationSettings', () => {
       apply={apply}
     />, { wrapper: Provider })
     expect(await screen.findByText('Licenses')).toBeVisible()
+    expect(await screen.findByText('All config recommendations')).toBeVisible()
     expect(await screen.findByText('Recipients')).toBeVisible()
     const input = await screen.findByRole('combobox')
     await userEvent.type(input, 'test@email.com')

@@ -3,7 +3,7 @@ import { gql } from 'graphql-request'
 import { getFilterPayload } from '@acx-ui/analytics/utils'
 import { dataApi }          from '@acx-ui/store'
 
-import { PieChartResult, RequestPayload, WidgetType } from './config'
+import { ImpactedClientsResult, PieChartResult, RequestPayload, WidgetType } from './config'
 
 export const fieldsMap: Record<WidgetType, string> = {
   cpuUsage: 'cpuUtilization',
@@ -12,11 +12,25 @@ export const fieldsMap: Record<WidgetType, string> = {
   portStorm: 'stormPortCount'
 }
 
-export const queryMapping: Record<WidgetType, string> = {
+export const topNQueryMapping: Record<WidgetType, string> = {
   dhcpFailure: 'topNSwitchesByDhcpFailure',
   congestion: 'topNSwitchesByPortCongestion',
   portStorm: 'topNSwitchesByStormPortCount',
   cpuUsage: 'topNSwitchesByCpuUsage'
+}
+
+export const wiredDevicesQueryMapping: Record<WidgetType, string> = {
+  congestion: 'wiredDevicesExpCongestion',
+  portStorm: 'wiredDevicesExpStorm',
+  dhcpFailure: '',
+  cpuUsage: ''
+}
+
+export const wiredDevicesMetricMapping: Record<WidgetType, string> = {
+  congestion: 'outUtilization',
+  portStorm: 'rxMltCount',
+  dhcpFailure: '',
+  cpuUsage: ''
 }
 
 export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
@@ -25,7 +39,7 @@ export const generateQuery = (type: WidgetType, detailed: boolean = false) => {
 
   const baseFields = `mac name ${field}`
   const detailedFields = `${field} mac name serial model status firmware numOfPorts`
-  const queryName = queryMapping[type as keyof typeof queryMapping]
+  const queryName = topNQueryMapping[type as keyof typeof topNQueryMapping]
 
   return `${queryName}(n: $n) { ${detailed ? detailedFields : baseFields} }`
 }
@@ -93,11 +107,60 @@ export const moreDetailsApi = dataApi.injectEndpoints({
       },
       transformResponse: (response: {
         network: { hierarchyNode: PieChartResult } }) => response.network.hierarchyNode
+    }),
+    impactedClientsData: build.query<ImpactedClientsResult, RequestPayload>({
+      query: payload => {
+        const { type } = payload
+        const queryName = wiredDevicesQueryMapping[type]
+        return ({
+          document: gql`
+          query SwitchClients(
+            $path: [HierarchyNodeInput]
+            $end: DateTime
+            $start: DateTime
+            $filter: FilterInput
+            $metric: String
+            $switchIds: [String]
+            $enableSwitchFirmwareFilter: Boolean
+          ) {
+            network(
+              end: $end
+              start: $start
+              filter: $filter
+              enableSwitchFirmwareFilter: $enableSwitchFirmwareFilter
+            ) {
+              hierarchyNode(path: $path) {
+                ${queryName}(metric: $metric, switchIds: $switchIds) {
+                  switchName
+                  switchId
+                  deviceName
+                  deviceMac
+                  devicePort
+                  devicePortMac
+                  devicePortType
+                  isRuckusAp
+                  localPortName
+                  metricValue
+                  metricName
+                }
+              }
+            }
+          }`,
+          variables: {
+            ...payload,
+            ...getFilterPayload(payload),
+            metric: wiredDevicesMetricMapping[payload.type]
+          }
+        })
+      },
+      transformResponse: (response: {
+        network: { hierarchyNode: ImpactedClientsResult } }) => response.network.hierarchyNode
     })
   })
 })
 
 export const {
   usePieChartDataQuery,
-  useImpactedSwitchesDataQuery
+  useImpactedSwitchesDataQuery,
+  useImpactedClientsDataQuery
 } = moreDetailsApi
