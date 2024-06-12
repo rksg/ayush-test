@@ -97,7 +97,14 @@ export const AuthApp = styled((props: AuthAppProps) => {
                 </Typography.Text>
                 <UI.QRCodeImgWrapper direction='vertical' size='large'>
                   <QRCodeSVG
+                    /* 
                     value={data?.key ?? ''}
+                    TODO: Testing with hardcode value which will appear as,
+                    otpauth://totp/RuckusCloud?secret=QQL72SWVYOKJC4SK 
+                    where secret is variable, received from backend
+                     */
+                    
+                    value={`otpauth://totp/RuckusCloud?secret=${data?.key}` ?? ''}
                     size={128}
                     bgColor={'#ffffff'}
                     fgColor={'#000000'}
