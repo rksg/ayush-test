@@ -20,7 +20,8 @@ import { SpaceWrapper }                                           from '@acx-ui/
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
-  useInternalRefreshEntitlementsMutation
+  useInternalRefreshEntitlementsMutation,
+  useGetTenantDetailsQuery
 } from '@acx-ui/rc/services'
 import {
   EntitlementUtil,
@@ -31,9 +32,9 @@ import {
   defaultSort,
   dateSort
 } from '@acx-ui/rc/utils'
-import { useParams }                       from '@acx-ui/react-router-dom'
-import { filterByAccess }                  from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload } from '@acx-ui/utils'
+import { useParams }      from '@acx-ui/react-router-dom'
+import { filterByAccess } from '@acx-ui/user'
+import { AccountType }    from '@acx-ui/utils'
 
 import * as UI                from './styledComponent'
 import { SubscriptionHeader } from './SubscriptionHeader'
@@ -292,10 +293,13 @@ export const SubscriptionTable = () => {
 
 const Subscriptions = () => {
   const isPendingActivationEnabled = useIsSplitOn(Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
-  const { tenantType } = getJwtTokenPayload()
+  const params = useParams()
+  const tenantDetailsData = useGetTenantDetailsQuery({ params })
+  const tenantType = tenantDetailsData.data?.tenantType
 
   return (
-    (isPendingActivationEnabled && tenantType === AccountType.REC)
+    (isPendingActivationEnabled &&
+      (tenantType === AccountType.REC || tenantType === AccountType.MSP_REC))
       ? <SubscriptionTabs />
       : <SpaceWrapper fullWidth size='large' direction='vertical'>
         <SubscriptionHeader />
