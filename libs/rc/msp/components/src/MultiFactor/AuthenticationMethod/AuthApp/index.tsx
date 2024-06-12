@@ -96,10 +96,10 @@ export const AuthApp = styled((props: AuthAppProps) => {
                   { $t({ defaultMessage: 'Scan the QR code below:' }) }
                 </Typography.Text>
                 <UI.QRCodeImgWrapper direction='vertical' size='large'>
-                  <QRCodeSVG 
+                  <QRCodeSVG
                     //value={data?.key ?? ''}
                     //TODO: Testing with hardcode value which will appear as,
-                    //otpauth://totp/RuckusCloud?secret=QQL72SWVYOKJC4SK 
+                    //otpauth://totp/RuckusCloud?secret=QQL72SWVYOKJC4SK
                     //where secret is variable, received from backend
                     value={data?.key?`otpauth://totp/RuckusCloud?secret=${data?.key}`:''}
                     size={128}
