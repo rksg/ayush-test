@@ -11,20 +11,10 @@ export const RadiusAttributeGroupUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     url: attributeBaseUrl + '/:attributeId'
   },
-  getAttributes: {
-    method: 'get',
-    newApi: true,
-    url: attributeBaseUrl + '?size=:pageSize&page=:page'
-  },
   getAttributesWithQuery: {
     method: 'post',
     newApi: true,
     url: attributeBaseUrl + '/query'
-  },
-  getAttributeGroups: {
-    method: 'get',
-    newApi: true,
-    url: attributeGroupsBaseUrl + paginationParams
   },
   getAttributeGroupsWithQuery: {
     method: 'post',
