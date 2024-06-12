@@ -4,11 +4,11 @@ import { Modal }    from 'antd'
 import { debounce } from 'lodash'
 import { rest }     from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { switchApi, venueApi }                                    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, SwitchUrlsInfo }                         from '@acx-ui/rc/utils'
-import { Provider, store }                                        from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
+import { switchApi, venueApi }                                          from '@acx-ui/rc/services'
+import { CommonUrlsInfo, SwitchConfigTemplateUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, within }       from '@acx-ui/test-utils'
 
 import {
   profilesExistResponse,
@@ -539,6 +539,7 @@ describe('Wired', () => {
       profileId: 'b27ddd7be108495fb9175cec5930ce63',
       action: 'edit'
     }
+
     render(
       <Provider>
         <ConfigurationProfileFormContext.Provider value={profileValues}>
@@ -663,5 +664,70 @@ describe('Wired', () => {
     const applyButton = await screen.findByRole('button', { name: /Apply/i })
     await userEvent.click(applyButton)
     await waitFor(() => expect(mockedUpdateFn).toBeCalled())
+  })
+
+  it('should render edit Switch Configuration Profile form correctly with rbac api', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      profileId: 'profile-id',
+      action: 'edit'
+    }
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+    mockServer.use(
+      rest.get(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfile.url,
+        (_, res, ctx) => res(ctx.json(profile))
+      ),
+      rest.post(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
+    )
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={{
+          ...configureProfileContextValues,
+          editMode: true
+        }}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/regular/:profileId/:action' }
+      })
+
+    expect(await screen.findByText('Edit Switch Configuration Profile')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(mockNavigate).toHaveBeenCalledWith({
+      hash: '', pathname: '/tenant-id/t/networks/wired/profiles', search: '' }, { replace: true }
+    )
+  })
+
+  it('should render add Switch Configuration Profile form correctly with rbac apu', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      action: 'add'
+    }
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+    mockServer.use(
+      rest.post(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList.url,
+        (_, res, ctx) => res(ctx.json({}))
+      )
+    )
+    render(
+      <Provider>
+        <ConfigurationProfileFormContext.Provider value={configureProfileContextValues}>
+          <ConfigurationProfileForm />
+        </ConfigurationProfileFormContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/networks/wired/profiles/:action' }
+      })
+
+    expect(await screen.findByText('Add Switch Configuration Profile')).toBeVisible()
+    const profileNameInput = await screen.findByLabelText('Profile Name')
+    fireEvent.change(profileNameInput, { target: { value: 'profiletest' } })
+    const profileDescInput = await screen.findByLabelText('Profile Description')
+    fireEvent.change(profileDescInput, { target: { value: 'profiledesc' } })
+    fireEvent.blur(profileNameInput)
+    expect(await screen.findByRole('img', { name: 'check-circle' })).toBeVisible()
   })
 })

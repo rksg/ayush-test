@@ -4,8 +4,8 @@ import { Form }    from 'antd'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { StepsForm, PageHeader, Loader, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { StepsForm, PageHeader, Loader, showActionModal }   from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import {
   useAddSwitchConfigProfileMutation, // wait
   useUpdateSwitchConfigProfileMutation, //wait
@@ -14,8 +14,11 @@ import {
   useAddSwitchConfigProfileTemplateMutation,
   useUpdateSwitchConfigProfileTemplateMutation,
   useLazyGetProfilesQuery,
+  useLazyGetSwitchConfigProfileTemplateListQuery,
   useBatchAssociateSwitchProfileMutation,
-  useBatchDisassociateSwitchProfileMutation
+  useBatchDisassociateSwitchProfileMutation,
+  useBatchAssociateSwitchConfigProfileTemplateMutation,
+  useBatchDisassociateSwitchConfigProfileTemplateMutation
 }                   from '@acx-ui/rc/services'
 import {
   ConfigurationProfile,
@@ -23,8 +26,8 @@ import {
   TaggedVlanPorts, useConfigTemplateBreadcrumb,
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
-  Vlan, VoiceVlanConfig, VoiceVlanOption
-} from '@acx-ui/rc/utils'
+  Vlan, VoiceVlanConfig, VoiceVlanOption,
+  useConfigTemplateLazyQueryFnSwitcher } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
@@ -53,10 +56,10 @@ export function ConfigurationProfileForm () {
   const [form] = Form.useForm()
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
-  const [getProfiles] = useLazyGetProfilesQuery()
-  const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
-  const [batchDisassociateSwitchProfile] = useBatchDisassociateSwitchProfileMutation()
+  const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyGetProfilesQuery,
+    useLazyTemplateQueryFn: useLazyGetSwitchConfigProfileTemplateListQuery
+  })
 
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
     useQueryFn: useGetSwitchConfigProfileQuery,
@@ -74,6 +77,16 @@ export function ConfigurationProfileForm () {
   const [updateSwitchConfigProfile, { isLoading: isUpdatingSwitchConfigProfile }] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateSwitchConfigProfileMutation,
     useTemplateMutationFn: useUpdateSwitchConfigProfileTemplateMutation
+  })
+
+  const [batchAssociateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useBatchAssociateSwitchProfileMutation,
+    useTemplateMutationFn: useBatchAssociateSwitchConfigProfileTemplateMutation
+  })
+
+  const [batchDisassociateSwitchConfigProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useBatchDisassociateSwitchProfileMutation,
+    useTemplateMutationFn: useBatchDisassociateSwitchConfigProfileTemplateMutation
   })
 
   const editMode = params.action === 'edit'
@@ -286,7 +299,7 @@ export function ConfigurationProfileForm () {
         params: { venueId: key, profileId }
       }))
 
-      await batchAssociateSwitchProfile(requests).then(callBack)
+      await batchAssociateSwitchConfigProfile(requests).then(callBack)
     }
     return Promise.resolve()
   }
@@ -300,7 +313,7 @@ export function ConfigurationProfileForm () {
       const requests = venues.map((key: string)=> ({
         params: { venueId: key, profileId: params.profileId }
       }))
-      await batchDisassociateSwitchProfile(requests).then(callBack)
+      await batchDisassociateSwitchConfigProfile(requests).then(callBack)
     }
     return Promise.resolve()
   }
@@ -311,7 +324,6 @@ export function ConfigurationProfileForm () {
         return false
       }
       const hasAssociatedVenues = (currentData.venues ?? [])?.length > 0
-
       await addSwitchConfigProfile({
         params,
         payload: proceedData(currentData),

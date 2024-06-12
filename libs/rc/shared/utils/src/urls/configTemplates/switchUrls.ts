@@ -30,5 +30,15 @@ export const SwitchConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/templates/cliProfiles/familyModels',
     newApi: true
+  },
+  associateWithVenue: {
+    method: 'put',
+    url: '/templates/venues/:venueId/switchProfiles/:profileId',
+    newApi: true
+  },
+  disassociateWithVenue: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/switchProfiles/:profileId',
+    newApi: true
   }
 }

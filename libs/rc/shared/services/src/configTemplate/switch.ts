@@ -8,11 +8,13 @@ import {
   TableResult,
   SwitchProfile,
   CommonResult,
-  CliFamilyModels
+  CliFamilyModels,
+  GetApiVersionHeader,
+  ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
-
+import { batchApi }              from '@acx-ui/utils'
 
 import { commonQueryFn }                                    from './common'
 import { useCasesToRefreshSwitchConfigProfileTemplateList } from './constants'
@@ -65,6 +67,30 @@ export const switchConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       transformResponse (result: { data: ConfigurationProfile[] }) {
         return result?.data
       }
+    }),
+    batchAssociateSwitchConfigProfileTemplate: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        return batchApi(
+          SwitchConfigTemplateUrlsInfo.associateWithVenue, requests, fetchWithBQ, header
+        )
+      },
+      invalidatesTags: [
+        { type: 'SwitchConfigProfileTemplate', id: 'LIST' },
+        { type: 'SwitchConfigProfileTemplate', id: 'DETAIL' }
+      ]
+    }),
+    batchDisassociateSwitchConfigProfileTemplate: build.mutation<void, RequestPayload[]>({
+      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
+        const header = GetApiVersionHeader(ApiVersionEnum.v1)
+        return batchApi(
+          SwitchConfigTemplateUrlsInfo.disassociateWithVenue, requests, fetchWithBQ, header
+        )
+      },
+      invalidatesTags: [
+        { type: 'SwitchConfigProfileTemplate', id: 'LIST' },
+        { type: 'SwitchConfigProfileTemplate', id: 'DETAIL' }
+      ]
     })
   })
 })
@@ -75,7 +101,10 @@ export const {
   useUpdateSwitchConfigProfileTemplateMutation,
   useDeleteSwitchConfigProfileTemplateMutation,
   useGetSwitchConfigProfileTemplateListQuery,
+  useLazyGetSwitchConfigProfileTemplateListQuery,
   useLazyValidateUniqueSwitchProfileTemplateNameQuery,
   useGetSwitchTemplateCliFamilyModelsQuery,
-  useGetSwitchConfigProfileTemplatesQuery
+  useGetSwitchConfigProfileTemplatesQuery,
+  useBatchAssociateSwitchConfigProfileTemplateMutation,
+  useBatchDisassociateSwitchConfigProfileTemplateMutation
 } = switchConfigTemplateApi
