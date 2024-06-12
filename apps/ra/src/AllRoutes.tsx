@@ -15,7 +15,8 @@ import {
   ServiceGuardSpecGuard,
   ServiceGuardTestGuard,
   ServiceGuardDetails,
-  Profile
+  Profile,
+  IntentAIDrivenRRM
 } from '@acx-ui/analytics/components'
 import { updateSelectedTenant, getUserProfile }                          from '@acx-ui/analytics/utils'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
@@ -82,6 +83,9 @@ function AllRoutes () {
       <Route path='dashboard' element={check('READ_DASHBOARD', <Dashboard />)} />
       <Route path='profile'>
         <Route path=':activeTab' element={<Profile />} />
+      </Route>
+      <Route path='intentAI'>
+        <Route path='aiDrivenRRM' element={<IntentAIDrivenRRM />} />
       </Route>
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
