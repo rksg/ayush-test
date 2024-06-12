@@ -1,19 +1,18 @@
-
 import React from 'react'
 
-import { Row, Col }                  from 'antd'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { Row, Col }                                 from 'antd'
+import { useIntl, FormattedMessage, defineMessage } from 'react-intl'
 
 import { PageHeader, StepsForm, bandwidthMapping, recommendationBandMapping } from '@acx-ui/components'
 
 import { Legend } from '../../Recommendations/RecommendationDetails/Graph/Legend'
 
-import { sampleMapping } from './mapping'
-import * as UI           from './styledComponents'
+import { sampleMapping, demoLink, guideLink } from './mapping'
+import * as UI  from './styledComponents'
 
 export function IntentAIDrivenRRM () {
   const { $t } = useIntl()
-  const code = 'c-crrm-channel5g-auto' // replace with actual code
+  const code = 'c-crrm-channel6g-auto' // replace with actual code
   const band = recommendationBandMapping[code as keyof typeof recommendationBandMapping]
 
   const values = {
@@ -30,7 +29,9 @@ export function IntentAIDrivenRRM () {
       />
       <StepsForm
         // onCancel={}
-        // onFinish={}
+        // onFinish={async () => {
+        //   showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+        // }}
         buttonLabel={{
           submit: 'Apply'
         }}
@@ -42,7 +43,9 @@ export function IntentAIDrivenRRM () {
                 <UI.Title>{$t({ defaultMessage: 'Introduction' })}</UI.Title>
                 <UI.Content>
                   <UI.ContentText>
-                    {$t({ defaultMessage: 'Intent: ' })}{sampleMapping[code].intent}
+                    <span>
+                      {$t({ defaultMessage: 'Intent: ' })}<b>{sampleMapping[code].intent}</b>
+                    </span>
                   </UI.ContentText>
                   <UI.ContentText>
                     {$t({ defaultMessage: 'Zone: ' })}{sampleMapping[code].zone}
@@ -87,6 +90,14 @@ export function IntentAIDrivenRRM () {
                   <UI.SideNoteSubtitle>
                     {$t({ defaultMessage: 'Resources:' })}
                   </UI.SideNoteSubtitle>
+                  <UI.SideNoteContent>
+                    <UI.Link href={demoLink} target='_blank'>
+                      {$t(defineMessage({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }))}
+                    </UI.Link>
+                    <UI.Link href={guideLink} target='_blank'>
+                      {$t(defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }))}
+                    </UI.Link>
+                  </UI.SideNoteContent>
                 </UI.SideNote>
               </UI.Wrapper>
             </Col>

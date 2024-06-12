@@ -2,7 +2,7 @@
 import { defineMessage } from 'react-intl'
 
 export const sampleMapping = {
-  'c-crrm-channel5g-auto': {
+  'c-crrm-channel6g-auto': {
     title: 'AI-Driven RRM',
     sideNotes: {
       introduction: defineMessage({ defaultMessage: '<p>AI-Driven Cloud RRM constantly monitors the network, adjusting the channel plan, bandwidth, and AP transmit power to minimize co-channel interference. These changes are reflected in the Key Performance Indicators. The number of interfering links may fluctuate based on network changes, configurations, and rogue AP activities.</p>' }),
@@ -10,8 +10,12 @@ export const sampleMapping = {
     },
     intent: 'Throughput vs Client Density',
     zone: 'SPS-Hospitality-BLR',
-    date: '2020-01-01',
+    date: 'May 20 2024 14:45',
     maximumThroughput: defineMessage({ defaultMessage: '<p><b>Maximum Throughput</b>: This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.</p>' }),
     highClientDensity: defineMessage({ defaultMessage: '<p><b>High Client Density</b>: This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.</p>' })
   }
 }
+
+
+export const demoLink = 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi'
+export const guideLink = 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'

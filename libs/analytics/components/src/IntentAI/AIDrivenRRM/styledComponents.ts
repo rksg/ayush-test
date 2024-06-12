@@ -35,6 +35,8 @@ export const ContentText = styled.span`
 export const SideNote = styled.div`
   border-radius: 4px;
   border: 1px solid var(--acx-neutrals-25);
+  height: 65vh;
+  min-height: 470px;
 `
 
 export const SideNoteHeader = styled.div`
@@ -64,6 +66,11 @@ export const SideNoteContent = styled.span`
 export const Para = styled.p`
   margin-block-end: 1em;
 `
+
 export const Bold = styled.b`
   margin-block-end: 1em;
+`
+
+export const Link = styled.a`
+  text-decoration: underline;
 `
