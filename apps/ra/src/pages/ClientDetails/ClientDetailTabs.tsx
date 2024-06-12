@@ -25,20 +25,15 @@ const useTabs = () : Tab[] => {
     title: $t({ defaultMessage: 'Reports' })
   }
 
-  const getTabsWithPermissions = () => {
-    let tabsWithPermissions = [] as Tab[]
-    if (hasPermission({ permission: 'READ_CLIENT_TROUBLESHOOTING' })) {
-      tabsWithPermissions.push(troubleshootingTab as Tab)
-    }
-    if (hasPermission({ permission: 'READ_WIRELESS_CLIENTS_REPORT' })) {
-      tabsWithPermissions.push(reportsTab as Tab)
-    }
-    return tabsWithPermissions
+  let tabsWithPermissions = [] as Tab[]
+  if (hasPermission({ permission: 'READ_CLIENT_TROUBLESHOOTING' })) {
+    tabsWithPermissions.push(troubleshootingTab as Tab)
+  }
+  if (hasPermission({ permission: 'READ_WIRELESS_CLIENTS_REPORT' })) {
+    tabsWithPermissions.push(reportsTab as Tab)
   }
 
-  return [
-    ...getTabsWithPermissions()
-  ]
+  return tabsWithPermissions
 }
 
 function ClientDetailTabs () {
