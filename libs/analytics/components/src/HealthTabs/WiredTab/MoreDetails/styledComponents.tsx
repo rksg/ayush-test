@@ -8,7 +8,7 @@ export const ChartTitle = styled.span`
   line-height: var(--acx-headline-4-line-height);
   font-weight: var(--acx-headline-4-font-weight);
   font-family: var(--acx-accent-brand-font);
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 `
 export const PieChartWrapper = styled.div`
   height: 260px;

@@ -2238,24 +2238,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     }),
-    radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const groupReq = createNewTableHttpRequest({
-          apiInfo: RadiusAttributeGroupUrlsInfo.getAttributeGroups,
-          params,
-          payload: payload as TableChangePayload
-        })
-        return {
-          ...groupReq
-        }
-      },
-      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
-        return transferToTableResult<RadiusAttributeGroup>(result)
-      },
-      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
     // eslint-disable-next-line max-len
     radiusAttributeGroupListByQuery: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2271,22 +2253,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
-    }),
-    radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
-      query: ({ params }) => {
-        // eslint-disable-next-line max-len
-        const groupReq = createHttpRequest(
-          RadiusAttributeGroupUrlsInfo.getAttributes,
-          params
-        )
-        return {
-          ...groupReq
-        }
-      },
-      transformResponse (result: NewTableResult<RadiusAttribute>) {
-        return transferToTableResult<RadiusAttribute>(result)
-      },
-      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
     }),
     radiusAttributeVendorList: build.query<RadiusAttributeVendor, RequestPayload>({
       query: ({ params }) => {
@@ -2390,26 +2356,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return transferToTableResult<Assignment>(result)
       }
     }),
-    adaptivePolicyList: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: RulesManagementUrlsInfo.getPolicies,
-          params,
-          payload: payload as TableChangePayload
-        })
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
-        return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
-      },
-      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
     adaptivePolicyListByQuery: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, params)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, { excludeContent: 'false', ...params } )
         return {
           ...req,
           body: {
@@ -2442,20 +2392,22 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     }),
-    policyTemplateList: build.query<TableResult<RuleTemplate>, RequestPayload>({
+    policyTemplateListByQuery: build.query<TableResult<RuleTemplate>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: RulesManagementUrlsInfo.getPolicyTemplateList,
-          params,
-          payload: payload as TableChangePayload
-        })
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicyTemplateListByQuery, { excludeContent: 'false', ...params } )
         return {
-          ...req
+          ...req,
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
       },
       transformResponse (result: NewAPITableResult<RuleTemplate>) {
         return transferNewResToTableResult<RuleTemplate>(result, { pageStartZero: true })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getPolicyTemplateAttributesList: build.query<TableResult<RuleAttribute>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2566,9 +2518,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
     }),
-    adaptivePolicySetLisByQuery: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+    adaptivePolicySetListByQuery: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, { excludeContent: 'false', ...params } )
         return {
           ...req,
           body: {
@@ -3143,15 +3096,12 @@ export const {
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
   useResetApSnmpSettingsMutation,
-  useRadiusAttributeGroupListQuery,
   useGetRadiusAttributeGroupQuery,
-  useRadiusAttributeListQuery,
   useRadiusAttributeVendorListQuery,
   useRadiusAttributeListWithQueryQuery,
   useLazyRadiusAttributeListWithQueryQuery,
   useRadiusAttributeQuery,
   useDeleteRadiusAttributeGroupMutation,
-  useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
   useRadiusAttributeGroupListByQueryQuery,
@@ -3160,12 +3110,10 @@ export const {
   useLazyGetRadiusAttributeGroupQuery,
   useLazyGetAssignmentsQuery,
   // policy
-  useAdaptivePolicyListQuery,
-  useLazyAdaptivePolicyListQuery,
   useGetAdaptivePolicyQuery,
   useLazyGetAdaptivePolicyQuery,
   useDeleteAdaptivePolicyMutation,
-  usePolicyTemplateListQuery,
+  usePolicyTemplateListByQueryQuery,
   useGetPolicyTemplateAttributesListQuery,
   useLazyGetPolicyTemplateAttributesListQuery,
   useAddAdaptivePolicyMutation,
@@ -3180,8 +3128,8 @@ export const {
   // policy set
   useAdaptivePolicySetListQuery,
   useLazyAdaptivePolicySetListQuery,
-  useAdaptivePolicySetLisByQueryQuery,
-  useLazyAdaptivePolicySetLisByQueryQuery,
+  useAdaptivePolicySetListByQueryQuery,
+  useLazyAdaptivePolicySetListByQueryQuery,
   useDeleteAdaptivePolicySetMutation,
   useLazyGetPrioritizedPoliciesQuery,
   useGetAdaptivePolicySetQuery,
