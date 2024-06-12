@@ -14,6 +14,8 @@ import {
 import { useParams }             from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
 
+import { useIsEdgeReady } from '../useEdgeActions'
+
 import { EdgeAlarmWidget }    from './EdgeAlarmWidget'
 import EdgeDetailsDrawer      from './EdgeDetailsDrawer'
 import { EdgePortsWidget }    from './EdgePortsWidget'

@@ -17,9 +17,6 @@ import {
   mockServer
 } from '@acx-ui/test-utils'
 
-
-// import { mockedEdgeServiceList } from '../../__tests__/fixtures'
-
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
 const { mockEdgeServiceList } = EdgeGeneralFixtures

@@ -4,9 +4,9 @@ import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, Tabs }                         from '@acx-ui/components'
-import { Features }                              from '@acx-ui/feature-toggle'
-import { EdgeInfoWidget, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { GridRow, Tabs }                                         from '@acx-ui/components'
+import { Features }                                              from '@acx-ui/feature-toggle'
+import { EdgeInfoWidget, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetEdgeClusterQuery,
   useGetEdgeLagsStatusListQuery,

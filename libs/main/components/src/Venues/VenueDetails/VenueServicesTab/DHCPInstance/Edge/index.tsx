@@ -2,7 +2,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }            from '@acx-ui/components'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, EdgeServiceStatusLight }                           from '@acx-ui/rc/components'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, EdgeServiceStatusLight, useIsEdgeReady }           from '@acx-ui/rc/components'
 import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery }                     from '@acx-ui/rc/services'
 import { EdgeDhcpHostStatus, LeaseTimeType, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                              from '@acx-ui/react-router-dom'

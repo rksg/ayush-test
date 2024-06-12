@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
 import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgeSdLanViewDataListQuery,

@@ -6,6 +6,8 @@ import { useEdgeBySerialNumberQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQu
 import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }                                                       from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                         from '@acx-ui/types'
 
+import { useIsEdgeReady } from '../useEdgeActions'
+
 interface EdgeDhcpLeaseTableProps {
   edgeId?: string
   isInfinite?: boolean

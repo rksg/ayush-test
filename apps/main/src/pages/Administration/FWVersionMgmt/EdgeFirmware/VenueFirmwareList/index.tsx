@@ -9,8 +9,8 @@ import {
   Tooltip,
   showActionModal
 } from '@acx-ui/components'
-import { Features }                     from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { Features }                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   useGetAvailableEdgeFirmwareVersionsQuery,
   useGetEdgeUpgradePreferencesQuery,
