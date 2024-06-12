@@ -16,7 +16,7 @@ import {
 import {
   getVlanString,
   NetworkApGroup,
-  NetworkSaveData, useConfigTemplate, VlanPool,
+  NetworkSaveData, VlanPool,
   VlanType
 } from '@acx-ui/rc/utils'
 
