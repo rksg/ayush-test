@@ -135,11 +135,14 @@ export const attributeList = {
 }
 
 export const groupList = {
-  content: [
+  totalCount: 24,
+  page: 1,
+  pageSize: 10,
+  data: [
     {
+      id: '520e34e0-9dbd-49a7-abb1-bfbd0185d908',
       name: 'group1',
-      id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4b9',
-      description: 'test',
+      description: '1111',
       attributeAssignments: [
         {
           attributeName: 'attributeName1',
@@ -153,26 +156,45 @@ export const groupList = {
           dataType: 'INTEGER',
           operator: 'DOES_NOT_EXIST'
         }
+      ],
+      attributeCount: 3,
+      externalAssignmentsCount: 4,
+      externalServiceAssignments: [
+        {
+          serviceName: 'policy-management',
+          externalAssignmentIdentifier: [
+            '10eda62b-8be8-4d07-b4ab-6e815e89f971',
+            '3c758416-9b86-406a-b85d-b16dc3feda2a',
+            'c3e08422-09ea-4d37-b91e-975bd360b50d',
+            'cc1a1734-eaa1-4536-8131-a9aec4995755'
+          ]
+        }
+      ]
+    },
+    {
+      id: '14b8183e-92a7-4b80-bd12-278f43953ebc',
+      name: '123',
+      description: '123',
+      attributeAssignments: [
+        {
+          attributeName: 'Callback-Number',
+          operator: 'ADD',
+          attributeValue: '1111',
+          dataType: 'STRING'
+        }
+      ],
+      attributeCount: 1,
+      externalAssignmentsCount: 1,
+      externalServiceAssignments: [
+        {
+          serviceName: 'policy-management',
+          externalAssignmentIdentifier: [
+            '90556908-e588-4818-9d43-c886f3225b13'
+          ]
+        }
       ]
     }
-  ],
-  pageable: {
-    sort: { unsorted: true, sorted: false, empty: true },
-    pageNumber: 0,
-    pageSize: 10,
-    offset: 0,
-    paged: true,
-    unpaged: false
-  },
-  totalPages: 1,
-  totalElements: 1,
-  last: true,
-  sort: { unsorted: true, sorted: false, empty: true },
-  numberOfElements: 3,
-  first: true,
-  size: 10,
-  number: 0,
-  empty: false
+  ]
 }
 
 export const attributeGroupReturnByQuery = {
