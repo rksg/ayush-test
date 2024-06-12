@@ -154,7 +154,8 @@ export function AssignedSubscriptionTable () {
     const params = useParams()
     const tableResults = useTableQuery({
       useQuery: useMspRbacAssignmentHistoryQuery,
-      defaultPayload: entitlementAssignmentPayload
+      defaultPayload: entitlementAssignmentPayload,
+      option: { skip: !isEntitlementRbacApiEnabled }
     })
     const queryResults = useMspAssignmentHistoryQuery({ params: params },
       { skip: isEntitlementRbacApiEnabled })

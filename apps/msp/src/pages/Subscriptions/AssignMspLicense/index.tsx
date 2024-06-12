@@ -132,7 +132,8 @@ export function AssignMspLicense () {
     useMspAssignmentHistoryQuery({ params: params }, { skip: isEntitlementRbacApiEnabled })
   const { data: rbacAssignment } = useTableQuery({
     useQuery: useMspRbacAssignmentHistoryQuery,
-    defaultPayload: entitlementAssignmentPayload
+    defaultPayload: entitlementAssignmentPayload,
+    option: { skip: !isEntitlementRbacApiEnabled }
   })
   const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const [addMspSubscription] = useAddMspAssignmentMutation()
