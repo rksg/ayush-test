@@ -12,8 +12,7 @@ import {
   GridCol,
   GridRow,
   Select,
-  StepsFormLegacy,
-  Tooltip
+  StepsFormLegacy
 } from '@acx-ui/components'
 import { InformationSolid }     from '@acx-ui/icons'
 import {
@@ -284,15 +283,11 @@ function Hotspot20Form () {
               }}
             />
           </Form.Item>
-          <Tooltip placement='bottom'
-            title={disabledAddProvider.current ? $t({ defaultMessage: 'Maximum is 16' }) : ''}>
-            <span><Button type='link'
-              disabled={disabledAddProvider.current}
-              onClick={handleAddProvider}
-              style={{ paddingTop: '10px' }}>
-              {$t({ defaultMessage: 'Add' })}
-            </Button></span>
-          </Tooltip>
+          <Button type='link'
+            disabled={disabledAddProvider.current}
+            onClick={handleAddProvider}
+            children={$t({ defaultMessage: 'Add' })}
+            style={{ paddingTop: '10px' }} />
         </Space>
 
         {editMode &&
