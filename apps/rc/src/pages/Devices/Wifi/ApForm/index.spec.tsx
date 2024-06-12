@@ -176,6 +176,8 @@ describe('AP Form - Add', () => {
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(aplist))),
+      rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_, res, ctx) => res(ctx.json([]))),
       rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,

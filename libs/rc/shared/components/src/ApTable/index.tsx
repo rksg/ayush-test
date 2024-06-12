@@ -27,7 +27,8 @@ import {
 } from '@acx-ui/icons'
 import {
   useApListQuery, useImportApMutation, useLazyImportResultQuery,
-  useLazyGetApCompatibilitiesVenueQuery, useLazyGetApCompatibilitiesNetworkQuery
+  useLazyGetApCompatibilitiesVenueQuery, useLazyGetApCompatibilitiesNetworkQuery,
+  useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeviceStatusEnum,
@@ -163,6 +164,8 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+  const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { tenantId: params.tenantId } })
+
 
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
@@ -252,6 +255,12 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     key, value: name, label: <Badge color={color} text={name} />
   }))
   const linkToEditAp = useTenantLink('/devices/wifi/')
+
+  const isAPOutdoor = (model: string): boolean | undefined => {
+    const currentApModel = wifiCapabilities?.apModels?.find((apModel) => apModel.model === model)
+    return currentApModel?.isOutdoor
+  }
+
 
   const columns = useMemo(() => {
     const extraParams = tableQuery?.data?.extra ?? {
@@ -509,12 +518,12 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
       sorter: false,
       width: 200,
       render: (data: React.ReactNode, row: APExtended) => {
-        const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+        const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, isAPOutdoor(row.model))
         return (
           <>
             {status.columnText}
             {/* eslint-disable-next-line*/}
-            {(status.columnText !== '--' && status.columnText === 'Low Power Indoor' && status.tooltipText) && <Tooltip.Info
+            {(status.columnText !== '--' && status.columnText !== 'Standard power' && status.tooltipText) && <Tooltip.Info
               placement='bottom'
               iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
               title={status.tooltipText}

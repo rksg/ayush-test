@@ -6,10 +6,10 @@ const policyTemplateApiBaseUrl = '/policyTemplates'
 const paginationParams = '?size=:pageSize&page=:page&sort=:sort'
 
 export const RulesManagementUrlsInfo: { [key: string]: ApiInfo } = {
-  getPolicyTemplateList: {
-    method: 'get',
+  getPolicyTemplateListByQuery: {
+    method: 'post',
     newApi: true,
-    url: policyTemplateApiBaseUrl + paginationParams
+    url: policyTemplateApiBaseUrl + '/query'
   },
   getPolicies: {
     method: 'get',
