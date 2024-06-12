@@ -236,7 +236,7 @@ export function SingleRadioSettings (props:{
       indoorChBars.dfsChannels = availableDfsChannels
       setIndoorChannelBars(indoorChBars)
 
-      const availableOutdoorChannels = outdoor[bandwidth]
+      const availableOutdoorChannels = outdoor ? outdoor[bandwidth] : []
       const selectedOutdoorChannels = setSelectedChannels(availableOutdoorChannels)
       setOutdoorChannelList(selectedOutdoorChannels)
 
