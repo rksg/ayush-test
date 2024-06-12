@@ -5,11 +5,8 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
-  EdgeScopes,
   RolesEnum as Role,
-  ScopeKeys,
-  SwitchScopes,
-  WifiScopes
+  ScopeKeys
 } from '@acx-ui/types'
 
 import type { UserProfile, RaiPermission, RaiPermissions } from './types'
@@ -49,14 +46,9 @@ export const setUserProfile = (profile: Profile) => {
   userProfile.allowedOperations = profile.allowedOperations
   userProfile.accountTier = profile.accountTier
   userProfile.betaEnabled = profile.betaEnabled
-  // userProfile.abacEnabled = profile.abacEnabled
-  // userProfile.isCustomRole = profile.isCustomRole
-  // userProfile.scopes = profile?.scopes
-  userProfile.abacEnabled = true
-  userProfile.isCustomRole = true
-  // userProfile.scopes = [WifiScopes.READ, WifiScopes.UPDATE]
-  // eslint-disable-next-line max-len
-  userProfile.scopes = [EdgeScopes.READ, EdgeScopes.UPDATE, SwitchScopes.READ, SwitchScopes.UPDATE, WifiScopes.READ, WifiScopes.UPDATE]
+  userProfile.abacEnabled = profile.abacEnabled
+  userProfile.isCustomRole = profile.isCustomRole
+  userProfile.scopes = profile?.scopes
 }
 
 export const getShowWithoutRbacCheckKey = (id:string) => {
