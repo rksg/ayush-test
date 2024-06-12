@@ -3,11 +3,11 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useApGroupNetworkListQuery,
-  useApGroupNetworkListV2Query,
+  useApGroupNetworkListV2Query
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -19,9 +19,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import { useGetVLANPoolPolicyInstance }                 from '../ApGroupEdit/ApGroupVlanRadioTab'
 import { renderConfigTemplateDetailsComponent }         from '../configTemplates'
 import { transformApGroupRadios, transformApGroupVlan } from '../pipes/apGroupPipes'
-import { useGetVLANPoolPolicyInstance } from '../ApGroupEdit/ApGroupVlanRadioTab'
 
 export const defaultApGroupNetworkPayload = {
   searchString: '',
