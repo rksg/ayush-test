@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Tooltip }                from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { getInactiveTooltip }     from '@acx-ui/rc/components'
 import { useLazyGetLagListQuery } from '@acx-ui/rc/services'
 import { Lag, SwitchPortStatus }  from '@acx-ui/rc/utils'
@@ -25,6 +26,8 @@ export function FrontViewPort (props:{
   tooltipEnable: boolean,
   disabledClick?:boolean
 }) {
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const { $t } = useIntl()
   const { portData, portColor, portIcon, labelText, labelPosition, tooltipEnable,
     disabledClick } = props
@@ -125,7 +128,10 @@ export function FrontViewPort (props:{
   }
 
   const onEditLag = async () => {
-    const { data: lagList } = await getLagList({ params })
+    const { data: lagList } = await getLagList({
+      params: { ...params, venueId: portData.venueId },
+      enableRbac: isSwitchRbacEnabled
+    })
     const lagData = lagList?.find(item => item.lagId?.toString() === portData.lagId) as Lag
     setEditLagModalVisible(true)
     setEditLag([lagData])
