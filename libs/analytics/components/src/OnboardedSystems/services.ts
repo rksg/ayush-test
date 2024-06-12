@@ -166,12 +166,12 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
         tenantId: string
       }
     >({
-      query: ({ tenants }) => {
+      query: () => {
         return {
           url: '/smartzones',
           method: 'get',
           credentials: 'include',
-          headers: { 'x-mlisa-tenant-ids': JSON.stringify(tenants.map(t => t.id)) }
+          headers: { 'x-mlisa-tenant-ids': '[*]' }
         }
       },
       providesTags: [{ type: 'SmartZone', id: 'list' }],
@@ -198,12 +198,12 @@ export const smartZoneApi = basedSmartZoneApi.injectEndpoints({
         })
       }
     }),
-    deleteSmartZone: build.mutation<string, { id: string, tenants: string[] }>({
-      query: ({ id, tenants }) => ({
+    deleteSmartZone: build.mutation<string, { id: string }>({
+      query: ({ id }) => ({
         url: `/smartzones/${id}/delete`,
         method: 'delete',
         credentials: 'include',
-        headers: { 'x-mlisa-tenant-ids': JSON.stringify(tenants) }
+        headers: { 'x-mlisa-tenant-ids': '[*]' }
       }),
       invalidatesTags: [{ type: 'SmartZone', id: 'list' }]
     })

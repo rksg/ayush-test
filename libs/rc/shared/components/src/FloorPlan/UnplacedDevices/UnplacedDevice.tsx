@@ -5,7 +5,7 @@ import { getEmptyImage } from 'react-dnd-html5-backend'
 import { useIntl }       from 'react-intl'
 
 import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
-import { DeviceOutlined, SignalUp }                     from '@acx-ui/icons'
+import { DeviceOutlined, DevicesOutlined, SignalUp }    from '@acx-ui/icons'
 import { APMeshRole, NetworkDevice, NetworkDeviceType } from '@acx-ui/rc/utils'
 
 import { NetworkDeviceContext } from '..'
@@ -44,6 +44,17 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
     }
   }), [device])
 
+  const getDeviceIcon = (deviceType: NetworkDeviceType) => {
+    switch(deviceType) {
+      case NetworkDeviceType.switch:
+        return <DeviceOutlined/>
+      case NetworkDeviceType.rwg:
+        return <DevicesOutlined/>
+      default:
+        return <SignalUp/>
+    }
+  }
+
   const getApMeshRoleAbbr = () => {
     return device.meshRole && device.meshRole !== APMeshRole.DISABLED
       ? `(${apMeshRoleAbbrMap[device.meshRole]})`
@@ -75,9 +86,7 @@ export default function UnplacedDevice (props: { device: NetworkDevice }) {
             height: '24px',
             margin: '0px 8px'
           }}>  {
-              device?.networkDeviceType === NetworkDeviceType.switch
-                ? <DeviceOutlined/>
-                : <SignalUp/>
+              getDeviceIcon(device?.networkDeviceType)
             }
           </div>{getDeviceName(device)} {isApMeshTopologyFFOn && getApMeshRoleAbbr()}
         </>

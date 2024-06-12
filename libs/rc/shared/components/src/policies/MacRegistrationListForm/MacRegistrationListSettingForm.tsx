@@ -6,7 +6,7 @@ import { useIntl }                                      from 'react-intl'
 import { Modal, ModalType, SelectionControl } from '@acx-ui/components'
 import { Features, useIsTierAllowed }         from '@acx-ui/feature-toggle'
 import {
-  useAdaptivePolicySetListQuery,
+  useAdaptivePolicySetListByQueryQuery,
   useLazySearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import { checkObjectNotExists, trailingNorLeadingSpaces } from '@acx-ui/rc/utils'
@@ -24,8 +24,8 @@ export function MacRegistrationListSettingForm () {
   const policyEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const form = Form.useFormInstance()
 
-  const { data: policySetsData } = useAdaptivePolicySetListQuery(
-    { payload: { page: 1, pageSize: '2147483647' } }, { skip: !policyEnabled })
+  const { data: policySetsData } = useAdaptivePolicySetListByQueryQuery(
+    { payload: { page: 1, pageSize: '2000' } }, { skip: !policyEnabled })
 
   const nameValidator = async (value: string) => {
     const list = (await macRegList({

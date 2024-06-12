@@ -218,7 +218,12 @@ export function ClientsTable (props: {
 
         const onEditLag = async () => {
           const { data: lagList } = await getLagList({
-            params: { ...params, switchId: switchPortStatus.switchMac }
+            params: {
+              ...params,
+              switchId: switchPortStatus.switchMac,
+              venueId: switchPortStatus.venueId
+            },
+            enableRbac: isSwitchRbacEnabled
           })
           const lagData = lagList?.find((item: Lag) =>
             item.lagId?.toString() === switchPortStatus.lagId) as Lag
