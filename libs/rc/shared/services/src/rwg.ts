@@ -51,7 +51,7 @@ export const rwgApi = baseRWGApi.injectEndpoints({
               hostname: rwg.hostname + ' / ' + node.ip,
               isNode: true } as RWGRow
           })
-        } : { ...rwg, rwgId: rwg.rwgId })
+        } : { ...rwg, rwgId: rwg.rwgId, rowId: rwg.rwgId })
         return {
           data: _res,
           totalCount: response.totalSizes,

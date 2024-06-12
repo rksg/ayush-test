@@ -97,9 +97,6 @@ describe('RadioSettingsTab', ()=> {
         rest.put(
           WifiUrlsInfo.updateApRadioCustomization.url,
           (_, res, ctx) => res(ctx.json({}))),
-        rest.delete(
-          WifiUrlsInfo.deleteApRadioCustomization.url,
-          (_, res, ctx) => res(ctx.json({}))),
         // rbac
         rest.get(
           WifiRbacUrlsInfo.getApRadioCustomization.url,
@@ -561,7 +558,7 @@ describe('test getRadioTypeDisplayName func', () => {
 })
 
 describe('test isCurrentTabUseVenueSettings func', () => {
-  it('should return value of isUseVenueSettings24G when isEnablePerApRadioCustomizationFlag is true', function () {
+  it('should return value of isUseVenueSettings24G', function () {
     const stateA: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: false,
       isUseVenueSettings5G: false,
@@ -585,7 +582,7 @@ describe('test isCurrentTabUseVenueSettings func', () => {
     expect(actualA).toBe(stateA.isUseVenueSettings24G)
     expect(actualB).toBe(stateB.isUseVenueSettings24G)
   })
-  it('should return value of isUseVenueSettings5G when isEnablePerApRadioCustomizationFlag is true', function () {
+  it('should return value of isUseVenueSettings5G', function () {
     const stateA: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: false,
@@ -609,7 +606,7 @@ describe('test isCurrentTabUseVenueSettings func', () => {
     expect(actualA).toBe(stateA.isUseVenueSettings5G)
     expect(actualB).toBe(stateB.isUseVenueSettings5G)
   })
-  it('should return value of isUseVenueSettings6G when isEnablePerApRadioCustomizationFlag is true', function () {
+  it('should return value of isUseVenueSettings6G', function () {
     const stateA: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: true,
@@ -633,7 +630,7 @@ describe('test isCurrentTabUseVenueSettings func', () => {
     expect(actualA).toBe(stateA.isUseVenueSettings6G)
     expect(actualB).toBe(stateB.isUseVenueSettings6G)
   })
-  it('should return value of isUseVenueSettingsLower5G when isEnablePerApRadioCustomizationFlag is true', function () {
+  it('should return value of isUseVenueSettingsLower5G', function () {
     const stateA: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: true,
@@ -657,7 +654,7 @@ describe('test isCurrentTabUseVenueSettings func', () => {
     expect(actualA).toBe(stateA.isUseVenueSettingsLower5G)
     expect(actualB).toBe(stateB.isUseVenueSettingsLower5G)
   })
-  it('should return value of isUseVenueSettingsUpper5G when isEnablePerApRadioCustomizationFlag is true', function () {
+  it('should return value of isUseVenueSettingsUpper5G', function () {
     const stateA: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: true,
@@ -684,7 +681,7 @@ describe('test isCurrentTabUseVenueSettings func', () => {
 })
 
 describe('test isUseVenueSettings func', () => {
-  it('should return correctly when isEnablePerApRadioCustomizationFlag is true', function () {
+  it('should return correctly', function () {
     const settings: ApRadioCustomization = {
       enable24G: true,
       enable50G: true,
@@ -869,9 +866,7 @@ describe('test extractStateOfIsUseVenueSettings func', () => {
 
 
 describe('test toggleState func', () => {
-  it('should toggle StateOfIsUseVenueSetting correctly when isEnablePerApRadioCustomizationFlag is true', function () {
-    const isEnablePerApRadioCustomizationFlag = true
-
+  it('should toggle StateOfIsUseVenueSetting correctly', function () {
     const stateA: StateOfIsUseVenueSettings = {
       isUseVenueSettings24G: true,
       isUseVenueSettings5G: false,
@@ -908,11 +903,11 @@ describe('test toggleState func', () => {
       isUseVenueSettingsUpper5G: true
     }
 
-    const actualA = toggleState(stateA, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualB = toggleState(stateB, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualC = toggleState(stateC, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualD = toggleState(stateD, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualE = toggleState(stateE, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
+    const actualA = toggleState(stateA, RadioType.Normal24GHz)
+    const actualB = toggleState(stateB, RadioType.Normal5GHz)
+    const actualC = toggleState(stateC, RadioType.Normal6GHz)
+    const actualD = toggleState(stateD, RadioType.Lower5GHz)
+    const actualE = toggleState(stateE, RadioType.Upper5GHz)
 
 
     expect(actualA).toEqual( {
@@ -959,49 +954,7 @@ describe('test toggleState func', () => {
 })
 
 describe('test createCacheSettings func', () => {
-  it('should return currentSettings when isEnablePerApRadioCustomizationFlag is false no matter what radio type is', function () {
-    const isEnablePerApRadioCustomizationFlag = false
-    const currentSettings: ApRadioCustomization = {
-      enable24G: true,
-      enable50G: true,
-      enable6G: true,
-      useVenueSettings: true,
-      apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
-      apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
-      apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
-      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
-        radioParamsLower5G: { ...new ApRadioParams50G(), useVenueSettings: true },
-        radioParamsUpper5G: { ...new ApRadioParams50G(), useVenueSettings: true }
-      }
-    }
-    const cacheSettings: ApRadioCustomization = {
-      enable24G: false,
-      enable50G: false,
-      enable6G: false,
-      useVenueSettings: false,
-      apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
-      apRadioParams50G: undefined,
-      apRadioParams6G: undefined,
-      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: false,
-        radioParamsLower5G: undefined,
-        radioParamsUpper5G: undefined
-      }
-    }
-
-    const actualA = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualB = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualC = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualD = createCacheSettings(currentSettings, cacheSettings, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualE = createCacheSettings(currentSettings, cacheSettings, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
-
-    expect(actualA).toEqual(currentSettings)
-    expect(actualB).toEqual(currentSettings)
-    expect(actualC).toEqual(currentSettings)
-    expect(actualD).toEqual(currentSettings)
-    expect(actualE).toEqual(currentSettings)
-  })
-  it('should return correctly when isEnablePerApRadioCustomizationFlag is true', function () {
-    const isEnablePerApRadioCustomizationFlag = true
+  it('should return correctly', function () {
     const currentSettings: ApRadioCustomization = {
       enable24G: true,
       enable50G: true,
@@ -1029,11 +982,11 @@ describe('test createCacheSettings func', () => {
       }
     }
 
-    const actualA = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualB = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualC = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualD = createCacheSettings(currentSettings, cacheSettings, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualE = createCacheSettings(currentSettings, cacheSettings, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
+    const actualA = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal24GHz)
+    const actualB = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal5GHz)
+    const actualC = createCacheSettings(currentSettings, cacheSettings, RadioType.Normal6GHz)
+    const actualD = createCacheSettings(currentSettings, cacheSettings, RadioType.Lower5GHz)
+    const actualE = createCacheSettings(currentSettings, cacheSettings, RadioType.Upper5GHz)
 
     const expectedA = {
       enable24G: true,
@@ -1114,49 +1067,7 @@ describe('test createCacheSettings func', () => {
 })
 
 describe('test applySettings func', () => {
-  it('should return applySettings when isEnablePerApRadioCustomizationFlag is false no matter what radio type is', function () {
-    const isEnablePerApRadioCustomizationFlag = false
-    const currentSettings: ApRadioCustomization = {
-      enable24G: true,
-      enable50G: true,
-      enable6G: true,
-      useVenueSettings: false,
-      apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
-      apRadioParams50G: { ...new ApRadioParams50G(), useVenueSettings: true },
-      apRadioParams6G: { ...new ApRadioParams6G(), useVenueSettings: true },
-      apRadioParamsDual5G: { enabled: true, lower5gEnabled: true, upper5gEnabled: true,
-        radioParamsLower5G: { ...new ApRadioParams50G(), useVenueSettings: true },
-        radioParamsUpper5G: { ...new ApRadioParams50G(), useVenueSettings: true }
-      }
-    }
-    const updateSettings: ApRadioCustomization = {
-      enable24G: false,
-      enable50G: false,
-      enable6G: false,
-      useVenueSettings: false,
-      apRadioParams24G: { ...new ApRadioParams24G(), useVenueSettings: true },
-      apRadioParams50G: undefined,
-      apRadioParams6G: undefined,
-      apRadioParamsDual5G: { enabled: false, lower5gEnabled: false, upper5gEnabled: false,
-        radioParamsLower5G: undefined,
-        radioParamsUpper5G: undefined
-      }
-    }
-
-    const actualA = applySettings(currentSettings, updateSettings, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualB = applySettings(currentSettings, updateSettings, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualC = applySettings(currentSettings, updateSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualD = applySettings(currentSettings, updateSettings, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualE = applySettings(currentSettings, updateSettings, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
-
-    expect(actualA).toEqual(updateSettings)
-    expect(actualB).toEqual(updateSettings)
-    expect(actualC).toEqual(updateSettings)
-    expect(actualD).toEqual(updateSettings)
-    expect(actualE).toEqual(updateSettings)
-  })
-  it('should return correctly when isEnablePerApRadioCustomizationFlag is true', function () {
-    const isEnablePerApRadioCustomizationFlag = true
+  it('should return correctly', function () {
     const currentSettings: ApRadioCustomization = {
       enable24G: true,
       enable50G: true,
@@ -1184,11 +1095,11 @@ describe('test applySettings func', () => {
       }
     }
 
-    const actualA = applySettings(currentSettings, updateSettings, RadioType.Normal24GHz, isEnablePerApRadioCustomizationFlag)
-    const actualB = applySettings(currentSettings, updateSettings, RadioType.Normal5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualC = applySettings(currentSettings, updateSettings, RadioType.Normal6GHz, isEnablePerApRadioCustomizationFlag)
-    const actualD = applySettings(currentSettings, updateSettings, RadioType.Lower5GHz, isEnablePerApRadioCustomizationFlag)
-    const actualE = applySettings(currentSettings, updateSettings, RadioType.Upper5GHz, isEnablePerApRadioCustomizationFlag)
+    const actualA = applySettings(currentSettings, updateSettings, RadioType.Normal24GHz)
+    const actualB = applySettings(currentSettings, updateSettings, RadioType.Normal5GHz)
+    const actualC = applySettings(currentSettings, updateSettings, RadioType.Normal6GHz)
+    const actualD = applySettings(currentSettings, updateSettings, RadioType.Lower5GHz)
+    const actualE = applySettings(currentSettings, updateSettings, RadioType.Upper5GHz)
 
     const expectedA = {
       enable24G: false,
