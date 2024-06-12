@@ -15,7 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
-  Network, NetworkExtended,
+  Network,
   NetworkVenue, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   VLANPoolViewModelType
@@ -87,6 +87,7 @@ export function ApGroupVlanRadioTab () {
   const [tableData, setTableData] = useState(defaultTableData)
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
+  // eslint-disable-next-line max-len
   const { vlanPoolingNameMap }: VlanPoolNameMapType = useGetVLANPoolPolicyInstance(!tableData.length)
 
   useEffect(() => {
