@@ -5,6 +5,7 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -22,7 +23,9 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation,
+  useActivateWifiCallingServiceMutation,
+  useDeactivateWifiCallingServiceMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -122,6 +125,7 @@ export function NetworkForm (props:{
   const location = useLocation()
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
 
@@ -142,10 +146,12 @@ export function NetworkForm (props:{
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
+  const updateWifiCallingActivations = useUpdateWifiCallingActivation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
+  const [originalNetworkData, setOriginalNetworkData] = useState<NetworkSaveData | undefined>()
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
     type: createType || NetworkTypeEnum.OPEN,
@@ -217,6 +223,7 @@ export function NetworkForm (props:{
         form?.setFieldsValue(resolvedData)
       }
       updateSaveData({ ...resolvedData, certificateTemplateId })
+      setOriginalNetworkData({ ...resolvedData })
     }
   }, [data, certificateTemplateId])
 
@@ -497,6 +504,11 @@ export function NetworkForm (props:{
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateRadiusServer(saveState, data, networkId)
+
+      if (enableRbac) {
+        await updateWifiCallingActivations(networkId, originalNetworkData, saveState)
+      }
+
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
@@ -581,6 +593,11 @@ export function NetworkForm (props:{
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
+
+      if (enableRbac) {
+        await updateWifiCallingActivations(payload.id, originalNetworkData, formData)
+      }
+
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -962,4 +979,48 @@ function useUpdateHotspot20Activation () {
     }
 
   return updateHotspot20Activations
+}
+
+function useUpdateWifiCallingActivation () {
+  const [ activate ] = useActivateWifiCallingServiceMutation()
+  const [ deactivate ] = useDeactivateWifiCallingServiceMutation()
+
+  const activateAll = async (networkId: string, ids: string[]) => {
+    if (ids.length === 0) return
+
+    return Promise.all(ids.map(serviceId => activate({ params: { networkId, serviceId } })))
+  }
+
+  const deactivateAll = async (networkId: string, ids: string[]) => {
+    if (ids.length === 0) return
+
+    return Promise.all(ids.map(serviceId => deactivate({ params: { networkId, serviceId } })))
+  }
+
+  return async (networkId?: string, originalData?: NetworkSaveData, newData?: NetworkSaveData) => {
+    if (!networkId) return
+
+    const { wifiCallingEnabled = false, wifiCallingIds = [] }
+      = newData?.wlan?.advancedCustomization ?? {}
+    const { wifiCallingEnabled: originalEnabled = false, wifiCallingIds: originalIds = [] }
+      = originalData?.wlan?.advancedCustomization ?? {}
+
+    if (wifiCallingEnabled) {
+      if (originalEnabled) {
+        const activateIds = wifiCallingIds.filter(id => !originalIds.includes(id))
+        const deactivateIds = originalIds.filter(id => !wifiCallingIds.includes(id))
+
+        return Promise.all([
+          activateAll(networkId, activateIds),
+          deactivateAll(networkId, deactivateIds)
+        ])
+      } else {
+        return activateAll(networkId, wifiCallingIds)
+      }
+    } else if (originalEnabled) {
+      return deactivateAll(networkId, originalIds)
+    }
+
+    return
+  }
 }

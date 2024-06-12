@@ -487,7 +487,8 @@ export interface WifiCallingSetting {
   tenantId?: string,
   name?: string,
   epdgs?: EPDG[],
-  networkIds?: string[]
+  networkIds?: string[],
+  wifiNetworkIds?: string[]
 }
 
 export interface WifiCallingSettingContextType {
