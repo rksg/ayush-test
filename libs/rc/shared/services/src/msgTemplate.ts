@@ -14,7 +14,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseMsgTemplateApi } from '@acx-ui/store'
 import { RequestPayload }     from '@acx-ui/types'
-import { createHttpRequest }  from '@acx-ui/utils'
+import { createHttpRequest, ignoreErrorModal }  from '@acx-ui/utils'
 
 
 export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
@@ -91,7 +91,9 @@ export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
     }),
     getRegistrationById: build.query<Registration, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(MsgTemplateUrls.getRegistrationById, params)
+        const req = createHttpRequest(MsgTemplateUrls.getRegistrationById, params, {
+          ...ignoreErrorModal
+        })
         return {
           ...req,
           body: payload
