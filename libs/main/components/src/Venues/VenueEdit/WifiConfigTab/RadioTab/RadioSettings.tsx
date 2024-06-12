@@ -722,7 +722,7 @@ export function RadioSettings () {
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
         payload: data,
-        enableRabc: isUseRbacApi,
+        enableRbac: isUseRbacApi,
         enableSeparation: is6gChannelSeparation
       }).unwrap()
     } catch (error) {
