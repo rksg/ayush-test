@@ -155,7 +155,7 @@ export const useOnboardedSystems = () => {
             content: $t({ defaultMessage:
                 'Historical data for this system will not be viewable anymore if you confirm.' }),
             onOk: async () => {
-              await deleteSmartZone({ tenants: tenant.tenants.map(t => t.id), id: selected?.id! })
+              await deleteSmartZone({ id: selected?.id! })
                 .unwrap()
                 .then(()=> {
                   showToast({

@@ -175,4 +175,46 @@ describe('ClientDetails', () => {
     expect(screen.queryByRole('tab', { name: 'Troubleshooting' })).toBeNull()
     expect(screen.queryByRole('tab', { name: 'Reports' })).toBeNull()
   })
+  it('should not render tabs for a single tab with troubleshooting permission', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_WIRELESS_CLIENTS_REPORT: false
+    } as RaiPermissions)
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'troubleshooting'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Reports' })).toBeNull()
+  })
+  it('should not render tabs for a single tab with client report permission', async () => {
+    setRaiPermissions({
+      READ_CLIENT_TROUBLESHOOTING: false,
+      READ_WIRELESS_CLIENTS_REPORT: true
+    } as RaiPermissions)
+    mockGraphqlQuery(dataApiURL, 'Network', {
+      data: clientsList
+    })
+    render(<ClientDetails/>, {
+      wrapper: Provider,
+      route: {
+        params: {
+          ...params,
+          activeTab: 'reports'
+        },
+        path: '/users/wifi/clients/:clientId/details/:activeTab'
+      }
+    })
+    expect(screen.queryByRole('tab', { name: 'Troubleshooting' })).toBeNull()
+    expect(screen.queryByRole('tab', { name: 'Reports' })).toBeNull()
+  })
 })

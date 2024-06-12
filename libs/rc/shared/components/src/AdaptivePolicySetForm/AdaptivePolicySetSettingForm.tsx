@@ -2,9 +2,9 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { GridCol, GridRow }                 from '@acx-ui/components'
+import { GridCol, GridRow }                  from '@acx-ui/components'
 import {
-  useLazyAdaptivePolicySetLisByQueryQuery
+  useLazyAdaptivePolicySetListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
@@ -25,7 +25,7 @@ export function AdaptivePolicySetSettingForm (props: AdaptivePolicySetSettingFor
   const { policyId } = useParams()
   const { editMode = false, accessPolicies, setAccessPolicies } = props
 
-  const [getPolicySetList] = useLazyAdaptivePolicySetLisByQueryQuery()
+  const [getPolicySetList] = useLazyAdaptivePolicySetListByQueryQuery()
 
   const nameValidator = async (value: string) => {
     const list = (await getPolicySetList({
