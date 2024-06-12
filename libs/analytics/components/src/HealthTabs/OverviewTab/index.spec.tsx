@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 
+import { get }                             from '@acx-ui/config'
 import { Provider }                        from '@acx-ui/store'
 import { render }                          from '@acx-ui/test-utils'
 import { DateRange, type AnalyticsFilter } from '@acx-ui/utils'
@@ -14,9 +15,21 @@ jest.mock('./ConnectedClientsOverTime', () => ({
   ConnectedClientsOverTime: () => <div>Mocked ConnectedClientsOverTime</div>
 }))
 
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
+beforeEach(() => mockGet.mockReturnValue(''))
+
 const params = { activeTab: 'overview', tenantId: 'tenant-id' }
 describe('OverviewTab', () => {
   it('should render correctly', async () => {
+    const { asFragment }=render(<Provider><OverviewTab /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render correctly when IS_MLISA_SA', async () => {
+    mockGet.mockReturnValue('true')
     const { asFragment }=render(<Provider><OverviewTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
   })
