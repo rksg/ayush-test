@@ -18,11 +18,18 @@ export const resourceGroups = [
   { id: '00000000-0000-0000-0000-000000000001', name: 'rg-2' }
 ]
 
+const callbackUrls = [
+  'http://localhost:3000/callback',
+  'https://localhost:3000/callback',
+  'http://user:pass@domain.com:3000/callback',
+  'https://user:pass@domain.com:3000/callback'
+]
+
 export const webhooks = Array(10).fill(null).map((_, index) => ({
   id: `00000000-0000-0000-0000-00000000000${index}`,
   name: `webhook-${index}`,
   resourceGroupId: `00000000-0000-0000-0000-00000000000${index % 2}`,
-  callbackUrl: 'http://localhost:3000/callback',
+  callbackUrl: callbackUrls[index % callbackUrls.length],
   eventTypes,
   secret: 'abc124',
   enabled: Boolean(index % 2),

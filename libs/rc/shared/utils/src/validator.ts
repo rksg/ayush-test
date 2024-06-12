@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import { uriRegex }                         from '@hapi/address'
 import { DefaultOptionType }                from 'antd/lib/select'
 import { PhoneNumberType, PhoneNumberUtil } from 'google-libphonenumber'
 import {
@@ -94,8 +95,7 @@ export function URLRegExp (value: string) {
 }
 export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
-  // eslint-disable-next-line max-len
-  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
+  const re = uriRegex({ scheme: ['http', 'https'] }).regex
   if (value!=='' && !re.test(value)) {
     return Promise.reject($t(validationMessages.validateURL))
   }
