@@ -32,7 +32,6 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
 
   const [isEditMode, setEditMode] = useState(false)
   const [isDirty, setDirty] = useState(false)
-  const { isTemplate } = useConfigTemplate()
 
   const apGroupVlanType = apgroup?.vlanId ? VlanType.VLAN : VlanType.Pool
   const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId
@@ -163,7 +162,7 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
       ) : (
         <>
           <label>{vlanLabel}</label>
-          <Button type='link' disabled={isTemplate} icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
+          <Button type='link' icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
           { isDirty && (<Button type='link' icon={<ReloadOutlined />} onClick={()=>{reset()}}></Button>) }
         </>
       )}
