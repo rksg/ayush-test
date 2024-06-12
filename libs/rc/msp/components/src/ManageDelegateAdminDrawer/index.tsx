@@ -22,15 +22,16 @@ import {
 } from '@acx-ui/msp/utils'
 import { useGetMspEcPrivilegeGroupsQuery } from '@acx-ui/rc/services'
 import {
+  CustomGroupType,
   PrivilegeGroup,
   defaultSort,
   roleDisplayText,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams }     from '@acx-ui/react-router-dom'
-import { RolesEnum }     from '@acx-ui/types'
-import { roleStringMap } from '@acx-ui/user'
-import { AccountType }   from '@acx-ui/utils'
+import { useParams }                          from '@acx-ui/react-router-dom'
+import { RolesEnum, SupportedDelegatedRoles } from '@acx-ui/types'
+import { roleStringMap }                      from '@acx-ui/user'
+import { AccountType }                        from '@acx-ui/utils'
 
 interface ManageDelegateAdminDrawerProps {
   visible: boolean
@@ -90,7 +91,9 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
     }
     setIsLoaded(isSkip || (queryResults?.data && delegatedAdmins?.data) as unknown as boolean)
     if (ecPrivilegeGroupList?.data) {
-      setEcPrivilegeGroups(ecPrivilegeGroupList?.data)
+      const groupList = ecPrivilegeGroupList?.data.filter((ecPrivGroup: PrivilegeGroup)=>
+        ecPrivGroup.type === CustomGroupType.SYSTEM)
+      setEcPrivilegeGroups(groupList)
     }
   }, [queryResults?.data, delegatedAdmins?.data, ecPrivilegeGroupList?.data])
 
@@ -169,8 +172,11 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
       },
       render: function (_, row) {
         return row.role === RolesEnum.DPSK_ADMIN ||
-              (row.role === RolesEnum.GUEST_MANAGER && rowNotSelected(row.email))
-          ? <span>{$t(roleDisplayText[row.role])}</span>
+              (row.role === RolesEnum.GUEST_MANAGER && rowNotSelected(row.email)) ||
+              (!SupportedDelegatedRoles.includes(row.role) && !rowNotSelected(row.email))
+          ? <span>
+            {roleDisplayText[row.role] ? $t(roleDisplayText[row.role]) : row.role}
+          </span>
           : transformAdminRole(row.id, row.role)
       }
     }
@@ -183,20 +189,22 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
     const role = delegatedAdmins?.data?.find((admin) => admin.msp_admin_id === id)?.msp_admin_role
-      ?? initialRole
+      ?? (SupportedDelegatedRoles.includes(initialRole)
+        ? initialRole : RolesEnum.ADMINISTRATOR)
+
     return isLoaded &&
     <Select defaultValue={role}
       style={{ width: '150px' }}
       onChange={value => handleRoleChange(id, value)}>
       {tenantId ? ecPrivilegeGroups?.map((item) => (
-        !(item.roleName === RolesEnum.DPSK_ADMIN)
+        SupportedDelegatedRoles.includes(item.roleName as RolesEnum)
           && <Option
             key={item.name}
             value={item.name}>{roleStringMap[item.name as RolesEnum]
               ? $t(roleStringMap[item.name as RolesEnum]) : item.name}
           </Option>
       )) : Object.entries(RolesEnum).map(([label, value]) => (
-        !(value === RolesEnum.DPSK_ADMIN)
+        SupportedDelegatedRoles.includes(value)
           && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}
@@ -226,7 +234,8 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
             getCheckboxProps: (record: MspAdministrator) => ({
               disabled:
                  record.role === RolesEnum.DPSK_ADMIN ||
-                (record.role === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email))
+                (record.role === RolesEnum.GUEST_MANAGER && rowNotSelected(record.email)) ||
+                (!SupportedDelegatedRoles.includes(record.role) && !rowNotSelected(record.email))
             })
           }}
         />

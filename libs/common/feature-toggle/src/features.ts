@@ -3,8 +3,6 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 /* eslint-disable max-len */
 export enum Features {
   ABAC_POLICIES_TOGGLE = 'abac-policies-toggle',
-  AI_CRRM = 'acx-ui-ai-crrm-toggle',
-  AI_RECOMMENDATIONS = 'acx-ui-ai-recommendations-toggle',
   ALLOWED_OPERATIONS_TOGGLE = 'allowed-operations-toggle',
   ANY_3RDPARTY_INVITE_TOGGLE = 'ptenant-any-3rdparty-invite-toggle',
   AP_AFC_TOGGLE = 'ap-afc-toggle',
@@ -52,7 +50,6 @@ export enum Features {
   G_MAP = 'acx-ui-maps-api-toggle',
   GOOGLE_WORKSPACE_SSO_TOGGLE = 'google-workspace-sso-toggle',
   GROUP_BASED_LOGIN_TOGGLE = 'group-based-login-toggle',
-  HEALTH_DRILLDOWN = 'acx-ui-health-drilldown-toggle',
   HELP_SUPPORT = 'acx-ui-help-support',
   HOST_APPROVAL_EMAIL_LIST_TOGGLE = 'guest-host-approval-email-list-toggle',
   I18N_DATA_STUDIO_TOGGLE = 'acx-ui-i18n-data-studio-toggle',
@@ -88,18 +85,13 @@ export enum Features {
   PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
-  RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
-  RECOMMENDATION_EMAIL_NOTIFICIATION_TOGGLE = 'acx-ui-recommendation-notification-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
   RECOMMENDATION_REVERT = 'acx-ui-recommendation-revert-toggle',
   ROGUE_EVENTS_FILTER = 'rogue-events-filter-enabled',
-  RUCKUS_AI_CHATBOT_TOGGLE = 'ruckus-ai-chatbot-toggle',
   RUCKUS_AI_CRRM_PARTIAL = 'ruckus-ai-recommendations-crrm-partial-toggle',
-  RUCKUS_AI_INCIDENT_SUMMARY_TOGGLE = 'ruckus-ai-incident-summary-toggle',
   RUCKUS_AI_INCIDENTS_AIRTIME_TOGGLE = 'ruckus-ai-incidents-airtime-toggle',
-  RUCKUS_AI_ZONES_LIST = 'ruckus-ai-zones-toggle',
   RUCKUS_AI_SWITCH_HEALTH_TOGGLE = 'ruckus-ai-switch-health-toggle',
   RUCKUS_WAN_GATEWAY_UI_SHOW = 'ruckus-wan-gateway-ui-show',
   SERVICES = 'acx-ui-services',
@@ -126,14 +118,10 @@ export enum Features {
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
   VERTICAL_RE_SKINNING = 'acx-ui-reskinning-toggle',
-  VIDEO_CALL_QOE = 'acx-ui-video-call-qoe-toggle',
   WIFI_COMPATIBILITY_CHECK_TOGGLE = 'wifi-compatibility-check-toggle',
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
-  WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
-  WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
-  WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
@@ -158,7 +146,8 @@ export enum Features {
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
-  RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle'
+  RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
+  GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

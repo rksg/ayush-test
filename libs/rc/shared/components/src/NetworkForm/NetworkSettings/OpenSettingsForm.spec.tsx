@@ -60,7 +60,9 @@ describe('OpenNetwork form', () => {
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
-        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
+        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
     )
 
   })

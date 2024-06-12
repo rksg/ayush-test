@@ -25,6 +25,7 @@ import {
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
 import { useTenantLink } from '@acx-ui/react-router-dom'
+import { CommonResult }  from '@acx-ui/user'
 
 import WifiOperatorSettingForm from './WifiOperatorSettingForm'
 
@@ -69,11 +70,18 @@ export const WifiOperatorForm = (props: WifiOperatorFormProps) => {
       if (!editMode) {
         await createWifiOperator({
           params,
-          payload
-        }).unwrap().then((res)=>{
-          const id = res.response?.id
-          formData.id = id
-          modalMode? modalCallBack?.(id) : navigate(linkToPolicies, { replace: true })
+          payload,
+          callback: async (res: CommonResult) => {
+            const id = res.response?.id
+            formData.id = id
+            if (modalMode) {
+              modalCallBack?.(id)
+            }
+          }
+        }).unwrap().then(() => {
+          if (!modalMode) {
+            navigate(linkToPolicies, { replace: true })
+          }
         })
       } else {
         await updateWifiOperator({
