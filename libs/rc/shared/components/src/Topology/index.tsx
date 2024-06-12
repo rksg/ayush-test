@@ -7,7 +7,8 @@ import { debounce, uniq }                                           from 'lodash
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader, Select } from '@acx-ui/components'
+import { Loader, Select }         from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
@@ -281,6 +282,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
 
   const graphRef = useRef<SVGSVGElement>(null)
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const _venueId = params.venueId || venueId
 
@@ -366,7 +368,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       }
 
       async function getVlanList (){
-        const vlanList = await getSwitchesVlan({ params }).unwrap()
+        const vlanList = await getSwitchesVlan({ params, enableRbac: isSwitchRbacEnabled }).unwrap()
         const vlansOptionValues: DefaultOptionType[] =
           [{ label: $t({ defaultMessage: 'Select VLAN...' }), value: '' }]
         vlanList.map(item=> vlansOptionValues.push({ label: item.vlanId, value: item.vlanId }))
