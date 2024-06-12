@@ -35,7 +35,6 @@ export const ContentText = styled.span`
 export const SideNote = styled.div`
   border-radius: 4px;
   border: 1px solid var(--acx-neutrals-25);
-  flex:1;
 `
 
 export const SideNoteHeader = styled.div`

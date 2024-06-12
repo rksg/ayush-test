@@ -37,7 +37,7 @@ export function IntentAIDrivenRRM () {
       >
         <StepsForm.StepForm title='Introduction'>
           <Row gutter={20}>
-            <Col span={16}>
+            <Col span={15}>
               <UI.Wrapper>
                 <UI.Title>{$t({ defaultMessage: 'Introduction' })}</UI.Title>
                 <UI.Content>
@@ -67,8 +67,7 @@ export function IntentAIDrivenRRM () {
                 </UI.Content>
               </UI.Wrapper>
             </Col>
-            <Col span={1} />
-            <Col span={7}>
+            <Col span={6} offset={3}>
               <UI.Wrapper>
                 <UI.SideNote>
                   <UI.SideNoteHeader>
@@ -96,7 +95,7 @@ export function IntentAIDrivenRRM () {
 
         <StepsForm.StepForm title='Trade-off'>
           <Row gutter={20}>
-            <Col span={16}>
+            <Col span={15}>
               <UI.Wrapper>
                 <UI.Title>{$t({ defaultMessage: 'Trade-off' })}</UI.Title>
                 <UI.Content>
@@ -106,8 +105,7 @@ export function IntentAIDrivenRRM () {
                 </UI.Content>
               </UI.Wrapper>
             </Col>
-            <Col span={1} />
-            <Col span={7}>
+            <Col span={6} offset={3}>
               <UI.Wrapper>
                 <UI.SideNote>
                   <UI.SideNoteHeader>
@@ -132,15 +130,14 @@ export function IntentAIDrivenRRM () {
 
         <StepsForm.StepForm title='Benefit'>
           <Row gutter={20}>
-            <Col span={16}>
+            <Col span={15}>
               <UI.Wrapper>
                 <UI.Title>{$t({ defaultMessage: 'Benefit' })}</UI.Title>
                 <UI.Content>
                 </UI.Content>
               </UI.Wrapper>
             </Col>
-            <Col span={1} />
-            <Col span={7}>
+            <Col span={6} offset={3}>
               <UI.Wrapper>
                 <UI.SideNote>
                   <UI.SideNoteHeader>
