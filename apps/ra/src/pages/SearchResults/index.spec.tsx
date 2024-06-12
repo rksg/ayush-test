@@ -98,22 +98,6 @@ describe('Search Results', () => {
     const href = link.getAttribute('href')
     expect(href).toBe('/ai/zones/Public-vSZ-2/CDC_BB_TEST/assurance')
   })
-  it('should handle isZonesPageEnabled feature flag correctly when false', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
-      data: searchFixture
-    })
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<SearchResults />, {
-      wrapper: Provider,
-      route: {
-        params: { ...params, searchVal: encodeURIComponent('some text') }
-      }
-    })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const link = screen.getAllByText('CDC_BB_TEST')[0]
-    const href = link.getAttribute('href')
-    expect((href as string).includes('incidents?analyticsNetworkFilter')).toBeTruthy()
-  })
   it('should handle results for report-only', async () => {
     setRaiPermissions({
       READ_REPORTS: true,

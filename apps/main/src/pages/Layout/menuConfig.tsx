@@ -41,7 +41,6 @@ export function useMenuConfig () {
   const tenantID = useTenantId()
   const { data: userProfileData, isCustomRole } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
-  const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
@@ -52,8 +51,6 @@ export function useMenuConfig () {
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
   const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
-  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
@@ -82,14 +79,14 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(crrmEnabled ? [{
+            {
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
-            }] : []),
-            ...(recommendationsEnabled ? [{
+            },
+            {
               uri: '/analytics/recommendations/aiOps',
               label: $t({ defaultMessage: 'AI Operations' })
-            }] : [])
+            }
           ]
         },
         {
@@ -108,7 +105,7 @@ export function useMenuConfig () {
               uri: '/analytics/configChange',
               label: $t({ defaultMessage: 'Config Change' })
             }] : []),
-            ...(isAnltAdvTier && showVideoCallQoe ? [{
+            ...(isAnltAdvTier ? [{
               uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
