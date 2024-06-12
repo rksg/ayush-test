@@ -12,9 +12,9 @@ import {
   TableChangePayload,
   transferNewResToTableResult
 } from '@acx-ui/rc/utils'
-import { baseMsgTemplateApi } from '@acx-ui/store'
-import { RequestPayload }     from '@acx-ui/types'
-import { createHttpRequest, ignoreErrorModal }  from '@acx-ui/utils'
+import { baseMsgTemplateApi }                  from '@acx-ui/store'
+import { RequestPayload }                      from '@acx-ui/types'
+import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 
 export const msgTemplateApi = baseMsgTemplateApi.injectEndpoints({
