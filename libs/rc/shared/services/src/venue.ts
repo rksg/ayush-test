@@ -825,7 +825,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params, headers)
         return {
           ...req,
