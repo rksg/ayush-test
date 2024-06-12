@@ -3,6 +3,7 @@ import { FormattedMessage } from 'react-intl'
 
 import { useAnalyticsFilter }      from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Alert } from '@acx-ui/components'
+import { get }                     from '@acx-ui/config'
 import type { AnalyticsFilter }    from '@acx-ui/utils'
 
 import { ConnectedClientsOverTime } from './ConnectedClientsOverTime'
@@ -12,14 +13,25 @@ const OverviewTab = (props: { filters? : AnalyticsFilter, wirelessOnly?: boolean
   const { filters: widgetFilters, wirelessOnly = false } = props
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
-  const switchFirmwareVersionMsg = <FormattedMessage
-    defaultMessage={
-      'Data is displayed for switches with firmware version <b>10.0.10c</b> or above.'
-    }
-    values={{
-      b: (content) => <b >{content}</b>
-    }}
-  />
+  const switchFirmwareVersionMsg = get('IS_MLISA_SA') ?
+    <FormattedMessage
+      defaultMessage={
+      // eslint-disable-next-line max-len
+        'Data is displayed for switches with firmware version <b>10.0.10c</b> and Sz version <b>7.x</b> or above.'
+      }
+      values={{
+        b: (content) => <b >{content}</b>
+      }}
+    />
+    :
+    <FormattedMessage
+      defaultMessage={
+        'Data is displayed for switches with firmware version <b>10.0.10c</b> or above.'
+      }
+      values={{
+        b: (content) => <b >{content}</b>
+      }}
+    />
 
   return (
     <GridRow>
