@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react'
+
 import {
   Menu,
   MenuProps,
@@ -41,6 +43,7 @@ function ApPageHeader () {
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   //eslint-disable-next-line
   const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber: apId } })
+  const [isOutdoor, setIsOutdoor] = useState<boolean>(false)
 
   const apAction = useApActions()
   const { activeTab } = useParams()
@@ -72,6 +75,12 @@ function ApPageHeader () {
     }
   }
 
+  useEffect(()=> {
+    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
+    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === model)
+    setIsOutdoor((currentApModel?.isOutdoor ?? false))
+  }, [capabilities])
+
   const menu = (
     <Menu
       onClick={handleMenuClick}
@@ -98,12 +107,6 @@ function ApPageHeader () {
 
   const enableTimeFilter = () =>
     !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
-
-  const isAPOutdoor = (): boolean | undefined => {
-    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
-    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === model)
-    return currentApModel?.isOutdoor
-  }
 
   return (
     <PageHeader
@@ -157,7 +160,7 @@ function ApPageHeader () {
           <LowPowerBannerAndModal
             afcInfo={ApStatusData.afcInfo}
             from={'ap'}
-            isOutdoor={isAPOutdoor()}
+            isOutdoor={isOutdoor}
           />
         }
         <ApTabs apDetail={data as ApDetailHeader} />

@@ -72,7 +72,7 @@ export function LowPowerBannerAndModal (props: {
     }
 
     setBannerText(modalMessage)
-  }, [])
+  }, [isOutdoor])
 
   return <Row
     data-testid='low-power-banner'
