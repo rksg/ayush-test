@@ -8,6 +8,7 @@ import { formatter }                                           from '@acx-ui/for
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
+import { limitRange }        from '../index'
 import { MoreDetailsDrawer } from '../MoreDetails'
 import { WidgetType }        from '../MoreDetails/config'
 
@@ -37,7 +38,9 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         value: !isNil(summaryData?.switchDHCP.successCount) &&
           summaryData?.switchDHCP.attemptCount
           ? formatter('percentFormat')(
-            summaryData?.switchDHCP.successCount / summaryData?.switchDHCP.attemptCount)
+            limitRange(
+              summaryData?.switchDHCP.successCount / summaryData?.switchDHCP.attemptCount
+            ))
           : noDataDisplay
       }],
       onClick: () => { moreDetails('dhcpFailure') }
@@ -48,7 +51,9 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         title: defineMessage({ defaultMessage: 'Uplink Usage' }),
         value: !isNil(summaryData?.congestedPortCount) &&
         summaryData?.portCount
-          ? formatter('percentFormat')(summaryData?.congestedPortCount / summaryData?.portCount)
+          ? formatter('percentFormat')(
+            limitRange(summaryData?.congestedPortCount / summaryData?.portCount)
+          )
           : noDataDisplay
       }],
       onClick: () => { moreDetails('congestion') }
@@ -59,7 +64,8 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
         title: defineMessage({ defaultMessage: 'Multicast Storm Ports' }),
         value: !isNil(summaryData?.stormPortCount) &&
         summaryData?.portCount
-          ? formatter('percentFormat')(summaryData?.stormPortCount / summaryData?.portCount)
+          ? formatter('percentFormat')(
+            limitRange(summaryData?.stormPortCount / summaryData?.portCount))
           : noDataDisplay
       }],
       onClick: () => { moreDetails('portStorm') }
@@ -69,7 +75,7 @@ export const SummaryBoxes = ({ filters }: { filters: AnalyticsFilter }) => {
       values: [{
         title: defineMessage({ defaultMessage: 'High CPU' }),
         value: !isNil(summaryData?.switchCpuUtilizationPct)
-          ? formatter('percentFormat')(summaryData?.switchCpuUtilizationPct)
+          ? formatter('percentFormat')(limitRange(summaryData?.switchCpuUtilizationPct!))
           : noDataDisplay
       }],
       onClick: () => { moreDetails('cpuUsage') }

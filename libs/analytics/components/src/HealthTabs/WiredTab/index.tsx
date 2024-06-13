@@ -1,3 +1,4 @@
+import { isNil }                     from 'lodash'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
@@ -11,6 +12,12 @@ import * as UI                       from '../../Health/styledComponents'
 
 import Kpis             from './Kpi'
 import { SummaryBoxes } from './SummaryBoxes'
+
+//Normalize the value by bringing it within the range
+export function limitRange (value: number, min: number = 0.0, max: number = 1.0): number {
+  if(isNil(value)) return value
+  return Math.max(min, Math.min(max, value))
+}
 
 const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
   const { $t } = useIntl()
