@@ -20,7 +20,6 @@ export default function ServiceCatalog () {
   const { $t } = useIntl()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  // const isEdgeEnabled = useIsEdgeReady()
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
@@ -78,7 +77,7 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !networkSegmentationSwitchEnabled
+          disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,

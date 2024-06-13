@@ -119,9 +119,9 @@ export default function MyServices () {
       tableQuery: useWebAuthTemplateListQuery({
         params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
       }, {
-        skip: !networkSegmentationSwitchEnabled
+        skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }),
-      disabled: !networkSegmentationSwitchEnabled
+      disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
     },
     {
       type: ServiceType.RESIDENT_PORTAL,

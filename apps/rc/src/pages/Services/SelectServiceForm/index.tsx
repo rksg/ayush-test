@@ -8,8 +8,8 @@ import {
   RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }      from '@acx-ui/rc/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   ServiceType,
   getServiceListRoutePath,
@@ -28,6 +28,7 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
@@ -93,7 +94,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgeHaReady || !isEdgePinHaReady
+          disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,
