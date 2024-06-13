@@ -286,7 +286,7 @@ function Hotspot20Form () {
             disabled={disabledAddProvider.current}
             onClick={handleAddProvider}
             children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '35px' }} />
+            style={{ paddingTop: '36px' }} />
         </Space>
 
         {editMode &&
