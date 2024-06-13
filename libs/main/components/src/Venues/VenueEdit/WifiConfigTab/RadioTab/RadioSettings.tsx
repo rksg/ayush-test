@@ -157,8 +157,7 @@ export function RadioSettings () {
   const { data: tripleBandRadioSettingsData, isLoading: isLoadingTripleBandRadioSettingsData } =
     useVenueConfigTemplateQueryFnSwitcher<TriBandSettings>({
       useQueryFn: useGetVenueTripleBandRadioSettingsQuery,
-      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery,
-      skip: isWifiSwitchableRfEnabled
+      useTemplateQueryFn: useGetVenueTemplateTripleBandRadioSettingsQuery
     })
 
   // available channels from this venue country code
@@ -396,7 +395,7 @@ export function RadioSettings () {
       return
     }
 
-    if (venueSavedChannelsData) {
+    if (tripleBandRadioSettingsData?.enabled && venueSavedChannelsData) {
       const dual5GData = venueSavedChannelsData.radioParamsDual5G
       if (dual5GData && dual5gApModels.length > 0) {
         const initVenueBandModeData = [ ...venueBandModeSavedData,
@@ -409,23 +408,20 @@ export function RadioSettings () {
 
     setInitVenueBandModeData([ ...venueBandModeSavedData ])
     setCurrentVenueBandModeData([ ...venueBandModeSavedData ])
-  }, [isWifiSwitchableRfEnabled, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData])
+  }, [isWifiSwitchableRfEnabled, venueBandModeSavedData, dual5gApModels, venueSavedChannelsData, tripleBandRadioSettingsData])
 
   useEffect(() => {
     if (!isWifiSwitchableRfEnabled) {
       return
     }
 
-    setIsTriBandRadio(true)
-    isTriBandRadioRef.current = true
-    /*
     const isTriBandRadio = currentVenueBandModeData.map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.TRIPLE)
     setIsTriBandRadio(isTriBandRadio)
     isTriBandRadioRef.current = isTriBandRadio
     if (!isTriBandRadio && currentTab === 'Normal6GHz') {
       onTabChange('Normal5GHz')
     }
-    */
+
     if (dual5gApModels.length > 0) {
       const isDual5GEnabled = currentVenueBandModeData.filter(data => dual5gApModels.includes(data.model))
         .map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.DUAL)
@@ -441,7 +437,7 @@ export function RadioSettings () {
     if (wifiRadioTab) {
       onTabChange(wifiRadioTab)
     }
-  }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
+  }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels, isSupport6GCountry])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
