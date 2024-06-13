@@ -9,7 +9,7 @@ import {
 } from '@acx-ui/test-utils'
 import { DateRange, type AnalyticsFilter } from '@acx-ui/utils'
 
-import { WiredTab, limitRange } from '.'
+import { WiredTab } from '.'
 
 const mockedUseNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -71,19 +71,4 @@ describe('WiredTab', () => {
       search: ''
     })
   })
-
-  describe('limitRange', () => {
-    it('should return the correct value', async () => {
-      expect(limitRange(0.01)).toEqual(0.01)
-      expect(limitRange(-0.01)).toEqual(0)
-      expect(limitRange(1)).toEqual(1)
-      expect(limitRange(0)).toEqual(0)
-      expect(limitRange(1.1)).toEqual(1)
-      expect(limitRange(-10, 0, 100)).toEqual(0)
-      expect(limitRange(101, 0, 100)).toEqual(100)
-      expect(limitRange(undefined!)).toEqual(undefined)
-      expect(limitRange(null!)).toEqual(null)
-    })
-  })
-
 })

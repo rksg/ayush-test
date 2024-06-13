@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { isNil }         from 'lodash'
 import { defineMessage } from 'react-intl'
 
+import { limitRange }                                          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
 import { formatter }                                           from '@acx-ui/formatter'
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
 import { noDataDisplay }                                       from '@acx-ui/utils'
 
-import { limitRange }        from '../index'
 import { MoreDetailsDrawer } from '../MoreDetails'
 import { WidgetType }        from '../MoreDetails/config'
 
