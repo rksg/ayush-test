@@ -34,6 +34,9 @@ export function UntaggedPortsStep () {
   const [portsModule2, setPortsModule2] = useState<PortsType[]>([])
   const [portsModule3, setPortsModule3] = useState<PortsType[]>([])
 
+  const [portsModule, setPortsModule] = useState<PortsType[][]>([])
+  const [selectedItems, setSelectedItems] = useState<string[]>([])
+
   const [selectedItems1, setSelectedItems1] = useState<string[]>([])
   const [selectedItems2, setSelectedItems2] = useState<string[]>([])
   const [selectedItems3, setSelectedItems3] = useState<string[]>([])
@@ -42,8 +45,34 @@ export function UntaggedPortsStep () {
 
   useEffect(() => {
     if(vlanSettingValues){
+
+      console.log('vlanSettingValues: ', vlanSettingValues)
+      console.log('slot1Data: ', vlanSettingValues.switchFamilyModels?.slots)
+
+      if (vlanSettingValues.switchFamilyModels?.slots) {
+        const slots = vlanSettingValues.switchFamilyModels?.slots as unknown as SwitchSlot[][]
+        const module = slots.map(slotData => {
+          return slotData
+            .filter((slot: SwitchSlot) => slot?.portStatus)
+            .map((slot: SwitchSlot) => {
+              return slot?.portStatus?.map(item => {
+                return {
+                  label: item.portNumber.toString(),
+                  value: item.portIdentifier //`1/1/${item.portNumber.toString()}`
+                }
+              })
+            })
+        })
+
+        setPortsModule(module as unknown as PortsType[][])
+
+        console.log('module: ', module)
+      }
+
+
       const slot1Data = vlanSettingValues.switchFamilyModels?.slots
         .filter(item => item.slotNumber === 1)
+
       if(slot1Data && slot1Data[0] && slot1Data[0].portStatus!== undefined){
         const portModule1List1 = slot1Data[0].portStatus?.map(
           item => ({ label: item.portNumber.toString(),
@@ -76,11 +105,13 @@ export function UntaggedPortsStep () {
           .toString().split(',').filter(item => item !== '')
         form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], untaggedPorts)
 
+        setSelectedItems(untaggedPorts)
         setSelectedItems1(untaggedPorts.filter(item=> item.split('/')[1] === '1'))
         setSelectedItems2(untaggedPorts.filter(item=> item.split('/')[1] === '2'))
         setSelectedItems3(untaggedPorts.filter(item=> item.split('/')[1] === '3'))
       }else{
         form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], [])
+        setSelectedItems([])
         setSelectedItems1([])
         setSelectedItems2([])
         setSelectedItems3([])
@@ -179,32 +210,58 @@ export function UntaggedPortsStep () {
   })
 
   const handleCheckboxGroupChange =
-    (moduleName: string, checkedValues: string[], setValues: (arg0: string[]) => void) => {
+    (moduleName: string, checkedValues: string[], setValues: (arg0: string[]) => void, moduleGroup: string) => {
       setValues(checkedValues)
-      let selectedUntaggedPorts: string[] = []
-      switch(moduleName){
-        case 'module1':
-          // eslint-disable-next-line max-len
-          selectedUntaggedPorts = _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues])
-          break
-        case 'module2':
-          // eslint-disable-next-line max-len
-          selectedUntaggedPorts = _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues])
-          break
-        case 'module3':
-          // eslint-disable-next-line max-len
-          selectedUntaggedPorts = _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues])
-          break
-      }
+      const orinSelected = form.getFieldValue(['switchFamilyModels', 'untaggedPorts'])
+      const orinSelectedGroupByPrefix = orinSelected.reduce((acc: { [key: string]: string[] }, str: string) => {
+        const prefix = str.slice(0, 3) // 1/1 1/2 2/1
+        if (!acc[prefix]) {
+          acc[prefix] = []
+        }
+        acc[prefix].push(str)
+        return acc
+      }, {} as { [key: string]: string[] })
 
-      form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], selectedUntaggedPorts)
+      console.log('aa: ', moduleGroup, orinSelectedGroupByPrefix)
+
+      // let selectedUntaggedPorts: string[] = []
+      // switch(moduleName){
+      //   case 'module1':
+      //     // eslint-disable-next-line max-len
+      //     selectedUntaggedPorts = _.uniq([...selectedItems2, ...selectedItems3, ...checkedValues])
+      //     break
+      //   case 'module2':
+      //     // eslint-disable-next-line max-len
+      //     selectedUntaggedPorts = _.uniq([...selectedItems1, ...selectedItems3, ...checkedValues])
+      //     break
+      //   case 'module3':
+      //     // eslint-disable-next-line max-len
+      //     selectedUntaggedPorts = _.uniq([...selectedItems1, ...selectedItems2, ...checkedValues])
+      //     break
+      // }
+
+      console.log('checkedValues: ', checkedValues)
+      console.log('** ', form.getFieldValue(['switchFamilyModels', 'untaggedPorts']) )
+
+      const selected = _.uniq([
+        ...Object.values(_.omit(orinSelectedGroupByPrefix, moduleGroup)).flat(),
+        ...checkedValues
+      ])
+
+      setSelectedItems(selected)
+
+      console.log('selected: ', selected)
+
+      // console.log(selectedUntaggedPorts)
+
+      form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], selected)
       setVlanSettingValues({
         ...vlanSettingValues,
         switchFamilyModels: {
           id: vlanSettingValues.switchFamilyModels?.id,
           model: vlanSettingValues.switchFamilyModels?.model || '',
           slots: vlanSettingValues.switchFamilyModels?.slots || [],
-          untaggedPorts: selectedUntaggedPorts,
+          untaggedPorts: selected, //selectedUntaggedPorts,
           taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
         }
       })
@@ -266,7 +323,7 @@ export function UntaggedPortsStep () {
   }
 
   return (
-    <div style={{ height: '300px' }}>
+    <div style={{ height: '80%' }}>
       <Row gutter={20}>
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
@@ -281,7 +338,7 @@ export function UntaggedPortsStep () {
       </Row>
       <Row gutter={20} style={{ marginTop: '20px' }} id='unTaggedContainer'>
         <Col>
-          <Card type='solid-bg'>
+          <UI.CardStyle>
             <Row gutter={20}>
               <Col>
                 <div>
@@ -302,8 +359,8 @@ export function UntaggedPortsStep () {
                     className='lightblue'
                     onChange={(checkedValues) =>
                       handleCheckboxGroupChange('module1',
-                        checkedValues as string[], setSelectedItems1)}
-                    value={selectedItems1}
+                        checkedValues as string[], setSelectedItems1, '')}
+                    value={selectedItems}
                     options={portsModule1.map((timeslot, i) => ({
                       label: <Tooltip
                         title={getTooltip(timeslot.value)}
@@ -343,8 +400,8 @@ export function UntaggedPortsStep () {
                         className='lightblue'
                         onChange={(checkedValues) =>
                           handleCheckboxGroupChange('module2',
-                                checkedValues as string[], setSelectedItems2)}
-                        value={selectedItems2}
+                                checkedValues as string[], setSelectedItems2, '')}
+                        value={selectedItems}
                         options={portsModule2.map((timeslot, i) => ({
                           label: <Tooltip
                             title={getTooltip(timeslot.value)}
@@ -384,8 +441,8 @@ export function UntaggedPortsStep () {
                     className='lightblue'
                     onChange={(checkedValues) =>
                       handleCheckboxGroupChange('module3',
-                            checkedValues as string[], setSelectedItems3)}
-                    value={selectedItems3}
+                            checkedValues as string[], setSelectedItems3, '')}
+                    value={selectedItems}
                     options={portsModule3.map((timeslot, i) => ({
                       label: <Tooltip
                         title={getTooltip(timeslot.value)}
@@ -407,7 +464,143 @@ export function UntaggedPortsStep () {
               </Col>
               }
             </Row>
-          </Card>
+          </UI.CardStyle>
+
+          { portsModule.map((module, index) => {
+            return <UI.CardStyle>
+              <Row gutter={20}>
+                <Col>
+                  <div>
+                    <Typography.Text style={{ fontWeight: 'bold' }}>
+                      {$t({ defaultMessage: 'Module 1' })}
+                    </Typography.Text>
+                  </div>
+                  { vlanSettingValues.switchFamilyModels?.slots[0] &&
+                  <Typography.Paragraph>
+                    {$t({ defaultMessage: '{module1}' },
+                      { module1: vlanSettingValues.switchFamilyModels?.slots[0].slotPortInfo
+                        ?.split('X').join(' X ') })}
+                  </Typography.Paragraph>
+                  }
+                  <UI.Module>
+                    <Checkbox.Group
+                      key='checkboxGroup_module1'
+                      className='lightblue'
+                      onChange={(checkedValues) =>
+                        handleCheckboxGroupChange('module1',
+                        checkedValues as string[], setSelectedItems1, `${index+1}/1`)}
+                      value={selectedItems1}
+                      options={(module[0] as unknown as PortsType[]).map((timeslot, i) => ({
+                        label: <Tooltip
+                          title={getTooltip(timeslot.value)}
+                        >
+                          <div
+                            id={`untagged_module1_${index}_${i}`}
+                            data-value={timeslot.value}
+                            data-testid={`untagged_module1_${index}_${i}`}
+                            data-disabled={getDisabledPorts(timeslot.value)}
+                            style={{ width: '20px', height: '20px' }}
+                          >
+                          </div>
+                          <p>{getPortLabel(i+1, 1)}</p>
+                        </Tooltip>,
+                        value: timeslot.value,
+                        disabled: getDisabledPorts(timeslot.value)
+                      }))}
+                    />
+                  </UI.Module>
+                </Col>
+                { //vlanSettingValues.enableSlot2 &&
+                  module[1] &&
+              <Col>
+                <Row gutter={20}>
+                  <Col>
+                    <div>
+                      <Typography.Text style={{ fontWeight: 'bold' }}>
+                        {$t({ defaultMessage: 'Module 2' })}
+                      </Typography.Text>
+                    </div>
+                    <Typography.Paragraph>
+                      {/* {$t({ defaultMessage: '{module2}' },
+                        { module2: slot2.slotPortInfo?.split('X').join(' X ') })} */}
+                    </Typography.Paragraph>
+                    <UI.Module>
+                      <Checkbox.Group
+                        key='checkboxGroup_module2'
+                        className='lightblue'
+                        onChange={(checkedValues) =>
+                          handleCheckboxGroupChange('module2',
+                                checkedValues as string[], setSelectedItems2, `${index+1}/2`)}
+                        value={selectedItems2}
+                        options={(module[1] as unknown as PortsType[]).map((timeslot, i) => ({
+                          label: <Tooltip
+                            title={getTooltip(timeslot.value)}
+                          >
+                            <div
+                              id={`untagged_module2_${index}_${i}`}
+                              data-value={timeslot.value}
+                              data-testid={`untagged_module2_${index}_${i}`}
+                              data-disabled={getDisabledPorts(timeslot.value)}
+                              style={{ width: '20px', height: '20px' }}
+                            ></div>
+                            <p>{getPortLabel(i+1, 2)}</p>
+                          </Tooltip>,
+                          value: timeslot.value,
+                          disabled: getDisabledPorts(timeslot.value)
+                        }))}
+                      />
+                    </UI.Module>
+                  </Col>
+                </Row>
+              </Col>
+                }
+                { //vlanSettingValues.enableSlot3 && slot3
+                  module[2] &&
+              <Col>
+                <div>
+                  <Typography.Text style={{ fontWeight: 'bold' }}>
+                    {$t({ defaultMessage: 'Module 3' })}
+                  </Typography.Text>
+                </div>
+                <Typography.Paragraph>
+                  {/* {$t({ defaultMessage: '{module3}' },
+                    { module3: slot3.slotPortInfo?.split('X').join(' X ') })} */}
+                </Typography.Paragraph>
+                <UI.Module>
+                  <Checkbox.Group
+                    key='checkboxGroup_module3'
+                    className='lightblue'
+                    onChange={(checkedValues) =>
+                      handleCheckboxGroupChange('module3',
+                            checkedValues as string[], setSelectedItems3, `${index+1}/3`)}
+                    value={selectedItems3}
+                    options={(module[2] as unknown as PortsType[]).map((timeslot, i) => ({
+                      label: <Tooltip
+                        title={getTooltip(timeslot.value)}
+                      >
+                        <div
+                          id={`untagged_module3_${index}_${i}`}
+                          data-value={timeslot.value}
+                          data-testid={`untagged_module3_${index}_${i}`}
+                          data-disabled={getDisabledPorts(timeslot.value)}
+                          style={{ width: '20px', height: '20px' }}
+                        ></div>
+                        <p>{getPortLabel(i+1, 3)}</p>
+                      </Tooltip>,
+                      value: timeslot.value,
+                      disabled: getDisabledPorts(timeslot.value)
+                    }))}
+                  />
+                </UI.Module>
+              </Col>
+                }
+              </Row>
+            </UI.CardStyle>
+          })
+
+
+          }
+
           <DragSelectionUntaggedPorts />
         </Col>
       </Row>

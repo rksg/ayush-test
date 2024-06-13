@@ -68,7 +68,7 @@ export function SwitchOverviewVLANs (props: {
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
-  const [portSlotsData, setPortSlotsData] = useState([] as SwitchSlot[])
+  const [portSlotsData, setPortSlotsData] = useState([] as SwitchSlot[][])
   const [isDefaultVlanAppliedACL, setIsDefaultVlanAppliedACL] = useState(false)
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -488,10 +488,14 @@ export function SwitchOverviewVLANs (props: {
 }
 
 export function getPortViewData (
-  portsData: SwitchPortViewModel[]): { slots: SwitchSlot[] } {
+  portsData: SwitchPortViewModel[]): { slots: SwitchSlot[][] } {
+
+  console.log('portsData: ', portsData)
+
   const tmpSlots = portsData.reduce((acc, port) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, slotStr, portNumberStr] = port.portIdentifier.split('/')
+    const [unit, slotStr, portNumberStr] = port.portIdentifier.split('/')
+    const unitNumber = Number(unit)
     const slotNumber = Number(slotStr)
     const portNumber = Number(portNumberStr)
 
@@ -502,20 +506,28 @@ export function getPortViewData (
       usedInUplink: port.cloudPort
     }
 
-    if (!acc[slotNumber]) {
-      acc[slotNumber] = { portStatus: [], portCount: 0, portNumber: 0, portTagged: '' }
+    if (!acc[unitNumber]) {
+      acc[unitNumber] = {}
     }
 
-    acc[slotNumber].portStatus.push(updatedPort)
-    acc[slotNumber].portCount++
-    acc[slotNumber].portNumber = portNumber
-    acc[slotNumber].slotNumber = slotNumber
+
+    if (!acc[unitNumber][slotNumber]) {
+      acc[unitNumber][slotNumber] = { portStatus: [], portCount: 0, portNumber: 0, portTagged: '' }
+    }
+
+    acc[unitNumber][slotNumber].portStatus.push(updatedPort)
+    acc[unitNumber][slotNumber].portCount++
+    acc[unitNumber][slotNumber].portNumber = portNumber
+    acc[unitNumber][slotNumber].slotNumber = slotNumber
 
     return acc
 
-  }, {} as { [key: number]: SwitchSlot })
+  }, {} as { [key: number]: { [key: number]:SwitchSlot } })
+
+  console.log('tmpSlots: ', tmpSlots)
+  console.log(Object.values(tmpSlots).map(slot => Object.values(slot)))
 
   return {
-    slots: Object.values(tmpSlots)
+    slots: Object.values(tmpSlots).map(slot => Object.values(slot))
   }
 }

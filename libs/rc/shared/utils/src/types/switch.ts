@@ -714,6 +714,7 @@ export interface PortStatus{
   portNumber: number
   portTagged: string
   unitNumber?: number
+  portIdentifier?: string
 }
 
 export interface SwitchSlot2 { //TODO

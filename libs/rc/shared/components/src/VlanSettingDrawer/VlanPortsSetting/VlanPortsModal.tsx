@@ -40,7 +40,7 @@ export function VlanPortsModal (props: {
   currrentRecords?: SwitchModelPortData[],
   vlanList: Vlan[],
   switchFamilyModel?: string,
-  portSlotsData?: SwitchSlot[]
+  portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
 }) {
   const { $t } = useIntl()
@@ -99,8 +99,8 @@ export function VlanPortsModal (props: {
     }
   }, [form, open, editRecord])
 
-  const checkSlotEnabled = (portSlotsData: SwitchSlot[], slotNumber: number) => {
-    return portSlotsData?.filter(port => port.slotNumber === slotNumber)?.length > 0
+  const checkSlotEnabled = (portSlotsData: SwitchSlot[][], slotNumber: number) => {
+    return portSlotsData[0]?.filter(port => port.slotNumber === slotNumber)?.length > 0
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -166,14 +166,14 @@ export function VlanPortsModal (props: {
       ? vlanSettingValues.switchFamilyModels?.slots : data.switchFamilyModels.slots
 
     const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
-      ?.filter((value: string) => value.startsWith('1/1/') ||
-        (enableSlot2 && value.startsWith('1/2/')) ||
-        (enableSlot3 && value.startsWith('1/3/')))
+    // ?.filter((value: string) => value.startsWith('1/1/') ||
+    //   (enableSlot2 && value.startsWith('1/2/')) ||
+    //   (enableSlot3 && value.startsWith('1/3/')))
 
     const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
-      ?.filter((value: string) => value.startsWith('1/1/') ||
-        (enableSlot2 && value.startsWith('1/2/')) ||
-        (enableSlot3 && value.startsWith('1/3/')))
+    // ?.filter((value: string) => value.startsWith('1/1/') ||
+    //   (enableSlot2 && value.startsWith('1/2/')) ||
+    //   (enableSlot3 && value.startsWith('1/3/')))
 
     switchFamilyModelsData.model
       = isSwitchLevel ? switchFamilyModel : data.family + '-' + data.model

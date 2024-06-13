@@ -47,7 +47,7 @@ export interface VlanSettingDrawerProps {
   isProfileLevel?: boolean
   enablePortModelConfigure?: boolean
   switchFamilyModel?: string
-  portSlotsData?: SwitchSlot[]
+  portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
 }
 
@@ -119,7 +119,7 @@ interface VlanSettingFormProps {
   isProfileLevel?: boolean
   switchFamilyModel?: string
   enablePortModelConfigure?: boolean
-  portSlotsData?: SwitchSlot[]
+  portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
 }
 

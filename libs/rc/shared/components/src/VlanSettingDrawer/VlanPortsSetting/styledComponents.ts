@@ -1,7 +1,6 @@
 import { Space } from 'antd'
 import styled    from 'styled-components/macro'
 
-
 import { TagsOutline, TagsSolid } from '@acx-ui/icons'
 
 export const GroupListLayout = styled('div')`
@@ -197,4 +196,10 @@ export const PortSpan = styled.div`
   font-size: var(--acx-body-5-font-size);
   line-height: var(--acx-body-5-line-height);
   padding-left: 20px;
+`
+
+export const CardStyle = styled.div`
+  padding: 12px 16px;
+  background-color: var(--acx-neutrals-10);
+  height: auto;
 `
