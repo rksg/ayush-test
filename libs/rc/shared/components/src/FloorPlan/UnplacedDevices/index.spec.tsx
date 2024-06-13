@@ -4,8 +4,8 @@ import userEvent        from '@testing-library/user-event'
 import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
-import { ApDeviceStatusEnum, NetworkDeviceType, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
-import { fireEvent, screen ,render }                                                       from '@acx-ui/test-utils'
+import { ApDeviceStatusEnum, NetworkDeviceType, RWGStatusEnum, SwitchStatusEnum, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
+import { fireEvent, screen ,render }                                                                      from '@acx-ui/test-utils'
 
 
 import { NetworkDeviceContext } from '..'
@@ -46,7 +46,17 @@ const unplacedDevicesState: TypeWiseNetworkDevices = {
   }],
   RogueAP: [],
   cloudpath: [],
-  DP: []
+  DP: [],
+  rwg: [{
+    deviceStatus: RWGStatusEnum.ONLINE,
+    floorplanId: '94bed28abef24175ab58a3800d01e24a',
+    id: 'bbc41563473348d29a36b76e95c50381',
+    serialNumber: '',
+    name: 'rwg-device',
+    xPercent: 30.20548,
+    yPercent: 29.839357,
+    networkDeviceType: NetworkDeviceType.rwg
+  }]
 }
 
 describe('Floor Plans Unlpaced Device list', () => {

@@ -61,6 +61,10 @@ describe('MyPolicies', () => {
         ApSnmpUrls.getApSnmpFromViewModel.url,
         (_, res, ctx) => res(ctx.json(mockTableResult))
       ),
+      rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json(mockTableResult))
+      ),
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockTableResult))

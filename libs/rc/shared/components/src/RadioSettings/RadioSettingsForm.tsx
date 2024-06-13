@@ -207,24 +207,22 @@ export function RadioSettingsForm (props:{
               { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
-              LPIButtonText?.buttonText : (
-                <Tooltip
-                  title={
-                    (isAFCEnabled ? undefined :
-                      <div style={{ textAlign: 'center' }}>
-                        <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
-                      </div>
-                    )
-                  }
-                >
-                  <Switch
-                    disabled={!isAFCEnabled || isUseVenueSettings}
-                    onChange={() => {
-                      onChangedByCustom('enableAfc')
-                      form.validateFields()
-                    }}
-                  />
-                </Tooltip>)
+              LPIButtonText?.buttonText : (isAFCEnabled ?
+                <Switch
+                  disabled={!isAFCEnabled || isUseVenueSettings}
+                  onChange={() => {
+                    onChangedByCustom('enableAfc')
+                    form.validateFields()
+                  }}
+                /> :
+                <Tooltip title={
+                  <div style={{ textAlign: 'center' }}>
+                    <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
+                  </div>
+                }>
+                  <Switch disabled={!isAFCEnabled || isUseVenueSettings} />
+                </Tooltip>
+              )
             }
           </Form.Item>
         </FieldLabel>
