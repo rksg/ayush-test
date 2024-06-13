@@ -29,6 +29,7 @@ import {
 } from './FirmwareUtils'
 import * as UI        from './styledComponents'
 import SwitchFirmware from './SwitchFirmware'
+import SwitchFirmwareV1002 from './SwitchFirmwareV1002'
 
 const FWVersionMgmt = () => {
   const { $t } = useIntl()
@@ -37,6 +38,7 @@ const FWVersionMgmt = () => {
   const basePath = useTenantLink('/administration/fwVersionMgmt')
   const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
 
   const { data: latestSwitchReleaseVersions } =
     useGetSwitchLatestFirmwareListQuery({ params, enableRbac: isSwitchRbacEnabled })
@@ -93,7 +95,14 @@ const FWVersionMgmt = () => {
       content: <ApFirmware />,
       visible: true
     },
-    switchFirmware: {
+    switchFirmware: isSwitchFirmwareV1002Enabled ? {
+      title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
+        {isSwitchFirmwareAvailable && <Tooltip children={<InformationSolid />}
+          title={$t({ defaultMessage: 'There are new Switch firmware versions available' })} />}
+      </UI.TabWithHint>,
+      content: <SwitchFirmwareV1002 />,
+      visible: true
+    } : {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
         {isSwitchFirmwareAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Switch firmware versions available' })} />}

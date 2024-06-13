@@ -38,6 +38,11 @@ const v1_1Header = {
   'Accept': 'application/vnd.ruckus.v1.1+json'
 }
 
+const v1_2Header = {
+  'Content-Type': 'application/vnd.ruckus.v1.2+json',
+  'Accept': 'application/vnd.ruckus.v1.2+json'
+}
+
 export const firmwareApi = baseFirmwareApi.injectEndpoints({
   endpoints: (build) => ({
     getUpgradePreferences: build.query<UpgradePreferences, RequestPayload>({
@@ -259,6 +264,38 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitchVenueVersionListV1002: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = v1_2Header
+        // eslint-disable-next-line max-len
+        const queryString = payload as { searchString: string, filters: { version: [], type: string[] } }
+        const request =
+            createHttpRequest(FirmwareRbacUrlsInfo.getSwitchVenueVersionList, params, headers)
+        return {
+          ...request,
+          body: JSON.stringify({
+            // eslint-disable-next-line max-len
+            firmwareVersion: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
+            searchFilter: queryString?.searchString ?? ''
+          })
+        }
+      },
+      transformResponse (result: {
+        upgradeVenueViewList?: FirmwareSwitchVenue[]
+      } | FirmwareSwitchVenue[]) {
+        const data = Array.isArray(result) ? result : result.upgradeVenueViewList ?? []
+        const totalCount = data.length
+
+        return {
+          data,
+          page: 1,
+          totalCount
+        } as TableResult<FirmwareSwitchVenue>
+      },
+      keepUnusedDataFor: 0,
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
     }),
     getSwitchVenueVersionList: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
@@ -602,6 +639,8 @@ export const {
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useLazyGetSwitchVenueVersionListQuery,
+  useGetSwitchVenueVersionListV1002Query,
+  useLazyGetSwitchVenueVersionListV1002Query,
   useGetSwitchAvailableFirmwareListQuery,
   useGetSwitchCurrentVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
