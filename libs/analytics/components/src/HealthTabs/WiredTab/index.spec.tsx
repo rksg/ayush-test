@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom'
 
+import { get }      from '@acx-ui/config'
 import { Provider } from '@acx-ui/store'
 import {
   fireEvent,
@@ -20,9 +21,21 @@ jest.mock('./SummaryBoxes', () => ({
 }))
 jest.mock('./Kpi', () => () => <div>Kpi Section</div>)
 
+const mockGet = get as jest.Mock
+jest.mock('@acx-ui/config', () => ({
+  get: jest.fn()
+}))
+
+beforeEach(() => mockGet.mockReturnValue(''))
+
 const params = { activeTab: 'wired', tenantId: 'tenant-id' }
 describe('WiredTab', () => {
   it('should render correctly', async () => {
+    const { asFragment }=render(<Provider><WiredTab /></Provider>, { route: { params } })
+    expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render correctly when IS_MLISA_SA', async () => {
+    mockGet.mockReturnValue('true')
     const { asFragment }=render(<Provider><WiredTab /></Provider>, { route: { params } })
     expect(asFragment()).toMatchSnapshot()
   })
