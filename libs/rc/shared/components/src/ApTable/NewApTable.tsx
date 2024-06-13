@@ -29,7 +29,8 @@ import {
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesVenueQuery,
   useLazyImportResultQuery,
-  useNewApListQuery
+  useNewApListQuery,
+  useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   APMeshRole,
@@ -50,7 +51,7 @@ import {
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                 from '@acx-ui/types'
+import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { exportMessageMapping }                                           from '@acx-ui/utils'
 
@@ -104,6 +105,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+  const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { tenantId: params.tenantId } })
 
   const apListTableQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
@@ -196,6 +198,13 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
   const venueOptions = filterables?.['venueId'] instanceof Array ?
     filterables?.['venueId'].map(item => ({ label: item.value, value: item.key })) :
     []
+
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const isAPOutdoor = (model: string): boolean | undefined => {
+    const currentApModel = wifiCapabilities?.apModels?.find((apModel) => apModel.model === model)
+    return currentApModel?.isOutdoor
+  }
 
   const columns = useMemo(() => {
     const extraParams = tableQuery?.data?.extra ?? {
@@ -454,12 +463,12 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     //   sorter: false,
     //   width: 200,
     //   render: (data: ReactNode, row: NewAPModelExtended) => {
-    //     const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+    //     const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, isAPOutdoor(row.model))
     //     return (
     //       <>
     //         {status.columnText}
     //         {/* eslint-disable-next-line*/}
-    //         {(status.columnText !== '--' && status.columnText === 'Low power' && status.tooltipText) && <Tooltip.Info
+    //         {(status.columnText !== '--' && status.columnText !== 'Standard power' && status.tooltipText) && <Tooltip.Info
     //           placement='bottom'
     //           iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
     //           title={status.tooltipText}
@@ -513,12 +522,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
 
   const rowActions: TableProps<NewAPModelExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [WifiScopes.DELETE],
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -530,6 +541,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
     //   }
     // }, {
     label: $t({ defaultMessage: 'Reboot' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
@@ -630,6 +642,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
         rowActions={filterByAccess(rowActions)}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,
@@ -638,6 +651,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
           }
         }, {
           label: $t({ defaultMessage: 'Add AP Group' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,
@@ -649,6 +663,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
           }
         }, {
           label: $t({ defaultMessage: 'Import APs' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             setImportVisible(true)
           }

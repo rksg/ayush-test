@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { render, screen, fireEvent } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { Modal }                     from 'antd'
-import { debounce }                  from 'lodash'
-import { rest }                      from 'msw'
-import { IntlProvider }              from 'react-intl'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent                              from '@testing-library/user-event'
+import { Modal }                              from 'antd'
+import { debounce }                           from 'lodash'
+import { rest }                               from 'msw'
+import { IntlProvider }                       from 'react-intl'
 
 import { StepsForm }      from '@acx-ui/components'
 import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
@@ -499,4 +499,72 @@ describe('VlanPortsModal', () => {
       vlanConfigName: ''
     })
   })
+
+  it('should render port status correctly', async () => {
+    const setVlan = jest.fn()
+    render(<IntlProvider locale='en'>
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={setVlan}
+          vlanList={[]}
+          switchFamilyModel={'ICX7150-C08P'}
+          portSlotsData={portSlotsData}
+          portsUsedBy={{
+            lag: { '1/1/6': 'LAG1' },
+            untagged: {
+              '1/1/7': 666,
+              '1/1/5': 555
+            }
+          }}
+        />
+      </Provider>
+    </IntlProvider>)
+
+    const untagged1_1_7 = await screen.findByTestId('untagged_module1_6')
+    expect(untagged1_1_7).toHaveAttribute('data-disabled', 'true')
+
+    await userEvent.hover(untagged1_1_7)
+    await waitFor(async () => expect(await screen.findByRole('tooltip')).toBeInTheDocument())
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Port is already an untagged member of VLAN 666')
+
+  })
+
+  it('should render port status (LAG) correctly', async () => {
+    const setVlan = jest.fn()
+    render(<IntlProvider locale='en'>
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={setVlan}
+          vlanList={[]}
+          switchFamilyModel={'ICX7150-C08P'}
+          portSlotsData={portSlotsData}
+          portsUsedBy={{
+            lag: { '1/1/6': 'LAG1' },
+            untagged: {
+              '1/1/7': 666,
+              '1/1/5': 555
+            }
+          }}
+        />
+      </Provider>
+    </IntlProvider>)
+
+    const untagged1_1_6 = await screen.findByTestId('untagged_module1_5')
+    expect(untagged1_1_6).toHaveAttribute('data-disabled', 'true')
+
+    await userEvent.hover(untagged1_1_6)
+    await waitFor(async () => expect(await screen.findByRole('tooltip')).toBeInTheDocument())
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Port is member of LAG – LAG1')
+  })
+
 })

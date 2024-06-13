@@ -13,6 +13,7 @@ import {
   useApContext
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { defaultPagination }              from './constants'
@@ -33,6 +34,7 @@ export default function ApLldpNeighbors () {
   const [ selectedApLldpNeighbor, setSelectedApLldpNeighbor ] = useState<ApLldpNeighbor>()
 
   const tableActions = [{
+    scopeKey: [WifiScopes.UPDATE],
     label: $t({ defaultMessage: 'Detect' }),
     disabled: isDetecting,
     onClick: () => doDetect()
