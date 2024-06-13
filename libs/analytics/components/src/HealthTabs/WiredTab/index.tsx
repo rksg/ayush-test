@@ -14,7 +14,7 @@ import Kpis             from './Kpi'
 import { SummaryBoxes } from './SummaryBoxes'
 
 //Normalize the value by bringing it within the range
-export function limitRange (value: number, min: number = 0.0, max: number = 1.0): number {
+export function limitRange (value: number, min = 0.0, max = 1.0): number {
   if(isNil(value)) return value
   return Math.max(min, Math.min(max, value))
 }
