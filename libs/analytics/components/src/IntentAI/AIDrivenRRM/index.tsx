@@ -8,7 +8,7 @@ import { PageHeader, StepsForm, bandwidthMapping, recommendationBandMapping } fr
 import { Legend } from '../../Recommendations/RecommendationDetails/Graph/Legend'
 
 import { sampleMapping, demoLink, guideLink } from './mapping'
-import * as UI  from './styledComponents'
+import * as UI                                from './styledComponents'
 
 export function IntentAIDrivenRRM () {
   const { $t } = useIntl()
