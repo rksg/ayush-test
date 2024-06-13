@@ -437,7 +437,7 @@ export function RadioSettings () {
     if (wifiRadioTab) {
       onTabChange(wifiRadioTab)
     }
-  }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels, isSupport6GCountry])
+  }, [isWifiSwitchableRfEnabled, currentVenueBandModeData, initVenueBandModeData, dual5gApModels])
 
   const [currentTab, setCurrentTab] = useState('Normal24GHz')
 
