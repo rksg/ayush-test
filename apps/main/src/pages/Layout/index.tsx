@@ -190,7 +190,7 @@ function Layout () {
               </UI.Home>
             </MspTenantLink>}
         </HeaderContext.Provider>
-        <LayoutUI.Divider />
+        {(!isSpecialRole || showMspHomeButton) && <LayoutUI.Divider />}
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
