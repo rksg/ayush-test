@@ -81,6 +81,7 @@ describe('Guest Table', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     networkId: 'tenant-id'
   }
+  const userProfile = getUserProfile()
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()
 
@@ -98,6 +99,19 @@ describe('Guest Table', () => {
     act(() => {
       store.dispatch(clientApi.util.resetApiState())
       store.dispatch(networkApi.util.resetApiState())
+    })
+
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: false,
+      isCustomRole: false,
+      allowedOperations: [
+        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'POST:/wifiNetworks',
+        'POST:/guestUsers'
+      ]
     })
 
     mockServer.use(
@@ -152,12 +166,6 @@ describe('Guest Table', () => {
   })
 
   it('should render Add Guest drawer correctly', async () => {
-    const userProfile = getUserProfile()
-    setUserProfile({
-      ...userProfile,
-      allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers']
-    })
-
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -181,12 +189,6 @@ describe('Guest Table', () => {
   })
 
   it('should render Add Guest Pass Network modal correctly', async () => {
-    const userProfile = getUserProfile()
-    setUserProfile({
-      ...userProfile,
-      allowedOperations: ['POST:/networks']
-    })
-
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -388,11 +390,6 @@ describe('Guest Table', () => {
   })
 
   it('should show "Import from file" correctly', async () => {
-    const userProfile = getUserProfile()
-    setUserProfile({
-      ...userProfile,
-      allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers']
-    })
 
     mockServer.use(
       rest.post(
@@ -467,7 +464,7 @@ describe('Guest Table', () => {
         profile: {
           ...getUserProfile().profile
         },
-        allowedOperations: [],
+        allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers'],
         abacEnabled: true,
         isCustomRole: true,
         scopes: [WifiScopes.CREATE]
