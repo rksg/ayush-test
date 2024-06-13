@@ -46,7 +46,7 @@ export function LowPowerBannerAndModal (props: {
       const messageList: string[] = []
 
       if (isOutdoor) {
-        messageList.push($t({ defaultMessage: '6 GHz radio has been turned off.' }))
+        messageList.push($t({ defaultMessage: 'The 6GHz radio is not currently operable.' }))
       } else {
         messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
       }
