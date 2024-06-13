@@ -475,16 +475,26 @@ export function SingleRadioSettings (props:{
           </Row>
           <Row gutter={20}>
             <Col span={channelColSpan}>
-              <RadioSettingsChannels
-                formName={allowedIndoorChannelsFieldName}
-                groupSize={groupSize}
-                channelList={indoorChannelList}
-                displayBarSettings={displayRadioBarSettings}
-                channelBars={indoorChannelBars}
-                disabled={inherit5G || disable}
-                handleChanged={handleChanged}
-                afcProps={afcProps}
-              />
+              {channelBandwidth !== '320MHz' ?
+                <RadioSettingsChannels
+                  formName={allowedIndoorChannelsFieldName}
+                  groupSize={groupSize}
+                  channelList={indoorChannelList}
+                  displayBarSettings={displayRadioBarSettings}
+                  channelBars={indoorChannelBars}
+                  disabled={inherit5G || disable}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                /> :
+                <RadioSettingsChannels320Mhz
+                  context={context}
+                  formName={allowedIndoorChannelsFieldName}
+                  channelList={indoorChannelList}
+                  disabled={inherit5G || disable || isUseVenueSettings}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                />
+              }
             </Col>
           </Row>
         </>
@@ -505,16 +515,26 @@ export function SingleRadioSettings (props:{
           </Row>
           <Row gutter={20}>
             <Col span={channelColSpan}>
-              <RadioSettingsChannels
-                formName={allowedOutdoorChannelsFieldName}
-                groupSize={groupSize}
-                channelList={outdoorChannelList}
-                displayBarSettings={displayRadioBarSettings}
-                channelBars={outdoorChannelBars}
-                disabled={inherit5G || disable}
-                handleChanged={handleChanged}
-                afcProps={afcProps}
-              />
+              {channelBandwidth !== '320MHz' ?
+                <RadioSettingsChannels
+                  formName={allowedOutdoorChannelsFieldName}
+                  groupSize={groupSize}
+                  channelList={outdoorChannelList}
+                  displayBarSettings={displayRadioBarSettings}
+                  channelBars={outdoorChannelBars}
+                  disabled={inherit5G || disable}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                /> :
+                <RadioSettingsChannels320Mhz
+                  context={context}
+                  formName={allowedOutdoorChannelsFieldName}
+                  channelList={outdoorChannelList}
+                  disabled={inherit5G || disable || isUseVenueSettings}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                />
+              }
             </Col>
           </Row>
         </>
