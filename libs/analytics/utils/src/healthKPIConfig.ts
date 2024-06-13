@@ -494,7 +494,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility to switches.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility of switches to controller.' })
     }
   },
   switchMemoryUtilization: {
@@ -509,7 +509,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchMemoryUtilization',
-      splits: [10,25,50,60,70,80,90],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
       shortXFormat: noFormat,
@@ -539,7 +539,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchCpuUtilization',
-      splits: [10,25,50,60,70,80,90],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
       shortXFormat: noFormat,
@@ -585,7 +585,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchUplinkPortUtilization',
-      splits: [20, 40, 60, 80, 100],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -615,7 +615,7 @@ export const kpiConfig = {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchPortUtilization',
-      splits: [20, 40, 60, 80, 100],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
