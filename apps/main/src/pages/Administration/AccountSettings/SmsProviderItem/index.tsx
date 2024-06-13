@@ -2,60 +2,64 @@ import { useEffect, useState } from 'react'
 
 import { Form, Col, List, Row, Space, Typography } from 'antd'
 import { useIntl }                                 from 'react-intl'
+import { useParams }                               from 'react-router-dom'
 import AutoSizer                                   from 'react-virtualized-auto-sizer'
 
 
 import { Button, Card, cssStr, DonutChart, showActionModal, Tooltip } from '@acx-ui/components'
 import {
-  useDeleteTenantAuthenticationsMutation
+  useGetNotificationSmsQuery,
+  useUpdateNotificationSmsMutation
 } from '@acx-ui/rc/services'
-import { TenantAuthentications, TenantAuthenticationType } from '@acx-ui/rc/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem/'
 import { ButtonWrapper }   from '../AuthServerFormItem/styledComponents'
 
 import { SetupSmsProviderDrawer } from './SetupSmsProviderDrawer'
 
-interface SmsProviderProps {
-  className?: string;
-  tenantAuthenticationData?: TenantAuthentications[];
-}
-
-const SmsProviderItem = (props: SmsProviderProps) => {
+const SmsProviderItem = () => {
   const { $t } = useIntl()
-  const { tenantAuthenticationData } = props
+  const params = useParams()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [isEditMode, setEditMode] = useState(false)
-  const [hasSmsConfigured, setSmsConfigured] = useState(false)
-  const [authenticationData, setAuthenticationData] = useState<TenantAuthentications>()
+  const [ruckusOneUsed, setRuckusOneUsed] = useState<number>(0)
+  const [smsThreshold, setSmsThreshold] = useState<number>(80)
+  const [smsProvider, setSmsProvider] = useState<string>('')
+  const [freeSmsPool, setFreeSmsPool] = useState(true)
 
-  const [deleteTenantAuthentications]
-  = useDeleteTenantAuthenticationsMutation()
+  const FREE_SMS_POOL = 100
 
+  const [updateNotificationSms] = useUpdateNotificationSmsMutation()
 
   const onSetUpValue = () => {
     setEditMode(false)
     setDrawerVisible(true)
   }
 
-  const ssoData = tenantAuthenticationData?.filter(n =>
-    n.authenticationType === TenantAuthenticationType.saml ||
-    n.authenticationType === TenantAuthenticationType.google_workspace)
-  useEffect(() => {
-    if (ssoData && ssoData.length > 0) {
-      setSmsConfigured(true)
-      setAuthenticationData(ssoData[0])
-    } else {
-      setSmsConfigured(false)
-    }
-  }, [ssoData])
+  const smsUsage = useGetNotificationSmsQuery({ params })
 
-  const data = [
-    { value: 30000, name: 'In Setup Phase', color: cssStr('--acx-accents-blue-50') },
-    { value: 3322, name: 'Temporarily Degraded', color: cssStr('--acx-neutrals-50') },
-    { value: 800, name: 'Requires Attention', color: cssStr('--acx-semantics-red-70') },
-    { value: 4322, name: 'Temporarily Degraded', color: cssStr('--acx-neutrals-50') }
-  ]
+  useEffect(() => {
+    if (smsUsage) {
+      // setRuckusOneUsed(smsUsage.data?.ruckusOneUsed ?? 0)
+      setRuckusOneUsed(60)
+      setSmsThreshold(smsUsage.data?.thredshold ?? 80)
+      setSmsProvider(smsUsage.data?.provider ?? '')
+      setFreeSmsPool(true)
+    }
+  }, [smsUsage])
+
+  const data = ruckusOneUsed > FREE_SMS_POOL
+    ? [
+      { value: 100, name: 'usage', color: cssStr('--acx-accents-blue-50') }
+    ]
+    : [
+      { value: ruckusOneUsed, name: 'usage', color: cssStr('--acx-accents-blue-50') },
+      { value: smsThreshold - ruckusOneUsed,
+        name: 'remaining1', color: cssStr('--acx-neutrals-50') },
+      { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+      { value: FREE_SMS_POOL - smsThreshold,
+        name: 'remaining2', color: cssStr('--acx-neutrals-50') }
+    ]
 
   return ( <>
     <Row gutter={24} style={{ marginBottom: '15px' }}>
@@ -78,7 +82,7 @@ const SmsProviderItem = (props: SmsProviderProps) => {
               placement='right'
             />
           </>}
-          children={hasSmsConfigured &&
+          children={smsProvider !== '' &&
             <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
               <ButtonWrapper
                 style={{ marginLeft: '10px' }}
@@ -100,13 +104,12 @@ const SmsProviderItem = (props: SmsProviderProps) => {
                       type: 'confirm',
                       customContent: {
                         action: 'DELETE',
-                        entityName: $t({ defaultMessage: 'sso' }),
+                        entityName: $t({ defaultMessage: 'sms' }),
                         // entityValue: name,
                         confirmationText: $t({ defaultMessage: 'Yes, Remove Provider' })
                       },
                       onOk: () => {
-                        deleteTenantAuthentications({
-                          params: { authenticationId: authenticationData?.id } })
+                        updateNotificationSms({ params })
                           .then()
                         reloadAuthTable(2)
                       }
@@ -119,14 +122,14 @@ const SmsProviderItem = (props: SmsProviderProps) => {
           }
         />
 
-        {hasSmsConfigured && <Col style={{ width: '341px', paddingLeft: 0 }}>
+        {smsProvider !== '' && <Col style={{ width: '341px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
             <div>
               <Form.Item
                 colon={false}
                 label={$t({ defaultMessage: 'Provider' })} />
               <h3 style={{ marginTop: '-18px' }}>
-                {'Twillo'}</h3>
+                {smsProvider}</h3>
             </div>
             <div>
               <Form.Item
@@ -146,7 +149,7 @@ const SmsProviderItem = (props: SmsProviderProps) => {
         </Col>
         }
 
-        {!hasSmsConfigured && <Col style={{ width: '341px', paddingLeft: 0 }}>
+        {smsProvider === '' && <Col style={{ width: '341px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
             <Button
               type='link'
@@ -162,7 +165,7 @@ const SmsProviderItem = (props: SmsProviderProps) => {
           label={$t({ defaultMessage: 'The SMS pool provided by RUCKUS has been depleted. We recommend'
            + 'setting up an SMS provider promptly.' })}
         /> */}
-        <List
+        {!freeSmsPool && <List
           style={{ marginTop: '15px', marginBottom: 0 }}
           split={false}
           dataSource={[
@@ -177,40 +180,34 @@ const SmsProviderItem = (props: SmsProviderProps) => {
               </Typography.Text>
             </List.Item>
           )}
-        />
+        />}
 
-        <Form.Item
-          style={{ marginTop: '10px', marginBottom: 0 }}
-          colon={false}
-          label={$t({ defaultMessage: 'Free SMS Pool' })}
-        />
-        {<Col style={{ width: '341px', paddingLeft: 0 }}>
-          <Card type='solid-bg' >
-            <div style={{ width: 100, height: 100 }}>
-              {/* <Card title='Venues'> */}
-              <AutoSizer>
-                {({ height, width }) => (
-                  <DonutChart
-                    showLegend={false}
-                    style={{ width, height }}
-                    title='66 / 100'
-                    // subTitle={'This is very long subtitle and it should go to next line'}
-                    //   tooltipFormat={defineMessage({
-                    //     defaultMessage: `{name}: <b>{formattedValue} {value, plural,
-                    //       one {Client}
-                    //       other {Clients}
-                    //     }</b> ({formattedPercent})`
-                    //   })}
-                    // dataFormatter={(v) => $t(intlFormats.countFormat, { value: v as number })}
-                    data={data}/>
-                )}
-              </AutoSizer>
-              {/* </Card> */}
-            </div>
-          </Card>
-        </Col>
-        }
-
+        {freeSmsPool && <div>
+          <Form.Item
+            style={{ marginTop: '10px', marginBottom: 0 }}
+            colon={false}
+            label={$t({ defaultMessage: 'Free SMS Pool' })}
+          />
+          {<Col style={{ width: '341px', paddingLeft: 0 }}>
+            <Card type='solid-bg' >
+              <div style={{ width: 100, height: 100 }}>
+                <AutoSizer>
+                  {({ height, width }) => (
+                    <DonutChart
+                      showLegend={false}
+                      showTotal={false}
+                      style={{ width, height }}
+                      title={ruckusOneUsed + '/100'}
+                      value={undefined}
+                      size='x-large'
+                      data={data}
+                    />
+                  )}
+                </AutoSizer>
+              </div>
+            </Card>
+          </Col>}
+        </div>}
       </Col>
     </Row>
 

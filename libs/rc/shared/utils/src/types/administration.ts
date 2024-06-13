@@ -351,3 +351,31 @@ export interface VenueObjectList
 {
   'com.ruckus.cloud.venue.model.venue'?: string[]
 }
+
+export enum SmsProviderType {
+  TWILIO = 'twilio',
+  ESENDEX = 'esendex',
+  OTHERS = 'others'
+}
+
+export interface NotificationSmsUsage
+{
+  ruckusOneUsed?: number,
+  thredshold?: number,
+  provider?: string
+}
+
+export interface NotificationSmsConfig
+{
+  // twilio
+  authid?: string,
+  sid?: string,
+  fromNumber?: string,
+  // esendex
+  userName?: string,
+  apiPassword?: string,
+  referenceNumber?: string,
+  // others
+  apiKey?: string,
+  url?: string
+}

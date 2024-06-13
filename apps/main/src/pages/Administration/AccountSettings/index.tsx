@@ -51,7 +51,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
   const isSsoAllowed = useIsTierAllowed(Features.SSO)
   const isIdmDecoupling = useIsSplitOn(Features.IDM_DECOUPLING) && isSsoAllowed
   const isApiKeyEnabled = useIsSplitOn(Features.IDM_APPLICATION_KEY_TOGGLE)
-  const isSmsProviderEnabled = useIsSplitOn(Features.SMS_PROVIDER_TOGGLE)
+  const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
 
   const showRksSupport = isMspEc === false
   const isFirstLoading = recoveryPassphraseData.isLoading
@@ -86,9 +86,7 @@ const AccountSettings = (props : AccountSettingsProps) => {
           { isSmsProviderEnabled && (
             <>
               <Divider />
-              <SmsProviderItem
-                tenantAuthenticationData={undefined}
-              />
+              <SmsProviderItem/>
             </>
           )}
 
