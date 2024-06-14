@@ -2,8 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import { administrationApi }                                               from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, LicenseUrlsInfo }                         from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
+import { Provider, store, userApi }                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                    from '@acx-ui/user'
 
@@ -29,6 +30,9 @@ describe('SubscriptionsTab', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(userApi.util.resetApiState())
 
     mockedTierReq.mockClear()
 

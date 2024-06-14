@@ -116,6 +116,26 @@ describe('MyPolicies', () => {
   })
 
   it('should render Rogue AP with RBAC on', async () => {
+    const mockQueryResult = {
+      totalCount: 1,
+      page: 1,
+      data: [{
+        id: 'b76d9aeb1d5e4fc8b62ed6250a6471ee',
+        name: 'Syslog 1',
+        venueIds: [],
+        primaryServer: '1.2.3.4:514 (UDP)',
+        secondaryServer: '',
+        facility: 'KEEP_ORIGINAL',
+        flowLevel: 'CLIENT_FLOW'
+      }]
+    }
+
+    mockServer.use(
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (_req, res, ctx) => res(ctx.json(mockQueryResult))
+      ))
+
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
 
     render(
