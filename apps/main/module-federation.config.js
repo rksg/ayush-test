@@ -1,3 +1,4 @@
 module.exports = {
-  name: 'main'
+  name: 'main',
+  remotes: ['rc', 'msp']
 }
