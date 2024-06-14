@@ -199,7 +199,24 @@ export const PortSpan = styled.div`
 `
 
 export const CardStyle = styled.div`
-  padding: 12px 16px;
   background-color: var(--acx-neutrals-10);
   height: auto;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  .ant-typography {
+    font-size: 12px;
+  }
+  .title {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 20px;
+    background-color: var(--acx-neutrals-20);
+    margin: 0 !important;
+  }
+  .content {
+    padding: 12px 20px;
+  }
+  &:last-child {
+    margin-bottom: 60px;
+  }
 `

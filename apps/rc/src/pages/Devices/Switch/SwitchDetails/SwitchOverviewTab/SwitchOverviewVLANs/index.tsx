@@ -18,6 +18,7 @@ import {
   useGetLagListQuery,
   useGetSwitchRoutedListQuery,
   useSwitchPortlistQuery,
+  useStackMemberListQuery,
   useAddSwitchesVlansMutation,
   useDeleteSwitchVlanMutation,
   useUpdateSwitchVlanMutation
@@ -126,6 +127,16 @@ export function SwitchOverviewVLANs (props: {
     }, {
       skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
     })
+
+  const { data: stackMember, isLoading: isStackMemberLoading } = useStackMemberListQuery({
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    payload: {
+      fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
+        'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
+      filters: { activeUnitId: [switchDetail?.serialNumber] } }
+  }, {
+    skip: !(switchDetail?.venueId && switchDetail?.enableStack && isSwitchLevelVlanEnabled)
+  })
 
   const { data: portsData } = useSwitchPortlistQuery({
     params: { tenantId, switchId },
@@ -363,7 +374,8 @@ export function SwitchOverviewVLANs (props: {
 
   useEffect(() => {
     const isDataReady
-      = tableQuery.data?.data && !isLagListLoading && !isVePortsListLoading && !isVlanListLoading
+      = tableQuery.data?.data && !isLagListLoading && !isVePortsListLoading
+      && !isVlanListLoading && !isStackMemberLoading
 
     if (isDataReady) {
       const portsUsedByLagObj = lagList?.reduce((result, lag) => {
@@ -412,7 +424,7 @@ export function SwitchOverviewVLANs (props: {
       setDefaultVlan(defaultVlan)
     }
   }, [tableQuery.data?.data, vlanListBySwitch,
-    isLagListLoading, isVePortsListLoading, isVlanListLoading
+    isLagListLoading, isVePortsListLoading, isVlanListLoading, isStackMemberLoading
   ])
 
   useEffect(() => {
@@ -471,6 +483,7 @@ export function SwitchOverviewVLANs (props: {
           lag: usedByLag,
           untagged: _.omit(usedUntaggedPorts, editVlan?.untaggedPorts?.split(',') ?? [])
         }}
+        stackMember={stackMember?.data ?? undefined}
       />}
 
       { isSwitchLevelVlanEnabled && defaultVlanDrawerVisible && <DefaultVlanDrawer
@@ -488,12 +501,9 @@ export function SwitchOverviewVLANs (props: {
 }
 
 export function getPortViewData (
-  portsData: SwitchPortViewModel[]): { slots: SwitchSlot[][] } {
-
-  console.log('portsData: ', portsData)
-
+  portsData: SwitchPortViewModel[]): { slots: SwitchSlot[][]
+} {
   const tmpSlots = portsData.reduce((acc, port) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [unit, slotStr, portNumberStr] = port.portIdentifier.split('/')
     const unitNumber = Number(unit)
     const slotNumber = Number(slotStr)
@@ -510,7 +520,6 @@ export function getPortViewData (
       acc[unitNumber] = {}
     }
 
-
     if (!acc[unitNumber][slotNumber]) {
       acc[unitNumber][slotNumber] = { portStatus: [], portCount: 0, portNumber: 0, portTagged: '' }
     }
@@ -523,9 +532,6 @@ export function getPortViewData (
     return acc
 
   }, {} as { [key: number]: { [key: number]:SwitchSlot } })
-
-  console.log('tmpSlots: ', tmpSlots)
-  console.log(Object.values(tmpSlots).map(slot => Object.values(slot)))
 
   return {
     slots: Object.values(tmpSlots).map(slot => Object.values(slot))

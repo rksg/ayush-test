@@ -10,7 +10,8 @@ import {
   TrustedPort,
   Vlan,
   SwitchSlot,
-  SwitchSlot2
+  SwitchSlot2,
+  StackMember
 } from '@acx-ui/rc/utils'
 
 import { PortsUsedByProps } from '..'
@@ -30,6 +31,7 @@ export interface VlanSettingInterface {
   selectedOptionOfSlot4?: string
   switchFamilyModels?: SwitchModelPortData
   trustedPorts: TrustedPort[]
+  stackMember?: StackMember[]
 }
 
 export function VlanPortsModal (props: {
@@ -42,10 +44,11 @@ export function VlanPortsModal (props: {
   switchFamilyModel?: string,
   portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
+  stackMember?: StackMember[]
 }) {
   const { $t } = useIntl()
   const { open, editRecord, onSave, onCancel,
-    vlanList, switchFamilyModel, portSlotsData = [], portsUsedBy } = props
+    vlanList, switchFamilyModel, portSlotsData = [], portsUsedBy, stackMember } = props
   const [form] = Form.useForm()
   const [editMode, setEditMode] = useState(false)
   const [noModelMsg, setNoModelMsg] = useState(false)
@@ -63,10 +66,8 @@ export function VlanPortsModal (props: {
 
     if (open && isSwitchLevel) {
       const [ family, model ] = switchFamilyModel.split('-')
-      const enableSlot2 = checkSlotEnabled(portSlotsData, 2)
-      const enableSlot3 = checkSlotEnabled(portSlotsData, 3)
       const initValues = {
-        family, model, enableSlot2, enableSlot3,
+        family, model,
         slots: portSlotsData as unknown as SwitchSlot2[],
         switchFamilyModels: {
           id: '',
@@ -75,7 +76,8 @@ export function VlanPortsModal (props: {
           taggedPorts: [],
           untaggedPorts: []
         },
-        trustedPorts: []
+        trustedPorts: [],
+        stackMember
       }
 
       if (editRecord) {
@@ -93,15 +95,13 @@ export function VlanPortsModal (props: {
     } else if (open && editRecord) {
       const family = editRecord.model.split('-')[0]
       const model = editRecord.model.split('-')[1]
-      setVlanSettingValues({ family, model, switchFamilyModels: editRecord, trustedPorts: [] })
+      setVlanSettingValues({
+        family, model, switchFamilyModels: editRecord, trustedPorts: [], stackMember
+      })
     } else {
       setVlanSettingValues({ family: '', model: '', trustedPorts: [] })
     }
   }, [form, open, editRecord])
-
-  const checkSlotEnabled = (portSlotsData: SwitchSlot[][], slotNumber: number) => {
-    return portSlotsData[0]?.filter(port => port.slotNumber === slotNumber)?.length > 0
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSaveModel = async (data: any) => {
@@ -165,18 +165,23 @@ export function VlanPortsModal (props: {
     const slots = isSwitchLevel
       ? vlanSettingValues.switchFamilyModels?.slots : data.switchFamilyModels.slots
 
-    const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
-    // ?.filter((value: string) => value.startsWith('1/1/') ||
-    //   (enableSlot2 && value.startsWith('1/2/')) ||
-    //   (enableSlot3 && value.startsWith('1/3/')))
+    const untaggedPorts = isSwitchLevel
+      ? vlanSettingValues.switchFamilyModels?.untaggedPorts
+      : vlanSettingValues.switchFamilyModels?.untaggedPorts
+        ?.filter((value: string) => value.startsWith('1/1/') ||
+          (enableSlot2 && value.startsWith('1/2/')) ||
+          (enableSlot3 && value.startsWith('1/3/')))
 
-    const taggedPorts = vlanSettingValues.switchFamilyModels?.taggedPorts
-    // ?.filter((value: string) => value.startsWith('1/1/') ||
-    //   (enableSlot2 && value.startsWith('1/2/')) ||
-    //   (enableSlot3 && value.startsWith('1/3/')))
+    const taggedPorts = isSwitchLevel
+      ? vlanSettingValues.switchFamilyModels?.taggedPorts
+      : vlanSettingValues.switchFamilyModels?.taggedPorts
+        ?.filter((value: string) => value.startsWith('1/1/') ||
+          (enableSlot2 && value.startsWith('1/2/')) ||
+          (enableSlot3 && value.startsWith('1/3/')))
 
     switchFamilyModelsData.model
       = isSwitchLevel ? switchFamilyModel : data.family + '-' + data.model
+
     switchFamilyModelsData.slots
       = slots?.map((slot: { slotNumber: number; enable: boolean }) => ({
         slotNumber: slot.slotNumber,
