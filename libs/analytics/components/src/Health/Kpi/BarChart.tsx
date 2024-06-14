@@ -3,12 +3,12 @@ import { useIntl }       from 'react-intl'
 import { defineMessage } from 'react-intl'
 import AutoSizer         from 'react-virtualized-auto-sizer'
 
-import { KPITimeseriesResponse, healthApi } from '@acx-ui/analytics/services'
-import { kpiConfig, productNames }          from '@acx-ui/analytics/utils'
-import { Loader, VerticalBarChart, NoData } from '@acx-ui/components'
-import { formatter }                        from '@acx-ui/formatter'
-import { noDataDisplay }                    from '@acx-ui/utils'
-import type { AnalyticsFilter }             from '@acx-ui/utils'
+import { KPITimeseriesResponse, healthApi }    from '@acx-ui/analytics/services'
+import { kpiConfig, productNames, limitRange } from '@acx-ui/analytics/utils'
+import { Loader, VerticalBarChart, NoData }    from '@acx-ui/components'
+import { formatter }                           from '@acx-ui/formatter'
+import { noDataDisplay }                       from '@acx-ui/utils'
+import type { AnalyticsFilter }                from '@acx-ui/utils'
 
 import GenericError from '../../GenericError'
 
@@ -20,7 +20,7 @@ const transformBarChartResponse = ({ data, time }: KPITimeseriesResponse) => {
   return data.map((datum, index) => ([
     moment(time[index], 'YYYY/MM/DD').date(),
     datum && datum.length && (datum[0] !== null && datum[1] !== null)
-      ? datum[1] === 0 ? 0 : (datum[0] / datum[1]) * 100
+      ? datum[1] === 0 ? 0 : (limitRange(datum[0] / datum[1])) * 100
       : null
   ])) as [number, number][]
 }
