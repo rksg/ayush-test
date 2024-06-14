@@ -146,7 +146,12 @@ export interface RWG {
   apiKey: string
   rwgId: string
   clusterNodes?: RWGClusterNode[]
-  isCluster: boolean
+  isCluster: boolean,
+  floorplanId?: string,
+  xPercent?: number,
+  yPercent?: number,
+  x?: number,
+  y?: number
 }
 
 export interface RWGClusterNode{

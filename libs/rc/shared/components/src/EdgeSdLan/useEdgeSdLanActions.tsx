@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 import { showActionModal }              from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { Features }                     from '@acx-ui/feature-toggle'
 import {
   useActivateEdgeSdLanDmzClusterMutation,
   useActivateEdgeSdLanDmzTunnelProfileMutation,
@@ -343,8 +343,8 @@ export const checkSdLanScopedNetworkDeactivateAction =
 // id: is `serialNumber` when SD_LAN HA FF off
 //     means `clusterId` when SD_LAN HA FF on
 export const useGetEdgeSdLanByEdgeOrClusterId = (id?: string) => {
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const {
     edgeSdLanData,

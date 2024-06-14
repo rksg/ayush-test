@@ -900,4 +900,8 @@ export interface CliProfileFamily {
   model: CliProfileModel[]
 }
 
+export enum VlanModalType {
+  UNTAGGED = 'untaggedVlan',
+  TAGGED = 'taggedVlans'
+}
 

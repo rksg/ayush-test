@@ -1,5 +1,5 @@
-import { useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { Provider  }        from '@acx-ui/store'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
+import { Provider  }              from '@acx-ui/store'
 import { render,
   screen
 } from '@acx-ui/test-utils'
@@ -35,9 +35,6 @@ describe('Devices widget', () => {
 })
 
 describe('Devices widget V2', () => {
-  beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
-  })
   it('should render loader and then chart', async () => {
     const params = {
       tenantId: 'tenant-id'
@@ -135,7 +132,7 @@ describe('Devices widget v1', () => {
 
 describe('Devices widget V2 edge enabled', () => {
   beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
   })
   it('should render loader and then chart', async () => {
     const params = {

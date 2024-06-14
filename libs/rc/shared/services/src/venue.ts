@@ -95,7 +95,10 @@ import {
   EnhancedRoguePolicyType,
   RogueApSettingsRequest,
   WifiDHCPClientLeases,
-  WifiDhcpPoolUsages
+  WifiDhcpPoolUsages,
+  RWG,
+  NetworkDevice,
+  NetworkDeviceType
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -602,22 +605,68 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DETAIL' }]
     }),
     getAllDevices: build.query<NetworkDeviceResponse, RequestPayload<NetworkDevicePayload>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getAllDevices, params)
-        return {
-          ...req,
+      async queryFn ({ params, payload }, _api, _extraOptions, query) {
+
+        const devicesReq = { ...createHttpRequest(CommonUrlsInfo.getAllDevices, params),
           body: payload as NetworkDevicePayload
         }
+        const responses = params?.showRwgDevice === 'true'
+          ? await Promise.all([
+            devicesReq,
+            createHttpRequest(CommonRbacUrlsInfo.getRwgListByVenueId, params)
+          ].map(query))
+          : await Promise.all([
+            devicesReq
+          ].map(query))
+
+        const allDevices = responses[0].data as NetworkDeviceResponse
+
+        const { response: rwgDevices } = ((responses[1] && responses[1].data) || {}) as {
+          requestId: string,
+          response : {
+            items: RWG[],
+            totalPages: number,
+            totalSizes: number
+          }
+        }
+
+        let rwgList: NetworkDevice[] = []
+        if (rwgDevices?.items?.length) {
+          const rwgs = rwgDevices.items
+
+          rwgList = rwgs.map(_rwg => {
+            return {
+              id: _rwg.rwgId,
+              name: _rwg.name,
+              deviceStatus: _rwg.status,
+              networkDeviceType: NetworkDeviceType.rwg,
+              serialNumber: '',
+              floorplanId: _rwg.floorplanId,
+              xPercent: _rwg.xPercent,
+              yPercent: _rwg.yPercent,
+              x: _rwg.x,
+              y: _rwg.y
+            } as NetworkDevice
+          }) as NetworkDevice[]
+        }
+
+        return { data: { data: [{ ...allDevices.data[0], rwg: rwgList }],
+          totalCount: allDevices.totalCount + rwgList.length,
+          fields: [],
+          page: 1 } as NetworkDeviceResponse }
       },
-      providesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }],
+      providesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' },
+        { type: 'RWG', id: 'List' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'UpdateSwitchPosition',
             'UpdateApPosition',
+            'UpdateRwgPosition',
             'UpdateCloudpathServerPosition',
             'DeleteFloorPlan'], () => {
-            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' }]))
+            api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' },
+              { type: 'RWG', id: 'List' }]))
           })
         })
       }
@@ -641,6 +690,16 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    updateRwgPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(CommonRbacUrlsInfo.UpdateRwgPosition, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'RWG', id: 'List' }]
     }),
     updateCloudpathServerPosition: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -825,7 +884,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     addAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = enableRbac ? customHeaders.v1 : {}
+        const headers = enableRbac ? customHeaders.v1001 : {}
         const req = createHttpRequest(SwitchUrlsInfo.addAaaServer, params, headers)
         return {
           ...req,
@@ -1860,6 +1919,7 @@ export const {
   useGetAllDevicesQuery,
   useUpdateSwitchPositionMutation,
   useUpdateApPositionMutation,
+  useUpdateRwgPositionMutation,
   useUpdateCloudpathServerPositionMutation,
   useGetApCompatibilitiesVenueQuery,
   useLazyGetApCompatibilitiesVenueQuery,

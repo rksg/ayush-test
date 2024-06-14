@@ -626,5 +626,10 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/venues/:venueId/rwgs/:gatewayId/details/nodes/:clusterNodeId',
     newApi: true
+  },
+  UpdateRwgPosition: {
+    method: 'put',
+    url: '/venues/:venueId/rwgs/:gatewayId/floorPositions',
+    newApi: true
   }
 }

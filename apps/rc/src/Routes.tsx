@@ -31,7 +31,8 @@ import {
   CliTemplateForm,
   CliProfileForm,
   IdentityProviderForm,
-  ApGroupDetails
+  ApGroupDetails,
+  useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
 import {
   PolicyOperation,
@@ -537,12 +538,12 @@ const edgePinRoutes = () => {
 }
 
 function ServiceRoutes () {
-  const isEdgeSdLanEnabled = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeSdLanEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   return rootRoutes(
     <Route path=':tenantId/t'>

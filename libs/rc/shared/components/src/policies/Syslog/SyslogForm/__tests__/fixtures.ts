@@ -105,3 +105,30 @@ export const targetSyslog: SyslogPolicyDetailType = {
   flowLevel: FlowLevelEnum.ALL,
   venues: [{ id: 'v12345', name: 'My-Venue' }]
 }
+
+export const rbacTargetSyslog: SyslogPolicyDetailType = {
+  name: 'test syslog',
+  id: '123456789',
+  primary: { server: '1.1.1.1', port: 1287, protocol: ProtocolEnum.TCP },
+  secondary: {},
+  facility: FacilityEnum.KEEP_ORIGINAL,
+  flowLevel: FlowLevelEnum.ALL
+}
+
+export const rbacQuerySyslogResult = {
+  fields: null,
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '123456789',
+      name: 'test syslog',
+      tenantId: '84f5749615134e53804c3a0e4b193b56',
+      venueIds: ['4ca20c8311024ac5956d366f15d96e0c'],
+      primaryServer: '1.2.3.4:514 (UDP)',
+      secondaryServer: '1.2.3.4:514 (TCP)',
+      facility: 'LOCAL3',
+      flowLevel: 'CLIENT_FLOW'
+    }
+  ]
+}

@@ -72,6 +72,7 @@ describe('Guest Generate New Password Modal', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     networkId: 'tenant-id'
   }
+  const userProfile = getUserProfile()
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()
 
@@ -89,6 +90,19 @@ describe('Guest Generate New Password Modal', () => {
     act(() => {
       store.dispatch(clientApi.util.resetApiState())
       store.dispatch(networkApi.util.resetApiState())
+    })
+
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: false,
+      isCustomRole: false,
+      allowedOperations: [
+        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'POST:/wifiNetworks',
+        'POST:/guestUsers'
+      ]
     })
 
     mockServer.use(
@@ -237,7 +251,7 @@ describe('Guest Generate New Password Modal', () => {
         profile: {
           ...getUserProfile().profile
         },
-        allowedOperations: [],
+        allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers'],
         abacEnabled: true,
         isCustomRole: true,
         scopes: [WifiScopes.CREATE]

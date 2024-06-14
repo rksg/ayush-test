@@ -57,7 +57,6 @@ const buildMenu = (config: Item[]): LayoutProps['menuConfig'] =>
 export function useMenuConfig () {
   const { $t } = useIntl()
   const [search] = useSearchParams()
-  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
@@ -119,7 +118,6 @@ export function useMenuConfig () {
     }]
   }, {
     permission: 'READ_ZONES',
-    hidden: !isZonesPageEnabled,
     uri: '/zones',
     label: $t({ defaultMessage: 'Zones' }),
     inactiveIcon: LocationOutlined,
