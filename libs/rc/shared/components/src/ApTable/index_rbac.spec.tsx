@@ -61,6 +61,11 @@ jest.mock('../ImportFileDrawer', () => ({
     </div>
 }))
 
+const mockFileSaver = jest.fn()
+jest.mock('file-saver', () => (data: string, fileName: string) => {
+  mockFileSaver(data, fileName)
+})
+
 describe('Aps', () => {
   afterEach(() => {
     mockedUsedNavigate.mockClear()
@@ -125,7 +130,15 @@ describe('Aps', () => {
     expect(await screen.findByText('Partially incompatible')).toBeVisible()
   })
 
-  it('Table action bar Download Log and Reboot', async () => {
+  it('Table action bar Download Log', async () => {
+    const fakeDownloadUrl = '/api/abc'
+    mockServer.use(
+      rest.get(
+        WifiRbacUrlsInfo.downloadApLog.url,
+        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
+      )
+    )
+
     render(<Provider><ApTable
       rowSelection={{
         type: 'checkbox'
@@ -134,32 +147,42 @@ describe('Aps', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    const fakeDownloadUrl = '/api/abc'
-    const rebootSpy = jest.fn()
-    rebootSpy.mockReturnValueOnce(true)
-
-    mockServer.use(
-      rest.patch(
-        WifiRbacUrlsInfo.rebootAp.url,
-        (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
-      ),
-      rest.get(
-        WifiRbacUrlsInfo.downloadApLog.url,
-        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
-      )
-    )
-
     const row1 = await screen.findByRole('row', { name: /mock-ap-1/i })
     await userEvent.click(await within(row1).findByRole('checkbox'))
     expect(await within(row1).findByRole('checkbox')).toBeChecked()
 
     const downloadButton = await screen.findByRole('button', { name: 'Download Log' })
-    await userEvent.click(downloadButton) // TODO: Fix error > Not implemented: navigation (except hash changes)
-
+    await userEvent.click(downloadButton)
     const toast = await screen.findByText('Preparing log', { exact: false })
     expect(toast).toBeVisible()
-
+    await waitFor(() =>
+      expect(mockFileSaver)
+        .toHaveBeenCalledWith(fakeDownloadUrl, expect.stringContaining('SupportLog_'))
+    )
     expect(await screen.findByText('Log is ready.', { exact: false })).toBeVisible()
+  })
+
+  it('Table action bar Reboot', async () => {
+    const rebootSpy = jest.fn()
+    rebootSpy.mockReturnValueOnce(true)
+    mockServer.use(
+      rest.patch(
+        WifiRbacUrlsInfo.rebootAp.url,
+        (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
+      )
+    )
+
+    render(<Provider><ApTable
+      rowSelection={{
+        type: 'checkbox'
+      }}
+    /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    const row1 = await screen.findByRole('row', { name: /mock-ap-1/i })
+    await userEvent.click(await within(row1).findByRole('checkbox'))
+    expect(await within(row1).findByRole('checkbox')).toBeChecked()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Reboot' }))
     const rebootDialog = await waitFor(async () => screen.findByRole('dialog'))
