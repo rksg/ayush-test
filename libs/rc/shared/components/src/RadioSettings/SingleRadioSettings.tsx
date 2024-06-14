@@ -100,7 +100,7 @@ export function SingleRadioSettings (props:{
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
 
   const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(
-    radioType !== ApRadioTypeEnum.Radio6G ? ['5G', 'DFS'] : [])
+    radioType === ApRadioTypeEnum.Radio5G ? ['5G', 'DFS'] : [])
   const [channelList, setChannelList] = useState<RadioChannel[]>([])
   const [indoorChannelList, setIndoorChannelList] = useState<RadioChannel[]>([])
   const [outdoorChannelList, setOutdoorChannelList] = useState<RadioChannel[]>([])
