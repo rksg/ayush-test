@@ -1,11 +1,10 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import {
-  useGetSwitchDefaultFirmwareListQuery,
-  useGetSwitchLatestFirmwareListQuery
+  useGetSwitchDefaultFirmwareListV1002Query,
+  useGetSwitchLatestFirmwareListV1002Query
 } from '@acx-ui/rc/services'
 import { FirmwareCategory } from '@acx-ui/rc/utils'
 
@@ -14,17 +13,10 @@ import { SwitchFirmwareBanner } from '../../SwitchFirmwareBanner'
 
 export const VersionBanner = () => {
   const params = useParams()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { $t } = useIntl()
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListQuery({
-    params,
-    enableRbac: isSwitchRbacEnabled
-  })
-  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({
-    params,
-    enableRbac: isSwitchRbacEnabled
-  })
+  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListV1002Query({ params })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
   const versions = getReleaseFirmware(latestReleaseVersions)
@@ -73,4 +65,6 @@ export const VersionBanner = () => {
 }
 
 export default VersionBanner
+
+
 

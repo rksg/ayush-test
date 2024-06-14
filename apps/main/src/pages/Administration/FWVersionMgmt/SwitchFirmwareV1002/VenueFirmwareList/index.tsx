@@ -10,15 +10,15 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery, //TODO
   useUpdateSwitchUpgradePreferencesMutation, //TODO
-  useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchCurrentVersionsQuery,
-  useGetSwitchFirmwarePredownloadQuery,
-  useGetSwitchVenueVersionListV1002Query
+  useGetSwitchFirmwarePredownloadQuery, // Done
+  useGetSwitchVenueVersionListV1002Query,
+  useGetSwitchAvailableFirmwareListV1002Query,
+  useGetSwitchCurrentVersionsV1002Query
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -73,10 +73,7 @@ export const VenueFirmwareTable = (
     getSwitchVenueAvailableVersions,
     sortAvailableVersionProp
   } = useSwitchFirmwareUtils()
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({
-    params,
-    enableRbac: isSwitchRbacEnabled
-  })
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
   const [updateStatusDrawerVisible, setUpdateStatusDrawerVisible] = useState(false)
@@ -336,7 +333,6 @@ export const VenueFirmwareTable = (
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenue>({
     useQuery: useGetSwitchVenueVersionListV1002Query,
@@ -346,9 +342,8 @@ export function VenueFirmwareList () {
     }
   })
 
-  const { versionFilterOptions } = useGetSwitchCurrentVersionsQuery({
-    params: useParams(),
-    enableRbac: isSwitchRbacEnabled
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsV1002Query({
+    params: useParams()
   }, {
     selectFromResult ({ data }) {
       let versionList = data?.currentVersions

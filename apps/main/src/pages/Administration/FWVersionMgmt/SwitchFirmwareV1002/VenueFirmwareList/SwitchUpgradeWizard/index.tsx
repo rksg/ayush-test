@@ -7,18 +7,18 @@ import moment      from 'moment'
 import { useIntl } from 'react-intl'
 
 import {
-  Modal, ModalType, StepsForm, showActionModal
+  Modal,
+  ModalType,
+  StepsForm,
+  showActionModal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { WarningCircleOutlined }               from '@acx-ui/icons'
-import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
+import { WarningCircleOutlined }                from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }               from '@acx-ui/rc/components'
 import {
-  useGetSwitchAvailableFirmwareListQuery,
-  useGetSwitchDefaultFirmwareListQuery,
-  useSkipSwitchUpgradeSchedulesMutation,
-  useUpdateSwitchVenueSchedulesMutation,
   useBatchSkipSwitchUpgradeSchedulesMutation,
-  useBatchUpdateSwitchVenueSchedulesMutation } from '@acx-ui/rc/services'
+  useBatchUpdateSwitchVenueSchedulesMutation,
+  useGetSwitchDefaultFirmwareListV1002Query,
+  useGetSwitchAvailableFirmwareListV1002Query } from '@acx-ui/rc/services'
 import {
   FirmwareCategory,
   FirmwareSwitchVenue,
@@ -51,13 +51,11 @@ export interface UpdateNowWizardProps {
 }
 
 export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [form] = Form.useForm()
   const { $t } = useIntl()
   const params = useParams()
   const { wizardType } = props
   const { checkCurrentVersions } = useSwitchFirmwareUtils()
-  const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
   const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesMutation()
 
   const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
@@ -73,14 +71,8 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
       } return version
     })
   }
-  const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({
-    params,
-    enableRbac: isSwitchRbacEnabled
-  })
-  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListQuery({
-    params,
-    enableRbac: isSwitchRbacEnabled
-  })
+  const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
+  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
 
   const isLatestVersion = function (currentVersion: FirmwareVersion) {
     if(_.isEmpty(currentVersion?.id)) return false
@@ -115,46 +107,32 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.skip]: '1120px'
   }
 
-  const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
   const [batchSkipSwitchUpgradeSchedules] = useBatchSkipSwitchUpgradeSchedulesMutation()
 
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {
       try {
-        if (isSwitchRbacEnabled) {
-          const venueIds = form.getFieldValue('selectedVenueRowKeys')
-          const venueRequests = Object.keys(venueIds).map(item => ({
-            params: { venueId: venueIds[item] },
+        const venueIds = form.getFieldValue('selectedVenueRowKeys')
+        const venueRequests = Object.keys(venueIds).map(item => ({
+          params: { venueId: venueIds[item] },
+          payload: {
+            switchVersion: form.getFieldValue('switchVersion') || '',
+            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+          }
+        }))
+        await batchUpdateSwitchVenueSchedules(venueRequests)
+
+        const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
+        const switchRequests = Object.keys(switchVenueGroups).map(key =>
+          ({
+            params: { venueId: key },
             payload: {
+              switchIds: switchVenueGroups[key].map(item => item.switchId),
               switchVersion: form.getFieldValue('switchVersion') || '',
               switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
             }
           }))
-          await batchUpdateSwitchVenueSchedules(venueRequests)
-
-          const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
-          const switchRequests = Object.keys(switchVenueGroups).map(key =>
-            ({
-              params: { venueId: key },
-              payload: {
-                switchIds: switchVenueGroups[key].map(item => item.switchId),
-                switchVersion: form.getFieldValue('switchVersion') || '',
-                switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
-              }
-            }))
-          await batchUpdateSwitchVenueSchedules(switchRequests)
-
-        } else {
-          await updateVenueSchedules({
-            params: { ...params },
-            payload: {
-              venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-              switchIds: _.map(upgradeSwitchList, 'switchId'),
-              switchVersion: form.getFieldValue('switchVersion') || '',
-              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
-            }
-          }).unwrap()
-        }
+        await batchUpdateSwitchVenueSchedules(switchRequests)
 
         form.resetFields()
         props.setVisible(false)
@@ -164,50 +142,33 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     },
     [SwitchFirmwareWizardType.schedule]: async () => {
       try {
-        if (isSwitchRbacEnabled) {
-          const venueIds = form.getFieldValue('selectedVenueRowKeys')
-          const venueRequests = Object.keys(venueIds).map(item => ({
-            params: { venueId: venueIds[item] },
+        const venueIds = form.getFieldValue('selectedVenueRowKeys')
+        const venueRequests = Object.keys(venueIds).map(item => ({
+          params: { venueId: venueIds[item] },
+          payload: {
+            date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
+            time: form.getFieldValue('selectTimeStep') || '',
+            preDownload: form.getFieldValue('preDownloadChecked') || false,
+            switchVersion: form.getFieldValue('switchVersion') || '',
+            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+          }
+        }))
+        await batchUpdateSwitchVenueSchedules(venueRequests)
+
+        const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
+        const switchRequests = Object.keys(switchVenueGroups).map(key =>
+          ({
+            params: { venueId: key },
             payload: {
               date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
               time: form.getFieldValue('selectTimeStep') || '',
               preDownload: form.getFieldValue('preDownloadChecked') || false,
+              switchIds: switchVenueGroups[key].map(item => item.switchId),
               switchVersion: form.getFieldValue('switchVersion') || '',
               switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
             }
           }))
-          await batchUpdateSwitchVenueSchedules(venueRequests)
-
-          const switchVenueGroups = _.groupBy(upgradeSwitchList, 'venueId')
-          const switchRequests = Object.keys(switchVenueGroups).map(key =>
-            ({
-              params: { venueId: key },
-              payload: {
-                date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
-                time: form.getFieldValue('selectTimeStep') || '',
-                preDownload: form.getFieldValue('preDownloadChecked') || false,
-                switchIds: switchVenueGroups[key].map(item => item.switchId),
-                switchVersion: form.getFieldValue('switchVersion') || '',
-                switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
-              }
-            }))
-          await batchUpdateSwitchVenueSchedules(switchRequests)
-
-
-        } else {
-          await updateVenueSchedules({
-            params: { ...params },
-            payload: {
-              date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
-              time: form.getFieldValue('selectTimeStep') || '',
-              preDownload: form.getFieldValue('preDownloadChecked') || false,
-              venueIds: form.getFieldValue('selectedVenueRowKeys') || [],
-              switchIds: _.map(upgradeSwitchList, 'switchId'),
-              switchVersion: form.getFieldValue('switchVersion') || '',
-              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
-            }
-          }).unwrap()
-        }
+        await batchUpdateSwitchVenueSchedules(switchRequests)
 
         form.resetFields()
         props.setVisible(false)
@@ -247,27 +208,17 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         cancelText: $t({ defaultMessage: 'Cancel' }),
         async onOk () {
           try {
-            if (isSwitchRbacEnabled) {
-              const venueRequests = Object.keys(venueIds).map(item => ({
-                params: { venueId: venueIds[item] },
-                payload: {}
-              }))
-              await batchSkipSwitchUpgradeSchedules(venueRequests)
+            const venueRequests = Object.keys(venueIds).map(item => ({
+              params: { venueId: venueIds[item] },
+              payload: {}
+            }))
+            await batchSkipSwitchUpgradeSchedules(venueRequests)
 
-              const switchVenueGroups = _.groupBy(upgradeList.currentUpgradeSwitchList, 'venueId')
-              const switchRequests = Object.keys(switchVenueGroups).map(key =>
-                ({ params: { venueId: key },
-                  payload: { switchIds: switchVenueGroups[key].map(item => item.switchId) } }))
-              await batchSkipSwitchUpgradeSchedules(switchRequests)
-            } else {
-              await skipSwitchUpgradeSchedules({
-                params: { ...params },
-                payload: {
-                  venueIds,
-                  switchIds
-                }
-              })
-            }
+            const switchVenueGroups = _.groupBy(upgradeList.currentUpgradeSwitchList, 'venueId')
+            const switchRequests = Object.keys(switchVenueGroups).map(key =>
+              ({ params: { venueId: key },
+                payload: { switchIds: switchVenueGroups[key].map(item => item.switchId) } }))
+            await batchSkipSwitchUpgradeSchedules(switchRequests)
 
             form.resetFields()
             props.setVisible(false)
@@ -290,7 +241,6 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
     const nestedData = form.getFieldValue('nestedData')
     const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
-
 
     props.data.forEach((row: FirmwareSwitchVenue) => {
       if (selectedVenueRowKeys.includes(row.id)) {

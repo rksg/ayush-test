@@ -11,7 +11,6 @@ import {
   cssStr,
   useStepFormContext
 } from '@acx-ui/components'
-import { useIsSplitOn, Features }                    from '@acx-ui/feature-toggle'
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
@@ -44,7 +43,6 @@ const getTooltipText = function (value: string, customDisplayValue?: string | Re
 }
 
 function useColumns () {
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const intl = useIntl()
   const { getSwitchNextScheduleTplTooltip,
     getSwitchFirmwareList,
@@ -53,12 +51,12 @@ function useColumns () {
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
       title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      key: isSwitchRbacEnabled ? 'venueName' : 'name',
-      dataIndex: isSwitchRbacEnabled ? 'venueName' : 'name',
+      key: 'venueName',
+      dataIndex: 'venueName',
       width: 150,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        const venueName = isSwitchRbacEnabled ? row.venueName : row.name
+        const venueName = row.venueName
         const customDisplayValue =
           <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} >
             {venueName}
@@ -127,7 +125,6 @@ export const SelectSwitchStep = (
 
   const columns = useColumns()
   const intl = useIntl()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { form, current } = useStepFormContext()
   const { tenantId } = useParams()
@@ -229,7 +226,7 @@ export const SelectSwitchStep = (
         ? (await getSwitchFirmwareList({
           params: { tenantId: tenantId },
           payload: switchListPayload,
-          enableRbac: isSwitchRbacEnabled
+          enableRbac: true
         }, false)).data?.data
         : []
 
@@ -344,7 +341,7 @@ export const SelectSwitchStep = (
     const searchSwitchList = (await getSwitchFirmwareList({
       params: { tenantId: tenantId },
       payload: switchListPayload,
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, true)).data?.data || []
     setSearchSwitchList(searchSwitchList)
 
@@ -588,7 +585,7 @@ export const SelectSwitchStep = (
                         const switchList = (await getSwitchFirmwareList({
                           params: { tenantId: tenantId },
                           payload: switchListPayload,
-                          enableRbac: isSwitchRbacEnabled
+                          enableRbac: true
                         }, false)).data?.data
                         if (switchList) {
                           initialData = switchList

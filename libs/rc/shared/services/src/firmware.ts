@@ -245,11 +245,32 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    getSwitchLatestFirmwareListV1002: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList, params, v1_2Header)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
     getSwitchDefaultFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
         const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
         const req = createHttpRequest(switchUrls.getSwitchDefaultFirmwareList, params, headers)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+
+    getSwitchDefaultFirmwareListV1002: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList, params, v1_2Header)
         return {
           ...req
         }
@@ -362,6 +383,16 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    getSwitchAvailableFirmwareListV1002: build.query<FirmwareVersion[], RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          FirmwareRbacUrlsInfo.getSwitchAvailableFirmwareList, params, v1_2Header)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
     getSwitchCurrentVersions: build.query<CurrentVersions, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
@@ -373,6 +404,29 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
+    getSwitchCurrentVersionsV1002: build.query<CurrentVersions, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(
+          FirmwareRbacUrlsInfo.getSwitchCurrentVersions, params, v1_2Header)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+    getSwitcDefaultVersions: build.query<CurrentVersions, RequestPayload>({
+      query: ({ params, enableRbac, customHeaders }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchCurrentVersions, params,
+          customHeaders || headers)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
+    }),
+
     getSwitchFirmwareStatusList: build.query<TableResult<SwitchFirmwareStatus>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? v1Header : {}
@@ -635,14 +689,19 @@ export const {
   useUpdateSwitchVenueSchedulesMutation,
   useBatchUpdateSwitchVenueSchedulesMutation,
   useGetSwitchLatestFirmwareListQuery,
+  useGetSwitchLatestFirmwareListV1002Query,
   useGetSwitchDefaultFirmwareListQuery,
+  useGetSwitchDefaultFirmwareListV1002Query,
   useGetSwitchFirmwareVersionIdListQuery,
   useGetSwitchVenueVersionListQuery,
   useLazyGetSwitchVenueVersionListQuery,
   useGetSwitchVenueVersionListV1002Query,
   useLazyGetSwitchVenueVersionListV1002Query,
   useGetSwitchAvailableFirmwareListQuery,
+  useGetSwitchAvailableFirmwareListV1002Query,
   useGetSwitchCurrentVersionsQuery,
+  useGetSwitchCurrentVersionsV1002Query,
+  useGetSwitcDefaultVersionsQuery,
   useGetSwitchFirmwarePredownloadQuery,
   useUpdateSwitchFirmwarePredownloadMutation,
   useGetAvailableEdgeFirmwareVersionsQuery,

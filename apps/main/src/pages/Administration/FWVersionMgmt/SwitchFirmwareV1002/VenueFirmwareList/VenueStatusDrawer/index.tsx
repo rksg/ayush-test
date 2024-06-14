@@ -9,7 +9,6 @@ import {
   Drawer,
   showToast
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
 import {
@@ -33,7 +32,6 @@ export interface VenueStatusDrawerProps {
 }
 
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { $t } = useIntl()
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
@@ -50,7 +48,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
     const switchList = (await getSwitchFirmwareStatusList({
       payload: { venueId: props.data.id },
       params: { venueId: props.data.id },
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, false)).data?.data
     setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
   }

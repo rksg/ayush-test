@@ -7,8 +7,8 @@ import _                                             from 'lodash'
 import { useIntl }                                   from 'react-intl'
 
 import {
-  Button,
-  Subtitle, useStepFormContext
+  Subtitle,
+  useStepFormContext
 } from '@acx-ui/components'
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {

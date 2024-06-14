@@ -1,8 +1,8 @@
 import { IntlShape } from 'react-intl'
 
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
-  useGetSwitchCurrentVersionsQuery
+  useGetSwitcDefaultVersionsQuery
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
@@ -17,8 +17,14 @@ import { noDataDisplay } from '@acx-ui/utils'
 
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const switchVersions = useGetSwitchCurrentVersionsQuery({
-    enableRbac: isSwitchRbacEnabled
+  const isSwitchFirmwareV1002Enabled = useIsSplitOn(Features.SWITCH_FIRMWARE_V1002_TOGGLE)
+
+  const switchVersions = useGetSwitcDefaultVersionsQuery({
+    enableRbac: isSwitchRbacEnabled || isSwitchFirmwareV1002Enabled,
+    customHeaders: isSwitchFirmwareV1002Enabled ? {
+      'Content-Type': 'application/vnd.ruckus.v1.2+json',
+      'Accept': 'application/vnd.ruckus.v1.2+json'
+    } : {}
   }, {
     refetchOnMountOrArgChange: false
   })
