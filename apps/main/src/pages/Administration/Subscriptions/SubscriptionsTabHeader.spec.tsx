@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                         from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
 import { administrationApi }                                      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo }                                 from '@acx-ui/rc/utils'
 import { Provider, store, userApi }                               from '@acx-ui/store'
@@ -23,7 +23,6 @@ describe('SubscriptionTabHeader', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockedTierReq.mockClear()
 
@@ -72,8 +71,8 @@ describe('SubscriptionTabHeader', () => {
     expect(mockedTierReq).not.toBeCalled()
   })
 
-  it('should filter edge data when PLM FF is not denabled', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+  it('should filter edge data when edge FF is not denabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(
       <Provider>

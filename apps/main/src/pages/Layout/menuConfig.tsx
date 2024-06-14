@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                                            from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps }                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -27,6 +27,7 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
+import { useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
@@ -42,7 +43,7 @@ export function useMenuConfig () {
   const { data: userProfileData, isCustomRole } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
