@@ -17,6 +17,7 @@ import {
 export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
   switch(oldFieldName) {
     case 'members':
+    case 'aps':
       return'apSerialNumbers'
     case 'networks':
       return 'wifiNetworkIds'

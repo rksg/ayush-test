@@ -160,22 +160,23 @@ export function ApGroupGeneralTab () {
         // use ap group viewmodel API
         const payload = {
           fields: ['id', 'members'],
-          filters: { venueId: [value], isDefault: [true] }
+          filters: { venueId: [value] }
         }
         const list = (await apGroupsList({
           payload,
           enableRbac: isWifiRbacEnabled
         }, true).unwrap()).data
 
-        if (list?.[0]?.aps)
-          defaultApGroupOption.push(...(list?.[0]?.aps!.map(item => ({
-            name: item.name,
-            key: item.serialNumber
-          }))))
+        defaultApGroupOption.push(...(list?.flatMap(item =>
+          (item.aps ?? ([] as ApDeep[])).map((ap) => ({
+            name: ap.name,
+            key: ap.serialNumber
+          })))))
       } else {
         (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
-          .data?.map(x => x.aps?.map((item: ApDeep) =>
-            defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber }))
+          .data?.map(x => x.aps?.map((item: ApDeep) => {
+            defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber })
+          })
           )
       }
     }

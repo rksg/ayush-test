@@ -261,7 +261,10 @@ export const apApi = baseApApi.injectEndpoints({
           }
 
           // fetch aps name
-          const apIds = _.uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('members') as keyof typeof item]))
+          const apIds = _.uniq(rbacApGroups.data
+            .flatMap(item => item[getApGroupNewFieldFromOld('members') as keyof typeof item])
+            .filter(i => !_.isNil(i)))
+
           if (apIds.length && isPayloadHasField(payload, ['members', 'aps'])) {
             const apQueryPayload = {
               fields: ['name', 'serialNumber'],
