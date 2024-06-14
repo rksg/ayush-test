@@ -210,7 +210,7 @@ export function ApForm () {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
-        ...omit(values, 'deviceGps', 'venueId'),
+        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
         ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
       }
       await addAp({
@@ -218,7 +218,7 @@ export function ApForm () {
           tenantId: tenantId,
           venueId: values.venueId
         },
-        payload,
+        payload: isUseWifiRbacApi ? payload : [payload],
         enableRbac: isUseWifiRbacApi
       }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
@@ -284,7 +284,7 @@ export function ApForm () {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
-        ...omit(values, 'deviceGps', 'venueId'),
+        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
         ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string)
           || deviceGps })
       }
