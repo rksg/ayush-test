@@ -128,6 +128,7 @@ export function RadioSettings () {
 
   const { isTemplate } = useConfigTemplate()
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION) && !isTemplate
 
   const {
     editContextData,
@@ -165,7 +166,8 @@ export function RadioSettings () {
     useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>({
       useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
-      enableRbac: isUseRbacApi
+      enableRbac: isUseRbacApi,
+      enableSeparation: is6gChannelSeparation
     })
 
   // default radio data
@@ -173,7 +175,8 @@ export function RadioSettings () {
     useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
       useQueryFn: useGetDefaultRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRadioCustomizationQuery,
-      enableRbac: isUseRbacApi
+      enableRbac: isUseRbacApi,
+      enableSeparation: is6gChannelSeparation
     })
 
   // Custom radio data
@@ -181,7 +184,8 @@ export function RadioSettings () {
     useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
       useQueryFn: useGetVenueRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateRadioCustomizationQuery,
-      enableRbac: isUseRbacApi
+      enableRbac: isUseRbacApi,
+      enableSeparation: is6gChannelSeparation
     })
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useVenueConfigTemplateMutationFnSwitcher(
@@ -224,7 +228,9 @@ export function RadioSettings () {
     const bandwidthRadioOptions = {
       [ApRadioTypeEnum.Radio24G]: GetSupportBandwidth(channelBandwidth24GOptions, supportCh24g),
       [ApRadioTypeEnum.Radio5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportCh5g),
-      [ApRadioTypeEnum.Radio6G]: GetSupportBandwidth(radio6GBandwidth, supportCh6g),
+      [ApRadioTypeEnum.Radio6G]: is6gChannelSeparation ?
+        GetSupportIndoorOutdoorBandwidth(radio6GBandwidth, supportCh6g) :
+        GetSupportBandwidth(radio6GBandwidth, supportCh6g),
       [ApRadioTypeEnum.RadioLower5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChLower5g),
       [ApRadioTypeEnum.RadioUpper5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChUpper5g)
     }
@@ -513,7 +519,14 @@ export function RadioSettings () {
     }
 
     if (isSupport6GCountry) {
-      radioParams6G.allowedChannels = curForm?.getFieldValue(['radioParams6G', 'allowedChannels'])
+      if (is6gChannelSeparation) {
+        radioParams6G.allowedIndoorChannels =
+          curForm?.getFieldValue(['radioParams6G', 'allowedIndoorChannels'])
+        radioParams6G.allowedOutdoorChannels =
+          curForm?.getFieldValue(['radioParams6G', 'allowedOutdoorChannels'])
+      } else {
+        radioParams6G.allowedChannels = curForm?.getFieldValue(['radioParams6G', 'allowedChannels'])
+      }
     } else {
       delete formData.radioParams6G
     }
@@ -721,7 +734,8 @@ export function RadioSettings () {
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
         payload: data,
-        enableRbac: isUseRbacApi
+        enableRbac: isUseRbacApi,
+        enableSeparation: is6gChannelSeparation
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
