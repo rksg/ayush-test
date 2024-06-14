@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Form, Col, List, Row, Space, Typography } from 'antd'
 import { useIntl }                                 from 'react-intl'
 import { useParams }                               from 'react-router-dom'
-import AutoSizer                                   from 'react-virtualized-auto-sizer'
+// import AutoSizer                                   from 'react-virtualized-auto-sizer'
 
 
 import { Button, Card, cssStr, DonutChart, showActionModal, Tooltip } from '@acx-ui/components'
@@ -40,9 +40,10 @@ const SmsProviderItem = () => {
 
   useEffect(() => {
     if (smsUsage) {
-      // setRuckusOneUsed(smsUsage.data?.ruckusOneUsed ?? 0)
-      setRuckusOneUsed(60)
+      setRuckusOneUsed(smsUsage.data?.ruckusOneUsed ?? 0)
+      // setRuckusOneUsed(60)
       setSmsThreshold(smsUsage.data?.thredshold ?? 80)
+      // setSmsThreshold(80)
       setSmsProvider(smsUsage.data?.provider ?? '')
       setFreeSmsPool(true)
     }
@@ -60,6 +61,19 @@ const SmsProviderItem = () => {
       { value: FREE_SMS_POOL - smsThreshold,
         name: 'remaining2', color: cssStr('--acx-neutrals-50') }
     ]
+
+  const UtilizationAlertThreshold = () => {
+    return <>                   <Form.Item
+      style={{ marginTop: '10px', marginBottom: 0 }}
+      colon={false}
+      label={$t({ defaultMessage: 'Utilization Alert Threshold' })}
+    />
+    <Button
+      type='link'
+      size='small'
+      onClick={onSetUpValue}>{$t({ defaultMessage: 'Change' })}</Button>
+    </>
+  }
 
   return ( <>
     <Row gutter={24} style={{ marginBottom: '15px' }}>
@@ -89,7 +103,7 @@ const SmsProviderItem = () => {
                 size={20}
               >
                 <Button type='link'
-                  key='editsso'
+                  key='editProvider'
                   onClick={() => {
                     setEditMode(true)
                     setDrawerVisible(true)
@@ -97,7 +111,7 @@ const SmsProviderItem = () => {
                   {$t({ defaultMessage: 'Change' })}
                 </Button>
                 <Button type='link'
-                  key='deletesso'
+                  key='deleteProvider'
                   onClick={() => {
                     showActionModal({
                       title: $t({ defaultMessage: 'Remove SMS Provider' }),
@@ -122,7 +136,7 @@ const SmsProviderItem = () => {
           }
         />
 
-        {smsProvider !== '' && <Col style={{ width: '341px', paddingLeft: 0 }}>
+        {smsProvider !== '' && <Col style={{ width: '360px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
             <div>
               <Form.Item
@@ -149,7 +163,7 @@ const SmsProviderItem = () => {
         </Col>
         }
 
-        {smsProvider === '' && <Col style={{ width: '341px', paddingLeft: 0 }}>
+        {smsProvider === '' && <Col style={{ width: '360px', paddingLeft: 0 }}>
           <Card type='solid-bg' >
             <Button
               type='link'
@@ -159,12 +173,6 @@ const SmsProviderItem = () => {
         </Col>
         }
 
-        {/* <Form.Item
-          style={{ marginTop: '10px', marginBottom: 0 }}
-          colon={false}
-          label={$t({ defaultMessage: 'The SMS pool provided by RUCKUS has been depleted. We recommend'
-           + 'setting up an SMS provider promptly.' })}
-        /> */}
         {!freeSmsPool && <List
           style={{ marginTop: '15px', marginBottom: 0 }}
           split={false}
@@ -182,31 +190,48 @@ const SmsProviderItem = () => {
           )}
         />}
 
-        {freeSmsPool && <div>
+        {smsProvider === '' && <div>
           <Form.Item
             style={{ marginTop: '10px', marginBottom: 0 }}
             colon={false}
             label={$t({ defaultMessage: 'Free SMS Pool' })}
           />
-          {<Col style={{ width: '341px', paddingLeft: 0 }}>
+          <Col style={{ width: '360px', paddingLeft: 0 }}>
             <Card type='solid-bg' >
-              <div style={{ width: 100, height: 100 }}>
-                <AutoSizer>
-                  {({ height, width }) => (
-                    <DonutChart
-                      showLegend={false}
-                      showTotal={false}
-                      style={{ width, height }}
-                      title={ruckusOneUsed + '/100'}
-                      value={undefined}
-                      size='x-large'
-                      data={data}
-                    />
-                  )}
-                </AutoSizer>
+              <div>
+                <div style={{ float: 'left' }}>
+                  <DonutChart
+                    showLegend={false}
+                    showTotal={false}
+                    style={{ width: 110, height: 110 }}
+                    title={ruckusOneUsed + '/100'}
+                    value={undefined}
+                    size='x-large'
+                    data={data}
+                  />
+                </div>
+                <div style={{ float: 'right', marginTop: '10px' }}>
+                  <List
+                    split={false}
+                    dataSource={[
+                      $t({ defaultMessage: 'This account has a 100 SMS pool for' }),
+                      $t({ defaultMessage: 'testing and trials. Once the pool has' }),
+                      $t({ defaultMessage: 'been exhausted, an SMS provider' }),
+                      $t({ defaultMessage: 'account must be set up.' })
+                    ]}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <Typography.Text className='description darkGreyText'>
+                          {item}
+                        </Typography.Text>
+                      </List.Item>
+                    )}
+                  />
+                  <UtilizationAlertThreshold/>
+                </div>
               </div>
             </Card>
-          </Col>}
+          </Col>
         </div>}
       </Col>
     </Row>
@@ -214,7 +239,6 @@ const SmsProviderItem = () => {
     {drawerVisible && <SetupSmsProviderDrawer
       visible={drawerVisible}
       isEditMode={isEditMode}
-      //   editData={authenticationsData as TenantAuthentications}
       setVisible={setDrawerVisible}
     />}
   </>
