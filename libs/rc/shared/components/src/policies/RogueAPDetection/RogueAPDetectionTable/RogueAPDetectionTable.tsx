@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, PageHeader, Table, TableProps, Loader }          from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelRoguePoliciesMutation,
@@ -25,10 +25,11 @@ import { RequestPayload }                                          from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../../../SimpleListTooltip'
+import { useIsEdgeReady }    from '../../../useEdgeActions'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
 
   return {
     fields: [
