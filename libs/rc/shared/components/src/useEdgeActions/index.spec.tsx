@@ -12,6 +12,7 @@ import { useEdgeActions } from '.'
 const mockedDeleteApi = jest.fn()
 const mockedSendOtpApi = jest.fn()
 const mockedRebootApi = jest.fn()
+const mockedShutdownApi = jest.fn()
 const mockedResetApi = jest.fn()
 
 describe('useEdgeActions', () => {
@@ -36,6 +37,13 @@ describe('useEdgeActions', () => {
         EdgeUrlsInfo.reboot.url,
         (req, res, ctx) => {
           mockedRebootApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.shutdown.url,
+        (req, res, ctx) => {
+          mockedShutdownApi()
           return res(ctx.status(202))
         }
       ),
@@ -68,6 +76,30 @@ describe('useEdgeActions', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(mockedCallback).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+
+  it('should shutdown successfully', async () => {
+    const mockedCallback = jest.fn()
+    const { result } = renderHook(() => useEdgeActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { shutdown } = result.current
+    shutdown(mockedEdges[0], mockedCallback)
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveTextContent('Graceful Shutdown "Smart Edge 1"?')
+    // eslint-disable-next-line max-len
+    expect(dialog).toHaveTextContent('Graceful shutdown will safely terminate all ongoing operations on SmartEdge. Are you sure you want to shutdown this SmartEdge?')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Graceful Shutdown' }))
+    await waitFor(() => {
+      expect(mockedShutdownApi).toBeCalledTimes(1)
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)

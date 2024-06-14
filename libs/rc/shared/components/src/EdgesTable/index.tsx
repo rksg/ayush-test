@@ -23,7 +23,7 @@ import {
   EdgeStatusEnum,
   TABLE_QUERY,
   TableQuery,
-  allowRebootForStatus,
+  allowRebootShutdownForStatus,
   allowResetForStatus,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
@@ -243,7 +243,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
-        allowRebootForStatus(selectedRows[0]?.deviceStatus)),
+        allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (rows, clearSelection) => {
         reboot(rows[0], clearSelection)

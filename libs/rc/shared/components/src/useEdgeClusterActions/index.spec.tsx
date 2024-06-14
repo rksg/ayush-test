@@ -10,6 +10,7 @@ import { useEdgeClusterActions } from '.'
 const mockedDeleteApi = jest.fn()
 const mockedDeleteClusterApi = jest.fn()
 const mockedRebootApi = jest.fn()
+const mockedShutdownApi = jest.fn()
 const mockedSendOtp = jest.fn()
 const mockedFactoryReset = jest.fn()
 
@@ -35,6 +36,13 @@ describe('useEdgeClusterActions', () => {
         EdgeUrlsInfo.reboot.url,
         (req, res, ctx) => {
           mockedRebootApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.shutdown.url,
+        (req, res, ctx) => {
+          mockedShutdownApi()
           return res(ctx.status(202))
         }
       ),
@@ -70,6 +78,30 @@ describe('useEdgeClusterActions', () => {
     await userEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
     await waitFor(() => {
       expect(mockedRebootApi).toBeCalledTimes(5)
+    })
+    await waitFor(() => {
+      expect(mockedCallback).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+
+  it('should shutdown successfully', async () => {
+    const mockedCallback = jest.fn()
+    const { result } = renderHook(() => useEdgeClusterActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { shutdown } = result.current
+    shutdown(mockEdgeList.data as EdgeStatus[], mockedCallback)
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveTextContent('Graceful Shutdown "5 SmartEdges"?')
+    // eslint-disable-next-line max-len
+    expect(dialog).toHaveTextContent('Graceful shutdown will safely terminate all ongoing operations on SmartEdge. Are you sure you want to shutdown this SmartEdge?')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'shutdown' }))
+    await waitFor(() => {
+      expect(mockedShutdownApi).toBeCalledTimes(5)
     })
     await waitFor(() => {
       expect(mockedCallback).toBeCalledTimes(1)
