@@ -18,6 +18,7 @@ import {
   useGetSwitchVenueVersionListV1002Query,
   useGetSwitchAvailableFirmwareListV1002Query,
   useGetSwitchCurrentVersionsV1002Query
+
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
@@ -89,6 +90,7 @@ export const VenueFirmwareTable = (
     enableRbac: true
   })
 
+
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
 
@@ -128,8 +130,23 @@ export const VenueFirmwareTable = (
       key: 'version',
       dataIndex: 'version',
       sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
-      filterable: filterables ? filterables['version'] : false,
+      filterable: true,
+      fitlerCustomOptions: [{
+        label: 'Group 1',
+        options: [
+          { label: 'option 1', value: 1 },
+          { label: 'option 2', value: 2 }
+        ]
+      },{
+        label: 'Group 2',
+        options: [
+          { label: 'option 3', value: 3 },
+          { label: 'option 4', value: 4 },
+          { label: 'option 5', value: 5 }
+        ]
+      }],//filterables ? filterables['version'] : false,
       filterMultiple: false,
+      filterKey: 'includeExpired',
       render: function (_, row) {
         let versionList = getSwitchFirmwareList(row)
         return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
