@@ -5,7 +5,7 @@ import { Checkbox, Form, InputNumber, Select, Space, Switch } from 'antd'
 import _                                                      from 'lodash'
 import { useIntl }                                            from 'react-intl'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { Features }                                                                         from '@acx-ui/feature-toggle'
 import { useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileViewDataListQuery } from '@acx-ui/rc/services'
 import {
   DnsProxyContextType,
@@ -19,6 +19,7 @@ import {
   ConfigTemplateType } from '@acx-ui/rc/utils'
 import { TenantLink } from '@acx-ui/react-router-dom'
 
+import { useIsEdgeFeatureReady, useIsEdgeReady }                                       from '../../../useEdgeActions'
 import NetworkFormContext                                                              from '../../NetworkFormContext'
 import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
 import { AccessControlForm }                                                           from '../AccessControlForm'
@@ -43,7 +44,7 @@ export function NetworkControlTab () {
 
   const labelWidth = '250px'
 
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isWifiCallingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.WIFI_CALLING)
 
   const form = Form.useFormInstance()
@@ -92,8 +93,7 @@ export function NetworkControlTab () {
   }
 
   const { enableTunnel, enableVxLan, vxLanTunnels } = useNetworkVxLanTunnelProfileInfo(data)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
   const tunnelProfileDefaultPayload = {
     fields: ['name', 'id', 'type'],
     pageSize: 10000,
@@ -104,7 +104,7 @@ export function NetworkControlTab () {
   const { tunnelOptions = [], isLoading: isTunnelLoading } = useGetTunnelProfileViewDataListQuery({
     payload: tunnelProfileDefaultPayload
   }, {
-    skip: !isEdgeEnabled || !isEdgeReady || !enableTunnel,
+    skip: !isEdgeEnabled || !enableTunnel,
     selectFromResult: ({ data, isLoading }) => {
       return {
         tunnelOptions: data?.data

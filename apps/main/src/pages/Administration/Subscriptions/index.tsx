@@ -11,12 +11,12 @@ import {
   TableProps,
   showToast
 } from '@acx-ui/components'
-import { get }                                                    from '@acx-ui/config'
-import { useIsTierAllowed, Features, TierFeatures, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { useGetMspProfileQuery }                                  from '@acx-ui/msp/services'
-import { MSPUtils }                                               from '@acx-ui/msp/utils'
-import { SpaceWrapper }                                           from '@acx-ui/rc/components'
+import { get }                          from '@acx-ui/config'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import { useGetMspProfileQuery }        from '@acx-ui/msp/services'
+import { MSPUtils }                     from '@acx-ui/msp/utils'
+import { SpaceWrapper, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetEntitlementsListQuery,
   useRefreshEntitlementsMutation,
@@ -83,7 +83,7 @@ const statusTypeFilterOpts = ($t: IntlShape['$t']) => [
 export const SubscriptionTable = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
 
   const queryResults = useGetEntitlementsListQuery({ params })
