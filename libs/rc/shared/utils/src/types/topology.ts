@@ -1,5 +1,3 @@
-import { PowerSavingStatusEnum } from '@acx-ui/rc/utils';
-
 export interface Node {
     type?: DeviceTypes;
     name: string;
@@ -18,7 +16,7 @@ export interface Node {
 	isConnectedCloud?: boolean;
 	ipAddress?: string;
 	meshRole?: string;
-	powerSavingStatus?: PowerSavingStatusEnum;
+	powerSavingStatus?: string;
 }
 
 export interface NodeData extends Node {
