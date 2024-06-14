@@ -262,7 +262,7 @@ export const apApi = baseApApi.injectEndpoints({
 
           // fetch aps name
           const apIds = _.uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('members') as keyof typeof item]))
-          if (apIds.length && isPayloadHasField(payload, 'members')) {
+          if (apIds.length && isPayloadHasField(payload, ['members', 'aps'])) {
             const apQueryPayload = {
               fields: ['name', 'serialNumber'],
               pageSize: 10000,
@@ -1498,9 +1498,11 @@ export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
     afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
 }
 
-const isPayloadHasField = (payload: RequestPayload['payload'], field: string): boolean => {
+const isPayloadHasField = (payload: RequestPayload['payload'], fields: string[] | string): boolean => {
   const typedPayload = payload as Record<string, unknown>
   const hasGroupBy = typedPayload?.groupBy
-  const fields = (hasGroupBy ? typedPayload.groupByFields : typedPayload.fields) as (string[] | undefined)
-  return fields?.includes(field) ?? false
+  const payloadFields = (hasGroupBy ? typedPayload.groupByFields : typedPayload.fields) as (string[] | undefined)
+  return (Array.isArray(fields)
+    ? fields.some(a => payloadFields?.includes(a))
+    : payloadFields?.includes(fields)) ?? false
 }

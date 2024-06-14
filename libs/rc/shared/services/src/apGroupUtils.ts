@@ -2,6 +2,7 @@ import { omit } from 'lodash'
 import _        from 'lodash'
 
 import {
+  ApDeep,
   ApGroup,
   ApGroupViewModel,
   CountAndNames,
@@ -79,6 +80,10 @@ export const aggregateApGroupApInfo = (
 ) => {
   apGroupList.data.forEach(apGroupItem => {
     const groupItem = rbacApGroupList.data.find(item => item.id === apGroupItem.id)
+    apGroupItem.aps = groupItem?.apSerialNumbers?.map((apSerialNumber) => ({
+      serialNumber: apSerialNumber,
+      name: apList.data?.find(n => n.serialNumber === apSerialNumber)?.name
+    }) as ApDeep)
     apGroupItem.members = {
       count: groupItem?.apSerialNumbers?.length ?? 0,
       names: groupItem?.apSerialNumbers?.map((apSerialNumber) => {

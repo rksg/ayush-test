@@ -81,7 +81,6 @@ export function ApGroupGeneralTab () {
   })
 
   const [venueDefaultApGroup] = useConfigTemplateLazyQueryFnSwitcher({
-    // TODO: should be replaced with AP group viewmodel
     useLazyQueryFn: useLazyVenueDefaultApGroupQuery,
     useLazyTemplateQueryFn: useLazyGetVenueTemplateDefaultApGroupQuery
   })
@@ -156,10 +155,29 @@ export function ApGroupGeneralTab () {
     const defaultApGroupOption: { name: string, key: string }[] = []
 
     if (value) {
-      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
-        .data?.map(x => x.aps?.map((item: ApDeep) =>
-          defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber }))
-        )
+      // get venue default ap group and its members options
+      if (isWifiRbacEnabled) {
+        // use ap group viewmodel API
+        const payload = {
+          fields: ['id', 'members'],
+          filters: { venueId: [value], isDefault: [true] }
+        }
+        const list = (await apGroupsList({
+          payload,
+          enableRbac: isWifiRbacEnabled
+        }, true).unwrap()).data
+
+        if (list?.[0]?.aps)
+          defaultApGroupOption.push(...(list?.[0]?.aps!.map(item => ({
+            name: item.name,
+            key: item.serialNumber
+          }))))
+      } else {
+        (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
+          .data?.map(x => x.aps?.map((item: ApDeep) =>
+            defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber }))
+          )
+      }
     }
 
     if (extraMemberList && defaultApGroupOption) {

@@ -367,9 +367,9 @@ export function ApForm () {
       }).unwrap()
 
       result = result.concat(apGroupOptions.filter(item => {
-        // set default group id
-        if (item.isDefault)
+        if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
           result[0].value = item.id
+        }
 
         return !item.isDefault
       }).map((v) => ({ label: v.name, value: v.id })) || [])
