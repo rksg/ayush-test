@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCardCategory } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                   from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListViewModelQuery,
   useGetDhcpStatsQuery,
@@ -33,14 +34,12 @@ export default function MyServices () {
   const params = useParams()
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
@@ -62,9 +61,9 @@ export default function MyServices () {
       tableQuery: useGetDhcpStatsQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
+        skip: !isEdgeHaReady || !isEdgeDhcpHaReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
+      disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
     },
     {
       type: ServiceType.NETWORK_SEGMENTATION,
@@ -72,9 +71,9 @@ export default function MyServices () {
       tableQuery: useGetNetworkSegmentationViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
+        skip: !isEdgePinReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady || !isEdgePinReady
+      disabled: !isEdgePinReady
     },
     {
       type: ServiceType.EDGE_SD_LAN,
@@ -82,9 +81,9 @@ export default function MyServices () {
       tableQuery: useGetEdgeSdLanP2ViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+        skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }),
-      disabled: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+      disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
     },
     {
       type: ServiceType.EDGE_FIREWALL,
@@ -92,9 +91,9 @@ export default function MyServices () {
       tableQuery: useGetEdgeFirewallViewDataListQuery({
         params, payload: { ...defaultPayload }
       },{
-        skip: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
+        skip: !isEdgeHaReady || !isEdgeFirewallHaReady
       }),
-      disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
+      disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
     },
     {
       type: ServiceType.DPSK,
@@ -120,9 +119,9 @@ export default function MyServices () {
       tableQuery: useWebAuthTemplateListQuery({
         params, payload: { ...defaultPayload }, enableRbac: isSwitchRbacEnabled
       }, {
-        skip: !isEdgeEnabled || !networkSegmentationSwitchEnabled
+        skip: !isEdgePinReady || !networkSegmentationSwitchEnabled
       }),
-      disabled: !isEdgeEnabled || !networkSegmentationSwitchEnabled
+      disabled: !isEdgePinReady || !networkSegmentationSwitchEnabled
     },
     {
       type: ServiceType.RESIDENT_PORTAL,
