@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }                                                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                                                  from '@acx-ui/feature-toggle'
 import { edgeSdLanApi, nsgApi, tunnelProfileApi }                                                                  from '@acx-ui/rc/services'
 import { EdgeSdLanFixtures, EdgeSdLanUrls, EdgeTunnelProfileFixtures, NetworkSegmentationUrls, TunnelProfileUrls } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                         from '@acx-ui/store'
@@ -153,7 +153,6 @@ describe('EditTunnelProfile', () => {
           flag === Features.EDGE_PIN_HA_TOGGLE) return true
         return false
       })
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
       mockServer.use(
         rest.post(

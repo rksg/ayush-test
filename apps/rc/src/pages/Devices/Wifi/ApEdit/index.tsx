@@ -135,7 +135,8 @@ export function ApEdit () {
     }
   }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
-  const isLoading = !targetVenueId
+  // need to wait venueData ready, venueData.id is using inside all tabs.
+  const isLoading = !venueData
 
   return <ApDataContext.Provider value={{ apData, apCapabilities, venueData }}>
     <ApEditContext.Provider value={{

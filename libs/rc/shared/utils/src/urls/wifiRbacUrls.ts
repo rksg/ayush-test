@@ -313,11 +313,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/radioSettings',
     newApi: true
   },
-  deleteApRadioCustomization: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/radioSettings',
-    newApi: true
-  },*/
+  */
   pingAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
@@ -392,7 +388,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/ledSettings',
     newApi: true
   },
-  /*
   getApBandModeSettings: {
     method: 'get',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
@@ -400,11 +395,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateApBandModeSettings: {
     method: 'put',
-    url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
-    newApi: true
-  },
-  resetApBandModeSettings: {
-    method: 'delete',
     url: '/venues/:venueId/aps/:serialNumber/bandModeSettings',
     newApi: true
   },
@@ -418,12 +408,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
-  resetApAntennaTypeSettings: {
-    method: 'delete',
-    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
-    newApi: true
-  },
-  */
   getApBssColoring: {
     method: 'get',
     // url: '/venues/aps/:serialNumber/bssColoringSettings',
@@ -436,24 +420,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/bssColoringSettings',
     newApi: true
   },
-  /*
-  getApCustomization: {
-    method: 'get',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
-    newApi: true
-  },
-  updateApCustomization: {
-    method: 'put',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
-    newApi: true
-  },
-  resetApCustomization: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization',
-    newApi: true
-  },
-  */
   getVenueDirectedMulticast: {
     method: 'get',
     //url: '/venues/:venueId/directedMulticastSettings',
