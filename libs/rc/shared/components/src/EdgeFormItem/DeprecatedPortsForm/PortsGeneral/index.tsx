@@ -7,7 +7,7 @@ import { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import { useIntl }             from 'react-intl'
 
 import { Loader, NoData, StepsForm }   from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Features }                    from '@acx-ui/feature-toggle'
 import { useUpdatePortConfigMutation } from '@acx-ui/rc/services'
 import {
   EdgeIpModeEnum,
@@ -17,6 +17,7 @@ import {
 
 import { EdgePortTabEnum }                                  from '..'
 import { useGetEdgeSdLanByEdgeOrClusterId }                 from '../../../EdgeSdLan/useEdgeSdLanActions'
+import { useIsEdgeFeatureReady }                            from '../../../useEdgeActions'
 import { EditContext }                                      from '../../EdgeEditContext'
 import { EdgePortConfigFormType, EdgePortsGeneralBase }     from '../../EdgePortsGeneralBase'
 import { getFieldFullPath, transformApiDataToFormListData } from '../../EdgePortsGeneralBase/utils'
@@ -38,7 +39,7 @@ interface PortsGeneralProps {
 const PortsGeneral = (props: PortsGeneralProps) => {
   const { clusterId, serialNumber, onCancel, buttonLabel } = props
   const { $t } = useIntl()
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const [form] = Form.useForm<EdgePortConfigFormType>()
   const [activeTab, setActiveTab] = useState<string|undefined>()

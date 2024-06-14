@@ -4,9 +4,11 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import { Features }                            from '@acx-ui/feature-toggle'
 import { defaultSort, EdgeDhcpPool, sortProp } from '@acx-ui/rc/utils'
 import { filterByAccess }                      from '@acx-ui/user'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 export function PoolTable (props:{
   data: EdgeDhcpPool[]
@@ -17,7 +19,7 @@ export function PoolTable (props:{
 }) {
   const { $t } = useIntl()
   const { data, openDrawer, onDelete, openImportModal, isRelayOn } = props
-  const isDHCPCSVEnabled = useIsSplitOn(Features.EDGES_DHCP_CSV_TOGGLE)
+  const isDHCPCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_DHCP_CSV_TOGGLE)
 
   const rowActions: TableProps<EdgeDhcpPool>['rowActions'] = [
     {
