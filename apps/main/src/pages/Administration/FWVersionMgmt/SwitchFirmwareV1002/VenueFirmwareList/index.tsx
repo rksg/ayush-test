@@ -10,7 +10,6 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery, //TODO
@@ -66,12 +65,9 @@ export const VenueFirmwareTable = (
   const { $t } = useIntl()
   const intl = useIntl()
   const params = useParams()
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const {
     getSwitchNextScheduleTplTooltip,
-    getSwitchFirmwareList,
-    getSwitchVenueAvailableVersions,
-    sortAvailableVersionProp
+    getSwitchFirmwareList
   } = useSwitchFirmwareUtils()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const [modelVisible, setModelVisible] = useState(false)
@@ -90,7 +86,7 @@ export const VenueFirmwareTable = (
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
     params,
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: true
   })
 
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
@@ -118,13 +114,13 @@ export const VenueFirmwareTable = (
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
-      key: isSwitchRbacEnabled ? 'venueName' : 'name',
-      dataIndex: isSwitchRbacEnabled ? 'venueName' : 'name',
-      sorter: { compare: sortProp(isSwitchRbacEnabled ? 'venueName' : 'name', defaultSort) },
+      key: 'venueName' ,
+      dataIndex: 'venueName',
+      sorter: { compare: sortProp('venueName', defaultSort) },
       searchable: true,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return isSwitchRbacEnabled ? row.venueName : row.name
+        return row.venueName
       }
     },
     {
@@ -137,15 +133,6 @@ export const VenueFirmwareTable = (
       render: function (_, row) {
         let versionList = getSwitchFirmwareList(row)
         return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
-      }
-    },
-    {
-      title: $t({ defaultMessage: 'Available Firmware' }),
-      sorter: { compare: sortAvailableVersionProp(defaultSort) },
-      key: 'availableVersions',
-      dataIndex: 'availableVersions',
-      render: function (__, row) {
-        return getSwitchVenueAvailableVersions(row)
       }
     },
     {
@@ -358,14 +345,11 @@ export function VenueFirmwareList () {
     }
   })
 
-  const typeFilterOptions = [{ key: 'Release', value: 'Release' }, { key: 'Beta', value: 'Beta' }]
-
   return (
     <VenueFirmwareTable tableQuery={tableQuery}
       searchable={true}
       filterables={{
-        version: versionFilterOptions,
-        type: typeFilterOptions
+        version: versionFilterOptions
       }}
     />
   )

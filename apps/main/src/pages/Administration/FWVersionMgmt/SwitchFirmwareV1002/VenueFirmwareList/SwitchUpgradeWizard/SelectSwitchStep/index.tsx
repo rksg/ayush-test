@@ -45,8 +45,7 @@ const getTooltipText = function (value: string, customDisplayValue?: string | Re
 function useColumns () {
   const intl = useIntl()
   const { getSwitchNextScheduleTplTooltip,
-    getSwitchFirmwareList,
-    getSwitchVenueAvailableVersions } = useSwitchFirmwareUtils()
+    getSwitchFirmwareList } = useSwitchFirmwareUtils()
 
   const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
     {
@@ -77,15 +76,6 @@ function useColumns () {
       render: function (_, row) {
         let versionList = getSwitchFirmwareList(row)
         const version = versionList.length > 0 ? versionList.join(', ') : noDataDisplay
-        return getTooltipText(version)
-      }
-    }, {
-      title: intl.$t({ defaultMessage: 'Available Firmware' }),
-      key: 'availableVersions',
-      dataIndex: 'availableVersions',
-      width: 150,
-      render: function (_, row) {
-        const version = getSwitchVenueAvailableVersions(row)
         return getTooltipText(version)
       }
     }, {
@@ -181,20 +171,6 @@ export const SelectSwitchStep = (
       render: function (_, row) {
         const version = row.currentFirmware ?
           parseSwitchVersion(row.currentFirmware) : noDataDisplay
-        return getTooltipText(version)
-      }
-    }, {
-      title: intl.$t({ defaultMessage: 'Available Firmware' }),
-      key: 'availableVersion',
-      dataIndex: 'availableVersion',
-      width: 150,
-      render: function (_, row) {
-        const currentVersion = row.currentFirmware ?
-          parseSwitchVersion(row.currentFirmware) : noDataDisplay
-        const availableVersion = row.availableVersion?.id ?
-          parseSwitchVersion(row.availableVersion.id) : noDataDisplay
-        const version = currentVersion === availableVersion ? noDataDisplay : availableVersion
-
         return getTooltipText(version)
       }
     }, {

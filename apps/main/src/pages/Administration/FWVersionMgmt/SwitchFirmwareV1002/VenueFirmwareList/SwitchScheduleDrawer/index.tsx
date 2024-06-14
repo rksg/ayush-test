@@ -38,7 +38,6 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     getSwitchScheduleTpl
   } = useSwitchFirmwareUtils()
 
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListQuery({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
@@ -50,7 +49,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     const switchList = (await getSwitchFirmwareStatusList({
       params: { venueId: props.data.id },
       payload: { venueIdList: [props.data.id] },
-      enableRbac: isSwitchRbacEnabled
+      enableRbac: true
     }, false)).data?.data
     if (switchList) {
       const filterSwitchList = switchList.filter(row => row.isSwitchLevelSchedule)
