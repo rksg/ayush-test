@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useContext } from 'react'
 
 import {
@@ -15,14 +14,9 @@ import { getIntl }                                                           fro
 
 import { getTooltipTemplate } from '../'
 
-import * as UI                                                 from './styledComponents'
-import VlanPortsContext                                        from './VlanPortsContext'
-import { getPortsModule, getUnitTitle, selectedGroupByPrefix } from './VlanPortsModal.utils'
-
-export interface PortsType {
-  label: string,
-  value: string
-}
+import * as UI                                                                       from './styledComponents'
+import VlanPortsContext                                                              from './VlanPortsContext'
+import { getPortsModule, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
 
 export function TaggedPortsStep () {
   const { $t } = getIntl()
@@ -31,7 +25,7 @@ export function TaggedPortsStep () {
     vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
   } = useContext(VlanPortsContext)
 
-  const [portsModule, setPortsModule] = useState<PortsType[][]>([])
+  const [portsModule, setPortsModule] = useState<PortsType[][][]>([])
   const [selectedItems, setSelectedItems] = useState<string[]>([])
 
   const [slot2, setSlot2] = useState<SwitchSlot>()
@@ -41,7 +35,7 @@ export function TaggedPortsStep () {
     if(vlanSettingValues){
       if (vlanSettingValues.switchFamilyModels?.slots) {
         const module = getPortsModule(vlanSettingValues.switchFamilyModels?.slots, isSwitchLevel)
-        setPortsModule(module as unknown as PortsType[][])
+        setPortsModule(module as unknown as PortsType[][][])
       }
 
       const slot2Data = vlanSettingValues.switchFamilyModels?.slots
@@ -199,7 +193,7 @@ export function TaggedPortsStep () {
   }
 
   return (
-    <div style={{ height: '80%', marginBottom: '100px' }}>
+    <div style={{ height: '80%', minHeight: '200px', marginBottom: '100px' }}>
       <Row gutter={20}>
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
@@ -242,7 +236,7 @@ export function TaggedPortsStep () {
                       onChange={(checkedValues) =>
                         handleCheckboxGroupChange(checkedValues as string[], `${index+1}/1`)}
                       value={selectedItems}
-                      options={(module[0] as unknown as PortsType[]).map((timeslot, i) => ({
+                      options={module[0].map((timeslot, i) => ({
                         label: <Tooltip
                           title={getTooltip(timeslot.value)}
                         >
@@ -261,7 +255,7 @@ export function TaggedPortsStep () {
                     />
                   </UI.Module>
                 </Col>
-                { module[1] && <Col>
+                { getModule(module, `${index+1}/2`) && <Col>
                   <Row gutter={20}>
                     <Col>
                       <div>
@@ -280,7 +274,7 @@ export function TaggedPortsStep () {
                           onChange={(checkedValues) =>
                             handleCheckboxGroupChange(checkedValues as string[], `${index+1}/2`)}
                           value={selectedItems}
-                          options={(module[1] as unknown as PortsType[]).map((timeslot, i) => ({
+                          options={getModule(module, `${index+1}/2`).map((timeslot, i) => ({
                             label: <Tooltip
                               title={getTooltip(timeslot.value)}
                             >
@@ -302,7 +296,7 @@ export function TaggedPortsStep () {
                   </Row>
                 </Col>
                 }
-                { module[2] && <Col>
+                { getModule(module, `${index+1}/3`) && <Col>
                   <div>
                     <Typography.Text style={{ fontWeight: 'bold' }}>
                       {$t({ defaultMessage: 'Module 3' })}
@@ -319,7 +313,7 @@ export function TaggedPortsStep () {
                       onChange={(checkedValues) =>
                         handleCheckboxGroupChange(checkedValues as string[], `${index+1}/3`)}
                       value={selectedItems}
-                      options={(module[2] as unknown as PortsType[]).map((timeslot, i) => ({
+                      options={getModule(module, `${index+1}/3`).map((timeslot, i) => ({
                         label: <Tooltip
                           title={getTooltip(timeslot.value)}
                         >

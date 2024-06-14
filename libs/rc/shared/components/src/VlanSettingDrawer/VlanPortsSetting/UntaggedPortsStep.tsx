@@ -15,14 +15,9 @@ import { getIntl }                                                           fro
 
 import { getTooltipTemplate } from '../'
 
-import * as UI                                                 from './styledComponents'
-import VlanPortsContext                                        from './VlanPortsContext'
-import { getPortsModule, getUnitTitle, selectedGroupByPrefix } from './VlanPortsModal.utils'
-
-export interface PortsType {
-  label: string,
-  value: string
-}
+import * as UI                                                                       from './styledComponents'
+import VlanPortsContext                                                              from './VlanPortsContext'
+import { getPortsModule, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
 
 export function UntaggedPortsStep () {
   const { $t } = getIntl()
@@ -31,7 +26,7 @@ export function UntaggedPortsStep () {
     vlanSettingValues, setVlanSettingValues, vlanList, isSwitchLevel, portsUsedBy
   } = useContext(VlanPortsContext)
 
-  const [portsModule, setPortsModule] = useState<PortsType[][]>([])
+  const [portsModule, setPortsModule] = useState<PortsType[][][]>([])
   const [selectedItems, setSelectedItems] = useState<string[]>([])
 
   const [slot2, setSlot2] = useState<SwitchSlot>()
@@ -41,7 +36,7 @@ export function UntaggedPortsStep () {
     if(vlanSettingValues){
       if (vlanSettingValues.switchFamilyModels?.slots) {
         const module = getPortsModule(vlanSettingValues.switchFamilyModels?.slots, isSwitchLevel)
-        setPortsModule(module as unknown as PortsType[][])
+        setPortsModule(module as unknown as PortsType[][][])
       }
 
       const slot2Data = vlanSettingValues.switchFamilyModels?.slots
@@ -60,13 +55,14 @@ export function UntaggedPortsStep () {
         const untaggedPorts = vlanSettingValues.switchFamilyModels?.untaggedPorts
           .toString().split(',').filter(item => item !== '')
         form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], untaggedPorts)
+
         setSelectedItems(untaggedPorts)
       }else{
         form.setFieldValue(['switchFamilyModels', 'untaggedPorts'], [])
         setSelectedItems([])
       }
     }
-  }, [vlanSettingValues, isSwitchLevel, form])
+  }, [vlanSettingValues])
 
   let tmpUntaggedSelectedItem: string[] = []
   const { DragSelection: DragSelectionUntaggedPorts } = useSelectionContainer({
@@ -148,7 +144,7 @@ export function UntaggedPortsStep () {
         id: vlanSettingValues.switchFamilyModels?.id,
         model: vlanSettingValues.switchFamilyModels?.model || '',
         slots: vlanSettingValues.switchFamilyModels?.slots || [],
-        untaggedPorts: selected, //selectedUntaggedPorts,
+        untaggedPorts: selected,
         taggedPorts: vlanSettingValues.switchFamilyModels?.taggedPorts || []
       }
     })
@@ -210,7 +206,7 @@ export function UntaggedPortsStep () {
   }
 
   return (
-    <div style={{ height: '80%', marginBottom: '100px' }}>
+    <div style={{ height: '80%', minHeight: '200px', marginBottom: '100px' }}>
       <Row gutter={20}>
         <Col>
           <label style={{ color: 'var(--acx-neutrals-60)' }}>
@@ -253,7 +249,7 @@ export function UntaggedPortsStep () {
                       onChange={(checkedValues) =>
                         handleCheckboxGroupChange(checkedValues as string[], `${index+1}/1`)}
                       value={selectedItems}
-                      options={(module[0] as unknown as PortsType[]).map((timeslot, i) => ({
+                      options={(module[0]).map((timeslot, i) => ({
                         label: <Tooltip
                           title={getTooltip(timeslot.value)}
                         >
@@ -273,7 +269,7 @@ export function UntaggedPortsStep () {
                     />
                   </UI.Module>
                 </Col>
-                { module[1] && <Col>
+                { getModule(module, `${index+1}/2`) && <Col>
                   <Row gutter={20}>
                     <Col>
                       <div>
@@ -292,7 +288,7 @@ export function UntaggedPortsStep () {
                           onChange={(checkedValues) =>
                             handleCheckboxGroupChange(checkedValues as string[], `${index+1}/2`)}
                           value={selectedItems}
-                          options={(module[1] as unknown as PortsType[]).map((timeslot, i) => ({
+                          options={(getModule(module, `${index+1}/2`)).map((timeslot, i) => ({
                             label: <Tooltip
                               title={getTooltip(timeslot.value)}
                             >
@@ -314,7 +310,7 @@ export function UntaggedPortsStep () {
                   </Row>
                 </Col>
                 }
-                { module[2] && <Col>
+                { getModule(module, `${index+1}/3`) && <Col>
                   <div>
                     <Typography.Text style={{ fontWeight: 'bold' }}>
                       {$t({ defaultMessage: 'Module 3' })}
@@ -331,7 +327,7 @@ export function UntaggedPortsStep () {
                       onChange={(checkedValues) =>
                         handleCheckboxGroupChange(checkedValues as string[], `${index+1}/3`)}
                       value={selectedItems}
-                      options={(module[2] as unknown as PortsType[]).map((timeslot, i) => ({
+                      options={(getModule(module, `${index+1}/3`)).map((timeslot, i) => ({
                         label: <Tooltip
                           title={getTooltip(timeslot.value)}
                         >

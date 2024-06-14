@@ -3,6 +3,11 @@ import {
   SwitchSlot2 as SwitchSlot
 } from '@acx-ui/rc/utils'
 
+export interface PortsType {
+  label: string,
+  value: string
+}
+
 export const getPortsModule = (slots: SwitchSlot[], isSwitchLevel?: boolean) => {
   const tmpSlots = isSwitchLevel ? slots : [slots] as unknown as SwitchSlot[][]
   const module = tmpSlots.map(slotData => {
@@ -38,3 +43,61 @@ export const getUnitTitle = (index: number, stackMembers?: StackMember[]) => {
   const member = stackMembers?.filter(member => member.unitId === unit)?.[0]
   return member ? `${unit} - ${member?.model}` : ''
 }
+
+export const getModule = (module: PortsType[][], portPrefix: string) => {
+  const index = module.findIndex(subArray =>
+    subArray.some(item => item.value === `${portPrefix}/1`)
+  )
+
+  return module[index]
+}
+
+// TODO: reduce redundant code
+// const getModuleContent = (
+//   type: string, module: PortsType[], index: number,
+//   slotIndex: number, slotData: SwitchSlot, selectedItems: string[],
+//   handleCheckboxGroupChange: (checkedValues: string[], moduleGroup: string) => void
+// ) => {
+//   const { $t } = getIntl()
+//   const checkboxClassName = type === 'untagged_module' ? 'lightblue' : 'purple'
+//   return module && <Col>
+//     <Row gutter={20}>
+//       <Col>
+//         <div>
+//           <Typography.Text style={{ fontWeight: 'bold' }}>
+//             {$t({ defaultMessage: 'Module {slotIndex}' }, { slotIndex })}
+//           </Typography.Text>
+//         </div>
+//         <Typography.Paragraph>
+//           {$t({ defaultMessage: '{module}' },
+//             { module: slotData?.slotPortInfo?.split('X').join(' X ') })}
+//         </Typography.Paragraph>
+//         <UI.Module>
+//           <Checkbox.Group
+//             key={`checkboxGroup_module${index+1}_${slotIndex}`}
+//             className={checkboxClassName}
+//             onChange={(checkedValues) =>
+//               handleCheckboxGroupChange(checkedValues as string[], `${index+1}/${slotIndex}`)}
+//             value={selectedItems}
+//             options={module.map((timeslot, i) => ({
+//               label: <Tooltip
+//                 title={getTooltip(timeslot.value)}
+//               >
+//                 <div
+//                   id={`${type}${index+1}_${slotIndex}_${i+1}`}
+//                   data-value={timeslot.value}
+//                   data-testid={`${type}${index+1}_${slotIndex}_${i+1}`}
+//                   data-disabled={getDisabledPorts(timeslot.value)}
+//                   style={{ width: '20px', height: '20px' }}
+//                 ></div>
+//                 <p>{getPortLabel(i+1, slotIndex)}</p>
+//               </Tooltip>,
+//               value: timeslot.value,
+//               disabled: getDisabledPorts(timeslot.value)
+//             }))}
+//           />
+//         </UI.Module>
+//       </Col>
+//     </Row>
+//   </Col>
+// }
