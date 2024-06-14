@@ -64,9 +64,9 @@ import { seriesMappingAP }                                                      
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
 import { useApActions }                                                                                  from '../useApActions'
 
-import { ApsTabContext }                     from './context'
-import { getGroupableConfig, groupedFields } from './newGroupByConfig'
-import { useExportCsv }                      from './useExportCsv'
+import { ApsTabContext } from './context'
+// import { getGroupableConfig, groupedFields } from './newGroupByConfig'
+import { useExportCsv } from './useExportCsv'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, retriedApIds, transformMeshRole } from '.'
 
@@ -91,7 +91,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
+  const { searchable, filterables, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const { setApsCount } = useContext(ApsTabContext)
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
@@ -112,7 +112,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     useQuery: useNewApListQuery,
     defaultPayload: {
       ...newApPayload,
-      groupByFields: groupedFields,
+      // groupByFields: groupedFields,
       filters
     },
     search: {
@@ -237,18 +237,18 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       filterKey: 'statusSeverity',
       filterable: filterables ? statusFilterOptions : false,
       // TODO Need more discuss wether groupBy feature is necessary
-      groupable: enableGroups ?
-        filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
+      // groupable: enableGroups ?
+      //   filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
       render: (_, { status }) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       searchable: searchable,
-      sorter: true,
+      sorter: true
       // TODO Need more discuss wether groupBy feature is necessary
-      groupable: enableGroups ?
-        filterables && getGroupableConfig()?.modelGroupableOptions : undefined
+      // groupable: enableGroups ?
+      //   filterables && getGroupableConfig()?.modelGroupableOptions : undefined
     }, {
       key: 'networkStatus.ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -345,10 +345,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       dataIndex: 'apGroupName',
       filterKey: 'apGroupId',
       filterable: filterables ? filterables['apGroupId'] : false,
-      sorter: true,
-      groupable: enableGroups
-        ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
-        : undefined
+      sorter: true
+      // groupable: enableGroups
+      //   ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+      //   : undefined
     }]),
     {
       key: 'rf-channels',
