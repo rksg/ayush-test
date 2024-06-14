@@ -70,7 +70,8 @@ export interface SyslogPolicyDetailType {
   facility?: FacilityEnum,
   priority?: PriorityEnum,
   flowLevel?: FlowLevelEnum,
-  venues: SyslogVenue[]
+  venues?: SyslogVenue[],
+  oldVenues?: SyslogVenue[]
 }
 
 export interface SyslogContextType {
@@ -84,7 +85,8 @@ export interface SyslogContextType {
   facility: FacilityEnum,
   priority: PriorityEnum,
   flowLevel: FlowLevelEnum,
-  venues: SyslogVenue[]
+  venues: SyslogVenue[],
+  oldVenues?: SyslogVenue[]
 }
 
 

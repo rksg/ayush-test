@@ -122,7 +122,7 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
 }
 
 // eslint-disable-next-line
-export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) : { columnText : string, tooltipText?: string} => {
+export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, isOutdoor?: boolean) : { columnText : string, tooltipText?: string} => {
   const { $t } = getIntl()
   const powerMode = afcInfo?.hasOwnProperty('powerMode') ?
     (afcInfo as AFCInfo)?.powerMode :
@@ -140,30 +140,42 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) :
   }
   else if (powerMode === AFCPowerMode.LOW_POWER) {
     if (afcStatus !== AFCStatus.AFC_NOT_REQUIRED){
+      let message = { columnText: '', tooltipText: undefined }
+      if(isOutdoor) {
+        message = {
+          columnText: $t({ defaultMessage: '6 GHz radio off' }),
+          tooltipText: undefined
+        }
+      } else {
+        message = {
+          columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+          tooltipText: undefined
+        }
+      }
       switch(afcStatus) {
         case AFCStatus.WAIT_FOR_LOCATION:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'AFC Geo-Location not set' })
           }
         case AFCStatus.REJECTED:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'Rejected by FCC DB due to no available channels' })
           }
         case AFCStatus.WAIT_FOR_RESPONSE:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'Wait for AFC server response' })
           }
         case AFCStatus.AFC_SERVER_FAILURE:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'AFC Server failure' })
           }
         case AFCStatus.PASSED:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'AP is working on LPI channel' })
           }
       }
@@ -179,7 +191,7 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) :
 }
 
 // eslint-disable-next-line
-export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, isOutdoor?: boolean) => {
 
   const { $t } = getIntl()
 
@@ -196,7 +208,12 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
   }
 
   else if (powerMode === AFCPowerMode.LOW_POWER) {
-    displayList.push($t({ defaultMessage: 'Low Power Indoor' }))
+
+    if (isOutdoor) {
+      displayList.push($t({ defaultMessage: '6 GHz radio off' }))
+    } else {
+      displayList.push($t({ defaultMessage: 'Low Power Indoor' }))
+    }
     switch(afcInfo?.afcStatus) {
       case AFCStatus.WAIT_FOR_LOCATION:
         displayList.push($t({ defaultMessage: '[AFC Geo-Location not set]' }))

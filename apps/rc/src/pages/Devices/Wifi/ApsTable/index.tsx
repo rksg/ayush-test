@@ -16,6 +16,7 @@ import {
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 
 export default function useApsTable () {
   const { $t } = useIntl()
@@ -97,9 +98,12 @@ export default function useApsTable () {
   })
 
   const extra = [
-    <Dropdown overlay={addMenu}>{() =>
-      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-    }</Dropdown>
+    <Dropdown
+      scopeKey={[WifiScopes.CREATE]}
+      overlay={addMenu}>{() =>
+        <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+      }
+    </Dropdown>
   ]
 
   const component =

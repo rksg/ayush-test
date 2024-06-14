@@ -5,10 +5,10 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { useIsSplitOn }                                                                          from '@acx-ui/feature-toggle'
-import { ApDeviceStatusEnum, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, SwitchStatusEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                              from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }             from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                                                                  from '@acx-ui/feature-toggle'
+import { ApDeviceStatusEnum, CommonRbacUrlsInfo, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, RWG, RWGStatusEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                      from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                     from '@acx-ui/test-utils'
 
 import { FloorPlan, sortByFloorNumber } from '.'
 
@@ -92,7 +92,16 @@ const deviceData = {
       LTEAP: [],
       RogueAP: [],
       cloudpath: [],
-      DP: []
+      DP: [],
+      rwg: [{
+        deviceStatus: RWGStatusEnum.ONLINE,
+        floorplanId: '94bed28abef24175ab58a3800d01e24a',
+        id: 'bbc41563473348d29a36b76e95c50381',
+        name: 'rwg-device',
+        xPercent: 30.20548,
+        yPercent: 29.839357,
+        networkDeviceType: NetworkDeviceType.rwg
+      }]
     }
   ]
 }
@@ -138,6 +147,27 @@ const meshApList = {
   ]
 }
 
+const rwgList = {
+  requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
+  response: {
+    items: [{
+      rwgId: 'bbc41563473348d29a36b76e95c50381',
+      venueId: '7231da344778480d88f37f0cca1c534f',
+      floorplanId: '94bed28abef24175ab58a3800d01e24a',
+      venueName: 'My-Venue',
+      name: 'ruckusdemos',
+      hostname: 'rxgs5-vpoc.ruckusdemos.net',
+      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      status: RWGStatusEnum.OFFLINE,
+      isCluster: false,
+      xPercent: 30.20548,
+      yPercent: 29.839357
+    }] as RWG[],
+    totalPages: 1,
+    totalSizes: 1
+  }
+}
+
 describe('Floor Plans', () => {
   let params: { tenantId: string, venueId: string }
   beforeEach(() => {
@@ -157,6 +187,10 @@ describe('Floor Plans', () => {
       rest.post(
         CommonUrlsInfo.getAllDevices.url,
         (req, res, ctx) => res(ctx.json(deviceData))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getRwgListByVenueId.url,
+        (req, res, ctx) => res(ctx.json(rwgList))
       ),
       rest.get(
         CommonUrlsInfo.getVenueRogueAp.url,

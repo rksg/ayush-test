@@ -46,16 +46,16 @@ describe('AdaptivePolicyForm', () => {
         RulesManagementUrlsInfo.getPolicyTemplateAttributes.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(attributeList))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicyTemplateListByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
       rest.post(
         RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       )
     )
@@ -100,8 +100,8 @@ describe('AdaptivePolicyForm', () => {
 
   it('should submit list successfully', async () => {
     mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.post(
@@ -122,7 +122,7 @@ describe('AdaptivePolicyForm', () => {
       ),
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
-        (req, res, ctx) => res(ctx.json(groupList.content[0]))
+        (req, res, ctx) => res(ctx.json(groupList.data[0]))
       )
     )
 
@@ -162,7 +162,7 @@ describe('AdaptivePolicyForm', () => {
     await userEvent.click(screen.getByText('Select Group'))
     await screen.findByText('Select RADIUS Attribute Group')
 
-    const row = await screen.findByRole('row', { name: new RegExp(groupList.content[0].name) })
+    const row = await screen.findByRole('row', { name: new RegExp(groupList.data[0].name) })
     fireEvent.click(within(row).getByRole('radio'))
     await userEvent.click(screen.getByText('Select'))
 
@@ -183,8 +183,8 @@ describe('AdaptivePolicyForm', () => {
 
   it.skip('should edit giving data successfully', async () => {
     mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
       rest.get(
@@ -205,7 +205,7 @@ describe('AdaptivePolicyForm', () => {
       ),
       rest.get(
         RadiusAttributeGroupUrlsInfo.getAttributeGroup.url,
-        (req, res, ctx) => res(ctx.json(groupList.content[0]))
+        (req, res, ctx) => res(ctx.json(groupList.data[0]))
       ),
       rest.delete(
         RulesManagementUrlsInfo.deleteConditions.url,
