@@ -1,10 +1,10 @@
 import userEvent       from '@testing-library/user-event'
 import { MomentInput } from 'moment-timezone'
 
-import { get }                         from '@acx-ui/config'
-import { useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { useVenueNetworkListV2Query }  from '@acx-ui/rc/services'
-import { Provider, recommendationUrl } from '@acx-ui/store'
+import { get }                              from '@acx-ui/config'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
+import { Provider, recommendationUrl }      from '@acx-ui/store'
 import {
   mockGraphqlMutation,
   render,
@@ -51,23 +51,28 @@ jest.mock('../services', () => ({
     ssid: 's3'
   }] })
 }))
+jest.mock('@acx-ui/rc/utils', () => ({
+  RadioTypeEnum: {
+    _2_4_GHz: '2.4-GHz',
+    _5_GHz: '5-GHz',
+    _6_GHz: '6-GHz'
+  }
+}))
+
 jest.mock('@acx-ui/rc/services', () => ({
-  useVenueNetworkListV2Query: jest.fn().mockReturnValue({ data: { data: [{
+  useVenueRadioActiveNetworksQuery: jest.fn().mockReturnValue({ data: [{
     id: 'i4',
     name: 'n4',
-    ssid: 's4',
-    venues: { names: ['zone-1', 'zone-2'] }
+    ssid: 's4'
   }, {
     id: 'i5',
     name: 'n5',
-    ssid: 's5',
-    venues: { names: ['zone-1'] }
+    ssid: 's5'
   }, {
     id: 'i6',
     name: 'n6',
-    ssid: 's6',
-    venues: { names: [] }
-  }] } })
+    ssid: 's6'
+  }] })
 }))
 
 jest.mock('@acx-ui/config')
@@ -254,7 +259,7 @@ describe('RecommendationActions', () => {
       isRecommendationRevertEnabled: false,
       scheduledAt: '2023-07-15T14:45:00.000Z',
       type: 'Apply',
-      wlans: [{ name: 'i5', ssid: 's5' }]
+      wlans: [{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
     })
   })
   it('allows wlans selection for airflexai in R1', async () => {
@@ -283,7 +288,7 @@ describe('RecommendationActions', () => {
       isRecommendationRevertEnabled: false,
       scheduledAt: '2023-07-15T14:45:00.000Z',
       type: 'Apply',
-      wlans: [{ name: 'i5', ssid: 's5' }]
+      wlans: [{ name: 'i5', ssid: 's5' }, { name: 'i6', ssid: 's6' }]
     })
   })
   it('hides wlans selection for airflexai in R1 for non-new', async () => {
@@ -378,7 +383,7 @@ describe('RecommendationActions', () => {
   it('handles empty wlans response', async () => {
     const schedule = jest.fn()
     jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
-    jest.mocked(useVenueNetworkListV2Query).mockReturnValue({})
+    jest.mocked(useVenueRadioActiveNetworksQuery).mockReturnValue({})
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
     render(

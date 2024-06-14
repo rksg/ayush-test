@@ -77,6 +77,10 @@ describe('validator', () => {
       const result = URLProtocolRegExp('000.000.000.000')
       await expect(result).rejects.toEqual('Please enter a valid URL')
     })
+    it('Should take care of auth info value within url correctlty', async () => {
+      const result = URLProtocolRegExp('http://auth:pass@domain.com:1111/path/a/b/c?query=AAA')
+      await expect(result).resolves.toEqual(undefined)
+    })
   })
 
   describe('hasGraveAccentAndDollarSign', () => {

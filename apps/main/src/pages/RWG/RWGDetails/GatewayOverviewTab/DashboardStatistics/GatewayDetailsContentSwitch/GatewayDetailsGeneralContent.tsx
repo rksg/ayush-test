@@ -45,7 +45,7 @@ export default function GatewayDetailsGeneralContent (props: {
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Uptime' })}
-      children={longDurationFormat(gatewayDetails?.uptimeInSeconds, 'long')}
+      children={longDurationFormat(+(gatewayDetails?.uptimeInSeconds || 0) * 1000, 'long')}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Booted at' })}

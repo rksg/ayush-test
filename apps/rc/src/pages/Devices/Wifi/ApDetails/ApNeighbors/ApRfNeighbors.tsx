@@ -11,6 +11,7 @@ import {
   sortProp,
   useApContext
 } from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { getIntl }        from '@acx-ui/utils'
 
@@ -27,6 +28,7 @@ export default function ApRfNeighbors () {
   const { doDetect, isDetecting, handleApiError } = useApNeighbors('rf', serialNumber!, socketHandler)
 
   const tableActions = [{
+    scopeKey: [WifiScopes.UPDATE],
     label: $t({ defaultMessage: 'Detect' }),
     disabled: isDetecting,
     onClick: () => doDetect()

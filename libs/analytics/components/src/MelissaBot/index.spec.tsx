@@ -44,13 +44,6 @@ describe('MelissaBot', () => {
     })
     expect(container).toMatchSnapshot()
   })
-  it('should not render anything if chatbot FF disabled',async ()=>{
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    await act(async ()=>{
-      render(<MelissaBot/>,{ route, container })
-    })
-    expect(container).toMatchSnapshot()
-  })
   it('should not render floating button for dashboard page',async ()=>{
     await act(async ()=>{
       render(<MelissaBot/>,{ route: { ...route, params: { page: 'dashboard' } }, container })

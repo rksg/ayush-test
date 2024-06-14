@@ -1,12 +1,19 @@
-import { get }                                                  from '@acx-ui/config'
-import { recommendationUrl, Provider }                          from '@acx-ui/store'
-import { mockGraphqlQuery, render, screen, fireEvent, waitFor } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { get }                                                              from '@acx-ui/config'
+import { networkApi }                                                       from '@acx-ui/rc/services'
+import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { recommendationUrl, store, Provider }                               from '@acx-ui/store'
+import { mockGraphqlQuery, render, screen, fireEvent, waitFor, mockServer } from '@acx-ui/test-utils'
+
 
 import {
   mockedRecommendationCRRM,
   mockedRecommendationFirmware,
   mockedRecommendationApFirmware,
-  mockedRecommendationClientLoad
+  mockedRecommendationClientLoad,
+  mockRecommendationProbeflexApplied,
+  mockWifiNetworkList
 } from './__tests__/fixtures'
 import { Overview }                 from './Overview'
 import { transformDetailsResponse } from './services'
@@ -22,7 +29,16 @@ jest.mock('./Graph/DownloadRRMComparison', () =>
   ({ DownloadRRMComparison: () => <div data-testid='download-button' /> }))
 
 describe('Recommendation Overview', () => {
-  beforeEach(() => mockGet.mockClear())
+  beforeEach(() => {
+    mockGet.mockClear()
+    store.dispatch(networkApi.util.resetApiState())
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiNetworkList))
+      )
+    )
+  })
   afterAll(() => mockGet.mockReset())
   it('should render correctly for firmware in R1', async () => {
     const firmwareDetails = transformDetailsResponse(mockedRecommendationFirmware)
@@ -141,5 +157,21 @@ describe('Recommendation Overview', () => {
     expect(await screen.findByText('Fong@Home')).toBeVisible()
     expect(await screen.findByText('Status')).toBeVisible()
     expect(await screen.findByText('New')).toBeVisible()
+    expect(screen.queryByText('Networks')).toBeNull()
+  })
+
+  it('should render correctly for AirFlexAI', async () => {
+    const probeflexDetails = transformDetailsResponse(mockRecommendationProbeflexApplied)
+    mockGet.mockReturnValue(false)
+    const { wlans } = probeflexDetails.metadata
+    render(<Overview details={probeflexDetails} />, { wrapper: Provider })
+    expect(await screen.findByText('Priority')).toBeVisible()
+    expect(await screen.findByText('Medium')).toBeVisible()
+    expect(await screen.findByText('Category')).toBeVisible()
+    expect(await screen.findByText('Wi-Fi Client Experience')).toBeVisible()
+    expect(await screen.findByText('Status')).toBeVisible()
+    expect(await screen.findByText('Applied')).toBeVisible()
+    expect(await screen.findByText('Networks')).toBeVisible()
+    expect(await screen.findByText(`${wlans?.length} networks selected`)).toBeVisible()
   })
 })

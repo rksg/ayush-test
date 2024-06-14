@@ -70,7 +70,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
       displayContent = (<Descriptions.Item
         label={$t({ defaultMessage: 'AFC Power State' })}
         children={
-          APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
+          APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy, currentApModel?.isOutdoor)
         }
       />)
     }

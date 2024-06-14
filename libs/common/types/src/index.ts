@@ -18,6 +18,10 @@ export enum RolesEnum {
   REPORTS_ADMIN='REPORTS_ADMIN'
 }
 
+export const SupportedDelegatedRoles = [
+  RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR,
+  RolesEnum.GUEST_MANAGER, RolesEnum.READ_ONLY]
+
 export interface RequestPayload <Payload = unknown> extends Record<string,unknown> {
   params?: Params<string>
   payload?: Payload
