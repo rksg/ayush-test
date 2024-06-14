@@ -414,12 +414,14 @@ export function RadioSettings () {
     if (!isWifiSwitchableRfEnabled) {
       return
     }
+
     const isTriBandRadio = currentVenueBandModeData.map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.TRIPLE)
     setIsTriBandRadio(isTriBandRadio)
     isTriBandRadioRef.current = isTriBandRadio
     if (!isTriBandRadio && currentTab === 'Normal6GHz') {
       onTabChange('Normal5GHz')
     }
+
     if (dual5gApModels.length > 0) {
       const isDual5GEnabled = currentVenueBandModeData.filter(data => dual5gApModels.includes(data.model))
         .map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.DUAL)
@@ -578,18 +580,26 @@ export function RadioSettings () {
     const { radioParamsLower5G, radioParamsUpper5G,
       inheritParamsLower5G, inheritParamsUpper5G } = radioParamsDual5G || {}
 
+    const supportLowerCh5G = supportRadioChannels[ApRadioTypeEnum.RadioLower5G] as VenueDefaultRegulatoryChannels['5GLowerChannels']
+    const isSupportIndoorLower5G = Object.keys(supportLowerCh5G.indoor).length > 0
+    const isSupportOutdoorLower5G = Object.keys(supportLowerCh5G.outdoor).length > 0
+
+    const supportUpperCh5g = supportRadioChannels[ApRadioTypeEnum.RadioUpper5G] as VenueDefaultRegulatoryChannels['5GUpperChannels']
+    const isSupportIndoorUpper5G = Object.keys(supportUpperCh5g.indoor).length > 0
+    const isSupportOutdoorUpper5G = Object.keys(supportUpperCh5g.outdoor).length > 0
+
     let indoorLower5GChs, indoorUpper5GChs
     if (indoorChannel5) {
       const { lower5GChannels, upper5GChannels } = split5GChannels(indoorChannel5 as string[])
-      indoorLower5GChs = lower5GChannels
-      indoorUpper5GChs = upper5GChannels
+      indoorLower5GChs = isSupportIndoorLower5G? lower5GChannels : undefined
+      indoorUpper5GChs = isSupportIndoorUpper5G? upper5GChannels : undefined
     }
 
     let outdoorLower5GChs, outdoorUpper5GChs
     if (outdoorChannel5) {
       const { lower5GChannels, upper5GChannels } = split5GChannels(outdoorChannel5 as string[])
-      outdoorLower5GChs = lower5GChannels
-      outdoorUpper5GChs = upper5GChannels
+      outdoorLower5GChs = isSupportOutdoorLower5G? lower5GChannels : undefined
+      outdoorUpper5GChs = isSupportOutdoorUpper5G? upper5GChannels : undefined
     }
 
     const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
@@ -692,11 +702,13 @@ export function RadioSettings () {
           payload: currentVenueBandModeData.filter(data => !dual5gApModels.includes(data.model))
         }).unwrap()
 
+        /*
         await updateVenueTripleBandRadioSettings({
           params: { tenantId, venueId },
           payload: { enabled: currentVenueBandModeData.map(data => data.model)
             .some(model => dual5gApModels.includes(model)) }
         }).unwrap()
+        */
       }
 
       if (!isWifiSwitchableRfEnabled) {
@@ -709,7 +721,7 @@ export function RadioSettings () {
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
         payload: data,
-        enableRabc: isUseRbacApi
+        enableRbac: isUseRbacApi
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
