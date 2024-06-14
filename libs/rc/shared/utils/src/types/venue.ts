@@ -491,6 +491,13 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
+  } | {
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   'afcEnabled': boolean
 }
