@@ -12,6 +12,7 @@ import {
   Select,
   Table,
   TableProps,
+  Tooltip,
   cssStr,
   showToast
 } from '@acx-ui/components'
@@ -33,6 +34,8 @@ import {
   useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
+  AFCPowerStateRender,
+  AFCStatusRender,
   APMeshRole,
   ApCompatibility,
   ApCompatibilityResponse,
@@ -41,6 +44,7 @@ import {
   CommonResult,
   FILTER,
   ImportErrorRes,
+  NewAPExtendedGrouped,
   NewAPModelExtended,
   SEARCH,
   TableQuery,
@@ -60,11 +64,9 @@ import { seriesMappingAP }                                                      
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType }                                               from '../ImportFileDrawer'
 import { useApActions }                                                                                  from '../useApActions'
 
-import {
-  groupedFields
-} from './config'
-import { ApsTabContext } from './context'
-import { useExportCsv }  from './useExportCsv'
+import { ApsTabContext }                     from './context'
+import { getGroupableConfig, groupedFields } from './newGroupByConfig'
+import { useExportCsv }                      from './useExportCsv'
 
 import { APStatus, ApTableProps, ApTableRefType, channelTitleMap, retriedApIds, transformMeshRole } from '.'
 
@@ -79,27 +81,26 @@ const newApPayload = {
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
     'switchName', 'meshRole', 'clients', 'apGroupId',
     'lanPortStatuses', 'tags', 'serialNumber', 'radioStatuses',
-    'venueId', 'poePort', 'firmwareVersion', 'uptime'
+    'venueId', 'poePort', 'firmwareVersion', 'uptime', 'afcStatus'
   ]
 }
 
-export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, ref?: Ref<ApTableRefType>) => {
+export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|NewAPExtendedGrouped>, ref?: Ref<ApTableRefType>) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
   const params = useParams()
   const filters = getFilters(params) as FILTER
-  const { searchable, filterables, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
+  const { searchable, filterables, enableGroups=true, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const { setApsCount } = useContext(ApsTabContext)
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
   const [ selectedApSN, setSelectedApSN ] = useState('')
   const [ selectedApName, setSelectedApName ] = useState('')
-  const [ tableData, setTableData ] = useState([] as NewAPModelExtended[])
+  const [ tableData, setTableData ] = useState([] as (NewAPModelExtended|NewAPExtendedGrouped)[])
   const [ hasGroupBy, setHasGroupBy ] = useState(false)
   const [ showFeatureCompatibilitiy, setShowFeatureCompatibilitiy ] = useState(false)
   const secureBootFlag = useIsSplitOn(Features.WIFI_EDA_SECURE_BOOT_TOGGLE)
-  // TODO AFC Should be fixed
-  // const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const apUptimeFlag = useIsSplitOn(Features.AP_UPTIME_TOGGLE)
   const apMgmtVlanFlag = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
@@ -126,14 +127,14 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
 
   useEffect(() => {
     const fetchApCompatibilitiesAndSetData = async () => {
-      const result:React.SetStateAction<NewAPModelExtended[]> = []
+      const result:React.SetStateAction<(NewAPModelExtended|NewAPExtendedGrouped)[]> = []
       const apIdsToIncompatible:{ [key:string]: number } = {}
       if (tableQuery.data?.data) {
         let apCompatibilitiesResponse:ApCompatibilityResponse = { apCompatibilities: [] }
         let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
-          const aps = tableQuery.data as TableResult<NewAPModelExtended, ApExtraParams>
+          const aps = tableQuery.data as TableResult<NewAPModelExtended|NewAPExtendedGrouped, ApExtraParams>
           apIds = retriedApIds(aps, !!hasGroupBy)
           try {
             if (apIds.length > 0) {
@@ -163,15 +164,15 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
               apIdsToIncompatible[id] = apIncompatible?.incompatibleFeatures?.length ?? apIncompatible?.incompatible ?? 0
             }
           })
-          // TODO Will add it back when the groupBy api is ready
-          // if (hasGroupBy) {
-          //   tableQuery.data.data?.forEach(item => {
-          //     const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
-          //     result.push({ ...item, aps: children, children })
-          //   })
-          // } else {
-          tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
-          // }
+          // TODO Need more discuss wether groupBy feature is necessary
+          if (hasGroupBy) {
+            tableQuery.data.data?.forEach(item => {
+              const children = (item as unknown as { aps: NewAPModelExtended[] }).aps?.map(ap => ({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] }))
+              result.push({ ...item, aps: children, children })
+            })
+          } else {
+            tableQuery.data.data?.forEach(ap => (result.push({ ...ap, incompatible: apIdsToIncompatible[ap.serialNumber] })))
+          }
           setTableData(result)
         } else {
           setTableData(tableQuery.data?.data)
@@ -215,7 +216,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
       channel60: false
     }
 
-    const columns: TableProps<NewAPModelExtended>['columns'] = [{
+    const columns: TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'] = [{
       key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
@@ -235,19 +236,19 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
       fixed: 'left',
       filterKey: 'statusSeverity',
       filterable: filterables ? statusFilterOptions : false,
-      // TODO Will add it back when the groupBy api is ready
-      // groupable: enableGroups ?
-      //   filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
+      // TODO Need more discuss wether groupBy feature is necessary
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
       render: (_, { status }) => <APStatus status={status as ApDeviceStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),
       dataIndex: 'model',
       searchable: searchable,
-      sorter: true
-      // TODO Will add it back when the groupBy api is ready
-      // groupable: enableGroups ?
-      //   filterables && getGroupableConfig()?.modelGroupableOptions : undefined
+      sorter: true,
+      // TODO Need more discuss wether groupBy feature is necessary
+      groupable: enableGroups ?
+        filterables && getGroupableConfig()?.modelGroupableOptions : undefined
     }, {
       key: 'networkStatus.ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
@@ -344,10 +345,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
       dataIndex: 'apGroupName',
       filterKey: 'apGroupId',
       filterable: filterables ? filterables['apGroupId'] : false,
-      sorter: true
-      // groupable: enableGroups
-      //   ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
-      //   : undefined
+      sorter: true,
+      groupable: enableGroups
+        ? filterables && getGroupableConfig(params, apAction)?.deviceGroupNameGroupableOptions
+        : undefined
     }]),
     {
       key: 'rf-channels',
@@ -366,7 +367,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
             transformDisplayText(row[key] as string)
         })
         return acc
-      }, [] as TableProps<NewAPModelExtended>['columns'])
+      }, [] as TableProps<NewAPModelExtended|NewAPExtendedGrouped>['columns'])
     },
     ...(apUptimeFlag ? [
       {
@@ -443,41 +444,42 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
           return (mgmtVlanId ? mgmtVlanId : null)
         }
       }] : []),
-    // TODO AFC Should be fixed
-    // ...(AFC_Featureflag ? [{
-    //   key: 'afcStatus',
-    //   title: $t({ defaultMessage: 'AFC Status' }),
-    //   dataIndex: ['apStatusData','afcInfo','powerMode'],
-    //   show: false,
-    //   sorter: false,
-    //   width: 200,
-    //   render: (data: ReactNode, row: NewAPModelExtended) => {
-    //     return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
-    //   }
-    // },
-    // {
-    //   key: 'afcPowerMode',
-    //   title: $t({ defaultMessage: 'AFC Power State' }),
-    //   dataIndex: ['apStatusData','afcInfo','powerMode'],
-    //   show: false,
-    //   sorter: false,
-    //   width: 200,
-    //   render: (data: ReactNode, row: NewAPModelExtended) => {
-    //     const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, isAPOutdoor(row.model))
-    //     return (
-    //       <>
-    //         {status.columnText}
-    //         {/* eslint-disable-next-line*/}
-    //         {(status.columnText !== '--' && status.columnText !== 'Standard power' && status.tooltipText) && <Tooltip.Info
-    //           placement='bottom'
-    //           iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
-    //           title={status.tooltipText}
-    //         />}
-    //       </>
-    //     )
-    //   }
-    // }
-    // ]: []),
+    ...(AFC_Featureflag ? [{
+      key: 'afcStatus',
+      title: $t({ defaultMessage: 'AFC Status' }),
+      dataIndex: ['apStatusData','afcInfo','powerMode'],
+      show: false,
+      sorter: false,
+      width: 200,
+      render: (data: ReactNode, row: NewAPModelExtended) => {
+        const apRadioDeploy = row.radioStatuses?.length === 3 ? '2-5-6' : ''
+        return AFCStatusRender(row.afcStatus, apRadioDeploy)
+      }
+    },
+    {
+      key: 'afcPowerMode',
+      title: $t({ defaultMessage: 'AFC Power State' }),
+      dataIndex: ['apStatusData','afcInfo','powerMode'],
+      show: false,
+      sorter: false,
+      width: 200,
+      render: (data: ReactNode, row: NewAPModelExtended) => {
+        const apRadioDeploy = row.radioStatuses?.length === 3 ? '2-5-6' : ''
+        const status = AFCPowerStateRender(row.afcStatus, apRadioDeploy)
+        return (
+          <>
+            {status.columnText}
+            {/* eslint-disable-next-line*/}
+            {(status.columnText !== '--' && status.columnText === 'Low Power Indoor' && status.tooltipText) && <Tooltip.Info
+              placement='bottom'
+              iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
+              title={status.tooltipText}
+            />}
+          </>
+        )
+      }
+    }
+    ]: []),
     ...(enableApCompatibleCheck ? [{
       key: 'incompatible',
       tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
@@ -583,7 +585,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
 
   useEffect(()=>{
     setIsImportResultLoading(false)
-    if (importResult?.fileErrorsCount === 0) {
+    if (importResult?.fileErrorCount === 0) {
       setImportVisible(false)
     } else {
       setImportErrors({ data: importResult } as FetchBaseQueryError)
@@ -627,7 +629,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended>, r
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<NewAPModelExtended>
+      <Table<NewAPModelExtended|NewAPExtendedGrouped>
         {...props}
         settingsId={settingsId}
         columns={columns}
