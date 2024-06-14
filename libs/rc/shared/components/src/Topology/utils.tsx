@@ -33,7 +33,8 @@ import {
   ConnectionStatus,
   TopologyDeviceStatus,
   SwitchStatusEnum,
-  DeviceTypes
+  DeviceTypes,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -230,6 +231,25 @@ export function getMeshRole (meshRole: APMeshRole) {
     case APMeshRole.DISABLED: return $t({ defaultMessage: 'disabled' })
   }
 
+}
+
+export function getPowerSavingStatusEnabled (deviceStatus: TopologyDeviceStatus,
+  powerSavingStatus: PowerSavingStatusEnum) {
+  if (deviceStatus !== TopologyDeviceStatus.Operational &&
+      deviceStatus !== TopologyDeviceStatus.Degraded) {
+    return false
+  }
+  return (powerSavingStatus === PowerSavingStatusEnum.POWER_SAVING)
+}
+
+export function getPowerSavingStatusEnabledDetailCard (status: ApDeviceStatusEnum,
+  powerSavingStatus: PowerSavingStatusEnum) {
+  if (status === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
+      status === ApDeviceStatusEnum.INITIALIZING ||
+      status === ApDeviceStatusEnum.OFFLINE) {
+    return false
+  }
+  return (powerSavingStatus === PowerSavingStatusEnum.POWER_SAVING)
 }
 
 export const transformData = (data: TreeData) => {
