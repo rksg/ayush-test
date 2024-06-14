@@ -212,7 +212,7 @@ export function AlarmsDrawer (props: AlarmsType) {
         onChange={(val)=>{
           setSeverity(val)
         }}
-        style={{ width: 120 }}>
+        dropdownMatchSelectWidth={false}>
         <Select.Option value={'all'}>
           { $t({ defaultMessage: 'All Severities' }) }
         </Select.Option>
