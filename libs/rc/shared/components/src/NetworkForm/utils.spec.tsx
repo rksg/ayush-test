@@ -201,7 +201,6 @@ describe('Network utils test', () => {
     const mockedTunnelReq = jest.fn()
     beforeEach(() => {
       mockedTunnelReq.mockRestore()
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockReturnValue(true)
 
       mockServer.use(

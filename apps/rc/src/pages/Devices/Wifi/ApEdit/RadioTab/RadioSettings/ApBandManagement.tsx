@@ -38,12 +38,10 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
   const { apCapabilities } = useContext(ApDataContext)
 
   const [bandCombinationOptions, setBandCombinationOptions] = useState<SelectItemOption[]>([])
-  // useEffect(() => console.info('[RadioSettings][ApBandManagement] bandCombinationOptions = ', bandCombinationOptions), [bandCombinationOptions]) // eslint-disable-line no-console
 
   const getCurrentBandMode = useCallback(() => {
     return (currentApBandModeData?.useVenueSettings ? venueBandMode : currentApBandModeData?.bandMode)
   }, [currentApBandModeData, venueBandMode])
-  // useEffect(() => console.info('[RadioSettings][ApBandManagement] getCurrentBandMode() = ', getCurrentBandMode()), [getCurrentBandMode]) // eslint-disable-line no-console
 
   const bandCombinationLabelMapping: Record<BandModeEnum, MessageDescriptor> = {
     [BandModeEnum.DUAL]: defineMessage({ defaultMessage: 'Dual-band' }),
@@ -67,7 +65,7 @@ export const ApBandManagement = ({ venue, venueBandMode, isSupportDual5GAp, isSu
       bandCombinationCapabilities = []
     } = apCapabilities || {}
 
-    setBandCombinationOptions(((!supportBandCombination && supportTriRadio) ? [BandModeEnum.DUAL, BandModeEnum.TRIPLE] : bandCombinationCapabilities).map(bandMode => ({ label: $t(bandCombinationLabelMapping[bandMode]), value: bandMode })))
+    setBandCombinationOptions(((!supportBandCombination && supportTriRadio)? [BandModeEnum.DUAL, BandModeEnum.TRIPLE] : bandCombinationCapabilities).map(bandMode => ({ label: $t(bandCombinationLabelMapping[bandMode]), value: bandMode })))
   }, [apCapabilities])
 
   return (<div style={{ marginTop: '1em' }}>
