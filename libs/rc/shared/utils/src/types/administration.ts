@@ -353,16 +353,17 @@ export interface VenueObjectList
 }
 
 export enum SmsProviderType {
-  TWILIO = 'twilio',
-  ESENDEX = 'esendex',
-  OTHERS = 'others'
+  RUCKUS_ONE = 'RUCKUS_ONE',
+  TWILIO = 'TWILIO',
+  ESENDEX = 'ESENDEX',
+  OTHERS = 'OTHERS'
 }
 
 export interface NotificationSmsUsage
 {
   ruckusOneUsed?: number,
   thredshold?: number,
-  provider?: string
+  provider?: SmsProviderType
 }
 
 export interface NotificationSmsConfig

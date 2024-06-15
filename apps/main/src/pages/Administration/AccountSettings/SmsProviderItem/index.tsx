@@ -1,20 +1,33 @@
 import { useEffect, useState } from 'react'
 
-import { Form, Col, List, Row, Space, Typography } from 'antd'
-import { useIntl }                                 from 'react-intl'
-import { useParams }                               from 'react-router-dom'
+import { Form, Col, List, Row, Space, Typography, Input } from 'antd'
+import { useIntl }                                        from 'react-intl'
+import { useParams }                                      from 'react-router-dom'
 
 
 import { Button, Card, cssStr, DonutChart, showActionModal, Tooltip } from '@acx-ui/components'
 import {
+  useGetNotificationSmsProviderQuery,
   useGetNotificationSmsQuery,
   useUpdateNotificationSmsMutation
 } from '@acx-ui/rc/services'
+import { SmsProviderType } from '@acx-ui/rc/utils'
 
-import { reloadAuthTable } from '../AppTokenFormItem/'
-import { ButtonWrapper }   from '../AuthServerFormItem/styledComponents'
+import { ButtonWrapper } from '../AuthServerFormItem/styledComponents'
 
 import { SetupSmsProviderDrawer } from './SetupSmsProviderDrawer'
+
+export const getProviderQueryParam = (providerType: SmsProviderType) => {
+  switch(providerType) {
+    case SmsProviderType.TWILIO:
+      return 'twilios'
+    case SmsProviderType.ESENDEX:
+      return 'esendex'
+    case SmsProviderType.OTHERS:
+      return 'others'
+  }
+  return ''
+}
 
 const SmsProviderItem = () => {
   const { $t } = useIntl()
@@ -23,9 +36,10 @@ const SmsProviderItem = () => {
   const [isEditMode, setEditMode] = useState(false)
   const [ruckusOneUsed, setRuckusOneUsed] = useState<number>(0)
   const [smsThreshold, setSmsThreshold] = useState<number>(80)
-  const [smsProvider, setSmsProvider] = useState<string>('')
+  const [smsProviderType, setSmsProviderType] = useState<SmsProviderType>()
   const [smsProviderConfigured, setSmsProviderConfigured] = useState(false)
   const [isInGracePeriod, setIsInGracePeriod] = useState(false)
+  const [isChangeGP, setIsChangeGP] = useState(false)
   const [freeSmsPool, setFreeSmsPool] = useState(true)
 
   const FREE_SMS_POOL = 100
@@ -37,15 +51,23 @@ const SmsProviderItem = () => {
     setDrawerVisible(true)
   }
 
+  const onSaveUtilization = () => {
+    // updateNotificationSms()
+  }
+
   const smsUsage = useGetNotificationSmsQuery({ params })
+  const smsProvider = useGetNotificationSmsProviderQuery(
+    { params: { provider: getProviderQueryParam(smsProviderType as SmsProviderType) } },
+    { skip: !smsProviderConfigured })
 
   useEffect(() => {
     if (smsUsage) {
-      const usedSms = 12//smsUsage.data?.ruckusOneUsed || 0
+      const usedSms = smsUsage.data?.ruckusOneUsed || 0
       setRuckusOneUsed(usedSms)
       setSmsThreshold(smsUsage.data?.thredshold ?? 80)
-      setSmsProvider(smsUsage.data?.provider ?? '')
-      setSmsProviderConfigured(smsUsage.data?.provider ? true : false)
+      setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
+      setSmsProviderConfigured((smsUsage.data?.provider &&
+        smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
       setIsInGracePeriod(usedSms > FREE_SMS_POOL)
       setFreeSmsPool(true)
     }
@@ -92,8 +114,8 @@ const SmsProviderItem = () => {
               },
               onOk: () => {
                 updateNotificationSms({ params })
-                  .then()
-                reloadAuthTable(2)
+                //   .then()
+                // reloadAuthTable(2)
               }
             })
           }}>
@@ -103,7 +125,7 @@ const SmsProviderItem = () => {
     </Space>
   }
 
-  const DisplaySmsProvider = () => {
+  const ProviderTwillo = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       <Card type='solid-bg' >
         <div>
@@ -111,23 +133,80 @@ const SmsProviderItem = () => {
             colon={false}
             label={$t({ defaultMessage: 'Provider' })} />
           <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider}</h3>
+            {'Twilio'}</h3>
         </div>
         <div>
           <Form.Item
             colon={false}
             label={$t({ defaultMessage: 'Account SID' })} />
           <h3 style={{ marginTop: '-18px' }}>
-            {'1234-5678-999'}</h3>
+            {smsProvider.data?.authid}</h3>
         </div>
         <div>
           <Form.Item
             colon={false}
             label={$t({ defaultMessage: 'Auth Token' })} />
           <h3 style={{ marginTop: '-18px' }}>
-            {'****-****-****-****'}</h3>
+            {smsProvider.data?.sid}</h3>
         </div>
       </Card>
+    </Col>
+  }
+
+  const ProviderEsendex = () => {
+    return <Col style={{ width: '381px', paddingLeft: 0 }}>
+      <Card type='solid-bg' >
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Provider' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {'Esendex'}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'API Token' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {smsProvider.data?.apiPassword}</h3>
+        </div>
+      </Card>
+    </Col>
+  }
+
+  const ProviderOther = () => {
+    return <Col style={{ width: '381px', paddingLeft: 0 }}>
+      <Card type='solid-bg' >
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Provider' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {'Other'}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'API Token' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {smsProvider.data?.apiKey}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Send URL' })} />
+          <h3 style={{ marginTop: '-18px', wordWrap: 'break-word', width: '320px' }}>
+            {smsProvider.data?.url}</h3>
+        </div>
+      </Card>
+    </Col>
+  }
+
+  const DisplaySmsProvider = () => {
+    return <Col style={{ width: '381px', paddingLeft: 0 }}>
+      {smsProviderType === SmsProviderType.TWILIO && <ProviderTwillo/>}
+      {smsProviderType === SmsProviderType.ESENDEX && <ProviderEsendex/>}
+      {smsProviderType === SmsProviderType.OTHERS && <ProviderOther/>}
     </Col>
   }
 
@@ -223,10 +302,29 @@ const SmsProviderItem = () => {
         colon={false}
         label={$t({ defaultMessage: 'Utilization Alert Threshold' })}
       />
-      <Button
-        type='link'
-        size='small'
-        onClick={onSetUpValue}>{$t({ defaultMessage: 'Change' })}</Button>
+      {!isChangeGP && <div>
+        <label>{smsThreshold}%</label>
+        <Button
+          style={{ marginLeft: '40px' }}
+          type='link'
+          size='small'
+          onClick={() => { setIsChangeGP(true) }}>{$t({ defaultMessage: 'Change' })}</Button>
+      </div>}
+      {isChangeGP && <div>
+        <Input
+          style={{ padding: 3, width: '45px', height: '28px' }}
+          type='number'/>
+        <Button
+          style={{ paddingBottom: 10, marginLeft: '20px' }}
+          type='link'
+          size='small'
+          onClick={() => { onSaveUtilization() }}>{$t({ defaultMessage: 'Save' })}</Button>
+        <Button
+          style={{ paddingBottom: 10, marginLeft: '20px' }}
+          type='link'
+          size='small'
+          onClick={() => { setIsChangeGP(false) }}>{$t({ defaultMessage: 'Cancel' })}</Button>
+      </div>}
     </>
   }
 
@@ -291,6 +389,7 @@ const SmsProviderItem = () => {
     {drawerVisible && <SetupSmsProviderDrawer
       visible={drawerVisible}
       isEditMode={isEditMode}
+      editData={smsProvider.data}
       setVisible={setDrawerVisible}
     />}
   </>
