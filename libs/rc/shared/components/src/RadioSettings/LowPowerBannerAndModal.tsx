@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
@@ -34,7 +34,7 @@ export function LowPowerBannerAndModal (props: {
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/wifi/radio/Normal6GHz`)
 
-  useEffect(()=> {
+  const displayModalMessage = (from: string, isOutdoor?: boolean, status?: AFCStatus): string => {
 
     let modalMessage = ''
 
@@ -51,19 +51,19 @@ export function LowPowerBannerAndModal (props: {
         messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
       }
 
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
+      if (status === AFCStatus.WAIT_FOR_LOCATION) {
         messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))
       }
-      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
+      if (status === AFCStatus.REJECTED) {
         messageList.push($t({ defaultMessage: '(Rejected by FCC DB due to no available channels)' }))
       }
-      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
+      if (status === AFCStatus.WAIT_FOR_RESPONSE) {
         messageList.push($t({ defaultMessage: '(Wait for AFC server response)' }))
       }
-      if (afcInfo?.afcStatus === AFCStatus.PASSED) {
+      if (status === AFCStatus.PASSED) {
         messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))
       }
-      if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
+      if (status === AFCStatus.AFC_SERVER_FAILURE) {
         messageList.push($t({ defaultMessage: '(AFC Server failure)' }))
       }
 
@@ -71,7 +71,16 @@ export function LowPowerBannerAndModal (props: {
 
     }
 
-    setBannerText(modalMessage)
+    return modalMessage
+
+  }
+
+  const memorizedFunction = useMemo(() => {
+    return displayModalMessage(from, isOutdoor, afcInfo?.afcStatus)
+  }, [from, isOutdoor, afcInfo])
+
+  useEffect(()=> {
+    setBannerText(memorizedFunction)
   }, [isOutdoor])
 
   return <Row
