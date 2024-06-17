@@ -12,6 +12,7 @@ import {
   PortalUrlsInfo,
   WifiCallingUrls,
   WifiOperatorUrls,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -144,7 +145,9 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(mockHotspot20OperatorList))
       ),
       rest.post(IdentityProviderUrls.getIdentityProviderList.url,
-        (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList)))
+        (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))),
+      rest.put(WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+        (_, res, ctx) => res(ctx.json(successResponse)))
     )
   })
 

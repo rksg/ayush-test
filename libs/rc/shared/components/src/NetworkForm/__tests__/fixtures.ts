@@ -616,7 +616,12 @@ export const venueListResponse = {
   ]
 }
 
-export const successResponse = { requestId: 'request-id' }
+export const successResponse = {
+  requestId: 'request-id',
+  response: {
+    id: 'new-network-id'
+  }
+}
 
 export const cloudpathResponse = [
   {
