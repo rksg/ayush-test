@@ -27,7 +27,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getNetworksVenuesList: {
     method: 'post',
-  url: '/networks/:networkId/venues',
+    url: '/networks/:networkId/venues',
     oldUrl: '/api/viewmodel/tenant/:tenantId/network/:networkId/venues',
     newApi: true
   },
