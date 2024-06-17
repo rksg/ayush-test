@@ -3,9 +3,9 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Tabs }                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable } from '@acx-ui/rc/components'
+import { Tabs }                                                         from '@acx-ui/components'
+import { Features }                                                     from '@acx-ui/feature-toggle'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   useGetDhcpHostStatsQuery,
   useGetDhcpPoolStatsQuery,
@@ -28,8 +28,8 @@ export const EdgeDhcp = () => {
   const { activeSubTab, serialNumber } = useParams()
   const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)
   const basePath = useTenantLink(`/devices/edge/${serialNumber}/details/dhcp`)
-  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const { isLeaseTimeInfinite } = useGetDhcpStatsQuery(
     {
       payload: {

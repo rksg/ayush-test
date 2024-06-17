@@ -2,7 +2,8 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, PageHeader, Tabs }                           from '@acx-ui/components'
-import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { Features }                                           from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                              from '@acx-ui/rc/components'
 import { useGetEdgeClusterListQuery, useGetEdgeClusterQuery } from '@acx-ui/rc/services'
 import { CommonOperation, Device, EdgeStatusEnum, getUrl }    from '@acx-ui/rc/utils'
 import { useTenantLink }                                      from '@acx-ui/react-router-dom'
@@ -17,7 +18,7 @@ const EditEdgeCluster = () => {
   const { $t } = useIntl()
   const { activeTab, clusterId } = useParams()
   const navigate = useNavigate()
-  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
   const basePath = useTenantLink(getUrl({
     feature: Device.EdgeCluster,
     oper: CommonOperation.Edit,

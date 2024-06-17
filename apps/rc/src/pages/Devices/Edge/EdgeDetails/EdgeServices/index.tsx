@@ -3,11 +3,11 @@ import { useContext, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps, showActionModal }           from '@acx-ui/components'
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                             from '@acx-ui/icons'
-import { EdgeServiceStatusLight, useEdgeDhcpActions, useEdgeExportCsv } from '@acx-ui/rc/components'
-import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }    from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps, showActionModal }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                                    from '@acx-ui/icons'
+import { EdgeServiceStatusLight, useEdgeDhcpActions, useEdgeExportCsv, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }                           from '@acx-ui/rc/services'
 import {
   EdgeService,
   EdgeServiceTypeEnum,
@@ -28,10 +28,10 @@ export const EdgeServices = () => {
   const params = useParams()
   const { serialNumber } = params
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
-  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
   const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)

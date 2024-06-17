@@ -5,7 +5,7 @@ import { useIntl }  from 'react-intl'
 import AutoSizer    from 'react-virtualized-auto-sizer'
 
 import { KPITimeseriesResponse, healthApi }         from '@acx-ui/analytics/services'
-import { kpiConfig, productNames }                  from '@acx-ui/analytics/utils'
+import { kpiConfig, productNames, limitRange }      from '@acx-ui/analytics/utils'
 import { Loader, MultiLineTimeSeriesChart, NoData } from '@acx-ui/components'
 import { formatter }                                from '@acx-ui/formatter'
 import type { TimeStamp, TimeStampRange }           from '@acx-ui/types'
@@ -18,7 +18,7 @@ const transformResponse = ({ data, time }: KPITimeseriesResponse) => data
   .map((datum, index) => ([
     time[index],
     datum && datum.length && (datum[0] !== null && datum[1] !== null)
-      ? datum[1] === 0 ? 0 : (datum[0] / datum[1])
+      ? datum[1] === 0 ? 0 : (limitRange(datum[0] / datum[1]))
       : null
   ])) as [TimeStamp, number][]
 

@@ -68,10 +68,12 @@ describe('ApManagementVlanForm', () => {
     await waitFor(() => expect(getVenueApManagementVlanSpy).toBeCalledTimes(1))
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
+    const vlanId = screen.getByTestId('ap-managment-vlan-vlan-id-span')
+    expect(vlanId).toBeVisible()
+    await waitFor(() => expect(vlanId).toHaveTextContent('1'))
   })
 
-  it.skip('should handle click Customize/Use Venue settings link', async () => {
+  it('should handle click Customize/Use Venue settings link', async () => {
     render(
       <Provider>
         <Form>
@@ -99,20 +101,25 @@ describe('ApManagementVlanForm', () => {
         route: { params, path: '/:tenantId/devices/wifi/:serialNumber/edit/advanced' }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => expect(getVenueApManagementVlanSpy).toBeCalledTimes(1))
 
-    expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
+    const customizeBtn = screen.getByRole('button', { name: /Customize/ })
+    expect(customizeBtn).toBeVisible()
+    const vlanId = screen.getByTestId('ap-managment-vlan-vlan-id-span')
+    expect(vlanId).toBeVisible()
+    await waitFor(() => expect(vlanId).toHaveTextContent('1'))
     expect(screen.queryByTestId('ap-managment-vlan-vlan-id-input')).toBeNull()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Customize/ }))
+    await userEvent.click(customizeBtn)
 
-    expect(await screen.findByRole('button', { name: /Use Venue Settings/ })).toBeVisible()
+    const venueSettingBtn = await screen.findByRole('button', { name: /Use Venue Settings/ })
+    expect(venueSettingBtn).toBeVisible()
     expect(screen.queryByTestId('ap-managment-vlan-vlan-id-span')).toBeNull()
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-input')).toBeVisible()
+    expect(screen.getByTestId('ap-managment-vlan-vlan-id-input')).toBeVisible()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Use Venue Settings/ }))
-    expect(await screen.findByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
+    await userEvent.click(venueSettingBtn)
+    await screen.findByRole('button', { name: /Customize/ })
+    expect(screen.getByTestId('ap-managment-vlan-vlan-id-span')).toBeVisible()
     expect(screen.queryByTestId('ap-managment-vlan-vlan-id-input')).toBeNull()
   })
 })
