@@ -225,7 +225,10 @@ export function ManageCustomer () {
     { skip: isEntitlementRbacApiEnabled })
   const { data: rbacAssignment } = useTableQuery({
     useQuery: useMspRbacAssignmentHistoryQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    option: {
+      skip: !isEntitlementRbacApiEnabled
+    }
   })
   const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const { data } =
