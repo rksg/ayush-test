@@ -4,6 +4,7 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { firmwareApi }                                        from '@acx-ui/rc/services'
 import {
+  EdgeFirmwareFixtures,
   FirmwareUrlsInfo, SigPackUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
@@ -27,6 +28,7 @@ import {
 
 import FWVersionMgmt from '.'
 
+const { mockedVenueFirmwareList, mockedLatestEdgeFirmwares } = EdgeFirmwareFixtures
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
 
@@ -56,6 +58,10 @@ jest.mock('../ApplicationPolicyMgmt', () => ({
   default: () => {
     return <div data-testid='mocked-application-policy-mgmt'></div>
   }
+}))
+jest.mock('./EdgeFirmware/VenueFirmwareList', () => ({
+  ...jest.requireActual('./EdgeFirmware/VenueFirmwareList'),
+  VenueFirmwareList: () => <div data-testid='mocked-EdgeFirmware-table'></div>
 }))
 
 jest.mock('@acx-ui/rc/services', () => ({
@@ -125,6 +131,14 @@ describe('Firmware Version Management', () => {
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_req, res, ctx) => res(ctx.json(mockedVenueFirmwareList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getLatestEdgeFirmware.url.replace('?latest=true', ''),
+        (_req, res, ctx) => res(ctx.json(mockedLatestEdgeFirmwares))
       )
     )
     render(
@@ -138,6 +152,9 @@ describe('Firmware Version Management', () => {
     await screen.findByTestId('mocked-ApFirmware-table')
     userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
     await screen.findByTestId('mocked-SwitchFirmware-table')
+
+    const edgeFirmwareTab = screen.getByRole('tab', { name: /SmartEdge Firmware/ })
+    expect(await within(edgeFirmwareTab).findByTestId('InformationSolid')).toBeVisible()
   })
 
   // eslint-disable-next-line max-len

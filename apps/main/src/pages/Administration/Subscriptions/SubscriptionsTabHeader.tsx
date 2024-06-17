@@ -5,8 +5,7 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }              from '@acx-ui/feature-toggle'
-import { SpaceWrapper, SubscriptionUtilizationWidget } from '@acx-ui/rc/components'
+import { SpaceWrapper, SubscriptionUtilizationWidget, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
@@ -53,7 +52,7 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionsTabHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
 
   // skip MSP data
   const subscriptionDeviceTypeList = getEntitlementDeviceTypes()

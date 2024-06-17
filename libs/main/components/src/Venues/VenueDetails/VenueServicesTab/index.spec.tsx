@@ -2,7 +2,7 @@
 import { rest } from 'msw'
 
 import { Tabs }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import { EdgeDhcpUrls, EdgeSdLanUrls, EdgeUrlsInfo, NetworkSegmentationUrls } from '@acx-ui/rc/utils'
 import { Provider }                                                           from '@acx-ui/store'
 import {
@@ -61,7 +61,6 @@ describe('Venue service tab', () => {
 
   describe('when edge feature flag is off', () => {
     it('should not render edge related tab', async () => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(false)
       jest.mocked(useIsSplitOn).mockReturnValue(false)
 
       render(
@@ -87,7 +86,6 @@ describe('Venue service tab', () => {
       mockedGetNsgListFn.mockReset()
       mockedGetSdLanListFn.mockReset()
 
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 

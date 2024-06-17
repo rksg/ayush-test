@@ -299,6 +299,8 @@ export function RadioSettings () {
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
+  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
+
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { apData, apCapabilities, venueData } = useContext(ApDataContext)
@@ -334,7 +336,8 @@ export function RadioSettings () {
 
   const getApAvailableChannels = useGetApValidChannelQuery({
     params: { tenantId, venueId, serialNumber },
-    enableRbac: isUseRbacApi
+    enableRbac: isUseRbacApi,
+    enableSeparation: is6gChannelSeparation
   }, { skip: !venueId })
 
   const defaultStateOfIsUseVenueSettings: StateOfIsUseVenueSettings = {
@@ -552,7 +555,8 @@ export function RadioSettings () {
 
       const venueRadioData = (await getVenueCustomization({
         params: { venueId },
-        enableRbac: isUseRbacApi
+        enableRbac: isUseRbacApi,
+        enableSeparation: is6gChannelSeparation
       }, true).unwrap())
 
       setVenueRadioData(venueRadioData)
