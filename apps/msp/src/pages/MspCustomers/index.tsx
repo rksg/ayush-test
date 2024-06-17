@@ -595,9 +595,7 @@ export function MspCustomers () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({
-              params: { mspEcTenantId: id },
-              enableRbac: isRbacEnabled })
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id }, enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }

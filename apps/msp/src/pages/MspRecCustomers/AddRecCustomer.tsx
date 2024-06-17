@@ -113,9 +113,7 @@ export function AddRecCustomer () {
 
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
-      enableMspEcSupport({
-        params: { mspEcTenantId: mspEcTenantId },
-        enableRbac: isRbacEnabled })
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -124,9 +122,7 @@ export function AddRecCustomer () {
           setEcSupport(true)
         })
     } else {
-      disableMspEcSupport({
-        params: { mspEcTenantId: mspEcTenantId },
-        enableRbac: isRbacEnabled })
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',

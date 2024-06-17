@@ -112,10 +112,8 @@ export function PortalSettings () {
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
   const { data: provider } = useExternalProvidersQuery({ params })
-  const { data: baseUrl } = useGetMspBaseURLQuery({ params:
-    isRbacEnabled ? { isRbacApi: 'true' } : params })
-  const { data: mspLabel } = useGetMspLabelQuery({ params:
-    isRbacEnabled ? { isRbacApi: 'true' } : params })
+  const { data: baseUrl } = useGetMspBaseURLQuery({ params, enableRbac: isRbacEnabled })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
 
   useEffect(() => {
     const fetchImages = async (mspLabel: MspPortal) => {
@@ -402,8 +400,7 @@ export function PortalSettings () {
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
       const formData = await getMspPortalToSave(values)
-      await addMspLabel({ params: isRbacEnabled ? { isRbacApi: 'true' } : params,
-        payload: formData }).unwrap()
+      await addMspLabel({ params, payload: formData, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
       window.location.reload()
     } catch(error) {
@@ -420,8 +417,7 @@ export function PortalSettings () {
   const handleUpdateMspLabel = async (values: MspPortal) => {
     try {
       const portal: MspPortal = await getMspPortalToSave(values)
-      await updateMspLabel({ params: isRbacEnabled ? { isRbacApi: 'true' } : params,
-        payload: portal }).unwrap()
+      await updateMspLabel({ params, payload: portal, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch(error) {
       const respData = error as { status: number, data: { [key: string]: string } }

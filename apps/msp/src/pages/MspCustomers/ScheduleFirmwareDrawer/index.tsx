@@ -140,8 +140,7 @@ export const ScheduleFirmwareDrawer = (props: ScheduleFirmwareDrawerProps) => {
       }
     }
 
-    updateFirmwareUpgradeSchedules({ params: isRbacEnabled ? { isRbacApi: 'true' } : params,
-      payload })
+    updateFirmwareUpgradeSchedules({ params, payload, enableRbac: isRbacEnabled })
       .then(() => {
         setVisible(false)
         resetFields()
