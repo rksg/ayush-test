@@ -11,7 +11,7 @@ import {
   Device,
   EdgeClusterTableDataType,
   activeTab,
-  allowRebootForStatus,
+  allowRebootShutdownForStatus,
   allowSendOtpForStatus,
   allowSendFactoryResetStatus,
   getUrl,
@@ -49,6 +49,7 @@ export const EdgeClusterTable = () => {
   const {
     deleteNodeAndCluster,
     reboot,
+    shutdown,
     sendEdgeOnboardOtp,
     sendFactoryReset
   } = useEdgeClusterActions()
@@ -258,10 +259,20 @@ export const EdgeClusterTable = () => {
       scopeKey: [EdgeScopes.CREATE],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
-        selectedRows.filter(row => !allowRebootForStatus(row?.deviceStatus)).length === 0),
+        selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (selectedRows, clearSelection) => {
         reboot(selectedRows, clearSelection)
+      }
+    },
+    {
+      scopeKey: [EdgeScopes.CREATE],
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+        selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
+      label: $t({ defaultMessage: 'Shutdown' }),
+      onClick: (selectedRows, clearSelection) => {
+        shutdown(selectedRows, clearSelection)
       }
     },
     {

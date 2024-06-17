@@ -5,6 +5,7 @@ import {
   useDeleteEdgeClusterMutation,
   useDeleteEdgeMutation,
   useRebootEdgeMutation,
+  useShutdownEdgeMutation,
   useSendOtpMutation,
   useFactoryResetEdgeMutation
 } from '@acx-ui/rc/services'
@@ -18,6 +19,7 @@ export const useEdgeClusterActions = () => {
   const { $t } = useIntl()
   const [ invokeDeleteEdge ] = useDeleteEdgeMutation()
   const [ invokeRebootEdge ] = useRebootEdgeMutation()
+  const [ invokeShutdownEdge ] = useShutdownEdgeMutation()
   const [ invokeDeleteEdgeCluster ] = useDeleteEdgeClusterMutation()
   const [ invokeSendOtp ] = useSendOtpMutation()
   const [ invokeFactoryReset ] = useFactoryResetEdgeMutation()
@@ -51,6 +53,48 @@ export const useEdgeClusterActions = () => {
           handler: () => {
             const requests = data.map(item =>
               invokeRebootEdge({
+                params: {
+                  venueId: item.venueId,
+                  edgeClusterId: item.clusterId,
+                  serialNumber: item.serialNumber
+                }
+              }))
+            Promise.all(requests).then(() => callback?.())
+          }
+        }]
+      }
+    })
+  }
+
+  const shutdown = (data: EdgeStatus[], callback?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t(
+        {
+          defaultMessage: `Shutdown "{count, plural,
+            one {{name}}
+            other {{count} SmartEdges}
+          }"?`
+        }, { count: data.length, name: data[0].name }
+      ),
+      content: $t({
+        defaultMessage: `Shutdown will safely terminate all ongoing operations on 
+        SmartEdge. Are you sure you want to shutdown this SmartEdge?`
+      }),
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel'
+        }, {
+          text: $t({ defaultMessage: 'Shutdown' }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler: () => {
+            const requests = data.map(item =>
+              invokeShutdownEdge({
                 params: {
                   venueId: item.venueId,
                   edgeClusterId: item.clusterId,
@@ -177,6 +221,7 @@ export const useEdgeClusterActions = () => {
 
   return {
     reboot,
+    shutdown,
     deleteNodeAndCluster,
     sendEdgeOnboardOtp,
     sendFactoryReset

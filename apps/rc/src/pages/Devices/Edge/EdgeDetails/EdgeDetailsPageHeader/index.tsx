@@ -14,7 +14,7 @@ import {
   useEdgeBySerialNumberQuery, useGetEdgeClusterQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeStatusEnum, rebootableEdgeStatuses, resettabaleEdgeStatuses
+  EdgeStatusEnum, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -64,7 +64,7 @@ export const EdgeDetailsPageHeader = () => {
 
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { reboot, factoryReset, deleteEdges } = useEdgeActions()
+  const { reboot, shutdown, factoryReset, deleteEdges } = useEdgeActions()
 
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
@@ -74,7 +74,13 @@ export const EdgeDetailsPageHeader = () => {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
-      showupstatus: rebootableEdgeStatuses
+      showupstatus: rebootShutdownEdgeStatusWhiteList
+    },
+    {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      label: $t({ defaultMessage: 'Shutdown' }),
+      key: 'shutdown',
+      showupstatus: rebootShutdownEdgeStatusWhiteList
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
@@ -100,6 +106,9 @@ export const EdgeDetailsPageHeader = () => {
     switch(e.key) {
       case 'reboot':
         reboot(currentEdge)
+        break
+      case 'shutdown':
+        shutdown(currentEdge)
         break
       case 'factoryReset':
         factoryReset(currentEdge)
