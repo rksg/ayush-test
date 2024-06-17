@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
@@ -176,6 +177,8 @@ describe('AP Form - Add', () => {
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(aplist))),
+      rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_, res, ctx) => res(ctx.json([]))),
       rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
@@ -240,7 +243,8 @@ describe('AP Form - Add', () => {
 
   describe('handle Add AP and Coordinates Modal', () => {
     beforeEach(async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
     })
 
     it('should handle Add AP correctly', async () => {
@@ -315,7 +319,8 @@ describe('AP Form - Add', () => {
 
   describe('handle error occurred', () => {
     beforeEach(async () => {
-      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
     })
 
     it('should handle error occurred', async () => {

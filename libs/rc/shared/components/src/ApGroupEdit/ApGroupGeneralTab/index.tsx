@@ -65,7 +65,7 @@ export function ApGroupGeneralTab () {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = usePathBasedOnConfigTemplate('/devices/', '/templates')
+  const basePath = usePathBasedOnConfigTemplate('/devices/', '')
   const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
     ? `${basePath.pathname}/wifi/apgroups`
     : `${basePath.pathname}/wifi`)

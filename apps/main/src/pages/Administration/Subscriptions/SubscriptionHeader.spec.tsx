@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { administrationApi }                                               from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo }                                          from '@acx-ui/rc/utils'
 import { Provider, store, userApi }                                        from '@acx-ui/store'
@@ -35,7 +35,6 @@ describe('SubscriptionHeader', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
 
     mockedTierReq.mockClear()
 
@@ -107,8 +106,8 @@ describe('SubscriptionHeader', () => {
     expect(await screen.findByText('Essentials')).toBeVisible()
   })
 
-  it('should filter edge data when PLM FF is not denabled', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+  it('should filter edge data when edge FF is not denabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_TOGGLE)
 
     render(
       <Provider>

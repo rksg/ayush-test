@@ -573,6 +573,15 @@ export interface APExtendedGrouped extends APExtended {
   children?: APExtended[],
   id?: number | string
 }
+export interface NewAPExtendedGrouped extends NewAPModelExtended {
+  members: number
+  incidents: number
+  model: string
+  clients: number
+  aps: NewAPModelExtended[],
+  children?: NewAPModelExtended[],
+  id?: number | string
+}
 export type ImportErrorRes = {
   errors: {
     code: number
@@ -582,6 +591,7 @@ export type ImportErrorRes = {
   downloadUrl?: string
   txId: string
   fileErrorsCount: number
+  fileErrorCount?: number
 }
 
 export enum MeshModeEnum {

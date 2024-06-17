@@ -84,7 +84,12 @@ export function useApActions () {
   }
 
 
-  const showDownloadApLog = ( serialNumber: string, tenantId?: string, callBack?: ()=>void ) => {
+  const showDownloadApLog = (
+    serialNumber: string,
+    tenantId?: string,
+    venueId?: string,
+    callBack?: ()=>void
+  ) => {
     const toastKey = showToast({
       type: 'info',
       closable: false,
@@ -95,7 +100,10 @@ export function useApActions () {
       content: $t({ defaultMessage: 'Preparing log ...' })
     })
 
-    downloadApLog({ params: { tenantId, serialNumber } })
+    downloadApLog({
+      params: { tenantId, serialNumber, venueId },
+      enableRbac: isUseWifiRbacApi
+    })
       .unwrap().then((result) => {
         showToast({
           key: toastKey,
@@ -104,7 +112,8 @@ export function useApActions () {
         })
 
         const timeString = moment().format('DDMMYYYY-HHmm')
-        saveAs(result.fileURL, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
+        const downloadLink = isUseWifiRbacApi ? result.fileUrl : result.fileURL
+        saveAs(downloadLink, `SupportLog_${serialNumber}_${timeString}.log.gz`) //TODO: CORS policy
 
         callBack && callBack()
       })

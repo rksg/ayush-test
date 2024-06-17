@@ -228,6 +228,11 @@ describe('TunnelProfileList', () => {
   })
 
   describe('when SD-LAN is ready', () => {
+    const whiteListFlags = [
+      Features.EDGES_TOGGLE,
+      Features.EDGES_SD_LAN_TOGGLE,
+      Features.EDGES_SD_LAN_HA_TOGGLE
+    ]
     const mockedSdLanReq = jest.fn()
     const mockedSdLanDataList = {
       totalCount: 1,
@@ -235,9 +240,8 @@ describe('TunnelProfileList', () => {
     }
 
     beforeEach(() => {
-      jest.mocked(useIsSplitOn).mockImplementation((flag: string) =>
-        flag === Features.EDGES_SD_LAN_TOGGLE || flag === Features.EDGES_SD_LAN_HA_TOGGLE
-      )
+      // eslint-disable-next-line max-len
+      jest.mocked(useIsSplitOn).mockImplementation((flag) => whiteListFlags.includes(flag as Features))
 
       mockServer.use(
         rest.post(

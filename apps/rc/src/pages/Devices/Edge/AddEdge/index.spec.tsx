@@ -26,20 +26,11 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-jest.mock('@acx-ui/utils', () => {
-  const reactIntl = jest.requireActual('react-intl')
-  const intl = reactIntl.createIntl({
-    locale: 'en'
-  })
-  return {
-    ...jest.requireActual('@acx-ui/utils'),
-    getIntl: () => intl
-  }
-})
-
 describe('AddEdge', () => {
   let params: { tenantId: string }
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
+
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -121,7 +112,7 @@ describe('AddEdge', () => {
   })
 
   it('should add edge with cluster successfully', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>
@@ -149,7 +140,7 @@ describe('AddEdge', () => {
   })
 
   it('should add edge without cluster successfully', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>
@@ -198,7 +189,7 @@ describe('AddEdge api fail', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_HA_TOGGLE || ff === Features.EDGES_TOGGLE)
 
     mockServer.use(
       rest.post(

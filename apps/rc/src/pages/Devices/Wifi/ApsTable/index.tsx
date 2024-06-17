@@ -15,6 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 
 export default function useApsTable () {
   const { $t } = useIntl()
@@ -41,6 +42,7 @@ export default function useApsTable () {
 
   const apgroupFilterOptions = useApGroupsFilterOpts()
 
+  // TODO This query needs to be updated after apViewModel changes to the RBAC api
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
@@ -81,9 +83,12 @@ export default function useApsTable () {
   })
 
   const extra = [
-    <Dropdown overlay={addMenu}>{() =>
-      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-    }</Dropdown>
+    <Dropdown
+      scopeKey={[WifiScopes.CREATE]}
+      overlay={addMenu}>{() =>
+        <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+      }
+    </Dropdown>
   ]
 
   const component =

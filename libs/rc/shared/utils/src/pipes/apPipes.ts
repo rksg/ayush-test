@@ -1,13 +1,14 @@
-import { uniq, without }      from 'lodash'
-import { IntlShape, useIntl } from 'react-intl'
+import { uniq, without } from 'lodash'
+import { IntlShape }     from 'react-intl'
 
 import { getIntl } from '@acx-ui/utils'
 
 import {
   ApDeviceStatusEnum,
   DeviceConnectionStatus,
-  QosPriorityEnum } from '../constants'
-import { AFCInfo, AFCPowerMode, AFCProps, AFCStatus } from '../types'
+  QosPriorityEnum
+} from '../constants'
+import { AFCInfo, AFCPowerMode, AFCProps, AFCStatus, NewAFCInfo } from '../types'
 
 export enum APView {
   AP_LIST,
@@ -121,11 +122,14 @@ export function transformQosPriorityType (type: QosPriorityEnum) {
 }
 
 // eslint-disable-next-line
-export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) : { columnText : string, tooltipText?: string} => {
-
-  const { $t } = useIntl()
-
-  const powerMode = afcInfo?.powerMode
+export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, isOutdoor?: boolean) : { columnText : string, tooltipText?: string} => {
+  const { $t } = getIntl()
+  const powerMode = afcInfo?.hasOwnProperty('powerMode') ?
+    (afcInfo as AFCInfo)?.powerMode :
+    (afcInfo as NewAFCInfo)?.powerState
+  const afcStatus = afcInfo?.hasOwnProperty('afcStatus') ?
+    (afcInfo as AFCInfo)?.afcStatus :
+    (afcInfo as NewAFCInfo)?.afcState
 
   if(!powerMode || apRadioDeploy !== '2-5-6') {
     return { columnText: '--', tooltipText: undefined }
@@ -135,31 +139,43 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) :
     return { columnText: $t({ defaultMessage: 'Standard power' }), tooltipText: undefined }
   }
   else if (powerMode === AFCPowerMode.LOW_POWER) {
-    if (afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED){
-      switch(afcInfo?.afcStatus) {
+    if (afcStatus !== AFCStatus.AFC_NOT_REQUIRED){
+      let message = { columnText: '', tooltipText: undefined }
+      if(isOutdoor) {
+        message = {
+          columnText: $t({ defaultMessage: '6 GHz radio off' }),
+          tooltipText: undefined
+        }
+      } else {
+        message = {
+          columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+          tooltipText: undefined
+        }
+      }
+      switch(afcStatus) {
         case AFCStatus.WAIT_FOR_LOCATION:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'AFC Geo-Location not set' })
           }
         case AFCStatus.REJECTED:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'Rejected by FCC DB due to no available channels' })
           }
         case AFCStatus.WAIT_FOR_RESPONSE:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'Wait for AFC server response' })
           }
         case AFCStatus.AFC_SERVER_FAILURE:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'AFC Server failure' })
           }
         case AFCStatus.PASSED:
           return {
-            columnText: $t({ defaultMessage: 'Low Power Indoor' }),
+            ...message,
             tooltipText: $t({ defaultMessage: 'AP is working on LPI channel' })
           }
       }
@@ -175,9 +191,9 @@ export const AFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) :
 }
 
 // eslint-disable-next-line
-export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
+export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy?: string, isOutdoor?: boolean) => {
 
-  const { $t } = useIntl()
+  const { $t } = getIntl()
 
   const powerMode = afcInfo?.powerMode
 
@@ -192,7 +208,12 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
   }
 
   else if (powerMode === AFCPowerMode.LOW_POWER) {
-    displayList.push($t({ defaultMessage: 'Low Power Indoor' }))
+
+    if (isOutdoor) {
+      displayList.push($t({ defaultMessage: '6 GHz radio off' }))
+    } else {
+      displayList.push($t({ defaultMessage: 'Low Power Indoor' }))
+    }
     switch(afcInfo?.afcStatus) {
       case AFCStatus.WAIT_FOR_LOCATION:
         displayList.push($t({ defaultMessage: '[AFC Geo-Location not set]' }))
@@ -220,12 +241,14 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
 }
 
 // eslint-disable-next-line
-export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
-
-  const { $t } = useIntl()
-
-  const powerMode = afcInfo?.powerMode
-
+export const AFCStatusRender = (afcInfo?: AFCInfo|NewAFCInfo, apRadioDeploy?: string) => {
+  const { $t } = getIntl()
+  const powerMode = afcInfo?.hasOwnProperty('powerMode') ?
+    (afcInfo as AFCInfo)?.powerMode :
+    (afcInfo as NewAFCInfo)?.powerState
+  const afcStatus = afcInfo?.hasOwnProperty('afcStatus') ?
+    (afcInfo as AFCInfo)?.afcStatus :
+    (afcInfo as NewAFCInfo)?.afcState
   const displayList = []
 
   if(!powerMode || apRadioDeploy !== '2-5-6') {
@@ -237,7 +260,7 @@ export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
   }
 
   else if (powerMode === AFCPowerMode.LOW_POWER) {
-    switch(afcInfo?.afcStatus) {
+    switch(afcStatus) {
       case AFCStatus.WAIT_FOR_LOCATION:
         displayList.push($t({ defaultMessage: 'Wait for location' }))
         break

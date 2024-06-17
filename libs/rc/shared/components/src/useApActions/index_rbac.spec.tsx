@@ -95,8 +95,8 @@ describe('Test useApActions', () => {
         (req, res, ctx) => res(ctx.json({ requestId: '789' }))
       ),
       rest.get(
-        WifiUrlsInfo.downloadApLog.url,
-        (req, res, ctx) => res(ctx.json({ fileURL: '/abc.tar.gz' }))
+        WifiRbacUrlsInfo.downloadApLog.url,
+        (req, res, ctx) => res(ctx.json({ fileURL: '/abc.tar.gz', fileUrl: '/abc.tar.gz' }))
       )
     )
   })
@@ -159,7 +159,7 @@ describe('Test useApActions', () => {
     const callback = jest.fn()
 
     act(() => {
-      showDownloadApLog(serialNumber, tenantId, callback)
+      showDownloadApLog(serialNumber, tenantId, venueId, callback)
     })
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('Preparing log')

@@ -10,12 +10,17 @@ import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
+import {
+  useApDetailHeaderQuery,
+  isAPLowPower,
+  useGetApCapabilitiesQuery
+}                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
   useApContext,
-  ApStatus
+  ApStatus,
+  Capabilities
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -23,6 +28,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
@@ -31,8 +37,11 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData, afcEnabled, venueId } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
+  //eslint-disable-next-line
+  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
+
   const apAction = useApActions()
   const { activeTab } = useParams()
 
@@ -58,11 +67,9 @@ function ApPageHeader () {
 
     if (e.key === 'delete') {
       actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
-    } else if(e.key === 'reboot' || e.key === 'blinkLed') {
+    } else {
       // eslint-disable-next-line max-len
       (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
-    } else {
-      actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
     }
   }
 
@@ -93,6 +100,12 @@ function ApPageHeader () {
   const enableTimeFilter = () =>
     !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
 
+  const isAPOutdoor = (): boolean | undefined => {
+    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
+    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === model)
+    return currentApModel?.isOutdoor
+  }
+
   return (
     <PageHeader
       title={data?.title || ''}
@@ -112,16 +125,19 @@ function ApPageHeader () {
           />
           : <></>,
         ...filterByAccess([
-          <Dropdown overlay={menu}>{()=>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <CaretDownSolidIcon />
-              </Space>
-            </Button>
-          }</Dropdown>,
+          <Dropdown
+            scopeKey={[WifiScopes.DELETE, WifiScopes.UPDATE]}
+            overlay={menu}>{()=>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>}
+          </Dropdown>,
           <Button
             type='primary'
+            scopeKey={[WifiScopes.UPDATE]}
             onClick={() => {
               navigate({
                 ...basePath,
@@ -139,7 +155,11 @@ function ApPageHeader () {
         {
           AFC_Featureflag && afcEnabled &&
           isAPLowPower(ApStatusData?.afcInfo) &&
-          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo} from={'ap'}/>
+          <LowPowerBannerAndModal
+            afcInfo={ApStatusData.afcInfo}
+            from={'ap'}
+            isOutdoor={isAPOutdoor()}
+          />
         }
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}

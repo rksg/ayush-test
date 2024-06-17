@@ -13,10 +13,11 @@ import {
   useGetApQuery,
   useGetApRadioCustomizationQuery,
   useGetPacketCaptureStateQuery,
+  useLazyGetApBandModeSettingsQuery,
   useStartPacketCaptureMutation,
   useStopPacketCaptureMutation
 } from '@acx-ui/rc/services'
-import { ApPacketCaptureStateEnum, CaptureInterfaceEnum, MacAddressFilterRegExp, useApContext } from '@acx-ui/rc/utils'
+import { ApPacketCaptureStateEnum, BandModeEnum, CaptureInterfaceEnum, MacAddressFilterRegExp, useApContext } from '@acx-ui/rc/utils'
 
 
 import * as UI from './styledComponents'
@@ -32,21 +33,24 @@ export enum CaptureInterfaceEnumExtended {
 
 export function ApPacketCaptureForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber, venueId } = useApContext()
+  const { tenantId, venueId, serialNumber } = useApContext()
+  const params = { tenantId, venueId, serialNumber }
   const [packetCaptureForm] = Form.useForm()
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const [startPacketCapture] = useStartPacketCaptureMutation()
   const [stopPacketCapture] = useStopPacketCaptureMutation()
-  const packetCaptureState = useGetPacketCaptureStateQuery({ params: { tenantId, serialNumber } })
+  const packetCaptureState = useGetPacketCaptureStateQuery({ params })
   const getAp = useGetApQuery({
-    params: { tenantId, serialNumber, venueId },
+    params,
     enableRbac: isUseWifiRbacApi
   })
-  const getApCapabilities = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
-  const getApLanPorts = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
+  const getApCapabilities = useGetApCapabilitiesQuery({ params })
+  const getApLanPorts = useGetApLanPortsQuery({ params })
   const getApRadioCustomization =
-    useGetApRadioCustomizationQuery({ params: { tenantId, serialNumber } })
+    useGetApRadioCustomizationQuery({ params })
+
+  const [getApBandModeSettings] = useLazyGetApBandModeSettingsQuery()
 
   const [interfaceOptions, setInterfaceOptions] = useState([] as SelectOption[])
   const [lanPortOptions, setLanPortOptions] = useState([] as SelectOption[])
@@ -102,61 +106,78 @@ export function ApPacketCaptureForm () {
   )
 
   useEffect(() => {
-    const ap = getAp.data
-    const capabilities = getApCapabilities.data
-    const apRadioCustomization = getApRadioCustomization.data
+    const setRadioOptions = async () => {
+      const ap = getAp.data
+      const capabilities = getApCapabilities.data
+      const apRadioCustomization = getApRadioCustomization.data
 
-    if (ap && capabilities && apRadioCustomization) {
-      let captureInterfaceOptions = []
-      const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
-      const { supportTriRadio = false, supportDual5gMode = false } = apCapabilities || {}
-      const { enable24G, enable50G, enable6G, apRadioParamsDual5G } = apRadioCustomization
+      if (ap && capabilities && apRadioCustomization) {
 
-      if (enable24G) {
-        captureInterfaceOptions.push({
-          label: $t({ defaultMessage: '2.4 GHz' }),
-          value: CaptureInterfaceEnum.RADIO24
-        })
-      }
+        let captureInterfaceOptions = []
+        const apCapabilities = capabilities.apModels.find(cap => cap.model === ap.model)
+        const {
+          supportTriRadio = false,
+          supportDual5gMode = false,
+          supportBandCombination = false
+        } = apCapabilities || {}
+        const { enable24G, enable50G, enable6G, apRadioParamsDual5G } = apRadioCustomization
 
-      if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G?.enabled) {
-        if (apRadioParamsDual5G.lower5gEnabled) {
+        if (enable24G) {
+          captureInterfaceOptions.push({
+            label: $t({ defaultMessage: '2.4 GHz' }),
+            value: CaptureInterfaceEnum.RADIO24
+          })
+        }
+
+        if (supportTriRadio && supportDual5gMode && apRadioParamsDual5G?.enabled) {
+          if (apRadioParamsDual5G.lower5gEnabled) {
+            captureInterfaceOptions.push(
+              {
+                label: $t({ defaultMessage: 'Lower 5 GHz' }),
+                value: CaptureInterfaceEnum.RADIO50LOWER
+              }
+            )
+          }
+          if (apRadioParamsDual5G.upper5gEnabled) {
+            captureInterfaceOptions.push(
+              {
+                label: $t({ defaultMessage: 'Upper 5 GHz' }),
+                value: CaptureInterfaceEnum.RADIO50UPPER
+              }
+            )
+          }
+        } else {
+          if (enable50G) {
+            captureInterfaceOptions.push(
+              { label: $t({ defaultMessage: '5 GHz' }), value: CaptureInterfaceEnum.RADIO50 }
+            )
+          }
+        }
+
+        let isTriBandMode = true
+        if (supportBandCombination) {
+          const apBandMode = await getApBandModeSettings({ params }).unwrap()
+          isTriBandMode = apBandMode.bandMode === BandModeEnum.TRIPLE
+        }
+
+        if (supportTriRadio && enable6G && isTriBandMode) {
           captureInterfaceOptions.push(
-            {
-              label: $t({ defaultMessage: 'Lower 5 GHz' }),
-              value: CaptureInterfaceEnum.RADIO50LOWER
-            }
+            { label: $t({ defaultMessage: '6 GHz' }), value: CaptureInterfaceEnum.RADIO60 }
           )
         }
-        if (apRadioParamsDual5G.upper5gEnabled) {
-          captureInterfaceOptions.push(
-            {
-              label: $t({ defaultMessage: 'Upper 5 GHz' }),
-              value: CaptureInterfaceEnum.RADIO50UPPER
-            }
-          )
-        }
-      } else {
-        if (enable50G) {
-          captureInterfaceOptions.push(
-            { label: $t({ defaultMessage: '5 GHz' }), value: CaptureInterfaceEnum.RADIO50 }
-          )
-        }
-      }
 
-      if (supportTriRadio && enable6G) {
         captureInterfaceOptions.push(
-          { label: $t({ defaultMessage: '6 GHz' }), value: CaptureInterfaceEnum.RADIO60 }
+          { label: $t({ defaultMessage: 'Wired' }), value: CaptureInterfaceEnumExtended.WIRED }
         )
+
+        setInterfaceOptions(captureInterfaceOptions)
+        packetCaptureForm.setFieldValue('captureInterface', captureInterfaceOptions[0].value)
       }
-
-      captureInterfaceOptions.push(
-        { label: $t({ defaultMessage: 'Wired' }), value: CaptureInterfaceEnumExtended.WIRED }
-      )
-
-      setInterfaceOptions(captureInterfaceOptions)
-      packetCaptureForm.setFieldValue('captureInterface', captureInterfaceOptions[0].value)
     }
+
+
+    setRadioOptions()
+
   }, [getAp, getApCapabilities, getApRadioCustomization])
 
   useEffect(() => {

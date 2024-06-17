@@ -7,7 +7,7 @@ import { SimpleListTooltip }                                   from '@acx-ui/rc/
 import {
   useAdaptivePolicyListByQueryQuery,
   useGetRadiusAttributeGroupQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy,
@@ -18,6 +18,7 @@ import {
   PolicyType, useAdaptivePolicyBreadcrumb, useTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 export default function RadiusAttributeGroupDetail () {
@@ -36,7 +37,7 @@ export default function RadiusAttributeGroupDetail () {
   })
 
   // eslint-disable-next-line max-len
-  const { templateList } = usePolicyTemplateListQuery({ payload: { page: '1', pageSize: '2147483647' } }, {
+  const { templateList } = usePolicyTemplateListByQueryQuery({ payload: { page: '1', pageSize: '1000' } }, {
     selectFromResult ({ data }) {
       const templateIds = new Map()
       data?.data.forEach( template => {
@@ -110,6 +111,7 @@ export default function RadiusAttributeGroupDetail () {
               oper: PolicyOperation.EDIT,
               policyId: policyId!
             })}
+            scopeKey={[WifiScopes.UPDATE]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

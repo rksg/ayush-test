@@ -146,7 +146,12 @@ export interface RWG {
   apiKey: string
   rwgId: string
   clusterNodes?: RWGClusterNode[]
-  isCluster: boolean
+  isCluster: boolean,
+  floorplanId?: string,
+  xPercent?: number,
+  yPercent?: number,
+  x?: number,
+  y?: number
 }
 
 export interface RWGClusterNode{
@@ -161,7 +166,7 @@ export interface RWGRow extends RWG {
   isNode?: boolean
   children?: RWGRow[]
   ip?: string
-  rowId: string
+  rowId?: string
 }
 
 export interface GatewayAlarms {

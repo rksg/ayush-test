@@ -28,7 +28,8 @@ import {
   useImportApMutation,
   useLazyGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesVenueQuery,
-  useLazyImportResultQuery
+  useLazyImportResultQuery,
+  useWifiCapabilitiesQuery
 } from '@acx-ui/rc/services'
 import {
   AFCPowerStateRender,
@@ -52,7 +53,7 @@ import {
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                 from '@acx-ui/types'
+import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
 import { filterByAccess }                                                 from '@acx-ui/user'
 import { AccountVertical, exportMessageMapping, getJwtTokenPayload }      from '@acx-ui/utils'
 
@@ -90,6 +91,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
+  const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { tenantId: params.tenantId } })
 
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
@@ -117,8 +119,8 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         let apCompatibilities:ApCompatibility[] = []
         let apIds:string[] = []
         if (enableApCompatibleCheck && showFeatureCompatibilitiy) {
-          const aps = tableQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams>
-          apIds = retriedApIds(aps, !!hasGroupBy)
+          const aps = tableQuery.data as TableResult<APExtended|APExtendedGrouped, ApExtraParams>
+          apIds = retriedApIds(aps, hasGroupBy)
           try {
             if (apIds.length > 0) {
               if (params.venueId) {
@@ -179,6 +181,11 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
   }))
   const linkToEditAp = useTenantLink('/devices/wifi/')
 
+  const isAPOutdoor = (model: string): boolean | undefined => {
+    const currentApModel = wifiCapabilities?.apModels?.find((apModel) => apModel.model === model)
+    return currentApModel?.isOutdoor
+  }
+
   const columns = useMemo(() => {
     const extraParams = tableQuery?.data?.extra ?? {
       channel24: false,
@@ -188,7 +195,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       channel60: false
     }
 
-    const columns: TableProps<APExtended | APExtendedGrouped>['columns'] = [{
+    const columns: TableProps<APExtended|APExtendedGrouped>['columns'] = [{
       key: 'name',
       title: $t({ defaultMessage: 'AP Name' }),
       dataIndex: 'name',
@@ -337,7 +344,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
             transformDisplayText(row[key] as string)
         })
         return acc
-      }, [] as TableProps<APExtended | APExtendedGrouped>['columns'])
+      }, [] as TableProps<APExtended|APExtendedGrouped>['columns'])
     },
     ...(apUptimeFlag ? [
       {
@@ -422,6 +429,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
+      width: 200,
       render: (data: React.ReactNode, row: APExtended) => {
         return AFCStatusRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
       }
@@ -432,13 +440,14 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       dataIndex: ['apStatusData','afcInfo','powerMode'],
       show: false,
       sorter: false,
+      width: 200,
       render: (data: React.ReactNode, row: APExtended) => {
-        const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy)
+        const status = AFCPowerStateRender(row.apStatusData?.afcInfo, row.apRadioDeploy, isAPOutdoor(row.model))
         return (
           <>
             {status.columnText}
             {/* eslint-disable-next-line*/}
-            {(status.columnText !== '--' && status.columnText === 'Low Power Indoor' && status.tooltipText) && <Tooltip.Info
+            {(status.columnText !== '--' && status.columnText !== 'Standard power' && status.tooltipText) && <Tooltip.Info
               placement='bottom'
               iconStyle={{ height: '12px', width: '12px', marginBottom: '-3px' }}
               title={status.tooltipText}
@@ -451,7 +460,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
     ...(enableApCompatibleCheck ? [{
       key: 'incompatible',
       tooltip: $t({ defaultMessage: 'Check for the Wi-Fi features of <venueSingular></venueSingular> not supported by earlier versions or AP models.' }),
-      title: $t({ defaultMessage: 'Feature Incompatibility' }),
+      title: $t({ defaultMessage: 'Feature Compatibility' }),
       filterPlaceholder: $t({ defaultMessage: 'Feature Incompatibility' }),
       filterValueArray: true,
       dataIndex: 'incompatible',
@@ -493,12 +502,14 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
 
   const rowActions: TableProps<APExtended>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (rows) => isActionVisible(rows, { selectOne: true }),
     onClick: (rows) => {
       navigate(`${linkToEditAp.pathname}/${rows[0].serialNumber}/edit/general`, { replace: false })
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [WifiScopes.DELETE],
     onClick: async (rows, clearSelection) => {
       apAction.showDeleteAps(rows, params.tenantId, clearSelection)
     }
@@ -510,6 +521,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
     //   }
     // }, {
     label: $t({ defaultMessage: 'Reboot' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (rows) => isActionVisible(rows, { selectOne: true, deviceStatus: [ ApDeviceStatusEnum.OPERATIONAL ] }),
     onClick: (rows, clearSelection) => {
       const showSendingToast = () => {
@@ -599,7 +611,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
 
   return (
     <Loader states={[tableQuery]}>
-      <Table<APExtended | APExtendedGrouped>
+      <Table<APExtended|APExtendedGrouped>
         {...props}
         settingsId={settingsId}
         columns={columns}
@@ -614,6 +626,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
         rowActions={filterByAccess(rowActions)}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,
@@ -622,6 +635,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
           }
         }, {
           label: $t({ defaultMessage: 'Add AP Group' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,
@@ -633,6 +647,7 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
           }
         }, {
           label: $t({ defaultMessage: 'Import APs' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             setImportVisible(true)
           }

@@ -25,8 +25,9 @@ import {
   PolicyOperation,
   PolicyType,
   useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { TenantLink, useTenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -93,6 +94,7 @@ export default function SnmpAgentTable () {
   const rowActions: TableProps<ApSnmpViewModelData>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -107,6 +109,7 @@ export default function SnmpAgentTable () {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: (selectedRows, clearSelection) => {
         const ids = selectedRows.map(row => row.id)
         const hasSnmpActivityVenues = _.some(selectedRows, (r) => {
@@ -158,7 +161,7 @@ export default function SnmpAgentTable () {
           }
         ]}
         extra={((list?.totalCount as number) < 64) && filterByAccess([
-          <TenantLink
+          <TenantLink scopeKey={[WifiScopes.CREATE]}
             to={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}
           >
             <Button type='primary'>
@@ -177,7 +180,7 @@ export default function SnmpAgentTable () {
           enableApiFilter={true}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasPermission() && { type: 'radio' }}
         />
       </Loader>
     </>

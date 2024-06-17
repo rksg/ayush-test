@@ -7,10 +7,11 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }        from '@acx-ui/analytics/components'
 import { Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }                                                                  from '@acx-ui/feature-toggle'
 import { useApGroupsListQuery, useDeleteApGroupMutation }                                          from '@acx-ui/rc/services'
 import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                              from '@acx-ui/types'
 import { filterByAccess }                                                                          from '@acx-ui/user'
 import { DateRange, getDateRangeFilter }                                                           from '@acx-ui/utils'
 
@@ -149,6 +150,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
 
   const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       //redirect to edit AP group page url
@@ -157,6 +159,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [WifiScopes.DELETE],
     onClick: async (selectedRows, clearSelection) => {
       showDeleteApGroups(selectedRows, clearSelection)
     }
@@ -181,6 +184,7 @@ export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
         rowActions={filterByAccess(rowActions)}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP Group' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,

@@ -25,6 +25,8 @@ export class ApRadioCustomization {
 
   enable50G?: boolean
 
+  useVenueSettings?: boolean
+
   constructor () {
     this.apRadioParams24G = new ApRadioParams24G()
 
