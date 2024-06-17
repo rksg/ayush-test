@@ -5,21 +5,22 @@ import _                                       from 'lodash'
 import { IntlShape, useIntl }                  from 'react-intl'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
-import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }                    from '@acx-ui/analytics/components'
-import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
-import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                     from '@acx-ui/rc/services'
-import { ApGroupViewModel, FILTER, TableQuery, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
-import { RequestPayload, WifiScopes }                                                                          from '@acx-ui/types'
-import { filterByAccess }                                                                                      from '@acx-ui/user'
-import { DateRange, getDateRangeFilter }                                                                       from '@acx-ui/utils'
+import { IncidentsBySeverityData, useIncidentToggles, useLazyIncidentsListBySeverityQuery }        from '@acx-ui/analytics/components'
+import { Loader, StackedBarChart, Table, TableProps, cssStr, deviceStatusColors, showActionModal } from '@acx-ui/components'
+import { useIsSplitOn, Features }                                                                  from '@acx-ui/feature-toggle'
+import { useApGroupsListQuery, useDeleteApGroupMutation }                                          from '@acx-ui/rc/services'
+import { ApGroupViewModel, FILTER, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
+import { TenantLink, useTenantLink }                                                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                              from '@acx-ui/types'
+import { filterByAccess }                                                                          from '@acx-ui/user'
+import { DateRange, getDateRangeFilter }                                                           from '@acx-ui/utils'
 
-import { CountAndNamesTooltip } from '..'
+import {  CountAndNamesTooltip } from '../'
 
 import { ApGroupsTabContext } from './context'
+import { ApGroupTableProps }  from './types'
 
-
-export const defaultApGroupPayload = {
+export const defaultNonRbacApGroupPayload = {
   fields: ['id', 'name', 'venueId', 'venueName', 'members', 'networks', 'clients'],
   searchTargetFields: ['name'],
   sortField: 'venueName',
@@ -49,19 +50,12 @@ const genIncidentsPayload = (apGroupsData: ApGroupViewModel[]) => {
   return { paths, variables }
 }
 
-
-interface ApGroupTableProps extends Omit<TableProps<ApGroupViewModel>, 'columns'> {
-  tableQuery?: TableQuery<ApGroupViewModel, RequestPayload<unknown>, unknown>
-  enableActions?: boolean
-  searchable?: boolean
-  filterables?: { [key: string]: ColumnType['filterable'] }
-}
-
 const defaultTableData: ApGroupViewModel[] = []
 
-export const ApGroupTable = (props : ApGroupTableProps) => {
+export const ApGroupTable = (props : ApGroupTableProps<ApGroupViewModel>) => {
   const intl = useIntl()
   const { $t } = intl
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const toggles = useIncidentToggles()
   const navigate = useNavigate()
   const location = useLocation()
@@ -69,26 +63,30 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
   const filters = getFilters(params) as FILTER
   const { settingsId = 'ap-group-table' } = props
   const { setApGroupsCount } = useContext(ApGroupsTabContext)
+
   const apGroupListTableQuery = usePollingTableQuery({
     useQuery: useApGroupsListQuery,
     defaultPayload: {
-      ...defaultApGroupPayload,
-      filters: { ...filters, ...defaultApGroupPayload.filters }
+      ...defaultNonRbacApGroupPayload,
+      filters: { ...filters, ...defaultNonRbacApGroupPayload.filters }
     },
     search: {
-      searchTargetFields: defaultApGroupPayload.searchTargetFields
+      searchTargetFields: defaultNonRbacApGroupPayload.searchTargetFields
     },
     sorter: {
-      sortField: (params.venueId) ? 'name' : defaultApGroupPayload.sortField,
-      sortOrder: defaultApGroupPayload.sortOrder
+      sortField: (params.venueId || isWifiRbacEnabled)
+        ? 'name'
+        : defaultNonRbacApGroupPayload.sortField,
+      sortOrder: defaultNonRbacApGroupPayload.sortOrder
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name'],
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isWifiRbacEnabled
   })
 
   const tableQuery = props.tableQuery || apGroupListTableQuery
-  const [ deleteApGroups ] = useDeleteApGroupsMutation()
+  const [ deleteApGroup ] = useDeleteApGroupMutation()
   const [ getIncidentsList ] = useLazyIncidentsListBySeverityQuery()
 
   const [tableData, setTableData] = useState(defaultTableData)
@@ -122,8 +120,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
 
   const linkToEditApGroup = useTenantLink('/devices/apgroups')
 
-  const showDeleteApGroups = async (rows: ApGroupViewModel[],
-    tenantId?: string, callBack?: () => void) => {
+  const showDeleteApGroups = async (rows: ApGroupViewModel[], callBack?: () => void) => {
     const numOfEntities = rows.length
     const entityValue = numOfEntities === 1 ? rows[0].name : undefined
     showActionModal({
@@ -135,15 +132,21 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
         numOfEntities
       },
       onOk: () => {
-        deleteApGroups({ params: { tenantId }, payload: rows.map(row => row.id) })
+        const actions = rows.map(row => deleteApGroup({
+          params: {
+            venueId: row.venueId,
+            apGroupId: row.id
+          },
+          enableRbac: isWifiRbacEnabled
+        }))
+
+        Promise.all(actions)
           .then(callBack)
       }
     })
   }
 
-  const columns = getTableColumns(intl, props, params?.venueId)
-
-
+  const columns = getTableColumns(intl, props, params?.venueId, isWifiRbacEnabled)
 
   const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
@@ -158,7 +161,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     label: $t({ defaultMessage: 'Delete' }),
     scopeKey: [WifiScopes.DELETE],
     onClick: async (selectedRows, clearSelection) => {
-      showDeleteApGroups(selectedRows, params.tenantId, clearSelection)
+      showDeleteApGroups(selectedRows, clearSelection)
     }
   }]
 
@@ -200,7 +203,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
 }
 
 // eslint-disable-next-line max-len
-const getTableColumns = (intl: IntlShape, props : ApGroupTableProps, venueId: string | undefined) => {
+const getTableColumns = (intl: IntlShape, props : ApGroupTableProps<ApGroupViewModel>, venueId: string | undefined, isWifiRbacEnabled: boolean) => {
   const { $t } = intl
   const { searchable, filterables } = props
 
@@ -312,8 +315,8 @@ const getTableColumns = (intl: IntlShape, props : ApGroupTableProps, venueId: st
       dataIndex: 'venueName',
       filterKey: 'venueId',
       filterable: filterables ? filterables['venueId'] : false,
-      sorter: true,
-      defaultSortOrder: 'ascend',
+      sorter: !isWifiRbacEnabled,
+      defaultSortOrder: isWifiRbacEnabled ? undefined : 'ascend',
       render: (_: React.ReactNode, row: ApGroupViewModel) => (
         <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
           {row.venueName}

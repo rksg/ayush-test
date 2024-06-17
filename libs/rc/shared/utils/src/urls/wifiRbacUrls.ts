@@ -193,6 +193,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // no longer supported after v1, use getApGroupsList as replacement
   getVenueDefaultApGroup: {
     method: 'get',
     url: '/venues/:venueId/apGroups',

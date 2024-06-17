@@ -426,9 +426,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
 
-        const payloadData = arg.payload as { venueId: string, networkId: string, isTemplate: boolean }[]
+        const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
           venueId: item.venueId,
           networkId: item.networkId
@@ -451,7 +451,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
               ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
-              : WifiUrlsInfo.getApGroupsList, arg.params),
+              : (enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo).getApGroupsList, params),
             body: apGroupPayload
           }
 
@@ -486,7 +486,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
 
         const networkVenuesApGroupInfo = {
-          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, params, apiV2CustomHeader),
           body: JSON.stringify({ filters })
         }
 

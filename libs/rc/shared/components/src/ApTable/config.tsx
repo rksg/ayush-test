@@ -46,7 +46,7 @@ const commonAttributes = ($t: IntlShape['$t']) => [
 export const getGroupableConfig = (
   params? :Readonly<Params<string>>,
   apAction?: {
-    showDeleteApGroups: (record: APExtended, tenantId: string) => void
+    showDeleteApGroups: (record: APExtended) => void
   } ) => {
   const { $t } = getIntl()
   const deviceStatusGroupableOptions = {
@@ -97,7 +97,7 @@ export const getGroupableConfig = (
             type='link'
             size='small'
             onClick={() => {
-              apAction?.showDeleteApGroups(record, params?.tenantId || '')
+              apAction?.showDeleteApGroups(record)
             }}
           >
             {$t(defineMessage({ defaultMessage: 'Delete' }))}

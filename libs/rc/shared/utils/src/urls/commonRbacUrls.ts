@@ -108,6 +108,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
+  // deprecated:  use getApGroupsList as replacement
   getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',

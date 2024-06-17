@@ -291,3 +291,35 @@ export const mockAPModels = {
     }
   ]
 }
+
+export const mockVenueList = {
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      city: 'New York',
+      country: 'United States',
+      description: 'My-Venue',
+      id: '2c16284692364ab6a01f4c60f5941836',
+      latitude: '40.769141',
+      longitude: '-73.9429713',
+      name: 'My-Venue',
+      status: '1_InSetupPhase',
+      aggregatedApStatus: { '1_01_NeverContactedCloud': 1 }
+    },
+    {
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      description: '',
+      id: 'a919812d11124e6c91b56b9d71eacc31',
+      latitude: '37.4112751',
+      longitude: '-122.0191908',
+      name: 'test',
+      status: '1_InSetupPhase',
+      switchClients: 2,
+      switches: 1,
+      edges: 3,
+      clients: 1
+    }
+  ]
+}

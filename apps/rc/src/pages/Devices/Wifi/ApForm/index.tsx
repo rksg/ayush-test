@@ -18,8 +18,8 @@ import {
   Tooltip,
   Alert
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { defaultApGroupsFilterOptsPayload, GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
@@ -32,7 +32,8 @@ import {
   useLazyGetVenueApEnhancedKeyQuery,
   useLazyGetVenueApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
-  useLazyGetApValidChannelQuery
+  useLazyGetApValidChannelQuery,
+  useLazyApGroupsListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -107,7 +108,9 @@ export function ApForm () {
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
   const [getDhcpAp] = useLazyGetDhcpApQuery()
+  // deprecated in RBAC.
   const [apGroupList] = useLazyApGroupListByVenueQuery()
+  const [rbacApGroupList] = useLazyApGroupsListQuery()
   const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
   const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
   const [getApValidChannel] = useLazyGetApValidChannelQuery()
@@ -353,22 +356,44 @@ export function ApForm () {
       value: null
     })
 
-    const list = venueId ? (await apGroupList({ params: { tenantId, venueId } })).data : []
-    if (venueId && list?.length) {
-      list?.filter((item) => {
+    if (isUseWifiRbacApi) {
+      const { data: apGroupOptions } = await rbacApGroupList({
+        payload: {
+          ...defaultApGroupsFilterOptsPayload,
+          fields: ['name', 'id', 'isDefault'],
+          filters: { venueId: [venueId] }
+        },
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
+
+      result = result.concat(apGroupOptions.filter(item => {
         if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
           result[0].value = item.id
         }
+
         return !item.isDefault
-      })
-        .sort((a, b) => (a.name > b.name) ? 1 : -1)
-        .forEach((item) => (
-          result.push({
-            label: item.name,
-            value: item.id
-          })
-        ))
+      }).map((v) => ({ label: v.name, value: v.id })) || [])
+
+    } else {
+      const list = venueId ? (await apGroupList({ params: { tenantId, venueId } })).data : []
+      if (venueId && list?.length) {
+        list?.filter((item) => {
+          if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
+            result[0].value = item.id
+          }
+          return !item.isDefault
+        })
+          .sort((a, b) => (a.name > b.name) ? 1 : -1)
+          .forEach((item) => (
+            result.push({
+              label: item.name,
+              value: item.id
+            })
+          ))
+      }
     }
+
+
     return result
   }
 
