@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                              from '@acx-ui/feature-toggle'
-import { AccessControlUrls, MtuTypeEnum, NetworkSaveData, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                                            from '@acx-ui/store'
-import { mockServer, render, screen, within }                                                                  from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                             from '@acx-ui/feature-toggle'
+import { AccessControlUrls, MtuTypeEnum, NetworkSaveData, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                                                           from '@acx-ui/store'
+import { mockServer, render, screen, within }                                                 from '@acx-ui/test-utils'
 
 import { mockedTunnelProfileViewData, devicePolicyListResponse, policyListResponse } from '../../__tests__/fixtures'
 import NetworkFormContext                                                            from '../../NetworkFormContext'
@@ -15,21 +15,21 @@ import { NetworkControlTab } from '.'
 
 
 
-const mockWifiCallingList = [
-  {
-    qosPriority: 'WIFICALLING_PRI_VOICE',
-    serviceName: 'joe-wc1',
-    id: 'wifi-calling-id',
-    epdgs: [
-      {
-        domain: 'test.com'
-      },
-      {
-        domain: 'test2.com'
-      }
-    ]
-  }
-]
+// const mockWifiCallingList = [
+//   {
+//     qosPriority: 'WIFICALLING_PRI_VOICE',
+//     serviceName: 'joe-wc1',
+//     id: 'wifi-calling-id',
+//     epdgs: [
+//       {
+//         domain: 'test.com'
+//       },
+//       {
+//         domain: 'test2.com'
+//       }
+//     ]
+//   }
+// ]
 
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
