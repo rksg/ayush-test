@@ -55,8 +55,6 @@ describe('Network More settings - Network Control Tab', () => {
         (_, res, ctx) => res(ctx.json(policyListResponse))),
       rest.get(AccessControlUrls.getAccessControlProfileList.url,
         (_, res, ctx) => res(ctx.json([]))),
-      rest.get(WifiCallingUrls.getWifiCallingList.url,
-        (_, res, ctx) => res(ctx.json(mockWifiCallingList))),
       rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
         (_, res, ctx) => res(ctx.json(mockedTunnelProfileViewData)))
     )

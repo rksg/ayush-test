@@ -43,7 +43,6 @@ export default function MyServices () {
   const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const services = [
     {
@@ -105,7 +104,7 @@ export default function MyServices () {
       type: ServiceType.WIFI_CALLING,
       categories: [RadioCardCategory.WIFI],
       tableQuery: useGetEnhancedWifiCallingServiceListQuery({
-        params, payload: defaultPayload, enableRbac
+        params, payload: defaultPayload, enableRbac: isEnabledRbacService
       })
     },
     {

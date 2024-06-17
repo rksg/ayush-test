@@ -1,12 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider }                                                                         from '@acx-ui/store'
-import { mockServer, render, screen }                                                       from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                                                                                                from '@acx-ui/feature-toggle'
+import { ApiVersionEnum, CommonUrlsInfo, GetApiVersionHeader, QosPriorityEnum, ServicesConfigTemplateUrlsInfo, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                              from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                                   from '@acx-ui/test-utils'
 
-import { mockNetworkResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
-import WifiCallingFormContext                            from '../WifiCallingFormContext'
+import { mockNetworkResult, mockRbacWifiCallingTableResult, mockWifiCallingTableResult } from '../__tests__/fixtures'
+import WifiCallingFormContext                                                            from '../WifiCallingFormContext'
 
 import { WifiCallingForm } from './WifiCallingForm'
 
@@ -69,7 +70,8 @@ const initState = {
   description: '',
   networkIds: [],
   networksName: [],
-  epdgs: []
+  epdgs: [],
+  oldNetworkIds: []
 }
 
 jest.mock('antd', () => {
@@ -110,6 +112,7 @@ const wifiCallingResponse = {
 const mockedUseNavigate = jest.fn()
 const mockedUseTenantLink = jest.fn()
 const mockedAddService = jest.fn()
+const mockedRbacAddService = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
   useNavigate: () => mockedUseNavigate,
@@ -117,12 +120,30 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 describe('WifiCallingForm', () => {
+  const createApiHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+  const rbacCreateApiHeaders = GetApiVersionHeader(ApiVersionEnum.v1_1)
+
   beforeEach(() => {
+    mockedAddService.mockClear()
+    mockedRbacAddService.mockClear()
+    mockedUseNavigate.mockClear()
+
     mockServer.use(
       rest.post(
         WifiCallingUrls.addWifiCalling.url,
         (req, res, ctx) => {
-          mockedAddService()
+          const headers = req.headers.get('content-type')
+          if (headers === createApiHeaders?.['Content-Type']) {
+            mockedAddService()
+          } else if (headers === rbacCreateApiHeaders?.['Content-Type']) {
+            mockedRbacAddService()
+            return res(ctx.json( {
+              requestId: 'requestId',
+              response: {
+                id: 'service-id'
+              }
+            }))
+          }
           return res(ctx.json(wifiCallingServiceResponse))
         }
       ),
@@ -133,8 +154,6 @@ describe('WifiCallingForm', () => {
           return res(ctx.json(wifiCallingServiceResponse))
         }
       ),
-      rest.get(WifiCallingUrls.getWifiCallingList.url,
-        (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.get(ServicesConfigTemplateUrlsInfo.getWifiCallingList.url,
         (req, res, ctx) => res(ctx.json(wifiCallingListResponse))),
       rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
@@ -148,6 +167,10 @@ describe('WifiCallingForm', () => {
       rest.post(CommonUrlsInfo.getVMNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockNetworkResult)))
     )
+  })
+
+  afterEach(() => {
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('should render wifiCallingForm successfully', async () => {
@@ -220,6 +243,96 @@ describe('WifiCallingForm', () => {
     expect(mockedAddService).toBeCalledTimes(1)
   })
 
+  it('should render wifiCallingForm successfully with rbac api', async () => {
+    const mockedActivateService = jest.fn()
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        WifiCallingUrls.queryWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(mockRbacWifiCallingTableResult))
+      ),
+      rest.put(
+        WifiCallingUrls.activateWifiCalling.url,
+        (_, res, ctx) => {
+          mockedActivateService()
+          return res(ctx.json({}))
+        }
+      )
+    )
+
+    render(
+      <WifiCallingFormContext.Provider value={{
+        state: initState,
+        dispatch: jest.fn()
+      }}>
+        <Provider>
+          <WifiCallingForm />
+        </Provider>
+      </WifiCallingFormContext.Provider>
+      , {
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+    expect(screen.getAllByText('Summary')).toBeTruthy()
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    await userEvent.type(screen.getByRole('textbox', { name: /service name/i }), 'wifiCSP1')
+
+    await userEvent.type(screen.getByRole('textbox', { name: /service name/i }), 'serviceNameTest')
+
+    await userEvent.type(screen.getByRole('textbox', { name: /description/i }), 'descriptionTest')
+
+    const addButton = screen.getByRole('button', { name: 'Add' })
+    await userEvent.click(addButton)
+    expect(screen.getByText('Add ePDG')).toBeInTheDocument()
+
+    const domainInput = screen.getByPlaceholderText('Please enter the domain name')
+    const ipInput = screen.getByPlaceholderText('Please enter the ip address')
+    await userEvent.type(domainInput, 'aaa.bbb.com')
+    await userEvent.type(ipInput, '10.10.10.10')
+    expect(domainInput).toHaveValue('aaa.bbb.com')
+    expect(ipInput).toHaveValue('10.10.10.10')
+
+    const saveButton = await screen.findByText('Save')
+    expect(saveButton).toBeInTheDocument()
+    await userEvent.click(saveButton)
+
+    await screen.findByTestId('selectQosPriorityId')
+
+    await userEvent.selectOptions(screen.getByTestId('selectQosPriorityId'), 'Video')
+
+    await userEvent.click(screen.getByRole('combobox'))
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: 'Video' })
+    )
+
+    await screen.findAllByText('Video')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    // Activate network
+    await userEvent.click(await screen.findByRole('heading', { name: 'Scope', level: 3 }))
+    await userEvent.click(await screen.findByRole('switch'))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByRole('heading', { name: 'Summary', level: 3 })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(mockedRbacAddService).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedActivateService).toBeCalledTimes(1))
+  })
+
   it('should render breadcrumb correctly', async () => {
     render(
       <WifiCallingFormContext.Provider value={{
@@ -270,6 +383,6 @@ describe('WifiCallingForm', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
 
-    expect(mockedUseNavigate).toBeCalledTimes(2)
+    expect(mockedUseNavigate).toBeCalledTimes(1)
   })
 })

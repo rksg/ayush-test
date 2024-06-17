@@ -106,39 +106,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-
-
-    // --------------- WiFi-Calling API ---------------
-    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
-    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        if (enableRbac) {
-          const requests = (payload as string[]).map(serviceId => ({ params: { serviceId } }))
-          await batchApi(WifiCallingUrls.deleteWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
-
-          return { data: {} as CommonResult }
-        } else {
-          const res = await fetchWithBQ({
-            ...createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params),
-            body: payload
-          })
-
-          return { data: res.data as CommonResult }
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
-    // --------------- WiFi-Calling API ---------------
-
-
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(DHCPUrls.getDHCPProfiles,
@@ -360,8 +327,33 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
 
+    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
+        return {
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
+    }),
+    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const requests = (payload as string[]).map(serviceId => ({ params: { serviceId } }))
+          await batchApi(WifiCallingUrls.deleteWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
 
-    // --------------- WiFi-Calling API ---------------
+          return { data: {} as CommonResult }
+        } else {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params),
+            body: payload
+          })
+
+          return { data: res.data as CommonResult }
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
+    }),
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
@@ -508,8 +500,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         return createHttpRequest(WifiCallingUrls.deactivateWifiCalling, params, GetApiVersionHeader(ApiVersionEnum.v1))
       }
     }),
-    // --------------- WiFi-Calling API ---------------
-
 
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       query: ({ params, payload }) => {
