@@ -81,7 +81,8 @@ export function AddRecCustomer () {
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: !isEditMode })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: !isEditMode })
   const { data: ecSupport } =
       useGetMspEcSupportQuery({
         params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: !isEditMode })

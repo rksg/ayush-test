@@ -86,12 +86,12 @@ export function MspCustomers () {
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
 
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
   const [deactivateMspEc] = useDeactivateMspEcMutation()
   const [reactivateMspEc] = useReactivateMspEcMutation()
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
 

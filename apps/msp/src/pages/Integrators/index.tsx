@@ -77,8 +77,8 @@ export function Integrators () {
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const onBoard = mspLabel?.msp_label
 
   const columns: TableProps<MspEc>['columns'] = [

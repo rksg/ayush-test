@@ -179,18 +179,20 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/mspCustomers/:mspEcTenantId',
     newApi: true
   },
-  // getMspEcDelegatedAdmins: {
-  //   method: 'get',
-  //   url: '/tenants/:mspEcTenantId/mspadmins',
-  //   oldUrl: '/mspCustomers/:mspEcTenantId/mspadmins',
-  //   newApi: true
-  // },
-  // updateMspEcDelegatedAdmins: {
-  //   method: 'put',
-  //   url: '/tenants/:mspEcTenantId/mspadmins',
-  //   oldUrl: '/mspCustomers/:mspEcTenantId/mspadmins',
-  //   newApi: true
-  // },
+  getMspEcDelegatedAdmins: {
+    method: 'get',
+    // url: '/tenants/:mspEcTenantId/adminDelegations/query',
+    url: '/mspCustomers/:mspEcTenantId/mspadmins',
+    oldUrl: '/mspCustomers/:mspEcTenantId/mspadmins',
+    newApi: true
+  },
+  updateMspEcDelegatedAdmins: {
+    method: 'put',
+    // url: '/tenants/:mspEcTenantId/adminDelegations',
+    url: '/mspCustomers/:mspEcTenantId/mspadmins',
+    oldUrl: '/mspCustomers/:mspEcTenantId/mspadmins',
+    newApi: true
+  },
   getMspEcSupport: {
     method: 'get',
     url: '/tenants/:mspEcTenantId/tenantDelegations',

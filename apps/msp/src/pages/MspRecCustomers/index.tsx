@@ -64,10 +64,10 @@ export function MspRecCustomers () {
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
 

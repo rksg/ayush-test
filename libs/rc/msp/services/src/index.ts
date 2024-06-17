@@ -52,13 +52,14 @@ const getMspUrls = (enableRbac?: boolean | unknown) => {
   return enableRbac ? MspRbacUrlsInfo : MspUrlsInfo
 }
 
-export function useCheckDelegateAdmin () {
+export function useCheckDelegateAdmin (isRbacEnabled: boolean) {
   const { $t } = useIntl()
   const [getDelegatedAdmins] = useLazyGetMspEcDelegatedAdminsQuery()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
   const checkDelegateAdmin = async (ecTenantId: string, adminId: string) => {
     try {
-      const admins = await getDelegatedAdmins({ params: { mspEcTenantId: ecTenantId } } ).unwrap()
+      const admins = await getDelegatedAdmins({ params: { mspEcTenantId: ecTenantId },
+        enableRbac: isRbacEnabled } ).unwrap()
       const allowDelegate = admins.find( admin => admin.msp_admin_id === adminId )
       if (allowDelegate) {
         delegateToMspEcPath(ecTenantId)
@@ -470,9 +471,10 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     getMspEcDelegatedAdmins: build.query<MspEcDelegatedAdmins[], RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
         const mspAdminListReq =
-          createHttpRequest(MspUrlsInfo.getMspEcDelegatedAdmins, params)
+          createHttpRequest(mspUrlsInfo.getMspEcDelegatedAdmins, params)
         return {
           ...mspAdminListReq
         }
