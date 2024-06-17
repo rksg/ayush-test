@@ -31,13 +31,27 @@ export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
 export const getNewApGroupViewmodelPayloadFromOld = (payload: Record<string, unknown>) => {
   const newPayload = _.cloneDeep(payload) as Record<string, unknown>
 
+  if (newPayload.fields) {
+    // eslint-disable-next-line max-len
+    newPayload.fields = _.uniq((newPayload.fields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
+  }
+  if (newPayload.searchTargetFields) {
   // eslint-disable-next-line max-len
-  newPayload.fields = (newPayload.fields as string[])?.map(field => getApGroupNewFieldFromOld(field))
+    newPayload.searchTargetFields = _.uniq((newPayload.searchTargetFields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
+  }
+
   newPayload.sortField = getApGroupNewFieldFromOld(payload.sortField as string)
+
+  if (payload.filters) {
+    const filters = {} as Record<string, unknown>
+    _.forIn(payload.filters, (val, key) => {
+      filters[getApGroupNewFieldFromOld(key)] = val
+    })
+    newPayload.filters = filters
+  }
 
   return newPayload
 }
-
 
 export const transformApGroupFromNewType = (newApGroup: NewGetApGroupResponseType,
   apsList: TableResult<NewAPModel>)=> {
@@ -69,7 +83,7 @@ export const aggregateApGroupNetworkInfo = (
       count: groupItem?.wifiNetworkIds?.length ?? 0,
       names: groupItem?.wifiNetworkIds?.map((id) => {
         return networks.data?.find(n => n.id === id)?.name
-      }).filter(i => !!i)
+      }).filter(i => !!i) ?? []
     } as CountAndNames
   })
 }
@@ -90,7 +104,7 @@ export const aggregateApGroupApInfo = (
       names: groupItem?.apSerialNumbers?.map((apSerialNumber) => {
         return apList.data
           ?.find(n => n.serialNumber === apSerialNumber)?.name
-      }).filter(i => !!i)
+      }).filter(i => !!i) ?? []
     } as CountAndNames
   })
 }
