@@ -15,9 +15,9 @@ import { getIntl }                                                           fro
 
 import { getTooltipTemplate } from '../'
 
-import * as UI                                                                       from './styledComponents'
-import VlanPortsContext                                                              from './VlanPortsContext'
-import { getPortsModule, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
+import * as UI                                                                                from './styledComponents'
+import VlanPortsContext                                                                       from './VlanPortsContext'
+import { getPortsModule, getUnit, getUnitTitle, getModule, PortsType, selectedGroupByPrefix } from './VlanPortsModal.utils'
 
 export function UntaggedPortsStep () {
   const { $t } = getIntl()
@@ -225,7 +225,7 @@ export function UntaggedPortsStep () {
             return <UI.CardStyle key={`card${index}`}>
               { vlanSettingValues?.stackMember &&
                 <Row gutter={20} className='title'>{
-                  getUnitTitle(index, vlanSettingValues?.stackMember)
+                  getUnitTitle(module, vlanSettingValues?.stackMember)
                 }</Row>
               }
               <Row gutter={20} className='content'>
@@ -244,19 +244,22 @@ export function UntaggedPortsStep () {
                   }
                   <UI.Module>
                     <Checkbox.Group
-                      key={`checkboxGroup_module${index+1}_1`}
+                      key={`checkboxGroup_module${getUnit(module)}_1`}
                       className='lightblue'
                       onChange={(checkedValues) =>
-                        handleCheckboxGroupChange(checkedValues as string[], `${index+1}/1`)}
+                        handleCheckboxGroupChange(
+                          checkedValues as string[], `${getUnit(module)}/1`
+                        )
+                      }
                       value={selectedItems}
                       options={(module[0]).map((timeslot, i) => ({
                         label: <Tooltip
                           title={getTooltip(timeslot.value)}
                         >
                           <div
-                            id={`untagged_module${index+1}_1_${i+1}`}
+                            id={`untagged_module${getUnit(module)}_1_${i+1}`}
                             data-value={timeslot.value}
-                            data-testid={`untagged_module${index+1}_1_${i+1}`}
+                            data-testid={`untagged_module${getUnit(module)}_1_${i+1}`}
                             data-disabled={getDisabledPorts(timeslot.value)}
                             style={{ width: '20px', height: '20px' }}
                           >
@@ -269,7 +272,7 @@ export function UntaggedPortsStep () {
                     />
                   </UI.Module>
                 </Col>
-                { getModule(module, `${index+1}/2`) && <Col>
+                { getModule(module, '2') && <Col>
                   <Row gutter={20}>
                     <Col>
                       <div>
@@ -283,19 +286,22 @@ export function UntaggedPortsStep () {
                       </Typography.Paragraph>
                       <UI.Module>
                         <Checkbox.Group
-                          key={`checkboxGroup_module${index+1}_2`}
+                          key={`checkboxGroup_module${getUnit(module)}_2`}
                           className='lightblue'
                           onChange={(checkedValues) =>
-                            handleCheckboxGroupChange(checkedValues as string[], `${index+1}/2`)}
+                            handleCheckboxGroupChange(
+                              checkedValues as string[], `${getUnit(module)}/2`
+                            )
+                          }
                           value={selectedItems}
-                          options={(getModule(module, `${index+1}/2`)).map((timeslot, i) => ({
+                          options={(getModule(module, '2')).map((timeslot, i) => ({
                             label: <Tooltip
                               title={getTooltip(timeslot.value)}
                             >
                               <div
-                                id={`untagged_module${index+1}_2_${i+1}`}
+                                id={`untagged_module${getUnit(module)}_2_${i+1}`}
                                 data-value={timeslot.value}
-                                data-testid={`untagged_module${index+1}_2_${i+1}`}
+                                data-testid={`untagged_module${getUnit(module)}_2_${i+1}`}
                                 data-disabled={getDisabledPorts(timeslot.value)}
                                 style={{ width: '20px', height: '20px' }}
                               ></div>
@@ -310,7 +316,7 @@ export function UntaggedPortsStep () {
                   </Row>
                 </Col>
                 }
-                { getModule(module, `${index+1}/3`) && <Col>
+                { getModule(module, '3') && <Col>
                   <div>
                     <Typography.Text style={{ fontWeight: 'bold' }}>
                       {$t({ defaultMessage: 'Module 3' })}
@@ -322,19 +328,22 @@ export function UntaggedPortsStep () {
                   </Typography.Paragraph>
                   <UI.Module>
                     <Checkbox.Group
-                      key={`checkboxGroup_module${index+1}_3`}
+                      key={`checkboxGroup_module${getUnit(module)}_3`}
                       className='lightblue'
                       onChange={(checkedValues) =>
-                        handleCheckboxGroupChange(checkedValues as string[], `${index+1}/3`)}
+                        handleCheckboxGroupChange(
+                          checkedValues as string[], `${getUnit(module)}/3`
+                        )
+                      }
                       value={selectedItems}
-                      options={(getModule(module, `${index+1}/3`)).map((timeslot, i) => ({
+                      options={(getModule(module, '3')).map((timeslot, i) => ({
                         label: <Tooltip
                           title={getTooltip(timeslot.value)}
                         >
                           <div
-                            id={`untagged_module${index+1}_3_${i+1}`}
+                            id={`untagged_module${getUnit(module)}_3_${i+1}`}
                             data-value={timeslot.value}
-                            data-testid={`untagged_module${index+1}_3_${i+1}`}
+                            data-testid={`untagged_module${getUnit(module)}_3_${i+1}`}
                             data-disabled={getDisabledPorts(timeslot.value)}
                             style={{ width: '20px', height: '20px' }}
                           ></div>

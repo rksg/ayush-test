@@ -38,15 +38,20 @@ export const selectedGroupByPrefix = (selected: string[]) => {
   }, {} as { [key: string]: string[] })
 }
 
-export const getUnitTitle = (index: number, stackMembers?: StackMember[]) => {
-  const unit = index + 1
+export const getUnit = (module: PortsType[][]) => {
+  return Number(module.flat()[0]?.value?.split('/')[0])
+}
+
+export const getUnitTitle = (module: PortsType[][], stackMembers?: StackMember[]) => {
+  const unit = getUnit(module)
   const member = stackMembers?.filter(member => member.unitId === unit)?.[0]
   return member ? `${unit} - ${member?.model}` : ''
 }
 
-export const getModule = (module: PortsType[][], portPrefix: string) => {
+export const getModule = (module: PortsType[][], slot: string) => {
+  const unit = getUnit(module)
   const index = module.findIndex(subArray =>
-    subArray.some(item => item.value === `${portPrefix}/1`)
+    subArray.some(item => item.value === `${unit}/${slot}/1`)
   )
 
   return module[index]
