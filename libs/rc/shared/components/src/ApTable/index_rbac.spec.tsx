@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { apApi, venueApi, networkApi }  from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }              from '@acx-ui/store'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
+import { apApi, networkApi, venueApi }                                       from '@acx-ui/rc/services'
+import { APGeneralFixtures, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                   from '@acx-ui/store'
 import {
   act,
   cleanup,
@@ -19,13 +20,13 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  apList,
   apCompatibilities,
   getApGroupsList
 } from './__test__/fixtures'
 
 import { ApTable } from '.'
 
+const { mockAPList } = APGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -33,23 +34,25 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedUsedNavigate
 }))
 
-const utils = require('@acx-ui/rc/utils')
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils')
-}))
+const rcUtils = require('@acx-ui/rc/utils')
+
+const FormComponent = ({ children }: React.PropsWithChildren) => {
+  return <Form>{children}</Form>
+}
 
 type MockDrawerProps = React.PropsWithChildren<{
   visible: boolean
-  importRequest: () => void
+  importRequest: (formData: FormData, values: Object) => void
   onClose: () => void
 }>
 jest.mock('../ImportFileDrawer', () => ({
   ...jest.requireActual('../ImportFileDrawer'),
-  ImportFileDrawer: ({ importRequest, onClose, visible }: MockDrawerProps) =>
+  ImportFileDrawer: ({ importRequest, onClose, visible, children }: MockDrawerProps) =>
     visible && <div data-testid={'ImportFileDrawer'}>
+      <FormComponent>{children}</FormComponent>
       <button onClick={(e)=>{
         e.preventDefault()
-        importRequest()
+        importRequest({} as FormData, { venueId: 'test-venue-id' })
       }}>Import</button>
       <button onClick={(e)=>{
         e.preventDefault()
@@ -69,20 +72,18 @@ describe('Aps', () => {
     cleanup()
   })
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
     act(() => {
       store.dispatch(apApi.util.resetApiState())
       store.dispatch(venueApi.util.resetApiState())
       store.dispatch(networkApi.util.resetApiState())
     })
 
-    utils.usePollingTableQuery = jest.fn().mockImplementation(() => {
-      return { data: apList }
+    jest.spyOn(rcUtils, 'usePollingTableQuery').mockImplementation(() => {
+      return { data: mockAPList }
     })
+
     mockServer.use(
-      rest.post(
-        CommonUrlsInfo.getApsList.url,
-        (req, res, ctx) => res(ctx.json(apList))
-      ),
       rest.post(
         WifiUrlsInfo.getApCompatibilitiesVenue.url,
         (req, res, ctx) => res(ctx.json(apCompatibilities))
@@ -94,30 +95,50 @@ describe('Aps', () => {
       rest.post(
         CommonUrlsInfo.getApGroupsListByGroup.url,
         (req, res, ctx) => res(ctx.json(getApGroupsList))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenue.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
   })
   const params = {
-    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    venueId: 'test-venue'
   }
 
   it('should render correctly', async () => {
-    render(<Provider><ApTable /></Provider>, {
-      route: { params, path: '/:tenantId' }
-    })
+    render(
+      <Provider>
+        <ApTable enableApCompatibleCheck />
+      </Provider>, {
+        route: { params, path: '/:tenantId/:venueId' }
+      })
 
     // eslint-disable-next-line testing-library/no-node-access
     const tbody = (await screen.findByRole('table')).querySelector('tbody')!
     expect(tbody).toBeVisible()
 
     const rows = await within(tbody).findAllByRole('row')
-    expect(rows).toHaveLength(apList.data.length)
-    for (const [index, item] of Object.entries(apList.data)) {
+    expect(rows).toHaveLength(mockAPList.data.length)
+    for (const [index, item] of Object.entries(mockAPList.data)) {
       expect(await within(rows[Number(index)]).findByText(item.name)).toBeVisible()
     }
+    await userEvent.click(screen.getByTestId('SettingsOutlined'))
+    await userEvent.click(await screen.findByText('Feature Compatibility'))
+    expect(await screen.findByText('Fully compatible')).toBeVisible()
+    expect(await screen.findByText('Partially incompatible')).toBeVisible()
   })
 
-  it('Table action bar Download Log and Reboot', async () => {
+  it('Table action bar Download Log', async () => {
+    const fakeDownloadUrl = '/api/abc'
+    mockServer.use(
+      rest.get(
+        WifiRbacUrlsInfo.downloadApLog.url,
+        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl, fileUrl: fakeDownloadUrl }))
+      )
+    )
+
     render(<Provider><ApTable
       rowSelection={{
         type: 'checkbox'
@@ -126,31 +147,12 @@ describe('Aps', () => {
       route: { params, path: '/:tenantId' }
     })
 
-    const fakeDownloadUrl = '/api/abc'
-    const rebootSpy = jest.fn()
-    rebootSpy.mockReturnValueOnce(true)
-
-    mockServer.use(
-      rest.patch(
-        WifiUrlsInfo.rebootAp.url,
-        (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
-      ),
-      rest.get(
-        WifiUrlsInfo.downloadApLog.url,
-        (req, res, ctx) => res(ctx.json({ fileURL: fakeDownloadUrl }))
-      )
-    )
-
-    const row1 = await screen.findByRole('row', { name: /10.00.000.101/i })
-    expect(row1).toHaveTextContent('mock-ap-1')
-    expect(await within(row1).findByRole('checkbox')).not.toBeChecked()
-
-    await userEvent.click(await within(row1).findByText('10.00.000.101'))
+    const row1 = await screen.findByRole('row', { name: /mock-ap-1/i })
+    await userEvent.click(await within(row1).findByRole('checkbox'))
     expect(await within(row1).findByRole('checkbox')).toBeChecked()
 
     const downloadButton = await screen.findByRole('button', { name: 'Download Log' })
     await userEvent.click(downloadButton)
-
     const toast = await screen.findByText('Preparing log', { exact: false })
     expect(toast).toBeVisible()
     await waitFor(() =>
@@ -158,6 +160,29 @@ describe('Aps', () => {
         .toHaveBeenCalledWith(fakeDownloadUrl, expect.stringContaining('SupportLog_'))
     )
     expect(await screen.findByText('Log is ready.', { exact: false })).toBeVisible()
+  })
+
+  it('Table action bar Reboot', async () => {
+    const rebootSpy = jest.fn()
+    rebootSpy.mockReturnValueOnce(true)
+    mockServer.use(
+      rest.patch(
+        WifiRbacUrlsInfo.rebootAp.url,
+        (req, res, ctx) => rebootSpy() && res(ctx.json({ requestId: '456' }))
+      )
+    )
+
+    render(<Provider><ApTable
+      rowSelection={{
+        type: 'checkbox'
+      }}
+    /></Provider>, {
+      route: { params, path: '/:tenantId' }
+    })
+
+    const row1 = await screen.findByRole('row', { name: /mock-ap-1/i })
+    await userEvent.click(await within(row1).findByRole('checkbox'))
+    expect(await within(row1).findByRole('checkbox')).toBeChecked()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Reboot' }))
     const rebootDialog = await waitFor(async () => screen.findByRole('dialog'))
@@ -186,12 +211,8 @@ describe('Aps', () => {
         }] }))
       ),
       rest.delete(
-        WifiUrlsInfo.deleteAp.url,
-        (req, res, ctx) => deleteSpy() && res(ctx.json({ requestId: '456' }))
-      ),
-      rest.delete(
-        WifiUrlsInfo.deleteAps.url,
-        (req, res, ctx) => deleteSpy() && res(ctx.json({ requestId: '456' }))
+        WifiRbacUrlsInfo.deleteAp.url,
+        (req, res, ctx) => deleteSpy() && res(ctx.status(202))
       )
     )
 
@@ -230,7 +251,7 @@ describe('Aps', () => {
 
   it('Table action bar Edit', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return (ff === Features.EXPORT_DEVICE) ? true : false
+      return ff === Features.EXPORT_DEVICE || ff === Features.WIFI_RBAC_API
     })
 
     render(<Provider><ApTable
@@ -283,13 +304,17 @@ describe('Aps', () => {
 
   it('should import correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation((ff) => {
-      return ff === Features.AP_GPS ? true : false
+      return ff === Features.AP_GPS || ff === Features.WIFI_RBAC_API
     })
+    const importAPSpy = jest.fn()
 
     mockServer.use(
       rest.post(
-        WifiUrlsInfo.addAp.url,
-        (req, res, ctx) => res(ctx.json({}))
+        WifiRbacUrlsInfo.addAp.url,
+        (req, res, ctx) => {
+          importAPSpy()
+          return res(ctx.status(202))
+        }
       )
     )
     render(<Provider><ApTable enableActions={true} /></Provider>, {
@@ -306,8 +331,9 @@ describe('Aps', () => {
     const drawer = await screen.findByTestId('ImportFileDrawer')
     expect(drawer).toBeVisible()
 
+    expect(within(drawer).getByRole('combobox', { name: 'Venue' })).toBeInTheDocument()
     await userEvent.click(await within(drawer).findByRole('button', { name: 'Import' }))
-    await waitFor(() => expect(drawer).toBeVisible())
+    await waitFor(() => expect(importAPSpy).toHaveBeenCalled())
   })
 
   it.skip('Should render the low power warning messages', async () => {

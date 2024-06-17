@@ -87,6 +87,7 @@ export function ApForm () {
   const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
   const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { tenantId, action, serialNumber='' } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
@@ -208,11 +209,18 @@ export function ApForm () {
   const handleAddAp = async (values: ApDeep) => {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
-      const payload = [{
-        ...omit(values, 'deviceGps'),
+      const payload = {
+        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
         ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
-      }]
-      await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
+      }
+      await addAp({
+        params: {
+          tenantId: tenantId,
+          venueId: values.venueId
+        },
+        payload: isUseWifiRbacApi ? payload : [payload],
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
       handleError(err as CatchErrorResponse)
@@ -276,7 +284,7 @@ export function ApForm () {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
-        ...omit(values, 'deviceGps'),
+        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
         ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string)
           || deviceGps })
       }
@@ -285,7 +293,15 @@ export function ApForm () {
         isDirty: false,
         hasError: false
       })
-      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+      await updateAp({
+        params: {
+          tenantId,
+          venueId: values.venueId,
+          serialNumber
+        },
+        payload,
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
       if (isOnlyOneTab) {
         redirectPreviousPage(navigate, previousPath, basePath)
       }

@@ -7,6 +7,7 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
 import {
   useApGroupsListQuery,
@@ -22,6 +23,7 @@ export default function useApsTable () {
   const { tenantId } = useParams()
   const [ apsCount, setApsCount ] = useState(0)
   const apTableRef = useRef<ApTableRefType>(null)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -55,13 +57,14 @@ export default function useApsTable () {
       })
     }
   )
-
+  // TODO This query needs to be updated after apViewModel changes to the RBAC api
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
       groupByFields: groupedFields
-    }
+    },
+    enableRbac: isUseWifiRbacApi
   })
 
   useEffect(() => {

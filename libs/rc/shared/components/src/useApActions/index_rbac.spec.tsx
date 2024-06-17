@@ -2,8 +2,10 @@ import { message } from 'antd'
 import { rest }    from 'msw'
 import '@testing-library/jest-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
@@ -66,6 +68,7 @@ const apList = {
 describe('Test useApActions', () => {
 
   beforeEach(() => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
     message.destroy()
 
     mockServer.use(
@@ -80,7 +83,7 @@ describe('Test useApActions', () => {
         }] ))
       ),
       rest.delete(
-        WifiUrlsInfo.deleteAp.url,
+        WifiRbacUrlsInfo.deleteAp.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       ),
       rest.patch(
@@ -88,12 +91,12 @@ describe('Test useApActions', () => {
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       ),
       rest.patch(
-        WifiUrlsInfo.blinkLedAp.url,
+        WifiRbacUrlsInfo.blinkLedAp.url,
         (req, res, ctx) => res(ctx.json({ requestId: '789' }))
       ),
       rest.get(
-        WifiUrlsInfo.downloadApLog.url,
-        (req, res, ctx) => res(ctx.json({ fileURL: '/abc.tar.gz' }))
+        WifiRbacUrlsInfo.downloadApLog.url,
+        (req, res, ctx) => res(ctx.json({ fileURL: '/abc.tar.gz', fileUrl: '/abc.tar.gz' }))
       )
     )
   })
@@ -174,7 +177,7 @@ describe('Test useApActions', () => {
     const { showBlinkLedAp } = result.current
 
     act(() => {
-      showBlinkLedAp(serialNumber, tenantId)
+      showBlinkLedAp(serialNumber, tenantId, venueId)
     })
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('AP LEDs Blink')

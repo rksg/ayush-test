@@ -129,6 +129,10 @@ describe('ApEdit', () => {
       rest.get(
         CommonUrlsInfo.getVenueApEnhancedKey.url,
         (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_req, res, ctx) => res(ctx.json([]))
       )
     )
   })
