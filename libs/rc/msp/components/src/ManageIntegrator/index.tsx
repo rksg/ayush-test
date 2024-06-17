@@ -421,8 +421,8 @@ export function ManageIntegrator () {
       }
 
       const result =
-      await addIntegrator({ params: isRbacEnabled ? { isRbacApi: 'true', tenantId: tenantId }
-        : { tenantId: tenantId }, payload: customer }).unwrap()
+      await addIntegrator({ params: { tenantId: tenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -497,9 +497,8 @@ export function ManageIntegrator () {
         customer.licenses = assignLicense
       }
       await updateIntegrator({
-        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
-          : { mspEcTenantId: mspEcTenantId },
-        payload: customer }).unwrap()
+        params: { mspEcTenantId: mspEcTenantId },
+        payload: customer, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {

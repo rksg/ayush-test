@@ -424,8 +424,8 @@ export function MspRecCustomers () {
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
             onOk: () => deleteMspEc({
-              params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: id }
-                : { mspEcTenantId: id } })
+              params: { mspEcTenantId: id },
+              enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }

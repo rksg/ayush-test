@@ -84,8 +84,7 @@ export function AddRecCustomer () {
       useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
   const { data: ecSupport } =
       useGetMspEcSupportQuery({
-        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
-          : { mspEcTenantId } }, { skip: !isEditMode })
+        params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: !isEditMode })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {
@@ -115,8 +114,8 @@ export function AddRecCustomer () {
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
       enableMspEcSupport({
-        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
-          : { mspEcTenantId: mspEcTenantId } })
+        params: { mspEcTenantId: mspEcTenantId },
+        enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -126,8 +125,8 @@ export function AddRecCustomer () {
         })
     } else {
       disableMspEcSupport({
-        params: isRbacEnabled ? { isRbacApi: 'true', mspEcTenantId: mspEcTenantId }
-          : { mspEcTenantId: mspEcTenantId } })
+        params: { mspEcTenantId: mspEcTenantId },
+        enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
