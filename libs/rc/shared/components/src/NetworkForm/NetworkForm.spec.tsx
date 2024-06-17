@@ -10,6 +10,7 @@ import {
   IdentityProviderUrls,
   MacRegListUrlsInfo,
   PortalUrlsInfo,
+  WifiCallingUrls,
   WifiOperatorUrls,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -34,7 +35,8 @@ import {
   portalList,
   vlanList,
   mockHotpost20IdentityProviderList,
-  mockHotspot20OperatorList
+  mockHotspot20OperatorList,
+  mockWifiCallingTableResult
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -101,6 +103,8 @@ describe('NetworkForm', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     networkDeepResponse.name = 'open network test'
     mockServer.use(
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
