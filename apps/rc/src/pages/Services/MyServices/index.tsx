@@ -18,12 +18,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getSelectServiceRoutePath,
-  isServicePolicyCardVisible,
-  radioCategoryToScopeKey,
+  isServicePolicyCardEnabled,
   ServicePolicyCardData,
+  servicePolicyCardDataToScopeKeys,
   ServiceType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { EdgeScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
 import { ServiceCard } from '../ServiceCard'
@@ -89,7 +90,11 @@ export default function MyServices () {
       },{
         skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
       }).data?.totalCount,
-      disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+      disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+      scopeKeysMap: {
+        create: [EdgeScopes.CREATE],
+        read: [EdgeScopes.READ]
+      }
     },
     {
       type: ServiceType.EDGE_FIREWALL,
@@ -140,7 +145,8 @@ export default function MyServices () {
     }
   ]
 
-  const createScopeKeys = radioCategoryToScopeKey(services.map(s => s.categories).flat(), 'create')
+  // eslint-disable-next-line max-len
+  const allServicesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(services, 'create')
 
   return (
     <>
@@ -148,13 +154,13 @@ export default function MyServices () {
         title={$t({ defaultMessage: 'My Services' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
-          <TenantLink to={getSelectServiceRoutePath(true)} scopeKey={createScopeKeys}>
+          <TenantLink to={getSelectServiceRoutePath(true)} scopeKey={allServicesScopeKeysForCreate}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Service' })}</Button>
           </TenantLink>
         ])}
       />
       <GridRow>
-        {services.filter(s => isServicePolicyCardVisible(s)).map(service => {
+        {services.filter(s => isServicePolicyCardEnabled(s, 'read')).map(service => {
           return (
             <GridCol key={service.type} col={{ span: 6 }}>
               <ServiceCard
@@ -163,6 +169,7 @@ export default function MyServices () {
                 categories={service.categories}
                 count={service.totalCount}
                 type={'default'}
+                scopeKeysMap={service.scopeKeysMap}
               />
             </GridCol>
           )

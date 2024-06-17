@@ -25,9 +25,9 @@ import {
   PolicyType,
   PolicyOperation,
   policyTypeLabelMapping, policyTypeDescMapping,
-  radioCategoryToScopeKey,
   ServicePolicyCardData,
-  isServicePolicyCardVisible
+  isServicePolicyCardEnabled,
+  servicePolicyCardDataToScopeKeys
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -48,7 +48,7 @@ export default function MyPolicies () {
 
   const policies: ServicePolicyCardData<PolicyType>[] = useCardData()
 
-  const createScopeKeys = radioCategoryToScopeKey(policies.map(p => p.categories).flat(), 'create')
+  const allPoliciesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(policies, 'create')
 
   return (
     <>
@@ -56,13 +56,13 @@ export default function MyPolicies () {
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
-          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={createScopeKeys}>
+          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={allPoliciesScopeKeysForCreate}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
         ])}
       />
       <GridRow>
-        {policies.filter(policy => isServicePolicyCardVisible(policy)).map((policy, index) => {
+        {policies.filter(p => isServicePolicyCardEnabled(p, 'read')).map((policy, index) => {
           return (
             <GridCol key={policy.type} col={{ span: 6 }}>
               <RadioCard

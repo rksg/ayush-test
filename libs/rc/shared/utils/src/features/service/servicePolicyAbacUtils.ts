@@ -16,8 +16,10 @@ const radioCardCategoryToReadScopeKeyMap: Record<RadioCardCategory, ScopeKeys[nu
   [RadioCardCategory.WIFI]: WifiScopes.READ
 }
 
+export type ServicePolicyScopeKeyOper = 'create' | 'read'
+
 // eslint-disable-next-line max-len
-export function radioCategoryToScopeKey (categoriesSet: RadioCardCategory[], oper: 'create' | 'read' = 'read'): ScopeKeys {
+function radioCategoryToScopeKey (categoriesSet: RadioCardCategory[], oper: ServicePolicyScopeKeyOper): ScopeKeys {
   // eslint-disable-next-line max-len
   const scopeKeyMap = oper === 'create' ? radioCardCategoryToCreateScopeKeyMap : radioCardCategoryToReadScopeKeyMap
   return [...new Set(categoriesSet)].map(category => {
@@ -31,15 +33,26 @@ export interface ServicePolicyCardData<T> {
   totalCount?: number
   listViewPath?: Path
   disabled?: boolean
+  scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>
 }
 // eslint-disable-next-line max-len
-export function isServicePolicyCardVisible<T> (cardItem: ServicePolicyCardData<T>, oper: 'create' | 'read' = 'read'): boolean {
-  return !cardItem.disabled && hasScope(radioCategoryToScopeKey(cardItem.categories, oper))
+export function isServicePolicyCardEnabled<T> (cardItem: ServicePolicyCardData<T>, oper: ServicePolicyScopeKeyOper): boolean {
+  // eslint-disable-next-line max-len
+  return !cardItem.disabled && hasScope(cardItem.scopeKeysMap?.[oper] || radioCategoryToScopeKey(cardItem.categories, oper))
 }
-
 
 export type ServicePolicyCardSet<T> = { title: string, items: ServicePolicyCardData<T>[] }
 // eslint-disable-next-line max-len
-export function isServicePolicyCardSetVisible<T> (set: ServicePolicyCardSet<T>, oper: 'create' | 'read' = 'read'): boolean {
-  return set.items.some(item => isServicePolicyCardVisible(item, oper))
+export function isServicePolicyCardSetEnabled<T> (set: ServicePolicyCardSet<T>, oper: ServicePolicyScopeKeyOper): boolean {
+  return set.items.some(item => isServicePolicyCardEnabled(item, oper))
+}
+
+export function servicePolicyCardDataToScopeKeys (
+  // eslint-disable-next-line max-len
+  cardData: { scopeKeysMap?: Record<ServicePolicyScopeKeyOper, ScopeKeys>, categories: RadioCardCategory[] }[],
+  oper: ServicePolicyScopeKeyOper
+): ScopeKeys {
+  return [...new Set(cardData.map(item => {
+    return item.scopeKeysMap?.[oper] || radioCategoryToScopeKey(item.categories, oper)
+  }).flat())]
 }

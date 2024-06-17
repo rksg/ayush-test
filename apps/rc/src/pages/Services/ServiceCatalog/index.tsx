@@ -8,9 +8,10 @@ import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   ServicePolicyCardData,
   ServiceType,
-  isServicePolicyCardSetVisible,
-  isServicePolicyCardVisible
+  isServicePolicyCardSetEnabled,
+  isServicePolicyCardEnabled
 } from '@acx-ui/rc/utils'
+import { EdgeScopes } from '@acx-ui/types'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -48,7 +49,11 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+          scopeKeysMap: {
+            create: [EdgeScopes.CREATE],
+            read: [EdgeScopes.READ]
+          }
         }
       ]
     },
@@ -92,19 +97,20 @@ export default function ServiceCatalog () {
         title={$t({ defaultMessage: 'Service Catalog' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
       />
-      {sets.filter(s => isServicePolicyCardSetVisible(s)).map(set => {
+      {sets.filter(set => isServicePolicyCardSetEnabled(set, 'read')).map(set => {
         return <UI.CategoryContainer key={set.title}>
           <Typography.Title level={3}>
             { set.title }
           </Typography.Title>
           <GridRow>
-            {set.items.filter(i => isServicePolicyCardVisible(i)).map(item => {
+            {set.items.filter(i => isServicePolicyCardEnabled(i, 'read')).map(item => {
               return <GridCol key={item.type} col={{ span: 6 }}>
                 <ServiceCard
                   key={item.type}
                   serviceType={item.type}
                   categories={item.categories}
                   type={'button'}
+                  scopeKeysMap={item.scopeKeysMap}
                 />
               </GridCol>
             })}

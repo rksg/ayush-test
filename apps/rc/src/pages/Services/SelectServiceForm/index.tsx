@@ -16,10 +16,11 @@ import {
   getServiceRoutePath,
   ServiceOperation,
   ServicePolicyCardData,
-  isServicePolicyCardVisible,
-  isServicePolicyCardSetVisible
+  isServicePolicyCardEnabled,
+  isServicePolicyCardSetEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes }                       from '@acx-ui/types'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -70,7 +71,11 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+          scopeKeysMap: {
+            create: [EdgeScopes.CREATE],
+            read: [EdgeScopes.READ]
+          }
         }
       ]
     },
@@ -130,7 +135,7 @@ export default function SelectServiceForm () {
             rules={[{ required: true }]}
           >
             <Radio.Group style={{ width: '100%' }}>
-              {sets.filter(set => isServicePolicyCardSetVisible(set, 'create')).map(set => {
+              {sets.filter(set => isServicePolicyCardSetEnabled(set, 'create')).map(set => {
                 return <UI.CategoryContainer key={set.title}>
                   <Typography.Title level={3}>
                     { set.title }
@@ -138,13 +143,14 @@ export default function SelectServiceForm () {
                   <GridRow>
                     {
                       // eslint-disable-next-line max-len
-                      set.items.filter(item => isServicePolicyCardVisible(item, 'create')).map(item => {
+                      set.items.filter(item => isServicePolicyCardEnabled(item, 'create')).map(item => {
                         return <GridCol key={item.type} col={{ span: 6 }}>
                           <ServiceCard
                             key={item.type}
                             serviceType={item.type}
                             categories={item.categories}
                             type={'radio'}
+                            scopeKeysMap={item.scopeKeysMap}
                           />
                         </GridCol>
                       })
