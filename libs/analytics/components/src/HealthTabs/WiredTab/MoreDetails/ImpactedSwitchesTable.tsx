@@ -14,8 +14,8 @@ import {
   WidgetType, PieChartResult, SwitchDetails,
   showTopResult, topImpactedSwitchesLimit
 } from './config'
-import { useImpactedSwitchesDataQuery, fieldsMap } from './services'
-import { ChartTitle }                              from './styledComponents'
+import { useImpactedSwitchesDataQuery, fieldsMap, topNQueryMapping } from './services'
+import { ChartTitle }                                                from './styledComponents'
 
 export const ImpactedSwitchesTable = ({
   filters,
@@ -33,8 +33,10 @@ export const ImpactedSwitchesTable = ({
   }
   const getTableData = (data: PieChartResult, type: WidgetType) => {
     if (!data) return []
-    return type === 'cpuUsage' ? data.topNSwitchesByCpuUsage : data.topNSwitchesByDhcpFailure
+    return data[topNQueryMapping[type] as keyof PieChartResult]
   }
+
+
   const queryResults = useImpactedSwitchesDataQuery(
     {
       ...payload,
@@ -92,22 +94,23 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
       key: 'status',
+      show: false,
       sorter: { compare: sortProp('status', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Firmware' }),
       dataIndex: 'firmware',
       key: 'firmware',
+      show: false,
       sorter: { compare: sortProp('firmware', defaultSort) }
     },
     {
       title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
       dataIndex: metricField,
       key: metricField,
-      align: 'right',
       sorter: { compare: sortProp(metricField, defaultSort) },
-      render: (value) => {
-        return formatter('countFormat')(value)
+      render: (_, row) => {
+        return formatter('countFormat')(row[metricField as keyof SwitchDetails])
       }
     }
   ]
@@ -129,10 +132,11 @@ export const ImpactedSwitchesTable = ({
         />
       </ChartTitle>
       <Table
+        settingsId='switch-health-impacted-switches-table'
         columns={columns}
-        dataSource={queryResults.data}
+        dataSource={queryResults.data as SwitchDetails[]}
         rowKey='mac'
-        type='compactBordered'
+        type='tall'
       />
     </Loader>
   )

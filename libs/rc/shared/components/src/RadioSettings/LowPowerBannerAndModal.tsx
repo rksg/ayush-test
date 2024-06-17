@@ -20,9 +20,10 @@ const StyledAlert = styled(Alert)`
 export function LowPowerBannerAndModal (props: {
     afcInfo?: AFCInfo
     from: string
+    isOutdoor?: boolean
 }) {
 
-  const { afcInfo, from } = props
+  const { afcInfo, from, isOutdoor } = props
 
   const { $t } = useIntl()
   const { venueId } = useParams()
@@ -44,7 +45,11 @@ export function LowPowerBannerAndModal (props: {
       // when from 'AP'
       const messageList: string[] = []
 
-      messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
+      if (isOutdoor) {
+        messageList.push($t({ defaultMessage: '6 GHz radio has been turned off.' }))
+      } else {
+        messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
+      }
 
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
         messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))

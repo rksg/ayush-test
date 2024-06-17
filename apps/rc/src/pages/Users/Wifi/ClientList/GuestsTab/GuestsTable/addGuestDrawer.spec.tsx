@@ -14,7 +14,8 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { UserUrlsInfo } from '@acx-ui/user'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { UserUrlsInfo }                   from '@acx-ui/user'
 
 import {
   GuestList,
@@ -58,11 +59,25 @@ const mockedAddGuestReq = jest.fn()
 
 describe('Add Guest Drawer', () => {
   let params: { tenantId: string, networkId: string }
+  const userProfile = getUserProfile()
 
   beforeEach(() => {
     mockedAddGuestReq.mockClear()
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
+
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: false,
+      isCustomRole: false,
+      allowedOperations: [
+        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'POST:/wifiNetworks',
+        'POST:/guestUsers'
+      ]
+    })
 
     mockServer.use(
       rest.post(CommonUrlsInfo.getGuestsList.url, (_, res, ctx) =>

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   useDelSyslogPoliciesMutation,
@@ -47,10 +48,12 @@ export default function SyslogTable () {
   const [ deleteFn ] = useDelSyslogPoliciesMutation()
 
   const settingsId = 'policies-syslog-table'
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const doDelete = (selectedRows: SyslogPolicyListType[], callback: () => void) => {
@@ -60,7 +63,8 @@ export default function SyslogTable () {
       selectedRows[0].name,
       // eslint-disable-next-line max-len
       [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () =>
+        deleteFn({ params, payload: selectedRows.map(row => row.id), enableRbac }).then(callback)
     )
   }
 

@@ -8,7 +8,8 @@ import {
   RadioCardCategory,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
   ServiceType,
   getServiceListRoutePath,
@@ -30,14 +31,13 @@ export default function SelectServiceForm () {
   const myServicesPath: Path = useTenantLink(getServiceListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
   const propertyManagementEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgeHaReady = useIsSplitOn(Features.EDGE_HA_TOGGLE)
-  const isEdgeDhcpHaReady = useIsSplitOn(Features.EDGE_DHCP_HA_TOGGLE)
-  const isEdgeFirewallHaReady = useIsSplitOn(Features.EDGE_FIREWALL_HA_TOGGLE)
-  const isEdgePinHaReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   const navigateToCreateService = async function (data: { serviceType: ServiceType }) {
     const serviceCreatePath = getServiceRoutePath({
@@ -59,18 +59,18 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.EDGE_DHCP,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeDhcpHaReady
+          disabled: !isEdgeHaReady || !isEdgeDhcpHaReady
         },
         { type: ServiceType.DPSK, categories: [RadioCardCategory.WIFI] },
         {
           type: ServiceType.NETWORK_SEGMENTATION,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.SWITCH, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgePinHaReady
+          disabled: !isEdgeHaReady || !isEdgePinHaReady
         },
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeReady || !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
         }
       ]
     },
@@ -79,7 +79,7 @@ export default function SelectServiceForm () {
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
-          disabled: !isEdgeEnabled || !isEdgeHaReady || !isEdgeFirewallHaReady
+          disabled: !isEdgeHaReady || !isEdgeFirewallHaReady
         }
       ]
     },
@@ -97,7 +97,7 @@ export default function SelectServiceForm () {
         {
           type: ServiceType.WEBAUTH_SWITCH,
           categories: [RadioCardCategory.SWITCH],
-          disabled: !isEdgeHaReady || !isEdgePinHaReady
+          disabled: !isEdgeHaReady || !isEdgePinHaReady || !networkSegmentationSwitchEnabled
         },
         {
           type: ServiceType.RESIDENT_PORTAL,
