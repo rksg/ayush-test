@@ -14,11 +14,11 @@ import {
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 import { getIntl }                   from '@acx-ui/utils'
 
+import { DefaultVlanDrawer }               from '../../DefaultVlanDrawer'
 import { VlanSettingDrawer }               from '../../VlanSettingDrawer'
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
-import { DefaultVlanDrawer } from './DefaultVlanDrawer'
-import * as UI               from './styledComponents'
+import * as UI from './styledComponents'
 
 export function VlanSetting () {
   const { $t } = getIntl()
@@ -204,12 +204,7 @@ export function VlanSetting () {
             dataSource={vlanTable.map((item, index) => ({ ...item, key: index }))}
             rowSelection={hasAccess() && {
               type: 'radio',
-              selectedRowKeys: selectedRows,
-              onChange: (keys: React.Key[]) => {
-                setDrawerFormRule(
-                  vlanTable?.find((i: { vlanId: number }) => i.vlanId === keys[0])
-                )
-              }
+              selectedRowKeys: selectedRows
             }}
             actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add VLAN' }),
@@ -234,6 +229,7 @@ export function VlanSetting () {
         setVisible={setVlanDrawerVisible}
         vlan={(drawerFormRule)}
         setVlan={handleSetVlan}
+        isProfileLevel={true}
         vlansList={vlanTable.filter(item=>item.vlanId !== drawerFormRule?.vlanId)}
       />
       <DefaultVlanDrawer

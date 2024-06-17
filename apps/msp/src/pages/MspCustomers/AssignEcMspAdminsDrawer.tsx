@@ -23,8 +23,8 @@ import {
   roleDisplayText,
   sortProp
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { RolesEnum } from '@acx-ui/types'
+import { useParams }                          from '@acx-ui/react-router-dom'
+import { RolesEnum, SupportedDelegatedRoles } from '@acx-ui/types'
 
 interface AssignEcMspAdminsDrawerProps {
   visible: boolean
@@ -139,15 +139,14 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
   }
 
   const transformAdminRole = (id: string, initialRole: RolesEnum) => {
-    const role = initialRole
+    const role = SupportedDelegatedRoles.includes(initialRole)
+      ? initialRole : RolesEnum.ADMINISTRATOR
     return <Select defaultValue={role}
       style={{ width: '150px' }}
       onChange={value => handleRoleChange(id, value)}>
       {
         Object.entries(RolesEnum).map(([label, value]) => (
-          !(value === RolesEnum.DPSK_ADMIN || value === RolesEnum.TEMPLATES_ADMIN
-            || value === RolesEnum.REPORTS_ADMIN
-          )
+          SupportedDelegatedRoles.includes(value)
           && <Option
             key={label}
             value={value}>{$t(roleDisplayText[value])}

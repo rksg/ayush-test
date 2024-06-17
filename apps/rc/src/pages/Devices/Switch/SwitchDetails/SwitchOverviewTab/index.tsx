@@ -73,6 +73,7 @@ export function SwitchOverviewTab () {
       setSwitchDetail({
         ...switchDetailHeader,
         description: switchData.description,
+        enableStack: switchData.enableStack,
         venueDescription: venue.description,
         unitDetails: syncedStackMember
       })

@@ -4,6 +4,7 @@ import { CheckOutlined } from '@ant-design/icons'
 import { useIntl }       from 'react-intl'
 
 import { Card, Table, TableProps }  from '@acx-ui/components'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
   useVenueSyslogPolicyQuery ,
   useGetSyslogPolicyQuery,
@@ -31,6 +32,7 @@ const defaultPayload = {
 const SyslogVenueDetail = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
@@ -62,7 +64,8 @@ const SyslogVenueDetail = () => {
 
   const { data: syslogPolicy } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
-    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery
+    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
+    enableRbac
   })
 
   const tableQuery = useTableQuery({
@@ -79,7 +82,7 @@ const SyslogVenueDetail = () => {
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        id: syslogPolicy.venues.map((venue: SyslogVenue) => venue.id)
+        id: syslogPolicy.venues?.map((venue: SyslogVenue) => venue.id)
       }
     })
   },[syslogPolicy])

@@ -120,7 +120,7 @@ export const MoreDetailsPieChart = ({
             {({ width, height }) => (
               <DonutChart
                 data={pieData}
-                style={{ height, width, top: 20 }}
+                style={{ height, width }}
                 legend='name'
                 size={'x-large'}
                 showTotal={false}

@@ -10,7 +10,7 @@ import { ColumnType, Loader, StackedBarChart, Table, TableProps, cssStr, deviceS
 import { useApGroupsListQuery, useDeleteApGroupsMutation }                                                     from '@acx-ui/rc/services'
 import { ApGroupViewModel, FILTER, TableQuery, getFilters, transformDisplayNumber, usePollingTableQuery }      from '@acx-ui/rc/utils'
 import { TenantLink, useTenantLink }                                                                           from '@acx-ui/react-router-dom'
-import { RequestPayload }                                                                                      from '@acx-ui/types'
+import { RequestPayload, WifiScopes }                                                                          from '@acx-ui/types'
 import { filterByAccess }                                                                                      from '@acx-ui/user'
 import { DateRange, getDateRangeFilter }                                                                       from '@acx-ui/utils'
 
@@ -147,6 +147,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
 
   const rowActions: TableProps<ApGroupViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE],
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       //redirect to edit AP group page url
@@ -155,6 +156,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [WifiScopes.DELETE],
     onClick: async (selectedRows, clearSelection) => {
       showDeleteApGroups(selectedRows, params.tenantId, clearSelection)
     }
@@ -179,6 +181,7 @@ export const ApGroupTable = (props : ApGroupTableProps) => {
         rowActions={filterByAccess(rowActions)}
         actions={props.enableActions ? filterByAccess([{
           label: $t({ defaultMessage: 'Add AP Group' }),
+          scopeKey: [WifiScopes.CREATE],
           onClick: () => {
             navigate({
               ...basePath,

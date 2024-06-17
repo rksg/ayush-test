@@ -2,7 +2,7 @@ import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
 import { showToast }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { mspApi }                                                                  from '@acx-ui/msp/services'
 import { MspUrlsInfo }                                                             from '@acx-ui/msp/utils'
 import { administrationApi }                                                       from '@acx-ui/rc/services'
@@ -28,12 +28,12 @@ jest.mock('./SubscriptionHeader', () => ({
   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
 }))
 
+const excludedFlags = [Features.DEVICE_AGNOSTIC, Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE]
+
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC
-      && ff !== Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.includes(ff as Features))
 
     mockedWindowOpen.mockClear()
     mockedRefreshFn.mockClear()
@@ -210,8 +210,9 @@ describe('Subscriptions', () => {
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /SmartEdge/i })
   })
-  it('should filter edge data when PLM FF is not denabled', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+  it('should filter edge data when edge FF is not denabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.concat(Features.EDGES_TOGGLE)
+      .includes(ff as Features))
 
     render(
       <Provider>

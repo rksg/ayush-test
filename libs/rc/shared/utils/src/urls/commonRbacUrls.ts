@@ -572,6 +572,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/rwgs/query',
     newApi: true
   },
+  getRwgListByVenueId: {
+    method: 'post',
+    url: '/venues/:venueId/rwgs/query',
+    newApi: true
+  },
   getGatewayDashboard: {
     method: 'get',
     url: '/venues/:venueId/rwgs/:gatewayId/dashboards',
@@ -620,6 +625,11 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getClusterGatewayDetails: {
     method: 'get',
     url: '/venues/:venueId/rwgs/:gatewayId/details/nodes/:clusterNodeId',
+    newApi: true
+  },
+  UpdateRwgPosition: {
+    method: 'put',
+    url: '/venues/:venueId/rwgs/:gatewayId/floorPositions',
     newApi: true
   }
 }

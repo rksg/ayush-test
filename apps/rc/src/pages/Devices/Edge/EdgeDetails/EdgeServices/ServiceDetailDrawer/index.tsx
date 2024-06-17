@@ -2,7 +2,8 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Drawer }                                                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                 from '@acx-ui/feature-toggle'
+import { Features }                                                                               from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                                  from '@acx-ui/rc/components'
 import { EdgeService, EdgeServiceTypeEnum, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                             from '@acx-ui/react-router-dom'
 
@@ -40,7 +41,7 @@ const getDrawerFormLebelColMap = (serviceType: EdgeServiceTypeEnum) => {
 export const ServiceDetailDrawer = (props: ServiceDetailDrawerProps) => {
   const { visible, setVisible, serviceData } = props
   const { $t } = useIntl()
-  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   const onClose = () => {
     setVisible(false)

@@ -44,7 +44,8 @@ import {
   Lag,
   LAG_TYPE,
   sortPortFunction,
-  VenueMessages
+  VenueMessages,
+  VlanModalType
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 import { getIntl }   from '@acx-ui/utils'
@@ -70,6 +71,8 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const { $t } = useIntl()
   const [form] = Form.useForm()
   const { visible, setVisible, isEditMode, editData } = props
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
+
   const urlParams = useParams()
   const tenantId = urlParams.tenantId
   const switchId = urlParams.switchId || props.params?.switchMac || props.params?.serialNumber
@@ -113,6 +116,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   const [addLag] = useAddLagMutation()
   const [updateLag] = useUpdateLagMutation()
 
+  const [vlanModalActivityTab, setVlanModalActivityTab] = useState(VlanModalType.UNTAGGED)
   const [currentPortType, setCurrentPortType] = useState(null as null | string)
   const [cliApplied, setCliApplied] = useState(false)
   const [availablePorts, setAvailablePorts] = useState([] as TransferItem[])
@@ -435,7 +439,12 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [useVenueSettings, setUseVenueSettings] = useState(true)
   const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
-  const onClickEditVlan = () =>{
+  const onClickEditUntaggedVlan = () =>{
+    setVlanModalActivityTab(VlanModalType.UNTAGGED)
+    setSelectModalVisible(true)
+  }
+  const onClickEditTaggedVlan = () =>{
+    setVlanModalActivityTab(VlanModalType.TAGGED)
     setSelectModalVisible(true)
   }
 
@@ -569,7 +578,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                 vlan: untaggedVlan
               }) : '--'}</div>
 
-            <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+            <Button type='link' onClick={onClickEditUntaggedVlan} disabled={cliApplied}>
               {$t({ defaultMessage: 'Edit' })}
             </Button>
           </div>
@@ -595,7 +604,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
                   vlan: sortOptions(
                     taggedVlans?.toString().split(','), 'number').join(', ')
                 }) : '--'}</div>
-            <Button type='link' onClick={onClickEditVlan} disabled={cliApplied}>
+            <Button type='link' onClick={onClickEditTaggedVlan} disabled={cliApplied}>
               {$t({ defaultMessage: 'Edit' })}
             </Button>
           </div>
@@ -625,6 +634,7 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             children={lagForm}
           />
       }
+
       {
         selectModalVisible &&
           <SelectVlanModal
@@ -634,15 +644,26 @@ export const SwitchLagModal = (props: SwitchLagProps) => {
             setUseVenueSettings={setUseVenueSettings}
             onValuesChange={()=>{form.validateFields(['taggedVlans'])}}
             defaultVlan={String(defaultVlanId)}
+            defaultTabKey={vlanModalActivityTab}
             switchVlans={getAllSwitchVlans(switchVlans)}
             venueVlans={venueVlans}
             taggedVlans={taggedVlans}
             untaggedVlan={untaggedVlan}
             vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
+            cliApplied={cliApplied}
             hasSwitchProfile={hasSwitchProfile}
             profileId={switchConfigurationProfileId}
+            switchIds={switchId ? [switchId] : []}
+            venueId={switchDetailHeader?.venueId}
             updateSwitchVlans={async (values: Vlan) =>
-              updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+              updateSwitchVlans(
+                values,
+                switchVlans,
+                setSwitchVlans,
+                venueVlans,
+                setVenueVlans,
+                isSwitchLevelVlanEnabled
+              )
             }
           />
       }

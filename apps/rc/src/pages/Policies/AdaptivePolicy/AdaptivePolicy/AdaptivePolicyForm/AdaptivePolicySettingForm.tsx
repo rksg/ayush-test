@@ -11,7 +11,7 @@ import { AccessConditionDrawer, RadiusAttributeGroupSelectDrawer }              
 import {
   useLazyAdaptivePolicyListByQueryQuery,
   useLazyGetRadiusAttributeGroupQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AccessCondition,
@@ -20,7 +20,7 @@ import {
   CriteriaOption, defaultSort,
   RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -50,12 +50,12 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
 
-  const { data: templateList, isLoading } = usePolicyTemplateListQuery({
+  const { data: templateList, isLoading } = usePolicyTemplateListByQueryQuery({
     payload: {
       page: '1',
       pageSize: '1000',
-      sortField: 'name',
-      sortOrder: 'desc' }
+      sort: 'name,asc'
+    }
   })
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
@@ -241,7 +241,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 columns={useColumns()}
                 dataSource={evaluationRules}
                 rowActions={filterByAccess(rowActions)}
-                rowSelection={hasAccess() && { type: 'radio' }}
+                rowSelection={{ type: 'radio' }}
                 actions={filterByAccess([{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len

@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, PageHeader, RangePicker }                  from '@acx-ui/components'
 import { LocationOutlined }                                 from '@acx-ui/icons'
 import { ApGroupDetailHeader, useConfigTemplateBreadcrumb } from '@acx-ui/rc/utils'
+import { WifiScopes }                                       from '@acx-ui/types'
 import { filterByAccess }                                   from '@acx-ui/user'
 import { useDateFilter }                                    from '@acx-ui/utils'
 
@@ -60,6 +61,7 @@ function ApGroupPageHeader () {
           />,
         ...filterByAccess([
           <Button type='primary'
+            scopeKey={[WifiScopes.UPDATE]}
             children={$t({ defaultMessage: 'Configure' })}
             onClick={() => {
               navigate({

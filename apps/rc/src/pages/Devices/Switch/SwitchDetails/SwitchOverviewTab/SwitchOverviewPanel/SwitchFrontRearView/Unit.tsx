@@ -339,7 +339,10 @@ export function Unit (props:{
         numOfEntities: 1
       },
       onOk: () => {
-        deleteStackMember({ params: { tenantId, stackSwitchSerialNumber: unit.serialNumber } }).then(() => {
+        deleteStackMember({
+          params: { tenantId, stackSwitchSerialNumber: unit.serialNumber, venueId },
+          enableRbac: isSwitchRbacEnabled
+        }).then(() => {
           switchQuery?.refetch()
           switchDetailViewModelQuery?.refetch()
         })
@@ -363,7 +366,11 @@ export function Unit (props:{
       ackPayload.add.push(unit.serialNumber)
     }
 
-    acknowledgeSwitch({ params: { tenantId, switchId }, payload: ackPayload })
+    acknowledgeSwitch({
+      params: { tenantId, switchId, venueId },
+      payload: ackPayload,
+      enableRbac: isSwitchRbacEnabled
+    })
   }
 
   const ViewModeButton = <Button
