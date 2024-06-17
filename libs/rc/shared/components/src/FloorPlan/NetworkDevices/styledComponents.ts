@@ -114,6 +114,19 @@ export const DeviceContainer = styled('div')`
       background-color: var(--acx-semantics-red-50) !important;
     }
 
+    &.rwg-status-never-contacted-cloud {
+      background-color: var(--acx-neutrals-50) !important;
+    }
+    &.rwg-status-operational {
+      background-color: var(--acx-semantics-green-50) !important;
+    }
+    &.rwg-status-disconnected {
+      background-color: var(--acx-semantics-red-50) !important;
+    }
+    &.rwg-status-invalid-api {
+      background-color: var(--acx-semantics-yellow-40) !important;
+    }
+
     &.cloudpath-server {
       background-color: var(--acx-semantics-green-50) !important;
     }

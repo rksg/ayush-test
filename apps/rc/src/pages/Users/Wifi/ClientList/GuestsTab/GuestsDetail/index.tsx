@@ -211,26 +211,32 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       ] : [{
         label: $t({ defaultMessage: 'Generate New Password' }),
         key: 'generatePassword',
-        scopeKey: [WifiScopes.UPDATE]
+        scopeKey: [WifiScopes.UPDATE],
+        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
       }, {
         label: $t({ defaultMessage: 'Download Information' }),
         key: 'downloadInformation',
-        scopeKey: [WifiScopes.READ]
+        scopeKey: [WifiScopes.READ],
+        allowedOperationUrl: 'POST:/guestUsers'
       },
       {
         label: $t({ defaultMessage: 'Disable Guest' }),
         key: 'disableGuest',
-        scopeKey: [WifiScopes.UPDATE]
+        scopeKey: [WifiScopes.UPDATE],
+        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
       }, {
         label: $t({ defaultMessage: 'Enable Guest' }),
         key: 'enableGuest',
-        scopeKey: [WifiScopes.UPDATE]
+        scopeKey: [WifiScopes.UPDATE],
+        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
       }, {
         label: $t({ defaultMessage: 'Delete Guest' }),
         key: 'deleteGuest',
-        scopeKey: [WifiScopes.DELETE]
+        scopeKey: [WifiScopes.DELETE],
+        allowedOperationUrl: 'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
       }].filter((item) => {
-        if (!hasPermission({ scopes: item.scopeKey })){
+        if (!hasRoles([RolesEnum.GUEST_MANAGER]) &&
+        !hasPermission({ scopes: item.scopeKey, allowedOperations: item.allowedOperationUrl })){
           return false
         }
         if (item.key === 'enableGuest' &&

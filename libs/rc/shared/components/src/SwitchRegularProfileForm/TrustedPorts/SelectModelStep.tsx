@@ -112,11 +112,18 @@ export function SelectModelStep (props: { editRecord?: TrustedPort }) {
         checkIfModuleFixed(family, model)
       }
     }
-  }, [])
+  }, [form.getFieldValue('family'), form.getFieldValue('model')])
 
   const checkIfModuleFixed = (family: string, model: string) => {
     if (family === 'ICX7550') {
       setModuleSelectionEnable(true)
+      form.setFieldValue('enableSlot2', true)
+      form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+      setModule2SelectionEnable(false)
+    }
+
+    if (family === 'ICX8200') {
+      setModuleSelectionEnable(false)
       form.setFieldValue('enableSlot2', true)
       form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
       setModule2SelectionEnable(false)

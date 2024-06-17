@@ -21,6 +21,7 @@ import { get }                                                       from '@acx-
 import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                 from '@acx-ui/formatter'
 import { TenantLink, useParams }                                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 import { getIntl, noDataDisplay, PathFilter }                        from '@acx-ui/utils'
 
@@ -249,6 +250,7 @@ export function RecommendationTable (
         .filter(action => !action.icon.props.disabled)
         .map((action, i) => {
           return {
+            scopeKey: [WifiScopes.UPDATE],
             label: action.icon as unknown as string,
             key: getShowWithoutRbacCheckKey(String(i)),
             onClick: () => {},
@@ -256,6 +258,7 @@ export function RecommendationTable (
           }
         }): []),
     {
+      key: getShowWithoutRbacCheckKey('mute'),
       label: $t(selectedRecommendation?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })
@@ -275,6 +278,7 @@ export function RecommendationTable (
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: async () => {
         await clickDeleteFn(selectedRecommendation.id, deleteRecommendation, () => {
           setSelectedRowData([])
@@ -317,6 +321,10 @@ export function RecommendationTable (
   const noCrrmData = data?.filter(recommendation => recommendation.code !== 'unknown')
   const writePermission = hasPermission({
     permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS'
+  })
+  const fullOptimizationPermission = hasPermission({
+    permission: showCrrm ? 'WRITE_AI_DRIVEN_RRM' : 'WRITE_AI_OPERATIONS',
+    scopes: [WifiScopes.UPDATE]
   })
   useEffect(() => {
     setSelectedRowData([])
@@ -451,7 +459,7 @@ export function RecommendationTable (
           <Switch
             defaultChecked
             checked={preferences.crrmFullOptimization}
-            disabled={!canToggle || record.isMuted || !writePermission}
+            disabled={!canToggle || record.isMuted || !fullOptimizationPermission}
             onChange={() => {
               const updatedPreference = {
                 ...preferences,

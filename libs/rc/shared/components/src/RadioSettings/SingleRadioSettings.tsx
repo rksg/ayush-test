@@ -99,7 +99,8 @@ export function SingleRadioSettings (props:{
   const allowedOutdoorChannelsFieldName = [...radioDataKey, 'allowedOutdoorChannels']
   const combinChannelsFieldName = [...radioDataKey, 'combineChannels']
 
-  const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(['5G', 'DFS'])
+  const [displayRadioBarSettings, setDisplayRadioBarSettings] = useState(
+    radioType === ApRadioTypeEnum.Radio5G ? ['5G', 'DFS'] : [])
   const [channelList, setChannelList] = useState<RadioChannel[]>([])
   const [indoorChannelList, setIndoorChannelList] = useState<RadioChannel[]>([])
   const [outdoorChannelList, setOutdoorChannelList] = useState<RadioChannel[]>([])
@@ -131,7 +132,6 @@ export function SingleRadioSettings (props:{
 
     allowIndoorForOutdoor = (radioType === ApRadioTypeEnum.Radio5G
                              && hasIndoorForOutdoor === true)
-
   } else {// context === 'ap'
     //bandwidthList = Object.keys(supportChannels)
   }
@@ -236,7 +236,7 @@ export function SingleRadioSettings (props:{
       indoorChBars.dfsChannels = availableDfsChannels
       setIndoorChannelBars(indoorChBars)
 
-      const availableOutdoorChannels = outdoor[bandwidth]
+      const availableOutdoorChannels = outdoor ? outdoor[bandwidth] : []
       const selectedOutdoorChannels = setSelectedChannels(availableOutdoorChannels)
       setOutdoorChannelList(selectedOutdoorChannels)
 
@@ -380,8 +380,7 @@ export function SingleRadioSettings (props:{
 
   return (
     <>
-      {
-        isSupportRadio &&
+      {isSupportRadio &&
       <>
         <Row style={{ marginTop: '10px' }} gutter={20} data-testid={testId}>
           <Col span={8}>
@@ -476,16 +475,26 @@ export function SingleRadioSettings (props:{
           </Row>
           <Row gutter={20}>
             <Col span={channelColSpan}>
-              <RadioSettingsChannels
-                formName={allowedIndoorChannelsFieldName}
-                groupSize={groupSize}
-                channelList={indoorChannelList}
-                displayBarSettings={displayRadioBarSettings}
-                channelBars={indoorChannelBars}
-                disabled={inherit5G || disable}
-                handleChanged={handleChanged}
-                afcProps={afcProps}
-              />
+              {channelBandwidth !== '320MHz' ?
+                <RadioSettingsChannels
+                  formName={allowedIndoorChannelsFieldName}
+                  groupSize={groupSize}
+                  channelList={indoorChannelList}
+                  displayBarSettings={displayRadioBarSettings}
+                  channelBars={indoorChannelBars}
+                  disabled={inherit5G || disable}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                /> :
+                <RadioSettingsChannels320Mhz
+                  context={context}
+                  formName={allowedIndoorChannelsFieldName}
+                  channelList={indoorChannelList}
+                  disabled={inherit5G || disable || isUseVenueSettings}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                />
+              }
             </Col>
           </Row>
         </>
@@ -506,16 +515,26 @@ export function SingleRadioSettings (props:{
           </Row>
           <Row gutter={20}>
             <Col span={channelColSpan}>
-              <RadioSettingsChannels
-                formName={allowedOutdoorChannelsFieldName}
-                groupSize={groupSize}
-                channelList={outdoorChannelList}
-                displayBarSettings={displayRadioBarSettings}
-                channelBars={outdoorChannelBars}
-                disabled={inherit5G || disable}
-                handleChanged={handleChanged}
-                afcProps={afcProps}
-              />
+              {channelBandwidth !== '320MHz' ?
+                <RadioSettingsChannels
+                  formName={allowedOutdoorChannelsFieldName}
+                  groupSize={groupSize}
+                  channelList={outdoorChannelList}
+                  displayBarSettings={displayRadioBarSettings}
+                  channelBars={outdoorChannelBars}
+                  disabled={inherit5G || disable}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                /> :
+                <RadioSettingsChannels320Mhz
+                  context={context}
+                  formName={allowedOutdoorChannelsFieldName}
+                  channelList={outdoorChannelList}
+                  disabled={inherit5G || disable || isUseVenueSettings}
+                  handleChanged={handleChanged}
+                  afcProps={afcProps}
+                />
+              }
             </Col>
           </Row>
         </>

@@ -94,7 +94,7 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByTestId('ServiceGuard')).toBeVisible()
   })
   it('should hide video call qoe when IS_MLISA_SA', async () => {
-    get.mockReturnValue('')
+    get.mockReturnValue('true')
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(screen.queryByText('VideoCallQoe')).toBeNull()
@@ -104,20 +104,6 @@ describe('NetworkAssurance', () => {
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('VideoCallQoe')).toBeVisible()
-  })
-  it('should hide video call qoe when feature flag VIDEO_CALL_QOE is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('VideoCallQoe')).toBeNull()
-
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('VideoCallQoe')).toBeNull()
-
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId('VideoCallQoe')).toBeNull()
   })
   it('should handle tab click', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

@@ -30,14 +30,15 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { VenueFilter }                                            from '@acx-ui/main/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { VenueFilter }            from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
   DevicesDashboardWidgetV2,
   MapWidgetV2,
-  VenuesDashboardWidgetV2
+  VenuesDashboardWidgetV2,
+  useIsEdgeReady
 } from '@acx-ui/rc/components'
 import { TenantLink }                                                from '@acx-ui/react-router-dom'
 import { EdgeScopes, SwitchScopes, WifiScopes }                      from '@acx-ui/types'
@@ -84,8 +85,7 @@ export const useDashBoardUpdatedFilter = () => {
 }
 export default function Dashboard () {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -98,7 +98,7 @@ export default function Dashboard () {
       value: 'switch',
       children: <SwitchWidgets />
     },
-    ...(isEdgeEnabled && isEdgeReady ? [
+    ...(isEdgeEnabled ? [
       {
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',
@@ -151,8 +151,7 @@ function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
 
   const hasCreatePermission
     = hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE] })
@@ -183,7 +182,7 @@ function DashboardPageHeader () {
           key: 'add-switch',
           label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
         }] : []),
-        ...(isEdgeEnabled && isEdgeReady && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
+        ...(isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
           key: 'add-edge',
           label: <TenantLink to='devices/edge/add'>{
             $t({ defaultMessage: 'SmartEdge' })

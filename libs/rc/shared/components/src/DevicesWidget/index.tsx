@@ -5,11 +5,13 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card, DonutChart,
   getDeviceConnectionStatusColorsv2,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
-import type { DonutChartData }                                    from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { ChartData }                                              from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath, useParams }               from '@acx-ui/react-router-dom'
-import { filterByAccess }                                         from '@acx-ui/user'
+import type { DonutChartData }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ChartData }                                from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                           from '@acx-ui/user'
+
+import { useIsEdgeReady } from '../useEdgeActions'
 
 import * as UI from './styledComponents'
 
@@ -25,11 +27,11 @@ export function DevicesWidget (props: {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
-  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
   let numDonut = 2
-  if (edgeSupported) {
+  if (isEdgeEnabled) {
     numDonut++
   }
 
@@ -70,7 +72,7 @@ export function DevicesWidget (props: {
                 title={$t({ defaultMessage: 'Switch' })}
                 data={props.switchData}/>
             </UI.NavigationContainer>
-            { edgeSupported && (
+            { isEdgeEnabled && (
               <UI.NavigationContainer onClick={clickSmartEdgeHandler}>
                 <DonutChart
                   key='smartEdge-donutChart'
@@ -106,7 +108,7 @@ export function DevicesWidgetv2 (props: {
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
-  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
   const {
@@ -194,7 +196,7 @@ export function DevicesWidgetv2 (props: {
                 }
               </GridCol>
             </GridRow>
-            { edgeSupported &&
+            { isEdgeEnabled &&
               <GridRow align={'middle'}>
                 <GridCol col={{ span: edgeTotalCount ? 9 : 12 }}>
                   { edgeTotalCount > 0

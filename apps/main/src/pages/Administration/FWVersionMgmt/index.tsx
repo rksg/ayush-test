@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                                          from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }                                       from '@acx-ui/icons'
+import { Tabs, Tooltip }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
+import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
@@ -35,7 +36,7 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { data: latestSwitchReleaseVersions } =
@@ -114,7 +115,8 @@ const FWVersionMgmt = () => {
         {isAPPLibraryAvailable && <Tooltip children={<InformationSolid />}
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
-      content: <ApplicationPolicyMgmt />
+      content: <ApplicationPolicyMgmt />,
+      visible: true
     }
   }
 
@@ -134,6 +136,7 @@ const FWVersionMgmt = () => {
     >
       {
         Object.entries(tabs).map((item) =>
+          item[1].visible &&
           <Tabs.TabPane
             key={item[0]}
             tab={item[1].title}
