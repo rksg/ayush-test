@@ -101,18 +101,17 @@ export function VenueRWG () {
   const rwgActions = useRwgActions()
 
   const rwgPayload = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'RwgHostname'
+    filters: {}
   }
 
+  const settingsId = 'venue-rwg-table'
   const tableQuery = useTableQuery({
     useQuery: useRwgListQuery,
     defaultPayload: rwgPayload,
+    pagination: { settingsId },
     search: {
       searchTargetFields: ['name']
-    },
-    enableSelectAllPagesData: ['rwgId', 'name']
+    }
   })
 
 
@@ -166,9 +165,13 @@ export function VenueRWG () {
     }
   }]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
-    tableQuery.setPayload(payload)
+  const handleTableChange: TableProps<RWGRow>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    tableQuery.setPayload({
+      ...tableQuery.payload
+    })
+    tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
 
   const rowSelection = () => {
@@ -185,16 +188,15 @@ export function VenueRWG () {
       tableQuery
     ]}>
       <Table
-        settingsId='rgw-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery?.data?.data}
-        pagination={{
-          pageSize: tableQuery?.data?.page || 0
-        }}
-        onFilterChange={handleFilterChange}
+        pagination={{ total: tableQuery?.data?.totalCount }}
+        onFilterChange={tableQuery.handleFilterChange}
         rowKey='rowId'
         rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && { ...rowSelection() }}
+        onChange={handleTableChange}
       />
     </Loader>
   )
