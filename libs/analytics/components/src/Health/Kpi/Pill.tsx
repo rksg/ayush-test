@@ -34,8 +34,9 @@ export const transformTSResponse = (
     datum && datum.length && (datum[0] !== null && datum[1] !== null )
       ? [success + datum[0], total + datum[1]] : [success, total]
   ), [0, 0])
-  return { success, total, length: filteredData
-    .filter(([count,total])=> count !== null && total !== null).length }
+  return { success, total,
+    length: filteredData.filter((datum)=>
+      datum && datum.length && (datum[0] !== null && datum[1] !== null )).length }
 }
 
 export const tranformHistResponse = (
