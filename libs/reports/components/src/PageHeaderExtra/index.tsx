@@ -53,6 +53,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
         filterFor={'reports'}
         isRadioBandDisabled={isRadioBandDisabled}
         radioBandDisabledReason={radioBandDisabledReason}
+        overrideFilters={{ startDate, endDate }}
       />
   )
 
