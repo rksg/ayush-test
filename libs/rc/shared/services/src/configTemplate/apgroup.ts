@@ -60,7 +60,7 @@ export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       ]
     }),
     deleteApGroupsTemplate: build.mutation<ApGroup[], RequestPayload>({
-      query: commonQueryFn(ApGroupConfigTemplateUrlsInfo.deleteApGroups),
+      query: commonQueryFn(ApGroupConfigTemplateUrlsInfo.deleteApGroup),
       invalidatesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
     })
   })

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { isNil }         from 'lodash'
 import { defineMessage } from 'react-intl'
 
+import { limitRange }                                          from '@acx-ui/analytics/utils'
 import { GridRow, GridCol, Loader, StatsCard, StatsCardProps } from '@acx-ui/components'
 import { formatter }                                           from '@acx-ui/formatter'
 import type { AnalyticsFilter }                                from '@acx-ui/utils'
@@ -34,7 +35,7 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
     noData: boolean): string {
     if (noData) return noDataDisplay
     return formatter('percentFormat')(
-      numerator && denominator ? (numerator / denominator) : 0
+      numerator && denominator ? limitRange(numerator / denominator) : 0
     )
   }
 
@@ -77,7 +78,7 @@ export const SummaryBoxes = ( props: { filters: AnalyticsFilter, noSwitches?: bo
       values: [{
         title: defineMessage({ defaultMessage: 'High CPU' }),
         value: !isNil(summaryData?.switchCpuUtilizationPct)
-          ? formatter('percentFormat')(summaryData?.switchCpuUtilizationPct)
+          ? formatter('percentFormat')(limitRange(summaryData?.switchCpuUtilizationPct!))
           : noDataDisplay
       }],
       onClick: () => { moreDetails('cpuUsage') }

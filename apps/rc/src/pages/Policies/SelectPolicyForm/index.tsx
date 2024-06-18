@@ -25,18 +25,14 @@ import {
   getPolicyListRoutePath,
   getPolicyRoutePath,
   PolicyOperation,
-  policyTypeLabelMapping, policyTypeDescMapping
+  policyTypeLabelMapping, policyTypeDescMapping,
+  ServicePolicyCardData,
+  isServicePolicyCardEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                  from '@acx-ui/types'
 import { hasPermission }                               from '@acx-ui/user'
 
-
-interface policyOption {
-  type: PolicyType,
-  categories: RadioCardCategory[],
-  disabled?: boolean
-}
 
 export default function SelectPolicyForm () {
   const { $t } = useIntl()
@@ -82,7 +78,7 @@ export default function SelectPolicyForm () {
     })
   }
 
-  const sets : policyOption[] = [
+  const sets : ServicePolicyCardData<PolicyType>[] = [
     { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
@@ -154,16 +150,18 @@ export default function SelectPolicyForm () {
           >
             <Radio.Group style={{ width: '100%' }}>
               <GridRow>
-                {sets.map(set => <GridCol col={{ span: 6 }} key={set.type}>
-                  <RadioCard
-                    type={set.disabled ? 'disabled' : 'radio'}
-                    key={set.type}
-                    value={set.type}
-                    title={$t(policyTypeLabelMapping[set.type])}
-                    description={$t(policyTypeDescMapping[set.type])}
-                    categories={set.categories}
-                  />
-                </GridCol>)}
+                {sets.filter(set => isServicePolicyCardEnabled(set, 'create')).map(set => {
+                  return <GridCol col={{ span: 6 }} key={set.type}>
+                    <RadioCard
+                      type={'radio'}
+                      key={set.type}
+                      value={set.type}
+                      title={$t(policyTypeLabelMapping[set.type])}
+                      description={$t(policyTypeDescMapping[set.type])}
+                      categories={set.categories}
+                    />
+                  </GridCol>
+                })}
               </GridRow>
             </Radio.Group>
           </Form.Item>

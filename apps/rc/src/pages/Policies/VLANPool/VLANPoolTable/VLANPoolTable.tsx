@@ -15,6 +15,7 @@ import {
   VLAN_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                              from '@acx-ui/types'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 export default function VLANPoolTable () {
@@ -45,6 +46,7 @@ export default function VLANPoolTable () {
 
   const rowActions: TableProps<VLANPoolViewModelType>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([{ id, name }], clearSelection) => {
         showActionModal({
@@ -61,6 +63,7 @@ export default function VLANPoolTable () {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       onClick: ([{ id }]) => {
         navigate({
@@ -93,8 +96,10 @@ export default function VLANPoolTable () {
           }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}>
+          <TenantLink
+            to={getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.CREATE })}
+            scopeKey={[WifiScopes.CREATE]}
+          >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= VLAN_LIMIT_NUMBER
