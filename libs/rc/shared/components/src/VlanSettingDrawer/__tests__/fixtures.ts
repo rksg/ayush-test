@@ -576,7 +576,7 @@ export const portList = [{
   poeUsage: 'off'
 }]
 
-export const portSlotsData = [{
+export const portSlotsData = [[{
   portCount: 8,
   portNumber: 8,
   portStatus: portList.slice(0, 7),
@@ -588,4 +588,4 @@ export const portSlotsData = [{
   portStatus: portList.slice(8, 9),
   portTagged: '',
   slotNumber: 2
-}]
+}]]
