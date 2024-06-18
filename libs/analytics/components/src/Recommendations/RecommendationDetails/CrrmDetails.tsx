@@ -5,6 +5,7 @@ import { impactedArea }                         from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, PageHeader } from '@acx-ui/components'
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { useParams }                            from '@acx-ui/react-router-dom'
+import { WifiScopes }                           from '@acx-ui/types'
 import { hasPermission }                        from '@acx-ui/user'
 
 import { FixedAutoSizer } from '../../DescriptionSection/styledComponents'
@@ -45,7 +46,10 @@ export const CrrmDetails = () => {
         { text: $t(recommendationTypeMapping.crrm.title),
           link: recommendationTypeMapping.crrm.link }
       ]}
-      extra={hasPermission() ? [<RecommendationSetting recommendationDetails={details} />] : []}
+      extra={hasPermission({ permission: 'WRITE_AI_DRIVEN_RRM', scopes: [WifiScopes.UPDATE] })
+        ? [<RecommendationSetting recommendationDetails={details} />]
+        : []
+      }
     />}
     <GridRow>
       <GridCol col={{ span: 4 }}>

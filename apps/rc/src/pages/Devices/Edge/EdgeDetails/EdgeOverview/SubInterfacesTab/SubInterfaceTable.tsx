@@ -1,12 +1,12 @@
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps }                                                  from '@acx-ui/components'
-import { EdgeLagStatus, EdgePortStatus, getEdgePortIpModeString, TableQuery } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                     from '@acx-ui/types'
+import { Table, TableProps }                                 from '@acx-ui/components'
+import { EdgePortInfo, getEdgePortIpModeString, TableQuery } from '@acx-ui/rc/utils'
+import { RequestPayload }                                    from '@acx-ui/types'
 
 interface SubInterfaceTableProps {
   settingsId?: string
-  tableQuery: TableQuery<EdgePortStatus | EdgeLagStatus, RequestPayload<unknown>, unknown>
+  tableQuery: TableQuery<EdgePortInfo, RequestPayload<unknown>, unknown>
 }
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
@@ -14,15 +14,12 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { tableQuery, settingsId = 'edge-sub-interfaces-table' } = props
   const { $t } = useIntl()
 
-  const columns: TableProps<EdgePortStatus | EdgeLagStatus>['columns'] = [
+  const columns: TableProps<EdgePortInfo>['columns'] = [
     {
       title: $t({ defaultMessage: 'Port Type' }),
-      key: 'type',
-      dataIndex: 'type',
-      sorter: true,
-      render: (_, row) => {
-        return 'type' in row ? row.type : row.portType
-      }
+      key: 'portType',
+      dataIndex: 'portType',
+      sorter: true
     },
     {
       title: $t({ defaultMessage: 'Status' }),
@@ -67,7 +64,7 @@ export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   return (
     <Table
       settingsId={settingsId}
-      rowKey={(row: EdgePortStatus | EdgeLagStatus) => `${row.mac}-${row.vlan}`}
+      rowKey={(row: EdgePortInfo) => `${row.mac}-${row.vlan}`}
       columns={columns}
       dataSource={tableQuery.data?.data}
       pagination={tableQuery.pagination}

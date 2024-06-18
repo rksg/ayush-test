@@ -1,63 +1,51 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
-import { Space }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Divider, Space } from 'antd'
+import { useIntl }        from 'react-intl'
 
-import {
-  Button,
-  Drawer,
-  Loader,
-  Table,
-  TableProps
-} from '@acx-ui/components'
-import { useMspCustomerListQuery } from '@acx-ui/msp/services'
-import {
-  MSPUtils,
-  MspEc
-} from '@acx-ui/msp/utils'
-import { useApplyConfigTemplateMutation } from '@acx-ui/rc/services'
-import {
-  ConfigTemplate,
-  useTableQuery
-} from '@acx-ui/rc/utils'
-import { hasAccess } from '@acx-ui/user'
+import { Button, Drawer, Loader, Table, TableProps }         from '@acx-ui/components'
+import { useMspCustomerListQuery }                           from '@acx-ui/msp/services'
+import { MSPUtils, MspEc }                                   from '@acx-ui/msp/utils'
+import { useApplyConfigTemplateMutation }                    from '@acx-ui/rc/services'
+import { ConfigTemplate, ConfigTemplateType, useTableQuery } from '@acx-ui/rc/utils'
+import { filterByAccess, hasAccess }                         from '@acx-ui/user'
+
+import { MAX_APPLICABLE_EC_TENANTS }                                                      from '../constants'
+import { ConfigTemplateOverrideModal }                                                    from '../Overrides'
+import { overrideDisplayViewMap }                                                         from '../Overrides/contentsMap'
+import { OverrideValuesPerMspEcType, transformOverrideValues, useConfigTemplateOverride } from '../Overrides/utils'
 
 import * as UI          from './styledComponents'
 import { useEcFilters } from './templateUtils'
 
+const mspUtils = MSPUtils()
 
 interface ApplyTemplateDrawerProps {
   setVisible: (visible: boolean) => void
-  selectedTemplates: ConfigTemplate[]
+  selectedTemplate: ConfigTemplate
 }
 
 export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const { $t } = useIntl()
-  const { setVisible, selectedTemplates } = props
+  const { setVisible, selectedTemplate } = props
   const ecFilters = useEcFilters()
   const [ selectedRows, setSelectedRows ] = useState<MspEc[]>([])
   const [ confirmationDrawerVisible, setConfirmationDrawerVisible ] = useState(false)
   const [ applyConfigTemplate ] = useApplyConfigTemplateMutation()
-  const mspUtils = MSPUtils()
-
-  const ecNames = useMemo(() => selectedRows.map(r => r.name), [selectedRows])
-  const templateNames = useMemo(() => selectedTemplates.map(t => t.name), [selectedTemplates])
-
-  const mspPayload = {
-    filters: ecFilters,
-    fields: [
-      'check-all',
-      'id',
-      'name',
-      'tenantType',
-      'status',
-      'streetAddress'
-    ]
-  }
+  const {
+    overrideModalVisible,
+    overrideValues,
+    setOverrideModalVisible,
+    isOverridable,
+    createOverrideModalProps
+  } = useConfigTemplateOverride(selectedTemplate, selectedRows)
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
-    defaultPayload: mspPayload,
+    defaultPayload: {
+      filters: ecFilters,
+      fields: ['id', 'name', 'status', 'streetAddress']
+    },
     search: {
       searchTargetFields: ['name'],
       searchString: ''
@@ -71,9 +59,14 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const onApply = async () => {
     const allRequests = selectedRows.map(ec => {
+      const overrideValue = overrideValues?.[ec.id]
+
       return applyConfigTemplate({
-        params: { templateId: selectedTemplates[0].id, tenantId: ec.id },
-        payload: {}
+        params: { templateId: selectedTemplate.id, tenantId: ec.id },
+        ...(overrideValue
+          ? { payload: transformOverrideValues(overrideValue) }
+          : {}
+        )
       }).unwrap()
     })
 
@@ -83,6 +76,22 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const hasReachedTheMaxRecord = (): boolean => {
+    return selectedRows.length >= MAX_APPLICABLE_EC_TENANTS
+  }
+
+  const isRecordDisabledAtMax = (mspEcId: string): boolean => {
+    return hasReachedTheMaxRecord() && !selectedRows.find(row => row.id === mspEcId)
+  }
+
+  const isRecordApplied = (mspEcId: string): boolean => {
+    return (selectedTemplate.appliedOnTenants ?? []).includes(mspEcId)
+  }
+
+  const isRecordDisabled = (mspEcId: string): boolean => {
+    return isRecordDisabledAtMax(mspEcId) || isRecordApplied(mspEcId)
   }
 
   const columns: TableProps<MspEc>['columns'] = [
@@ -97,6 +106,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     {
       title: $t({ defaultMessage: 'Status' }),
       dataIndex: 'status',
+      width: 70,
       key: 'status',
       sorter: true,
       render: function (_, row) {
@@ -108,11 +118,41 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       dataIndex: 'streetAddress',
       key: 'streetAddress',
       sorter: true
+    },
+    ...(isOverridable(selectedTemplate) ? [{
+      title: $t({ defaultMessage: 'Template Override Value' }),
+      dataIndex: 'overrideValue',
+      key: 'overrideValue',
+      sorter: false,
+      render: function (_: React.ReactNode, row: MspEc) {
+        const View = overrideDisplayViewMap[selectedTemplate.type]
+        const entity = overrideValues?.[row.id]
+
+        return (View && entity) ? <View entity={entity} /> : null
+      }
+    }] : [])
+  ]
+
+  const rowActions: TableProps<MspEc>['rowActions'] = [
+    {
+      label: $t({ defaultMessage: 'Override Template' }),
+      visible: isOverridable(selectedTemplate),
+      onClick: (rows: MspEc[]) => {
+        setSelectedRows(rows)
+        setOverrideModalVisible(true)
+      }
     }
   ]
 
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
+    { hasReachedTheMaxRecord() &&
+      <UI.Warning>{
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'You have reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
+      }
+      </UI.Warning>
+    }
     <Loader states={[tableQuery]}>
       <Table<MspEc>
         columns={columns}
@@ -123,11 +163,16 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
         settingsId='msp-apply-template-table'
         rowKey='id'
         enableApiFilter={true}
+        rowActions={filterByAccess(rowActions)}
         rowSelection={hasAccess() && {
+          hideSelectAll: true,
           type: 'checkbox',
           onChange (selectedRowKeys, selRows) {
             setSelectedRows(selRows)
-          }
+          },
+          getCheckboxProps: (record: MspEc) => ({
+            disabled: isRecordDisabled(record.id)
+          })
         }}
       />
     </Loader>
@@ -154,32 +199,38 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
         onClose={onClose}
         footer={footer}
         destroyOnClose={true}
-        width={700}
+        width={isOverridable(selectedTemplate) ? 850 : 700}
       >
         {content}
       </Drawer>
       {confirmationDrawerVisible &&
-      <ApplyTemplateConfirmationDrawer
-        ecNames={ecNames}
-        templateNames={templateNames}
-        onBack={() => setConfirmationDrawerVisible(false)}
-        onApply={onApply}
-        onCancel={onClose}
-      />}
+        <ApplyTemplateConfirmationDrawer
+          targetMspEcs={selectedRows}
+          selectedTemplate={selectedTemplate}
+          overrideValues={overrideValues}
+          onBack={() => setConfirmationDrawerVisible(false)}
+          onApply={onApply}
+          onCancel={onClose}
+        />
+      }
+      {overrideModalVisible &&
+        <ConfigTemplateOverrideModal {...createOverrideModalProps()} />
+      }
     </>
   )
 }
 
 interface ApplyTemplateConfirmationDrawerProps {
-  ecNames: string[]
-  templateNames: string[]
+  targetMspEcs: MspEc[]
+  selectedTemplate: ConfigTemplate
+  overrideValues: OverrideValuesPerMspEcType | undefined
   onBack: () => void
   onApply: () => void
   onCancel: () => void
 }
 
 function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
-  const { ecNames, templateNames, onBack, onApply, onCancel } = props
+  const { targetMspEcs, selectedTemplate, onBack, onApply, onCancel } = props
   const { $t } = useIntl()
   const [loading, setLoading ] = useState(false)
 
@@ -188,9 +239,15 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
       {/* eslint-disable-next-line max-len */}
       <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated <venuePlural></venuePlural>.' }) }</p>
       <p>{ $t({ defaultMessage: 'Are you sure you want to continue?' }) }</p>
-      <UI.EcListContainer>{ ecNames.map(name => <li key={name}>{name}</li>) }</UI.EcListContainer>
-      {/* eslint-disable-next-line max-len */}
-      <UI.TemplateListContainer>{ templateNames.map(name => <li key={name}>- {name}</li>) }</UI.TemplateListContainer>
+      <AppliedMspEcListView
+        targetMspEcs={targetMspEcs}
+        templateType={selectedTemplate.type}
+        overrideValues={props.overrideValues}
+      />
+      <Divider />
+      <UI.TemplateListContainer>
+        <li key={selectedTemplate.name}>- {selectedTemplate.name}</li>
+      </UI.TemplateListContainer>
     </Space>
 
   const footer =<div>
@@ -227,4 +284,28 @@ function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawer
       {content}
     </Drawer>
   )
+}
+
+interface AppliedMspEcListProps {
+  targetMspEcs: MspEc[]
+  templateType: ConfigTemplateType
+  overrideValues: OverrideValuesPerMspEcType | undefined
+}
+function AppliedMspEcListView (props: AppliedMspEcListProps) {
+  const { targetMspEcs, templateType, overrideValues } = props
+  const OverrideDisplayView = overrideDisplayViewMap[templateType]
+
+  return <Space direction='vertical'>
+    {targetMspEcs.map(mspEc => {
+      const overrideEntity = overrideValues?.[mspEc.id]
+      const hasOverrideDisplayView = !!OverrideDisplayView && !!overrideEntity
+
+      return <Space direction='vertical' key={mspEc.id}>
+        <span style={{ fontWeight: 'bold' }}>{mspEc.name}</span>
+        {hasOverrideDisplayView &&
+          <div style={{ marginLeft: '12px' }}><OverrideDisplayView entity={overrideEntity} /></div>
+        }
+      </Space>
+    })}
+  </Space>
 }

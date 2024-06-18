@@ -35,15 +35,11 @@ export function NetworkingTab (props: {
     Other Agile Multi Band capabilities including 802.11k, 802.11r, and 802.11w
     are enabled or disabled separately.` })
 
-  const gtkRekeyFlag = useIsSplitOn(Features.WIFI_FR_6029_FG5_TOGGLE)
   const enableBSSPriority = useIsSplitOn(Features.WIFI_EDA_BSS_PRIORITY_TOGGLE)
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-  const isRadiusOptionsSupport = useIsSplitOn(Features.RADIUS_OPTIONS)
 
-  const showRadiusOptions = isRadiusOptionsSupport && hasAuthRadius(data, wlanData)
   const showSingleSessionIdAccounting = hasAccountingRadius(data, wlanData)
   const wifi6AndWifi7Flag = useIsSplitOn(Features.WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE)
-  const enable80211D = useIsSplitOn(Features.ADDITIONAL_REGULATORY_DOMAINS_TOGGLE)
 
   const [
     enableFastRoaming,
@@ -114,7 +110,6 @@ export function NetworkingTab (props: {
         />
       </UI.FieldLabel>
 
-      {enable80211D &&
       <UI.FieldLabel width={labelWidth}>
         <Space>
           {$t({ defaultMessage: 'Enable 802.11d' })}
@@ -133,7 +128,6 @@ export function NetworkingTab (props: {
           children={<Switch />}
         />
       </UI.FieldLabel>
-      }
 
       {isFastBssVisible &&
         <UI.FieldLabel width={labelWidth}>
@@ -384,19 +378,16 @@ export function NetworkingTab (props: {
         </div>
       </>}
 
-      {gtkRekeyFlag &&
-        <UI.FieldLabel width={labelWidth}>
-          {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
-          <Form.Item
-            name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
-            style={{ marginBottom: '10px' }}
-            valuePropName='checked'
-            initialValue={false}
-            children={<Switch/>}/>
-        </UI.FieldLabel>
-      }
+      <UI.FieldLabel width={labelWidth}>
+        {$t({ defaultMessage: 'AP Host Name Advertisement in Beacon' })}
+        <Form.Item
+          name={['wlan', 'advancedCustomization', 'enableApHostNameAdvertisement']}
+          style={{ marginBottom: '10px' }}
+          valuePropName='checked'
+          initialValue={false}
+          children={<Switch/>}/>
+      </UI.FieldLabel>
 
-      {gtkRekeyFlag &&
       <UI.FieldLabel width={labelWidth}>
         <Space>
           {$t({ defaultMessage: 'GTK Rekey' })}
@@ -414,7 +405,6 @@ export function NetworkingTab (props: {
           initialValue={true}
           children={<Switch/>}/>
       </UI.FieldLabel>
-      }
 
       <MulticastForm wlanData={wlanData}/>
 
@@ -452,7 +442,7 @@ export function NetworkingTab (props: {
 
       { wifi6AndWifi7Flag && enableAP70 && <WiFi7/> }
 
-      {showRadiusOptions &&
+      {hasAuthRadius(data, wlanData) &&
       <>
         <UI.Subtitle>{$t({ defaultMessage: 'RADIUS Options' })}</UI.Subtitle>
         <RadiusOptionsForm context='network'

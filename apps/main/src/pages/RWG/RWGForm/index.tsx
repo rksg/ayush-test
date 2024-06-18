@@ -6,6 +6,7 @@ import { useIntl }                              from 'react-intl'
 
 import {
   Button,
+  cssStr,
   Loader,
   PageHeader,
   PasswordInput,
@@ -25,7 +26,8 @@ import {
   whitespaceOnlyRegExp,
   RWG,
   excludeSpaceRegExp,
-  URLProtocolRegExp
+  domainNameRegExp,
+  getRwgStatus
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -80,7 +82,7 @@ export function RWGForm () {
       return Promise.reject($t(validationMessages.name))
     }
     const payload = { ...gatewayListPayload, searchString: value }
-    const list = (await gatewayList({ params, payload }, true)
+    const list = (await gatewayList({ params: { gatewayId, tenantId }, payload }, true)
       .unwrap()).data.filter(n => n.rwgId !== data?.rwgId).map(n => ({ name: n.name }))
     return checkObjectNotExists(list, { name: value } , $t({ defaultMessage: 'Gateway' }))
   }
@@ -121,9 +123,8 @@ export function RWGForm () {
           isEditMode &&
           <span>
             <Badge
-              color={`var(${data?.status === 'Operational'
-                ? '--acx-semantics-green-50'
-                : '--acx-neutrals-50'})`}
+              color={data?.status ? cssStr(getRwgStatus(data.status).color)
+                : cssStr('--acx-neutrals-50')}
             />
           </span>
         }
@@ -178,7 +179,7 @@ export function RWGForm () {
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
-                    { max: 32, transform: (value) => value.trim() },
+                    { max: 255, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     {
                       validator: (_, value) => nameValidator(value)
@@ -204,8 +205,12 @@ export function RWGForm () {
                     />
                   </>}
                   rules={[
-                    { type: 'string', required: true },
-                    { validator: (_, value) => URLProtocolRegExp(value) }
+                    { type: 'string', required: true,
+                      message: $t({ defaultMessage: 'Please enter FQDN / IP' })
+                    },
+                    { validator: (_, value) => domainNameRegExp(value),
+                      message: $t({ defaultMessage: 'Please enter a valid FQDN / IP' })
+                    }
                   ]}
                   children={<Input />}
                 />
@@ -225,7 +230,8 @@ export function RWGForm () {
                     />
                   </>}
                   rules={[
-                    { required: true },
+                    { required: true,
+                      message: $t({ defaultMessage: 'Please enter API Key' }) },
                     { max: 80 },
                     { validator: (_, value) => excludeSpaceRegExp(value) }
                   ]}

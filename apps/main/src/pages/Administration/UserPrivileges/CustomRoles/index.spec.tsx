@@ -255,36 +255,5 @@ describe('Custom Roles Table', () => {
       name: 'new wi-fi custom role', scope: [ 'wifi-r', 'wifi-u' ], type: 'Custom'
     } })
   })
-  it('should clone selected row', async () => {
-    render(
-      <Provider>
-        <UserProfileContext.Provider
-          value={userProfileContextValues}
-        >
-          <CustomRoles
-            isPrimeAdminUser={true}
-          />
-        </UserProfileContext.Provider>
-      </Provider>, {
-        route: { params }
-      })
-
-    const systemRow = await screen.findByRole('row', { name: /Read Only/i })
-    await userEvent.click(within(systemRow).getByRole('radio'))
-    expect(screen.getByRole('button', { name: 'Clone' })).toBeVisible()
-    const customRow = await screen.findByRole('row', { name: /custom role/i })
-    await userEvent.click(within(customRow).getByRole('radio'))
-
-    await userEvent.click(screen.getByRole('button', { name: 'Clone' }))
-
-    expect(mockedUsedNavigate).toHaveBeenCalledWith({
-      pathname: `/${params.tenantId}/t/administration/userPrivileges/customRoles/clone/df2277fb9f8c403c8b1a12ffe6ae9809`,
-      hash: '',
-      search: ''
-    }, { state: {
-      description: 'this is new custom role for wi-fi', id: 'df2277fb9f8c403c8b1a12ffe6ae9809',
-      name: 'new wi-fi custom role', scope: [ 'wifi-r', 'wifi-u' ], type: 'Custom'
-    } })
-  })
 })
 

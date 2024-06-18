@@ -4,17 +4,16 @@ import { Button, Space } from 'antd'
 import { isEmpty }       from 'lodash'
 import { useIntl }       from 'react-intl'
 
-import { AnchorLayout, StepsFormLegacy, Tooltip }                                                     from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                     from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                                                                 from '@acx-ui/icons'
-import { usePathBasedOnConfigTemplate }                                                               from '@acx-ui/rc/components'
-import { useGetVenueApCapabilitiesQuery, useGetVenueTemplateApCapabilitiesQuery, useLazyApListQuery } from '@acx-ui/rc/services'
-import { CapabilitiesApModel, VenueApModelCellular, redirectPreviousPage }                            from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                                                                     from '@acx-ui/react-router-dom'
-import { directedMulticastInfo }                                                                      from '@acx-ui/utils'
+import { AnchorLayout, StepsFormLegacy, Tooltip }     from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                 from '@acx-ui/icons'
+import { usePathBasedOnConfigTemplate }               from '@acx-ui/rc/components'
+import { useLazyApListQuery }                         from '@acx-ui/rc/services'
+import { VenueApModelCellular, redirectPreviousPage } from '@acx-ui/rc/utils'
+import { useNavigate, useParams }                     from '@acx-ui/react-router-dom'
+import { directedMulticastInfo }                      from '@acx-ui/utils'
 
-import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                      from '../../index'
+import { VenueUtilityContext } from '..'
+import { VenueEditContext }    from '../../index'
 
 import { CellularOptionsForm } from './CellularOptions/CellularOptionsForm'
 import { DirectedMulticast }   from './DirectedMulticast'
@@ -39,49 +38,37 @@ export function NetworkingTab () {
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { tenantId, venueId } = useParams()
 
-  const supportDirectedMulticast = useIsSplitOn(Features.DIRECTED_MULTICAST)
-  const supportRadiusOptions = useIsSplitOn(Features.RADIUS_OPTIONS)
-
-  const [cellularApModels, setCellularApModels] = useState<string[]>([])
   const [hasCellularAps, setHasCellularAps] = useState(false)
 
-  // eslint-disable-next-line max-len
-  const { data: venueCaps } = useVenueConfigTemplateQueryFnSwitcher<{ version: string, apModels: CapabilitiesApModel[] }>(
-    useGetVenueApCapabilitiesQuery,
-    useGetVenueTemplateApCapabilitiesQuery
-  )
+  const { venueApCaps } = useContext(VenueUtilityContext)
 
   const [ getApList ] = useLazyApListQuery()
 
   useEffect(() => {
-    if (venueCaps) {
-      let apModels = venueCaps.apModels
+    if (venueApCaps) {
+      let apModels = venueApCaps.apModels
         .filter(apCapability => apCapability.canSupportCellular === true)
         .map(apCapability => apCapability.model) as string[]
 
-      setCellularApModels(apModels)
-    }
-  }, [venueCaps])
+      const cellurlarApModelNames = isEmpty(apModels)? ['M510'] : apModels
+      let filters = { model: cellurlarApModelNames, venueId: [venueId] }
 
-  useEffect(() => {
-    const cellurlarApModelNames = isEmpty(cellularApModels)? ['M510'] : cellularApModels
-    let filters = { model: cellurlarApModelNames, venueId: [venueId] }
+      const payload = {
+        fields: ['name', 'model', 'venueId', 'id'],
+        pageSize: 10000,
+        sortField: 'name',
+        sortOrder: 'ASC',
+        filters
+      }
 
-    const payload = {
-      fields: ['name', 'model', 'venueId', 'id'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters
+      if (getApList) {
+        getApList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
+          const { data } = res || {}
+          setHasCellularAps(!!(data?.length > 0))
+        })
+      }
     }
-
-    if (getApList) {
-      getApList({ params: { tenantId }, payload }, true).unwrap().then((res)=>{
-        const { data } = res || {}
-        setHasCellularAps(!!(data?.length > 0))
-      })
-    }
-  }, [cellularApModels])
+  }, [venueApCaps])
 
   const {
     previousPath,
@@ -108,7 +95,7 @@ export function NetworkingTab () {
       <MeshNetwork />
     </>
   },
-  ...(supportDirectedMulticast? [{
+  {
     title: $t({ defaultMessage: 'Directed Multicast' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='directed-multicast'>
@@ -127,7 +114,7 @@ export function NetworkingTab () {
         }
       </StepsFormLegacy.SectionTitle>
       <DirectedMulticast />
-    </> }] : []),
+    </> },
   ...(hasCellularAps? [{
     title: $t({ defaultMessage: 'Cellular Options' }),
     content: <>
@@ -136,15 +123,15 @@ export function NetworkingTab () {
       </StepsFormLegacy.SectionTitle>
       <CellularOptionsForm />
     </> }] : []),
-  ...(supportRadiusOptions? [{
+  {
     title: $t({ defaultMessage: 'RADIUS Options' }),
     content: <>
       <StepsFormLegacy.SectionTitle id='radius-options'>
         { $t({ defaultMessage: 'RADIUS Options' }) }
       </StepsFormLegacy.SectionTitle>
       <RadiusOptions />
-    </> }] : []
-  )]
+    </>
+  }]
 
   const handleUpdateAllSettings = async () => {
     try {

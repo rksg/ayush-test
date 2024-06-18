@@ -16,6 +16,7 @@ import {
   EditOutlinedDisabledIcon
 } from '@acx-ui/icons'
 import { TenantLink, useParams }                                           from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                      from '@acx-ui/types'
 import { hasPermission }                                                   from '@acx-ui/user'
 import { DateFilter, DateRange, TABLE_DEFAULT_PAGE_SIZE, encodeParameter } from '@acx-ui/utils'
 
@@ -126,7 +127,7 @@ export function VideoCallQoeDetails (){
                   : (
                     <div style={{ width: '100px' }}>-</div>
                   )}
-              {hasPermission() &&
+              {hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE', scopes: [WifiScopes.UPDATE] }) &&
               <Tooltip title={$t({ defaultMessage: 'Select Client MAC' })}>
                 <EditOutlinedIcon
                   style={{ height: '16px', width: '16px', cursor: 'pointer' }}
@@ -144,7 +145,7 @@ export function VideoCallQoeDetails (){
         return (
           <Space>
             <div style={{ width: '100px' }}>-</div>
-            {hasPermission() &&
+            {hasPermission({ permission: 'WRITE_VIDEO_CALL_QOE', scopes: [WifiScopes.UPDATE] }) &&
             <Tooltip title={$t({ defaultMessage: 'Not allowed as participant not on Wi-Fi' })}>
               <EditOutlinedDisabledIcon
                 style={{ height: '16px', width: '16px', cursor: 'not-allowed' }}

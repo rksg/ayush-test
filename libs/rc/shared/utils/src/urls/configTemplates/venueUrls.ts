@@ -230,5 +230,25 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/aaaServers',
     newApi: true
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apGroups',
+    newApi: true
+  },
+  getVlanPoolViewModelList: {
+    method: 'post',
+    url: '/templates/enhancedVlanPoolProfiles/query',
+    newApi: true
+  },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/templates/apGroups/:apGroupId/networks/query',
+    newApi: true
+  },
+  networkActivations: {
+    method: 'post',
+    url: '/templates/networkActivations/query',
+    newApi: true
   }
 }

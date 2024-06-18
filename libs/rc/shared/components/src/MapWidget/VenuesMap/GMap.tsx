@@ -5,8 +5,9 @@ import * as _                                     from 'lodash'
 import { createRoot }                             from 'react-dom/client'
 import { RawIntlProvider, useIntl }               from 'react-intl'
 
-import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { VenueMarkerOptions }             from '@acx-ui/rc/utils'
+import { VenueMarkerOptions } from '@acx-ui/rc/utils'
+
+import { useIsEdgeReady } from '../../useEdgeActions'
 
 import { getMarkerSVG, getMarkerColor, getIcon }    from './helper'
 import VenueClusterRenderer                         from './VenueClusterRenderer'
@@ -47,7 +48,7 @@ const GMap: React.FC<MapProps> = ({
   const [markerClusterer, setMarkerClusterer] = React.useState<MarkerClusterer>()
   const [venueInfoWindow, setVenueInfoWindow] = React.useState<google.maps.InfoWindow>()
   // whether to display edge on marker tooltip
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
 
   React.useEffect(() => {
     if (ref.current) {

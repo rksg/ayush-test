@@ -16,7 +16,8 @@ export enum ConfigTemplateType {
   SYSLOG = 'SYSLOG',
   ROGUE_AP_DETECTION = 'ROGUE_AP',
   SWITCH_REGULAR = 'SWITCH_REGULAR',
-  SWITCH_CLI = 'SWITCH_CLI'
+  SWITCH_CLI = 'SWITCH_CLI',
+  AP_GROUP = 'AP_GROUP'
 }
 
 export enum AccessControlPolicyForTemplateCheckType {
@@ -31,8 +32,12 @@ export interface ConfigTemplate {
   name: string,
   createdBy: string,
   createdOn: number,
-  appliedOnTenants: string[],
+  appliedOnTenants?: string[],
   type: ConfigTemplateType,
   lastModified: number,
   lastApplied: number
+}
+
+export interface ApplyConfigTemplatePaylod {
+  overrides: Array<{ [key in string]: string | number | boolean | [] }>
 }

@@ -23,7 +23,7 @@ import { ApStatusDetails, LanPort }                  from './ap'
 import { RogueCategory }                             from './policies'
 import { ConfigurationHistory, CliTemplateVariable } from './switch'
 
-import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, RWGStatusEnum, SwitchStatusEnum } from './index'
 
 
 
@@ -96,6 +96,7 @@ export interface TypeWiseNetworkDevices {
 	RogueAP: NetworkDevice[];
 	cloudpath: NetworkDevice[];
 	DP: NetworkDevice[];
+	rwg: NetworkDevice[];
 }
 
 export enum FloorplanContext {
@@ -106,7 +107,8 @@ export enum FloorplanContext {
 	switch = 'Switch',
 	lte_ap = 'LteAp',
 	rogue_ap = 'RogueAp',
-	cloudpath = 'Cloudpath'
+	cloudpath = 'Cloudpath',
+	rwg='rwg'
   }
 
 export interface APStatus {
@@ -128,13 +130,14 @@ export enum NetworkDeviceType {
 	lte_ap = 'LTEAP',
 	rogue_ap = 'RogueAP',
 	cloudpath = 'cloudpath',
-	dp = 'DP'
+	dp = 'DP',
+	rwg = 'rwg'
 }
 export interface NetworkDevice {
     id?: string; // used by devices type other than AP & switch
 	name: string;
 	switchName?: string;
-	deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum;
+	deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum | RWGStatusEnum;
 	networkDeviceType: NetworkDeviceType;
 	serialNumber: string;
 	floorplanId?: string;
@@ -400,8 +403,11 @@ export interface SwitchModel {
 	id: string,
 	model: string,
 	slots: SwitchModelSlot[],
-  taggedPorts?: string,
+	switchModel?: string,
+	taggedPorts?: string,
+	taggedPortsList?: string[],
 	untaggedPorts?: string,
+	untaggedPortsList?: string[],
 	voicePorts?: string
 }
 
@@ -414,12 +420,17 @@ export interface Vlan {
 	spanningTreePriority?: number,
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
+	switchVlanPortModels?: SwitchModel[]
 	vlanId: number,
 	vlanName?: string,
+	vlanConfigName?: string
   untaggedPorts?: string,
   taggedPorts?: string,
   title?: string,
   key?: number
+	inactiveRow?: boolean //ignore
+  inactiveTooltip?: string //ignore
+	isDeletable?: boolean //ignore
 }
 
 export interface ConfigurationProfile {
@@ -480,6 +491,13 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
+  } | {
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   'afcEnabled': boolean
 }
@@ -755,34 +773,7 @@ export interface ApManagementVlan {
 	keepAp?: boolean
 }
 
-export interface MdnsFencingWirelessRule {
-  fencingRange: string//'SAME_AP' | 'ONE_HOP_AP'
-}
 
-export interface MdnsFencingWiredRule {
-  name: string,
-  fencingRange: string, //'SAME_AP' | 'ONE_HOP_AP',
-  closestApMac: string,
-  deviceMacAddresses: string[]
-}
-
-export interface MdnsFencingService {
-  service: string,
-  customServiceName?: string,
-  description: string,
-  wirelessEnabled: boolean,
-  wirelessRule?: MdnsFencingWirelessRule,
-  wiredEnabled: boolean,
-  wiredRules?: MdnsFencingWiredRule[],
-  customMappingEnabled: boolean,
-  customStrings?: string[],
-  rowId?: string
-}
-
-export interface VenueMdnsFencingPolicy {
-  enabled: boolean,
-  services?: MdnsFencingService[]
-}
 
 export enum ShowTopologyFloorplanOn {
 	VENUE_OVERVIEW='VENUE_OVERVIEW',

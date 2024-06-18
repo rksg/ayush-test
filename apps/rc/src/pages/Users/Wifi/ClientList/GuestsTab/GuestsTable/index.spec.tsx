@@ -15,6 +15,7 @@ import {
   within,
   fireEvent
 } from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import {
@@ -80,6 +81,7 @@ describe('Guest Table', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     networkId: 'tenant-id'
   }
+  const userProfile = getUserProfile()
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()
 
@@ -97,6 +99,19 @@ describe('Guest Table', () => {
     act(() => {
       store.dispatch(clientApi.util.resetApiState())
       store.dispatch(networkApi.util.resetApiState())
+    })
+
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: false,
+      isCustomRole: false,
+      allowedOperations: [
+        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'POST:/wifiNetworks',
+        'POST:/guestUsers'
+      ]
     })
 
     mockServer.use(
@@ -151,12 +166,6 @@ describe('Guest Table', () => {
   })
 
   it('should render Add Guest drawer correctly', async () => {
-    const userProfile = getUserProfile()
-    setUserProfile({
-      ...userProfile,
-      allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers']
-    })
-
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -180,12 +189,6 @@ describe('Guest Table', () => {
   })
 
   it('should render Add Guest Pass Network modal correctly', async () => {
-    const userProfile = getUserProfile()
-    setUserProfile({
-      ...userProfile,
-      allowedOperations: ['POST:/networks']
-    })
-
     render(
       <Provider>
         <GuestTabContext.Provider value={{ setGuestCount }}>
@@ -387,11 +390,6 @@ describe('Guest Table', () => {
   })
 
   it('should show "Import from file" correctly', async () => {
-    const userProfile = getUserProfile()
-    setUserProfile({
-      ...userProfile,
-      allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers']
-    })
 
     mockServer.use(
       rest.post(
@@ -458,5 +456,58 @@ describe('Guest Table', () => {
     await openGuestDetailsAndClickAction('test5')
     await userEvent.click(await screen.findByRole('menuitem', { name: /download information/i }))
     await waitFor(() => expect(mockedDownloadReq).toBeCalledTimes(1))
+  })
+
+  describe('ABAC permission', () => {
+    it('should dispaly with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers'],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.CREATE]
+      })
+
+      render(
+        <Provider>
+          <GuestTabContext.Provider value={{ setGuestCount }}>
+            <GuestsTable />
+          </GuestTabContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/guests' }
+        })
+
+      expect(await screen.findByRole('button', { name: 'Add Guest' })).toBeEnabled()
+      const table = await screen.findByRole('table')
+      expect(await within(table).findByText('test1')).toBeVisible()
+      await userEvent.click(await screen.findByRole('button', { name: 'Add Guest' }))
+      const dialog = await screen.findByRole('dialog')
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('should correctly hide with custom scopeKeys', async () => {
+      setUserProfile({
+        profile: {
+          ...getUserProfile().profile
+        },
+        allowedOperations: [],
+        abacEnabled: true,
+        isCustomRole: true,
+        scopes: [WifiScopes.DELETE]
+      })
+
+      render(
+        <Provider>
+          <GuestTabContext.Provider value={{ setGuestCount }}>
+            <GuestsTable />
+          </GuestTabContext.Provider>
+        </Provider>, {
+          route: { params, path: '/:tenantId/t/users/wifi/guests' }
+        })
+      expect(screen.queryByRole('button', { name: 'Add Guest' })).toBeNull()
+    })
   })
 })

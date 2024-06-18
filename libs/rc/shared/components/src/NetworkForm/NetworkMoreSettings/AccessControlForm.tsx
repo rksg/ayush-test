@@ -188,8 +188,10 @@ function AddAcProfileModal (props: AcProfileModalProps) {
   const { modalStatus, setModalStatus, updateSelectedACProfile } = props
   const { visible=false, embeddedObject } = modalStatus
 
-  const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher(
-    useAddAccessControlProfileMutation, useAddAccessControlProfileTemplateMutation)
+  const [ createAclProfile ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddAccessControlProfileMutation,
+    useTemplateMutationFn: useAddAccessControlProfileTemplateMutation
+  })
 
   const formRef = useRef<StepsFormLegacyInstance<AccessControlFormFields>>()
 

@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, SummaryCard }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
 import { useGetSyslogPolicyQuery, useGetSyslogPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
   FacilityEnum, facilityLabelMapping,
@@ -15,11 +16,12 @@ import { SyslogDetailContext } from './SyslogDetailView'
 
 const SyslogDetailContent = () => {
   const { $t } = useIntl()
-
-  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>(
-    useGetSyslogPolicyQuery,
-    useGetSyslogPolicyTemplateQuery
-  )
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
+    useQueryFn: useGetSyslogPolicyQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
+    enableRbac
+  })
 
   const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)
 

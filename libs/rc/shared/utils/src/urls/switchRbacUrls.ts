@@ -149,14 +149,24 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/switch/tenant/:tenantId/vlans/switch/:switchId',
     newApi: true
   },
-  addSwitchVlan: {
-    method: 'post',
-    url: '/venues/:venueId/vlans',
+  deleteSwitchVlan: {
+    method: 'delete',
+    url: '/venues/:venueId/switches/:switchId/vlans/:vlanId',
+    newApi: true
+  },
+  updateSwitchVlan: {
+    method: 'put',
+    url: '/venues/:venueId/switches/:switchId/vlans/:vlanId',
     newApi: true
   },
   addSwitchVlans: {
     method: 'post',
     url: '/venues/:venueId/switches/:switchId/vlans',
+    newApi: true
+  },
+  addSwitchesVlans: {
+    method: 'post',
+    url: '/venues/:venueId/vlans',
     newApi: true
   },
   deleteSwitchVlans: {
@@ -343,16 +353,26 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   associateSwitchProfile: {
     method: 'put',
-    url: '/venues/:venueId/switchProfiles/:switchProfileId',
+    url: '/venues/:venueId/switchProfiles/:profileId',
     newApi: true
   },
-  dissociateSwitchProfile: {
+  disassociateSwitchProfile: {
     method: 'delete',
-    url: '/venues/:venueId/switchProfiles/:switchProfileId',
+    url: '/venues/:venueId/switchProfiles/:profileId',
+    newApi: true
+  },
+  deleteSwitchProfile: {
+    method: 'delete',
+    url: '/switchProfiles/:switchProfileId',
     newApi: true
   },
   associateCliTemplate: {
     method: 'put',
+    url: '/venues/:venueId/cliTemplates/:templateId',
+    newApi: true
+  },
+  disassociateCliTemplate: {
+    method: 'delete',
     url: '/venues/:venueId/cliTemplates/:templateId',
     newApi: true
   },
@@ -417,7 +437,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   downloadSwitchsCSV: {
     method: 'post',
-    url: '/venues/switches/csvFiles',
+    url: '/venues/switches/query/csvFiles',
     newApi: true
   },
   getSwitchPortlist: {

@@ -22,7 +22,6 @@ import {
   useLazyGetPortSettingQuery,
   useLazyGetPortsSettingQuery,
   useLazyGetSwitchVlanQuery,
-  useLazyGetSwitchVlansQuery,
   useLazyGetSwitchesVlanQuery,
   useLazyGetSwitchConfigurationProfileByVenueQuery,
   useLazyGetSwitchRoutedListQuery,
@@ -41,12 +40,16 @@ import {
   PORT_SPEED,
   SwitchPortViewModel,
   SwitchVlanUnion,
+  SWITCH_DEFAULT_VLAN_NAME,
+  ProfileTypeEnum,
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { store }     from '@acx-ui/store'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { store }         from '@acx-ui/store'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import { ACLSettingDrawer }       from './ACLSettingDrawer'
 import { EditLldpModal }          from './editLldpModal'
@@ -151,11 +154,13 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
+  const [ loading, setLoading ] = useState<boolean>(true)
   const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  const [loading, setLoading] = useState<boolean>(true)
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
-  const defaultVlanName = 'DEFAULT-VLAN'
+  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
+
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const switchId = switches?.[0]
@@ -174,6 +179,7 @@ export function EditPortDrawer ({
   const [editPortData, setEditPortData] = useState(null as unknown as PortSettingModel)
   const [defaultVlan, setDefaultVlan] = useState('')
   const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
+
   const [initPortVlans, setInitPortVlans] = useState([] as PortVlan[])
   const [profileDefaultVlan, setProfileDefaultVlan] = useState(null as unknown as Number)
   const [portsProfileVlans, setPortsProfileVlans] = useState({} as ProfileVlans)
@@ -187,6 +193,7 @@ export function EditPortDrawer ({
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
   const [disableCyclePoeCapability, setDisableCyclePoeCapability] = useState(false)
   const [disableSaveButton, setDisableSaveButton] = useState(false)
+  const [cliApplied, setCliApplied] = useState(false)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
@@ -202,7 +209,6 @@ export function EditPortDrawer ({
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
-  const [getSwitchVlans] = useLazyGetSwitchVlansQuery()
   const [getSwitchesVlan] = useLazyGetSwitchesVlanQuery()
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const [getSwitchConfigurationProfileByVenue] = useLazyGetSwitchConfigurationProfileByVenueQuery()
@@ -223,7 +229,7 @@ export function EditPortDrawer ({
       skip: !switchDetail?.venueId
     })
 
-  const { data: switchesDefaultVlan } = useGetDefaultVlanQuery({
+  const { data: switchesDefaultVlan, isLoading: isDefaultVlanLoading } = useGetDefaultVlanQuery({
     params: { tenantId, venueId: switchDetail?.venueId },
     payload: switches,
     enableRbac: isSwitchRbacEnabled
@@ -232,6 +238,10 @@ export function EditPortDrawer ({
   })
 
   const getVlans = async () => {
+    if (isSwitchLevelVlanEnabled) {
+      return await getSwitchUnionVlans()
+    }
+
     return switches.length > 1
       // eslint-disable-next-line max-len
       ? await getSwitchesVlan({
@@ -279,21 +289,38 @@ export function EditPortDrawer ({
     return veRouted?.data
   }
 
-  const getEachSwitchVlans = async () => {
-    const switchVlans = switches?.map(async (switchId) => {
-      return await getSwitchVlans({
-        params: { tenantId, switchId, venueId: switchDetail?.venueId },
-        enableRbac: isSwitchRbacEnabled
-      }, true).unwrap()
-    })
-    return Promise.all(switchVlans)
+  const getSwitchUnionVlans = async () => {
+    // include switch vlan and switch default vlan
+    const vlanList = switchesDefaultVlan?.flatMap(
+      v => v.vlanList?.filter(v => v.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
+    )
+
+    const vlanIds = _.uniq(vlanList?.map(v => v.vlanId))
+      ?.sort((a, b) => a - b)
+
+    return {
+      switchVlan: vlanIds?.map(v => {
+        const nameList = vlanList
+          ?.filter(vlan => !!vlan.vlanName && vlan.vlanId === v)
+          ?.map(vlan => vlan.vlanName)
+
+        const isAllHaveName = nameList?.length === switches.length
+        const isSameName = _.uniq(nameList)?.length === 1
+        const vlanName = isAllHaveName && isSameName && nameList?.[0]
+
+        return {
+          vlanId: v,
+          vlanConfigName: vlanName || ''
+        }
+      })
+    }
   }
 
   const getUseVenueSettingDisabled = async (profileDefaultVlan: Number) => {
-    const switchVlans = (await getEachSwitchVlans())?.flat()
+    const switchVlans = switchesDefaultVlan?.map(v => v.vlanList)?.flat() ?? []
 
     return switchVlans?.filter((v) =>
-      v?.vlanName !== defaultVlanName && v?.vlanId === Number(profileDefaultVlan)
+      v?.vlanName !== SWITCH_DEFAULT_VLAN_NAME && v?.vlanId === Number(profileDefaultVlan)
     )?.length > 0
   }
 
@@ -326,21 +353,23 @@ export function EditPortDrawer ({
         : []
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
-        ?.find((item) => item?.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
-      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
+        ?.find((item) => item?.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.vlanId ?? 1
+      const isCliApplied = !!switchProfile?.find(p => p.profileType === ProfileTypeEnum.CLI)
 
       setDefaultVlan(defaultVlan)
       setProfileDefaultVlan(profileDefaultVlan)
-      setSwitchVlans(switchVlans)
+      setSwitchVlans(switchVlans as SwitchVlanUnion)
       setVenueVlans(vlansByVenue)
       setVlanUsedByVe(vlanUsedByVe)
 
       setAclsOptions(getAclOptions(aclUnion))
       setPortSpeedOptions(portSpeed)
       setPoeClassOptions(getPoeClass(selectedPorts))
-      setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
+      setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
       setHasSwitchProfile(!!switchProfile?.length)
+      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
+      setCliApplied(isCliApplied)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
 
       isMultipleEdit
@@ -351,15 +380,17 @@ export function EditPortDrawer ({
     }
 
     // eslint-disable-next-line max-len
-    if (switchesDefaultVlan && !isSwitchDetailLoading && !isSwitchDataLoading && switchDetail?.venueId) {
+    if (!isSwitchDetailLoading && !isSwitchDataLoading && !isDefaultVlanLoading && switchDetail?.venueId) {
       resetFields()
       setData()
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
-  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, switchesDefaultVlan, visible, switchDetail])
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible])
 
-  const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
+  const getSinglePortValue = async (
+    portSpeed: string[],
+    defaultVlan: string,
     vlansByVenue: Vlan[]
   ) => {
     const portSettingArray = await getPortSetting({
@@ -1424,7 +1455,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('ingressAcl')}>
               <Space style={{ marginLeft: '8px', marginBottom: isMultipleEdit ? '10px' : '' }}>
                 <Button type='link'
@@ -1457,7 +1488,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('egressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
@@ -1506,9 +1537,19 @@ export function EditPortDrawer ({
         isVoiceVlanInvalid={isVoiceVlanInvalid}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
+        cliApplied={cliApplied}
         profileId={switchConfigurationProfileId}
+        switchIds={switches}
+        venueId={switchDetail?.venueId}
         updateSwitchVlans={async (values: Vlan) =>
-          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+          updateSwitchVlans(
+            values,
+            switchVlans,
+            setSwitchVlans,
+            venueVlans,
+            setVenueVlans,
+            isSwitchLevelVlanEnabled
+          )
         }
       />}
 

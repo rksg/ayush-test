@@ -20,6 +20,7 @@ import {
   configTemplatePolicyTypeMap
 } from '@acx-ui/rc/utils'
 import { LinkProps, MspTenantLink, Path, TenantLink, useLocation, useTenantLink } from '@acx-ui/react-router-dom'
+import { ScopeKeys }                                                              from '@acx-ui/types'
 
 import { configTemplateDefaultDetailsTab } from './contentMap'
 
@@ -69,7 +70,11 @@ export function PolicyConfigTemplateDetailsLink (props: GeneralConfigTemplateLin
 }
 
 // eslint-disable-next-line max-len
-export function PolicyConfigTemplateLinkSwitcher (props: React.PropsWithChildren<PolicyDetailsLinkProps>) {
+interface PolicyConfigTemplateLinkSwitcherProps extends React.PropsWithChildren<PolicyDetailsLinkProps> {
+  scopeKey?: ScopeKeys
+}
+// eslint-disable-next-line max-len
+export function PolicyConfigTemplateLinkSwitcher (props: PolicyConfigTemplateLinkSwitcherProps) {
   const { isTemplate } = useConfigTemplate()
   const { type, oper, policyId, children } = props
 
@@ -105,7 +110,11 @@ export function ServiceConfigTemplateDetailsLink (props: GeneralConfigTemplateLi
 }
 
 // eslint-disable-next-line max-len
-export function ServiceConfigTemplateLinkSwitcher (props: React.PropsWithChildren<ServiceDetailsLinkProps>) {
+interface ServiceConfigTemplateLinkSwitcherProps extends React.PropsWithChildren<ServiceDetailsLinkProps> {
+  scopeKey?: ScopeKeys
+}
+// eslint-disable-next-line max-len
+export function ServiceConfigTemplateLinkSwitcher (props: ServiceConfigTemplateLinkSwitcherProps) {
   const { isTemplate } = useConfigTemplate()
   const { type, oper, serviceId, children } = props
 
@@ -145,6 +154,8 @@ export function renderConfigTemplateDetailsComponent (type: ConfigTemplateType, 
     return <ConfigTemplateLink to={`networks/wireless/${id}/network-details/${targetTab}`} children={name} />
   } else if (type === ConfigTemplateType.VENUE) {
     return <ConfigTemplateLink to={`venues/${id}/venue-details/${targetTab}`} children={name} />
+  } else if (type === ConfigTemplateType.AP_GROUP) {
+    return <ConfigTemplateLink to={`devices/apgroups/${id}/details/networks`} children={name} />
   }
 
   return <span>{name}</span>

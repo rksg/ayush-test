@@ -160,7 +160,8 @@ const getLinkText = (tx: Transaction) => {
 
 export const showTxToast = (tx: Transaction) => {
   const intl = getIntl()
-  const rolesNotSupportingLinks = hasRoles([RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER])
+  const rolesNotSupportingLinks = hasRoles([
+    RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER, RolesEnum.REPORTS_ADMIN])
   if (tx.attributes && tx.attributes.name) {
     // calculate max_name_length
     const fullLength = getToastMessage(tx).length

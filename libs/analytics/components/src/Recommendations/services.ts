@@ -8,10 +8,10 @@ import {
   formattedPath,
   productNames
 } from '@acx-ui/analytics/utils'
-import { DateFormatEnum, formatter }      from '@acx-ui/formatter'
-import { recommendationApi }              from '@acx-ui/store'
-import { NodeType, getIntl, NetworkPath } from '@acx-ui/utils'
-import type { PathFilter }                from '@acx-ui/utils'
+import { DateFormatEnum, formatter }                          from '@acx-ui/formatter'
+import { recommendationApi }                                  from '@acx-ui/store'
+import { NodeType, getIntl, NetworkPath, computeRangeFilter } from '@acx-ui/utils'
+import type { PathFilter }                                    from '@acx-ui/utils'
 
 import {
   states,
@@ -246,7 +246,7 @@ export const api = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
     crrmList: build.query<
       CrrmList,
-      PathFilter & { n: number }
+      PathFilter & { n: number } & { selectedTenants?: string | null }
     >({
       query: (payload) => ({
         // kpiHelper hard-coded to c-crrm-channel24g-auto as it's the same for all crrm
@@ -402,7 +402,12 @@ export const api = recommendationApi.injectEndpoints({
           }
         }
         `,
-        variables: _.pick(payload, ['path', 'startDate', 'endDate', 'crrm'])
+        variables: {
+          ...(_.pick(payload,['path', 'crrm'])),
+          ...computeRangeFilter({
+            dateFilter: _.pick(payload, ['startDate', 'endDate', 'range'])
+          })
+        }
       }),
       transformResponse: (response: Response<Recommendation>) => {
         const { $t } = getIntl()

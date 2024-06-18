@@ -2,6 +2,7 @@ import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs }                                    from '@acx-ui/components'
 import { generatePath, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                          from '@acx-ui/types'
 import { hasPermission }                                       from '@acx-ui/user'
 
 import { Details }                                     from './DetailsTable'
@@ -55,7 +56,13 @@ export function ServiceGuardDetails () {
           }
         ]}
         extra={[
-          ...(hasPermission() ? [ <ReRunButton key='re-run' /> ] : []),
+          ...(hasPermission({
+            permission: 'WRITE_SERVICE_VALIDATION',
+            scopes: [WifiScopes.UPDATE]
+          })
+            ? [ <ReRunButton key='re-run' /> ]
+            : []
+          ),
           <TestRunButton key='past-tests' />
         ]}
         footer={

@@ -38,13 +38,13 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
   )
 
   const incidents : StatsCardProps['values'] = [{
-    title: defineMessage({ defaultMessage: 'APs' }),
+    title: defineMessage({ defaultMessage: 'at AP level' }),
     value: formatValue(summaryData?.apIncidentCount)
   }]
 
   !wirelessOnly && incidents.push(
     {
-      title: defineMessage({ defaultMessage: 'Switches' }),
+      title: defineMessage({ defaultMessage: 'at Switch level' }),
       value: formatValue(summaryData?.switchIncidentCount)
     }
   )
@@ -59,10 +59,12 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
   !wirelessOnly && traffic.push(
     {
       title: defineMessage({ defaultMessage: 'Wired' }),
-      value: summaryData?.switchTotalTraffic ?
-        formatter('bytesFormat')(summaryData?.switchTotalTraffic).split(' ')[0] : noDataDisplay,
-      suffix: summaryData?.switchTotalTraffic ?
-        formatter('bytesFormat')(summaryData?.switchTotalTraffic).split(' ')[1] : undefined
+      value: summaryData?.timeSeries?.switchTotalTraffic[0] ?
+        formatter('bytesFormat')(
+          summaryData?.timeSeries?.switchTotalTraffic[0]).split(' ')[0] : noDataDisplay,
+      suffix: summaryData?.timeSeries?.switchTotalTraffic[0] ?
+        formatter('bytesFormat')(
+          summaryData?.timeSeries?.switchTotalTraffic[0]).split(' ')[1] : undefined
     }
   )
   const powerUtilization = [{
@@ -73,7 +75,7 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
 
   !wirelessOnly && powerUtilization.push(
     {
-      title: defineMessage({ defaultMessage: 'Switches under PoE threshold' }),
+      title: defineMessage({ defaultMessage: 'Switches with surplus availability' }),
       value: formatValue(summaryData?.poeUnderPoweredSwitchCount),
       suffix: `/${formatValue(summaryData?.poeThresholdSwitchCount)}`
     }
@@ -97,7 +99,7 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
     },
     {
       type: 'grey',
-      title: defineMessage({ defaultMessage: 'Power Utilization' }),
+      title: defineMessage({ defaultMessage: 'Power Utilization (PoE)' }),
       values: powerUtilization
     }
   ]

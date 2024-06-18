@@ -75,18 +75,6 @@ const CustomRoles = (props: CustomRolesTableProps) => {
   ]
 
   const rowActions: TableProps<CustomRole>['rowActions'] = [
-    // {
-    //   label: $t({ defaultMessage: 'View' }),
-    //   visible: (selectedRows) => {
-    //     return (selectedRows.length === 1 && selectedRows[0].type === CustomGroupType.SYSTEM)
-    //   },
-    //   onClick: (selectedRows) => {
-    //     navigate({
-    //       ...linkAddCustomRolePath,
-    //       pathname: `${linkAddCustomRolePath.pathname}/view/${selectedRows[0].id}`
-    //     }, { state: selectedRows[0] })
-    //   }
-    // },
     {
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => {
@@ -96,18 +84,6 @@ const CustomRoles = (props: CustomRolesTableProps) => {
         navigate({
           ...linkAddCustomRolePath,
           pathname: `${linkAddCustomRolePath.pathname}/edit/${selectedRows[0].id}`
-        }, { state: selectedRows[0] })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Clone' }),
-      visible: (selectedRows) => {
-        return (selectedRows.length === 1 && selectedRows[0].name !== RolesEnum.PRIME_ADMIN)
-      },
-      onClick: (selectedRows) => {
-        navigate({
-          ...linkAddCustomRolePath,
-          pathname: `${linkAddCustomRolePath.pathname}/clone/${selectedRows[0].id}`
         }, { state: selectedRows[0] })
       }
     },

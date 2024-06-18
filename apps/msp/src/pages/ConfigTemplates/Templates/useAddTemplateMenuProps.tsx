@@ -19,25 +19,21 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import * as UI from './styledComponents'
+import * as UI                        from './styledComponents'
+import { getConfigTemplateTypeLabel } from './templateUtils'
 
 export function useAddTemplateMenuProps (): Omit<MenuProps, 'placement'> {
-  const { $t } = useIntl()
   const visibilityMap = useConfigTemplateVisibilityMap()
+  const wifiMenuItems = useWiFiMenuItems()
   const policyMenuItems = usePolicyMenuItems()
   const serviceMenuItems = useServiceMenuItems()
   const switchMenuItems = useSwitchMenuItems()
   const items: ItemType[] = [
-    (visibilityMap[ConfigTemplateType.NETWORK] ? {
-      key: 'add-wifi-network',
-      label: <ConfigTemplateLink to='networks/wireless/add'>
-        {$t({ defaultMessage: 'Wi-Fi Network' })}
-      </ConfigTemplateLink>
-    } : null),
+    wifiMenuItems,
     (visibilityMap[ConfigTemplateType.VENUE] ? {
       key: 'add-venue',
       label: <ConfigTemplateLink to='venues/add'>
-        {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
+        {getConfigTemplateTypeLabel(ConfigTemplateType.VENUE)}
       </ConfigTemplateLink>
     } : null),
     switchMenuItems,
@@ -63,7 +59,8 @@ function usePolicyMenuItems (): ItemType {
       createPolicyMenuItem(ConfigTemplateType.ACCESS_CONTROL, visibilityMap),
       createPolicyMenuItem(ConfigTemplateType.ROGUE_AP_DETECTION, visibilityMap),
       createPolicyMenuItem(ConfigTemplateType.SYSLOG, visibilityMap),
-      createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap)
+      createPolicyMenuItem(ConfigTemplateType.VLAN_POOL, visibilityMap),
+      createPolicyMenuItem(ConfigTemplateType.RADIUS, visibilityMap)
     ]
   }
 }
@@ -132,13 +129,40 @@ export function useSwitchMenuItems (): ItemType | null {
       (visibilityMap[ConfigTemplateType.SWITCH_REGULAR] ? {
         key: 'add-switch-regular-profile',
         label: <ConfigTemplateLink to='networks/wired/profiles/add'>
-          {$t({ defaultMessage: 'Regular Profile' })}
+          {getConfigTemplateTypeLabel(ConfigTemplateType.SWITCH_REGULAR)}
         </ConfigTemplateLink>
       } : null),
       (visibilityMap[ConfigTemplateType.SWITCH_CLI] ? {
         key: 'add-switch-cli-profile',
         label: <ConfigTemplateLink to='networks/wired/profiles/cli/add'>
-          {$t({ defaultMessage: 'CLI Profile' })}
+          {getConfigTemplateTypeLabel(ConfigTemplateType.SWITCH_CLI)}
+        </ConfigTemplateLink>
+      } : null)
+    ]
+  }
+}
+
+export function useWiFiMenuItems (): ItemType | null {
+  const visibilityMap = useConfigTemplateVisibilityMap()
+  const { $t } = getIntl()
+
+  // eslint-disable-next-line max-len
+  if (!visibilityMap[ConfigTemplateType.NETWORK] && !visibilityMap[ConfigTemplateType.AP_GROUP]) return null
+
+  return {
+    key: 'add-wifi-profile',
+    label: $t({ defaultMessage: 'Wi-Fi' }),
+    children: [
+      (visibilityMap[ConfigTemplateType.NETWORK] ? {
+        key: 'add-wifi-network',
+        label: <ConfigTemplateLink to='networks/wireless/add'>
+          {getConfigTemplateTypeLabel(ConfigTemplateType.NETWORK)}
+        </ConfigTemplateLink>
+      } : null),
+      (visibilityMap[ConfigTemplateType.AP_GROUP] ? {
+        key: 'add-ap-group',
+        label: <ConfigTemplateLink to='devices/apgroups/add'>
+          {getConfigTemplateTypeLabel(ConfigTemplateType.AP_GROUP)}
         </ConfigTemplateLink>
       } : null)
     ]

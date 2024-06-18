@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { rwgApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider, store }                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                           from '@acx-ui/feature-toggle'
+import { rwgApi }                                 from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, RWG, RWGStatusEnum } from '@acx-ui/rc/utils'
+import { Provider, store }                        from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen }  from '@acx-ui/test-utils'
 
 
 import { RWGDetails } from '.'
@@ -17,10 +17,11 @@ const gatewayResponse = {
     venueId: '3f10af1401b44902a88723cb68c4bc77',
     venueName: 'My-Venue',
     name: 'ruckusdemos',
-    hsotname: 'https://rxgs5-vpoc.ruckusdemos.net',
+    hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxxxxxx',
-    status: 'Operational'
-  }
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 const gatewayResponse1 = {
@@ -32,20 +33,15 @@ const gatewayResponse1 = {
     name: 'ruckusdemos',
     hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
     apiKey: 'xxxxxxxxxxx',
-    status: 'Offline'
-  }
+    status: RWGStatusEnum.ONLINE,
+    isCluster: false
+  } as RWG
 }
 
 jest.mock('./GatewayOverviewTab', () => ({
   GatewayOverviewTab: () => <div
     data-testid={'rc-GatewayOverviewTab'}
     title='GatewayOverviewTab' />
-}))
-
-const mockNavigate = jest.fn()
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate
 }))
 
 describe('RWGDetails', () => {
@@ -64,7 +60,7 @@ describe('RWGDetails', () => {
     }
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGateway.url,
+        CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse))
       )
     )
@@ -76,8 +72,9 @@ describe('RWGDetails', () => {
     expect(screen.getAllByRole('tab')).toHaveLength(1)
 
     await fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
+    await fireEvent.click(screen.getByRole('menuitem', { name: 'Configure RWG' }))
 
-    await expect(mockNavigate).toBeCalledTimes(1)
+    await expect(window.open).toBeCalledTimes(1)
 
   })
 
@@ -90,7 +87,7 @@ describe('RWGDetails', () => {
     }
     mockServer.use(
       rest.get(
-        CommonUrlsInfo.getGateway.url,
+        CommonRbacUrlsInfo.getGateway.url,
         (req, res, ctx) => res(ctx.json(gatewayResponse1))
       )
     )

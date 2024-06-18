@@ -105,7 +105,8 @@ export const mockedMeshNetworkDevices: { [key: string]: TypeWiseNetworkDevices }
     LTEAP: [],
     RogueAP: [],
     cloudpath: [],
-    DP: []
+    DP: [],
+    rwg: []
   }
 }
 

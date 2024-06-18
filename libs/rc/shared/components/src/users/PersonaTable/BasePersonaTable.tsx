@@ -4,41 +4,29 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, TierFeatures, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { Features, useIsTierAllowed }                                         from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                                   from '@acx-ui/icons'
 import {
   useDeletePersonasMutation,
   useGetPersonaGroupByIdQuery,
-  useGetPersonaGroupListQuery,
   useImportPersonasMutation,
   useLazyDownloadPersonasQuery,
-  useLazyGetPropertyUnitByIdQuery
+  useLazyGetPropertyUnitByIdQuery,
+  useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
-import {
-  FILTER,
-  Persona,
-  PersonaErrorResponse,
-  PersonaGroup,
-  SEARCH
-} from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }      from '@acx-ui/utils'
+import { FILTER, Persona, PersonaErrorResponse, PersonaGroup, SEARCH } from '@acx-ui/rc/utils'
+import { WifiScopes }                                                  from '@acx-ui/types'
+import { filterByAccess, hasPermission }                               from '@acx-ui/user'
+import { exportMessageMapping }                                        from '@acx-ui/utils'
 
-import {
-  IdentityDetailsLink,
-  IdentityGroupLink,
-  PropertyUnitLink
-} from '../../CommonLinkHelper'
-import {
-  CsvSize,
-  ImportFileDrawerType,
-  ImportFileDrawer } from '../../ImportFileDrawer'
-import { usePersonaListQuery } from '../../usePersonaListQuery'
-import { PersonaDrawer }       from '../PersonaDrawer'
-import {
-  PersonaGroupSelect } from '../PersonaGroupSelect'
-import { PersonaBlockedIcon }     from '../styledComponents'
-import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
+import { IdentityDetailsLink, IdentityGroupLink, PropertyUnitLink } from '../../CommonLinkHelper'
+import { CsvSize, ImportFileDrawer, ImportFileDrawerType }          from '../../ImportFileDrawer'
+import { useIsEdgeFeatureReady }                                    from '../../useEdgeActions'
+import { usePersonaListQuery }                                      from '../../usePersonaListQuery'
+import { PersonaDrawer }                                            from '../PersonaDrawer'
+import { PersonaGroupSelect }                                       from '../PersonaGroupSelect'
+import { PersonaBlockedIcon }                                       from '../styledComponents'
+import { usePersonaAsyncHeaders }                                   from '../usePersonaAsyncHeaders'
 
 const IdentitiesContext = createContext({} as {
   setIdentitiesCount: (data: number) => void
@@ -50,11 +38,11 @@ function useColumns (
   venueId: string
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
-  const personaGroupList = useGetPersonaGroupListQuery({
+  const personaGroupList = useSearchPersonaGroupListQuery({
     payload: {
-      page: 1, pageSize: 2147483647, sortField: 'name', sortOrder: 'ASC'
+      page: 1, pageSize: 10000, sortField: 'name', sortOrder: 'ASC'
     }
   })
 
@@ -277,19 +265,19 @@ export function BasePersonaTable (props: PersonaTableProps) {
     })
   }
 
-  const actions: TableProps<PersonaGroup>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Identity' }),
-      onClick: () => {
+  const actions: TableProps<PersonaGroup>['actions'] =
+    hasPermission({ scopes: [WifiScopes.CREATE] })
+      ? [{
+        label: $t({ defaultMessage: 'Add Identity' }),
+        onClick: () => {
         // if user is under PersonaGroup page, props groupId into Drawer
-        setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
-      }
-    },
-    {
-      label: $t({ defaultMessage: 'Import From File' }),
-      onClick: () => setUploadCsvDrawerVisible(true)
-    }
-  ]
+          setDrawerState({ isEdit: false, visible: true, data: { groupId: personaGroupId } })
+        }
+      },
+      {
+        label: $t({ defaultMessage: 'Import From File' }),
+        onClick: () => setUploadCsvDrawerVisible(true)
+      }] : []
 
   const rowActions: TableProps<Persona>['rowActions'] = [
     {
@@ -298,12 +286,14 @@ export function BasePersonaTable (props: PersonaTableProps) {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
       },
-      visible: (selectedItems => selectedItems.length === 1)
+      visible: (selectedItems => selectedItems.length === 1),
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
       // We would not allow the user to delete the persons which was created by the Unit.
       disabled: (selectedItems => selectedItems.filter(p => !!p?.identityId).length > 0),
+      scopeKey: [WifiScopes.DELETE],
       onClick: (selectedItems, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -386,7 +376,10 @@ export function BasePersonaTable (props: PersonaTableProps) {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: personaGroupId ? 'checkbox' : 'radio' }}
+        rowSelection={
+          hasPermission({
+            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+          }) && { type: personaGroupId ? 'checkbox' : 'radio' }}
         onFilterChange={handleFilterChange}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona'} />,

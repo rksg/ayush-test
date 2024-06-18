@@ -4,10 +4,21 @@ import { IntlShape }              from 'react-intl'
 
 import { getIntl, validationMessages } from '@acx-ui/utils'
 
-import { IpUtilsService }                                                                                                                               from '../../ipUtilsService'
-import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum }                                                                      from '../../models/EdgeEnum'
-import { ClusterNetworkSettings, EdgeAlarmSummary, EdgeLag, EdgeLagStatus, EdgePort, EdgePortStatus, EdgePortWithStatus, EdgeSerialNumber, EdgeStatus } from '../../types'
-import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp }                                                                                     from '../../validator'
+import { IpUtilsService }                                                          from '../../ipUtilsService'
+import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum } from '../../models/EdgeEnum'
+import {
+  ClusterNetworkSettings,
+  EdgeAlarmSummary,
+  EdgeLag,
+  EdgeLagStatus,
+  EdgePort,
+  EdgePortStatus,
+  EdgePortWithStatus,
+  EdgeSerialNumber,
+  EdgeStatus,
+  EdgeSubInterface
+} from '../../types'
+import { isSubnetOverlap, networkWifiIpRegExp, subnetMaskIpRegExp } from '../../validator'
 
 const Netmask = require('netmask').Netmask
 const vSmartEdgeSerialRegex = '96[0-9A-Z]{32}'
@@ -162,6 +173,16 @@ export const convertEdgePortsConfigToApiPayload = (formData: EdgePortWithStatus 
   return payload
 }
 
+export const convertEdgeSubinterfaceToApiPayload = (formData: EdgeSubInterface) => {
+  const payload = { ...formData }
+  if (payload.ipMode === EdgeIpModeEnum.DHCP) {
+    payload.ip = ''
+    payload.subnet = ''
+  }
+
+  return payload
+}
+
 export const getEdgePortDisplayName = (port: EdgePort | EdgePortStatus | undefined) => {
   return _.capitalize(port?.interfaceName)
 }
@@ -217,11 +238,8 @@ export const deriveEdgeModel = (serial: string) => {
   return isVirtualEdgeSerial(serial) ? 'vSmartEdge' : '-'
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const isOtpEnrollmentRequired = (serial: string) => {
-  // Currently always return true since physical SmartEdge144 leverages the OTP enrollment instead of TPM due to
-  // tight schedule.
-  return true
+  return isVirtualEdgeSerial(serial)
 }
 
 export const optionSorter = (

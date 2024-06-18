@@ -7,7 +7,8 @@ import { debounce, uniq }                                           from 'lodash
 import { useIntl }                                                  from 'react-intl'
 import { useParams }                                                from 'react-router-dom'
 
-import { Loader, Select } from '@acx-ui/components'
+import { Loader, Select }         from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,
@@ -24,8 +25,9 @@ import {
   ShowTopologyFloorplanOn,
   LinkConnectionInfo
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
-import { hasAccess }  from '@acx-ui/user'
+import { TenantLink }               from '@acx-ui/react-router-dom'
+import { SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission }            from '@acx-ui/user'
 
 import LinkTooltip             from './LinkTooltip'
 import NodeTooltip             from './NodeTooltip'
@@ -280,6 +282,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
 
   const graphRef = useRef<SVGSVGElement>(null)
   const params = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const _venueId = params.venueId || venueId
 
@@ -342,16 +345,18 @@ export function TopologyGraphComponent (props:{ venueId?: string,
         setModalVisible(true)
       })
 
-      const _formattedNodes = nodes.map(node => ({
-        value: (node.name as string || node.id as string).toString(),
-        key: (node.id as string).toString(),
-        label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
-          {node.name as string}</Typography.Title>
-        <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text>
-        <Typography.Text type='secondary'> ({(node.ipAddress as string)})</Typography.Text></div>,
-        children: node.label,
-        item: node
-      })) as OptionType[]
+      const _formattedNodes = nodes.map((node, index) =>
+      {
+        return {
+          value: (node.name as string || node.id as string).toString()+'\u200b'.repeat(index),
+          key: (node.id as string).toString(),
+          label: <div><Typography.Title style={{ margin: 0 }} level={5} ellipsis={true}>
+            {node.name as string}</Typography.Title>
+          <Typography.Text type='secondary'>{(node.mac as string)}</Typography.Text>
+          <Typography.Text type='secondary'> ({(node.ipAddress as string)})</Typography.Text></div>,
+          children: node.label,
+          item: node
+        }}) as OptionType[]
 
       setFilterNodes(_formattedNodes)
 
@@ -363,7 +368,7 @@ export function TopologyGraphComponent (props:{ venueId?: string,
       }
 
       async function getVlanList (){
-        const vlanList = await getSwitchesVlan({ params }).unwrap()
+        const vlanList = await getSwitchesVlan({ params, enableRbac: isSwitchRbacEnabled }).unwrap()
         const vlansOptionValues: DefaultOptionType[] =
           [{ label: $t({ defaultMessage: 'Select VLAN...' }), value: '' }]
         vlanList.map(item=> vlansOptionValues.push({ label: item.vlanId, value: item.vlanId }))
@@ -587,17 +592,17 @@ export function TopologyGraphComponent (props:{ venueId?: string,
             (showTopologyOn === ShowTopologyFloorplanOn.VENUE_OVERVIEW)
               // eslint-disable-next-line max-len
               ? <Empty description={$t({ defaultMessage: 'No devices added yet to this <venueSingular></venueSingular>' })}>
-                { hasAccess() && <Row>
-                  <Col span={12}>
+                { <Row style={{ justifyContent: 'space-around' }}>
+                  { hasPermission({ scopes: [WifiScopes.CREATE] }) && <Col>
                     <TenantLink to='devices/wifi/add'>
                       {$t({ defaultMessage: 'Add Access Point' })}
                     </TenantLink>
-                  </Col>
-                  <Col span={8} offset={4}>
+                  </Col>}
+                  { hasPermission({ scopes: [SwitchScopes.CREATE] }) && <Col >
                     <TenantLink to='devices/switch/add'>
                       {$t({ defaultMessage: 'Add Switch' })}
                     </TenantLink>
-                  </Col>
+                  </Col>}
                 </Row>}
               </Empty>
               // eslint-disable-next-line max-len

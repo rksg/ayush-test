@@ -2,10 +2,10 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi, policyApi }                                                               from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls, WifiUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store }                                                                   from '@acx-ui/store'
-import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { venueApi, policyApi }                                                                                                    from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonRbacUrlsInfo, CommonUrlsInfo, SwitchUrlsInfo, SyslogUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                        from '@acx-ui/store'
+import { render, screen, fireEvent, mockServer, waitFor, within, waitForElementToBeRemoved }                                      from '@acx-ui/test-utils'
 
 import {
   configProfiles,
@@ -24,9 +24,9 @@ import { VenueEdit } from './index'
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
 }))
-jest.mock('./WifiConfigTab/NetworkingTab/DirectedMulticast', () => () => {
-  return <div data-testid='DirectedMulticast' />
-})
+jest.mock('./WifiConfigTab/NetworkingTab/DirectedMulticast', () => ({
+  DirectedMulticast: () => <div data-testid='DirectedMulticast' />
+}))
 jest.mock('./WifiConfigTab/NetworkingTab/CellularOptions/CellularOptionsForm', () => ({
   CellularOptionsForm: () => <div data-testid='CellularOptionsForm' />
 }))
@@ -40,12 +40,16 @@ jest.mock('./WifiConfigTab/RadioTab/ClientAdmissionControlSettings', () => ({
 jest.mock('./WifiConfigTab/RadioTab/LoadBalancing', () => ({
   LoadBalancing: () => <div data-testid='LoadBalancing' />
 }))
-jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => () => {
-  return <div data-testid='MdnsFencing' />
-})
-jest.mock('./WifiConfigTab/ServerTab/ApSnmp', () => () => {
-  return <div data-testid='ApSnmp' />
-})
+jest.mock('./WifiConfigTab/ServerTab/MdnsFencing/MdnsFencing', () => ({
+  MdnsFencing: () => <div data-testid='MdnsFencing' />
+}))
+jest.mock('./WifiConfigTab/ServerTab/ApSnmp', () => ({
+  ApSnmp: () => <div data-testid='ApSnmp' />
+}))
+jest.mock('./WifiConfigTab/NetworkingTab/RadiusOptions', () => ({
+  RadiusOptions: () => <div data-testid='RadiusOptions' />
+}))
+
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -204,7 +208,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
           rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
             (_, res, ctx) => res(ctx.json({}))
           ),
-          rest.post(CommonUrlsInfo.getConfigProfiles.url,
+          rest.post(SwitchUrlsInfo.getProfiles.url,
             (_, res, ctx) => res(ctx.json({ data: configProfiles } ))
           ),
           rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,
@@ -271,6 +275,9 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         ),
         rest.put(CommonUrlsInfo.updateVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json({}))
+        ),
+        rest.get(CommonUrlsInfo.getVenueBssColoring.url,
+          (_, res, ctx) => res(ctx.json({}))
         )
       )
     })
@@ -286,7 +293,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
         })
-        await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+        await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
         await updateAdvancedSettings(false)
         fireEvent.click(await screen.findByText('Back to venue details'))
         await showInvalidChangesModal('Advanced Settings', buttonAction.CANCEL)
@@ -295,7 +302,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
         })
-        await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+        await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
         await updateAdvancedSettings(false)
         fireEvent.click(await screen.findByRole('tab', { name: 'Networking' }))
 
@@ -305,7 +312,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
         render(<Provider><VenueEdit /></Provider>, {
           route: { params, path: '/:tenantId/t/venues/:venueId/edit/:activeTab/:activeSubTab' }
         })
-        await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+        await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
         await updateAdvancedSettings(true)
         fireEvent.click(await screen.findByRole('tab', { name: 'Networking' }))
 
@@ -323,6 +330,10 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
       beforeEach(() => {
         mockServer.use(
           rest.put(CommonUrlsInfo.updateVenueMesh.url,
+            (_, res, ctx) => res(ctx.json({}))
+          ),
+          // rbac
+          rest.put(CommonRbacUrlsInfo.updateVenueMesh.url,
             (_, res, ctx) => res(ctx.json({}))
           )
         )
@@ -376,6 +387,22 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
           ),
           rest.put(
             WifiUrlsInfo.updateVenueExternalAntenna.url,
+            (_, res, ctx) => res(ctx.json({}))
+          ),
+          // rbac
+          rest.get(
+            WifiRbacUrlsInfo.getVenueExternalAntenna.url,
+            (_, res, ctx) => res(ctx.json([{
+              enable24G: true,
+              enable50G: true,
+              gain24G: 3,
+              gain50G: 3,
+              model: 'E510'
+            }])
+            )
+          ),
+          rest.put(
+            WifiRbacUrlsInfo.updateVenueExternalAntenna.url,
             (_, res, ctx) => res(ctx.json({}))
           )
         )

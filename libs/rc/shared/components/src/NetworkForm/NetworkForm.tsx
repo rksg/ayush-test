@@ -22,8 +22,7 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation,
-  useDeactivateWifiOperatorOnWifiNetworkMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -42,7 +41,9 @@ import {
   WlanSecurityEnum,
   useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
-import { useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
+
+import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
 import { CloudpathForm }           from './CaptivePortal/CloudpathForm'
 import { GuestPassForm }           from './CaptivePortal/GuestPassForm'
@@ -67,9 +68,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                       from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo } from './utils'
-import { Venues }                           from './Venues/Venues'
+import PortalInstance                                                                    from './PortalInstance'
+import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer } from './utils'
+import { Venues }                                                                        from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -119,25 +120,29 @@ export function NetworkForm (props:{
   const intl = useIntl()
   const navigate = useNavigate()
   const location = useLocation()
-  const linkToNetworks = useTenantLink('/networks')
+  const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
 
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
-  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useAddNetworkVenuesMutation, useAddNetworkVenueTemplatesMutation
-  )
-  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
-  )
-  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher(
-    useDeleteNetworkVenuesMutation, useDeleteNetworkVenuesTemplateMutation
-  )
+  const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddNetworkVenuesMutation,
+    useTemplateMutationFn: useAddNetworkVenueTemplatesMutation
+  })
+  const [updateNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateNetworkVenuesMutation,
+    useTemplateMutationFn: useUpdateNetworkVenueTemplateMutation
+  })
+  const [deleteNetworkVenues] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useDeleteNetworkVenuesMutation,
+    useTemplateMutationFn: useDeleteNetworkVenuesTemplateMutation
+  })
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
+  const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -202,26 +207,31 @@ export function NetworkForm (props:{
 
   useEffect(() => {
     if(data){
-      let name = data.name
+      const resolvedData = deriveFieldsFromServerData(data)
+
       if (cloneMode) {
-        name = data.name + ' - copy'
         formRef.current?.resetFields()
-        formRef.current?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
-      }else if(editMode){
+        formRef.current?.setFieldsValue({ ...resolvedData, name: data.name + ' - copy' })
+      } else if (editMode) {
         form?.resetFields()
-        form?.setFieldsValue({
-          ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-          enableAccountingService: (data.accountingRadius||
-            data.guestPortal?.wisprPage?.accountingRadius)?true:false })
+        form?.setFieldsValue(resolvedData)
       }
-      updateSaveData({ ...data, name, isCloudpathEnabled: data.authRadius?true:false,
-        enableAccountingService: (data.accountingRadius||
-          data.guestPortal?.wisprPage?.accountingRadius)?true:false, certificateTemplateId })
+      updateSaveData({ ...resolvedData, certificateTemplateId })
     }
   }, [data, certificateTemplateId])
+
+  useEffect(() => {
+    if (!radiusServerConfigurations) return
+
+    const fullNetworkSaveData = _.merge({}, saveState, radiusServerConfigurations)
+    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+
+    form.setFieldsValue({
+      ...resolvedNetworkSaveData
+    })
+
+    updateSaveData(resolvedNetworkSaveData)
+  }, [radiusServerConfigurations])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -486,6 +496,7 @@ export function NetworkForm (props:{
       const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
+      await updateRadiusServer(saveState, data, networkId)
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response
@@ -569,6 +580,7 @@ export function NetworkForm (props:{
       await updateNetworkInstance({ params, payload }).unwrap()
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
+      await updateRadiusServer(formData, data, payload.id)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -846,17 +858,6 @@ function useWifiOperatorActivation () {
   return activateWifiOperator
 }
 
-function useWifiOperatorDeactivation () {
-  const [deactivate] = useDeactivateWifiOperatorOnWifiNetworkMutation()
-  const deactivateWifiOperator =
-    async (wifiNetworkId?: string, operatorId?: string) => {
-      return wifiNetworkId && operatorId ?
-        await deactivate({ params: { wifiNetworkId, operatorId } }).unwrap() : null
-    }
-
-  return deactivateWifiOperator
-}
-
 function useIdentityProviderActivation () {
   const [activate] = useActivateIdentityProviderOnWifiNetworkMutation()
   const activateIdentityProvider =
@@ -884,12 +885,14 @@ function useAddHotspot20Activation () {
   const activateHotspot20NetworkProvider = useIdentityProviderActivation()
   const addHotspot20Activations =
     async (network?: NetworkSaveData, networkId?: string) => {
-      if (network?.type === NetworkTypeEnum.HOTSPOT20 && networkId) {
-        await activateHotspot20NetworkOperator(
-          networkId, network.hotspot20Settings?.wifiOperator)
-        network.hotspot20Settings?.identityProviders?.forEach(async (id) => {
-          await activateHotspot20NetworkProvider(networkId, id)
-        })
+      if (network?.type === NetworkTypeEnum.HOTSPOT20 && networkId &&
+        network?.hotspot20Settings) {
+        const hotspot20 = network?.hotspot20Settings
+        await activateHotspot20NetworkOperator(networkId, hotspot20.wifiOperator)
+        if (hotspot20.identityProviders) {
+          await Promise.allSettled(hotspot20.identityProviders.map(id =>
+            activateHotspot20NetworkProvider(networkId, id)))
+        }
       }
       return
     }
@@ -899,35 +902,62 @@ function useAddHotspot20Activation () {
 
 function useUpdateHotspot20Activation () {
   const activateOperator = useWifiOperatorActivation()
-  const deactivateOperator = useWifiOperatorDeactivation()
   const activateProvider = useIdentityProviderActivation()
   const deactivateProvider = useIdentityProviderDeactivation()
   const updateHotspot20Activations =
     async (network?: NetworkSaveData) => {
       if (network && network.type === NetworkTypeEnum.HOTSPOT20) {
+        const networkId = network.id
         const hotspot20Setting = network.hotspot20Settings
         const hotspot20OriginalOperator = hotspot20Setting?.originalOperator
         const hotspot20OriginalProviders = hotspot20Setting?.originalProviders
+        const newProviderIds = hotspot20Setting?.identityProviders
 
         if (hotspot20OriginalOperator &&
           hotspot20OriginalOperator !== hotspot20Setting.wifiOperator) {
-          await deactivateOperator(network.id, hotspot20OriginalOperator)
-          await activateOperator(network.id, hotspot20Setting.wifiOperator)
+          await activateOperator(networkId, hotspot20Setting.wifiOperator)
         }
 
-        if (hotspot20OriginalProviders &&
-          hotspot20Setting?.identityProviders &&
-          !_.isEqual(hotspot20OriginalProviders, hotspot20Setting?.identityProviders)) {
-          hotspot20OriginalProviders.forEach(async (id) => {
-            hotspot20Setting?.identityProviders &&
-            !(hotspot20Setting?.identityProviders.includes(id)) &&
-            await deactivateProvider(network.id, id)
-          })
+        if (hotspot20OriginalProviders && newProviderIds &&
+          !_.isEqual(hotspot20OriginalProviders, newProviderIds)) {
 
-          hotspot20Setting?.identityProviders.forEach(async (id) => {
-            !hotspot20OriginalProviders.includes(id) &&
-            await activateProvider(network.id, id)
-          })
+          const deactivateProviderIds = hotspot20OriginalProviders.filter(providerId =>
+            !(hotspot20Setting.identityProviders!.includes(providerId))
+          )
+
+          const activateProviderIds = newProviderIds.filter(providerId =>
+            !hotspot20OriginalProviders.includes(providerId)
+          )
+
+          const deactivateLength = deactivateProviderIds.length
+          const activateLength = activateProviderIds.length
+
+          // if remove all original providers
+          if (deactivateLength === hotspot20OriginalProviders.length &&
+            deactivateLength === 1 && activateLength > 0) {
+            // can only activate before deativate to avoid remove reuiqred field
+            // max number of providers activated with a network is 6
+            await activateProvider(networkId, activateProviderIds[activateLength - 1])
+            activateProviderIds.pop()
+            await deactivateProvider(networkId, deactivateProviderIds[0])
+            deactivateProviderIds.pop()
+          } else {
+            // deactivate first to have space to activate
+            if (deactivateLength > 0) {
+              await deactivateProvider(network.id, deactivateProviderIds[deactivateLength - 1])
+              deactivateProviderIds.pop()
+            }
+
+            if (activateLength > 0) {
+              await activateProvider(network.id, activateProviderIds[activateLength - 1])
+              activateProviderIds.pop()
+            }
+          }
+
+          await Promise.allSettled(deactivateProviderIds.map(id =>
+            deactivateProvider(networkId, id)))
+
+          await Promise.allSettled(activateProviderIds.map(id => activateProvider(networkId, id)))
         }
       }
       return

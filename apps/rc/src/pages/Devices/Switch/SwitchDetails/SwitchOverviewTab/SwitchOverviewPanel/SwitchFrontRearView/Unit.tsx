@@ -24,6 +24,8 @@ import { getPoeUsage,
   SwitchViewModel,
   transformSwitchUnitStatus } from '@acx-ui/rc/utils'
 import { useParams }                         from '@acx-ui/react-router-dom'
+import { SwitchScopes }                      from '@acx-ui/types'
+import { hasPermission }                     from '@acx-ui/user'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
 import { SwitchDetailsContext } from '../../..'
@@ -337,7 +339,10 @@ export function Unit (props:{
         numOfEntities: 1
       },
       onOk: () => {
-        deleteStackMember({ params: { tenantId, stackSwitchSerialNumber: unit.serialNumber } }).then(() => {
+        deleteStackMember({
+          params: { tenantId, stackSwitchSerialNumber: unit.serialNumber, venueId },
+          enableRbac: isSwitchRbacEnabled
+        }).then(() => {
           switchQuery?.refetch()
           switchDetailViewModelQuery?.refetch()
         })
@@ -361,7 +366,11 @@ export function Unit (props:{
       ackPayload.add.push(unit.serialNumber)
     }
 
-    acknowledgeSwitch({ params: { tenantId, switchId }, payload: ackPayload })
+    acknowledgeSwitch({
+      params: { tenantId, switchId, venueId },
+      payload: ackPayload,
+      enableRbac: isSwitchRbacEnabled
+    })
   }
 
   const ViewModeButton = <Button
@@ -424,7 +433,7 @@ export function Unit (props:{
       }
       <div className='view-button'>
         {
-          enableDeleteStackMember &&
+          enableDeleteStackMember && hasPermission({ scopes: [SwitchScopes.DELETE] }) &&
           <Button
             type='link'
             size='small'

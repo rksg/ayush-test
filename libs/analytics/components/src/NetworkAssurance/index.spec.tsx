@@ -1,10 +1,11 @@
 import userEvent from '@testing-library/user-event'
 
-import * as config                    from '@acx-ui/config'
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { useLocation, useTenantLink } from '@acx-ui/react-router-dom'
-import { Provider }                   from '@acx-ui/store'
-import { render, screen, waitFor }    from '@acx-ui/test-utils'
+import * as config                           from '@acx-ui/config'
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useLocation, useTenantLink }        from '@acx-ui/react-router-dom'
+import { Provider }                          from '@acx-ui/store'
+import { cleanup, render, screen, waitFor }  from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import { NetworkAssurance, NetworkAssuranceTabEnum } from '.'
 
@@ -71,6 +72,12 @@ describe('NetworkAssurance', () => {
   beforeEach(() => {
     jest.mocked(useLocation).mockReturnValue(location)
     jest.mocked(useTenantLink).mockReturnValue(basePath)
+    setRaiPermissions({
+      READ_HEALTH: true,
+      READ_SERVICE_VALIDATION: true,
+      READ_CONFIG_CHANGE: true,
+      READ_VIDEO_CALL_QOE: true
+    } as RaiPermissions)
   })
   afterEach(() => {
     get.mockReturnValue('')
@@ -87,7 +94,7 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByTestId('ServiceGuard')).toBeVisible()
   })
   it('should hide video call qoe when IS_MLISA_SA', async () => {
-    get.mockReturnValue('')
+    get.mockReturnValue('true')
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(screen.queryByText('VideoCallQoe')).toBeNull()
@@ -97,20 +104,6 @@ describe('NetworkAssurance', () => {
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('VideoCallQoe')).toBeVisible()
-  })
-  it('should hide video call qoe when feature flag VIDEO_CALL_QOE is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('VideoCallQoe')).toBeNull()
-
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.SERVICE_GUARD}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByText('VideoCallQoe')).toBeNull()
-
-    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE}/>,
-      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
-    expect(screen.queryByTestId('VideoCallQoe')).toBeNull()
   })
   it('should handle tab click', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -149,6 +142,30 @@ describe('NetworkAssurance', () => {
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
     expect(await screen.findByTestId('ConfigChange')).toBeVisible()
   })
+  it('renders only health', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({
+      READ_HEALTH: true,
+      READ_SERVICE_VALIDATION: false,
+      READ_CONFIG_CHANGE: false,
+      READ_VIDEO_CALL_QOE: false
+    } as RaiPermissions)
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByTestId('HealthTabs')).toBeVisible()
+  })
+  it('renders only config change', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    setRaiPermissions({
+      READ_HEALTH: false,
+      READ_SERVICE_VALIDATION: false,
+      READ_CONFIG_CHANGE: true,
+      READ_VIDEO_CALL_QOE: false
+    } as RaiPermissions)
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByTestId('ConfigChange')).toBeVisible()
+  })
   it('should hide config change when feature flag CONFIG_CHANGE is off', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
@@ -160,7 +177,8 @@ describe('NetworkAssurance', () => {
     expect(screen.queryByText('Config Change')).toBeNull()
   })
   it('should render header with correct options for health pages', async () => {
-    ['overview', 'wireless', 'wired'].forEach(async (tab) => {
+    const tabs = ['overview', 'wireless', 'wired']
+    for(const tab of tabs) {
       jest.mocked(useIsSplitOn).mockReturnValue(true)
       jest.mocked(useTenantLink).mockReturnValue({
         pathname: 't1/t/ai',
@@ -171,9 +189,28 @@ describe('NetworkAssurance', () => {
         ...location,
         pathname: `t1/t/ai/health/${tab}`
       })
+      cleanup()
       render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
         { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
       expect(await screen.findByTestId('HealthTabs')).toBeVisible()
+    }
+  })
+  it('should redirect from health path to overview', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useTenantLink).mockReturnValue({
+      pathname: 't1/t/ai',
+      search: '',
+      hash: ''
     })
+    jest.mocked(useLocation).mockReturnValue({
+      ...location,
+      pathname: 't1/t/ai/health'
+    })
+    render(<NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByTestId('HealthTabs')).toBeVisible()
+    await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: 't1/t/ai/health/overview', hash: '', search: ''
+    }))
   })
 })

@@ -17,12 +17,14 @@ import {
   SwitchPortViewModel,
   SwitchPortViewModelQueryFields,
   SwitchVlan,
+  SwitchMessages,
   SwitchViewModel,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl }                       from '@acx-ui/utils'
 
 import { SwitchLagDrawer } from '../SwitchLagDrawer'
 
@@ -298,6 +300,7 @@ export function SwitchPortTable (props: {
 
   const rowActions: TableProps<SwitchPortViewModel>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
       setSelectedPorts(selectedRows)
       setDrawerVisible(true)
@@ -321,7 +324,7 @@ export function SwitchPortTable (props: {
       enableApiFilter={true}
       rowKey='portId'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() ? {
+      rowSelection={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? {
         type: 'checkbox',
         renderCell: (checked, record, index, originNode) => {
           return record?.inactiveRow
@@ -375,17 +378,15 @@ export function getInactiveTooltip (port: SwitchPortViewModel): string {
   const { $t } = getIntl()
 
   if (!isOperationalSwitchPort(port)) {
-    return $t({
-      defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
-    })
+    return $t(SwitchMessages.NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED)
   }
 
   if (isStackPort(port)) {
-    return $t({ defaultMessage: 'This is a stacking port and can not be configured' })
+    return $t(SwitchMessages.STACKING_PORT_NOT_SUPPORT_CONFIGURED)
   }
 
   if (isLAGMemberPort(port)) {
-    return $t({ defaultMessage: 'This is a LAG member port and can not be configured' })
+    return $t(SwitchMessages.LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED)
   }
 
   return ''

@@ -5,6 +5,7 @@ import { isEqual }                                         from 'lodash'
 import { useIntl }                                         from 'react-intl'
 
 import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
 import {
   useGetSyslogPolicyTemplateListQuery,
@@ -57,32 +58,34 @@ export function Syslog () {
     setEditServerContextData
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const {
     data: syslogPolicyList,
     isLoading: isSyslogPolicyListLoading
-  } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>(
-    useSyslogPolicyListQuery,
-    useGetSyslogPolicyTemplateListQuery,
-    false,
-    { page: 1, pageSize: 10000 }
-  )
+  } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
+    useQueryFn: useSyslogPolicyListQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
+    payload: { page: 1, pageSize: 10000 },
+    enableRbac
+  })
 
   const {
     data: venueSyslogSettings,
     isLoading: isVenueSyslogSettingsLoading
-  } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>(
-    useGetVenueSyslogApQuery,
-    useGetVenueTemplateSyslogSettingsQuery
-  )
+  } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>({
+    useQueryFn: useGetVenueSyslogApQuery,
+    useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery,
+    enableRbac
+  })
 
   const [
     updateVenueSyslog,
     { isLoading: isUpdatingVenueSyslog }
-  ] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueSyslogApMutation,
-    useUpdateVenueTemplateSyslogSettingsMutation
-  )
+  ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueSyslogApMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSyslogSettingsMutation
+  })
 
   const apSyslogOptions = syslogPolicyList?.data?.map(m => ({ label: m.name, value: m.id })) ?? []
   const [venueSyslogOrinData, setVenueSyslogOrinData] = useState({} as VenueSettings)
@@ -152,7 +155,8 @@ export function Syslog () {
       if (payload) {
         await updateVenueSyslog({
           params: { venueId },
-          payload
+          payload,
+          enableRbac
         }).unwrap()
       }
     } catch (error) {

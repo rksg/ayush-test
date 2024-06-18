@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { firmwareApi }                       from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo, SwitchFirmwareFixtures
@@ -29,7 +29,12 @@ import {
 import { VenueFirmwareListLegacy } from '.'
 
 const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
-
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
 describe('Firmware Venues Table', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
@@ -139,7 +144,8 @@ describe('Firmware Venues Table', () => {
   })
 
   it('should selected default options in dialog when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SUPPORT_SWITCH_TWO_VERSION_UPGRADE)
 
     render(
       <Provider>

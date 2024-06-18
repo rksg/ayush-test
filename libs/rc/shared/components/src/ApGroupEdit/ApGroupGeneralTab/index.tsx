@@ -9,11 +9,12 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
 import {
-  useAddApGroupMutation,
-  useGetApGroupQuery,
-  useLazyApGroupsListQuery,
+  useAddApGroupMutation, useAddApGroupTemplateMutation,
+  useGetApGroupQuery, useGetApGroupTemplateQuery, useGetVenuesTemplateListQuery,
+  useLazyApGroupsListQuery, useLazyGetApGroupsTemplateListQuery,
+  useLazyGetVenueTemplateDefaultApGroupQuery,
   useLazyVenueDefaultApGroupQuery,
-  useUpdateApGroupMutation,
+  useUpdateApGroupMutation, useUpdateApGroupTemplateMutation,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
@@ -21,12 +22,17 @@ import {
   ApDeep,
   checkObjectNotExists,
   hasGraveAccentAndDollarSign,
-  trailingNorLeadingSpaces,
-  validateByteLength
-}                                      from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+  TableResult,
+  trailingNorLeadingSpaces, useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  validateByteLength,
+  Venue
+} from '@acx-ui/rc/utils'
 
-import { ApGroupEditContext } from '../index'
+import { usePathBasedOnConfigTemplate } from '../../configTemplates'
+import { ApGroupEditContext }           from '../index'
 
 const defaultVenuePayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -46,31 +52,53 @@ const apGroupsListPayload = {
 export function ApGroupGeneralTab () {
   const { $t } = useIntl()
   const { tenantId, action, apGroupId } = useParams()
-  const { isEditMode, isApGroupTableFlag, setEditContextData } = useContext(ApGroupEditContext)
+  const { isTemplate } = useConfigTemplate()
+  const {
+    isEditMode, isApGroupTableFlag, setEditContextData
+  } = useContext(ApGroupEditContext)
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = useTenantLink('/devices/')
-  const navigatePathName = (isApGroupTableFlag)?
-    `${basePath.pathname}/wifi/apgroups` :
-    `${basePath.pathname}/wifi`
+  const basePath = usePathBasedOnConfigTemplate('/devices/', '')
+  const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
+    ? `${basePath.pathname}/wifi/apgroups`
+    : `${basePath.pathname}/wifi`)
 
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const oldFormDataRef = useRef<AddApGroup>()
-  const venuesList = useVenuesListQuery({
-    params: { tenantId: tenantId },
-    payload: defaultVenuePayload })
+  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
+    useQueryFn: useVenuesListQuery,
+    useTemplateQueryFn: useGetVenuesTemplateListQuery,
+    skip: false,
+    payload: defaultVenuePayload
+  })
 
-
-  const [venueDefaultApGroup] = useLazyVenueDefaultApGroupQuery()
-  const [apGroupsList] = useLazyApGroupsListQuery()
-  const [addApGroup] = useAddApGroupMutation()
-  const [updateApGroup] = useUpdateApGroupMutation()
+  const [venueDefaultApGroup] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyVenueDefaultApGroupQuery,
+    useLazyTemplateQueryFn: useLazyGetVenueTemplateDefaultApGroupQuery
+  })
+  const [apGroupsList] = useConfigTemplateLazyQueryFnSwitcher({
+    useLazyQueryFn: useLazyApGroupsListQuery,
+    useLazyTemplateQueryFn: useLazyGetApGroupsTemplateListQuery
+  })
+  const [addApGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddApGroupMutation,
+    useTemplateMutationFn: useAddApGroupTemplateMutation
+  })
+  const [updateApGroup] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateApGroupMutation,
+    useTemplateMutationFn: useUpdateApGroupTemplateMutation
+  })
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apsOption, setApsOption] = useState([] as TransferItem[])
 
-  const { data: apGroupData, isLoading: isApGroupDataLoading } =
-  useGetApGroupQuery({ params: { tenantId, apGroupId } }, { skip: !isEditMode })
+  const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetApGroupQuery,
+    useTemplateQueryFn: useGetApGroupTemplateQuery,
+    skip: !isEditMode,
+    payload: null,
+    extraParams: { tenantId, apGroupId }
+  })
 
   const locationState = location.state as { venueId?: string, history?: string }
 
@@ -275,7 +303,7 @@ export function ApGroupGeneralTab () {
               />
             </Col>
           </Row>
-          <Row>
+          {!isTemplate && <Row>
             <Col>
               <StepsFormLegacy.Title
                 style={{ padding: '10px 0px' }}>
@@ -300,7 +328,7 @@ export function ApGroupGeneralTab () {
                 />
               </Form.Item>
             </Col>
-          </Row>
+          </Row>}
         </Loader>
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>

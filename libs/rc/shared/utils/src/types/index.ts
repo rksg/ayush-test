@@ -1,3 +1,5 @@
+import { defineMessage } from 'react-intl'
+
 import {
   ServiceAdminState,
   ServiceStatus,
@@ -9,7 +11,7 @@ import { EdgeStatusSeverityEnum } from '../models'
 import { NetworkVenue }           from '../models/NetworkVenue'
 import { TrustedCAChain }         from '../models/TrustedCAChain'
 
-import { ApModel }                               from './ap'
+import { CapabilitiesApModel }                   from './ap'
 import { EdgeStatusSeverityStatistic }           from './edge'
 import { EPDG }                                  from './services'
 import { SwitchPortViewModel, SwitchStatusEnum } from './switch'
@@ -39,17 +41,13 @@ export * from './googleMaps'
 export * from './applicationPolicy'
 export * from './configTemplate'
 export * from './topology'
+export * from './mDnsFencingServie'
 
 export interface CommonResult {
   requestId: string
   response?: {
     id?: string
   }
-}
-
-export interface CommonResultWithEntityResponse<EntityType> {
-  requestId: string
-  response: EntityType
 }
 
 export interface CommonErrorsResult<T> {
@@ -126,14 +124,49 @@ export interface AlarmMeta {
   edgeName: string
 }
 
+export enum RWGStatusEnum {
+  RWG_STATUS_UNKNOWN = 'RWG_STATUS_UNKNOWN',
+  STAGING = 'STAGING',
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE',
+  INVALID_APIKEY = 'INVALID_APIKEY',
+  INVALID_HOSTNAME = 'INVALID_HOSTNAME',
+  INVALID_CERTIFICATE = 'INVALID_CERTIFICATE',
+  INVALID_LICENSE = 'INVALID_LICENSE',
+  INSUFFICIENT_LICENSE = 'INSUFFICIENT_LICENSE',
+  DATA_INCOMPLETE = 'DATA_INCOMPLETE'
+}
+
 export interface RWG {
   name: string
-  status: string
+  status: RWGStatusEnum
   venueId: string
   venueName: string
   hostname: string
   apiKey: string
   rwgId: string
+  clusterNodes?: RWGClusterNode[]
+  isCluster: boolean,
+  floorplanId?: string,
+  xPercent?: number,
+  yPercent?: number,
+  x?: number,
+  y?: number
+}
+
+export interface RWGClusterNode{
+  id: string
+  name: string
+  ip: string
+}
+
+export interface RWGRow extends RWG {
+  clusterId?: string
+  clusterName?: string
+  isNode?: boolean
+  children?: RWGRow[]
+  ip?: string
+  rowId?: string
 }
 
 export interface GatewayAlarms {
@@ -170,8 +203,7 @@ export interface GatewayDetailsGeneral {
   venueName: string,
   venueId: string,
   hostname: string,
-  username: string,
-  password: string,
+  apiKey: string,
   uptimeInSeconds: string,
   bootedAt: string,
   temperature: string,
@@ -201,15 +233,6 @@ export interface GatewayDetailsHardware {
   systemFamily: string
 }
 
-export interface GatewayDetailsOs {
-  architecture: string,
-  branch: string,
-  kernel: string,
-  name: string,
-  release: string,
-  version: string
-}
-
 export interface GatewayDetailsDiskMemory {
   diskDevice: string,
   diskTotalSpaceInGb: number,
@@ -222,7 +245,6 @@ export interface GatewayDetailsDiskMemory {
 export interface GatewayDetails {
   gatewayDetailsGeneral: GatewayDetailsGeneral
   gatewayDetailsHardware: GatewayDetailsHardware
-  gatewayDetailsOs: GatewayDetailsOs
   gatewayDetailsDiskMemory: GatewayDetailsDiskMemory
 }
 
@@ -497,7 +519,7 @@ export enum ClientStatusEnum {
 }
 
 export interface Capabilities {
-  apModels: ApModel[]
+  apModels: CapabilitiesApModel[]
   version: string
 }
 
@@ -574,4 +596,17 @@ export interface QosMapRule {
   dscpLow: number
   dscpHigh: number
   dscpExceptionValues: number[]
+}
+
+export const RWGStatusMap = {
+  [RWGStatusEnum.ONLINE]: defineMessage({ defaultMessage: 'Operational' }),
+  [RWGStatusEnum.OFFLINE]: defineMessage({ defaultMessage: 'Disconnected' }),
+  [RWGStatusEnum.STAGING]: defineMessage({ defaultMessage: 'Staging' }),
+  [RWGStatusEnum.DATA_INCOMPLETE]: defineMessage({ defaultMessage: 'Data Incomplete' }),
+  [RWGStatusEnum.INSUFFICIENT_LICENSE]: defineMessage({ defaultMessage: 'Insufficient License' }),
+  [RWGStatusEnum.INVALID_APIKEY]: defineMessage({ defaultMessage: 'Invalid API Key' }),
+  [RWGStatusEnum.INVALID_CERTIFICATE]: defineMessage({ defaultMessage: 'Invalid Certificate' }),
+  [RWGStatusEnum.INVALID_HOSTNAME]: defineMessage({ defaultMessage: 'Invalid Hostname' }),
+  [RWGStatusEnum.RWG_STATUS_UNKNOWN]: defineMessage({ defaultMessage: 'RWG Status Unknown' }),
+  [RWGStatusEnum.INVALID_LICENSE]: defineMessage({ defaultMessage: 'Invalid License' })
 }

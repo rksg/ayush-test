@@ -25,7 +25,8 @@ import {
   useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 
 
@@ -52,7 +53,7 @@ export default function WifiOperatorTable () {
   const doDelete = (selectedRows: WifiOperatorViewModel[], callback: () => void) => {
     doProfileDelete(
       selectedRows,
-      $t({ defaultMessage: 'Policy' }),
+      $t({ defaultMessage: 'Profile(s)' }),
       selectedRows[0].name,
       [{ fieldName: 'wifiNetworkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
       async () =>
@@ -64,12 +65,14 @@ export default function WifiOperatorTable () {
   const rowActions: TableProps<WifiOperatorViewModel>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: (selectedRows: WifiOperatorViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
         navigate({
@@ -99,9 +102,11 @@ export default function WifiOperatorTable () {
           }
         ]}
         extra={filterByAccess([
-          <TenantLink to={getPolicyRoutePath({
-            type: PolicyType.WIFI_OPERATOR,
-            oper: PolicyOperation.CREATE })}>
+          <TenantLink
+            scopeKey={[WifiScopes.CREATE]}
+            to={getPolicyRoutePath({
+              type: PolicyType.WIFI_OPERATOR,
+              oper: PolicyOperation.CREATE })}>
             <Button
               type='primary'
               disabled={tableQuery.data?.totalCount! >= WIFI_OPERATOR_MAX_COUNT}>
@@ -119,7 +124,7 @@ export default function WifiOperatorTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={hasPermission() && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
   useAddSyslogPolicyMutation, useAddSyslogPolicyTemplateMutation,
   useUpdateSyslogPolicyMutation, useUpdateSyslogPolicyTemplateMutation
@@ -60,11 +61,16 @@ export const SyslogForm = (props: SyslogFormProps) => {
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.SYSLOG, PolicyOperation.LIST)
   const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, initialValues)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  // eslint-disable-next-line max-len
-  const [ createSyslog ] = useConfigTemplateMutationFnSwitcher(useAddSyslogPolicyMutation, useAddSyslogPolicyTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateSyslog ] = useConfigTemplateMutationFnSwitcher(useUpdateSyslogPolicyMutation, useUpdateSyslogPolicyTemplateMutation)
+  const [ createSyslog ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddSyslogPolicyMutation,
+    useTemplateMutationFn: useAddSyslogPolicyTemplateMutation
+  })
+  const [ updateSyslog ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateSyslogPolicyMutation,
+    useTemplateMutationFn: useUpdateSyslogPolicyTemplateMutation
+  })
 
   const transformPayload = (state: SyslogContextType, edit: boolean) => {
     if (!(state.secondaryServer && state.secondaryPort)) {
@@ -78,7 +84,8 @@ export const SyslogForm = (props: SyslogFormProps) => {
         },
         facility: state.facility,
         flowLevel: state.flowLevel,
-        venues: state.venues
+        venues: state.venues,
+        oldVenues: state.oldVenues
       }
     }
 
@@ -97,7 +104,8 @@ export const SyslogForm = (props: SyslogFormProps) => {
       },
       facility: state.facility,
       flowLevel: state.flowLevel,
-      venues: state.venues
+      venues: state.venues,
+      oldVenues: state.oldVenues
     }
   }
 
@@ -106,12 +114,14 @@ export const SyslogForm = (props: SyslogFormProps) => {
       if (!edit) {
         await createSyslog({
           params,
-          payload: transformPayload(state, false)
+          payload: transformPayload(state, false),
+          enableRbac
         }).unwrap()
       } else {
         await updateSyslog({
           params,
-          payload: transformPayload(state, true)
+          payload: transformPayload(state, true),
+          enableRbac
         }).unwrap()
       }
       navigate(linkToInstanceList, { replace: true })

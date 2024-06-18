@@ -37,6 +37,7 @@ const MeshInfoIcon = () => {
 export function MeshNetwork () {
   const { $t } = useIntl()
   const params = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -45,9 +46,6 @@ export function MeshNetwork () {
     setEditNetworkingContextData
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
-
-  const isFeatureOnMeshEnhancement = useIsSplitOn(Features.MESH_ENHANCEMENTS)
-  const supportMeshEnhancement = isFeatureOnMeshEnhancement
 
   const supportZeroTouchMesh = useIsSplitOn(Features.ZERO_TOUCH_MESH)
 
@@ -79,10 +77,10 @@ export function MeshNetwork () {
 
   const [meshToolTipDisabledText, setMeshToolTipDisabledText] = useState(defaultToolTip)
 
-  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
-    useGetVenueSettingsQuery,
-    useGetVenueTemplateSettingsQuery
-  )
+  const { data } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
+  })
 
   useEffect(() => {
     if (data) {
@@ -265,7 +263,7 @@ export function MeshNetwork () {
     try {
       let meshData: Mesh = { enabled: meshEnabled }
 
-      if (meshEnabled && supportMeshEnhancement) {
+      if (meshEnabled) {
         meshData = { ...meshData,
           ssid: meshSsid,
           passphrase: meshPassphrase,
@@ -288,7 +286,7 @@ export function MeshNetwork () {
         }
       }
 
-      await updateVenueMesh({ params, payload: meshData })
+      await updateVenueMesh({ params, payload: meshData, enableRbac: isWifiRbacEnabled })
 
       setIsSsidEditMode(false)
       setIsPassphraseEditMode(false)
@@ -334,7 +332,7 @@ export function MeshNetwork () {
         />
       }
     </StepsFormLegacy.FieldLabel>
-    {(supportMeshEnhancement && meshEnabled) && <>
+    {meshEnabled && <>
       <MeshInfoBlock>
         <ul>
           <li>

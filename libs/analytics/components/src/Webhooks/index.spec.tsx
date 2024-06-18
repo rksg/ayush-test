@@ -5,7 +5,7 @@ import { get }                                                                  
 import { notificationApi, Provider, rbacApi, store }                                from '@acx-ui/store'
 import { findTBody, mockServer, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 import { RolesEnum }                                                                from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                                           from '@acx-ui/user'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile }        from '@acx-ui/user'
 
 import { mockResourceGroups, webhooks, webhooksUrl } from './__fixtures__'
 import { Webhook }                                   from './services'
@@ -36,6 +36,7 @@ describe('WebhooksTable', () => {
     beforeEach(() => {
       jest.resetModules()
       jest.mocked(get).mockReturnValue('true')
+      setRaiPermissions({ WRITE_WEBHOOKS: true } as RaiPermissions)
 
       mockServer.use(
         mockResourceGroups(),

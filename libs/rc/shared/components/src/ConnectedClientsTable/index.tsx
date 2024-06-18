@@ -26,9 +26,10 @@ import {
   networkTypes,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RequestPayload }        from '@acx-ui/types'
-import { noDataDisplay }         from '@acx-ui/utils'
+import { TenantLink, useParams }      from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
+import { noDataDisplay }              from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -199,7 +200,6 @@ export const ConnectedClientsTable = (props: {
     const { $t } = useIntl()
     const wifi7MLOToggle = useIsSplitOn(Features.WIFI_EDA_WIFI7_MLO_TOGGLE)
     const { tenantId, venueId, apId, networkId } = useParams()
-    const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
 
     const clientStatuses = () => [
       { key: null, text: $t({ defaultMessage: 'All Health Levels' }) },
@@ -349,7 +349,7 @@ export const ConnectedClientsTable = (props: {
         title: intl.$t({ defaultMessage: 'Switch' }),
         dataIndex: 'switchName',
         sorter: true,
-        render: (_, row) => {
+        render: (_: React.ReactNode, row: ClientList) => {
           return AsyncLoadingInColumn(row.apName, row.venueName, () => {
             if(!row.switchName){
               return noDataDisplay
@@ -367,7 +367,7 @@ export const ConnectedClientsTable = (props: {
         dataIndex: 'ssid',
         sorter: true,
         filterKey: 'ssid',
-        filterable: networkId ? false : listOfClientsPerWlanFlag ? GetNetworkFilterOptions(tenantId) : false,
+        filterable: networkId ? false : GetNetworkFilterOptions(tenantId),
         render: (_: React.ReactNode, row: ClientList) => {
           return AsyncLoadingInColumn(row.apName, row.venueName, () => {
             if (!row.healthCheckStatus) {
@@ -640,6 +640,7 @@ export const ConnectedClientsTable = (props: {
   const rowActions: TableProps<ClientList>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
+      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
       onClick: async (selectedRows, clearRowSelections) => {
         const selectedVenues = selectedRows.map((row) => row.venueId)
         const allAps = (await getApList({ params, payload: {
@@ -661,6 +662,7 @@ export const ConnectedClientsTable = (props: {
     },
     {
       label: $t({ defaultMessage: 'Revoke' }),
+      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
       tooltip: (tableSelected.actionButton.revoke.disable ?
         $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' })
         :''
@@ -709,7 +711,7 @@ export const ConnectedClientsTable = (props: {
         </Subtitle>
         <Table<ClientList>
           rowSelection={(wifiEDAClientRevokeToggle ? rowSelection : undefined)}
-          rowActions={(wifiEDAClientRevokeToggle ? rowActions : undefined)}
+          rowActions={(wifiEDAClientRevokeToggle ? filterByAccess(rowActions) : undefined)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}

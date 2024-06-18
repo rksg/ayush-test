@@ -41,11 +41,11 @@ export const AccessControlSettingForm = (props: AccessControlSettingFormProps) =
   } = props
   const form = Form.useFormInstance()
 
-  const { data } = useConfigTemplateQueryFnSwitcher(
-    useGetAccessControlProfileQuery,
-    useGetAccessControlProfileTemplateQuery,
-    !editMode
-  )
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetAccessControlProfileQuery,
+    useTemplateQueryFn: useGetAccessControlProfileTemplateQuery,
+    skip: !editMode
+  })
 
   const aclProfileList : AccessControlInfoType[] = GetAclPolicyListInstance(editMode)
 

@@ -5,9 +5,9 @@ import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle
 import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useAdaptivePolicySetLisByQueryQuery,
-  useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetDpskListQuery,
-  useMacRegListsQuery
+  useAdaptivePolicySetListByQueryQuery,
+  useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetEnhancedDpskListQuery,
+  useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicySet, FILTER,
@@ -17,7 +17,8 @@ import {
   PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
+import { WifiScopes }                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
@@ -28,7 +29,7 @@ export default function AdaptivePolicySetTable () {
 
   const settingsId = 'adaptive-policy-set-list-table'
   const tableQuery = useTableQuery({
-    useQuery: useAdaptivePolicySetLisByQueryQuery,
+    useQuery: useAdaptivePolicySetListByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
     defaultPayload: {},
     pagination: { settingsId }
@@ -39,8 +40,18 @@ export default function AdaptivePolicySetTable () {
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicySetMutation()
 
-  const { macRegList, getMacListLoading } = useMacRegListsQuery(
-    { payload: { pageSize: 10000 } }, {
+  const { macRegList, getMacListLoading } = useSearchMacRegListsQuery(
+    {
+      payload: {
+        pageSize: 10000,
+        dataOption: 'all',
+        searchCriteriaList: [{
+          filterKey: 'name',
+          operation: 'cn',
+          value: ''
+        }]
+      }
+    }, {
       selectFromResult: ({ data, isLoading }) => {
         const macRegList = new Map(data?.data.map((mac) =>
           [mac.id, mac.name]))
@@ -51,7 +62,7 @@ export default function AdaptivePolicySetTable () {
       }, skip: !isCloudpathEnabled
     })
 
-  const { dpskList, getDpsksLoading } = useGetDpskListQuery(
+  const { dpskList, getDpsksLoading } = useGetEnhancedDpskListQuery(
     {
       payload: { pageSize: 10000 }
     }, {
@@ -161,7 +172,8 @@ export default function AdaptivePolicySetTable () {
           policyId: selectedRows[0].id!
         })
       })
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -189,7 +201,8 @@ export default function AdaptivePolicySetTable () {
             })
         }
       )
-    }
+    },
+    scopeKey: [WifiScopes.DELETE]
   }]
 
   const actions = [{
@@ -202,7 +215,8 @@ export default function AdaptivePolicySetTable () {
           oper: PolicyOperation.CREATE
         })
       })
-    }
+    },
+    scopeKey: [WifiScopes.CREATE]
   }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
@@ -226,7 +240,8 @@ export default function AdaptivePolicySetTable () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
         actions={filterByAccess(actions)}
       />
     </Loader>

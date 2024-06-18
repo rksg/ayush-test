@@ -28,15 +28,17 @@ export function SwitchAAATab () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
-  const [updateAAASettingMutation] = useConfigTemplateMutationFnSwitcher(
-    useUpdateAAASettingMutation, useUpdateVenueTemplateSwitchAAASettingMutation
-  )
+  const [updateAAASettingMutation] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAAASettingMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSwitchAAASettingMutation
+  })
   const [aaaSettingId, setAAASettingId] = useState<string>('')
   const { previousPath } = useContext(VenueEditContext)
-  const { data: venueSwitchSetting } = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>(
-    useVenueSwitchSettingQuery, useGetVenueTemplateSwitchSettingQuery, false,
-    undefined, undefined, isSwitchRbacEnabled
-  )
+  const { data: venueSwitchSetting } = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>({
+    useQueryFn: useVenueSwitchSettingQuery,
+    useTemplateQueryFn: useGetVenueTemplateSwitchSettingQuery,
+    enableRbac: isSwitchRbacEnabled
+  })
   const cliApplied = !!venueSwitchSetting?.cliApplied
 
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })

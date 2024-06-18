@@ -8,7 +8,7 @@ import {
   ConnectedClientsOverTime,
   IncidentsDashboardv2,
   ClientExperience,
-  SwitchesTrafficByVolume,
+  SwitchesTrafficByVolumeLegacy,
   TopAppsByTraffic,
   TopSwitchesByError,
   TopSwitchesByPoEUsage,
@@ -18,7 +18,8 @@ import {
   DidYouKnow,
   TopWiFiNetworks,
   TopEdgesByTraffic,
-  TopEdgesByResources } from '@acx-ui/analytics/components'
+  TopEdgesByResources,
+  SwitchesTrafficByVolume } from '@acx-ui/analytics/components'
 import {
   Button,
   Dropdown,
@@ -29,18 +30,27 @@ import {
   ContentSwitcher,
   ContentSwitcherProps
 } from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { VenueFilter }                                            from '@acx-ui/main/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { VenueFilter }            from '@acx-ui/main/components'
 import {
   AlarmWidgetV2,
   ClientsWidgetV2,
   DevicesDashboardWidgetV2,
   MapWidgetV2,
-  VenuesDashboardWidgetV2
+  VenuesDashboardWidgetV2,
+  useIsEdgeReady
 } from '@acx-ui/rc/components'
-import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
-import { filterByAccess, getShowWithoutRbacCheckKey }                                                         from '@acx-ui/user'
-import { useDashboardFilter, DateFilter,DateRange, getDateRangeFilter, AnalyticsFilter, getDatePickerValues } from '@acx-ui/utils'
+import { TenantLink }                                                from '@acx-ui/react-router-dom'
+import { EdgeScopes, SwitchScopes, WifiScopes }                      from '@acx-ui/types'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
+import {
+  useDashboardFilter,
+  DateFilter,
+  DateRange,
+  getDateRangeFilter,
+  AnalyticsFilter,
+  getDatePickerValues
+} from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
@@ -75,8 +85,7 @@ export const useDashBoardUpdatedFilter = () => {
 }
 export default function Dashboard () {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
 
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
@@ -89,7 +98,7 @@ export default function Dashboard () {
       value: 'switch',
       children: <SwitchWidgets />
     },
-    ...(isEdgeEnabled && isEdgeReady ? [
+    ...(isEdgeEnabled ? [
       {
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',
@@ -142,8 +151,10 @@ function DashboardPageHeader () {
   const { dashboardFilters, setDateFilterState } = useDashBoardUpdatedFilter()
   const { startDate , endDate, range } = dashboardFilters
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
+
+  const hasCreatePermission
+    = hasPermission({ scopes: [WifiScopes.CREATE, SwitchScopes.CREATE, EdgeScopes.CREATE] })
 
   const addMenu = <Menu
     expandIcon={<UI.MenuExpandArrow />}
@@ -151,26 +162,35 @@ function DashboardPageHeader () {
       key: 'add-venue',
       // eslint-disable-next-line max-len
       label: <TenantLink to='venues/add'>{$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}</TenantLink>
-    }, {
+    },
+    ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
       key: 'add-wifi-network',
       label: <TenantLink to='networks/wireless/add'>{
         $t({ defaultMessage: 'Wi-Fi Network' })}
       </TenantLink>
-    }, {
+    }] : []),
+    ...( hasCreatePermission ? [{
       key: 'add-device',
       label: $t({ defaultMessage: 'Device' }),
       // type: 'group',
-      children: [{
-        key: 'add-ap',
-        label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
-      }, {
-        key: 'add-switch',
-        label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
-      }, ...(isEdgeEnabled && isEdgeReady) ? [{
-        key: 'add-edge',
-        label: <TenantLink to='devices/edge/add'>{$t({ defaultMessage: 'SmartEdge' })}</TenantLink>
-      }] : []]
-    }]}
+      children: [
+        ...( hasPermission({ scopes: [WifiScopes.CREATE] }) ? [{
+          key: 'add-ap',
+          label: <TenantLink to='devices/wifi/add'>{$t({ defaultMessage: 'Wi-Fi AP' })}</TenantLink>
+        }] : []),
+        ...( hasPermission({ scopes: [SwitchScopes.CREATE] }) ? [{
+          key: 'add-switch',
+          label: <TenantLink to='devices/switch/add'>{$t({ defaultMessage: 'Switch' })}</TenantLink>
+        }] : []),
+        ...(isEdgeEnabled && hasPermission({ scopes: [EdgeScopes.CREATE] })) ? [{
+          key: 'add-edge',
+          label: <TenantLink to='devices/edge/add'>{
+            $t({ defaultMessage: 'SmartEdge' })
+          }</TenantLink>
+        }] : []
+      ]
+    }] : [])
+    ]}
   />
 
   return (
@@ -228,10 +248,15 @@ function DashboardMapWidget () {
 
 function SwitchWidgets () {
   const { dashboardFilters } = useDashBoardUpdatedFilter()
+  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
+        {
+          supportPortTraffic ?
+            <SwitchesTrafficByVolume filters={dashboardFilters} vizType={'area'} />
+            :<SwitchesTrafficByVolumeLegacy filters={dashboardFilters} vizType={'area'} />
+        }
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={dashboardFilters}/>

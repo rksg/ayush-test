@@ -37,7 +37,7 @@ export function HealthTabs () {
 
   return <Tabs
     onChange={onTabChange}
-    // destroyInactiveTabPane
+    destroyInactiveTabPane
     activeKey={activeSubTab}
     defaultActiveKey='overview'
     type='card'
@@ -49,7 +49,7 @@ export function HealthTabs () {
       <HealthPage />
     </Tabs.TabPane>
     <Tabs.TabPane tab={$t({ defaultMessage: 'Wired' })} key='wired'>
-      <WiredTab/>
+      <WiredTab noSwitches={wirelessOnly}/>
     </Tabs.TabPane>
   </Tabs>
 }

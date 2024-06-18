@@ -6,17 +6,20 @@ import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
 import { Modal, SummaryCard }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { ServiceConfigTemplateLinkSwitcher }  from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
   useGetVenueSettingsQuery,
   useGetVenueTemplateSettingsQuery,
+  useLazyGetDHCPProfileQuery,
   useUpdateVenueDHCPProfileMutation,
   useUpdateVenueTemplateDhcpProfileMutation
 } from '@acx-ui/rc/services'
 import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
+  useConfigTemplate,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
@@ -34,10 +37,11 @@ interface DHCPFormRefType {
 export default function BasicInfo () {
   const params = useParams()
   const locationState = (useLocation() as LocationExtended)?.state
-
-  const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher(
-    useUpdateVenueDHCPProfileMutation, useUpdateVenueTemplateDhcpProfileMutation
-  )
+  const { isTemplate } = useConfigTemplate()
+  const [updateVenueDHCPProfile] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueDHCPProfileMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateDhcpProfileMutation
+  })
 
   const [visible, setVisible] = useState(!!locationState?.from?.returnParams?.showConfig)
   const { $t } = useIntl()
@@ -46,19 +50,31 @@ export default function BasicInfo () {
   const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
-  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>(
-    useGetVenueSettingsQuery, useGetVenueTemplateSettingsQuery
-  )
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
+  })
 
-  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>(
-    useGetDHCPProfileListQuery, useGetDhcpTemplateListQuery
-  )
+  const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
+    useQueryFn: useGetDHCPProfileListQuery,
+    useTemplateQueryFn: useGetDhcpTemplateListQuery,
+    skip: enableRbac,
+    enableRbac
+  })
 
-  const getSelectedDHCPMode = (dhcpServiceID:string)=> {
+  const [getDhcpProfile] = useLazyGetDHCPProfileQuery()
+
+  const getSelectedDHCP = async (dhcpServiceID:string)=> {
+    if(enableRbac && !isTemplate) {
+      // eslint-disable-next-line max-len
+      const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID }, enableRbac }).unwrap()
+      return result
+    }
     if(dhcpProfileList && dhcpServiceID){
-      return _.find(dhcpProfileList, { id: dhcpServiceID })?.dhcpMode
+      return _.find(dhcpProfileList, { id: dhcpServiceID })
     }else{
-      return DHCPConfigTypeEnum.SIMPLE
+      return { dhcpMode: DHCPConfigTypeEnum.SIMPLE, dhcpPools: [] }
     }
   }
 
@@ -70,10 +86,11 @@ export default function BasicInfo () {
     gateways:[];
   })=>{
     const payload:{
-      id: string;//venueID
-      enabled:Boolean
+      id?: string;//venueID
+      enabled?:Boolean
       serviceProfileId?:string
-      dhcpServiceAps?: Array<object>
+      dhcpServiceAps?: Array<object>,
+      activeDhcpPoolNames?: Array<string>
     } = {
       enabled: data.enabled,
       serviceProfileId: data.serviceProfileId,
@@ -188,16 +205,23 @@ export default function BasicInfo () {
           const valid = await form.validateFields()
           if (valid) {
             const payload = payloadTransverter(form.getFieldsValue())
-            const profileMode = payload.serviceProfileId ?
-              getSelectedDHCPMode(payload.serviceProfileId) : null
-            if(profileMode === DHCPConfigTypeEnum.SIMPLE || payload.enabled === false){
+            const { serviceProfileId: serviceId, enabled: enableService } = payload
+            const selectedDhcp = payload.serviceProfileId ?
+              await getSelectedDHCP(payload.serviceProfileId) : null
+            if(selectedDhcp?.dhcpMode === DHCPConfigTypeEnum.SIMPLE || payload.enabled === false){
               delete payload.dhcpServiceAps
               if(payload.enabled === false){
                 delete payload.serviceProfileId
               }
             }
+            if (enableRbac && !isTemplate) {
+              payload.activeDhcpPoolNames = selectedDhcp?.dhcpPools.map(pool => pool.name) || []
+              delete payload.serviceProfileId
+              delete payload.enabled
+              delete payload.id
+            }
             await updateVenueDHCPProfile({
-              params: { ...params }, payload
+              params: { ...params, serviceId }, payload, enableRbac, enableService
             }).unwrap()
             setVisible(false)
           }

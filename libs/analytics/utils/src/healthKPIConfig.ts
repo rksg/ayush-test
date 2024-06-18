@@ -25,6 +25,12 @@ const multipleBy100 = (ms: number) => ms * 100
 export const multipleBy1000 = (ms: number) => ms * 1000
 export const divideBy100 = (ms: number) => ms / 100
 export const noFormat = (x: number) => x
+export const numberWithPercentSymbol = (x: number) => `${x}%`
+
+export const shouldAddFirmwareFilter = () =>
+  window.location.pathname.includes('/health/wired')
+    ? true
+    : undefined
 
 export const kpiConfig = {
   connectionSuccess: {
@@ -161,6 +167,23 @@ export const kpiConfig = {
       apiMetric: 'dhcpSuccess',
       format: formatter('percentFormat'),
       deltaSign: '+'
+    }
+  },
+  switchDhcp: {
+    textPostFix: 'Success',
+    text: defineMessage({ defaultMessage: 'DHCP' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchDHCPSuccessAndAttemptCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchDHCPSuccessAndAttemptCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} DHCP successful bindings' }),
+      thresholdDesc: [],
+      thresholdFormatter: null,
+      pillSuffix: pillSuffix.success,
+      tooltip: defineMessage({ defaultMessage: 'Metric of DHCP successful bindings for switches that have DHCP snooping configured.' })
     }
   },
   radius: {
@@ -409,6 +432,7 @@ export const kpiConfig = {
   },
   switchPoeUtilization: {
     text: defineMessage({ defaultMessage: 'PoE Utilization' }),
+    enableSwitchFirmwareFilter: shouldAddFirmwareFilter,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
@@ -433,7 +457,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: formatter('percentFormat'),
-      tooltip: defineMessage({ defaultMessage: 'The PoE Utilization measures the percentage of the switches that utilize less power than the goal set.{br}{br}The time-series graph on the left displays the percentage of switches across time that meet the configured SLA. The bar chart on the right captures the distribution of PoE Utilization across the number of switches. Do note that the numbers related to the time-series graph will change as you zoom in/out of a time range, whereas the bar chart will stay fixed based on the selected time range at the top of the page.' })
+      tooltip: defineMessage({ defaultMessage: 'Indication of switches where power consumption is above a threshold.' })
     }
   },
   onlineAPs: {
@@ -455,6 +479,220 @@ export const kpiConfig = {
       apiMetric: 'onlineAPCount',
       format: formatter('countFormat'),
       deltaSign: '+'
+    }
+  },
+  switchReachability: {
+    text: defineMessage({ defaultMessage: 'Switch Reachability' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchStatusCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are reachable.' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility of switches to controller.' })
+    }
+  },
+  switchMemoryUtilization: {
+    text: defineMessage({ defaultMessage: 'Memory' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchMemoryUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} Memory' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Metric of switches with memory utilisation above a threshold.' })
+    }
+  },
+  switchCpuUtilization: {
+    text: defineMessage({ defaultMessage: 'CPU' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchCpuUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'switches',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} switches use' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} CPU' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Metric of switches with CPU utilisation above a threshold.' })
+    }
+  },
+  switchesTemperature: {
+    text: defineMessage({ defaultMessage: 'Temperature' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchTempCountAndSwitchCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are under safe thresholds of temperature.' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Metric of switches with temperature above or below the operating conditions.' })
+    }
+  },
+  switchUplinkPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Uplink Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchUplinkPortUtilCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchUplinkPortUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} uplink ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Metric that refers to amount of network traffic that is transmitted effectively through the uplink port of wired switches.' })
+    }
+  },
+  switchPortUtilization: {
+    text: defineMessage({ defaultMessage: 'Port Utilization' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchPortUtilizationCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 80,
+      apiMetric: 'switchPortUtilization',
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
+      xUnit: '%',
+      yUnit: 'Ports',
+      shortXFormat: noFormat,
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports are' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'under' }),
+        defineMessage({ defaultMessage: '{threshold} congested' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: numberWithPercentSymbol,
+      tooltip: defineMessage({ defaultMessage: 'Metric that refers to traffic being transmitted effectively if its within the network capacity.' })
+    }
+  },
+  switchInterfaceAnomalies: {
+    text: defineMessage({ defaultMessage: 'Interface Anomalies' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: 'Ports without anomalies' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Anomalies refer to unexpected and abnormal networking behaviour can occur due to cable issues, failed negotiation, and MTU Errors, Input errors contributing to bad user minutes.' })
+    }
+  },
+  switchStormControl: {
+    text: defineMessage({ defaultMessage: 'MC Traffic' }),
+    isBeta: false,
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchPortStormCountAndPortCount',
+      minGranularity: 'PT15M'
+    },
+    histogram: {
+      highlightAbove: false,
+      initialThreshold: 2000,
+      apiMetric: 'switchPortStormCount',
+      splits: [1000, 2000, 3000, 4000, 5000, 6000],
+      xUnit: defineMessage({ defaultMessage: 'packets/sec' }),
+      yUnit: 'Ports',
+      shortXFormat: formatter('countFormatRound'),
+      longXFormat: noFormat,
+      reFormatFromBarChart: noFormat
+    },
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} ports' }),
+      thresholdDesc: [
+        defineMessage({ defaultMessage: 'below' }),
+        defineMessage({ defaultMessage: '{threshold} packets/sec' })
+      ],
+      pillSuffix: pillSuffix.meetGoal,
+      thresholdFormatter: noFormat,
+      tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
+    }
+  },
+  switchAuthentication: {
+    text: defineMessage({ defaultMessage: 'Authentication' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchAuthCountAndAttemptCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchAuthCountAndAttemptCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} of auth succeeded' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Metric of authentication events amongst success and failed categories.' })
     }
   }
 }
@@ -503,31 +741,31 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        'uplinkPortUtilization',
+        'switchUplinkPortUtilization',
         'switchReachability'
       ]
     },
     connection: {
       kpis: [
-        'authentication',
-        'dhcp'
+        'switchAuthentication',
+        'switchDhcp'
       ]
     },
     performance: {
       kpis: [
-        'portUtilization',
-        'uplinkPortUtilization',
-        'interfaceAnamolies',
-        'bcmcTraffic'
+        'switchPortUtilization',
+        'switchUplinkPortUtilization',
+        'switchInterfaceAnomalies',
+        'switchStormControl'
       ]
     },
     infrastructure: {
       kpis: [
         'switchReachability',
-        'memory',
-        'cpu',
-        'temperature',
-        'poeUtilization'
+        'switchMemoryUtilization',
+        'switchCpuUtilization',
+        'switchesTemperature',
+        'switchPoeUtilization'
       ]
     }
   }

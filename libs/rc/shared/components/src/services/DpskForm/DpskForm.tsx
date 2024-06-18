@@ -9,6 +9,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useCreateDpskMutation,
   useCreateDpskTemplateMutation,
@@ -59,19 +60,27 @@ export function DpskForm (props: DpskFormProps) {
 
   const idAfterCreatedRef = useRef<string>()
 
-  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>(
-    useGetDpskListQuery, useGetEnhancedDpskTemplateListQuery, !isModalMode()
-  )
+  const { data: dpskList } = useConfigTemplateQueryFnSwitcher<TableResult<DpskSaveData>>({
+    useQueryFn: useGetDpskListQuery,
+    useTemplateQueryFn: useGetEnhancedDpskTemplateListQuery,
+    skip: !isModalMode()
+  })
+
+  const [ createDpsk ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useCreateDpskMutation,
+    useTemplateMutationFn: useCreateDpskTemplateMutation
+  })
+  const [ updateDpsk ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateDpskMutation,
+    useTemplateMutationFn: useUpdateDpskTemplateMutation
+  })
 
   // eslint-disable-next-line max-len
-  const [ createDpsk ] = useConfigTemplateMutationFnSwitcher(useCreateDpskMutation, useCreateDpskTemplateMutation)
-  // eslint-disable-next-line max-len
-  const [ updateDpsk ] = useConfigTemplateMutationFnSwitcher(useUpdateDpskMutation, useUpdateDpskTemplateMutation)
-
-  // eslint-disable-next-line max-len
-  const { data: dataFromServer, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DpskSaveData>(
-    useGetDpskQuery, useGetDpskTemplateQuery, !editMode
-  )
+  const { data: dataFromServer, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DpskSaveData>({
+    useQueryFn: useGetDpskQuery,
+    useTemplateQueryFn: useGetDpskTemplateQuery,
+    skip: !editMode
+  })
 
   const formRef = useRef<StepsFormLegacyInstance<CreateDpskFormFields>>()
   const initialValues: Partial<CreateDpskFormFields> = {
@@ -81,6 +90,7 @@ export function DpskForm (props: DpskFormProps) {
   }
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DPSK)
   const pageTitle = useServicePageHeaderTitle(editMode, ServiceType.DPSK)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   function isModalMode (): boolean {
     return modalMode && !editMode
@@ -112,11 +122,13 @@ export function DpskForm (props: DpskFormProps) {
       if (editMode) {
         result = await updateDpsk({
           params: { ...params },
-          payload: _.omit(dpskSaveData, 'id')
+          payload: _.omit(dpskSaveData, 'id'),
+          enableRbac
         }).unwrap()
       } else {
         result = await createDpsk({
-          payload: dpskSaveData
+          payload: dpskSaveData,
+          enableRbac
         }).unwrap()
       }
 

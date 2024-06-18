@@ -6,10 +6,12 @@ import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 
 import { Alert, Loader, useStepFormContext }                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { Features }                                                               from '@acx-ui/feature-toggle'
 import { useGetEdgeClusterListQuery, useVenuesListQuery }                         from '@acx-ui/rc/services'
 import { EdgeGeneralSetting, edgeSerialNumberValidator, isOtpEnrollmentRequired } from '@acx-ui/rc/utils'
 import { useParams }                                                              from '@acx-ui/react-router-dom'
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 
 interface EdgeSettingFormProps {
@@ -42,7 +44,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
 
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeHaEnabled = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeHaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
   const [showOtpMessage, setShowOtpMessage] = useState(false)
   // const [addClusterDrawerVisible, setAddClusterDrawerVisible] = useState(false)
   const { form } = useStepFormContext<EdgeGeneralSetting>()
@@ -98,6 +100,8 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
               <Form.Item
                 name='clusterId'
                 label={$t({ defaultMessage: 'Cluster' })}
+                // eslint-disable-next-line max-len
+                extra={$t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using SmartEdge’s name by default.' })}
               >
                 <Select options={[
                   {

@@ -5,12 +5,15 @@ import _             from 'lodash'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Tooltip }                                                            from '@acx-ui/components'
-import { useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
-import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }       from '@acx-ui/rc/utils'
+import { Tooltip }                                                                                               from '@acx-ui/components'
+import { useGetAllApModelFirmwareListQuery, useGetUpgradePreferencesQuery, useUpdateUpgradePreferencesMutation } from '@acx-ui/rc/services'
+import { ApModelFirmware, FirmwareVenuePerApModel, UpgradePreferences }                                          from '@acx-ui/rc/utils'
+import { getIntl }                                                                                               from '@acx-ui/utils'
 
-import { VersionLabelType } from '../../FirmwareUtils'
-import * as UI              from '../../styledComponents'
+import { VersionLabelType, compareVersions, getVersionLabel } from '../../FirmwareUtils'
+import * as UI                                                from '../../styledComponents'
+
+import { UpdateFirmwarePerApModelFirmware } from './UpdateNowDialog'
 
 export function useUpdateNowPerApModel () {
   const [ updateNowVisible, setUpdateNowVisible ] = useState(false)
@@ -35,6 +38,32 @@ export function useChangeScheduleVisiblePerApModel () {
     changeScheduleVisible,
     setChangeScheduleVisible,
     handleChangeScheduleCancel
+  }
+}
+
+export function useDowngradePerApModel () {
+  const [ downgradeVisible, setDowngradeVisible ] = useState(false)
+  const { data: apModelFirmwares } = useGetAllApModelFirmwareListQuery({}, {
+    refetchOnMountOrArgChange: 300
+  })
+  const handleDowngradeCancel = () => {
+    setDowngradeVisible(false)
+  }
+
+  const canDowngrade = (selectedVenues: FirmwareVenuePerApModel[]): boolean => {
+    if (selectedVenues.length > 1 || !apModelFirmwares) return false
+
+    // eslint-disable-next-line max-len
+    const apModelIndividualDisplayData = convertToApModelIndividualDisplayData(apModelFirmwares, selectedVenues, undefined, false)
+
+    return apModelIndividualDisplayData.length > 0
+  }
+
+  return {
+    downgradeVisible,
+    setDowngradeVisible,
+    handleDowngradeCancel,
+    canDowngrade
   }
 }
 
@@ -159,4 +188,101 @@ export function ExpandableApModelList (props: ExpandableApModelListProps) {
 
 function generateDefaultLabelWrapper (apModelsForDisplay: string): JSX.Element {
   return <div>{ apModelsForDisplay }</div>
+}
+
+export type ApModelIndividualDisplayDataType = {
+  apModel: string
+  versionOptions: { key: string, label: string }[]
+  defaultVersion: string
+  extremeFirmware: string
+}
+
+export function convertToApModelIndividualDisplayData (
+  apModelFirmwareList: ApModelFirmware[],
+  venuesFirmwares: FirmwareVenuePerApModel[],
+  initialPayload?: UpdateFirmwarePerApModelFirmware,
+  isUpgrade = true
+): ApModelIndividualDisplayDataType[] {
+  const extremeFirmwareMap = findExtremeFirmwareBasedOnApModel(venuesFirmwares, isUpgrade)
+
+  if (_.isEmpty(extremeFirmwareMap)) return []
+
+  // eslint-disable-next-line max-len
+  const result: { [apModel in string]: Pick<ApModelIndividualDisplayDataType, 'versionOptions' | 'extremeFirmware'> } = {}
+
+  apModelFirmwareList.forEach((apModelFirmware: ApModelFirmware) => {
+    if (!apModelFirmware.supportedApModels) return
+
+    apModelFirmware.supportedApModels.forEach(apModel => {
+      const apModelExtremeFirmware = extremeFirmwareMap[apModel]
+      if (!apModelExtremeFirmware) return
+
+      if (!result[apModel]) {
+        result[apModel] = {
+          versionOptions: [],
+          extremeFirmware: apModelExtremeFirmware
+        }
+      }
+
+      const comparisonResult = compareVersions(apModelExtremeFirmware, apModelFirmware.id)
+      if (isUpgrade ? comparisonResult >= 0 : comparisonResult <= 0) return
+
+      result[apModel].versionOptions.push(createFirmwareOption(apModelFirmware))
+    })
+  })
+
+  return Object.entries(result).map(([ apModel, { versionOptions, extremeFirmware } ]) => ({
+    apModel,
+    versionOptions,
+    extremeFirmware,
+    defaultVersion: isUpgrade
+      ? getApModelDefaultFirmwareFromOptions(apModel, versionOptions, initialPayload)
+      : ''
+  }))
+}
+
+// eslint-disable-next-line max-len
+function createFirmwareOption (apModelFirmware: ApModelFirmware): ApModelIndividualDisplayDataType['versionOptions'][number] {
+  const intl = getIntl()
+
+  return {
+    key: apModelFirmware.id,
+    label: getVersionLabel(intl, apModelFirmware as VersionLabelType)
+  }
+}
+
+function getApModelDefaultFirmwareFromOptions (
+  apModel: string,
+  versionOptions: ApModelIndividualDisplayDataType['versionOptions'],
+  initialPayload?: UpdateFirmwarePerApModelFirmware
+): string {
+  if (initialPayload) {
+    const targetApModelFirmwares = initialPayload.find(fw => fw.apModel === apModel)
+    return targetApModelFirmwares?.firmware ?? ''
+  }
+
+  return versionOptions.length === 0 ? '' : versionOptions[0].key
+}
+
+export function findExtremeFirmwareBasedOnApModel (
+  venuesFirmwares: FirmwareVenuePerApModel[],
+  findMax = true
+): { [apModel in string]: string } {
+
+  return venuesFirmwares.reduce((acc, curr) => {
+    if (!curr.currentApFirmwares) return acc
+
+    curr.currentApFirmwares.forEach(currentApFw => {
+      if (!acc[currentApFw.apModel]) {
+        acc[currentApFw.apModel] = currentApFw.firmware
+      } else {
+        const comparisonResult = compareVersions(currentApFw.firmware, acc[currentApFw.apModel])
+        if (findMax ? comparisonResult > 0 : comparisonResult < 0) {
+          acc[currentApFw.apModel] = currentApFw.firmware
+        }
+      }
+    })
+
+    return acc
+  }, {} as { [apModel in string]: string })
 }

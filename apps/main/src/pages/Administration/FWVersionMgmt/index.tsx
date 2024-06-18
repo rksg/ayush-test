@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                                          from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }                                       from '@acx-ui/icons'
+import { Tabs, Tooltip }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
+import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
@@ -35,10 +36,13 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
-  const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
-  const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
+  const isEdgeEnabled = useIsEdgeReady()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const { data: latestSwitchReleaseVersions } =
+    useGetSwitchLatestFirmwareListQuery({ params, enableRbac: isSwitchRbacEnabled })
+  const { data: switchVenueVersionList } =
+    useGetSwitchVenueVersionListQuery({ params, enableRbac: isSwitchRbacEnabled })
   const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
     skip: !isEdgeEnabled
   })
@@ -48,8 +52,7 @@ const FWVersionMgmt = () => {
       latestEdgeReleaseVersion: data?.[0]
     })
   })
-  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
-    { skip: !enableSigPackUpgrade })
+  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
   const isApFirmwareAvailable = useIsApFirmwareAvailable()
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
@@ -113,7 +116,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
       content: <ApplicationPolicyMgmt />,
-      visible: enableSigPackUpgrade
+      visible: true
     }
   }
 

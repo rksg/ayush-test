@@ -34,22 +34,18 @@ export default function GatewayDetailsGeneralContent (props: {
       children={gatewayDetails?.hostname}
     />
     <Descriptions.Item
-      label={$t({ defaultMessage: 'Username' })}
-      children={gatewayDetails?.username}
-    />
-    <Descriptions.Item
-      label={$t({ defaultMessage: 'Password' })}
+      label={$t({ defaultMessage: 'API Key' })}
       children={<UI.DetailsPassword>
         <PasswordInput
           readOnly
           bordered={false}
-          value={gatewayDetails?.password}
+          value={gatewayDetails?.apiKey}
         />
       </UI.DetailsPassword>}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Uptime' })}
-      children={longDurationFormat(gatewayDetails?.uptimeInSeconds, 'long')}
+      children={longDurationFormat(+(gatewayDetails?.uptimeInSeconds || 0) * 1000, 'long')}
     />
     <Descriptions.Item
       label={$t({ defaultMessage: 'Booted at' })}

@@ -37,10 +37,10 @@ import {
   SEARCH,
   GuestClient
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams, useNavigate, useTenantLink }  from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload }                          from '@acx-ui/types'
-import { filterByAccess, GuestErrorRes, hasAccess, hasRoles } from '@acx-ui/user'
-import { getIntl  }                                           from '@acx-ui/utils'
+import { TenantLink, useParams, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload, WifiScopes }             from '@acx-ui/types'
+import { GuestErrorRes, hasRoles, hasPermission }            from '@acx-ui/user'
+import { getIntl  }                                          from '@acx-ui/utils'
 
 import { defaultGuestPayload, GuestsDetail } from '../GuestsDetail'
 import { GenerateNewPasswordModal }          from '../GuestsDetail/generateNewPasswordModal'
@@ -106,7 +106,10 @@ export const GuestsTable = () => {
         {$t({ defaultMessage: 'Guests cannot be added since there are no guest networks' })}
       </span>
       {
-        hasAccess() &&
+        hasPermission({
+          scopes: [WifiScopes.CREATE],
+          allowedOperations: 'POST:/wifiNetworks'
+        }) &&
         <Button type='link'
           onClick={() => setNetworkModalVisible(true)}
           disabled={!isServicesEnabled}
@@ -139,6 +142,10 @@ export const GuestsTable = () => {
     .map(gtype => ({ key: gtype, value: renderGuestType(gtype) }))
 
   const networkFilterOptions = allowedNetworkList.map(network=>({
+    key: network.id, value: network.name
+  }))
+
+  const networkOptions = guestNetworkList.map(network=>({
     key: network.id, value: network.name
   }))
 
@@ -265,10 +272,10 @@ export const GuestsTable = () => {
       title: $t({ defaultMessage: 'Allowed Network' }),
       dataIndex: 'wifiNetworkId',
       filterKey: 'wifiNetworkId',
-      filterable: networkFilterOptions || true,
+      filterable: networkFilterOptions,
       sorter: true,
       render: function (_, row) {
-        return renderAllowedNetwork(row, networkFilterOptions)
+        return renderAllowedNetwork(row, networkOptions)
       }
     }, {
       key: 'expiryDate',
@@ -322,19 +329,27 @@ export const GuestsTable = () => {
   ] : [
     {
       label: $t({ defaultMessage: 'Delete' }),
-      onClick: (selectedRows) => {
+      scopeKey: [WifiScopes.DELETE],
+      allowedOperations: 'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      onClick: (selectedRows:Guest[]) => {
         guestAction.showDeleteGuest(selectedRows, params.tenantId, clearSelection)
       }
     },
     {
+      key: 'downloadInformation',
       label: $t({ defaultMessage: 'Download Information' }),
-      onClick: (selectedRows) => {
+      scopeKey: [WifiScopes.READ],
+      allowedOperations: 'POST:/guestUsers',
+      onClick: (selectedRows:Guest[]) => {
         guestAction.showDownloadInformation(selectedRows, params.tenantId)
       }
     },
     {
+      key: 'generatePassword',
       label: $t({ defaultMessage: 'Generate New Password' }),
-      visible: (selectedRows) => {
+      scopeKey: [WifiScopes.UPDATE],
+      allowedOperations: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      visible: (selectedRows:Guest[]) => {
         if (selectedRows.length !== 1) { return false }
         const guestDetail = selectedRows[0]
         const flag =
@@ -345,31 +360,40 @@ export const GuestsTable = () => {
           guestDetail.wifiNetworkId ))
         return Boolean(flag)
       },
-      onClick: (selectedRows) => {
+      onClick: (selectedRows:Guest[]) => {
         setGuestDetail(selectedRows[0])
         setGenerateModalVisible(true)
       }
     },
     {
+      key: 'disableGuest',
       label: $t({ defaultMessage: 'Disable' }),
-      visible: (selectedRows) => {
+      scopeKey: [WifiScopes.UPDATE],
+      allowedOperations: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      visible: (selectedRows:Guest[]) => {
         return selectedRows.length === 1 &&
           !_.isEmpty(selectedRows[0].wifiNetworkId) &&
           (selectedRows[0].guestStatus !== GuestStatusEnum.DISABLED) &&
           (selectedRows[0].guestStatus !== GuestStatusEnum.EXPIRED)
       },
-      onClick: (selectedRows) => { guestAction.disableGuest(selectedRows[0], params.tenantId)}
+      onClick: (selectedRows:Guest[]) =>
+      { guestAction.disableGuest(selectedRows[0], params.tenantId)}
     },
     {
+      key: 'enableGuest',
       label: $t({ defaultMessage: 'Enable' }),
-      visible: (selectedRows) => {
+      scopeKey: [WifiScopes.UPDATE],
+      allowedOperations: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+      visible: (selectedRows:Guest[]) => {
         return selectedRows.length === 1 &&
           !_.isEmpty(selectedRows[0].wifiNetworkId) &&
           (selectedRows[0].guestStatus === GuestStatusEnum.DISABLED)
       },
-      onClick: (selectedRows) => { guestAction.enableGuest(selectedRows[0], params.tenantId)}
+      onClick: (selectedRows:Guest[]) =>
+      { guestAction.enableGuest(selectedRows[0], params.tenantId)}
     }
-  ]
+  ].filter(item =>
+    hasPermission({ scopes: item.scopeKey, allowedOperations: item.allowedOperations }))
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
     if (customFilters.guestType?.includes('SelfSign')) {
@@ -408,26 +432,34 @@ export const GuestsTable = () => {
           selectedRowKeys,
           type: 'checkbox'
         }}
-        actions={filterByAccess([{
-          key: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        actions={[{
+          key: 'addGuest',
+          scopeKey: [WifiScopes.CREATE],
+          allowedOperationUrl: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
           label: $t({ defaultMessage: 'Add Guest' }),
           onClick: () => setDrawerVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
         }, {
-          key: 'POST:/networks',
+          key: 'addNetworks',
+          scopeKey: [WifiScopes.CREATE],
+          allowedOperationUrl: 'POST:/wifiNetworks',
           label: $t({ defaultMessage: 'Add Guest Pass Network' }),
           onClick: () => {setNetworkModalVisible(true) },
           disabled: !isServicesEnabled
         },
         {
-          key: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+          key: 'importGuests',
+          scopeKey: [WifiScopes.CREATE],
+          allowedOperationUrl: 'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
           label: $t({ defaultMessage: 'Import from file' }),
           onClick: () => setImportVisible(true),
           disabled: allowedNetworkList.length === 0 ? true : false
-        }]).map((action, index) => {
-          action.key = `${action.key}_${index}`
-          return action
-        })}
+        }]
+          .filter(item =>
+            hasPermission({
+              scopes: item.scopeKey,
+              allowedOperations: item.allowedOperationUrl
+            }))}
       />
 
       <Drawer

@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                                            from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps }                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -23,8 +23,11 @@ import {
   SwitchSolid,
   WiFi,
   DevicesOutlined,
-  DevicesSolid
+  DevicesSolid,
+  DataStudioOutlined,
+  DataStudioSolid
 } from '@acx-ui/icons'
+import { useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
@@ -37,20 +40,18 @@ import { useTenantId }                     from '@acx-ui/utils'
 export function useMenuConfig () {
   const { $t } = useIntl()
   const tenantID = useTenantId()
-  const { data: userProfileData } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
-  const showVideoCallQoe = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const isRadiusClientEnabled = useIsSplitOn(Features.RADIUS_CLIENT_CONFIG)
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantID)
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
-  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
   const showApGroupTable = useIsSplitOn(Features.AP_GROUP_TOGGLE)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
@@ -79,14 +80,14 @@ export function useMenuConfig () {
               uri: '/analytics/incidents',
               label: $t({ defaultMessage: 'Incidents' })
             },
-            ...(crrmEnabled ? [{
+            {
               uri: '/analytics/recommendations/crrm',
               label: $t({ defaultMessage: 'AI-Driven RRM' })
-            }] : []),
-            ...(recommendationsEnabled ? [{
+            },
+            {
               uri: '/analytics/recommendations/aiOps',
               label: $t({ defaultMessage: 'AI Operations' })
-            }] : [])
+            }
           ]
         },
         {
@@ -105,7 +106,7 @@ export function useMenuConfig () {
               uri: '/analytics/configChange',
               label: $t({ defaultMessage: 'Config Change' })
             }] : []),
-            ...(isAnltAdvTier && showVideoCallQoe ? [{
+            ...(isAnltAdvTier ? [{
               uri: '/analytics/videoCallQoe',
               label: $t({ defaultMessage: 'Video Call QoE' })
             }] : [])
@@ -328,11 +329,15 @@ export function useMenuConfig () {
           type: 'group' as const,
           label: $t({ defaultMessage: 'Account Management' }),
           children: [
-            {
-              uri: '/administration/accountSettings',
-              label: $t({ defaultMessage: 'Settings' })
-            },
-            ...(isAdministratorAccessible ? [
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/accountSettings',
+                  label: $t({ defaultMessage: 'Settings' })
+                }
+              ] : []
+            ),
+            ...(isAdministratorAccessible && !isCustomRole ? [
               isAbacToggleEnabled ? {
                 uri: '/administration/userPrivileges',
                 label: $t({ defaultMessage: 'Users & Privileges' })
@@ -341,27 +346,35 @@ export function useMenuConfig () {
                 label: $t({ defaultMessage: 'Administrators' })
               }
             ] : []),
-            {
-              uri: '/administration/notifications',
-              label: $t({ defaultMessage: 'Notifications' })
-            },
-            {
-              uri: '/administration/subscriptions',
-              label: $t({ defaultMessage: 'Subscriptions' })
-            },
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/notifications',
+                  label: $t({ defaultMessage: 'Notifications' })
+                },
+                {
+                  uri: '/administration/subscriptions',
+                  label: $t({ defaultMessage: 'Subscriptions' })
+                }
+              ] : []
+            ),
             {
               uri: '/administration/fwVersionMgmt',
               label: $t({ defaultMessage: 'Version Management' })
             },
-            {
-              uri: '/administration/webhooks',
-              label: $t({ defaultMessage: 'Webhooks' })
-            },
-            {
-              uri: '/administration/onpremMigration',
-              label: $t({ defaultMessage: 'ZD Migration' })
-            },
-            ...(isRadiusClientEnabled ? [{
+            ...(
+              !isCustomRole ? [
+                {
+                  uri: '/administration/webhooks',
+                  label: $t({ defaultMessage: 'Webhooks' })
+                },
+                {
+                  uri: '/administration/onpremMigration',
+                  label: $t({ defaultMessage: 'ZD Migration' })
+                }
+              ] : []
+            ),
+            ...(isRadiusClientEnabled && !isCustomRole ? [{
               uri: '/administration/localRadiusServer',
               label: $t({ defaultMessage: 'Local RADIUS Server' })
             }] : [])
@@ -371,5 +384,23 @@ export function useMenuConfig () {
     }
   ]
   if (isGuestManager || isDPSKAdmin) { return [] }
+  if (isReportsAdmin) {
+    return [
+      {
+        label: $t({ defaultMessage: 'Data Studio' }),
+        inactiveIcon: DataStudioOutlined,
+        activeIcon: DataStudioSolid,
+        uri: '/dataStudio',
+        isActiveCheck: new RegExp('^/dataStudio')
+      },
+      {
+        label: $t({ defaultMessage: 'Reports' }),
+        inactiveIcon: DataStudioOutlined,
+        activeIcon: DataStudioSolid,
+        uri: '/reports',
+        isActiveCheck: new RegExp('^/reports')
+      }
+    ]
+  }
   return config
 }

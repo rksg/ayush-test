@@ -155,9 +155,7 @@ function SettingsForm () {
   },[data])
 
   const disablePolicies = !useIsSplitOn(Features.POLICIES)
-  const supportOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
 
   const macAuthOptions = Object.keys(macAuthMacFormatOptions).map((key =>
     <Option key={key}>
@@ -170,7 +168,6 @@ function SettingsForm () {
       <StepsFormLegacy.Title>{$t({ defaultMessage: 'Open Settings' })}</StepsFormLegacy.Title>
       <div>
         <Form.Item>
-          {supportOweEncryption &&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               {$t({ defaultMessage: 'OWE encryption' })}
@@ -186,8 +183,8 @@ function SettingsForm () {
               valuePropName='checked'
               children={<Switch onChange={onOweChange} />}
             />
-          </UI.FieldLabel>}
-          {enableOwe && supportOweTransition &&
+          </UI.FieldLabel>
+          {enableOwe &&
           <UI.FieldLabel width={labelWidth}>
             <Space align='start'>
               {$t({ defaultMessage: 'OWE Transition mode' })}

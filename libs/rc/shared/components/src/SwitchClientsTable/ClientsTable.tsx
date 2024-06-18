@@ -18,9 +18,9 @@ import {
   Lag,
   SwitchPortStatus
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }        from '@acx-ui/types'
-import { hasPermission }         from '@acx-ui/user'
+import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { hasPermission }                from '@acx-ui/user'
 
 import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
 import {
@@ -197,7 +197,7 @@ export function ClientsTable (props: {
       dataIndex: 'switchPortFormatted',
       sorter: true,
       render: (_, row) => {
-        if (!portLinkEnabled || !hasPermission()) { // FF
+        if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) { // FF
           return row['switchPort']
         }
 
@@ -218,7 +218,12 @@ export function ClientsTable (props: {
 
         const onEditLag = async () => {
           const { data: lagList } = await getLagList({
-            params: { ...params, switchId: switchPortStatus.switchMac }
+            params: {
+              ...params,
+              switchId: switchPortStatus.switchMac,
+              venueId: switchPortStatus.venueId
+            },
+            enableRbac: isSwitchRbacEnabled
           })
           const lagData = lagList?.find((item: Lag) =>
             item.lagId?.toString() === switchPortStatus.lagId) as Lag

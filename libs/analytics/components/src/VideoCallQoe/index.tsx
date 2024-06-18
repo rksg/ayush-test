@@ -5,6 +5,7 @@ import { defineMessage, useIntl } from 'react-intl'
 
 import { Tooltip, PageHeader }                       from '@acx-ui/components'
 import { TenantLink }                                from '@acx-ui/react-router-dom'
+import { WifiScopes }                                from '@acx-ui/types'
 import { getShowWithoutRbacCheckKey, hasPermission } from '@acx-ui/user'
 
 import { useVideoCallQoeTestsQuery } from './services'
@@ -53,7 +54,10 @@ export function useVideoCallQoe () {
 
   return {
     title: $t(title, { count }),
-    headerExtra: hasPermission() ? headerExtra : [],
+    headerExtra: hasPermission({
+      permission: 'WRITE_VIDEO_CALL_QOE',
+      scopes: [WifiScopes.CREATE]
+    }) ? headerExtra : [],
     component
   }
 }
