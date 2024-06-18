@@ -33,6 +33,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
       selectionType={range}
+      isReport
     />
   ]
   showFilter && !isNetworkFilterDisabled && component.unshift(
