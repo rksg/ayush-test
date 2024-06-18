@@ -1,7 +1,7 @@
 import { ReactCompareSlider, ReactCompareSliderDetailedProps } from 'react-compare-slider'
 
 // https://react-compare-slider.vercel.app/?path=/docs/docs-api--docs
-export type CompareSliderProps = ReactCompareSliderDetailedProps
+export type CompareSliderProps = typeof ReactCompareSliderDetailedProps
 
 export const CompareSlider = (props: CompareSliderProps) => {
   const { itemOne, itemTwo,
