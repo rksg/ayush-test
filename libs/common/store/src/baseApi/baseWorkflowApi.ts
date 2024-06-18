@@ -4,7 +4,7 @@ import { baseQuery } from './baseQuery'
 
 export const baseWorkflowApi = createApi({
   baseQuery: baseQuery,
-  tagTypes: ['Workflow','WorkflowUIConfig'],
+  tagTypes: ['Workflow','WorkflowUIConfig', 'Action', 'Step'],
   reducerPath: 'workflowApi',
   refetchOnMountOrArgChange: true,
   endpoints: () => ({ })

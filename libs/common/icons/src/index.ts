@@ -375,4 +375,6 @@ export { ReactComponent as Port } from './icons/Port.svg'
 export { ReactComponent as SubInterface } from './icons/SubInterface.svg'
 export { ReactComponent as ClusterInterface } from './icons/ClusterInterface.svg'
 
+export { ReactComponent as Workflow } from './icons/NetworksSolid.svg'
+
 export * from './styledComponents'
