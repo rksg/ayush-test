@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { edgeApi, venueApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -297,6 +298,8 @@ describe('Edge Table', () => {
   })
 
   it('should shutdown the selected SmartEdge', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
     const user = userEvent.setup()
     render(
       <Provider>

@@ -86,7 +86,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-
+  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
@@ -251,7 +251,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
-      visible: (selectedRows) => (selectedRows.length === 1 &&
+      visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
         allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Shutdown' }),
       onClick: (rows, clearSelection) => {

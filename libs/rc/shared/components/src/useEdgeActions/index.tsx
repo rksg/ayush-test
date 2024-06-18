@@ -78,8 +78,8 @@ export const useEdgeActions = () => {
         { edgeName: data.name }
       ),
       content: $t({
-        defaultMessage: `Shutdown will safely terminate all ongoing operations on 
-        SmartEdge. Are you sure you want to shutdown this SmartEdge?`
+        defaultMessage: `Shutdown will safely end all operations on SmartEdge. You will need to 
+        manually restart the device. Are you sure you want to shut down this SmartEdge?`
       }),
       customContent: {
         action: 'CUSTOM_BUTTONS',

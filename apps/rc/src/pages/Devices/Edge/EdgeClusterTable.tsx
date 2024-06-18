@@ -2,6 +2,7 @@ import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
 
 import { Loader, Table, TableProps, Tooltip }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { EdgeStatusLight, useEdgeClusterActions }                 from '@acx-ui/rc/components'
 import { useGetEdgeClusterListForTableQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import {
@@ -46,6 +47,7 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
+  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const {
     deleteNodeAndCluster,
     reboot,
@@ -267,8 +269,8 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE],
-      visible: (selectedRows) =>
-        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+      visible: (selectedRows) => (isGracefulShutdownReady &&
+        selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Shutdown' }),
       onClick: (selectedRows, clearSelection) => {
