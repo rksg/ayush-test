@@ -142,7 +142,15 @@ const defaultAddress: Address = {
   timezone: 'America/Los_Angeles'
 }
 
-export function VenuesForm () {
+interface VenuesFormProps {
+  modalMode?: boolean
+  modalCallBack?: (venue?: VenueExtended) => void
+  specifiedAction?: 'override'
+  dataFromParent?: VenueExtended | undefined
+}
+
+export function VenuesForm (props: VenuesFormProps) {
+  const { modalMode = false, modalCallBack, specifiedAction, dataFromParent } = props
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
 
@@ -170,8 +178,8 @@ export function VenuesForm () {
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
   const [countryCode, setCountryCode] = useState('')
 
-  const { action } = useParams()
-  const { data } = useGetVenueInstance()
+  const action = specifiedAction ?? params.action ?? 'add'
+  const { data = dataFromParent } = useGetVenueInstance()
   const previousPath = usePreviousPath()
 
   // Config Template related states
@@ -210,7 +218,7 @@ export function VenuesForm () {
       }
     }
 
-    if ( action !== 'edit') { // Add mode
+    if (action === 'add') {
       const initialAddress = isMapEnabled ? '' : defaultAddress.addressLine
       formRef.current?.setFieldValue(['address', 'addressLine'], initialAddress)
     }
@@ -301,15 +309,22 @@ export function VenuesForm () {
 
   const handleSubmit = async (
     values: VenueExtended,
-    action: (args: RequestPayload<unknown>) => { unwrap: () => Promise<VenueExtended> },
+    trigger?: (args: RequestPayload<unknown>) => { unwrap: () => Promise<VenueExtended> },
     needRedirect: boolean = true
   ) => {
     try {
       const formData = { ...values }
       formData.address = countryCode ? { ...address, countryCode } : address
-      await action({ params, payload: formData }).unwrap()
 
-      needRedirect && redirectPreviousPage(navigate, previousPath, linkToVenues)
+      if (trigger) {
+        await trigger({ params, payload: formData }).unwrap()
+      }
+
+      if (modalMode) {
+        modalCallBack?.(formData)
+      } else {
+        needRedirect && redirectPreviousPage(navigate, previousPath, linkToVenues)
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -323,9 +338,27 @@ export function VenuesForm () {
     await handleSubmit(values, updateVenue, false)
   }
 
+  const handleOverrideVenue = async (values: VenueExtended) => {
+    await handleSubmit(values, undefined, false)
+  }
+
+  const saveHandlerMap: Record<string, (values: VenueExtended) => Promise<boolean | void>> = {
+    edit: handleEditVenue,
+    add: handleAddVenue,
+    override: handleOverrideVenue
+  }
+
+  const onCancel = () => {
+    modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToVenues)
+  }
+
+  const isHeaderVisible = (): boolean => {
+    return action !== 'edit' && !modalMode
+  }
+
   return (
     <>
-      {action !== 'edit' && <PageHeader
+      {isHeaderVisible() && <PageHeader
         title={pageTitle}
         breadcrumb={breadcrumb}
       />}
@@ -335,17 +368,15 @@ export function VenuesForm () {
       }]}>
         <StepsFormLegacy
           formRef={formRef}
-          onFinish={action === 'edit' ? handleEditVenue : handleAddVenue}
-          onCancel={() =>
-            redirectPreviousPage(navigate, previousPath, linkToVenues)
-          }
+          onFinish={saveHandlerMap[action]}
+          onCancel={onCancel}
           buttonLabel={{ submit: action === 'edit' ?
             intl.$t({ defaultMessage: 'Save' }):
             intl.$t({ defaultMessage: 'Add' }) }}
         >
           <StepsFormLegacy.StepForm>
             <Row gutter={20}>
-              <Col span={8}>
+              <Col span={modalMode ? 20 : 8}>
                 <Form.Item
                   name='name'
                   label={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Name' })}
@@ -377,7 +408,7 @@ export function VenuesForm () {
               </Col>
             </Row>
             <Row gutter={20}>
-              <Col span={10}>
+              <Col span={modalMode ? 20 : 10}>
                 <GoogleMap.FormItem
                   label={intl.$t({ defaultMessage: 'Address' })}
                   required
@@ -425,7 +456,7 @@ export function VenuesForm () {
             </Row>
             {isMapEnabled &&
           <Row gutter={20}>
-            <Col span={8}>
+            <Col span={modalMode ? 20 : 8}>
               <Form.Item
                 label={intl.$t({ defaultMessage: 'Wi-Fi Country Code' })}
                 tooltip={intl.$t( MessageMapping.wifi_country_code_tooltip )}
