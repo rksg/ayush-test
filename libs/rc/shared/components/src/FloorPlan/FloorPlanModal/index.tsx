@@ -6,7 +6,7 @@ import { isEmpty }      from 'lodash'
 import { useParams }    from 'react-router-dom'
 
 import { Button, Modal }                                     from '@acx-ui/components'
-import { useGetUploadURLMutation }                           from '@acx-ui/rc/services'
+import { useGetVenueSpecificUploadURLMutation }              from '@acx-ui/rc/services'
 import { FloorPlanDto, FloorPlanFormDto, UploadUrlResponse } from '@acx-ui/rc/utils'
 import { hasAccess }                                         from '@acx-ui/user'
 import { getIntl, loadImageWithJWT }                         from '@acx-ui/utils'
@@ -55,7 +55,7 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
 
   const { $t } = getIntl()
 
-  const [getUploadURL] = useGetUploadURLMutation()
+  const [getUploadURL] = useGetVenueSpecificUploadURLMutation()
 
   useEffect(() => {
     if (isEditMode) {
@@ -69,7 +69,8 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
 
   useEffect(() => {
     if (selectedFloorPlan?.imageId) {
-      const response = loadImageWithJWT(selectedFloorPlan?.imageId)
+      const fileUrl = `/venues/${params?.venueId}/signurls/${selectedFloorPlan?.imageId}/urls`
+      const response = loadImageWithJWT(selectedFloorPlan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })

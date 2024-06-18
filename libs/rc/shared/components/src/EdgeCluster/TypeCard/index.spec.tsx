@@ -45,7 +45,7 @@ describe('EdgeClusterTypeCard', () => {
         icon={<MapSolid title='portVirtualIP'/>}
         warningTooltip='A test warning'
       />)
-    await userEvent.hover(screen.getByTestId('InformationSolid'))
+    await userEvent.hover(screen.getByTestId('WarningCircleSolid'))
     expect(await screen.findByRole('tooltip', { hidden: true })).toHaveTextContent('A test warning')
   })
 

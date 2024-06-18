@@ -6,9 +6,9 @@ import { cssStr } from '@acx-ui/components'
 import { SpaceWrapper } from '../../SpaceWrapper'
 
 import DcDmzDiagramHorizontal from './assets/images/edge-sd-lan-dc-dmz-horizontal.png'
-import DcDmzDiagramVertical   from './assets/images/edge-sd-lan-dc-dmz.png'
+import DcDmzDiagramVertical   from './assets/images/edge-sd-lan-dc-dmz-vertical.png'
 import DcDiagramHorizontal    from './assets/images/edge-sd-lan-dc-horizontal.png'
-import DcDiagramVertical      from './assets/images/edge-sd-lan-dc.png'
+import DcDiagramVertical      from './assets/images/edge-sd-lan-dc-vertical.png'
 import { messageMappings }    from './messageMappings'
 import * as UI                from './styledComponents'
 

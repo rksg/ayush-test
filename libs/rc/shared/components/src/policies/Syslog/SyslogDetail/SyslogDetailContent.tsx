@@ -1,30 +1,32 @@
 import { useContext, useEffect } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { Loader, SummaryCard }     from '@acx-ui/components'
-import { useGetSyslogPolicyQuery } from '@acx-ui/rc/services'
+import { Loader, SummaryCard }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { useGetSyslogPolicyQuery, useGetSyslogPolicyTemplateQuery } from '@acx-ui/rc/services'
 import {
-  FacilityEnum,
-  FlowLevelEnum
+  FacilityEnum, facilityLabelMapping,
+  FlowLevelEnum, flowLevelLabelMapping,
+  SyslogPolicyDetailType,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-
-import { facilityLabelMapping, flowLevelLabelMapping } from '../contentsMap'
 
 import { SyslogDetailContext } from './SyslogDetailView'
 
 const SyslogDetailContent = () => {
   const { $t } = useIntl()
-
-  const { data, isLoading } = useGetSyslogPolicyQuery({
-    params: useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
+    useQueryFn: useGetSyslogPolicyQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
+    enableRbac
   })
 
   const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)
 
   useEffect(() => {
-    if (data){
+    if (data) {
       const venueIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
       setFiltersId(venueIdList)
       setPolicyName(data.name ?? '')

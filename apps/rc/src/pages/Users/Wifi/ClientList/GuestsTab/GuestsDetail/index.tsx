@@ -18,19 +18,17 @@ import {
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { ClientHealthIcon }          from '@acx-ui/rc/components'
-import { useGetGuestsListQuery }     from '@acx-ui/rc/services'
 import {
   getOsTypeIcon,
   Guest,
   GuestClient,
   GuestStatusEnum,
   GuestTypesEnum,
-  transformDisplayText,
-  useTableQuery
+  transformDisplayText
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams }     from '@acx-ui/react-router-dom'
-import { RolesEnum, RequestPayload } from '@acx-ui/types'
-import { hasRoles }                  from '@acx-ui/user'
+import { TenantLink, useParams }                 from '@acx-ui/react-router-dom'
+import { RolesEnum, RequestPayload, WifiScopes } from '@acx-ui/types'
+import { hasRoles, hasPermission }               from '@acx-ui/user'
 
 import {
   renderAllowedNetwork,
@@ -59,7 +57,7 @@ export const defaultGuestPayload = {
     'name',
     'passDurationHours',
     'id',
-    'networkId',
+    'wifiNetworkId',
     'maxNumberOfClients',
     'notes',
     'clients',
@@ -78,37 +76,19 @@ export const defaultGuestPayload = {
 
 export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
   const { $t } = useIntl()
-  const { currentGuest, queryPayload = {} } = props
+  const { currentGuest } = props
   const { tenantId } = useParams()
   const [guestDetail, setGuestDetail] = useState({} as Guest)
   const [generateModalVisible, setGenerateModalVisible] = useState(false)
   const guestAction = useGuestActions()
-
-  const tableQuery = useTableQuery({
-    useQuery: useGetGuestsListQuery,
-    defaultPayload: {
-      ...defaultGuestPayload,
-      ...queryPayload
-    }
-  })
 
   const hasOnlineClient = function (row: Guest) {
     return row.guestStatus.indexOf(GuestStatusEnum.ONLINE) !== -1
   }
 
   useEffect(() => {
-    tableQuery.setPayload({
-      ...tableQuery.payload,
-      ...queryPayload
-    })
-  }, [queryPayload])
-
-  useEffect(() => {
-    const guest = tableQuery?.data?.data.filter((item: Guest) => item.id === currentGuest.id)[0]
-    if (guest) {
-      setGuestDetail(guest)
-    }
-  }, [currentGuest.id, tableQuery])
+    setGuestDetail(currentGuest)
+  }, [currentGuest])
 
   const renderStatus = function (row: Guest) {
     if(Object.keys(row).length === 0) {
@@ -157,7 +137,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
       defaultSortOrder: 'ascend'
     }, {
       key: 'venueId',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueId',
       sorter: false,
       defaultSortOrder: 'ascend',
@@ -228,23 +208,37 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
           label: $t({ defaultMessage: 'Download Information' }),
           key: 'downloadInformation'
         }
-      ] : [
-        {
-          label: $t({ defaultMessage: 'Generate New Password' }),
-          key: 'generatePassword'
-        }, {
-          label: $t({ defaultMessage: 'Download Information' }),
-          key: 'downloadInformation'
-        }, {
-          label: $t({ defaultMessage: 'Disable Guest' }),
-          key: 'disableGuest'
-        }, {
-          label: $t({ defaultMessage: 'Enable Guest' }),
-          key: 'enableGuest'
-        }, {
-          label: $t({ defaultMessage: 'Delete Guest' }),
-          key: 'deleteGuest'
-        }].filter((item) => {
+      ] : [{
+        label: $t({ defaultMessage: 'Generate New Password' }),
+        key: 'generatePassword',
+        scopeKey: [WifiScopes.UPDATE],
+        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+      }, {
+        label: $t({ defaultMessage: 'Download Information' }),
+        key: 'downloadInformation',
+        scopeKey: [WifiScopes.READ],
+        allowedOperationUrl: 'POST:/guestUsers'
+      },
+      {
+        label: $t({ defaultMessage: 'Disable Guest' }),
+        key: 'disableGuest',
+        scopeKey: [WifiScopes.UPDATE],
+        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+      }, {
+        label: $t({ defaultMessage: 'Enable Guest' }),
+        key: 'enableGuest',
+        scopeKey: [WifiScopes.UPDATE],
+        allowedOperationUrl: 'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+      }, {
+        label: $t({ defaultMessage: 'Delete Guest' }),
+        key: 'deleteGuest',
+        scopeKey: [WifiScopes.DELETE],
+        allowedOperationUrl: 'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}'
+      }].filter((item) => {
+        if (!hasRoles([RolesEnum.GUEST_MANAGER]) &&
+        !hasPermission({ scopes: item.scopeKey, allowedOperations: item.allowedOperationUrl })){
+          return false
+        }
         if (item.key === 'enableGuest' &&
         guestDetail.guestStatus !== GuestStatusEnum.DISABLED) {
           return false
@@ -261,7 +255,7 @@ export const GuestsDetail= (props: GuestDetailsDrawerProps) => {
           guestDetail.guestType !== GuestTypesEnum.HOST_GUEST &&
         ((guestDetail.guestStatus?.indexOf(GuestStatusEnum.ONLINE) !== -1) ||
         ((guestDetail.guestStatus === GuestStatusEnum.OFFLINE) &&
-          guestDetail.networkId ))
+          guestDetail.wifiNetworkId ))
         }
 
         return true

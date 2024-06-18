@@ -3,6 +3,7 @@ export * from './rogueApDetectionPolicy'
 export * from './aaaPolicy'
 export * from './vlanPoolPolicy'
 export * from './clientIsolationPolicy'
+export * from './wifiOperator'
 export * from './identityProvider'
 export * from './syslogPolicy'
 export * from './accessControl'
@@ -12,6 +13,7 @@ export * from './tunnelProfile'
 export * from './rulesManagement'
 export * from './connectionMetering'
 export * from './workflow'
+export * from './certificateTemplate'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
@@ -35,7 +37,11 @@ export enum PolicyType {
   ADAPTIVE_POLICY_SET = 'Adaptive Policy Set',
   TUNNEL_PROFILE = 'Tunnel Profile',
   CONNECTION_METERING = 'Data Usage Metering',
-  WORKFLOW = 'Onboarding Workflows'
+  WORKFLOW = 'Onboarding Workflows',
+  WIFI_OPERATOR = 'Wi-Fi Operator',
+  CERTIFICATE_TEMPLATE = 'Certificate Template',
+  CERTIFICATE_AUTHORITY = 'Certificate Authority',
+  CERTIFICATE = 'Certificate'
 }
 
 export enum PolicyTechnology {
@@ -51,3 +57,4 @@ export interface Policy {
   scope: number
   tags: string[]
 }
+export * from './common'

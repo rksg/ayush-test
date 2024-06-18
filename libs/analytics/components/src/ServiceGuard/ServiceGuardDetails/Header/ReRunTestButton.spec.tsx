@@ -35,7 +35,7 @@ describe('ReRunButton', () => {
     const button = await screen.findByText('Re-Run Test')
     await userEvent.click(button)
 
-    expect(await screen.findByText('Service Validation test running')).toBeVisible()
+    expect(await screen.findByText('Service Validation test is running')).toBeVisible()
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       pathname: '/t-id/t/analytics/serviceValidation/spec-id/tests/3',
       hash: '',

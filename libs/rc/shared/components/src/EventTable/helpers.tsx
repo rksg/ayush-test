@@ -142,7 +142,7 @@ export const getDescription = (data: Event, highlightFn?: TableHighlightFnArgs) 
       }}
     />
   } catch {
-    return noDataDisplay
+    return data.message
   }
 }
 

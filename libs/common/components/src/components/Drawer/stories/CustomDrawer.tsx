@@ -11,6 +11,7 @@ export function CustomDrawer () {
   const [visible, setVisible] = useState(false)
   const [resetField, setResetField] = useState(false)
   const [showAddAnother, setShowAddAnother] = useState(false)
+  const [showExtra, setShowExtra] = useState(false)
   const [form] = Form.useForm()
 
   const onClose = () => {
@@ -31,6 +32,14 @@ export function CustomDrawer () {
     setVisible(true)
     setResetField(false)
     setShowAddAnother(true)
+    setShowExtra(false)
+  }
+
+  const onOpenWithExtra = () => {
+    setVisible(true)
+    setResetField(false)
+    setShowAddAnother(false)
+    setShowExtra(true)
   }
 
   const content = <Form layout='vertical' form={form} onFinish={resetFields}>
@@ -48,9 +57,10 @@ export function CustomDrawer () {
     />
   </Form>
 
-  const footerWithAddAnother = (
+  const customFooter = (
     <Drawer.FormFooter
       showAddAnother={showAddAnother}
+      extra={showExtra ? <div>Extra Content</div> : null}
       onCancel={resetFields}
       onSave={async () => {
         await form.validateFields()
@@ -68,6 +78,7 @@ export function CustomDrawer () {
       <Space>
         <Button onClick={onOpen}>Custom Drawer</Button>
         <Button onClick={onOpenWithAddAnother}>Custom Drawer With Add Another</Button>
+        <Button onClick={onOpenWithExtra}>Custom Drawer With Extra</Button>
       </Space>
       <Drawer
         title={'Custom Drawer'}
@@ -77,7 +88,7 @@ export function CustomDrawer () {
         visible={visible}
         onClose={onClose}
         children={content}
-        footer={footerWithAddAnother}
+        footer={customFooter}
         destroyOnClose={resetField}
         width={'600px'}
       />

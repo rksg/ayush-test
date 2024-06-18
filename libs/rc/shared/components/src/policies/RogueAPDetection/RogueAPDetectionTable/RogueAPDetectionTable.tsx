@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import {
   doProfileDelete,
   useDelRoguePoliciesMutation,
@@ -25,10 +25,11 @@ import { RequestPayload }                                          from '@acx-ui
 import { filterByAccess }                                          from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../../../SimpleListTooltip'
+import { useIsEdgeReady }    from '../../../useEdgeActions'
 import { PROFILE_MAX_COUNT } from '../contentsMap'
 
 const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
 
   return {
     fields: [
@@ -66,11 +67,14 @@ const defaultPayload = {
     'description',
     'numOfRules',
     'venueIds',
-    'venueCount'
+    'venueCount',
+    'rules',
+    'rule'
   ]
 }
 
 export function RogueAPDetectionTable () {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
@@ -82,6 +86,7 @@ export function RogueAPDetectionTable () {
   const tableQuery = useTableQuery({
     useQuery: useEnhancedRoguePoliciesQuery,
     defaultPayload,
+    enableRbac,
     pagination: { settingsId }
   })
 
@@ -104,8 +109,10 @@ export function RogueAPDetectionTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      // eslint-disable-next-line max-len
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
+      // eslint-disable-next-line max-len
+      async () => deleteFn({ params, payload: selectedRows.map(row => row.id), enableRbac }).then(callback)
     )
   }
 
@@ -249,7 +256,7 @@ function useColumns (venueIds: string[]) {
     },
     {
       key: 'venueCount',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueFilterOptions,
       align: 'center',

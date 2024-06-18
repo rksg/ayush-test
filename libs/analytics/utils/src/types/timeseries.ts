@@ -6,3 +6,10 @@ export interface TimeSeriesChartData extends Object {
   show?: boolean,
   data: [TimeStamp, number | null][]
 }
+
+export interface YAxisData extends Object {
+  axisName: string
+  nameRotate: number
+  showLabel?: boolean
+  color?: string
+}

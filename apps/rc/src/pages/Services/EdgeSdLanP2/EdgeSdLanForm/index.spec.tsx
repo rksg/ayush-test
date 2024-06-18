@@ -125,7 +125,8 @@ describe('SD-LAN P2 form', () => {
       await click(actions.getByRole('button', { name: 'Add' }))
 
       await waitFor(() => {
-        expect(mockedFinishFn).toBeCalledWith({
+        const call = mockedFinishFn.mock.calls[0]
+        expect(call[0]).toStrictEqual({
           name: 'mockedServiceName',
           tunnelProfileId: 'SLt-id',
           tunnelProfileName: 'Default tunnel profile (SD-LAN)',
@@ -171,7 +172,8 @@ describe('SD-LAN P2 form', () => {
       await click(actions.getByRole('button', { name: 'Apply' }))
 
       await waitFor(() => {
-        expect(mockedFinishFn).toBeCalledWith({
+        const call = mockedFinishFn.mock.calls[0]
+        expect(call[0]).toStrictEqual({
           ...mockedSdLanServiceP2,
           activatedNetworks: mockedSdLanServiceP2.networkIds.map(id => ({ id })),
           activatedGuestNetworks: mockedSdLanServiceP2.guestNetworkIds.map(id => ({ id }))

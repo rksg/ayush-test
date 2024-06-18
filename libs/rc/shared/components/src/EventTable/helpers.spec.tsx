@@ -60,7 +60,7 @@ describe('getDescription', () => {
       message: '{ xxxx: bad template '
     })}</>, { route: true })
 
-    expect(container).toHaveTextContent('--')
+    expect(container).toHaveTextContent('{ xxxx: bad template')
   })
 
   it('handles keyword of formatjs', async () => {

@@ -66,7 +66,8 @@ export const EdgeSdLanActivatedNetworksTable = forwardRef(
     const defaultColumns: TableProps<NetworkSaveData>['columns'] = useMemo(() => ([{
       title: $t({ defaultMessage: 'Active Network' }),
       tooltip: $t({ defaultMessage:
-        'A list of the networks that have been activated on this venue.' }),
+        // eslint-disable-next-line max-len
+        'A list of the networks that have been activated on this <venueSingular></venueSingular>.' }),
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',
@@ -81,7 +82,7 @@ export const EdgeSdLanActivatedNetworksTable = forwardRef(
         return $t(networkTypes[row.type!])
       }
     }, {
-      title: $t({ defaultMessage: 'Activate on Venue' }),
+      title: $t({ defaultMessage: 'Activate on <VenueSingular></VenueSingular>' }),
       key: 'action',
       dataIndex: 'action',
       align: 'center' as AlignType,

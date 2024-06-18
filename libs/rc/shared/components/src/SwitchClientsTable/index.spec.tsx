@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import { clientApi, switchApi }           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                from '@acx-ui/store'
@@ -49,6 +49,7 @@ const clientList = {
       switchName: 'ICX7150-C12 Router',
       switchId: '58:fb:96:0e:c0:c4',
       switchPort: '1/1/7',
+      switchPortId: '58-fb-96-0e-c0-c4_1-1-7',
       venueName: 'My-Venue',
       venueId: 'a98653366d2240b9ae370e48fab3a9a1',
       clientVlan: '1',
@@ -77,6 +78,7 @@ const clientDetail = {
   clientIpv4Addr: '00 00 00 00',
   id: 'NTg6ZmI6OTY6MGU6YzA6YzRfNTggZmIgOTYgMGUgYzAgY2FfMS0xLTdfMzQ6MjA6RTM6MkM6QjU6QjBfMQ==',
   switchPort: '1/1/7',
+  switchPortId: '58-fb-96-0e-c0-c4_1-1-7',
   timestamp: 1673436143865,
   updatedTime: 1673436143865,
   vlanName: 'DEFAULT-VLAN',
@@ -86,8 +88,58 @@ const clientDetail = {
   clientIpv6Addr: '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00',
   tenantId: 'f2e4a77d49914dc7b1bcb0dfc21b9a74',
   clientVlan: '1',
-  switchSerialNumber: 'FEK3230S0DA',
-  switchPortId: '58 fb 96 0e c0 ca_1-1-7'
+  switchSerialNumber: 'FEK3230S0DA'
+}
+
+const portData = {
+  data: [{
+    cloudPort: false,
+    stack: false,
+    name: 'GigabitEthernet1/1/7',
+    portId: '58-fb-96-0e-c0-c4_1-1-7',
+    status: 'Up',
+    adminStatus: 'Up',
+    vlanIds: '1',
+    portSpeed: '1 Gb/sec',
+    poeUsed: 0,
+    poeTotal: 0,
+    signalIn: 0,
+    signalOut: 0,
+    crcErr: '0',
+    inErr: '0',
+    outErr: '0',
+    opticsType: '1 Gbits per second copper',
+    switchUnitId: 'FMF3250Q0BK',
+    poeEnabled: true,
+    usedInFormingStack: false,
+    portIdentifier: '1/1/7',
+    unTaggedVlan: '1',
+    inDiscard: '0',
+    broadcastIn: '5513232',
+    broadcastOut: '2751137',
+    multicastIn: '9662979',
+    multicastOut: '53376',
+    poeType: 'n/a',
+    switchMac: '58:fb:96:0e:c0:c4',
+    id: '58-fb-96-0e-c0-c4_1-1-7',
+    neighborName: 'R_SW2',
+    ingressAclName: '',
+    egressAclName: '',
+    vsixIngressAclName: '',
+    vsixEgressAclName: '',
+    lagName: '',
+    switchName: 'R_SW3',
+    switchSerial: 'FEK3230S0DA',
+    lagId: '0',
+    deviceStatus: 'ONLINE',
+    unitStatus: 'Standalone',
+    unitState: 'ONLINE',
+    switchModel: 'ICX7150-C08P',
+    neighborMacAddress: 'C0:C5:20:B2:08:11',
+    syncedSwitchConfig: true,
+    mediaType: 'MEDIA_TYPE_EMPTY',
+    poeUsage: '0/0W (0%)'
+  }]
 }
 
 const apList = {
@@ -103,6 +155,84 @@ jest.mock('@acx-ui/rc/utils', () => ({
   exportCSV: jest.fn().mockImplementation(() => mockExportCsv())
 }))
 
+jest.mock('../SwitchPortTable/editPortDrawer', () => ({
+  EditPortDrawer: () => <div data-testid='rc-editPortDrawer' />
+}))
+
+
+describe('SwitchClientsTable - Port link', () => {
+  beforeEach(() => {
+    mockExportCsv.mockClear()
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
+    store.dispatch(clientApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
+    global.URL.createObjectURL = jest.fn()
+    HTMLAnchorElement.prototype.click = jest.fn()
+    mockServer.use(
+      rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
+        res(ctx.json(clientList))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portData))
+      ),
+      rest.post(SwitchUrlsInfo.getSwitchList.url, (_, res, ctx) =>
+        res(ctx.json({
+          data: [{ id: '58:fb:96:0e:c0:c4', name: 'ICX7150-C12 Router' }]
+        }))
+      )
+    )
+  })
+
+  it('should render correctly port link', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switch-id',
+      serialNumber: 'serialNumber'
+    }
+
+    render(
+      <Provider>
+        <SwitchClientsTable />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/users/switch/clients'
+        }
+      }
+    )
+    expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
+    expect(await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
+  })
+
+  it('should render correctly port link and clickable', async () => {
+    const params = {
+      tenantId: 'tenant-id',
+      switchId: 'switch-id',
+      serialNumber: 'serialNumber'
+    }
+
+    render(
+      <Provider>
+        <SwitchClientsTable />
+      </Provider>,
+      {
+        route: {
+          params,
+          path: '/:tenantId/t/users/switch/clients'
+        }
+      }
+    )
+    expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
+    expect( await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
+
+    await userEvent.click(screen.getByText(/1\/1\/7/i))
+    expect(await screen.findByTestId('rc-editPortDrawer')).toBeVisible()
+  })
+
+})
+
 describe('SwitchClientsTable', () => {
   beforeEach(() => {
     mockExportCsv.mockClear()
@@ -113,6 +243,10 @@ describe('SwitchClientsTable', () => {
     mockServer.use(
       rest.post(SwitchUrlsInfo.getSwitchClientList.url, (_, res, ctx) =>
         res(ctx.json(clientList))
+      ),
+      rest.post(
+        SwitchUrlsInfo.getSwitchPortlist.url,
+        (req, res, ctx) => res(ctx.json(portData))
       ),
       rest.post(SwitchUrlsInfo.getSwitchList.url, (_, res, ctx) =>
         res(ctx.json({
@@ -142,7 +276,7 @@ describe('SwitchClientsTable', () => {
       {
         route: {
           params,
-          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/clients'
+          path: '/:tenantId/t/users/switch/clients'
         }
       }
     )
@@ -285,7 +419,7 @@ describe('SwitchClientsTable', () => {
           clientType: 'ROUTER',
           switchName: 'ICX7150-C12 Router',
           switchId: '58:fb:96:0e:c0:c4',
-          switchPort: '1/1/7',
+          switchPort: '1/1/8',
           venueName: 'My-Venue',
           venueId: 'a98653366d2240b9ae370e48fab3a9a1',
           clientName: '',
@@ -312,12 +446,7 @@ describe('SwitchClientsTable', () => {
         route: { params, path: '/:tenantId/users/switch/clients' }
       }
     )
-
-    await waitForElementToBeRemoved(() =>
-      screen.queryByRole('img', { name: 'loader' })
-    )
-
-    expect(await screen.findByText('Router')).toBeVisible()
+    expect(await screen.findByText('1/1/8')).toBeVisible()
   })
 
   it('should render correctly when feature flag SWITCH_DHCP_CLIENTS is on', async () => {
@@ -343,7 +472,7 @@ describe('SwitchClientsTable', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>
@@ -385,7 +514,7 @@ describe('SwitchClientsTable', () => {
       )
     )
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Col, Row, Typography } from 'antd'
+import { isNil }                from 'lodash'
 import { useIntl }              from 'react-intl'
 
 import { Card, SummaryCard }                                                     from '@acx-ui/components'
@@ -17,9 +18,11 @@ import {
   getPolicyDetailsLink,
   PolicyType,
   PolicyOperation,
-  NetworkSaveData,
-  NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+  NetworkTypeEnum,
+  Network } from '@acx-ui/rc/utils'
+import { TenantLink }    from '@acx-ui/react-router-dom'
+import { EdgeScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 interface EdgeSdLanServiceProps {
   data: EdgeSdLanViewDataP2;
@@ -48,19 +51,20 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
       {data.name}
     </TenantLink>
   }, {
-    title: $t({ defaultMessage: 'Venue' }),
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     content: () => <TenantLink to={`/venues/${data.venueId}/venue-details/overview`}>
       {data.venueName}
     </TenantLink>
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
-    content: () => <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
-      {data.edgeClusterName}
-    </TenantLink>
+    content: () => (
+      <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
+        {data.edgeClusterName}
+      </TenantLink>)
   }, ...(data.isGuestTunnelEnabled ? [{
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestEdgeClusterId}/details/overview`}>
+      <TenantLink to={`devices/edge/cluster/${data.guestEdgeClusterId}/edit/cluster-details`}>
         {data.guestEdgeClusterName}
       </TenantLink>
     )
@@ -102,7 +106,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
           wifiNetworkId: networkId
         },
         payload: {
-          isGuestTunnelUtilized: activate
+          isGuestTunnelUtilized: !isGuest ? false : activate
         },
         callback: cb
       }).unwrap()
@@ -116,7 +120,7 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
 
   const handleActivateChange = async (
     fieldName: string,
-    rowData: NetworkSaveData,
+    rowData: Network,
     checked: boolean
   ) => {
     const networkId = rowData.id!
@@ -124,20 +128,27 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
 
     try {
       if (data.isGuestTunnelEnabled
-      && rowData.type === NetworkTypeEnum.CAPTIVEPORTAL ) {
+      && rowData.nwSubType === NetworkTypeEnum.CAPTIVEPORTAL ) {
+        // network with vlan pooling enabled cannot be a SD-LAN guest network
+        const isVlanPooling = !isNil(rowData.vlanPool)
         const isGuestNetwork = fieldName === 'activatedGuestNetworks'
-        await toggleNetwork(isGuestNetwork, networkId, checked)
+                              || (fieldName === 'activatedNetworks' && checked && !isVlanPooling)
+        await toggleNetwork(isGuestNetwork, networkId, checked, () => {
+          setIsActivateUpdating(false)
+        })
       } else {
-        await toggleNetwork(false, networkId, checked)
+        await toggleNetwork(false, networkId, checked, () => {
+          setIsActivateUpdating(false)
+        })
       }
-
-      setIsActivateUpdating(false)
     } catch(err) {
       setIsActivateUpdating(false)
       // eslint-disable-next-line no-console
       console.error(err)
     }
   }
+
+  const hasEdgeUpdatePermission = hasPermission({ scopes: [EdgeScopes.UPDATE] })
 
   return (
     <SpaceWrapper fullWidth direction='vertical' size={30}>
@@ -168,6 +179,10 @@ const EdgeSdLanP2 = ({ data }: EdgeSdLanServiceProps) => {
             isGuestTunnelEnabled={data.isGuestTunnelEnabled}
             activated={data.networkIds}
             activatedGuest={data.guestNetworkIds}
+            disabled={!hasEdgeUpdatePermission}
+            tooltip={!hasEdgeUpdatePermission
+              ? $t({ defaultMessage: 'No permission on this' })
+              : undefined}
             onActivateChange={handleActivateChange}
             isUpdating={isActivateUpdating
               || isActivateRequesting

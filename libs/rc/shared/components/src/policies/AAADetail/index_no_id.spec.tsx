@@ -77,12 +77,8 @@ describe('AAA Detail Page', () => {
 })
 async function aaaAuth () {
   mockServer.use(
-    rest.post(
-      AaaUrls.getAAANetworkInstances.url,
-      (req, res, ctx) => res(ctx.json(list))
-    ),
     rest.get(
-      AaaUrls.getAAAProfileDetail.url,
+      AaaUrls.getAAAPolicy.url,
       (req, res, ctx) => res(ctx.json(detailResult))
     )
   )

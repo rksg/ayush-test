@@ -1,8 +1,9 @@
 import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
+import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
@@ -77,22 +78,34 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
+
+const excludedFlags = [
+  Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE,
+  Features.AP_FW_MGMT_UPGRADE_BY_MODEL
+]
 describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.includes(ff as Features))
+
     mockServer.use(
+      rest.get(CommonUrlsInfo.getVenue.url,
+        (_, res, ctx) => res(ctx.json(venueData))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
+      rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
+        (req, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
         (_, res, ctx) => res(ctx.json(apDetailsList))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
@@ -109,6 +122,13 @@ describe('ApEdit', () => {
       ),
       rest.get(FirmwareUrlsInfo.getVenueVersionList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(venueVersionList))
+      ),
+      rest.get(WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
       )
     )
   })
@@ -142,7 +162,7 @@ describe('ApEdit', () => {
     it('Should render correctly when ap has not connected to the cloud', async () => {
       mockServer.use(
         rest.post(CommonUrlsInfo.getApsList.url,
-          (_, res, ctx) => res(ctx.json({
+          (_req, res, ctx) => res(ctx.json({
             ...deviceAps,
             data: [{
               ...(_.omit(deviceAps?.data?.[0], ['model']))
@@ -346,6 +366,8 @@ describe('ApEdit', () => {
           (_, res, ctx) => res(ctx.json(venueSetting))),
         rest.get(CommonUrlsInfo.getVenueLanPorts.url,
           (_, res, ctx) => res(ctx.json(venueLanPorts))),
+        rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+          (_, res, ctx) => res(ctx.json([]))),
         rest.post(CommonUrlsInfo.getApsList.url,
           (_, res, ctx) => res(ctx.json(deviceAps)))
       )

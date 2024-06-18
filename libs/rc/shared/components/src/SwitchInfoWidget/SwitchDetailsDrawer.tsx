@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Divider, Form, Select } from 'antd'
-import { replace }               from 'lodash'
 import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
@@ -63,7 +62,9 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
       : $t({ defaultMessage: 'Dynamic (DHCP)' })
   }
   const dnsParser = (dns:string) => {
-    return replace(dns, /,/g, '\r\n')
+    const dnsList = dns.split(',').slice(0, 4)
+    return (<ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+      {dnsList.map((val) => <li key={val}>{val}</li>)}</ul>)
   }
   return <Drawer
     width={'450px'}
@@ -74,7 +75,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
     children={
       <Form labelCol={{ span: 10 }} labelAlign='left'>
         <Form.Item
-          label={$t({ defaultMessage: 'Venue' })}
+          label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
           children={
             <TenantLink to={`/venues/${switchDetail.venueId}/venue-details/overview`}>
               {switchDetail.venueName}
@@ -83,7 +84,7 @@ export const SwitchDetailsDrawer = (props: DrawerProps) => {
         />
         <Form.Item
           label={$t({ defaultMessage: 'Description' })}
-          children={switchDetail.venueDescription || $t({ defaultMessage: 'None' })}
+          children={switchDetail.description || $t({ defaultMessage: 'None' })}
         />
         <Divider/>
         { enableSwitchAdminPassword && isSupportAdminPassword && <Form.Item

@@ -21,8 +21,9 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-import { useDateFilter }  from '@acx-ui/utils'
+import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useDateFilter }                 from '@acx-ui/utils'
 
 import { HaStatusBadge } from '../../HaStatusBadge'
 
@@ -37,6 +38,7 @@ export const EdgeDetailsPageHeader = () => {
   const edgeStatusPayload = {
     fields: [
       'name',
+      'venueId',
       'venueName',
       'type',
       'serialNumber',
@@ -69,21 +71,29 @@ export const EdgeDetailsPageHeader = () => {
 
   const menuConfig = [
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
       showupstatus: rebootableEdgeStatuses
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reset & Recover' }),
       key: 'factoryReset',
       showupstatus: resettabaleEdgeStatuses
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete SmartEdge' }),
       key: 'delete',
       showupstatus: [...Object.values(EdgeStatusEnum)]
     }
-  ] as { label: string, key: string, showupstatus?: EdgeStatusEnum[] } []
+  ] as {
+    scopeKey: ScopeKeys,
+    label: string,
+    key: string,
+    showupstatus?: EdgeStatusEnum[]
+  } []
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!currentEdge) return
@@ -109,10 +119,9 @@ export const EdgeDetailsPageHeader = () => {
       onClick={handleMenuClick}
       items={
         menuConfig.filter(item =>
-          item.showupstatus?.includes(status)
-        ).map(item => {
-          delete item.showupstatus
-          return item
+          item.showupstatus?.includes(status) && hasPermission({ scopes: item.scopeKey })
+        ).map(({ showupstatus, scopeKey, ...itemFields }) => {
+          return { ...itemFields }
         })
       }
     />
@@ -148,15 +157,18 @@ export const EdgeDetailsPageHeader = () => {
           selectionType={range}
         />,
         ...filterByAccess([
-          <Dropdown overlay={menu}>{()=>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <CaretDownSolidIcon />
-              </Space>
-            </Button>
-          }</Dropdown>,
+          <Dropdown
+            // scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
+            overlay={menu}>{()=>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>
+            }</Dropdown>,
           <Button
+            scopeKey={[EdgeScopes.UPDATE]}
             type='primary'
             onClick={() =>
               navigate({

@@ -47,8 +47,8 @@ describe('TunnelProfileForm', () => {
     // screen.getByRole('combobox', { name: 'Tags' })
     expect(screen.getByRole('radio', { name: 'Auto' })).toBeVisible()
     expect(screen.getByRole('radio', { name: 'Manual' })).toBeVisible()
-    expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeVisible()
-    expect(screen.getByText('Idle Period')).toBeVisible()
+    expect(screen.getByRole('switch')).toBeVisible()
+    expect(screen.getByText('Tunnel Idle Timeout')).toBeVisible()
     expect(screen.getByRole('spinbutton')).toBeVisible()
   })
 
@@ -59,8 +59,11 @@ describe('TunnelProfileForm', () => {
         <TunnelProfileForm />
       </Form>
     )
-    user.click(screen.getByRole('radio', { name: 'Manual' }))
-    expect(await screen.findByRole('spinbutton')).toBeVisible()
+    await user.click(screen.getByRole('radio', { name: 'Manual' }))
+    const spinBtns = await screen.findAllByRole('spinbutton') // MTU size / idleTime unit
+    expect(spinBtns.length).toBe(2)
+    expect(spinBtns.filter(i => i.id === 'mtuSize').length).toBe(1)
+    expect(screen.getByText(/Please check Ethernet MTU on AP/i)).toBeVisible()
   })
 
   it('should show error when ageTime is invalid', async () => {
@@ -137,10 +140,22 @@ describe('TunnelProfileForm', () => {
     expect(await screen.findByRole('textbox', { name: 'Profile Name' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Auto' })).toBeDisabled()
     expect(screen.getByRole('radio', { name: 'Manual' })).toBeDisabled()
-    expect(screen.getByRole('switch', { name: 'Force Fragmentation' })).toBeDisabled()
+    const fragmentToggle = screen.getByRole('switch')
+    expect(fragmentToggle.id).toBe('forceFragmentation')
+    expect(fragmentToggle).toBeDisabled()
     expect(screen.getByRole('spinbutton')).toBeDisabled()
     expect(screen.getByRole('combobox')).toBeDisabled()
   })
+
+  it('MTU help message should only display when manual', async () => {
+    render(
+      <Form initialValues={defaultValues}>
+        <TunnelProfileForm />
+      </Form>
+    )
+
+  })
+
 
   describe('when SD-LAN is ready', () => {
     beforeEach(() => {

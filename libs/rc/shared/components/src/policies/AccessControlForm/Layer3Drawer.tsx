@@ -24,9 +24,15 @@ import {
 import { Drag }                  from '@acx-ui/icons'
 import {
   useAddL3AclPolicyMutation,
+  useGetEnhancedL3AclProfileListQuery,
   useGetL3AclPolicyQuery,
-  useL3AclPolicyListQuery,
   useUpdateL3AclPolicyMutation
+} from '@acx-ui/rc/services'
+import {
+  useAddL3AclPolicyTemplateMutation,
+  useGetL3AclPolicyTemplateListQuery,
+  useGetL3AclPolicyTemplateQuery,
+  useUpdateL3AclPolicyTemplateMutation
 } from '@acx-ui/rc/services'
 import {
   AccessStatus,
@@ -34,14 +40,17 @@ import {
   Layer3ProtocolType,
   portRegExp,
   networkWifiIpRegExp,
-  subnetMaskIpRegExp
+  subnetMaskIpRegExp,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  layer3ProtocolLabelMapping, TableResult, L3AclPolicy
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { AddModeProps, editModeProps }     from './AccessControlForm'
-import { PROFILE_MAX_COUNT_LAYER3_POLICY } from './constants'
-import { layer3ProtocolLabelMapping }      from './contentsMap'
-import { useScrollLock }                   from './ScrollLock'
+
+import { AddModeProps, editModeProps }                                                  from './AccessControlForm'
+import { DEFAULT_LAYER3_RULES, PROFILE_MAX_COUNT_LAYER3_POLICY, QUERY_DEFAULT_PAYLOAD } from './constants'
+import { useScrollLock }                                                                from './ScrollLock'
 
 const { useWatch } = Form
 const { Option } = Select
@@ -53,6 +62,7 @@ export interface Layer3DrawerProps {
     viewText: string
   },
   isOnlyViewMode?: boolean,
+  drawerViewModeId?: string,
   onlyAddMode?: AddModeProps,
   editMode?: editModeProps,
   setEditMode?: (editMode: editModeProps) => void,
@@ -114,49 +124,6 @@ const AclGridCol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-const DEFAULT_LAYER3_RULES = [
-  {
-    priority: 1,
-    description: 'Allow DHCP',
-    access: 'ALLOW',
-    protocol: 'ANYPROTOCOL',
-    source: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: ''
-    },
-    destination: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: '67'
-    }
-  },
-  {
-    priority: 2,
-    description: 'Allow DNS',
-    access: 'ALLOW',
-    protocol: 'ANYPROTOCOL',
-    source: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: ''
-    },
-    destination: {
-      type: 'Any',
-      subnet: '',
-      ipMask: '',
-      ip: '',
-      port: '53'
-    }
-  }
-]
-
 export const Layer3Drawer = (props: Layer3DrawerProps) => {
   const { $t } = useIntl()
   const params = useParams()
@@ -165,6 +132,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     onlyViewMode = {} as { id: string, viewText: string },
     isOnlyViewMode = false,
     onlyAddMode = { enable: false, visible: false } as AddModeProps,
+    drawerViewModeId = '',
     editMode = { id: '', isEdit: false } as editModeProps,
     setEditMode = () => {},
     callBack = () => {}
@@ -204,35 +172,33 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     useWatch<string>([...inputName, 'l3AclPolicyId'])
   ]
 
-  const [ createL3AclPolicy ] = useAddL3AclPolicyMutation()
-
-  const [ updateL3AclPolicy ] = useUpdateL3AclPolicyMutation()
-
-  const { layer3SelectOptions, layer3List } = useL3AclPolicyListQuery({
-    params: { ...params, requestId: requestId }
-  }, {
-    selectFromResult ({ data }) {
-      return {
-        layer3SelectOptions: data ? data.map(
-          item => {
-            return <Option key={item.id}>{item.name}</Option>
-          }) : [],
-        layer3List: data ? data.map(item => item.name) : []
-      }
-    }
+  const [ createL3AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddL3AclPolicyMutation,
+    useTemplateMutationFn: useAddL3AclPolicyTemplateMutation
   })
 
+  const [ updateL3AclPolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateL3AclPolicyMutation,
+    useTemplateMutationFn: useUpdateL3AclPolicyTemplateMutation
+  })
 
-  const { data: layer3PolicyInfo } = useGetL3AclPolicyQuery(
-    {
-      params: { ...params, l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
-    },
-    { skip: skipFetch }
-  )
+  const { layer3SelectOptions, layer3List } = useGetL3AclPolicyListInstance(editMode.isEdit)
+
+  const { data: layer3PolicyInfo } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetL3AclPolicyQuery,
+    useTemplateQueryFn: useGetL3AclPolicyTemplateQuery,
+    skip: skipFetch,
+    payload: {},
+    extraParams: { l3AclPolicyId: isOnlyViewMode ? onlyViewMode.id : l3AclPolicyId }
+  })
 
   const isViewMode = () => {
     if (queryPolicyId === '') {
       return false
+    }
+
+    if (drawerViewModeId !== '') {
+      return !_.isNil(layer3PolicyInfo)
     }
 
     if (editMode.isEdit || localEditMode.isEdit) {
@@ -253,7 +219,14 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
 
   useEffect(() => {
     setSkipFetch(!isOnlyViewMode && !l3AclPolicyId)
-  }, [isOnlyViewMode, l3AclPolicyId])
+  }, [isOnlyViewMode, l3AclPolicyId, drawerViewModeId])
+
+  useEffect(() => {
+    if (drawerViewModeId !== '') {
+      setDrawerVisible(true)
+      setQueryPolicyId(drawerViewModeId)
+    }
+  }, [drawerViewModeId])
 
   useEffect(() => {
     if (editMode.isEdit && editMode.id !== '') {
@@ -1051,7 +1024,7 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
   }
 
   const modelContent = () => {
-    if (onlyAddMode.enable) {
+    if (onlyAddMode.enable || drawerViewModeId !== '') {
       return null
     }
 
@@ -1149,3 +1122,23 @@ export const Layer3Drawer = (props: Layer3DrawerProps) => {
     </>
   )
 }
+
+const useGetL3AclPolicyListInstance = (isEdit: boolean): {
+  layer3SelectOptions: JSX.Element[], layer3List: string[]
+} => {
+  const { data } = useConfigTemplateQueryFnSwitcher<TableResult<L3AclPolicy>>({
+    useQueryFn: useGetEnhancedL3AclProfileListQuery,
+    useTemplateQueryFn: useGetL3AclPolicyTemplateListQuery,
+    skip: isEdit,
+    payload: QUERY_DEFAULT_PAYLOAD
+  })
+
+  return {
+    layer3SelectOptions: data?.data?.map(
+      item => {
+        return <Option key={item.id}>{item.name}</Option>
+      }) ?? [],
+    layer3List: data?.data.map(item => item.name) ?? []
+  }
+}
+

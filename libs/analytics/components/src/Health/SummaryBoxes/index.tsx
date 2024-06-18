@@ -131,6 +131,7 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
       <GridRow>
         {mapping.map((box)=>
           <GridCol key={box.type} col={{ span: 6 }}>
+            {/* TODO: Replace this StatsCard component fom common-components */}
             <Box {...box} />
           </GridCol>
         )}

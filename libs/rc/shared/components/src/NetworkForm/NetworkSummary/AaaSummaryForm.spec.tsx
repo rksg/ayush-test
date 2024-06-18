@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import { Form } from 'antd'
 
+import { useIsSplitOn }                                                     from '@acx-ui/feature-toggle'
 import { WlanSecurityEnum, PassphraseFormatEnum, PassphraseExpirationEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                         from '@acx-ui/store'
 import { render, screen }                                                   from '@acx-ui/test-utils'
@@ -47,6 +48,12 @@ const mockSummary = {
       port: 1813,
       sharedSecret: 'xxxxxxxx'
     }
+  },
+  wlan: {
+    macAddressAuthenticationConfiguration: {
+      macAddressAuthentication: true,
+      macAuthMacFormat: 'aa:bb:cc:dd:ee:ff'
+    }
   }
 }
 
@@ -80,5 +87,23 @@ describe('AaaSummaryForm', () => {
       }
     )
     expect((await screen.findAllByText('Primary Server'))[1]).toBeVisible()
+  })
+  it('should render AAA summary with MAC Authentication enabled', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockSummary.enableAccountingService = false
+    mockSummary.enableAuthProxy = false
+    const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id' }
+    render(
+      <Provider>
+        <Form>
+          <AaaSummaryForm summaryData={mockSummary} />
+        </Form>
+      </Provider>,
+      {
+        route: { params }
+      }
+    )
+    expect(await screen.findByText('MAC Authentication')).toBeVisible()
+    expect(await screen.findByText('MAC Address Format')).toBeVisible()
   })
 })

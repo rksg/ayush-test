@@ -22,26 +22,25 @@ import {
 } from '@acx-ui/rc/utils'
 import { hasAccess } from '@acx-ui/user'
 
+import { MAX_APPLICABLE_EC_TENANTS } from '../constants'
+
 import * as UI          from './styledComponents'
 import { useEcFilters } from './templateUtils'
 
-
 interface ApplyTemplateDrawerProps {
   setVisible: (visible: boolean) => void
-  selectedTemplates: ConfigTemplate[]
+  selectedTemplate: ConfigTemplate
 }
 
 export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const { $t } = useIntl()
-  const { setVisible, selectedTemplates } = props
+  const { setVisible, selectedTemplate } = props
   const ecFilters = useEcFilters()
   const [ selectedRows, setSelectedRows ] = useState<MspEc[]>([])
   const [ confirmationDrawerVisible, setConfirmationDrawerVisible ] = useState(false)
   const [ applyConfigTemplate ] = useApplyConfigTemplateMutation()
   const mspUtils = MSPUtils()
-
   const ecNames = useMemo(() => selectedRows.map(r => r.name), [selectedRows])
-  const templateNames = useMemo(() => selectedTemplates.map(t => t.name), [selectedTemplates])
 
   const mspPayload = {
     filters: ecFilters,
@@ -72,7 +71,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   const onApply = async () => {
     const allRequests = selectedRows.map(ec => {
       return applyConfigTemplate({
-        params: { templateId: selectedTemplates[0].id, tenantId: ec.id },
+        params: { templateId: selectedTemplate.id, tenantId: ec.id },
         payload: {}
       }).unwrap()
     })
@@ -83,6 +82,22 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
+  }
+
+  const hasReachedTheMaxRecord = (): boolean => {
+    return selectedRows.length >= MAX_APPLICABLE_EC_TENANTS
+  }
+
+  const isRecordDisabledAtMax = (mspEcId: string): boolean => {
+    return hasReachedTheMaxRecord() && !selectedRows.find(row => row.id === mspEcId)
+  }
+
+  const isRecordApplied = (mspEcId: string): boolean => {
+    return (selectedTemplate.appliedOnTenants ?? []).includes(mspEcId)
+  }
+
+  const isRecordDisabled = (mspEcId: string): boolean => {
+    return isRecordDisabledAtMax(mspEcId) || isRecordApplied(mspEcId)
   }
 
   const columns: TableProps<MspEc>['columns'] = [
@@ -113,16 +128,32 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
   const content = <Space direction='vertical'>
     <p>{ $t({ defaultMessage: 'Apply selected templates to the customers below' }) }</p>
+    { hasReachedTheMaxRecord() &&
+      <UI.Warning>{
+        // eslint-disable-next-line max-len
+        $t({ defaultMessage: 'You have reached the maximum number of applicable customers (maximum: {maximum}).' }, { maximum: MAX_APPLICABLE_EC_TENANTS })
+      }
+      </UI.Warning>
+    }
     <Loader states={[tableQuery]}>
       <Table<MspEc>
         columns={columns}
         dataSource={tableQuery.data?.data}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        onFilterChange={tableQuery.handleFilterChange}
+        settingsId='msp-apply-template-table'
         rowKey='id'
+        enableApiFilter={true}
         rowSelection={hasAccess() && {
+          hideSelectAll: true,
           type: 'checkbox',
           onChange (selectedRowKeys, selRows) {
             setSelectedRows(selRows)
-          }
+          },
+          getCheckboxProps: (record: MspEc) => ({
+            disabled: isRecordDisabled(record.id)
+          })
         }}
       />
     </Loader>
@@ -144,7 +175,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
   return (
     <>
       <Drawer
-        title={$t({ defaultMessage: 'Apply Templates - RUCKUS End Customers' })}
+        title={$t({ defaultMessage: 'Apply Templates - Brand Properties' })}
         visible={true}
         onClose={onClose}
         footer={footer}
@@ -156,7 +187,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
       {confirmationDrawerVisible &&
       <ApplyTemplateConfirmationDrawer
         ecNames={ecNames}
-        templateNames={templateNames}
+        templateName={selectedTemplate.name}
         onBack={() => setConfirmationDrawerVisible(false)}
         onApply={onApply}
         onCancel={onClose}
@@ -167,31 +198,42 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
 interface ApplyTemplateConfirmationDrawerProps {
   ecNames: string[]
-  templateNames: string[]
+  templateName: string
   onBack: () => void
   onApply: () => void
   onCancel: () => void
 }
 
 function ApplyTemplateConfirmationDrawer (props: ApplyTemplateConfirmationDrawerProps) {
-  const { ecNames, templateNames, onBack, onApply, onCancel } = props
+  const { ecNames, templateName, onBack, onApply, onCancel } = props
   const { $t } = useIntl()
+  const [loading, setLoading ] = useState(false)
 
   const content =
     <Space direction='vertical'>
       {/* eslint-disable-next-line max-len */}
-      <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated venues.' }) }</p>
+      <p>{ $t({ defaultMessage: 'Selected Configuration Templates will apply to the tenants listed below. During the process all configurations in these templates overwrite the corresponding configuration in the associated <venuePlural></venuePlural>.' }) }</p>
       <p>{ $t({ defaultMessage: 'Are you sure you want to continue?' }) }</p>
       <UI.EcListContainer>{ ecNames.map(name => <li key={name}>{name}</li>) }</UI.EcListContainer>
       {/* eslint-disable-next-line max-len */}
-      <UI.TemplateListContainer>{ templateNames.map(name => <li key={name}>- {name}</li>) }</UI.TemplateListContainer>
+      <UI.TemplateListContainer><li key={templateName}>- {templateName}</li></UI.TemplateListContainer>
     </Space>
 
   const footer =<div>
     <Button onClick={onBack}>
       {$t({ defaultMessage: 'Back' })}
     </Button>
-    <Button onClick={onApply} type='primary'>
+    <Button
+      onClick={async () => {
+        setLoading(true)
+        try {
+          await onApply()
+        } finally {
+          setLoading(false)
+        }
+      }}
+      loading={loading}
+      type='primary'>
       {$t({ defaultMessage: 'Apply Template' })}
     </Button>
     <Button onClick={onCancel}>

@@ -44,7 +44,11 @@ export function IncidentsDashboardv2 ({ filters }: { filters: IncidentFilter }) 
         {({ width, height }) => (
           noData
             ? <NoActiveData text={$t({ defaultMessage: 'No reported incidents' })} />
-            : <UI.Container style={{ width, height }}>
+            : <UI.Container
+              hasAccess={hasAccess()}
+              style={{ width, height }}
+              onClick={hasAccess() ? onArrowClick : undefined}
+            >
               <DonutChart
                 style={{ width, height }}
                 data={chartData}

@@ -1,3 +1,6 @@
+import type { RaiPermission } from '@acx-ui/user'
+
+import { Roles } from '../constants'
 
 export type UserProfile = {
   firstName: string
@@ -10,10 +13,13 @@ export type UserProfile = {
   selectedTenant: Tenant
   accountTier?: string
   betaEnabled?: boolean
+  preferences?: {
+    preferredLanguage: string
+  }
 }
 export type Invitation = {
   accountName: string
-  role: string
+  role: Roles
   type: string
   resourceGroupId: string
   firstName: string
@@ -24,38 +30,23 @@ export type Tenant = {
   name: string
   support: boolean
   type: 'tenant' | 'super-tenant'
-  role: 'admin' | 'network-admin' | 'report-only'
+  role: Roles
   resourceGroupId: string
   isTrial: boolean
   isRADEOnly: boolean
-  permissions: Permissions
+  permissions: Record<RaiPermission, boolean>
   settings: Settings
 }
-
-export type Permissions = {
-  'view-analytics': boolean
-  'view-report-controller-inventory': boolean
-  'view-data-explorer': boolean
-  'manage-service-guard': boolean
-  'manage-call-manager': boolean
-  'manage-mlisa': boolean
-  'manage-occupancy': boolean
-  'manage-label': boolean
-  'manage-tenant-settings': boolean
-  'manage-config-recommendation': boolean
-  'franchisor': boolean
-}
-
 
 export type Settings = {
   'sla-p1-incidents-count': string
   'sla-guest-experience': string
   'sla-brand-ssid-compliance': string
   'brand-ssid-compliance-matcher': string
-  franchisor: string
-  franchisee: string
-  zone: string
-  sso: string
+  'sso': string
+  'brand-name': string
+  'lsp-name': string
+  'property-name': string
 }
 
 export type ManagedUser = {
@@ -65,7 +56,7 @@ export type ManagedUser = {
   email: string
   accountId: string
   accountName: string
-  role: 'admin' | 'network-admin' | 'report-only'
+  role: Roles
   tenantId: string
   resourceGroupId: string
   resourceGroupName: string

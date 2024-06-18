@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { ApSnmpUrls, CommonUrlsInfo, SyslogUrls }                                    from '@acx-ui/rc/utils'
+import { ApSnmpUrls, CommonRbacUrlsInfo, CommonUrlsInfo, SyslogUrls }                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -41,7 +41,8 @@ jest.mock('react-router-dom', () => ({
 describe('ServerTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
     mockServer.use(
       rest.get(
         SyslogUrls.getVenueSyslogAp.url,
@@ -49,9 +50,13 @@ describe('ServerTab', () => {
       rest.post(
         SyslogUrls.updateVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(
-        SyslogUrls.getSyslogPolicyList.url,
-        (_, res, ctx) => res(ctx.json(syslogServerProfiles))),
+      rest.post(
+        SyslogUrls.syslogPolicyList.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: syslogServerProfiles.length,
+          data: syslogServerProfiles
+        }))
+      ),
       rest.get(CommonUrlsInfo.getVenueMdnsFencingPolicy.url,
         (_, res, ctx) => res(ctx.json({}))),
       rest.post(CommonUrlsInfo.updateVenueMdnsFencingPolicy.url,
@@ -64,7 +69,10 @@ describe('ServerTab', () => {
         (_, res, ctx) => res(ctx.json(resultOfGetApSnmpAgentProfiles))),
       rest.get(
         ApSnmpUrls.getVenueApSnmpSettings.url,
-        (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings)))
+        (_, res, ctx) => res(ctx.json(resultOfGetVenueApSnmpAgentSettings))),
+      // rbac
+      rest.get(CommonRbacUrlsInfo.getVenueMdnsFencingPolicy.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
   it('should render correctly', async () => {

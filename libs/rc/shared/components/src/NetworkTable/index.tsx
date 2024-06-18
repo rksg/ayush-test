@@ -21,16 +21,15 @@ import {
   checkVenuesNotInSetup,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess }            from '@acx-ui/user'
-import { getIntl, noDataDisplay }    from '@acx-ui/utils'
+import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
+import { getIntl, noDataDisplay }     from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>,
-  oweTransFlag: boolean, clientsFlag: boolean, supportApCompatibleCheck: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -44,10 +43,10 @@ function getCols (intl: ReturnType<typeof useIntl>,
         _securityProtocol = intl.$t({ defaultMessage: 'WPA2/WPA3 mixed mode' })
         break
       case WlanSecurityEnum.OWE:
-        _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
+        _securityProtocol = intl.$t({ defaultMessage: 'OWE' })
         break
       case WlanSecurityEnum.OWETransition:
-        _securityProtocol = oweTransFlag && oweMaster === false ?
+        _securityProtocol = oweMaster === false ?
           intl.$t({ defaultMessage: 'OWE' }) : ''
         break
       case WlanSecurityEnum.WPA3:
@@ -112,7 +111,7 @@ function getCols (intl: ReturnType<typeof useIntl>,
     },
     {
       key: 'venues',
-      title: intl.$t({ defaultMessage: 'Venues' }),
+      title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
@@ -154,13 +153,13 @@ function getCols (intl: ReturnType<typeof useIntl>,
                 <Tooltip.Info isFilled
                   title={intl.$t({
                     defaultMessage: 'Some access points may not be compatible with ' +
-                    'certain features in this venue.'
+                    'certain features on this network.'
                   })}
                   placement='right'
                   iconStyle={{
-                    height: '14px',
-                    width: '14px',
-                    marginBottom: '-2px',
+                    height: '16px',
+                    width: '16px',
+                    marginBottom: '-3px',
                     marginLeft: '4px',
                     color: cssStr('--acx-semantics-yellow-50') }}
                 /> : []
@@ -177,19 +176,13 @@ function getCols (intl: ReturnType<typeof useIntl>,
       sorter: false, // API does not seem to be working
       align: 'center',
       render: function (_, row) {
-        if (clientsFlag) {
-          return (
-            row?.isOnBoarded
-              ? <span>{row.clients || noDataDisplay}</span>
-              : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
-                {row.clients}
-              </TenantLink>
-          )
-        }else{
-          return row?.isOnBoarded ?
-            row.clients || noDataDisplay
-            : row.clients
-        }
+        return (
+          row?.isOnBoarded
+            ? <span>{row.clients || noDataDisplay}</span>
+            : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
+              {row.clients}
+            </TenantLink>
+        )
       }
     },
     // { TODO: Wait for Services
@@ -269,13 +262,12 @@ export const defaultNetworkPayload = {
   pageSize: 2048
 }
 
-const rowSelection = (supportOweTransition: boolean) => {
+const rowSelection = () => {
   return {
     getCheckboxProps: (record: Network) => ({
       disabled: !!record?.isOnBoarded
         || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (supportOweTransition &&
-          record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
+        || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
     }),
     renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
       if (record?.isOnBoarded) {
@@ -292,7 +284,7 @@ const getDeleteMessage = (messageKey: string) => {
   const deleteMessageMap = {
     deletingGuestPass: $t({ defaultMessage: 'Deleting Guest Pass network will invalidate all its related guest passes.' }),
     deletingDPSK: $t({ defaultMessage: 'Deleting DPSK network will remove all its related DPSK User Credentials (Passphrases).' }),
-    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all venues and APs that the network is activated on.' })
+    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all <venuePlural></venuePlural> and APs that the network is activated on.' })
   }
   return deleteMessageMap?.[messageKey as keyof typeof deleteMessageMap]
 }
@@ -313,26 +305,24 @@ export function NetworkTable ({
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
   const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
-  const listOfClientsPerWlanFlag = useIsSplitOn(Features.LIST_OF_CLIENTS_PER_WLAN)
   const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
-      const _rows: string[]=[]
+      const _rows: string[] = []
 
-      tableQuery?.data?.data.map((record: Network) => {
-        if (record?.children) _rows.push(record.id)})
+      tableQuery?.data?.data.forEach((record: Network) => {
+        if (record?.children) _rows.push(record.id)
+      })
+
       setShowOnboardNetworkToggle(!!_rows.length)
-      if (expandOnBoaroardingNetworks) {
-        setExpandedRowKeys(_rows)
-      } else {
-        setExpandedRowKeys([])
-      }
+
+      const exRowKeys = expandOnBoaroardingNetworks ? _rows : []
+      setExpandedRowKeys(exRowKeys)
     }
 
   }, [tableQuery?.data?.data, expandOnBoaroardingNetworks])
@@ -356,6 +346,7 @@ export function NetworkTable ({
   const rowActions: TableProps<Network>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
@@ -364,6 +355,7 @@ export function NetworkTable ({
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
+      scopeKey: [WifiScopes.CREATE],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
@@ -372,6 +364,7 @@ export function NetworkTable ({
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: async ([selected], clearSelection) => {
         const isDeletingDPSK = isSelectedDpskNetwork([selected])
         const isDeletingGuestPass = isSelectedGuestNetwork([selected])
@@ -427,8 +420,6 @@ export function NetworkTable ({
       <Table
         settingsId={settingsId}
         columns={getCols(intl,
-          supportOweTransition,
-          listOfClientsPerWlanFlag,
           supportApCompatibleCheck
         )}
         dataSource={tableQuery.data?.data}
@@ -443,7 +434,7 @@ export function NetworkTable ({
         expandable={expandable}
         rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio',
-          ...rowSelection(supportOweTransition) } : undefined}
+          ...rowSelection } : undefined}
         actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks

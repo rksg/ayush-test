@@ -63,6 +63,7 @@ exports[`Brand360 resets SLAs 1`] = `
               </div>
               <div
                 class="ant-space-item"
+                style="margin-right: 8px;"
               >
                 <div
                   class="styledComponents__Wrapper-sc-8afdnk-0 styledComponents__RangePickerWrapper-sc-8afdnk-1 jndHDU cGJIri"
@@ -134,6 +135,13 @@ exports[`Brand360 resets SLAs 1`] = `
                   </div>
                 </div>
               </div>
+              <div
+                class="ant-space-item"
+              >
+                <div
+                  data-testid="settings"
+                />
+              </div>
             </div>
           </span>
         </div>
@@ -156,7 +164,7 @@ exports[`Brand360 resets SLAs 1`] = `
             <div
               data-testid="brand360Tile"
             >
-              {"chartKey":"incident","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
+              {"chartKey":"incident","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
             </div>
           </div>
         </div>
@@ -174,7 +182,7 @@ exports[`Brand360 resets SLAs 1`] = `
             <div
               data-testid="brand360Tile"
             >
-              {"chartKey":"experience","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
+              {"chartKey":"experience","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
             </div>
           </div>
         </div>
@@ -192,7 +200,7 @@ exports[`Brand360 resets SLAs 1`] = `
             <div
               data-testid="brand360Tile"
             >
-              {"chartKey":"compliance","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"settings":{"brand-ssid-compliance-matcher":"^[a-zA-Z0-9]{5}_GUEST$","sla-p1-incidents-count":"1","sla-guest-experience":"2","sla-brand-ssid-compliance":"3"}}
+              {"chartKey":"compliance","sliceType":"lsp","chartData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"prevData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]},"currData":{"time":["2023-12-11T22:00:00.000Z"],"incidentCount":[20],"ssidComplianceSLA":[0.4],"timeToConnectSLA":[0.4],"clientThroughputSLA":[0.4],"connectionSuccessSLA":[0.8],"errors":[]}}
             </div>
           </div>
         </div>

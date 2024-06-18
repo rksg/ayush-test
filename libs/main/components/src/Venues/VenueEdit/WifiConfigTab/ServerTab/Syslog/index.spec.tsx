@@ -47,9 +47,12 @@ describe('SyslogForm', () => {
       rest.post(
         SyslogUrls.updateVenueSyslogAp.url,
         (_, res, ctx) => res(ctx.json({}))),
-      rest.get(
-        SyslogUrls.getSyslogPolicyList.url,
-        (_, res, ctx) => res(ctx.json(syslogServerProfiles)))
+      rest.post(SyslogUrls.syslogPolicyList.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: syslogServerProfiles.length,
+          data: syslogServerProfiles
+        }))
+      )
     )
   })
 

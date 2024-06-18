@@ -175,16 +175,23 @@ export function renderFilter <RecordType> (
       }, []).sort().map(v => ({ key: v, value: v, label: v }))
       : []
 
+  const getValue = (value: unknown | string[], filterValueArray: undefined | boolean) => {
+    if (filterValueArray && value) {
+      return Array.isArray(value) ? (value as string[]).join(',') : value
+    }
+    return value
+  }
+
   return filterTypeComp[column.filterComponent?.type as Type] || <UI.FilterSelect
     data-testid='options-selector'
     key={index}
     maxTagCount='responsive'
     mode={column.filterMultiple === false ? undefined : 'multiple'}
     showSearch={column?.filterSearchable ?? undefined}
-    value={filterValues[key as keyof Filter]}
+    value={getValue(filterValues[key as keyof Filter], column.filterValueArray)}
     onChange={(value: unknown | string) => {
       const isValidValue = Array.isArray(value) ? (value as string[]).length : value
-      const filterArrayValue = column.filterValueArray&&value?(value as string).split(','):[value]
+      const filterArrayValue = column.filterValueArray && value?(value as string).split(','):[value]
       const filterValue = Array.isArray(value) ? value : filterArrayValue
       let filters = {} as Filter
 

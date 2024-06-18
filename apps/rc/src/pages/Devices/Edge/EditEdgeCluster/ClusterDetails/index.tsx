@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { StepsForm }                                          from '@acx-ui/components'
 import { EdgeClusterSettingForm, EdgeClusterSettingFormType } from '@acx-ui/rc/components'
 import { usePatchEdgeClusterMutation }                        from '@acx-ui/rc/services'
-import { EdgeClusterTableDataType }                           from '@acx-ui/rc/utils'
+import { EdgeClusterStatus }                                  from '@acx-ui/rc/utils'
 import { useTenantLink }                                      from '@acx-ui/react-router-dom'
 
 interface ClusterDetailsProps {
-  currentClusterStatus?: EdgeClusterTableDataType
+  currentClusterStatus?: EdgeClusterStatus
 }
 
 export const ClusterDetails = (props: ClusterDetailsProps) => {

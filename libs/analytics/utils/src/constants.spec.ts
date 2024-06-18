@@ -92,4 +92,26 @@ describe('constants', () => {
       expect(incidentsToggle({ code, toggles }, 'infrastructure')).toEqual(code)
     })
   })
+  describe('useRoles', () => {
+    const useIsSplitOn = jest.fn()
+    beforeEach(() => {
+      jest.resetModules()
+      jest.doMock('@acx-ui/feature-toggle', () => ({
+        ...jest.requireActual('@acx-ui/feature-toggle'),
+        useIsSplitOn
+      }))
+    })
+    it('returns old roles', () => {
+      useIsSplitOn.mockReturnValue(false)
+      expect(Object.values(require('.').useRoles(false)).length).toEqual(3)
+    })
+    it('returns new roles', () => {
+      useIsSplitOn.mockReturnValue(true)
+      expect(Object.values(require('.').useRoles(false)).length).toEqual(7)
+    })
+    it('always returns new roles for places where splitio may not be initialized', () => {
+      useIsSplitOn.mockReturnValue(false)
+      expect(Object.values(require('.').useRoles()).length).toEqual(7)
+    })
+  })
 })

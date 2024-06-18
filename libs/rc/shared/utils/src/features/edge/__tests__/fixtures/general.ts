@@ -1,9 +1,10 @@
-import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
+import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
+import { ClusterNetworkSettings }                                                                                                                                                         from '../../../../types/edge'
 
 export const mockEdgeList = {
   fields: [
     'name','deviceStatus','type','model','serialNumber','ip',
-    'ports','venueName','venueId','tags'
+    'ports','venueName','venueId','tags','clusterId'
   ],
   totalCount: 5,
   page: 1,
@@ -127,7 +128,8 @@ export const mockEdgeData = {
   description: 'This is description rr',
   edgeName: 'edgeName',
   name: 'edgeName',
-  tags: ['tag1', 'tag2']
+  tags: ['tag1', 'tag2'],
+  clusterId: 'clusterId_1'
 }
 
 
@@ -192,7 +194,7 @@ export const mockEdgeClusterList = {
           name: 'Smart Edge 2',
           deviceStatus: '2_00_Operational',
           type: 'Virtual',
-          model: 'model 1',
+          model: 'model 2',
           serialNumber: 'serialNumber-2',
           ip: '0.0.0.0',
           ports: '3',
@@ -396,3 +398,115 @@ export const mockEdgeCluster = {
     ]
   }
 }
+
+export const mockedHaNetworkSettings = {
+  lagSettings: [{
+    serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+    lags: [{
+      id: 0,
+      description: 'string',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.DHCP,
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: false,
+      natEnabled: true,
+      lagEnabled: true
+    }]
+  }, {
+    serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+    lags: [{
+      id: 1,
+      description: 'string',
+      lagType: EdgeLagTypeEnum.LACP,
+      lacpMode: EdgeLagLacpModeEnum.ACTIVE,
+      lacpTimeout: EdgeLagTimeoutEnum.SHORT,
+      lagMembers: [],
+      portType: EdgePortTypeEnum.LAN,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '1.10.10.1',
+      subnet: '255.255.0.0',
+      gateway: '127.1.1.0',
+      corePortEnabled: false,
+      natEnabled: false,
+      lagEnabled: true
+    }]
+  }],
+  portSettings: [{
+    serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+    ports: [{
+      id: 'port_id_0',
+      name: '',
+      mac: '00:0c:29:b6:ad:00',
+      enabled: false,
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '1.1.1.1',
+      subnet: '255.255.255.0',
+      gateway: '1.1.1.1',
+      corePortEnabled: false,
+      interfaceName: 'port1'
+    },
+    {
+      id: 'port_id_1',
+      name: '',
+      mac: '00:11:00:22:00:01',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.3',
+      subnet: '255.255.255.0',
+      gateway: '2.2.2.1',
+      corePortEnabled: true,
+      interfaceName: 'port2'
+    }]
+  }, {
+    serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+    ports: [{
+      id: 'port_id_0',
+      name: '',
+      mac: '00:0c:29:b6:ad:02',
+      enabled: false,
+      portType: EdgePortTypeEnum.WAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.DHCP,
+      ip: '',
+      subnet: '',
+      gateway: '',
+      corePortEnabled: false,
+      interfaceName: 'port1'
+    },
+    {
+      id: 'port_id_1',
+      name: '',
+      mac: '00:11:00:22:00:03',
+      enabled: true,
+      portType: EdgePortTypeEnum.LAN,
+      natEnabled: false,
+      ipMode: EdgeIpModeEnum.STATIC,
+      ip: '2.2.2.2',
+      subnet: '255.255.255.0',
+      gateway: '2.2.2.1',
+      corePortEnabled: true,
+      interfaceName: 'port2'
+    }]
+  }],
+  virtualIpSettings: [{
+    virtualIp: '1.1.1.1',
+    ports: [{
+      serialNumber: mockEdgeClusterList.data[0].edgeList[0].serialNumber,
+      portName: 'port2'
+    }, {
+      serialNumber: mockEdgeClusterList.data[0].edgeList[1].serialNumber,
+      portName: 'port2'
+    }],
+    timeoutSeconds: 6
+  }]
+} as ClusterNetworkSettings

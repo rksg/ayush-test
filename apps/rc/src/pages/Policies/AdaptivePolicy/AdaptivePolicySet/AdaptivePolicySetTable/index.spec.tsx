@@ -4,6 +4,7 @@ import { rest }  from 'msw'
 import { useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { serviceApi, policyApi } from '@acx-ui/rc/services'
 import {
+  CertificateUrls,
   DpskUrls,
   getPolicyDetailsLink, getPolicyRoutePath, MacRegListUrlsInfo,
   PolicyOperation,
@@ -16,7 +17,13 @@ import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { dpskList } from '../AdaptivePolicySetDetail/__test__/fixtures'
 
-import { policySetList, prioritizedPolicies, adaptivePolicyList, macList } from './__test__/fixtures'
+import {
+  policySetList,
+  prioritizedPolicies,
+  adaptivePolicyList,
+  macList,
+  certificateTemplateList
+} from './__test__/fixtures'
 
 import AdaptivePolicySetTable from './index'
 
@@ -47,29 +54,33 @@ describe('AdaptivePolicySetTable', () => {
     store.dispatch(policyApi.util.resetApiState())
     store.dispatch(serviceApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macList))
       ),
-      rest.get(
-        DpskUrls.getDpskList.url.split('?')[0],
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(dpskList))
       ),
       rest.post(
         RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
+      ),
+      rest.post(
+        CertificateUrls.getCertificateTemplates.url,
+        (req, res, ctx) => res(ctx.json(certificateTemplateList))
       )
     )
   })

@@ -1,12 +1,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
-import { ClientUrlsInfo, CommonUrlsInfo, ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                             from '@acx-ui/store'
-import { mockServer, render, screen }                                           from '@acx-ui/test-utils'
-import { RolesEnum }                                                            from '@acx-ui/types'
-import { getUserProfile, setUserProfile }                                       from '@acx-ui/user'
+import {
+  ClientUrlsInfo,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  VenueConfigTemplateUrlsInfo,
+  WifiUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider }                       from '@acx-ui/store'
+import { mockServer, render, screen }     from '@acx-ui/test-utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { venuesResponse } from '../NetworkForm/__tests__/fixtures'
 
@@ -95,12 +100,18 @@ describe('NetworkDetails', () => {
         (_, res, ctx) => res(ctx.json({ data: [] }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
       rest.post(
         ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
         (req, res, ctx) => res(ctx.json(venuesResponse))
       ),
       rest.post(
         CommonUrlsInfo.getVenueCityList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        VenueConfigTemplateUrlsInfo.getVenueCityList.url,
         (req, res, ctx) => res(ctx.json([]))
       )
     )
@@ -117,7 +128,7 @@ describe('NetworkDetails', () => {
     })
 
     expect(await screen.findByText('overview')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(5)
+    expect(screen.getAllByRole('tab')).toHaveLength(6)
   })
 
   it('renders a tab with MSP account', async () => {
@@ -147,7 +158,7 @@ describe('NetworkDetails', () => {
     })
 
     expect(await screen.findByText('incidents')).toBeVisible()
-    expect(screen.getAllByRole('tab')).toHaveLength(5)
+    expect(screen.getAllByRole('tab')).toHaveLength(6)
   })
 
   it('should hide incidents when role is READ_ONLY', async () => {
@@ -167,7 +178,6 @@ describe('NetworkDetails', () => {
   })
 
   it('renders clients tab', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     const params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
       networkId: '373377b0cb6e46ea8982b1c80aabe1fa',

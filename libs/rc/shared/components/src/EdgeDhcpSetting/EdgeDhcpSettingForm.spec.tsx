@@ -111,7 +111,9 @@ describe('EdgeDhcpSettingForm', () => {
 
     await screen.findByText('1.1.1.127' )
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    await waitFor(() => expect(mockedUpdateReq).toBeCalledWith({
+    await waitFor(() => expect(mockedUpdateReq).toBeCalled())
+    const call = mockedUpdateReq.mock.calls[0]
+    expect(call[0]).toStrictEqual({
       id: '1',
       serviceName: 'test',
       dhcpRelay: false,
@@ -136,7 +138,7 @@ describe('EdgeDhcpSettingForm', () => {
       ],
       dhcpOptions: [],
       hosts: []
-    }))
+    })
   })
 
   it('should clear pool gateway when relay is switched to enabled', async () => {
@@ -168,7 +170,9 @@ describe('EdgeDhcpSettingForm', () => {
     expect(screen.getByRole('switch', { name: 'DHCP Relay' })).toBeChecked()
 
     await userEvent.click(screen.getByRole('button', { name: 'Apply' }))
-    await waitFor(() => expect(mockedUpdateReq).toBeCalledWith({
+    await waitFor(() => expect(mockedUpdateReq).toBeCalled())
+    const call = mockedUpdateReq.mock.calls[0]
+    expect(call[0]).toStrictEqual({
       id: '1',
       serviceName: 'testRelayOff',
       dhcpRelay: true,
@@ -193,7 +197,7 @@ describe('EdgeDhcpSettingForm', () => {
       ],
       dhcpOptions: [],
       hosts: []
-    }))
+    })
   })
 
   it('pool gateway should be empty when relay is enabled', async () => {

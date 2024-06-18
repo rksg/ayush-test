@@ -4,10 +4,10 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, RangePicker }                                                  from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { generateConfigTemplateBreadcrumb, useConfigTemplate, useConfigTemplateTenantLink } from '@acx-ui/rc/utils'
 import { TenantType }                                                                       from '@acx-ui/react-router-dom'
 import { useLocation, useNavigate, useTenantLink, useParams }                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                                                                       from '@acx-ui/types'
 import { filterByAccess }                                                                   from '@acx-ui/user'
 import { useDateFilter }                                                                    from '@acx-ui/utils'
 
@@ -31,7 +31,6 @@ function NetworkPageHeader ({
   const templateBasePath = useConfigTemplateTenantLink('networks/wireless')
   const { networkId, activeTab } = useParams()
   const { $t } = useIntl()
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const enableTimeFilter = () => !['aps', 'venues'].includes(activeTab as string)
   const [ disableConfigure, setDisableConfigure ] = useState(false)
 
@@ -50,12 +49,12 @@ function NetworkPageHeader ({
   const breadcrumb = GenBreadcrumb()
 
   useEffect(() => {
-    if ((supportOweTransition && !isLoading)) {
+    if (!isLoading) {
       setDisableConfigure(
         networkData?.isOweMaster === false &&
         networkData?.owePairNetworkId !== undefined)
     }
-  }, [networkData, isLoading, supportOweTransition])
+  }, [networkData, isLoading])
 
   return (
     <PageHeader
@@ -80,6 +79,7 @@ function NetworkPageHeader ({
           : <></>,
         ...filterByAccess([
           <Button
+            scopeKey={[WifiScopes.UPDATE]}
             type='primary'
             hidden={disableConfigure}
             onClick={() =>

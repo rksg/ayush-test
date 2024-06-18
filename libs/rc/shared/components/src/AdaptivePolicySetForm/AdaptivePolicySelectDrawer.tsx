@@ -6,7 +6,7 @@ import { useIntl }      from 'react-intl'
 import { Drawer, Loader, Table, TableProps } from '@acx-ui/components'
 import {
   useAdaptivePolicyListByQueryQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicy, FILTER,
@@ -14,7 +14,9 @@ import {
   PolicyOperation, SEARCH,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
+import { filterByAccess } from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../SimpleListTooltip'
 
@@ -35,8 +37,8 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
   const [adaptivePolicyDrawerVisible, setAdaptivePolicyDrawerVisible] = useState(false)
   const [selectedPolicies, setSelectedPolicies] = useState(new Map())
 
-  const { templateIdMap, templateIsLoading } = usePolicyTemplateListQuery(
-    { payload: { page: '1', pageSize: '2147483647' } }, {
+  const { templateIdMap, templateIsLoading } = usePolicyTemplateListByQueryQuery(
+    { payload: { page: '1', pageSize: '1000' } }, {
       selectFromResult: ({ data, isLoading }) => {
         const templateIds = new Map(data?.data.map((template) =>
           [template.ruleType.toString(), template.id]))
@@ -174,12 +176,13 @@ export function AdaptivePoliciesSelectDrawer (props: AdaptivePoliciesSelectDrawe
             pagination={adaptivePolicyListTableQuery.pagination}
             onChange={adaptivePolicyListTableQuery.handleTableChange}
             onFilterChange={handleFilterChange}
-            actions={[{
+            actions={filterByAccess([{
               label: $t({ defaultMessage: 'Add Policy' }),
               onClick: () => {
                 setAdaptivePolicyDrawerVisible(true)
-              }
-            }]}
+              },
+              scopeKey: [WifiScopes.CREATE]
+            }])}
           />
         </Form.Item>
       </Loader>

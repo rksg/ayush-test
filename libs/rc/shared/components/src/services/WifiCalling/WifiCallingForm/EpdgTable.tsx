@@ -3,12 +3,12 @@ import { useContext, useEffect, useState } from 'react'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { showActionModal, Table, TableProps } from '@acx-ui/components'
-import { useGetWifiCallingServiceQuery }      from '@acx-ui/rc/services'
+import { showActionModal, Table, TableProps }                                   from '@acx-ui/components'
+import { useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery } from '@acx-ui/rc/services'
 import {
   defaultSort,
   EPDG,
-  sortProp,
+  sortProp, useConfigTemplateQueryFnSwitcher,
   WifiCallingActionPayload,
   WifiCallingActionTypes
 } from '@acx-ui/rc/utils'
@@ -30,7 +30,9 @@ const EpdgTable = (props: { edit?: boolean }) => {
 
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
-  const { data } = useGetWifiCallingServiceQuery({ params: useParams() }, {
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetWifiCallingServiceQuery,
+    useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
     skip: !useParams().hasOwnProperty('serviceId')
   })
 

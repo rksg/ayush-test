@@ -53,7 +53,7 @@ describe('MFA Setup Dialog', () => {
         route: { params }
       })
 
-    await screen.findByRole('dialog', { name: /Multi-Factors Authentication Setup/i })
+    await screen.findByRole('dialog', { name: /Multi-Factor Authentication Setup/i })
     await screen.findByText('test@email.com')
     await screen.findByRole('switch', { name: 'otp' })
     expect(await screen.findByRole('switch', { name: 'otp' })).toBeChecked()

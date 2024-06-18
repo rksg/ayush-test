@@ -3,9 +3,8 @@ import { useContext } from 'react'
 import { Form, Slider } from 'antd'
 import { useIntl }      from 'react-intl'
 
-import { Tooltip }                                                from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                             from '@acx-ui/icons'
+import { Tooltip }                    from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
 
 import NetworkFormContext from '../../NetworkFormContext'
 import * as UI            from '../styledComponents'
@@ -21,14 +20,8 @@ export function AdvancedTab () {
    'Defines the frequency beacons will include a DTIM to wake clients in power-saving mode.'
   const labelWidth = '250px'
 
-  const qosMapSetFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MAP_SET_TOGGLE)
-  const qosMirroringFlag = useIsSplitOn(Features.WIFI_EDA_QOS_MIRRORING_TOGGLE)
-  const dtimFlag = useIsSplitOn(Features.WIFI_DTIM_TOGGLE)
-  const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
-
   return (
     <>
-      {dtimFlag &&
       <UI.FieldLabel width={labelWidth}>
         <Form.Item
           name={['wlan','advancedCustomization','dtimInterval']}
@@ -54,9 +47,8 @@ export function AdvancedTab () {
           />}
         />
       </UI.FieldLabel>
-      }
 
-      {(qosMapSetFlag || (qosMirroringFlag && enableAP70)) && <QoS wlanData={data} />}
+      <QoS wlanData={data} />
     </>
   )
 }

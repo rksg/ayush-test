@@ -1,16 +1,18 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }          from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
+import { EdgeDHCPFixtures, EdgeDhcpUrls, EdgeGeneralFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                      from '@acx-ui/store'
+import { mockServer, render, screen }                                                    from '@acx-ui/test-utils'
 
-import { mockDhcpPoolStatsData, mockEdgeDhcpData, mockEdgeDhcpDataList } from '../../../../Services/DHCP/Edge/__tests__/fixtures'
+import { mockDhcpPoolStatsData }  from '../../../../Services/DHCP/Edge/__tests__/fixtures'
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { EdgeDhcp } from '.'
 
-const { mockEdgeDhcpHostStats } = EdgeDHCPFixtures
+const { mockEdgeDhcpHostStats, mockDhcpStatsData } = EdgeDHCPFixtures
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -22,65 +24,6 @@ jest.mock('@acx-ui/rc/components', () => ({
   EdgeDhcpLeaseTable: () => <div data-testid='edge-dhcp-lease-table' />,
   EdgeDhcpPoolTable: () => <div data-testid='edge-dhcp-pool-table' />
 }))
-
-describe('Edge DHCP no initial data', () => {
-
-  let params: { tenantId: string, serialNumber: string, activeTab?: string, activeSubTab?: string }
-  beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      serialNumber: '000000000000',
-      activeTab: 'dhcp'
-    }
-    mockServer.use(
-      rest.post(
-        EdgeDhcpUrls.getDhcpPoolStats.url,
-        (req, res, ctx) => res(ctx.json({ totalCount: 0, data: [] }))
-      ),
-      rest.post(
-        EdgeDhcpUrls.getDhcpHostStats.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpHostStats))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
-      ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpByEdgeId.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
-      ),
-      rest.post(
-        EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json({
-          data: []
-        }))
-      )
-    )
-  })
-
-  it('open apply DHCP drawer', async () => {
-    params.activeSubTab = 'pools'
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EdgeDhcp />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
-        }
-      })
-    await user.click(screen.getByRole('switch'))
-    await screen.findByText('Manage DHCP for SmartEdge Service')
-
-    expect(await screen.findByText('DHCP Service')).toBeVisible()
-  })
-})
 
 describe('Edge DHCP', () => {
 
@@ -102,23 +45,23 @@ describe('Edge DHCP', () => {
         EdgeDhcpUrls.getDhcpHostStats.url,
         (req, res, ctx) => res(ctx.json(mockEdgeDhcpHostStats))
       ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpDataList))
-      ),
-      rest.patch(
-        EdgeDhcpUrls.patchDhcpService.url,
+      rest.delete(
+        EdgeDhcpUrls.deactivateDhcpService.url,
         (req, res, ctx) => res(ctx.status(202))
       ),
-      rest.get(
-        EdgeDhcpUrls.getDhcpByEdgeId.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeDhcpData))
+      rest.post(
+        EdgeDhcpUrls.getDhcpStats.url,
+        (req, res, ctx) => res(ctx.json(mockDhcpStatsData))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
         (req, res, ctx) => res(ctx.json({
           data: []
         }))
+      ),
+      rest.put(
+        EdgeDhcpUrls.activateDhcpService.url,
+        (req, res, ctx) => res(ctx.status(202))
       )
     )
   })
@@ -127,7 +70,14 @@ describe('Edge DHCP', () => {
     params.activeSubTab = 'pools'
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -143,7 +93,14 @@ describe('Edge DHCP', () => {
     params.activeSubTab = 'leases'
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -160,7 +117,14 @@ describe('Edge DHCP', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <EdgeDhcp />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeDhcp />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: {
           params,
@@ -174,45 +138,5 @@ describe('Edge DHCP', () => {
       hash: '',
       search: ''
     })
-  })
-
-  it('update DHCP service', async () => {
-    params.activeSubTab = 'pools'
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EdgeDhcp />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
-        }
-      })
-    const settingIcon = screen.getByTestId('setting-icon')
-    await waitFor(() => expect(settingIcon).not.toBeDisabled())
-    await user.click(screen.getByTestId('setting-icon'))
-    await screen.findByText('Manage DHCP for SmartEdge Service')
-    await user.click(screen.getByRole('combobox'))
-    await user.click((await screen.findAllByText('TestDhcp-1'))[0])
-    await user.click(screen.getByRole('button', { name: 'Apply' }))
-  })
-
-  it('deactivate DHCP service', async () => {
-    params.activeSubTab = 'pools'
-    const user = userEvent.setup()
-    render(
-      <Provider>
-        <EdgeDhcp />
-      </Provider>, {
-        route: {
-          params,
-          path: '/:tenantId/t/devices/edge/:serialNumber/details/:activeTab/:activeSubTab'
-        }
-      })
-    const dhcpSwitch = screen.getByRole('switch')
-    await waitFor(() => expect(dhcpSwitch).toBeChecked())
-    await user.click(screen.getByRole('switch'))
-    await screen.findByText('Deactive DHCP Service')
-    await user.click(screen.getByRole('button', { name: 'OK' }))
   })
 })

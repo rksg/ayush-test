@@ -1,0 +1,70 @@
+import React from 'react'
+
+import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
+
+import { getSeriesData } from '@acx-ui/analytics/utils'
+import {
+  Card,
+  Loader,
+  NoData,
+  MultiLineTimeSeriesChart,
+  qualitativeColorSet } from '@acx-ui/components'
+import type { AnalyticsFilter } from '@acx-ui/utils'
+
+import { ConnectedClientsOverTimeData, useHealthConnectedClientsOverTimeQuery } from './services'
+
+type Key = keyof Omit<ConnectedClientsOverTimeData, 'time'>
+
+export function ConnectedClientsOverTime ({
+  filters
+}: { filters : AnalyticsFilter }) {
+  const { $t } = useIntl()
+  const chartColors = qualitativeColorSet()
+
+  const seriesMapping = [
+    { key: 'wirelessClientsCount', name: $t({ defaultMessage: 'Wireless Clients' }) },
+    { key: 'wiredClientsCount', name: $t({ defaultMessage: 'Wired Clients' }) }
+  ] as unknown as Array<{ key: Key, name: string }>
+
+  const queryResults = useHealthConnectedClientsOverTimeQuery(filters, {
+    selectFromResult: ({ data, ...rest }) => ({
+      ...rest,
+      data: getSeriesData(data!, seriesMapping)
+    })
+  })
+
+  return (
+    <Loader states={[queryResults]}>
+      <Card>
+        <AutoSizer>
+          {({ height, width }) => (
+            queryResults.data.length ?
+              <MultiLineTimeSeriesChart
+                style={{ width, height }}
+                data={queryResults.data}
+                grid={{
+                  left: 40,
+                  right: 40
+                }}
+                yAxisConfig={[{
+                  axisName: $t({ defaultMessage: 'Wireless Clients Count' }),
+                  nameRotate: 90,
+                  showLabel: true,
+                  color: chartColors[0]
+                }, {
+                  axisName: $t({ defaultMessage: 'Wired Clients Count' }),
+                  nameRotate: 270,
+                  showLabel: true,
+                  color: chartColors[1]
+                }]}
+                seriesYAxisIndexes={[0, 1]}
+                seriesChartTypes={['line', 'line']}
+              />
+              : <NoData/>
+          )}
+        </AutoSizer>
+      </Card>
+    </Loader>
+  )
+}

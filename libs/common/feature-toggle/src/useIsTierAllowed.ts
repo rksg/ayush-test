@@ -83,7 +83,8 @@ export function useFFList (): {
       userFFConfig[featureKey] : _.union(userFFConfig[featureKey], userFFConfig[featureDefaultKey]),
     betaList: betaEnabled? userFFConfig['betaList'] : [],
     featureDrawerBetaList: userFFConfig['betaList'],
-    alphaList: (betaEnabled && userProfile?.dogfood) ? userFFConfig['alphaList'] : []
+    alphaList: ((betaEnabled && userProfile?.dogfood) || jwtPayload.isAlphaFlag)
+      ? userFFConfig['alphaList'] : []
   }
 }
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Checkbox, Form, Input, Select, Space, Switch } from 'antd'
-import { DefaultOptionType }                            from 'antd/lib/select'
-import _                                                from 'lodash'
+import { Checkbox, Divider, Form, Input, Select, Space, Switch } from 'antd'
+import { DefaultOptionType }                                     from 'antd/lib/select'
+import _                                                         from 'lodash'
 
 import {
   Alert,
@@ -13,6 +13,8 @@ import {
   Tooltip,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { PoeUsage }               from '@acx-ui/icons'
 import {
   switchApi,
   useLazyGetAclUnionQuery,
@@ -20,14 +22,15 @@ import {
   useLazyGetPortSettingQuery,
   useLazyGetPortsSettingQuery,
   useLazyGetSwitchVlanQuery,
-  useLazyGetSwitchVlansQuery,
   useLazyGetSwitchesVlanQuery,
   useLazyGetSwitchConfigurationProfileByVenueQuery,
   useLazyGetSwitchRoutedListQuery,
   useLazyGetVlansByVenueQuery,
   useLazyGetVenueRoutedListQuery,
+  useGetSwitchQuery,
   useSwitchDetailHeaderQuery,
-  useSavePortsSettingMutation
+  useSavePortsSettingMutation,
+  useCyclePoeMutation
 } from '@acx-ui/rc/services'
 import {
   EditPortMessages,
@@ -37,15 +40,19 @@ import {
   PORT_SPEED,
   SwitchPortViewModel,
   SwitchVlanUnion,
+  SWITCH_DEFAULT_VLAN_NAME,
+  ProfileTypeEnum,
   PortSettingModel,
   Vlan
 } from '@acx-ui/rc/utils'
-import { useParams } from '@acx-ui/react-router-dom'
-import { store }     from '@acx-ui/store'
-import { getIntl }   from '@acx-ui/utils'
+import { useParams }     from '@acx-ui/react-router-dom'
+import { store }         from '@acx-ui/store'
+import { SwitchScopes }  from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
-import { ACLSettingDrawer } from './ACLSettingDrawer'
-import { EditLldpModal }    from './editLldpModal'
+import { ACLSettingDrawer }       from './ACLSettingDrawer'
+import { EditLldpModal }          from './editLldpModal'
 import {
   checkVlanOptions,
   checkLldpListEqual,
@@ -69,7 +76,8 @@ import {
   MultipleText,
   getPoeClass,
   updateSwitchVlans,
-  getPortVenueVlans
+  getPortVenueVlans,
+  getMultiPoeCapabilityDisabled
 } from './editPortDrawer.utils'
 import { LldpQOSTable }    from './lldpQOSTable'
 import { SelectVlanModal } from './selectVlanModal'
@@ -146,9 +154,13 @@ export function EditPortDrawer ({
   } = (useWatch([], form) ?? {})
 
   const { tenantId, venueId, serialNumber } = useParams()
-  const [loading, setLoading] = useState<boolean>(true)
+  const [ loading, setLoading ] = useState<boolean>(true)
+  const cyclePoeFFEnabled = useIsSplitOn(Features.SWITCH_CYCLE_POE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
 
-  const defaultVlanName = 'DEFAULT-VLAN'
+  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
+
   const defaultVlanText = $t({ defaultMessage: 'Default VLAN (Multiple values)' })
   const switches: string[] = _.uniq(selectedPorts.map(p => p.switchMac))
   const switchId = switches?.[0]
@@ -167,6 +179,7 @@ export function EditPortDrawer ({
   const [editPortData, setEditPortData] = useState(null as unknown as PortSettingModel)
   const [defaultVlan, setDefaultVlan] = useState('')
   const [switchVlans, setSwitchVlans] = useState({} as SwitchVlanUnion)
+
   const [initPortVlans, setInitPortVlans] = useState([] as PortVlan[])
   const [profileDefaultVlan, setProfileDefaultVlan] = useState(null as unknown as Number)
   const [portsProfileVlans, setPortsProfileVlans] = useState({} as ProfileVlans)
@@ -178,7 +191,9 @@ export function EditPortDrawer ({
   const [hasMultipleValue, setHasMultipleValue] = useState([] as string[])
   const [disabledUseVenueSetting, setDisabledUseVenueSetting] = useState(false)
   const [disablePoeCapability, setDisablePoeCapability] = useState(false)
+  const [disableCyclePoeCapability, setDisableCyclePoeCapability] = useState(false)
   const [disableSaveButton, setDisableSaveButton] = useState(false)
+  const [cliApplied, setCliApplied] = useState(false)
 
   const [venueVlans, setVenueVlans] = useState([] as Vlan[])
   const [venueTaggedVlans, setVenueTaggedVlans] = useState('' as string)
@@ -188,13 +203,12 @@ export function EditPortDrawer ({
 
   const [selectModalvisible, setSelectModalvisible] = useState(false)
   const [lldpModalvisible, setLldpModalvisible] = useState(false)
-
-  const [ drawerAclVisible, setDrawerAclVisible ] = useState(false)
+  const [drawerAclVisible, setDrawerAclVisible] = useState(false)
+  const [cyclePoeEnable, setCyclePoeEnable] = useState(false)
 
   const [getPortSetting] = useLazyGetPortSettingQuery()
   const [getPortsSetting] = useLazyGetPortsSettingQuery()
   const [getSwitchVlan] = useLazyGetSwitchVlanQuery()
-  const [getSwitchVlans] = useLazyGetSwitchVlansQuery()
   const [getSwitchesVlan] = useLazyGetSwitchesVlanQuery()
   const [getVlansByVenue] = useLazyGetVlansByVenueQuery()
   const [getSwitchConfigurationProfileByVenue] = useLazyGetSwitchConfigurationProfileByVenueQuery()
@@ -202,18 +216,44 @@ export function EditPortDrawer ({
   const [getVenueRoutedList] = useLazyGetVenueRoutedListQuery()
   const [getAclUnion] = useLazyGetAclUnionQuery()
   const [savePortsSetting, { isLoading: isPortsSettingUpdating }] = useSavePortsSettingMutation()
+  const [cyclePoe, { isLoading: isCyclePoeUpdating }] = useCyclePoeMutation()
 
   const { data: switchDetail, isLoading: isSwitchDetailLoading }
     = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
 
-  const { data: switchesDefaultVlan }
-    = useGetDefaultVlanQuery({ params: { tenantId }, payload: switches })
+  const { data: switchData, isLoading: isSwitchDataLoading }
+    = useGetSwitchQuery({
+      params: { tenantId, switchId, venueId: switchDetail?.venueId },
+      enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !switchDetail?.venueId
+    })
+
+  const { data: switchesDefaultVlan, isLoading: isDefaultVlanLoading } = useGetDefaultVlanQuery({
+    params: { tenantId, venueId: switchDetail?.venueId },
+    payload: switches,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !switchDetail?.venueId
+  })
 
   const getVlans = async () => {
+    if (isSwitchLevelVlanEnabled) {
+      return await getSwitchUnionVlans()
+    }
+
     return switches.length > 1
       // eslint-disable-next-line max-len
-      ? await getSwitchesVlan({ params: { tenantId, serialNumber }, payload: switches }, true).unwrap()
-      : await getSwitchVlan({ params: { tenantId, switchId } }, true).unwrap()
+      ? await getSwitchesVlan({
+        params: { tenantId, serialNumber },
+        payload: switches,
+        enableRbac: isSwitchRbacEnabled
+      }, true).unwrap()
+      : await getSwitchVlan({
+        params: { tenantId, switchId, venueId: switchDetail?.venueId },
+        enableRbac: isSwitchRbacEnabled,
+        option: { skip: !switchDetail?.venueId }
+      }, true).unwrap()
   }
 
   const getMultiplePortsSetting = async () => {
@@ -225,7 +265,10 @@ export function EditPortDrawer ({
     }))
 
     return await getPortsSetting({
-      params: { tenantId }, payload: portsSettingPayload
+      params: { tenantId, venueId: switchDetail?.venueId },
+      payload: portsSettingPayload,
+      enableRbac: isSwitchRbacEnabled,
+      option: { skip: !switchDetail?.venueId }
     }, true).unwrap()
   }
 
@@ -236,7 +279,8 @@ export function EditPortDrawer ({
         fields: ['id', 'portNumber', 'portType'],
         sortField: 'name',
         pageSize: 10000
-      }
+      },
+      enableRbac: isSwitchRbacEnabled
     }
     const veRouted = isVenueLevel
       ? await getVenueRoutedList(veRouteQueryParams, true).unwrap()
@@ -245,34 +289,58 @@ export function EditPortDrawer ({
     return veRouted?.data
   }
 
-  const getEachSwitchVlans = async () => {
-    const switchVlans = switches?.map(async (switchId) => {
-      return await getSwitchVlans({
-        params: { tenantId, switchId }
-      }, true).unwrap()
-    })
-    return Promise.all(switchVlans)
+  const getSwitchUnionVlans = async () => {
+    // include switch vlan and switch default vlan
+    const vlanList = switchesDefaultVlan?.flatMap(
+      v => v.vlanList?.filter(v => v.vlanName !== SWITCH_DEFAULT_VLAN_NAME)
+    )
+
+    const vlanIds = _.uniq(vlanList?.map(v => v.vlanId))
+      ?.sort((a, b) => a - b)
+
+    return {
+      switchVlan: vlanIds?.map(v => {
+        const nameList = vlanList
+          ?.filter(vlan => !!vlan.vlanName && vlan.vlanId === v)
+          ?.map(vlan => vlan.vlanName)
+
+        const isAllHaveName = nameList?.length === switches.length
+        const isSameName = _.uniq(nameList)?.length === 1
+        const vlanName = isAllHaveName && isSameName && nameList?.[0]
+
+        return {
+          vlanId: v,
+          vlanConfigName: vlanName || ''
+        }
+      })
+    }
   }
 
   const getUseVenueSettingDisabled = async (profileDefaultVlan: Number) => {
-    const switchVlans = (await getEachSwitchVlans())?.flat()
+    const switchVlans = switchesDefaultVlan?.map(v => v.vlanList)?.flat() ?? []
 
     return switchVlans?.filter((v) =>
-      v?.vlanName !== defaultVlanName && v?.vlanId === Number(profileDefaultVlan)
+      v?.vlanName !== SWITCH_DEFAULT_VLAN_NAME && v?.vlanId === Number(profileDefaultVlan)
     )?.length > 0
   }
 
   useEffect(() => {
     const setData = async () => {
-      const aclUnion = await getAclUnion({ params: { tenantId, switchId } }, true).unwrap()
+      const aclUnion = await getAclUnion({
+        params: { tenantId, switchId, venueId: switchDetail?.venueId },
+        enableRbac: isSwitchRbacEnabled
+      }, true).unwrap()
       const vid = isVenueLevel ? venueId : switchDetail?.venueId
       const switchVlans = await getVlans()
       const vlansByVenue = await getVlansByVenue({
-        params: { tenantId, venueId: vid }
+        params: { tenantId, venueId: vid },
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
 
       const switchProfile = await getSwitchConfigurationProfileByVenue({
-        params: { tenantId, venueId: vid }
+        params: { tenantId, venueId: vid },
+        options: { skip: !vid },
+        enableRbac: isSwitchRbacEnabled
       }, true).unwrap()
 
       const veRouted = await getVeRouted(isVenueLevel, vid)
@@ -285,21 +353,23 @@ export function EditPortDrawer ({
         : []
       const defaultVlan = defaultVlans?.length > 1 ? '' : defaultVlans?.[0]
       const profileDefaultVlan = switchProfile?.[0]?.vlans
-        ?.find((item) => item?.vlanName === 'DEFAULT-VLAN')?.vlanId ?? 1
-      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
+        ?.find((item) => item?.vlanName === SWITCH_DEFAULT_VLAN_NAME)?.vlanId ?? 1
+      const isCliApplied = !!switchProfile?.find(p => p.profileType === ProfileTypeEnum.CLI)
 
       setDefaultVlan(defaultVlan)
       setProfileDefaultVlan(profileDefaultVlan)
-      setSwitchVlans(switchVlans)
+      setSwitchVlans(switchVlans as SwitchVlanUnion)
       setVenueVlans(vlansByVenue)
       setVlanUsedByVe(vlanUsedByVe)
 
       setAclsOptions(getAclOptions(aclUnion))
       setPortSpeedOptions(portSpeed)
       setPoeClassOptions(getPoeClass(selectedPorts))
-      setVlansOptions(getVlanOptions(switchVlans, defaultVlan, voiceVlan))
+      setVlansOptions(getVlanOptions(switchVlans as SwitchVlanUnion, defaultVlan, voiceVlan))
 
       setHasSwitchProfile(!!switchProfile?.length)
+      setSwitchConfigurationProfileId(switchProfile?.[0]?.id)
+      setCliApplied(isCliApplied)
       setDisabledUseVenueSetting(await getUseVenueSettingDisabled(profileDefaultVlan))
 
       isMultipleEdit
@@ -309,20 +379,33 @@ export function EditPortDrawer ({
       setLoading(false)
     }
 
-    if (switchesDefaultVlan && !isSwitchDetailLoading) {
+    // eslint-disable-next-line max-len
+    if (!isSwitchDetailLoading && !isSwitchDataLoading && !isDefaultVlanLoading && switchDetail?.venueId) {
       resetFields()
       setData()
     }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPorts, isSwitchDetailLoading, switchesDefaultVlan, visible])
+  // eslint-disable-next-line react-hooks/exhaustive-deps, max-len
+  }, [selectedPorts, isSwitchDetailLoading, isSwitchDataLoading, isDefaultVlanLoading, visible])
 
-  const getSinglePortValue = async (portSpeed: string[], defaultVlan: string,
-    vlansByVenue: Vlan[]) => {
-    const portSetting = await getPortSetting({
-      params: { tenantId, switchId, portIdentifier: selectedPorts?.[0]?.portIdentifier },
-      payload: [selectedPorts?.[0]?.portIdentifier]
+  const getSinglePortValue = async (
+    portSpeed: string[],
+    defaultVlan: string,
+    vlansByVenue: Vlan[]
+  ) => {
+    const portSettingArray = await getPortSetting({
+      params: {
+        tenantId, switchId,
+        venueId: switchDetail?.venueId,
+        portIdentifier: selectedPorts?.[0]?.portIdentifier
+      },
+      payload: [selectedPorts?.[0]?.portIdentifier],
+      enableRbac: isSwitchRbacEnabled,
+      option: { skip: !switchDetail?.venueId }
     }, true).unwrap()
+    const portSetting = isSwitchRbacEnabled
+      ? (portSettingArray as unknown as PortSettingModel[])?.[0]
+      : portSettingArray
 
     const { tagged, untagged, voice } = getPortVenueVlans(vlansByVenue, selectedPorts?.[0])
     setVenueTaggedVlans(tagged)
@@ -331,8 +414,10 @@ export function EditPortDrawer ({
 
     setEditPortData(portSetting)
     setDisablePoeCapability(getPoeCapabilityDisabled([portSetting]))
+    setDisableCyclePoeCapability(getPoeCapabilityDisabled([portSetting]))
     setUseVenueSettings(portSetting?.revert)
     setLldpQosList(portSetting?.lldpQos || [])
+    setCyclePoeEnable(portSetting.poeEnable)
 
     setInitPortVlans(getInitPortVlans( [portSetting], defaultVlan ))
     setPortEditStatus(
@@ -352,19 +437,22 @@ export function EditPortDrawer ({
       voiceVlan: (portSetting.revert ? voice
         : (portSetting?.voiceVlan === 0 ? '' : portSetting?.voiceVlan))
     })
-    checkIsVoiceVlanInvalid()
+    checkIsVoiceVlanInvalid(true, portSetting?.revert)
   }
 
   const getMultiplePortsValue = async (vlansByVenue: Vlan[], defaultVlan: string) => {
-    const portsSetting = await getMultiplePortsSetting()
+    const multiPortsSetting = await getMultiplePortsSetting()
+    const portsSetting = (isSwitchRbacEnabled
+      ? multiPortsSetting : multiPortsSetting?.response) as PortSettingModel[]
     const vlansValue = getMultipleVlanValue(
       selectedPorts, vlansByVenue, portsSetting, defaultVlan, switchesDefaultVlan
     )
-    const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting?.response)
+    const poeCapabilityDisabled = getPoeCapabilityDisabled(portsSetting)
+    const cyclePoeMultiPortsDisabled = getMultiPoeCapabilityDisabled(portsSetting)
     const hasMultipleValueFields = allMultipleEditableFields?.filter(field => {
       const isEqual = field === 'lldpQos'
-        ? checkLldpListEqual(portsSetting?.response?.map(s => s[field]))
-        : _.uniq(portsSetting?.response?.map(s =>
+        ? checkLldpListEqual(portsSetting?.map(s => s[field]))
+        : _.uniq(portsSetting?.map(s =>
           s[field as keyof PortSettingModel]?.toString())
         )?.length === 1
 
@@ -372,9 +460,12 @@ export function EditPortDrawer ({
     })
 
     const hasEqualValueFields = _.xor(allMultipleEditableFields, hasMultipleValueFields)
-    const portSetting = _.pick(portsSetting?.response?.[0], [...hasEqualValueFields, 'profileName'])
+    const portSetting = _.pick(portsSetting?.[0], [...hasEqualValueFields, 'profileName'])
 
     setDisablePoeCapability(poeCapabilityDisabled)
+    setDisableCyclePoeCapability(cyclePoeMultiPortsDisabled)
+    setCyclePoeEnable(portsSetting?.filter(s => s?.poeEnable)?.length > 0)
+
     setHasMultipleValue(_.uniq([
       ...hasMultipleValueFields,
       ...((!vlansValue.isTagEqual && ['taggedVlans']) || []),
@@ -435,10 +526,11 @@ export function EditPortDrawer ({
         || disablePoeCapability
         || !poeEnable
         || (poeClass !== 'ZERO' && poeClass !== 'UNSET')
-      case 'useVenuesettings': return disabledUseVenueSetting || switchDetail?.vlanCustomize
+      case 'useVenuesettings': return disabledUseVenueSetting || switchData?.vlanCustomize
       case 'portSpeed':
         return (isMultipleEdit && !portSpeedCheckbox) || disablePortSpeed || hasBreakoutPort
       case 'ingressAcl': return (isMultipleEdit && !ingressAclCheckbox) || ipsg
+      case 'cyclePoe': return disableCyclePoeCapability || !cyclePoeEnable
       default:
         const checkboxEnabled = form.getFieldValue(`${field}Checkbox`)
         return isMultipleEdit && !checkboxEnabled
@@ -483,7 +575,7 @@ export function EditPortDrawer ({
   const transformData = (data: PortSettingModel) => {
     const hasBreakoutPortAndVenueSettings = hasBreakoutPort && useVenueSettings
     const vlansHasChanged = form?.isFieldTouched('taggedVlans') ||
-      form?.isFieldTouched('untaggedVlan')
+      form?.isFieldTouched('untaggedVlan') || form?.isFieldTouched('voiceVlan')
     const getInitIgnoreFields = () => {
       const overrideFields = getOverrideFields(form.getFieldsValue())
       if ((overrideFields?.includes('portVlans') && vlansHasChanged)
@@ -558,7 +650,19 @@ export function EditPortDrawer ({
           .filter(p => p.switchSerial === item)
           .map(p => p.portIdentifier)
 
-        return {
+        return isSwitchRbacEnabled ? {
+          ...transformedValues,
+          switchId: item,
+          port: ports?.[0],
+          ports: ports,
+          ...(transformedValues?.untaggedVlan === defaultVlanText && {
+            untaggedVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+          }),
+          ...(transformedValues?.voiceVlan === defaultVlanText && {
+            voiceVlan: defaultVlanMap?.[item as keyof typeof defaultVlanMap] ?? ''
+          }),
+          ignoreFields: ignoreFields.toString()
+        } : {
           switchId: item,
           port: {
             ...transformedValues,
@@ -574,7 +678,13 @@ export function EditPortDrawer ({
           }
         }
       })
-      await savePortsSetting({ params: { tenantId }, payload }).unwrap()
+
+      await savePortsSetting({
+        params: { tenantId, venueId: switchDetail?.venueId },
+        payload,
+        enableRbac: isSwitchRbacEnabled,
+        option: { skip: !switchDetail?.venueId }
+      }).unwrap()
       store.dispatch(
         switchApi.util.invalidateTags([
           { type: 'SwitchPort', id: 'LIST' },
@@ -586,6 +696,22 @@ export function EditPortDrawer ({
     } catch (err) {
       console.log(err) // eslint-disable-line no-console
     }
+  }
+
+  const onCyclePoe = async () => {
+    const venueId = selectedPorts[0].venueId
+    const payload = switches.map((switchId) => ({
+      switchId: switchId,
+      ports: selectedPorts
+        .filter(p => p.switchSerial === switchId)
+        .map(p => p.portIdentifier)
+    }))
+    await cyclePoe({
+      params: { venueId },
+      payload,
+      enableRbac: isSwitchRbacEnabled
+    }).unwrap()
+    onClose()
   }
 
   const resetFields = async () => {
@@ -708,12 +834,13 @@ export function EditPortDrawer ({
     checkIsVoiceVlanInvalid()
   }
 
-  const checkIsVoiceVlanInvalid = () => {
+  const checkIsVoiceVlanInvalid = (init?:boolean, revert?:boolean) => {
+    const applyVenueSetting = init ? revert : useVenueSettings
     const voiceVlanField = form?.getFieldValue('voiceVlan')
     const taggedVlansField = form?.getFieldValue('taggedVlans')
     let isInvalid = voiceVlanField &&
     taggedVlansField.split(',').indexOf(String(voiceVlanField)) === -1
-    if (useVenueSettings && voiceVlanField && !taggedVlansField) {
+    if (applyVenueSetting && voiceVlanField && !taggedVlansField) {
       isInvalid = false
     }
     setIsVoiceVlanInvalid(isInvalid)
@@ -747,6 +874,16 @@ export function EditPortDrawer ({
 
   const footer = [
     <Space style={{ display: 'flex', marginLeft: 'auto' }} key='edit-port-footer'>
+      {
+        cyclePoeFFEnabled && <>
+          <Button icon={<PoeUsage />} disabled={getFieldDisabled('cyclePoe')} onClick={onCyclePoe}>
+            {$t({ defaultMessage: 'Cycle PoE' })}
+          </Button>
+          <UI.DrawerFooterDivider>
+            <Divider type='vertical' />
+          </UI.DrawerFooterDivider>
+        </>
+      }
       <Button disabled={loading} key='cancel' onClick={onClose}>
         {$t({ defaultMessage: 'Cancel' })}
       </Button>
@@ -768,7 +905,7 @@ export function EditPortDrawer ({
     footer={footer}
     children={<Loader states={[{
       isLoading: loading,
-      isFetching: isPortsSettingUpdating
+      isFetching: isPortsSettingUpdating || isCyclePoeUpdating
     }]}>
       {
         isCloudPort && <Alert
@@ -853,7 +990,7 @@ export function EditPortDrawer ({
                             disabled={getFieldDisabled('useVenuesettings')}
                             onClick={onApplyVenueSettings}
                           >
-                            {$t({ defaultMessage: 'Use Venue settings' })}
+                            {$t({ defaultMessage: 'Use <VenueSingular></VenueSingular> settings' })}
                           </Button>
                         </Space>
                       </Tooltip>
@@ -1023,6 +1160,7 @@ export function EditPortDrawer ({
                     initialValue={false}
                   >
                     <Switch
+                      data-testid='poeEnable'
                       disabled={getFieldDisabled('poeEnable')}
                       className={getToggleClassName('poeEnable', isMultipleEdit, hasMultipleValue)}
                     />
@@ -1306,7 +1444,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='ingressAcl'
-              label={$t({ defaultMessage: 'Ingress ACL' })}
+              label={$t({ defaultMessage: 'Ingress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !ingressAclCheckbox && hasMultipleValue.includes('ingressAcl')
@@ -1317,7 +1455,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && ingressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('ingressAcl')}>
               <Space style={{ marginLeft: '8px', marginBottom: isMultipleEdit ? '10px' : '' }}>
                 <Button type='link'
@@ -1331,7 +1469,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'ingressAcl', $t({ defaultMessage: 'Ingress ACL' })
+          'ingressAcl', $t({ defaultMessage: 'Ingress ACL (IPv4)' })
         )}
 
         { getFieldTemplate(
@@ -1339,7 +1477,7 @@ export function EditPortDrawer ({
             <Form.Item
               {...getFormItemLayout(isMultipleEdit)}
               name='egressAcl'
-              label={$t({ defaultMessage: 'Egress ACL' })}
+              label={$t({ defaultMessage: 'Egress ACL (IPv4)' })}
               initialValue=''
               children={
                 isMultipleEdit && !egressAclCheckbox && hasMultipleValue.includes('egressAcl')
@@ -1350,7 +1488,7 @@ export function EditPortDrawer ({
                   />
               }
             />
-            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) &&
+            {((isMultipleEdit && egressAclCheckbox) || !isMultipleEdit) && hasCreatePermission &&
             <Tooltip title={getFieldTooltip('egressAcl')}>
               <Space style={{ marginLeft: '8px' }}>
                 <Button type='link'
@@ -1363,7 +1501,7 @@ export function EditPortDrawer ({
               </Space>
             </Tooltip>}
           </>,
-          'egressAcl', $t({ defaultMessage: 'Egress ACL' })
+          'egressAcl', $t({ defaultMessage: 'Egress ACL (IPv4)' })
         )}
 
         {getFieldTemplate(
@@ -1399,9 +1537,19 @@ export function EditPortDrawer ({
         isVoiceVlanInvalid={isVoiceVlanInvalid}
         vlanDisabledTooltip={$t(EditPortMessages.ADD_VLAN_DISABLE)}
         hasSwitchProfile={hasSwitchProfile}
+        cliApplied={cliApplied}
         profileId={switchConfigurationProfileId}
+        switchIds={switches}
+        venueId={switchDetail?.venueId}
         updateSwitchVlans={async (values: Vlan) =>
-          updateSwitchVlans(values, switchVlans, setSwitchVlans, venueVlans, setVenueVlans)
+          updateSwitchVlans(
+            values,
+            switchVlans,
+            setSwitchVlans,
+            venueVlans,
+            setVenueVlans,
+            isSwitchLevelVlanEnabled
+          )
         }
       />}
 

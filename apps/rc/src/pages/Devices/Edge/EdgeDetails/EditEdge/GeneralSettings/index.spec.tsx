@@ -1,14 +1,17 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { edgeApi }                                           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                          from '@acx-ui/store'
+import { Provider, store }                                   from '@acx-ui/store'
 import {
   fireEvent, mockServer, render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
-import { mockVenueData } from '../../../__tests__/fixtures'
+import { mockVenueData }                                from '../../../__tests__/fixtures'
+import { EditEdgeDataContext, EditEdgeDataContextType } from '../EditEdgeDataProvider'
 
 import GeneralSettings from './index'
 
@@ -18,23 +21,25 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+const updateRequestSpy = jest.fn()
 
-describe('EditEdge general settings', () => {
-  let params: { tenantId: string, serialNumber: string }
+describe('EditEdge - GeneralSettings', () => {
+  let params: { tenantId: string, venueId: string, edgeClusterId: string, serialNumber: string }
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+      venueId: '66e6694ca3334997998c42def9326797',
+      edgeClusterId: 'cluster-1',
       serialNumber: '000000000000'
     }
-
+    store.dispatch(edgeApi.util.resetApiState())
     mockServer.use(
-      rest.put(
+      rest.patch(
         EdgeUrlsInfo.updateEdge.url,
-        (req, res, ctx) => res(ctx.status(202))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getEdge.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
+        (req, res, ctx) => {
+          updateRequestSpy()
+          return res(ctx.status(202))
+        }
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -48,7 +53,13 @@ describe('EditEdge general settings', () => {
   it('should create GeneralSettings successfully', async () => {
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -61,7 +72,13 @@ describe('EditEdge general settings', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -75,7 +92,13 @@ describe('EditEdge general settings', () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -83,13 +106,20 @@ describe('EditEdge general settings', () => {
     fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
     const applyButton = screen.getByRole('button', { name: 'Apply' })
     await user.click(applyButton)
+    await waitFor(() => expect(updateRequestSpy).toHaveBeenCalledTimes(1))
   })
 
   it('cancel and go back to edge list', async () => {
     const user = userEvent.setup()
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
@@ -104,6 +134,7 @@ describe('EditEdge general settings', () => {
 
 describe('EditEdge general settings api fail', () => {
   let params: { tenantId: string, serialNumber: string }
+
   beforeEach(() => {
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
@@ -111,13 +142,9 @@ describe('EditEdge general settings api fail', () => {
     }
 
     mockServer.use(
-      rest.put(
+      rest.patch(
         EdgeUrlsInfo.updateEdge.url,
         (req, res, ctx) => res(ctx.status(500), ctx.json(null))
-      ),
-      rest.get(
-        EdgeUrlsInfo.getEdge.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeData))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
@@ -128,18 +155,28 @@ describe('EditEdge general settings api fail', () => {
 
   it('General settings api fail handle', async () => {
     const user = userEvent.setup()
+    const spyOnConsole = jest.fn()
+    jest.spyOn(console, 'log').mockImplementation(spyOnConsole)
+
     render(
       <Provider>
-        <GeneralSettings />
+        <EditEdgeDataContext.Provider
+          value={{
+            generalSettings: mockEdgeData
+          } as unknown as EditEdgeDataContextType}
+        >
+          <GeneralSettings />
+        </EditEdgeDataContext.Provider>
       </Provider>, {
         route: { params, path: '/:tenantId/t/devices/edge/:serialNumber/edit/general-settings' }
       })
     const edgeNameInput = await screen.findByRole('textbox', { name: 'SmartEdge Name' })
-    fireEvent.change(edgeNameInput, { target: { value: 'edge_name_test' } })
+    await user.type(edgeNameInput, 'edge_name_test')
     const serialNumberInput = screen.getByRole('textbox',
       { name: 'Serial Number' })
-    fireEvent.change(serialNumberInput, { target: { value: 'serial_number_test' } })
+    await user.type(serialNumberInput, 'serial_number_test')
     await user.click(screen.getByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(spyOnConsole).toBeCalled())
     // TODO
     // await screen.findAllByText('Server Error')
   })

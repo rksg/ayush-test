@@ -2,47 +2,11 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer } from '@acx-ui/components'
-import { useLocation }    from '@acx-ui/react-router-dom'
-
+import { Button, Drawer }                                 from '@acx-ui/components'
+import { DOCS_HOME_URL, fetchDocsURLMapping, getDocsURL } from '@acx-ui/rc/utils'
+import { useLocation }                                    from '@acx-ui/react-router-dom'
 
 import { EmptyDescription } from './styledComponents'
-
-
-//for Local test, use '/docs/ruckusone/userguide/mapfile/doc-mapper.json'
-export const getMappingURL = (isMspUser:boolean) => {
-  return process.env['NODE_ENV'] === 'development'
-    // eslint-disable-next-line max-len
-    ? isMspUser ? '/docs/ruckusone/mspguide/mapfile/doc-mapper.json':'/docs/ruckusone/userguide/mapfile/doc-mapper.json'
-    // eslint-disable-next-line max-len
-    : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/mapfile/doc-mapper.json' : 'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json'
-}
-
-// for local test, use '/docs/ruckusone/userguide/'
-export const getDocsURL = (isMspUser:boolean) => process.env['NODE_ENV'] === 'development'
-  ? isMspUser ? '/docs/ruckusone/mspguide/':'/docs/ruckusone/userguide/'
-  // eslint-disable-next-line max-len
-  : isMspUser ? 'https://docs.cloud.ruckuswireless.com/ruckusone/mspguide/':'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/'
-
-export const DOCS_HOME_URL = 'https://docs.cloud.ruckuswireless.com'
-
-const getMapping = async (basePath: string, showError: () => void, isMspUser:boolean) => {
-  let result = await fetch(getMappingURL(isMspUser), {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json'
-    }
-  })
-
-  if(!result.ok){
-    showError()
-    return
-  }
-
-  result = await result.json()
-  const mapKey = Object.keys(result).find(item => basePath === item)
-  return result[mapKey as keyof typeof result]
-}
 
 const updateDesc = async (
   destFile: string,
@@ -84,7 +48,7 @@ export default function HelpPage (props: {
   useEffect(() => {
     if (!props.modalState) return
     (async ()=> {
-      const mappingRs = await getMapping(basePath, showError, isMspUser)
+      const mappingRs = await fetchDocsURLMapping(basePath, showError, isMspUser)
       if (!mappingRs) {
         return showError()
       }

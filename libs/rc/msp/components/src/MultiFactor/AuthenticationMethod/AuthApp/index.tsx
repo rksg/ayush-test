@@ -1,4 +1,5 @@
-import { Form, Input, Tooltip, Typography, Row } from 'antd'
+import { Form, Input, Row, Tooltip, Typography } from 'antd'
+import { QRCodeSVG }                             from 'qrcode.react'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
@@ -94,11 +95,14 @@ export const AuthApp = styled((props: AuthAppProps) => {
                 <Typography.Text>
                   { $t({ defaultMessage: 'Scan the QR code below:' }) }
                 </Typography.Text>
-
                 <UI.QRCodeImgWrapper direction='vertical' size='large'>
-                  <img
-                    src={data?.url ?? ''}
-                    alt={data?.url ?? ''}
+                  <QRCodeSVG
+                    value={data?.key?`otpauth://totp/RuckusCloud?secret=${data?.key}`:''}
+                    size={128}
+                    bgColor={'#ffffff'}
+                    fgColor={'#000000'}
+                    level={'L'}
+                    includeMargin={false}
                   />
                   <Row>
                     <Typography.Text>

@@ -2,8 +2,7 @@ import { useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { showToast }    from '@acx-ui/components'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { showToast } from '@acx-ui/components'
 import {
   notificationApi,
   notificationApiURL,
@@ -22,8 +21,6 @@ import {
 } from '@acx-ui/test-utils'
 
 import { AINotificationDrawer } from './AINotificationDrawer'
-
-jest.mocked(useIsSplitOn)
 
 jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
@@ -74,17 +71,15 @@ describe('IncidentNotificationDrawer', () => {
     mockedUnwrap.mockClear()
     mockServer.resetHandlers()
     mockServer.restoreHandlers()
-    jest.mocked(useIsSplitOn).mockClear()
     cleanup()
   })
   it('should render drawer open & close correctly', async () => {
     const mockedPref = {
       incident: {}
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     })
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
     expect(mockSetShowDrawer).toBeCalledTimes(0)
@@ -104,10 +99,9 @@ describe('IncidentNotificationDrawer', () => {
         aiOps: ['email']
       }
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
     fireEvent.click(drawerButton)
@@ -115,25 +109,6 @@ describe('IncidentNotificationDrawer', () => {
     expect(inputs).toHaveLength(6)
     await waitFor(() => { expect(inputs[0]).toBeChecked() })
     await waitFor(() => { expect(inputs[5]).toBeChecked() })
-  })
-  it('should render with recommendation FT off queried preferences correctly', async () => {
-    const mockedPref = {
-      incident: {
-        P1: ['email']
-      }
-    }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
-      data: mockedPref
-    }, true)
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<MockDrawer />, { wrapper: Provider })
-    const drawerButton = screen.getByRole('button', { name: /open me/ })
-    fireEvent.click(drawerButton)
-    await waitFor(async () => {
-      expect(await screen.findAllByRole('checkbox')).toHaveLength(4)
-    })
-    await waitFor( async () => {
-      expect(await screen.findByRole('checkbox', { name: 'P1 Incidents' })).toBeChecked() })
   })
   it('should handle notification preference update', async () => {
     const mockedPref = {
@@ -144,13 +119,12 @@ describe('IncidentNotificationDrawer', () => {
         aiOps: ['email']
       }
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
       data: { success: true }
     }, true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUnwrap.mockResolvedValueOnce({ success: true })
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
@@ -202,13 +176,12 @@ describe('IncidentNotificationDrawer', () => {
         P1: ['email']
       }
     }
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
       data: { success: false }
     }, true)
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUnwrap.mockResolvedValueOnce({ success: false })
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })
@@ -257,14 +230,13 @@ describe('IncidentNotificationDrawer', () => {
   })
   it('should handle error notification preference update', async () => {
     const mockedPref = {}
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'get', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'get', {
       data: mockedPref
     }, true)
-    mockRestApiQuery(`${notificationApiURL}preferences`, 'post', {
+    mockRestApiQuery(`${notificationApiURL}/preferences`, 'post', {
       data: { success: false }
     }, true)
 
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUnwrap.mockRejectedValueOnce({ success: false })
     render(<MockDrawer />, { wrapper: Provider })
     const drawerButton = screen.getByRole('button', { name: /open me/ })

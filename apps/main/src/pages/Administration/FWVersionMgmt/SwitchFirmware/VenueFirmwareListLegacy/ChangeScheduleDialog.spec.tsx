@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { firmwareApi }                       from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo, SwitchFirmwareFixtures
@@ -73,7 +73,7 @@ describe('Firmware Venues Table', () => {
         (req, res, ctx) => res(ctx.json(preference))
       ),
       rest.get(
-        FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       )
     )
@@ -146,7 +146,7 @@ describe('Firmware Venues Table', () => {
 
   // eslint-disable-next-line max-len
   it('should render the next schedule version of the selected row in dialog when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>
@@ -181,7 +181,7 @@ describe('Firmware Venues Table', () => {
 
   // eslint-disable-next-line max-len
   it('should render switch counts of the selected rows in dialog when feature flag is on', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>

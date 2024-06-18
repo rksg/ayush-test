@@ -6,6 +6,7 @@ import {
 } from 'antd'
 import styled, { css, createGlobalStyle } from 'styled-components/macro'
 
+import { get }                                         from '@acx-ui/config'
 import { ArrowChevronLeft, ArrowChevronRight, LogOut } from '@acx-ui/icons'
 
 import modifyVars from '../../theme/modify-vars'
@@ -368,6 +369,7 @@ export const MenuIcon = styled.span`
 
 export const Content = styled.div`
   margin: var(--acx-content-vertical-space) var(--acx-content-horizontal-space);
+  ${get('IS_MLISA_SA') ? 'padding-block-end: 60px;' : ''}
   min-width: calc(
     ${modifyVars['@screen-xl']}
     - var(--acx-sider-width)

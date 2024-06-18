@@ -152,7 +152,7 @@ describe('ServiceGuardForm', () => {
 
     await click(actions.getByRole('button', { name: 'Create' }))
 
-    expect(await screen.findByText('Service Validation test created')).toBeVisible()
+    expect(await screen.findByText('Service Validation test was created')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
   })
 
@@ -183,7 +183,7 @@ describe('ServiceGuardForm', () => {
     // Submit
     await click(actions.getByRole('button', { name: 'Apply' }))
 
-    expect(await screen.findByText('Service Validation test updated')).toBeVisible()
+    expect(await screen.findByText('Service Validation test was updated')).toBeVisible()
     expect(mockedNavigate).toBeCalled()
   })
 

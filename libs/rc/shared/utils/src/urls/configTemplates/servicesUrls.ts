@@ -50,5 +50,100 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/dhcpConfigServiceProfiles/:templateId',
     newApi: true
+  },
+  getPortal: {
+    method: 'get',
+    url: '/templates/portalServiceProfiles/:serviceId',
+    newApi: true
+  },
+  addPortal: {
+    method: 'post',
+    url: '/templates/portalServiceProfiles',
+    newApi: true
+  },
+  updatePortal: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId',
+    newApi: true
+  },
+  deletePortal: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:templateId',
+    newApi: true
+  },
+  getEnhancedPortalList: {
+    method: 'post',
+    url: '/templates/portalServiceProfiles/query',
+    newApi: true
+  },
+  uploadPhoto: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/photos',
+    newApi: true
+  },
+  uploadLogo: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/logos',
+    newApi: true
+  },
+  uploadBgImage: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/backgroundImages',
+    newApi: true
+  },
+  uploadPoweredImg: {
+    method: 'put',
+    url: '/templates/portalServiceProfiles/:serviceId/poweredImages',
+    newApi: true
+  },
+  deletePhoto: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/photos',
+    newApi: true
+  },
+  deleteLogo: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/logos',
+    newApi: true
+  },
+  deleteBgImage: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/backgroundImages',
+    newApi: true
+  },
+  deletePoweredImg: {
+    method: 'delete',
+    url: '/templates/portalServiceProfiles/:serviceId/poweredImages',
+    newApi: true
+  },
+  getWifiCalling: {
+    method: 'get',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    newApi: true
+  },
+  getWifiCallingList: {
+    method: 'get',
+    url: '/templates/wifiCallingServiceProfiles',
+    newApi: true
+  },
+  getEnhancedWifiCallingList: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles/query',
+    newApi: true
+  },
+  addWifiCalling: {
+    method: 'post',
+    url: '/templates/wifiCallingServiceProfiles',
+    newApi: true
+  },
+  updateWifiCalling: {
+    method: 'put',
+    url: '/templates/wifiCallingServiceProfiles/:serviceId',
+    newApi: true
+  },
+  deleteWifiCalling: {
+    method: 'delete',
+    url: '/templates/wifiCallingServiceProfiles/:templateId',
+    newApi: true
   }
 }

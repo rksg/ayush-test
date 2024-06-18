@@ -603,3 +603,25 @@ export const mockedApModelFamilies = [
     ]
   }
 ]
+
+export const mockedFirmwareVenuesPerApModel = [
+  {
+    id: '90b0b0cd6c3a44a894fe73e210b1a4c1',
+    name: 'venueBBB-upToDate',
+    isFirmwareUpToDate: true,
+    currentApFirmwares: [
+      { apModel: 'R550', firmware: '7.0.0.104.1220' }
+    ],
+    lastScheduleUpdate: '2024-02-22T14:00:01.099-08:00'
+  },
+  {
+    id: '10b0b0cd6c3a44a894fe73e210b12345',
+    name: 'venueCCC-oneApOutdated',
+    isFirmwareUpToDate: false,
+    currentApFirmwares: [
+      { apModel: 'R350', firmware: '7.0.0.104.1220' },
+      { apModel: 'R550', firmware: '6.2.0.103.486' }
+    ],
+    lastScheduleUpdate: '2022-01-12T14:00:01.099-08:00'
+  }
+]

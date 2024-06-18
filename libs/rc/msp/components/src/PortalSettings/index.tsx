@@ -374,13 +374,14 @@ export function PortalSettings () {
     }
     if (preferredProvider) {
       if (isOtherProvider) {
+        const wisprProvider = values.preferredWisprProvider || mspLabel?.preferredWisprProvider
         portal.preferredWisprProvider = {
-          providerName: values.preferredWisprProvider?.providerName as string,
+          providerName: wisprProvider?.providerName || '',
           apiKey: '',
           apiSecret: '',
           customExternalProvider: true,
-          auth: values.preferredWisprProvider?.auth,
-          acct: values.preferredWisprProvider?.acct
+          auth: wisprProvider?.auth,
+          acct: wisprProvider?.acct
         }
       } else {
         portal.preferredWisprProvider = {
@@ -947,14 +948,14 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <UI.ImagePreviewLight width='355px' height='80px'>
+                    <UI.ImagePreviewDark width='355px' height='80px'>
                       {(selectedLogo === 'defaultLogo' || loginLogoUrl) &&
                         <img alt='customer login logo'
                           src={selectedLogo === 'defaultLogo' ? defaultLoginLogo : loginLogoUrl}
                           style={{ margin: 'auto', maxHeight: '80px', maxWidth: '320px' }}
                         />
                       }
-                    </UI.ImagePreviewLight>
+                    </UI.ImagePreviewDark>
                   </Space>
                 </Card>
                 <Card

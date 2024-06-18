@@ -13,14 +13,6 @@ import { AccountType }                                                          
 
 import { ManageIntegrator, addressParser } from '.'
 
-const timezoneResult = {
-  dstOffset: 3600,
-  rawOffset: -28800,
-  status: 'OK',
-  timeZoneId: 'America/Los_Angeles',
-  timeZoneName: 'Pacific Daylight Time'
-}
-
 const autocompleteResult: google.maps.places.PlaceResult = {
   address_components: [
     {
@@ -248,10 +240,6 @@ describe('ManageIntegrator', () => {
       rest.put(
         MspUrlsInfo.updateMspEcAccount.url,
         (_req, res, ctx) => res(ctx.json({ requestId: 'update' }))
-      ),
-      rest.get(
-        'https://maps.googleapis.com/maps/api/timezone/*',
-        (req, res, ctx) => res(ctx.json(timezoneResult))
       )
     )
 

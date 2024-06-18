@@ -9,6 +9,7 @@ import {
   FormInstance,
   Input,
   Space,
+  Switch,
   Typography,
   Upload,
   UploadFile
@@ -18,6 +19,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, DrawerProps, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { formatter }                          from '@acx-ui/formatter'
 import {
   useAddTenantAuthenticationsMutation,
@@ -94,6 +96,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
 
   const [uploadFile, setUploadFile] = useState(false)
   const [selectedAuth, setSelectedAuth] = useState('')
+  const [ssoSignature, setSsoSignature] = useState(false)
+  const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
 
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
@@ -103,6 +107,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const onClose = () => {
     setVisible(false)
     form.resetFields()
+  }
+
+  const onChangeSsoSignature = (checked: boolean) => {
+    setSsoSignature(checked)
   }
 
   useEffect(()=>{
@@ -121,6 +129,7 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       // TODO: setMetadata() to contents of file only if we want to see file contents in metadata in editmode
       // fetchMetaData()
       form.setFieldValue('domains', editData?.domains?.toString())
+      setSsoSignature(editData?.samlSignatureEnabled ?? false)
     }
     setSelectedAuth(editData?.authenticationType || TenantAuthenticationType.saml)
   }, [form, props.visible])
@@ -223,7 +232,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           samlFileType: needAuthUpdate ? fileType : undefined,
           samlFileURL: needAuthUpdate
             ? (fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath) : undefined,
-          domains: allowedDomains
+          domains: allowedDomains,
+          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined
         }
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
@@ -234,7 +244,8 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           authenticationType: TenantAuthenticationType.saml,
           samlFileType: fileType,
           samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
-          domains: allowedDomains
+          domains: allowedDomains,
+          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined
         }
         await addSso({ payload: ssoData }).unwrap()
         reloadAuthTable(2)
@@ -402,6 +413,21 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     <Form layout='vertical' form={form} >
       {props.children}
     </Form>
+
+    {loginSsoSignatureEnabled && <Form.Item style={{ marginTop: '20px' }}
+      colon={false}
+      label={$t({ defaultMessage: 'Require SAML requests to be signed' })}
+      tooltip={$t({ defaultMessage:
+        'If this option is enabled, a public certificate needs to be configured' })}
+      name='samlRequestSigned'
+    >
+      <Switch style={{ marginLeft: '70px' }}
+        checkedChildren={$t({ defaultMessage: 'Yes' })}
+        unCheckedChildren={$t({ defaultMessage: 'No' })}
+        defaultChecked={ssoSignature}
+        onChange={onChangeSsoSignature}
+      />
+    </Form.Item>}
     </>
   }
 

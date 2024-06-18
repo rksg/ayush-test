@@ -3,6 +3,7 @@ import type { TimeStamp } from '@acx-ui/types'
 import { FirmwareCategory, SkippedVersion }                                                                                                                                                    from '..'
 import { ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
+export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
 
 export interface EdgeGeneralSetting {
@@ -11,7 +12,8 @@ export interface EdgeGeneralSetting {
   name: string
   serialNumber?: string
   venueId?: string
-  tags: string // TODO when tags component is ready need to change type to array
+  clusterId?: string
+  tags: string[] // TODO when tags component is ready need to change type to array
 }
 
 export interface EdgeResourceUtilization {
@@ -61,6 +63,7 @@ export interface EdgeStatus extends EdgeResourceUtilization {
   haStatus?: NodeClusterRoleEnum
   clusterNodeStatus?: ClusterNodeStatusEnum
   clusterId?: string
+  hasCorePort?: boolean
 }
 export interface EdgeDetails {
   serialNumber: string
@@ -88,12 +91,12 @@ export interface EdgePort {
 }
 
 export interface EdgePortWithStatus extends EdgePort {
-  statusIp: string
+  statusIp?: string
   isLagPort?: boolean
 }
 
 export interface EdgePortConfig {
-  ports: EdgePort[]
+  ports: EdgePort[] | EdgePortWithStatus[]
 }
 
 export interface EdgeSubInterface extends EdgePort {
@@ -116,7 +119,7 @@ export interface EdgeStaticRouteConfig {
 }
 
 export interface EdgePortStatus {
-  type: EdgePortTypeEnum.UNCONFIGURED | EdgePortTypeEnum.WAN | EdgePortTypeEnum.LAN
+  type: EdgePortTypeEnum
   portId: string
   name: string
   status: string
@@ -130,7 +133,7 @@ export interface EdgePortStatus {
   vlan: string
   subnet: string
   interfaceName?: string
-  serialNumber?: string
+  serialNumber?: EdgeSerialNumber
   isCorePort?: string
 }
 
@@ -381,6 +384,8 @@ export interface EdgeClusterStatus {
   venueName?: string
   clusterStatus?: string
   edgeList?: EdgeStatus[]
+  description?: string
+  hasCorePort?: boolean
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,
@@ -390,24 +395,32 @@ Omit<EdgeClusterStatus, 'tenantId' | 'name' | 'venueId' | 'venueName'> {
 }
 
 export interface EdgePortInfo {
-  serialNumber: string
+  serialNumber: EdgeSerialNumber
+  id: string
   portName: string
+  ipMode: EdgeIpModeEnum,
   ip: string
+  mac: string
   subnet: string
   portType: EdgePortTypeEnum
   isCorePort: boolean
+  isLag: boolean
   isLagMember: boolean
   portEnabled: boolean
+  status?: string // Up, Down
+  vlan?: string
 }
+
+export type EdgeNodesPortsInfo = Record<EdgeSerialNumber, EdgePortInfo[]>
 
 export interface ClusterNetworkSettings {
   virtualIpSettings: VirtualIpSetting[]
   portSettings: {
-    serialNumber: string,
+    serialNumber: EdgeSerialNumber,
     ports: EdgePort[]
   }[]
   lagSettings: {
-    serialNumber: string,
+    serialNumber: EdgeSerialNumber,
     lags: EdgeLag[]
   }[]
 }

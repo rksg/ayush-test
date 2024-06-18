@@ -1,35 +1,26 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { getUserProfile }                                                       from '@acx-ui/analytics/utils'
 import { useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
 import { Provider, dataApiSearchURL }                                           from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, cleanup } from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions }                                    from '@acx-ui/user'
 
 import { searchFixture, emptySearchFixture } from './__fixtures__/searchMocks'
 
 import SearchResults from '.'
 
-jest.mock('@acx-ui/analytics/utils', () => ({
-  ...jest.requireActual('@acx-ui/analytics/utils'),
-  getUserProfile: jest.fn(),
-  updateSelectedTenant: jest.fn()
-}))
-const userProfile = getUserProfile as jest.Mock
-
 const params = { searchVal: 'test%3F' }
-describe.only('Search Results', () => {
-  const defaultUserProfile = {
-    accountId: 'aid',
-    tenants: [],
-    invitations: [],
-    selectedTenant: {
-      id: 'aid',
-      role: 'admin'
-    }
-  }
+describe('Search Results', () => {
   beforeEach(() => {
-    userProfile.mockReturnValue(defaultUserProfile)
+    setRaiPermissions({
+      READ_REPORTS: true,
+      READ_ACCESS_POINTS_LIST: true,
+      READ_INCIDENTS: true,
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_SWITCH_LIST: true,
+      READ_WIFI_NETWORKS_LIST: true
+    } as RaiPermissions)
     cleanup()
   })
   it('should decode search string correctly', async () => {
@@ -107,30 +98,15 @@ describe.only('Search Results', () => {
     const href = link.getAttribute('href')
     expect(href).toBe('/ai/zones/Public-vSZ-2/CDC_BB_TEST/assurance')
   })
-  it('should handle isZonesPageEnabled feature flag correctly when false', async () => {
-    mockGraphqlQuery(dataApiSearchURL, 'Search', {
-      data: searchFixture
-    })
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    render(<SearchResults />, {
-      wrapper: Provider,
-      route: {
-        params: { ...params, searchVal: encodeURIComponent('some text') }
-      }
-    })
-    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
-    const link = screen.getAllByText('CDC_BB_TEST')[0]
-    const href = link.getAttribute('href')
-    expect((href as string).includes('incidents?analyticsNetworkFilter')).toBeTruthy()
-  })
   it('should handle results for report-only', async () => {
-    userProfile.mockReturnValue({
-      ...defaultUserProfile,
-      selectedTenant: {
-        ...defaultUserProfile.selectedTenant,
-        role: 'report-only'
-      }
-    })
+    setRaiPermissions({
+      READ_REPORTS: true,
+      READ_ACCESS_POINTS_LIST: false,
+      READ_INCIDENTS: false,
+      READ_CLIENT_TROUBLESHOOTING: false,
+      READ_SWITCH_LIST: false,
+      READ_WIFI_NETWORKS_LIST: false
+    } as RaiPermissions)
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: {
         search: {
@@ -160,13 +136,6 @@ describe.only('Search Results', () => {
     expect((clientHref as string).includes('/details/reports')).toBeTruthy()
   })
   it('should handle results for non report-only user', async () => {
-    userProfile.mockReturnValue({
-      ...defaultUserProfile,
-      selectedTenant: {
-        ...defaultUserProfile.selectedTenant,
-        role: 'admin'
-      }
-    })
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: {
         search: {
@@ -191,13 +160,6 @@ describe.only('Search Results', () => {
   it('should handle client results link when event time is closer to current time', async () => {
     const mockCurrentTime = new Date('2023-08-23T05:00:00Z').getTime()
     jest.spyOn(Date, 'now').mockImplementation(() => mockCurrentTime)
-    userProfile.mockReturnValue({
-      ...defaultUserProfile,
-      selectedTenant: {
-        ...defaultUserProfile.selectedTenant,
-        role: 'admin'
-      }
-    })
     mockGraphqlQuery(dataApiSearchURL, 'Search', {
       data: {
         search: {

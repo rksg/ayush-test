@@ -22,7 +22,7 @@ export const DmzSdLanDetailContent = (props: {
   const { $t } = useIntl()
 
   const sdLanInfo = [{
-    title: $t({ defaultMessage: 'Venue' }),
+    title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
     content: () => ((data.venueId)
       ? <TenantLink to={`/venues/${data.venueId}/venue-details/overview`}>
         {data.venueName}
@@ -32,14 +32,14 @@ export const DmzSdLanDetailContent = (props: {
   }, {
     title: $t({ defaultMessage: 'Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.edgeClusterId}/details/overview`}>
+      <TenantLink to={`devices/edge/cluster/${data.edgeClusterId}/edit/cluster-details`}>
         {data.edgeClusterName}
       </TenantLink>
     )
   }, {
     title: $t({ defaultMessage: 'DMZ Cluster' }),
     content: () => (
-      <TenantLink to={`/devices/edge/${data.guestEdgeClusterId}/details/overview`}>
+      <TenantLink to={`devices/edge/cluster/${data.guestEdgeClusterId}/edit/cluster-details`}>
         {data.guestEdgeClusterName}
       </TenantLink>
     )

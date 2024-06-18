@@ -5,21 +5,27 @@ import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { AnchorContext, Loader }                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import {
   useGetVenueDirectedMulticastQuery,
   useGetVenueTemplateDirectedMulticastQuery,
   useUpdateVenueDirectedMulticastMutation,
   useUpdateVenueTemplateDirectedMulticastMutation
 } from '@acx-ui/rc/services'
-import { VenueDirectedMulticast } from '@acx-ui/rc/utils'
+import { VenueDirectedMulticast, useConfigTemplate } from '@acx-ui/rc/utils'
 
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
-import { VenueEditContext }                                                                from '../../../index'
-import { FieldLabel }                                                                      from '../../styledComponents'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext } from '../../../index'
+import { FieldLabel }       from '../../styledComponents'
 
 export function DirectedMulticast () {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
   const {
     editContextData,
@@ -29,10 +35,11 @@ export function DirectedMulticast () {
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
 
-  const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>(
-    useGetVenueDirectedMulticastQuery,
-    useGetVenueTemplateDirectedMulticastQuery
-  )
+  const directedMulticast = useVenueConfigTemplateQueryFnSwitcher<VenueDirectedMulticast>({
+    useQueryFn: useGetVenueDirectedMulticastQuery,
+    useTemplateQueryFn: useGetVenueTemplateDirectedMulticastQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const [updateVenueDirectedMulticast, { isLoading: isUpdatingVenueDirectedMulticast }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -116,7 +123,8 @@ export function DirectedMulticast () {
 
       await updateVenueDirectedMulticast({
         params: { venueId },
-        payload
+        payload,
+        enableRbac: isUseRbacApi
       }).unwrap()
 
     } catch (error) {

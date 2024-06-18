@@ -1,4 +1,10 @@
-import { crrmText } from './utils'
+import moment from 'moment-timezone'
+
+import { get } from '@acx-ui/config'
+
+import { crrmText, isDataRetained } from './utils'
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 describe('crrmText', () => {
   it('should return correct text for current configuration', () => {
@@ -186,3 +192,15 @@ describe('crrmText', () => {
   })
 })
 
+describe('isDataRetained', () => {
+  beforeEach(() => jest.mocked(get).mockReturnValue('380'))
+  it('should return true', () => {
+    expect(isDataRetained(moment().subtract(100, 'days').toISOString())).toBeTruthy()
+  })
+  it('should return false', () => {
+    expect(isDataRetained(moment().subtract(400, 'days').toISOString())).toBeFalsy()
+  })
+  it('should handle undefined', () => {
+    expect(isDataRetained(undefined)).toBeTruthy()
+  })
+})

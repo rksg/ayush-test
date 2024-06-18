@@ -1,18 +1,17 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                       from '@acx-ui/feature-toggle'
-import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, EdgeServiceStatusLight }                                from '@acx-ui/rc/components'
-import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery } from '@acx-ui/rc/services'
-import { EdgeDhcpHostStatus, LeaseTimeType, ServiceOperation, ServiceType, getServiceDetailsLink }      from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                   from '@acx-ui/react-router-dom'
+import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow, Loader, SummaryCard }            from '@acx-ui/components'
+import { EdgeDhcpLeaseTable, EdgeDhcpPoolTable, EdgeServiceStatusLight, useIsEdgeReady }           from '@acx-ui/rc/components'
+import { useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeListQuery }                     from '@acx-ui/rc/services'
+import { EdgeDhcpHostStatus, LeaseTimeType, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                              from '@acx-ui/react-router-dom'
 
 const EdgeDhcpTab = () => {
 
   const { $t } = useIntl()
   const { venueId } = useParams()
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeReady = useIsEdgeReady()
 
   const edgeDataPayload = {
     filters: { venueId: [venueId] }
@@ -27,23 +26,13 @@ const EdgeDhcpTab = () => {
       })
     }
   )
-  const { dhcpId, isDhcpLoading } = useGetDhcpByEdgeIdQuery(
-    { params: { edgeId: edgeData?.serialNumber } },
-    {
-      skip: !!!edgeData?.serialNumber,
-      selectFromResult: ({ data, isLoading }) => ({
-        dhcpId: data?.id,
-        isDhcpLoading: isLoading
-      })
-    }
-  )
   const getDhcpStatsPayload = {
-    filters: { id: [dhcpId] }
+    filters: { edgeClusterIds: [edgeData?.clusterId] }
   }
   const { dhcpData, isDhcpStatsLoading } = useGetDhcpStatsQuery(
     { payload: getDhcpStatsPayload },
     {
-      skip: !!!dhcpId,
+      skip: !Boolean(edgeData?.clusterId),
       selectFromResult: ({ data, isLoading }) => ({
         dhcpData: data?.data[0],
         isDhcpStatsLoading: isLoading
@@ -138,7 +127,7 @@ const EdgeDhcpTab = () => {
 
   return (
     <Loader states={[{
-      isFetching: isDhcpLoading || isEdgeLoading || isDhcpStatsLoading,
+      isFetching: isEdgeLoading || isDhcpStatsLoading,
       isLoading: false
     }]}>
       <GridRow>

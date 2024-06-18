@@ -1,4 +1,4 @@
-import { Venue, VenueDetail } from '..'
+import { MacAuthMacFormatEnum, Venue, VenueDetail } from '..'
 import {
   GuestNetworkTypeEnum,
   NetworkTypeEnum,
@@ -8,6 +8,7 @@ import { AAAWlanAdvancedCustomization }   from '../models/AAAWlanAdvancedCustomi
 import { DpskWlanAdvancedCustomization }  from '../models/DpskWlanAdvancedCustomization'
 import { GuestPortal }                    from '../models/GuestPortal'
 import { GuestWlanAdvancedCustomization } from '../models/GuestWlanAdvancedCustomization'
+import { NetworkHotspot20Settings }       from '../models/NetworkHotspot20Settings'
 import { NetworkVenue }                   from '../models/NetworkVenue'
 import { OpenWlanAdvancedCustomization }  from '../models/OpenWlanAdvancedCustomization'
 import { PskWlanAdvancedCustomization }   from '../models/PskWlanAdvancedCustomization'
@@ -58,6 +59,11 @@ export interface Network extends BaseNetwork{
   isOweMaster?: boolean
   owePairNetworkId?: string,
   incompatible?: number
+  certificateTemplateId?: string
+}
+
+export interface WifiNetwork extends Network{
+  venueApGroups: VenueApGroup[]
 }
 
 export interface NetworkExtended extends Network {
@@ -129,6 +135,10 @@ export interface NetworkSaveData {
       DpskWlanAdvancedCustomization |
       PskWlanAdvancedCustomization |
       GuestWlanAdvancedCustomization
+    macAddressAuthenticationConfiguration?: {
+      macAddressAuthentication?: boolean
+      macAuthMacFormat?: string
+    }
   };
   wlanSecurity?: WlanSecurityEnum
   dpskWlanSecurity?: WlanSecurityEnum
@@ -144,6 +154,10 @@ export interface NetworkSaveData {
   enableOwe?: boolean
   isDsaeServiceNetwork?: boolean
   dsaeNetworkPairId?: string
+  hotspot20Settings?: NetworkHotspot20Settings
+  useCertificateTemplate?: boolean
+  certificateTemplateId?: string
+  accountingInterimUpdates?: number
 }
 
 export enum MaxRateEnum {
@@ -197,9 +211,21 @@ export interface ApGroupModalState { // subset of ApGroupModalWidgetProps
   venueName?: string
 }
 
+export interface VenueApGroup {
+  venueId: string,
+  isAllApGroups: boolean,
+  apGroupIds: string[]
+}
+
 export type SchedulingModalState = {
   visible: boolean,
   networkVenue?: NetworkVenue,
   venue?: Venue | VenueDetail
   network?: Network
+}
+
+export interface NetworkRadiusSettings {
+  enableAccountingProxy?: boolean
+  enableAuthProxy?: boolean
+  macAuthMacFormat?: MacAuthMacFormatEnum
 }

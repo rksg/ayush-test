@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { policyApi } from '@acx-ui/rc/services'
 import {
@@ -8,8 +9,8 @@ import {
   SyslogUrls,
   SyslogVenue
 } from '@acx-ui/rc/utils'
-import { Provider, store }                                   from '@acx-ui/store'
-import { act, fireEvent,mockServer, render, screen, within } from '@acx-ui/test-utils'
+import { Provider, store }                         from '@acx-ui/store'
+import { act, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import SyslogContext from '../SyslogContext'
 
@@ -103,13 +104,14 @@ describe('SyslogVenueTable', () => {
     const row = screen.getByRole('row', {
       name: /test\-venue2/i
     })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(within(row).getByRole('checkbox'))
     const activateBtn = screen.getByRole('button', { name: 'Activate' })
-    fireEvent.click(activateBtn)
-    fireEvent.click(within(row).getByRole('checkbox'))
+    await userEvent.click(activateBtn)
+    await userEvent.click(within(row).getByRole('checkbox'))
     const deactivateBtn = screen.getByRole('button', { name: 'Deactivate' })
-    fireEvent.click(deactivateBtn)
+    await userEvent.click(deactivateBtn)
 
+    expect(await screen.findAllByText('OFF')).toHaveLength(3)
   })
 
   it('render SyslogVenueTable with maximum venue', async () => {
@@ -135,6 +137,6 @@ describe('SyslogVenueTable', () => {
       }
     )
 
-    await screen.findByText('Activate for Wi-Fi')
+    expect(await screen.findByText('Activate for Wi-Fi')).toBeVisible()
   })
 })

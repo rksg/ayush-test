@@ -5,9 +5,13 @@ import { useIntl }                                                            fr
 
 import { ContentSwitcher, ContentSwitcherProps }                  from '@acx-ui/components'
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { AccessStatus, DeviceTypeEnum, OsVendorEnum }             from '@acx-ui/rc/utils'
-
-import { deviceTypeLabelMapping, osVenderLabelMapping } from '../contentsMap'
+import {
+  AccessStatus,
+  DeviceTypeEnum,
+  deviceTypeLabelMapping,
+  osVenderLabelMapping,
+  OsVendorEnum
+} from '@acx-ui/rc/utils'
 
 import {
   deviceOsVendorMappingTable,

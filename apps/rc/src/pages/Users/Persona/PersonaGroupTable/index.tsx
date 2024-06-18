@@ -1,36 +1,38 @@
-import { useEffect, useState, useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, showToast, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed }                    from '@acx-ui/feature-toggle'
+import { Features }                                          from '@acx-ui/feature-toggle'
 import { DownloadOutlined }                                  from '@acx-ui/icons'
 import {
   DpskPoolLink,
+  IdentityGroupLink,
   MacRegistrationPoolLink,
   NetworkSegmentationLink,
-  IdentityGroupLink,
-  VenueLink,
   PersonaGroupDrawer,
-  usePersonaAsyncHeaders
+  usePersonaAsyncHeaders,
+  useIsEdgeFeatureReady,
+  VenueLink
 } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
   useDeletePersonaGroupMutation,
-  useGetDpskListQuery,
-  useGetNetworkSegmentationGroupListQuery,
+  useGetEnhancedDpskListQuery,
+  useGetNetworkSegmentationViewDataListQuery,
   useGetQueriablePropertyConfigsQuery,
   useLazyDownloadPersonaGroupsQuery,
   useLazyGetDpskQuery,
   useLazyGetMacRegListQuery,
   useLazyGetNetworkSegmentationGroupByIdQuery,
   useLazyVenuesListQuery,
-  useMacRegListsQuery,
+  useSearchMacRegListsQuery,
   useSearchPersonaGroupListQuery
 } from '@acx-ui/rc/services'
 import { FILTER, PersonaGroup, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                   from '@acx-ui/user'
+import { WifiScopes }                                  from '@acx-ui/types'
+import { filterByAccess, hasPermission }               from '@acx-ui/user'
 import { exportMessageMapping }                        from '@acx-ui/utils'
 
 import { IdentityGroupContext } from '..'
@@ -42,6 +44,21 @@ const propertyConfigDefaultPayload = {
   pageSize: 100
 }
 
+const macRegSearchDefaultPayload = {
+  dataOption: 'all',
+  searchCriteriaList: [
+    {
+      filterKey: 'name',
+      operation: 'cn',
+      value: ''
+    }
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC',
+  page: 1,
+  pageSize: 10000
+}
+
 function useColumns (
   macRegistrationPools: Map<string, string>,
   dpskPools: Map<string, string>,
@@ -49,14 +66,22 @@ function useColumns (
   nsgMap: Map<string, string>
 ) {
   const { $t } = useIntl()
-  const networkSegmentationEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
-  const { data: dpskPool } = useGetDpskListQuery({})
-  const { data: macList } = useMacRegListsQuery({
+  const { data: dpskPool } = useGetEnhancedDpskListQuery({
     payload: { sortField: 'name', sortOrder: 'ASC', page: 1, pageSize: 10000 }
   })
-  const { data: nsgList } = useGetNetworkSegmentationGroupListQuery(
-    { params: { page: '1', pageSize: '10000', sort: 'name,asc' } },
+  const { data: macList } = useSearchMacRegListsQuery({ payload: macRegSearchDefaultPayload })
+  const { data: nsgList } = useGetNetworkSegmentationViewDataListQuery(
+    {
+      payload: {
+        page: 1,
+        pageSize: 10000,
+        fields: ['name', 'id'],
+        sortField: 'name',
+        sortOrder: 'ASC'
+      }
+    },
     { skip: !networkSegmentationEnabled }
   )
   const { venueOptions, isVenueOptionsLoading } = useGetQueriablePropertyConfigsQuery({
@@ -91,7 +116,7 @@ function useColumns (
     },
     {
       key: 'propertyId',
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'propertyId',
       sorter: true,
       filterMultiple: false,
@@ -192,6 +217,7 @@ export function PersonaGroupTable () {
     defaultPayload: { keyword: '' },
     pagination: { settingsId }
   })
+  const networkSegmentationEnabled = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   useEffect(() => {
     if (tableQuery.isLoading) return
@@ -231,7 +257,7 @@ export function PersonaGroupTable () {
           })
       }
 
-      if (personalIdentityNetworkId) {
+      if (networkSegmentationEnabled && personalIdentityNetworkId) {
         getNsgById({ params: { tenantId, serviceId: personalIdentityNetworkId } })
           .then(result => {
             if (result.data) {
@@ -273,7 +299,8 @@ export function PersonaGroupTable () {
           fieldName: 'personalIdentityNetworkId',
           fieldText: $t({ defaultMessage: 'Personal Identity Network' })
         },
-        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: 'Venue' }) }
+        // eslint-disable-next-line max-len
+        { fieldName: 'propertyId', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }
       ],
       async () => deletePersonaGroup({ params: { groupId: id }, customHeaders })
         .then(() => {
@@ -288,14 +315,14 @@ export function PersonaGroupTable () {
     )
   }
 
-  const actions: TableProps<PersonaGroup>['actions'] = [
-    {
-      label: $t({ defaultMessage: 'Add Identity Group' }),
-      onClick: () => {
-        setDrawerState({ isEdit: false, visible: true, data: undefined })
-      }
-    }
-  ]
+  const actions: TableProps<PersonaGroup>['actions'] =
+    hasPermission({ scopes: [WifiScopes.CREATE] })
+      ? [{
+        label: $t({ defaultMessage: 'Add Identity Group' }),
+        onClick: () => {
+          setDrawerState({ isEdit: false, visible: true, data: undefined })
+        }
+      }] : []
 
   const rowActions: TableProps<PersonaGroup>['rowActions'] = [
     {
@@ -303,7 +330,8 @@ export function PersonaGroupTable () {
       onClick: ([data], clearSelection) => {
         setDrawerState({ data, isEdit: true, visible: true })
         clearSelection()
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -313,7 +341,8 @@ export function PersonaGroupTable () {
       ),
       onClick: ([selectedRow], clearSelection) => {
         doDelete(selectedRow, clearSelection)
-      }
+      },
+      scopeKey: [WifiScopes.DELETE]
     }
   ]
 
@@ -353,7 +382,10 @@ export function PersonaGroupTable () {
         rowKey='id'
         actions={filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={
+          hasPermission({
+            scopes: [WifiScopes.UPDATE, WifiScopes.DELETE]
+          }) && { type: 'radio' }}
         iconButton={{
           icon: <DownloadOutlined data-testid={'export-persona-group'} />,
           tooltip: $t(exportMessageMapping.EXPORT_TO_CSV),

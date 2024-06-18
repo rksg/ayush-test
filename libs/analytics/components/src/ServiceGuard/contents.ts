@@ -157,11 +157,11 @@ export const messageMapping = {
   TEST_IN_PROGRESS: defineMessage({ defaultMessage: 'Test is in progress' }),
   EDIT_NOT_ALLOWED: defineMessage({ defaultMessage: 'Only the creator of the test is allowed to edit' }),
   DUPLICATE_NAME_NOT_ALLOWED: defineMessage({ defaultMessage: 'Duplicate test name exist' }),
-  TEST_CREATED: defineMessage({ defaultMessage: 'Service Validation test created' }),
-  TEST_UPDATED: defineMessage({ defaultMessage: 'Service Validation test updated' }),
-  TEST_DELETED: defineMessage({ defaultMessage: 'Service Validation test deleted' }),
-  TEST_CLONED: defineMessage({ defaultMessage: 'Service Validation test cloned' }),
-  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Service Validation test running' })
+  TEST_CREATED: defineMessage({ defaultMessage: 'Service Validation test was created' }),
+  TEST_UPDATED: defineMessage({ defaultMessage: 'Service Validation test was updated' }),
+  TEST_DELETED: defineMessage({ defaultMessage: 'Service Validation test was deleted' }),
+  TEST_CLONED: defineMessage({ defaultMessage: 'Service Validation test was cloned' }),
+  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Service Validation test is running' })
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {

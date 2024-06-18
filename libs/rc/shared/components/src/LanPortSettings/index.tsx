@@ -4,7 +4,6 @@ import { FormattedMessage, useIntl }                       from 'react-intl'
 import { cssStr, Tooltip } from '@acx-ui/components'
 import {
   ApLanPortTypeEnum,
-  ApModel,
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
@@ -41,7 +40,7 @@ export function LanPortSettings (props: {
   selectedPortCaps: LanPort,
   setSelectedPortCaps: (data: LanPort) => void,
   selectedModel: VenueLanPorts | WifiApSetting,
-  selectedModelCaps: ApModel | CapabilitiesApModel,
+  selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
   isTrunkPortUntaggedVlanEnabled?: boolean,
@@ -102,7 +101,7 @@ export function LanPortSettings (props: {
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
         <p>You cannot edit LAN Port setting on this device because it has assigned
-          to the venue which already has enabled DHCP service.</p>
+          to the <venueSingular></venueSingular> which already has enabled DHCP service.</p>
       </section>`}
       values={{
         section: (contents) => <Space

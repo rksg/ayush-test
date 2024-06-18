@@ -3,9 +3,10 @@ import '@testing-library/jest-dom'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
-import { switchApi }       from '@acx-ui/rc/services'
-import { SwitchUrlsInfo }  from '@acx-ui/rc/utils'
-import { Provider, store } from '@acx-ui/store'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { switchApi }                          from '@acx-ui/rc/services'
+import { SwitchUrlsInfo, SwitchRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                    from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -41,12 +42,22 @@ const params = {
 }
 
 const editPortVlans = async (
-  inputTagged: string, inputUntagged: string, currentStatus?: string, voiceVlan?: string
+  inputTagged: string, inputUntagged: string,
+  currentStatus?: string, voiceVlan?: string, checkPortsModel?:boolean
 ) => {
   await userEvent.click(await screen.findByRole('button', {
     name: currentStatus !== 'port' ? 'Customize' : 'Edit'
   }))
   const dialog = await screen.findByTestId('select-port-vlans')
+
+  if (checkPortsModel) {
+    await userEvent.click(await within(dialog).findByRole('button', { name: /Add VLAN/i }))
+    const dialogs = await screen.findAllByRole('dialog')
+    const drawer = dialogs[2]
+    expect(await within(drawer).findByText(/Add Model/i)).toBeVisible()
+    expect(within(drawer).queryByText(/Add Ports/i)).toBeNull()
+    await userEvent.click(await within(drawer).findByRole('button', { name: /Cancel/i }))
+  }
 
   if (inputTagged) {
     await userEvent.click(await within(dialog).findByRole('tab', { name: 'Tagged VLANs' }))
@@ -61,7 +72,7 @@ const editPortVlans = async (
   }
 
   if (inputUntagged) {
-    await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLANs' }))
+    await userEvent.click(await screen.findByRole('tab', { name: 'Untagged VLAN' }))
     const untaggedTabPanel = await within(dialog).findByRole('tabpanel', { hidden: false })
     const untaggedInput = await within(untaggedTabPanel).findByTestId('untagged-input')
     fireEvent.change(untaggedInput, { target: { value: inputUntagged } })
@@ -73,10 +84,17 @@ const editPortVlans = async (
 const mockedSavePortsSetting = jest.fn().mockImplementation(() => ({
   unwrap: jest.fn()
 }))
+const mockedCyclePoe = jest.fn().mockImplementation(() => ({
+  unwrap: jest.fn()
+}))
+const mockedAddSwitchVlan = jest.fn()
 jest.mock('@acx-ui/rc/services', () => ({
   ...jest.requireActual('@acx-ui/rc/services'),
   useSavePortsSettingMutation: () => [
     mockedSavePortsSetting, { reset: jest.fn() }
+  ],
+  useCyclePoeMutation: () => [
+    mockedCyclePoe, { reset: jest.fn() }
   ]
 }))
 
@@ -109,7 +127,12 @@ const initPortValue = {
 
 const transformSubmitValue = (updateValue?: object) => {
   return {
-    params: { tenantId: 'tenant-id' },
+    enableRbac: false,
+    option: { skip: false },
+    params: {
+      tenantId: 'tenant-id',
+      venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+    },
     payload: [{
       switchId: 'c0:c5:20:aa:32:79',
       port: {
@@ -124,10 +147,15 @@ describe('EditPortDrawer', () => {
   beforeEach(() => {
     store.dispatch(switchApi.util.resetApiState())
     mockedSavePortsSetting.mockClear()
+    mockedCyclePoe.mockClear()
+    mockedAddSwitchVlan.mockClear()
     setDrawerVisible.mockClear()
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
         (_, res, ctx) => res(ctx.json(switchDetailHeader))
+      ),
+      rest.get(SwitchUrlsInfo.getSwitch.url,
+        (_, res, ctx) => res(ctx.json({ id: 'c0:c5:20:aa:32:79' }))
       ),
       rest.post(SwitchUrlsInfo.getDefaultVlan.url,
         (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 1)))
@@ -169,7 +197,17 @@ describe('EditPortDrawer', () => {
         (_, res, ctx) => res(ctx.json(switchesVlan))
       ),
       rest.put(SwitchUrlsInfo.savePortsSetting.url,
-        (_, res, ctx) => res(ctx.json({})))
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(SwitchUrlsInfo.portsPowerCycle.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(SwitchRbacUrlsInfo.addSwitchesVlans.url,
+        (_, res, ctx) => {
+          mockedAddSwitchVlan()
+          return res(ctx.json({}))
+        }
+      )
     )
   })
   afterEach(() => {
@@ -178,6 +216,7 @@ describe('EditPortDrawer', () => {
 
   describe('single edit', () => {
     it('should apply edit data correctly', async () => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
       render(<Provider>
         <EditPortDrawer
           visible={true}
@@ -219,6 +258,35 @@ describe('EditPortDrawer', () => {
       )
     })
 
+    it('should cycle PoE correctly', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_CYCLE_POE)
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Selected Port')
+
+      const poeEnableButton = await screen.findAllByTestId('poeEnable')
+      expect(poeEnableButton[0]).toBeChecked()
+
+      await userEvent.click(await screen.findByRole('button', { name: 'Cycle PoE' }))
+      expect(mockedCyclePoe).toHaveBeenCalled()
+    })
+
     it('should customized VLAN correctly', async () => {
       render(<Provider>
         <EditPortDrawer
@@ -243,7 +311,7 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('combobox', { name: /PoE Class/ }))
       await userEvent.click(await screen.findByText('2 (802.3af 7.0 W)'))
       expect(await screen.findByTestId('poe-budget-input')).toBeDisabled()
-      await editPortVlans('VLAN-ID-66', 'VLAN-ID-', 'port', 'voiceVlan')
+      await editPortVlans('VLAN-ID-66', 'VLAN-ID-', 'port', 'voiceVlan', true)
 
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith(
@@ -415,7 +483,12 @@ describe('EditPortDrawer', () => {
       await editPortVlans('VLAN-ID-66', '', 'venue')
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: '58:fb:96:0e:82:8a',
           port: {
@@ -469,9 +542,57 @@ describe('EditPortDrawer', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
       expect(setDrawerVisible).toBeCalledTimes(1)
     })
+
+    it('should support switch level vlan correctly', async () => {
+      mockServer.use(
+        rest.post(SwitchUrlsInfo.getDefaultVlan.url,
+          (_, res, ctx) => res(ctx.json(defaultVlan.slice(2, 3)))
+        )
+      )
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_LEVEL_VLAN)
+      render(<Provider>
+        <EditPortDrawer
+          visible={true}
+          setDrawerVisible={jest.fn()}
+          isCloudPort={false}
+          isMultipleEdit={selectedPorts?.slice(0, 1)?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts?.slice(0, 1)}
+        />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/overview/ports'
+        }
+      })
+
+      await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+      await screen.findByText('Edit Port')
+      await screen.findByText('Selected Port')
+
+      // Edit Port VLANs - switch vlan
+      await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
+      const dialog = await screen.findByTestId('select-port-vlans')
+      await userEvent.click(await within(dialog).findByRole('button', { name: /Add VLAN/i }))
+
+      const dialogs = await screen.findAllByRole('dialog')
+      const drawer = dialogs[2]
+      expect(within(drawer).queryByText(/Add Ports/i)).toBeNull()
+      expect(within(drawer).queryByText(/Add Model/i)).toBeNull()
+      await userEvent.type(await within(drawer).findByLabelText('VLAN ID'), '777')
+      await userEvent.type(await within(drawer).findByLabelText('VLAN Name'), 'vlan777')
+
+      await userEvent.click(await within(drawer).findByRole('button', { name: 'Add' }))
+      expect(mockedAddSwitchVlan).toBeCalled()
+      expect(await within(dialog).findByText(/VLAN-ID-777 \(vlan777\)/)).toBeVisible()
+
+    })
   })
 
   describe('multiple edit', () => {
+    beforeEach(() => {
+      jest.mocked(useIsSplitOn).mockReturnValue(false)
+    })
     it('should render consistent LLDP data correctly', async () => {
       mockServer.use(
         rest.post(SwitchUrlsInfo.getPortsSetting.url,
@@ -511,7 +632,7 @@ describe('EditPortDrawer', () => {
     it('should apply edit data correctly', async () => {
       mockServer.use(
         rest.post(SwitchUrlsInfo.getDefaultVlan.url,
-          (_, res, ctx) => res(ctx.json(defaultVlan))
+          (_, res, ctx) => res(ctx.json(defaultVlan.slice(0, 2)))
         )
       )
       render(<Provider>
@@ -540,19 +661,25 @@ describe('EditPortDrawer', () => {
       // Edit Port VLANs
       await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
       const dialog = await screen.findByTestId('select-port-vlans')
-      const taggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
-      await userEvent.click(await within(taggedTabPanel).findByText(/VLAN-ID-6/))
 
-      await userEvent.click(await within(dialog).findByRole('tab', { name: 'Untagged VLANs' }))
       const untaggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
       await userEvent.click(await within(untaggedTabPanel).findByText(/VLAN-ID-2/))
+
+      await userEvent.click(await screen.findByText('Tagged VLAN'))
+      const taggedTabPanel = await screen.findByRole('tabpanel', { hidden: false })
+      await userEvent.click(await within(taggedTabPanel).findByText(/VLAN-ID-6/))
 
       await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
 
       await userEvent.click(await screen.findByRole('button', { name: 'Use Venue settings' }))
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -805,7 +932,12 @@ describe('EditPortDrawer', () => {
       await waitFor(() => expect(dialog).not.toBeVisible())
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {
@@ -1065,7 +1197,12 @@ describe('EditPortDrawer', () => {
       expect(await screen.findByText('Applied at venue')).toBeVisible()
       await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
       expect(mockedSavePortsSetting).toHaveBeenLastCalledWith({
-        params: { tenantId: 'tenant-id' },
+        enableRbac: false,
+        option: { skip: false },
+        params: {
+          tenantId: 'tenant-id',
+          venueId: 'a98653366d2240b9ae370e48fab3a9a1'
+        },
         payload: [{
           switchId: 'c0:c5:20:aa:32:79',
           port: {

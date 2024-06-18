@@ -1,3 +1,4 @@
+import { useIsSplitOn }                                                                                                                                      from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum, DeviceStates, DeviceTypes, NetworkDevice, NetworkDevicePosition, NetworkDeviceType, ShowTopologyFloorplanOn, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider  }                                                                                                                                         from '@acx-ui/store'
 import { render }                                                                                                                                            from '@acx-ui/test-utils'
@@ -47,6 +48,7 @@ describe('TopologyFloorPlanWidget', () => {
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render floorplan topology widget under AP overview', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     const { asFragment } = render(<Provider><TopologyFloorPlanWidget
       showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
       currentDevice={currentApDevice}
@@ -57,6 +59,18 @@ describe('TopologyFloorPlanWidget', () => {
       route: { params: { venueId: '7231da344778480d88f37f0cca1c534f' } }
     })
     expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render next gen floorplan topology widget under AP overview', () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    render(<Provider><TopologyFloorPlanWidget
+      showTopologyFloorplanOn={ShowTopologyFloorplanOn.AP_OVERVIEW}
+      currentDevice={currentApDevice}
+      venueId='7231da344778480d88f37f0cca1c534f'
+      devicePosition={{ floorplanId: '',
+        xPercent: 0,
+        yPercent: 0 } as NetworkDevicePosition}/></Provider>,{
+      route: { params: { venueId: '7231da344778480d88f37f0cca1c534f' } }
+    })
   })
 
   it('should render floorplan topology widget under Switch overview', () => {

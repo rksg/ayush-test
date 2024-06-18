@@ -22,50 +22,46 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/api/viewmodel/:tenantId/client/:clientId'
   },
-  deleteGuests: {
+  deleteGuest: {
     method: 'delete',
-    url: '/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    url: '/wifiNetworks/:networkId/guestUsers/:guestId',
     newApi: true
   },
   importGuestPass: {
     method: 'post',
-    url: '/networks/:networkId/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/import',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
   enableGuests: {
     method: 'PATCH',
-    url: '/guestUsers/:guestId',
-    oldMethod: 'post',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/enable',
+    url: '/wifiNetworks/:networkId/guestUsers/:guestId',
     newApi: true
   },
   disableGuests: {
     method: 'PATCH',
-    url: '/guestUsers/:guestId',
-    oldMethod: 'post',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/disable',
+    url: '/wifiNetworks/:networkId/guestUsers/:guestId',
     newApi: true
   },
   getGuests: {
     method: 'post',
-    url: '/guestUsers/query/csvFiles',
-    oldUrl: '/api/viewmodel/tenant/:tenantId/guest/csv-file',
+    url: '/guestUsers/query',
     newApi: true
   },
   generateGuestPassword: {
     method: 'PATCH',
-    url: '/guestUsers/:guestId',
-    oldMethod: 'post',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user/:guestId/regenerate',
+    url: '/wifiNetworks/:networkId/guestUsers/:guestId',
     newApi: true
   },
   disconnectClient: {
     method: 'PATCH',
-    url: '/aps/clients',
+    url: '/venues/:venueId/aps/:serialNumber/clients/:clientMacAddress',
     oldMethod: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/disconnect-client',
+    newApi: true
+  },
+  getClientUEDetail: {
+    method: 'GET',
+    url: '/clients/:clientMacAddress',
     newApi: true
   }
 }

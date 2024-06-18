@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -8,7 +10,7 @@ import { mockServer, render, screen }        from '@acx-ui/test-utils'
 
 import EdgeDetails from '.'
 
-const { mockEdgeList, mockEdgeServiceList } = EdgeGeneralFixtures
+const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
@@ -34,6 +36,10 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('./EdgeDetailsDataProvider', () => ({
+  EdgeDetailsDataProvider: ({ children }: { children: ReactNode }) =>
+    <div data-testid='EdgeDetailsDataProvider' children={children} />
+}))
 
 describe('EdgeDetails', () => {
   const currentEdge = mockEdgeList.data[0]
@@ -50,11 +56,15 @@ describe('EdgeDetails', () => {
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
-        (req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
+        (_req, res, ctx) => res(ctx.json({ data: [currentEdge] }))
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+        (_req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (_req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
@@ -68,6 +78,7 @@ describe('EdgeDetails', () => {
 
     const tab = await screen.findByText('Overview')
     expect(tab.getAttribute('aria-selected')).toBe('true')
+    expect(screen.getByTestId('EdgeDetailsDataProvider')).toBeVisible()
   })
 
   it('should display troubleshooting tab correctly', async () => {

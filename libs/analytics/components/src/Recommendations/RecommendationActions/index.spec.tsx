@@ -1,11 +1,21 @@
 import userEvent       from '@testing-library/user-event'
 import { MomentInput } from 'moment-timezone'
 
-import { Provider, recommendationUrl }                          from '@acx-ui/store'
-import { mockGraphqlMutation, render, screen, cleanup, within } from '@acx-ui/test-utils'
+import { get }                              from '@acx-ui/config'
+import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useVenueRadioActiveNetworksQuery } from '@acx-ui/rc/services'
+import { Provider, recommendationUrl }      from '@acx-ui/store'
+import {
+  mockGraphqlMutation,
+  render,
+  screen,
+  cleanup,
+  within,
+  waitFor
+}                                                               from '@acx-ui/test-utils'
 
-import { recommendationListResult }               from '../__tests__/fixtures'
-import { Recommendation, RecommendationListItem } from '../services'
+import { recommendationListResult }                                                  from '../__tests__/fixtures'
+import { Recommendation, RecommendationListItem, useScheduleRecommendationMutation } from '../services'
 
 import { RecommendationActions, isCrrmOptimizationMatched } from '.'
 
@@ -26,6 +36,46 @@ const mockedCrrm = {
   statusTrail: [{ status: 'new' }]
 }
 
+jest.mock('../services', () => ({
+
+  ...jest.requireActual<typeof import('../services')>('../services'),
+  useScheduleRecommendationMutation: jest.fn().mockReturnValue([jest.fn()]),
+  useRecommendationWlansQuery: jest.fn().mockReturnValue({ data: [{
+    name: 'n1',
+    ssid: 's1'
+  }, {
+    name: 'n2',
+    ssid: 's2'
+  }, {
+    name: 'n3',
+    ssid: 's3'
+  }] })
+}))
+jest.mock('@acx-ui/rc/utils', () => ({
+  RadioTypeEnum: {
+    _2_4_GHz: '2.4-GHz',
+    _5_GHz: '5-GHz',
+    _6_GHz: '6-GHz'
+  }
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  useVenueRadioActiveNetworksQuery: jest.fn().mockReturnValue({ data: [{
+    id: 'i4',
+    name: 'n4',
+    ssid: 's4'
+  }, {
+    id: 'i5',
+    name: 'n5',
+    ssid: 's5'
+  }, {
+    id: 'i6',
+    name: 'n6',
+    ssid: 's6'
+  }] })
+}))
+
+jest.mock('@acx-ui/config')
 jest.mock('moment-timezone', () => {
   const moment = jest.requireActual<typeof import('moment-timezone')>('moment-timezone')
   return {
@@ -40,6 +90,7 @@ jest.mock('moment-timezone', () => {
 describe('RecommendationActions', () => {
   afterEach(() => {
     cleanup()
+    jest.mocked(get).mockReturnValue('')
     jest.clearAllMocks()
   })
   it('should render active status icons correctly', async () => {
@@ -185,6 +236,169 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByText('Apply'))[0])
     expect(inputs[0]).toHaveValue('2023-07-15')
   })
+  it('allows wlans selection for airflexai in R1 without saved wlans', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g'
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByRole('combobox'))
+    await user.click(await screen.findByText('n4'))
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: false,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Apply',
+      wlans: [{ name: 'i5', ssid: 's5' },{ name: 'i6', ssid: 's6' }]
+    })
+  })
+  it('allows wlans selection for airflexai in R1', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByRole('combobox'))
+    await user.click(await screen.findByText('n4'))
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: false,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Apply',
+      wlans: [{ name: 'i5', ssid: 's5' }, { name: 'i6', ssid: 's6' }]
+    })
+  })
+  it('hides wlans selection for airflexai in R1 for non-new', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        status: 'Applied',
+        statusEnum: 'applied' as 'applied',
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    expect(screen.queryByText('Networks')).toBeNull()
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByTestId('Reload'))
+    await user.click(await screen.findByRole('button', { name: 'Apply' }))
+    await waitFor(() => expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: false,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Revert'
+    }))
+  })
+  it('allows wlans selection for airflexai in RAI', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    jest.mocked(get).mockReturnValue('true')
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: true,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Apply',
+      wlans: [{ name: 'n1', ssid: 's1' }]
+    })
+  })
+  it('allows wlans selection for airflexai in RAI for non-new', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    jest.mocked(get).mockReturnValue('true')
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        status: 'Applied',
+        statusEnum: 'applied' as 'applied',
+        code: 'c-probeflex-5g',
+        metadata: {
+          wlans: [{ name: 'n1', ssid: 's1' }]
+        }
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    expect(screen.queryByText('Networks')).toBeNull()
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click(await screen.findByTestId('Reload'))
+    await user.click((await screen.findAllByText('Apply'))[0])
+    await waitFor(() => expect(schedule).toHaveBeenCalledWith({
+      id: '11',
+      isRecommendationRevertEnabled: true,
+      scheduledAt: '2023-07-15T14:45:00.000Z',
+      type: 'Revert'
+    }))
+  })
+  it('handles empty wlans response', async () => {
+    const schedule = jest.fn()
+    jest.mocked(useScheduleRecommendationMutation).mockReturnValue([schedule])
+    jest.mocked(useVenueRadioActiveNetworksQuery).mockReturnValue({})
+    const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
+    render(
+      <RecommendationActions recommendation={{
+        ...mockedCrrm,
+        code: 'c-probeflex-5g'
+      } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    const user = userEvent.setup()
+    const inputs = await screen.findAllByPlaceholderText('Select date')
+    await user.click(inputs[0])
+    await user.click((await screen.findAllByText('Apply'))[0])
+    expect(schedule).not.toHaveBeenCalled()
+  })
   it('should handle non-same day apply mutation correctly', async () => {
     const resp = { schedule: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'ScheduleRecommendation', { data: resp })
@@ -255,6 +469,76 @@ describe('RecommendationActions', () => {
       expect(input).toBeUndefined()
     })
   })
+  describe('should allow revert scheduling based on regular/continuous recommendation', () => {
+    it('applyscheduled with regular recommendation', async () => {
+      const recommendation = { ...mockedCrrm,
+        statusEnum: 'applyscheduled', code: 'c-txpower-same' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(1)
+    })
+    it('1st applyscheduled with continuous recommendation', async () => {
+      const recommendation = {
+        ...mockedCrrm, statusEnum: 'applyscheduled' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(1)
+    })
+    it('2st applyscheduled with continuous recommendation', async () => {
+      const recommendation = { ...mockedCrrm,
+        statusEnum: 'applyscheduled',
+        statusTrail: [
+          { status: 'new' },
+          { status: 'applyscheduled' },
+          { status: 'applyscheduleinprogress' },
+          { status: 'applied' },
+          { status: 'applyscheduled' }
+        ]
+      } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(1)
+    })
+    it('applyfailed with regular recommendation', async () => {
+      const recommendation = { ...mockedCrrm,
+        statusEnum: 'applyfailed', code: 'c-txpower-same' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(0)
+    })
+    it('applyfailed with continuous recommendation', async () => {
+      const recommendation = {
+        ...mockedCrrm, statusEnum: 'applyfailed' } as unknown as RecommendationListItem
+      const div = document.createElement('div')
+      const { container } = render(
+        <RecommendationActions {...{ recommendation }} />,
+        { wrapper: Provider, container: div }
+      )
+      const inputs = await within(container).findAllByPlaceholderText('Select date')
+      const input = inputs.filter(input => input.getAttribute('disabled') === null)
+      expect(input).toHaveLength(0)
+    })
+  })
   it('should handle cancel mutation correctly', async () => {
     const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
     mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
@@ -265,6 +549,21 @@ describe('RecommendationActions', () => {
     )
     const user = userEvent.setup()
     await user.click(screen.getByTestId('CancelCircleOutlined'))
+    expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
+  })
+  it('should render cancel text correctly', async () => {
+    const resp = { cancel: { success: true, errorMsg: '' , errorCode: '' } }
+    mockGraphqlMutation(recommendationUrl, 'CancelRecommendation', { data: resp })
+    render(
+      <RecommendationActions
+        showTextOnly
+        recommendation={
+        { ...mockedCrrm, statusEnum: 'applyscheduled' } as unknown as RecommendationListItem} />,
+      { wrapper: Provider }
+    )
+    expect(await screen.findByText('Cancel')).toBeVisible()
+    const user = userEvent.setup()
+    await user.click(await screen.findByText('Cancel'))
     expect(await screen.findAllByPlaceholderText('Select date')).toHaveLength(2)
   })
   it('should show toast if scheduled time is before buffer', async () => {
@@ -287,6 +586,72 @@ describe('RecommendationActions', () => {
     await user.click((await screen.findAllByText('Apply'))[0])
     expect(await screen.findByText('Scheduled time cannot be before 07/15/2023 14:15'))
       .toBeVisible()
+  })
+  describe('isRecommendationRevertEnable', () => {
+    function doTests () {
+      it('does not allow scheduling', async () => {
+        [
+          'beforeapplyinterrupted',
+          'afterapplyinterrupted',
+          'reverted',
+          'applyscheduleinprogress',
+          'revertscheduleinprogress'
+        ].forEach(async (statusEnum) => {
+          const recommendation = { ...mockedCrrm, statusEnum } as unknown as RecommendationListItem
+          const div = document.createElement('div')
+          const { container } = render(
+            <RecommendationActions {...{ recommendation }} />,
+            { wrapper: Provider, container: div }
+          )
+          const inputs = await within(container).findAllByPlaceholderText('Select date')
+          const input = inputs.find(input => input.getAttribute('disabled') === null)
+          expect(input).toBeUndefined()
+        })
+      })
+      it('2st applyscheduled with continuous recommendation', async () => {
+        const recommendation = { ...mockedCrrm,
+          statusEnum: 'applyscheduled',
+          statusTrail: [
+            { status: 'new' },
+            { status: 'applyscheduled' },
+            { status: 'applyscheduleinprogress' },
+            { status: 'applied' },
+            { status: 'applyscheduled' }
+          ]
+        } as unknown as RecommendationListItem
+        const div = document.createElement('div')
+        const { container } = render(
+          <RecommendationActions {...{ recommendation }} />,
+          { wrapper: Provider, container: div }
+        )
+        const inputs = await within(container).findAllByPlaceholderText('Select date')
+        const input = inputs.filter(input => input.getAttribute('disabled') === null)
+        expect(input).toHaveLength(2)
+      })
+      it('applyfailed with continuous recommendation', async () => {
+        const recommendation = {
+          ...mockedCrrm, statusEnum: 'applyfailed' } as unknown as RecommendationListItem
+        const div = document.createElement('div')
+        const { container } = render(
+          <RecommendationActions {...{ recommendation }} />,
+          { wrapper: Provider, container: div }
+        )
+        const inputs = await within(container).findAllByPlaceholderText('Select date')
+        const input = inputs.filter(input => input.getAttribute('disabled') === null)
+        expect(input).toHaveLength(1)
+      })
+    }
+    describe('R1', () => {
+      beforeEach(() => jest.mocked(useIsSplitOn).mockReturnValue(true))
+      doTests()
+    })
+    describe('SA', () => {
+      beforeEach(() => {
+        jest.mocked(useIsSplitOn).mockReturnValue(false)
+        jest.mocked(get).mockReturnValue('true')
+      })
+      doTests()
+    })
   })
 })
 

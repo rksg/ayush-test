@@ -11,7 +11,8 @@ import { AccessControlUrls }                     from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
-import { avcApp, avcCat, queryApplication } from '../__tests__/fixtures'
+import { enhancedApplicationPolicyListResponse } from '../../AccessControl/__tests__/fixtures'
+import { avcApp, avcCat }                        from '../__tests__/fixtures'
 
 import { ApplicationDrawer } from './index'
 
@@ -67,27 +68,15 @@ const mockedUpdateApplication = jest.fn()
 describe('ApplicationRuleContent Component', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
-        AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ))
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
+      rest.post(AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(ctx.json(applicationResponse))),
+      rest.get(AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(ctx.json(avcCat))),
+      rest.get(AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(ctx.json(avcApp)))
+    )
   })
 
   it('Render ApplicationDrawer component successfully for access control part', async () => {
@@ -253,15 +242,17 @@ describe('ApplicationRuleContent Component', () => {
       }
     )
 
-    await screen.findByText('app1')
+    const application = enhancedApplicationPolicyListResponse.data
 
-    expect(await screen.findByText('app1')).toBeInTheDocument()
+    await screen.findByText(application[0].name)
 
-    await screen.findByRole('option', { name: 'app1' })
+    expect(await screen.findByText(application[0].name)).toBeInTheDocument()
+
+    await screen.findByRole('option', { name: application[0].name })
 
     await userEvent.selectOptions(
       screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'app1' })
+      screen.getByRole('option', { name: application[0].name })
     )
 
     await userEvent.click(screen.getByText(/edit details/i))

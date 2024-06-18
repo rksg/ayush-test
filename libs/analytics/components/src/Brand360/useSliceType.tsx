@@ -1,20 +1,19 @@
 import { useState } from 'react'
 
-import { Menu, Space }                               from 'antd'
-import { useIntl, defineMessage, MessageDescriptor } from 'react-intl'
+import { Menu, Space } from 'antd'
 
 import { Dropdown, Button, CaretDownSolidIcon } from '@acx-ui/components'
 
 export type SliceType = 'property' | 'lsp'
-type Slices = {
-  [type in SliceType]?: MessageDescriptor;
+
+interface UseSliceTypeProps {
+  isLSP: boolean
+  lsp: string
+  property: string
 }
-const slices: Slices = {
-  lsp: defineMessage({ defaultMessage: 'LSP' }),
-  property: defineMessage({ defaultMessage: 'Property' })
-}
-export const useSliceType = ({ isLSP }: { isLSP: boolean }) => {
-  const { $t } = useIntl()
+
+export const useSliceType = ({ isLSP, lsp, property }: UseSliceTypeProps) => {
+  const slices = { lsp, property }
   const [sliceType, setSliceType] = useState<SliceType>(isLSP ? 'property' : 'lsp')
   return {
     sliceType,
@@ -23,10 +22,10 @@ export const useSliceType = ({ isLSP }: { isLSP: boolean }) => {
       overlay={
         <Menu
           onClick={e => setSliceType(e.key as SliceType)}
-          items={Object.entries(slices).map(([key, label]) => ({ key, label: $t(label) }))}
+          items={Object.entries(slices).map(([key, label]) => ({ key, label }))}
         />
       }>
-      {() => <Button><Space>{$t(slices[sliceType]!)}<CaretDownSolidIcon /></Space></Button>}
+      {() => <Button><Space>{slices[sliceType]}<CaretDownSolidIcon /></Space></Button>}
     </Dropdown>
   }
 }

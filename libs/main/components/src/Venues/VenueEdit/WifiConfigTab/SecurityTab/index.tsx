@@ -1,23 +1,51 @@
-import React, { ReactNode, useContext, useEffect, useRef, useState, CSSProperties } from 'react'
+import React, { CSSProperties, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 
-import { Form, FormItemProps, InputNumber, Select, Space } from 'antd'
-import _                                                   from 'lodash'
-import { FormattedMessage, useIntl }                       from 'react-intl'
+import { Form, FormItemProps, InputNumber, Select, Space, Switch } from 'antd'
+import { isEmpty }                                                 from 'lodash'
+import { FormattedMessage, useIntl }                               from 'react-intl'
+import styled                                                      from 'styled-components'
 
-import { Button, Fieldset, Loader, StepsFormLegacy, StepsFormLegacyInstance, Tooltip } from '@acx-ui/components'
-import { RogueApModal, usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
 import {
+  Button,
+  Fieldset,
+  Loader,
+  showActionModal,
+  StepsFormLegacy,
+  StepsFormLegacyInstance,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { RogueApModal, useIsConfigTemplateEnabledByType, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
+import {
+  useEnhancedRoguePoliciesQuery,
   useGetDenialOfServiceProtectionQuery,
-  useUpdateDenialOfServiceProtectionMutation,
+  useGetRoguePolicyTemplateListQuery,
+  useGetVenueApEnhancedKeyQuery,
   useGetVenueRogueApQuery,
-  useUpdateVenueRogueApMutation, useGetRoguePolicyListQuery,
-  useGetVenueTemplateDoSProtectionQuery, useUpdateVenueTemplateDoSProtectionMutation
+  useGetVenueRogueApTemplateQuery,
+  useGetVenueTemplateDoSProtectionQuery,
+  useUpdateDenialOfServiceProtectionMutation,
+  useUpdateVenueApEnhancedKeyMutation,
+  useUpdateVenueRogueApMutation,
+  useUpdateVenueRogueApTemplateMutation,
+  useUpdateVenueTemplateDoSProtectionMutation
 } from '@acx-ui/rc/services'
-import { VenueDosProtection, VenueMessages, redirectPreviousPage, useConfigTemplate } from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                                                     from '@acx-ui/react-router-dom'
+import {
+  ConfigTemplateType,
+  redirectPreviousPage,
+  useConfigTemplate,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher,
+  VenueDosProtection,
+  VenueMessages
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext }                                                                from '../..'
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }               from '../..'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../venueConfigTemplateApiSwitcher'
 
 import RogueApDrawer from './RogueApDrawer'
 
@@ -28,7 +56,8 @@ export interface SecuritySetting {
   failThreshold: number,
   rogueApEnabled: boolean,
   reportThreshold: number,
-  roguePolicyId: string
+  roguePolicyId: string,
+  tlsEnhancedKeyEnabled: boolean
 }
 
 export interface SecuritySettingContext {
@@ -38,20 +67,35 @@ export interface SecuritySettingContext {
 
 const { Option } = Select
 
+const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
+const DEFAULT_PROFILE_NAME = 'Default profile'
+
+const DEFAULT_OPTIONS = [{
+  id: DEFAULT_POLICY_ID,
+  name: DEFAULT_PROFILE_NAME
+}]
+
+const DEFAULT_PAYLOAD = {
+  searchString: '',
+  fields: [
+    'id',
+    'name'
+  ],
+  page: 1, pageSize: 1000
+}
+
 export function SecurityTab () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
   const { isTemplate } = useConfigTemplate()
+  // eslint-disable-next-line max-len
+  const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
+  const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
-  const DEFAULT_POLICY_ID = 'c1fe63007a5d4a71858d487d066eee6d'
-  const DEFAULT_PROFILE_NAME = 'Default profile'
-
-  const DEFAULT_OPTIONS = [{
-    id: DEFAULT_POLICY_ID,
-    name: DEFAULT_PROFILE_NAME
-  }]
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
   const formRef = useRef<StepsFormLegacyInstance>()
   const {
@@ -67,41 +111,68 @@ export function SecurityTab () {
       useUpdateVenueTemplateDoSProtectionMutation
     )
 
-  const [updateVenueRogueAp, {
-    isLoading: isUpdatingVenueRogueAp }] = useUpdateVenueRogueApMutation()
+  // eslint-disable-next-line max-len
+  const [updateVenueRogueAp, { isLoading: isUpdatingVenueRogueAp }] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVenueRogueApMutation,
+    useTemplateMutationFn: useUpdateVenueRogueApTemplateMutation
+  })
 
-  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>(
-    useGetDenialOfServiceProtectionQuery,
-    useGetVenueTemplateDoSProtectionQuery
-  )
+  const { data: dosProctectionData } = useVenueConfigTemplateQueryFnSwitcher<VenueDosProtection>({
+    useQueryFn: useGetDenialOfServiceProtectionQuery,
+    useTemplateQueryFn: useGetVenueTemplateDoSProtectionQuery,
+    enableRbac: isUseRbacApi
+  })
 
-  const { data: venueRogueApData } = useGetVenueRogueApQuery({ params }, { skip: isTemplate })
+  const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVenueRogueApQuery,
+    useTemplateQueryFn: useGetVenueRogueApTemplateQuery,
+    enableRbac
+  })
+
+  // eslint-disable-next-line max-len
+  const useGetRoguePolicyInstances = (policyId: string): { selectOptions: JSX.Element[], selected: { id: string, name: string } | undefined } => {
+    const { data } = useConfigTemplateQueryFnSwitcher({
+      useQueryFn: useEnhancedRoguePoliciesQuery,
+      useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
+      payload: DEFAULT_PAYLOAD,
+      enableRbac
+    })
+
+    if (data?.totalCount === 0) {
+      return {
+        selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
+        selected: DEFAULT_OPTIONS.find((item) =>
+          item.id === DEFAULT_POLICY_ID
+        )
+      }
+    }
+    return {
+      selectOptions: data?.data.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
+      selected: data?.data.find((item) =>
+        item.id === policyId
+      )
+    }
+  }
+
+  const [updateVenueApEnhancedKey, {
+    isLoading: isUpdatingVenueApEnhancedKey }] = useUpdateVenueApEnhancedKeyMutation()
+  // eslint-disable-next-line max-len
+  const { data: venueApEnhancedKeyData } = useGetVenueApEnhancedKeyQuery({ params }, { skip: isTemplate || !supportTlsKeyEnhance })
 
   const [roguePolicyIdValue, setRoguePolicyIdValue] = useState('')
   const [triggerDoSProtection, setTriggerDoSProtection] = useState(false)
   const [triggerRogueAPDetection, setTriggerRogueAPDetection] = useState(false)
   const [rogueDrawerVisible, setRogueDrawerVisible] = useState(false)
+  const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
+  const [triggerTlsEnhancedKey, setTriggerTlsEnhancedKey] = useState(false)
 
-  const { selectOptions, selected } = useGetRoguePolicyListQuery({ params },{
-    selectFromResult ({ data }) {
-      if (data?.length === 0) {
-        return {
-          selectOptions: DEFAULT_OPTIONS.map(item => <Option key={item.id}>{item.name}</Option>),
-          selected: DEFAULT_OPTIONS.find((item) =>
-            item.id === DEFAULT_POLICY_ID
-          )
-        }
-      }
-      return {
-        selectOptions: data?.map(item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        selected: data?.find((item) => item.id === formRef.current?.getFieldValue('roguePolicyId'))
-      }
-    }
-  })
+  const { selectOptions, selected } = useGetRoguePolicyInstances(
+    formRef.current?.getFieldValue('roguePolicyId')
+  )
 
   useEffect(() => {
     if (selectOptions.length > 0) {
-      if (_.isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
+      if (isEmpty(formRef.current?.getFieldValue('roguePolicyId'))){
         // eslint-disable-next-line max-len
         const defaultProfile = selectOptions.find(option => option.props.children === DEFAULT_PROFILE_NAME)
         formRef.current?.setFieldValue('roguePolicyId', defaultProfile?.key)
@@ -137,6 +208,15 @@ export function SecurityTab () {
     }
   }, [venueRogueApData])
 
+  useEffect(() => {
+    if (!venueApEnhancedKeyData) return
+
+    formRef?.current?.setFieldsValue({
+      tlsEnhancedKeyEnabled: venueApEnhancedKeyData.tlsKeyEnhancedModeEnabled
+    })
+  }, [venueApEnhancedKeyData])
+
+
   const handleUpdateSecuritySettings = async (data?: SecuritySetting) => {
     try {
       if(triggerDoSProtection){
@@ -146,7 +226,11 @@ export function SecurityTab () {
           checkPeriod: data?.checkPeriod,
           failThreshold: data?.failThreshold
         }
-        await updateDenialOfServiceProtection({ params, payload: dosProtectionPayload })
+        await updateDenialOfServiceProtection({
+          params,
+          payload: dosProtectionPayload,
+          enableRbac: isUseRbacApi
+        })
         setTriggerDoSProtection(false)
       }
 
@@ -154,10 +238,16 @@ export function SecurityTab () {
         const rogueApPayload = {
           enabled: data?.rogueApEnabled,
           reportThreshold: data?.reportThreshold,
-          roguePolicyId: data?.roguePolicyId
+          roguePolicyId: data?.roguePolicyId,
+          currentRoguePolicyId: venueRogueApData?.roguePolicyId,
+          currentReportThreshold: venueRogueApData?.reportThreshold
         }
-        await updateVenueRogueAp({ params, payload: rogueApPayload })
+        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac })
         setTriggerRogueAPDetection(false)
+      }
+
+      if(triggerTlsEnhancedKey){
+        handleUpdateApEnhancedKey(data?.tlsEnhancedKeyEnabled)
       }
 
       setEditContextData({
@@ -187,10 +277,41 @@ export function SecurityTab () {
     setRoguePolicyIdValue(id)
   }
 
+  const setTlsEnhancedKey = (checked: boolean) => {
+    formRef.current?.setFieldValue('tlsEnhancedKeyEnabled', checked)
+    setTriggerTlsEnhancedKey(true)
+    setTlsEnhancedKeyEnabled(checked)
+  }
+
+  const handleUpdateApEnhancedKey = async (enabled: boolean | undefined) => {
+
+    showActionModal({
+      type: 'confirm',
+      width: 450,
+      title: $t({ defaultMessage: 'TLS Enhanced Key' }),
+      content: $t({ defaultMessage:
+          `Enabling or disabling TLS Enhanced key will prompt a reboot of all AP devices
+          within this <venueSingular></venueSingular>. Are you sure you want to continue?` }),
+      okText: $t({ defaultMessage: 'Continue' }),
+      onOk: async () => {
+        try {
+          const tlsEnhancedKeyEnabledPayload = {
+            tlsKeyEnhancedModeEnabled: enabled
+          }
+          await updateVenueApEnhancedKey({ params, payload: tlsEnhancedKeyEnabledPayload }).unwrap()
+          setTriggerTlsEnhancedKey(false)
+        } catch (error) {
+          console.log(error) // eslint-disable-line no-console
+        }
+      }
+    })
+  }
+
   return (
     <Loader states={[{
       isLoading: false,
-      isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp
+      // eslint-disable-next-line max-len
+      isFetching: isUpdatingDenialOfServiceProtection || isUpdatingVenueRogueAp || isUpdatingVenueApEnhancedKey
     }]}>
       <StepsFormLegacy
         formRef={formRef}
@@ -282,7 +403,7 @@ export function SecurityTab () {
             initialValue={false}
             switchStyle={{}}
             triggerDirtyFunc={setTriggerRogueAPDetection}
-            hidden={isTemplate}
+            hidden={isTemplate && !isConfigTemplateEnabledByType}
           >
             <Form.Item
               label={<>
@@ -339,11 +460,47 @@ export function SecurityTab () {
                 policyId={roguePolicyIdValue} /> }
             </Form.Item>
           </FieldsetItem>
+          { !isTemplate && supportTlsKeyEnhance && <Space align='start'>
+            <StepsFormLegacy.FieldLabel
+              width='max-content'
+              style={{ height: '32px', display: 'flex', alignItems: 'center', paddingLeft: '8px' }}
+            >
+              <span>{$t({ defaultMessage: 'TLS Enhanced Key (RSA 3072/ECDSA P-256)' })}</span>
+              <Tooltip.Question
+                // eslint-disable-next-line max-len
+                title={$t({ defaultMessage: 'Strengthen the TLS connection strength between APs and R1 by utilizing RSA 3072 for WiFi 7 and ECDSA P-256 for non-WiFi 7 devices. Note that toggling the switch will prompt a reboot of all AP devices within this <venueSingular></venueSingular>.' })}
+                placement='bottom'
+                iconStyle={{ height: '16px', width: '16px' }}
+              />
+              <div style={{ margin: '2px' }}></div>
+              <Form.Item
+                valuePropName='checked'
+                initialValue={tlsEnhancedKeyEnabled}
+                name='tlsEnhancedKeyEnabled'
+                children={
+                  <Switch
+                    data-testid='tls-enhanced-key'
+                    checked={tlsEnhancedKeyEnabled}
+                    onClick={(checked) => {
+                      setTlsEnhancedKey(checked)
+                    }}
+                    style={{ marginLeft: '20px', marginTop: '16px' }}
+                  />
+                }
+              />
+            </StepsFormLegacy.FieldLabel>
+          </Space> }
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </Loader>
   )
 }
+
+const CustomFieldSet = styled(Fieldset)`
+  & > legend > label {
+    font-weight: 100 !important;
+  }
+`
 
 const FieldsetItem = ({
   children,
@@ -360,8 +517,9 @@ const FieldsetItem = ({
   {...props}
   valuePropName='checked'
 >
-  <Fieldset
+  <CustomFieldSet
     {...{ label, children }}
     switchStyle={switchStyle}
     onChange={() => triggerDirtyFunc(true)}/>
 </Form.Item>
+

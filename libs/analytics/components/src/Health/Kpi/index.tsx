@@ -16,6 +16,8 @@ import {
 } from '@acx-ui/analytics/utils'
 import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
 import { get }                              from '@acx-ui/config'
+import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
+import { hasPermission }                    from '@acx-ui/user'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
@@ -35,6 +37,11 @@ export const defaultThreshold: KpiThresholdType = {
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
+  switchMemoryUtilization: kpiConfig.switchMemoryUtilization.histogram.initialThreshold,
+  switchCpuUtilization: kpiConfig.switchCpuUtilization.histogram.initialThreshold,
+  switchStormControl: kpiConfig.switchStormControl.histogram.initialThreshold,
+  switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
+  switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
 
@@ -76,7 +83,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   </Loader>
 }
 
-function KpiSection (props: {
+export function KpiSection (props: {
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
@@ -98,6 +105,8 @@ function KpiSection (props: {
     moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
+  useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
+
   const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
   return (
     <>
@@ -135,6 +144,10 @@ function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
+                disabled={!hasPermission({
+                  permission: 'WRITE_HEALTH',
+                  scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+                })}
               />
             ) : (
               <BarChart

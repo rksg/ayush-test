@@ -701,3 +701,36 @@ export const FilterRangePicker = styled.div`
   border-color: var(--acx-neutrals-70) !important;
 }
 `
+
+export const AsyncColumnLoader = styled.div`
+  color: black;
+  font: 100 1.5em/80% Impact;
+  text-align: left;
+  padding-bottom: 15px;
+
+  &:after {
+    content: ' .';
+    animation: dots 2s steps(5, end) infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% {
+      color: rgba(0, 0, 0, 0);
+      text-shadow: .25em 0 0 rgba(0, 0, 0, 0),
+      .5em 0 0 rgba(0, 0, 0, 0);
+    }
+    40% {
+      color: orange;
+      text-shadow: .25em 0 0 rgba(0, 0, 0, 0),
+      .5em 0 0 rgba(0, 0, 0, 0);
+    }
+    60% {
+      text-shadow: .25em 0 0 orange,
+      .5em 0 0 rgba(0, 0, 0, 0);
+    }
+    80%, 100% {
+      text-shadow: .25em 0 0 orange,
+      .5em 0 0 orange;
+    }
+  }
+`

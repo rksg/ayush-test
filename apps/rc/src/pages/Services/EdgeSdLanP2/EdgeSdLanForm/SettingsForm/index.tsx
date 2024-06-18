@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 
 import { Select,Col, Form, Input, Row, Switch } from 'antd'
+import { findIndex }                            from 'lodash'
 import { useIntl }                              from 'react-intl'
 import { useParams }                            from 'react-router-dom'
 
@@ -13,7 +14,8 @@ import {
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  servicePolicyNameRegExp
+  servicePolicyNameRegExp,
+  useHelpPageLink
 } from '@acx-ui/rc/utils'
 
 import { EdgeSdLanFormModelP2 } from '..'
@@ -27,6 +29,7 @@ export const SettingsForm = () => {
   const { form, editMode, initialValues } = useStepFormContext<EdgeSdLanFormModelP2>()
   const venueId = Form.useWatch('venueId', form)
   const edgeClusterId = Form.useWatch('edgeClusterId', form)
+  const helpUrl = useHelpPageLink()
 
   const { sdLanBoundEdges, isSdLanBoundEdgesLoading } = useGetEdgeSdLanP2ViewDataListQuery(
     { payload: {
@@ -63,36 +66,34 @@ export const SettingsForm = () => {
       }
     } })
 
-  const { clusterOptions, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
+  const { clusterData, isLoading: isClusterOptsLoading } = useGetEdgeClusterListQuery(
     { payload: {
       fields: [
         'name',
         'clusterId',
         'venueId',
-        'clusterStatus'
+        'clusterStatus',
+        'hasCorePort'
       ],
       filters: {
         venueId: [venueId]
-        // TODO: need confirm
-        // clusterStatus: Object.values(ClusterStatusEnum)
-        //   .filter(v => v === ClusterStatusEnum.CLUSTER_READY
-        //     || v === ClusterStatusEnum.CLUSTER_UNHEALTHY)
       } } },
     {
       skip: !venueId || isSdLanBoundEdgesLoading,
       selectFromResult: ({ data, isLoading }) => {
         return {
-          clusterOptions: data?.data
-            .filter(item => sdLanBoundEdges.indexOf(item.clusterId!) === -1)
-            .map(item => ({
-              label: item.name,
-              value: item.clusterId,
-              venueId: item.venueId
-            })),
+          clusterData: data?.data
+            .filter(item => sdLanBoundEdges.indexOf(item.clusterId!) === -1),
           isLoading
         }
       }
     })
+
+  const clusterOptions = clusterData?.map(item => ({
+    label: item.name,
+    value: item.clusterId,
+    venueId: item.venueId
+  }))
 
   // prepare venue info
   useEffect(() => {
@@ -111,6 +112,20 @@ export const SettingsForm = () => {
   const onDmzClusterChange = (val: string) => {
     const edgeData = clusterOptions?.filter(i => i.value === val)[0]
     form.setFieldValue('guestEdgeClusterName', edgeData?.label)
+  }
+
+  const checkCorePortConfigured = (clusterId: string) => {
+    if (findIndex(clusterData, { clusterId, hasCorePort: true }) !== -1) {
+      return Promise.resolve()
+    } else
+      return Promise.reject(<UI.ClusterSelectorHelper>
+        <InformationSolid />
+        {$t(messageMappings.setting_cluster_helper, {
+          infoLink: <a href={helpUrl} target='_blank' rel='noreferrer'>
+            {$t({ defaultMessage: 'See more information' })}
+          </a>
+        })}
+      </UI.ClusterSelectorHelper>)
   }
 
   return (
@@ -139,16 +154,19 @@ export const SettingsForm = () => {
           <Row>
             <Col span={24}>
               <UI.VenueSelectorText>
-                {$t({ defaultMessage: 'Select the venue where you want to apply the SD-LAN:' })}
+                { // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'Select the <venueSingular></venueSingular> where you want to apply the SD-LAN:' })
+                }
               </UI.VenueSelectorText>
               <Row>
                 <Col span={18}>
                   <Form.Item
                     name='venueId'
-                    label={$t({ defaultMessage: 'Venue' })}
+                    label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                     rules={[{
                       required: true,
-                      message: $t({ defaultMessage: 'Please select a Venue' })
+                      // eslint-disable-next-line max-len
+                      message: $t({ defaultMessage: 'Please select a <VenueSingular></VenueSingular>' })
                     }]}
                   >
                     <Select
@@ -175,7 +193,9 @@ export const SettingsForm = () => {
                     rules={[{
                       required: true,
                       message: $t({ defaultMessage: 'Please select a Cluster' })
-                    }]}
+                    },
+                    { validator: (_, value) => checkCorePortConfigured(value) }
+                    ]}
                   >
                     <Select
                       loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
@@ -184,16 +204,7 @@ export const SettingsForm = () => {
                       disabled={editMode}
                       onChange={onEdgeClusterChange}
                     />
-
                   </Form.Item>
-                  <UI.ClusterSelectorHelper>
-                    <InformationSolid />
-                    {$t(messageMappings.setting_cluster_helper, {
-                      infoLink: <a href=''>
-                        {$t({ defaultMessage: 'See more information' })}
-                      </a>
-                    })}
-                  </UI.ClusterSelectorHelper>
                 </Col>
               </Row>
             </Col>
@@ -205,7 +216,7 @@ export const SettingsForm = () => {
                 {$t({ defaultMessage: 'Tunnel guest traffic to another cluster (DMZ)' })}
               </UI.FieldText>
             </Col>
-            <Col span={3}>
+            <UI.FlexEndCol span={3}>
               <Form.Item
                 name='isGuestTunnelEnabled'
                 valuePropName='checked'
@@ -213,7 +224,7 @@ export const SettingsForm = () => {
               >
                 <Switch aria-label='dmzEnabled' />
               </Form.Item>
-            </Col>
+            </UI.FlexEndCol>
           </Row>
 
           <Row>
@@ -224,38 +235,30 @@ export const SettingsForm = () => {
               >
                 {({ getFieldValue }) => {
                   return getFieldValue('isGuestTunnelEnabled')
-                    ? (<>
-                      <Form.Item
-                        name='guestEdgeClusterId'
-                        label={<>
-                          { $t({ defaultMessage: 'DMZ Cluster' }) }
-                          <Tooltip.Question
-                            title={$t(messageMappings.setting_dmz_cluster_tooltip)}
-                            placement='bottom'
-                          />
-                        </>}
-                        rules={[{
-                          required: true,
-                          message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
-                        }]}
-                      >
-                        <Select
-                          loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
-                          options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
-                          placeholder={$t({ defaultMessage: 'Select ...' })}
-                          disabled={editMode && !!initialValues?.guestEdgeClusterId}
-                          onChange={onDmzClusterChange}
+                    ? (<Form.Item
+                      name='guestEdgeClusterId'
+                      label={<>
+                        { $t({ defaultMessage: 'DMZ Cluster' }) }
+                        <Tooltip.Question
+                          title={$t(messageMappings.setting_dmz_cluster_tooltip)}
+                          placement='bottom'
                         />
-                      </Form.Item>
-                      <UI.ClusterSelectorHelper>
-                        <InformationSolid />
-                        {$t(messageMappings.setting_cluster_helper, {
-                          infoLink: <a href=''>
-                            {$t({ defaultMessage: 'See more information' })}
-                          </a>
-                        })}
-                      </UI.ClusterSelectorHelper>
-                    </>)
+                      </>}
+                      rules={[{
+                        required: true,
+                        message: $t({ defaultMessage: 'Please select a DMZ Cluster' })
+                      },
+                      { validator: (_, value) => checkCorePortConfigured(value) }
+                      ]}
+                    >
+                      <Select
+                        loading={isClusterOptsLoading || isSdLanBoundEdgesLoading}
+                        options={clusterOptions?.filter(item => item.value !== edgeClusterId)}
+                        placeholder={$t({ defaultMessage: 'Select ...' })}
+                        disabled={editMode && !!initialValues?.guestEdgeClusterId}
+                        onChange={onDmzClusterChange}
+                      />
+                    </Form.Item>)
                     : null
                 }}
               </Form.Item>

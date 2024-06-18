@@ -14,7 +14,7 @@ export enum ModalType {
   ModalStepsForm = 'modalStepsForm'
 }
 
-interface ModalProps extends AntModalProps {
+export interface ModalProps extends AntModalProps {
   type?: ModalType,
   title: string
   subTitle?: string | React.ReactNode

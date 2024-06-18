@@ -11,6 +11,7 @@ import { useMspCustomerListQuery } from '@acx-ui/msp/services'
 import { SpaceWrapper }            from '@acx-ui/rc/components'
 import { useTableQuery }           from '@acx-ui/rc/utils'
 import { RolesEnum }               from '@acx-ui/types'
+import { AccountType }             from '@acx-ui/utils'
 
 export enum ECCustomerRadioButtonEnum {
   none = 'none',
@@ -64,13 +65,18 @@ const MspCustomerSelector = () => {
 
   const tableQuery = useTableQuery({
     useQuery: useMspCustomerListQuery,
+    pagination: {
+      pageSize: 10000
+    },
     defaultPayload: {
-      filters: {},
+      filters: {
+        tenantType: [AccountType.MSP_EC, AccountType.MSP_REC,
+          AccountType.MSP_INTEGRATOR, AccountType.MSP_INSTALLER]
+      },
       fields: [
         'id',
         'name'
       ],
-      pageSize: 10000,
       sortField: 'name',
       sortOrder: 'ASC'
     }

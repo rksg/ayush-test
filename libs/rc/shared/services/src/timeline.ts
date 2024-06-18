@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import { Filter }             from '@acx-ui/components'
@@ -11,6 +12,8 @@ import {
   AdminLog,
   CommonUrlsInfo,
   TableResult,
+  ActivityIncompatibleFeatures,
+  ActivityApCompatibilityExtraParams,
   onSocketActivityChanged,
   downloadFile,
   SEARCH,
@@ -66,6 +69,20 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, () => {
           api.dispatch(timelineApi.util.invalidateTags([{ type: 'Activity', id: 'LIST' }]))
         })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    activityApCompatibilities: build.query<TableResult<ActivityIncompatibleFeatures, ActivityApCompatibilityExtraParams>, RequestPayload>({
+      providesTags: [{ type: 'Activity', id: 'Detail' }],
+      query: ({ params, payload }) => {
+        return {
+          ...createHttpRequest(CommonUrlsInfo.getActivityApCompatibilitiesList, params),
+          body: payload
+        }
+      },
+      transformResponse: (res: { data: ActivityIncompatibleFeatures[], page: number, impactedCount: number, totalCount: number }) => {
+        const extra = { impactedCount: res.impactedCount } as ActivityApCompatibilityExtraParams
+        return { data: res.data ?? [], page: res.page, totalCount: res.totalCount, extra }
       },
       extraOptions: { maxRetries: 5 }
     }),
@@ -204,6 +221,7 @@ export const timelineApi = baseTimelineApi.injectEndpoints({
 
 export const {
   useActivitiesQuery,
+  useActivityApCompatibilitiesQuery,
   useEventsQuery,
   useAdminLogsQuery,
   useDownloadEventsCSVMutation,

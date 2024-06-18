@@ -111,7 +111,7 @@ export const PersonalIdentityNetworkServiceInfo = styled((
       )
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       content: () => {
         const venueInfo = nsgViewData?.venueInfos?.[0]
         return (

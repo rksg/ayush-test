@@ -166,7 +166,7 @@ export const DatePicker = (props: AntDatePickerProps) => (
 )
 
 interface DateTimePickerProps {
-  applyFooterMsg?: string;
+  extraFooter?: ReactNode;
   disabled?: boolean;
   icon?: ReactNode;
   initialDate: MutableRefObject<Moment>;
@@ -196,7 +196,7 @@ export function useClosePreviousDateTimePicker (onClose: CallableFunction, visib
 }
 
 export const DateTimePicker = ({
-  applyFooterMsg,
+  extraFooter,
   disabled,
   icon,
   initialDate,
@@ -209,7 +209,7 @@ export const DateTimePicker = ({
   const [date, setDate] = useState(() => initialDate.current)
   const [open, setOpen] = useState(false)
   useClosePreviousDateTimePicker(() => setOpen(false), Boolean(open))
-  return <Tooltip placement='right' title={title}>
+  return <Tooltip placement='top' title={title}>
     <UI.HiddenDateInputGlobalOverride />
     <UI.HiddenDateInput ref={wrapperRef}>
       <AntDatePicker
@@ -234,7 +234,7 @@ export const DateTimePicker = ({
           <DateTimePickerFooter
             value={date}
             setValue={setDate}
-            applyFooterMsg={applyFooterMsg}
+            extraFooter={extraFooter}
             onApply={() => {
               onApply(date)
               setOpen(false)

@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react'
 
-import moment      from 'moment-timezone'
-import { useIntl } from 'react-intl'
+import moment from 'moment-timezone'
 
-import { useGetTenantSettingsQuery }                         from '@acx-ui/analytics/services'
-import type { Settings }                                     from '@acx-ui/analytics/utils'
+import { useBrand360Config }                                 from '@acx-ui/analytics/services'
+import { Settings }                                          from '@acx-ui/analytics/utils'
 import { PageHeader, RangePicker, GridRow, GridCol, Loader } from '@acx-ui/components'
 import {
-  useMspCustomerListDropdownQuery,
+  useMspECListQuery,
   useIntegratorCustomerListDropdownQuery
 } from '@acx-ui/msp/services'
 import {
@@ -36,10 +35,12 @@ import {
   useFetchBrandPropertiesQuery,
   BrandVenuesSLA
 } from './services'
-import { SlaSliders }   from './SlaSliders'
-import { SlaTile }      from './SlaTile'
-import { BrandTable }   from './Table'
-import { useSliceType } from './useSliceType'
+import { ConfigSettings } from './Settings'
+import { SlaSliders }     from './SlaSliders'
+import { SlaTile }        from './SlaTile'
+import { BrandTable }     from './Table'
+import { useSliceType }   from './useSliceType'
+
 
 const mspPayload = {
   searchString: '',
@@ -66,12 +67,12 @@ const getlspPayload = (parentTenantId: string | undefined) => ({
 })
 
 export function Brand360 () {
-  const settingsQuery = useGetTenantSettingsQuery()
-  const { $t } = useIntl()
+  const { names, settingsQuery } = useBrand360Config()
+  const { brand, lsp, property } = names
   const { tenantId, tenantType } = getJwtTokenPayload()
   const isLSP = tenantType === AccountType.MSP_INTEGRATOR
     || tenantType === AccountType.MSP_INSTALLER
-  const { sliceType, SliceTypeDropdown } = useSliceType({ isLSP })
+  const { sliceType, SliceTypeDropdown } = useSliceType({ isLSP, lsp, property })
   const [settings, setSettings] = useState<Partial<Settings>>({})
   const [dateFilterState, setDateFilterState] = useState<DateFilter>(
     getDateRangeFilter(DateRange.last8Hours)
@@ -91,13 +92,13 @@ export function Brand360 () {
   const tenantDetails = useGetTenantDetailsQuery({ tenantId })
   const parentTenantid = tenantDetails.data?.mspEc?.parentMspId
 
-  const mspPropertiesData = useMspCustomerListDropdownQuery(
+  const mspPropertiesData = useMspECListQuery(
     { params: { tenantId }, payload: mspPayload }, { skip: isLSP })
   const lspPropertiesData = useIntegratorCustomerListDropdownQuery(
     { params: { tenantId }, payload: getlspPayload(parentTenantid) }, { skip: !isLSP
       && !Boolean(parentTenantid) })
   const propertiesData = isLSP ? lspPropertiesData : mspPropertiesData
-
+  const propertiesLoading = Boolean(propertiesData?.isLoading)
   const lookupAndMappingData = propertiesData?.data
     ? transformLookupAndMappingData(propertiesData.data)
     : {}
@@ -105,28 +106,46 @@ export function Brand360 () {
   const tableResults = venuesData.data && lookupAndMappingData
     ? transformVenuesData(venuesData as { data : BrandVenuesSLA[] }, lookupAndMappingData)
     : []
+  const tenantIds = tableResults?.map(({ tenantId }) => tenantId)
+  /*
+      skip timeseries query if
+      - ssid regex still loading
+      - rc api for properties still loading
+      - no tenantids implies no data in table
+  */
+  const skipTSQuery = ssidSkip || propertiesLoading || !tenantIds.length
   const {
     data: chartData,
     ...chartResults
-  } = useFetchBrandTimeseriesQuery(chartPayload, { skip: ssidSkip })
+  } = useFetchBrandTimeseriesQuery(
+    { ...chartPayload, tenantIds },
+    { skip: skipTSQuery }
+  )
   const [pastStart, pastEnd] = computePastRange(startDate, endDate)
   const {
     data: prevData,
     ...prevResults
   } = useFetchBrandTimeseriesQuery({
     ...chartPayload,
+    tenantIds,
     start: pastStart,
     end: pastEnd,
     granularity: 'all' },
-  { skip: ssidSkip })
+  { skip: skipTSQuery })
   const {
     data: currData,
     ...currResults
-  } = useFetchBrandTimeseriesQuery({ ...chartPayload, granularity: 'all' }, { skip: ssidSkip })
+  } = useFetchBrandTimeseriesQuery({
+    ...chartPayload,
+    tenantIds,
+    granularity: 'all'
+  },
+  { skip: skipTSQuery }
+  )
   const chartMap: ChartKey[] = ['incident', 'experience', 'compliance']
   return <Loader states={[settingsQuery, propertiesData, venuesData]}>
     <PageHeader
-      title={$t({ defaultMessage: 'Brand 360' })}
+      title={brand}
       extra={[
         <>
           { !isLSP ? <SliceTypeDropdown /> : null }
@@ -138,6 +157,7 @@ export function Brand360 () {
             selectionType={range}
             showLast8hours
           />
+          <ConfigSettings settings={settings as Settings} />
         </>
       ]}
     />
@@ -152,7 +172,8 @@ export function Brand360 () {
             chartData={chartData}
             prevData={prevData}
             currData={currData}
-            settings={settings as Settings}
+            lsp={lsp}
+            property={property}
           />
         </Loader>
       </GridCol>)}
@@ -166,6 +187,8 @@ export function Brand360 () {
           slaThreshold={settings}
           data={tableResults as Response[]}
           isLSP={isLSP}
+          lspLabel={lsp}
+          propertyLabel={property}
         />
       </GridCol>
     </GridRow>

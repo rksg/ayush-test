@@ -40,7 +40,7 @@ const {
   mockedTunnelProfileViewData
 } = EdgeTunnelProfileFixtures
 
-const { mockedEdgeLagList } = EdgeLagFixtures
+const { mockedEdgeLagListCorePortEnabled } = EdgeLagFixtures
 
 jest.mock('antd', () => {
   const components = jest.requireActual('antd')
@@ -147,7 +147,7 @@ describe('Edge centrailized forwarding form: settings', () => {
 
   it('should query specific venue and edge when edit mode', async () => {
     const expectedVenueId = 'mocked_venue_id'
-    const expectedEdgeId = 'mocked_edge'
+    const expectedEdgeId = '0000000001'
 
     const { result: stepFormRef } = renderHook(() => {
       const [ form ] = Form.useForm()
@@ -178,7 +178,7 @@ describe('Edge centrailized forwarding form: settings', () => {
 
     await waitFor(() => {
       expect(mockedReqEdgesList).toBeCalledWith({
-        fields: ['name', 'serialNumber', 'venueId'],
+        fields: ['name', 'serialNumber', 'venueId', 'clusterId'],
         filters: {
           venueId: [expectedVenueId],
           serialNumber: [expectedEdgeId],
@@ -254,7 +254,7 @@ describe('Edge centrailized forwarding form: settings', () => {
     await screen.findByText('SmartEdge')
     await waitFor(() => {
       expect(mockedReqEdgesList).toBeCalledWith({
-        fields: ['name', 'serialNumber', 'venueId'],
+        fields: ['name', 'serialNumber', 'venueId', 'clusterId'],
         filters: {
           venueId: [mockedVenueList.data[4].id],
           deviceStatus: Object.values(EdgeStatusEnum)
@@ -279,7 +279,7 @@ describe('Edge centrailized forwarding form: settings', () => {
         ),
         rest.get(
           EdgeUrlsInfo.getEdgeLagList.url,
-          (_, res, ctx) => res(ctx.json(mockedEdgeLagList))
+          (_, res, ctx) => res(ctx.json(mockedEdgeLagListCorePortEnabled))
         )
       )
     })

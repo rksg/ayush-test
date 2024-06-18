@@ -11,13 +11,9 @@ const guestTokenReponse = {
   token: 'some token'
 } as GuestToken
 
-
 const userInfo = {
-  tenant_id: 'ac940866-a6f3-4113-81c1-ffb82983ce51',
-  is_franchisor: 'false',
-  tenant_ids: [
-    'ac940866-a6f3-4113-81c1-ffb82983ce51'
-  ]
+  own_tenant_id: 'ac940866-a6f3-4113-81c1-ffb82983ce51',
+  cache_key: 'cache-key'
 } as UserInfo
 
 const getEmbeddedReponse = {

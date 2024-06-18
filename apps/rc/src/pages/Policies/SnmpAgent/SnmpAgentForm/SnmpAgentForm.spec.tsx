@@ -2,18 +2,25 @@ import userEvent    from '@testing-library/user-event'
 import { rest }     from 'msw'
 import { Path, To } from 'react-router-dom'
 
-import { ApSnmpUrls, getPolicyRoutePath, PolicyOperation, PolicyType } from '@acx-ui/rc/utils'
-import { Provider }                                                    from '@acx-ui/store'
-import { mockServer, render, screen, within }                          from '@acx-ui/test-utils'
+import { policyApi } from '@acx-ui/rc/services'
+import {
+  ApSnmpUrls,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import SnmpAgentForm from './SnmpAgentForm'
 
-
+const mockedTenantId = '__Tenant_ID__'
+const mockedPolicyId = '__Policy_ID__'
 
 const mockSnmpData = {
   policyName: 'www',
-  id: '876899c9f9a64196b4604fe5d5dac9d2',
-  tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+  id: mockedPolicyId,
+  tenantId: mockedTenantId,
   snmpV2Agents: [
     {
       communityName: 'joe_cn1',
@@ -32,20 +39,18 @@ const mockSnmpData = {
   snmpV3Agents: [
     {
       userName: 'joe_un1',
-      readPrivilege: false,
-      trapPrivilege: true,
-      notificationType: 'Trap',
-      targetAddr: '192.168.0.100',
-      targetPort: 162,
+      readPrivilege: true,
+      trapPrivilege: false,
       authProtocol: 'SHA',
       authPassword: '1234567890',
       privacyProtocol: 'None'
     },
     {
       userName: 'joe_un2',
-      readPrivilege: true,
-      trapPrivilege: false,
+      readPrivilege: false,
+      trapPrivilege: true,
       notificationType: 'Trap',
+      targetAddr: '192.168.0.201',
       targetPort: 162,
       authProtocol: 'MD5',
       authPassword: '123456789',
@@ -56,55 +61,11 @@ const mockSnmpData = {
 }
 
 const mockSnmpListData = [
+  mockSnmpData,
   {
-    policyName: 'www',
-    id: '876899c9f9a64196b4604fe5d5dac9d2',
-    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
-    snmpV2Agents: [
-      {
-        communityName: 'joe_cn1',
-        readPrivilege: true,
-        trapPrivilege: false,
-        notificationType: 'Trap',
-        targetPort: 162
-      },
-      {
-        communityName: 'joe_cn2',
-        readPrivilege: false,
-        trapPrivilege: true,
-        notificationType: 'Trap',
-        targetAddr: '192.168.0.120',
-        targetPort: 162
-      }
-    ],
-    snmpV3Agents: [
-      {
-        userName: 'joe_un1',
-        readPrivilege: false,
-        trapPrivilege: true,
-        notificationType: 'Trap',
-        targetAddr: '192.168.0.100',
-        targetPort: 162,
-        authProtocol: 'SHA',
-        authPassword: '1234567890',
-        privacyProtocol: 'None'
-      },
-      {
-        userName: 'joe_un2',
-        readPrivilege: true,
-        trapPrivilege: false,
-        notificationType: 'Trap',
-        targetPort: 162,
-        authProtocol: 'MD5',
-        authPassword: '123456789',
-        privacyProtocol: 'AES',
-        privacyPassword: '12345678'
-      }
-    ]
-  }, {
     policyName: 'ttt',
-    id: '876899c9f9a64196b4604fe5d5dac9d8',
-    tenantId: '3de62cf01fea4f75a00163cd5a6cd97d',
+    id: '__Policy_ID_2__',
+    tenantId: mockedTenantId,
     snmpV2Agents: [
       {
         communityName: 'ttt2',
@@ -130,8 +91,7 @@ const mockSnmpListData = [
     ]
   }]
 
-const mockedTenantId = '__Tenant_ID__'
-const mockedPolicyId = '__Policy_ID__'
+
 
 // eslint-disable-next-line max-len
 const createPath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })
@@ -155,53 +115,39 @@ jest.mock('react-router-dom', () => ({
 
 
 describe('SnmpAgentForm', () => {
+  const mockGetProfileApi = jest.fn()
+  const mockAddFn = jest.fn()
+  const mockEditFn = jest.fn()
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
+    mockAddFn.mockClear()
+    mockEditFn.mockClear()
+    mockGetProfileApi.mockClear()
+    mockedUseNavigate.mockClear()
+
     mockServer.use(
       rest.post(ApSnmpUrls.addApSnmpPolicy.url,
-        (_, res, ctx) => res(ctx.json({ requestId: '123456789' }))),
+        (_, res, ctx) => {
+          mockAddFn()
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      ),
       rest.get(ApSnmpUrls.getApSnmpPolicy.url,
-        (_, res, ctx) => res(ctx.json(mockSnmpData))),
+        (_, res, ctx) => {
+          mockGetProfileApi()
+          return res(ctx.json(mockSnmpData))
+        }
+      ),
       rest.get(ApSnmpUrls.getApSnmpPolicyList.url,
         (_, res, ctx) => res(ctx.json(mockSnmpListData))),
       rest.put(ApSnmpUrls.updateApSnmpPolicy.url,
-        (_, res, ctx) => res(ctx.json({ requestId: '123456789' })))
+        (_, res, ctx) => {
+          mockEditFn()
+          return res(ctx.json({ requestId: '123456789' }))
+        }
+      )
     )
-  })
-
-  it.skip('should create SNMP Agent successfully', async () => {
-    render(
-      <Provider>
-        <SnmpAgentForm editMode={false}/>
-      </Provider>, {
-        route: { params: { tenantId: mockedTenantId }, path: createPath }
-      })
-
-    const header = screen.getByRole('heading', { name: /Add SNMP Agent/i })
-    expect(header).toBeInTheDocument()
-
-    const inputElem = await screen.findByRole('textbox')
-    await userEvent.type(inputElem, 'test1')
-    expect(inputElem).toHaveAttribute('value', 'test1')
-
-
-    // Add SNMPv2 Agent
-    await userEvent.click(await screen.findByRole('button', { name: 'Add SNMPv2 Agent' }))
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Community Name' }), 'cn1')
-    await userEvent.click(await screen.findByRole('checkbox', { name: 'Read-only' }))
-    await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-
-    // Edit SNMPv2 Agent
-    let row = await screen.findByRole('row', { name: /cn1/i })
-    await userEvent.click(await within(row).findByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    await userEvent.click(await screen.findByRole('checkbox', { name: 'Read-only' }))
-    await userEvent.click(await screen.findByRole('checkbox', { name: 'Notification' }))
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Target IP' }), '192.168.0.100')
-    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
-
-
-    // await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
   })
 
   it('should render breadcrumb correctly', async () => {
@@ -219,6 +165,10 @@ describe('SnmpAgentForm', () => {
     expect(screen.getByRole('link', {
       name: 'SNMP Agent'
     })).toBeVisible()
+
+    expect(await screen.findByText('Add SNMP Agent')).toBeInTheDocument()
+    // In create mode doesn't call the getting profile API
+    expect(mockGetProfileApi).not.toBeCalled()
   })
 
   it('should edit SNMP Agent successfully', async () => {
@@ -233,7 +183,19 @@ describe('SnmpAgentForm', () => {
     const header = screen.getByRole('heading', { name: /Edit SNMP Agent/i })
     expect(header).toBeInTheDocument()
 
-    // await userEvent.click(await screen.findByRole('button', { name: 'Finish' }))
+    await waitFor(() => {
+      expect(mockGetProfileApi).toBeCalled()
+    })
+
+    // data has been loaded
+    expect(await screen.findByDisplayValue('www')).toBeInTheDocument()
+    expect(await screen.findByText('joe_cn1')).toBeVisible()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => {
+      expect(mockEditFn).toBeCalled()
+    })
   })
 
   it('should Policy name not empty and duplicated', async () => {
@@ -264,7 +226,7 @@ describe('SnmpAgentForm', () => {
       pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
       hash: '',
       search: ''
-    })
+    }, { replace: true })
   })
 
   it('should at least one SNMPv2 agent or SNMPv3 agent', async () => {
@@ -291,7 +253,7 @@ describe('SnmpAgentForm', () => {
       pathname: '/__Tenant_ID__/t/policies/snmpAgent/list',
       hash: '',
       search: ''
-    })
+    }, { replace: true })
   })
 
 })

@@ -6,13 +6,12 @@ import { defineMessage, MessageDescriptor, useIntl }                            
 import { ContentSwitcher, ContentSwitcherProps, GridCol, GridRow } from '@acx-ui/components'
 import { QuestionMarkCircleOutlined }                              from '@acx-ui/icons'
 import {
+  AppAclLabelMapping,
   ApplicationAclType,
-  ApplicationRuleType, AvcCategory, generalIpAddressRegExp,
+  ApplicationRuleType, AppRuleLabelMapping, AvcCategory, generalIpAddressRegExp,
   portRegExp,
   subnetMaskIpRegExp
 } from '@acx-ui/rc/utils'
-
-import { AppAclLabelMapping, AppRuleLabelMapping } from '../contentsMap'
 
 import QosContent from './QosContent'
 

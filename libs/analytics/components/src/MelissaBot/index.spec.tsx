@@ -13,6 +13,7 @@ describe('MelissaBot', () => {
   let container:HTMLDivElement|undefined=undefined
   // eslint-disable-next-line max-len
   const ERROR_MSG = 'Oops! We are currently experiencing unexpected technical difficulties. Please try again later.'
+  const originalFetch = global.fetch
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     // setup a DOM element as a render target
@@ -30,6 +31,7 @@ describe('MelissaBot', () => {
     container?.remove()
     container = undefined
     jest.clearAllMocks()
+    global.fetch = originalFetch
   })
   const route = {
     path: '/:page',
@@ -37,13 +39,6 @@ describe('MelissaBot', () => {
     wrapRoutes: false
   }
   it('should render floating button',async ()=>{
-    await act(async ()=>{
-      render(<MelissaBot/>,{ route, container })
-    })
-    expect(container).toMatchSnapshot()
-  })
-  it('should not render anything if chatbot FF disabled',async ()=>{
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
     await act(async ()=>{
       render(<MelissaBot/>,{ route, container })
     })

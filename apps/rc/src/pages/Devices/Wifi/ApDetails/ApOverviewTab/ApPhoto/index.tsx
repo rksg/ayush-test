@@ -9,8 +9,10 @@ import {
   useApViewModelQuery,
   useGetApCapabilitiesQuery
 } from '@acx-ui/rc/services'
-import { useApContext } from '@acx-ui/rc/utils'
-import { getIntl }      from '@acx-ui/utils'
+import { useApContext }  from '@acx-ui/rc/utils'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
+import { getIntl }       from '@acx-ui/utils'
 
 import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.svg'
 
@@ -18,6 +20,7 @@ import { ApPhotoDrawer }                                                        
 import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv } from './styledComponents'
 
 export function ApPhoto () {
+  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const [imageUrl, setImageUrl] = useState('')
   const [defaultImageUrl, setDefaultImageUrl] = useState(PlaceHolder)
   const [tempUrl, setTempUrl] = useState('')
@@ -117,7 +120,7 @@ export function ApPhoto () {
           <RoundIconDiv>
             <ArrowsOutIcon onClick={() => setVisible(true)} data-testid='gallery'/>
           </RoundIconDiv>
-          <Upload
+          {hasUpdatePermission && <Upload
             name='apPhoto'
             listType='picture'
             showUploadList={false}
@@ -132,6 +135,7 @@ export function ApPhoto () {
               <PhotoIcon />
             </RoundIconDiv>
           </Upload>
+          }
         </StyledSpace>
         <PhotoDiv>
           {imageUrl !== '' && activeImage[0] &&

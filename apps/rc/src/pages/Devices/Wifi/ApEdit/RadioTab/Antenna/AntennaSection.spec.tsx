@@ -3,7 +3,7 @@ import { Form }  from 'antd'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                       from '@acx-ui/rc/services'
-import { ApAntennaTypeEnum, CommonUrlsInfo, WifiUrlsInfo }       from '@acx-ui/rc/utils'
+import { ApAntennaTypeEnum, WifiUrlsInfo }                       from '@acx-ui/rc/utils'
 import { Provider, store }                                       from '@acx-ui/store'
 import { mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -78,13 +78,25 @@ const mockApAntennaType = {
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
 
 describe('AP Antenna Type Section', () => {
+  const defaultApEditCtxData = {
+    editContextData: {
+      unsavedTabKey: 'radio',
+      tabTitle: 'Radio',
+      isDirty: false
+    },
+    setEditContextData: jest.fn(),
+    editRadioContextData: {
+      updateApAntennaType: jest.fn()
+    },
+    setEditRadioContextData: jest.fn()
+  }
+
+  const defaultR760ApCtxData = { apData: mockR670ApData, venueData: venuelist.data[0] }
+
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venuelist.data[0]))),
       rest.get(
         WifiUrlsInfo.getVenueAntennaType.url,
         (_, res, ctx) => res(ctx.json(mockVenueAntennaType))),
@@ -93,9 +105,6 @@ describe('AP Antenna Type Section', () => {
         (_, res, ctx) => res(ctx.json(mockApAntennaType))),
       rest.put(
         WifiUrlsInfo.updateApAntennaTypeSettings.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.delete(
-        WifiUrlsInfo.resetApAntennaTypeSettings.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
@@ -103,20 +112,8 @@ describe('AP Antenna Type Section', () => {
   it('should render correctly when use venue settings', async () => {
     render(
       <Provider>
-        <ApEditContext.Provider value={{
-          editContextData: {
-            unsavedTabKey: 'radio',
-            tabTitle: 'Radio',
-            isDirty: false
-          },
-          setEditContextData: jest.fn(),
-          editRadioContextData: {
-            updateApAntennaType: jest.fn()
-          },
-          setEditRadioContextData: jest.fn()
-        }}
-        >
-          <ApDataContext.Provider value={{ apData: mockR670ApData }}>
+        <ApEditContext.Provider value={defaultApEditCtxData}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <Form>
               <AntennaSection />
             </Form>
@@ -134,20 +131,8 @@ describe('AP Antenna Type Section', () => {
   it('should render correctly when use custom settings', async () => {
     render(
       <Provider>
-        <ApEditContext.Provider value={{
-          editContextData: {
-            unsavedTabKey: 'radio',
-            tabTitle: 'Radio',
-            isDirty: false
-          },
-          setEditContextData: jest.fn(),
-          editRadioContextData: {
-            updateApAntennaType: jest.fn()
-          },
-          setEditRadioContextData: jest.fn()
-        }}
-        >
-          <ApDataContext.Provider value={{ apData: mockR670ApData }}>
+        <ApEditContext.Provider value={defaultApEditCtxData}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <Form>
               <AntennaSection />
             </Form>

@@ -3,13 +3,18 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import { DndProvider, useDrag, useDrop } from 'react-dnd'
 import { HTML5Backend }                  from 'react-dnd-html5-backend'
 import { useIntl }                       from 'react-intl'
-import { useParams }                     from 'react-router-dom'
 
-import { showActionModal, Table, TableProps }                      from '@acx-ui/components'
-import { Drag }                                                    from '@acx-ui/icons'
-import { useRoguePolicyQuery }                                     from '@acx-ui/rc/services'
-import { RogueAPDetectionActionTypes, RogueAPRule, RogueRuleType } from '@acx-ui/rc/utils'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { showActionModal, Table, TableProps }                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { Drag }                                                from '@acx-ui/icons'
+import { useGetRoguePolicyTemplateQuery, useRoguePolicyQuery } from '@acx-ui/rc/services'
+import {
+  RogueAPDetectionActionTypes,
+  RogueAPRule,
+  RogueRuleType,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+import { filterByAccess } from '@acx-ui/user'
 
 import { rogueRuleLabelMapping, RULE_MAX_COUNT } from '../contentsMap'
 import RogueAPDetectionContext                   from '../RogueAPDetectionContext'
@@ -26,13 +31,18 @@ type DragItemProps = {
 }
 
 const RuleTable = (props: RuleTableProps) => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const { edit } = props
-  const params = useParams()
 
   const { state, dispatch } = useContext(RogueAPDetectionContext)
 
-  const { data } = useRoguePolicyQuery({ params: params }, { skip: !edit })
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
+    skip: !edit,
+    enableRbac
+  })
 
   const [ruleName, setRuleName] = useState('')
   const [visibleAdd, setVisibleAdd] = useState(false)

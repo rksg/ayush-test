@@ -22,9 +22,9 @@ jest.mock('../../policies/MacRegistrationListForm', () => ({
   </div>
 }))
 
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({})
 }))
 
 jest.mock('../utils', () => ({
@@ -61,8 +61,8 @@ describe('MacRegistrationListComponent', () => {
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url
         .split('?')[0],
       (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(mockPolicySetList))
       )
     )

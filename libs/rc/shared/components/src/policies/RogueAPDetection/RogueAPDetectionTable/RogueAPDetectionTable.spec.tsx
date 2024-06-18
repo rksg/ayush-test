@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
@@ -19,71 +20,10 @@ import {
   within
 } from '@acx-ui/test-utils'
 
+import { mockedRogueApPoliciesList, mockedRogueApPoliciesListRbac, mockVenueRogueApResult } from '../__tests__/fixtures'
+
 import { RogueAPDetectionTable } from './RogueAPDetectionTable'
 
-const mockTableResult = {
-  fields: [
-    'id',
-    'name',
-    'numOfRules',
-    'venueIds'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
-      name: 'My Rogue AP Detection 1',
-      numOfRules: 5,
-      venueIds: []
-    }
-  ]
-}
-
-const mockVenueResult = {
-  fields: [
-    'country',
-    'clients',
-    'city',
-    'latitude',
-    'switches',
-    'edges',
-    'description',
-    'check-all',
-    'networks',
-    'switchClients',
-    'name',
-    'cog',
-    'id',
-    'aggregatedApStatus',
-    'longitude',
-    'status'
-  ],
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      id: '2e7a2dd226c8422ab62316b57f5a8631',
-      name: 'My-Venue',
-      description: 'My-Venue',
-      city: 'New York',
-      country: 'United States',
-      latitude: '40.7690084',
-      longitude: '-73.9431541',
-      networks: {
-        count: 1,
-        names: [
-          'test-psk'
-        ],
-        vlans: [
-          1
-        ]
-      },
-      status: '1_InSetupPhase',
-      aggregatedApClientHealth: []
-    }
-  ]
-}
 
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
@@ -109,16 +49,16 @@ describe('RogueAPDetectionTable', () => {
   beforeEach(async () => {
     mockServer.use(
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
-      ),
-      rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
-        (req, res, ctx) => res(ctx.json(mockTableResult))
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
       ),
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
-        (req, res, ctx) => res(ctx.json(mockVenueResult))
+        (req, res, ctx) => res(ctx.json(mockVenueRogueApResult))
+      ),
+      rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesListRbac))
       )
     )
   })
@@ -132,7 +72,7 @@ describe('RogueAPDetectionTable', () => {
       }
     )
 
-    const targetName = mockTableResult.data[0].name
+    const targetName = mockedRogueApPoliciesList.data[0].name
     // eslint-disable-next-line max-len
     expect(await screen.findByRole('button', { name: /Add Rogue AP Detection Policy/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
@@ -159,7 +99,7 @@ describe('RogueAPDetectionTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedRogueApPoliciesList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 
@@ -188,7 +128,7 @@ describe('RogueAPDetectionTable', () => {
       }
     )
 
-    const target = mockTableResult.data[0]
+    const target = mockedRogueApPoliciesList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
 
@@ -203,6 +143,64 @@ describe('RogueAPDetectionTable', () => {
     expect(mockedUseNavigate).toHaveBeenCalledWith({
       ...mockedTenantPath,
       pathname: `${mockedTenantPath.pathname}/${editPath}`
+    })
+  })
+
+  it('should render table with rbac enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    render(
+      <Provider>
+        <RogueAPDetectionTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetName = mockedRogueApPoliciesListRbac.data[0].name
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('button', { name: /Add Rogue AP Detection Policy/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
+  })
+
+  it('should delete selected row with rbac enabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        RogueApUrls.deleteRoguePolicyRbac.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <RogueAPDetectionTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockedRogueApPoliciesListRbac.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('checkbox'))
+
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
+
+    const dialog = await screen.findByRole('dialog')
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(dialog).not.toBeVisible()
     })
   })
 })

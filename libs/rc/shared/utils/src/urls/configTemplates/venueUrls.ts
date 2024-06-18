@@ -21,11 +21,6 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId',
     newApi: true
   },
-  getVenuesTemplateList: {
-    method: 'post',
-    url: '/templates/venues/query',
-    newApi: true
-  },
   getVenueApCapabilities: {
     method: 'get',
     url: '/templates/venues/:venueId/aps/capabilities',
@@ -184,6 +179,76 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deactivateVenueDhcpPool: {
     method: 'delete',
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
+    newApi: true
+  },
+  getVenueCityList: {
+    method: 'post',
+    url: '/api/viewmodel/:tenantId/venuetemplate/citylist',
+    newApi: true
+  },
+  getVenueSwitchSetting: {
+    method: 'get',
+    url: '/templates/venues/:venueId/switchSettings',
+    newApi: true
+  },
+  updateVenueSwitchSetting: {
+    method: 'put',
+    url: '/templates/venues/:venueId/switchSettings',
+    newApi: true
+  },
+  getVenueSwitchAaaSetting: {
+    method: 'get',
+    url: '/templates/venues/:venueId/aaaSettings',
+    newApi: true
+  },
+  updateVenueSwitchAaaSetting: {
+    method: 'put',
+    url: '/templates/venues/:venueId/aaaSettings/:aaaSettingId',
+    newApi: true
+  },
+  getVenueSwitchAaaServerList: {
+    method: 'post',
+    url: '/templates/venues/aaaServers/query',
+    newApi: true
+  },
+  addVenueSwitchAaaServer: {
+    method: 'post',
+    url: '/templates/venues/:venueId/aaaServers',
+    newApi: true
+  },
+  updateVenueSwitchAaaServer: {
+    method: 'put',
+    url: '/templates/venues/:venueId/aaaServers/:aaaServerId',
+    newApi: true
+  },
+  deleteVenueSwitchAaaServer: {
+    method: 'delete',
+    url: '/templates/venues/aaaServers/:aaaServerId',
+    newApi: true
+  },
+  bulkDeleteVenueSwitchAaaServer: {
+    method: 'delete',
+    url: '/templates/venues/aaaServers',
+    newApi: true
+  },
+  getVenueDefaultApGroup: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apGroups',
+    newApi: true
+  },
+  getVlanPoolViewModelList: {
+    method: 'post',
+    url: '/templates/enhancedVlanPoolProfiles/query',
+    newApi: true
+  },
+  getApGroupNetworkList: {
+    method: 'post',
+    url: '/templates/apGroups/:apGroupId/networks/query',
+    newApi: true
+  },
+  networkActivations: {
+    method: 'post',
+    url: '/templates/networkActivations/query',
     newApi: true
   }
 }

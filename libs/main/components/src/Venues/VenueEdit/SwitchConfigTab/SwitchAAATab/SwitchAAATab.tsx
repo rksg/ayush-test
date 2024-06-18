@@ -4,10 +4,18 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Alert, AnchorLayout, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { usePathBasedOnConfigTemplate }                                  from '@acx-ui/rc/components'
-import { useUpdateAAASettingMutation, useVenueSwitchSettingQuery }       from '@acx-ui/rc/services'
-import { redirectPreviousPage, VenueMessages }                           from '@acx-ui/rc/utils'
-import { useNavigate, useParams }                                        from '@acx-ui/react-router-dom'
+import {
+  useGetVenueTemplateSwitchSettingQuery, useUpdateAAASettingMutation,
+  useUpdateVenueTemplateSwitchAAASettingMutation,
+  useVenueSwitchSettingQuery
+}  from '@acx-ui/rc/services'
+import {
+  redirectPreviousPage, useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher, VenueMessages, VenueSwitchConfiguration
+} from '@acx-ui/rc/utils'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { VenueEditContext } from '../../index'
 
@@ -16,13 +24,21 @@ import { AAASettings } from './AAASettings'
 
 export function SwitchAAATab () {
   const { tenantId, venueId } = useParams()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = usePathBasedOnConfigTemplate('/venues/')
-  const [updateAAASettingMutation] = useUpdateAAASettingMutation()
+  const [updateAAASettingMutation] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateAAASettingMutation,
+    useTemplateMutationFn: useUpdateVenueTemplateSwitchAAASettingMutation
+  })
   const [aaaSettingId, setAAASettingId] = useState<string>('')
   const { previousPath } = useContext(VenueEditContext)
-  const { data: venueSwitchSetting } = useVenueSwitchSettingQuery({ params: { tenantId, venueId } })
+  const { data: venueSwitchSetting } = useConfigTemplateQueryFnSwitcher<VenueSwitchConfiguration>({
+    useQueryFn: useVenueSwitchSettingQuery,
+    useTemplateQueryFn: useGetVenueTemplateSwitchSettingQuery,
+    enableRbac: isSwitchRbacEnabled
+  })
   const cliApplied = !!venueSwitchSetting?.cliApplied
 
   const serversTitle = $t({ defaultMessage: 'Servers & Users' })
@@ -82,7 +98,8 @@ export function SwitchAAATab () {
 
     await updateAAASettingMutation({
       params: { tenantId, venueId, aaaSettingId },
-      payload: _.pickBy(payload, v => v !== undefined)
+      payload: _.pickBy(payload, v => v !== undefined),
+      enableRbac: isSwitchRbacEnabled
     }).unwrap()
       .catch((error) => {
         console.log(error) // eslint-disable-line no-console

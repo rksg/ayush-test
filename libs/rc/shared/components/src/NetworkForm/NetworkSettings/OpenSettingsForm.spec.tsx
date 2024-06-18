@@ -25,9 +25,9 @@ jest.mock('./MacRegistrationListComponent', () => () => {
   return <div data-testid='MacRegistrationListComponentId' />
 })
 
-jest.mock('../../useEdgeActions', () => ({
-  ...jest.requireActual('../../useEdgeActions'),
-  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue([])
+jest.mock('../../EdgeSdLan/useEdgeSdLanActions', () => ({
+  ...jest.requireActual('../../EdgeSdLan/useEdgeSdLanActions'),
+  useSdLanScopedNetworkVenues: jest.fn().mockReturnValue({})
 }))
 
 jest.mock('../utils', () => ({
@@ -60,7 +60,9 @@ describe('OpenNetwork form', () => {
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.get(MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
-        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList)))
+        (_, res, ctx) => res(ctx.json(mockMacRegistrationPoolList))),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
     )
 
   })
@@ -79,7 +81,7 @@ describe('OpenNetwork form', () => {
       </MLOContext.Provider>
     </Provider>, { route: { params } })
 
-    await userEvent.click(await screen.findByLabelText(/MAC Authentication/i))
+    await userEvent.click(await screen.findByTestId('mac-auth-switch'))
     await screen.findByText(/mac address format/i)
 
     await userEvent.click(await screen.findByLabelText(/MAC Registration list/i))

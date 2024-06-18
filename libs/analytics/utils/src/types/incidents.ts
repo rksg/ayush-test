@@ -21,6 +21,9 @@ export interface IncidentMetadata {
   }
   apRadioDeploy?: string,
   avgAnomalousAirtime?: number
+  // switch memory incident metadata
+  upper_bound?: number
+  projected_time?: number
 }
 
 export interface Incident extends IncidentInformation {

@@ -7,7 +7,6 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { GridCol, GridRow, StepsFormLegacy, Tooltip }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
 import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, WifiNetworkMessages, WlanSecurityEnum } from '@acx-ui/rc/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -33,7 +32,6 @@ export function GuestPassForm () {
   const intl = useIntl()
   const form = Form.useFormInstance()
   const { disableMLO } = useContext(MLOContext)
-  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
 
   const [enableOwe] = [useWatch('enableOwe')]
 
@@ -63,7 +61,7 @@ export function GuestPassForm () {
       <GridCol col={{ span: 10 }}>
         <StepsFormLegacy.Title children={intl.$t({ defaultMessage: 'Host Settings' })} />
         <RedirectUrlInput></RedirectUrlInput>
-        {enableOweEncryption && <Form.Item>
+        <Form.Item>
           <Form.Item noStyle
             name='enableOwe'
             initialValue={false}
@@ -81,12 +79,10 @@ export function GuestPassForm () {
             title={intl.$t(WifiNetworkMessages.ENABLE_OWE_TOOLTIP)}
             placement='bottom'
           />
-        </Form.Item>}
+        </Form.Item>
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.GuestPass}
           enableDefaultWalledGarden={false} />
       </GridCol>
       <GridCol col={{ span: 14 }}>

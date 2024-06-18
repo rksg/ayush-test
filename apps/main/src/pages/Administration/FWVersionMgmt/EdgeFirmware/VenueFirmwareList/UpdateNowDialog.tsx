@@ -90,7 +90,7 @@ export function UpdateNowDialog (props: UpdateApNowDialogProps) {
           <div>
             <Typography>
               { // eslint-disable-next-line max-len
-                $t({ defaultMessage: 'Choose which version to update the venue to:' })
+                $t({ defaultMessage: 'Choose which version to update the <venueSingular></venueSingular> to:' })
               }
             </Typography>
             <UI.TitleActive>{$t({ defaultMessage: 'Active Device' })}</UI.TitleActive>

@@ -5,6 +5,7 @@ import { Button, PageHeader, RangePicker } from '@acx-ui/components'
 import { usePathBasedOnConfigTemplate }    from '@acx-ui/rc/components'
 import { useVenueDetailsHeaderQuery }      from '@acx-ui/rc/services'
 import {
+  useConfigTemplate,
   useConfigTemplateBreadcrumb,
   VenueDetailHeader
 } from '@acx-ui/rc/utils'
@@ -13,6 +14,7 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes, EdgeScopes, SwitchScopes }       from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
 import { useDateFilter }                              from '@acx-ui/utils'
 
@@ -33,17 +35,21 @@ function DatePicker () {
 
 function VenuePageHeader () {
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const { tenantId, venueId, activeTab } = useParams()
   const enableTimeFilter = () => !['networks', 'services', 'units'].includes(activeTab as string)
 
-  const { data } = useVenueDetailsHeaderQuery({ params: { tenantId, venueId } })
+  const { data } = useVenueDetailsHeaderQuery({
+    params: { tenantId, venueId },
+    payload: { isTemplate }
+  })
 
   const navigate = useNavigate()
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/details`)
 
   const breadcrumb = useConfigTemplateBreadcrumb([
-    { text: $t({ defaultMessage: 'Venues' }), link: '/venues' }
+    { text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
   ])
 
   return (
@@ -54,6 +60,7 @@ function VenuePageHeader () {
         enableTimeFilter() ? <DatePicker key={getShowWithoutRbacCheckKey('date-filter')} /> : <></>,
         ...filterByAccess([<Button
           type='primary'
+          scopeKey={[WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]}
           onClick={() =>
             navigate(detailsPath, {
               state: {

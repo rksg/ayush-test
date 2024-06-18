@@ -1,25 +1,24 @@
 import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
-import { rest }  from 'msw'
 
-import { EdgeSdLanFixtures, EdgeSdLanUrls, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                           from '@acx-ui/store'
+import { EdgeSdLanFixtures, Network, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Provider }                                    from '@acx-ui/store'
 import {
-  mockServer,
   render,
   screen,
   waitFor,
   within
 } from '@acx-ui/test-utils'
+import { RequestPayload } from '@acx-ui/types'
 
-import { mockDeepNetworkList } from './__tests__/fixtures'
+import { mockNetworkViewmodelList } from './__tests__/fixtures'
 
 import EdgeSdLan from '.'
 
 const { mockedSdLanDataListP2 } = EdgeSdLanFixtures
 const mockedEdgeSdLanDmz = mockedSdLanDataListP2[0]
 const mockedEdgeSdLanDc = mockedSdLanDataListP2[1]
-const guestNetwork = _.find(mockDeepNetworkList.response, { type: NetworkTypeEnum.CAPTIVEPORTAL })
+const guestNetwork = _.find(mockNetworkViewmodelList, { nwSubType: NetworkTypeEnum.CAPTIVEPORTAL })
 
 const mockedActivateNetworkReq = jest.fn()
 const mockedDeactivateNetworkReq = jest.fn()
@@ -30,9 +29,9 @@ jest.mock('@acx-ui/rc/components', () => ({
   EdgeSdLanP2ActivatedNetworksTable: (props:
     { isUpdating: boolean,
       onActivateChange: (fieldName: string,
-      rowData: NetworkSaveData,
+      rowData: Network,
       checked: boolean,
-      activated: NetworkSaveData[])=> void }) => {
+      activated: string[])=> void }) => {
 
     const mockedData = mockedGetData()
     const onClick = () => {
@@ -48,6 +47,36 @@ jest.mock('@acx-ui/rc/components', () => ({
   }
 }))
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useActivateEdgeSdLanNetworkMutation: () => {
+    return [(req: RequestPayload) => {
+      mockedActivateNetworkReq(req.params, req.payload)
+
+      return { unwrap: () => new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)({
+            response: { id: 'mocked_service_id' }
+          })
+        }, 300)
+      }) }
+    }, { isLoading: false }]
+  },
+  useDeactivateEdgeSdLanNetworkMutation: () => {
+    return [(req: RequestPayload) => {
+      mockedDeactivateNetworkReq(req.params)
+
+      return { unwrap: () => new Promise((resolve) => {
+        resolve(true)
+        setTimeout(() => {
+          (req.callback as Function)()
+        }, 300)
+      }) }
+    }, { isLoading: false }]
+  }
+}))
+
 describe('Venue Edge SD-LAN Service Phase2', () => {
   let params: { tenantId: string, venueId: string }
 
@@ -60,23 +89,6 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
     mockedActivateNetworkReq.mockReset()
     mockedDeactivateNetworkReq.mockReset()
     mockedGetData.mockReset()
-
-    mockServer.use(
-      rest.put(
-        EdgeSdLanUrls.activateEdgeSdLanNetwork.url,
-        (req, res, ctx) => {
-          mockedActivateNetworkReq(req.params, req.body)
-          return res(ctx.status(202))
-        }
-      ),
-      rest.delete(
-        EdgeSdLanUrls.deactivateEdgeSdLanNetwork.url,
-        (req, res, ctx) => {
-          mockedDeactivateNetworkReq(req.params)
-          return res(ctx.status(202))
-        }
-      )
-    )
   })
 
   it('should render correctly', async () => {
@@ -115,9 +127,9 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
     it('deactivate non-guest network tunneled to DC', async () => {
       mockedGetData.mockReturnValue([
         'activatedNetworks',
-        _.find(mockDeepNetworkList.response, { id: 'network_1' }),
+        _.find(mockNetworkViewmodelList, { id: 'network_1' }),
         false,
-        mockDeepNetworkList.response.filter(item => item.id === 'network_4')
+        ['network_4']
       ])
 
       render(
@@ -139,9 +151,9 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
     it('activate non-guest network tunneled to DC', async () => {
       mockedGetData.mockReturnValue([
         'activatedNetworks',
-        _.find(mockDeepNetworkList.response, { id: 'network_2' }),
+        _.find(mockNetworkViewmodelList, { id: 'network_2' }),
         true,
-        mockDeepNetworkList.response.filter(item => item.id !== 'network_3')
+        mockNetworkViewmodelList.filter(item => item.id !== 'network_3').map(i => i.id)
       ])
 
       render(
@@ -158,7 +170,7 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
       expect(mockedActivateNetworkReq).toBeCalledWith({
         serviceId: 'mocked-sd-lan-1',
         wifiNetworkId: 'network_2'
-      }, { isGuestTunnelUtilized: true })
+      }, { isGuestTunnelUtilized: false })
     })
 
     it('deactivate DMZ network', async () => {
@@ -252,8 +264,7 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
         guestNetwork,
         true,
         // network1,4
-        mockDeepNetworkList.response.filter(item =>
-          item.id === 'network_1' || item.id === 'network_4')
+        ['network_1', 'network_4']
       ])
 
       render(
@@ -280,7 +291,7 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
         'activatedNetworks',
         guestNetwork,
         false,
-        mockDeepNetworkList.response.filter(item => item.id === 'network_1')
+        ['network_1']
       ])
 
       render(
@@ -307,7 +318,7 @@ describe('Venue Edge SD-LAN Service Phase2', () => {
         'activatedNetworks',
         guestNetwork,
         false,
-        mockDeepNetworkList.response.filter(item => item.id === 'network_1')
+        ['network_1']
       ])
 
       render(

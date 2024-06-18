@@ -20,7 +20,7 @@ import {
 } from '../__tests__/fixtures'
 import NetworkFormContext from '../NetworkFormContext'
 
-import AAAInstance from '.'
+import { AAAInstance } from '.'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({

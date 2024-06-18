@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import {
   Layout as LayoutComponent,
@@ -22,15 +23,16 @@ import {
 import {
   MspEcDropdownList
 } from '@acx-ui/msp/components'
-import { useInviteCustomerListQuery }                                       from '@acx-ui/msp/services'
-import { CloudMessageBanner }                                               from '@acx-ui/rc/components'
-import { useGetTenantDetailsQuery }                                         from '@acx-ui/rc/services'
-import { useTableQuery }                                                    from '@acx-ui/rc/utils'
-import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink } from '@acx-ui/react-router-dom'
-import { useParams }                                                        from '@acx-ui/react-router-dom'
-import { RolesEnum }                                                        from '@acx-ui/types'
-import { hasRoles, useUserProfileContext }                                  from '@acx-ui/user'
-import { AccountType, getJwtTokenPayload, isDelegationMode, useTenantId }   from '@acx-ui/utils'
+import { useGetBrandingDataQuery, useGetMspEcProfileQuery, useInviteCustomerListQuery }    from '@acx-ui/msp/services'
+import { MSPUtils }                                                                        from '@acx-ui/msp/utils'
+import { CloudMessageBanner }                                                              from '@acx-ui/rc/components'
+import { useGetTenantDetailsQuery }                                                        from '@acx-ui/rc/services'
+import { useTableQuery, dpskAdminRoutePathKeeper }                                         from '@acx-ui/rc/utils'
+import { Outlet, useNavigate, useTenantLink, TenantNavLink, MspTenantLink, useLocation }   from '@acx-ui/react-router-dom'
+import { useParams }                                                                       from '@acx-ui/react-router-dom'
+import { RolesEnum }                                                                       from '@acx-ui/types'
+import { hasRoles, useUserProfileContext }                                                 from '@acx-ui/user'
+import { AccountType, AccountVertical, getJwtTokenPayload, isDelegationMode, useTenantId } from '@acx-ui/utils'
 
 import { useMenuConfig } from './menuConfig'
 import * as UI           from './styledComponents'
@@ -41,6 +43,7 @@ function Layout () {
   const navigate = useNavigate()
   const tenantId = useTenantId()
   const params = useParams()
+  const location = useLocation()
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
 
@@ -48,6 +51,9 @@ function Layout () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: tenantDetails } = useGetTenantDetailsQuery({ params })
+  const { data: mspEcProfile } = useGetMspEcProfileQuery({ params })
+  const isMspEc = MSPUtils().isMspEc(mspEcProfile)
+  const { data: mspBrandData } = useGetBrandingDataQuery({ params }, { skip: !isMspEc })
 
   const companyName = userProfile?.companyName
   const tenantType = tenantDetails?.tenantType
@@ -75,26 +81,62 @@ function Layout () {
 
   const isGuestManager = hasRoles([RolesEnum.GUEST_MANAGER])
   const isDPSKAdmin = hasRoles([RolesEnum.DPSK_ADMIN])
+  const isReportsAdmin = hasRoles([RolesEnum.REPORTS_ADMIN])
+  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
   const isSupportDelegation = userProfile?.support && isSupportToMspDashboardAllowed
+  const isHospitality = useIsSplitOn(Features.VERTICAL_RE_SKINNING) &&
+    getJwtTokenPayload().acx_account_vertical === AccountVertical.HOSPITALITY
   const showMspHomeButton = isSupportDelegation && (tenantType === AccountType.MSP ||
     tenantType === AccountType.MSP_NON_VAR || tenantType === AccountType.VAR)
-  const indexPath = isGuestManager ? '/users/guestsManager' : '/dashboard'
+  const userProfileBasePath = useTenantLink('/userprofile')
   const basePath = useTenantLink('/users/guestsManager')
   const dpskBasePath = useTenantLink('/users/dpskAdmin')
+  const reportsAdminBasePath = useTenantLink('/dataStudio')
   useEffect(() => {
     if (isGuestManager && params['*'] !== 'guestsManager') {
-      navigate({
-        ...basePath,
-        pathname: `${basePath.pathname}`
-      })
+      (params['*'] === 'userprofile')
+        ? navigate({
+          ...userProfileBasePath,
+          pathname: `${userProfileBasePath.pathname}`
+        })
+        : navigate({
+          ...basePath,
+          pathname: `${basePath.pathname}`
+        })
     }
-    if (isDPSKAdmin && !(params['*'] as string).includes('dpsk')) {
-      navigate({
+  }, [isGuestManager, params['*']])
+
+  useEffect(() => {
+    const currentPath = params['*'] as string
+    const isAllowed = dpskAdminRoutePathKeeper(currentPath)
+
+    if (!isDPSKAdmin || isAllowed) return
+
+    currentPath === 'userprofile'
+      ? navigate({
+        ...userProfileBasePath,
+        pathname: `${userProfileBasePath.pathname}`
+      })
+      : navigate({
         ...dpskBasePath,
         pathname: `${dpskBasePath.pathname}`
       })
+  }, [isDPSKAdmin, params['*']])
+
+  useEffect(() => {
+    if(isReportsAdmin){
+      const currentPath = location.pathname
+
+      if(!currentPath.includes('/dataStudio') &&
+         !currentPath.includes('/reports') &&
+         params['*'] !== 'userprofile') {
+        navigate({
+          ...reportsAdminBasePath,
+          pathname: `${reportsAdminBasePath.pathname}`
+        })
+      }
     }
-  }, [isGuestManager, isDPSKAdmin, params['*']])
+  }, [isReportsAdmin, location.pathname, params['*']])
 
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
@@ -104,7 +146,7 @@ function Layout () {
 
   return (
     <LayoutComponent
-      logo={<TenantNavLink to={indexPath} children={logo} />}
+      logo={isDPSKAdmin ? logo : <TenantNavLink to={indexPath} children={logo} />}
       menuConfig={useMenuConfig()}
       content={
         <>
@@ -123,6 +165,12 @@ function Layout () {
           </a>)
         }
         <RegionButton/>
+        { isHospitality && (
+          <UI.VerticalTitle>
+            <Typography.Title level={3}>
+              {$t({ defaultMessage: 'Hospitality Edition' })}
+            </Typography.Title>
+          </UI.VerticalTitle>)}
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
           <LicenseBanner/>
@@ -144,13 +192,16 @@ function Layout () {
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}
-        {!(isGuestManager || isDPSKAdmin) &&
+        {!(isGuestManager || isDPSKAdmin || isReportsAdmin) &&
           <>
             <AlarmsButton/>
             <ActivityButton/>
           </>}
         <FetchBot showFloatingButton={false} statusCallback={setSupportStatus}/>
-        <HelpButton supportStatus={supportStatus}/>
+        <HelpButton
+          isMspEc={isMspEc}
+          mspBrandData={mspBrandData}
+          supportStatus={supportStatus}/>
         <UserButton/>
       </>}
     />

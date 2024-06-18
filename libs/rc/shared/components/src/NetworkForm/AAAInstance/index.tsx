@@ -7,6 +7,7 @@ import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
 import { Tooltip, PasswordInput }               from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { AaaServerOrderEnum, AAAViewModalType } from '@acx-ui/rc/utils'
 
 import { useLazyGetAAAPolicyInstance, useGetAAAPolicyInstanceList } from '../../policies/AAAForm/aaaPolicyQuerySwitcher'
@@ -25,7 +26,7 @@ interface AAAInstanceProps {
   type: 'authRadius' | 'accountingRadius'
 }
 
-const AAAInstance = (props: AAAInstanceProps) => {
+export const AAAInstance = (props: AAAInstanceProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const form = Form.useFormInstance()
@@ -33,6 +34,7 @@ const AAAInstance = (props: AAAInstanceProps) => {
   const radiusIdName = props.type + 'Id'
   const watchedRadius = Form.useWatch(props.type) || form.getFieldValue(props.type)
   const watchedRadiusId = Form.useWatch(radiusIdName) || form.getFieldValue(radiusIdName)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data: aaaListQuery } = useGetAAAPolicyInstanceList({
     queryOptions: { refetchOnMountOrArgChange: 10 }
@@ -66,7 +68,7 @@ const AAAInstance = (props: AAAInstanceProps) => {
     if (watchedRadiusId === watchedRadius?.id) return
 
     if (watchedRadiusId) {
-      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId } })
+      getAaaPolicy({ params: { ...params, policyId: watchedRadiusId }, enableRbac })
         .unwrap()
         .then(aaaPolicy => form.setFieldValue(props.type, aaaPolicy))
         // eslint-disable-next-line no-console
@@ -78,7 +80,7 @@ const AAAInstance = (props: AAAInstanceProps) => {
 
   return (
     <>
-      <Form.Item label={props.serverLabel}><Space>
+      <Form.Item label={props.serverLabel} required><Space>
         <Form.Item
           name={radiusIdName}
           noStyle
@@ -149,7 +151,7 @@ const AAAInstance = (props: AAAInstanceProps) => {
   )
 }
 
-export default AAAInstance
+//export default AAAInstance
 
 function convertAaaListToDropdownItems (
   targetRadiusType: typeof radiusTypeMap[keyof typeof radiusTypeMap],

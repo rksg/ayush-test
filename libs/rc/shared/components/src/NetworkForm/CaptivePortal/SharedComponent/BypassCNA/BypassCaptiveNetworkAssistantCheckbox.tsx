@@ -7,29 +7,14 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
-import { GuestNetworkTypeEnum }       from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../../../NetworkFormContext'
 
-export interface BypassCNAProps {
-  guestNetworkTypeEnum: GuestNetworkTypeEnum
-}
-
-const exemptionList = [
-  GuestNetworkTypeEnum.Cloudpath
-]
-
-function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
-  return exemptionList.includes(guestNetworkTypeEnum)
-}
-
-export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
+export function BypassCaptiveNetworkAssistantCheckbox () {
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const { guestNetworkTypeEnum } = props
 
   const {
     data: networkFromContextData,
@@ -43,15 +28,6 @@ export function BypassCaptiveNetworkAssistantCheckbox (props: BypassCNAProps) {
       form.setFieldValue(['wlan', 'bypassCNA'], networkFromContextData?.wlan?.bypassCNA)
     }
   },[])
-
-  const featureToggle = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
-
-  // if one condition is true, then go render it.
-  const isRenderNeed = [featureToggle, isExemption(guestNetworkTypeEnum)].some(Boolean)
-
-  if (!isRenderNeed) {
-    return null
-  }
 
   /* eslint-disable max-len */
   return (

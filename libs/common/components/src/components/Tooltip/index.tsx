@@ -13,11 +13,21 @@ Tooltip.defaultProps = {
   mouseEnterDelay: 0.5
 }
 
-function Tooltip (props: TooltipProps) {
-  return <>
+type ExtendedTooltipProps = TooltipProps & {
+  dottedUnderline?: boolean
+}
+
+function Tooltip (props: ExtendedTooltipProps) {
+  let tooltip = <>
     <UI.TooltipGlobalStyle />
     <AntTooltip {...props} />
   </>
+  if (props.dottedUnderline) {
+    tooltip = <UI.TooltipWrapper>
+      {tooltip}
+    </UI.TooltipWrapper>
+  }
+  return tooltip
 }
 
 export { Tooltip, TooltipProps }
@@ -36,7 +46,7 @@ Tooltip.Question = function QuestionTooltip (props: PredefinedTooltipProps) {
 
 Tooltip.Info = function InfoTooltip (props: PredefinedTooltipProps) {
   const { iconStyle, isFilled=false, ...tooltipProps } = props
-  return <Tooltip {...tooltipProps} >
+  return <Tooltip {...tooltipProps}>
     {!isFilled
       ? <InformationOutlined {...(iconStyle && { style: iconStyle })} />
       : <InformationSolid {...(iconStyle && { style: iconStyle })} />

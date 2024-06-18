@@ -1,11 +1,12 @@
-import { useContext, useReducer } from 'react'
+import { useContext } from 'react'
 
+import userEvent  from '@testing-library/user-event'
 import { Button } from 'antd'
 
 import { EPDG, QosPriorityEnum, WifiCallingActionTypes } from '@acx-ui/rc/utils'
-import { fireEvent, renderHook, render, screen }         from '@acx-ui/test-utils'
+import { render, screen }                                from '@acx-ui/test-utils'
 
-import WifiCallingFormContext, { mainReducer } from './WifiCallingFormContext'
+import WifiCallingFormContext from './WifiCallingFormContext'
 
 const serviceName = 'test'
 const description = ''
@@ -29,23 +30,6 @@ const initState = {
   epdgs
 }
 
-const renderInitState = (children: JSX.Element) => {
-
-
-  const { result } = renderHook(() => useReducer(mainReducer, initState))
-  const [state, dispatch] = result.current
-
-
-
-  const renderElement = <WifiCallingFormContext.Provider value={{ state, dispatch }}>
-    {children}
-  </WifiCallingFormContext.Provider>
-
-  return {
-    state, dispatch, renderElement
-  }
-}
-
 const TestComponent = () => {
   const { state, dispatch } = useContext(WifiCallingFormContext)
   return (
@@ -63,13 +47,24 @@ const TestComponent = () => {
 }
 
 describe('WifiCallingFormContext', () => {
-  it('should render wifiCallingFormContext successfully', () => {
-    const { renderElement } = renderInitState(<TestComponent />)
-    render(renderElement)
+  it('should render wifiCallingFormContext successfully', async () => {
+    const mockDispatch = jest.fn()
 
-    expect(screen.getByText('test')).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'add ePDG' })).toBeTruthy()
+    render(
+      <WifiCallingFormContext.Provider value={{ state: initState, dispatch: mockDispatch }}>
+        <TestComponent />
+      </WifiCallingFormContext.Provider>
+    )
 
-    fireEvent.click(screen.getByRole('button', { name: 'add ePDG' }))
+    const addButton = screen.getByText('add ePDG')
+    await userEvent.click(addButton)
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: WifiCallingActionTypes.ADD_EPDG,
+      payload: {
+        domain: 'aaa.bbb.ccc',
+        ip: '10.10.10.10.'
+      }
+    })
   })
 })

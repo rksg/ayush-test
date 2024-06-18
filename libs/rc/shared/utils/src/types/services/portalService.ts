@@ -5,16 +5,35 @@ import { Network } from '../network'
 
 export interface Portal{
   id?: string
-  serviceName: string
+  serviceName?: string
+  name?: string
   tags?: string[]
-  network: PortalNetwork[]
-  content: Demo,
+  network?: PortalNetwork[]
+  content?: Demo,
   networkIds?: string[],
   logoFile?: RcFile,
   bgFile?: RcFile,
   photoFile?: RcFile,
-  poweredFile?: RcFile
+  poweredFile?: RcFile,
+  wifiNetworkIds?: string[],
+  displayLangCode?: string
 }
+
+export interface PortalSaveData {
+  id: string
+  serviceName?: string
+  name?: string
+  content: Demo
+}
+
+export interface PortalDetail{
+  id: string
+  name?: string
+  serviceName?: string
+  displayLangCode?: string,
+  wifiNetworkIds?: string[]
+}
+
 export interface PortalNetwork extends Network{
 }
 export interface Demo{

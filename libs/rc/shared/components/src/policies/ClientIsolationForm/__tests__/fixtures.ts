@@ -61,7 +61,7 @@ export const mockedClientIsolation = mockedClientIsolationList[0]
 
 export const mockedClientList = [{
   osType: 'Windows',
-  clientMac: '28:B3:71:28:78:50',
+  clientMac: '28:b3:71:28:78:50',
   ipAddress: '10.206.1.93',
   Username: '24418cc316df',
   hostname: 'LP-XXXXX',

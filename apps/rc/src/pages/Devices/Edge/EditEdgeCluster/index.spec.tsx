@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                                                        from '@acx-ui/feature-toggle'
 import { edgeApi }                                                                                       from '@acx-ui/rc/services'
 import { CommonOperation, Device, EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo, activeTab, getUrl } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                               from '@acx-ui/store'
@@ -44,6 +45,8 @@ describe('Edit Edge Cluster', () => {
         (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
+
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
   })
 
   it('should render EditEdgeCluster successfully', async () => {
@@ -56,6 +59,20 @@ describe('Edit Edge Cluster', () => {
       })
     expect((await screen.findAllByRole('tab')).length).toBe(4)
     expect(await screen.findByTestId('cluster-details')).toBeVisible()
+  })
+
+  it('when DHCP_HA OFF, should not render DHCP', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
+
+    render(
+      <Provider>
+        <EditEdgeCluster />
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    expect((await screen.findAllByRole('tab')).length).toBe(3)
+    expect(screen.queryByTestId('dhcp')).toBeNull()
   })
 
   it('should change tab correctly', async () => {

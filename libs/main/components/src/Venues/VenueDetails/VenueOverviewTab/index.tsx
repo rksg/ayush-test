@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
@@ -5,7 +7,7 @@ import {
   ConnectedClientsOverTime,
   IncidentBySeverity,
   NetworkHistory,
-  SwitchesTrafficByVolume,
+  SwitchesTrafficByVolumeLegacy,
   TopSwitchModels,
   TopApplicationsByTraffic,
   TopSSIDsByClient,
@@ -14,7 +16,8 @@ import {
   TopSwitchesByPoEUsage,
   TopSwitchesByTraffic,
   TrafficByVolume,
-  VenueHealth
+  VenueHealth,
+  SwitchesTrafficByVolume
 } from '@acx-ui/analytics/components'
 import {
   GridRow,
@@ -22,20 +25,36 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
-import { TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
-import { ShowTopologyFloorplanOn }                                       from '@acx-ui/rc/utils'
-import { generateVenueFilter, useDateFilter }                            from '@acx-ui/utils'
-import type { AnalyticsFilter }                                          from '@acx-ui/utils'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
+import { LowPowerBannerAndModal, TopologyFloorPlanWidget, VenueAlarmWidget, VenueDevicesWidget } from '@acx-ui/rc/components'
+import {
+  useGetVenueRadioCustomizationQuery,
+  useGetVenueTripleBandRadioSettingsQuery }                            from '@acx-ui/rc/services'
+import { ShowTopologyFloorplanOn }            from '@acx-ui/rc/utils'
+import { useNavigateToPath }                  from '@acx-ui/react-router-dom'
+import { generateVenueFilter, useDateFilter } from '@acx-ui/utils'
+import type { AnalyticsFilter }               from '@acx-ui/utils'
 
+import * as UI from './styledComponents'
 
 export function VenueOverviewTab () {
   const { $t } = useIntl()
   const { dateFilter } = useDateFilter()
   const { venueId } = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const venueFilter = {
     ...dateFilter,
     filter: generateVenueFilter([venueId as string])
   }
+
+  const { data: venueRadio } = useGetVenueRadioCustomizationQuery({
+    params: { venueId },
+    enableRbac: isUseRbacApi
+  })
+
+  const { data: tripleBand } = useGetVenueTripleBandRadioSettingsQuery({ params: { venueId } })
+
   const tabDetails: ContentSwitcherProps['tabDetails'] = [
     {
       label: $t({ defaultMessage: 'Wi-Fi' }),
@@ -48,13 +67,30 @@ export function VenueOverviewTab () {
       children: <SwitchWidgets filters={venueFilter}/>
     }
   ]
+
   return (<>
+    {
+      (
+        (tripleBand?.enabled === true) &&
+        (venueRadio?.radioParams6G?.enableAfc === true) &&
+        (
+          (venueRadio?.radioParams6G?.venueHeight?.minFloor === undefined) ||
+          (venueRadio?.radioParams6G?.venueHeight?.maxFloor === undefined)
+        )
+      ) &&
+      <LowPowerBannerAndModal from={'venue'} />
+    }
     <CommonDashboardWidgets filters={venueFilter}/>
     <ContentSwitcher tabDetails={tabDetails} size='large' />
   </>)
 }
 
 function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
+  const { venueId } = useParams()
+  const [incidentCount, setIncidentCount] = useState(0)
+  const onIncidentClick =
+    useNavigateToPath(`/venues/${venueId}/venue-details/analytics/incidents/overview`)
+
   const filters = props.filters
   return (
     <GridRow>
@@ -62,7 +98,12 @@ function CommonDashboardWidgets (props: { filters: AnalyticsFilter }) {
         <VenueAlarmWidget />
       </GridCol>
       <GridCol col={{ span: 7 }} style={{ height: '176px' }}>
-        <IncidentBySeverity type='donut' filters={filters}/>
+        <UI.Container
+          incidentCount={incidentCount}
+          onClick={incidentCount > 0 ? onIncidentClick : undefined}
+        >
+          <IncidentBySeverity type='donut' filters={filters} setIncidentCount={setIncidentCount}/>
+        </UI.Container>
       </GridCol>
       <GridCol col={{ span: 10 }} style={{ height: '176px' }}>
         <VenueDevicesWidget />
@@ -108,10 +149,15 @@ function ApWidgets (props: { filters: AnalyticsFilter }) {
 
 function SwitchWidgets (props: { filters: AnalyticsFilter }) {
   const filters = props.filters
+  const supportPortTraffic = useIsSplitOn(Features.SWITCH_PORT_TRAFFIC)
   return (
     <GridRow>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
-        <SwitchesTrafficByVolume filters={filters} />
+        {
+          supportPortTraffic ?
+            <SwitchesTrafficByVolume filters={filters} />
+            :<SwitchesTrafficByVolumeLegacy filters={filters} />
+        }
       </GridCol>
       <GridCol col={{ span: 12 }} style={{ height: '280px' }}>
         <TopSwitchesByPoEUsage filters={filters} />

@@ -1,10 +1,8 @@
 import { css } from 'styled-components/macro'
 
-export const greyTextStyles = css`
-  .greyText {
-    color: var(--acx-neutrals-50)
-  }
-`
+import { StepsForm } from '@acx-ui/components'
+
+export const greyTextStyles = StepsForm.DescriptionTextWrapper
 
 export const darkGreyTextStyles = css`
   .darkGreyText {
@@ -33,22 +31,7 @@ export const styles = css`
     width: 200px;
   }
 
-  & .ant-checkbox-wrapper-in-form-item {
-    color: var(--acx-neutrals-60)
-  }
-
-  & .description {
-    font-size: var(--acx-body-4-font-size);
-  }
-
-  & .descriptionsWrapper {
-    margin-left: 24px;
-    flex-wrap: wrap;
-    align-content: flex-start;
-  }
-
   ${checkboxStyles}
-  ${greyTextStyles}
   ${darkGreyTextStyles}
 `
 

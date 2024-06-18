@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Row, Col, Form, Input } from 'antd'
 import TextArea                  from 'antd/lib/input/TextArea'
@@ -7,6 +7,7 @@ import { useIntl }               from 'react-intl'
 import { useParams }             from 'react-router-dom'
 
 import { Button, Loader, Tooltip }   from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import { useGetTroubleshootingQuery,
   useLazyGetTroubleshootingCleanQuery,
@@ -16,6 +17,8 @@ import { targetHostRegExp,
   WifiTroubleshootingMessages } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
+import { SwitchDetailsContext } from '..'
+
 export const parseResult = function (response: string) {
   const { $t } = getIntl()
   return response === 'EMPTY_RESULT' ? $t({ defaultMessage: 'No data to display.' }) : response
@@ -24,23 +27,28 @@ export const parseResult = function (response: string) {
 export function SwitchPingForm () {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
   const [pingForm] = Form.useForm()
 
   const [isValid, setIsValid] = useState(false)
   const [lasySyncTime, setLastSyncTime] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const troubleshootingParams = {
     tenantId,
     switchId,
-    troubleshootingType: TroubleshootingType.PING
+    troubleshootingType: TroubleshootingType.PING,
+    venueId: switchDetailsContextData.switchDetailHeader?.venueId
   }
 
   const [runMutation] = usePingMutation()
   const [getTroubleshootingClean] = useLazyGetTroubleshootingCleanQuery()
   const getTroubleshooting =
     useGetTroubleshootingQuery({
-      params: troubleshootingParams
+      params: troubleshootingParams,
+      enableRbac: isSwitchRbacEnabled
     })
 
   const refetchResult = function () {
@@ -82,7 +90,15 @@ export function SwitchPingForm () {
         },
         troubleshootingType: 'ping'
       }
-      const result = await runMutation({ params: { tenantId, switchId }, payload }).unwrap()
+      const result = await runMutation({
+        params: {
+          tenantId,
+          switchId,
+          venueId: switchDetailsContextData.switchDetailHeader?.venueId
+        },
+        payload,
+        enableRbac: isSwitchRbacEnabled
+      }).unwrap()
       if (result) {
         refetchResult()
       }
@@ -96,7 +112,8 @@ export function SwitchPingForm () {
     setIsLoading(true)
     setIsValid(false)
     await getTroubleshootingClean({
-      params: troubleshootingParams
+      params: troubleshootingParams,
+      enableRbac: isSwitchRbacEnabled
     })
     refetchResult()
   }

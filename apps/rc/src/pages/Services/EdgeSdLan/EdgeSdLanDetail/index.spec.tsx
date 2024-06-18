@@ -46,9 +46,10 @@ describe('Edge SD-LAN Detail', () => {
     )
 
     await waitForElementToBeRemoved(screen.queryAllByRole('img', { name: 'loader' }))
+    expect(await screen.findByText('Instances (1)')).toBeVisible()
+    await screen.findByRole('img', { name: 'loader' })
     const row = await screen.findAllByRole('row', { name: /amyNetwork/i })
     expect(row.length).toBe(1)
-    expect(await screen.findByText('Instances (1)')).toBeVisible()
     // expect(await screen.findByText('Total Tunnels: 12')).toBeVisible()
     // expect(await screen.findByText('Total VLANs: 37')).toBeVisible()
     expect(await screen.findByRole('row',

@@ -4,7 +4,9 @@ import { useCrrmKpiQuery } from '../Recommendations/services'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
-const CrrmKpi: React.FC<{ id: string, code: string }> = ({ id, code }) => {
+type CrrmKpiType = { id: string, code: string }
+
+const CrrmKpi: React.FC<CrrmKpiType> = ({ id, code }) => {
   const detailsQuery = useCrrmKpiQuery({ id, code })
 
   return <Loader

@@ -5,11 +5,13 @@ import AutoSizer   from 'react-virtualized-auto-sizer'
 import { Card, DonutChart,
   getDeviceConnectionStatusColorsv2,
   GridCol, GridRow, StackedBarChart }    from '@acx-ui/components'
-import type { DonutChartData }            from '@acx-ui/components'
-import { TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { ChartData }                      from '@acx-ui/rc/utils'
-import { TenantLink, useNavigateToPath }  from '@acx-ui/react-router-dom'
-import { filterByAccess }                 from '@acx-ui/user'
+import type { DonutChartData }                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ChartData }                                from '@acx-ui/rc/utils'
+import { TenantLink, useNavigateToPath, useParams } from '@acx-ui/react-router-dom'
+import { filterByAccess }                           from '@acx-ui/user'
+
+import { useIsEdgeReady } from '../useEdgeActions'
 
 import * as UI from './styledComponents'
 
@@ -19,17 +21,36 @@ export function DevicesWidget (props: {
   apData: DonutChartData[],
   switchData: DonutChartData[],
   edgeData: DonutChartData[],
+  rwgData: DonutChartData[],
   enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
 
-  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
   let numDonut = 2
-  if (edgeSupported) {
+  if (isEdgeEnabled) {
     numDonut++
   }
+
+  if (showRwgUI) {
+    numDonut++
+  }
+
+  const { venueId } = useParams()
+
+  const getNavigatePath = (deviceType: string) => {
+    return (venueId)
+      ? `/venues/${venueId}/venue-details/devices/${deviceType}`
+      : `/devices/${deviceType}`
+  }
+
+  const clickWifiHandler = useNavigateToPath(getNavigatePath('wifi'))
+  const clickSwitchHandler = useNavigateToPath(getNavigatePath('switch'))
+  const clickSmartEdgeHandler = useNavigateToPath(getNavigatePath('edge'))
+  const clickRwgHandler = useNavigateToPath(getNavigatePath('rwg'))
 
   return (
     <Card title={$t({ defaultMessage: 'Devices' })}
@@ -37,21 +58,36 @@ export function DevicesWidget (props: {
       <AutoSizer>
         {({ height, width }) => (
           <div style={{ display: 'inline-flex' }}>
-            <DonutChart
-              key='wifi-donutChart'
-              style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'Wi-Fi' })}
-              data={props.apData}/>
-            <DonutChart
-              key='switch-donutChart'
-              style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'Switch' })}
-              data={props.switchData}/>
-            { edgeSupported && (<DonutChart
-              key='smartEdge-donutChart'
-              style={{ width: width/numDonut, height }}
-              title={$t({ defaultMessage: 'SmartEdge' })}
-              data={props.edgeData}/>)}
+            <UI.NavigationContainer onClick={clickWifiHandler}>
+              <DonutChart
+                key='wifi-donutChart'
+                style={{ width: width/numDonut, height }}
+                title={$t({ defaultMessage: 'Wi-Fi' })}
+                data={props.apData}/>
+            </UI.NavigationContainer>
+            <UI.NavigationContainer onClick={clickSwitchHandler}>
+              <DonutChart
+                key='switch-donutChart'
+                style={{ width: width/numDonut, height }}
+                title={$t({ defaultMessage: 'Switch' })}
+                data={props.switchData}/>
+            </UI.NavigationContainer>
+            { isEdgeEnabled && (
+              <UI.NavigationContainer onClick={clickSmartEdgeHandler}>
+                <DonutChart
+                  key='smartEdge-donutChart'
+                  style={{ width: width/numDonut, height }}
+                  title={$t({ defaultMessage: 'SmartEdge' })}
+                  data={props.edgeData}/>
+              </UI.NavigationContainer>)}
+            { showRwgUI && (
+              <UI.NavigationContainer onClick={clickRwgHandler}>
+                <DonutChart
+                  key='rwg-donutChart'
+                  style={{ width: width/numDonut, height }}
+                  title={$t({ defaultMessage: 'RWG' })}
+                  data={props.rwgData}/>
+              </UI.NavigationContainer>)}
           </div>
         )}
       </AutoSizer>
@@ -63,22 +99,27 @@ export function DevicesWidgetv2 (props: {
   apStackedData: ChartData[],
   switchStackedData: ChartData[],
   edgeStackedData: ChartData[],
+  rwgStackedData: { chartData: ChartData[], stackedColors: string[] },
   apTotalCount: number,
   switchTotalCount: number,
   edgeTotalCount: number,
+  rwgTotalCount: number,
   enableArrowClick?: boolean
 }) {
   const { $t } = useIntl()
   const onArrowClick = useNavigateToPath('/devices/')
-  const edgeSupported = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
 
   const {
     apStackedData,
     switchStackedData,
     edgeStackedData,
+    rwgStackedData,
     apTotalCount,
     switchTotalCount,
-    edgeTotalCount
+    edgeTotalCount,
+    rwgTotalCount
   } = props
 
   return (
@@ -155,7 +196,7 @@ export function DevicesWidgetv2 (props: {
                 }
               </GridCol>
             </GridRow>
-            { edgeSupported &&
+            { isEdgeEnabled &&
               <GridRow align={'middle'}>
                 <GridCol col={{ span: edgeTotalCount ? 9 : 12 }}>
                   { edgeTotalCount > 0
@@ -187,6 +228,43 @@ export function DevicesWidgetv2 (props: {
                       {filterByAccess([<TenantLink
                         to={'/devices/edge/add'}>
                         {$t({ defaultMessage: 'Add SmartEdge' })}
+                      </TenantLink>])}
+                    </UI.LinkContainer>
+                  }
+                </GridCol>
+              </GridRow>
+            }
+            {
+              showRwgUI && <GridRow align={'middle'}>
+                <GridCol col={{ span: switchTotalCount ? 9 : 12 }}>
+                  { rwgTotalCount > 0
+                    ? $t({ defaultMessage: 'RWGs' })
+                    : $t({ defaultMessage: 'No RWGs' }) }
+                </GridCol>
+                <GridCol col={{ span: switchTotalCount ? 15 : 12 }}>
+                  { rwgTotalCount > 0
+                    ? <Space>
+                      <StackedBarChart
+                        key='rwg-stackedBarChart'
+                        animation={false}
+                        style={{
+                          height: height/2 - 30,
+                          width: width/2 - 15
+                        }}
+                        data={rwgStackedData.chartData}
+                        showLabels={false}
+                        showTotal={false}
+                        total={rwgTotalCount}
+                        barColors={rwgStackedData.stackedColors} />
+                      <TenantLink key='rwg-tenantLink' to={'/ruckus-wan-gateway'}>
+                        {rwgTotalCount}
+                      </TenantLink>
+                    </Space>
+                    : <UI.LinkContainer
+                      key='rwg-linkContainer'
+                      style={{ height: (height/2) - 30 }}>
+                      {filterByAccess([<TenantLink to={'/ruckus-wan-gateway/add'}>
+                        {$t({ defaultMessage: 'Add RWG' })}
                       </TenantLink>])}
                     </UI.LinkContainer>
                   }

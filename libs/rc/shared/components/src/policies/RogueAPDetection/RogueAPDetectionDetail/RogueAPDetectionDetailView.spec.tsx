@@ -2,32 +2,15 @@ import React from 'react'
 
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { policyApi }                       from '@acx-ui/rc/services'
 import { RogueApUrls }                     from '@acx-ui/rc/utils'
 import { Provider, store }                 from '@acx-ui/store'
 import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
+import { detailContent } from '../__tests__/fixtures'
+
 import { RogueAPDetectionDetailView } from './RogueAPDetectionDetailView'
-
-
-const detailContent = {
-  venues: [
-    {
-      id: '4ca20c8311024ac5956d366f15d96e0c',
-      name: 'test-venue'
-    }
-  ],
-  name: 'Default profile',
-  rules: [
-    {
-      name: 'Same Network Rule',
-      type: 'SameNetworkRule',
-      classification: 'Malicious',
-      priority: 1
-    }
-  ],
-  id: 'policyId1'
-}
 
 const emptyDetailContent = {
   rules: [
@@ -138,15 +121,15 @@ describe('RogueAPDetectionDetailView', () => {
 
     await screen.findByText(/classification rules/i)
 
-    screen.getByText(1)
+    screen.getByText(detailContent.rules.length)
 
     await screen.findByText(/venue name/i)
 
     await screen.findByText(/instance \(3\)/i)
 
-    await screen.findByRole('cell', {
+    expect(await screen.findByRole('cell', {
       name: 'test-venue2'
-    })
+    })).toBeVisible()
   })
 
   it('should render empty RogueAPDetectionDetailView successfully', async () => {
@@ -178,5 +161,42 @@ describe('RogueAPDetectionDetailView', () => {
 
     await screen.findByText(/instance \(0\)/i)
 
+  })
+
+  it('should render RogueAPDetectionDetailView correctly when enableRbac is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    mockServer.use(rest.get(
+      RogueApUrls.getRoguePolicyRbac.url,
+      (_, res, ctx) => res(
+        ctx.json(detailContent)
+      )
+    ), rest.post(
+      RogueApUrls.getVenueRoguePolicy.url,
+      (_, res, ctx) => res(
+        ctx.json(venueDetailContent)
+      )
+    ))
+
+    render(
+      <RogueAPDetectionDetailView />
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByText(/classification rules/i)
+
+    screen.getByText(detailContent.rules.length)
+
+    await screen.findByText(/venue name/i)
+
+    await screen.findByText(/instance \(3\)/i)
+
+    expect(await screen.findByRole('cell', {
+      name: 'test-venue2'
+    })).toBeVisible()
   })
 })

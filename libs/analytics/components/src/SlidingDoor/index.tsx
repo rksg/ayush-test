@@ -138,6 +138,9 @@ export const SlidingDoor = (props: SlidingDoorProps) => {
     setSearchText('')
     setBreadcrumbPath(initialBreadcrumb)
   }, [rootNode]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { // Required when the filter is re-used for different pages
+    setInputValue(nodeToInputValue(availableNode?.path || defaultNetworkPath))
+  }, [availableNode?.path])
 
   const nodesToShow = (searchText
     ? searchResults

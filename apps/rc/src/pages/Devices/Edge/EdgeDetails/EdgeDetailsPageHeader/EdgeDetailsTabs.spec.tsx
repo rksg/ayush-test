@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { rest } from 'msw'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   EdgeStatus,
   ApVenueStatusEnum,
@@ -16,9 +16,6 @@ import {
   fireEvent,
   mockServer
 } from '@acx-ui/test-utils'
-
-
-// import { mockedEdgeServiceList } from '../../__tests__/fixtures'
 
 import  EdgeDetailsTabs from './EdgeDetailsTabs'
 
@@ -74,6 +71,20 @@ describe('Edge Details Tabs', () => {
       })
 
     expect(screen.queryByText('Troubleshooting')).toBeFalsy()
+  })
+
+  it('should not have DHCP tab if DHCP_HA OFF', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGE_DHCP_HA_TOGGLE)
+    render(
+      <Provider>
+        <EdgeDetailsTabs
+          isOperational={true}
+        />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.queryByText('DHCP')).toBeFalsy()
   })
 
   it('should not display troubleshooting tab when FF is disabled', async () => {

@@ -24,6 +24,10 @@ export function transformTitleCase (value: string) {
   )
 }
 
+export function transformIPv6 (value: string) {
+  return value.replace(/^ipv6$/i, 'IPv6')
+}
+
 export function transformByte (bytes: string| number, perSecondFlag: boolean = false, precision?: number) {
   if (bytes === 0 || bytes === '0.0' || bytes === '0') {
     return perSecondFlag ? '0 Bps' : '0 Bytes'

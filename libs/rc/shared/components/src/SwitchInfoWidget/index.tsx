@@ -19,7 +19,6 @@ import { CommonUrlsInfo, SwitchStatusEnum, SWITCH_DISCONNECTED, useTableQuery } 
 import { useParams, TenantLink }                                                from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                                                 from '@acx-ui/utils'
 
-import { AlarmsDrawer } from '../AlarmsDrawer'
 
 import * as UI                 from './styledComponents'
 import { SwitchDetailsDrawer } from './SwitchDetailsDrawer'
@@ -82,7 +81,6 @@ export function SwitchInfoWidget (props:{
   const { $t } = useIntl()
   const { switchDetail, filters } = props
   const [visible, setVisible] = useState(false)
-  const [alarmDrawerVisible, setAlarmDrawerVisible] = useState(false)
 
   const isDisconnected
     = switchDetail?.deviceStatus === SwitchStatusEnum.DISCONNECTED
@@ -138,6 +136,12 @@ export function SwitchInfoWidget (props:{
   }
   const poeUsage = getPoeUsage(switchDetail)
 
+  const onAlarmClick = () => {
+    const event = new CustomEvent('showAlarmDrawer',
+      { detail: { data: { name: 'all', serialNumber: params.serialNumber } } })
+    window.dispatchEvent(event)
+  }
+
   return (
     <UI.Container>
       <Card title={switchDetail?.model}
@@ -153,12 +157,19 @@ export function SwitchInfoWidget (props:{
             <UI.Wrapper>
               <Loader states={[alarmQuery]}>
                 { alarmData && alarmData.length > 0
-                  ?<div onClick={() => setAlarmDrawerVisible(true)}>
+                  ?<div onClick={onAlarmClick}>
                     <UI.DonutChartWidget
                       title={$t({ defaultMessage: 'Alarms' })}
                       style={{ width: 100, height: 100 }}
                       legend={'name-value'}
-                      data={alarmData}/>
+                      data={alarmData}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      onClick={(e: any)=>{
+                        e.event.stop()
+                        const event = new CustomEvent('showAlarmDrawer',
+                          { detail: { data: { ...e.data, serialNumber: params.serialNumber } } })
+                        window.dispatchEvent(event)
+                      }}/>
                   </div>
                   : <NoActiveContent
                     text={$t({ defaultMessage: 'No active alarms' })}
@@ -244,11 +255,6 @@ export function SwitchInfoWidget (props:{
         visible={visible}
         onClose={()=>setVisible(false)}
         switchDetail={switchDetail}
-      />
-      <AlarmsDrawer
-        visible={alarmDrawerVisible}
-        setVisible={setAlarmDrawerVisible}
-        serialNumber={params.serialNumber}
       />
     </UI.Container>
   )

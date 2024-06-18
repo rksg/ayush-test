@@ -7,11 +7,12 @@ import { Form }              from 'antd'
 import { SliderSingleProps } from 'antd/lib/slider'
 import { rest }              from 'msw'
 
-import { AccessControlUrls }                              from '@acx-ui/rc/utils'
-import { Provider }                                       from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { AccessControlUrls, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }               from '@acx-ui/test-utils'
 
-import { applicationDetail, avcApp, avcCat, queryApplication, queryApplicationUpdate } from '../__tests__/fixtures'
+import { enhancedApplicationPolicyListResponse } from '../../AccessControl/__tests__/fixtures'
+import { applicationDetail, avcApp, avcCat }     from '../__tests__/fixtures'
 
 import { ApplicationDrawer } from './index'
 
@@ -90,35 +91,23 @@ const getApplicationDetail = jest.fn()
 describe('ApplicationDrawer Component with view mode', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
-      ), rest.post(
-        AccessControlUrls.addAppPolicy.url,
-        (_, res, ctx) => res(
-          ctx.json(applicationResponse)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcCategory.url,
-        (_, res, ctx) => res(
-          ctx.json(avcCat)
-        )
-      ), rest.get(
-        AccessControlUrls.getAvcApp.url,
-        (_, res, ctx) => res(
-          ctx.json(avcApp)
-        )
-      ), rest.get(
-        AccessControlUrls.getAppPolicy.url,
+      rest.post(AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))),
+      rest.post(AccessControlUrls.addAppPolicy.url,
+        (_, res, ctx) => res(ctx.json(applicationResponse))),
+      rest.get(AccessControlUrls.getAvcCategory.url,
+        (_, res, ctx) => res(ctx.json(avcCat))),
+      rest.get(AccessControlUrls.getAvcApp.url,
+        (_, res, ctx) => res(ctx.json(avcApp))),
+      rest.get(AccessControlUrls.getAppPolicy.url,
         (_, res, ctx) => {
           getApplicationDetail()
           return res(
             ctx.json(applicationDetail)
           )
-        }
-      ))
+        }),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))))
   })
 
   it('Render ApplicationDrawer component successfully with viewMode', async () => {
@@ -139,7 +128,7 @@ describe('ApplicationDrawer Component with view mode', () => {
 
     await screen.findByText('viewText')
 
-    fireEvent.click(screen.getByText('viewText'))
+    await userEvent.click(screen.getByText('viewText'))
 
     expect(getApplicationDetail).toHaveBeenCalled()
 
@@ -162,11 +151,9 @@ describe('ApplicationDrawer Component with view mode', () => {
 describe('ApplicationDrawer Component', () => {
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(
-          ctx.json(queryApplication)
-        )
+      rest.post(
+        AccessControlUrls.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))
       ), rest.post(
         AccessControlUrls.addAppPolicy.url,
         (_, res, ctx) => res(
@@ -190,7 +177,8 @@ describe('ApplicationDrawer Component', () => {
             ctx.json(applicationDetail)
           )
         }
-      ))
+      ), rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))))
   })
   it('Render ApplicationDrawer component successfully with new added profile', async () => {
     render(
@@ -231,11 +219,18 @@ describe('ApplicationDrawer Component', () => {
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.get(
-      AccessControlUrls.getAppPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryApplicationUpdate)
-      )
+    mockServer.use(rest.post(
+      AccessControlUrls.getEnhancedApplicationPolicies.url,
+      (req, res, ctx) => res(ctx.json({
+        ...enhancedApplicationPolicyListResponse,
+        data: [
+          ...enhancedApplicationPolicyListResponse.data,
+          {
+            id: 'updateId',
+            name: 'app1-test'
+          }
+        ]
+      }))
     ))
 
     expect(await screen.findByRole('option', { name: 'app1-test' })).toBeVisible()

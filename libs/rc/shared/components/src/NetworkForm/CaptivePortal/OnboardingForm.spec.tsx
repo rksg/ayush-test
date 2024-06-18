@@ -55,14 +55,13 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
         (_, res, ctx) => res(ctx.json({ response: [clickThroughData] }))),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json(externalProviders))),
-      rest.get(PortalUrlsInfo.getPortalProfileList.url
-        .replace('?pageSize=:pageSize&page=:page&sort=:sort', ''),
-      (_, res, ctx) => res(ctx.json({ content: portalList }))
+      rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
+        (_, res, ctx) => res(ctx.json({ content: portalList }))
       ),
       rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
         res(ctx.json([]))
       ),
-      rest.post(PortalUrlsInfo.savePortal.url,
+      rest.post(PortalUrlsInfo.createPortal.url,
         (_, res, ctx) => res(ctx.json({
           requestId: 'request-id', id: 'test', serviceName: 'test' }))
       ),

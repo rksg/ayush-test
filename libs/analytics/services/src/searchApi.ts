@@ -1,15 +1,15 @@
 
 import { gql } from 'graphql-request'
 
-import { dataApiSearch, dataApi }   from '@acx-ui/store'
-import { NetworkPath, NodesFilter } from '@acx-ui/utils'
+import { dataApiSearch, dataApi }          from '@acx-ui/store'
+import { hasRaiPermission, RaiPermission } from '@acx-ui/user'
+import { NetworkPath, NodesFilter }        from '@acx-ui/utils'
 
 export interface RequestPayload {
   start: string
   end: string
   query: string
-  limit: number,
-  isReportOnly?: boolean
+  limit: number
 }
 
 export interface ListPayload extends RequestPayload {
@@ -35,7 +35,7 @@ export interface NetworkHierarchy {
   switchCount: number
 }
 
-export interface SearchResponse extends APListResponse, SwitchListResponse, NetworkListReponse {
+export interface SearchResponse extends APListResponse, SwitchListResponse, NetworkListResponse {
   clients: Client[]
   networkHierarchy: NetworkHierarchy[]
 }
@@ -48,7 +48,7 @@ export interface SwitchListResponse {
   switches: Switch[]
 }
 
-export interface NetworkListReponse {
+export interface NetworkListResponse {
   wifiNetworks: Network[]
 }
 
@@ -97,6 +97,9 @@ export interface ClientList {
   clientsByTraffic: ClientByTraffic[]
 }
 
+const addQueryPart = (permissions: RaiPermission[], query: string) =>
+  permissions.some(permission => hasRaiPermission(permission)) ? query : ''
+
 export const searchApi = dataApiSearch.injectEndpoints({
   endpoints: (build) => ({
     search: build.query<SearchResponse, RequestPayload>({
@@ -109,6 +112,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
           $limit: Int
         ) {
           search(start: $start, end: $end, query: $query, limit: $limit) {
+            ${addQueryPart(['READ_REPORTS', 'READ_ACCESS_POINTS_LIST'], `
             aps {
               apName,
               macAddress,
@@ -117,7 +121,9 @@ export const searchApi = dataApiSearch.injectEndpoints({
               version,
               apZone
               networkPath {name type}
-            },
+            }
+            `)}
+            ${addQueryPart(['READ_REPORTS', 'READ_INCIDENTS'], `
             networkHierarchy {
               name
               root
@@ -125,7 +131,9 @@ export const searchApi = dataApiSearch.injectEndpoints({
               apCount
               networkPath {name type}
               switchCount
-            },
+            }
+            `)}
+            ${addQueryPart(['READ_WIRELESS_CLIENTS_REPORT', 'READ_CLIENT_TROUBLESHOOTING'], `
             clients {
               hostname
               username
@@ -135,16 +143,16 @@ export const searchApi = dataApiSearch.injectEndpoints({
               lastActiveTime
               manufacturer
             }
-            ${payload.isReportOnly
-          ? ''
-          : `
-            ,
+            `)}
+            ${addQueryPart(['READ_SWITCH_LIST'], `
             switches {
               switchName
               switchMac: switchId
               switchModel
               switchVersion: switchFirmware
-            },
+            }
+            `)}
+            ${addQueryPart(['READ_WIFI_NETWORKS_LIST'], `
             wifiNetworks {
               name
               apCount
@@ -154,7 +162,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               rxBytes
               txBytes
             }
-              `}
+            `)}
           }
         }
         `,
@@ -163,7 +171,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
       providesTags: [{ type: 'Monitoring', id: 'GLOBAL_SEARCH_CLIENTS' }],
       transformResponse: (response: { search: SearchResponse }) => response.search
     }),
-    switchtList: build.query<SwitchListResponse, ListPayload>({
+    switchList: build.query<SwitchListResponse, ListPayload>({
       query: (payload) => ({
         document: gql`
         query Search(
@@ -229,7 +237,7 @@ export const networkSearchApi = dataApi.injectEndpoints({
       transformResponse: (response: { network: { search: APListResponse } }) =>
         response.network.search
     }),
-    networkList: build.query<NetworkListReponse, ListPayload>({
+    networkList: build.query<NetworkListResponse, ListPayload>({
       query: (payload) => ({
         document: gql`
         query Network(
@@ -258,7 +266,7 @@ export const networkSearchApi = dataApi.injectEndpoints({
         variables: payload
       }),
       providesTags: [{ type: 'Monitoring', id: 'NETWORK_LIST' }],
-      transformResponse: (response: { network: { search: NetworkListReponse } }) =>
+      transformResponse: (response: { network: { search: NetworkListResponse } }) =>
         response.network.search
     }),
     networkClientList: build.query<ClientList, ListPayload>({
@@ -297,8 +305,10 @@ export const networkSearchApi = dataApi.injectEndpoints({
 
 export const {
   useSearchQuery,
-  useSwitchtListQuery
+  useSwitchListQuery,
+  useLazySwitchListQuery
 } = searchApi
+
 export const {
   useApListQuery,
   useNetworkListQuery,

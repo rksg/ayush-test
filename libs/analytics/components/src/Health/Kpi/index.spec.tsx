@@ -12,7 +12,8 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { TimeStampRange }                                            from '@acx-ui/types'
+import { RolesEnum, TimeStampRange }                                 from '@acx-ui/types'
+import { setUserProfile, getUserProfile }                            from '@acx-ui/user'
 import { DateRange, NetworkPath, fixedEncodeURIComponent, NodeType } from '@acx-ui/utils'
 import type { AnalyticsFilter }                                      from '@acx-ui/utils'
 
@@ -31,6 +32,15 @@ jest.mock('@acx-ui/rc/utils', () => ({
 describe('Kpi Section', () => {
   beforeEach(() => {
     store.dispatch(healthApi.util.resetApiState())
+    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
+      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
+    })
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { network: { timeSeries: sampleTS } }
+    })
+    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
+      data: { timeToConnectThreshold: { value: 30000 } }
+    })
   })
 
   afterEach(() => cleanup())
@@ -58,27 +68,11 @@ describe('Kpi Section', () => {
   }
 
   it('should render disabled tooltip with network path', async () => {
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { network: { timeSeries: sampleTS } }
-    })
     mockGraphqlQuery(dataApiURL, 'KPI', {
-      data: {
-        mutationAllowed: false
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
-      data: {
-        timeToConnectThreshold: { value: 30000 }
-      }
+      data: { mutationAllowed: false }
     })
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: {
-        timeToConnect: {
-          success: true
-        }
+      data: { timeToConnect: { success: true }
       }
     })
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
@@ -95,28 +89,11 @@ describe('Kpi Section', () => {
   })
 
   it('should render disabled tooltip with no permissions', async () => {
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { network: { timeSeries: sampleTS } }
-    })
     mockGraphqlQuery(dataApiURL, 'KPI', {
-      data: {
-        mutationAllowed: false
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
-      data: {
-        timeToConnectThreshold: { value: 30000 }
-      }
+      data: { mutationAllowed: false }
     })
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: {
-        saveThreshold: {
-          success: true
-        }
-      }
+      data: { saveThreshold: { success: true } }
     })
 
     const path =
@@ -152,21 +129,7 @@ describe('Kpi Section', () => {
 
   it('should render valid threshold apply for single ap path', async () => {
     mockGraphqlQuery(dataApiURL, 'KPI', {
-      data: {
-        mutationAllowed: true
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
-      data: {
-        timeToConnectThreshold: { value: 30000 }
-      }
-    })
-
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { network: { timeSeries: sampleTS } }
+      data: { mutationAllowed: true }
     })
 
     const path = [{ type: 'ap' as NodeType, name: 'z1' }] as NetworkPath
@@ -200,27 +163,11 @@ describe('Kpi Section', () => {
   }, 60000)
 
   it('should render with smaller timewindow', async () => {
-    mockGraphqlQuery(dataApiURL, 'histogramKPI', {
-      data: { network: { histogram: { data: [0, 2, 2, 3, 3, 0] } } }
-    })
-    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
-      data: { network: { timeSeries: sampleTS } }
-    })
     mockGraphqlQuery(dataApiURL, 'KPI', {
-      data: {
-        mutationAllowed: false
-      }
-    })
-    mockGraphqlQuery(dataApiURL, 'GetKpiThresholds', {
-      data: {
-        timeToConnectThreshold: { value: 30000 }
-      }
+      data: { mutationAllowed: false }
     })
     mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
-      data: {
-        timeToConnect: {
-          success: true
-        }
+      data: { timeToConnect: { success: true }
       }
     })
     const path = [{ type: 'network', name: 'Network' }] as NetworkPath
@@ -238,5 +185,38 @@ describe('Kpi Section', () => {
     await userEvent.click(viewMore)
     await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText(/Time to Connect/i)).toBeInTheDocument()
+  })
+
+  it('should disable threshold setting when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(dataApiURL, 'KPI', {
+      data: { mutationAllowed: false }
+    })
+    mockGraphqlMutation(dataApiURL, 'SaveThreshold', {
+      data: { timeToConnect: { success: true }
+      }
+    })
+    const path = [{ type: 'network', name: 'Network' }] as NetworkPath
+    const params = { tenantId: 'testTenant' }
+    render(<Provider>
+      <HealthPageContext.Provider
+        value={{ ...healthContext }}
+      >
+        <KpiSection tab={'overview'} filters={{ ...filters, filter: pathToFilter(path) }} />
+      </HealthPageContext.Provider>
+    </Provider>, { route: { params, path: '/:tenantId' } })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const viewMore = await screen.findByRole('button', { name: 'View more' })
+    await userEvent.click(viewMore)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const sliders = await screen.findAllByRole('slider')
+    sliders.forEach(slider => {
+      expect(slider).toHaveAttribute('aria-disabled', 'true')
+    })
+    expect(screen.queryByText('Apply')).not.toBeInTheDocument()
+    expect(screen.queryByText('Reset')).not.toBeInTheDocument()
   })
 })

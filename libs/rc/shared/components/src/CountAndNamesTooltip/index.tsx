@@ -40,7 +40,11 @@ export function CountAndNamesTooltip (props: CountAndNamesTooltipProps) {
     const tootipTitle = truncateData.map(n => <div key={n}>{n}</div>)
 
     return (
-      <Tooltip title={tootipTitle} placement={placement || 'bottom'} >
+      <Tooltip
+        dottedUnderline
+        title={tootipTitle}
+        placement={placement || 'bottom'}
+      >
         { countComponent(linkUrl!, countDisplay) }
       </Tooltip>
     )

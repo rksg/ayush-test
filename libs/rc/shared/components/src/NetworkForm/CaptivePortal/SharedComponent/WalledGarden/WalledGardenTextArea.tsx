@@ -8,10 +8,9 @@ import {
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Button }                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                    from '@acx-ui/feature-toggle'
-import { QuestionMarkCircleOutlined }                from '@acx-ui/icons'
-import { walledGardensRegExp, GuestNetworkTypeEnum } from '@acx-ui/rc/utils'
+import { Button }                     from '@acx-ui/components'
+import { QuestionMarkCircleOutlined } from '@acx-ui/icons'
+import { walledGardensRegExp }        from '@acx-ui/rc/utils'
 
 import NetworkFormContext from '../../../NetworkFormContext'
 
@@ -25,7 +24,6 @@ enum WallGardenAction {
 }
 
 export interface WalledGardenProps {
-  guestNetworkTypeEnum: GuestNetworkTypeEnum,
   enableDefaultWalledGarden: boolean
 }
 
@@ -41,23 +39,12 @@ interface WalledGardenState {
   fieldsValue: WalledGardenFieldsValue
 }
 
-const exemptionList = [
-  GuestNetworkTypeEnum.WISPr,
-  GuestNetworkTypeEnum.Cloudpath
-]
-
-function isExemption (guestNetworkTypeEnum: GuestNetworkTypeEnum) : boolean {
-  return exemptionList.includes(guestNetworkTypeEnum)
-}
-
-
 
 /* eslint-disable max-len */
 export function WalledGardenTextArea (props: WalledGardenProps) {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const toggleFlag = useIsSplitOn(Features.WIFI_EDA_BYPASS_CNA_TOGGLE)
-  const { guestNetworkTypeEnum, enableDefaultWalledGarden } = props
+  const { enableDefaultWalledGarden } = props
 
   /**
    * the reanson why we set condition isExemption() is because
@@ -66,9 +53,6 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
    * So we have make sure that in WISPr and Cloudpath,
    * walled garden setting is shown even Feature toggle is disabled
    */
-
-  // if one condition is true, then go render it.
-  const isRenderNeed = [toggleFlag, isExemption(guestNetworkTypeEnum)].some(Boolean)
 
   const {
     data: networkFromContextData,
@@ -155,7 +139,7 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
    * and no sigcanificant change to the submit/validate logic in NetworkForm.tsx
    * The walledGardensString attribute will be deleted before submit
    */
-  return (isRenderNeed ? <>
+  return (<>
     <Form.Item
       data-testid='walled-garden-fullblock'
       name={['walledGardensString']}
@@ -230,5 +214,5 @@ export function WalledGardenTextArea (props: WalledGardenProps) {
         <Input.TextArea data-testid='walled-garden-hidden-textarea'/>
       }
     />
-  </> : null)
+  </>)
 }

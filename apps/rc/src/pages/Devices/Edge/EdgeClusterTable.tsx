@@ -12,13 +12,18 @@ import {
   EdgeClusterTableDataType,
   activeTab,
   allowRebootForStatus,
+  allowSendOtpForStatus,
+  allowSendFactoryResetStatus,
   getUrl,
   usePollingTableQuery,
   genUrl,
-  CommonCategory
+  CommonCategory,
+  EdgeStatusEnum,
+  isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                         from '@acx-ui/user'
+import { EdgeScopes }                             from '@acx-ui/types'
+import { filterByAccess, hasPermission }          from '@acx-ui/user'
 import { getIntl }                                from '@acx-ui/utils'
 
 import { HaStatusBadge } from './HaStatusBadge'
@@ -41,7 +46,12 @@ export const EdgeClusterTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { deleteNodeAndCluster, reboot } = useEdgeClusterActions()
+  const {
+    deleteNodeAndCluster,
+    reboot,
+    sendEdgeOnboardOtp,
+    sendFactoryReset
+  } = useEdgeClusterActions()
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeClusterListForTableQuery,
     defaultPayload: defaultPayload,
@@ -113,7 +123,7 @@ export const EdgeClusterTable = () => {
       align: 'center',
       render: (_, row) => {
         return (
-          row.haStatus &&
+          !row.isFirstLevel &&
           <HaStatusBadge
             haStatus={row.haStatus}
           />
@@ -152,7 +162,7 @@ export const EdgeClusterTable = () => {
       dataIndex: 'clusterInterface'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueId',
       dataIndex: 'venueId',
       sorter: true,
@@ -165,11 +175,19 @@ export const EdgeClusterTable = () => {
           </TenantLink>
         )
       }
+    },
+    {
+      title: $t({ defaultMessage: 'Version' }),
+      key: 'firmwareVersion',
+      dataIndex: 'firmwareVersion',
+      sorter: true,
+      show: false
     }
   ]
 
   const rowActions: TableProps<EdgeClusterTableDataType>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -203,6 +221,7 @@ export const EdgeClusterTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       visible: (selectedRows) =>
         (selectedRows.filter(row =>
           row.isFirstLevel && (row.children?.length ?? 0) > 0).length === 0),
@@ -212,6 +231,31 @@ export const EdgeClusterTable = () => {
       }
     },
     {
+      scopeKey: [EdgeScopes.UPDATE],
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => !allowSendOtpForStatus(row?.deviceStatus)).length === 0 &&
+          // eslint-disable-next-line max-len
+          selectedRows.filter(row => isOtpEnrollmentRequired(row.serialNumber)).length === selectedRows.length),
+      label: $t({ defaultMessage: 'Send OTP' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendEdgeOnboardOtp(selectedRows, clearSelection)
+      }
+    },
+    {
+      scopeKey: [EdgeScopes.CREATE],
+      visible: (selectedRows) =>
+        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+          selectedRows.filter(row => {
+            return !allowSendFactoryResetStatus(row?.deviceStatus)
+          }).length === 0),
+      label: $t({ defaultMessage: 'Reset & Recover' }),
+      onClick: (selectedRows, clearSelection) => {
+        sendFactoryReset(selectedRows, clearSelection)
+      }
+    },
+    {
+      scopeKey: [EdgeScopes.CREATE],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootForStatus(row?.deviceStatus)).length === 0),
@@ -221,10 +265,9 @@ export const EdgeClusterTable = () => {
       }
     },
     {
-      label: $t({ defaultMessage: 'Switchover' }),
-      onClick: () => {},
-      disabled: true
-    },{
+      scopeKey: [EdgeScopes.UPDATE],
+      visible: (selectedRows) =>
+        (selectedRows.length === 1 && Boolean(selectedRows[0]?.isFirstLevel)),
       label: $t({ defaultMessage: 'Run Cluster & SmartEdge configuration wizard' }),
       onClick: (selectedRows) => {
         if(selectedRows[0].isFirstLevel) {
@@ -243,16 +286,24 @@ export const EdgeClusterTable = () => {
         }
       },
       disabled: (selectedRows) => {
-        return !selectedRows[0]?.isFirstLevel
+        const nodeList = selectedRows[0]?.edgeList ?? []
+        return !nodeList.length ||
+        nodeList.filter(item =>
+          item.deviceStatus === EdgeStatusEnum.NEVER_CONTACTED_CLOUD).length > 0
       }
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [EdgeScopes.CREATE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+  })
+
   return (
     <Loader states={[tableQuery]}>
       <Table
+        settingsId='edge-cluster-table'
         rowKey={(row: EdgeClusterTableDataType) => (row.serialNumber ?? `c-${row.clusterId}`)}
-        rowSelection={{ type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}
         dataSource={tableQuery?.data?.data}
@@ -269,16 +320,16 @@ const getClusterStatus = (data: EdgeClusterTableDataType) => {
   const { $t } = getIntl()
   const defaultMessage = $t({ defaultMessage: 'Cluster Setup Required' })
   if((data.edgeList?.length ?? 0) < 2){
-    return <Row align='middle' justify='center' gutter={[2, 0]}>
+    return <Row align='middle' gutter={[2, 0]}>
       <Col>
         {$t({ defaultMessage: 'Single Node' })}
       </Col>
       <Col>
         <Tooltip.Question
-          title={$t({ defaultMessage: `The cluster function requires 
+          title={$t({ defaultMessage: `The cluster function requires
         at least two nodes to operate` })}
           placement='bottom'
-          iconStyle={{ width: 16, marginTop: 5 }}
+          iconStyle={{ width: 13, height: 13, marginTop: 3 }}
         />
       </Col>
     </Row>

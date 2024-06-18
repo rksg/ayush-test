@@ -276,11 +276,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/radioSettings',
     newApi: true
   },
-  deleteApRadioCustomization: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/radioSettings',
-    newApi: true
-  },
   pingAp: {
     method: 'PATCH',
     url: '/venues/aps/:serialNumber',
@@ -371,11 +366,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
     newApi: true
   },
-  resetApAntennaTypeSettings: {
-    method: 'delete',
-    url: '/venues/:venueId/aps/:serialNumber/antennaTypeSettings',
-    newApi: true
-  },
   getApBssColoring: {
     method: 'get',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
@@ -384,22 +374,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   updateApBssColoring: {
     method: 'put',
     url: '/venues/aps/:serialNumber/bssColoringSettings',
-    newApi: true
-  },
-  getApCustomization: {
-    method: 'get',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
-    newApi: true
-  },
-  updateApCustomization: {
-    method: 'put',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
-    newApi: true
-  },
-  resetApCustomization: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/wifiOverwriteSettings',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/customization',
     newApi: true
   },
   getVenueDirectedMulticast: {
@@ -419,7 +393,8 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   updateApDirectedMulticast: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/directedMulticastSettings'
+    url: '/venues/aps/:serialNumber/directedMulticastSettings',
+    newApi: true
   },
   resetApDirectedMulticast: {
     method: 'delete',
@@ -533,32 +508,28 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueApManagementVlan: {
     method: 'get',
-    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    url: '/venues/:venueId/apManagementTrafficVlanSettings',
     newApi: true
   },
   updateVenueApManagementVlan: {
     method: 'put',
-    url: '/venues/:venueId/aps/managementTrafficVlanSettings',
+    url: '/venues/:venueId/apManagementTrafficVlanSettings',
     newApi: true
   },
   getApManagementVlan: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
   updateApManagementVlan: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
-    newApi: true
-  },
-  deleteApManagementVlan: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/managementTrafficVlanSettings',
+    url: '/venues/:venueId/aps/:serialNumber/managementTrafficVlanSettings',
     newApi: true
   },
   getApFeatureSets: {
     method: 'get',
-    url: '/wifiFeatureSets/:featureName'
+    url: '/wifiFeatureSets/:featureName',
+    newApi: true
   },
   getApCompatibilitiesVenue: {
     method: 'post',
@@ -569,6 +540,10 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/wifiNetworks/:networkId/apCompatibilities/query',
     newApi: true
+  },
+  activateCertificateTemplate: {
+    method: 'PUT',
+    newApi: true,
+    url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   }
-
 }

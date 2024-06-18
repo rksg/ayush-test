@@ -7,17 +7,27 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
-import { useAddRoguePolicyMutation, useUpdateRoguePolicyMutation } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import {
+  useAddRoguePolicyMutation,
+  useAddRoguePolicyTemplateMutation,
+  useUpdateRoguePolicyMutation,
+  useUpdateRoguePolicyTemplateMutation
+} from '@acx-ui/rc/services'
 import {
   RogueAPDetectionContextType,
   RogueAPRule,
   RogueVenue,
-  getPolicyRoutePath,
-  getPolicyListRoutePath,
   PolicyType,
-  PolicyOperation, CommonResult
+  PolicyOperation,
+  CommonResult,
+  usePolicyListBreadcrumb,
+  usePolicyPageHeaderTitle,
+  useConfigTemplateMutationFnSwitcher,
+  usePolicyPreviousPath,
+  RoguePolicyRequest
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import RogueAPDetectionContext , { mainReducer } from '../RogueAPDetectionContext'
 import { RogueAPDetectionScopeForm }             from '../RogueAPDetectionScope/RogueAPDetectionScopeForm'
@@ -32,11 +42,11 @@ type RogueAPDetectionFormProps = {
 }
 
 export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
-  const tablePath = getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
+  const linkToInstanceList = usePolicyPreviousPath(PolicyType.ROGUE_AP_DETECTION, PolicyOperation.LIST)
   const params = useParams()
   const { edit, modalMode, modalCallBack } = props
 
@@ -46,64 +56,74 @@ export const RogueAPDetectionForm = (props: RogueAPDetectionFormProps) => {
     tags: [] as string[],
     description: '',
     rules: [] as RogueAPRule[],
-    venues: [] as RogueVenue[]
+    venues: [] as RogueVenue[],
+    defaultPolicyId: ''
   })
 
-  const [ createRoguePolicy ] = useAddRoguePolicyMutation()
+  const [ createRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddRoguePolicyMutation,
+    useTemplateMutationFn: useAddRoguePolicyTemplateMutation
+  })
 
-  const [ updateRoguePolicy ] = useUpdateRoguePolicyMutation()
+  const [ updateRoguePolicy ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateRoguePolicyMutation,
+    useTemplateMutationFn: useUpdateRoguePolicyTemplateMutation
+  })
 
-  const transformPayload = (state: RogueAPDetectionContextType, edit: boolean) => {
+  // eslint-disable-next-line max-len
+  const transformPayload = (state: RogueAPDetectionContextType, edit: boolean) : RoguePolicyRequest => {
     return {
       id: edit ? params.policyId : '',
       name: state.policyName,
       description: state.description,
       rules: state.rules,
-      venues: state.venues
+      venues: state.venues,
+      oldVenues: state.oldVenues || [],
+      defaultPolicyId: state.defaultPolicyId ?? ''
     }
   }
 
-  const handleRogueAPDetectionPolicy = async (edit: boolean) => {
+  const handleRogueAPDetectionPolicy = async () => {
     try {
       let results = {} as CommonResult
       if (!edit) {
         results = await createRoguePolicy({
           params,
-          payload: transformPayload(state, false)
+          payload: transformPayload(state, false),
+          enableRbac
         }).unwrap()
       } else {
         await updateRoguePolicy({
           params,
-          payload: transformPayload(state, true)
+          payload: transformPayload(state, true),
+          enableRbac
         }).unwrap()
       }
       const response = results.response as { id: string }
-      modalMode ? modalCallBack?.(response.id) : navigate(linkToPolicies, { replace: true })
+      modalMode ? modalCallBack?.(response.id) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
 
+  const onCancel = () => {
+    modalMode ? modalCallBack?.() : navigate(linkToInstanceList, { replace: true })
+  }
+
+  const breadcrumb = usePolicyListBreadcrumb(PolicyType.ROGUE_AP_DETECTION)
+  const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.ROGUE_AP_DETECTION)
+
   return (
     <RogueAPDetectionContext.Provider value={{ state, dispatch }}>
       {!modalMode && <PageHeader
-        title={edit
-          ? $t({ defaultMessage: 'Edit Rogue AP Detection Policy' })
-          : $t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Rogue AP Detection' }), link: tablePath }
-        ]}
+        title={pageTitle}
+        breadcrumb={breadcrumb}
       />}
       <StepsForm<RogueAPDetectionContextType>
         form={form}
         editMode={edit}
-        onCancel={() => modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })}
-        onFinish={() => handleRogueAPDetectionPolicy(edit)}
+        onCancel={onCancel}
+        onFinish={handleRogueAPDetectionPolicy}
       >
         <StepsForm.StepForm<RogueAPDetectionContextType>
           name='settings'

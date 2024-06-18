@@ -8,6 +8,7 @@ import {  Loader, Tabs }                                         from '@acx-ui/c
 import { DateFormatEnum, formatter }                             from '@acx-ui/formatter'
 import { useExportAllSigPackMutation, useExportSigPackMutation } from '@acx-ui/rc/services'
 import { ApplicationUpdateType }                                 from '@acx-ui/rc/utils'
+import { hasPermission }                                         from '@acx-ui/user'
 
 import * as UI                                                                           from './styledComponents'
 import { UpdateConfirms }                                                                from './UpdateConfirms'
@@ -95,7 +96,7 @@ const ApplicationPolicyMgmt = () => {
             </UI.CurrentDetail>
           </UI.FwContainer>
         </Space>
-        {updateAvailable && <>
+        {updateAvailable && hasPermission() && <>
           <div style={{ marginTop: 10, color: 'var(--acx-neutrals-70)' }}>
             {/* eslint-disable-next-line max-len */}
             {$t({ defaultMessage: 'Clicking "Update" will proceed with the below updates under this tenant' })}

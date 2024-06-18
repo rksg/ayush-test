@@ -1,32 +1,18 @@
 import { rest } from 'msw'
 
-import { serviceApi }                                                    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiCallingDetailContextType, WifiCallingUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                               from '@acx-ui/store'
-import { act, mockServer, render, screen }                               from '@acx-ui/test-utils'
+import { serviceApi } from '@acx-ui/rc/services'
+import {
+  CommonUrlsInfo,
+  ServicesConfigTemplateUrlsInfo,
+  WifiCallingDetailContextType,
+  WifiCallingUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+
+import { mockWifiCallingDetail } from '../__tests__/fixtures'
 
 import { WifiCallingDetailContext, WifiCallingDetailView } from './WifiCallingDetailView'
-
-const wifiCallingDetail = {
-  networkIds: [
-    '44c5604da90443968e1ee91706244e63',
-    'c8cd8bbcb8cc42caa33c991437ecb983',
-    '5cae9e28662447008ea86ec7c339661b'
-  ],
-  description: 'for test',
-  qosPriority: 'WIFICALLING_PRI_VOICE',
-  serviceName: 'wifiCSP1',
-  id: 'wifiCallingServiceId1',
-  epdgs: [
-    {
-      ip: '1.2.3.4',
-      domain: 'abc.com'
-    },
-    {
-      domain: 'a.b.c.com'
-    }
-  ]
-}
 
 const initState = {} as WifiCallingDetailContextType
 
@@ -37,14 +23,17 @@ describe('WifiCallingDetailView', () => {
     })
     mockServer.use(
       rest.get(WifiCallingUrls.getWifiCalling.url,
-        (_, res, ctx) => res(ctx.json(wifiCallingDetail))),
-      rest.post(CommonUrlsInfo.getVMNetworksList.url, (_, res, ctx) =>
-        res(ctx.json({
-          fields: ['name', 'id'],
-          totalCount: 0,
-          page: 1,
-          data: []
-        }))
+        (_, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
+      rest.get(ServicesConfigTemplateUrlsInfo.getWifiCalling.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingDetail))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) =>
+          res(ctx.json({
+            fields: ['name', 'id'],
+            totalCount: 0,
+            page: 1,
+            data: []
+          }))
       )
     )
   })

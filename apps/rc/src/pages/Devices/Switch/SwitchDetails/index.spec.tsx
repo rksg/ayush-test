@@ -1,17 +1,17 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { apApi }                                            from '@acx-ui/rc/services'
+import { apApi, switchApi }                                 from '@acx-ui/rc/services'
 import { CommonUrlsInfo, FirmwareUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                  from '@acx-ui/store'
 import { mockRestApiQuery, mockServer, render, screen }     from '@acx-ui/test-utils'
 import { RolesEnum }                                        from '@acx-ui/types'
 import { getUserProfile, setUserProfile }                   from '@acx-ui/user'
 
-import { switchDetailData } from './__tests__/fixtures'
-import { activities }       from './SwitchTimelineTab/__tests__/fixtures'
+import { switchDetailData, switchDetailsContextData } from './__tests__/fixtures'
+import { activities }                                 from './SwitchTimelineTab/__tests__/fixtures'
 
-import SwitchDetails from '.'
+import SwitchDetails, { SwitchDetailsContext } from '.'
 
 /* eslint-disable max-len */
 jest.mock('@acx-ui/components', () => ({
@@ -28,6 +28,10 @@ jest.mock('@acx-ui/reports/components', () => ({
   ...jest.requireActual('@acx-ui/reports/components'),
   EmbeddedReport: () => <div data-testid={'some-report-id'} id='acx-report' />
 }))
+
+jest.mock('./SwitchOverviewTab', () => () => {
+  return <div data-testid={'rc-SwitchOverviewTab'} title='SwitchOverviewTab' />
+})
 
 const jwtToken = {
   access_token: 'access_token',
@@ -111,14 +115,10 @@ export const troubleshootingResult_ping_emptyResult = {
   }
 }
 
-jest.mock('./SwitchOverviewTab', () => () => {
-  return <div data-testid={'rc-SwitchOverviewTab'} title='SwitchOverviewTab' />
-})
-
-
 describe('SwitchDetails', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
+    store.dispatch(switchApi.util.resetApiState())
     mockRestApiQuery(CommonUrlsInfo.getActivityList.url, 'post', activities)
     mockServer.use(
       rest.get(SwitchUrlsInfo.getSwitchDetailHeader.url,
@@ -173,11 +173,19 @@ describe('SwitchDetails', () => {
       serialNumber: 'serialNumber',
       activeTab: 'troubleshooting'
     }
-    render(<Provider><SwitchDetails /></Provider>, {
-      route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
-    })
+    render(
+      <Provider>
+        <SwitchDetailsContext.Provider value={{
+          switchDetailsContextData,
+          setSwitchDetailsContextData: jest.fn()
+        }}>
+          <SwitchDetails />
+        </SwitchDetailsContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
+      })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Troubleshooting')
+      .toEqual('Ping')
   })
 
   it('should navigate to clients tab correctly', async () => {
@@ -191,7 +199,7 @@ describe('SwitchDetails', () => {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab' }
     })
     expect(screen.getAllByRole('tab', { selected: true }).at(0)?.textContent)
-      .toEqual('Clients (1)')
+      .toEqual('Clients (0)')
   })
 
   it('should navigate to configuration tab correctly', async () => {

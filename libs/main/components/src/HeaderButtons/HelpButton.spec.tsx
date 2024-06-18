@@ -1,19 +1,19 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { getDocsMappingURL, getDocsURL } from '@acx-ui/rc/utils'
+import { Provider }                      from '@acx-ui/store'
+import { mockServer, render, screen }    from '@acx-ui/test-utils'
 
-import HelpButton                    from './HelpButton'
-import { getMappingURL, getDocsURL } from './HelpButton/HelpPage'
+import HelpButton from './HelpButton'
 
 const params = { tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1' }
 describe('HelpButton', () => {
   it('should render HelpButton correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
@@ -35,7 +35,7 @@ describe('HelpButton', () => {
   it('should render HelpButton disabled correctly', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           't/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
@@ -51,7 +51,7 @@ describe('HelpButton', () => {
 
   it('should not trigger chat if tdi.chat is not defined', async () => {
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
@@ -74,7 +74,7 @@ describe('HelpButton', () => {
   })
   it('should trigger chat if support status is ready', async () => {
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
@@ -97,7 +97,7 @@ describe('HelpButton', () => {
   })
   it('should enable chat support button if support status is chatting', async () => {
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))
@@ -121,7 +121,7 @@ describe('HelpButton', () => {
   })
   it.skip('should show warning icon with tooltip when fetchbot not ready for 30 secs', async () => {
     mockServer.use(
-      rest.get(getMappingURL(false), (_, res, ctx) =>
+      rest.get(getDocsMappingURL(false), (_, res, ctx) =>
         res(ctx.json({
           '/t/*/dashboard': 'GUID-A338E06B-7FD9-4492-B1B2-D43841D704F1.html'
         }))

@@ -94,13 +94,3 @@ export const ValueContainer = styled.div`
     font-size: unset;
   }
 `
-export const LabelWithHint = styled.div`
-  display: flex;
-  align-items: center;
-  svg {
-    height: 18px;
-    width: 18px;
-    margin-left: 5px;
-    color: var(--acx-accents-orange-50);
-  }
-`

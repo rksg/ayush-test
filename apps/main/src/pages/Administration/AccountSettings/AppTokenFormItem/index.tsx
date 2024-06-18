@@ -52,6 +52,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   const onAddAppToken = () => {
     setEditMode(false)
+    setAuthenticationsData(undefined)
     setDrawerVisible(true)
   }
 
@@ -152,7 +153,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         key: 'scopes',
         render: function (_, row) {
           return roleDisplayText[row.scopes as RolesEnum]
-            ? $t(roleDisplayText[row.scopes as RolesEnum]) : ''
+            ? $t(roleDisplayText[row.scopes as RolesEnum]) : row.scopes
         }
       }
     ]

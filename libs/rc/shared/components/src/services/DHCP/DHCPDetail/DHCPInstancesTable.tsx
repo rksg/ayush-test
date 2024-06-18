@@ -4,19 +4,24 @@ import { useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                                    from '@acx-ui/components'
-import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery } from '@acx-ui/rc/services'
-import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplateQueryFnSwitcher, useConfigTemplate } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                         from '@acx-ui/react-router-dom'
+import { Table, TableProps, Card, Loader }                                                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
+import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery }                     from '@acx-ui/rc/services'
+import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplateQueryFnSwitcher, useConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                             from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../../configTemplates'
 
 
 export default function DHCPInstancesTable (){
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery, useGetDhcpTemplateQuery
-  )
+  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  })
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenuesTemplateListQuery : useVenuesListQuery,
@@ -45,15 +50,14 @@ export default function DHCPInstancesTable (){
   const columns: TableProps<Venue>['columns'] = [
     {
       key: 'VenueName',
-      title: $t({ defaultMessage: 'Venue Name' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
       dataIndex: 'venue',
       sorter: true,
       fixed: 'left',
       render: function (_, row) {
-        return (
-          <TenantLink
-            to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
-        )
+        return isTemplate
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, row.id, row.name)
+          : <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
       }
     },
     {

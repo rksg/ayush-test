@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps } from '@acx-ui/components'
-import { useApNetworkListQuery }     from '@acx-ui/rc/services'
+import { Loader, Table, TableProps }                                                   from '@acx-ui/components'
+import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { useGetNetworkTunnelInfo, useIsEdgeFeatureReady, useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
+import { useApNetworkListQuery, useApViewModelQuery }                                  from '@acx-ui/rc/services'
 import {
   Network,
   NetworkType,
@@ -32,6 +34,18 @@ export function ApNetworksTab () {
     apiParams,
     pagination: { settingsId }
   })
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const apViewModelPayload = {
+    entityType: 'aps',
+    fields: ['name', 'serialNumber', 'venueId'],
+    filters: { serialNumber: [apiParams.serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ apiParams, payload: apViewModelPayload },
+    { skip: !isEdgeSdLanHaReady })
+
+  const sdLanScopedNetworks = useSdLanScopedVenueNetworks(apViewModelQuery.data?.venueId
+    , tableQuery.data?.data?.map(item => item.id))
+  const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
 
   const columns: TableProps<Network>['columns'] = React.useMemo(() => {
     return [{
@@ -70,7 +84,17 @@ export function ApNetworksTab () {
           $t({ defaultMessage: 'VLAN Pool: {poolName}' }, { poolName: row.vlanPool?.name ?? '' }) :
           $t({ defaultMessage: 'VLAN-{id}' }, { id: row.vlan })
       }
-    }
+    },
+    ...(isEdgeSdLanHaReady ? [{
+      key: 'tunneled',
+      title: $t({ defaultMessage: 'Tunnel' }),
+      dataIndex: 'tunneled',
+      render: function (_: ReactNode, row: Network) {
+        const destinationsInfo = sdLanScopedNetworks?.sdLans?.filter(sdlan =>
+          sdlan.networkIds.includes(row.id))
+        return getNetworkTunnelInfo(row.id, destinationsInfo?.[0])
+      }
+    }]: [])
     // { // TODO: Waiting for HEALTH feature support
     //   key: 'health',
     //   title: $t({ defaultMessage: 'Health' }),
@@ -84,7 +108,7 @@ export function ApNetworksTab () {
     //   sorter: true
     // }
     ]
-  }, [$t])
+  }, [$t, sdLanScopedNetworks, isEdgeSdLanHaReady])
 
   return (
     <Loader states={[tableQuery]}>

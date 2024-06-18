@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { Typography, Space } from 'antd'
 import { useIntl }           from 'react-intl'
 
-import { cssStr, Modal, ModalType }                        from '@acx-ui/components'
-import { EdgeEditContext, EdgePortsForm, EdgePortTabEnum } from '@acx-ui/rc/components'
-import { EdgePort }                                        from '@acx-ui/rc/utils'
+import { cssStr, Modal, ModalType }                                  from '@acx-ui/components'
+import { EdgeEditContext, DeprecatedEdgePortsForm, EdgePortTabEnum } from '@acx-ui/rc/components'
+import { EdgePort }                                                  from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 
@@ -76,7 +76,9 @@ const PortsFormEditContextProvider = (props: {
       formControl,
       setFormControl
     }}>
-      <EdgePortsForm
+      <DeprecatedEdgePortsForm
+        // for BC phase1 & phase2
+        clusterId=''
         serialNumber={edgeId}
         onTabChange={handleTabChange}
         onCancel={handleClose}
@@ -163,7 +165,7 @@ export const CorePortFormItem = (props: {
           ? null
           : <><Typography.Text>
             {$t({
-              defaultMessage: `To use SD-LAN on the venue, 
+              defaultMessage: `To use SD-LAN on the <venueSingular></venueSingular>,
               you must select a port as the Core Port/LAG on the {editPortLink}.
               Core port is the port used to connect SmartEdge to the core network for SDLAN service`
             },

@@ -6,27 +6,28 @@ import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { AnchorContext, Loader, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useGetApDirectedMulticastQuery,
   useLazyGetVenueDirectedMulticastQuery,
-  useLazyGetVenueQuery,
   useResetApDirectedMulticastMutation,
   useUpdateApDirectedMulticastMutation
 } from '@acx-ui/rc/services'
 import {
   ApDirectedMulticast,
-  VenueDirectedMulticast,
-  VenueExtended } from '@acx-ui/rc/utils'
+  VenueDirectedMulticast
+} from '@acx-ui/rc/utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { FieldLabel }                   from '../../styledComponents'
 import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 
-
 export function DirectedMulticast () {
   const { $t } = useIntl()
   const { tenantId, serialNumber } = useParams()
+
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -35,22 +36,25 @@ export function DirectedMulticast () {
     setEditNetworkingContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const venueId = venueData?.id
 
-  const directedMulticast = useGetApDirectedMulticastQuery({ params: { serialNumber } })
+  const directedMulticast = useGetApDirectedMulticastQuery({
+    params: { venueId, serialNumber },
+    enableRbac: isUseRbacApi
+  }, { skip: !venueId })
+
   const [updateApDirectedMulticast, { isLoading: isUpdatingApDirectedMulticast }] =
     useUpdateApDirectedMulticastMutation()
   const [resetApDirectedMulticast, { isLoading: isResetApDirectedMulticast }] =
     useResetApDirectedMulticastMutation()
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueDirectedMulticast] = useLazyGetVenueDirectedMulticastQuery()
 
   const formRef = useRef<StepsFormLegacyInstance<ApDirectedMulticast>>()
   const isUseVenueSettingsRef = useRef<boolean>(false)
 
-  const [venue, setVenue] = useState({} as VenueExtended)
   const [initData, setInitData] = useState({} as ApDirectedMulticast)
   const [apDirectedMulticast, setApDirectedMulticast] = useState({} as ApDirectedMulticast)
   const [venueDirectedMulticast, setVenueDirectedMulticast] = useState({} as VenueDirectedMulticast)
@@ -79,15 +83,14 @@ export function DirectedMulticast () {
 
   useEffect(() => {
     const directedMulticastData = directedMulticast?.data
-    if (apDetails && directedMulticastData) {
-      const venueId = apDetails.venueId
-      const setData = async () => {
-        const apVenue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
-        const venueDirectedMulticastData = (await getVenueDirectedMulticast({
-          params: { tenantId, venueId } }, true).unwrap())
 
-        setVenue(apVenue)
+    if (venueId && directedMulticastData) {
+      const setData = async () => {
+        const venueDirectedMulticastData = (await getVenueDirectedMulticast({
+          params: { tenantId, venueId },
+          enableRbac: isUseRbacApi
+        }, true).unwrap())
+
         setVenueDirectedMulticast(venueDirectedMulticastData)
         setIsUseVenueSettings(directedMulticastData.useVenueSettings)
         isUseVenueSettingsRef.current = directedMulticastData.useVenueSettings
@@ -104,7 +107,7 @@ export function DirectedMulticast () {
 
       setData()
     }
-  }, [ apDetails, directedMulticast?.data ])
+  }, [ venueId, directedMulticast?.data ])
 
   const handleVenueSetting = () => {
     let isUseVenue = !isUseVenueSettings
@@ -143,20 +146,20 @@ export function DirectedMulticast () {
       })
 
       const isUseVenue = isUseVenueSettingsRef.current
+      const payload = {
+        ...values,
+        useVenueSettings: isUseVenue
+      }
 
-      if (isUseVenue) {
+      if (isUseVenue && !isUseRbacApi) {
         await resetApDirectedMulticast({
           params: { serialNumber }
         }).unwrap()
       } else {
-        const payload = {
-          ...values,
-          useVenueSettings: false
-        }
-
         await updateApDirectedMulticast({
-          params: { serialNumber },
-          payload
+          params: { venueId, serialNumber },
+          payload,
+          enableRbac: isUseRbacApi
         }).unwrap()
       }
 
@@ -199,7 +202,7 @@ export function DirectedMulticast () {
       onFormChange={handleChange}
     >
       <StepsFormLegacy.StepForm initialValues={initData}>
-        <VenueSettingsHeader venue={venue}
+        <VenueSettingsHeader venue={venueData}
           isUseVenueSettings={isUseVenueSettings}
           handleVenueSetting={handleVenueSetting} />
         <Row gutter={0} style={{ height: '40px' }}>

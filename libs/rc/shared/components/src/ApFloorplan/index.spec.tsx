@@ -70,7 +70,8 @@ const networkDevices: {
     LTEAP: [],
     RogueAP: [],
     cloudpath: [],
-    DP: []
+    DP: [],
+    rwg: []
   }
 }
 
@@ -148,7 +149,7 @@ describe('AP floorplan', () => {
   beforeEach(() => {
     mockServer.use(
       rest.get(
-        `${window.location.origin}/api/file/tenant/:tenantId/:imageId/url`,
+        'venues/:venueId/signurls/:imageId/urls',
         (req, res, ctx) => {
           const { imageId } = req.params as { imageId: keyof typeof imageObj }
           return res(ctx.json({ ...imageObj[imageId], imageId }))

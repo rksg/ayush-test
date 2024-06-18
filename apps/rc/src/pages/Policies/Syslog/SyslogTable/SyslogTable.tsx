@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   useDelSyslogPoliciesMutation,
@@ -16,13 +17,12 @@ import {
   PolicyOperation,
   SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, flowLevelLabelMapping, facilityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
-import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
-import { PROFILE_MAX_COUNT }                           from '../constants'
+import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: [
@@ -48,10 +48,12 @@ export default function SyslogTable () {
   const [ deleteFn ] = useDelSyslogPoliciesMutation()
 
   const settingsId = 'policies-syslog-table'
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const doDelete = (selectedRows: SyslogPolicyListType[], callback: () => void) => {
@@ -59,8 +61,10 @@ export default function SyslogTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      // eslint-disable-next-line max-len
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
+      async () =>
+        deleteFn({ params, payload: selectedRows.map(row => row.id), enableRbac }).then(callback)
     )
   }
 
@@ -210,7 +214,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,

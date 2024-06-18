@@ -81,7 +81,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
 
   const columns: TableProps<NetworkVenue>['columns'] = [
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'name',
       dataIndex: 'name',
       defaultSortOrder: 'ascend',

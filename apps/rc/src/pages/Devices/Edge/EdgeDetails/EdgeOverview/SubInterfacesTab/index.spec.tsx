@@ -100,7 +100,7 @@ describe('Edge overview sub-interfaces tab', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/sub-interface',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/sub-interfaces',
         hash: '',
         search: ''
       })

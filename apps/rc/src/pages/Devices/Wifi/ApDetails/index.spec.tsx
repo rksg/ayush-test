@@ -47,11 +47,6 @@ jest.mock('./ApNeighbors', () => ({
   ApNeighborsTab: () => <div data-testid='ApNeighborsTab' />
 }))
 
-jest.mock('./ApNeighbors/useApNeighbors', () => ({
-  ...jest.requireActual('./ApNeighbors/useApNeighbors'),
-  useIsApNeighborsOn: () => true
-}))
-
 const mockedUsedNavigate = jest.fn()
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'),
@@ -111,10 +106,15 @@ describe('ApDetails', () => {
         (_, res, ctx) => res(ctx.json(list))
       ),
       rest.get(CommonUrlsInfo.getApDetailHeader.url,
-        (_, res, ctx) => res(ctx.json(apDetailData))),
+        (_, res, ctx) => res(ctx.json(apDetailData))
+      ),
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })

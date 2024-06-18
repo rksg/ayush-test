@@ -8,11 +8,12 @@ import { Button,
   cssStr, Modal,
   Table, TableProps,
   Tabs, Tooltip } from '@acx-ui/components'
+import { usePathBasedOnConfigTemplate }     from '@acx-ui/rc/components'
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }  from '@acx-ui/user'
-import { getIntl }                    from '@acx-ui/utils'
+import { useNavigate }               from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { getIntl }                   from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
 
@@ -27,8 +28,8 @@ export function ConfigProfileModal (props: {
   setFormData: (data: VenueSwitchConfiguration) => void,
 }) {
   const { $t } = getIntl()
-  const addRegularProfilePath = useTenantLink('/networks/wired/profiles/add')
-  const addCliProfilePath = useTenantLink('/networks/wired/profiles/cli/add')
+  const addRegularProfilePath = usePathBasedOnConfigTemplate('/networks/wired/profiles/add')
+  const addCliProfilePath = usePathBasedOnConfigTemplate('/networks/wired/profiles/cli/add')
   const navigate = useNavigate()
   const { formState, setFormState, formData, setFormData } = props
   const [disableButton, setDisableButton] = useState(false)
@@ -83,7 +84,7 @@ export function ConfigProfileModal (props: {
       return <Tooltip title={title} placement='bottom'>{ content }</Tooltip>
     }
   }, {
-    title: $t({ defaultMessage: 'Venues' }),
+    title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
     dataIndex: 'venues',
     key: 'venues',
     render: (_, { venues }) => {

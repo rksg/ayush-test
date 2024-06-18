@@ -73,7 +73,6 @@ describe('EdgeClusterSettingForm', () => {
     expect(screen.getByRole('textbox', { name: 'Description' })).toBeVisible()
     expect(screen.getByText('SmartEdges (0)')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Add another SmartEdge' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Import from file' })).toBeVisible()
     expect(screen.getByText(/The cluster function will operate/i)).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'SmartEdge Name' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Serial Number' })).toBeVisible()
@@ -111,13 +110,47 @@ describe('EdgeClusterSettingForm', () => {
     expect(screen.getByRole('button', { name: 'delete' })).toBeDisabled()
   })
 
+  it('should derive vSmartEdge model correctly', async () => {
+    render(
+      <Provider>
+        <StepsForm>
+          <StepsForm.StepForm>
+            <EdgeClusterSettingForm />
+          </StepsForm.StepForm>
+        </StepsForm>
+      </Provider>
+      , {
+        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
+      })
+    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    await userEvent.click(addBtn)
+    await waitFor(async () =>
+      expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(2)
+    )
+    await waitFor(async () =>
+      expect((await screen.findAllByRole('textbox', { name: 'Serial Number' })).length).toBe(2)
+    )
+    await userEvent.type(
+      screen.getAllByRole('textbox', { name: 'Serial Number' })[0],
+      '968E1BDBCED13611EE9078AE968A3B9E8B'
+    )
+    await userEvent.type(
+      screen.getAllByRole('textbox', { name: 'Serial Number' })[1],
+      '190000000001'
+    )
+    expect((await screen.findAllByText('vSmartEdge')).length).toBe(1)
+    expect((await screen.findAllByText('-')).length).toBe(1)
+  })
+
   it('should show edit data correctly', async () => {
+    let mockData = mockEdgeClusterList.data[0]
+    mockData.edgeList[0].serialNumber = '968E1BDBCED13611EE9078AE968A3B9E8B'
     render(
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
             <EdgeClusterSettingForm
-              editData={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+              editData={mockData as unknown as EdgeClusterTableDataType}
             />
           </StepsForm.StepForm>
         </StepsForm>
@@ -138,11 +171,12 @@ describe('EdgeClusterSettingForm', () => {
     expect(edgeNames[0]).toHaveValue('Smart Edge 1')
     expect(edgeNames[1]).toHaveValue('Smart Edge 2')
     const serialNumbers = await screen.findAllByRole('textbox', { name: 'Serial Number' })
-    expect(serialNumbers[0]).toHaveValue('serialNumber-1')
+    expect(serialNumbers[0]).toHaveValue('968E1BDBCED13611EE9078AE968A3B9E8B')
     expect(serialNumbers[1]).toHaveValue('serialNumber-2')
     expect(serialNumbers[0]).toBeDisabled()
     expect(serialNumbers[1]).toBeDisabled()
-    expect((await screen.findAllByText('Virtual')).length).toBe(2)
+    expect((await screen.findAllByText('model 1')).length).toBe(1)
+    expect((await screen.findAllByText('model 2')).length).toBe(1)
     expect(screen.queryByText(/The cluster function will operate/i)).not.toBeInTheDocument()
   })
 
@@ -158,7 +192,10 @@ describe('EdgeClusterSettingForm', () => {
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
-    await userEvent.type(screen.getByRole('textbox', { name: 'Serial Number' }), '96123')
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Serial Number' }),
+      '9612345678901234567890123456789012'
+    )
     expect(await screen.findByText(/The one-time-password \(OTP\) will be/i)).toBeVisible()
   })
 

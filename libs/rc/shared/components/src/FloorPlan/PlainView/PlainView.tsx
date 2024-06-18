@@ -3,6 +3,7 @@ import { RefObject, useCallback, useEffect, useRef, useState } from 'react'
 import { Col, Divider, Row, Space, Switch, Typography } from 'antd'
 import { DropTargetMonitor, useDrop, XYCoord }          from 'react-dnd'
 import { useIntl }                                      from 'react-intl'
+import { useParams }                                    from 'react-router-dom'
 
 import { Button, Loader, Tooltip } from '@acx-ui/components'
 import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
@@ -80,6 +81,7 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
   const [imageMode, setImageMode] = useState(ImageMode.ORIGINAL)
   const [fitContainerSize, setFitContanierSize] = useState(0)
   const [imageUrl, setImageUrl] = useState('')
+  const { venueId } = useParams()
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
   // eslint-disable-next-line max-len
   const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
@@ -97,7 +99,8 @@ export default function PlainView (props: { floorPlans: FloorPlanDto[],
 
   useEffect(() => {
     if (selectedFloorPlan?.imageId) {
-      const response = loadImageWithJWT(selectedFloorPlan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${selectedFloorPlan?.imageId}/urls`
+      const response = loadImageWithJWT(selectedFloorPlan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })

@@ -133,6 +133,7 @@ export const networkTypes: Record<NetworkTypeEnum, MessageDescriptor> = {
   [NetworkTypeEnum.PSK]: defineMessage({ defaultMessage: 'Passphrase (PSK/SAE)' }),
   [NetworkTypeEnum.DPSK]: defineMessage({ defaultMessage: 'Dynamic Pre-Shared Key (DPSK)' }),
   [NetworkTypeEnum.AAA]: defineMessage({ defaultMessage: 'Enterprise AAA (802.1X)' }),
+  [NetworkTypeEnum.HOTSPOT20]: defineMessage({ defaultMessage: 'Hotspot 2.0 Access' }),
   [NetworkTypeEnum.CAPTIVEPORTAL]: defineMessage({ defaultMessage: 'Captive Portal' })
 }
 
@@ -246,6 +247,9 @@ export const NetworkType: React.FC<{
           }}
         />
         : <FormattedMessage {...message} />
+    case NetworkTypeEnum.HOTSPOT20:
+      const type = networkTypes[networkType]
+      return <FormattedMessage {...type} />
     case NetworkTypeEnum.CAPTIVEPORTAL:
       return <FormattedMessage
         defaultMessage={'Captive Portal - {captiveNetworkType}{oweSecurity}'}

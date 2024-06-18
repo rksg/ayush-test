@@ -3,14 +3,13 @@ import { useContext, useEffect } from 'react'
 import { Form, InputNumber, Space, Switch } from 'antd'
 import { useIntl }                          from 'react-intl'
 
-import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
-import { GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
-import { validationMessages }                                     from '@acx-ui/utils'
+import { ConfigTemplateType, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum } from '@acx-ui/rc/utils'
+import { validationMessages }                                                         from '@acx-ui/utils'
 
-import NetworkFormContext                   from '../../NetworkFormContext'
-import { useNetworkVxLanTunnelProfileInfo } from '../../utils'
-import VLANPoolInstance                     from '../../VLANPoolInstance'
-import * as UI                              from '../styledComponents'
+import NetworkFormContext                                                              from '../../NetworkFormContext'
+import { useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from '../../utils'
+import VLANPoolInstance                                                                from '../../VLANPoolInstance'
+import * as UI                                                                         from '../styledComponents'
 
 
 const { useWatch } = Form
@@ -19,7 +18,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
   const { $t } = useIntl()
   const { data } = useContext(NetworkFormContext)
 
-  const labelWidth = '230px'
+  const labelWidth = '250px'
 
   const [
     enableDhcp,
@@ -31,8 +30,6 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
 
   const form = Form.useFormInstance()
   const { wlanData } = props
-
-  const supportMacAuthDynamicVlan = useIsSplitOn(Features.WIFI_DYNAMIC_VLAN_TOGGLE)
 
   const isPortalDefaultVLANId = (data?.enableDhcp||enableDhcp) &&
     data?.type === NetworkTypeEnum.CAPTIVEPORTAL &&
@@ -48,12 +45,13 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
 
   const showDynamicWlan = data?.type === NetworkTypeEnum.AAA ||
     data?.type === NetworkTypeEnum.DPSK ||
-    (supportMacAuthDynamicVlan &&
-      ((data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
-        data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
-      (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication)))
+    ((data?.guestPortal?.guestNetworkType === GuestNetworkTypeEnum.WISPr &&
+      data?.wlan?.bypassCPUsingMacAddressAuthentication) ||
+    (data?.type === NetworkTypeEnum.OPEN && data.wlan?.macAddressAuthentication))
 
   const { enableVxLan: pureVxLanEnabled } = useNetworkVxLanTunnelProfileInfo(wlanData)
+  // eslint-disable-next-line max-len
+  const isVlanPoolingSupported = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.VLAN_POOL)
 
   return (
     <>
@@ -65,7 +63,7 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           valuePropName='checked'
           initialValue={false}
           children={<Switch
-            disabled={!useIsSplitOn(Features.POLICIES) || pureVxLanEnabled}
+            disabled={!isVlanPoolingSupported || pureVxLanEnabled}
           />}
         />
       </UI.FieldLabel>
@@ -76,10 +74,12 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
           label={$t({ defaultMessage: 'VLAN ID' })}
           initialValue={1}
           rules={[
-            { required: true }, {
+            { required: true },
+            {
               type: 'number', max: 4094, min: 1,
               message: $t(validationMessages.vlanRange)
-            }]}
+            }
+          ]}
           style={{ marginBottom: '15px' }}
           children={<InputNumber style={{ width: '80px' }}
             disabled={isPortalDefaultVLANId || pureVxLanEnabled}/>}
@@ -105,12 +105,10 @@ export function VlanTab (props: { wlanData: NetworkSaveData | null }) {
         <Space size={1}>
           <UI.InfoIcon />
           <UI.Description>
-            {
-              $t({
-                defaultMessage: `Not able to modify when the network
+            {$t({
+              defaultMessage: `Not able to modify when the network
                     enables personal identify network`
-              })
-            }
+            })}
           </UI.Description>
         </Space>
       }

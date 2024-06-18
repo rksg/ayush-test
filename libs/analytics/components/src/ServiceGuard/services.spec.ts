@@ -841,6 +841,16 @@ describe('transformPathFromDB', () => {
   it('should not covert path when system is not available', () => {
     expect(transformPathFromDB(spec)).toEqual(spec)
   })
+  it('should handle system only path', () => {
+    const spec = {
+      configs: [{ networkPaths: { networkNodes: [
+        [ { type: 'system', name: '00000000-0000-0000-0000-000000000001' } ],
+        [ { type: 'system', name: '00000000-0000-0000-0000-000000000011' } ]
+      ] } }]
+    } as unknown as ServiceGuardSpec
+    expect(transformPathFromDB(spec, systemMap).configs[0].networkPaths.networkNodes)
+      .toEqual([[ { type: 'system', name: 'system 1' } ]])
+  })
 })
 describe('transformPathToDB', () => {
   const systemMap = {

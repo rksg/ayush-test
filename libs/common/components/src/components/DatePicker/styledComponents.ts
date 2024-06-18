@@ -273,13 +273,6 @@ export const Buttons = styled(Space)`
   }
 `
 
-export const ApplyMsgWrapper = styled.div`
-  padding: 5px 12px;
-  white-space: normal;
-  font-size: var(--acx-body-5-font-size);
-  line-height: var(--acx-body-5-line-height);
-`
-
 export const HiddenDateInput = styled.div`
   cursor: pointer;
   caret-color: transparent;

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
 import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                           from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
@@ -26,6 +27,7 @@ export default function DHCPTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
@@ -42,7 +44,8 @@ export default function DHCPTable () {
     search: {
       searchString: '',
       searchTargetFields: ['name']
-    }
+    },
+    enableRbac
   })
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
@@ -63,7 +66,7 @@ export default function DHCPTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+            deleteFn({ params: { tenantId, serviceId: id }, enableRbac }).then(clearSelection)
           }
         })
       }
@@ -223,12 +226,13 @@ function useColumns () {
         }
         placement='bottom'
         overlayClassName={UI.toolTipClassName}
-        overlayInnerStyle={{ width: 515 }}>{dhcpPools.length}</Tooltip>
+        overlayInnerStyle={{ width: 515 }}
+        dottedUnderline={true}>{dhcpPools.length}</Tooltip>
       }
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueNameMap,
       align: 'center',

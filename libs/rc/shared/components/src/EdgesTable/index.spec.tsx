@@ -23,7 +23,6 @@ jest.mock('react-router-dom', () => ({
 }))
 
 const mockedDeleteApi = jest.fn()
-const mockedBulkDeleteApi = jest.fn()
 const mockedSendOtpApi = jest.fn()
 const mockedRebootApi = jest.fn()
 
@@ -52,13 +51,6 @@ describe('Edge Table', () => {
           return res(ctx.status(202))
         }
       ),
-      rest.delete(
-        EdgeUrlsInfo.deleteEdges.url,
-        (req, res, ctx) => {
-          mockedBulkDeleteApi()
-          return res(ctx.status(202))
-        }
-      ),
       rest.patch(
         EdgeUrlsInfo.sendOtp.url,
         (req, res, ctx) => {
@@ -74,6 +66,10 @@ describe('Edge Table', () => {
         }
       )
     )
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
   })
 
   it('should create EdgeList successfully', async () => {
@@ -266,7 +262,7 @@ describe('Edge Table', () => {
     expect(within(dialog).getByText('Delete "2 SmartEdges"?')).toBeVisible()
 
     await user.click(within(dialog).getByRole('button', { name: 'Delete' }))
-    await waitFor(() => expect(mockedBulkDeleteApi).toBeCalledTimes(1))
+    await waitFor(() => expect(mockedDeleteApi).toBeCalledTimes(2))
     await waitFor(() => expect(dialog).not.toBeVisible())
   })
 

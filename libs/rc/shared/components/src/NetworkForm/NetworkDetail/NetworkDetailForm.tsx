@@ -19,16 +19,21 @@ import {
   checkObjectNotExists,
   NetworkVenue,
   networkTypes,
-  useConfigTemplate,
-  validateByteLength
+  validateByteLength,
+  ConfigTemplateType,
+  TableResult,
+  useConfigTemplateLazyQueryFnSwitcher,
+  Network,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
-import { networkTypesDescription } from '../contentsMap'
-import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
-import NetworkFormContext          from '../NetworkFormContext'
-import { RadioDescription }        from '../styledComponents'
+import { networkTypesDescription }                   from '../contentsMap'
+import { NetworkDiagram }                            from '../NetworkDiagram/NetworkDiagram'
+import NetworkFormContext                            from '../NetworkFormContext'
+import { RadioDescription }                          from '../styledComponents'
+import { useServicePolicyEnabledWithConfigTemplate } from '../utils'
 
 import type { RadioChangeEvent } from 'antd'
 
@@ -52,6 +57,9 @@ export function NetworkDetailForm () {
 
   const [differentSSID, setDifferentSSID] = useState(false)
 
+  // eslint-disable-next-line max-len
+  const isPortalServiceEnabled = useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL)
+
   const onChange = (e: RadioChangeEvent) => {
     setData && setData({ ...data, type: e.target.value as NetworkTypeEnum,
       enableAccountingProxy: false,
@@ -74,7 +82,10 @@ export function NetworkDetailForm () {
     filters: {},
     pageSize: 10000
   }
-  const [getInstanceList] = useGetLazyInstanceList()
+  const [getInstanceList] = useConfigTemplateLazyQueryFnSwitcher<TableResult<Network>>({
+    useLazyQueryFn: useLazyNetworkListQuery,
+    useLazyTemplateQueryFn: useLazyGetNetworkTemplateListQuery
+  })
   const [getVenueNetrworkApGroupList] = useLazyGetVenueNetworkApGroupQuery()
   const params = useParams()
 
@@ -131,11 +142,14 @@ export function NetworkDetailForm () {
         extra: ''
       }))
   }
+  const { isTemplate } = useConfigTemplate()
   const types = [
     { type: NetworkTypeEnum.PSK, disabled: false },
     { type: NetworkTypeEnum.DPSK, disabled: !useIsSplitOn(Features.SERVICES) },
     { type: NetworkTypeEnum.AAA, disabled: !useIsSplitOn(Features.POLICIES) },
-    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !useIsSplitOn(Features.SERVICES) },
+    { type: NetworkTypeEnum.HOTSPOT20,
+      disabled: !useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE) || isTemplate },
+    { type: NetworkTypeEnum.CAPTIVEPORTAL, disabled: !isPortalServiceEnabled },
     { type: NetworkTypeEnum.OPEN, disabled: false }
   ]
 
@@ -269,12 +283,4 @@ export function NetworkDetailForm () {
       </Col>
     </Row>
   )
-}
-
-function useGetLazyInstanceList () {
-  const { isTemplate } = useConfigTemplate()
-  const networkListQuery = useLazyNetworkListQuery()
-  const networkTemplateListQuery = useLazyGetNetworkTemplateListQuery()
-
-  return isTemplate ? networkTemplateListQuery : networkListQuery
 }

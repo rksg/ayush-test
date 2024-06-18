@@ -41,7 +41,8 @@ import {
   notificationApi,
   baseEdgeSdLanApi,
   baseConfigTemplateApi,
-  baseWorkflowApi
+  baseWorkflowApi,
+  smartZoneApi
 } from './baseApi'
 
 const isDev = process.env['NODE_ENV'] === 'development'
@@ -86,7 +87,8 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
-    [baseWorkflowApi.reducerPath]: baseWorkflowApi.reducer
+    [baseWorkflowApi.reducerPath]: baseWorkflowApi.reducer,
+    [smartZoneApi.reducerPath]: smartZoneApi.reducer
   },
 
   middleware: (getDefaultMiddleware) => {
@@ -133,7 +135,8 @@ export const store = configureStore({
       notificationApi.middleware,
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
-      baseWorkflowApi.middleware
+      baseWorkflowApi.middleware,
+      smartZoneApi.middleware
     ])
   },
 

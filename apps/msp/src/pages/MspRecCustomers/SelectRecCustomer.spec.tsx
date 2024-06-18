@@ -55,7 +55,8 @@ describe('SelectRecCustomerDrawer', () => {
         <SelectRecCustomerDrawer visible={true}
           setVisible={jest.fn()}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantId={params.tenantId}
+          multiSelectionEnabled={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
@@ -74,7 +75,8 @@ describe('SelectRecCustomerDrawer', () => {
       <Provider>
         <SelectRecCustomerDrawer visible={true}
           setVisible={jest.fn()}
-          setSelected={jest.fn()}/>
+          setSelected={jest.fn()}
+          multiSelectionEnabled={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
@@ -99,7 +101,8 @@ describe('SelectRecCustomerDrawer', () => {
         <SelectRecCustomerDrawer visible={true}
           setVisible={mockedCloseDialog}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantId={params.tenantId}
+          multiSelectionEnabled={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
@@ -116,7 +119,8 @@ describe('SelectRecCustomerDrawer', () => {
         <SelectRecCustomerDrawer visible={true}
           setVisible={mockedCloseDialog}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantId={params.tenantId}
+          multiSelectionEnabled={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
@@ -133,7 +137,8 @@ describe('SelectRecCustomerDrawer', () => {
         <SelectRecCustomerDrawer visible={true}
           setVisible={mockedCloseDialog}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantId={params.tenantId}
+          multiSelectionEnabled={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
@@ -149,7 +154,8 @@ describe('SelectRecCustomerDrawer', () => {
         <SelectRecCustomerDrawer visible={true}
           setVisible={mockedCloseDialog}
           setSelected={jest.fn()}
-          tenantId={params.tenantId} />
+          tenantId={params.tenantId}
+          multiSelectionEnabled={false} />
       </Provider>, {
         route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
       })
@@ -161,5 +167,26 @@ describe('SelectRecCustomerDrawer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save' }))
 
     expect(mockedCloseDialog).toHaveBeenLastCalledWith(false)
+  })
+  it('should render multi selection correctly', async () => {
+    render(
+      <Provider>
+        <SelectRecCustomerDrawer visible={true}
+          setVisible={jest.fn()}
+          setSelected={jest.fn()}
+          tenantId={params.tenantId}
+          multiSelectionEnabled={true} />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspRecCustomers/create' }
+      })
+
+    await screen.findByText('Aloft Lexington')
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = screen.getByRole('table').querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = await within(tbody).findAllByRole('row')
+    expect(rows).toHaveLength(list.child_accounts.length)
   })
 })

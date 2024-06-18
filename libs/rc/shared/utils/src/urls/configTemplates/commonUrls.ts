@@ -36,6 +36,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networks/query',
     newApi: true
   },
+  getVenueNetworkTemplateList: {
+    method: 'post',
+    url: '/templates/venues/:venueId/networks/query',
+    newApi: true
+  },
   addAAAPolicyTemplate: {
     method: 'post',
     url: '/templates/radiusServerProfiles',
@@ -96,9 +101,24 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networkActivations/:networkVenueId',
     newApi: true
   },
+  deleteNetworkVenuesTemplate: {
+    method: 'delete',
+    url: '/templates/networkActivations',
+    newApi: true
+  },
   updateNetworkVenueTemplate: {
     method: 'put',
     url: '/templates/networkActivations/:networkVenueId?quickAck=true',
+    newApi: true
+  },
+  addNetworkVenuesTemplate: {
+    method: 'post',
+    url: '/templates/networkActivations/mappings',
+    newApi: true
+  },
+  updateNetworkVenuesTemplate: {
+    method: 'put',
+    url: '/templates/networkActivations/mappings',
     newApi: true
   }
 }

@@ -1,4 +1,4 @@
-import { Incident } from '@acx-ui/analytics/utils'
+import { Incident, TimeSeriesData } from '@acx-ui/analytics/utils'
 
 import airtimeUtilizationChart            from './Charts/AirtimeUtilizationChart'
 import apDisconnectionCountChart          from './Charts/ApDisconnectionCountChart'
@@ -13,14 +13,19 @@ import downtimeEventTypeDistributionChart from './Charts/DowntimeEventTypeDistri
 import failureChart                       from './Charts/FailureChart'
 import rebootedAPsCountChart              from './Charts/RebootedAPsCountChart'
 import rssQualityByClientsChart           from './Charts/RssQualityByClientsChart'
+import switchMemoryUtilizationChart       from './Charts/SwitchMemoryUtilizationChart'
 import ttcByFailureTypeChart              from './Charts/TtcByFailureTypeChart'
 import ttcFailureChart                    from './Charts/TtcFailureChart'
 
 import type { TimeSeriesChartProps } from './types'
 
 interface TimeSeriesChart {
-  query: (incident: Incident) => string,
+  query: (incident: Incident) => string
   chart: (props: TimeSeriesChartProps) => JSX.Element
+  transformResponse?: (
+    incident: Incident,
+    data: Record<string, TimeSeriesData>
+  ) => Record<string, TimeSeriesData>
 }
 
 export enum TimeSeriesChartTypes {
@@ -38,7 +43,8 @@ export enum TimeSeriesChartTypes {
   ApPoeImpactChart,
   ApWanThroughputImpactChart,
   ChannelChangeCount,
-  AirtimeUtilizationChart
+  AirtimeUtilizationChart,
+  SwitchMemoryUtilizationChart
 }
 
 export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesChart>> = {
@@ -56,5 +62,6 @@ export const timeSeriesCharts: Readonly<Record<TimeSeriesChartTypes, TimeSeriesC
   [TimeSeriesChartTypes.ApPoeImpactChart]: apPoeImpactChart,
   [TimeSeriesChartTypes.ApWanThroughputImpactChart]: apWanthroughputImpactChart,
   [TimeSeriesChartTypes.ChannelChangeCount]: channelChangeCount,
-  [TimeSeriesChartTypes.AirtimeUtilizationChart]: airtimeUtilizationChart
+  [TimeSeriesChartTypes.AirtimeUtilizationChart]: airtimeUtilizationChart,
+  [TimeSeriesChartTypes.SwitchMemoryUtilizationChart]: switchMemoryUtilizationChart
 }

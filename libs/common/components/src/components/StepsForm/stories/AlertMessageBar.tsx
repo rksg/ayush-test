@@ -2,9 +2,9 @@ import { useState } from 'react'
 
 import { Row, Col, Form, Input, Button, AlertProps, Space, Switch } from 'antd'
 
-import { StepsForm, StepsFormProps } from '..'
-import { Drawer }                    from '../../Drawer'
-import { showToast }                 from '../../Toast'
+import { StepsForm, StepsFormProps, isStepsFormBackStepClicked } from '..'
+import { Drawer }                                                from '../../Drawer'
+import { showToast }                                             from '../../Toast'
 
 function wait (ms: number) { return new Promise(resolve => setTimeout(resolve, ms)) }
 
@@ -45,33 +45,7 @@ export function AlertMessageBar () {
       }}
       alert={alertData}
     >
-      <StepsForm.StepForm name='step1'
-        title='Step 1'
-        onFinish={async () => {
-          try {
-            await form.validateFields()
-            return await crossValidation()
-              .then(() => {
-                setAlertData(undefined)
-                return true
-              })
-              .catch((errorData) => {
-                setAlertData({
-                  type: errorData.type as AlertProps['type'],
-                  message: <div>
-                    {JSON.stringify(errorData.data)}
-                    <Button type='link' onClick={() => setVisible(true)}>
-                      More details
-                    </Button>
-                  </div>
-                })
-                return false
-              })
-          } catch {
-            setAlertData(undefined)
-            return false
-          }
-        }}>
+      <StepsForm.StepForm name='step1' title='Step 1'>
         <Row gutter={20}>
           <Col span={10}>
             <StepsForm.Title children='Step 1' />
@@ -89,7 +63,40 @@ export function AlertMessageBar () {
         </Row>
       </StepsForm.StepForm>
 
-      <StepsForm.StepForm title='Step 2'>
+      <StepsForm.StepForm title='Step 2'
+        onFinish={async (v: unknown, event?: React.MouseEvent) => {
+          const isBackBtn = isStepsFormBackStepClicked(event)
+          // no need to block back step when crossValidation failed
+          if (isBackBtn) {
+            setAlertData(undefined)
+            return true
+          }
+
+          try {
+            await form.validateFields()
+            return await crossValidation()
+              .then(() => {
+                setAlertData(undefined)
+                return true
+              })
+              .catch((errorData) => {
+                setAlertData({
+                  type: errorData.type as AlertProps['type'],
+                  message: <div>
+                    {JSON.stringify(errorData.data)}
+                    <Button type='link' onClick={() => setVisible(true)}>
+                            More details
+                    </Button>
+                  </div>
+                })
+                return false
+              })
+          } catch {
+            setAlertData(undefined)
+            return false
+          }
+        }}
+      >
         <Row gutter={20}>
           <Col span={10}>
             <StepsForm.Title children='Step 2' />

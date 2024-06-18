@@ -181,7 +181,7 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   const content = <>
     <p>{ $t({
       // eslint-disable-next-line max-len
-      defaultMessage: 'Select the APs that the mDNS Proxy Service will be applied to at venue “{venueName}”.'
+      defaultMessage: 'Select the APs that the mDNS Proxy Service will be applied to at <venueSingular></venueSingular> “{venueName}”.'
     }, {
       venueName: venue.name
     }) }</p>

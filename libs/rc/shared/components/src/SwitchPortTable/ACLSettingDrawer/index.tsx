@@ -13,11 +13,12 @@ import {
 import { DefaultOptionType } from 'antd/lib/select'
 import { useIntl }           from 'react-intl'
 
-import { Table, TableProps, Modal }                            from '@acx-ui/components'
-import { useAddAclMutation }                                   from '@acx-ui/rc/services'
-import { Acl, AclExtendedRule, AclStandardRule, checkAclName } from '@acx-ui/rc/utils'
-import { useParams }                                           from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                           from '@acx-ui/user'
+import { Table, TableProps, Modal }                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
+import { useAddAclMutation }                                                               from '@acx-ui/rc/services'
+import { Acl, AclExtendedRule, AclStandardRule, checkAclName, validateDuplicateAclOption } from '@acx-ui/rc/utils'
+import { useParams }                                                                       from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                       from '@acx-ui/user'
 
 import { ACLRuleModal } from './ACLRuleModal'
 
@@ -115,6 +116,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
   const { form, aclType, setAclType, setVisible, aclsOptions, setAclsOptions, profileId } = props
 
   const [addAcl] = useAddAclMutation()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const columns: TableProps<AclStandardRule | AclExtendedRule>['columns'] = [
     {
@@ -241,7 +243,8 @@ function ACLSettingForm (props: ACLSettingFormProps) {
     try {
       await addAcl({
         params: { tenantId: params.tenantId, profileId: profileId },
-        payload
+        payload,
+        enableRbac: isSwitchRbacEnabled
       }).unwrap()
       setAclsOptions([...aclsOptions, { label: payload.name, value: payload.name }])
       setVisible(false)
@@ -270,7 +273,8 @@ function ACLSettingForm (props: ACLSettingFormProps) {
           rules={[
             { required: true },
             { max: 255 },
-            { validator: (_, value) => checkAclName(value, form.getFieldValue('aclType')) }
+            { validator: (_, value) => checkAclName(value) },
+            { validator: (_, value) => validateDuplicateAclOption(value, aclsOptions) }
           ]}
           children={<Input style={{ width: '400px' }} />}
         />

@@ -6,9 +6,11 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { AccessControlUrls }          from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { AccessControlUrls, PoliciesConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
+import { mockServer, render, screen }                        from '@acx-ui/test-utils'
+
+import { enhancedLayer3PolicyListResponse } from '../AccessControl/__tests__/fixtures'
 
 import { layer3PolicyListResponse } from './__tests__/fixtures'
 import { Layer3Drawer }             from './Layer3Drawer'
@@ -201,15 +203,23 @@ const subnetSetting = async () => {
   })
 }
 
+const layer3Data = enhancedLayer3PolicyListResponse.data
+
 describe('Layer3Drawer Component', () => {
-  it('Render Layer3Drawer component with anyIp option successfully', async () => {
+  beforeEach(() => {
     mockServer.use(
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.post(AccessControlUrls.addL3AclPolicy.url,
         (_, res, ctx) => res(ctx.json(layer3Response))),
+      rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json(enhancedLayer3PolicyListResponse))),
       rest.get(AccessControlUrls.getL3AclPolicyList.url,
         (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
     )
+  })
 
+  it('Render Layer3Drawer component with anyIp option successfully', async () => {
     render(
       <Provider>
         <Form>
@@ -228,39 +238,35 @@ describe('Layer3Drawer Component', () => {
 
     await userEvent.click(screen.getByText(/block traffic/i))
 
+    const newLayer3Policy = {
+      id: 'newLayer3PolicyId',
+      name: 'newLayer3PolicyName'
+    }
+
     await userEvent.type(screen.getByRole('textbox', {
       name: /policy name:/i
-    }), 'layer3-test')
+    }), newLayer3Policy.name)
 
     await anyIpSetting()
 
     await userEvent.click(screen.getAllByText('Save')[0])
 
-    mockServer.use(rest.get(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3Update)
-      )
-    ),
-    rest.get(AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
+    mockServer.use(
+      rest.post(AccessControlUrls.getEnhancedL3AclPolicies.url,
+        (req, res, ctx) => res(ctx.json({
+          ...enhancedLayer3PolicyListResponse,
+          data: [
+            ...layer3Data,
+            newLayer3Policy
+          ]
+        })))
     )
 
-    await screen.findByRole('option', { name: 'layer3-test' })
+    await screen.findByRole('option', { name: newLayer3Policy.name })
 
   })
 
   it.skip('Render Layer3Drawer component with ip option successfully', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.addL3AclPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(layer3Response)
-      )
-    ),
-    rest.get(AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
-    )
-
     render(
       <Provider>
         <Form>
@@ -288,16 +294,6 @@ describe('Layer3Drawer Component', () => {
   })
 
   it.skip('Render Layer3Drawer component with subnet option successfully', async () => {
-    mockServer.use(rest.post(
-      AccessControlUrls.addL3AclPolicy.url,
-      (_, res, ctx) => res(
-        ctx.json(layer3Response)
-      )
-    ),
-    rest.get(AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(ctx.json(layer3PolicyListResponse)))
-    )
-
     render(
       <Provider>
         <Form>
@@ -372,11 +368,6 @@ describe('Layer3Drawer Component', () => {
 
   it('Render Layer3Drawer component in viewMode successfully', async () => {
     mockServer.use(rest.get(
-      AccessControlUrls.getL3AclPolicyList.url,
-      (_, res, ctx) => res(
-        ctx.json(queryLayer3)
-      )
-    ), rest.get(
       AccessControlUrls.getL3AclPolicy.url,
       (_, res, ctx) => res(
         ctx.json(layer3Detail)
@@ -395,11 +386,11 @@ describe('Layer3Drawer Component', () => {
       }
     )
 
-    await screen.findByRole('option', { name: 'l3-010' })
+    await screen.findByRole('option', { name: layer3Data[0].name })
 
     await userEvent.selectOptions(
       screen.getByRole('combobox'),
-      screen.getByRole('option', { name: 'l3-010' })
+      screen.getByRole('option', { name: layer3Data[0].name })
     )
 
     await userEvent.click(screen.getByText(/edit details/i))

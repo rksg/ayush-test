@@ -1,0 +1,174 @@
+import { useEffect, useState } from 'react'
+
+import { Form, Select, Input } from 'antd'
+import { useIntl }             from 'react-intl'
+
+import { Button, GridCol, GridRow, Tabs }                                         from '@acx-ui/components'
+import { useGetCertificateAuthoritiesQuery, useLazyGetCertificateTemplatesQuery } from '@acx-ui/rc/services'
+import { checkObjectNotExists, trailingNorLeadingSpaces }                         from '@acx-ui/rc/utils'
+import { useParams }                                                              from '@acx-ui/react-router-dom'
+
+import { MAX_CERTIFICATE_PER_TENANT }                                           from '../constants'
+import { onboardSettingsDescription }                                           from '../contentsMap'
+import { Description, Section, SettingsSectionTitle, TabItem, TabLabel, Title } from '../styledComponents'
+
+import AddCertificateAuthorityDrawer from './AddCertificateAuthorityDrawer'
+import CertificateStrengthSettings   from './CertificateTemplateSettings/CertificateStrengthSettings'
+import OrganizationInfoSettings      from './CertificateTemplateSettings/OrganizationInfoSettings'
+import ValidityPeriodSettings        from './CertificateTemplateSettings/ValidityPeriodSettings'
+
+export default function OnboardForm ({ editMode = false }) {
+  const { $t } = useIntl()
+  const form = Form.useFormInstance()
+  const selectedCaId = Form.useWatch(['onboard', 'certificateAuthorityId'], form)
+  const [getCertificateTemplateList] = useLazyGetCertificateTemplatesQuery()
+  const [showMoreSettings, setShowMoreSettings] = useState(false)
+  const { policyId } = useParams()
+  const moreSettingsTabsInfo = [
+    {
+      key: 'validityPeriod',
+      display: $t({ defaultMessage: 'Validity Period' }),
+      content: <ValidityPeriodSettings />
+    },
+    {
+      key: 'certificateStrength',
+      display: $t({ defaultMessage: 'Certificate Strength' }),
+      content: <CertificateStrengthSettings />
+    },
+    {
+      key: 'organizationInfo',
+      display: $t({ defaultMessage: 'Organization Info' }),
+      content: <OrganizationInfoSettings />
+    }
+  ]
+  const [activeTabKey, setActiveTabKey] = useState(moreSettingsTabsInfo[0].key)
+
+  const { isCaOptionsLoading, caOptions } = useGetCertificateAuthoritiesQuery({
+    payload: { page: '1', pageSize: MAX_CERTIFICATE_PER_TENANT }
+  }, {
+    selectFromResult: ({ data, isLoading }) => {
+      return {
+        isCaOptionsLoading: isLoading,
+        caOptions: data?.data?.map((item) => ({ label: item.name, value: item.id }))
+      }
+    }
+  })
+
+  const nameValidator = async (value: string) => {
+    try {
+      const list = (await getCertificateTemplateList({
+        payload:
+        {
+          page: 1,
+          pageSize: MAX_CERTIFICATE_PER_TENANT,
+          searchTargetFields: ['name'],
+          searchString: value
+        }
+      }).unwrap()).data.filter(n => n.id !== policyId).map(n => ({ name: n.name }))
+      return checkObjectNotExists(list, { name: value },
+        $t({ defaultMessage: 'Certificate Template' }))
+    } catch {
+      return Promise.reject($t({ defaultMessage: 'Validation error' }))
+    }
+  }
+
+  useEffect(() => {
+    const optionLabel = caOptions
+      ? caOptions.filter(option => option.value === selectedCaId).map(option => option.label)
+      : selectedCaId
+    form.setFieldValue(['onboard', 'certificateAuthorityName'], optionLabel)
+  }, [selectedCaId])
+
+  return (
+    <>
+      <div style={{ marginBottom: '24px' }}>
+        <Title>{$t({ defaultMessage: 'Onboard CA' })}</Title>
+        <Description>{$t(onboardSettingsDescription.INFORMATION)}</Description>
+      </div>
+      <Section>
+        <SettingsSectionTitle>{$t({ defaultMessage: 'CA Sources' })}</SettingsSectionTitle>
+        <GridRow>
+          <GridCol col={{ span: 12 }}>
+            <Form.Item
+              name={['onboard', 'certificateAuthorityId']}
+              label={$t({ defaultMessage: 'Onboard Certificate Authority' })}
+              rules={[{
+                required: true
+              }]}
+            >
+              <Select
+                loading={isCaOptionsLoading}
+                placeholder={$t({ defaultMessage: 'Select CA...' })}
+                options={caOptions}
+                disabled={editMode}
+              />
+            </Form.Item>
+          </GridCol>
+          {!editMode && <AddCertificateAuthorityDrawer certificateTemplateForm={form} />}
+        </GridRow>
+      </Section>
+      <Section>
+        <SettingsSectionTitle>
+          {$t({ defaultMessage: 'Certificate Template Information' })}
+        </SettingsSectionTitle>
+        <GridRow>
+          <GridCol col={{ span: 10 }}>
+            <Form.Item
+              name='name'
+              label={$t({ defaultMessage: 'Certificate Template Name' })}
+              rules={[
+                { required: true },
+                { min: 2 },
+                { max: 32 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) },
+                { validator: (_, value) => nameValidator(value) }
+              ]}
+              validateTrigger={'onBlur'}
+              validateFirst
+            >
+              <Input placeholder='BYOD Template' />
+            </Form.Item>
+            <Form.Item
+              name={['onboard', 'commonNamePattern']}
+              label={$t({ defaultMessage: 'Common Name' })}
+              extra={$t(onboardSettingsDescription.CERTIFICATE_TEMPLATE_NAME)}
+              rules={[
+                { required: true },
+                { min: 2 },
+                { max: 32 },
+                { validator: (_, value) => trailingNorLeadingSpaces(value) }
+              ]}
+              validateTrigger={'onBlur'}
+              validateFirst>
+              <Input placeholder='${USERNAME}@byod.company.com' />
+            </Form.Item>
+          </GridCol>
+        </GridRow>
+      </Section>
+      <GridRow>
+        <GridCol col={{ span: 12 }}>
+          <Button type='link'
+            style={{ maxWidth: 120 }}
+            onClick={() => setShowMoreSettings(!showMoreSettings)}>
+            {showMoreSettings
+              ? $t({ defaultMessage: 'Show less settings' })
+              : $t({ defaultMessage: 'Show more settings' })}
+          </Button>
+          {showMoreSettings && <>
+            <Tabs type='third'
+              onChange={(key) => setActiveTabKey(key)}
+              activeKey={activeTabKey}
+            >
+              {moreSettingsTabsInfo.map(({ key, display }) =>
+                (<Tabs.TabPane key={key} tab={<TabLabel>{display}</TabLabel>} />))}
+            </Tabs>
+            <TabItem>
+              {moreSettingsTabsInfo.find(info => (info.key === activeTabKey))?.content}
+            </TabItem>
+          </>
+          }
+        </GridCol>
+      </GridRow>
+    </>
+  )
+}

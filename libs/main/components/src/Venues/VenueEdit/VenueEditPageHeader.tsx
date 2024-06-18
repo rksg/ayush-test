@@ -23,7 +23,7 @@ function VenueEditPageHeader () {
     `/venues/${venueId}/venue-details/networks`
   )
   // eslint-disable-next-line max-len
-  const breadcrumb = useConfigTemplateBreadcrumb([{ text: $t({ defaultMessage: 'Venues' }), link: '/venues' }])
+  const breadcrumb = useConfigTemplateBreadcrumb([{ text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }])
 
   return (
     <PageHeader
@@ -34,7 +34,7 @@ function VenueEditPageHeader () {
           type='primary'
           onClick={() => navigate(detailsPath)}
         >
-          { $t({ defaultMessage: 'Back to venue details' }) }
+          { $t({ defaultMessage: 'Back to <venueSingular></venueSingular> details' }) }
         </Button>
       ]}
       footer={<VenueEditTabs />}

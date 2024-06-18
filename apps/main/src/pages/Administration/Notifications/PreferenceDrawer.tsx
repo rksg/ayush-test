@@ -58,7 +58,7 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
 
   const formContent = <Form layout='vertical'form={form} >
     <h4 style={{ marginTop: '14px', marginBottom: '20px' }}>
-      {$t({ defaultMessage: 'Select the notifications you wish to receive:' })}
+      {$t({ defaultMessage: 'Select the notification you wish to receive:' })}
     </h4>
 
     <Subtitle level={5}>

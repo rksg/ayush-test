@@ -1,13 +1,13 @@
 import { useIntl } from 'react-intl'
 
-import { Loader, showToast, Table, TableProps } from '@acx-ui/components'
-import { Features, useIsTierAllowed }           from '@acx-ui/feature-toggle'
-import { SimpleListTooltip }                    from '@acx-ui/rc/components'
+import { Loader, showToast, Table, TableProps }     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                        from '@acx-ui/rc/components'
 import {
   doProfileDelete,
-  useAdaptivePolicySetLisByQueryQuery,
-  useDeleteAdaptivePolicySetMutation, useGetDpskListQuery,
-  useMacRegListsQuery
+  useAdaptivePolicySetListByQueryQuery,
+  useDeleteAdaptivePolicySetMutation, useGetCertificateTemplatesQuery, useGetEnhancedDpskListQuery,
+  useSearchMacRegListsQuery
 } from '@acx-ui/rc/services'
 import {
   AdaptivePolicySet, FILTER,
@@ -17,17 +17,19 @@ import {
   PolicyType, SEARCH, useTableQuery
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                    from '@acx-ui/user'
+import { WifiScopes }                                   from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 
 export default function AdaptivePolicySetTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   const settingsId = 'adaptive-policy-set-list-table'
   const tableQuery = useTableQuery({
-    useQuery: useAdaptivePolicySetLisByQueryQuery,
+    useQuery: useAdaptivePolicySetListByQueryQuery,
     apiParams: { sort: 'name,ASC', excludeContent: 'false' },
     defaultPayload: {},
     pagination: { settingsId }
@@ -38,8 +40,18 @@ export default function AdaptivePolicySetTable () {
     { isLoading: isDeletePolicyUpdating }
   ] = useDeleteAdaptivePolicySetMutation()
 
-  const { macRegList, getMacListLoading } = useMacRegListsQuery(
-    { payload: { pageSize: 10000 } }, {
+  const { macRegList, getMacListLoading } = useSearchMacRegListsQuery(
+    {
+      payload: {
+        pageSize: 10000,
+        dataOption: 'all',
+        searchCriteriaList: [{
+          filterKey: 'name',
+          operation: 'cn',
+          value: ''
+        }]
+      }
+    }, {
       selectFromResult: ({ data, isLoading }) => {
         const macRegList = new Map(data?.data.map((mac) =>
           [mac.id, mac.name]))
@@ -50,7 +62,7 @@ export default function AdaptivePolicySetTable () {
       }, skip: !isCloudpathEnabled
     })
 
-  const { dpskList, getDpsksLoading } = useGetDpskListQuery(
+  const { dpskList, getDpsksLoading } = useGetEnhancedDpskListQuery(
     {
       payload: { pageSize: 10000 }
     }, {
@@ -62,6 +74,21 @@ export default function AdaptivePolicySetTable () {
           getDpsksLoading: isLoading
         }
       }, skip: !isCloudpathEnabled
+    })
+
+  // eslint-disable-next-line max-len
+  const { certificateTemplateList, getCertificateTemplateLoading } = useGetCertificateTemplatesQuery(
+    {
+      payload: { pageSize: 10000 }
+    }, {
+      selectFromResult: ({ data, isLoading }) => {
+        const certificateTemplateList = new Map(data?.data.map((template) =>
+          [template.id, template.name]))
+        return {
+          certificateTemplateList,
+          getCertificateTemplateLoading: isLoading
+        }
+      }, skip: !isCertificateTemplateEnabled
     })
 
   function useColumns () {
@@ -119,7 +146,13 @@ export default function AdaptivePolicySetTable () {
             .filter(id => dpskList.has(id))
             .map(id => dpskList.get(id) ?? '') ?? []
 
-          return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments]}
+          const certTemplateAssignments = row.externalAssignments
+            .map(assignment => assignment.identityId).flat()
+            .filter(id => certificateTemplateList.has(id))
+            .map(id => certificateTemplateList.get(id) ?? '') ?? []
+
+          // eslint-disable-next-line max-len
+          return <SimpleListTooltip items={[...macAssignments, ...dpskAssignments, ...certTemplateAssignments]}
             displayText={row.assignmentCount}
             totalCountOfItems={row.assignmentCount}/>
         }
@@ -139,7 +172,8 @@ export default function AdaptivePolicySetTable () {
           policyId: selectedRows[0].id!
         })
       })
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -151,7 +185,7 @@ export default function AdaptivePolicySetTable () {
         name,
         [
           // eslint-disable-next-line max-len
-          { fieldName: 'assignmentCount', fieldText: $t({ defaultMessage: 'Mac Registration Lists or DPSK' }) }
+          { fieldName: 'assignmentCount', fieldText: $t({ defaultMessage: 'other services' }) }
         ],
         async () => {
           deletePolicy({ params: { policySetId: selectedRow.id } })
@@ -167,7 +201,8 @@ export default function AdaptivePolicySetTable () {
             })
         }
       )
-    }
+    },
+    scopeKey: [WifiScopes.DELETE]
   }]
 
   const actions = [{
@@ -180,7 +215,8 @@ export default function AdaptivePolicySetTable () {
           oper: PolicyOperation.CREATE
         })
       })
-    }
+    },
+    scopeKey: [WifiScopes.CREATE]
   }]
 
   const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
@@ -191,7 +227,8 @@ export default function AdaptivePolicySetTable () {
   return (
     <Loader states={[
       tableQuery,
-      { isLoading: getMacListLoading || getDpsksLoading, isFetching: isDeletePolicyUpdating }
+      { isLoading: getMacListLoading || getDpsksLoading || getCertificateTemplateLoading,
+        isFetching: isDeletePolicyUpdating }
     ]}>
       <Table
         enableApiFilter
@@ -203,7 +240,8 @@ export default function AdaptivePolicySetTable () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={hasAccess() && { type: 'radio' }}
+        rowSelection={
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
         actions={filterByAccess(actions)}
       />
     </Loader>

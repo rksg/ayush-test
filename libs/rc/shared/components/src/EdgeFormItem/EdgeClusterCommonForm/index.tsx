@@ -42,7 +42,7 @@ export const EdgeClusterCommonForm = () => {
     <>
       <Form.Item
         name='venueId'
-        label={$t({ defaultMessage: 'Venue' })}
+        label={$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
         rules={[{
           required: true
         }]}

@@ -8,16 +8,13 @@ import {
   Input,
   InputRef
 } from 'antd'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import _                       from 'lodash'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import {
-  InformationSolid,
-  QuestionMarkCircleOutlined
+  InformationSolid
 } from '@acx-ui/icons'
 import { useGetMspEcProfileQuery }   from '@acx-ui/msp/services'
 import { MSPUtils }                  from '@acx-ui/msp/utils'
@@ -49,7 +46,6 @@ import { MLOContext }              from '../NetworkForm'
 import NetworkFormContext          from '../NetworkFormContext'
 import { NetworkMoreSettingsForm } from '../NetworkMoreSettings/NetworkMoreSettingsForm'
 
-import { AuthAccServerSetting }                                                                     from './AuthAccServerSetting'
 import { AuthAccServerSummary }                                                                     from './AuthAccServerSummary'
 import { DhcpCheckbox }                                                                             from './DhcpCheckbox'
 import { RedirectUrlInput }                                                                         from './RedirectUrlInput'
@@ -67,9 +63,6 @@ export function WISPrForm () {
     setData
   } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
-  const enableWISPREncryptMacIP = useIsSplitOn(Features.WISPR_ENCRYPT_MAC_IP)
-  const enableWISPRAlwaysAccept = useIsSplitOn(Features.WIFI_EDA_WISPR_ALWAYS_ACCEPT_TOGGLE)
-  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
@@ -222,13 +215,7 @@ export function WISPrForm () {
   useEffect(()=>{
     const { wlanSecurity } = data?.wlan || {}
     if (wlanSecurity) {
-      if (!enableOweEncryption) {
-        const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
-                          wlanSecurity !== WlanSecurityEnum.OWE
-        form.setFieldValue('enablePreShared', enablePsk)
-        setEnablePreShared(enablePsk)
-        form.setFieldValue('pskProtocol', wlanSecurity)
-      } else if (wlanSecurity === WlanSecurityEnum.None) {
+      if (wlanSecurity === WlanSecurityEnum.None) {
         form.setFieldValue('networkSecurity', 'NONE')
       } else if (wlanSecurity === WlanSecurityEnum.OWE) {
         form.setFieldValue('networkSecurity', 'OWE')
@@ -338,10 +325,6 @@ export function WISPrForm () {
         }
       }
     })
-  }
-
-  const onPskChange = async (e: CheckboxChangeEvent) => {
-    setEnablePreShared(e.target.checked)
   }
 
   const region = regionOption?.length === 1? regionOption?.[0]:
@@ -454,24 +437,7 @@ export function WISPrForm () {
               </Button></div>}
           children={<Input readOnly style={{ width: 200 }} ref={inputKey}/>}
         />
-        {!enableOweEncryption && <Form.Item>
-          <Form.Item
-            name='enablePreShared'
-            noStyle
-            valuePropName='checked'
-            initialValue={false}
-            children={
-              <Checkbox onChange={onPskChange}>
-                {$t({ defaultMessage: 'Enable Pre-Shared Key (PSK)' })}
-              </Checkbox>
-            }
-          />
-          <Tooltip title={$t({ defaultMessage: 'Require users to enter a passphrase to connect' })}
-            placement='bottom'>
-            <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-          </Tooltip>
-        </Form.Item>}
-        {enableOweEncryption && <Form.Item
+        <Form.Item
           name='networkSecurity'
           initialValue={'NONE'}
           label={$t({ defaultMessage: 'Secure your network' })}
@@ -511,7 +477,7 @@ export function WISPrForm () {
                 onProtocolChange(security)
               }}
             />}
-        />}
+        />
 
         {enablePreShared && wlanSecurity !== WlanSecurityEnum.WEP &&
          wlanSecurity !== WlanSecurityEnum.WPA3 &&
@@ -599,7 +565,7 @@ export function WISPrForm () {
             </Checkbox>
           }
         />
-        {enableWISPREncryptMacIP && <Form.Item
+        <Form.Item
           name={['guestPortal','wisprPage', 'encryptMacIpEnabled']}
           valuePropName='checked'
           initialValue={true}
@@ -608,34 +574,30 @@ export function WISPrForm () {
               {$t({ defaultMessage: 'Enable the encryption for users’ MAC and IP addresses' })}
             </Checkbox>
           }
-        />}
+        />
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr} />
+        <BypassCaptiveNetworkAssistantCheckbox />
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.WISPr}
           enableDefaultWalledGarden={false} />
         {!regionOption &&
          isOtherProvider &&
-         (enableWISPRAlwaysAccept ?
-           <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
-             <WISPrAuthAccServer
-               onClickAuth={() => {
-                 dispatch(statesCollection.useOnlyAuth)
-                 let mutableData = _.cloneDeep(data) ?? {}
-                 _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.RADIUS)
-                 setData && setData(mutableData)
-               }}
-               onClickAllAccept={() => {
-                 dispatch(statesCollection.useAllAccept)
-                 let mutableData = _.cloneDeep(data) ?? {}
-                 _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.ALWAYS_ACCEPT)
-                 _.unset(mutableData, 'guestPortal.wisprPage.authRadius')
-                 setData && setData(mutableData)
-               }}
-             />
-           </WISPrAuthAccContext.Provider>
-           : <AuthAccServerSetting/>)
+          <WISPrAuthAccContext.Provider value={{ state, dispatch }}>
+            <WISPrAuthAccServer
+              onClickAuth={() => {
+                dispatch(statesCollection.useOnlyAuth)
+                let mutableData = _.cloneDeep(data) ?? {}
+                _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.RADIUS)
+                setData && setData(mutableData)
+              }}
+              onClickAllAccept={() => {
+                dispatch(statesCollection.useAllAccept)
+                let mutableData = _.cloneDeep(data) ?? {}
+                _.set(mutableData, 'guestPortal.wisprPage.authType', AuthRadiusEnum.ALWAYS_ACCEPT)
+                _.unset(mutableData, 'guestPortal.wisprPage.authRadius')
+                setData && setData(mutableData)
+              }}
+            />
+          </WISPrAuthAccContext.Provider>
         }
         {regionOption && region && <AuthAccServerSummary summaryData={region as Regions}/>}
       </GridCol>

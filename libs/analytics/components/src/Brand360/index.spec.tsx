@@ -44,22 +44,22 @@ jest.mock('./SlaTile', () => ({
     sliceType,
     chartData,
     prevData,
-    currData,
-    settings
+    currData
   }
   :{
     chartKey: string,
     sliceType: string,
     chartData: string,
     prevData: string,
-    currData: string,
-    settings: Settings
+    currData: string
   }) =>
     <div data-testid={'brand360Tile'}>
-      {JSON.stringify({ chartKey, sliceType, chartData, prevData, currData, settings })}
+      {JSON.stringify({ chartKey, sliceType, chartData, prevData, currData })}
     </div>
 }))
-
+jest.mock('./Settings', () => ({
+  ConfigSettings: () => <div data-testid='settings'></div>
+}))
 
 describe('Brand360', () => {
   beforeEach(() => {
@@ -69,7 +69,7 @@ describe('Brand360', () => {
         '[{"key": "sla-p1-incidents-count", "value": "1"},{"key": "sla-guest-experience", "value": "2"},{"key": "sla-brand-ssid-compliance", "value": "3"}]'
       )))
     )
-    services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+    services.useMspECListQuery = jest.fn().mockImplementation(() => {
       return { data: propertiesMappingData }
     })
     rcServices.useGetTenantDetailsQuery = jest.fn(() => {
@@ -108,7 +108,7 @@ describe('Brand360', () => {
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', mockBrandTimeseries)
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(prevTimeseries))
     mockGraphqlQuery(dataApiURL, 'FranchisorTimeseries', wrapData(currTimeseries))
-    services.useMspCustomerListDropdownQuery = jest.fn().mockImplementation(() => {
+    services.useMspECListQuery = jest.fn().mockImplementation(() => {
       return { data: null }
     })
     render(<Provider><Brand360 /></Provider>)

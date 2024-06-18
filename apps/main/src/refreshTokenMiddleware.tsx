@@ -15,18 +15,11 @@ export type MiddlewareAction = {
 
 export const refreshTokenMiddleware: Middleware = () => (next) => (action: MiddlewareAction) => {
   // JWT refresh flow support in UI
-  // TODO: temporary logs below will be cleanup once this is tested by QA & before moving the code to higher envs
   if (isFulfilled(action)) {
-    const jwt = sessionStorage.getItem('jwt') ?? 'null'
     const loginToken = action?.meta?.baseQueryMeta?.response?.headers.get('login-token')
     if (loginToken) {
-      // eslint-disable-next-line no-console
-      console.log('%c[%s] Refreshing login token:::: [%s]',
-        'color: green',
-        new Date().toLocaleString(),
-        action?.meta?.baseQueryMeta?.response?.headers.get('login-token'))
-      sessionStorage.setItem('oldJwt', jwt) // temporary parameter, will clean up once testing is done
       sessionStorage.setItem('jwt', loginToken)
+      sessionStorage.removeItem('ACX-ap-compatibiliy-note-hidden') // clear ap compatibiliy banner display condition
       updateJwtCache(loginToken)
     }
   }

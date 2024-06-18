@@ -192,7 +192,7 @@ describe('Notification List', () => {
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
-    await userEvent.click(screen.getByRole('button', { name: 'Preference' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Preferences' }))
     expect(await screen.findByRole('dialog')).toBeVisible()
   })
 

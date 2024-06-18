@@ -37,3 +37,10 @@ export const GreenTickIcon = styled(CheckMarkCircleSolid)<{
   width: var(--size);
   margin-block-end: ${({ $size }) => $size === 'default' ? '0' : '13px'};
 `
+
+export const RollupText = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: -webkit-fill-available;
+`

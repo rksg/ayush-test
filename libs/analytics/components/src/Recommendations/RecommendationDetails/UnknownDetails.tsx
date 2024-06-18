@@ -29,7 +29,7 @@ export const UnknownDetails = () => {
     {
       label: isZone
         ? $t({ defaultMessage: 'Zone RRM Health' })
-        : $t({ defaultMessage: 'Venue RRM Health' }),
+        : $t({ defaultMessage: '<VenueSingular></VenueSingular> RRM Health' }),
       children: <OptimizedIcon
         value={crrmStates[status as keyof typeof crrmStates]!.order}
         text={$t(crrmStates[status as keyof typeof crrmStates]!.label)}
@@ -40,8 +40,10 @@ export const UnknownDetails = () => {
       children: formatter(DateFormatEnum.DateTimeFormat)(moment(date, moment.ISO_8601))
     }
   ]
-  const value = isZone ? $t({ defaultMessage: 'zone' }) : $t({ defaultMessage: 'venue' })
-  const Value = isZone ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: 'Venue' })
+  // eslint-disable-next-line max-len
+  const value = isZone ? $t({ defaultMessage: 'zone' }) : $t({ defaultMessage: '<venueSingular></venueSingular>' })
+  // eslint-disable-next-line max-len
+  const Value = isZone ? $t({ defaultMessage: 'Zone' }) : $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
 
   const failureText = {
     insufficientLicenses: defineMessage({ defaultMessage:
@@ -63,7 +65,7 @@ export const UnknownDetails = () => {
     ` }),
     verificationError: defineMessage({ defaultMessage: `
       Insufficient data for RUCKUS AI to generate RRM recommendations.
-      RUCKUS AI requires at least 3 days of data to train its AI models.
+      RUCKUS AI requires at least 4 days of data to train its AI models.
     ` }),
     global_zone_checker: defineMessage({ defaultMessage:
       `RUCKUS AI will not be able to generate RRM recommendations as the controller

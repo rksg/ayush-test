@@ -144,7 +144,7 @@ export const wlanKeyMap = [
   { id: 140, value: 'initialState.CcmWlan.ignore_unauth', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 141, value: 'initialState.CcmWlan.eap_accounting_server_ip_attribute_ignored', text: defineMessage({ defaultMessage: 'Accounting Before DHCP IP Enabled' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 142, value: 'initialState.CcmWlan.aws_ext_nas_ip_enabled', text: 'TBD', textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
-  { id: 143, value: 'initialState.CcmWlan.aws_venue_enabled', text: defineMessage({ defaultMessage: 'Venue Code' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
+  { id: 143, value: 'initialState.CcmWlan.aws_venue_enabled', text: defineMessage({ defaultMessage: '<VenueSingular></VenueSingular> Code' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 144, value: 'initialState.CcmWlan.hotspot_20_onboarding', text: defineMessage({ defaultMessage: 'Hotspot 2.0 Onboarding' }), textAlto: 'TBD', enumType: '', incidents: {}, kpis: {} },
   { id: 145, value: 'initialState.CcmWlan.hd_overhead_optimization_enabled', text: 'TBD', textAlto: defineMessage({ defaultMessage: 'Airtime Decongestion' }), enumType: '', incidents: { 'p-cov-clientrssi-low': 0.5 }, kpis: { clientThroughput: 0.5 } },
   { id: 146, value: 'initialState.CcmWlan.transient_client_management.enabled', text: defineMessage({ defaultMessage: 'Transient Client Management' }), textAlto: defineMessage({ defaultMessage: 'Transient Client Management' }), enumType: '', incidents: { 'assoc-failure': 1 }, kpis: { connectionSuccess: 1, timeToConnect: 1, apCapacity: 1, rss: 1 } },

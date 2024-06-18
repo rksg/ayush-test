@@ -133,16 +133,8 @@ export function ApFloorplan (props: {
 
   useEffect(() => {
     if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
-      response.then((_imageUrl) => {
-        setImageUrl(_imageUrl)
-      })
-    }
-  }, [floorplan?.imageId])
-
-  useEffect(() => {
-    if (floorplan?.imageId) {
-      const response = loadImageWithJWT(floorplan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${floorplan?.imageId}/urls`
+      const response = loadImageWithJWT(floorplan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })

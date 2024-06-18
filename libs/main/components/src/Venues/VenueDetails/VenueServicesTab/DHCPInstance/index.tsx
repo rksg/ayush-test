@@ -8,7 +8,14 @@ import {
   ContentSwitcherProps,
   ContentSwitcher
 } from '@acx-ui/components'
-import { useVenuesLeasesListQuery, useGetDHCPProfileQuery, useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery, useGetDhcpTemplateQuery } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import {
+  useVenuesLeasesListQuery,
+  useGetDHCPProfileQuery,
+  useVenueDHCPProfileQuery,
+  useGetVenueTemplateDhcpProfileQuery,
+  useGetDhcpTemplateQuery
+} from '@acx-ui/rc/services'
 import {
   DHCPLeasesStatusEnum,
   DHCPConfigTypeEnum,
@@ -27,24 +34,30 @@ const DHCPInstance = () => {
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-
-  const { data: leasesList } = useVenuesLeasesListQuery({ params }, { skip: isTemplate })
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data: leasesList } = useVenuesLeasesListQuery(
+    { params, enableRbac }, { skip: isTemplate })
 
   const onlineList = _.filter(leasesList, (item)=>{
     return item.status === DHCPLeasesStatusEnum.ONLINE
   })
 
-  const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>(
-    useVenueDHCPProfileQuery, useGetVenueTemplateDhcpProfileQuery
-  )
+  // eslint-disable-next-line max-len
+  const { data: venueDHCPProfile, isFetching: isVenueDhcpFetching } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
+    useQueryFn: useVenueDHCPProfileQuery,
+    useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
+    extraParams: params,
+    enableRbac
+  })
 
-  const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>(
-    useGetDHCPProfileQuery,
-    useGetDhcpTemplateQuery,
-    !venueDHCPProfile?.serviceProfileId,
-    undefined,
-    { serviceId: venueDHCPProfile?.serviceProfileId }
-  )
+  // eslint-disable-next-line max-len
+  const { data: dhcpProfile, isFetching: isProfileFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+    useQueryFn: useGetDHCPProfileQuery,
+    useTemplateQueryFn: useGetDhcpTemplateQuery,
+    skip: !venueDHCPProfile?.serviceProfileId,
+    extraParams: { serviceId: venueDHCPProfile?.serviceProfileId },
+    enableRbac
+  })
 
   const leaseContent = $t({ defaultMessage: 'Lease Table ({count} Online)' },
     { count: onlineList.length || 0 })
@@ -59,7 +72,13 @@ const DHCPInstance = () => {
       label: $t({ defaultMessage: 'Pools ({count})' },
         { count: dhcpProfile?.dhcpPools.length || 0 }),
       value: 'pools',
-      children: <GridCol col={{ span: 24 }}><PoolTable /></GridCol>
+      children: <GridCol col={{ span: 24 }}>
+        {venueDHCPProfile && dhcpProfile &&
+          <PoolTable
+            venueDHCPProfile={venueDHCPProfile}
+            dhcpProfile={dhcpProfile}
+            isFetching={isVenueDhcpFetching || isProfileFetching}
+          />}</GridCol>
     },
     {
       label: leaseLabel,

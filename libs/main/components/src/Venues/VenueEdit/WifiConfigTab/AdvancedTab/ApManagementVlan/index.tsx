@@ -23,17 +23,18 @@ export function ApManagementVlan () {
     setEditAdvancedContextData
   } = useContext(VenueEditContext)
 
-  const getVenueApManagementVlan = useGetVenueApManagementVlanQuery({ params: { venueId } })
+  const { data: venueApMgmtData, isLoading: isVenueApMgmtLoading } =
+    useGetVenueApManagementVlanQuery({ params: { venueId } })
   const [updateVenueApManagementVlan, { isLoading: isUpdatingVenueManagementVlan }] =
     useUpdateVenueApManagementVlanMutation()
 
   useEffect(() => {
-    const venueMgmtVlanApData = getVenueApManagementVlan?.data
-    if (!getVenueApManagementVlan?.isLoading) {
-      form.setFieldsValue(venueMgmtVlanApData)
+    if (!isVenueApMgmtLoading && venueApMgmtData) {
+      const { vlanId } = venueApMgmtData
+      form.setFieldValue('vlanId', vlanId)
     }
 
-  }, [form, getVenueApManagementVlan?.data, getVenueApManagementVlan?.isLoading])
+  }, [form, venueApMgmtData, isVenueApMgmtLoading])
 
   const onFormDataChanged = () => {
 
@@ -67,11 +68,10 @@ export function ApManagementVlan () {
       width: 450,
       title: $t({ defaultMessage: 'AP Management VLAN Change' }),
       content:
-        // eslint-disable-next-line max-len
         $t({ defaultMessage:
           `Modifying the AP management VLAN for managing traffic will
-          cause a reboot of all AP devices within this venue. Please note
-          that incorrect settings between APs and switches could result
+          cause a reboot of all AP devices within this <venueSingular></venueSingular>.
+          Please note that incorrect settings between APs and switches could result
           in losing access to your APs. Are you sure you want to continue?` }),
       okText: $t({ defaultMessage: 'Continue' }),
       onOk: async () => {
@@ -91,7 +91,7 @@ export function ApManagementVlan () {
 
   return (
     <Loader states={[{
-      isLoading: getVenueApManagementVlan.isLoading,
+      isLoading: isVenueApMgmtLoading,
       isFetching: isUpdatingVenueManagementVlan
     }]}>
       <Space align='start'>

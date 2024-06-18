@@ -25,8 +25,6 @@ import {
 } from '../../__tests__/fixtures'
 import { PersonalIdentityNetworkFormContext } from '../PersonalIdentityNetworkFormContext'
 
-import { StaticRouteModal } from './StaticRouteModal'
-
 import { DistributionSwitchForm } from './'
 
 const createNsgPath = '/:tenantId/services/personalIdentityNetwork/create'
@@ -52,11 +50,9 @@ jest.mock('./DistributionSwitchDrawer', () => ({
     </div>
 }))
 
-jest.mock('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes', () => ({
-  ...jest.requireActual('../../../../Devices/Edge/EdgeDetails/EditEdge/StaticRoutes'),
-  default: () => <div data-testid={'StaticRoutes'}></div>
+jest.mock('./StaticRouteModal', () => ({
+  StaticRouteModal: () => <div data-testid='static-route-modal' />
 }))
-
 
 describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
   let params: { tenantId: string, serviceId: string }
@@ -145,20 +141,5 @@ describe('PersonalIdentityNetworkForm - DistributionSwitchForm', () => {
     await user.click(await within(dialog).findByRole('button', { name: 'Save' }))
 
     await waitFor(() => expect(dialog).not.toBeVisible())
-  })
-})
-
-describe('StaticRouteModal', () => {
-  it('Should render successfully', async () => {
-    render(<StaticRouteModal edgeId='0000000001' edgeName='Smart Edge 1' />)
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Static Route' }))
-
-    const form = await screen.findByTestId('StaticRoutes')
-    await waitFor(() => expect(form).toBeVisible())
-
-    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
-
-    expect(form).not.toBeVisible()
   })
 })

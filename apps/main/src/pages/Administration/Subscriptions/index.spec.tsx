@@ -2,7 +2,7 @@ import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
 import { showToast }                                                               from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
 import { mspApi }                                                                  from '@acx-ui/msp/services'
 import { MspUrlsInfo }                                                             from '@acx-ui/msp/utils'
 import { administrationApi }                                                       from '@acx-ui/rc/services'
@@ -10,7 +10,7 @@ import { AdministrationUrlsInfo }                                               
 import { Provider, store }                                                         from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within  } from '@acx-ui/test-utils'
 
-import { mockedEtitlementsList, mockedSummary } from './__tests__/fixtures'
+import { mockedEtitlementsList, mockedSummary, fakeMspEcProfile } from './__tests__/fixtures'
 
 import Subscriptions from '.'
 
@@ -28,11 +28,12 @@ jest.mock('./SubscriptionHeader', () => ({
   SubscriptionHeader: () => (<div data-testid='rc-SubscriptionHeader' />)
 }))
 
+const excludedFlags = [Features.DEVICE_AGNOSTIC, Features.ENTITLEMENT_PENDING_ACTIVATION_TOGGLE]
+
 describe('Subscriptions', () => {
   let params: { tenantId: string }
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.DEVICE_AGNOSTIC)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.includes(ff as Features))
 
     mockedWindowOpen.mockClear()
     mockedRefreshFn.mockClear()
@@ -77,6 +78,10 @@ describe('Subscriptions', () => {
           msp_label: '',
           msp_tenant_name: ''
         }))
+      ),
+      rest.get(
+        MspUrlsInfo.getMspEcProfile.url,
+        (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
       )
     )
   })
@@ -89,7 +94,7 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: /ICX 7150-C08P .* Active/i })).toBeVisible()
@@ -108,7 +113,7 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByRole('row', { name: /ICX 7650/i })).toBeVisible()
 
     const licenseManagementButton =
@@ -149,7 +154,7 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     await userEvent.click(refreshButton)
@@ -166,7 +171,7 @@ describe('Subscriptions', () => {
       </Provider>, {
         route: { params }
       })
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Part Number' })
     const data = await screen.findAllByRole('row')
     // because it is default sorted by "timeleft" in descending order
@@ -182,7 +187,7 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     const wifiRow = await screen.findByRole('row', { name: /Wi-Fi/i })
     const wifiRowCells = await within(wifiRow as HTMLTableRowElement).findAllByRole('cell')
@@ -201,12 +206,13 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /SmartEdge/i })
   })
-  it('should filter edge data when PLM FF is not denabled', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+  it('should filter edge data when edge FF is not denabled', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.concat(Features.EDGES_TOGGLE)
+      .includes(ff as Features))
 
     render(
       <Provider>
@@ -215,7 +221,7 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     await screen.findByRole('columnheader', { name: 'Device Count' })
     await screen.findByRole('row', { name: /Wi-Fi/i })
     expect(screen.queryByRole('row', { name: /SmartEdge/i })).toBeNull()
@@ -247,7 +253,7 @@ describe('Subscriptions', () => {
         route: { params }
       })
 
-    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     // eslint-disable-next-line max-len
     expect(await screen.findByText('At least one active subscription must be available! Please activate subscription and click on'))
       .toBeVisible()

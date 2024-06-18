@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { edgeSdLanApi } from '@acx-ui/rc/services'
 import {
   EdgeDHCPFixtures,
   EdgeDhcpUrls,
@@ -16,7 +17,7 @@ import {
   PersonaUrls,
   TunnelProfileUrls
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -60,6 +61,8 @@ describe('Edge Detail Services Tab - Service Detail Drawer', () => {
     mockedSetVisible.mockReset()
     mockedUseSearchParams.mockReset()
     mockedUseSearchParams.mockReturnValue(null)
+
+    store.dispatch(edgeSdLanApi.util.resetApiState())
 
     mockServer.use(
       rest.post(

@@ -21,14 +21,14 @@ export function TypeCard () {
     value={selected}
   >
     <Row gutter={[10, 0]}>
-      <Col span={6}>
+      <Col>
         <EdgeClusterTypeCard
           id='test1'
           title='LAG, Port & Virtual IP Settings'
           icon={<PortIcon />}
         />
       </Col>
-      <Col span={6}>
+      <Col>
         <EdgeClusterTypeCard
           id='test2'
           title='Sub-interface Settings'
@@ -37,7 +37,7 @@ export function TypeCard () {
           warningTooltip='The node lacks the general IP configurations for the ports to make it operational, and forming a cluster will require the virtual IP.'
         />
       </Col>
-      <Col span={6}>
+      <Col>
         <EdgeClusterTypeCard
           id='test3'
           title='Cluster Interface Settings'
@@ -47,7 +47,7 @@ export function TypeCard () {
           onClick={() => alert('click')}
         />
       </Col>
-      <Col span={6}>
+      <Col>
         <EdgeClusterTypeCard
           id='test4'
           title='Sub-interface Settings'

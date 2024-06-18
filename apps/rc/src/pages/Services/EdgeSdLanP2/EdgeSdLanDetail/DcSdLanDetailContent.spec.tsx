@@ -95,4 +95,25 @@ describe('Edge SD-LAN Detail - DC', () => {
     expect(await screen.findByText('# of tunneled VLANs')).toBeVisible()
     expect(screen.getAllByText('--').length).toBe(3)
   })
+
+  it('should correctly display stats data', async () => {
+
+    render(
+      <Provider>
+        <DcSdLanDetailContent data={mockedSdLanData}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/edgeSdLanP2/:serviceId/detail' }
+      }
+    )
+
+    expect(await screen.findByText('Instances')).toBeVisible()
+    const edgesTable = await screen.findByRole('tab', { name: 'SmartEdges(1)' })
+    await userEvent.click(edgesTable)
+    const row = await screen.findByRole('row', { name: /SE_Cluster 1/i })
+    expect(row.textContent).toBe('SE_Cluster 12015')
+    const vlanCell = await within(row).findByText('15')
+    await userEvent.hover(vlanCell)
+    // will not have tooltip when valns/guestVlans is undefined
+    expect(screen.queryByRole('tooltip', { hidden: true })).not.toBeInTheDocument()
+  })
 })

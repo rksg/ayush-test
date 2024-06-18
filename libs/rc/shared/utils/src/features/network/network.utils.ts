@@ -49,6 +49,11 @@ export const isOweTransitionNetwork = (data: Network | NetworkSaveData): boolean
   return data.isOweMaster === false && !_.isNil(data.owePairNetworkId)
 }
 
-export const isDsaeOnboardingNetwork = (data: NetworkSaveData): boolean => {
-  return data.isDsaeServiceNetwork === false && !_.isNil(data.dsaeNetworkPairId)
+export const isDsaeOnboardingNetwork = (data: Network | NetworkSaveData): boolean => {
+  if (data.hasOwnProperty('isOnBoarded')) {
+    return !!(data as Network).isOnBoarded
+  } else {
+    const _data = (data as NetworkSaveData)
+    return _data.isDsaeServiceNetwork === false && !_.isNil(_data.dsaeNetworkPairId)
+  }
 }

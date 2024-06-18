@@ -466,7 +466,7 @@ describe('DateTimePicker', () => {
         initialDate={{ current: mockedInitialDate }}
         onApply={mockApply}
         title={title}
-        applyFooterMsg={applyMsg}
+        extraFooter={applyMsg}
       />
     </IntlProvider>)
     const calendarIcon = await screen.findByTestId('ClockOutlined')

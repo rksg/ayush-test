@@ -36,7 +36,7 @@ describe('TtcTimeWidget', () => {
     render( <Provider>
       <TtcTimeWidget filters={filters}/></Provider>)
     await screen.findByText('Time To Connect')
-    await screen.findByText('0')
+    await screen.findByText('0 ms')
   })
 
   it('should render for number data', async () => {
@@ -46,7 +46,7 @@ describe('TtcTimeWidget', () => {
     render( <Provider>
       <TtcTimeWidget filters={filters}/></Provider>)
     await screen.findByText('Time To Connect')
-    await screen.findByText('500')
+    await screen.findByText('500 ms')
   })
 
 })

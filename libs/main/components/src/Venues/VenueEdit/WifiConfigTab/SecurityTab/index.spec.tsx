@@ -4,19 +4,21 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                    from '@acx-ui/rc/services'
-import { CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider, store }             from '@acx-ui/store'
-import { mockServer, render, screen }  from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { venueApi }                                        from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                 from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }             from '@acx-ui/test-utils'
 
-import { VenueEditContext }        from '../..'
+import { VenueEditContext }     from '../..'
 import {
   venueData,
   venueRogueAp,
+  venueApTlsEnhancedKey,
   venueDosProtection,
-  venueRoguePolicy,
   venueRoguePolicyList,
-  rogueApPolicyNotDefaultProfile
+  rogueApPolicyNotDefaultProfile,
+  mockRogueApPoliciesListRbac
 } from '../../../__tests__/fixtures'
 
 
@@ -27,6 +29,7 @@ const params = {
   venueId: 'f892848466d047798430de7ac234e940'
 }
 const mockedUpdateFn = jest.fn()
+const mockGetRoguePolicy = jest.fn()
 
 type MockSelectProps = React.PropsWithChildren<{
   onChange?: (value: string) => void
@@ -59,14 +62,17 @@ describe('SecurityTab', () => {
         CommonUrlsInfo.getVenue.url,
         (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicy))),
-      rest.get(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json(venueDosProtection))),
       rest.get(
         CommonUrlsInfo.getVenueRogueAp.url,
         (_, res, ctx) => res(ctx.json(venueRogueAp))),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_, res, ctx) => res(ctx.json(venueApTlsEnhancedKey))),
+      rest.put(
+        CommonUrlsInfo.updateVenueApEnhancedKey.url,
+        (_, res, ctx) => res(ctx.json({}))),
       rest.put(
         CommonUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json({}))),
@@ -79,6 +85,30 @@ describe('SecurityTab', () => {
       rest.get(
         RogueApUrls.getRoguePolicy.url,
         (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
+      ),
+      rest.post(
+        RogueApUrls.getEnhancedRoguePolicyList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(venueRoguePolicyList))
+        }),
+      // RBAC API
+      rest.get(
+        CommonRbacUrlsInfo.getDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json(venueDosProtection))),
+      rest.put(
+        CommonRbacUrlsInfo.updateDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json({}))),
+      rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(
+          ctx.json(mockRogueApPoliciesListRbac)
+        )
+      ),
+      rest.get(
+        CommonRbacUrlsInfo.getVenueRogueAp.url,
+        (_, res, ctx) => res(
+          mockGetRoguePolicy(),
+          ctx.json({ reportThreshold: 0 }))
       )
     )
   })
@@ -104,12 +134,6 @@ describe('SecurityTab', () => {
   })
 
   it('should render correctly with RogueApProfile settings', async () => {
-    mockServer.use(
-      rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicyList)))
-    )
-
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -154,12 +178,6 @@ describe('SecurityTab', () => {
   })
 
   it('should render correctly with RogueApProfile settings then cancel', async () => {
-    mockServer.use(
-      rest.get(
-        RogueApUrls.getRoguePolicyList.url,
-        (_, res, ctx) => res(ctx.json(venueRoguePolicyList)))
-    )
-
     render(
       <Provider>
         <VenueEditContext.Provider value={{
@@ -189,4 +207,58 @@ describe('SecurityTab', () => {
 
     expect(screen.queryByText(/rogue ap detection policy details: roguepolicy1/i)).toBeNull()
   })
+
+  it('should render correctly with TlsEnhancedKey settings then cancel', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockServer.use(
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_, res, ctx) => res(ctx.json(venueApTlsEnhancedKey)))
+    )
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          setEditContextData: jest.fn(),
+          setEditSecurityContextData: jest.fn()
+        }}>
+          <SecurityTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await screen.findByText('TLS Enhanced Key (RSA 3072/ECDSA P-256)')
+
+    const cancelButton = await screen.findAllByRole('button', { name: 'Cancel' })
+
+    await userEvent.click(cancelButton[1])
+
+    expect(screen.queryByText(/rogue ap detection policy details: roguepolicy1/i)).toBeNull()
+  })
+
+  it('should render correctly with RogueApProfile settings with RBAC turned on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    render(
+      <Provider>
+        <VenueEditContext.Provider value={{
+          setEditContextData: jest.fn(),
+          setEditSecurityContextData: jest.fn()
+        }}>
+          <SecurityTab />
+        </VenueEditContext.Provider>
+      </Provider>, { route: { params } })
+
+    await waitFor(() => expect(mockGetRoguePolicy).toBeCalled())
+
+    await screen.findByRole('option', { name: 'a123' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[0],
+      screen.getByRole('option', { name: 'a123' })
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'View Details' }))
+
+  })
+
 })

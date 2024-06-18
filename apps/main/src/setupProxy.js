@@ -1,4 +1,4 @@
-const http = require('http')
+//const http = require('http')
 const https = require('https')
 
 const { createProxyMiddleware } = require('http-proxy-middleware')
@@ -19,13 +19,13 @@ jsonServerCli({
  * Configure proxy to devalto for local development
  * See https://create-react-app.dev/docs/proxying-api-requests-in-development/
  */
-const MOCK_SERVER_URL = 'http://localhost:5000'
+//const MOCK_SERVER_URL = 'http://localhost:5000'
 const CLOUD_URL = 'https://dev.ruckus.cloud'
 const LOCAL_MLISA_URL = 'https://alto.local.mlisa.io'
 const STATIC_ASSETS = 'https://storage.googleapis.com/ruckus-web-1'
 
 module.exports = async function setupProxy (app) {
-
+/*
   const mockServerApi = new Promise((resolve) => {
     http
       .get(MOCK_SERVER_URL, () => { resolve('up') })
@@ -48,6 +48,7 @@ module.exports = async function setupProxy (app) {
       }
     ))
   }
+  */
 
   const localDataApi = new Promise((resolve) => {
     https

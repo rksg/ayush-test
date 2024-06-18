@@ -375,9 +375,13 @@ exports[`incident details should render incident details correctly 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                               >
-                                RuckusAP (70:CA:97:01:A0:C0)
+                                <span
+                                  class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                >
+                                  RuckusAP (70:CA:97:01:A0:C0)
+                                </span>
                               </span>
                             </span>
                           </div>
@@ -1088,9 +1092,13 @@ exports[`incident details should render incident details correctly when there is
                               class="ant-descriptions-item-content"
                             >
                               <span
-                                class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                class="styledComponents__TooltipWrapper-sc-xryt7m-0 jxKtSw"
                               >
-                                RuckusAP (70:CA:97:01:A0:C0)
+                                <span
+                                  class="styledComponents__TextContent-sc-1l4qm8r-0"
+                                >
+                                  RuckusAP (70:CA:97:01:A0:C0)
+                                </span>
                               </span>
                             </span>
                           </div>

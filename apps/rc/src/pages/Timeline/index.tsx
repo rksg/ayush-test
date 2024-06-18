@@ -1,41 +1,19 @@
-import moment                                        from 'moment-timezone'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import moment                     from 'moment-timezone'
+import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, RangePicker }         from '@acx-ui/components'
-import { TimelineTypes }                         from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { goToNotFound }                          from '@acx-ui/user'
 import { useDateFilter }                         from '@acx-ui/utils'
 
 import { Activities } from './Activities'
 import { AdminLogs }  from './AdminLogs'
 import { Events }     from './Events'
 
-const tabs : {
-  key: TimelineTypes,
-  title: MessageDescriptor,
-  component: () => JSX.Element
-}[] = [
-  {
-    key: 'activities',
-    title: defineMessage({ defaultMessage: 'Activities' }),
-    component: Activities
-  },
-  {
-    key: 'events',
-    title: defineMessage({ defaultMessage: 'Events' }),
-    component: Events
-  },
-  {
-    key: 'adminLogs',
-    title: defineMessage({ defaultMessage: 'Admin Logs' }),
-    component: AdminLogs
-  }
-]
-
 function Timeline () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { activeTab = tabs[0].key } = useParams()
+  const { activeTab } = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/timeline')
 
@@ -44,7 +22,13 @@ function Timeline () {
       ...basePath,
       pathname: `${basePath.pathname}/${tab}`
     })
-  const Tab = tabs.find(tab => tab.key === activeTab)?.component
+
+  const tabs = {
+    activities: () => <Activities />,
+    events: () => <Events />,
+    adminLogs: () => <AdminLogs />
+  }
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
   return (
     <>
       <PageHeader
@@ -52,7 +36,12 @@ function Timeline () {
         breadcrumb={[{ text: $t({ defaultMessage: 'Administration' }) }]}
         footer={
           <Tabs activeKey={activeTab} onChange={onTabChange}>
-            {tabs.map(({ key, title }) => <Tabs.TabPane tab={$t(title)} key={key} />)}
+            <Tabs.TabPane key={'activities'}
+              tab={$t(defineMessage({ defaultMessage: 'Activities' }))} />
+            <Tabs.TabPane key={'events'}
+              tab={$t(defineMessage({ defaultMessage: 'Events' }))} />
+            <Tabs.TabPane key={'adminLogs'}
+              tab={$t(defineMessage({ defaultMessage: 'Admin Logs' }))} />
           </Tabs>
         }
         extra={[

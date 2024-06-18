@@ -1,96 +1,38 @@
 import { rest } from 'msw'
 
-import { AaaUrls, ConfigTemplateUrlsInfo }             from '@acx-ui/rc/utils'
-import { Provider }                                    from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
+import { AaaUrls, CommonUrlsInfo, ConfigTemplateContext, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }                            from '@acx-ui/test-utils'
 
-import { mockAAAPolicyTemplateListResponse, mockAAAPolicyTemplateResponse } from '../../NetworkForm/__tests__/fixtures'
+import {
+  aaaServerNetworkList, aaaServerDetail,
+  mockAAAPolicyTemplateListResponse, mockAAAPolicyTemplateResponse,
+  mockAAAPolicyViewModelListResponse
+} from './__tests__/fixtures'
 
 import { AAAPolicyDetail } from '.'
 
-const list = {
-  fields: [
-    'networkId',
-    'networkName'
-  ],
-  totalCount: 4,
-  page: 1,
-  data: [
-    {
-      id: 1,
-      networkId: '6',
-      networkName: 'Network A',
-      networkType: 'OPEN'
-    },
-    {
-      id: 2,
-      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8d',
-      networkName: 'Network B',
-      networkType: 'GUEST',
-      guestNetworkType: 'WISPr'
-    },
-    {
-      id: 3,
-      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8f',
-      networkName: 'Network C',
-      networkType: 'AAA'
-    },
-    {
-      id: 4,
-      networkId: '3b11bcaffd6f4f4f9b2805b6fe24bf8g',
-      networkName: 'Network E',
-      networkType: 'GUEST',
-      guestNetworkType: 'Cloudpath'
-    }
-  ]
-}
-const detailResult = {
-  id: 1,
-  networkIds: [] as string[],
-  name: 'test',
-  type: 'AUTHENTICATION',
-  primary: {
-    ip: '2.2.2.2',
-    port: 101,
-    sharedSecret: 'xxxxxxxx'
-  },
-  secondary: {
-    ip: '2.2.2.2',
-    port: 102,
-    sharedSecret: 'xxxxxxxx'
-  },
-  tags: ['123','345']
-}
-let params: { tenantId: string, policyId: string }
-params = {
-  tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
-  policyId: '373377b0cb6e46ea8982b1c80aabe1fa'
-}
-
-const mockedUseConfigTemplate = jest.fn()
-const mockedUsePolicyListBreadcrumb = jest.fn()
-jest.mock('@acx-ui/rc/utils', () => ({
-  ...jest.requireActual('@acx-ui/rc/utils'),
-  useConfigTemplate: () => mockedUseConfigTemplate(),
-  usePolicyListBreadcrumb: () => mockedUsePolicyListBreadcrumb()
-}))
-
 describe('AAA Detail Page', () => {
+  const params = {
+    tenantId: 'a27e3eb0bd164e01ae731da8d976d3b1',
+    policyId: '373377b0cb6e46ea8982b1c80aabe1fa'
+  }
+
   beforeEach(() => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
-  })
-
-  afterEach(() => {
-    mockedUseConfigTemplate.mockRestore()
-  })
-  it('should render breadcrumb correctly with MSP account', async () => {
-    mockedUseConfigTemplate.mockReturnValue({ isTemplate: true })
-
     mockServer.use(
       rest.post(
-        AaaUrls.getAAANetworkInstances.url,
-        (req, res, ctx) => res(ctx.json(list))
+        AaaUrls.getAAAPolicyViewModelList.url,
+        (_, res, ctx) => res(ctx.json(mockAAAPolicyViewModelListResponse))
       ),
+      rest.post(
+        CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(aaaServerNetworkList))
+      )
+    )
+  })
+
+  it('should render breadcrumb correctly when it is config template', async () => {
+    mockServer.use(
       rest.post(
         ConfigTemplateUrlsInfo.getAAAPolicyTemplateList.url,
         (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateListResponse))
@@ -100,33 +42,32 @@ describe('AAA Detail Page', () => {
         (_, res, ctx) => res(ctx.json(mockAAAPolicyTemplateResponse))
       )
     )
-    render(<Provider><AAAPolicyDetail /></Provider>, {
+    render(<ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+      <Provider><AAAPolicyDetail /></Provider></ConfigTemplateContext.Provider>, {
       route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
     })
 
-    expect(mockedUsePolicyListBreadcrumb).toHaveBeenCalled()
+    expect(await screen.findByRole('link', { name: /Configuration Templates/i })).toBeVisible()
   })
 
   it('should render aaa detail page', async () => {
     mockServer.use(
-      rest.post(
-        AaaUrls.getAAANetworkInstances.url,
-        (req, res, ctx) => res(ctx.json(list))
-      ),
       rest.get(
-        AaaUrls.getAAAProfileDetail.url,
-        (req, res, ctx) => res(ctx.json({ ...detailResult, type: 'AUTHENTICATION',
-          networkIds: ['1','2'] }))
+        AaaUrls.getAAAPolicy.url,
+        (req, res, ctx) => res(ctx.json({
+          ...aaaServerDetail, type: 'AUTHENTICATION'
+        }))
       )
     )
     render(<Provider><AAAPolicyDetail /></Provider>, {
       route: { params, path: '/:tenantId/policies/aaa/:policyId/detail' }
     })
-    expect(await screen.findByText('test')).toBeVisible()
-    expect(await screen.findByText((`Instances (${list.data.length})`))).toBeVisible()
+    expect(await screen.findByText('NotOnlyAAA')).toBeVisible()
+    const networkCount = aaaServerNetworkList.data.length
+    expect(await screen.findByText((`Instances (${networkCount})`))).toBeVisible()
     const body = await screen.findByRole('rowgroup', {
       name: (_, element) => element.classList.contains('ant-table-tbody')
     })
-    await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(4))
+    await waitFor(() => expect(within(body).getAllByRole('row')).toHaveLength(networkCount))
   })
 })

@@ -2,8 +2,8 @@ import { useReducer, useState } from 'react'
 
 import userEvent from '@testing-library/user-event'
 
-import { EPDG, QosPriorityEnum }                          from '@acx-ui/rc/utils'
-import { fireEvent, render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
+import { EPDG, QosPriorityEnum }               from '@acx-ui/rc/utils'
+import { render, renderHook, screen, waitFor } from '@acx-ui/test-utils'
 
 import WifiCallingFormContext, { mainReducer } from '../WifiCallingFormContext'
 
@@ -83,7 +83,7 @@ describe('WifiCallingDrawer', () => {
     let cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeTruthy()
 
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton)
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).toBeNull()
     })
@@ -102,7 +102,7 @@ describe('WifiCallingDrawer', () => {
     let cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeTruthy()
 
-    fireEvent.click(cancelButton)
+    await userEvent.click(cancelButton)
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).toBeNull()
     })
@@ -125,7 +125,7 @@ describe('WifiCallingDrawer', () => {
     let cancelButton = screen.getByText('Cancel')
     expect(cancelButton).toBeTruthy()
 
-    fireEvent.click(saveButton)
+    await userEvent.click(saveButton)
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).toBeNull()
     })

@@ -78,7 +78,7 @@ describe('PIN GeneralSettings Form - PropertyManagementInfo (property management
     )
 
     expect(
-      await screen.findByRole('button', { name: 'Venue\'s property configuration page' })
+      await screen.findByRole('button', { name: 'property configuration page' })
     ).toBeVisible()
   })
 })

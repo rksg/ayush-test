@@ -4,22 +4,33 @@ import { Form, Switch } from 'antd'
 import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
-import { AnchorContext, Loader, StepsForm }                                          from '@acx-ui/components'
-import { RadiusOptionsForm }                                                         from '@acx-ui/rc/components'
+import { AnchorContext, Loader, StepsForm }     from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { RadiusOptionsForm }                    from '@acx-ui/rc/components'
 import {
-  useGetVenueRadiusOptionsQuery, useGetVenueTemplateRadiusOptionsQuery,
-  useUpdateVenueRadiusOptionsMutation, useUpdateVenueTemplateRadiusOptionsMutation
+  useGetVenueRadiusOptionsQuery,
+  useUpdateVenueRadiusOptionsMutation,
+  useGetVenueTemplateRadiusOptionsQuery,
+  useUpdateVenueTemplateRadiusOptionsMutation
 } from '@acx-ui/rc/services'
-import { VenueRadiusOptions } from '@acx-ui/rc/utils'
+import {
+  VenueRadiusOptions,
+  useConfigTemplate
+} from '@acx-ui/rc/utils'
 
-import { VenueEditContext }                                                                from '../../..'
-import { useVenueConfigTemplateMutationFnSwitcher, useVenueConfigTemplateQueryFnSwitcher } from '../../../../venueConfigTemplateApiSwitcher'
+import { VenueEditContext }               from '../../..'
+import {
+  useVenueConfigTemplateMutationFnSwitcher,
+  useVenueConfigTemplateQueryFnSwitcher
+} from '../../../../venueConfigTemplateApiSwitcher'
 
 const { useWatch } = Form
 
 export function RadiusOptions () {
   const { $t } = useIntl()
   const { venueId } = useParams()
+  const { isTemplate } = useConfigTemplate()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
   const {
     editContextData,
@@ -30,10 +41,11 @@ export function RadiusOptions () {
   const { setReadyToScroll } = useContext(AnchorContext)
 
   const form = Form.useFormInstance()
-  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>(
-    useGetVenueRadiusOptionsQuery,
-    useGetVenueTemplateRadiusOptionsQuery
-  )
+  const getVenueRadiusOptions = useVenueConfigTemplateQueryFnSwitcher<VenueRadiusOptions>({
+    useQueryFn: useGetVenueRadiusOptionsQuery,
+    useTemplateQueryFn: useGetVenueTemplateRadiusOptionsQuery,
+    enableRbac: isUseRbacApi
+  })
 
   const [updateVenueRadiusOptions, { isLoading: isUpdatingVenueRadiusOptions }] =
     useVenueConfigTemplateMutationFnSwitcher(
@@ -77,7 +89,8 @@ export function RadiusOptions () {
 
       await updateVenueRadiusOptions({
         params: { venueId },
-        payload: payload
+        payload: payload,
+        enableRbac: isUseRbacApi
       }).unwrap()
 
     } catch (error) {

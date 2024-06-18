@@ -165,6 +165,7 @@ function useColumns () {
               rules={rules}
             />}
             children={rules.length}
+            dottedUnderline={true}
           />
           : 0
         )
@@ -172,7 +173,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       align: 'center',
       filterKey: 'venueIds',

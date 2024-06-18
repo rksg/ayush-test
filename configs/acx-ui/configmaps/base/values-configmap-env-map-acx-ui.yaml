@@ -57,4 +57,12 @@ data:
       - configmap: configmap-acx-ui
         key: api.documentation.url
         name: API_DOCUMENTATION_URL
-
+      - configmap: configmap-acx-ui
+        key: mib.files
+        name: MIB_FILES
+      - configmap: configmap-acx-ui
+        key: druid.rollup.period.days
+        name: DRUID_ROLLUP_DAYS
+      - configmap: configmap-acx-ui
+        key: druid.retain.period.days
+        name: DRUID_RETAIN_PERIOD_DAYS

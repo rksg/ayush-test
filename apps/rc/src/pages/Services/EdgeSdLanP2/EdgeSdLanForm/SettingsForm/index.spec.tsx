@@ -58,6 +58,11 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
+jest.mock('@acx-ui/rc/utils', () => ({
+  ...jest.requireActual('@acx-ui/rc/utils'),
+  useHelpPageLink: () => ''
+}))
+
 const mockedSetFieldValue = jest.fn()
 const mockedReqVenuesList = jest.fn()
 const mockedReqClusterList = jest.fn()
@@ -171,12 +176,9 @@ describe('Edge SD-LAN form: settings', () => {
 
     await waitFor(() => {
       expect(mockedReqClusterList).toBeCalledWith({
-        fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
+        fields: ['name', 'clusterId', 'venueId', 'clusterStatus', 'hasCorePort'],
         filters: {
           venueId: [expectedVenueId]
-          // TODO: need confirm
-          // clusterStatus: Object.values(EdgeStatusEnum)
-          //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
     })
@@ -242,12 +244,9 @@ describe('Edge SD-LAN form: settings', () => {
     await screen.findByText('Cluster')
     await waitFor(() => {
       expect(mockedReqClusterList).toBeCalledWith({
-        fields: ['name', 'clusterId', 'venueId', 'clusterStatus'],
+        fields: ['name', 'clusterId', 'venueId', 'clusterStatus', 'hasCorePort'],
         filters: {
           venueId: [mockedVenueList.data[4].id]
-          // TODO: need confirm
-          // clusterStatus: Object.values(EdgeStatusEnum)
-          //   .filter(v => v !== EdgeStatusEnum.NEVER_CONTACTED_CLOUD)
         }
       })
     })
@@ -289,6 +288,26 @@ describe('Edge SD-LAN form: settings', () => {
       .queryByRole('option', { name: 'Edge Cluster 5' })).toBeNull()
     expect(within(dmzSelector)
       .getByRole('option', { name: 'Edge Cluster 3' })).toBeValid()
+  })
+
+  it('should validate cluster doesnot configure core port ready', async () => {
+    const { result: stepFormRef } = renderHook(() => {
+      const [ form ] = Form.useForm()
+      jest.spyOn(form, 'setFieldValue').mockImplementation(mockedSetFieldValue)
+      return form
+    })
+
+    render(<Provider>
+      <StepsForm form={stepFormRef.current}>
+        <SettingsForm />
+      </StepsForm>
+    </Provider>)
+
+    const formBody = await screen.findByTestId('steps-form-body')
+    await checkBasicSettings()
+
+    const alert = await within(formBody).findByRole('alert')
+    expect(alert).toHaveTextContent('selected cluster must set up a Core port or LAG')
   })
 })
 

@@ -18,8 +18,6 @@ export const Wrapper = styled.section`
   --acx-steps-form-form-title-line-height: var(--acx-headline-3-line-height);
   --acx-steps-form-form-title-margin-bottom: 16px;
 
-  --acx-steps-form-actions-vertical-space: 12px;
-
   padding-block-end: calc(var(--acx-steps-form-actions-vertical-space) * 2 + 32px);
 
   ${disableStickyPagination}
@@ -298,3 +296,28 @@ z-index: 5;
   z-index: 1;
 }
 `
+
+export const DescriptionTextWrapper = css`
+  .greyText {
+    color: var(--acx-neutrals-50);
+  }
+`
+
+export const DescriptionWrapper = styled.div`
+  & .ant-checkbox-wrapper-in-form-item {
+    color: var(--acx-neutrals-60);
+  }
+
+  & .description {
+    font-size: var(--acx-body-4-font-size);
+  }
+
+  & .descriptionsWrapper {
+    margin-left: 24px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+  }
+
+  ${DescriptionTextWrapper}
+`
+

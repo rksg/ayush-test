@@ -1,5 +1,6 @@
 import userEvent      from '@testing-library/user-event'
 import { Typography } from 'antd'
+import _              from 'lodash'
 
 import {
   render,
@@ -47,7 +48,7 @@ describe('EdgeCluster CompatibilityErrorDetails', () => {
       />)
 
     errorDetails.forEach(item => {
-      screen.getByText(item.nodeName)
+      screen.getByText(item.nodeName!)
     })
 
     expect(mockedRenderFn).toBeCalledTimes(errorDetails.length)
@@ -84,9 +85,50 @@ describe('EdgeCluster CompatibilityErrorDetails', () => {
       />)
 
     errorDetails.forEach(item => {
-      screen.getByText(item.nodeName)
+      screen.getByText(item.nodeName!)
     })
     await userEvent.click(screen.getByRole('button', { name: 'OK' }))
     expect(mockedSetVisible).toBeCalledWith(false)
+  })
+
+  it('should display empty Card title when node name is undefined', async () => {
+    const noNodeName = _.cloneDeep(errorDetails)
+    noNodeName.forEach((node) => {
+      node.nodeName = undefined
+    })
+
+    render(
+      <CompatibilityErrorDetails
+        visible={true}
+        setVisible={mockedSetVisible}
+        fields={errorDetailFields}
+        data={noNodeName}
+      />)
+
+    expect(mockedRenderFn).toBeCalledTimes(noNodeName.length)
+    await screen.findAllByText('Number of LAGs')
+    const dialog = screen.getByRole('dialog') as HTMLElement
+    // eslint-disable-next-line testing-library/no-node-access
+    const allTitles = dialog?.getElementsByClassName('ant-card-head-title')
+    for (let i = 0; i < allTitles.length; i++) {
+      expect(allTitles[i].textContent).toBe('')
+    }
+  })
+
+  it('should display nothing when fields is empty', async () => {
+    render(
+      <CompatibilityErrorDetails
+        visible={true}
+        setVisible={mockedSetVisible}
+        fields={[]}
+        data={errorDetails}
+      />)
+
+    errorDetails.forEach(item => {
+      screen.getByText(item.nodeName!)
+    })
+    expect(mockedRenderFn).toBeCalledTimes(0)
+    const fields = screen.queryAllByRole('row')
+    expect(fields.length).toBe(0)
   })
 })

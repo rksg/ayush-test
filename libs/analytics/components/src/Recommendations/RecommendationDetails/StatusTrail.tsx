@@ -23,6 +23,18 @@ const trailFormatter = (
       replacement: defineMessage({ defaultMessage: 'Applied (Revert Canceled)' })
     },
     {
+      pattern: ['applyfailed', 'revertscheduled'],
+      replacement: defineMessage({ defaultMessage: 'Failed (Revert Canceled)' })
+    },
+    {
+      pattern: ['revertfailed', 'revertscheduled'],
+      replacement: defineMessage({ defaultMessage: 'Revert Failed (Revert Canceled)' })
+    },
+    {
+      pattern: ['applywarning', 'revertscheduled'],
+      replacement: defineMessage({ defaultMessage: 'REVERT (Revert Canceled)' })
+    },
+    {
       pattern: ['new', 'applyscheduled'],
       replacement: defineMessage({ defaultMessage: 'New (Apply Canceled)' })
     }

@@ -24,6 +24,7 @@ import {
   DownloadOutlined
 } from '@acx-ui/icons'
 import { TenantLink, useNavigateToPath }                               from '@acx-ui/react-router-dom'
+import { filterByAccess, getShowWithoutRbacCheckKey, hasPermission }   from '@acx-ui/user'
 import { exportMessageMapping, noDataDisplay, handleBlobDownloadFile } from '@acx-ui/utils'
 
 import { useIncidentToggles } from '../useIncidentToggles'
@@ -142,6 +143,7 @@ export function IncidentTable ({ filters }: {
 
   const rowActions: TableProps<IncidentTableRow>['rowActions'] = [
     {
+      key: getShowWithoutRbacCheckKey('mute'),
       label: $t(selectedIncident?.isMuted
         ? defineMessage({ defaultMessage: 'Unmute' })
         : defineMessage({ defaultMessage: 'Mute' })
@@ -241,7 +243,11 @@ export function IncidentTable ({ filters }: {
       dataIndex: 'scope',
       key: 'scope',
       render: (_, value, __, highlightFn ) => {
-        return <Tooltip placement='top' title={formattedPath(value.path, value.sliceValue)}>
+        return <Tooltip
+          placement='top'
+          title={formattedPath(value.path, value.sliceValue)}
+          dottedUnderline={true}
+        >
           {highlightFn(value.scope)}
         </Tooltip>
       },
@@ -266,7 +272,7 @@ export function IncidentTable ({ filters }: {
         type='tall'
         dataSource={data}
         columns={ColumnHeaders}
-        rowActions={rowActions}
+        rowActions={filterByAccess(rowActions)}
         iconButton={{
           icon: <DownloadOutlined />,
           disabled: !Boolean(data?.length),
@@ -274,7 +280,7 @@ export function IncidentTable ({ filters }: {
           onClick: () => {
             downloadIncidentList(data as IncidentNodeData, ColumnHeaders, filters)
           } }}
-        rowSelection={{
+        rowSelection={hasPermission({ permission: 'WRITE_INCIDENTS' }) && {
           type: 'radio',
           selectedRowKeys: selectedRowData.map(val => val.id),
           onChange: (_, [row]) => {

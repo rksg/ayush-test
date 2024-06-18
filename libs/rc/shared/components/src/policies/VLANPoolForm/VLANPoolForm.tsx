@@ -7,16 +7,22 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
-import { useGetVLANPoolPolicyDetailQuery, useAddVLANPoolPolicyMutation, useUpdateVLANPoolPolicyMutation } from '@acx-ui/rc/services'
+import {
+  useGetVLANPoolPolicyDetailQuery, useAddVLANPoolPolicyMutation,
+  useUpdateVLANPoolPolicyMutation, useAddVlanPoolPolicyTemplateMutation,
+  useUpdateVlanPoolPolicyTemplateMutation, useGetVlanPoolPolicyTemplateDetailQuery
+} from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
-  getPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  generatePolicyPageHeaderTitle,
-  usePolicyListBreadcrumb
+  usePolicyPageHeaderTitle,
+  usePolicyListBreadcrumb,
+  usePolicyPreviousPath,
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import VLANPoolSettingForm from './VLANPoolSettingForm'
 
@@ -27,18 +33,28 @@ type VLANPoolFormProps = {
 }
 
 export const VLANPoolForm = (props: VLANPoolFormProps) => {
+  const { edit, networkView, backToNetwork } = props
   const { $t } = useIntl()
   const navigate = useNavigate()
-  const tablePath = getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })
-  const linkToPolicies = useTenantLink(tablePath)
+  const linkToInstanceList = usePolicyPreviousPath(PolicyType.VLAN_POOL, PolicyOperation.LIST)
   const params = useParams()
-  const isEdit = props.edit && !props.networkView
+  const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
-  const { data } = useGetVLANPoolPolicyDetailQuery({ params }, { skip: !isEdit })
+  const { data } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useGetVLANPoolPolicyDetailQuery,
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery,
+    skip: !isEdit
+  })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
-  const [ createVLANPoolPolicy ] = useAddVLANPoolPolicyMutation()
-
-  const [ updateVLANPoolPolicy ] = useUpdateVLANPoolPolicyMutation()
+  const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.VLAN_POOL)
+  const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useAddVLANPoolPolicyMutation,
+    useTemplateMutationFn: useAddVlanPoolPolicyTemplateMutation
+  })
+  const [ updateInstance ] = useConfigTemplateMutationFnSwitcher({
+    useMutationFn: useUpdateVLANPoolPolicyMutation,
+    useTemplateMutationFn: useUpdateVlanPoolPolicyTemplateMutation
+  })
 
   useEffect(() => {
     if (data) {
@@ -48,36 +64,39 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
   const handleVLANPoolPolicy = async (formData: VLANPoolPolicyType) => {
+    const payload = {
+      ...formData,
+      vlanMembers: (formData.vlanMembers as string).split(',')
+    }
+
     try {
       if (!isEdit) {
-        await createVLANPoolPolicy({
-          params,
-          payload: formData
-        }).unwrap().then((res)=>{
+        await createInstance({ params, payload }).unwrap().then(res => {
           formData.id = res.response?.id
         })
       } else {
-        await updateVLANPoolPolicy({
-          params,
-          payload: formData
-        }).unwrap()
+        await updateInstance({ params, payload }).unwrap()
       }
-      props.networkView ? props.backToNetwork?.(formData)
-        : navigate(linkToPolicies, { replace: true })
+      networkView ? backToNetwork?.(formData) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
+  const onCancel = () => {
+    networkView ? backToNetwork?.() : navigate(linkToInstanceList)
+  }
+
   return (
     <>
-      {!props.networkView &&<PageHeader
-        title={generatePolicyPageHeaderTitle(isEdit, false, PolicyType.VLAN_POOL)}
+      {!networkView &&<PageHeader
+        title={pageTitle}
         breadcrumb={breadcrumb}
       />}
       <StepsFormLegacy<VLANPoolPolicyType>
         formRef={formRef}
         editMode={isEdit}
-        onCancel={() => props.networkView? props.backToNetwork?.():navigate(linkToPolicies)}
+        onCancel={onCancel}
         onFinish={async (data) => {
           return handleVLANPoolPolicy(data)
         }}
@@ -86,7 +105,7 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
           name='settings'
           title={$t({ defaultMessage: 'Settings' })}
         >
-          <VLANPoolSettingForm edit={isEdit} networkView={props.networkView}/>
+          <VLANPoolSettingForm edit={isEdit} networkView={networkView}/>
         </StepsFormLegacy.StepForm>
       </StepsFormLegacy>
     </>

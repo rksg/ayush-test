@@ -5,8 +5,8 @@ import {
   Loader,
   Subtitle
 } from '@acx-ui/components'
-import { Features, TierFeatures, useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { SpaceWrapper, SubscriptionUtilizationWidget }            from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
+import { SpaceWrapper, SubscriptionUtilizationWidget, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   useGetEntitlementSummaryQuery
 } from '@acx-ui/rc/services'
@@ -62,7 +62,7 @@ const subscriptionUtilizationTransformer = (
 export const SubscriptionHeader = () => {
   const { $t } = useIntl()
   const params = useParams()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isDelegationTierApi = useIsSplitOn(Features.DELEGATION_TIERING) && isDelegationMode()
 
   const request = useGetAccountTierQuery({ params }, { skip: !isDelegationTierApi })
@@ -108,7 +108,9 @@ export const SubscriptionHeader = () => {
         <SpaceWrapper fullWidth size='large' justifycontent='flex-start'>
           {
             subscriptionDeviceTypeList.filter(data =>
-              data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled)
+              (data.value !== EntitlementDeviceType.EDGE || isEdgeEnabled) &&
+               data.value !== EntitlementDeviceType.ANALYTICS
+            )
               .map((item) => {
                 const summary = summaryData[item.value]
                 return summary ? <SubscriptionUtilizationWidget

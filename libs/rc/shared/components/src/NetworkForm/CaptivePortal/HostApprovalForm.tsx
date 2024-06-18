@@ -233,10 +233,8 @@ export function HostApprovalForm () {
         />
         <RedirectUrlInput/>
         <DhcpCheckbox />
-        <BypassCaptiveNetworkAssistantCheckbox
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.HostApproval} />
+        <BypassCaptiveNetworkAssistantCheckbox/>
         <WalledGardenTextArea
-          guestNetworkTypeEnum={GuestNetworkTypeEnum.HostApproval}
           enableDefaultWalledGarden={false} />
       </GridCol>
       <GridCol col={{ span: 14 }}>

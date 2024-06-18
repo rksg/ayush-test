@@ -256,7 +256,7 @@ const getAirtimeRxRecommendations = (checks: (AirtimeRxChecks)[], params: Airtim
     ? <FormattedMessage defaultMessage={'<li>Review the channel planning, AP density and deployment.</li>'} values={htmlValues}/>
     : get('IS_MLISA_SA')
       ? <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the zone.</li>'} values={htmlValues}/>
-      : <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the venue.</li>'} values={htmlValues}/>
+      : <FormattedMessage defaultMessage={'<li>Enable ChannelFly for the <venueSingular></venueSingular>.</li>'} values={htmlValues}/>
   const highLegacyCount = <FormattedMessage defaultMessage={'<li>Remove legacy devices or upgrade them. If possible, enable OFDM-only mode on WLANs.</li>'} values={htmlValues}/>
 
   const allFalseText = [
@@ -424,7 +424,7 @@ export const rootCauseRecommendationMap = {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p>
+        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, <venuePlural></venuePlural>, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or <venueSingular></venueSingular>).</p>
         <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>`
       })
     },
@@ -574,7 +574,7 @@ export const rootCauseRecommendationMap = {
       rootCauses: defineMessage({ defaultMessage: '<p>Clients are failing 802.11r roaming due to a mismatch in the mobility domain ID (MDID) in the 802.11r connection request.</p>' }),
       recommendations: defineMessage({
         defaultMessage: `
-        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, venues, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or venue).</p>
+        <p>This may be caused if the roaming boundary for an SSID crosses two AP zones, <venuePlural></venuePlural>, or groups in which the same SSID exists, but the MDID does not match on the SSIDs. Double check the deployment to identify if the failing AP(s) represent a roaming boundary between two WLANs that have the same SSID, but different MDIDs (usually between AP zones or <venueSingular></venueSingular>).</p>
         <p>This issue may be observed when client 802.11r implementations are unreliable, which usually points to firmware or driver issues. Check the impacted client list to see if this is only affecting a specific OS type.</p>`
       })
     },

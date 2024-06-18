@@ -33,9 +33,10 @@ const errorDetailFields = [{
 jest.mock('../CompatibilityErrorDetails', () => ({
   ...jest.requireActual('../CompatibilityErrorDetails'),
   CompatibilityErrorDetails: (props:
-    { visible: boolean, data: CompatibilityNodeError[] }) =>
+    { visible: boolean, fields: SingleNodeDetailsField[], data: CompatibilityNodeError[] }) =>
     props.visible && <div data-testid='rc-CompatibilityErrorDetails'>
-      {JSON.stringify(props.data)}
+      {'Fields:' + JSON.stringify(props.fields)}
+      {'Data:' + JSON.stringify(props.data)}
     </div>
 }))
 
@@ -66,7 +67,7 @@ describe('EdgeCluster CompatibilityStatusBar', () => {
     expect(detailbtn).toBeValid()
     await userEvent.click(detailbtn!)
     const detailDiv = screen.queryByTestId('rc-CompatibilityErrorDetails')
-    expect(detailDiv).toHaveTextContent(/\[\]/)
+    expect(detailDiv).toHaveTextContent(/Data:\[\]/)
   })
 
   it('should display error style', async () => {
@@ -85,5 +86,19 @@ describe('EdgeCluster CompatibilityStatusBar', () => {
     await userEvent.click(detailbtn!)
     const detailDiv = screen.queryByTestId('rc-CompatibilityErrorDetails')
     expect(detailDiv).toBeVisible()
+  })
+
+  it('should handle empty fields', async () => {
+    render(
+      <CompatibilityStatusBar
+        type={CompatibilityStatusEnum.FAIL}
+        errors={errorDetails}
+      />)
+
+    expect(screen.queryByText('Mismatch')).toBeValid()
+    const detailbtn = screen.queryByRole('button', { name: 'See details' })
+    await userEvent.click(detailbtn!)
+    const detailDiv = screen.queryByTestId('rc-CompatibilityErrorDetails')
+    expect(detailDiv).toHaveTextContent(/Fields:\[\]/)
   })
 })

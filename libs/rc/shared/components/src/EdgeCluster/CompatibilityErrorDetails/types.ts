@@ -4,7 +4,7 @@ import { EdgePortTypeEnum } from '@acx-ui/rc/utils'
 
 export interface CompatibilityNodeError<RecordType = unknown> {
   nodeId: string
-  nodeName: string
+  nodeName?: string
   errors: RecordType
 }
 export interface SingleNodeDetailsField<RecordType = unknown> {

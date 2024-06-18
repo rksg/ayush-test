@@ -9,7 +9,12 @@ import {
   NetworkHierarchy,
   Switch
 } from '@acx-ui/analytics/services'
-import { defaultSort, sortProp, formattedPath, getUserProfile, encodeFilterPath } from '@acx-ui/analytics/utils'
+import {
+  defaultSort,
+  sortProp,
+  formattedPath,
+  encodeFilterPath
+} from '@acx-ui/analytics/utils'
 import {
   PageHeader,
   Loader,
@@ -20,9 +25,9 @@ import {
   useDateRange,
   TimeRangeDropDownProvider
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                       from '@acx-ui/formatter'
 import { useParams, TenantLink }                                           from '@acx-ui/react-router-dom'
+import { hasRaiPermission }                                                from '@acx-ui/user'
 import { DateRange, fixedEncodeURIComponent, encodeParameter, DateFilter } from '@acx-ui/utils'
 
 import NoData                               from './NoData'
@@ -32,16 +37,12 @@ const pagination = { pageSize: 5, defaultPageSize: 5 }
 
 function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
   const { $t } = useIntl()
-  const { selectedTenant: { role } } = getUserProfile()
-  const isReportOnly = role === 'report-only'
-  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const { timeRange } = useDateRange()
   const results = useSearchQuery({
     start: timeRange[0].format(),
     end: timeRange[1].format(),
     limit: 100,
-    query: searchVal!,
-    isReportOnly
+    query: searchVal!
   })
   let count = 0
   results.data && Object.entries(results.data).forEach(([, value]) => {
@@ -56,9 +57,9 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       sorter: { compare: sortProp('apName', defaultSort) },
       render: (_, row: AP) => {
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const link = role === 'report-only'
-          ? `/reports/aps?${filter}`
-          : `/devices/wifi/${row.macAddress}/details/ai`
+        const link = hasRaiPermission('READ_ACCESS_POINTS_LIST')
+          ? `/devices/wifi/${row.macAddress}/details/ai`
+          : `/reports/aps?${filter}`
         return <TenantLink to={link}>{row.apName}</TenantLink>
       }
     },
@@ -123,9 +124,9 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
           endDate: moment.min([moment(), moment(lastActiveTime).add(4, 'hours')]).format(),
           range: DateRange.custom
         })
-        const link = isReportOnly
-          ? `/users/wifi/clients/${mac}/details/reports`
-          : `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+        const link = hasRaiPermission('READ_CLIENT_TROUBLESHOOTING')
+          ? `/users/wifi/clients/${mac}/details/troubleshooting?period=${period}`
+          : `/users/wifi/clients/${mac}/details/reports`
         return <TenantLink to={link}>{hostname}</TenantLink>
       },
       sorter: { compare: sortProp('hostname', defaultSort) }
@@ -214,15 +215,15 @@ function SearchResult ({ searchVal }: { searchVal: string | undefined }) {
       render: (_, row: NetworkHierarchy) => {
         const networkPath = row.networkPath.slice(1)
         const filter = encodeFilterPath('analytics', row.networkPath)
-        const defaultPath = row.type.toLowerCase() === 'zone' && isZonesPageEnabled
+        const defaultPath = row.type.toLowerCase() === 'zone'
           ? `/zones/${networkPath?.[0]?.name}/${networkPath?.[1]?.name}/assurance`
           : `/incidents?${filter}`
         const reportOnly = row.type.toLowerCase().includes('switch')
           ? `/reports/switches?${filter}`
           : `/reports/wireless?${filter}`
-        const link = role === 'report-only'
-          ? reportOnly
-          : defaultPath
+        const link = hasRaiPermission('READ_INCIDENTS')
+          ? defaultPath
+          : reportOnly
         return <TenantLink to={link}>{row.name}</TenantLink>
       },
       sorter: { compare: sortProp('name', defaultSort) }

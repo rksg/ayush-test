@@ -1,8 +1,8 @@
-import { ReactNode, useEffect, useMemo } from 'react'
+import { ReactNode } from 'react'
 
 import { FormInstance } from 'antd'
 
-import { StepsForm } from '@acx-ui/components'
+import { StepsForm, StepsFormGotoStepFn } from '@acx-ui/components'
 import {
   EdgeSdLanSettingP2,
   getServiceRoutePath,
@@ -53,7 +53,7 @@ interface EdgeSdLanFormP2Props {
   form: FormInstance,
   steps: EdgeSdLanFormStep[]
   editData?: EdgeSdLanSettingP2
-  onFinish: (values: EdgeSdLanFormModelP2) => Promise<boolean | void>
+  onFinish: (values: EdgeSdLanFormModelP2, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
 }
 
 const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
@@ -66,24 +66,16 @@ const EdgeSdLanFormP2 = (props: EdgeSdLanFormP2Props) => {
     oper: ServiceOperation.LIST
   }))
 
-  const handleFinish = async (formData: EdgeSdLanFormModelP2) => {
-    await onFinish(formData)
+  const handleFinish = async (formData: EdgeSdLanFormModelP2, gotoStep: StepsFormGotoStepFn) => {
+    await onFinish(formData, gotoStep)
   }
 
-  const initFormValues = useMemo(() => {
-    const initValues = getSdLanFormDefaultValues(editData)
-    const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
-    if (!isEditMode) {
-      initValues.tunnelProfileId = defaultSdLanTunnelProfile.value
-      initValues.tunnelProfileName = defaultSdLanTunnelProfile.label
-    }
-    return initValues
+  const initFormValues = getSdLanFormDefaultValues(editData)
+  const defaultSdLanTunnelProfile = getVlanVxlanDefaultTunnelProfileOpt()
+  if (!isEditMode) {
+    initFormValues.tunnelProfileId = defaultSdLanTunnelProfile.value
+    initFormValues.tunnelProfileName = defaultSdLanTunnelProfile.label
   }
-  , [isEditMode, editData])
-
-  useEffect(() => {
-    form.setFieldsValue(initFormValues)
-  }, [initFormValues])
 
   return (<StepsForm
     form={form}

@@ -1,18 +1,22 @@
 import { useContext, useEffect } from 'react'
 
-import { useIntl }   from 'react-intl'
-import { useParams } from 'react-router-dom'
+import { useIntl } from 'react-intl'
 
-import { Loader, SummaryCard } from '@acx-ui/components'
-import { useRoguePolicyQuery } from '@acx-ui/rc/services'
+import { Loader, SummaryCard }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useGetRoguePolicyTemplateQuery, useRoguePolicyQuery } from '@acx-ui/rc/services'
+import { useConfigTemplateQueryFnSwitcher }                    from '@acx-ui/rc/utils'
 
 import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
 const RogueAPDetectionDetailContent = () => {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { $t } = useIntl()
 
-  const { data, isLoading } = useRoguePolicyQuery({
-    params: useParams()
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher({
+    useQueryFn: useRoguePolicyQuery,
+    useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
+    enableRbac
   })
 
   const { setFiltersId, setPolicyName } = useContext(RogueAPDetailContext)

@@ -7,14 +7,17 @@ import { HTML5Backend }                     from 'react-dnd-html5-backend'
 import { useIntl }                          from 'react-intl'
 import { Location, useLocation, useParams } from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }      from '@acx-ui/icons'
+import { Button, Loader, showActionModal }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined } from '@acx-ui/icons'
 import {
   useAddFloorPlanMutation, useApListQuery, useDeleteFloorPlanMutation,
   useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery,
-  useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation,
-  useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
+  useUpdateApPositionMutation,
+  useUpdateCloudpathServerPositionMutation,
+  useUpdateFloorPlanMutation,
+  useUpdateRwgPositionMutation,
+  useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
 import {
   APMeshRole,
   FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
@@ -73,7 +76,8 @@ export function FloorPlan () {
     LTEAP: [],
     RogueAP: [],
     cloudpath: [],
-    DP: []
+    DP: [],
+    rwg: []
   } as TypeWiseNetworkDevices
 
   const clearDevicePositionValues: NetworkDevicePosition = {
@@ -91,8 +95,11 @@ export function FloorPlan () {
   }
 
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
-
-  const getNetworkDevices = useGetAllDevicesQuery({ params, payload: networkDevicePayload })
+  const showRwgDevice = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const getNetworkDevices = useGetAllDevicesQuery({ params: { ...params,
+    showRwgDevice: '' + showRwgDevice
+  },
+  payload: networkDevicePayload })
 
   const { data: apsList } = useApListQuery({
     params, payload: {
@@ -187,6 +194,11 @@ export function FloorPlan () {
     { isLoading: isUpdateCloudpathServerPosition }
   ] = useUpdateCloudpathServerPositionMutation()
 
+  const [
+    updateRwgPosition,
+    { isLoading: isUpdateRwgPosition }
+  ] = useUpdateRwgPositionMutation()
+
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
   const galleryViewHandler = () => {
@@ -245,7 +257,8 @@ export function FloorPlan () {
     const switchesCount = get(unplacedDevices, 'switches.length', 0)
     const lteApsCount = get(unplacedDevices, 'LTEAP.length', 0)
     const coudpathsCount = get(unplacedDevices, 'cloudpath.length', 0)
-    return apsCount + switchesCount + lteApsCount + coudpathsCount
+    const rwgCount = get(unplacedDevices, 'rwg.length', 0)
+    return apsCount + switchesCount + lteApsCount + coudpathsCount + rwgCount
   }
 
   const extractPlacedDevices = (deviceType: NetworkDeviceType,
@@ -346,6 +359,9 @@ export function FloorPlan () {
         updateCloudpathServerPosition({ params: { ...params, cloudpathServerId: device.id },
           payload: clear ? clearDevicePositionValues : device.position })
         break
+      case NetworkDeviceType.rwg:
+        updateRwgPosition({ params: { ...params, gatewayId: device.id },
+          payload: clear ? clearDevicePositionValues : device.position })
     }
   }
 
@@ -376,14 +392,16 @@ export function FloorPlan () {
       { isLoading: false, isFetching: isUpdateFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateSwitchPosition },
       { isLoading: false, isFetching: isUpdateApPosition },
-      { isLoading: false, isFetching: isUpdateCloudpathServerPosition }
+      { isLoading: false, isFetching: isUpdateCloudpathServerPosition },
+      { isLoading: false, isFetching: isUpdateRwgPosition }
     ]}>
       {floorPlans?.length ?
         <NetworkDeviceContext.Provider value={clearDevice}>
           { !(deviceList?.ap?.length + deviceList?.switches?.length)
           && <Space direction='vertical'>
             <Alert
-              message={$t({ defaultMessage: 'This venue contains no networking device' })}
+              // eslint-disable-next-line max-len
+              message={$t({ defaultMessage: 'This <venueSingular></venueSingular> contains no networking device' })}
               type='info'
               icon={<UI.BulbOutlinedIcon />}
               showIcon

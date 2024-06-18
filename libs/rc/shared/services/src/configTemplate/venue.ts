@@ -1,22 +1,43 @@
 import {
-  CapabilitiesApModel, CommonResult, ExternalAntenna, TableResult, TriBandSettings,
+  AAASetting,
+  CapabilitiesApModel,
+  CommonResult,
+  ConfigTemplateUrlsInfo,
+  ExternalAntenna,
+  LocalUser,
+  RadiusServer,
+  TableResult,
+  TacacsServer,
+  TriBandSettings,
   Venue,
   VenueBssColoring,
-  VenueClientAdmissionControl, VenueConfigTemplateUrlsInfo,
+  VenueClientAdmissionControl,
+  VenueConfigTemplateUrlsInfo,
   VenueDHCPPoolInst,
   VenueDHCPProfile,
-  VenueDefaultRegulatoryChannels, VenueDirectedMulticast,
-  VenueDosProtection, VenueExtended, VenueLanPorts, VenueLoadBalancing,
+  VenueDefaultRegulatoryChannels,
+  VenueDirectedMulticast,
+  VenueDosProtection,
+  VenueExtended,
+  VenueLanPorts,
+  VenueLoadBalancing,
   VenueMdnsFencingPolicy,
-  VenueRadioCustomization, VenueRadiusOptions, VenueSettings,
-  onActivityMessageReceived, onSocketActivityChanged
+  VenueRadioCustomization,
+  VenueRadiusOptions,
+  VenueSettings,
+  VenueSwitchConfiguration,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
 import { handleCallbackWhenActivitySuccess } from '../utils'
 
-import { commonQueryFn, configTemplateApi } from './common'
+import { commonQueryFn, configTemplateApi }                                          from './common'
+import { useCasesToRefreshVenueTemplateList, useCasesToRefreshVlanPoolTemplateList } from './constants'
+import { policiesConfigTemplateApi }                                                 from './policies'
 
 export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -40,17 +61,12 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     getVenuesTemplateList: build.query<TableResult<Venue>, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenuesTemplateList),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'VenueTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          const activities = [
-            'AddVenueTemplateRecord',
-            'UpdateVenueTemplateRecord',
-            'DeleteVenueTemplateRecord'
-          ]
-          onActivityMessageReceived(msg, activities, () => {
+          onActivityMessageReceived(msg, useCasesToRefreshVenueTemplateList, () => {
             // eslint-disable-next-line max-len
             api.dispatch(configTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
           })
@@ -269,6 +285,78 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
+    }),
+    getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueCityList),
+      transformResponse: (result: { cityList: { name: string }[] }) => {
+        return result.cityList
+      }
+    }),
+    getVenueTemplateSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchSetting)
+    }),
+    updateVenueTemplateSwitchSetting: build.mutation<Venue, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchSetting)
+    }),
+    getVenueTemplateSwitchAaaSetting: build.query<AAASetting, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchAaaSetting),
+      providesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'DETAIL' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'AddVenueTemplateAaaServer',
+            'UpdateVenueTemplateAaaServer',
+            'DeleteVenueTemplateAaaServer'
+          ], () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]))
+          })
+        })
+      }
+    }),
+    updateVenueTemplateSwitchAAASetting: build.mutation<AAASetting, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaSetting),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'DETAIL' }]
+    }),
+    // eslint-disable-next-line max-len
+    getVenueTemplateSwitchAAAServerList: build.query<TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchAaaServerList),
+      providesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
+    // eslint-disable-next-line max-len
+    deleteVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deleteVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    bulkDeleteVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.bulkDeleteVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    addVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.addVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServer),
+      invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
+    }),
+    // eslint-disable-next-line max-len
+    getVLANPoolPolicyViewModeTemplateList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
+      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVlanPoolViewModelList),
+      providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, useCasesToRefreshVlanPoolTemplateList, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(policiesConfigTemplateApi.util.invalidateTags([{ type: 'VlanPoolTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
     })
   })
 })
@@ -311,5 +399,16 @@ export const {
   useGetVenueTemplateDhcpPoolsQuery,
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation,
-  useUpdateVenueTemplateDhcpProfileMutation
+  useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueTemplateCityListQuery,
+  useGetVenueTemplateSwitchSettingQuery,
+  useUpdateVenueTemplateSwitchSettingMutation,
+  useGetVenueTemplateSwitchAaaSettingQuery,
+  useUpdateVenueTemplateSwitchAAASettingMutation,
+  useGetVenueTemplateSwitchAAAServerListQuery,
+  useDeleteVenueTemplateSwitchAAAServerMutation,
+  useBulkDeleteVenueTemplateSwitchAAAServerMutation,
+  useAddVenueTemplateSwitchAAAServerMutation,
+  useUpdateVenueTemplateSwitchAAAServerMutation,
+  useGetVLANPoolPolicyViewModeTemplateListQuery
 } = venueConfigTemplateApi

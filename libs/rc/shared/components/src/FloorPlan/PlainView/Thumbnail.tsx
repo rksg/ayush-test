@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { useParams }                                 from 'react-router-dom'
 
 import { FloorPlanDto, NetworkDeviceType, TypeWiseNetworkDevices } from '@acx-ui/rc/utils'
 import { loadImageWithJWT }                                        from '@acx-ui/utils'
@@ -28,10 +29,12 @@ export default function Thumbnail (props: {
   function selectFloorPlan () {
     onFloorPlanSelection(floorPlan)
   }
+  const { venueId } = useParams()
 
   useEffect(() => {
     if (floorPlan?.imageId) {
-      const response = loadImageWithJWT(floorPlan?.imageId)
+      const fileUrl = `/venues/${venueId}/signurls/${floorPlan?.imageId}/urls`
+      const response = loadImageWithJWT(floorPlan?.imageId, fileUrl)
       response.then((_imageUrl) => {
         setImageUrl(_imageUrl)
       })

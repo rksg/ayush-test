@@ -13,12 +13,12 @@ import {
 } from '@acx-ui/rc/services'
 import {
   getPolicyDetailsLink,
-  getPolicyListRoutePath,
-  getPolicyRoutePath,
   PolicyOperation,
-  PolicyType
+  PolicyType,
+  useAdaptivePolicyBreadcrumb
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { NetworkTable } from './NetworkTable'
@@ -27,9 +27,6 @@ export default function AdaptivePolicySetDetail () {
   const { $t } = useIntl()
   const { policyId, tenantId } = useParams()
   const { Paragraph } = Typography
-  const tablePath = getPolicyRoutePath(
-    { type: PolicyType.ADAPTIVE_POLICY_SET, oper: PolicyOperation.LIST })
-
   const isCloudpathEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const [networkIdsInMacList, setNetworkIdsInMacList] = useState([] as string [])
   const [networkIdsInDpskList, setNetworkIdsInDpskList] = useState([] as string [])
@@ -43,6 +40,8 @@ export default function AdaptivePolicySetDetail () {
   const [ macRegList ] = useLazySearchMacRegListsQuery()
 
   const [ dpskList ] = useLazyGetDpskListQuery()
+
+  const breadcrumb = useAdaptivePolicyBreadcrumb(PolicyType.ADAPTIVE_POLICY_SET)
 
   useEffect(() => {
     if(isGetAdaptivePolicySetLoading) return
@@ -73,15 +72,7 @@ export default function AdaptivePolicySetDetail () {
     <>
       <PageHeader
         title={policySetData?.name || ''}
-        breadcrumb={[
-          { text: $t({ defaultMessage: 'Network Control' }) },
-          {
-            text: $t({ defaultMessage: 'Policies & Profiles' }),
-            link: getPolicyListRoutePath(true)
-          },
-          { text: $t({ defaultMessage: 'Adaptive Policy Sets' }),
-            link: tablePath }
-        ]}
+        breadcrumb={breadcrumb}
         extra={filterByAccess([
           <TenantLink
             to={
@@ -91,6 +82,7 @@ export default function AdaptivePolicySetDetail () {
                 policyId: policyId as string
               })
             }
+            scopeKey={[WifiScopes.UPDATE]}
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>

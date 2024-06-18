@@ -12,6 +12,8 @@ import {
   useParams,
   UNSAFE_NavigationContext as NavigationContext
 } from '@acx-ui/react-router-dom'
+import { RolesEnum, SwitchScopes, WifiScopes } from '@acx-ui/types'
+import { hasPermission, hasRoles }             from '@acx-ui/user'
 
 import { VenueEditContext, EditContext, showUnsavedModal } from './index'
 
@@ -23,7 +25,6 @@ function VenueEditTabs () {
   const location = useLocation()
   const navigate = useNavigate()
   const enablePropertyManagement = usePropertyManagementEnabled()
-  const { isTemplate } = useConfigTemplate()
   const baseEditPath = usePathBasedOnConfigTemplate(`/venues/${params.venueId}/edit/`)
   const {
     editContextData,
@@ -86,9 +87,18 @@ function VenueEditTabs () {
 
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Venue Details' })} key='details' />
-      <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
-      {!isTemplate &&
+      {/* eslint-disable-next-line max-len */}
+      {
+        hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) &&
+        <Tabs.TabPane
+          tab={intl.$t({ defaultMessage: '<VenueSingular></VenueSingular> Details' })}
+          key='details' />
+      }
+      {
+        hasPermission({ scopes: [WifiScopes.UPDATE] }) &&
+        <Tabs.TabPane tab={intl.$t({ defaultMessage: 'Wi-Fi Configuration' })} key='wifi' />
+      }
+      {hasPermission({ scopes: [SwitchScopes.UPDATE] }) &&
         <Tabs.TabPane
           key='switch'
           tab={intl.$t({ defaultMessage: 'Switch Configuration' })}
@@ -105,7 +115,7 @@ function VenueEditTabs () {
 
 export default VenueEditTabs
 
-function usePropertyManagementEnabled () {
+export function usePropertyManagementEnabled () {
   const enablePropertyManagement = useIsTierAllowed(Features.CLOUDPATH_BETA)
   const { isTemplate } = useConfigTemplate()
 
