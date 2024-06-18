@@ -1,8 +1,8 @@
 import  { ReactNode } from 'react'
 
-import { Form, Radio, Space, Col, Row, RadioProps } from 'antd'
-import { NamePath }                                 from 'antd/es/form/interface'
-import { defineMessage, useIntl }                   from 'react-intl'
+import { Form, Radio, Col, Row, RadioProps } from 'antd'
+import { NamePath }                          from 'antd/es/form/interface'
+import { defineMessage, useIntl }            from 'react-intl'
 
 import {
   useStepFormContext
@@ -54,11 +54,9 @@ export function TradeOff (props: TradeOffProps) {
 
   return (
     <TradeOffWrapper key={key}>
-      <Space>
-        <Row>
-          <Col span={24}><h2>{title}</h2></Col>
-        </Row>
-      </Space>
+      <Row>
+        <Col span={24}><h2>{title}</h2></Col>
+      </Row>
       <Form.Item
         name={fieldName}
         label={label}
