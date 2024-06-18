@@ -6,9 +6,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {
   StepsForm,
-  Loader,
-  showActionModal
-} from '@acx-ui/components'
+  Loader } from '@acx-ui/components'
 import {
   useGetWorkflowByIdQuery,
   useAddWorkflowMutation,

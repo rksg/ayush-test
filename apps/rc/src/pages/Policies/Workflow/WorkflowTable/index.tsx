@@ -72,7 +72,8 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       key: 'identityGroup',
       title: $t({ defaultMessage: 'IdentityGroup' }),
       dataIndex: 'identityGroup',
-      render: (_, row) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      render: (_, _row) => {
         return undefined
       }
     },
@@ -150,6 +151,7 @@ export default function WorkflowTable () {
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: ([data], clearSelection) => {
         clearSelection()
       },
@@ -157,6 +159,7 @@ export default function WorkflowTable () {
     },
     {
       label: $t({ defaultMessage: 'Preview' }),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       onClick: ([data], clearSelection) => {
         clearSelection()
       },
