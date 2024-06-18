@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 
-import { render, screen, fireEvent } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { Modal }                     from 'antd'
-import { debounce }                  from 'lodash'
-import { rest }                      from 'msw'
-import { IntlProvider }              from 'react-intl'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent                              from '@testing-library/user-event'
+import { Modal }                              from 'antd'
+import { debounce }                           from 'lodash'
+import { rest }                               from 'msw'
+import { IntlProvider }                       from 'react-intl'
 
 import { StepsForm }      from '@acx-ui/components'
 import { SwitchUrlsInfo } from '@acx-ui/rc/utils'
@@ -87,14 +87,14 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    await userEvent.click(await screen.findByTestId('untagged_module1_0'))
-    await userEvent.click(await screen.findByTestId('untagged_module2_0'))
-    await userEvent.click(await screen.findByTestId('untagged_module3_0'))
+    await userEvent.click(await screen.findByTestId('untagged_module1_1_1'))
+    await userEvent.click(await screen.findByTestId('untagged_module1_2_1'))
+    await userEvent.click(await screen.findByTestId('untagged_module1_3_1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    await userEvent.click(await screen.findByTestId('tagged_module1_1'))
-    await userEvent.click(await screen.findByTestId('tagged_module2_1'))
-    await userEvent.click(await screen.findByTestId('tagged_module3_1'))
+    await userEvent.click(await screen.findByTestId('tagged_module1_1_2'))
+    await userEvent.click(await screen.findByTestId('tagged_module1_2_2'))
+    await userEvent.click(await screen.findByTestId('tagged_module1_3_2'))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
 
@@ -123,24 +123,24 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    const dst1 = await screen.findAllByTestId('untagged_module1_0')
-    const src1 = await screen.findAllByTestId('untagged_module1_10')
+    const dst1 = await screen.findAllByTestId('untagged_module1_1_1')
+    const src1 = await screen.findAllByTestId('untagged_module1_1_11')
     fireEvent.mouseDown(src1[0])
     fireEvent.mouseMove(dst1[0])
     debounce(() => {
       fireEvent.mouseUp(dst1[0])
     }, 100)
 
-    const dst2 = await screen.findAllByTestId('untagged_module2_0')
-    const src2 = await screen.findAllByTestId('untagged_module2_1')
+    const dst2 = await screen.findAllByTestId('untagged_module1_2_1')
+    const src2 = await screen.findAllByTestId('untagged_module1_2_2')
     fireEvent.mouseDown(src2[0])
     fireEvent.mouseMove(dst2[0])
     debounce(() => {
       fireEvent.mouseUp(dst2[0])
     }, 100)
 
-    const dst3 = await screen.findAllByTestId('untagged_module3_0')
-    const src3 = await screen.findAllByTestId('untagged_module3_3')
+    const dst3 = await screen.findAllByTestId('untagged_module1_3_1')
+    const src3 = await screen.findAllByTestId('untagged_module1_3_4')
     fireEvent.mouseDown(src3[0])
     fireEvent.mouseMove(dst3[0])
     debounce(() => {
@@ -176,24 +176,24 @@ describe('VlanPortsModal', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    const dst1 = await screen.findAllByTestId('tagged_module1_0')
-    const src1 = await screen.findAllByTestId('tagged_module1_10')
+    const dst1 = await screen.findAllByTestId('tagged_module1_1_1')
+    const src1 = await screen.findAllByTestId('tagged_module1_1_11')
     fireEvent.mouseDown(src1[0])
     fireEvent.mouseMove(dst1[0])
     debounce(() => {
       fireEvent.mouseUp(dst1[0])
     }, 100)
 
-    const dst2 = await screen.findAllByTestId('tagged_module2_0')
-    const src2 = await screen.findAllByTestId('tagged_module2_1')
+    const dst2 = await screen.findAllByTestId('tagged_module1_2_1')
+    const src2 = await screen.findAllByTestId('tagged_module1_2_2')
     fireEvent.mouseDown(src2[0])
     fireEvent.mouseMove(dst2[0])
     debounce(() => {
       fireEvent.mouseUp(dst2[0])
     }, 100)
 
-    const dst3 = await screen.findAllByTestId('tagged_module3_0')
-    const src3 = await screen.findAllByTestId('tagged_module3_3')
+    const dst3 = await screen.findAllByTestId('tagged_module1_3_1')
+    const src3 = await screen.findAllByTestId('tagged_module1_3_4')
     fireEvent.mouseDown(src3[0])
     fireEvent.mouseMove(dst3[0])
     debounce(() => {
@@ -227,8 +227,8 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    const dst1 = await screen.findAllByTestId('untagged_module1_0')
-    const src1 = await screen.findAllByTestId('untagged_module1_10')
+    const dst1 = await screen.findAllByTestId('untagged_module1_1_1')
+    const src1 = await screen.findAllByTestId('untagged_module1_1_11')
     fireEvent.mouseDown(src1[0])
     fireEvent.mouseMove(dst1[0])
     debounce(() => {
@@ -237,8 +237,8 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    const dst2 = await screen.findAllByTestId('tagged_module1_11')
-    const src2 = await screen.findAllByTestId('tagged_module1_20')
+    const dst2 = await screen.findAllByTestId('tagged_module1_1_12')
+    const src2 = await screen.findAllByTestId('tagged_module1_1_21')
     fireEvent.mouseDown(src2[0])
     fireEvent.mouseMove(dst2[0])
     debounce(() => {
@@ -298,20 +298,20 @@ describe('VlanPortsModal', () => {
     await userEvent.click(model)
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    fireEvent.mouseOver(await screen.findByTestId('untagged_module2_6'))
+    fireEvent.mouseOver(await screen.findByTestId('untagged_module1_2_7'))
     await screen.findByText(/VLANs/i)
-    await userEvent.click(await screen.findByTestId('untagged_module2_6'))
-    await userEvent.click(await screen.findByTestId('untagged_module1_25'))
+    await userEvent.click(await screen.findByTestId('untagged_module1_2_7'))
+    await userEvent.click(await screen.findByTestId('untagged_module1_1_26'))
 
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    fireEvent.mouseOver(await screen.findByTestId('tagged_module2_6'))
+    fireEvent.mouseOver(await screen.findByTestId('tagged_module1_2_7'))
     await screen.findByText('Port set as untagged')
 
-    fireEvent.mouseOver(await screen.findByTestId('tagged_module1_47'))
+    fireEvent.mouseOver(await screen.findByTestId('tagged_module1_1_48'))
     await screen.findByText(/VLANs/i)
-    await userEvent.click(await screen.findByTestId('tagged_module1_47'))
-    await userEvent.click(await screen.findByTestId('tagged_module2_5'))
+    await userEvent.click(await screen.findByTestId('tagged_module1_1_48'))
+    await userEvent.click(await screen.findByTestId('tagged_module1_2_6'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
   })
@@ -341,18 +341,19 @@ describe('VlanPortsModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
     expect(
-      await screen.findByTestId('untagged_module1_19')).toHaveAttribute('data-disabled', 'true')
-    expect(await screen.findByTestId('untagged_module3_1')).toHaveAttribute('data-disabled', 'true')
-    await userEvent.click(await screen.findByTestId('untagged_module1_20'))
-    await userEvent.click(await screen.findByTestId('untagged_module3_0'))
-    fireEvent.mouseOver(await screen.findByTestId('untagged_module1_19'))
+      await screen.findByTestId('untagged_module1_1_20')).toHaveAttribute('data-disabled', 'true')
+    expect(
+      await screen.findByTestId('untagged_module1_3_2')).toHaveAttribute('data-disabled', 'true')
+    await userEvent.click(await screen.findByTestId('untagged_module1_1_21'))
+    await userEvent.click(await screen.findByTestId('untagged_module1_3_1'))
+    fireEvent.mouseOver(await screen.findByTestId('untagged_module1_1_20'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
-    fireEvent.mouseOver(await screen.findByTestId('tagged_module1_20'))
-    await userEvent.click(await screen.findByTestId('tagged_module1_11'))
+    fireEvent.mouseOver(await screen.findByTestId('tagged_module1_1_21'))
+    await userEvent.click(await screen.findByTestId('tagged_module1_1_12'))
 
     await userEvent.click(await screen.findByRole('button', { name: 'Back' }))
-    fireEvent.mouseOver(await screen.findByTestId('untagged_module1_11'))
+    fireEvent.mouseOver(await screen.findByTestId('untagged_module1_1_12'))
     await screen.findByText('Port set as tagged')
   })
 
@@ -407,7 +408,7 @@ describe('VlanPortsModal', () => {
     </IntlProvider>)
 
     await screen.findByText(
-      /Select the untagged ports \(trunk ports\) for this model \(ICX7150-48\)/i
+      /Select the untagged ports \(access ports\) for this model \(ICX7150-48\)/i
     )
   })
 
@@ -481,17 +482,16 @@ describe('VlanPortsModal', () => {
       </Provider>
     </IntlProvider>)
 
-    await userEvent.click(await screen.findByTestId('untagged_module1_0'))
+    await userEvent.click(await screen.findByTestId('untagged_module1_1_1'))
     await userEvent.click(await screen.findByRole('button', { name: 'Next' }))
 
-    await userEvent.click(await screen.findByTestId('tagged_module1_1'))
+    await userEvent.click(await screen.findByTestId('tagged_module1_1_2'))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
 
     expect(setVlan).toHaveBeenLastCalledWith({
       model: 'ICX7150-C08P',
       slots: [
-        { enable: undefined, option: '', slotNumber: 1 },
-        { enable: undefined, option: undefined, slotNumber: 2 }
+        { enable: undefined, option: undefined, slotNumber: undefined }
       ],
       taggedPorts: ['1/1/2'],
       title: '',
@@ -499,4 +499,72 @@ describe('VlanPortsModal', () => {
       vlanConfigName: ''
     })
   })
+
+  it('should render port status correctly', async () => {
+    const setVlan = jest.fn()
+    render(<IntlProvider locale='en'>
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={setVlan}
+          vlanList={[]}
+          switchFamilyModel={'ICX7150-C08P'}
+          portSlotsData={portSlotsData}
+          portsUsedBy={{
+            lag: { '1/1/6': 'LAG1' },
+            untagged: {
+              '1/1/7': 666,
+              '1/1/5': 555
+            }
+          }}
+        />
+      </Provider>
+    </IntlProvider>)
+
+    const untagged1_1_7 = await screen.findByTestId('untagged_module1_1_7')
+    expect(untagged1_1_7).toHaveAttribute('data-disabled', 'true')
+
+    await userEvent.hover(untagged1_1_7)
+    await waitFor(async () => expect(await screen.findByRole('tooltip')).toBeInTheDocument())
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Port is already an untagged member of VLAN 666')
+
+  })
+
+  it('should render port status (LAG) correctly', async () => {
+    const setVlan = jest.fn()
+    render(<IntlProvider locale='en'>
+      <Provider>
+        <VlanPortsModal
+          open={true}
+          editRecord={undefined}
+          currrentRecords={undefined}
+          onCancel={jest.fn()}
+          onSave={setVlan}
+          vlanList={[]}
+          switchFamilyModel={'ICX7150-C08P'}
+          portSlotsData={portSlotsData}
+          portsUsedBy={{
+            lag: { '1/1/6': 'LAG1' },
+            untagged: {
+              '1/1/7': 666,
+              '1/1/5': 555
+            }
+          }}
+        />
+      </Provider>
+    </IntlProvider>)
+
+    const untagged1_1_6 = await screen.findByTestId('untagged_module1_1_6')
+    expect(untagged1_1_6).toHaveAttribute('data-disabled', 'true')
+
+    await userEvent.hover(untagged1_1_6)
+    await waitFor(async () => expect(await screen.findByRole('tooltip')).toBeInTheDocument())
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Port is member of LAG – LAG1')
+  })
+
 })

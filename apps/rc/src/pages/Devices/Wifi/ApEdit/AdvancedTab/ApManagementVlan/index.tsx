@@ -19,7 +19,7 @@ import { VenueSettingsHeader }          from '../../VenueSettingsHeader'
 
 export function ApManagementVlanForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useParams()
+  const { serialNumber } = useParams()
   const VLAN_ID_MIN = 1
   const VLAN_ID_MAX = 4096
   const form = Form.useFormInstance()
@@ -59,8 +59,7 @@ export function ApManagementVlanForm () {
       }
       setData()
     }
-  }, [form, venueId, getApManagementVlan?.data, getApManagementVlan.isLoading,
-    tenantId, getVenueApManagementVlan])
+  }, [venueId, getApManagementVlan?.data])
 
   const onApMgmtVlanChange = () => {
     onFormDataChanged()
@@ -168,13 +167,16 @@ export function ApManagementVlanForm () {
           {$t({ defaultMessage: 'AP Management VLAN' })}
           <Row>
             <Col style={{ marginTop: '6px' }}>
-              {(isUseVenueSettings)?
-                <span
-                  data-testid={'ap-managment-vlan-vlan-id-span'}
-                  style={{ display: 'flex' }}>{form.getFieldValue(vlanIdFieldName)}
-                </span>
-                :
-                <>
+              {isUseVenueSettings
+                ? <Form.Item
+                  dependencies={[vlanIdFieldName]}
+                  noStyle
+                >
+                  {({ getFieldValue }) => <span data-testid={'ap-managment-vlan-vlan-id-span'}>
+                    {getFieldValue(vlanIdFieldName)}
+                  </span>}
+                </Form.Item>
+                : <>
                   <Form.Item
                     data-testid={'ap-managment-vlan-vlan-id-input'}
                     name={vlanIdFieldName}

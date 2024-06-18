@@ -13,7 +13,8 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn, TierFeatures, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }            from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useVenuesTableQuery,
@@ -27,17 +28,19 @@ import {
   TableQuery,
   usePollingTableQuery, useConfigTemplate
 } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams } from '@acx-ui/react-router-dom'
-import { RequestPayload }                     from '@acx-ui/types'
-import { filterByAccess, hasAccess }          from '@acx-ui/user'
-import { transformToCityListOptions }         from '@acx-ui/utils'
+import { TenantLink, useNavigate, useParams }                              from '@acx-ui/react-router-dom'
+import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum } from '@acx-ui/types'
+import { filterByAccess, hasPermission, hasRoles }                         from '@acx-ui/user'
+import { transformToCityListOptions }                                      from '@acx-ui/utils'
+
+import { usePropertyManagementEnabled } from '../VenueEdit/VenueEditTabs'
 
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
 ) {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   const columns: TableProps<Venue>['columns'] = [
@@ -204,7 +207,7 @@ function useColumns (
 }
 
 export const useDefaultVenuePayload = (): RequestPayload => {
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
 
   return {
     fields: [
@@ -245,7 +248,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
-
+  const enablePropertyManagement = usePropertyManagementEnabled()
   const columns = useColumns(searchable, filterables)
   const [
     deleteVenue,
@@ -255,12 +258,24 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const rowActions: TableProps<Venue>['rowActions'] = [{
     visible: (selectedRows) => selectedRows.length === 1,
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
-      navigate(`${selectedRows[0].id}/edit/details`, { replace: false })
+      let path = `${selectedRows[0].id}/edit/`
+      if(hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) {
+        path = path + 'details'
+      } else if(hasPermission({ scopes: [WifiScopes.UPDATE] })) {
+        path = path + 'wifi'
+      } else if(hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
+        path = path + 'switch'
+      } else if(enablePropertyManagement) {
+        path = path + 'property'
+      }
+      navigate(path, { replace: false })
     }
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
+    visible: hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]),
     onClick: (rows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -298,7 +313,9 @@ export const VenueTable = ({ settingsId = 'venues-table',
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && rowSelection}
+        rowSelection={hasPermission({
+          scopes: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE]
+        }) && rowSelection}
       />
     </Loader>
   )
@@ -328,11 +345,11 @@ export function VenuesTable () {
     <>
       <PageHeader
         title={$t({ defaultMessage: '<VenuePlural></VenuePlural> ({count})' }, { count })}
-        extra={filterByAccess([
+        extra={hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && [
           <TenantLink to='/venues/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add <VenueSingular></VenueSingular>' }) }</Button>
           </TenantLink>
-        ])}
+        ]}
       />
       <VenueTable settingsId={settingsId}
         tableQuery={tableQuery}

@@ -113,12 +113,20 @@ const useTabs = ({ isAdministratorAccessible }: { isAdministratorAccessible: boo
 export default function Administration () {
   const { $t } = useIntl()
   const { tenantId, activeTab } = useParams()
-  const { data: userProfileData } = useUserProfileContext()
+  const { data: userProfileData, isCustomRole } = useUserProfileContext()
   const basePath = useTenantLink('/administration')
   const navigate = useNavigate()
 
   const isAdministratorAccessible = hasAdministratorTab(userProfileData, tenantId)
-  const tabs = useTabs({ isAdministratorAccessible })
+  const customRoleTab = [
+    {
+      key: 'fwVersionMgmt',
+      title: $t({ defaultMessage: 'Version Management' }),
+      component: <FWVersionMgmt />
+    }
+  ]
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const tabs = isCustomRole ? customRoleTab : useTabs({ isAdministratorAccessible })
   if (isAdministratorAccessible === false && activeTab === 'administrators') {
     return <span>{ $t({ defaultMessage: 'Administrators is not allowed to access.' }) }</span>
   }

@@ -21,9 +21,9 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes, SwitchScopes } from '@acx-ui/types'
-import { filterByAccess, hasPermission }        from '@acx-ui/user'
-import { useDateFilter }                        from '@acx-ui/utils'
+import { EdgeScopes, ScopeKeys }         from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { useDateFilter }                 from '@acx-ui/utils'
 
 import { HaStatusBadge } from '../../HaStatusBadge'
 
@@ -89,7 +89,7 @@ export const EdgeDetailsPageHeader = () => {
       showupstatus: [...Object.values(EdgeStatusEnum)]
     }
   ] as {
-    scopeKey: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopeKey: ScopeKeys,
     label: string,
     key: string,
     showupstatus?: EdgeStatusEnum[]
@@ -120,9 +120,8 @@ export const EdgeDetailsPageHeader = () => {
       items={
         menuConfig.filter(item =>
           item.showupstatus?.includes(status) && hasPermission({ scopes: item.scopeKey })
-        ).map(item => {
-          delete item.showupstatus
-          return item
+        ).map(({ showupstatus, scopeKey, ...itemFields }) => {
+          return { ...itemFields }
         })
       }
     />
@@ -159,7 +158,7 @@ export const EdgeDetailsPageHeader = () => {
         />,
         ...filterByAccess([
           <Dropdown
-            scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
+            // scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
             overlay={menu}>{()=>
               <Button>
                 <Space>

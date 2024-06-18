@@ -11,6 +11,7 @@ import {
   useConfigTemplateQueryFnSwitcher,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../configTemplates'
@@ -36,6 +37,7 @@ export function AAAPolicyDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <PolicyConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={PolicyType.AAA}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}

@@ -23,7 +23,8 @@ export const UserProfileSection = (props: UserProfileSectionProps) => {
         {props.userProfile && <div>
           <UI.UserName>{props.userProfile?.fullName}</UI.UserName>
           <UI.UserRole>
-            {$t(props.roleStringMap[props.userProfile?.role])}
+            {props.roleStringMap[props.userProfile?.role] ?
+              $t(props.roleStringMap[props.userProfile?.role]) : ''}
           </UI.UserRole>
           <UI.UserAttributes>
             <div>

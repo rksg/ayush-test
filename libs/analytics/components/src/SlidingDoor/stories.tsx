@@ -1,38 +1,36 @@
 
 import { storiesOf } from '@storybook/react'
 
-import { GridRow, GridCol } from '../Grid'
+import { GridRow, GridCol } from '@acx-ui/components'
 
-import { RevolvingDoor } from '.'
-const data = {
-  name: 'parent',
-  type: 'parent',
-  children: [{
-    name: 'child-1',
-    type: 'child-1',
-    children: [{
-      name: 'child-2',
-      type: 'child-2',
-      children: [{
-        name: 'child-3',
-        type: 'child-3',
-        children: [{
-          name: 'child-4',
-          type: 'child-4'
-        }]
+import { SlidingDoor } from '.'
 
-      }]
-
-    }]
-
-  }]
-}
-storiesOf('RVD', module)
+storiesOf('SlidingDoor', module)
   .add('default', () =>
     <GridRow>
       <GridCol col={{ span: 8 }} style={{ maxWidth: 240 }}>
-        <RevolvingDoor data={data}
-          setNetworkPath={()=>{}}
+        <SlidingDoor
+          data={{
+            id: '1',
+            name: 'network',
+            type: 'network',
+            children: [
+              {
+                id: '2', name: 'child1', type: 'system',
+                children: [{ id: '4', name: 'child3', type: 'domain' },
+                  { id: '4', name: 'child5', type: 'domain' }]
+              },
+              {
+                id: '3', name: 'child2', type: 'system',
+                children: [{ id: '5', name: 'child4', type: 'domain' }]
+              }
+            ]
+          }}
+          setNetworkPath={() => {}}
+          defaultSelectedNode={[{
+            name: 'Network',
+            type: 'network'
+          }]}
         />
       </GridCol>
     </GridRow>

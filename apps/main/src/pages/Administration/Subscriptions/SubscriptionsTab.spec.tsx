@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                                     from '@acx-ui/msp/utils'
+import { administrationApi }                                               from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo }                                          from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
+import { Provider, store, userApi }                                        from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 import { UserUrlsInfo }                                                    from '@acx-ui/user'
 
@@ -23,17 +23,29 @@ jest.mock('@acx-ui/utils', () => ({
   isDelegationMode: jest.fn().mockReturnValue(true)
 }))
 
+const services = require('@acx-ui/msp/services')
+
 const mockedTierReq = jest.fn()
 describe('SubscriptionsTab', () => {
   let params: { tenantId: string }
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(userApi.util.resetApiState())
+
     mockedTierReq.mockClear()
 
     params = {
       tenantId: '3061bd56e37445a8993ac834c01e2710'
     }
+
+    services.useGetMspEcProfileQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeMspEcProfile }
+    })
+    services.useGetMspProfileQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeMspEcProfile }
+    })
 
     mockServer.use(
       rest.get(
@@ -60,14 +72,6 @@ describe('SubscriptionsTab', () => {
         (_req, res, ctx) => {
           return res(ctx.json(mockedEtitlementsList))
         }
-      ),
-      rest.get(
-        MspUrlsInfo.getMspEcProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
-      ),
-      rest.get(
-        MspUrlsInfo.getMspProfile.url,
-        (req, res, ctx) => res(ctx.json(fakeMspEcProfile))
       ),
       rest.get(UserUrlsInfo.getAccountTier.url as string,
         (_req, res, ctx) => {
@@ -97,6 +101,7 @@ describe('SubscriptionsTab', () => {
     expect(screen.getByText('My Subscriptions')).toBeVisible()
     expect(screen.getByText('Pending Activations')).toBeVisible()
   })
+
   it('should render correctly for gold/essentials tier', async () => {
     mockServer.use(
       rest.get(UserUrlsInfo.getAccountTier.url as string,
@@ -121,7 +126,6 @@ describe('SubscriptionsTab', () => {
     expect(screen.getByText('My Subscriptions')).toBeVisible()
     expect(screen.getByText('Pending Activations')).toBeVisible()
   })
-
   it('should navigate correctly on tab click', async () => {
     render(
       <Provider>
