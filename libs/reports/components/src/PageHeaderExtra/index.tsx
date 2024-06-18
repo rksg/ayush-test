@@ -24,7 +24,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   const isAPReport = ['ap','both'].includes(reportType)
   const isNetworkFilterDisabled = networkFilterDisabledReports.includes(type)
 
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter(moment().subtract(12, 'month'))
 
   const component = [
     <RangePicker
