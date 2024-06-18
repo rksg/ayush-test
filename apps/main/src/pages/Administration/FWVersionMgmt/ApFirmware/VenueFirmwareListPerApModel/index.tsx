@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps, Tooltip, showActionModal }                                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                         from '@acx-ui/feature-toggle'
 import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
 import { FirmwareType, FirmwareVenuePerApModel, Schedule, dateSort, defaultSort, sortProp, useTableQuery }                from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess }                                                                                      from '@acx-ui/user'
@@ -207,7 +208,10 @@ function useColumns () {
 }
 
 function useVersionFilterOptions () {
-  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {
+  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({
+    params: useParams(),
+    enableRbac: useIsSplitOn(Features.WIFI_RBAC_API)
+  }, {
     refetchOnMountOrArgChange: false,
     selectFromResult ({ data }) {
       return {

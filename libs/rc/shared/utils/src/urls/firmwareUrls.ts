@@ -256,7 +256,7 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/apModelFirmwares?status=scheduled',
     newApi: true
   },
-  getDistinctFirmwares: {
+  getDistinctFirmwareIdList: {
     method: 'get',
     url: '/apModelFirmwares?status=distinctFirmwareVersion',
     newApi: true
