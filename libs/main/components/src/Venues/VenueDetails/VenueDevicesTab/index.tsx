@@ -1,8 +1,9 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                                   from '@acx-ui/components'
-import { useIsTierAllowed, TierFeatures, useIsSplitOn, Features } from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink }                  from '@acx-ui/react-router-dom'
+import { Tabs }                                  from '@acx-ui/components'
+import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }                        from '@acx-ui/rc/components'
+import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import { VenueEdge }   from './VenueEdge'
 import { VenueRWG }    from './VenueRWG'
@@ -15,6 +16,7 @@ export function VenueDevicesTab () {
   const navigate = useNavigate()
   const { activeSubTab, venueId } = useParams()
   const basePath = useTenantLink(`/venues/${venueId}/venue-details/devices`)
+  const isEdgeEnabled = useIsEdgeReady()
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -34,7 +36,7 @@ export function VenueDevicesTab () {
       value: 'switch',
       children: <VenueSwitch />
     },
-    ...(useIsTierAllowed(TierFeatures.SMART_EDGES)
+    ...(isEdgeEnabled
       ? [{
         label: $t({ defaultMessage: 'SmartEdge' }),
         value: 'edge',

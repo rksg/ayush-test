@@ -887,12 +887,14 @@ function useAddHotspot20Activation () {
   const activateHotspot20NetworkProvider = useIdentityProviderActivation()
   const addHotspot20Activations =
     async (network?: NetworkSaveData, networkId?: string) => {
-      if (network?.type === NetworkTypeEnum.HOTSPOT20 && networkId) {
-        await activateHotspot20NetworkOperator(
-          networkId, network.hotspot20Settings?.wifiOperator)
-        network.hotspot20Settings?.identityProviders?.forEach(async (id) => {
-          await activateHotspot20NetworkProvider(networkId, id)
-        })
+      if (network?.type === NetworkTypeEnum.HOTSPOT20 && networkId &&
+        network?.hotspot20Settings) {
+        const hotspot20 = network?.hotspot20Settings
+        await activateHotspot20NetworkOperator(networkId, hotspot20.wifiOperator)
+        if (hotspot20.identityProviders) {
+          await Promise.allSettled(hotspot20.identityProviders.map(id =>
+            activateHotspot20NetworkProvider(networkId, id)))
+        }
       }
       return
     }

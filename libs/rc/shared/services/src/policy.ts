@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { each, zip }           from 'lodash'
-import { Params }              from 'react-router-dom'
+import { FetchBaseQueryError }   from '@reduxjs/toolkit/query/react'
+import { each, difference, zip } from 'lodash'
+import { Params }                from 'react-router-dom'
 
 import {
   MacRegistration, MacRegistrationPool, MacRegListUrlsInfo,
   RogueApUrls, RogueAPDetectionContextType, RogueAPDetectionTempType,
-  SyslogUrls, SyslogContextType, SyslogPolicyDetailType, SyslogPolicyListType,
+  SyslogUrls, SyslogPolicyDetailType, SyslogPolicyListType,
   VenueSyslogPolicyType, VenueSyslogSettingType, VenueRoguePolicyType,
   VLANPoolPolicyType, VLANPoolViewModelType, VlanPoolUrls, VLANPoolVenues,
   TableResult, onSocketActivityChanged, onActivityMessageReceived, CommonResult,
@@ -65,7 +65,8 @@ import {
   CommonUrlsInfo,
   ClientIsolationTableChangePayload,
   VenueDetail,
-  Network
+  Network,
+  TxStatus
 } from '@acx-ui/rc/utils'
 import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -1303,7 +1304,19 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'WifiOperator', id: 'LIST' }],
+      async onCacheEntryAdded (args, api) {
+        await onSocketActivityChanged(args, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (args.callback && response && msg.useCase === 'AddHotspot20Operator' &&
+              msg.status === TxStatus.SUCCESS) {
+              (args.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
     }),
     updateWifiOperator: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1451,7 +1464,18 @@ export const policyApi = basePolicyApi.injectEndpoints({
           body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'IdentityProvider', id: 'LIST' }],
+      async onCacheEntryAdded (args, api) {
+        await onSocketActivityChanged(args, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (args.callback && response && msg.useCase === 'AddHotspot20IdentityProvider' &&
+              msg.status === TxStatus.SUCCESS) {
+              (args.callback as Function)(response.data)
+            }
+          } catch {}
+        })
+      }
     }),
     updateIdentityProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -1741,19 +1765,33 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    addSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.addSyslogPolicy, params)
-        return {
-          ...req,
-          body: payload
+    addSyslogPolicy: build.mutation<CommonResult, RequestPayload<SyslogPolicyDetailType>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+        const { venues, ...rest } = payload!
+        const res = await fetchWithBQ({
+          ...createHttpRequest(SyslogUrls.addSyslogPolicy, params, headers),
+          body: JSON.stringify(enableRbac ? { ...rest } : payload)
+        })
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
         }
+        if (enableRbac) {
+          const { response } = res.data as CommonResult
+          const requests = venues?.map(venue => ({
+            params: { policyId: response?.id, venueId: venue.id }
+          }))
+          await batchApi(SyslogUrls.bindVenueSyslog, requests ?? [], fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+        }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicy, params)
+      query: ({ params, enableRbac }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicy, params, headers)
         return {
           ...req
         }
@@ -1761,22 +1799,45 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     delSyslogPolicies: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicies, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const requests = (payload as string[]).map(policyId => ({ params: { policyId } }))
+          await batchApi(SyslogUrls.deleteSyslogPolicy, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
+          return { data: {} as CommonResult }
+        } else {
+          const req = createHttpRequest(SyslogUrls.deleteSyslogPolicies, params)
+          const res = await fetchWithBQ({ ...req, body: payload })
+          return { data: res.data as CommonResult }
         }
       },
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
-    updateSyslogPolicy: build.mutation<SyslogContextType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.updateSyslogPolicy, params)
-        return {
-          ...req,
-          body: payload
+    updateSyslogPolicy: build.mutation<CommonResult, RequestPayload<SyslogPolicyDetailType>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { id, venues, oldVenues, ...rest } = payload!
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+        const res = await fetchWithBQ({
+          ...createHttpRequest(SyslogUrls.updateSyslogPolicy, params, headers),
+          body: JSON.stringify(enableRbac ? { id, ...rest } : payload)
+        })
+
+        if(res.error) {
+          return { error: res.error as FetchBaseQueryError }
         }
+
+        if (enableRbac) {
+          const unbindReqs = difference(oldVenues, venues || []).map(venue => ({
+            params: { policyId: id, venueId: venue.id }
+          }))
+          const bindReqs = difference(venues, oldVenues || []).map(venue => ({
+            params: { policyId: id, venueId: venue.id }
+          }))
+          await Promise.all([
+            batchApi(SyslogUrls.unbindVenueSyslog, unbindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1)),
+            batchApi(SyslogUrls.bindVenueSyslog, bindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+          ])
+        }
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
@@ -1792,29 +1853,80 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSyslogPolicy: build.query<SyslogPolicyDetailType, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params)
-        return {
-          ...req
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params, GetApiVersionHeader(ApiVersionEnum.v1_1))
+          const viewmodelReq = createHttpRequest(SyslogUrls.querySyslog, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          const [res, viewmodelRes] = await Promise.all([
+            fetchWithBQ(req),
+            fetchWithBQ({
+              ...viewmodelReq,
+              body: JSON.stringify({ filters: { id: [params!.policyId] } })
+            })
+          ])
+          if (res.error || viewmodelRes.error) {
+            return { error: res.error ?? viewmodelRes.error as FetchBaseQueryError }
+          }
+
+          const venueIds =
+            (viewmodelRes.data as TableResult<SyslogPolicyListType>).data?.[0]?.venueIds
+          const mergeData = {
+            ...res.data as SyslogPolicyDetailType,
+            // eslint-disable-next-line max-len
+            ...(venueIds && venueIds?.length > 0) ? { venues: venueIds.map(id => ({ id, name: '' })) } : {}
+          }
+          return { data: mergeData as SyslogPolicyDetailType }
+        } else {
+          const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params)
+          const res = await fetchWithBQ(req)
+          return { data: res.data as SyslogPolicyDetailType }
         }
       },
       providesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     getVenueSyslogAp: build.query<VenueSyslogSettingType, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(SyslogUrls.getVenueSyslogAp, params)
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac ? SyslogUrls.querySyslog : SyslogUrls.getVenueSyslogAp
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
         return{
-          ...req
+          ...req,
+          ...enableRbac ? {
+            body: JSON.stringify({ filters: { venueIds: [params!.venueId] } }) } : {}
         }
       },
-      providesTags: [{ type: 'Syslog', id: 'VENUE' }]
+      transformResponse: (response: VenueSyslogSettingType | TableResult<SyslogPolicyListType>, _meta, arg: RequestPayload) => {
+        if (arg.enableRbac) {
+          const res = response as TableResult<SyslogPolicyListType>
+          return res.data.length > 0
+            ? { serviceProfileId: res.data[0].id, enabled: true } as VenueSyslogSettingType
+            : { enabled: false } as VenueSyslogSettingType
+        }
+        return response as VenueSyslogSettingType
+      },
+      providesTags: [{ type: 'Syslog', id: 'VENUE' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'DeactivateSyslogServerProfileOnVenue',
+            'ActivateSyslogServerProfileOnVenue'
+          ], () => {
+            api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'VENUE' }]))
+          })
+        })
+      }
     }),
-    updateVenueSyslogAp: build.mutation<VenueSyslogSettingType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.updateVenueSyslogAp, params)
+    updateVenueSyslogAp: build.mutation<VenueSyslogSettingType, RequestPayload<VenueSyslogSettingType>>({
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ?
+          (payload!.enabled ? SyslogUrls.bindVenueSyslog : SyslogUrls.unbindVenueSyslog)
+          : SyslogUrls.updateVenueSyslogAp
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const param = enableRbac ? { ...params, policyId: payload!.serviceProfileId } : params
+        const req = createHttpRequest(url, param, headers)
         return {
           ...req,
-          body: payload
+          ...(enableRbac ? {} : { body: payload })
         }
       },
       invalidatesTags: [{ type: 'Syslog', id: 'VENUE' }]
@@ -1831,9 +1943,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
+            'AddSyslogServerProfileV1_1',
             'UpdateSyslogServerProfile',
+            'UpdateSyslogServerProfileV1_1',
             'DeleteSyslogServerProfile',
-            'DeleteSyslogServerProfiles'
+            'DeleteSyslogServerProfiles',
+            'DeleteSyslogServerProfileV1_1'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -1851,11 +1966,13 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Syslog', id: 'VENUE' }]
     }),
     syslogPolicyList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.syslogPolicyList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ? SyslogUrls.querySyslog : SyslogUrls.syslogPolicyList
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Syslog', id: 'LIST' }],
@@ -1863,9 +1980,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
+            'AddSyslogServerProfileV1_1',
             'UpdateSyslogServerProfile',
+            'UpdateSyslogServerProfileV1_1',
             'DeleteSyslogServerProfile',
-            'DeleteSyslogServerProfiles'
+            'DeleteSyslogServerProfiles',
+            'DeleteSyslogServerProfileV1_1'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -2237,24 +2357,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'SnmpAgent', id: 'AP' }]
     }),
-    radiusAttributeGroupList: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
-      query: ({ params, payload }) => {
-        // eslint-disable-next-line max-len
-        const groupReq = createNewTableHttpRequest({
-          apiInfo: RadiusAttributeGroupUrlsInfo.getAttributeGroups,
-          params,
-          payload: payload as TableChangePayload
-        })
-        return {
-          ...groupReq
-        }
-      },
-      transformResponse (result: NewTableResult<RadiusAttributeGroup>) {
-        return transferToTableResult<RadiusAttributeGroup>(result)
-      },
-      providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
     // eslint-disable-next-line max-len
     radiusAttributeGroupListByQuery: build.query<TableResult<RadiusAttributeGroup>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2270,22 +2372,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'RadiusAttributeGroup', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
-    }),
-    radiusAttributeList: build.query<TableResult<RadiusAttribute>, RequestPayload>({
-      query: ({ params }) => {
-        // eslint-disable-next-line max-len
-        const groupReq = createHttpRequest(
-          RadiusAttributeGroupUrlsInfo.getAttributes,
-          params
-        )
-        return {
-          ...groupReq
-        }
-      },
-      transformResponse (result: NewTableResult<RadiusAttribute>) {
-        return transferToTableResult<RadiusAttribute>(result)
-      },
-      providesTags: [{ type: 'RadiusAttribute', id: 'LIST' }]
     }),
     radiusAttributeVendorList: build.query<RadiusAttributeVendor, RequestPayload>({
       query: ({ params }) => {
@@ -2389,26 +2475,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
         return transferToTableResult<Assignment>(result)
       }
     }),
-    adaptivePolicyList: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: RulesManagementUrlsInfo.getPolicies,
-          params,
-          payload: payload as TableChangePayload
-        })
-        return {
-          ...req
-        }
-      },
-      transformResponse (result: NewAPITableResult<AdaptivePolicy>) {
-        return transferNewResToTableResult<AdaptivePolicy>(result, { pageStartZero: true })
-      },
-      providesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }],
-      extraOptions: { maxRetries: 5 }
-    }),
     adaptivePolicyListByQuery: build.query<TableResult<AdaptivePolicy>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, params)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPoliciesByQuery, { excludeContent: 'false', ...params } )
         return {
           ...req,
           body: {
@@ -2441,20 +2511,22 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AdaptivePolicy', id: 'LIST' }]
     }),
-    policyTemplateList: build.query<TableResult<RuleTemplate>, RequestPayload>({
+    policyTemplateListByQuery: build.query<TableResult<RuleTemplate>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: RulesManagementUrlsInfo.getPolicyTemplateList,
-          params,
-          payload: payload as TableChangePayload
-        })
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicyTemplateListByQuery, { excludeContent: 'false', ...params } )
         return {
-          ...req
+          ...req,
+          body: {
+            ...(payload as TableChangePayload),
+            ...transferToNewTablePaginationParams(payload as TableChangePayload)
+          }
         }
       },
       transformResponse (result: NewAPITableResult<RuleTemplate>) {
         return transferNewResToTableResult<RuleTemplate>(result, { pageStartZero: true })
-      }
+      },
+      extraOptions: { maxRetries: 5 }
     }),
     getPolicyTemplateAttributesList: build.query<TableResult<RuleAttribute>, RequestPayload>({
       query: ({ params, payload }) => {
@@ -2565,9 +2637,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'AdaptivePolicySet', id: 'LIST' }]
     }),
-    adaptivePolicySetLisByQuery: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
+    adaptivePolicySetListByQuery: build.query<TableResult<AdaptivePolicySet>, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, params)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(RulesManagementUrlsInfo.getPolicySetsByQuery, { excludeContent: 'false', ...params } )
         return {
           ...req,
           body: {
@@ -3142,15 +3215,12 @@ export const {
   useGetApSnmpSettingsQuery,
   useUpdateApSnmpSettingsMutation,
   useResetApSnmpSettingsMutation,
-  useRadiusAttributeGroupListQuery,
   useGetRadiusAttributeGroupQuery,
-  useRadiusAttributeListQuery,
   useRadiusAttributeVendorListQuery,
   useRadiusAttributeListWithQueryQuery,
   useLazyRadiusAttributeListWithQueryQuery,
   useRadiusAttributeQuery,
   useDeleteRadiusAttributeGroupMutation,
-  useLazyRadiusAttributeGroupListQuery,
   useUpdateRadiusAttributeGroupMutation,
   useAddRadiusAttributeGroupMutation,
   useRadiusAttributeGroupListByQueryQuery,
@@ -3159,12 +3229,10 @@ export const {
   useLazyGetRadiusAttributeGroupQuery,
   useLazyGetAssignmentsQuery,
   // policy
-  useAdaptivePolicyListQuery,
-  useLazyAdaptivePolicyListQuery,
   useGetAdaptivePolicyQuery,
   useLazyGetAdaptivePolicyQuery,
   useDeleteAdaptivePolicyMutation,
-  usePolicyTemplateListQuery,
+  usePolicyTemplateListByQueryQuery,
   useGetPolicyTemplateAttributesListQuery,
   useLazyGetPolicyTemplateAttributesListQuery,
   useAddAdaptivePolicyMutation,
@@ -3179,8 +3247,8 @@ export const {
   // policy set
   useAdaptivePolicySetListQuery,
   useLazyAdaptivePolicySetListQuery,
-  useAdaptivePolicySetLisByQueryQuery,
-  useLazyAdaptivePolicySetLisByQueryQuery,
+  useAdaptivePolicySetListByQueryQuery,
+  useLazyAdaptivePolicySetListByQueryQuery,
   useDeleteAdaptivePolicySetMutation,
   useLazyGetPrioritizedPoliciesQuery,
   useGetAdaptivePolicySetQuery,

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { FormInstance } from 'antd'
 import _                from 'lodash'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   covertAAAViewModalTypeToRadius,
   useActivateRadiusServerMutation,
@@ -35,6 +35,7 @@ import {
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { useIsConfigTemplateEnabledByType } from '../configTemplates'
+import { useIsEdgeReady }                   from '../useEdgeActions'
 
 export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
@@ -119,14 +120,13 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
 
 export const useNetworkVxLanTunnelProfileInfo =
   (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
-    const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-    const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+    const isEdgeEnabled = useIsEdgeReady()
 
     const { data: tunnelProfileData } = useGetTunnelProfileViewDataListQuery(
       { payload: {
         filters: { networkIds: [data?.id] }
       } },
-      { skip: !isEdgeEnabled || !isEdgeReady || !data }
+      { skip: !isEdgeEnabled || !data }
     )
 
     const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN

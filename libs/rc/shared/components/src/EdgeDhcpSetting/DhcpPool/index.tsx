@@ -4,12 +4,13 @@ import { Form }         from 'antd'
 import { useIntl }      from 'react-intl'
 import { v4 as uuidv4 } from 'uuid'
 
-import { Features, useIsSplitOn }                                                from '@acx-ui/feature-toggle'
+import { Features }                                                              from '@acx-ui/feature-toggle'
 import { EdgeDhcpPool, IpInSubnetPool, networkWifiIpRegExp, subnetMaskIpRegExp } from '@acx-ui/rc/utils'
 import { validationMessages }                                                    from '@acx-ui/utils'
 
 import { useTableControl }                                 from '..'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../ImportFileDrawer'
+import { useIsEdgeFeatureReady }                           from '../../useEdgeActions'
 
 import { PoolDrawer } from './PoolDrawer'
 import { PoolTable }  from './PoolTable'
@@ -26,7 +27,7 @@ export default function DhcpPoolTable ({
   onChange
 }: DhcpPoolTableProps) {
   const { $t } = useIntl()
-  const isDHCPCSVEnabled = useIsSplitOn(Features.EDGES_DHCP_CSV_TOGGLE)
+  const isDHCPCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_DHCP_CSV_TOGGLE)
   const [importModalvisible, setImportModalvisible] = useState<boolean>(false)
   const form = Form.useFormInstance()
   const {

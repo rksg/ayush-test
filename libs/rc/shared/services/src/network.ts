@@ -27,7 +27,8 @@ import {
   VenueConfigTemplateUrlsInfo,
   NetworkRadiusSettings,
   GetApiVersionHeader,
-  ApiVersionEnum
+  ApiVersionEnum,
+  RadioTypeEnum
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -528,6 +529,33 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       },
       providesTags: [{ type: 'Network', id: 'DETAIL' }],
       extraOptions: { maxRetries: 5 }
+    }),
+    venueRadioActiveNetworks: build.query<Network[], RequestPayload & { radio: RadioTypeEnum }>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const [networkActivationsQuery, networksQuery] = await Promise.all([
+          fetchWithBQ({
+            ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params),
+            body: arg.payload
+          }),
+          fetchWithBQ({
+            ...createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params),
+            body: arg.payload
+          })
+        ]) as [{ data: { data: NetworkVenue[] } }, { data: { data: Network[] } }]
+        const active = networkActivationsQuery.data.data.reduce(
+          (active: Record<string, boolean>, network: NetworkVenue) => {
+            if (network.allApGroupsRadioTypes?.includes(arg.radio)) {
+              active[network.networkId as string] = true
+            }
+            return active
+          },
+          {} as Record<string, boolean>
+        )
+        return {
+          data: networksQuery.data.data.filter(network => active[network.id])
+        }
+      },
+      providesTags: [{ type: 'Network', id: 'DETAIL' }]
     }),
     venueNetworkTableV2: build.query<TableResult<Network>, RequestPayload>({
       async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
@@ -1223,6 +1251,7 @@ export const {
   useVenueNetworkListQuery,
   useVenueNetworkTableQuery,
   useVenueNetworkListV2Query,
+  useVenueRadioActiveNetworksQuery,
   useVenueNetworkTableV2Query,
   useApGroupNetworkListV2Query,
   useLazyApGroupNetworkListV2Query,

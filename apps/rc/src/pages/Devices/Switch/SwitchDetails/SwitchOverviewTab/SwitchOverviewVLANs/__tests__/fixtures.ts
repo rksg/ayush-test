@@ -1410,7 +1410,7 @@ export const portList_7150_C12P = {
 }
 
 export const transformdPortViewData = {
-  slots: [{
+  slots: [[{
     portCount: 8,
     portNumber: 8,
     portStatus: [{
@@ -1934,11 +1934,11 @@ export const transformdPortViewData = {
     ],
     portTagged: '',
     slotNumber: 2
-  }]
+  }]]
 }
 
 export const transformdPortViewData_7150_C12P = {
-  slots: [{
+  slots: [[{
     portCount: 12,
     portNumber: 12,
     portStatus: [{
@@ -2756,5 +2756,5 @@ export const transformdPortViewData_7150_C12P = {
     }],
     portTagged: '',
     slotNumber: 3
-  }]
+  }]]
 }
