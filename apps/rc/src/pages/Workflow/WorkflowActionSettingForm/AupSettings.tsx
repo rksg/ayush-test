@@ -13,7 +13,7 @@ import { CommonActionSettings } from './CommonActionSettings'
 
 export function AupSettings () {
   const { $t } = useIntl()
-  const [downloadUrl, setDownloadUrl] = useState()
+  const [downloadUrl, setDownloadUrl] = useState<string>()
   const form = Form.useFormInstance()
   const aupFileLocation = Form.useWatch<RcFile|string>('aupFileLocation', form)
 
