@@ -575,6 +575,30 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'AccessControl', id: 'DETAIL' }]
     }),
+    activateAccessControlProfileOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.activateAccessControlProfileOnWifiNetwork,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateAccessControlProfileOnWifiNetwork: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(
+          AccessControlUrls.deactivateAccessControlProfileOnWifiNetwork,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        )
+        return {
+          ...req
+        }
+      }
+    }),
     getL3AclPolicy: build.query<l3AclPolicyInfoType, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const req = createHttpRequest(
@@ -968,6 +992,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             const aclData = acl.data as EnhancedAccessControlInfoType
 
             return {
+              ...aclData,
               ...policy,
               networkIds: aclData.networkIds
             }
@@ -3643,6 +3668,8 @@ export const {
   useDeleteAccessControlProfileMutation,
   useDeleteAccessControlProfilesMutation,
   useGetAccessControlProfileQuery,
+  useActivateAccessControlProfileOnWifiNetworkMutation,
+  useDeactivateAccessControlProfileOnWifiNetworkMutation,
   useL2AclPolicyListQuery,
   useL3AclPolicyListQuery,
   useAddDevicePolicyMutation,

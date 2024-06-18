@@ -26,7 +26,9 @@ import {
   useActivateDeviceOnWifiNetworkMutation,
   useDeactivateDeviceOnWifiNetworkMutation,
   useActivateApplicationPolicyOnWifiNetworkMutation,
-  useDeactivateApplicationPolicyOnWifiNetworkMutation
+  useDeactivateApplicationPolicyOnWifiNetworkMutation,
+  useActivateAccessControlProfileOnWifiNetworkMutation,
+  useDeactivateAccessControlProfileOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -294,6 +296,8 @@ export function useAccessControlActivation () {
   const [ deactivateDevice ] = useDeactivateDeviceOnWifiNetworkMutation()
   const [ activateApplication ] = useActivateApplicationPolicyOnWifiNetworkMutation()
   const [ deactivateApplication ] = useDeactivateApplicationPolicyOnWifiNetworkMutation()
+  const [ activateAccessControl ] = useActivateAccessControlProfileOnWifiNetworkMutation()
+  const [ deactivateAccessControl ] = useDeactivateAccessControlProfileOnWifiNetworkMutation()
   const { networkId } = useParams()
 
   const accessControlWifiActionMap = {
@@ -352,6 +356,21 @@ export function useAccessControlActivation () {
           deactivateApplication({ params, enableRbac: enableServicePolicyRbac }).unwrap()
         ]
       }
+    },
+    accessControlProfileId: {
+      added: (params: Params<string>) => {
+        return activateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      removed: (params: Params<string>) => {
+        return deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+      },
+      updated: (oldParams: Params<string>, params: Params<string>) => {
+        return [
+          // eslint-disable-next-line max-len
+          activateAccessControl({ params: oldParams, enableRbac: enableServicePolicyRbac }).unwrap(),
+          deactivateAccessControl({ params, enableRbac: enableServicePolicyRbac }).unwrap()
+        ]
+      }
     }
   }
 
@@ -375,6 +394,12 @@ export function useAccessControlActivation () {
     if (data.wlan?.advancedCustomization?.hasOwnProperty('applicationPolicyId')
       && data.wlan?.advancedCustomization?.applicationPolicyEnable) {
       object['applicationPolicyId'] = { id: data.wlan.advancedCustomization.applicationPolicyId }
+    }
+
+    if (data.wlan?.advancedCustomization?.hasOwnProperty('accessControlProfileId')
+      && data.wlan?.advancedCustomization.accessControlEnable) {
+      // eslint-disable-next-line max-len
+      object['accessControlProfileId'] = { id: data.wlan.advancedCustomization.accessControlProfileId }
     }
 
     return object
@@ -445,8 +470,6 @@ export function useAccessControlActivation () {
 
   const updateAccessControl = async (formData: NetworkSaveData, data?: NetworkSaveData | null) => {
     if (!enableServicePolicyRbac || !networkId) return Promise.resolve()
-
-    console.log(formData, data)
 
     const comparisonResult = comparePayload(
       filterForAccessControlComparison(formData),

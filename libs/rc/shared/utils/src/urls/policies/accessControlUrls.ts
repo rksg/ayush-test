@@ -354,5 +354,15 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'get',
     url: '/applicationLibraries/:applicationLibraryId/categories/:categoryId/applications',
     newApi: true
+  },
+  activateAccessControlProfileOnWifiNetwork: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
+    newApi: true
+  },
+  deactivateAccessControlProfileOnWifiNetwork: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
+    newApi: true
   }
 }

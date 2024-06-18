@@ -503,6 +503,7 @@ export function NetworkForm (props:{
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateRadiusServer(saveState, data, networkId)
+      await updateAccessControl(saveState, data)
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
       const hasResult = certResponse ?? networkResponse?.response

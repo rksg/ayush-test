@@ -163,7 +163,7 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
       ) : (
         <>
           <label>{vlanLabel}</label>
-          <Button type='link' disabled={isTemplate} icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
+          <Button type='link' icon={<EditOutlined />} onClick={()=>{handleEdit()}}></Button>
           { isDirty && (<Button type='link' icon={<ReloadOutlined />} onClick={()=>{reset()}}></Button>) }
         </>
       )}

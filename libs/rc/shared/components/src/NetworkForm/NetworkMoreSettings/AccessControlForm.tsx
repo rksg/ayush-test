@@ -16,21 +16,21 @@ import { useIntl }             from 'react-intl'
 import { Button, Modal, ModalType, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
 import {
-  useDevicePolicyListQuery,
-  useL2AclPolicyListQuery,
-  useL3AclPolicyListQuery,
-  useApplicationPolicyListQuery,
   useAddAccessControlProfileMutation,
-  useGetAccessControlProfileListQuery,
   useAddAccessControlProfileTemplateMutation,
   useGetL2AclPolicyTemplateListQuery,
   useGetL3AclPolicyTemplateListQuery,
   useGetDevicePolicyTemplateListQuery,
   useGetAppPolicyTemplateListQuery,
-  useGetAccessControlProfileTemplateListQuery
+  useGetAccessControlProfileTemplateListQuery,
+  useGetEnhancedAccessControlProfileListQuery,
+  useGetEnhancedL2AclProfileListQuery,
+  useGetEnhancedL3AclProfileListQuery,
+  useGetEnhancedApplicationProfileListQuery,
+  useGetEnhancedDeviceProfileListQuery
 } from '@acx-ui/rc/services'
 import {
-  AccessControlFormFields,
+  AccessControlFormFields, AccessControlInfoType,
   AccessControlProfile, AccessControlProfileTemplate,
   AclEmbeddedObject, useConfigTemplate, useConfigTemplateMutationFnSwitcher
 } from '@acx-ui/rc/utils'
@@ -545,6 +545,7 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   selectedLayer2: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useL2PolicyTemplateList = useGetL2AclPolicyTemplateListQuery({
@@ -563,13 +564,15 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
     skip: !isTemplate
   })
 
-  const useL2PolicyList = useL2AclPolicyListQuery({
-    params: useParams()
+  const useL2PolicyList = useGetEnhancedL2AclProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
         selectedLayer2: getAccessControlProfile(
-          data,
+          data?.data,
           state.selectedAccessControlProfile,
           'l2AclPolicy'
         )
@@ -585,6 +588,7 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   selectedLayer3: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useL3PolicyTemplateList = useGetL3AclPolicyTemplateListQuery({
@@ -604,13 +608,15 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
     skip: !isTemplate
   })
 
-  const useL3PolicyList = useL3AclPolicyListQuery({
-    params: useParams()
+  const useL3PolicyList = useGetEnhancedL3AclProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
         selectedLayer3: getAccessControlProfile(
-          data,
+          data?.data,
           state.selectedAccessControlProfile,
           'l3AclPolicy'
         )
@@ -626,6 +632,7 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
   selectedDevicePolicy: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useDevicePolicyTemplateList = useGetDevicePolicyTemplateListQuery({
@@ -644,13 +651,15 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
     skip: !isTemplate
   })
 
-  const useDevicePolicyList = useDevicePolicyListQuery({
-    params: useParams()
+  const useDevicePolicyList = useGetEnhancedDeviceProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
         selectedDevicePolicy: getAccessControlProfile(
-          data,
+          data?.data,
           state.selectedAccessControlProfile,
           'devicePolicy'
         )
@@ -666,6 +675,7 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
   selectedApplicationPolicy: string
 } => {
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { isTemplate } = useConfigTemplate()
 
   const useAppPolicyTemplateList = useGetAppPolicyTemplateListQuery({
@@ -684,13 +694,15 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
     skip: !isTemplate
   })
 
-  const useAppPolicyList = useApplicationPolicyListQuery({
-    params: useParams()
+  const useAppPolicyList = useGetEnhancedApplicationProfileListQuery({
+    params: useParams(),
+    payload: QUERY_DEFAULT_PAYLOAD,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
         selectedApplicationPolicy: getAccessControlProfile(
-          data,
+          data?.data,
           state.selectedAccessControlProfile,
           'applicationPolicy'
         )
@@ -762,7 +774,16 @@ const GetClientRateLimitFromNwInstance = (props: SelectedAccessControlProfileTyp
 
 const GetAclPolicyListFromNwInstance = () => {
   const params = useParams()
+  const defaultPayload = {
+    searchString: '',
+    fields: [
+      'id',
+      'name'
+    ]
+  }
   const { isTemplate } = useConfigTemplate()
+
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const useAclPolicyTemplateList = useGetAccessControlProfileTemplateListQuery({
     params, payload: QUERY_DEFAULT_PAYLOAD
@@ -777,14 +798,15 @@ const GetAclPolicyListFromNwInstance = () => {
     skip: !isTemplate
   })
 
-  const useAclPolicyList = useGetAccessControlProfileListQuery({
-    params: useParams()
+  const useAclPolicyList = useGetEnhancedAccessControlProfileListQuery({
+    payload: defaultPayload,
+    enableRbac
   }, {
     selectFromResult ({ data }) {
       return {
-        accessControlProfileSelectOptions: data?.map(
+        accessControlProfileSelectOptions: data?.data.map(
           item => <Option key={item.id}>{item.name}</Option>) ?? [],
-        accessControlList: data
+        accessControlList: data?.data as AccessControlInfoType[]
       }
     },
     skip: isTemplate
