@@ -1,3 +1,4 @@
+import './type.d'
 import { ReactCompareSlider, ReactCompareSliderDetailedProps } from 'react-compare-slider'
 
 // https://react-compare-slider.vercel.app/?path=/docs/docs-api--docs
