@@ -1,16 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react'
 
-import _ from 'lodash'
+import { FormInstance } from 'antd'
+import _                from 'lodash'
 
 import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   covertAAAViewModalTypeToRadius,
   useActivateRadiusServerMutation,
+  useBindClientIsolationMutation,
   useDeactivateRadiusServerMutation,
   useGetAAAPolicyViewModelListQuery,
+  useGetEnhancedClientIsolationListQuery,
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
+  useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -25,7 +29,8 @@ import {
   ConfigTemplateType,
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
-  CommonResult
+  CommonResult,
+  NetworkVenue
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -266,4 +271,68 @@ export function useRadiusServer () {
     updateRadiusServer,
     radiusServerConfigurations
   }
+}
+
+export function useClientIsolationActivations (shouldSkipMode: boolean,
+  saveState: NetworkSaveData, updateSaveData: Function, form: FormInstance) {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { networkId } = useParams()
+  const [ bindClientIsolation ] = useBindClientIsolationMutation()
+  const [ unbindClientIsolation ] = useUnbindClientIsolationMutation()
+
+  const { data: clientIsolationBindingData } = useGetEnhancedClientIsolationListQuery(
+    { payload: { pageSize: 10000, page: 1, filters: { 'activations.wifiNetworkId': [networkId] } },
+      enableRbac },
+    { skip: shouldSkipMode || saveState.venues?.length === 0 || !enableRbac })
+
+  useEffect(() => {
+    if (!clientIsolationBindingData || !saveState) return
+
+    const venueClientIsolationMap = new Map<string, string>()
+    _.forEach(clientIsolationBindingData?.data, item => {
+      const activation = _.find(item.activations, { wifiNetworkId: networkId })
+      if (activation) {
+        venueClientIsolationMap.set(activation.venueId, item.id)
+      }
+    })
+    const venueData = saveState?.venues?.map(v => ({ ...v,
+      clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
+    const fullNetworkSaveData = { ...saveState, venues: venueData }
+    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+
+    form.setFieldsValue({
+      ...resolvedNetworkSaveData
+    })
+    updateSaveData(resolvedNetworkSaveData)
+  }, [clientIsolationBindingData])
+
+  // eslint-disable-next-line max-len
+  const updateClientIsolationActivations = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+    if (!enableRbac || !networkId) return Promise.resolve()
+    const createMutationPromises = (data: NetworkVenue[], action: Function) =>
+      _.map(data, item => action({
+        params: {
+          venueId: item.venueId, networkId: networkId, policyId: item.clientIsolationAllowlistId }
+      }).unwrap())
+
+    const bindData = _.filter(saveData?.venues, v =>
+      v.clientIsolationAllowlistId != null &&
+        (!_.some(oldSaveData?.venues, { id: v.id }) ||
+          _.some(oldSaveData?.venues, ov => ov.id === v.id
+            && ov.clientIsolationAllowlistId !== v.clientIsolationAllowlistId)
+        )
+    )
+
+    const unbindData = _.filter(oldSaveData?.venues, v =>
+      v.clientIsolationAllowlistId != null &&
+        _.some(saveData?.venues, { id: v.id, clientIsolationAllowlistId: null })
+    )
+
+    const bindMutations = createMutationPromises(bindData, bindClientIsolation)
+    const unbindMutations = createMutationPromises(unbindData, unbindClientIsolation)
+
+    await Promise.all([...bindMutations, ...unbindMutations])
+  }
+
+  return { updateClientIsolationActivations }
 }

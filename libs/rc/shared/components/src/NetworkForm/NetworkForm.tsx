@@ -68,9 +68,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                                                                    from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer } from './utils'
-import { Venues }                                                                        from './Venues/Venues'
+import PortalInstance                                                                                                   from './PortalInstance'
+import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer, useClientIsolationActivations } from './utils'
+import { Venues }                                                                                                       from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -158,6 +158,8 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
+  const { updateClientIsolationActivations }
+    = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
@@ -505,7 +507,7 @@ export function NetworkForm (props:{
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
       }
-
+      await updateClientIsolationActivations(saveState, null, networkId)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -584,7 +586,7 @@ export function NetworkForm (props:{
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
-
+      await updateClientIsolationActivations(formData, data, payload.id)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

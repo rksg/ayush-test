@@ -48,5 +48,30 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
     url: '/enhancedIsolationAllowlists/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedIsolationAllowlists/query',
     newApi: true
+  },
+  addClientIsolationRbac: {
+    method: 'post',
+    url: '/clientIsolationProfiles',
+    newApi: true
+  },
+  getClientIsolationRbac: {
+    method: 'get',
+    url: '/clientIsolationProfiles/:policyId',
+    newApi: true
+  },
+  updateClientIsolationRbac: {
+    method: 'put',
+    url: '/clientIsolationProfiles/:policyId',
+    newApi: true
+  },
+  deleteClientIsolationRbac: {
+    method: 'delete',
+    url: '/clientIsolationProfiles/:policyId',
+    newApi: true
+  },
+  queryClientIsolation: {
+    method: 'post',
+    url: '/clientIsolationProfiles/query',
+    newApi: true
   }
 }
