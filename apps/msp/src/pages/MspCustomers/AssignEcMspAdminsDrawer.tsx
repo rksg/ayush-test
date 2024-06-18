@@ -47,6 +47,7 @@ interface AssignedMultiEcMspAdmins {
 export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => {
   const { $t } = useIntl()
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { visible, tenantIds, setVisible, setSelected } = props
   const [resetField, setResetField] = useState(false)
@@ -86,7 +87,8 @@ export const AssignEcMspAdminsDrawer = (props: AssignEcMspAdminsDrawerProps) => 
       })
     })
 
-    saveMspAdmins({ params, payload: { associations: assignedEcMspAdmins } })
+    saveMspAdmins({ params, payload: { associations: assignedEcMspAdmins },
+      enableRbac: isRbacEnabled })
       .then(() => {
         setSelected(selectedRows)
         setVisible(false)
