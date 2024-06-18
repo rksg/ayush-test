@@ -1,15 +1,12 @@
-import userEvent from '@testing-library/user-event'
-import { rest }  from 'msw'
-import { Path }  from 'react-router-dom'
+import { rest } from 'msw'
+import { Path } from 'react-router-dom'
 
-import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { NewAPITableResult, Workflow, WorkflowUrls }                              from '@acx-ui/rc/utils'
-import { Provider }                                                               from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
+import { useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
+import { NewAPITableResult, Workflow, WorkflowUrls }                      from '@acx-ui/rc/utils'
+import { Provider }                                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
-import WorkflowDetailVersionHistoryTab from './WorkflowDetailVersionHistoryTab'
-
-
+import { WorkflowDetailOverview } from './WorkflowDetailOverview'
 
 const workflows:Workflow[] = [{
   id: 'id1',
@@ -63,12 +60,11 @@ jest.mock('@acx-ui/react-router-dom', () => ({
 }))
 
 
-describe('WorkflowVersionTab', () => {
+describe('WorkflowOverviewTab', () => {
   const searchInProgressWorkflowApi = jest.fn()
   const searchVersionApi = jest.fn()
-  const deleteWorkflowApi = jest.fn()
   jest.mocked(useIsSplitOn).mockReturnValue(true)
-  const params = { tenantId: 't1', policyId: workflows[0].id, activeTab: 'versionHistory' }
+  const params = { tenantId: 't1', policyId: workflows[0].id, activeTab: 'overview' }
   beforeEach(async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockServer.use(
@@ -85,30 +81,23 @@ describe('WorkflowVersionTab', () => {
           searchVersionApi()
           res(ctx.json(publishedList))
         }
-      ),
-      rest.delete(
-        WorkflowUrls.deleteWorkflow.url,
-        (req, res, ctx) => {
-          deleteWorkflowApi()
-          return res(ctx.json({}))
-        }
       )
     )
   })
 
   it('should render correctly', async () => {
     render(<Provider>
-      <WorkflowDetailVersionHistoryTab/>
+      <WorkflowDetailOverview/>
     </Provider>, {
       route: { params }
     })
 
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-    const row = await screen.findByRole('row', { name: /Version 1.*/ })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    await screen.findByRole('button', { name: /Activate/i })
-    const deleteButton = await screen.findByRole('button', { name: /Delete/i })
-    await userEvent.click(deleteButton)
-    await waitFor(() => expect(deleteWorkflowApi).toHaveBeenCalled())
+    await screen.findByText('Status')
+    await screen.findByText('Active Version')
+    await screen.findByText('Identity Group')
+    await screen.findByText('Preview')
+    await waitFor(() => expect(searchInProgressWorkflowApi).toHaveBeenCalled())
+    await waitFor(() => expect(searchVersionApi).toHaveBeenCalled())
   })
 })

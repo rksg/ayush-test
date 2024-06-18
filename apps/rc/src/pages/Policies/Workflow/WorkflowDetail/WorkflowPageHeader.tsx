@@ -16,7 +16,6 @@ import {
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
 
-import WorkflowTabs from './WorkflowTabs'
 
 function WorkflowPageHeader () {
   const { $t } = useIntl()
@@ -49,7 +48,6 @@ function WorkflowPageHeader () {
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}
-      footer={<WorkflowTabs/>}
     />
   )
 }

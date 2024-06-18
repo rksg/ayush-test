@@ -19,6 +19,7 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ACCESS_CONTROL]: defineMessage({ defaultMessage: 'Create L2-L7 access policies for device access to wireless networks' }),
   [PolicyType.CLIENT_ISOLATION]: defineMessage({ defaultMessage: 'Segregate layer 2 network traffic from all clients, create exception policies for allow-lists and block-lists' }),
   [PolicyType.IDENTITY_PROVIDER]: defineMessage({ defaultMessage: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean euismod bibendum' }),
+  [PolicyType.WIFI_OPERATOR]: defineMessage({ defaultMessage: 'Deploys and operates an access network consisting of publicly accessible or guest access Passpoint APs' }),
   [PolicyType.ROGUE_AP_DETECTION]: defineMessage({ defaultMessage: 'Create WIDS policies for rogue wireless device detection' }),
   [PolicyType.SYSLOG]: defineMessage({ defaultMessage: 'Configure syslog to an external server for offline reporting' }),
   [PolicyType.VLAN_POOL]: defineMessage({ defaultMessage: 'Create multiple VLANs in a pool to serve clients' }),
@@ -33,6 +34,9 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.ADAPTIVE_POLICY]: defineMessage({ defaultMessage: 'Create adaptive policies for user and device connectivity on wired or wireless networks' }),
   [PolicyType.ADAPTIVE_POLICY_SET]: defineMessage({ defaultMessage: 'Adaptive Policy Set' }),
   [PolicyType.RADIUS_ATTRIBUTE_GROUP]: defineMessage({ defaultMessage: 'Radius Attribute group' }),
+  [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Create certificates to establish secure communication and verify the identity of entities in a network' }),
+  [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
+  [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
   [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'A customizable onboarding process that provides more control over who is granted network access' })
 }
 export const policyTechnologyLabelMapping: Record<PolicyTechnology, MessageDescriptor> = {

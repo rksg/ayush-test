@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 
-import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
@@ -9,8 +8,7 @@ import {
   Table,
   TableProps,
   Loader } from '@acx-ui/components'
-import {  DateFormatEnum,  userDateTimeFormat } from '@acx-ui/formatter'
-import { EyeOpenSolid }                         from '@acx-ui/icons'
+import { EnrollmentPortalLink }    from '@acx-ui/rc/components'
 import {
   useDeleteWorkflowMutation,
   useSearchInProgressWorkflowListQuery,
@@ -34,7 +32,6 @@ import {
   useTenantLink
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-import { noDataDisplay }  from '@acx-ui/utils'
 function useColumns (workflowMap: Map<string, Workflow>) {
   const { $t } = useIntl()
 
@@ -72,51 +69,24 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       })
     },
     {
-      key: 'publishedVersion',
-      title: $t({ defaultMessage: 'Published Version' }),
-      dataIndex: 'publishedVersion',
-      render: (_, row) => $t({ defaultMessage: ` {
-        status, select,
-        PUBLISHED {{version}}
-        other {--}
-      }` }, {
-        status: workflowMap.get(row.id!)?.publishDetails?.status,
-        version: workflowMap.get(row.id!)?.publishDetails?.version
-      })
-    },
-    {
       key: 'identityGroup',
       title: $t({ defaultMessage: 'IdentityGroup' }),
       dataIndex: 'identityGroup',
-      render: (_, row) => $t({ defaultMessage: ` {
-        status, select,
-        PUBLISHED {{version}}
-        other {--}
-      }` }, {
-        status: workflowMap.get(row.id!)?.publishDetails?.status,
-        version: workflowMap.get(row.id!)?.publishDetails?.version
-      })
+      render: (_, row) => {
+        return undefined
+      }
     },
     {
-      key: 'lastPublished',
-      title: $t({ defaultMessage: 'Last Published' }),
-      dataIndex: 'lastPublished',
-      sorter: false,
-      align: 'center',
-      render: (_, row) => workflowMap.get(row.id!)?.publishDetails?.publishedDate ?
-        moment(row.publishDetails?.publishedDate)
-          .format(userDateTimeFormat(DateFormatEnum.DateTimeFormatWith12HourSystem))
-        : noDataDisplay
-
-    },
-    {
-      key: 'preview',
-      title: $t({ defaultMessage: 'Preview' }),
-      dataIndex: 'preview',
-      sorter: false,
-      align: 'center',
-      render: (_, row) => <div><EyeOpenSolid/></div>
-
+      key: 'url',
+      title: $t({ defaultMessage: 'URL' }),
+      dataIndex: 'url',
+      render: (_, row) => {
+        if (workflowMap.get(row.id!)?.publishDetails?.status === 'PUBLISHED') {
+          const link = workflowMap.get(row.id!)?.links?.find(v => v.rel === 'enrollmentPortal')
+          if (link) return <EnrollmentPortalLink name={row.name} url={link.href}/>
+        }
+        return undefined
+      }
     }
   ]
 
@@ -178,13 +148,20 @@ export default function WorkflowTable () {
       },
       disabled: (selectedItems => selectedItems.length > 1)
     },
-    // {
-    //   label: $t({ defaultMessage: 'Clone' }),
-    //   onClick: ([data], clearSelection) => {
-    //     clearSelection()
-    //   },
-    //   disabled: (selectedItems => selectedItems.length > 1)
-    // },
+    {
+      label: $t({ defaultMessage: 'Clone' }),
+      onClick: ([data], clearSelection) => {
+        clearSelection()
+      },
+      disabled: (selectedItems => selectedItems.length > 1)
+    },
+    {
+      label: $t({ defaultMessage: 'Preview' }),
+      onClick: ([data], clearSelection) => {
+        clearSelection()
+      },
+      disabled: (selectedItems => selectedItems.length > 1)
+    },
     {
       label: $t({ defaultMessage: 'Delete' }),
       onClick: ([data], clearSelection) => {

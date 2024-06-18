@@ -5,7 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { SummaryCard }             from '@acx-ui/components'
-import { EyeOpenSolid }            from '@acx-ui/icons'
+import { EnrollmentPortalLink }    from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
@@ -13,7 +13,7 @@ import {
 import { Workflow } from '@acx-ui/rc/utils'
 
 
-export function WorkflowDetailOverviewTab () {
+export function WorkflowDetailOverview () {
   const { $t } = useIntl()
   const { policyId } = useParams()
   const workflowQuery = useGetWorkflowByIdQuery({ params: { id: policyId } })
@@ -45,29 +45,22 @@ export function WorkflowDetailOverviewTab () {
       }` }, {
         status: data?.publishDetails?.status
       }),
-      colSpan: 3
+      colSpan: 2
     },
     {
-      title: $t({ defaultMessage: 'Active Version' }),
-      content: $t({ defaultMessage: ` {
-        status, select,
-        PUBLISHED {Version {version}}
-        other {--}
-      }` }, {
-        status: data?.publishDetails?.status,
-        version: data?.publishDetails?.version
-      }),
-      colSpan: 3
+      title: $t({ defaultMessage: 'Onboarding Network' }),
+      visible: false,
+      colSpan: 4
     },
     {
-      title: $t({ defaultMessage: 'Identity Group' }),
-      content: '--',
-      colSpan: 3
-    },
-    {
-      title: $t({ defaultMessage: 'Preview' }),
-      content: <div><EyeOpenSolid/></div>
-
+      title: $t({ defaultMessage: 'URL' }),
+      visible: data?.publishDetails?.status === 'PUBLISHED',
+      content: () => {
+        const link = data?.links?.find(v => v.rel === 'enrollmentPortal')
+        if (link) return <EnrollmentPortalLink name={data?.name!!} url={link.href} />
+        return undefined
+      },
+      colSpan: 2
     }
   ]
 

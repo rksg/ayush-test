@@ -6,6 +6,7 @@ export interface Workflow {
   allowedIps?: string[]
   disallowedIps?: string[]
   startStepId?: string
+  links?: { rel: string, href: string }[]
 }
 
 export type PublishStatus = 'WORK_IN_PROGRESS' | 'PUBLISHED' | 'RETIRED'

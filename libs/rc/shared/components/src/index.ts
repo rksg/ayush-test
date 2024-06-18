@@ -253,3 +253,4 @@ export * from './SwitchCliTemplateForm'
 export {
   useRwgActions
 } from './useRwgActions'
+export * from './EnrollmentPortalLink'
