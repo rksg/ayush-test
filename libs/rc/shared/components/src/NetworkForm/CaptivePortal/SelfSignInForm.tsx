@@ -17,10 +17,12 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
+import { useGetNotificationSmsQuery }     from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum
 } from '@acx-ui/rc/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -93,6 +95,13 @@ export function SelfSignInForm () {
   })
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
+  const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
+  const params = useParams()
+  const smsUsage = useGetNotificationSmsQuery({ params })
+  const isSMSTokenAvailable = isSmsProviderEnabled ?
+    !((smsUsage?.data?.provider ?? []) == ['RUCKUS_ONE'] &&
+     (smsUsage?.data?.ruckusOneUsed ?? 0) >= (smsUsage?.data?.thredshold ?? 0))
+    : true
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -204,7 +213,9 @@ export function SelfSignInForm () {
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
-                checked={enableSmsLogin}>
+                checked={enableSmsLogin}
+                disabled={!isSMSTokenAvailable}
+                >
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}
                 </UI.Checkbox>
