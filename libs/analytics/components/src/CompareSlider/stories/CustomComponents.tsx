@@ -15,13 +15,14 @@ const labelStyle: CSSProperties = {
 
 export const ComponentOne = () => {
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-      height: '100%',
-      justifyContent: 'start'
-    }}>
+    <div data-testid='custom-component-one'
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'start'
+      }}>
       <div style={labelStyle}>Left</div>
       <img
         // eslint-disable-next-line max-len
@@ -40,13 +41,14 @@ export const ComponentOne = () => {
 
 export const ComponentTwo = () => {
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-      height: '100%',
-      justifyContent: 'end'
-    }}>
+    <div data-testid='custom-component-two'
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+        justifyContent: 'end'
+      }}>
       <div style={labelStyle}>Right</div>
       <img
         // eslint-disable-next-line max-len
