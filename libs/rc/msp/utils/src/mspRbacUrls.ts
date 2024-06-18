@@ -181,15 +181,13 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getMspEcDelegatedAdmins: {
     method: 'get',
-    // url: '/tenants/:mspEcTenantId/adminDelegations/query',
-    url: '/mspCustomers/:mspEcTenantId/mspadmins',
+    url: '/tenants/:mspEcTenantId/adminDelegations',
     oldUrl: '/mspCustomers/:mspEcTenantId/mspadmins',
     newApi: true
   },
   updateMspEcDelegatedAdmins: {
     method: 'put',
-    // url: '/tenants/:mspEcTenantId/adminDelegations',
-    url: '/mspCustomers/:mspEcTenantId/mspadmins',
+    url: '/tenants/:mspEcTenantId/adminDelegations',
     oldUrl: '/mspCustomers/:mspEcTenantId/mspadmins',
     newApi: true
   },
@@ -300,8 +298,8 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
 
   assignMultiMspEcDelegatedAdmins: {
     method: 'PATCH',
-    url: '/tenants/mspAdmins/associations',
-    oldUrl: '/mspCustomers/mspAdmins/associations',
+    // url: '/tenants/:tenantId/adminDelegations',
+    url: '/mspCustomers/mspAdmins/associations',
     newApi: true
   },
   // // getMspAggregations: {
