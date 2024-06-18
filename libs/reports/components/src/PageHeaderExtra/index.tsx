@@ -41,7 +41,9 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
       ? <SANetworkFilter
         key={getShowWithoutRbacCheckKey('sa-network-filter')}
         shouldQueryAp={isAPReport}
-        shouldQuerySwitch={isSwitchReport}/>
+        shouldQuerySwitch={isSwitchReport}
+        overrideFilters={{ startDate, endDate }}
+      />
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('reports-network-filter')}
         shouldQuerySwitch={isSwitchReport}
