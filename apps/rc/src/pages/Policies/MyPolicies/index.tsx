@@ -15,6 +15,7 @@ import {
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetConnectionMeteringListQuery,
+  useSearchInProgressWorkflowListQuery,
   useAdaptivePolicyListByQueryQuery,
   useGetCertificateTemplatesQuery,
   useGetWifiOperatorListQuery
@@ -95,6 +96,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isWorkflowEnabled = useIsSplitOn(Features.WORKFLOW_TOGGLE)
   const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -218,6 +220,16 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
       disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.WORKFLOW,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useSearchInProgressWorkflowListQuery({
+        params: { ...params, excludeContent: 'true' }
+      }, { skip: !isWorkflowEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WORKFLOW, oper: PolicyOperation.LIST })),
+      disabled: !isWorkflowEnabled
     },
     {
       type: PolicyType.CERTIFICATE_TEMPLATE,

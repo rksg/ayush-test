@@ -12,9 +12,9 @@ export * from './radiusAttributeGroup'
 export * from './tunnelProfile'
 export * from './rulesManagement'
 export * from './connectionMetering'
+export * from './workflow'
 export * from './certificateTemplate'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
-
 export * from './common'

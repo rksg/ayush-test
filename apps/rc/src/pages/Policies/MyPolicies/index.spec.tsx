@@ -1,6 +1,6 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                       from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
@@ -8,7 +8,7 @@ import {
   ClientIsolationUrls,
   ConnectionMeteringUrls,
   getSelectPolicyRoutePath,
-  RogueApUrls, SyslogUrls, WifiUrlsInfo
+  RogueApUrls, SyslogUrls, WifiUrlsInfo, WorkflowUrls
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -27,6 +27,15 @@ import MyPolicies from '.'
 const mockTableResult = {
   totalCount: 0,
   data: []
+}
+
+const mockNewTableResult = {
+  content: [],
+  paging: {
+    page: 0,
+    pageSize: 0,
+    totalCount: 0
+  }
 }
 
 describe('MyPolicies', () => {
@@ -72,6 +81,10 @@ describe('MyPolicies', () => {
       rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        WorkflowUrls.searchInProgressWorkflows.url.split('?')[0],
+        (req, res, ctx ) => res(ctx.json(mockNewTableResult))
       ),
       rest.post(
         RogueApUrls.getRoguePolicyListRbac.url,

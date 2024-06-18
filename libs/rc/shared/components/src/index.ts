@@ -244,6 +244,8 @@ export * from './NetworkDetails'
 export * from './users'
 export * from './configTemplates'
 export * from './EdgeCluster'
+export * from './WorkflowForm'
+export * from './EnrollmentPortalDesignModal'
 export * from './SwitchBlinkLEDsDrawer'
 export { ConfigurationProfileForm } from './SwitchRegularProfileForm'
 export * from './SwitchCliProfileForm'
@@ -251,3 +253,4 @@ export * from './SwitchCliTemplateForm'
 export {
   useRwgActions
 } from './useRwgActions'
+export * from './EnrollmentPortalLink'

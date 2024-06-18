@@ -1,0 +1,296 @@
+import { forwardRef, Ref, useEffect, useImperativeHandle, useRef, useState } from 'react'
+
+import { Form, Switch }                              from 'antd'
+import { MessageDescriptor, defineMessage, useIntl } from 'react-intl'
+
+import { Loader }                                                       from '@acx-ui/components'
+import { useGetUIConfigurationQuery, useUpdateUIConfigurationMutation } from '@acx-ui/rc/services'
+import { UIConfiguration }                                              from '@acx-ui/rc/utils'
+
+
+import { BackgroundContent } from './BackgroundContent'
+import { BodyContent }       from './BodyContent'
+import { ButtonContent }     from './ButtonContent'
+import Wifi4eu               from './images/WiFi4euBanner.svg'
+import { LogoContent }       from './LogoContent'
+import { PopOver }           from './PopOver'
+import { PoweredByContent }  from './PoweredByContent'
+import * as UI               from './styledComponents'
+import { TitleContent }      from './TitleContent'
+import WiFi4euModal          from './Wifi4euModal'
+export interface PortalDesignProps {
+  id: string
+}
+
+const defaultConfiguration : UIConfiguration = {
+  disablePoweredBy: false,
+  uiColorSchema: {
+    titleFontColor: '#000000',
+    backgroundColor: '#FFFFFF',
+    bodyFontColor: '#000000',
+    buttonFontColor: '#FFFFFF',
+    buttonColor: '#EC7100'
+  },
+  uiStyleSchema: {
+    logoRatio: 1,
+    titleFontSize: 16,
+    bodyFontSize: 14
+  }
+}
+
+enum PortalComponentEnum {
+  logo = 'logo',
+  poweredBy = 'poweredby',
+  wifi4eu ='wifi4eu'
+}
+
+const PortalComponents: Record<PortalComponentEnum, MessageDescriptor> = {
+  [PortalComponentEnum.logo]: defineMessage({ defaultMessage: 'Logo' }),
+  [PortalComponentEnum.poweredBy]: defineMessage({ defaultMessage: 'Powered By' }),
+  [PortalComponentEnum.wifi4eu]: defineMessage({ defaultMessage: 'WiFi4EU Snippet' })
+}
+
+function PortalComponentList (props: {
+  display: Map<keyof typeof PortalComponentEnum, boolean>
+  onDisplayChange: (v:Map<keyof typeof PortalComponentEnum, boolean>) =>void
+  value: UIConfiguration
+  onValueChange: (v:UIConfiguration) => void
+}) {
+  const { display, onDisplayChange, value, onValueChange } = props
+  const valueKeys = Object.keys(PortalComponentEnum) as Array<keyof typeof PortalComponentEnum>
+  const { $t } = useIntl()
+  return (
+    <Form layout='vertical'>
+      <Form.Item
+        name='manageComponents'
+        label={$t({ defaultMessage: 'Manage Components' })}
+        children={<div>
+          {valueKeys.map((key => <UI.CommonLabel key={key+'label'}>
+            <UI.ComponentLabel key={key}>
+              {$t(PortalComponents[PortalComponentEnum[key]])}
+            </UI.ComponentLabel>
+            <Switch
+              key={key+'switch'}
+              checked={display.get(key)}
+              onClick={(v) => {
+                onDisplayChange(new Map(display).set(key, v))
+              }}
+            />
+            {PortalComponentEnum[key] ===PortalComponentEnum.wifi4eu &&
+               <WiFi4euModal wifi4eu={value.wifi4EUNetworkId}
+                 onChange={(v) => onValueChange({ ...value, wifi4EUNetworkId: v })}/>
+            }
+          </UI.CommonLabel>
+          ))}
+        </div>}
+      />
+    </Form>
+  )
+}
+
+
+const PortalDesign = forwardRef(function PortalDesign (props: PortalDesignProps,
+  ref: Ref<{ onFinish: ()=> void }>){
+  const{ id } = props
+  const { $t } = useIntl()
+  const [marked, setMarked] = useState({
+    desk: true,
+    tablet: false,
+    mobile: false
+  })
+  const [screen, setScreen] = useState('desk')
+  const [showComponent, setShowComponent] = useState(false)
+  const original = useRef<UIConfiguration>(defaultConfiguration)
+  const [value, setValue] = useState<UIConfiguration>(defaultConfiguration)
+  const [display, setDisplay] = useState<Map<keyof typeof PortalComponentEnum, boolean>>(new Map([
+    ['logo', value.logoImage !== undefined],
+    ['poweredBy', value.disablePoweredBy],
+    ['wifi4eu', value.wifi4EUNetworkId !== undefined]
+  ]))
+
+  const reset = () => {
+    setValue(original.current!!)
+    setDisplay(new Map([
+      ['logo', original.current!!.logoImage !== undefined],
+      ['poweredBy', !(original.current!!.disablePoweredBy)],
+      ['wifi4eu', original.current!!.wifi4EUNetworkId !== undefined]
+    ]))
+  }
+
+  const configurationQuery = useGetUIConfigurationQuery({ params: { id: id } })
+  const [updateConfiguration] = useUpdateUIConfigurationMutation()
+  useEffect(()=>{
+    if (configurationQuery.isLoading) return
+    if (configurationQuery.data) {
+      original.current = configurationQuery.data
+      setValue(configurationQuery.data)
+      setDisplay(new Map([
+        ['logo', configurationQuery.data.logoImage !== undefined],
+        ['poweredBy', !(configurationQuery.data.disablePoweredBy)],
+        ['wifi4eu', configurationQuery.data.wifi4EUNetworkId !== undefined]
+      ]))
+    }
+  }, [configurationQuery])
+
+  const handleSubmit = async () => {
+    if (!value) return
+    const data: UIConfiguration = { ...value }
+    if (!display.get('wifi4eu')) {
+      data.wifi4EUNetworkId = undefined
+    }
+    if (!display.get('logo')) {
+      data.logoImage = undefined
+      data.uiStyleSchema = {
+        ...data.uiStyleSchema,
+        logoRatio: 1
+      }
+    }
+    if (!display.get('poweredBy')) {
+      data.disablePoweredBy = true
+    }
+
+    // console.log(data)
+    await updateConfiguration({ params: { id: id }, payload: data })
+      .unwrap()
+      .catch((e)=> {
+        // eslint-disable-next-line no-console
+        console.log(e)
+      })
+  }
+
+  useImperativeHandle(ref, ()=> ({
+    onFinish () {
+      handleSubmit()
+    }
+  }))
+
+
+  return (
+    <Loader states={[configurationQuery]}>
+      <div style={{ width: '100%', minWidth: 1100, height: '100%' }}>
+        <UI.PopoverStyle />
+        <UI.LayoutHeader>
+          <div style={{ display: 'flex' }}>
+            <div
+              style={{ flex: '0 0 345px' }}>
+              <div style={{ fontSize: 16, color: 'var(--acx-primary-black)', fontWeight: 600 }}>
+                {$t({ defaultMessage: 'Portal Design' })}
+              </div>
+            </div>
+            <div style={{ flex: 'auto', textAlign: 'center' }}>
+              <UI.DesktopOutlined $marked={marked.desk}
+                title='deskicon'
+                onClick={()=>{
+                  setScreen('desk')
+                  setMarked({ desk: true, tablet: false, mobile: false })
+                }}/>
+              <UI.TabletOutlined $marked={marked.tablet}
+                title='tableticon'
+                onClick={()=>{
+                  setScreen('tablet')
+                  setMarked({ desk: false, tablet: true, mobile: false })
+                }}/>
+              <UI.MobileOutlined $marked={marked.mobile}
+                title='mobileicon'
+                onClick={()=>{
+                  setScreen('mobile')
+                  setMarked({ desk: false, tablet: false, mobile: true })
+                }}/>
+            </div>
+            <div
+              style={{
+                flex: '0 0 513px', textAlign: 'right', verticalAlign: 'middle' ,paddingRight: 50 }}>
+              {<div>
+                <UI.Button type='default' size='small'>
+                  <PopOver overlayInnerStyle={{ minWidth: 260 }}
+                    content={<PortalComponentList
+                      display={display}
+                      onDisplayChange={setDisplay}
+                      value={value}
+                      onValueChange={setValue}/>}
+                    visible={showComponent}
+                    placement='bottomLeft'
+                    onVisibleChange={(v)=>setShowComponent(v)}
+                  >
+                    {$t({ defaultMessage: 'Components' })}
+                  </PopOver>
+                </UI.Button>
+                <UI.Button type='default'
+                  size='small'
+                  onClick={()=>{reset()}}>{$t({ defaultMessage: 'Reset' })}
+                </UI.Button>
+              </div>}
+            </div>
+          </div>
+        </UI.LayoutHeader>
+        <UI.LayoutContent id={'democontent'} $isPreview={true}>
+          {<BackgroundContent
+            $isDesk={marked.desk}
+            value={value}
+            onColorChange={(color)=> {
+              setValue({ ...value, uiColorSchema: {
+                ...value.uiColorSchema,
+                backgroundColor: color
+              } })
+            }}
+            onImageChange={(url)=> {
+              setValue({ ...value,
+                backgroundImage: url
+              })
+            }}
+          />}
+          <UI.LayoutView $type={screen}
+            style={{ backgroundImage: 'url("'+ value.backgroundImage+'")',
+              backgroundColor: value.uiColorSchema.backgroundColor }}>
+            <div>
+              <UI.LayoutViewContent
+                isbg={value?.backgroundImage !== undefined ? true : false}
+                style={display.get('logo') || display.get('wifi4eu') ? {}: { paddingTop: '15' }}
+              >
+                {display.get('wifi4eu') && <UI.Img src={Wifi4eu} alt={'Wifi4eu'} height={120}/> }
+                {display.get('logo') && <LogoContent
+                  value={value}
+                  onDisabled={()=> {
+                    setDisplay(new Map(display).set('logo', false))
+                    setValue({ ...value, logoImage: undefined })
+                  }}
+                  onLogoChange={(v)=> setValue({ ...value, logoImage: v })}
+                  onRatioChange={(v)=> setValue({ ...value,
+                    uiStyleSchema: { ...value.uiStyleSchema, logoRatio: v } })}
+                />}
+                <div style={{ marginTop: 10 }}>
+                  <TitleContent value={value}
+                    onColorChange={(v)=> setValue({ ...value,
+                      uiColorSchema: { ...value.uiColorSchema, titleFontColor: v } })}
+                    onSizeChange={(v)=> setValue({ ...value,
+                      uiStyleSchema: { ...value.uiStyleSchema, titleFontSize: v } })}
+                  />
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <BodyContent value={value}
+                    onColorChange={(v)=> setValue({ ...value,
+                      uiColorSchema: { ...value.uiColorSchema, bodyFontColor: v } })}
+                    onSizeChange={(v)=> setValue({ ...value,
+                      uiStyleSchema: { ...value.uiStyleSchema, bodyFontSize: v } })}
+                  />
+                </div>
+                <div style={{ marginTop: 10 }}>
+                  <ButtonContent value={value}
+                    onButtonColorChange={(v)=> setValue({ ...value,
+                      uiColorSchema: { ...value.uiColorSchema, buttonColor: v } })}
+                    onFontColorChange={(v)=> setValue({ ...value,
+                      uiColorSchema: { ...value.uiColorSchema, buttonFontColor: v } })}
+                  />
+                </div>
+                {display.get('poweredBy') &&
+                <div style={{ marginTop: 10 }}><PoweredByContent/></div>}
+              </UI.LayoutViewContent>
+            </div>
+          </UI.LayoutView>
+        </UI.LayoutContent>
+      </div>
+    </Loader>
+  )
+})
+
+export default PortalDesign
