@@ -1,12 +1,13 @@
 import { Menu }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Dropdown, PageHeader }                           from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { CommonOperation, Device, getUrl }                        from '@acx-ui/rc/utils'
-import { TenantLink }                                             from '@acx-ui/react-router-dom'
-import { EdgeScopes }                                             from '@acx-ui/types'
-import { hasPermission }                                          from '@acx-ui/user'
+import { Button, Dropdown, PageHeader }          from '@acx-ui/components'
+import { Features }                              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
+import { CommonOperation, Device, getUrl }       from '@acx-ui/rc/utils'
+import { TenantLink }                            from '@acx-ui/react-router-dom'
+import { EdgeScopes }                            from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import { EdgeClusterTable } from './EdgeClusterTable'
 import { OldEdgeListPage }  from './OldEdgeListPage'
@@ -14,8 +15,8 @@ import { OldEdgeListPage }  from './OldEdgeListPage'
 
 const Edges = () => {
   const { $t } = useIntl()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isEdgeHaEnabled = useIsSplitOn(Features.EDGE_HA_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
+  const isEdgeHaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
 
   if (!isEdgeEnabled) {
     return <span>{ $t({ defaultMessage: 'SmartEdge is not enabled' }) }</span>

@@ -20,7 +20,7 @@ export const defaultNetworkPath: NetworkPath = [{ type: 'network', name: 'Networ
 type NetworkFilter = { path: NetworkPath, raw: object }
 
 const noSwitchSupportURLs = [
-  '/ai/health/wireless',
+  // '/ai/health/wireless',
   '/analytics/health/wireless',
   '/analytics/configChange',
   '/ai/configChange',
@@ -39,7 +39,7 @@ const noSwitchSupportURLs = [
 ]
 
 const noApSupportURLs = [
-  '/ai/health/wired',
+  // '/ai/health/wired',
   '/analytics/health/wired',
   '/ai/reports/switches',
   '/ai/reports/wired',
