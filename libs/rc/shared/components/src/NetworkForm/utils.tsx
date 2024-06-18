@@ -323,9 +323,9 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
         )
     )
 
-    const unbindData = _.filter(oldSaveData?.venues, v =>
-      v.clientIsolationAllowlistId != null &&
-        _.some(saveData?.venues, { id: v.id, clientIsolationAllowlistId: null })
+    const unbindData = _.filter(oldSaveData?.venues, ov =>
+      ov.clientIsolationAllowlistId != null &&
+        _.some(saveData?.venues, v => v.id === ov.id && !v.clientIsolationAllowlistId)
     )
 
     const bindMutations = createMutationPromises(bindData, bindClientIsolation)

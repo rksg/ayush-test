@@ -507,7 +507,7 @@ export function NetworkForm (props:{
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
       }
-      await updateClientIsolationActivations(saveState, null, networkId)
+      await updateClientIsolationActivations(payload, null, networkId)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -586,7 +586,7 @@ export function NetworkForm (props:{
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
-      await updateClientIsolationActivations(formData, data, payload.id)
+      await updateClientIsolationActivations(payload, data, payload.id)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
