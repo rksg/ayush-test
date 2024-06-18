@@ -282,10 +282,10 @@ export const rbacApi = baseRbacApi.injectEndpoints({
     deleteUserResourceGroup: build.mutation<string, { userId: string }>({
       query: ({ userId }) => {
         return {
-          url: '/users/resourceGroup',
+          url: '/users',
           method: 'delete',
           credentials: 'include',
-          body: { users: [userId] },
+          body: [userId],
           responseHandler: 'text'
         }
       },

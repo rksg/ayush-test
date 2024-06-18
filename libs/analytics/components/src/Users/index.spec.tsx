@@ -80,7 +80,7 @@ const mockRefreshUserResponse = () => {
 }
 const mockDeleteUserDetailsResponse = () => {
   mockServer.use(
-    rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.text('OK')))
+    rest.delete(`${rbacApiURL}/users`, (_, res, ctx) => res(ctx.text('OK')))
   )
 }
 const mockDeleteInvitationResponse = () => {
@@ -205,7 +205,7 @@ describe('Users Page', () => {
     mockRbacUserResponse([mockManagedUsers[0]])
     mockSSOResponse()
     mockServer.use(
-      rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(ctx.status(404)))
+      rest.delete(`${rbacApiURL}/users`, (_, res, ctx) => res(ctx.status(404)))
     )
     const Component = () => {
       const { component } = useUsers()
@@ -234,7 +234,7 @@ describe('Users Page', () => {
     mockSSOResponse()
     const error = { status: 422, message: 'error message' }
     mockServer.use(
-      rest.delete(`${rbacApiURL}/users/resourceGroup`, (_, res, ctx) => res(
+      rest.delete(`${rbacApiURL}/users`, (_, res, ctx) => res(
         ctx.status(error.status),
         ctx.json({ error: error.message })
       ))
