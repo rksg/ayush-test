@@ -12,7 +12,7 @@ import {
 import { useSwitchActions, useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareStatusListQuery }  from '@acx-ui/rc/services'
 import {
-  FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
   SwitchFirmwareStatus,
   SwitchFwStatusEnum,
   SwitchStatusEnum,
@@ -28,7 +28,7 @@ import * as UI        from '../styledComponents'
 export interface VenueStatusDrawerProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,
-  data: FirmwareSwitchVenue
+  data: FirmwareSwitchVenueV1002
 }
 
 export function VenueStatusDrawer (props: VenueStatusDrawerProps) {

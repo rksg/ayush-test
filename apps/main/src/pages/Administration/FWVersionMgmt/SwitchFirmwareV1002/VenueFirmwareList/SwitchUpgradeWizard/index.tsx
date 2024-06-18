@@ -76,11 +76,11 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
   const isLatestVersion = function (currentVersion: FirmwareVersion) {
     if(_.isEmpty(currentVersion?.id)) return false
-    const defaultVersions = getReleaseFirmware(defaultReleaseVersions)
-    const defaultFirmware = defaultVersions.filter(v => v.id.startsWith('090'))[0]
-    const defaultRodanFirmware = defaultVersions.filter(v => v.id.startsWith('100'))[0]
-    return (currentVersion.id === defaultFirmware?.id ||
-      currentVersion.id === defaultRodanFirmware?.id)
+    const defaultVersions = ''//getReleaseFirmware(defaultReleaseVersions)
+    const defaultFirmware = ''//defaultVersions.filter(v => v.id.startsWith('090'))[0]
+    const defaultRodanFirmware = ''//defaultVersions.filter(v => v.id.startsWith('100'))[0]
+    return false//(currentVersion.id === defaultFirmware?.id ||
+      // currentVersion.id === defaultRodanFirmware?.id)
   }
 
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)

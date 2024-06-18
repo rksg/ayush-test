@@ -124,6 +124,29 @@ export interface FirmwareVersion {
   isDowngradeVersion?: boolean;
 }
 
+export enum SwitchFirmwareModelGroup {
+  ICX71 = 'ICX71',
+  ICX7X = 'ICX7X',
+  ICX82 = 'ICX82'
+}
+
+export interface SwitchVersion1002 {
+  id: string;
+  name: string;
+  category: FirmwareCategory;
+  createdDate?: string;
+}
+
+export interface FirmwareVersion1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  versions: string[];
+}
+
+export interface LatestFirmwareVersion1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  versions: SwitchVersion1002[];
+}
+
 export interface ABFVersion {
   abf: string;
   sequence?: number;
@@ -239,6 +262,28 @@ export interface FirmwareSwitchVenue {
   scheduleCount: number;
 }
 
+export interface FirmwareSwitchVenueVersionsV1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  version: string;
+}
+export interface FirmwareSwitchVenueSwitchCountsV1002 {
+  modelGroup: SwitchFirmwareModelGroup;
+  count: number;
+}
+
+export interface FirmwareSwitchVenueV1002 {
+  id: string;
+  venueId?: string;
+  venueName: string;
+  preDownload: boolean;
+  versions:FirmwareSwitchVenueVersionsV1002[];
+  nextSchedule?: switchSchedule;
+  lastScheduleUpdateTime: string;
+  switchCount: FirmwareSwitchVenueSwitchCountsV1002[];
+  status: SwitchFirmwareStatusType;
+  scheduleCount: number;
+}
+
 export enum SwitchFirmwareStatusType {
   NONE = 'NONE',
   INITIATE = 'INITIATE',
@@ -288,6 +333,11 @@ export interface SwitchFirmwareStatus {
 export interface CurrentVersions {
   currentVersions: string[];
   currentVersionsAboveTen: string[];
+  generalVersions: string[];
+}
+
+export interface CurrentVersionsV1002 {
+  currentVersions: FirmwareVersion1002[];
   generalVersions: string[];
 }
 

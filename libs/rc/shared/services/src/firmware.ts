@@ -21,7 +21,10 @@ import {
   ApModelFirmware,
   UpdateFirmwarePerApModelPayload,
   UpdateFirmwareSchedulePerApModelPayload,
-  FirmwareRbacUrlsInfo
+  FirmwareRbacUrlsInfo,
+  CurrentVersionsV1002,
+  LatestFirmwareVersion1002,
+  FirmwareSwitchVenueV1002
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -245,7 +248,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchLatestFirmwareListV1002: build.query<FirmwareVersion[], RequestPayload>({
+    getSwitchLatestFirmwareListV1002: build.query<LatestFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList, params, v1_2Header)
@@ -267,7 +270,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
 
-    getSwitchDefaultFirmwareListV1002: build.query<FirmwareVersion[], RequestPayload>({
+    getSwitchDefaultFirmwareListV1002: build.query<LatestFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList, params, v1_2Header)
@@ -286,7 +289,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchVenueVersionListV1002: build.query<TableResult<FirmwareSwitchVenue>, RequestPayload>({
+    // eslint-disable-next-line max-len
+    getSwitchVenueVersionListV1002: build.query<TableResult<FirmwareSwitchVenueV1002>, RequestPayload>({
       query: ({ params, payload }) => {
         const headers = v1_2Header
         // eslint-disable-next-line max-len
@@ -404,7 +408,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchCurrentVersionsV1002: build.query<CurrentVersions, RequestPayload>({
+    getSwitchCurrentVersionsV1002: build.query<CurrentVersionsV1002, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           FirmwareRbacUrlsInfo.getSwitchCurrentVersions, params, v1_2Header)

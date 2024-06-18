@@ -6,57 +6,50 @@ import {
   useGetSwitchDefaultFirmwareListV1002Query,
   useGetSwitchLatestFirmwareListV1002Query
 } from '@acx-ui/rc/services'
-import { FirmwareCategory } from '@acx-ui/rc/utils'
+import { FirmwareCategory, SwitchFirmwareModelGroup } from '@acx-ui/rc/utils'
 
-import { getReleaseFirmware }   from '../../FirmwareUtils'
 import { SwitchFirmwareBanner } from '../../SwitchFirmwareBanner'
+
 
 export const VersionBanner = () => {
   const params = useParams()
 
   const { $t } = useIntl()
-  const { data: latestReleaseVersions } = useGetSwitchLatestFirmwareListV1002Query({ params })
-  const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
+  const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+    [SwitchFirmwareModelGroup.ICX71]: $t({ defaultMessage: 'For ICX Models (7150)' }),
+    [SwitchFirmwareModelGroup.ICX7X]: $t({ defaultMessage: 'For ICX Models (7550-7850)' }),
+    [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: 'For ICX Models (8200)' })
+  }
+
+  const { data: latestVersions } = useGetSwitchLatestFirmwareListV1002Query({ params })
+  const { data: recommendedVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
-  const versions = getReleaseFirmware(latestReleaseVersions)
-  const firmware = versions.filter(v => v.id.startsWith('090'))[0]
-  const rodanFirmware = versions.filter(v => v.id.startsWith('100'))[0]
-
-  const recommendedVersions = getReleaseFirmware(defaultReleaseVersions)
-  const recommendedFirmware = recommendedVersions.filter(v => v.id.startsWith('090'))[0]
-  const recommendedRodanFirmware = recommendedVersions.filter(v => v.id.startsWith('100'))[0]
-
-  if (!firmware && !rodanFirmware) return null
+  if(!latestVersions && !recommendedVersions) return false
 
   const versionInfo = []
 
-  if(rodanFirmware) {
-    versionInfo.push({
-      label: $t({ defaultMessage: 'For ICX Models (8200)' }),
-      firmware: {
-        version: parseSwitchVersion(rodanFirmware?.name),
-        category: FirmwareCategory.LATEST,
-        releaseDate: rodanFirmware?.createdDate,
-        recommendedVersion: parseSwitchVersion(recommendedRodanFirmware?.name),
-        recommendedCategory: FirmwareCategory.RECOMMENDED,
-        recommendedDate: recommendedRodanFirmware?.createdDate
-      }
-    })
-  }
+  for (const key in SwitchFirmwareModelGroup) {
+    const modelGroupValue = SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
+    const latestVersion = latestVersions?.filter(
+      v => v.modelGroup === modelGroupValue)[0]
+    const recommendedVersion = recommendedVersions?.filter(
+      v => v.modelGroup === modelGroupValue)[0]
 
-  if(firmware) {
-    versionInfo.push({
-      label: $t({ defaultMessage: 'For ICX Models (7150-7850)' }),
-      firmware: {
-        version: parseSwitchVersion(firmware?.name),
-        category: FirmwareCategory.LATEST,
-        releaseDate: firmware?.createdDate,
-        recommendedVersion: parseSwitchVersion(recommendedFirmware?.name),
-        recommendedCategory: FirmwareCategory.RECOMMENDED,
-        recommendedDate: recommendedFirmware?.createdDate
-      }
-    })
+
+    if (latestVersion) {
+      versionInfo.push({
+        label: modelGroupDisplayText[modelGroupValue],
+        firmware: {
+          version: parseSwitchVersion(latestVersion.versions[0]?.name),
+          category: FirmwareCategory.LATEST,
+          releaseDate: latestVersion.versions[0]?.createdDate,
+          recommendedVersion: parseSwitchVersion(recommendedVersion?.versions[0]?.name || ''),
+          recommendedCategory: FirmwareCategory.RECOMMENDED,
+          recommendedDate: recommendedVersion?.versions[0]?.createdDate
+        }
+      })
+    }
   }
 
   return (

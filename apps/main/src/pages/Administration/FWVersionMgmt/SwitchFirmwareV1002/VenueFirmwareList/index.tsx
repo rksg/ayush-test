@@ -5,12 +5,11 @@ import * as _                  from 'lodash'
 import { useIntl }             from 'react-intl'
 
 import {
-  ColumnType,
   Table,
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
+import { useSwitchFirmwareUtils }          from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery, //TODO
   useUpdateSwitchUpgradePreferencesMutation, //TODO
@@ -22,13 +21,13 @@ import {
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
-  FirmwareSwitchVenue,
   FirmwareVersion,
-  TableQuery,
   sortProp,
   defaultSort,
   usePollingTableQuery,
-  SwitchFirmwareStatusType
+  SwitchFirmwareStatusType,
+  SwitchFirmwareModelGroup,
+  FirmwareSwitchVenueV1002
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
@@ -55,41 +54,75 @@ export const useDefaultVenuePayload = (): RequestPayload => {
   }
 }
 
-type VenueTableProps = {
-  tableQuery: TableQuery<FirmwareSwitchVenue, RequestPayload<unknown>, unknown>,
-  searchable?: boolean
-  filterables?: { [key: string]: ColumnType['filterable'] }
-}
-
-export const VenueFirmwareTable = (
-  { tableQuery, filterables }: VenueTableProps) => {
+export function VenueFirmwareList () {
+  const venuePayload = useDefaultVenuePayload()
+  const { parseSwitchVersion } = useSwitchFirmwareUtils()
   const { $t } = useIntl()
+
+  const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+    [SwitchFirmwareModelGroup.ICX71]: $t({ defaultMessage: '(7150)' }),
+    [SwitchFirmwareModelGroup.ICX7X]: $t({ defaultMessage: '(7550-7850)' }),
+    [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: '(8200)' })
+  }
+
+  const tableQuery = usePollingTableQuery<FirmwareSwitchVenueV1002>({
+    useQuery: useGetSwitchVenueVersionListV1002Query,
+    defaultPayload: venuePayload,
+    search: {
+      searchTargetFields: venuePayload.searchTargetFields as string[]
+    }
+  })
+
+  const { versionFilterOptions } = useGetSwitchCurrentVersionsV1002Query({
+    params: useParams()
+  }, {
+    selectFromResult ({ data }) {
+
+
+      const filterOptions = []
+
+      for (const key in SwitchFirmwareModelGroup) {
+        const modelGroupValue =
+          SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
+        const versionGroup = data?.currentVersions?.filter(
+          (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
+
+        if (versionGroup) {
+          filterOptions.push({
+            // eslint-disable-next-line max-len
+            label: `${$t({ defaultMessage: 'ICX Models' })} ${modelGroupDisplayText[modelGroupValue]}`,
+            options: versionGroup.versions.map(
+              (v) => ({ value: v, label: parseSwitchVersion(v) }))
+          })
+        }
+      }
+
+      return { versionFilterOptions: filterOptions }
+    }
+  })
+
   const intl = useIntl()
   const params = useParams()
   const {
-    getSwitchNextScheduleTplTooltip,
-    getSwitchFirmwareList
+    getSwitchNextScheduleTplTooltip
   } = useSwitchFirmwareUtils()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
   const [updateStatusDrawerVisible, setUpdateStatusDrawerVisible] = useState(false)
   const [clickedRowData, setClickedRowData] =
-    useState<FirmwareSwitchVenue>({} as FirmwareSwitchVenue)
+    useState<FirmwareSwitchVenueV1002>({} as FirmwareSwitchVenueV1002)
   const [switchScheduleDrawerVisible, setSwitchScheduleDrawerVisible] = useState(false)
 
   const [wizardType, setWizardType] =
     useState<SwitchFirmwareWizardType>(SwitchFirmwareWizardType.update)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedRowKeys, setSelectedRowKeys] = useState([])
-  const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenue[]>([])
+  const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenueV1002[]>([])
 
   const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
     params,
     enableRbac: true
   })
-
 
   const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
   const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
@@ -113,7 +146,7 @@ export const VenueFirmwareTable = (
       console.log(error) // eslint-disable-line no-console
     }
   }
-  const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
+  const columns: TableProps<FirmwareSwitchVenueV1002>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueName' ,
@@ -131,25 +164,26 @@ export const VenueFirmwareTable = (
       dataIndex: 'version',
       sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: true,
-      fitlerCustomOptions: [{
-        label: 'Group 1',
-        options: [
-          { label: 'option 1', value: 1 },
-          { label: 'option 2', value: 2 }
-        ]
-      },{
-        label: 'Group 2',
-        options: [
-          { label: 'option 3', value: 3 },
-          { label: 'option 4', value: 4 },
-          { label: 'option 5', value: 5 }
-        ]
-      }],//filterables ? filterables['version'] : false,
+      fitlerCustomOptions: versionFilterOptions || [],
       filterMultiple: false,
       filterKey: 'includeExpired',
       render: function (_, row) {
-        let versionList = getSwitchFirmwareList(row)
-        return versionList.length > 0 ? versionList.join(', ') : noDataDisplay
+
+        let versionValue = ''
+
+        for (const key in SwitchFirmwareModelGroup) {
+          const modelGroupValue =
+            SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
+          const versionGroup = row?.versions?.filter(
+            (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
+
+          if (versionGroup) {
+            versionValue += modelGroupDisplayText[modelGroupValue] +
+              parseSwitchVersion(versionGroup.version) + ';'
+          }
+        }
+
+        return versionValue || noDataDisplay
       }
     },
     {
@@ -169,8 +203,12 @@ export const VenueFirmwareTable = (
             $t({ defaultMessage: 'Update failed.' })
         }
 
-        if (_.isEmpty(row.status) || row.status === SwitchFirmwareStatusType.NONE
-          || _.isEmpty(switchFirmwareStatusTextMapping[row.status])) {
+        const witchFirmwareStatusValue =
+        SwitchFirmwareStatusType[row.status as keyof typeof SwitchFirmwareStatusType]
+
+        if (_.isEmpty(witchFirmwareStatusValue)
+          || witchFirmwareStatusValue === SwitchFirmwareStatusType.NONE
+          || _.isEmpty(witchFirmwareStatusValue)) {
           return noDataDisplay
         }
 
@@ -240,7 +278,7 @@ export const VenueFirmwareTable = (
     return filterVersions?.length > 0
   }
 
-  const rowActions: TableProps<FirmwareSwitchVenue>['rowActions'] = [{
+  const rowActions: TableProps<FirmwareSwitchVenueV1002>['rowActions'] = [{
     label: $t({ defaultMessage: 'Update Now' }),
     scopeKey: [SwitchScopes.UPDATE],
     visible: hasAvailableSwitchFirmware(),
@@ -299,7 +337,7 @@ export const VenueFirmwareTable = (
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
@@ -309,7 +347,7 @@ export const VenueFirmwareTable = (
       <SwitchUpgradeWizard
         wizardType={wizardType}
         visible={updateNowWizardVisible}
-        data={selectedVenueList as FirmwareSwitchVenue[]}
+        data={selectedVenueList as FirmwareSwitchVenueV1002[]}
         setVisible={setUpdateNowWizardVisible}
         onSubmit={() => { }} />
 
@@ -331,43 +369,5 @@ export const VenueFirmwareTable = (
         setVisible={setSwitchScheduleDrawerVisible}
         data={clickedRowData} />
     </Loader>
-  )
-}
-
-export function VenueFirmwareList () {
-  const venuePayload = useDefaultVenuePayload()
-  const { parseSwitchVersion } = useSwitchFirmwareUtils()
-
-  const tableQuery = usePollingTableQuery<FirmwareSwitchVenue>({
-    useQuery: useGetSwitchVenueVersionListV1002Query,
-    defaultPayload: venuePayload,
-    search: {
-      searchTargetFields: venuePayload.searchTargetFields as string[]
-    }
-  })
-
-  const { versionFilterOptions } = useGetSwitchCurrentVersionsV1002Query({
-    params: useParams()
-  }, {
-    selectFromResult ({ data }) {
-      let versionList = data?.currentVersions
-      if (data?.currentVersionsAboveTen && versionList) {
-        versionList = versionList.concat(data?.currentVersionsAboveTen)
-      }
-
-      return {
-        // eslint-disable-next-line max-len
-        versionFilterOptions: versionList?.map(v => ({ key: v, value: parseSwitchVersion(v) })) || true
-      }
-    }
-  })
-
-  return (
-    <VenueFirmwareTable tableQuery={tableQuery}
-      searchable={true}
-      filterables={{
-        version: versionFilterOptions
-      }}
-    />
   )
 }
