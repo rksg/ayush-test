@@ -1,3 +1,5 @@
+import 'reactflow/dist/style.css' // Very important css must be imported!
+
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
