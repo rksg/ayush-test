@@ -12,6 +12,8 @@ import {
 } from '@acx-ui/rc/services'
 import { Workflow } from '@acx-ui/rc/utils'
 
+import WorkflowPanel from '../../../Workflow/WorkflowPanel'
+
 
 export function WorkflowDetailOverview () {
   const { $t } = useIntl()
@@ -73,7 +75,7 @@ export function WorkflowDetailOverview () {
           isFetching={workflowQuery.isFetching}
         />
       </Space>
-      <div></div>
+      <WorkflowPanel workflowId={policyId!} />
     </>
   )
 }

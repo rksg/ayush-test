@@ -1,14 +1,14 @@
 import { ActionType } from './workflowAction'
 
-export interface Workflow {
-  id: string,
-  name: string,
-  description: string,
-  publishedState: string
-  publishedDate?: string,
-
-  allowedIps: string[]
-}
+// export interface Workflow {
+//   id: string,
+//   name: string,
+//   description: string,
+//   publishedState: string
+//   publishedDate?: string,
+//
+//   allowedIps: string[]
+// }
 
 export type WorkflowStep = Step & SplitStep
 

@@ -310,7 +310,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 }
 
 export default function WorkflowPanel (props: WorkflowPanelProps) {
-  const { width = '80vw', height = '80vh' } = props
+  const { width = '60vw', height = '60vh' } = props
   return (
     <Card>
       <ReactFlowProvider>
