@@ -14,7 +14,7 @@ export interface VlanPortsType {
   vlanList: Vlan[]
   isSwitchLevel?: boolean
   switchFamilyModel?: string
-  portSlotsData?: SwitchSlot[]
+  portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
 }
 const VlanPortsContext = createContext({} as VlanPortsType)

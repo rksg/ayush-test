@@ -120,9 +120,8 @@ export const EdgeDetailsPageHeader = () => {
       items={
         menuConfig.filter(item =>
           item.showupstatus?.includes(status) && hasPermission({ scopes: item.scopeKey })
-        ).map(item => {
-          delete item.showupstatus
-          return item
+        ).map(({ showupstatus, scopeKey, ...itemFields }) => {
+          return { ...itemFields }
         })
       }
     />
@@ -159,7 +158,7 @@ export const EdgeDetailsPageHeader = () => {
         />,
         ...filterByAccess([
           <Dropdown
-            scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
+            // scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
             overlay={menu}>{()=>
               <Button>
                 <Space>

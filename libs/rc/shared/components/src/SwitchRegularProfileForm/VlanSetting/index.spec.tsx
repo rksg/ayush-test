@@ -164,10 +164,10 @@ describe('Wired - VlanSetting', () => {
     const dialog = await screen.findByTestId('vlanSettingModal')
     await userEvent.click(await within(dialog).findByText('Untagged Ports'))
 
-    await userEvent.click(await within(dialog).findByTestId('untagged_module1_1'))
+    await userEvent.click(await within(dialog).findByTestId('untagged_module1_1_2'))
     await userEvent.click(await within(dialog).findByText('Tagged Ports'))
 
-    await userEvent.click(await within(dialog).findByTestId('tagged_module1_6'))
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_1_7'))
     await userEvent.click(await within(dialog).findByRole('button', { name: 'Apply' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Save' }))
   })

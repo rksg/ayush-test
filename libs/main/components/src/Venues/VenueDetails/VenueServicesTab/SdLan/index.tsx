@@ -1,8 +1,9 @@
 import { Col, Row, Space, Typography } from 'antd'
 import { useIntl }                     from 'react-intl'
 
-import { SummaryCard }            from '@acx-ui/components'
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { SummaryCard }           from '@acx-ui/components'
+import { Features }              from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady } from '@acx-ui/rc/components'
 import {
   ServiceOperation,
   ServiceType,
@@ -81,7 +82,7 @@ const EdgeSdLan = ({ data }: { data: EdgeSdLanViewData }) => {
 }
 
 const EdgeSdLanContainer = (props: EdgeSdLanServiceProps) => {
-  const isEdgeSdLanHaEnabled = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaEnabled = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   return isEdgeSdLanHaEnabled
     ? <EdgeSdLanP2 data={props.data as EdgeSdLanViewDataP2}/>
