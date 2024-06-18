@@ -81,7 +81,8 @@ jest.mock('react-router-dom', () => ({
 
 const excludedFlags = [
   Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE,
-  Features.AP_FW_MGMT_UPGRADE_BY_MODEL
+  Features.AP_FW_MGMT_UPGRADE_BY_MODEL,
+  Features.WIFI_RBAC_API
 ]
 describe('ApEdit', () => {
   beforeEach(() => {
@@ -129,6 +130,10 @@ describe('ApEdit', () => {
       rest.get(
         CommonUrlsInfo.getVenueApEnhancedKey.url,
         (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_req, res, ctx) => res(ctx.json([]))
       )
     )
   })

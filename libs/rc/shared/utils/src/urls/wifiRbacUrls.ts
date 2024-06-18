@@ -186,23 +186,25 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
-  /*
   getImportResult: {
     method: 'get',
-    url: '/venues/aps/importResults',
+    // url: '/venues/aps/importResults',
+    url: '/venues/:venueId/aps/importResults',
     newApi: true
   },
+  /*
+  // no longer supported after v1, use getApGroupsList as replacement
   getVenueDefaultApGroup: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
     newApi: true
-  },
+  },*/
   getApGroupsList: {
     method: 'post',
-    url: '/apGroups/query',
+    // url: '/apGroups/query',
+    url: '/venues/apGroups/query',
     newApi: true
   },
-  */
   addApGroup: {
     method: 'post',
     url: '/venues/:venueId/apGroups',
@@ -267,12 +269,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/aps/?resetFirmware=true',
     newApi: true
-  },
+  },*/
   downloadApLog: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/logs',
+    // url: '/venues/aps/:serialNumber/logs',
+    url: '/venues/:venueId/aps/:serialNumber/logs',
     newApi: true
-  },*/
+  },
   rebootAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',

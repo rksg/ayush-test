@@ -108,6 +108,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
+  // deprecated:  use getApGroupsList as replacement
   getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
@@ -144,12 +145,13 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/venue/:venueId',
     newApi: true
   },
+  */
   getVenue: {
     method: 'get',
     url: '/venues/:venueId',
-    oldUrl: '/api/tenant/:tenantId/venue/:venueId',
     newApi: true
   },
+  /*
   deleteVenue: {
     method: 'delete',
     url: '/venues/:venueId',
@@ -476,12 +478,14 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/apGroups/:apGroupId/networks/query',
     newApi: true
   },
+  */
   getExternalProviders: {
     method: 'get',
-    url: '/networks/wisprProviders',
-    oldUrl: '/api/tenant/:tenantId/wifi/network/external-providers',
+    // url: '/networks/wisprProviders',
+    url: '/wifiNetworks/wisprProviders',
     newApi: true
   },
+  /*
   fetchBotAuth: {
     method: 'post',
     url: '/tenants/chatbot/idtoken',

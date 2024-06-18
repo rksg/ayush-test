@@ -235,8 +235,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenue: build.query<VenueExtended, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getVenue, params, apiCustomHeader)
         return{
           ...req
         }
@@ -359,11 +363,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }, { type: 'Venue', id: 'VENUE_MESH_SETTINGS' }]
     }),
     updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueCellularSettings, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.updateVenueCellularSettings, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -418,9 +426,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
 
-        const payloadData = arg.payload as { venueId: string, networkId: string, isTemplate: boolean }[]
+        const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
           venueId: item.venueId,
           networkId: item.networkId
@@ -443,7 +451,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
               ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
-              : WifiUrlsInfo.getApGroupsList, arg.params),
+              : (enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo).getApGroupsList, params),
             body: apGroupPayload
           }
 
@@ -478,7 +486,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
 
         const networkVenuesApGroupInfo = {
-          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, params, apiV2CustomHeader),
           body: JSON.stringify({ filters })
         }
 
@@ -791,16 +799,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getAvailableLteBands: build.query<AvailableLteBands[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getAvailableLteBands, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getAvailableLteBands, params, apiCustomHeader)
         return{
           ...req
         }
       }
     }),
     getVenueApModelCellular: build.query<VenueApModelCellular, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueApModelCellular, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getVenueApModelCellular, params, apiCustomHeader)
         return{
           ...req
         }

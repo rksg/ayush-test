@@ -37,10 +37,10 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData, afcEnabled, model, apId } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   //eslint-disable-next-line
-  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber: apId } })
+  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
 
   const apAction = useApActions()
   const { activeTab } = useParams()
@@ -68,7 +68,8 @@ function ApPageHeader () {
     if (e.key === 'delete') {
       actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
     } else {
-      actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
+      // eslint-disable-next-line max-len
+      (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
     }
   }
 
