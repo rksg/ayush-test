@@ -6,7 +6,7 @@ import _                                 from 'lodash'
 import { useIntl }                       from 'react-intl'
 
 import { Drawer, Select, StepsForm, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Features }                                   from '@acx-ui/feature-toggle'
 import {
   ClusterNetworkSettings,
   EdgeIpModeEnum,
@@ -26,6 +26,7 @@ import {
 import { getEnabledCorePortInfo }           from '../EdgeFormItem/EdgePortsGeneralBase/utils'
 import { EdgePortCommonForm }               from '../EdgeFormItem/PortCommonForm'
 import { useGetEdgeSdLanByEdgeOrClusterId } from '../EdgeSdLan/useEdgeSdLanActions'
+import { useIsEdgeFeatureReady }            from '../useEdgeActions'
 
 interface LagDrawerProps {
   clusterId: string
@@ -61,7 +62,7 @@ export const LagDrawer = (props: LagDrawerProps) => {
   } = props
   const isEditMode = data?.id !== undefined
   const { $t } = useIntl()
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const portTypeOptions = getEdgePortTypeOptions($t)
     .filter(item => item.value !== EdgePortTypeEnum.UNCONFIGURED)
   const [form] = Form.useForm()

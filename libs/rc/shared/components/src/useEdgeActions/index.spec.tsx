@@ -1,18 +1,51 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { EdgeUrlsInfo }                                    from '@acx-ui/rc/utils'
 import { Provider }                                        from '@acx-ui/store'
 import { mockServer, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import { mockedEdges } from './__tests__/fixtures'
 
-import { useEdgeActions } from '.'
+import { useEdgeActions, useIsEdgeFeatureReady, useIsEdgeReady } from '.'
 
 const mockedDeleteApi = jest.fn()
 const mockedSendOtpApi = jest.fn()
 const mockedRebootApi = jest.fn()
 const mockedResetApi = jest.fn()
+
+describe('Edge enabled evaluation', () => {
+  describe('useIsEdgeReady', () => {
+    it('should return true', async () => {
+      jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff === Features.EDGES_TOGGLE)
+      expect(useIsEdgeReady()).toBe(true)
+    })
+
+    it('should return false when edge toggle not ON', async () => {
+      jest.mocked(useIsSplitOn).mockImplementationOnce(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+      expect(useIsEdgeReady()).toBe(false)
+    })
+  })
+
+  describe('useIsEdgeFeatureReady', () => {
+    it('should return true', async () => {
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGE_HA_TOGGLE)
+      expect(useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)).toBe(true)
+    })
+
+    it('should return false when edge toggle not ON', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+      expect(useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)).toBe(false)
+    })
+
+    it('should return false when target flag not ON', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.EDGES_SD_LAN_HA_TOGGLE)
+      expect(useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)).toBe(false)
+    })
+  })
+})
 
 describe('useEdgeActions', () => {
 

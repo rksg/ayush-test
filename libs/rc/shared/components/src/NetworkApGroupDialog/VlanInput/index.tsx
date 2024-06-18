@@ -16,7 +16,7 @@ import {
 import {
   getVlanString,
   NetworkApGroup,
-  NetworkSaveData, useConfigTemplate, VlanPool,
+  NetworkSaveData, VlanPool,
   VlanType
 } from '@acx-ui/rc/utils'
 
@@ -32,7 +32,6 @@ export function VlanInput ({ apgroup, wlan, vlanPoolSelectOptions, onChange }: {
 
   const [isEditMode, setEditMode] = useState(false)
   const [isDirty, setDirty] = useState(false)
-  const { isTemplate } = useConfigTemplate()
 
   const apGroupVlanType = apgroup?.vlanId ? VlanType.VLAN : VlanType.Pool
   const apGroupVlanId = apgroup?.vlanId || wlan?.vlanId

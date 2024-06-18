@@ -105,9 +105,6 @@ describe('AP Antenna Type Section', () => {
         (_, res, ctx) => res(ctx.json(mockApAntennaType))),
       rest.put(
         WifiUrlsInfo.updateApAntennaTypeSettings.url,
-        (_, res, ctx) => res(ctx.json({}))),
-      rest.delete(
-        WifiUrlsInfo.resetApAntennaTypeSettings.url,
         (_, res, ctx) => res(ctx.json({})))
     )
   })
