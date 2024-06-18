@@ -24,10 +24,12 @@ import {
   getSelectPolicyRoutePath,
   PolicyType,
   PolicyOperation,
-  policyTypeLabelMapping, policyTypeDescMapping
+  policyTypeLabelMapping, policyTypeDescMapping,
+  ServicePolicyCardData,
+  isServicePolicyCardEnabled,
+  servicePolicyCardDataToScopeKeys
 } from '@acx-ui/rc/utils'
 import {
-  Path,
   TenantLink,
   useNavigate,
   useParams,
@@ -35,14 +37,6 @@ import {
 } from '@acx-ui/react-router-dom'
 import { EdgeScopes, WifiScopes }   from '@acx-ui/types'
 import { filterByAccess, hasScope } from '@acx-ui/user'
-
-interface CardDataProps {
-  type: PolicyType
-  categories: RadioCardCategory[]
-  totalCount?: number
-  listViewPath: Path
-  disabled?: boolean
-}
 
 const defaultPayload = {
   fields: ['id']
@@ -52,7 +46,9 @@ export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
-  const policies: CardDataProps[] = useCardData()
+  const policies: ServicePolicyCardData<PolicyType>[] = useCardData()
+
+  const allPoliciesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(policies, 'create')
 
   return (
     <>
@@ -60,13 +56,13 @@ export default function MyPolicies () {
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
-          <TenantLink to={getSelectPolicyRoutePath(true)}>
+          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={allPoliciesScopeKeysForCreate}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
         ])}
       />
       <GridRow>
-        {policies.filter(policy => !policy.disabled).map((policy, index) => {
+        {policies.filter(p => isServicePolicyCardEnabled(p, 'read')).map((policy, index) => {
           return (
             <GridCol key={policy.type} col={{ span: 6 }}>
               <RadioCard
@@ -82,7 +78,7 @@ export default function MyPolicies () {
                 description={$t(policyTypeDescMapping[policy.type])}
                 categories={policy.categories}
                 onClick={() => {
-                  navigate(policy.listViewPath)
+                  policy.listViewPath && navigate(policy.listViewPath)
                 }}
               />
             </GridCol>
@@ -93,7 +89,7 @@ export default function MyPolicies () {
   )
 }
 
-function useCardData (): CardDataProps[] {
+function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const params = useParams()
   const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
   const isEdgeEnabled = useIsEdgeReady()
