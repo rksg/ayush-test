@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { CheckOutlined } from '@ant-design/icons'
 import { useIntl }       from 'react-intl'
 
-import { Card, Table, TableProps }  from '@acx-ui/components'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
+import { Card, Loader, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useVenueSyslogPolicyQuery ,
   useGetSyslogPolicyQuery,
@@ -74,9 +74,12 @@ const SyslogVenueDetail = () => {
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenueTemplateForSyslogPolicyQuery : useVenueSyslogPolicyQuery,
-    defaultPayload,
+    defaultPayload: {
+      ...defaultPayload,
+      filters: { id: (syslogPolicy?.venues ?? []).map(v => v.id) }
+    },
     option: {
-      skip: !syslogPolicy || (syslogPolicy.venues ?? []).length === 0
+      skip: (syslogPolicy?.venues ?? []).length === 0
     }
   })
 
@@ -86,32 +89,27 @@ const SyslogVenueDetail = () => {
     tableQuery.setPayload({
       ...tableQuery.payload,
       filters: {
-        id: syslogPolicy.venues?.map((venue: SyslogVenue) => venue.id)
+        id: syslogPolicy.venues!.map((venue: SyslogVenue) => venue.id)
       }
     })
   },[syslogPolicy])
-
-  const basicData = tableQuery.data?.data
-  let detailData = [] as VenueSyslogPolicyType[] | undefined
-  if (syslogPolicy?.venues && basicData) {
-    const venueIdList = syslogPolicy.venues?.map(venue => venue.id) ?? ['UNDEFINED']
-    detailData = basicData?.filter(policy => venueIdList.includes(policy.id as string))
-  }
 
   return (
     <Card title={
       $t(
         { defaultMessage: 'Instance ({count})' },
-        { count: detailData ? detailData.length : '' }
+        { count: tableQuery.data?.totalCount }
       )
     }>
-      <Table
-        columns={basicColumns}
-        dataSource={detailData}
-        pagination={tableQuery.pagination}
-        onChange={tableQuery.handleTableChange}
-        rowKey='id'
-      />
+      <Loader states={[tableQuery]}>
+        <Table
+          columns={basicColumns}
+          dataSource={tableQuery.data?.data}
+          pagination={tableQuery.pagination}
+          onChange={tableQuery.handleTableChange}
+          rowKey='id'
+        />
+      </Loader>
     </Card>
   )
 }
