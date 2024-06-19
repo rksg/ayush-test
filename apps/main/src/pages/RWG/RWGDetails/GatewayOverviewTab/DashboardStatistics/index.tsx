@@ -26,14 +26,9 @@ export function DashboardStatistics () {
   const { $t } = useIntl()
   const { tenantId, gatewayId, venueId, clusterNodeId } = useParams()
   const [visible, setVisible] = useState(false)
-  const rwgAlarmPayload = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'UpdateTimeDesc'
-  }
+
   const { data: alarm, isLoading: isAlarmLoading, isFetching: isAlarmFetching } =
     useGetGatewayAlarmsQuery({ params: { tenantId, gatewayId, venueId }, payload: {
-      ...rwgAlarmPayload,
       ...(clusterNodeId ? {
         filterBy: [{ key: 'CLUSTER_NODE_ID_IS', value: clusterNodeId }] } : {})
     } }, { skip: !gatewayId })
@@ -45,7 +40,7 @@ export function DashboardStatistics () {
 
 
   const alarmData: DonutChartData[] = [
-    { value: alarm?.total || 0,
+    { value: alarm?.totalCount || 0,
       name: 'Total',
       color: cssStr('--acx-accents-orange-30') }
   ]
