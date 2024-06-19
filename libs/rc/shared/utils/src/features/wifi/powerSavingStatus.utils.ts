@@ -1,4 +1,4 @@
-import { ApDeviceStatusEnum, PowerSavingStatusEnum, TopologyDeviceStatus } from "../.."
+import { ApDeviceStatusEnum, PowerSavingStatusEnum, TopologyDeviceStatus } from '../..'
 
 export function getPowerSavingStatusEnabledTopologyStatus (
   deviceStatus: TopologyDeviceStatus,
