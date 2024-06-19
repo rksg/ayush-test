@@ -29,6 +29,14 @@ describe('Config Template Overrides utils', () => {
 
       expect(result).toEqual(expectedOutput)
     })
+
+    it('should handle undefined entity', () => {
+      const expectedOutput = { overrides: [] }
+
+      const result = transformOverrideValues()
+
+      expect(result).toEqual(expectedOutput)
+    })
   })
 
   describe('useConfigTemplateOverride', () => {
