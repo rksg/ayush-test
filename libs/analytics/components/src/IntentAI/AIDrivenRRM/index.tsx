@@ -19,7 +19,12 @@ export function IntentAIDrivenRRM () {
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'AI-Driven RRM' })}
+        title={<UI.Header>
+          <UI.AIDrivenRRMIcon />
+          <UI.HeaderTitle>
+            {$t({ defaultMessage: 'AI-Driven RRM' })}
+          </UI.HeaderTitle>
+        </UI.Header>}
         subTitle={
           <>
             {/* eslint-disable-next-line max-len */}
@@ -28,10 +33,6 @@ export function IntentAIDrivenRRM () {
         }
       />
       <StepsForm
-        // onCancel={}
-        // onFinish={async () => {
-        //   showToast({ type: 'success', content: 'Submitted' })
-        // }}
         buttonLabel={{
           submit: 'Apply'
         }}
@@ -76,7 +77,7 @@ export function IntentAIDrivenRRM () {
                 </UI.Content>
               </UI.Wrapper>
             </Col>
-            <Col span={6} offset={3}>
+            <Col span={7} offset={2}>
               <UI.Wrapper>
                 <UI.SideNote>
                   <UI.SideNoteHeader>
@@ -98,9 +99,11 @@ export function IntentAIDrivenRRM () {
                   </UI.SideNoteSubtitle>
                   <UI.SideNoteContent>
                     <UI.Link href={demoLink} target='_blank'>
+                      <UI.LinkVideoIcon />
                       {$t(defineMessage({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }))}
                     </UI.Link>
                     <UI.Link href={guideLink} target='_blank'>
+                      <UI.LinkDocumentIcon />
                       {$t(defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }))}
                     </UI.Link>
                   </UI.SideNoteContent>
@@ -122,7 +125,7 @@ export function IntentAIDrivenRRM () {
                 </UI.Content>
               </UI.Wrapper>
             </Col>
-            <Col span={6} offset={3}>
+            <Col span={7} offset={2}>
               <UI.Wrapper>
                 <UI.SideNote>
                   <UI.SideNoteHeader>
@@ -154,7 +157,7 @@ export function IntentAIDrivenRRM () {
                 </UI.Content>
               </UI.Wrapper>
             </Col>
-            <Col span={6} offset={3}>
+            <Col span={7} offset={2}>
               <UI.Wrapper>
                 <UI.SideNote>
                   <UI.SideNoteHeader>

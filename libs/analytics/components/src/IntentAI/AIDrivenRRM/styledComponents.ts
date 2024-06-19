@@ -1,7 +1,8 @@
 import { Typography } from 'antd'
 import styled         from 'styled-components/macro'
 
-import { Card } from '@acx-ui/components'
+import { Card }                                 from '@acx-ui/components'
+import { AIDrivenRRM, LinkDocument, LinkVideo } from '@acx-ui/icons'
 
 export const Wrapper = styled.div`
   padding-top: 35px;
@@ -73,4 +74,27 @@ export const Bold = styled.b`
 
 export const Link = styled.a`
   text-decoration: underline;
+`
+
+export const AIDrivenRRMIcon = styled(AIDrivenRRM)`
+  margin-right: 10px;
+  transform: scale(0.8);
+`
+
+export const LinkVideoIcon = styled(LinkVideo)`
+  margin-top: 10px;
+  margin-right: 10px;
+`
+
+export const LinkDocumentIcon = styled(LinkDocument)`
+  margin-top: 10px;
+  margin-right: 10px;
+`
+
+export const HeaderTitle = styled.div`
+  padding-top: 8px;
+`
+
+export const Header = styled.div`
+  display: flex;
 `
