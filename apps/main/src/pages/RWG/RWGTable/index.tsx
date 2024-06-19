@@ -1,13 +1,12 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                          from '@acx-ui/components'
-import { useRwgActions }                                                                                                      from '@acx-ui/rc/components'
-import { useGetVenuesQuery, useRwgListQuery }                                                                                 from '@acx-ui/rc/services'
-import { defaultSort, FILTER, getRwgStatus, RWGRow, SEARCH, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                                                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                          from '@acx-ui/user'
-import { TABLE_DEFAULT_PAGE_SIZE }                                                                                            from '@acx-ui/utils'
+import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                          from '@acx-ui/components'
+import { useRwgActions }                                                                                      from '@acx-ui/rc/components'
+import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
+import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                          from '@acx-ui/user'
 
 
 
@@ -120,18 +119,16 @@ export function RWGTable () {
   const rwgActions = useRwgActions()
 
   const rwgPayload = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'RwgHostname'
+    filters: {}
   }
-
+  const settingsId = 'rwg-table'
   const tableQuery = useTableQuery({
     useQuery: useRwgListQuery,
     defaultPayload: rwgPayload,
+    pagination: { settingsId },
     search: {
       searchTargetFields: ['name']
-    },
-    enableSelectAllPagesData: ['rwgId', 'name']
+    }
   })
 
 
@@ -180,9 +177,13 @@ export function RWGTable () {
     }
   }]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
-    tableQuery.setPayload(payload)
+  const handleTableChange: TableProps<RWGRow>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    tableQuery.setPayload({
+      ...tableQuery.payload
+    })
+    tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
 
   const rowSelection = () => {
@@ -192,7 +193,6 @@ export function RWGTable () {
       })
     }
   }
-
 
   return (
     <>
@@ -207,20 +207,16 @@ export function RWGTable () {
       <Loader states={[
         tableQuery
       ]}>
-        <Table
-          settingsId='rgw-table'
+        <Table<RWGRow>
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery?.data?.data}
-          pagination={{
-            defaultPageSize: TABLE_DEFAULT_PAGE_SIZE,
-            pageSize: tableQuery?.data?.page,
-            showSizeChanger: false,
-            showQuickJumper: false
-          }}
-          onFilterChange={handleFilterChange}
+          pagination={{ total: tableQuery?.data?.totalCount }}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='rowId'
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { ...rowSelection() }}
+          onChange={handleTableChange}
         />
       </Loader>
     </>
