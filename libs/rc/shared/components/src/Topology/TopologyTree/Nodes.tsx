@@ -4,12 +4,18 @@ import { HierarchyPointNode } from 'd3'
 import { useIntl }            from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { Tooltip }                                                            from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud, LeafSolidIcon }    from '@acx-ui/icons'
-import { DeviceTypes, NodeData, TopologyDeviceStatus, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
+import { Tooltip }                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud, LeafSolidIcon } from '@acx-ui/icons'
+import {
+  DeviceTypes,
+  NodeData,
+  TopologyDeviceStatus,
+  PowerSavingStatusEnum,
+  getPowerSavingStatusEnabledTopologyStatus
+} from '@acx-ui/rc/utils'
 
-import { getDeviceIcon, getDeviceColor, truncateLabel, getPowerSavingStatusEnabled } from '../utils'
+import { getDeviceIcon, getDeviceColor, truncateLabel } from '../utils'
 
 import { TopologyTreeContext } from './TopologyTreeContext'
 
@@ -163,7 +169,7 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   />
                 </g>
               )}
-              {isSupportPowerSavingMode && getPowerSavingStatusEnabled(
+              {isSupportPowerSavingMode && getPowerSavingStatusEnabledTopologyStatus(
                 node.data.status as TopologyDeviceStatus,
                 node.data.powerSavingStatus as PowerSavingStatusEnum) &&
                 <Tooltip

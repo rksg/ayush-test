@@ -55,7 +55,8 @@ import {
   SEARCH,
   ApCompatibility,
   ApCompatibilityResponse,
-  PowerSavingStatusEnum
+  PowerSavingStatusEnum,
+  getPowerSavingStatusEnabledApStatus
 } from '@acx-ui/rc/utils'
 import { TenantLink, useLocation, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RequestPayload, WifiScopes }                                     from '@acx-ui/types'
@@ -127,23 +128,20 @@ export const APStatus = (
   const { $t } = useIntl()
   const apStatus = transformApStatus(intl, status, APView.AP_LIST)
   const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
-  const powerSavingModeEnabled =
-    !(status === ApDeviceStatusEnum.NEVER_CONTACTED_CLOUD ||
-      status === ApDeviceStatusEnum.INITIALIZING ||
-      status === ApDeviceStatusEnum.OFFLINE) &&
-      powerSavingStatus === PowerSavingStatusEnum.POWER_SAVING
 
   return (
     <Space>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
         text={showText ? apStatus.message : ''}
       />
-      {isSupportPowerSavingMode && powerSavingModeEnabled && <Tooltip
-        title={$t({ defaultMessage: 'AI-Driven GreenFlex mode. Radio may not be broadcasting' })}
-        placement='bottom'
-      >
-        <LeafSolidIcon/>
-      </Tooltip>}
+      { isSupportPowerSavingMode &&
+        getPowerSavingStatusEnabledApStatus(status, powerSavingStatus) &&
+        <Tooltip
+          title={$t({ defaultMessage: 'AI-Driven GreenFlex mode. Radio may not be broadcasting' })}
+          placement='bottom'
+        >
+          <LeafSolidIcon/>
+        </Tooltip>}
     </Space>
   )
 }

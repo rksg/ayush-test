@@ -1,9 +1,9 @@
 import { Button }                   from 'antd'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { ApDeviceStatusEnum, APExtended,PowerSavingStatusEnum } from '@acx-ui/rc/utils'
-import { Params, TenantLink }                                   from '@acx-ui/react-router-dom'
-import { getIntl }                                              from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APExtended, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
+import { Params, TenantLink }                                    from '@acx-ui/react-router-dom'
+import { getIntl }                                               from '@acx-ui/utils'
 
 import { APStatus } from '.'
 
