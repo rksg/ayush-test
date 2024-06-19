@@ -65,11 +65,16 @@ const Svg = (props: TopologyProps) => {
       const treeContainer = document.querySelector('#treeContainer')
       const topologyGraph =
         document.getElementById('topologyGraph') as unknown as SVGGraphicsElement
+      const d3TreeMainWidth = topologyGraph?.getBBox().width
+      const containerWidth = treeContainer?.clientWidth || 0
       const containerHeight = (treeContainer?.clientHeight &&
         treeContainer?.clientHeight > topologyGraph?.getBBox().height ?
         treeContainer?.clientHeight : topologyGraph?.getBBox().height) || 0
 
-      let boundaryDx = translate[0] + dx
+
+      let boundaryDx = translate[0] + dx <= -(d3TreeMainWidth/2) + 20 ?
+        -(d3TreeMainWidth/2) + 20 : (translate[0] + dx > containerWidth + (d3TreeMainWidth/2) - 20 ?
+          containerWidth + (d3TreeMainWidth/2) - 20 : translate[0] + dx)
       let boundaryDy = translate[1] + dy >= containerHeight ?
         containerHeight : (translate[1] + dy <= -(containerHeight - 200) ?
           -(containerHeight - 200) : translate[1] + dy)
