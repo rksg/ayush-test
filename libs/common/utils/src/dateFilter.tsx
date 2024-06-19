@@ -11,7 +11,9 @@ export interface DateFilter extends DateRangeFilter {
   initiated?: number // seconds
 }
 
-export const useDateFilter = (earliestStart: Moment = moment().subtract(3, 'month')) => {
+export const useDateFilter = (
+  earliestStart: Moment = moment().subtract(3, 'months').subtract(1, 'hour')
+) => {
   const { read, write } = useEncodedParameter<DateFilter>('period')
   return useMemo(() => {
     const period = read()
