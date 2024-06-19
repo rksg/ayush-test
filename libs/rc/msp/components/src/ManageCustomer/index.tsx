@@ -24,9 +24,9 @@ import {
   StepsFormLegacyInstance,
   Subtitle
 } from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
-import { SearchOutlined }                                         from '@acx-ui/icons'
+import { useIsSplitOn, Features }    from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { SearchOutlined }            from '@acx-ui/icons'
 import {
   useAddCustomerMutation,
   useMspEcAdminListQuery,
@@ -56,7 +56,7 @@ import {
   MspEcTierEnum,
   MspEcTierPayload
 } from '@acx-ui/msp/utils'
-import { GoogleMapWithPreference, usePlacesAutocomplete } from '@acx-ui/rc/components'
+import { GoogleMapWithPreference, useIsEdgeReady, usePlacesAutocomplete } from '@acx-ui/rc/components'
 import {
   Address,
   emailRegExp,
@@ -168,11 +168,12 @@ export function ManageCustomer () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const optionalAdminFF = useIsSplitOn(Features.MSPEC_OPTIONAL_ADMIN)
-  const edgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -224,11 +225,13 @@ export function ManageCustomer () {
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
-      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcSupportQuery({
+        params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: action !== 'edit' })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {
@@ -412,7 +415,7 @@ export function ManageCustomer () {
 
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
-      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -421,7 +424,7 @@ export function ManageCustomer () {
           setEcSupport(true)
         })
     } else {
-      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -512,7 +515,8 @@ export function ManageCustomer () {
       }
 
       const result =
-      await addCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addCustomer({ params: { tenantId: tenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -622,7 +626,9 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
-      await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+      await updateCustomer({
+        params: { mspEcTenantId: mspEcTenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
 
       if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
         const patchTier: MspEcTierPayload = {
@@ -1184,7 +1190,7 @@ export function ManageCustomer () {
             <label>{intl.$t({ defaultMessage: 'Switch Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>
-          {edgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
+          {isEdgeEnabled && <UI.FieldLabel2 width='275px' style={{ marginTop: '6px' }}>
             <label>{intl.$t({ defaultMessage: 'SmartEdge Subscription' })}</label>
             <label>{intl.$t({ defaultMessage: '25 devices' })}</label>
           </UI.FieldLabel2>}
@@ -1327,7 +1333,7 @@ export function ManageCustomer () {
           >
             <Paragraph>{switchAssigned}</Paragraph>
           </Form.Item>
-          {edgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
+          {isEdgeEnabled && <Form.Item style={{ marginTop: '-22px' }}
             label={intl.$t({ defaultMessage: 'SmartEdge Subscriptions' })}
           >
             <Paragraph>25</Paragraph>

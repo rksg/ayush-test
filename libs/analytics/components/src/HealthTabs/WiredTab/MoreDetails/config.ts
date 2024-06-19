@@ -14,7 +14,7 @@ export type WidgetType =
   | 'portStorm'
   | 'cpuUsage'
 
-export type SwitchName = {
+export type Switch = {
   mac: string
   name: string
 }
@@ -24,7 +24,26 @@ export type SwitchDetails = {
   status: string
   firmware: string
   numOfPorts: number
-} & SwitchName
+} & Switch
+
+export type ImpactedClients = {
+  switchName: string,
+  switchId: string,
+  deviceName: string,
+  deviceMac: string,
+  devicePort: string,
+  devicePortMac: string,
+  devicePortType: string,
+  isRuckusAp: boolean,
+  localPortName: string,
+  metricValue: number,
+  metricName: string
+}
+
+export type ImpactedClientsResult = {
+  wiredDevicesExpStorm: ImpactedClients[],
+  wiredDevicesExpCongestion: ImpactedClients[]
+}
 
 export type TopNByCPUUsageResult = {
   cpuUtilization: number
@@ -36,18 +55,19 @@ export type TopNByDHCPFailureResult = {
 
 export type TopNByPortCongestionResult = {
   congestedPortCount: number
-} & SwitchName
+} & Switch
 
 export type TopNByStormPortCountResult = {
   stormPortCount: number
-} & SwitchName
+} & Switch
 
 export interface RequestPayload {
   filter: NodesFilter
   start: string
   end: string
-  n: number
   type: WidgetType
+  switchIds?: string[]
+  n?: number
 }
 
 export const topImpactedSwitchesLimit = 10

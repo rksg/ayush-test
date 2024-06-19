@@ -105,8 +105,8 @@ export function Hotspot20Tab () {
   const labelWidth = '250px'
 
   useEffect(() => {
-    if (data && data.hotspot20Settings && data.hotspot20Settings.connectionCapabilities) {
-      setConnectionCapabilities(data.hotspot20Settings.connectionCapabilities)
+    if (data && data.hotspot20Settings) {
+      setConnectionCapabilities(data.hotspot20Settings.connectionCapabilities ?? [])
     } else {
       setConnectionCapabilities(defaultConnectionCapabilities)
     }

@@ -19,7 +19,9 @@ import {
   SwitchModel,
   SwitchModelPortData,
   SwitchSlot,
+  StackMember,
   PortStatusMessages,
+  validateVlanName,
   validateDuplicateVlanId,
   validateVlanNameWithoutDVlans,
   Vlan
@@ -47,15 +49,16 @@ export interface VlanSettingDrawerProps {
   isProfileLevel?: boolean
   enablePortModelConfigure?: boolean
   switchFamilyModel?: string
-  portSlotsData?: SwitchSlot[]
+  portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
+  stackMember?: StackMember[]
 }
 
 export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
   const { $t } = useIntl()
   const { vlan, setVlan, visible, setVisible, editMode,
     vlansList, isProfileLevel, switchFamilyModel,
-    enablePortModelConfigure = true, portSlotsData, portsUsedBy } = props
+    enablePortModelConfigure = true, portSlotsData, portsUsedBy, stackMember } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -84,6 +87,7 @@ export function VlanSettingDrawer (props: VlanSettingDrawerProps) {
           switchFamilyModel={switchFamilyModel}
           portSlotsData={portSlotsData}
           portsUsedBy={portsUsedBy}
+          stackMember={stackMember}
         />
       }
       footer={
@@ -119,8 +123,9 @@ interface VlanSettingFormProps {
   isProfileLevel?: boolean
   switchFamilyModel?: string
   enablePortModelConfigure?: boolean
-  portSlotsData?: SwitchSlot[]
+  portSlotsData?: SwitchSlot[][]
   portsUsedBy?: PortsUsedByProps
+  stackMember?: StackMember[]
 }
 
 function VlanSettingForm (props: VlanSettingFormProps) {
@@ -135,7 +140,8 @@ function VlanSettingForm (props: VlanSettingFormProps) {
   const [hasPortsUsedByLag, setHasPortsUsedByLag] = useState(false)
 
   const { form, vlan, setVlan, vlansList, isProfileLevel, editMode,
-    switchFamilyModel, portSlotsData, enablePortModelConfigure = true, portsUsedBy } = props
+    switchFamilyModel, portSlotsData, enablePortModelConfigure = true,
+    portsUsedBy, stackMember } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
   const isSwitchLevel = !!switchFamilyModel
@@ -293,6 +299,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           validateFirst
           rules={[
             { required: true },
+            { validator: (_, value) => validateVlanName(value) },
             { validator: (_, value) => validateDuplicateVlanId(
               value, vlansList.filter(v => editMode ? v.vlanId !== vlan?.vlanId : v)
             ) }
@@ -440,6 +447,7 @@ function VlanSettingForm (props: VlanSettingFormProps) {
           switchFamilyModel={isSwitchLevelVlanEnabled ? switchFamilyModel : undefined}
           portSlotsData={portSlotsData}
           portsUsedBy={portsUsedBy}
+          stackMember={stackMember}
         />
       </>}
     </div>

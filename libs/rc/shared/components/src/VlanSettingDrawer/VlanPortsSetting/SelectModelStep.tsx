@@ -105,6 +105,13 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setModule2SelectionEnable(false)
     }
 
+    if (family === 'ICX8200') {
+      setModuleSelectionEnable(false)
+      form.setFieldValue('enableSlot2', true)
+      form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+      setModule2SelectionEnable(false)
+    }
+
     if (family === 'ICX7150' || family === 'ICX7850') {
       switch (model) {
         case '24':
