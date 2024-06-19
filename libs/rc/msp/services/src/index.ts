@@ -41,8 +41,7 @@ import {
   MspEntitlement,
   downloadFile,
   Venue,
-  CommonUrlsInfo,
-  LicenseUrlsInfo
+  CommonUrlsInfo
 } from '@acx-ui/rc/utils'
 import { baseMspApi }                          from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -442,7 +441,7 @@ export const mspApi = baseMspApi.injectEndpoints({
     mspRbacAssignmentHistory: build.query<TableResult<MspAssignmentHistory>, RequestPayload>({
       query: ({ params, payload }) => {
         const mspAssignmentHistoryReq =
-          createHttpRequest(LicenseUrlsInfo.getMspAssignmentHistory, params)
+          createHttpRequest(MspRbacUrlsInfo.getMspAssignmentHistory, params)
         return {
           ...mspAssignmentHistoryReq,
           body: payload
@@ -784,8 +783,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     deleteMspAssignment: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params, {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.deleteMspAssignment, params, {
           ...ignoreErrorModal
         })
         return {

@@ -85,9 +85,7 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   newApi: true
   // },
   getMspAssignmentHistory: {
-    // method: 'get',
     method: 'post',
-    // url: '/tenants/:tenantId/entitlements/assignments/query',
     url: '/tenants/self/entitlements/assignments/query',
     oldUrl: '/assignments',
     newApi: true
@@ -99,18 +97,17 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   updateMspAssignment: {
-    // method: 'PATCH',
-    method: 'put',
+    method: 'PATCH',
     url: '/tenants/self/entitlements/assignments/:assignmentId',
     oldUrl: '/assignments',
     newApi: true
   },
-  // deleteMspAssignment: {
-  //   method: 'delete',
-  //   url: '/assignments',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-  //   newApi: true
-  // },
+  deleteMspAssignment: {
+    method: 'delete',
+    url: '/tenants/self/entitlements/assignments/:assignmentId',
+    oldUrl: '/assignments',
+    newApi: true
+  },
   resendEcInvitation: {
     // method: 'post',
     method: 'get',
