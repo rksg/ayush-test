@@ -21,32 +21,32 @@ export function useWorkflowStepActions () {
   const [ createChildStepMutation ] = useCreateWorkflowChildStepMutation()
 
   const createStepCallback = async (
-    serviceId: string,
+    policyId: string,
     actionType: ActionType,
     actionId: string,
     priorNodeId?: string
   ) => {
     return priorNodeId
       ? await createChildStepMutation({
-        params: { serviceId, stepId: priorNodeId },
+        params: { policyId, stepId: priorNodeId },
         payload: {
           type: isSplitActionType(actionType) ? StepType.Split : StepType.Basic,
           enrollmentActionId: actionId
         },
-        skip: !serviceId
+        skip: !policyId
       })
       : await createStepMutation({
-        params: { serviceId },
+        params: { policyId },
         payload: {
           type: isSplitActionType(actionType) ? StepType.Split : StepType.Basic,
           enrollmentActionId: actionId
         },
-        skip: !serviceId
+        skip: !policyId
       })
   }
 
   const createStepWithActionMutation = async (
-    serviceId: string,
+    policyId: string,
     actionType: ActionType,
     formData: GenericActionData,
     priorNodeId?: string,
@@ -58,7 +58,7 @@ export function useWorkflowStepActions () {
       callback: (response: AsyncResponse) => {
         if (response.id) {
           onClose?.()
-          createStepCallback(serviceId, actionType, response.id, priorNodeId)
+          createStepCallback(policyId, actionType, response.id, priorNodeId)
         }
       } }).unwrap()
   }

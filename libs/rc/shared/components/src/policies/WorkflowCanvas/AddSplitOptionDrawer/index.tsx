@@ -21,7 +21,7 @@ interface AddSplitOptionDrawerProps {
 
 export default function AddSplitOptionDrawer (props: AddSplitOptionDrawerProps) {
   const { $t } = useIntl()
-  const { visible, onClose, workflowId: serviceId, stepId, optionType } = props
+  const { visible, onClose, workflowId: policyId, stepId, optionType } = props
   const [ formInstance ] = Form.useForm()
   const [ createOptionMutation ] = useCreateSplitOptionMutation()
 
@@ -30,7 +30,7 @@ export default function AddSplitOptionDrawer (props: AddSplitOptionDrawerProps) 
     try {
       await formInstance.validateFields()
       await createOptionMutation({
-        params: { serviceId, stepId },
+        params: { policyId, stepId },
         payload: { ...formInstance.getFieldsValue() }
       }).unwrap()
       onClose()

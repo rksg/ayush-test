@@ -27,7 +27,7 @@ export default function BaseActionNode (props: NodeProps
 {
   const { $t } = useIntl()
   const nodeId = useNodeId()
-  const { serviceId } = useParams()
+  const { policyId } = useParams()
   // FIXME: Maybe it is not necessary
   const splitCount = props.splitCount ?? ['a']
   const {
@@ -73,9 +73,9 @@ export default function BaseActionNode (props: NodeProps
       onOk: () => {
         props.type === ActionType.USER_SELECTION_SPLIT && props.data?.splitStepId
           ? deleteOption({
-            params: { serviceId, stepId: props.data.splitStepId, optionId: nodeId }
+            params: { policyId, stepId: props.data.splitStepId, optionId: nodeId }
           }).unwrap()
-          : deleteStep({ params: { serviceId, stepId: nodeId } })
+          : deleteStep({ params: { policyId, stepId: nodeId } })
             .unwrap()
       }
     })

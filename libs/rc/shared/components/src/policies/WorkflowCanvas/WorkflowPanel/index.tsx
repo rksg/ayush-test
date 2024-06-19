@@ -229,7 +229,7 @@ const useRequiredDependency = () => {
 
 function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const { $t } = useIntl()
-  const { workflowId: serviceId } = props
+  const { workflowId: policyId } = props
   const {
     nodeState,
     stepDrawerState,
@@ -244,8 +244,8 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   // console.log('const requiredDependency = useRequiredDependency()', requiredDependency)
 
   const { data: stepsData, ...stepQuery } = useGetWorkflowStepsByIdQuery({
-    params: { serviceId, pageSize: '1000', page: '0', sort: 'id,ASC' }
-  }, { skip: !serviceId })
+    params: { policyId, pageSize: '1000', page: '0', sort: 'id,ASC' }
+  }, { skip: !policyId })
 
   const { data: actionDefsData, ...defQuery } = useGetWorkflowActionDefinitionListQuery({
     params: { pageSize: '1000', page: '0', sort: 'name,asc' }
@@ -294,7 +294,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
         (stepDrawerState.visible && stepDrawerState?.selectedActionDef?.actionType) &&
         <StepDrawer
           isEdit={stepDrawerState.isEdit}
-          workflowId={serviceId}
+          workflowId={policyId}
           actionId={nodeState.interactedNode?.data?.enrollmentActionId}
           actionType={stepDrawerState.selectedActionDef.actionType}
           selectedActionDef={stepDrawerState.selectedActionDef}

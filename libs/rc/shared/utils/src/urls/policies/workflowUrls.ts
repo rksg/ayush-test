@@ -3,7 +3,7 @@ import { ApiInfo } from '@acx-ui/utils'
 
 const WorkflowBaseUrl = '/workflows'
 const WorkFlowActionDefinitionBaseUrl = '/workflowActionDefinitions'
-const WorkflowStepBaseUrl = WorkflowBaseUrl + '/:serviceId/steps'
+const WorkflowStepBaseUrl = WorkflowBaseUrl + '/:policyId/steps'
 const WorkflowSplitOptionsBaseUrl = WorkflowStepBaseUrl + '/:stepId/splitOptions'
 
 const WorkflowActionBaseUrl = '/enrollmentActions'

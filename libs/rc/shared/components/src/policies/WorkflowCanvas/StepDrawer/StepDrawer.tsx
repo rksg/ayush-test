@@ -42,7 +42,7 @@ const actionFormMap = {
 export default function StepDrawer (props: StepDrawerProps) {
   const { $t } = useIntl()
   const {
-    workflowId: serviceId, visible, onClose,
+    workflowId: policyId, visible, onClose,
     actionType, priorNode, selectedActionDef,
     isEdit, actionId
   } = props
@@ -70,7 +70,7 @@ export default function StepDrawer (props: StepDrawerProps) {
 
     if (!actionId) return
 
-    getActionById({ params: { serviceId, actionId } })
+    getActionById({ params: { policyId, actionId } })
       .then((result) => {
         if (result?.data === undefined) return
 
@@ -88,7 +88,7 @@ export default function StepDrawer (props: StepDrawerProps) {
 
       isEdit
         ? actionData && await patchActionMutation(actionData, formContent).then(onClose)
-        : await createStep(serviceId, actionType, formContent, priorNode?.id, onClose)
+        : await createStep(policyId, actionType, formContent, priorNode?.id, onClose)
     } catch (ex) {
       console.error('Failed to create/update step. isEdit=', isEdit, ' reason=', ex)
     }

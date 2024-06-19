@@ -21,10 +21,10 @@ interface SplitStepDrawerProps {
 
 export default function SplitStepDrawer (props: SplitStepDrawerProps) {
   const { $t } = useIntl()
-  const { visible, onClose, workflowId: serviceId, stepId } = props
+  const { visible, onClose, workflowId: policyId, stepId } = props
   const { data } = useGetSplitOptionsByStepIdQuery({
-    params: { serviceId, stepId }
-  }, { skip: !serviceId || !stepId })
+    params: { policyId, stepId }
+  }, { skip: !policyId || !stepId })
 
   const actions = useGetAllActionsByTypeQuery({
     params: {
