@@ -236,12 +236,12 @@ export function DevicesWidgetv2 (props: {
             }
             {
               showRwgUI && <GridRow align={'middle'}>
-                <GridCol col={{ span: switchTotalCount ? 9 : 12 }}>
+                <GridCol col={{ span: rwgTotalCount ? 9 : 12 }}>
                   { rwgTotalCount > 0
                     ? $t({ defaultMessage: 'RWGs' })
                     : $t({ defaultMessage: 'No RWGs' }) }
                 </GridCol>
-                <GridCol col={{ span: switchTotalCount ? 15 : 12 }}>
+                <GridCol col={{ span: rwgTotalCount ? 9 : 12 }}>
                   { rwgTotalCount > 0
                     ? <Space>
                       <StackedBarChart
