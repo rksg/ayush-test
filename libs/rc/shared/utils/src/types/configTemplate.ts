@@ -37,3 +37,7 @@ export interface ConfigTemplate {
   lastModified: number,
   lastApplied: number
 }
+
+export interface ApplyConfigTemplatePaylod {
+  overrides: Array<{ [key in string]: string | number | boolean | [] }>
+}

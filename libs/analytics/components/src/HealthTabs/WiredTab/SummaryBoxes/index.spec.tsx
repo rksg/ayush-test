@@ -35,6 +35,16 @@ describe('Wired SummaryBoxes', () => {
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment()).toMatchSnapshot()
   })
+
+  it('should show no data when no switches', async () => {
+    mockGraphqlQuery(dataApiURL, 'WiredSummaryQuery', { data: wiredSummaryNoDataFixture })
+    const { asFragment } = render(
+      <Router><Provider><SummaryBoxes filters={filters} noSwitches={true} /></Provider></Router>
+    )
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    expect(asFragment()).toMatchSnapshot()
+  })
+
   it('should show when no data', async () => {
     mockGraphqlQuery(dataApiURL, 'WiredSummaryQuery', { data: wiredSummaryNoDataFixture })
     const { asFragment } = render(

@@ -281,7 +281,8 @@ export function SwitchStackSetting (props: {
         </Form.Item>
       </Form.Item>
       }
-      { switchDetail && <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
+      { switchDetail && isL3ConfigAllowed &&
+        <StaticRoutes readOnly={readOnly} switchDetail={switchDetail}/> }
     </>
   )
 }

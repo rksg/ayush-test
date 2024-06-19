@@ -9,7 +9,7 @@ import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
 import { Loader, Table, TableProps, Button, showToast, Filter }           from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }         from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                      from '@acx-ui/formatter'
 import { DownloadOutlined }                                               from '@acx-ui/icons'
 import { useAddExportSchedulesMutation }                                  from '@acx-ui/rc/services'
@@ -18,6 +18,7 @@ import { RequestPayload }                                                 from '
 import { computeRangeFilter, DateRangeFilter, exportMessageMapping }      from '@acx-ui/utils'
 
 import { TimelineDrawer } from '../TimelineDrawer'
+import { useIsEdgeReady } from '../useEdgeActions'
 
 import { filtersFrom, getDescription, getDetail, getSource, valueFrom } from './helpers'
 import {
@@ -65,7 +66,7 @@ export const EventTable = ({
   const [visible, setVisible] = useState(false)
   const [exportDrawerVisible, setExportDrawerVisible] = useState(false)
   const [current, setCurrent] = useState<Event>()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isRogueEventsFilterEnabled = useIsSplitOn(Features.ROGUE_EVENTS_FILTER)
   const { exportCsv, disabled } = useExportCsv<Event>(tableQuery)
   const [addExportSchedules] = useAddExportSchedulesMutation()
