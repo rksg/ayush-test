@@ -3,7 +3,7 @@ import userEvent      from '@testing-library/user-event'
 import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { MspRbacUrlsInfo, MspUrlsInfo }                           from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -215,6 +215,10 @@ describe('MspRecCustomers', () => {
       ),
       rest.delete(
         MspUrlsInfo.deleteMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
+      ),
+      rest.delete(
+        MspRbacUrlsInfo.deleteMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
       ),
       rest.post(
