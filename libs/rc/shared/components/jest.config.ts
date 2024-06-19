@@ -2,7 +2,8 @@ module.exports = {
   displayName: 'rc-components',
   preset: '../../../../jest.preset.ts',
   transform: {
-    '^.+\\.m?[tj]sx?$': 'babel-jest'
+    '^.+\\.mjs?$': 'babel-jest',
+    '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/rc/shared/components',
