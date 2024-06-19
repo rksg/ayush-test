@@ -16,6 +16,7 @@ export enum InCompatibilityFeatures {
   AP_NEIGHBORS = 'AP Neighbors',
   BSS_COLORING = 'BSS Coloring',
   QOS_MIRRORING = 'QoS Mirroring',
+  TRUNK_PORT_VLAN_UNTAG_ID = 'Trunk Port Vlan Untag Id'
 }
 
 export enum ApCompatibilityQueryTypes {
