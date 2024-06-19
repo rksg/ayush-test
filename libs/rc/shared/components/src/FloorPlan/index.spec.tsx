@@ -150,7 +150,7 @@ const meshApList = {
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
-    items: [{
+    data: [{
       rwgId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '7231da344778480d88f37f0cca1c534f',
       floorplanId: '94bed28abef24175ab58a3800d01e24a',
@@ -163,8 +163,8 @@ const rwgList = {
       xPercent: 30.20548,
       yPercent: 29.839357
     }] as RWG[],
-    totalPages: 1,
-    totalSizes: 1
+    totalCount: 1,
+    page: 1
   }
 }
 
