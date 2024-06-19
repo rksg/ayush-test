@@ -18,7 +18,7 @@ export const TradeOffWrapper = styled.div`
     color: var(--acx-primary-black);
     line-height: var(--acx-body-3-line-height);
     font-size: var(--acx-body-3-font-size);
-    font-weight: var(--acx-subtitle-3-font-weight);
+    font-weight: var(--acx-body-font-weight-bold);
   }
 
   label.ant-radio-wrapper {
@@ -29,17 +29,17 @@ export const TradeOffWrapper = styled.div`
 `
 
 export const HeaderWrapper = styled(Row)`
-    margin: 6px 12px;
+    margin: 50px 8px 12px;
     font-size: var(--acx-subtitle-5-font-size);
     line-height: var(--acx-subtitle-5-line-height);
-    font-weight: var(--acx-subtitle-4-font-weight);
+    font-weight: var(--acx-body-font-weight-bold);
 `
 
 export const DividerWrapper = styled(Divider)`
     padding: 0px 0px;
     margin-top: 9px !important;
     margin-bottom: 0px !important;
-    border-top: 1px solid #D5D5D5
+    border-top: 1px solid var(--acx-neutrals-30)
 `
 
 
@@ -51,8 +51,9 @@ export const RowWrapper = styled(Row)`
     line-height: var(--acx-body-2-line-height);
 
     &.highlight {
-        background: #03AAFF1A;
+        background: var(--acx-accents-blue-20);
         border-radius: 4px;
-        border: 1px solid #03AAFF;
+        border: 1px solid var(--acx-accents-blue-50);
     }
 `
+

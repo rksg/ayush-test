@@ -27,33 +27,35 @@ const Column1:ReactNode = (<div style={{ flexDirection: 'column' }}>
   <div>
     <label style={{ fontWeight: 600 }}>Full Optimization</label>
   </div>
-  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '6px' }}>
-    <span>Ap:Radio Channel</span>
-    <span>Ap:Radio Channel Width</span>
-    <span>Ap:Radio Channel Power</span>
-    <span>Zone:Radio Channel Range</span>
+  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '6px', paddingTop: '10px' }}>
+    <span>AP: Radio Channell</span>
+    <span>AP: Radio Channel Width</span>
+    <span>AP: Radio Transmit Power</span>
+    <span>Zone: Radio Channel Range</span>
   </div>
 </div>)
 
 const Column2:ReactNode = (<div style={{ flexDirection: 'column' }}>
   <div>
-    <label style={{ fontWeight: 600 }}>Partial Optimization</label>
+    <label style={{ fontWeight: 600 }}>Partial Optimization:</label>
   </div>
-  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '6px' }}>
-    <span>Ap:Radio Channel</span>
+  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '4px', paddingTop: '10px' }}>
+    <span>AP: Radio Channel</span>
     <span>Ap:Radio Channel Width</span>
-    <span>Ap:Radio Channel Power</span>
-    <span>Zone:Radio Channel Range</span>
+    <span>AP: Radio Channel Width</span>
+    <span>Zone: Radio Channel Range</span>
   </div>
-  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '6px', marginTop: '6px' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '4px', marginTop: '6px' }}>
     <span>IntentAI will not change Transmit Power</span>
   </div>
 </div>)
 
 export const Default = Template.bind({})
 Default.args = {
-  key: 'tradeOff',
+  title: 'Choose priority',
   name: 'tradeOff',
+  currentValue: 'value1',
+  label: 'What\'s more important to you for this network?',
   headers: ['Intent Trade-off', 'AI Driven - Configuration change'],
   radios: [
     {
@@ -66,12 +68,13 @@ Default.args = {
       key: 'value2',
       value: 'value2',
       children: 'Maximize client throughput',
-      columns: ['Maximize client throughput1', Column2]
+      columns: ['Maximize client throughput', Column2]
     },
     {
       key: 'value3',
       value: 'value3',
       children: 'Lable3',
       columns: ['Row5', 'Row6'] }
-  ]
+  ],
+  onChange: () => {}
 }
