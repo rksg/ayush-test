@@ -3,34 +3,34 @@ import React from 'react'
 import { Row, Col }                                 from 'antd'
 import { useIntl, FormattedMessage, defineMessage } from 'react-intl'
 
-import { PageHeader, StepsForm, bandwidthMapping, recommendationBandMapping } from '@acx-ui/components'
+import { PageHeader, StepsForm } from '@acx-ui/components'
 
-import { Legend } from '../../Recommendations/RecommendationDetails/Graph/Legend'
-
-import { sampleMapping, demoLink, guideLink } from './mapping'
-import * as UI                                from './styledComponents'
+import { mapping, demoLink, guideLink } from './mapping'
+import * as UI                          from './styledComponents'
 
 export function IntentAIDrivenRRM () {
   const { $t } = useIntl()
-  const code = 'c-crrm-channel6g-auto' // replace with actual code
-  const band = recommendationBandMapping[code as keyof typeof recommendationBandMapping]
-
   const values = {
     p: (text: string) => <UI.Para>{text}</UI.Para>,
-    b: (text: string) => <UI.Bold>{text}</UI.Bold>
+    b: (text: string) => <UI.Bold>{text}</UI.Bold>,
+    br: () => <br />
   }
 
   return (
     <>
       <PageHeader
         title={$t({ defaultMessage: 'AI-Driven RRM' })}
-        subTitle={$t({
-          defaultMessage: 'Intent: Throughput vs Client Density | Zone: SPS-Hospitality-BLR' })} // replace with actual data
+        subTitle={
+          <>
+            {/* eslint-disable-next-line max-len */}
+            {$t({ defaultMessage: 'Intent: ' })} {mapping.intent} | {$t({ defaultMessage: 'Zone: ' })} {mapping.zone}
+          </>
+        }
       />
       <StepsForm
         // onCancel={}
         // onFinish={async () => {
-        //   showToast({ type: 'success', content: 'Submitted' }) // show notification to indicate submission successful
+        //   showToast({ type: 'success', content: 'Submitted' })
         // }}
         buttonLabel={{
           submit: 'Apply'
@@ -44,14 +44,20 @@ export function IntentAIDrivenRRM () {
                 <UI.Content>
                   <UI.ContentText>
                     <span>
-                      {$t({ defaultMessage: 'Intent: ' })}<b>{sampleMapping[code].intent}</b>
+                      {$t({ defaultMessage: 'Intent:' })} <b>{mapping.intent}</b>
                     </span>
                   </UI.ContentText>
                   <UI.ContentText>
-                    {$t({ defaultMessage: 'Zone: ' })}{sampleMapping[code].zone}
+                    {$t({ defaultMessage: 'Category:' })} {mapping.category}
                   </UI.ContentText>
                   <UI.ContentText>
-                    {$t({ defaultMessage: 'Date: ' })}{sampleMapping[code].date}
+                    {$t({ defaultMessage: 'Zone:' })} {mapping.zone}
+                  </UI.ContentText>
+                  <UI.ContentText>
+                    {$t({ defaultMessage: 'Status:' })} {mapping.status}
+                  </UI.ContentText>
+                  <UI.ContentText>
+                    {$t({ defaultMessage: 'Last update:' })} {mapping.lastUpdate}
                   </UI.ContentText>
                 </UI.Content>
                 <UI.Content>
@@ -60,11 +66,11 @@ export function IntentAIDrivenRRM () {
                       'Wireless network design involves balancing different priorities:' })}
                   </UI.Subtitle>
                   <FormattedMessage
-                    {...sampleMapping[code].maximumThroughput}
+                    {...mapping.clientDensity.combined}
                     values={{ ...values }}
                   />
                   <FormattedMessage
-                    {...sampleMapping[code].highClientDensity}
+                    {...mapping.clientThroughput.combined}
                     values={{ ...values }}
                   />
                 </UI.Content>
@@ -83,7 +89,7 @@ export function IntentAIDrivenRRM () {
                   </UI.SideNoteSubtitle>
                   <UI.SideNoteContent>
                     <FormattedMessage
-                      {...sampleMapping[code].sideNotes.introduction}
+                      {...mapping.sideNotes.introduction}
                       values={{ ...values }}
                     />
                   </UI.SideNoteContent>
@@ -104,11 +110,11 @@ export function IntentAIDrivenRRM () {
           </Row>
         </StepsForm.StepForm>
 
-        <StepsForm.StepForm title='Trade-off'>
+        <StepsForm.StepForm title='Choose priority'>
           <Row gutter={20}>
             <Col span={15}>
               <UI.Wrapper>
-                <UI.Title>{$t({ defaultMessage: 'Trade-off' })}</UI.Title>
+                <UI.Title>{$t({ defaultMessage: 'Choose priority' })}</UI.Title>
                 <UI.Content>
                   <UI.Subtitle>
                     {$t({ defaultMessage: 'What\'s more important to you for this network?' })}
@@ -129,7 +135,7 @@ export function IntentAIDrivenRRM () {
                   </UI.SideNoteSubtitle>
                   <UI.SideNoteContent>
                     <FormattedMessage
-                      {...sampleMapping[code].sideNotes.tradeOff}
+                      {...mapping.sideNotes.tradeOff}
                       values={{ ...values }}
                     />
                   </UI.SideNoteContent>
@@ -139,11 +145,11 @@ export function IntentAIDrivenRRM () {
           </Row>
         </StepsForm.StepForm>
 
-        <StepsForm.StepForm title='Benefit'>
+        <StepsForm.StepForm title='Summary'>
           <Row gutter={20}>
             <Col span={15}>
               <UI.Wrapper>
-                <UI.Title>{$t({ defaultMessage: 'Benefit' })}</UI.Title>
+                <UI.Title>{$t({ defaultMessage: 'Summary' })}</UI.Title>
                 <UI.Content>
                 </UI.Content>
               </UI.Wrapper>
@@ -156,8 +162,17 @@ export function IntentAIDrivenRRM () {
                       {$t({ defaultMessage: 'Side Notes' })}
                     </UI.SideNoteTitle>
                   </UI.SideNoteHeader>
+                  <UI.SideNoteSubtitle>
+                    <FormattedMessage
+                      {...mapping.clientDensity.title}
+                      values={{ ...values }}
+                    />
+                  </UI.SideNoteSubtitle>
                   <UI.SideNoteContent>
-                    <Legend key='crrm-graph-legend' bandwidths={bandwidthMapping[band]}/>
+                    <FormattedMessage
+                      {...mapping.clientDensity.content}
+                      values={{ ...values }}
+                    />
                   </UI.SideNoteContent>
                 </UI.SideNote>
               </UI.Wrapper>
