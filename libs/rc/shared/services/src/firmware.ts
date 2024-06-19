@@ -23,7 +23,7 @@ import {
   UpdateFirmwareSchedulePerApModelPayload,
   FirmwareRbacUrlsInfo,
   CurrentVersionsV1002,
-  LatestFirmwareVersion1002,
+  SwitchFirmwareVersion1002,
   FirmwareSwitchVenueV1002
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }             from '@acx-ui/store'
@@ -248,7 +248,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchLatestFirmwareListV1002: build.query<LatestFirmwareVersion1002[], RequestPayload>({
+    getSwitchLatestFirmwareListV1002: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           FirmwareRbacUrlsInfo.getSwitchLatestFirmwareList, params, v1_2Header)
@@ -270,7 +270,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
 
-    getSwitchDefaultFirmwareListV1002: build.query<LatestFirmwareVersion1002[], RequestPayload>({
+    getSwitchDefaultFirmwareListV1002: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           FirmwareRbacUrlsInfo.getSwitchDefaultFirmwareList, params, v1_2Header)
@@ -387,7 +387,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
-    getSwitchAvailableFirmwareListV1002: build.query<FirmwareVersion[], RequestPayload>({
+    getSwitchAvailableFirmwareListV1002: build.query<SwitchFirmwareVersion1002[], RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(
           FirmwareRbacUrlsInfo.getSwitchAvailableFirmwareList, params, v1_2Header)

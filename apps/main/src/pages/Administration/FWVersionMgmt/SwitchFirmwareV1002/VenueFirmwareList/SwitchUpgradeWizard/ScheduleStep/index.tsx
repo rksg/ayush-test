@@ -14,6 +14,7 @@ import {
   FirmwareSwitchVenue,
   FirmwareSwitchVenueV1002,
   FirmwareVersion,
+  SwitchFirmwareVersion1002,
   SwitchFirmware,
   switchSchedule
 } from '@acx-ui/rc/utils'
@@ -28,7 +29,7 @@ import type { RangePickerProps } from 'antd/es/date-picker'
 
 export interface ScheduleStepProps {
   visible: boolean,
-  availableVersions?: FirmwareVersion[]
+  availableVersions?: SwitchFirmwareVersion1002[]
   nonIcx8200Count: number
   icx8200Count: number
   hasVenue: boolean,
@@ -90,31 +91,31 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   }, [upgradeVenueList, upgradeSwitchList])
 
-  const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
-    aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
-    let firmwareAvailableVersions = availableVersions?.filter(
-      (v: FirmwareVersion) => aboveTenPrefix ? v.id.startsWith('100') : !v.id.startsWith('100')
-    )
-    if (currentScheduleVersion) {
-      const currentVersionInSchedule = firmwareAvailableVersions?.filter((v: FirmwareVersion) =>
-        currentScheduleVersion === v.id)
+  // const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
+  //   aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
+  //   let firmwareAvailableVersions = availableVersions?.filter(
+  //     (v: FirmwareVersion) => aboveTenPrefix ? v.id.startsWith('100') : !v.id.startsWith('100')
+  //   )
+  //   if (currentScheduleVersion) {
+  //     const currentVersionInSchedule = firmwareAvailableVersions?.filter((v: FirmwareVersion) =>
+  //       currentScheduleVersion === v.id)
 
-      if (currentVersionInSchedule?.length === 0) {
-        firmwareAvailableVersions?.push({
-          id: currentScheduleVersion,
-          name: currentScheduleVersion,
-          category: FirmwareCategory.REGULAR
-        } as FirmwareVersion)
-      }
-    }
+  //     if (currentVersionInSchedule?.length === 0) {
+  //       firmwareAvailableVersions?.push({
+  //         id: currentScheduleVersion,
+  //         name: currentScheduleVersion,
+  //         category: FirmwareCategory.REGULAR
+  //       } as FirmwareVersion)
+  //     }
+  //   }
 
-    if (_.isArray(firmwareAvailableVersions)) {
-      firmwareAvailableVersions =
-        firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
-    }
+  //   if (_.isArray(firmwareAvailableVersions)) {
+  //     firmwareAvailableVersions =
+  //       firmwareAvailableVersions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+  //   }
 
-    return firmwareAvailableVersions
-  }
+  //   return firmwareAvailableVersions
+  // }
 
   const handleChange = (value: RadioChangeEvent) => {
     setSelectedVersion(value.target.value)
@@ -191,7 +192,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
               onChange={handleChangeForVersionAboveTen}
               value={selectedAboveTenVersion}>
               <Space direction={'vertical'}>
-                { // eslint-disable-next-line max-len
+                {/* { // eslint-disable-next-line max-len
                   getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
@@ -199,7 +200,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                         {v.isDowngradeVersion && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                       </span>
-                    </Radio>)}
+                    </Radio>)} */}
                 <Radio value='' key='0'>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
@@ -221,7 +222,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                 onChange={handleChange}
                 value={selectedVersion}>
                 <Space direction={'vertical'}>
-                  { // eslint-disable-next-line max-len
+                  {/* { // eslint-disable-next-line max-len
                     getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
                       <Radio value={v.id} key={v.id} disabled={v.inUse}>
                         <span style={{ lineHeight: '22px' }}>
@@ -229,7 +230,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
                           {v.isDowngradeVersion && !v.inUse &&
                             <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                         </span>
-                      </Radio>)}
+                      </Radio>)} */}
                   <Radio value='' key='0'>
                     {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>

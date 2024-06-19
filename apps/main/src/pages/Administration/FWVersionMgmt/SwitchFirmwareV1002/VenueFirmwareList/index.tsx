@@ -27,7 +27,8 @@ import {
   usePollingTableQuery,
   SwitchFirmwareStatusType,
   SwitchFirmwareModelGroup,
-  FirmwareSwitchVenueV1002
+  FirmwareSwitchVenueV1002,
+  SwitchFirmwareVersion1002
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
@@ -274,7 +275,8 @@ export function VenueFirmwareList () {
   ]
 
   const hasAvailableSwitchFirmware = function () {
-    let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+    let filterVersions: SwitchFirmwareVersion1002[] =
+      [...availableVersions as SwitchFirmwareVersion1002[] ?? []]
     return filterVersions?.length > 0
   }
 

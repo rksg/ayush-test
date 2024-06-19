@@ -23,17 +23,19 @@ import {
   FirmwareCategory,
   FirmwareSwitchVenue,
   FirmwareSwitchVenueV1002,
-  FirmwareVersion,
+  FirmwareVersion1002,
+  SwitchFirmwareVersion1002,
   SwitchFirmware,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import * as UI                from '../styledComponents'
+import * as UI from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
 import { UpdateNowStep }    from './UpdateNowStep'
+import { getReleaseFirmware } from '../../../FirmwareUtils'
 
 
 export enum SwitchFirmwareWizardType {
@@ -58,29 +60,29 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const { checkCurrentVersions } = useSwitchFirmwareUtils()
   const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesMutation()
 
-  const [upgradeVersions, setUpgradeVersions] = useState<FirmwareVersion[]>([])
+  const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
   const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
-  const filterVersions = function (availableVersions: FirmwareVersion[]) {
+  // const filterVersions = function (availableVersions: FirmwareVersion1002[]) {
 
-    return availableVersions?.map((version) => {
-      if (version?.category === FirmwareCategory.RECOMMENDED && !isLatestVersion(version)) {
-        return {
-          ...version,
-          id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR
-        }
-      } return version
-    })
-  }
+  //   return availableVersions?.map((version) => {
+  //     if (version?.category === FirmwareCategory.RECOMMENDED && !isRecommendedVersion(version)) {
+  //       return {
+  //         ...version,
+  //         id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR
+  //       }
+  //     } return version
+  //   })
+  // }
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
 
-  const isLatestVersion = function (currentVersion: FirmwareVersion) {
-    if(_.isEmpty(currentVersion?.id)) return false
-    const defaultVersions = ''//getReleaseFirmware(defaultReleaseVersions)
+  const isRecommendedVersion = function (currentVersion: SwitchFirmwareVersion1002) {
+    // if(_.isEmpty(currentVersion?.id)) return false
+    const defaultVersions = defaultReleaseVersions
     const defaultFirmware = ''//defaultVersions.filter(v => v.id.startsWith('090'))[0]
     const defaultRodanFirmware = ''//defaultVersions.filter(v => v.id.startsWith('100'))[0]
     return false//(currentVersion.id === defaultFirmware?.id ||
-      // currentVersion.id === defaultRodanFirmware?.id)
+    // currentVersion.id === defaultRodanFirmware?.id)
   }
 
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
@@ -234,7 +236,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
   const saveSwitchStep = function () {
     // eslint-disable-next-line max-len
-    let filterVersions: FirmwareVersion[] = [...availableVersions as FirmwareVersion[] ?? []]
+    // let filterVersions: FirmwareVersion1002[] = [...availableVersions as FirmwareVersion1002[] ?? []]
     let nonIcx8200Count = 0, icx8200Count = 0
     let currentUpgradeSwitchList = [] as SwitchFirmware[]
     let currentUpgradeVenueList = [] as FirmwareSwitchVenue[]
@@ -273,7 +275,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     setUpgradeSwitchList(currentUpgradeSwitchList)
     setUpgradeVenueList(currentUpgradeVenueList)
     setHasVenue(selectedVenueRowKeys.length > 0 || (nonIcx8200Count + icx8200Count === 0))
-    setUpgradeVersions(filterVersions)
+    setUpgradeVersions(availableVersions)
     setNonIcx8200Count(nonIcx8200Count)
     setIcx8200Count(icx8200Count)
     return { currentUpgradeSwitchList, currentUpgradeVenueList }
@@ -337,7 +339,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   setShowSubTitle={setShowSubTitle}
                   visible={true}
                   hasVenue={hasVenue}
-                  availableVersions={filterVersions(upgradeVersions)}
+                  availableVersions={upgradeVersions}//{filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}
                   icx8200Count={icx8200Count}
                 /> : <ScheduleStep
@@ -347,7 +349,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   data={props.data}
                   upgradeVenueList={upgradeVenueList as FirmwareSwitchVenue[]}
                   upgradeSwitchList={upgradeSwitchList as SwitchFirmware[]}
-                  availableVersions={filterVersions(upgradeVersions)}
+                  availableVersions={upgradeVersions}//{filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}
                   icx8200Count={icx8200Count}
                 />

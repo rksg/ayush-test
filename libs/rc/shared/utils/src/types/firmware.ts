@@ -135,6 +135,8 @@ export interface SwitchVersion1002 {
   name: string;
   category: FirmwareCategory;
   createdDate?: string;
+  inUse?: boolean;
+  isDowngradeVersion?: boolean;
 }
 
 export interface FirmwareVersion1002 {
@@ -142,7 +144,7 @@ export interface FirmwareVersion1002 {
   versions: string[];
 }
 
-export interface LatestFirmwareVersion1002 {
+export interface SwitchFirmwareVersion1002 {
   modelGroup: SwitchFirmwareModelGroup;
   versions: SwitchVersion1002[];
 }

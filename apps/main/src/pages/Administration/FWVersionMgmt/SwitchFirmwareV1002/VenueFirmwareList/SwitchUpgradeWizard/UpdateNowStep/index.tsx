@@ -13,7 +13,11 @@ import {
 import { useSwitchFirmwareUtils } from '@acx-ui/rc/components'
 import {
   compareSwitchVersion,
-  FirmwareVersion
+  FirmwareSwitchVenueVersionsV1002,
+  FirmwareVersion,
+  FirmwareVersion1002,
+  SwitchFirmwareVersion1002,
+  SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 
 import { DowngradeTag } from '../../../styledComponents'
@@ -21,7 +25,7 @@ import * as UI          from '../../styledComponents'
 
 export interface UpdateNowStepProps {
   visible: boolean,
-  availableVersions?: FirmwareVersion[]
+  availableVersions: SwitchFirmwareVersion1002[]
   nonIcx8200Count: number
   icx8200Count: number
   hasVenue: boolean,
@@ -41,12 +45,15 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const [selectionChanged, setSelectionChanged] = useState(false)
   const [selectionAboveTenChanged, setSelectionAboveTenChanged] = useState(false)
 
-  const firmware10AvailableVersions =
-    availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
-      .sort((a, b) => compareSwitchVersion(a.id, b.id))
-  const firmware90AvailableVersions =
-    availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
-      .sort((a, b) => compareSwitchVersion(a.id, b.id))
+  // const firmware10AvailableVersions =
+  //   availableVersions?.filter((v: FirmwareVersion) => v.id.startsWith('100'))
+  //     .sort((a, b) => compareSwitchVersion(a.id, b.id))
+  // const firmware90AvailableVersions =
+  //   availableVersions?.filter((v: FirmwareVersion) => !v.id.startsWith('100'))
+  //     .sort((a, b) => compareSwitchVersion(a.id, b.id))
+
+  const ICX71AvailableVersions = availableVersions?.filter((v) =>
+    v.modelGroup === 'ICX71')[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
 
   useEffect(()=>{
     setShowSubTitle(false)
@@ -109,7 +116,16 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             onChange={onChangeRegularForVersionAboveTen}
             value={selectedAboveTenVersion}>
             <Space direction={'vertical'}>
-              {firmware10AvailableVersions?.map(v =>
+              {/* {firmware10AvailableVersions?.map(v =>
+                <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                  <span style={{ lineHeight: '22px' }}>
+                    {getSwitchVersionLabel(intl, v)}
+                    {v.isDowngradeVersion && !v.inUse &&
+                      <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                  </span>
+                </Radio>)} */}
+
+              {availableVersions[0]?.versions?.map(v =>
                 <Radio value={v.id} key={v.id} disabled={v.inUse}>
                   <span style={{ lineHeight: '22px' }}>
                     {getSwitchVersionLabel(intl, v)}
@@ -117,6 +133,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                       <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                   </span>
                 </Radio>)}
+
               <Radio value='' key='0'>
                 {$t({ defaultMessage: 'Do not update firmware on these switches' })}
               </Radio>
@@ -135,14 +152,14 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
                 onChange={onChangeRegular}
                 value={selectedVersion}>
                 <Space direction={'vertical'}>
-                  {firmware90AvailableVersions?.map(v =>
+                  {/* {firmware90AvailableVersions?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
                         {getSwitchVersionLabel(intl, v)}
                         {v.isDowngradeVersion && !v.inUse &&
                           <DowngradeTag>{$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                       </span>
-                    </Radio>)}
+                    </Radio>)} */}
                   <Radio value='' key='0'>
                     {$t({ defaultMessage: 'Do not update firmware on these switches' })}
                   </Radio>
