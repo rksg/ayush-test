@@ -52,7 +52,7 @@ const AntRangePicker = AntDatePicker.RangePicker
 export const restrictDateTo3Months = (values: RangeValueType, range: string) => {
   let startDate = values?.[0] || null
   let endDate = values?.[1] || null
-  if (endDate && startDate && endDate.diff(startDate.clone().subtract(1, 'hour'), 'months') > 3) {
+  if (endDate && startDate && endDate.diff(startDate, 'months') > 3) {
     if (range === 'start') {
       endDate = startDate.clone().add(3, 'months')
     }
