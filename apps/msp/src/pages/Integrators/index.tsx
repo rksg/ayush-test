@@ -15,7 +15,8 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
-  ManageAdminsDrawer
+  ManageAdminsDrawer,
+  ManageDelegateAdminDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -68,14 +69,16 @@ export function Integrators () {
 
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const onBoard = mspLabel?.msp_label
 
   const columns: TableProps<MspEc>['columns'] = [
@@ -212,7 +215,7 @@ export function Integrators () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id }, enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
@@ -265,12 +268,19 @@ export function Integrators () {
           ]}
       />
       <IntegratorssTable />
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={() => {}}
-        tenantId={tenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={tenantId}
+        />
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={tenantId}
+        />)}
       {drawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}

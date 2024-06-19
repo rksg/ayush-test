@@ -72,6 +72,7 @@ export enum Features {
   MSP_HSP_PLM_FF = 'HSP-LOC',
   MSP_MULTI_PROPERTY_CREATION_TOGGLE = 'msp-multi-property-creation-toggle',
   MSP_PATCH_TIER = 'mspservice-patch-tier',
+  MSP_RBAC_API = 'acx-ui-rbac-api-msp-toggle',
   MSP_SELF_ASSIGNMENT = 'entitlement-msp-own-license-assignment-toggle',
   MSP_UPGRADE_MULTI_EC_FIRMWARE = 'mspservice-multi-ec-to-upgrade-ap-firmware',
   MSPEC_ALARM_COUNT_SUPPORT_TOGGLE = 'acx-ui-mspec-alarm-count-toggle',
@@ -81,10 +82,10 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
+  NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
   PLM_FF = 'ACX-PLM-FF',
   POLICIES = 'acx-ui-policies',
   PTENANT_RBAC_DPSK_ROLE_INTRODUCTION = 'ptenant-rbac-dpsk-role-introduction',
-  RADIO6G_RATE_CONTROL = 'radio6g-rate-control-toggle',
   RADIUS_CLIENT_CONFIG = 'radius-client-config-api-enabled',
   REC_TO_MSP_CONVERSION_TOGGLE = 'acx-rec-to-msp-conversion-toggle',
   RECOMMENDATION_DELETE = 'acx-ui-recommendation-delete-toggle',
@@ -122,9 +123,6 @@ export enum Features {
   WIFI_DOWNGRADE_VENUE_ABF_TOGGLE = 'wifi-downgrade-venue-abf-toggle',
   WIFI_EDA_BSS_PRIORITY_TOGGLE = 'wifi-eda-bss-priority-toggle',
   WIFI_EDA_CLIENT_REVOKE_TOGGLE = 'wifi-eda-client-revoke-toggle',
-  WIFI_EDA_OWE_TOGGLE = 'wifi-eda-owe-toggle',
-  WIFI_EDA_OWE_TRANSITION_TOGGLE = 'wifi-eda-owe-transition-toggle',
-  WIFI_EDA_PER_AP_RADIO_CUSTOMIZATION_TOGGLE = 'wifi-eda-per-ap-radio-customization-toggle',
   WIFI_EDA_QOS_MIRRORING_TOGGLE = 'wifi-eda-qos-mirroring-toggle',
   WIFI_EDA_SECURE_BOOT_TOGGLE = 'wifi-eda-secure-boot-toggle',
   WIFI_EDA_WIFI6_AND_WIFI7_FLAG_TOGGLE = 'wifi-eda-wifi6-and-wifi7-flag-toggle',
@@ -149,7 +147,9 @@ export enum Features {
   RUCKUS_AI_NEW_ROLES_TOGGLE = 'ruckus-ai-users-new-roles-toggle',
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
-  RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle'
+  RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
+  GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
+  WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

@@ -172,9 +172,10 @@ export const kpiConfig = {
   switchDhcp: {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchDHCPSuccessAndAttemptCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchDHCPSuccessAndAttemptCount'),
     pill: {
@@ -435,7 +436,7 @@ export const kpiConfig = {
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -485,7 +486,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
@@ -493,7 +494,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility to switches.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility of switches to controller.' })
     }
   },
   switchMemoryUtilization: {
@@ -502,13 +503,13 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchMemoryUtilization',
-      splits: [10,25,50,60,70,80,90],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
       shortXFormat: noFormat,
@@ -532,13 +533,13 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchCpuUtilization',
-      splits: [10,25,50,60,70,80,90],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
       shortXFormat: noFormat,
@@ -561,7 +562,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
@@ -578,13 +579,13 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchUplinkPortUtilization',
-      splits: [20, 40, 60, 80, 100],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -608,13 +609,13 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortUtilizationCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchPortUtilization',
-      splits: [20, 40, 60, 80, 100],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -637,7 +638,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
@@ -654,7 +655,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortStormCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -676,6 +677,22 @@ export const kpiConfig = {
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: noFormat,
       tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
+    }
+  },
+  switchAuthentication: {
+    text: defineMessage({ defaultMessage: 'Authentication' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchAuthCountAndAttemptCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchAuthCountAndAttemptCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} of auth succeeded' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Metric of authentication events amongst success and failed categories.' })
     }
   }
 }
@@ -730,7 +747,7 @@ export const wiredKPIsForTab = () => {
     },
     connection: {
       kpis: [
-        // 'authentication',
+        'switchAuthentication',
         'switchDhcp'
       ]
     },

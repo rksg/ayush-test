@@ -141,6 +141,8 @@ function Layout () {
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+  const isSpecialRole = hasRoles([
+    RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER, RolesEnum.REPORTS_ADMIN])
 
   const [supportStatus, setSupportStatus] = useState('')
 
@@ -180,7 +182,7 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <GlobalSearchBar />
+          {!isSpecialRole && <GlobalSearchBar />}
           {showMspHomeButton &&
             <MspTenantLink to='/dashboard'>
               <UI.Home>
@@ -188,7 +190,7 @@ function Layout () {
               </UI.Home>
             </MspTenantLink>}
         </HeaderContext.Provider>
-        <LayoutUI.Divider />
+        {(!isSpecialRole || showMspHomeButton) && <LayoutUI.Divider />}
         {isDelegationMode()
           ? <MspEcDropdownList/>
           : <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>}

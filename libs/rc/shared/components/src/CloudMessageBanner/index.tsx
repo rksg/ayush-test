@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button, useLayoutContext }                        from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVenueVersionListQuery,
   useLazyGetVenueEdgeFirmwareListQuery,
@@ -23,12 +23,13 @@ import {
   hasRoles
 } from '@acx-ui/user'
 
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
 export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isEdgeScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const layout = useLayoutContext()
 
@@ -59,7 +60,7 @@ export function CloudMessageBanner () {
       if(!isSpecialRole) {
         checkWifiScheduleExists()
         checkSwitchScheduleExists()
-        if(isEdgeEnabled && isScheduleUpdateReady) {
+        if(isEdgeScheduleUpdateReady) {
           checkEdgeScheduleExists()
         }
       }
