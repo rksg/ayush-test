@@ -23,9 +23,9 @@ import {
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
-    totalSizes: 1,
-    totalPages: 1,
-    items: [{
+    totalCount: 1,
+    page: 1,
+    data: [{
       rwgId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
@@ -312,7 +312,7 @@ describe('getEdgeStackedBarChartData', () => {
 
 describe('getRwgStackedBarChartData', () => {
   it('should return correct formatted data', async () => {
-    expect(getRwgStackedBarChartData(rwgList.response.items)).toMatchSnapshot()
+    expect(getRwgStackedBarChartData(rwgList.response.data)).toMatchSnapshot()
   })
   it('should return empty array if no data', ()=>{
     expect(getRwgStackedBarChartData([])).toMatchSnapshot()
@@ -321,7 +321,7 @@ describe('getRwgStackedBarChartData', () => {
 
 describe('getRwgDonutChartData', () => {
   it('should return correct formatted data', async () => {
-    expect(getRwgDonutChartData(rwgList.response.items)).toEqual([{
+    expect(getRwgDonutChartData(rwgList.response.data)).toEqual([{
       color: '#ED1C24',
       name: 'Disconnected',
       value: 1

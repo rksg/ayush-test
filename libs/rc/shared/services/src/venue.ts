@@ -624,15 +624,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const { response: rwgDevices } = ((responses[1] && responses[1].data) || {}) as {
           requestId: string,
           response : {
-            items: RWG[],
-            totalPages: number,
-            totalSizes: number
+            data: RWG[],
+            totalCount: number,
+            page: number
           }
         }
 
         let rwgList: NetworkDevice[] = []
-        if (rwgDevices?.items?.length) {
-          const rwgs = rwgDevices.items
+        if (rwgDevices?.data?.length) {
+          const rwgs = rwgDevices.data
 
           rwgList = rwgs.map(_rwg => {
             return {
@@ -949,9 +949,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, enableRbac, enableSeparation = false }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion = enableRbac?
+          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getVenueDefaultRegulatoryChannels, params, apiCustomHeader)
@@ -961,9 +962,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getDefaultRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      query: ({ params, enableRbac, enableSeparation = false }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion = enableRbac?
+          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getDefaultRadioCustomization, params, apiCustomHeader)
@@ -973,9 +975,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, enableSeparation = false }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion = enableRbac?
+          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getVenueRadioCustomization, params, apiCustomHeader)
@@ -995,9 +998,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueRadioCustomization: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
+      query: ({ params, payload, enableRbac, enableSeparation = false }) => {
         const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const rbacApiVersion = enableRbac?
+          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.updateVenueRadioCustomization, params, apiCustomHeader)
