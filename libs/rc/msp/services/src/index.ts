@@ -760,10 +760,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     addMspAssignment: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const req = createHttpRequest(rbacApiEnabled
-          ? LicenseUrlsInfo.addMspAssignment : MspUrlsInfo.addMspAssignment, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.addMspAssignment, params)
         return {
           ...req,
           body: payload
@@ -772,10 +771,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     updateMspAssignment: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const req = createHttpRequest(rbacApiEnabled
-          ? LicenseUrlsInfo.updateMspAssignment : MspUrlsInfo.updateMspAssignment, params, {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.updateMspAssignment, params, {
           ...ignoreErrorModal
         })
         return {

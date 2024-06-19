@@ -5,7 +5,6 @@ import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                    from '@acx-ui/msp/utils'
-import { LicenseUrlsInfo }                                from '@acx-ui/rc/utils'
 import { Provider }                                       from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
@@ -228,10 +227,6 @@ describe('AssignMspLicense', () => {
       rest.post(
         MspUrlsInfo.addMspAssignment.url,
         (req, res, ctx) => res(ctx.json({ requestId: 123 }))
-      ),
-      rest.post(
-        LicenseUrlsInfo.addMspAssignment.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'rbac123' }))
       ),
       rest.patch(
         MspUrlsInfo.updateMspAssignment.url,

@@ -325,9 +325,8 @@ export function AssignMspLicense () {
             endDate: expirationDate,
             assignments: addAssignment
           }
-        await addMspSubscription(isEntitlementRbacApiEnabled
-          ? { params: { tenantId: tenantId, isRbacApi: 'true' }, payload: mspAssignments }
-          : { payload: mspAssignments }).unwrap()
+        await addMspSubscription({ params: { tenantId: tenantId }, payload: mspAssignments,
+          enableRbac: isEntitlementRbacApiEnabled }).unwrap()
       }
       if (updateAssignment.length > 0) {
         const assignId = updateAssignment[0].assignmentId.toString()
@@ -336,10 +335,8 @@ export function AssignMspLicense () {
             quantity: updateAssignment[0].quantity,
             expirationDate: expirationDate }
           : updateAssignment
-        await updateMspSubscription(isEntitlementRbacApiEnabled
-          ? { params: { tenantId: tenantId, isRbacApi: 'true', assignmentId: assignId },
-            payload: updatePayload }
-          : { payload: updateAssignment }).unwrap()
+        await updateMspSubscription({ params: { tenantId: tenantId, assignmentId: assignId },
+          payload: updatePayload, enableRbac: isEntitlementRbacApiEnabled }).unwrap()
       }
       if (deleteAssignment.length > 0) {
         await deleteMspSubscription({ payload: deleteAssignment }).unwrap()

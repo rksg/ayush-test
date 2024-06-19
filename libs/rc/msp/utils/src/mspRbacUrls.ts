@@ -84,24 +84,27 @@ export const MspRbacUrlsInfo: { [key: string]: ApiInfo } = {
   //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment/summary',
   //   newApi: true
   // },
-  // getMspAssignmentHistory: {
-  //   method: 'get',
-  //   url: '/assignments',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-  //   newApi: true
-  // },
-  // addMspAssignment: {
-  //   method: 'post',
-  //   url: '/assignments',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-  //   newApi: true
-  // },
-  // updateMspAssignment: {
-  //   method: 'PATCH',
-  //   url: '/assignments',
-  //   oldUrl: '/api/entitlement-assign/tenant/:tenantId/assignment',
-  //   newApi: true
-  // },
+  getMspAssignmentHistory: {
+    // method: 'get',
+    method: 'post',
+    // url: '/tenants/:tenantId/entitlements/assignments/query',
+    url: '/tenants/self/entitlements/assignments/query',
+    oldUrl: '/assignments',
+    newApi: true
+  },
+  addMspAssignment: {
+    method: 'post',
+    url: '/tenants/self/entitlements/assignments',
+    oldUrl: '/assignments',
+    newApi: true
+  },
+  updateMspAssignment: {
+    // method: 'PATCH',
+    method: 'put',
+    url: '/tenants/self/entitlements/assignments/:assignmentId',
+    oldUrl: '/assignments',
+    newApi: true
+  },
   // deleteMspAssignment: {
   //   method: 'delete',
   //   url: '/assignments',
