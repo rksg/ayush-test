@@ -105,6 +105,12 @@ export const useCasesToRefreshSwitchConfigProfileTemplateList = [
   'DeleteSwitchConfigProfileTemplate'
 ]
 
+export const useCasesToRefreshApGroupTemplateList = [
+  'AddApGroupTemplate',
+  'UpdateApGroupTemplate',
+  'DeleteApGroupTemplate'
+]
+
 export const useCasesToRefreshTemplateList = [
   'ApplyTemplate',
   ...useCasesToRefreshNetworkTemplateList,
@@ -118,5 +124,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshWifiCallingTemplateList,
   ...useCasesToRefreshSyslogTemplateList,
   ...useCasesToRefreshRogueAPTemplateList,
-  ...useCasesToRefreshSwitchConfigProfileTemplateList
+  ...useCasesToRefreshSwitchConfigProfileTemplateList,
+  ...useCasesToRefreshApGroupTemplateList
 ]

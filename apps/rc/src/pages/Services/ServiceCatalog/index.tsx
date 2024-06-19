@@ -1,14 +1,17 @@
-import { Typography }             from 'antd'
-import _                          from 'lodash'
-import { defineMessage, useIntl } from 'react-intl'
+import { Typography } from 'antd'
+import { useIntl }    from 'react-intl'
 
 import { GridCol, GridRow, PageHeader }             from '@acx-ui/components'
 import { RadioCardCategory }                        from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                    from '@acx-ui/rc/components'
 import {
-  ServiceType
+  ServicePolicyCardData,
+  ServiceType,
+  isServicePolicyCardSetEnabled,
+  isServicePolicyCardEnabled
 } from '@acx-ui/rc/utils'
+import { EdgeScopes } from '@acx-ui/types'
 
 import { ServiceCard } from '../ServiceCard'
 
@@ -27,10 +30,9 @@ export default function ServiceCatalog () {
   const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
   const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
-  const sets = [
+  const sets: { title: string, items: ServicePolicyCardData<ServiceType>[] }[] = [
     {
-      key: 'connectivity',
-      title: defineMessage({ defaultMessage: 'Connectivity' }),
+      title: $t({ defaultMessage: 'Connectivity' }),
       items: [
         { type: ServiceType.DHCP, categories: [RadioCardCategory.WIFI] },
         {
@@ -47,13 +49,16 @@ export default function ServiceCatalog () {
         {
           type: ServiceType.EDGE_SD_LAN,
           categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
-          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady)
+          disabled: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+          scopeKeysMap: {
+            create: [EdgeScopes.CREATE],
+            read: [EdgeScopes.READ]
+          }
         }
       ]
     },
     {
-      key: 'security',
-      title: defineMessage({ defaultMessage: 'Security' }),
+      title: $t({ defaultMessage: 'Security' }),
       items: [
         { type: ServiceType.EDGE_FIREWALL,
           categories: [RadioCardCategory.EDGE],
@@ -62,16 +67,14 @@ export default function ServiceCatalog () {
       ]
     },
     {
-      key: 'application',
-      title: defineMessage({ defaultMessage: 'Application' }),
+      title: $t({ defaultMessage: 'Application' }),
       items: [
         { type: ServiceType.MDNS_PROXY, categories: [RadioCardCategory.WIFI] },
         { type: ServiceType.WIFI_CALLING, categories: [RadioCardCategory.WIFI] }
       ]
     },
     {
-      key: 'guests',
-      title: defineMessage({ defaultMessage: 'Guests & Residents' }),
+      title: $t({ defaultMessage: 'Guests & Residents' }),
       items: [
         { type: ServiceType.PORTAL, categories: [RadioCardCategory.WIFI] },
         {
@@ -94,31 +97,26 @@ export default function ServiceCatalog () {
         title={$t({ defaultMessage: 'Service Catalog' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
       />
-      {sets.map(set => {
-        const isAllDisabled = _.findIndex(set.items,
-          (o) => o.disabled === undefined || o.disabled === false ) === -1
-
-        return isAllDisabled
-          ? null
-          : <UI.CategoryContainer key={set.key}>
-            <Typography.Title level={3}>
-              { $t(set.title) }
-            </Typography.Title>
-            <GridRow>
-              {set.items.map(item => item.disabled
-                ? null
-                : <GridCol key={item.type} col={{ span: 6 }}>
-                  <ServiceCard
-                    key={item.type}
-                    serviceType={item.type}
-                    categories={item.categories}
-                    type={'button'}
-                  />
-                </GridCol>)}
-            </GridRow>
-          </UI.CategoryContainer>
-      }
-      )}
+      {sets.filter(set => isServicePolicyCardSetEnabled(set, 'read')).map(set => {
+        return <UI.CategoryContainer key={set.title}>
+          <Typography.Title level={3}>
+            { set.title }
+          </Typography.Title>
+          <GridRow>
+            {set.items.filter(i => isServicePolicyCardEnabled(i, 'read')).map(item => {
+              return <GridCol key={item.type} col={{ span: 6 }}>
+                <ServiceCard
+                  key={item.type}
+                  serviceType={item.type}
+                  categories={item.categories}
+                  type={'button'}
+                  scopeKeysMap={item.scopeKeysMap}
+                />
+              </GridCol>
+            })}
+          </GridRow>
+        </UI.CategoryContainer>
+      })}
     </>
   )
 }
