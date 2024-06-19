@@ -4,15 +4,14 @@ import { Space }     from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { SummaryCard }             from '@acx-ui/components'
-import { EnrollmentPortalLink }    from '@acx-ui/rc/components'
+import { SummaryCard }                         from '@acx-ui/components'
+import { EnrollmentPortalLink, WorkflowPanel } from '@acx-ui/rc/components'
 import {
   useGetWorkflowByIdQuery,
   useLazySearchWorkflowListQuery
 } from '@acx-ui/rc/services'
 import { Workflow } from '@acx-ui/rc/utils'
 
-import WorkflowPanel from '../../../Workflow/WorkflowPanel'
 
 
 export function WorkflowDetailOverview () {

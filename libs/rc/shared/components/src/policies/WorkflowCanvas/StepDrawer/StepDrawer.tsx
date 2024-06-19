@@ -72,8 +72,11 @@ export default function StepDrawer (props: StepDrawerProps) {
 
     getActionById({ params: { serviceId, actionId } })
       .then((result) => {
-        setActionData(result?.data)
-        formInstance.setFieldsValue(result?.data)
+        if (result?.data === undefined) return
+
+        const data = { ...result.data, actionId }
+        setActionData(data)
+        formInstance.setFieldsValue(data)
       })
 
   }, [actionId, isEdit])

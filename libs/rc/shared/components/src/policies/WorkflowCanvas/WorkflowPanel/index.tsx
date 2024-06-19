@@ -309,7 +309,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   )
 }
 
-export default function WorkflowPanel (props: WorkflowPanelProps) {
+export function WorkflowPanel (props: WorkflowPanelProps) {
   const { width = '80vw', height = '80vh' } = props
   return (
     <Card>

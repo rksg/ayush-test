@@ -4,11 +4,15 @@ import { useIntl }     from 'react-intl'
 import { GridCol, GridRow }                         from '@acx-ui/components'
 import { useLazySearchInProgressWorkflowListQuery } from '@acx-ui/rc/services'
 import {  checkObjectNotExists }                    from '@acx-ui/rc/utils'
+import { useParams }                                from '@acx-ui/react-router-dom'
+
+import { WorkflowPanel } from '../../policies/WorkflowCanvas/WorkflowPanel'
 
 
 
 export function WorkflowSettingForm () {
   const { $t } = useIntl()
+  const { policyId } = useParams()
   const form = Form.useFormInstance()
   const [searchWorkflowList] = useLazySearchInProgressWorkflowListQuery()
   const nameValidator = async (name: string) => {
@@ -56,7 +60,11 @@ export function WorkflowSettingForm () {
             validateFirst
             validateTrigger={['onBlur']}
             hasFeedback
-            //children={<Input/>}
+            children={
+              policyId
+                ? <WorkflowPanel workflowId={policyId} />
+                : <></>
+            }
           />
         </GridCol>
       </GridRow>
