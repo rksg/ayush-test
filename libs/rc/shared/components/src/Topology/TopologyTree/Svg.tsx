@@ -65,14 +65,11 @@ const Svg = (props: TopologyProps) => {
       const treeContainer = document.querySelector('#treeContainer')
       const topologyGraph =
         document.getElementById('topologyGraph') as unknown as SVGGraphicsElement
-      const containerWidth = treeContainer?.clientWidth || 0
       const containerHeight = (treeContainer?.clientHeight &&
         treeContainer?.clientHeight > topologyGraph?.getBBox().height ?
         treeContainer?.clientHeight : topologyGraph?.getBBox().height) || 0
 
-      let boundaryDx = translate[0] + dx >= containerWidth ?
-        containerWidth : (translate[0] + dx <= 0 ?
-          0 : translate[0] + dx)
+      let boundaryDx = translate[0] + dx
       let boundaryDy = translate[1] + dy >= containerHeight ?
         containerHeight : (translate[1] + dy <= -(containerHeight - 200) ?
           -(containerHeight - 200) : translate[1] + dy)
