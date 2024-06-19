@@ -1548,8 +1548,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
 
             const networkData = networkQuery.data as TableResult<VLANPoolNetworkType>
             networkData.data?.forEach(v => {
-              const val = v as VLANPoolNetworkType
-              networkMap.set(val.id, val.venueApGroups)
+              const network = v as VLANPoolNetworkType
+              networkMap.set(network.id, network.venueApGroups)
             })
           }
 
