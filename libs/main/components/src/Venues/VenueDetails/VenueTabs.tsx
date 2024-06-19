@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { Tabs }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                from '@acx-ui/feature-toggle'
-import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery } from '@acx-ui/rc/services'
+import { Tabs }                                                                     from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed }                                 from '@acx-ui/feature-toggle'
+import { useGetPropertyConfigsQuery, useGetPropertyUnitListQuery, useRwgListQuery } from '@acx-ui/rc/services'
 import {
   PropertyConfigStatus,
   useConfigTemplate,
@@ -34,6 +34,9 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
     skip: !enableProperty || isTemplate
   })
 
+  const showRwgUI = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const { data: rwgs } = useRwgListQuery({ params: useParams() }, { skip: !showRwgUI })
+
   const onTabChange = (tab: string) => {
     if (isTemplate) {
       navigate({
@@ -55,7 +58,8 @@ function VenueTabs (props:{ venueDetail: VenueDetailHeader }) {
       (data?.switchClients?.totalCount ?? 0),
     (data?.aps?.totalApCount ?? 0) +
       (data?.switches?.totalCount ?? 0) +
-      (data?.edges?.totalCount ?? 0),
+      (data?.edges?.totalCount ?? 0)
+      + (rwgs?.totalCount ?? 0),
     data?.activeNetworkCount ?? 0,
     unitQuery?.totalCount ?? 0
   ]
