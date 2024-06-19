@@ -11,8 +11,10 @@ import {
   useGetVenueTemplateForSyslogPolicyQuery,
   useGetSyslogPolicyTemplateQuery
 } from '@acx-ui/rc/services'
-import { SyslogPolicyDetailType, SyslogVenue, useConfigTemplate, useConfigTemplateQueryFnSwitcher, useTableQuery, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
-import { TenantLink }                                                                                                                     from '@acx-ui/react-router-dom'
+import { ConfigTemplateType, SyslogPolicyDetailType, SyslogVenue, useConfigTemplate, useConfigTemplateQueryFnSwitcher, useTableQuery, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
+import { TenantLink }                                                                                                                                         from '@acx-ui/react-router-dom'
+
+import { renderConfigTemplateDetailsComponent } from '../../../configTemplates'
 
 const defaultPayload = {
   fields: [
@@ -42,7 +44,9 @@ const SyslogVenueDetail = () => {
       sorter: true,
       fixed: 'left',
       render: (_, row) => {
-        return <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
+        return isTemplate
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.VENUE, row.id!, row.name)
+          : <TenantLink to={`/venues/${row.id}/venue-details/overview`}>{row.name}</TenantLink>
       }
     },
     {
