@@ -11,6 +11,7 @@ import {
   usePolicyListBreadcrumb
 }   from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../configTemplates'
@@ -36,6 +37,7 @@ export function VLANPoolDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <PolicyConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={PolicyType.VLAN_POOL}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}

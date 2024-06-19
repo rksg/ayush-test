@@ -2,7 +2,7 @@ import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
 import { Loader }                                                                                                                                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                         from '@acx-ui/feature-toggle'
+import { Features }                                                                                                                                       from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady, useTunnelProfileActions }                                                                                                 from '@acx-ui/rc/components'
 import { useGetEdgeSdLanP2ViewDataListQuery, useGetEdgeSdLanViewDataListQuery, useGetNetworkSegmentationViewDataListQuery, useGetTunnelProfileByIdQuery } from '@acx-ui/rc/services'
 import { getTunnelProfileFormDefaultValues, isDefaultTunnelProfile as getIsDefaultTunnelProfile, TunnelProfileFormType }                                  from '@acx-ui/rc/utils'
@@ -16,7 +16,7 @@ const EditTunnelProfile = () => {
   const [form] = Form.useForm()
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
 
   const { data: tunnelProfileData, isFetching } = useGetTunnelProfileByIdQuery(
     { params: { id: policyId } }

@@ -647,7 +647,7 @@ describe('RcRoutes: Devices', () => {
 
       describe('Only P1 enabled', () => {
         beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
-          flag === Features.EDGES_SD_LAN_TOGGLE
+          flag === Features.EDGES_TOGGLE || flag === Features.EDGES_SD_LAN_TOGGLE
         ))
 
         test('should navigate to create Edge SD-LAN P1 page', async () => {
@@ -671,7 +671,7 @@ describe('RcRoutes: Devices', () => {
 
       describe('Only P2 enabled', () => {
         beforeEach(() => jest.mocked(useIsSplitOn).mockImplementation(flag =>
-          flag === Features.EDGES_SD_LAN_HA_TOGGLE
+          flag === Features.EDGES_TOGGLE || flag === Features.EDGES_SD_LAN_HA_TOGGLE
         ))
 
         test('should navigate to create Edge SD-LAN P2 page', async () => {

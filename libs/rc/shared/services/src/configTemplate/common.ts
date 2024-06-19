@@ -2,6 +2,7 @@
 import {
   AAAPolicyType,
   AAAViewModalType,
+  ApplyConfigTemplatePaylod,
   CommonResult,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
@@ -38,7 +39,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    applyConfigTemplate: build.mutation<CommonResult, RequestPayload>({
+    applyConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),

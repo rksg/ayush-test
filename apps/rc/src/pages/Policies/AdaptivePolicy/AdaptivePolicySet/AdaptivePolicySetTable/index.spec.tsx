@@ -54,24 +54,24 @@ describe('AdaptivePolicySetTable', () => {
     store.dispatch(policyApi.util.resetApiState())
     store.dispatch(serviceApi.util.resetApiState())
     mockServer.use(
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
-      rest.get(
-        MacRegListUrlsInfo.getMacRegistrationPools.url.split('?')[0],
+      rest.post(
+        MacRegListUrlsInfo.searchMacRegistrationPools.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(macList))
       ),
-      rest.get(
-        DpskUrls.getDpskList.url.split('?')[0],
+      rest.post(
+        DpskUrls.getEnhancedDpskList.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(dpskList))
       ),
       rest.post(

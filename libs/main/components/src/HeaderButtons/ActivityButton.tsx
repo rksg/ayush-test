@@ -138,7 +138,8 @@ export default function ActivityButton () {
         size='small'
         onChange={(val)=>{
           setStatus(val)
-        }}>
+        }}
+        dropdownMatchSelectWidth={false}>
         <Select.Option value={'all'}>
           { $t({ defaultMessage: 'All Statuses' }) }
         </Select.Option>

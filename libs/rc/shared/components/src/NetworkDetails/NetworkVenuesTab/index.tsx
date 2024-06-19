@@ -141,7 +141,6 @@ export function NetworkVenuesTab () {
 
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenueMutation,
@@ -222,14 +221,12 @@ export function NetworkVenuesTab () {
           // work around of read-only records from RTKQ
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
-        if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
-        }
+        setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
       })
 
       setTableData(data)
     }
-  }, [tableQuery.data, networkQuery.data, supportOweTransition])
+  }, [tableQuery.data, networkQuery.data])
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
 
