@@ -56,12 +56,6 @@ jest.mock('antd', () => {
   return { ...components, Select }
 })
 
-// const mockedUseConfigTemplate = jest.fn()
-// jest.mock('@acx-ui/rc/utils', () => ({
-//   ...jest.requireActual('@acx-ui/rc/utils'),
-//   useConfigTemplate: () => mockedUseConfigTemplate()
-// }))
-
 describe('SecurityTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())

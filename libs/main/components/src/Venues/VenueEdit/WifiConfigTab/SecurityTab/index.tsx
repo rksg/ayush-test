@@ -246,7 +246,7 @@ export function SecurityTab () {
           currentReportThreshold: venueRogueApData?.reportThreshold
         }
         // eslint-disable-next-line max-len
-        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac, enableTemplateRbac })
+        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: (isTemplate) ? enableTemplateRbac : enableRbac })
         setTriggerRogueAPDetection(false)
       }
 
