@@ -15,6 +15,7 @@ const RogueApDrawer = (props: {
   policyId: string
 }) => {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { $t } = useIntl()
   const { visible, setVisible, policyId } = props
 
@@ -26,7 +27,8 @@ const RogueApDrawer = (props: {
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
     extraParams: { policyId: policyId },
-    enableRbac
+    enableRbac,
+    enableTemplateRbac
   })
 
   const basicColumns: TableProps<RogueAPRule>['columns'] = [

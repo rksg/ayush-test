@@ -3,15 +3,17 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
 import {
   CommonResult,
+  ConfigTemplateContext, ConfigTemplateUrlsInfo,
+  PoliciesConfigTemplateUrlsInfo,
   RogueAPDetectionContextType,
   RogueAPRule,
   RogueApUrls,
   RogueCategory,
   RogueRuleType,
-  RogueVenue
+  RogueVenue, VenueConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Path }                                                   from '@acx-ui/react-router-dom'
 import { Provider }                                               from '@acx-ui/store'
@@ -506,6 +508,89 @@ describe('RogueAPDetectionForm', () => {
       }}>
         <RogueAPDetectionForm edit={false}/>
       </RogueAPDetectionContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.getAllByText('Settings')).toBeTruthy()
+    expect(screen.getAllByText('Scope')).toBeTruthy()
+    expect(screen.getAllByText('Summary')).toBeTruthy()
+
+    fireEvent.change(screen.getByRole('textbox', { name: /policy name/i }),
+      { target: { value: 'test policy' } })
+
+    await addRuleWithoutEdit('rule1', RogueRuleType.CTS_ABUSE_RULE, RogueCategory.MALICIOUS)
+
+    await screen.findByText('rule1')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    const table = await screen.findByRole('table')
+    expect(await within(table).findByText('test-venue')).toBeVisible()
+
+    const row = screen.getByRole('row', {
+      name: /test-venue 10 0 OFF/i
+    })
+
+    await userEvent.click(within(row).getByRole('switch'))
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await screen.findByText(/Venues \(1\)/i)
+
+    await screen.findByRole('heading', { name: 'Summary' })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Add' }))
+
+    await waitFor(() => expect(mockAddRoguePolicy).toBeCalled())
+    await waitFor(() => expect(mockActivateRoguePolicy).toBeCalled())
+  })
+
+
+  it('add policy is successful when RBAC_CONFIG_TEMPLATE_TOGGLE is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    const mockAddRoguePolicy = jest.fn()
+    const mockActivateRoguePolicy = jest.fn()
+    mockServer.use(
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(
+          ctx.json(venueTable)
+        )
+      ),
+      rest.post(
+        PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        PoliciesConfigTemplateUrlsInfo.addRoguePolicyRbac.url,
+        (_, res, ctx) => res(
+          mockAddRoguePolicy(),
+          ctx.json(addPolicyRbacResponse)
+        )
+      ),
+      rest.put(
+        PoliciesConfigTemplateUrlsInfo.activateRoguePolicy.url,
+        (_, res, ctx) => res(
+          mockActivateRoguePolicy(),
+          ctx.json(policyResponse)
+        )
+      )
+    )
+
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <RogueAPDetectionContext.Provider value={{
+          state: initState,
+          dispatch: setRogueAPConfigure
+        }}>
+          <RogueAPDetectionForm edit={false}/>
+        </RogueAPDetectionContext.Provider>
+      </ConfigTemplateContext.Provider>
       , {
         wrapper: wrapper,
         route: {

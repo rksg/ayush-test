@@ -33,6 +33,7 @@ type RogueAPDetectionSettingFormProps = {
 
 export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormProps) => {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { $t } = useIntl()
   const { edit } = props
 
@@ -46,7 +47,8 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
     skip: !edit,
-    enableRbac
+    enableRbac,
+    enableTemplateRbac
   })
 
   // eslint-disable-next-line max-len
@@ -54,7 +56,8 @@ export const RogueAPDetectionSettingForm = (props: RogueAPDetectionSettingFormPr
     useQueryFn: useEnhancedRoguePoliciesQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
     payload: { page: 1, pageSize: 10000 },
-    enableRbac
+    enableRbac,
+    enableTemplateRbac
   })
 
   const handlePolicyName = (policyName: string) => {
