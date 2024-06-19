@@ -4,6 +4,8 @@ import { useIntl } from 'react-intl'
 
 import { Button, Modal, ModalType }              from '@acx-ui/components'
 import { VLANPoolPolicyType, VLAN_LIMIT_NUMBER } from '@acx-ui/rc/utils'
+import { WifiScopes }                            from '@acx-ui/types'
+import { hasPermission }                         from '@acx-ui/user'
 
 import { VLANPoolForm } from '../../policies/VLANPoolForm'
 import * as UI          from '../styledComponents'
@@ -24,6 +26,8 @@ export default function VLANPoolModal (props:{
       onClose()
       if(data)updateInstance(data)
     }}/>
+
+  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) return null
 
   return (
     <UI.ButtonContainer>
