@@ -17,7 +17,7 @@ import {
   useLazyGetSwitchFirmwareListQuery
 } from '@acx-ui/rc/services'
 import {
-  FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
   SwitchFirmware
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
@@ -47,7 +47,7 @@ function useColumns () {
   const { getSwitchNextScheduleTplTooltip,
     getSwitchFirmwareList } = useSwitchFirmwareUtils()
 
-  const columns: TableProps<FirmwareSwitchVenue>['columns'] = [
+  const columns: TableProps<FirmwareSwitchVenueV1002>['columns'] = [
     {
       title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueName',
@@ -74,9 +74,10 @@ function useColumns () {
       dataIndex: 'version',
       width: 150,
       render: function (_, row) {
-        let versionList = getSwitchFirmwareList(row)
-        const version = versionList.length > 0 ? versionList.join(', ') : noDataDisplay
-        return getTooltipText(version)
+        // let versionList = getSwitchFirmwareList(row)
+        // const version = versionList.length > 0 ? versionList.join(', ') : noDataDisplay
+        // return getTooltipText(version)
+        return ''
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -84,10 +85,11 @@ function useColumns () {
       dataIndex: 'nextSchedule',
       width: 200,
       render: function (_, row) {
-        const tooltip = getSwitchNextScheduleTplTooltip(row) ||
-          intl.$t({ defaultMessage: 'Not scheduled' })
-        const customDisplayValue = getNextScheduleTpl(intl, row)
-        return getTooltipText(tooltip, customDisplayValue)
+        return ''
+        // const tooltip = getSwitchNextScheduleTplTooltip(row) ||
+        //   intl.$t({ defaultMessage: 'Not scheduled' })
+        // const customDisplayValue = getNextScheduleTpl(intl, row)
+        // return getTooltipText(tooltip, customDisplayValue)
       }
     }
   ]
@@ -105,7 +107,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 }
 
 type SelectSwitchStepProps = {
-  data: FirmwareSwitchVenue[],
+  data: FirmwareSwitchVenueV1002[],
   wizardtype?: SwitchFirmwareWizardType,
   setShowSubTitle: (visible: boolean) => void
 }
@@ -135,7 +137,16 @@ export const SelectSwitchStep = (
     }
   })
   const [isLoading, setIsLoading] = useState(false)
-  const totalSwitchCount = data.reduce((total, venue) => total + venue.switchCount, 0)
+
+  const totalSwitchCount = data.reduce((total, venue) => {
+    if (venue.switchCounts) {
+      const venueSwitchCount = venue.switchCounts.reduce((sum, switchCount) => {
+        return sum + switchCount.count
+      }, 0)
+      return total + venueSwitchCount
+    }
+    return total
+  }, 0)
 
 
   useEffect(()=>{
@@ -187,12 +198,10 @@ export const SelectSwitchStep = (
     }
   ]
 
-  const handleExpand = async (_expanded: unknown, record: {
-    id: string, switchCount: number,
-    aboveTenSwitchCount: number
-  }) => {
+  const handleExpand = async (_expanded: unknown, record: FirmwareSwitchVenueV1002) => {
+    const count = record.switchCounts.reduce((sum, switchCount) => sum + switchCount.count, 0)
     if (_.isEmpty(nestedData[record.id]?.initialData) ||
-      (record.switchCount + record.aboveTenSwitchCount)
+      (count)
       !== nestedData[record.id]?.initialData.length) {
       setIsLoading(true)
       const switchListPayload = {
@@ -242,7 +251,7 @@ export const SelectSwitchStep = (
     form.setFieldsValue({ selectedSwitchRowKeys, selectedVenueRowKeys, nestedData })
   }, [selectedSwitchRowKeys, selectedVenueRowKeys, nestedData])
 
-  const expandedRowRenderFunc = (record: FirmwareSwitchVenue) => {
+  const expandedRowRenderFunc = (record: FirmwareSwitchVenueV1002) => {
     return <Table<SwitchFirmware>
       columns={switchColumns}
       enableResizableColumn={false}
@@ -333,7 +342,7 @@ export const SelectSwitchStep = (
     })
   }
   const [selectedSearchSwitchRowKeys, setSelectedSearchSwitchRowKeys] = useState([] as Key[])
-  const isIndeterminate = (record: FirmwareSwitchVenue) => {
+  const isIndeterminate = (record: FirmwareSwitchVenueV1002) => {
     const venueId = record.id
     if (selectedVenueRowKeys.includes(record.id)) {
       return false
@@ -427,7 +436,9 @@ export const SelectSwitchStep = (
                   })
 
                   const currentVenue = data.filter(d => d.id === currentRow.venueId)[0]
-                  if ((currentVenue.switchCount + currentVenue.aboveTenSwitchCount)
+                  const currentVenueCount = currentVenue?.switchCounts?.reduce(
+                    (sum, switchCount) => sum + switchCount.count, 0) || 0
+                  if ((currentVenueCount)
                     === newSelectedSwitchRowKeys[currentRow.venueId].length) {
                     newSelectedVenueRowKeys = [...newSelectedVenueRowKeys, currentVenue.id]
                   }
@@ -502,7 +513,9 @@ export const SelectSwitchStep = (
                 // columnWidth: '30px',
                 onExpand: handleExpand,
                 expandIcon: ({ expanded, onExpand, record }) => {
-                  if ((record?.switchCount + record?.aboveTenSwitchCount > 0)) {
+                  const count = record.switchCounts?.reduce(
+                    (sum, switchCount) => sum + switchCount.count, 0) || 0
+                  if ((count > 0)) {
                     return expanded ? (
                       <ArrowExpand
                         style={{ verticalAlign: 'bottom' }}
@@ -527,8 +540,11 @@ export const SelectSwitchStep = (
                   }
                 },
                 expandedRowRender: expandedRowRenderFunc,
-                rowExpandable: record =>
-                  (record?.switchCount + record?.aboveTenSwitchCount > 0) ?? false
+                rowExpandable: record => {
+                  const count = record.switchCounts?.reduce(
+                    (sum, switchCount) => sum + switchCount.count, 0) || 0
+                  return count > 0
+                }
               }}
               enableApiFilter={true}
               rowKey='id'
@@ -539,7 +555,7 @@ export const SelectSwitchStep = (
                 getCheckboxProps: (record) => {
                   return {
                     indeterminate: isIndeterminate(record),
-                    name: record.name
+                    name: record.venueName
                   }
                 },
                 onChange: (selectedKeys) => {
@@ -553,8 +569,10 @@ export const SelectSwitchStep = (
 
                       let initialData = nestedData[venue]?.initialData ?? []
                       const row = data.filter(v => v.id === venue)
+                      const rowCount = row[0]?.switchCounts?.reduce(
+                        (sum, switchCount) => sum + switchCount.count, 0) || 0
                       if (_.isEmpty(initialData) &&
-                      (row[0]?.switchCount > 0 || row[0]?.aboveTenSwitchCount > 0)) {
+                      rowCount > 0) {
                         const switchListPayload = {
                           venueIdList: [venue]
                         }

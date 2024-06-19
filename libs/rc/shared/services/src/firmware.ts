@@ -307,8 +307,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         }
       },
       transformResponse (result: {
-        upgradeVenueViewList?: FirmwareSwitchVenue[]
-      } | FirmwareSwitchVenue[]) {
+        upgradeVenueViewList?: FirmwareSwitchVenueV1002[]
+      } | FirmwareSwitchVenueV1002[]) {
         const data = Array.isArray(result) ? result : result.upgradeVenueViewList ?? []
         const totalCount = data.length
 
@@ -316,7 +316,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
           data,
           page: 1,
           totalCount
-        } as TableResult<FirmwareSwitchVenue>
+        } as TableResult<FirmwareSwitchVenueV1002>
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],

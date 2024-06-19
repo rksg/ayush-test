@@ -12,6 +12,7 @@ import {
   compareSwitchVersion,
   FirmwareCategory,
   FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
   FirmwareVersion,
   SwitchFirmware,
   switchSchedule
@@ -31,7 +32,7 @@ export interface ScheduleStepProps {
   nonIcx8200Count: number
   icx8200Count: number
   hasVenue: boolean,
-  data: FirmwareSwitchVenue[],
+  data: FirmwareSwitchVenueV1002[],
   upgradeVenueList: FirmwareSwitchVenue[],
   upgradeSwitchList: SwitchFirmware[],
   setShowSubTitle: (visible: boolean) => void

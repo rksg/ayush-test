@@ -22,13 +22,13 @@ import {
 import {
   FirmwareCategory,
   FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
   FirmwareVersion,
   SwitchFirmware,
   UpdateScheduleRequest
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { getReleaseFirmware } from '../../../FirmwareUtils'
 import * as UI                from '../styledComponents'
 
 import { ScheduleStep }     from './ScheduleStep'
@@ -47,7 +47,7 @@ export interface UpdateNowWizardProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,
   onSubmit: (data: UpdateScheduleRequest) => void,
-  data: FirmwareSwitchVenue[],
+  data: FirmwareSwitchVenueV1002[],
 }
 
 export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
@@ -242,33 +242,33 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     const nestedData = form.getFieldValue('nestedData')
     const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
 
-    props.data.forEach((row: FirmwareSwitchVenue) => {
-      if (selectedVenueRowKeys.includes(row.id)) {
-        const version = row.switchFirmwareVersion?.id
-        const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-        filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
-        nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
-        icx8200Count = icx8200Count +
-                  (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
-      } else if (nestedData[row.id]) {
-        nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
-          const fw = row.currentFirmware || ''
-          if (row.switchId) {
-            currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
-          }
-          if (fw.includes('090')) { //Need use regular expression
-            filterVersions = checkCurrentVersions(fw, '', filterVersions)
-            nonIcx8200Count = nonIcx8200Count +1
-          } else if (fw.includes('100')) {
-            filterVersions = checkCurrentVersions('', fw, filterVersions)
-            icx8200Count = icx8200Count+1
-          }
-        })
-      }
-    })
-    currentUpgradeVenueList =
-            _.filter(props.data, obj =>
-              selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenue[]
+    // props.data.forEach((row: FirmwareSwitchVenueV1002) => {
+    //   if (selectedVenueRowKeys.includes(row.id)) {
+    //     const version = row.switchFirmwareVersion?.id
+    //     const rodanVersion = row.switchFirmwareVersionAboveTen?.id
+    //     filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
+    //     nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
+    //     icx8200Count = icx8200Count +
+    //               (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
+    //   } else if (nestedData[row.id]) {
+    //     nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
+    //       const fw = row.currentFirmware || ''
+    //       if (row.switchId) {
+    //         currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
+    //       }
+    //       if (fw.includes('090')) { //Need use regular expression
+    //         filterVersions = checkCurrentVersions(fw, '', filterVersions)
+    //         nonIcx8200Count = nonIcx8200Count +1
+    //       } else if (fw.includes('100')) {
+    //         filterVersions = checkCurrentVersions('', fw, filterVersions)
+    //         icx8200Count = icx8200Count+1
+    //       }
+    //     })
+    //   }
+    // })
+    // currentUpgradeVenueList =
+    //         _.filter(props.data, obj =>
+    //           selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenue[]
 
     setUpgradeSwitchList(currentUpgradeSwitchList)
     setUpgradeVenueList(currentUpgradeVenueList)
@@ -322,7 +322,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
         >
           <SelectSwitchStep
             setShowSubTitle={setShowSubTitle}
-            data={props.data as FirmwareSwitchVenue[]}
+            data={props.data as FirmwareSwitchVenueV1002[]}
             wizardtype={wizardType} />
         </StepsForm.StepForm>
 

@@ -25,7 +25,7 @@ export const VersionBanner = () => {
   const { data: recommendedVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
   const { parseSwitchVersion } = useSwitchFirmwareUtils()
 
-  if(!latestVersions && !recommendedVersions) return false
+  if(!latestVersions && !recommendedVersions) return <></>
 
   const versionInfo = []
 

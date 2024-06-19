@@ -35,7 +35,7 @@ import { filterByAccess, hasPermission } from '@acx-ui/user'
 import { noDataDisplay }                 from '@acx-ui/utils'
 
 import {
-  getNextScheduleTpl,
+  getNextScheduleTplV1002,
   toUserDate
 } from '../../FirmwareUtils'
 import { PreferencesDialog } from '../../PreferencesDialog'
@@ -267,7 +267,7 @@ export function VenueFirmwareList () {
           title={getSwitchNextScheduleTplTooltip(row) ||
             intl.$t({ defaultMessage: 'Not scheduled' })}
           placement='bottom' >
-          <UI.WithTooltip>{getNextScheduleTpl(intl, row)}</UI.WithTooltip>
+          <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>
         </Tooltip >
       }
     }

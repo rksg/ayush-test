@@ -8,19 +8,18 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
 import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
 import {
-  FirmwareSwitchVenue,
+  FirmwareSwitchVenueV1002,
   SwitchFirmware,
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
 import { TABLE_QUERY_LONG_POLLING_INTERVAL } from '@acx-ui/utils'
 
-import { getNextScheduleTpl } from '../../../FirmwareUtils'
-import * as UI                from '../../../styledComponents'
+import {  getNextScheduleTplV1002 } from '../../../FirmwareUtils'
+import * as UI                      from '../../../styledComponents'
 import {
   enableSwitchScheduleTooltip,
   getSwitchNextScheduleTpl
@@ -28,7 +27,7 @@ import {
 export interface SwitchScheduleDrawerProps {
   visible: boolean,
   setVisible: (visible: boolean) => void,
-  data: FirmwareSwitchVenue
+  data: FirmwareSwitchVenueV1002
 }
 
 export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
@@ -133,13 +132,13 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
       <Row style={{ lineHeight: '24px' }}>
         <Typography.Text>
           <b> {intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}</b>{
-            props.data.name}
+            props.data.venueName}
         </Typography.Text>
       </Row>
       <Row style={{ lineHeight: '24px' }}>
         <Typography.Text>
           <b>  {intl.$t({ defaultMessage: 'Scheduled for:' })}</b> {
-            getNextScheduleTpl(intl, props.data)}
+            getNextScheduleTplV1002(intl, props.data)}
         </Typography.Text>
       </Row>
       <Row style={{ lineHeight: '24px' }}>

@@ -279,9 +279,10 @@ export interface FirmwareSwitchVenueV1002 {
   versions:FirmwareSwitchVenueVersionsV1002[];
   nextSchedule?: switchSchedule;
   lastScheduleUpdateTime: string;
-  switchCount: FirmwareSwitchVenueSwitchCountsV1002[];
+  switchCounts: FirmwareSwitchVenueSwitchCountsV1002[];
   status: SwitchFirmwareStatusType;
   scheduleCount: number;
+
 }
 
 export enum SwitchFirmwareStatusType {
