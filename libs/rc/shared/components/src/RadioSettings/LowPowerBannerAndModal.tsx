@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable max-len */
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
@@ -28,13 +28,11 @@ export function LowPowerBannerAndModal (props: {
   const { $t } = useIntl()
   const { venueId } = useParams()
 
-  const [bannerText, setBannerText] = useState('')
-
   const navigate = useNavigate()
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/wifi/radio/Normal6GHz`)
 
-  const displayModalMessage = (from: string, isOutdoor?: boolean, status?: AFCStatus): string => {
+  const displayModalMessage = useMemo(() => {
 
     let modalMessage = ''
 
@@ -51,19 +49,19 @@ export function LowPowerBannerAndModal (props: {
         messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
       }
 
-      if (status === AFCStatus.WAIT_FOR_LOCATION) {
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
         messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))
       }
-      if (status === AFCStatus.REJECTED) {
+      if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
         messageList.push($t({ defaultMessage: '(Rejected by FCC DB due to no available channels)' }))
       }
-      if (status === AFCStatus.WAIT_FOR_RESPONSE) {
+      if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
         messageList.push($t({ defaultMessage: '(Wait for AFC server response)' }))
       }
-      if (status === AFCStatus.PASSED) {
+      if (afcInfo?.afcStatus === AFCStatus.PASSED) {
         messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))
       }
-      if (status === AFCStatus.AFC_SERVER_FAILURE) {
+      if (afcInfo?.afcStatus === AFCStatus.AFC_SERVER_FAILURE) {
         messageList.push($t({ defaultMessage: '(AFC Server failure)' }))
       }
 
@@ -73,15 +71,7 @@ export function LowPowerBannerAndModal (props: {
 
     return modalMessage
 
-  }
-
-  const memorizedFunction = useMemo(() => {
-    return displayModalMessage(from, isOutdoor, afcInfo?.afcStatus)
   }, [from, isOutdoor, afcInfo])
-
-  useEffect(()=> {
-    setBannerText(memorizedFunction)
-  }, [isOutdoor])
 
   return <Row
     data-testid='low-power-banner'
@@ -93,7 +83,7 @@ export function LowPowerBannerAndModal (props: {
       <StyledAlert showIcon={true}
         style={{ verticalAlign: 'middle' }}
         message={<>
-          {bannerText}
+          {displayModalMessage}
           { from === 'ap' ?
             <Button type='link'
               data-testid='how-to-fix-this-button'>
