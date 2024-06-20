@@ -1,10 +1,11 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { ComponentStory } from '@storybook/react'
 
 import { StepsForm } from '@acx-ui/components'
 
 import { TradeOff, TradeOffProps } from '.'
+
 
 const story = {
   title: 'TradeOff',
@@ -14,10 +15,13 @@ const story = {
 export default story
 
 const Template: ComponentStory<typeof TradeOff> = (props: TradeOffProps) => {
+  const [value, setValue] = useState('value1')
   return (
     <StepsForm>
       <StepsForm.StepForm>
-        <TradeOff {...props} />
+        <TradeOff {...props}
+          onChange={(current) => setValue(current as string)}
+          currentValue={value}/>
       </StepsForm.StepForm>
     </StepsForm>
   )
@@ -41,7 +45,6 @@ const Column2:ReactNode = (<div style={{ flexDirection: 'column' }}>
   </div>
   <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '4px', paddingTop: '10px' }}>
     <span>AP: Radio Channel</span>
-    <span>Ap:Radio Channel Width</span>
     <span>AP: Radio Channel Width</span>
     <span>Zone: Radio Channel Range</span>
   </div>
@@ -56,7 +59,7 @@ Default.args = {
   name: 'tradeOff',
   currentValue: 'value1',
   label: 'What\'s more important to you for this network?',
-  headers: ['Intent Trade-off', 'AI Driven - Configuration change'],
+  headers: ['Intent Priority', 'AI Driven - Configuration change'],
   radios: [
     {
       key: 'value1',

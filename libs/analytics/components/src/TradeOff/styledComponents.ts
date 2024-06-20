@@ -29,7 +29,7 @@ export const TradeOffWrapper = styled.div`
 `
 
 export const HeaderWrapper = styled(Row)`
-    margin: 50px 8px 12px;
+    margin: 50px 8px 9px;
     font-size: var(--acx-subtitle-5-font-size);
     line-height: var(--acx-subtitle-5-line-height);
     font-weight: var(--acx-body-font-weight-bold);
@@ -51,7 +51,7 @@ export const RowWrapper = styled(Row)`
     line-height: var(--acx-body-2-line-height);
 
     &.highlight {
-        background: var(--acx-accents-blue-20);
+        background-color: var(--acx-accents-blue-10);
         border-radius: 4px;
         border: 1px solid var(--acx-accents-blue-50);
     }
