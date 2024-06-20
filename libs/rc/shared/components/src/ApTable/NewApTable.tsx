@@ -106,7 +106,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const enableAP70 = useIsTierAllowed(TierFeatures.AP_70)
   const [ getApCompatibilitiesVenue ] = useLazyGetApCompatibilitiesVenueQuery()
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
-  const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { tenantId: params.tenantId } })
+  const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
 
   const apListTableQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,

@@ -10,17 +10,12 @@ import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
-import {
-  useApDetailHeaderQuery,
-  isAPLowPower,
-  useGetApCapabilitiesQuery
-}                          from '@acx-ui/rc/services'
+import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
   useApContext,
-  ApStatus,
-  Capabilities
+  ApStatus
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -32,20 +27,30 @@ import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
+import { useGetApCapabilities } from '../hooks'
+
 import ApTabs from './ApTabs'
 
 function ApPageHeader () {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
   const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
-  const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
-  //eslint-disable-next-line
-  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
+  const params = { venueId, serialNumber }
+  const { data } = useApDetailHeaderQuery({ params })
+
+  const { data: apCapabilities } = useGetApCapabilities({
+    params,
+    modelName: model,
+    enableRbac: isUseRbacApi
+  })
+
+  const isOutdoorAp = apCapabilities?.isOutdoor
 
   const apAction = useApActions()
   const { activeTab } = useParams()
-
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -100,12 +105,6 @@ function ApPageHeader () {
   const enableTimeFilter = () =>
     !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
 
-  const isAPOutdoor = (): boolean | undefined => {
-    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
-    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === model)
-    return currentApModel?.isOutdoor
-  }
-
   return (
     <PageHeader
       title={data?.title || ''}
@@ -158,7 +157,7 @@ function ApPageHeader () {
           <LowPowerBannerAndModal
             afcInfo={ApStatusData.afcInfo}
             from={'ap'}
-            isOutdoor={isAPOutdoor()}
+            isOutdoor={isOutdoorAp}
           />
         }
         <ApTabs apDetail={data as ApDetailHeader} />

@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
-import _          from 'lodash'
-import { Params } from 'react-router-dom'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import _                       from 'lodash'
+import { Params }              from 'react-router-dom'
 
 import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -68,7 +69,8 @@ import {
   onSocketActivityChanged,
   NewAPModel,
   NewApGroupViewModelResponseType,
-  NewGetApGroupResponseType
+  NewGetApGroupResponseType,
+  CapabilitiesApModel
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -170,7 +172,7 @@ export const apApi = baseApApi.injectEndpoints({
           const apGroupList = apGroupListRes.data as TableResult<ApGroup>
           aggregateApGroupInfo(apList, apGroupList)
         }
-        const capabilitiesRes = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities))
+        const capabilitiesRes = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities, apiCustomHeader))
         const capabilities = capabilitiesRes.data as Capabilities
         aggregatePoePortInfo(apList, capabilities)
         return { data: transformApListFromNewModel(apListRes.data as TableResult<NewAPModelExtended, ApExtraParams>) }
@@ -557,8 +559,10 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
     wifiCapabilities: build.query<Capabilities, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getWifiCapabilities, params, apiCustomHeader)
         return {
           ...req
         }
@@ -671,7 +675,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
     pingAp: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -695,8 +698,10 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApRadioCustomization, params, apiCustomHeader)
         return {
           ...req
         }
@@ -714,18 +719,50 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApRadioCustomization, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateApRadioCustomization, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params }) => { // non RBAC API
         const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    getOldApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) { // non RBAC API
+        const { params } = arg
+        let modelName = arg.modelName
+        const apCapReq = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
+        const apCapQuery = await fetchWithBQ(apCapReq)
+        const apCaps = apCapQuery.data as Capabilities
+
+        if (!modelName) {
+          const apReq = createHttpRequest(WifiUrlsInfo.getAp, params)
+          const apQuery = await fetchWithBQ(apReq)
+          const apData = apQuery.data as ApDetails
+          modelName = apData.model
+        }
+        const curApCap = apCaps?.apModels.find(cap => cap.model === modelName) as CapabilitiesApModel
+
+        return apCapQuery.data
+          ? { data: curApCap }
+          : { error: apCapQuery.error as FetchBaseQueryError }
+      }
+    }),
+    getApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
+      query: ({ params }) => { // RBAC API
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApCapabilities, params, apiCustomHeader)
         return {
           ...req
         }
@@ -1280,8 +1317,12 @@ export const {
   useUpdateApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
-  useGetApCapabilitiesQuery,
-  useLazyGetApCapabilitiesQuery,
+  useGetApCapabilitiesQuery,     // deprecated
+  useLazyGetApCapabilitiesQuery, // deprecated
+  useGetOldApCapabilitiesByModelQuery,
+  useLazyGetOldApCapabilitiesByModelQuery,
+  useGetApCapabilitiesByModelQuery,
+  useLazyGetApCapabilitiesByModelQuery,
   useGetApValidChannelQuery,
   useLazyGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,

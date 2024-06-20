@@ -1878,8 +1878,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueAntennaType, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1895,11 +1898,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueAntennaType, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.updateVenueAntennaType, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]

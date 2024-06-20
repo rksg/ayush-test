@@ -3,23 +3,32 @@ import { useState, useEffect } from 'react'
 import { Upload, Image } from 'antd'
 
 import { Card, Loader, showToast } from '@acx-ui/components'
+import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
-  useApViewModelQuery,
-  useGetApCapabilitiesQuery
+  useApViewModelQuery
 } from '@acx-ui/rc/services'
 import { useApContext }  from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
 import { hasPermission } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
 
-import PlaceHolder from '../../../../../../assets/images/ap-models-images/placeholder.svg'
+import PlaceHolder              from '../../../../../../assets/images/ap-models-images/placeholder.svg'
+import { useGetApCapabilities } from '../../../hooks'
 
-import { ApPhotoDrawer }                                                          from './ApPhotoDrawer'
-import { StyledSpace, RoundIconDiv, PhotoDiv, ArrowsOutIcon, PhotoIcon, DotsDiv } from './styledComponents'
+import { ApPhotoDrawer } from './ApPhotoDrawer'
+import {
+  StyledSpace,
+  RoundIconDiv,
+  PhotoDiv,
+  ArrowsOutIcon,
+  PhotoIcon,
+  DotsDiv
+} from './styledComponents'
 
 export function ApPhoto () {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const [imageUrl, setImageUrl] = useState('')
   const [defaultImageUrl, setDefaultImageUrl] = useState(PlaceHolder)
@@ -28,7 +37,8 @@ export function ApPhoto () {
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [activeImage, setActiveImage] = useState<boolean[]>([true, false])
   const [imageList, setImageList] = useState<string[]>([])
-  const params = useApContext()
+  const { serialNumber, venueId, model } = useApContext()
+  const params = { venueId, serialNumber }
 
   const apViewModelPayload = {
     entityType: 'aps',
@@ -40,25 +50,26 @@ export function ApPhoto () {
     filters: { serialNumber: [params.serialNumber] }
   }
   const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const apCapabilitiesQuery = useGetApCapabilitiesQuery({ params })
+
   const currentAP = apViewModelQuery.data
-  const apCapabilities = apCapabilitiesQuery.data
+
+  const { data: apCapabilities, isLoading: isApCapLoading } = useGetApCapabilities({
+    params,
+    modelName: model,
+    skip: !currentAP,
+    enableRbac: isUseRbacApi
+  })
+
 
   const [addApPhoto] = useAddApPhotoMutation()
   const apPhoto = useGetApPhotoQuery({ params })
 
   useEffect(() => {
-    if(apCapabilities){
-      const allModelsCapabilities = apCapabilities?.apModels
-      const filteredModelCapabilities = allModelsCapabilities?.filter((modelCapabilities:
-        { model: string })=> modelCapabilities.model === apViewModelQuery.data?.model)
-      if(filteredModelCapabilities[0]){
-        setDefaultImageUrl(filteredModelCapabilities[0].pictureDownloadUrl)
-      }else{
-        setDefaultImageUrl(PlaceHolder)
-      }
+    if (!isApCapLoading && model) {
+      setDefaultImageUrl(apCapabilities?.pictureDownloadUrl ?? PlaceHolder)
       setActiveImage([false,true])
     }
+
     if (!apPhoto.isLoading) {
       if(apPhoto?.data?.imageUrl){
         setActiveImage([true, false])
@@ -70,7 +81,7 @@ export function ApPhoto () {
         setImageList([defaultImageUrl])
       }
     }
-  }, [apPhoto, currentAP, apCapabilities])
+  }, [apPhoto, currentAP, apCapabilities, isApCapLoading, model])
 
   const { $t } = getIntl()
   const beforeUpload = async function (file: File) {
@@ -114,7 +125,7 @@ export function ApPhoto () {
   }
 
   return (
-    <Loader states={[apPhoto, apCapabilitiesQuery]}>
+    <Loader states={[{ isLoading: apPhoto.isLoading || isApCapLoading }]}>
       <Card>
         <StyledSpace>
           <RoundIconDiv>
