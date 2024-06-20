@@ -1,10 +1,19 @@
 import React, { useState, useEffect, MouseEvent, useContext } from 'react'
 
 import { HierarchyPointNode } from 'd3'
+import { useIntl }            from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud } from '@acx-ui/icons'
-import { DeviceTypes, NodeData, TopologyDeviceStatus }      from '@acx-ui/rc/utils'
+import { Tooltip }                                                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { MinusCircleOutlined, PlusCircleOutlined, R1Cloud, LeafSolidIcon } from '@acx-ui/icons'
+import {
+  DeviceTypes,
+  NodeData,
+  TopologyDeviceStatus,
+  PowerSavingStatusEnum,
+  getPowerSavingStatusEnabledTopologyStatus
+} from '@acx-ui/rc/utils'
 
 import { getDeviceIcon, getDeviceColor, truncateLabel } from '../utils'
 
@@ -25,6 +34,8 @@ const Nodes: React.FC<NodeProps> = (props) => {
   let delayHandler: NodeJS.Timeout
   const { nodes, expColEvent, onHover, onClick, nodesCoordinate } = props
   const { selectedNode, selectedVlanPortList } = useContext(TopologyTreeContext)
+  const { $t } = useIntl()
+  const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
 
   useEffect(() => {
     nodes
@@ -158,6 +169,23 @@ const Nodes: React.FC<NodeProps> = (props) => {
                   />
                 </g>
               )}
+              {isSupportPowerSavingMode && getPowerSavingStatusEnabledTopologyStatus(
+                node.data.status as TopologyDeviceStatus,
+                node.data.powerSavingStatus as PowerSavingStatusEnum) &&
+                <Tooltip
+                  title={$t(
+                    { defaultMessage: 'AI-Driven GreenFlex mode. Radio may not be broadcasting' }
+                  )}
+                  placement='bottom'
+                >
+                  <LeafSolidIcon
+                    x='20'
+                    y='8'
+                    width={8}
+                    height={8}
+                  />
+                </Tooltip>
+              }
             </g>
           )
         })}
