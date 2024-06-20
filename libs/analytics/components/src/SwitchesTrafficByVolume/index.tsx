@@ -64,6 +64,7 @@ export function SwitchesTrafficByVolume ({
               options={portOptions}
               onChange={onPortChange}
               dropdownMatchSelectWidth={false}
+              allowClear
             />
           </UI.SelectPort>
         }

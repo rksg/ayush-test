@@ -46,6 +46,7 @@ function RWGPageHeader () {
       setGatewayStatus(rwg.status)
     } else {
       setGatewayData(_gatewayData)
+      setGatewayStatus(_gatewayData?.status)
     }
   }, [_gatewayData])
 
@@ -106,19 +107,26 @@ function RWGPageHeader () {
         { text: $t({ defaultMessage: 'RUCKUS WAN Gateways' }), link: '/ruckus-wan-gateway' }
       ]}
       extra={[
-        ...filterByAccess([<Button
-          type='default'
-          onClick={() =>
-            rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
-          }
-          disabled={!!clusterNodeId}
-        >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
-        <Dropdown
-          overlay={menu}>
-          { () => <Button
-            type='primary'
-          >{$t({ defaultMessage: 'Configure' })} <CaretDownOutlined /></Button> }
-        </Dropdown>])
+        ...filterByAccess([
+          <Button
+            type='default'
+            onClick={() =>
+              rwgActions.refreshGateway()
+            }
+          >{$t({ defaultMessage: 'Refresh' })}</Button>,
+          <Button
+            type='default'
+            onClick={() =>
+              rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
+            }
+            disabled={!!clusterNodeId}
+          >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
+          <Dropdown
+            overlay={menu}>
+            { () => <Button
+              type='primary'
+            >{$t({ defaultMessage: 'Configure' })} <CaretDownOutlined /></Button> }
+          </Dropdown>])
       ]}
       footer={<RWGTabs gatewayDetail={gatewayData as RWG} />}
     />
