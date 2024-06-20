@@ -23,7 +23,7 @@ const tenantId = ':tenantId'
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
-    items: [{
+    data: [{
       rwgId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
@@ -72,7 +72,7 @@ describe('Test useRwgActions', () => {
     const callback = jest.fn()
 
 
-    await deleteGateways(rwgList.response.items, tenantId, callback)
+    await deleteGateways(rwgList.response.data, tenantId, callback)
 
     const dialog = await screen.findByRole('dialog')
 
@@ -102,7 +102,7 @@ describe('Test useRwgActions', () => {
     const callback = jest.fn()
 
 
-    await deleteGateways([rwgList.response.items[0]], tenantId, callback)
+    await deleteGateways([rwgList.response.data[0]], tenantId, callback)
 
     const dialog = await screen.findByRole('dialog')
 
