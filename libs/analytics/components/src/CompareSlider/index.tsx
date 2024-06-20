@@ -1,5 +1,6 @@
 import './type.d'
 import { ReactCompareSlider, ReactCompareSliderDetailedProps } from 'react-compare-slider'
+
 import * as UI from './styledComponents'
 
 // https://react-compare-slider.vercel.app/?path=/docs/docs-api--docs
@@ -9,7 +10,7 @@ const Line = () => <div style={{
   height: '100%',
   width: '2px',
   backgroundColor: 'white',
-  pointerEvents: 'auto',
+  pointerEvents: 'auto'
 }} />
 
 const CircleWithArrows = () => {
@@ -22,12 +23,12 @@ const CircleWithArrows = () => {
     height: '56px', //16
     borderRadius: '50%',
     pointerEvents: 'auto',
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   }}>
     <UI.LeftArrow />
     <UI.RightArrow />
   </div>
-} 
+}
 
 const CustomHandle: React.FC = () => {
   return <div style={{
@@ -43,7 +44,7 @@ const CustomHandle: React.FC = () => {
     <CircleWithArrows />
     <Line />
   </div>
-};
+}
 
 export const CompareSlider = (props: CompareSliderProps) => {
   const { itemOne, itemTwo,

@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components/macro'
+
 import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
 
 const arrowStyle = css`
