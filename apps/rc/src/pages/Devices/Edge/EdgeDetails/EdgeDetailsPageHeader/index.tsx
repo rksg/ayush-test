@@ -78,12 +78,12 @@ export const EdgeDetailsPageHeader = () => {
       key: 'reboot',
       showupstatus: rebootShutdownEdgeStatusWhiteList
     },
-    isGracefulShutdownReady && {
+    ...(isGracefulShutdownReady ? [{
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Shutdown' }),
       key: 'shutdown',
       showupstatus: rebootShutdownEdgeStatusWhiteList
-    },
+    }] : []),
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reset & Recover' }),
