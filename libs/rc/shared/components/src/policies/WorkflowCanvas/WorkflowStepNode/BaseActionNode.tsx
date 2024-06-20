@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Popover, Space }                         from 'antd'
+import { Popover }                                from 'antd'
 import { useIntl }                                from 'react-intl'
 import { useParams }                              from 'react-router-dom'
 import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
@@ -105,31 +105,30 @@ export default function BaseActionNode (props: NodeProps
 
 
   return (
-    <UI.WorkflowNode selected={props.selected}>
+    <UI.StepNode selected={props.selected}>
       <Loader states={[
         { isLoading: false, isFetching: isDeleteStepLoading },
         { isLoading: false, isFetching: isDeleteOptionLoading }
       ]}>
-        <Space direction={'vertical'} align={'center'} style={{ width: '100%' }}>
-          {props.children}
-        </Space>
+        {props.children}
       </Loader>
-      <UI.EditHandle>
-        <Handle hidden={!props.selected} type={'source'} position={Position.Right} >
-          <Popover
-            content={stepToolBar}
-            trigger={'hover'}
-          >
-            <Button
-              style={{ background: 'white' }}
-              shape={'circle'}
-              size={'small'}
-              icon={<MoreVertical />}
-            />
-          </Popover>
-        </Handle>
-      </UI.EditHandle>
 
+      {props.selected &&
+        <Popover
+          content={stepToolBar}
+          trigger={'hover'}
+        >
+          <UI.EditButton>
+            <MoreVertical />
+          </UI.EditButton>
+        </Popover>
+      }
+
+      {props.selected &&
+        <UI.PlusButton>
+          <Plus />
+        </UI.PlusButton>
+      }
 
       {/*<CustomDiv>*/}
       {/*  <Handle type={'source'} position={Position.Top}>*/}
@@ -156,19 +155,19 @@ export default function BaseActionNode (props: NodeProps
               position={Position.Bottom}
               style={{ left: `${getHandlePosition(splitCount.length, index)}%` }}
             >
-              {props.selected &&
-                <Button
-                  style={{ background: 'white' }}
-                  shape={'circle'}
-                  size={'small'}
-                  icon={<Plus />}
-                  onClick={onAddClick}
-                />
-              }
+              {/*{props.selected &&*/}
+              {/*  <Button*/}
+              {/*    style={{ background: 'white' }}*/}
+              {/*    shape={'circle'}*/}
+              {/*    size={'small'}*/}
+              {/*    icon={<Plus />}*/}
+              {/*    onClick={onAddClick}*/}
+              {/*  />*/}
+              {/*}*/}
             </Handle>
           </UI.SourceHandle>
         )
       })}
-    </UI.WorkflowNode>
+    </UI.StepNode>
   )
 }

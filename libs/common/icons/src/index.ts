@@ -377,4 +377,6 @@ export { ReactComponent as ClusterInterface } from './icons/ClusterInterface.svg
 
 export { ReactComponent as Workflow } from './icons/NetworksSolid.svg'
 
+export { ReactComponent as AupIcon } from './icons/AupActionTypeIcon.svg'
+
 export * from './styledComponents'

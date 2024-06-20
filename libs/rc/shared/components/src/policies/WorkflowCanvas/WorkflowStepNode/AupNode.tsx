@@ -3,13 +3,14 @@ import { useIntl }              from 'react-intl'
 import { useNodeId, NodeProps } from 'reactflow'
 
 import { Loader }                          from '@acx-ui/components'
+import { AupIcon }                         from '@acx-ui/icons'
 import { useGetActionByIdQuery }           from '@acx-ui/rc/services'
 import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
 import { noDataDisplay }                   from '@acx-ui/utils'
 
 
-import BaseActionNode from './BaseActionNode'
-
+import BaseActionNode     from './BaseActionNode'
+import BasicActionContent from './BasicActionContent'
 
 
 export function AupNode (props: NodeProps<WorkflowStep>) {
@@ -22,8 +23,11 @@ export function AupNode (props: NodeProps<WorkflowStep>) {
   return (
     <BaseActionNode {...props} name={data?.name}>
       <Loader states={[{ isLoading, isFetching }]}>
-        <div>{$t(ActionNodeDisplay.AUP)}</div>
-        <div>{` (${data?.name ?? noDataDisplay})`}</div>
+        <BasicActionContent
+          icon={<AupIcon/>}
+          title={$t(ActionNodeDisplay.AUP)}
+          content={` (${data?.name ?? noDataDisplay})`}
+        />
       </Loader>
     </BaseActionNode>
   )

@@ -89,7 +89,7 @@ export const getInitialNodes = (x: number, y: number): Node[] => {
 /* eslint-disable max-len */
 // TODO: need to be defined by UX designer
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
-  [ActionType.AUP]: defineMessage({ defaultMessage: 'AUP Node' }),
+  [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Data Prompt Node' }),
   [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Display Message Node' }),
   // [ActionType.DPSK]: defineMessage({ defaultMessage: 'DPSK Node' }),

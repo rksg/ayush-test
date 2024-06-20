@@ -133,13 +133,10 @@ const composeNext = (
       target: nextStepId,
       // FIXME: if there are two/more sources, it need to specific the `sourceHandler`
       sourceHandle: '0',
-      type: ConnectionLineType.Step,
-      markerEnd: {
-        type: MarkerType.Arrow
-      }
+      type: ConnectionLineType.Step
     })
 
-    composeNext(nextStepId, stepMap, nodes, edges, currentX, currentY + 100)
+    composeNext(nextStepId, stepMap, nodes, edges, currentX, currentY + 110)
   }
 }
 
