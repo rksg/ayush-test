@@ -1,9 +1,9 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, VlanPoolRbacUrls, VlanPoolUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                     from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, within }                  from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, VlanPoolRbacUrls, VlanPoolUrls } from '@acx-ui/rc/utils'
+import { Provider }                                       from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, within }    from '@acx-ui/test-utils'
 
 
 import { vlanPoolVenueList, vlanPoolDetail, vlanPoolRbacDetail, wifiNetworkList, venueList } from './__tests__/fixtures'
@@ -71,7 +71,7 @@ describe('VLAN Pool Detail Page', () => {
         (req, res, ctx) => res(ctx.json(vlanPoolDetail))
       ),
       rest.post(
-        WifiUrlsInfo.queryWifiNetworks.url,
+        CommonUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json({
           data: wifiNetworkList,
           totalCount: wifiNetworkList.length,

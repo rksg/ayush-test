@@ -248,7 +248,7 @@ describe('VLANPoolTable', () => {
         (req, res, ctx) => res(ctx.json(mockRbacTableResult))
       ),
       rest.post(
-        WifiUrlsInfo.queryWifiNetworks.url,
+        CommonUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockRbacNetworkTableResult))
       )
     )
@@ -283,7 +283,7 @@ describe('VLANPoolTable', () => {
         (req, res, ctx) => res(ctx.json(mockRbacTableResult))
       ),
       rest.post(
-        WifiUrlsInfo.queryWifiNetworks.url,
+        CommonUrlsInfo.getWifiNetworksList.url,
         (req, res, ctx) => res(ctx.json(mockRbacNetworkTableResult))
       )
     )

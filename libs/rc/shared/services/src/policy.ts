@@ -1527,14 +1527,11 @@ export const policyApi = basePolicyApi.injectEndpoints({
           return { data: res.data as TableResult<VLANPoolViewModelType> }
         } else {
           const data = res.data as TableResult<VLANPoolViewModelRbacType>
-          const networkIds: string[] = []
+          const networkIds: string[] = [...new Set(data.data.map(v => v.wifiNetworkIds ?? []).flat())]
           const networkMap = new Map<string, VenueApGroupRbacType[]>()
-          data.data.forEach(v => {
-            v.wifiNetworkIds?.forEach(id => networkIds.push(id))
-          })
           if (networkIds.length > 0) {
             const networkQuery = await fetchWithBQ({
-              ...createHttpRequest(WifiUrlsInfo.queryWifiNetworks, params, headers),
+              ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, headers),
               body: JSON.stringify({
                 filters: { id: networkIds },
                 fields: ['id', 'name', 'venueApGroups'],
@@ -1697,7 +1694,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
               const allApGroupVenueSet = new Set<string> ()
               if((result.data[0].wifiNetworkIds?.length ?? 0) > 0) {
                 const networkQuery = await fetchWithBQ({
-                  ...createHttpRequest(WifiUrlsInfo.queryWifiNetworks, params, headers),
+                  ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, headers),
                   body: JSON.stringify({
                     filters: { id: result.data[0].wifiNetworkIds },
                     fields: ['id', 'name', 'venueApGroups'],

@@ -546,16 +546,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   },
-  getVenueRogueAp: {
-    method: 'get',
-    url: '/venues/:venueId/roguePolicySettings',
-    newApi: true
-  },
-  updateVenueRogueAp: {
-    method: 'put',
-    url: '/venues/:venueId/roguePolicySettings',
-    newApi: true
-  },
   activateVlanPool: {
     method: 'put',
     url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
@@ -574,11 +564,6 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   deactivateApGroupVlanPool: {
     method: 'delete',
     url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
-    newApi: true
-  },
-  queryWifiNetworks: {
-    method: 'post',
-    url: '/wifiNetworks/query',
     newApi: true
   }
 }
