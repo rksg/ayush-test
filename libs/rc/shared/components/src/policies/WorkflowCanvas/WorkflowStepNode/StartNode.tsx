@@ -12,9 +12,10 @@ import * as UI from './styledComponents'
 
 export function StartNode (props: NodeProps) {
   const { $t } = useIntl()
-  const { actionDrawerState } = useWorkflowContext()
+  const { nodeState, actionDrawerState } = useWorkflowContext()
 
   const onClick = () => {
+    nodeState.setInteractedNode(props)
     actionDrawerState.onOpen()
   }
 

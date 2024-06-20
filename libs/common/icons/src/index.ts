@@ -377,6 +377,8 @@ export { ReactComponent as ClusterInterface } from './icons/ClusterInterface.svg
 
 export { ReactComponent as Workflow } from './icons/NetworksSolid.svg'
 
+export { ReactComponent as StartFlag } from './icons/StartFlag.svg'
+export { ReactComponent as EndFlag } from './icons/StartFlag.svg'
 export { ReactComponent as AupIcon } from './icons/AupActionTypeIcon.svg'
 export { ReactComponent as DisplayMessageIcon } from './icons/DisplayMessageActionTypeIcon.svg'
 export { ReactComponent as DataPromptIcon } from './icons/DataPromptActionTypeIcon.svg'

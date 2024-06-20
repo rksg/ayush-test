@@ -46,7 +46,7 @@ export default function ActionSelectedForm (props: ActionSelectedFormProps) {
         options: data?.content?.map(type => {
           return {
             label: type.name,
-            value: type.actionId
+            value: type.id
           }
         })
       }
@@ -109,7 +109,7 @@ export default function ActionSelectedForm (props: ActionSelectedFormProps) {
             loading={actions.isLoading}
             options={actions.data?.content?.map(action => ({
               label: action.name,
-              value: action.actionId
+              value: action.id
             }))}
           />
         </Form.Item>

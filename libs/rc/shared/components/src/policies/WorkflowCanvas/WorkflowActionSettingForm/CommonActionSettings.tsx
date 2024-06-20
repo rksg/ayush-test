@@ -17,7 +17,7 @@ export function CommonActionSettings () {
       const list = (await searchActions({
         payload: { name, page: 0, pageSize: 10000 }
       }).unwrap()).content
-        .filter(a => a.actionId !== actionId)
+        .filter(a => a.id !== actionId)
         .map(a => ({ name: a.name }))
       return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Action' }))
     } catch (e) {

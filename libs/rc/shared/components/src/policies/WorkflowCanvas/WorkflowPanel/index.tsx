@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl'
 import {
   ConnectionLineType,
   Edge,
-  MarkerType,
   Node,
   ReactFlowProvider,
   useEdgesState,
@@ -20,14 +19,7 @@ import {
   useGetWorkflowStepsByIdQuery,
   useLazyGetWorkflowActionRequiredDefinitionsQuery
 } from '@acx-ui/rc/services'
-import {
-  ActionType,
-  findFirstStep,
-  getInitialNodes,
-  SplitOption,
-  toStepMap,
-  WorkflowStep
-} from '@acx-ui/rc/utils'
+import { ActionType, findFirstStep, getInitialNodes, StepType, toStepMap, WorkflowStep } from '@acx-ui/rc/utils'
 
 import ActionLibraryDrawer from '../ActionLibraryDrawer/ActionLibraryDrawer'
 import StepDrawer          from '../StepDrawer/StepDrawer'
@@ -43,101 +35,57 @@ interface WorkflowPanelProps {
   width?: string
 }
 
-const composeSplitOptions = (
-  splitStep: WorkflowStep,
-  options: SplitOption[],
-  nodes: Node[], edges: Edge[],
-  currentX: number, currentY: number
-) => {
-  const splitCount = options.length
-
-  options.forEach((option, index) => {
-    const { optionName, enrollmentActionId } = option
-    nodes.push({
-      id: option.id,
-      position: { x: currentX + 200*index, y: currentY },
-      data: {
-        label: enrollmentActionId,
-        enrollmentActionId,
-        splitStepId: splitStep.id,
-        optionName
-      },
-      type: option.actionType
-    })
-
-    edges.push({
-      id: `${splitStep.id} -- ${option.id}`,
-      source: splitStep.id,
-      target: option.id,
-      // FIXME: if there are two/more sources, it need to specific the `sourceHandler`
-      sourceHandle: '0',
-      type: ConnectionLineType.Step,
-      markerEnd: {
-        type: MarkerType.Arrow
-      }
-    })
-  })
-}
-
 const composeNext = (
   stepId: string, stepMap: Map<string, WorkflowStep>,
-  nodes: Node[], edges: Edge[],
-  currentX: number, currentY: number
+  nodes: Node<WorkflowStep, ActionType>[], edges: Edge[],
+  currentX: number, currentY: number,
+  isStart?: boolean
 ) => {
+  const SPACE_OF_NODES = 110
   const step = stepMap.get(stepId)
+
   if (!step) return
 
   console.log('Compose Next step : ', step)
 
-  const { id, nextStepId, enrollmentActionId, splitOptionId, type } = step
-  const actionType: ActionType = (type === ActionType.USER_SELECTION_SPLIT && !enrollmentActionId)
-    ? ActionType.USER_SELECTION_SPLIT : (type as ActionType) ?? 'START'
+  const {
+    id,
+    nextStepId,
+    enrollmentActionId, splitOptionId,
+    type,
+    actionType
+  } = step
+  const nodeType: ActionType = (actionType ?? 'START') as ActionType
+  const nextStep = stepMap.get(nextStepId ?? '')
 
-  console.log('Step :: ', actionType, type, enrollmentActionId)
+  console.log('Step :: ', nodeType, type, enrollmentActionId)
 
   nodes.push({
     id,
-    type: actionType,
+    type: nodeType,
     position: { x: currentX, y: currentY },
     data: {
-      label: enrollmentActionId,
-      enrollmentActionId
-    }
-  })
+      ...step,
+      isStart,
+      isEnd: nextStep?.type === StepType.End
+    },
 
-  if (actionType === ActionType.USER_SELECTION_SPLIT && step.splitOptionsList) {
-    console.log('[SplitStep] :: ', step)
-    composeSplitOptions(step, step.splitOptionsList, nodes, edges, currentX, currentY + 100)
-    step.splitOptionsList.forEach((option, index) => {
-      if (option.nextStepId) {
-        edges.push({
-          id: `${option.id} -- ${option.nextStepId}`,
-          source: option.id,
-          target: option.nextStepId,
-          // FIXME: if there are two/more sources, it need to specific the `sourceHandler`
-          sourceHandle: '0',
-          type: ConnectionLineType.Step,
-          markerEnd: {
-            type: MarkerType.Arrow
-          }
-        })
-        composeNext(option.nextStepId, stepMap, nodes, edges, currentX + 200*index, currentY + 200)
-      }
-    })
-  }
+    hidden: type === StepType.End || (type === StepType.Start && stepMap.size !== 2),
+    deletable: false
+  })
 
   if (nextStepId) {
     edges.push({
       id: `${id} -- ${nextStepId}`,
       source: id,
       target: nextStepId,
-      // FIXME: if there are two/more sources, it need to specific the `sourceHandler`
-      sourceHandle: '0',
       type: ConnectionLineType.Step,
-      style: { stroke: 'var(--acx-primary-black)' }
+      style: { stroke: 'var(--acx-primary-black)' },
+
+      deletable: false
     })
 
-    composeNext(nextStepId, stepMap, nodes, edges, currentX, currentY + 110)
+    composeNext(nextStepId, stepMap, nodes, edges, currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
   }
 }
 
@@ -145,23 +93,23 @@ const composeNext = (
 //  If I want to use the ContextProvider, I need to move these functions into Canvas component.
 //  => It is fine actually, because of no others needed.
 //  => I need the ActionDefinitions to determine the ActionType
-function toReactflowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
+function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
   : { nodes: Node[], edges: Edge[] } {
-  const nodes: Node[] = []
+  const nodes: Node<WorkflowStep, ActionType>[] = []
   const edges: Edge[] = []
-  const startX = 100
-  const startY = 0
+  const START_X = 100
+  const START_Y = 0
 
   if (steps.length === 0) {
-    return { nodes: getInitialNodes(startX, startY), edges }
+    return { nodes: getInitialNodes(START_X, START_Y), edges }
   }
 
-  console.groupCollapsed('[Processing] - toReactflowData')
+  console.groupCollapsed('[Processing] - toReactFlowData')
   const firstStep = findFirstStep(steps)
   const stepMap = toStepMap(steps, definitionMap)
 
   if (firstStep) {
-    composeNext(firstStep.id, stepMap, nodes, edges, startX, startY)
+    composeNext(firstStep.id, stepMap, nodes, edges, START_X, START_Y, firstStep.type === StepType.Start)
   }
 
   console.groupEnd()
@@ -258,7 +206,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
     const {
       nodes: inputNodes,
       edges: inputEdges
-    } = toReactflowData(stepsData?.content, defsMap)
+    } = toReactFlowData(stepsData?.content, defsMap)
     setNodes(inputNodes)
     setEdges(inputEdges)
     console.log('USE effect = ', inputNodes, inputEdges)

@@ -28,7 +28,8 @@ export interface WorkflowAction {
 }
 
 export interface ActionBase {
-  actionId: string,
+  id: string,
+  // actionId: string,  // Replace as id?!
   name: string,
   description: string,
   actionType: ActionType,

@@ -44,13 +44,6 @@ export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep => {
     step.priorStepId === undefined && !step.splitOptionId
   )
 
-  console.groupCollapsed('[Processing] - findFirstStep function')
-  console.log('FirstStep is ', steps[firstIndex])
-  console.log('FirstStep possible to be ', steps.filter(step =>
-    step.priorStepId === undefined && !step.splitOptionId
-  ))
-  console.groupEnd()
-
   return firstIndex ? steps[firstIndex] : steps[0]
 }
 
@@ -62,7 +55,7 @@ export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, Acti
   steps.forEach(step => {
     map.set(step.id, {
       ...step,
-      type: definitionMap.get(step?.actionDefinitionId ?? '')
+      actionType: definitionMap.get(step?.actionDefinitionId ?? '') ?? step.actionType
     })
   })
 
@@ -74,7 +67,6 @@ export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, Acti
 }
 
 export const getInitialNodes = (x: number, y: number): Node[] => {
-  // FIXME: START type move to enum or not? maybe it would impact some validation? need to be checked
   return [
     {
       id: 'initial-id',

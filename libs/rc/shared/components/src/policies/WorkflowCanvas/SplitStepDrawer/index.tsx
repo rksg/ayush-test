@@ -45,7 +45,7 @@ export default function SplitStepDrawer (props: SplitStepDrawerProps) {
       <Select
         options={actions.data?.content?.map(action => ({
           label: action.name,
-          value: action.actionId
+          value: action.id
         }))}
       />
       {data?.content?.map((option, index) => {

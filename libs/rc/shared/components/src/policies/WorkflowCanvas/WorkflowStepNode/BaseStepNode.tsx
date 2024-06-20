@@ -5,21 +5,15 @@ import { useIntl }                                from 'react-intl'
 import { useParams }                              from 'react-router-dom'
 import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
 
-import { Button, Loader, showActionModal }                                     from '@acx-ui/components'
-import { DeleteOutlined, EditOutlined, EyeOpenOutlined, MoreVertical, Plus }   from '@acx-ui/icons'
-import { useDeleteSplitOptionByIdMutation, useDeleteWorkflowStepByIdMutation } from '@acx-ui/rc/services'
-import { ActionType }                                                          from '@acx-ui/rc/utils'
+import { Button, Loader, showActionModal }                                                       from '@acx-ui/components'
+import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
+import { useDeleteSplitOptionByIdMutation, useDeleteWorkflowStepByIdMutation }                   from '@acx-ui/rc/services'
+import { ActionType }                                                                            from '@acx-ui/rc/utils'
 
 
 import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
 
 import * as UI from './styledComponents'
-
-function getHandlePosition (partitionCount: number, index: number) {
-  const onePartition = 100 / (partitionCount + 1)
-
-  return onePartition * (index + 1)
-}
 
 export default function BaseStepNode (props: NodeProps
   & { children: ReactNode, name?: string }
@@ -78,7 +72,7 @@ export default function BaseStepNode (props: NodeProps
   }
 
   const onPreviewClick = () => {
-    console.log('[PreviewBtnClick]', nodeId, props)
+    // TODO: Need to implement
   }
 
   const stepToolBar = (<>
@@ -129,20 +123,24 @@ export default function BaseStepNode (props: NodeProps
       <Handle
         type='target'
         position={Position.Top}
-        className={'circle'}
       />
 
-      {splitCount.map((split, index) => {
-        return (
-          <Handle
-            id={`${index}`}
-            key={split}
-            type={'source'}
-            position={Position.Bottom}
-            style={{ left: `${getHandlePosition(splitCount.length, index)}%` }}
-          />
-        )
-      })}
+      <Handle
+        type={'source'}
+        position={Position.Bottom}
+      />
+
+      {props.data.isStart &&
+        <UI.FlagIcon>
+          <StartFlag />
+        </UI.FlagIcon>
+      }
+
+      {props.data.isEnd &&
+        <UI.FlagIcon>
+          <EndFlag />
+        </UI.FlagIcon>
+      }
     </UI.StepNode>
   )
 }

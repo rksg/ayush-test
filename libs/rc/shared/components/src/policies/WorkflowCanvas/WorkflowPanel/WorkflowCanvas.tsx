@@ -26,9 +26,8 @@ import {
 } from '../WorkflowStepNode'
 
 
-// TODO: Use enum to make sure new type adding
 const nodeTypes: NodeTypes = {
-  START: StartNode,
+  START: StartNode, // This is a special type for the starter node displaying
   [ActionType.AUP]: AupNode,
   [ActionType.DATA_PROMPT]: DataPromptNode,
   [ActionType.DISPLAY_MESSAGE]: DisplayMessageNode
@@ -127,6 +126,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         nodesDraggable={false}
+        nodesConnectable={false}
         onNodeDragStart={(_, node) => {
           console.log('[onNodeDragStart] :: ', node)
           setOriginalPosition(node.position)
@@ -135,6 +135,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
         onConnect={onConnect}
         minZoom={0.1}
         attributionPosition={'top-right'}
+        // elementsSelectable={false} -> Editor Mode
       >
         {/*<MiniMap position={'bottom-left'} />*/}
         <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />

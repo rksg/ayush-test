@@ -56,6 +56,28 @@ export const ActionTypeIcon = styled.div`
   }
 `
 
+export const FlagIcon = styled.div`
+  position: absolute;
+  top: -8px;
+  left: -4px;
+
+  background: black;
+  border-radius: 50%;
+  border: 1px solid var(--acx-primary-black) !important;
+
+  width: 16px;
+  height: 16px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+  path {
+    stroke: white;
+    fill: white;
+  }
+`
+
 export const EditButton = styled.div`
   position: absolute;
   top: -8px;

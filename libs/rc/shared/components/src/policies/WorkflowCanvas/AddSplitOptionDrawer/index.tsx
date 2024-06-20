@@ -85,7 +85,7 @@ export default function AddSplitOptionDrawer (props: AddSplitOptionDrawerProps) 
             loading={actions.isLoading}
             options={actions.data?.content?.map(action => ({
               label: action.name,
-              value: action.actionId
+              value: action.id
             }))}
           />
         </Form.Item>

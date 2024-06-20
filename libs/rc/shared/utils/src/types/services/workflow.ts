@@ -1,24 +1,28 @@
 import { ActionType } from './workflowAction'
 
-// export interface Workflow {
-//   id: string,
-//   name: string,
-//   description: string,
-//   publishedState: string
-//   publishedDate?: string,
-//
-//   allowedIps: string[]
-// }
 
 export type WorkflowStep = Step & SplitStep
 
-interface BaseStep {
+export enum StepType {
+  Basic = 'stepDto',
+  Split = 'splitStepDto',
+  Start = 'startStepDto',
+  End = 'endStepDto'
+}
+
+interface BaseStep extends StepState{
   id: string,
-  type?: ActionType,
-  actionType?: string,
+  type?: StepType,
+  actionType?: ActionType,
   actionDefinitionId?: string,
   priorStepId?: string,
   splitOptionId?: string
+}
+
+// Only for Canvas used
+interface StepState {
+  isStart?: boolean,
+  isEnd?: boolean
 }
 
 interface Step extends BaseStep {
@@ -53,15 +57,3 @@ export interface WorkflowActionDefinition {
 }
 
 export interface WorkflowActionDef extends Pick<WorkflowActionDefinition, 'id' | 'actionType'> {}
-
-export interface WorkflowUiStyleTemplate {
-  id: string,
-
-  bannerMaxWitch: string
-}
-
-export interface WorkflowUiColorSchema {
-  id: string,
-
-  lineColor: string
-}

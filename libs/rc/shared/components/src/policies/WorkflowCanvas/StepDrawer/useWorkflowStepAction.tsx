@@ -5,13 +5,8 @@ import {
   AsyncResponse,
   useCreateActionMutation
 } from '@acx-ui/rc/services'
-import { ActionType, GenericActionData, isSplitActionType } from '@acx-ui/rc/utils'
+import { ActionType, GenericActionData, isSplitActionType, StepType } from '@acx-ui/rc/utils'
 
-
-enum StepType {
-    Basic = 'stepDto',
-    Split = 'splitStepDto'
-  }
 
 export function useWorkflowStepActions () {
   const [ createAction ] = useCreateActionMutation()
@@ -86,7 +81,7 @@ export function useWorkflowStepActions () {
     if (Object.values(patchData).every((value) => value === undefined)) return
 
     return patchAction({
-      params: { actionId: formData.actionId },
+      params: { actionId: formData.id },
       payload: { ...patchData }
     }).unwrap()
   }
