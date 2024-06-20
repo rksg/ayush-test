@@ -19,11 +19,9 @@ export function useGuestActions () {
   const [disableGuests] = useDisableGuestsMutation()
 
   const showDownloadInformation = (guest: Guest | Guest[], tenantId?: string) => {
-    const dateFormat = 'yyyy/MM/dd HH:mm' //TODO: Wait for User profile
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
     const id = Array.isArray(guest) ? guest.map(g => g.id) : [guest.id]
 
-    getGuests({ params: { tenantId }, payload: { dateFormat, timezone, filters: { id } } })
+    getGuests({ params: { tenantId }, payload: { filters: { id }, page: 1, pageSize: id.length } })
       .catch((error) => {
         console.log(error) // eslint-disable-line no-console
       })

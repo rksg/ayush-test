@@ -78,12 +78,16 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
+
+const excludedFlags = [
+  Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE,
+  Features.AP_FW_MGMT_UPGRADE_BY_MODEL
+]
 describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.includes(ff as Features))
 
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenue.url,
@@ -96,10 +100,12 @@ describe('ApEdit', () => {
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
         (_, res, ctx) => res(ctx.json([]))),
+      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
+        (req, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
         (_, res, ctx) => res(ctx.json(apDetailsList))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
