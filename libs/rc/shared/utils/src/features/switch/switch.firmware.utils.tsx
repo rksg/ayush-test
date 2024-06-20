@@ -47,6 +47,7 @@ export const getStackUnitsMinLimitation = (
   }
 }
 
+//The function will be deprecated in the future; please use the isVerGEVer function instead.
 //Important: compareVersion or targetVersion may be empty
 export const compareSwitchVersion = (compareVersion?: string, targetVersion?: string): number => {
   const cleanedCompareVersion = compareVersion?.replace('.bin', '')
@@ -196,9 +197,11 @@ export function isVerGEVer (currentVer: string, targetVer: string, considerBeta:
   }
 }
 
+/*
+1. > 10010e < 10020
+2. > 10020b
+*/
 export function isSwitchSupportNotificator (swVersion: string): boolean {
-  if (isVerGEVer(swVersion, '10010e', false)) {
-    return !isVerGEVer(swVersion, '10020', false) || isVerGEVer(swVersion, '10020b', false)
-  }
-  return false
+  return isVerGEVer(swVersion, '10010e', false) &&
+    (!isVerGEVer(swVersion, '10020', false) || isVerGEVer(swVersion, '10020b', false))
 }
