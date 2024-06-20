@@ -1,4 +1,3 @@
-
 /* eslint-disable max-len */
 export { ReactComponent as AccessPointOutlined } from './icons/AccessPointOutlined.svg'
 export { ReactComponent as AccessPointSolid } from './icons/AccessPointSolid.svg'

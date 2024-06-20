@@ -6,7 +6,6 @@ import { Badge, Space }        from 'antd'
 import { find }                from 'lodash'
 import { useIntl }             from 'react-intl'
 
-
 import {
   Loader,
   Table,
