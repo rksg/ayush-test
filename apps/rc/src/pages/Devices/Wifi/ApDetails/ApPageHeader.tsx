@@ -13,14 +13,16 @@ import { useApActions }                                                  from '@
 import {
   useApDetailHeaderQuery,
   isAPLowPower,
-  useGetApCapabilitiesQuery
+  useGetApCapabilitiesQuery,
+  useApViewModelQuery
 }                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
   useApContext,
   ApStatus,
-  Capabilities
+  Capabilities,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -37,13 +39,20 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData, afcEnabled, model, apId } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled, model } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
   //eslint-disable-next-line
-  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber: apId } })
+  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
 
   const apAction = useApActions()
   const { activeTab } = useParams()
+  const apViewModelPayload = {
+    entityType: 'aps',
+    fields: ['powerSavingStatus'],
+    filters: { serialNumber: [serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ serialNumber, payload: apViewModelPayload })
+  const powerSavingStatus = apViewModelQuery.data?.powerSavingStatus as PowerSavingStatusEnum
 
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
@@ -108,7 +117,13 @@ function ApPageHeader () {
   return (
     <PageHeader
       title={data?.title || ''}
-      titleExtra={<APStatus status={status} showText={!currentApOperational} />}
+      titleExtra={
+        <APStatus
+          status={status}
+          showText={!currentApOperational}
+          powerSavingStatus={powerSavingStatus}
+        />
+      }
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
