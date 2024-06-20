@@ -4,6 +4,7 @@ import { useIntl }                from 'react-intl'
 import { useParams, useNavigate } from 'react-router-dom'
 
 import { Tabs }                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
 import { isRouter, isSwitchSupportNotificator } from '@acx-ui/rc/utils'
 import { useTenantLink }                        from '@acx-ui/react-router-dom'
 
@@ -23,6 +24,7 @@ export function SwitchTroubleshootingTab () {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/troubleshooting/`)
+  const isSwitchCliEnabled = useIsSplitOn(Features.SWITCH_CLI_MODE)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -69,7 +71,7 @@ export function SwitchTroubleshootingTab () {
         </TabPane>
       }
       {
-        isSupportMacAddress() &&
+        isSupportMacAddress() && isSwitchCliEnabled &&
         <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
           <SwitchMacAddressForm />
         </TabPane>
