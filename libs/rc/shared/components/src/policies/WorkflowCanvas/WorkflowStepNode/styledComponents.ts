@@ -1,23 +1,7 @@
 import styled from 'styled-components/macro'
 
+
 import { Collapse as AntCollapse } from '@acx-ui/components'
-
-export const StarterNode = styled.div`
-  padding: 10px 20px;
-  border-radius: 5px;
-  border: 1px dashed #888;
-  width: 150px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .react-flow__handle {
-    width: 10px;
-    height: 7px;
-    border-radius: 3px;
-  }
-`
 
 export const StepNode = styled.div<{ selected?: boolean }>`
   width: 220px;
@@ -25,7 +9,7 @@ export const StepNode = styled.div<{ selected?: boolean }>`
   padding: 12px;
   cursor: pointer;
 
-  border-radius: 5px;
+  border-radius: 4px;
   border: 1px solid var(--acx-neutrals-30);
 
   ${props => props.selected
@@ -49,6 +33,16 @@ export const StepNode = styled.div<{ selected?: boolean }>`
   }
   .react-flow__handle-top {
     top:0;
+  }
+`
+
+export const StartNode = styled(StepNode)`
+  //display: none;
+
+  border: 1px dashed  var(--acx-primary-black);
+
+  div {
+    text-align: center;
   }
 `
 

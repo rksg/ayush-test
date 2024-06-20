@@ -3,14 +3,14 @@ import { NodeProps } from 'reactflow'
 
 import { ActionNodeDisplay } from '@acx-ui/rc/utils'
 
-import BaseActionNode from './BaseActionNode'
+import BaseStepNode from './BaseStepNode'
 
 export function SplitOptionNode (props: NodeProps) {
   const { $t } = useIntl()
   const { data } = props
 
   return (
-    <BaseActionNode {...props}>
+    <BaseStepNode {...props}>
       {/* Use the splitStepId to determinate this Node is SplitStep or SplitOption Node */}
       {props.data?.splitStepId
         ? <>
@@ -21,6 +21,6 @@ export function SplitOptionNode (props: NodeProps) {
           Split Step Node
         </>
       }
-    </BaseActionNode>
+    </BaseStepNode>
   )
 }

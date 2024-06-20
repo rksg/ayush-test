@@ -21,7 +21,7 @@ function getHandlePosition (partitionCount: number, index: number) {
   return onePartition * (index + 1)
 }
 
-export default function BaseActionNode (props: NodeProps
+export default function BaseStepNode (props: NodeProps
   & { children: ReactNode, name?: string }
   & { splitCount?: string[] })
 {
@@ -42,21 +42,17 @@ export default function BaseActionNode (props: NodeProps
   }
 
   const onEditClick = () => {
-    console.log('[EditBtnClick]', nodeId, props)
-
     onHandleNode(props)
     stepDrawerState.onOpen(true, 'definitionId', props.type as ActionType)
   }
 
   const onAddClick = () => {
-    console.log('[AddBtnClick]', nodeId, props)
-
     onHandleNode(props)
     actionDrawerState.onOpen()
   }
 
   const onDeleteClick = () => {
-    console.log('[DeleteBtnClick]', nodeId, props)
+    // console.log('[DeleteBtnClick]', nodeId, props)
 
     onHandleNode(props)
     stepDrawerState.onClose()
@@ -144,7 +140,7 @@ export default function BaseActionNode (props: NodeProps
             type={'source'}
             position={Position.Bottom}
             style={{ left: `${getHandlePosition(splitCount.length, index)}%` }}
-         />
+          />
         )
       })}
     </UI.StepNode>

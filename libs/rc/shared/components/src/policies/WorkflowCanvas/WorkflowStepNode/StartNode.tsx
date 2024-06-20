@@ -1,13 +1,13 @@
-import { Button }    from 'antd'
+import { Space }     from 'antd'
 import { useIntl }   from 'react-intl'
 import { NodeProps } from 'reactflow'
 
 
-
+import { Plus } from '@acx-ui/icons'
 
 import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
 
-import { StarterNode } from './styledComponents'
+import * as UI from './styledComponents'
 
 
 export function StartNode (props: NodeProps) {
@@ -15,22 +15,21 @@ export function StartNode (props: NodeProps) {
   const { actionDrawerState } = useWorkflowContext()
 
   const onClick = () => {
-    console.log('Start to add a step')
     actionDrawerState.onOpen()
   }
 
   return (
-    <StarterNode>
-      <div>
-        <Button
-          type={'text'}
-          onClick={onClick}
-        >
-          {$t({ defaultMessage: 'Start building your' })}
-          <br/>
-          {$t({ defaultMessage: 'Onboarding Workflow' })}
-        </Button>
-      </div>
-    </StarterNode>
+    <UI.StartNode {...props} onClick={onClick}>
+      <Space
+        direction={'horizontal'}
+        align={'center'}
+        size={12}
+      >
+        <UI.ActionTypeIcon>
+          <Plus />
+        </UI.ActionTypeIcon>
+        {$t({ defaultMessage: 'Start building your Onboarding Workflow' })}
+      </Space>
+    </UI.StartNode>
   )
 }

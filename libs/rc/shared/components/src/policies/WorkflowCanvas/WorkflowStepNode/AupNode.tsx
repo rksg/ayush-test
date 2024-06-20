@@ -9,7 +9,7 @@ import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
 import { noDataDisplay }                   from '@acx-ui/utils'
 
 
-import BaseActionNode     from './BaseActionNode'
+import BaseStepNode       from './BaseStepNode'
 import BasicActionContent from './BasicActionContent'
 
 
@@ -21,7 +21,7 @@ export function AupNode (props: NodeProps<WorkflowStep>) {
   }, { skip: !props.data?.enrollmentActionId })
 
   return (
-    <BaseActionNode {...props} name={data?.name}>
+    <BaseStepNode {...props} name={data?.name}>
       <Loader states={[{ isLoading, isFetching }]}>
         <BasicActionContent
           icon={<AupIcon/>}
@@ -29,6 +29,6 @@ export function AupNode (props: NodeProps<WorkflowStep>) {
           content={` (${data?.name ?? noDataDisplay})`}
         />
       </Loader>
-    </BaseActionNode>
+    </BaseStepNode>
   )
 }

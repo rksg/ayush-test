@@ -1,17 +1,22 @@
-import { useIntl }              from 'react-intl'
-import { useNodeId, NodeProps } from 'reactflow'
+import { useIntl }   from 'react-intl'
+import { NodeProps } from 'reactflow'
 
+import { DisplayMessageIcon }              from '@acx-ui/icons'
 import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
 
-import BaseActionNode from './BaseActionNode'
-
+import BaseStepNode       from './BaseStepNode'
+import BasicActionContent from './BasicActionContent'
 
 
 export function DisplayMessageNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
 
-
-  return <BaseActionNode {...props}>
-    <div>{$t(ActionNodeDisplay.DISPLAY_MESSAGE)}</div>
-  </BaseActionNode>
+  return (
+    <BaseStepNode {...props}>
+      <BasicActionContent
+        icon={<DisplayMessageIcon/>}
+        title={$t(ActionNodeDisplay.DISPLAY_MESSAGE)}
+      />
+    </BaseStepNode>
+  )
 }

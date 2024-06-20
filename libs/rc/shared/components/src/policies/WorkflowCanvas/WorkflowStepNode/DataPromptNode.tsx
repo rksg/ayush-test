@@ -1,18 +1,22 @@
-import { useIntl }              from 'react-intl'
-import { NodeProps, useNodeId } from 'reactflow'
+import { useIntl }   from 'react-intl'
+import { NodeProps } from 'reactflow'
 
-import { ActionNodeDisplay } from '@acx-ui/rc/utils'
+import { DataPromptIcon }                  from '@acx-ui/icons'
+import { ActionNodeDisplay, WorkflowStep } from '@acx-ui/rc/utils'
 
-import BaseActionNode from './BaseActionNode'
+import BaseStepNode       from './BaseStepNode'
+import BasicActionContent from './BasicActionContent'
 
 
-export function DataPromptNode (props: NodeProps) {
+export function DataPromptNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
-  const nodeId = useNodeId()
 
   return (
-    <BaseActionNode {...props}>
-      <div>{$t(ActionNodeDisplay.DATA_PROMPT)}</div>
-    </BaseActionNode>
+    <BaseStepNode {...props}>
+      <BasicActionContent
+        icon={<DataPromptIcon/>}
+        title={$t(ActionNodeDisplay.DATA_PROMPT)}
+      />
+    </BaseStepNode>
   )
 }

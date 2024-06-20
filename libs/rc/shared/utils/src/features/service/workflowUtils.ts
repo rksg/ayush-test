@@ -62,8 +62,7 @@ export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, Acti
   steps.forEach(step => {
     map.set(step.id, {
       ...step,
-      // FIXME: replace the specific id as ''
-      type: definitionMap.get(step?.actionDefinitionId ?? 'd1342c9e-c379-4fe6-9a18-8eec67e34eb6')
+      type: definitionMap.get(step?.actionDefinitionId ?? '')
     })
   })
 
@@ -90,8 +89,8 @@ export const getInitialNodes = (x: number, y: number): Node[] => {
 // TODO: need to be defined by UX designer
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
-  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Data Prompt Node' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Display Message Node' }),
+  [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
   // [ActionType.DPSK]: defineMessage({ defaultMessage: 'DPSK Node' }),
 
   [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'Split Option Node' })

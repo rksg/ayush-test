@@ -91,7 +91,7 @@ const composeNext = (
 
   const { id, nextStepId, enrollmentActionId, splitOptionId, type } = step
   const actionType: ActionType = (type === ActionType.USER_SELECTION_SPLIT && !enrollmentActionId)
-    ? ActionType.USER_SELECTION_SPLIT : type as ActionType
+    ? ActionType.USER_SELECTION_SPLIT : (type as ActionType) ?? 'START'
 
   console.log('Step :: ', actionType, type, enrollmentActionId)
 
