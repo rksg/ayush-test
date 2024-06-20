@@ -725,7 +725,7 @@ describe('AssignMspLicense', () => {
     const value: [Function, Object] = [
       expect.any(Function),
       expect.objectContaining({
-        data: { requestId: 'rbac123' },
+        data: { requestId: 123 },
         status: 'fulfilled'
       })
     ]
@@ -761,7 +761,7 @@ describe('AssignMspLicense', () => {
     const value: [Function, Object] = [
       expect.any(Function),
       expect.objectContaining({
-        data: { requestId: 'rbac123' },
+        data: { requestId: 123 },
         status: 'fulfilled'
       })
     ]
