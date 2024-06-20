@@ -1,14 +1,16 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 
-import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Row } from 'antd'
-import TextArea                                                                      from 'antd/lib/input/TextArea'
-import { useIntl }                                                                   from 'react-intl'
-import { useParams }                                                                 from 'react-router-dom'
+import { Col, Form, FormInstance, FormListFieldData, FormListOperation, Input, Radio, Row, Space } from 'antd'
+import TextArea                                                                                    from 'antd/lib/input/TextArea'
+import { useIntl }                                                                                 from 'react-intl'
+import { useParams }                                                                               from 'react-router-dom'
 
-import { Alert, Button, Select, Subtitle, useStepFormContext } from '@acx-ui/components'
-import { DeleteOutlinedIcon }                                  from '@acx-ui/icons'
-import { useVenuesListQuery }                                  from '@acx-ui/rc/services'
+import { Alert, Button, Select, StepsForm, Subtitle, useStepFormContext } from '@acx-ui/components'
+import { Features }                                                       from '@acx-ui/feature-toggle'
+import { DeleteOutlinedIcon }                                             from '@acx-ui/icons'
+import { useVenuesListQuery }                                             from '@acx-ui/rc/services'
 import {
+  ClusterHighAvailabilityModeEnum,
   EdgeClusterStatus,
   EdgeStatusEnum,
   deriveEdgeModel,
@@ -16,7 +18,9 @@ import {
   isOtpEnrollmentRequired
 } from '@acx-ui/rc/utils'
 
-import { showDeleteModal } from '../../useEdgeActions'
+import { showDeleteModal, useIsEdgeFeatureReady } from '../../useEdgeActions'
+
+import { RadioDescription } from './styledComponents'
 
 interface EdgeClusterSettingFormProps {
   editData?: EdgeClusterStatus
@@ -32,6 +36,7 @@ export interface EdgeClusterSettingFormType {
   venueId: string
   name: string
   description?: string
+  highAvailabilityMode: ClusterHighAvailabilityModeEnum
 }
 
 const venueOptionsDefaultPayload = {
@@ -57,6 +62,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
       }
     }
   })
+  const isEdgeHaAaReady = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
 
   useEffect(() => {
     if(editData) {
@@ -64,6 +70,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
         venueId: editData.venueId,
         name: editData.name,
         description: editData.description,
+        highAvailabilityMode: editData.highAvailabilityMode,
         smartEdges: editData.edgeList?.map(item => ({
           name: item.name,
           serialNumber: item.serialNumber,
@@ -93,6 +100,14 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   const showOtpMessage = smartEdges?.some(item =>
     !item?.isEdit &&
     isOtpEnrollmentRequired(item?.serialNumber ?? ''))
+
+  const activeActiveMessage = $t({ defaultMessage: `All SmartEdges work together and
+  balance the load, enhancing redundancy and performance. If one SmartEdge fails, the
+  rest take over the tasks.` })
+
+  const activeStandbyMessage = $t({ defaultMessage: `Active-standby high availability
+  has one active SmartEdge handling tasks while a standby SmartEdge waits to take over
+  if the active SmartEdge fails.` })
 
   const deleteNode = (fieldName: number, serialNumber?: string) => {
     if(!smartEdges?.[fieldName]?.isEdit) {
@@ -139,6 +154,50 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
           />
         </Col>
       </Row>
+      {isEdgeHaAaReady &&
+        <Row style={{ marginTop: 8 }}>
+          <Col span={12}>
+            <Form.Item
+              name='highAvailabilityMode'
+              label={$t({ defaultMessage: 'High-Availability Mode' })}
+              initialValue={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
+              children={editMode ? (
+                form.getFieldValue('highAvailabilityMode') ===
+                  ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
+                  <div style={{ marginTop: 14 }}>
+                    <StepsForm.FieldLabel width='100%'>
+                      {$t({ defaultMessage: 'Active-Active' })}
+                    </StepsForm.FieldLabel>
+                    <RadioDescription>{activeActiveMessage}</RadioDescription>
+                  </div> :
+                  <div style={{ marginTop: 14 }}>
+                    <StepsForm.FieldLabel width='100%'>
+                      {$t({ defaultMessage: 'Active-Standby' })}
+                    </StepsForm.FieldLabel>
+                    <RadioDescription>{activeStandbyMessage}</RadioDescription>
+                  </div>
+              ) : (
+                <Radio.Group>
+                  <Space direction='vertical'>
+                    <Radio
+                      key={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
+                      value={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}>
+                      {$t({ defaultMessage: 'Active-Active' })}
+                      <RadioDescription>{activeActiveMessage}</RadioDescription>
+                    </Radio>
+                    <Radio
+                      key={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}
+                      value={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}>
+                      {$t({ defaultMessage: 'Active-Standby' })}
+                      <RadioDescription>{activeStandbyMessage}</RadioDescription>
+                    </Radio>
+                  </Space>
+                </Radio.Group>
+              )}
+            />
+          </Col>
+        </Row>
+      }
       <Row style={{ marginTop: 30 }}>
         <Col span={14}>
           <Row>
