@@ -66,7 +66,7 @@ describe('Identity Provider Form - SummaryForm', () => {
     // NAI Realm
     expect(screen.queryByText('abc.com (1 EAP methods)')).toBeVisible()
     // PLMN
-    expect(screen.queryByText('001 001')).toBeVisible()
+    expect(screen.queryByText('001 005')).toBeVisible()
     // Roaming Consortium
     expect(screen.queryByText('roi1 (1a2b3c4d5e)')).toBeVisible()
     // Authentication Service
