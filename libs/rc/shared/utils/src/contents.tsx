@@ -143,6 +143,9 @@ export const WifiNetworkMessages = {
   LAN_PORTS_VLAN_UNTAG_TOOLTIP: defineMessage({
     defaultMessage: 'Enter the native VLAN ID (no VLAN tag in its Ethernet frames)'
   }),
+  LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP: defineMessage({
+    defaultMessage: 'Enter the native VLAN ID (no VLAN tag in its Ethernet frames). Only APs with the supported firmware version can modify the untagged VLAN from the default value of 1. Supported model family: WiFi 6, WiFi 6e, WiFi 7'
+  }),
   LAN_PORTS_VLAN_MEMBERS_TOOLTIP: defineMessage({
     defaultMessage: 'Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7'
   }),

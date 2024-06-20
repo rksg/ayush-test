@@ -167,7 +167,7 @@ export function LanPortSettings (props: {
         {$t({ defaultMessage: 'VLAN untag ID' })}
         { lan?.type === ApLanPortTypeEnum.TRUNK ?
           <ApCompatibilityToolTip
-            title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_UNTAG_TOOLTIP)}
+            title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
             visible={supportApCompatibleCheck}
             placement='bottom'
             onClick={() => setDrawerVisible(true)}
