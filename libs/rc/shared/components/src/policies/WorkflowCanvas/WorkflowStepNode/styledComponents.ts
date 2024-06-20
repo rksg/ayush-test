@@ -13,7 +13,6 @@ export const StarterNode = styled.div`
   align-items: center;
 
   .react-flow__handle {
-    background: ${(props) => props.theme.primary};
     width: 10px;
     height: 7px;
     border-radius: 3px;
@@ -24,6 +23,7 @@ export const StepNode = styled.div<{ selected?: boolean }>`
   width: 220px;
   height: 64px;
   padding: 12px;
+  cursor: pointer;
 
   border-radius: 5px;
   border: 1px solid var(--acx-neutrals-30);
@@ -40,91 +40,15 @@ export const StepNode = styled.div<{ selected?: boolean }>`
     border: 1px solid var(--acx-accents-orange-50);
   }
 
+  // Hide the handler and adjust the position to let the edge line can connect with each Nodes without space
   .react-flow__handle {
-    background: ${(props) => props.theme.primary};
-    width: 10px;
-    height: 7px;
-    border-radius: 3px;
+    opacity: 0;
   }
-`
-
-export const SourceHandle = styled.div<{ selected?: boolean }>`
-  .react-flow__handle
-  ${(props) => props.selected
-    ? `{
-        background: black;
-        width: 0px;
-        min-width: 0px;
-        height: 0px;
-        bottom: 1px;
-        margin-left: -11px;
-      }`
-    : `{
-
-      }
-    }`}
-`
-
-export const CustomDiv = styled.div`
-  .circle {
-    width: 20px;
-    height: 20px;
-    background-color: blue;
-    border-radius: 50%; /* Makes the div a circle */
-    position: relative;
+  .react-flow__handle-bottom {
+    top: 58px;
   }
-
-  .circle::before, .circle::after {
-    content: '';
-    position: absolute;
-    background-color: white;
-  }
-
-  .circle::before {
-    left: 50%;
-    top: 5px; /* 3px from the top to make the line 14px tall */
-    transform: translateX(-50%); /* Center the line horizontally */
-    width: 2px; /* Thickness of the line */
-    height: 10px; /* Height of the vertical line */
-  }
-
-  .circle::after {
-    top: 50%;
-    left: 5px; /* 3px from the left to make the line 14px wide */
-    transform: translateY(-50%); /* Center the line vertically */
-    width: 10px; /* Width of the horizontal line */
-    height: 2px; /* Thickness of the line */
-  }
-`
-
-export const TargetHandle = styled.div<{ selected?: boolean }>`
-  .react-flow__handle
-  ${(props) => props.selected
-    ? `{
-        background: black;
-        width: 0px;
-        min-width: 0px;
-        height: 0px;
-        top: -16px;
-        margin-left: -11px;
-      }`
-    : `{
-
-    }`}
-`
-
-export const Collapse = styled(AntCollapse)`
-  grid-area: 1 / 1 / 1 / 1;
-
-  .ant-collapse-item {
-    flex: 1;
-
-    > .ant-collapse-content > .ant-collapse-content-box {
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-      margin-top: 16px;
-    }
+  .react-flow__handle-top {
+    top:0;
   }
 `
 
@@ -154,6 +78,7 @@ export const EditButton = styled.div`
   transform: rotate(90deg);
 
   :hover {
+    cursor: pointer;
     border: 1px solid var(--acx-accents-orange-50) !important;
     background-color: var(--acx-accents-orange-10) !important;
 
@@ -176,12 +101,44 @@ export const PlusButton = styled.div`
   align-items: center;
   justify-content: center;
 
+  ::after {
+    content: '';
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    width: 1px;
+    height: 16px;
+    background-color: var(--acx-primary-black);
+    transform: translateX(-50%);
+  }
+
   :hover {
+    cursor: pointer;
     border: 1px solid var(--acx-accents-orange-50) !important;
     background-color: var(--acx-accents-orange-10) !important;
 
     path {
       stroke: var(--acx-accents-orange-50) !important;
+    }
+
+    ::after {
+      height: 17px;
+      background-color: var(--acx-accents-orange-50);
+    }
+  }
+`
+
+export const Collapse = styled(AntCollapse)`
+  grid-area: 1 / 1 / 1 / 1;
+
+  .ant-collapse-item {
+    flex: 1;
+
+    > .ant-collapse-content > .ant-collapse-content-box {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin-top: 16px;
     }
   }
 `

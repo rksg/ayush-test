@@ -125,47 +125,26 @@ export default function BaseActionNode (props: NodeProps
       }
 
       {props.selected &&
-        <UI.PlusButton>
+        <UI.PlusButton onClick={onAddClick}>
           <Plus />
         </UI.PlusButton>
       }
 
-      {/*<CustomDiv>*/}
-      {/*  <Handle type={'source'} position={Position.Top}>*/}
-      {/*    <div className={'circle'} />*/}
-      {/*  </Handle>*/}
-      {/*</CustomDiv>*/}
-
-
-      <UI.TargetHandle>
-        <Handle
-          type='target'
-          position={Position.Top}
-          className={'circle'}
-        />
-      </UI.TargetHandle>
+      <Handle
+        type='target'
+        position={Position.Top}
+        className={'circle'}
+      />
 
       {splitCount.map((split, index) => {
         return (
-          <UI.SourceHandle selected={props.selected} key={index}>
-            <Handle
-              id={`${index}`}
-              key={split}
-              type={'source'}
-              position={Position.Bottom}
-              style={{ left: `${getHandlePosition(splitCount.length, index)}%` }}
-            >
-              {/*{props.selected &&*/}
-              {/*  <Button*/}
-              {/*    style={{ background: 'white' }}*/}
-              {/*    shape={'circle'}*/}
-              {/*    size={'small'}*/}
-              {/*    icon={<Plus />}*/}
-              {/*    onClick={onAddClick}*/}
-              {/*  />*/}
-              {/*}*/}
-            </Handle>
-          </UI.SourceHandle>
+          <Handle
+            id={`${index}`}
+            key={split}
+            type={'source'}
+            position={Position.Bottom}
+            style={{ left: `${getHandlePosition(splitCount.length, index)}%` }}
+         />
         )
       })}
     </UI.StepNode>
