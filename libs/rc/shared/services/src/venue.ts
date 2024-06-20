@@ -672,7 +672,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateApPosition',
             'UpdateRwgPosition',
             'UpdateCloudpathServerPosition',
-            'DeleteFloorPlan'], () => {
+            'DeleteFloorPlan',
+            'ActivateApFloorPosition',
+            'DeactivateApFloorPosition'
+          ], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' },
               { type: 'RWG', id: 'List' }]))
           })
@@ -690,11 +693,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     updateApPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateApPosition, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.UpdateApPosition, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    removeApPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CommonRbacUrlsInfo.RemoveApPosition, params, apiCustomHeader)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
@@ -2035,7 +2051,8 @@ export const {
   useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
-  useUpdateVenueAntennaTypeMutation
+  useUpdateVenueAntennaTypeMutation,
+  useRemoveApPositionMutation
 } = venueApi
 
 

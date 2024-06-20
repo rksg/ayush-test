@@ -95,25 +95,25 @@ const setPoEPortStatus = (
 }
 
 export const aggregateVenueInfo = (
-  apList: TableResult<NewAPModelExtended, ApExtraParams>,
-  venueList: TableResult<Venue>
+  apList?: TableResult<NewAPModelExtended, ApExtraParams>,
+  venueList?: TableResult<Venue>
 ) => {
-  const apListData = apList.data
-  const venueListData = venueList.data
-  apListData.forEach(apItem => {
-    apItem.venueName = venueListData.find(venueItem =>
+  const apListData = apList?.data
+  const venueListData = venueList?.data
+  apListData?.forEach(apItem => {
+    apItem.venueName = venueListData?.find(venueItem =>
       venueItem.id === apItem.venueId)?.name
   })
 }
 
 export const aggregatePoePortInfo = (
-  apList: TableResult<NewAPModelExtended, ApExtraParams>,
-  capabilities: Capabilities
+  apList?: TableResult<NewAPModelExtended, ApExtraParams>,
+  capabilities?: Capabilities
 ) => {
-  const apListData = apList.data
-  const apModels = capabilities.apModels
-  apListData.forEach(apItem => {
-    const portId = apModels.find(apModelItem =>
+  const apListData = apList?.data
+  const apModels = capabilities?.apModels
+  apListData?.forEach(apItem => {
+    const portId = apModels?.find(apModelItem =>
       apModelItem.model === apItem.model)?.lanPorts
       .find(lanPort => lanPort.isPoePort)?.id
     apItem.poePort = String(Number(portId) - 1)
@@ -121,13 +121,13 @@ export const aggregatePoePortInfo = (
 }
 
 export const aggregateApGroupInfo = (
-  apList: TableResult<NewAPModelExtended, ApExtraParams>,
-  apGroupList: TableResult<ApGroup>
+  apList?: TableResult<NewAPModelExtended, ApExtraParams>,
+  apGroupList?: TableResult<ApGroup>
 ) => {
-  const apListData = apList.data
-  const apGroupListData = apGroupList.data
-  apListData.forEach(apItem => {
-    apItem.apGroupName = apGroupListData.find(apGroupItem =>
+  const apListData = apList?.data
+  const apGroupListData = apGroupList?.data
+  apListData?.forEach(apItem => {
+    apItem.apGroupName = apGroupListData?.find(apGroupItem =>
       apGroupItem.id === apItem.apGroupId)?.name
   })
 }

@@ -240,11 +240,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/apGroups',
     newApi: true
   },
+  */
   getDhcpAp: {
-    method: 'post',
-    url: '/venues/dhcpApSettings/query',
+    method: 'get',
+    // url: '/venues/dhcpApSettings/query',
+    url: '/venues/:venueId/aps/:serialNumber/dhcpSettings',
     newApi: true
-  },*/
+  },
   deleteAp: {
     method: 'delete',
     // url: '/venues/aps/:serialNumber',
@@ -326,22 +328,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
-  /*
   startPacketCapture: {
-    method: 'post',
-    url: '/venues/aps/:serialNumber/packets',
+    method: 'PATCH',
+    // url: '/venues/aps/:serialNumber/packets',
+    url: '/venues/:venueId/aps/:serialNumber/packets',
     newApi: true
   },
   stopPacketCapture: {
-    method: 'delete',
-    url: '/venues/aps/:serialNumber/packets',
+    method: 'PATCH',
+    // url: '/venues/aps/:serialNumber/packets',
+    url: '/venues/:venueId/aps/:serialNumber/packets',
     newApi: true
   },
   getPacketCaptureState: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/packets',
+    // url: '/venues/aps/:serialNumber/packets',
+    url: '/venues/:venueId/aps/:serialNumber/packets',
     newApi: true
-  },*/
+  },
   blinkLedAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',
@@ -539,21 +543,31 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/aps/neighbors/query',
     newApi: true
   },
-  getApRfNeighbors: {
+  */
+  getApNeighbors: {
+    method: 'post',
+    url: '/venues/:venueId/aps/:serialNumber/neighbors/query',
+    newApi: true
+  },
+  /*
+  getApRfNeighbors: { deprecate
     method: 'get',
     url: '/venues/aps/:serialNumber/rfNeighbors',
     newApi: true
   },
-  getApLldpNeighbors: {
+  getApLldpNeighbors: { deprecate
     method: 'get',
     url: '/venues/aps/:serialNumber/lldpNeighbors',
     newApi: true
   },
+  */
   detectApNeighbors: {
     method: 'PATCH',
-    url: '/venues/aps/:serialNumber/neighbors',
+    // url: '/venues/aps/:serialNumber/neighbors',
+    url: '/venues/:venueId/aps/:serialNumber/neighbors',
     newApi: true
   },
+  /*
   getCcdSupportVenues: {
     method: 'post',
     url: '/venues/clientConnectionDiagnosis/query',

@@ -161,7 +161,10 @@ export function useApActions () {
   ) => {
     const dhcpAps = await getDhcpAp({
       params: { tenantId: tenantId },
-      payload: rows.map(row => row.serialNumber)
+      payload: isUseWifiRbacApi ?
+        rows.map(row => ({ venueId: row.venueId, serialNumber: row.serialNumber })):
+        rows.map(row => row.serialNumber),
+      enableRbac: isUseWifiRbacApi
     }, true).unwrap()
 
     if (hasDhcpAps(dhcpAps)) {

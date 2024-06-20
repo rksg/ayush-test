@@ -156,7 +156,12 @@ export function ApForm () {
         const venueLatLng = pick(selectVenue, ['latitude', 'longitude'])
         const options = await getApGroupOptions(apDetails.venueId)
         const dhcpApResponse = await getDhcpAp({
-          params: { tenantId }, payload: [serialNumber] }, true).unwrap()
+          params: { tenantId },
+          payload: isUseWifiRbacApi ?
+            [{ venueId: apDetails.venueId, serialNumber }] :
+            [serialNumber],
+          enableRbac: isUseWifiRbacApi
+        }, true).unwrap()
         const dhcpAp = retrieveDhcpAp(dhcpApResponse)
 
         setSelectedVenue(selectVenue as unknown as VenueExtended)
