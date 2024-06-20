@@ -60,7 +60,7 @@ const SummaryForm = () => {
             )} />
           <Form.Item label={$t({ defaultMessage: 'PLMN' })}
             children={state.plmns?.map((plmn, index) =>
-              <div key={`plmn-${index}`}> {`${plmn.mcc} ${plmn.mcc}`}</div>
+              <div key={`plmn-${index}`}> {`${plmn.mcc} ${plmn.mnc}`}</div>
             )} />
           <Form.Item label={$t({ defaultMessage: 'Roaming Consortium' })}
             children={state.roamConsortiumOIs?.map((roi, index) =>
