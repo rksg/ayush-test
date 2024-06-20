@@ -287,7 +287,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   deleteRoguePolicyRbac: {
     method: 'delete',
-    url: '/templates/roguePolicies/:policyId',
+    url: '/templates/roguePolicies/:templateId',
     newApi: true
   },
   activateRoguePolicy: {

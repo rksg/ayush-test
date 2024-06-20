@@ -11,12 +11,14 @@ import { RogueAPDetailContext } from './RogueAPDetectionDetailView'
 
 const RogueAPDetectionDetailContent = () => {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { $t } = useIntl()
 
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
-    enableRbac
+    enableRbac,
+    enableTemplateRbac
   })
 
   const { setFiltersId, setPolicyName } = useContext(RogueAPDetailContext)

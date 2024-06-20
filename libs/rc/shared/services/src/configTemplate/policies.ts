@@ -400,7 +400,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
           const res = await fetchWithBQ({
             // eslint-disable-next-line max-len
-            ...createHttpRequest(enableRbac ? ConfigTemplateUrlsInfo.updateRoguePolicyRbac : ConfigTemplateUrlsInfo.updateRoguePolicy, params, headers),
+            ...createHttpRequest(enableRbac ? PoliciesConfigTemplateUrlsInfo.updateRoguePolicyRbac : PoliciesConfigTemplateUrlsInfo.updateRoguePolicy, params, headers),
             body: JSON.stringify({
               policyId,
               name,
@@ -425,9 +425,9 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
             const [deactivationRes, activationRes] = await Promise.all([
               // eslint-disable-next-line max-len
-              batchApi(ConfigTemplateUrlsInfo.activateRoguePolicy, deactivateRequests, fetchWithBQ, headers),
+              batchApi(PoliciesConfigTemplateUrlsInfo.activateRoguePolicy, deactivateRequests, fetchWithBQ, headers),
               // eslint-disable-next-line max-len
-              batchApi(ConfigTemplateUrlsInfo.activateRoguePolicy, activateRequests, fetchWithBQ, headers)
+              batchApi(PoliciesConfigTemplateUrlsInfo.activateRoguePolicy, activateRequests, fetchWithBQ, headers)
             ])
 
             if (deactivationRes.error || activationRes.error) {
@@ -446,7 +446,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: ({ params, enableRbac }) => {
         const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         // eslint-disable-next-line max-len
-        const url = enableRbac ? ConfigTemplateUrlsInfo.deleteRoguePolicyRbac : ConfigTemplateUrlsInfo.deleteRoguePolicy
+        const url = enableRbac ? PoliciesConfigTemplateUrlsInfo.deleteRoguePolicyRbac : PoliciesConfigTemplateUrlsInfo.deleteRoguePolicy
         const req = createHttpRequest(url, params, headers)
         return {
           ...req
@@ -456,7 +456,19 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
-      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ActivateRoguePolicyOnVenueTemplate',
+            'DeactivateRoguePolicyOnVenueTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     getVenueRogueApTemplate: build.query<VenueRogueAp, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
