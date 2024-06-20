@@ -150,7 +150,7 @@ export enum Features {
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
-  SWITCH_CLI_MODE = 'switch-consumer-cli-mode'
+  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
