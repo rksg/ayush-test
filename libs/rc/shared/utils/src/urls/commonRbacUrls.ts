@@ -475,8 +475,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addGuestPass: {
     method: 'post',
-    url: '/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
   /*
