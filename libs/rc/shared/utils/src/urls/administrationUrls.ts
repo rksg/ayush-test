@@ -321,5 +321,10 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/notifications/sms/providers/:provider',
     newApi: true
+  },
+  getTwiliosIncomingPhoneNumbers: {
+    method: 'post',
+    url: '/notifications/sms/providers/twilios/incomingPhoneNumbers',
+    newApi: true
   }
 }

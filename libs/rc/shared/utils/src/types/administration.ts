@@ -369,14 +369,16 @@ export interface NotificationSmsUsage
 export interface NotificationSmsConfig
 {
   // twilio
-  authid?: string,
-  sid?: string,
+  accountSid?: string,
+  authToken?: string,
   fromNumber?: string,
   // esendex
-  userName?: string,
-  apiPassword?: string,
-  referenceNumber?: string,
-  // others
   apiKey?: string,
+  // others
   url?: string
+}
+
+export interface TwiliosIncommingPhoneNumbers
+{
+  incommingPhoneNumbers?: string[]
 }

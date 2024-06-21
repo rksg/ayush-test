@@ -2,9 +2,11 @@ import { useState } from 'react'
 
 import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
+import { useParams }           from 'react-router-dom'
 
 import { Drawer }                            from '@acx-ui/components'
 import {
+  useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useUpdateNotificationSmsProviderMutation
 } from '@acx-ui/rc/services'
 import {
@@ -24,15 +26,38 @@ interface SetupSmsProviderDrawerProps {
 export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const { $t } = useIntl()
 
+  const params = useParams()
   const { visible, setVisible, editData } = props
   const [providerType, setProviderType] = useState<SmsProviderType>()
   const [form] = Form.useForm()
 
   const [updateSmsProvider] = useUpdateNotificationSmsProviderMutation()
+  const [getTwiliosIncomingPhoneNumbers] = useLazyGetTwiliosIncomingPhoneNumbersQuery()
 
   const onClose = () => {
     setVisible(false)
     form.resetFields()
+  }
+
+  let incomingPhoneList = [
+    {
+      label: $t({ defaultMessage: '+19388887785' }),
+      value: '+19388887785'
+    }
+  ]
+
+  const handleGetTwiliosIncomingPhoneNumbers = async () => {
+    const payload = {
+      sid: 'AC76930bb18cb76e44e743bbd1572c5eaa',
+      authId: '3dc75201133cb439febd5c12e34a91f5'
+    }
+    const phoneList = await getTwiliosIncomingPhoneNumbers({
+      params: params, payload: payload })
+    const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
+    incomingPhoneList = myNumber?.map((item) => ({
+      label: item,
+      value: item
+    }))
   }
 
   const onSubmit = async () => {
@@ -40,15 +65,13 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       await form.validateFields()
       const providerData: NotificationSmsConfig = {
         // twilio
-        authid: form.getFieldValue('accountSid'),
-        sid: form.getFieldValue('authToken'),
+        accountSid: form.getFieldValue('accountSid'),
+        authToken: form.getFieldValue('authToken'),
         fromNumber: form.getFieldValue('phoneNumber'),
         // esendex
-        // userName: form.getFieldValue('userName'),
-        apiPassword: form.getFieldValue('apiPassword'),
-        // referenceNumber: form.getFieldValue('sendUrl'),
+        apiKey: form.getFieldValue('apiPassword'),
         // others
-        apiKey: form.getFieldValue('apiKey'),
+        // apiKey: form.getFieldValue('apiKey'),
         url: form.getFieldValue('sendUrl')
       }
 
@@ -102,7 +125,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='accountSid'
         label={$t({ defaultMessage: 'Account SID' })}
-        initialValue={editData?.authid ?? ''}
+        initialValue={editData?.accountSid ?? ''}
         rules={[
           { required: true }
         ]}
@@ -111,10 +134,11 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='authToken'
         label={$t({ defaultMessage: 'Auth Token' })}
+        initialValue={editData?.authToken ?? ''}
         rules={[
           { required: true }
         ]}
-        children={<Input />}
+        children={<Input onBlur={handleGetTwiliosIncomingPhoneNumbers}/>}
       />
       <Form.Item
         name='phoneNumber'
@@ -123,7 +147,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         //   { required: true }
         // ]}
         children={<Select
-          options={providerList}
+          options={incomingPhoneList}
           placeholder={$t({ defaultMessage: 'Select...' })}
           onChange={handleProviderChange}
         />}
@@ -131,7 +155,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     </>}
     {providerType === SmsProviderType.ESENDEX &&
       <Form.Item
-        name='apiPassword'
+        name='apiKey'
         label={$t({ defaultMessage: 'API Key' })}
         rules={[
           { required: true }

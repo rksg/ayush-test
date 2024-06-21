@@ -7,13 +7,17 @@ import { useParams }                                      from 'react-router-dom
 
 import { Button, Card, cssStr, DonutChart, showActionModal, Tooltip } from '@acx-ui/components'
 import {
+  administrationApi,
+  useDeleteNotificationSmsProviderMutation,
   useGetNotificationSmsProviderQuery,
   useGetNotificationSmsQuery,
   useUpdateNotificationSmsMutation
 } from '@acx-ui/rc/services'
-import { SmsProviderType } from '@acx-ui/rc/utils'
+import { NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
+import { store }                                 from '@acx-ui/store'
 
-import { ButtonWrapper } from '../AuthServerFormItem/styledComponents'
+import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
+import { MessageMapping } from '../MessageMapping'
 
 import { SetupSmsProviderDrawer } from './SetupSmsProviderDrawer'
 
@@ -27,6 +31,16 @@ export const getProviderQueryParam = (providerType: SmsProviderType) => {
       return 'others'
   }
   return ''
+}
+
+export const reloadSmsNotification = (timeoutSec?: number) => {
+  const milisec = timeoutSec ? timeoutSec*1000 : 1000
+  setTimeout(() => {
+    store.dispatch(
+      administrationApi.util.invalidateTags([
+        { type: 'Administration', id: 'SMS_PROVIDER' }
+      ]))
+  }, milisec)
 }
 
 const SmsProviderItem = () => {
@@ -45,6 +59,7 @@ const SmsProviderItem = () => {
   const FREE_SMS_POOL = 100
 
   const [updateNotificationSms] = useUpdateNotificationSmsMutation()
+  const [deleteNotificationSms] = useDeleteNotificationSmsProviderMutation()
 
   const onSetUpValue = () => {
     setEditMode(false)
@@ -52,11 +67,17 @@ const SmsProviderItem = () => {
   }
 
   const onSaveUtilization = () => {
-    // updateNotificationSms()
+    const payload: NotificationSmsUsage = {
+      thredshold: 50,
+      provider: SmsProviderType.RUCKUS_ONE,
+      ruckusOneUsed: 0
+    }
+    updateNotificationSms({ params , payload: payload }).then()
+    reloadSmsNotification(2)
   }
 
   const smsUsage = useGetNotificationSmsQuery({ params })
-  const smsProvider = useGetNotificationSmsProviderQuery(
+  let smsProvider = useGetNotificationSmsProviderQuery(
     { params: { provider: getProviderQueryParam(smsProviderType as SmsProviderType) } },
     { skip: !smsProviderConfigured })
 
@@ -71,7 +92,7 @@ const SmsProviderItem = () => {
       setIsInGracePeriod(usedSms > FREE_SMS_POOL)
       setFreeSmsPool(true)
     }
-  }, [smsUsage])
+  }, [smsUsage, smsProviderConfigured])
 
   const data = ruckusOneUsed > FREE_SMS_POOL
     ? [
@@ -106,16 +127,14 @@ const SmsProviderItem = () => {
             showActionModal({
               title: $t({ defaultMessage: 'Remove SMS Provider' }),
               type: 'confirm',
-              customContent: {
-                action: 'DELETE',
-                entityName: $t({ defaultMessage: 'sms' }),
-                // entityValue: name,
-                confirmationText: $t({ defaultMessage: 'Yes, Remove Provider' })
-              },
+              content: $t(MessageMapping.delete_sms_provider_msg),
+              okText: $t({ defaultMessage: 'Yes, Remove Provider' }),
+              cancelText: $t({ defaultMessage: 'No, Keep Provider' }),
               onOk: () => {
-                updateNotificationSms({ params })
-                //   .then()
-                // reloadAuthTable(2)
+                deleteNotificationSms({ params:
+                  { provider: getProviderQueryParam(smsProviderType as SmsProviderType) } })
+                  .then()
+                reloadSmsNotification(2)
               }
             })
           }}>
@@ -140,14 +159,14 @@ const SmsProviderItem = () => {
             colon={false}
             label={$t({ defaultMessage: 'Account SID' })} />
           <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.authid}</h3>
+            {smsProvider.data?.accountSid}</h3>
         </div>
         <div>
           <Form.Item
             colon={false}
             label={$t({ defaultMessage: 'Auth Token' })} />
           <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.sid}</h3>
+            {smsProvider.data?.authToken}</h3>
         </div>
       </Card>
     </Col>
@@ -168,7 +187,7 @@ const SmsProviderItem = () => {
             colon={false}
             label={$t({ defaultMessage: 'API Token' })} />
           <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.apiPassword}</h3>
+            {smsProvider.data?.apiKey}</h3>
         </div>
       </Card>
     </Col>

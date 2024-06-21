@@ -30,7 +30,8 @@ import {
   PrivilegeGroup,
   EntitlementPendingActivations,
   NotificationSmsUsage,
-  NotificationSmsConfig
+  NotificationSmsConfig,
+  TwiliosIncommingPhoneNumbers
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -803,7 +804,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     updateNotificationSms: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -812,7 +814,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     getNotificationSmsProvider: build.query<NotificationSmsConfig, RequestPayload>({
       query: ({ params }) => {
@@ -829,11 +832,22 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     deleteNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    getTwiliosIncomingPhoneNumbers: build.query<TwiliosIncommingPhoneNumbers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosIncomingPhoneNumbers, params)
         return {
           ...req,
           body: payload
@@ -918,5 +932,7 @@ export const {
   useUpdateNotificationSmsMutation,
   useGetNotificationSmsProviderQuery,
   useUpdateNotificationSmsProviderMutation,
-  useDeleteNotificationSmsProviderMutation
+  useDeleteNotificationSmsProviderMutation,
+  useGetTwiliosIncomingPhoneNumbersQuery,
+  useLazyGetTwiliosIncomingPhoneNumbersQuery
 } = administrationApi
