@@ -44,6 +44,7 @@ import {
   CommonResult,
   FILTER,
   ImportErrorRes,
+  PowerSavingStatusEnum,
   SEARCH,
   TableQuery,
   TableResult,
@@ -217,7 +218,8 @@ export const OldApTable = forwardRef((props: ApTableProps<APExtended|APExtendedG
       filterable: filterables ? statusFilterOptions : false,
       groupable: enableGroups ?
         filterables && getGroupableConfig()?.deviceStatusGroupableOptions : undefined,
-      render: (_, { deviceStatus }) => <APStatus status={deviceStatus as ApDeviceStatusEnum} />
+      render: (_, { deviceStatus, powerSavingStatus }) =>
+        <APStatus status={deviceStatus as ApDeviceStatusEnum} powerSavingStatus={powerSavingStatus as PowerSavingStatusEnum} />
     }, {
       key: 'model',
       title: $t({ defaultMessage: 'Model' }),

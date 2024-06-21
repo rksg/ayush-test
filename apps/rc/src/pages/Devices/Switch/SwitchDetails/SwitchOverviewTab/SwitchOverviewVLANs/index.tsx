@@ -18,6 +18,7 @@ import {
   useGetLagListQuery,
   useGetSwitchRoutedListQuery,
   useSwitchPortlistQuery,
+  useStackMemberListQuery,
   useAddSwitchesVlansMutation,
   useDeleteSwitchVlanMutation,
   useUpdateSwitchVlanMutation
@@ -68,7 +69,7 @@ export function SwitchOverviewVLANs (props: {
   const [cliApplied, setCliApplied] = useState(false)
   const [isSwitchOperational, setIsSwitchOperational] = useState(false)
   const [switchFamilyModel, setSwitchFamilyModel] = useState('')
-  const [portSlotsData, setPortSlotsData] = useState([] as SwitchSlot[])
+  const [portSlotsData, setPortSlotsData] = useState([] as SwitchSlot[][])
   const [isDefaultVlanAppliedACL, setIsDefaultVlanAppliedACL] = useState(false)
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -126,6 +127,16 @@ export function SwitchOverviewVLANs (props: {
     }, {
       skip: !(switchDetail?.venueId && isSwitchLevelVlanEnabled)
     })
+
+  const { data: stackMember, isLoading: isStackMemberLoading } = useStackMemberListQuery({
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    payload: {
+      fields: ['activeUnitId', 'unitId', 'unitStatus', 'name', 'deviceStatus', 'model',
+        'serialNumber', 'activeSerial', 'switchMac', 'ip', 'venueName', 'uptime'],
+      filters: { activeUnitId: [switchDetail?.serialNumber] } }
+  }, {
+    skip: !(switchDetail?.venueId && switchDetail?.enableStack && isSwitchLevelVlanEnabled)
+  })
 
   const { data: portsData } = useSwitchPortlistQuery({
     params: { tenantId, switchId },
@@ -363,7 +374,8 @@ export function SwitchOverviewVLANs (props: {
 
   useEffect(() => {
     const isDataReady
-      = tableQuery.data?.data && !isLagListLoading && !isVePortsListLoading && !isVlanListLoading
+      = tableQuery.data?.data && !isLagListLoading && !isVePortsListLoading
+      && !isVlanListLoading && !isStackMemberLoading
 
     if (isDataReady) {
       const portsUsedByLagObj = lagList?.reduce((result, lag) => {
@@ -412,7 +424,7 @@ export function SwitchOverviewVLANs (props: {
       setDefaultVlan(defaultVlan)
     }
   }, [tableQuery.data?.data, vlanListBySwitch,
-    isLagListLoading, isVePortsListLoading, isVlanListLoading
+    isLagListLoading, isVePortsListLoading, isVlanListLoading, isStackMemberLoading
   ])
 
   useEffect(() => {
@@ -471,6 +483,7 @@ export function SwitchOverviewVLANs (props: {
           lag: usedByLag,
           untagged: _.omit(usedUntaggedPorts, editVlan?.untaggedPorts?.split(',') ?? [])
         }}
+        stackMember={stackMember?.data ?? undefined}
       />}
 
       { isSwitchLevelVlanEnabled && defaultVlanDrawerVisible && <DefaultVlanDrawer
@@ -488,10 +501,11 @@ export function SwitchOverviewVLANs (props: {
 }
 
 export function getPortViewData (
-  portsData: SwitchPortViewModel[]): { slots: SwitchSlot[] } {
+  portsData: SwitchPortViewModel[]): { slots: SwitchSlot[][]
+} {
   const tmpSlots = portsData.reduce((acc, port) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [_, slotStr, portNumberStr] = port.portIdentifier.split('/')
+    const [unit, slotStr, portNumberStr] = port.portIdentifier.split('/')
+    const unitNumber = Number(unit)
     const slotNumber = Number(slotStr)
     const portNumber = Number(portNumberStr)
 
@@ -502,20 +516,24 @@ export function getPortViewData (
       usedInUplink: port.cloudPort
     }
 
-    if (!acc[slotNumber]) {
-      acc[slotNumber] = { portStatus: [], portCount: 0, portNumber: 0, portTagged: '' }
+    if (!acc[unitNumber]) {
+      acc[unitNumber] = {}
     }
 
-    acc[slotNumber].portStatus.push(updatedPort)
-    acc[slotNumber].portCount++
-    acc[slotNumber].portNumber = portNumber
-    acc[slotNumber].slotNumber = slotNumber
+    if (!acc[unitNumber][slotNumber]) {
+      acc[unitNumber][slotNumber] = { portStatus: [], portCount: 0, portNumber: 0, portTagged: '' }
+    }
+
+    acc[unitNumber][slotNumber].portStatus.push(updatedPort)
+    acc[unitNumber][slotNumber].portCount++
+    acc[unitNumber][slotNumber].portNumber = portNumber
+    acc[unitNumber][slotNumber].slotNumber = slotNumber
 
     return acc
 
-  }, {} as { [key: number]: SwitchSlot })
+  }, {} as { [key: number]: { [key: number]:SwitchSlot } })
 
   return {
-    slots: Object.values(tmpSlots)
+    slots: Object.values(tmpSlots).map(slot => Object.values(slot))
   }
 }

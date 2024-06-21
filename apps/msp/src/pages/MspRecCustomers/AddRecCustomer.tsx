@@ -72,6 +72,7 @@ export function AddRecCustomer () {
   const { Paragraph } = Typography
   const isEditMode = action === 'edit'
   const multiPropertySelectionEnabled = useIsSplitOn(Features.MSP_MULTI_PROPERTY_CREATION_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { data: userProfileData } = useUserProfileContext()
   const { data: recCustomer } =
@@ -80,9 +81,11 @@ export function AddRecCustomer () {
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: !isEditMode })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: !isEditMode })
   const { data: ecSupport } =
-      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: !isEditMode })
+      useGetMspEcSupportQuery({
+        params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: !isEditMode })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {
@@ -111,7 +114,7 @@ export function AddRecCustomer () {
 
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
-      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -120,7 +123,7 @@ export function AddRecCustomer () {
           setEcSupport(true)
         })
     } else {
-      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',

@@ -1,4 +1,4 @@
-import * as APGroupFixtures   from './APGroup'
+import * as APGroupFixtures   from './apGroup'
 import * as APGeneralFixtures from './general'
 
 export {

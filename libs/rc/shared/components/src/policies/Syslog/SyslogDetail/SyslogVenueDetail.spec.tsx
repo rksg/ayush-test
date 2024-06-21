@@ -1,10 +1,21 @@
+import { ReactNode } from 'react'
+
 import { rest } from 'msw'
 
-import { SyslogUrls }                          from '@acx-ui/rc/utils'
-import { Provider }                            from '@acx-ui/store'
-import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
+import { ConfigTemplateContext, ConfigTemplateType, ConfigTemplateUrlsInfo, PoliciesConfigTemplateUrlsInfo, SyslogUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                      from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                           from '@acx-ui/test-utils'
 
 import SyslogVenueDetail from './SyslogVenueDetail'
+
+const mockedRenderConfigTemplateDetailsComponent = jest.fn()
+jest.mock('../../../configTemplates', () => ({
+  ...jest.requireActual('../../../configTemplates'),
+  renderConfigTemplateDetailsComponent: (type: ConfigTemplateType, id: string, name: ReactNode) => {
+    mockedRenderConfigTemplateDetailsComponent({ type, id, name })
+    return <div>{name}</div>
+  }
+}))
 
 const venueDetailContent = {
   fields: [
@@ -12,11 +23,9 @@ const venueDetailContent = {
     'city',
     'name',
     'id',
-    'aggregatedApStatus',
-    'syslog',
     'status'
   ],
-  totalCount: 2,
+  totalCount: 1,
   page: 1,
   data: [
     {
@@ -24,42 +33,7 @@ const venueDetailContent = {
       name: 'test-venue',
       city: 'Toronto, Ontario',
       country: 'Canada',
-      aggregatedApStatus: {
-        '1_01_NeverContactedCloud': 10
-      },
-      status: '1_InSetupPhase',
-      syslog: {
-        policyId: 'policyId1',
-        policyName: 'Default profile',
-        enabled: false
-      }
-    },
-    {
-      id: '4ca20c8311024ac5956d366f15d96e03',
-      name: 'test-venue2',
-      city: 'Toronto, Ontario',
-      country: 'Canada',
-      aggregatedApStatus: {
-        '2_00_Operational': 5
-      },
-      status: '1_InSetupPhase',
-      syslog: {
-        policyId: 'policyId1',
-        policyName: 'Default profile',
-        enabled: true
-      }
-    },
-    {
-      id: '4ca20a8511024ac5956d366f15d12t03',
-      name: 'test-venue3',
-      city: 'Toronto, Ontario',
-      country: 'Canada',
-      status: '1_InSetupPhase',
-      syslog: {
-        policyId: 'policyId1',
-        policyName: 'Default profile',
-        enabled: true
-      }
+      status: '1_InSetupPhase'
     }
   ]
 }
@@ -82,31 +56,54 @@ const params: { tenantId: string, policyId: string } = {
 
 describe('SyslogVenueDetail', () => {
   it('should render SyslogVenueDetail successfully', async () => {
-    const mockGetSyslogPolicy = jest.fn()
     mockServer.use(
       rest.get(
         SyslogUrls.getSyslogPolicy.url,
-        (_, res, ctx) => {
-          mockGetSyslogPolicy()
-          return res(
-            ctx.json(detailContent)
-          )
-        }
+        (_, res, ctx) => res(ctx.json(detailContent))
       ),
       rest.post(
         SyslogUrls.getVenueSyslogList.url,
-        (_, res, ctx) => res(
-          ctx.json(venueDetailContent)
-        )
+        (_, res, ctx) => res(ctx.json(venueDetailContent))
       )
     )
 
     render(<Provider><SyslogVenueDetail /></Provider>, { route: { params } })
 
-    await waitFor(()=>{
-      expect(mockGetSyslogPolicy).toBeCalled()
-    })
-    expect(await screen.findByText(/Venue Name/i)).toBeInTheDocument()
+    const targetVenue = venueDetailContent.data[0]
+    const targetRow = await screen.findByRole('link', { name: targetVenue.name })
+    const venueLink = `/${params.tenantId}/t/venues/${targetVenue.id}/venue-details/overview`
+
+    expect(targetRow).toHaveAttribute('href', venueLink)
+
     expect(await screen.findByText(/Instance \(1\)/)).toBeVisible()
+  })
+
+  it('should render Venue link for Config Template successfully', async () => {
+    mockServer.use(
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getSyslogPolicy.url,
+        (_, res, ctx) => res(ctx.json(detailContent))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(ctx.json(venueDetailContent))
+      )
+    )
+
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <Provider><SyslogVenueDetail /></Provider>
+      </ConfigTemplateContext.Provider>, { route: { params } }
+    )
+
+    const targetVenue = venueDetailContent.data[0]
+
+    await waitFor(() => {
+      expect(mockedRenderConfigTemplateDetailsComponent).toHaveBeenCalledWith({
+        type: ConfigTemplateType.VENUE,
+        name: targetVenue.name,
+        id: targetVenue.id
+      })
+    })
   })
 })
