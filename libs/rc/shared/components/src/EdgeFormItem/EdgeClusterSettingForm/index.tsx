@@ -120,18 +120,18 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   }
 
   const maxActiveActiveNodes = 4
-  const maxActiveStandyNodes = 2
+  const maxActiveStandbyNodes = 2
   const isAaSelected = () => {
     return haMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
   }
   const getMaxNodes = () => {
-    return isAaSelected() ? maxActiveActiveNodes : maxActiveStandyNodes
+    return isAaSelected() ? maxActiveActiveNodes : maxActiveStandbyNodes
   }
   const isDisableAddEdgeButton = () => {
     return (smartEdges?.length ?? 0) >= getMaxNodes()
   }
   const isDisableHaModeRadio = () => {
-    return isAaSelected() && (smartEdges?.length ?? 0) > maxActiveStandyNodes
+    return isAaSelected() && (smartEdges?.length ?? 0) > maxActiveStandbyNodes
   }
 
   return (
