@@ -3,8 +3,8 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import _                       from 'lodash'
 import { Params }              from 'react-router-dom'
 
-import { Filter }                    from '@acx-ui/components'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { Filter }                     from '@acx-ui/components'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -70,14 +70,27 @@ import {
   NewAPModel,
   NewApGroupViewModelResponseType,
   NewGetApGroupResponseType,
-  CapabilitiesApModel
+  CapabilitiesApModel,
+  GetUploadFormDataApiVersionHeader
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { aggregateApGroupApInfo, aggregateApGroupNetworkInfo, aggregateApGroupVenueInfo, getApGroupNewFieldFromOld, getNewApGroupViewmodelPayloadFromOld, transformApGroupFromNewType } from './apGroupUtils'
-import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel }                                                                                  from './apUtils'
+import {
+  aggregateApGroupApInfo,
+  aggregateApGroupNetworkInfo,
+  aggregateApGroupVenueInfo,
+  getApGroupNewFieldFromOld,
+  getNewApGroupViewmodelPayloadFromOld,
+  transformApGroupFromNewType
+} from './apGroupUtils'
+import {
+  aggregateApGroupInfo,
+  aggregatePoePortInfo,
+  aggregateVenueInfo,
+  transformApListFromNewModel
+} from './apUtils'
 
 
 export type ApsExportPayload = {
@@ -439,12 +452,8 @@ export const apApi = baseApApi.injectEndpoints({
     importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.addAp, params, {
-          ...apiCustomHeader,
-          'Content-Type': undefined,
-          ...(enableRbac ? {} : { Accept: '*/*' })
-        })
+        const apiCustomHeader = GetUploadFormDataApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.addAp, params, apiCustomHeader)
         return {
           ...req,
           body: payload
@@ -752,7 +761,7 @@ export const apApi = baseApApi.injectEndpoints({
           const apData = apQuery.data as ApDetails
           modelName = apData.model
         }
-        const curApCap = apCaps?.apModels.find(cap => cap.model === modelName) as CapabilitiesApModel
+        const curApCap = (apCaps?.apModels?.find(cap => cap.model === modelName) ?? {}) as CapabilitiesApModel
 
         return apCapQuery.data
           ? { data: curApCap }
@@ -768,31 +777,31 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    getPacketCaptureState: build.query<PacketCaptureState, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
-        return {
-          ...req
-        }
-      }
-    }),
-
     getApPhoto: build.query<APPhoto, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApPhoto, params)
-        return{
-          ...req
-        }
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { params, enableRbac } = arg
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
+
+        const apPhotoReq = createHttpRequest(urlsInfo.getApPhoto, params, apiCustomHeader)
+        const apPhotoQuery = await fetchWithBQ(apPhotoReq)
+        const data = (apPhotoQuery.data ?? {}) as APPhoto
+
+        return data
+          ? { data: data }
+          : { error: apPhotoQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Ap', id: 'PHOTO' }],
       keepUnusedDataFor: 0
     }),
     addApPhoto: build.mutation<{}, RequestFormData>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addApPhoto, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
-        })
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetUploadFormDataApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.addApPhoto, params, apiCustomHeader)
         return {
           ...req,
           body: payload
@@ -801,13 +810,23 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
     }),
     deleteApPhoto: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteApPhoto, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.deleteApPhoto, params, apiCustomHeader)
         return{
           ...req
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
+    }),
+    getPacketCaptureState: build.query<PacketCaptureState, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
+        return {
+          ...req
+        }
+      }
     }),
     startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
       query: ({ params, payload }) => {
