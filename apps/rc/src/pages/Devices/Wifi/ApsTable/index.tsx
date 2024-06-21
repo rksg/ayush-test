@@ -7,10 +7,9 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
-import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
-  useApGroupsListQuery,
   useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
@@ -40,23 +39,9 @@ export default function useApsTable () {
         venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
       })
     })
-  const { apgroupFilterOptions } = useApGroupsListQuery(
-    {
-      params: { tenantId },
-      payload: {
-        fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-        pageSize: 10000,
-        sortField: 'name',
-        sortOrder: 'ASC',
-        filters: { isDefault: [false] }
-      }
-    },
-    {
-      selectFromResult: ({ data }) => ({
-        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
-      })
-    }
-  )
+
+  const apgroupFilterOptions = useApGroupsFilterOpts()
+
   // TODO This query needs to be updated after apViewModel changes to the RBAC api
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,

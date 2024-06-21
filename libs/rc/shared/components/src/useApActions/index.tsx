@@ -10,7 +10,7 @@ import { cssStr, showActionModal, showToast } from '@acx-ui/components'
 import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useBlinkLedApMutation,
-  useDeleteApGroupsMutation,
+  useDeleteApGroupMutation,
   useDeleteApMutation,
   useDeleteSoloApMutation,
   useDownloadApLogMutation,
@@ -43,7 +43,7 @@ export function useApActions () {
   const [ deleteAp ] = useDeleteApMutation()
   const [ deleteSoloAp ] = useDeleteSoloApMutation()
   const [ blinkLedAp ] = useBlinkLedApMutation()
-  const [ deleteApGroups ] = useDeleteApGroupsMutation()
+  const [ deleteApGroup ] = useDeleteApGroupMutation()
 
   const deleteSoloFlag = useIsSplitOn(Features.DELETE_SOLO)
 
@@ -137,8 +137,7 @@ export function useApActions () {
     showDeleteAps(apList.data, tenantId, callBack)
   }
 
-  const showDeleteApGroups = async (row: APExtended,
-    tenantId?: string, callBack?: () => void) => {
+  const showDeleteApGroups = async (row: APExtended, callBack?: () => void) => {
     showActionModal({
       type: 'confirm',
       customContent: {
@@ -148,8 +147,13 @@ export function useApActions () {
         numOfEntities: 1
       },
       onOk: () => {
-        deleteApGroups({ params: { tenantId }, payload: [row.deviceGroupId] })
-          .then(callBack)
+        deleteApGroup({
+          params: {
+            venueId: row.venueId,
+            apGroupId: row.deviceGroupId
+          },
+          enableRbac: isUseWifiRbacApi
+        }).then(callBack)
       }
     })
   }

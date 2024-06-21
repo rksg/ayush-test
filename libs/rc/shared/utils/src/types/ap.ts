@@ -68,7 +68,8 @@ export interface AP {
   poePort?: string,
   healthStatus?: string,
   downLinkCount?: number,
-  apRadioDeploy?: string
+  apRadioDeploy?: string,
+  powerSavingStatus?: string
 }
 
 export interface NewAPModel {
@@ -266,8 +267,27 @@ export interface ApGroupViewModel extends ApGroup {
   incidents?: unknown
 }
 
+export interface NewApGroupViewModelResponseType {
+  id?: string,
+  name?: string,
+  description?: string,
+  isDefault?: boolean,
+  venueId?: string,
+  apSerialNumbers?: string[],
+  wifiNetworkIds?: string[],
+  clientCount?: number,
+}
+
+export interface NewGetApGroupResponseType {
+  id: string,
+  name: string,
+  description: string,
+  isDefault: boolean,
+  apSerialNumbers?: string[],  // undefined: when no ap associated
+}
+
 export interface AddApGroup {
-  venueId: string,
+  venueId: string,  // deprecated in v1.1
   apSerialNumbers?: unknown[],
   name: string,
   id?: string

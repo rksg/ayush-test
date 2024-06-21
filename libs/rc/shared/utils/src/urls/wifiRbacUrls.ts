@@ -84,7 +84,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
-  /*
   getVenueAntennaType: {
     method: 'get',
     url: '/venues/:venueId/apModelAntennaTypeSettings',
@@ -95,7 +94,6 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelAntennaTypeSettings',
     newApi: true
   },
-  */
   getVenueDefaultRegulatoryChannels: {
     method: 'get',
     //url: '/venues/:venueId/channels',
@@ -193,6 +191,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // no longer supported after v1, use getApGroupsList as replacement
   getVenueDefaultApGroup: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
@@ -235,6 +234,7 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true
   },
   /*
+  // deprecated. loop call the deleteApGroup to replace
   deleteApGroups: {
     method: 'delete',
     url: '/venues/apGroups',
@@ -305,17 +305,19 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/aps/:serialNumber/pictures',
     newApi: true
   },
+  */
   getApRadioCustomization: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/radioSettings',
+    //url: '/venues/aps/:serialNumber/radioSettings',
+    url: '/venues//:venueId/aps/:serialNumber/radioSettings',
     newApi: true
   },
   updateApRadioCustomization: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/radioSettings',
+    //url: '/venues/aps/:serialNumber/radioSettings',
+    url: '/venues//:venueId/aps/:serialNumber/radioSettings',
     newApi: true
   },
-  */
   pingAp: {
     method: 'PATCH',
     // url: '/venues/aps/:serialNumber',

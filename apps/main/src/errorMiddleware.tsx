@@ -149,16 +149,10 @@ export const getErrorContent = (action: ErrorAction) => {
       errorMsg = errorMessage.BAD_REQUEST
       break
     case 401:
-    case 403:
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      if(!(errors as any)?.error) {
-        errorMsg = errorMessage.SESSION_EXPIRED
-        type = 'info'
-        if(!isDevModeOn && !isIntDevMode) {
-          callback = userLogout
-        }
-      } else {
-        errorMsg = errorMessage.SERVER_ERROR
+      errorMsg = errorMessage.SESSION_EXPIRED
+      type = 'info'
+      if(!isDevModeOn && !isIntDevMode) {
+        callback = userLogout
       }
       break
     case 408: // request timeout

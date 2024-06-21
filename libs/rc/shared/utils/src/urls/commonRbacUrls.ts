@@ -108,6 +108,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/api/viewmodel/:tenantId/aps/grouped'
   },
+  // deprecated:  use getApGroupsList as replacement
   getApGroupListByVenue: {
     method: 'get',
     url: '/venues/:venueId/apGroups',
@@ -320,7 +321,6 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apModelBandModeSettings',
     newApi: true
   },
-  /*
   getVenueBssColoring: {
     method: 'get',
     //url: '/venues/:venueId/bssColoringSettings',
@@ -333,6 +333,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/apBssColoringSettings',
     newApi: true
   },
+  /*
   getVenueLanPorts: {
     method: 'get',
     //url: '/venues/:venueId/lanPortSettings',
@@ -465,6 +466,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/historicalClients/query',
     newApi: true
   },
+  */
   getGuestsList: {
     method: 'post',
     url: '/guestUsers/query',
@@ -477,6 +479,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
     newApi: true
   },
+  /*
   getApNetworkList: {
     method: 'post',
     url: '/aps/:serialNumber/networks/query',

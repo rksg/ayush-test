@@ -4,13 +4,12 @@ import { Row, Col, Upload, Slider } from 'antd'
 import Cropper                      from 'react-easy-crop'
 import { useIntl }                  from 'react-intl'
 
-import { Button, Drawer }     from '@acx-ui/components'
+import { Button, Drawer } from '@acx-ui/components'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
   useDeleteApPhotoMutation,
-  useApViewModelQuery,
-  useGetApCapabilitiesQuery
+  useApViewModelQuery
 } from '@acx-ui/rc/services'
 import { generateHexKey, useApContext } from '@acx-ui/rc/utils'
 
@@ -64,7 +63,6 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
     filters: { serialNumber: [params.serialNumber] }
   }
   const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
-  const wifiCapabilities = useGetApCapabilitiesQuery({ params })
 
   useEffect(() => {
     if (!apPhoto.isLoading && apPhoto?.data) {
@@ -72,7 +70,8 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
       setImageName(apPhoto?.data.imageName)
       setKey(generateHexKey(10))
     }
-  }, [apPhoto, wifiCapabilities, apViewModelQuery])
+  }, [apPhoto, apViewModelQuery])
+
   const onCropComplete = useCallback(
     (croppedArea: cropImageType, croppedAreaPixels: cropImageType) => {
       setCroppedAreaPixels(croppedAreaPixels)}, [])
@@ -94,7 +93,8 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
       setZoom(1)
     } catch (e) {
-      return e
+      // eslint-disable-next-line no-console
+      console.log(e)
     }
   }, [croppedAreaPixels])
 
