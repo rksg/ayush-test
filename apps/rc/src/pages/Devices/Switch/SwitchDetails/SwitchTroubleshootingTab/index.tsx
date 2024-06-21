@@ -3,10 +3,10 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Tabs }                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
-import { isRouter, isSwitchSupportNotificator } from '@acx-ui/rc/utils'
-import { useTenantLink }                        from '@acx-ui/react-router-dom'
+import { Tabs }                   from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { isRouter, isVerGEVer }   from '@acx-ui/rc/utils'
+import { useTenantLink }          from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '..'
 
@@ -44,7 +44,14 @@ export function SwitchTroubleshootingTab () {
 
   const isSupportMacAddress = function () {
     if(switchDetailsContextData.switchDetailHeader?.firmware){
-      return isSwitchSupportNotificator(switchDetailsContextData.switchDetailHeader?.firmware) //Currently, ICX does not support Troubleshooting Mac Address feature
+      const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
+      /*
+      Only support the firmware versions listed below:
+      1. > 10010e < 10020
+      2. > 10020b
+      */
+      return isVerGEVer(fwVersion, '10010e', false) &&
+      (!isVerGEVer(fwVersion, '10020', false) || isVerGEVer(fwVersion, '10020b', false))
     }else{
       return false
     }

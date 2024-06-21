@@ -196,12 +196,3 @@ export function isVerGEVer (currentVer: string, targetVer: string, considerBeta:
     return cMajor > tMajor
   }
 }
-
-/*
-1. > 10010e < 10020
-2. > 10020b
-*/
-export function isSwitchSupportNotificator (swVersion: string): boolean {
-  return isVerGEVer(swVersion, '10010e', false) &&
-    (!isVerGEVer(swVersion, '10020', false) || isVerGEVer(swVersion, '10020b', false))
-}
