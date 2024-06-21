@@ -107,7 +107,7 @@ const PendingActivationsTable = () => {
       dataIndex: 'spaEndDate',
       key: 'spaEndDate',
       render: function (_, row) {
-        return row.productClass === 'ACX-TRIAL-NEW'
+        return row.productClass === 'ACX-TRIAL-NEW' || row.trial
           ? noDataDisplay
           : formatter(DateFormatEnum.DateFormat)(row.spaEndDate)
       }
