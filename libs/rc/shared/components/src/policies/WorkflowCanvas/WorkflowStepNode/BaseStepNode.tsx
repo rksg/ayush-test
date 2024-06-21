@@ -7,7 +7,7 @@ import { Handle, NodeProps, Position, useNodeId } from 'reactflow'
 
 import { Button, Loader, showActionModal }                                                       from '@acx-ui/components'
 import { DeleteOutlined, EditOutlined, EndFlag, EyeOpenOutlined, MoreVertical, Plus, StartFlag } from '@acx-ui/icons'
-import { useDeleteSplitOptionByIdMutation, useDeleteWorkflowStepByIdMutation }                   from '@acx-ui/rc/services'
+import { useDeleteWorkflowStepByIdMutation }                                                     from '@acx-ui/rc/services'
 import { ActionType }                                                                            from '@acx-ui/rc/utils'
 
 
@@ -16,20 +16,16 @@ import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
 import * as UI from './styledComponents'
 
 export default function BaseStepNode (props: NodeProps
-  & { children: ReactNode, name?: string }
-  & { splitCount?: string[] })
+  & { children: ReactNode, name?: string })
 {
   const { $t } = useIntl()
   const nodeId = useNodeId()
   const { policyId } = useParams()
-  // FIXME: Maybe it is not necessary
-  const splitCount = props.splitCount ?? ['a']
   const {
     nodeState, actionDrawerState,
     stepDrawerState
   } = useWorkflowContext()
   const [ deleteStep, { isLoading: isDeleteStepLoading } ] = useDeleteWorkflowStepByIdMutation()
-  const [ deleteOption, { isLoading: isDeleteOptionLoading }] = useDeleteSplitOptionByIdMutation()
 
   const onHandleNode = (node?: NodeProps) => {
     nodeState.setInteractedNode(node)
@@ -61,12 +57,7 @@ export default function BaseStepNode (props: NodeProps
       content:
         $t({ defaultMessage: 'Do you want to delete this step?' }),
       onOk: () => {
-        props.type === ActionType.USER_SELECTION_SPLIT && props.data?.splitStepId
-          ? deleteOption({
-            params: { policyId, stepId: props.data.splitStepId, optionId: nodeId }
-          }).unwrap()
-          : deleteStep({ params: { policyId, stepId: nodeId } })
-            .unwrap()
+        deleteStep({ params: { policyId, stepId: nodeId } }).unwrap()
       }
     })
   }
@@ -97,8 +88,7 @@ export default function BaseStepNode (props: NodeProps
   return (
     <UI.StepNode selected={props.selected}>
       <Loader states={[
-        { isLoading: false, isFetching: isDeleteStepLoading },
-        { isLoading: false, isFetching: isDeleteOptionLoading }
+        { isLoading: false, isFetching: isDeleteStepLoading }
       ]}>
         {props.children}
       </Loader>

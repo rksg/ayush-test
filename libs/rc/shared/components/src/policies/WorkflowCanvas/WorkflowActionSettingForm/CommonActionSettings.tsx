@@ -8,7 +8,7 @@ import { checkObjectNotExists }      from '@acx-ui/rc/utils'
 export function CommonActionSettings () {
   const { $t } = useIntl()
   const form = Form.useFormInstance()
-  const actionId = Form.useWatch('actionId', form)
+  const id = Form.useWatch('id', form)
 
   const [ searchActions ] = useLazySearchActionsQuery()
 
@@ -17,7 +17,7 @@ export function CommonActionSettings () {
       const list = (await searchActions({
         payload: { name, page: 0, pageSize: 10000 }
       }).unwrap()).content
-        .filter(a => a.id !== actionId)
+        .filter(a => a.id !== id)
         .map(a => ({ name: a.name }))
       return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Action' }))
     } catch (e) {
@@ -27,7 +27,7 @@ export function CommonActionSettings () {
 
   return <>
     <Form.Item
-      name={'actionId'}
+      name={'id'}
       noStyle
       children={<Input hidden />}
     />

@@ -5,7 +5,7 @@ import {
   AsyncResponse,
   useCreateActionMutation
 } from '@acx-ui/rc/services'
-import { ActionType, GenericActionData, isSplitActionType, StepType } from '@acx-ui/rc/utils'
+import { ActionType, GenericActionData, StepType } from '@acx-ui/rc/utils'
 
 
 export function useWorkflowStepActions () {
@@ -25,7 +25,7 @@ export function useWorkflowStepActions () {
       ? await createChildStepMutation({
         params: { policyId, stepId: priorNodeId },
         payload: {
-          type: isSplitActionType(actionType) ? StepType.Split : StepType.Basic,
+          type: StepType.Basic,
           enrollmentActionId: actionId
         },
         skip: !policyId
@@ -33,7 +33,7 @@ export function useWorkflowStepActions () {
       : await createStepMutation({
         params: { policyId },
         payload: {
-          type: isSplitActionType(actionType) ? StepType.Split : StepType.Basic,
+          type: StepType.Basic,
           enrollmentActionId: actionId
         },
         skip: !policyId

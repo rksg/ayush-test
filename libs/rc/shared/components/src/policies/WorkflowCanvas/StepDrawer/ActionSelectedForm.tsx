@@ -1,16 +1,15 @@
 import { useState } from 'react'
 
-import { Form, FormInstance, Input } from 'antd'
-import { useIntl }                   from 'react-intl'
+import { Form, FormInstance } from 'antd'
+import { useIntl }            from 'react-intl'
 
-import { Button, Modal, ModalType, Select, StepsForm } from '@acx-ui/components'
-import { useGetAllActionsByTypeQuery }                 from '@acx-ui/rc/services'
+import { Button, Modal, ModalType, Select } from '@acx-ui/components'
+import { useGetAllActionsByTypeQuery }      from '@acx-ui/rc/services'
 import {
-  ActionType,
   ActionTypeNewTemplateTerms,
   ActionTypeSelectionTerms,
   ActionTypeTitle,
-  SplitActionTypes, WorkflowActionDef
+  WorkflowActionDef
 } from '@acx-ui/rc/utils'
 
 import ActionGenericForm from '../WorkflowActionSettingForm/ActionGenericForm'
@@ -21,7 +20,7 @@ interface ActionSelectedFormProps {
   actionDef: WorkflowActionDef
 }
 
-// FIXME: Deprecated! if we don't want to support action template concept, this can be removed
+// FIXME: Deprecated!
 export default function ActionSelectedForm (props: ActionSelectedFormProps) {
   const { $t } = useIntl()
   const { form, actionDef } = props
@@ -39,7 +38,6 @@ export default function ActionSelectedForm (props: ActionSelectedFormProps) {
       ...defaultActionTypePagination
     }
   }, {
-    skip: SplitActionTypes.includes(actionDef.actionType),
     selectFromResult: ({ data, isLoading }) => {
       return {
         isLoading,
@@ -53,18 +51,9 @@ export default function ActionSelectedForm (props: ActionSelectedFormProps) {
     }
   })
 
-  const actions = useGetAllActionsByTypeQuery({
-    params: {
-      // FIXME: possible need to switch the actionType between USER_SELECTION or AUTO_SELECTION
-      actionType: ActionType.USER_SELECTION_SPLIT.toString(),
-      ...defaultActionTypePagination
-    }
-  }, { skip: !SplitActionTypes.includes(actionDef.actionType) })
-
   const BaseSelectedForm = () => {
     return (<Form.Item
       name={'actionId'}
-      // FIXME: need to eunm them
       label={ActionTypeSelectionTerms[actionDef.actionType]
         ? $t(ActionTypeSelectionTerms[actionDef.actionType]!)
         : $t({ defaultMessage: 'Select an existing template to use:' })}
@@ -83,58 +72,12 @@ export default function ActionSelectedForm (props: ActionSelectedFormProps) {
     </Form.Item>)
   }
 
-  const SplitSelectedForm = () => {
-    return (
-      <>
-        <StepsForm.SectionTitle>
-          {$t({ defaultMessage: 'Option 1' })}
-        </StepsForm.SectionTitle>
-        <Form.Item
-          name={['splitOption', 'optionName']}
-          label={$t({ defaultMessage: 'Option Name' })}
-          rules={[
-            { required: true }
-          ]}
-        >
-          <Input/>
-        </Form.Item>
-        <Form.Item
-          name={['splitOption', 'enrollmentActionId']}
-          label={$t({ defaultMessage: 'Split Option Template' })}
-          rules={[
-            { required: true }
-          ]}
-        >
-          <Select
-            loading={actions.isLoading}
-            options={actions.data?.content?.map(action => ({
-              label: action.name,
-              value: action.id
-            }))}
-          />
-        </Form.Item>
-
-        <Form.Item
-          // FIXME: May be the USER/AUTO Selection choice
-          // TODO: Passing to the next StepDrawer to createSplitStep
-          name={'actionDefinitionId'}
-          hidden={true}
-          initialValue={actionDef.id}
-          children={<Input />}
-        />
-      </>
-    )
-  }
-
-
-
   return (
     <Form
       form={form}
       layout={'vertical'}
     >
-      {SplitActionTypes.includes(actionDef.actionType)
-        ? <SplitSelectedForm /> : <BaseSelectedForm />}
+      <BaseSelectedForm />
       {ActionTypeNewTemplateTerms[actionDef.actionType] &&
         <Button
           type={'link'}

@@ -85,7 +85,8 @@ const composeNext = (
       deletable: false
     })
 
-    composeNext(nextStepId, stepMap, nodes, edges, currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
+    composeNext(nextStepId, stepMap, nodes, edges,
+      currentX, currentY + SPACE_OF_NODES, type === StepType.Start)
   }
 }
 
@@ -109,7 +110,8 @@ function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, Acti
   const stepMap = toStepMap(steps, definitionMap)
 
   if (firstStep) {
-    composeNext(firstStep.id, stepMap, nodes, edges, START_X, START_Y, firstStep.type === StepType.Start)
+    composeNext(firstStep.id, stepMap, nodes, edges,
+      START_X, START_Y, firstStep.type === StepType.Start)
   }
 
   console.groupEnd()
@@ -135,7 +137,7 @@ const useRequiredDependency = () => {
     const gen = async () => {
       console.groupCollapsed('[Processing] - useRequiredDependency gen()')
       for (const def of actionDefsData?.content) {
-        if (def.dependencyType === 'NONE' && def.actionType !== ActionType.USER_SELECTION_SPLIT) {
+        if (def.dependencyType === 'NONE') {
           console.log('NONE - ', def)
           requiredDependency[def.actionType] = {
             type: def.dependencyType,

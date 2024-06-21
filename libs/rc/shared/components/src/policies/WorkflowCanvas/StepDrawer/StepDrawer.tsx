@@ -34,9 +34,7 @@ export interface StepDrawerProps {
 const actionFormMap = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting,
-
-  [ActionType.USER_SELECTION_SPLIT]: () => <></>
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageSetting
 }
 
 export default function StepDrawer (props: StepDrawerProps) {

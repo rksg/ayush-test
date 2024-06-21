@@ -20,9 +20,7 @@ import { DataPromptSettings } from './DataPromptSettings'
 const actionFormMap = {
   [ActionType.AUP]: AupSettings,
   [ActionType.DATA_PROMPT]: DataPromptSettings,
-  [ActionType.DISPLAY_MESSAGE]: () => <></>,
-
-  [ActionType.USER_SELECTION_SPLIT]: () => <></>
+  [ActionType.DISPLAY_MESSAGE]: () => <></>
 }
 
 export interface ActionGenericFormProps {
@@ -32,7 +30,7 @@ export interface ActionGenericFormProps {
   modalCallback?: () => void
 }
 
-// FIXME: Deprecated! if we don't want to support action template concept, this can be removed
+// FIXME: Deprecated!
 export default function ActionGenericForm (props: ActionGenericFormProps) {
   const { $t } = useIntl()
   const params = useParams()

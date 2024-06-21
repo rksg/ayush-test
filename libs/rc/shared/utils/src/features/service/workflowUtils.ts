@@ -9,7 +9,6 @@ import {
   AupActionContext,
   DataPromptActionContext,
   DisplayMessageActionContext,
-  SplitActionTypes,
   UserSelectionSplitContext,
   WorkflowStep
 } from '../../types'
@@ -27,16 +26,6 @@ export const useGetActionDefaultValueByType = (actionType: ActionType) => {
       }
       return acc
     }, {})
-}
-
-export const isSplitActionType = (type: ActionType | string): boolean => {
-  if (typeof type === 'string') {
-    console.log('Type is string: ', type, SplitActionTypes.map(t => t.toString()).includes(type))
-    return SplitActionTypes.map(t => t.toString()).includes(type)
-  } else {
-    console.log('Type is ActionType: ', type)
-    return SplitActionTypes.includes(type)
-  }
 }
 
 export const findFirstStep = (steps: WorkflowStep[]): WorkflowStep => {
@@ -82,56 +71,44 @@ export const getInitialNodes = (x: number, y: number): Node[] => {
 export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a Form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom Message' })
   // [ActionType.DPSK]: defineMessage({ defaultMessage: 'DPSK Node' }),
-
-  [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'Split Option Node' })
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
   [ActionType.AUP]: AccessPointOutlined,
   [ActionType.DATA_PROMPT]: PoliciesOutlined,
-  [ActionType.DISPLAY_MESSAGE]: EnvelopOpenOutlined,
-
-  [ActionType.USER_SELECTION_SPLIT]: AccessPointOutlined
+  [ActionType.DISPLAY_MESSAGE]: EnvelopOpenOutlined
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Acceptable Use Policy (AUP)' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Display a form' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Custom message' })
   // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generate a Ruckus DPSK' }),
-
-  [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'User selection split' })
 }
 
 export const ActionTypeDescription: Record<ActionType, MessageDescriptor> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Requires that users signal their acceptance of the AUP or Terms & Conditions' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Displays a prompt screen with customizable data entry fields' }),
-  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' }),
+  [ActionType.DISPLAY_MESSAGE]: defineMessage({ defaultMessage: 'Displays a message to the user along with a single button to continue' })
   // [ActionType.DPSK]: defineMessage({ defaultMessage: 'Generates a DPSK, either via DPSK pools (for use in Ruckus WLAN controllers as "External DPSK") or via a Ruckus WLAN controller.' }),
-
-  [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'User selection split' })
 }
 
 // FIXME: Deprecated => due to we don't support action template selector anymore.
 export const ActionTypeSelectionTerms: Record<ActionType, MessageDescriptor | undefined> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'Select the existing AUP to use:' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'Select the existing data prompt template to use:' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined,
+  [ActionType.DISPLAY_MESSAGE]: undefined
   // [ActionType.DPSK]: undefined,
-
-  [ActionType.USER_SELECTION_SPLIT]: undefined
 }
 
 // FIXME: Deprecated => due to we don't support action template selector anymore.
 export const ActionTypeNewTemplateTerms: Record<ActionType, MessageDescriptor | undefined> = {
   [ActionType.AUP]: defineMessage({ defaultMessage: 'A new AUP created from a standard template.' }),
   [ActionType.DATA_PROMPT]: defineMessage({ defaultMessage: 'A new prompt created from a standard template.' }),
-  [ActionType.DISPLAY_MESSAGE]: undefined,
+  [ActionType.DISPLAY_MESSAGE]: undefined
   // [ActionType.DPSK]: undefined,
-
-  [ActionType.USER_SELECTION_SPLIT]: defineMessage({ defaultMessage: 'A new user selection split option created from a standard template.' })
 }
 
 export const AupActionDefaultValue: {
@@ -177,9 +154,7 @@ export const DisplayMessageActionDefaultValue: {
 export const ActionDefaultValueMap: Record<ActionType, object> = {
   [ActionType.AUP]: AupActionDefaultValue,
   [ActionType.DATA_PROMPT]: DataPromptActionDefaultValue,
-  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageActionDefaultValue
   // [ActionType.DPSK]: {},
-
-  [ActionType.USER_SELECTION_SPLIT]: UserSelectionActionDefaultValue
 }
 /* eslint-enable max-len */

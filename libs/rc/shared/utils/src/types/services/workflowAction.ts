@@ -7,15 +7,8 @@ import { RcFile } from 'antd/lib/upload'
 export enum ActionType {
   AUP = 'AUP',
   DATA_PROMPT = 'DATA_PROMPT',
-  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE',
-
-  USER_SELECTION_SPLIT = 'USER_SELECTION_SPLIT'
+  DISPLAY_MESSAGE = 'DISPLAY_MESSAGE'
 }
-
-export const SplitActionTypes: ActionType[] = [
-
-
-]
 
 export interface WorkflowAction {
   id: string,
