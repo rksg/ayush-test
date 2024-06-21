@@ -63,7 +63,7 @@ const assignmentHistoryAgnostic =
       createdBy: 'msp.eleu1658@rwbigdog.com',
       dateAssignmentCreated: '2022-12-13 19:00:08.043Z',
       dateAssignmentRevoked: null,
-      dateEffective: '2022-12-13 19:00:08Z',
+      dateEffective: '2024-01-13 19:00:08Z',
       dateExpires: '2024-02-12 07:59:59Z',
       deviceType: 'MSP_APSW',
       id: 130468,
@@ -106,6 +106,33 @@ const assignmentHistoryAgnostic =
     }
   ]
 
+const assignmentHistoryRbac =
+[
+  {
+    licenseType: 'APSW',
+    quantity: 2,
+    createdDate: 'Fri Jun 21 01:20:01 UTC 2024',
+    revokedDate: '',
+    id: 398689,
+    isTrial: false,
+    effectiveDate: 'Fri Jun 21 01:20:01 UTC 2024',
+    expirationDate: 'Sun Sep 15 01:19:53 UTC 2024',
+    status: 'VALID'
+  },
+  {
+    licenseType: 'APSW',
+    quantity: 1,
+    createdDate: 'Fri Jun 21 01:20:01 UTC 2024',
+    revokedDate: '',
+    id: 398699,
+    isTrial: true,
+    effectiveDate: 'Fri Jun 21 01:20:01 UTC 2024',
+    expirationDate: 'Sun Jul 21 01:19:53 UTC 2024',
+    status: 'VALID'
+  }
+]
+
+
 const services = require('@acx-ui/msp/services')
 jest.mock('@acx-ui/msp/services', () => ({
   ...jest.requireActual('@acx-ui/msp/services')
@@ -124,7 +151,7 @@ describe('AssignedSubscriptionTable', () => {
       return { data: assignmentHistory }
     })
     utils.useTableQuery = jest.fn().mockImplementation(() => {
-      return { data: { data: assignmentHistory } }
+      return { data: { data: assignmentHistoryRbac } }
     })
     params = {
       tenantId: '1576b79db6b549f3b1f3a7177d7d4ca5'
@@ -171,7 +198,7 @@ describe('AssignedSubscriptionTable', () => {
         route: { params, path: '/:tenantId/mspLicenses' }
       })
 
-    expect(await screen.findAllByText('Active')).toHaveLength(3)
+    expect(await screen.findAllByText('Active')).toHaveLength(2)
     expect(screen.queryByRole('button', { name: 'Generate Usage Report' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Manage Subscriptions' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Refresh' })).toBeNull()
