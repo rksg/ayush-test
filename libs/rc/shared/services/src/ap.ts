@@ -1467,7 +1467,7 @@ const getVenueDhcpRelation = async (
   const dhcpList = (dhcpListRes.data as TableResult<DHCPSaveData>).data
   return _.reduce(newPayload,
     (result, item) => {
-      const dhcpInfo = dhcpList.find(dhcpItem => dhcpItem.venueIds?.includes(item.venueId))
+      const dhcpInfo = dhcpList?.find(dhcpItem => dhcpItem.venueIds?.includes(item.venueId))
       result[item.venueId] = dhcpInfo?.id
       return result
     }, {} as { [venueId: string]: string|undefined }) // {venueId: dhcpId}
