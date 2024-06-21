@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { StepsForm }                                                                                                     from '@acx-ui/components'
+import { Features }                                                                                                      from '@acx-ui/feature-toggle'
 import { venueApi }                                                                                                      from '@acx-ui/rc/services'
 import { ClusterHighAvailabilityModeEnum, CommonUrlsInfo, EdgeClusterTableDataType, EdgeGeneralFixtures, VenueFixtures } from '@acx-ui/rc/utils'
 import { Provider, store }                                                                                               from '@acx-ui/store'
@@ -57,10 +58,11 @@ describe('EdgeClusterSettingForm', () => {
         (req, res, ctx) => res(ctx.json(mockVenueOptions))
       )
     )
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
   })
 
   it('should show HaMode config when AA FF is ON in add mode', () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    mockHaAaEnabled()
     renderClusterForm()
 
     expect(screen.getByText('High-Availability Mode')).toBeInTheDocument()
@@ -71,7 +73,6 @@ describe('EdgeClusterSettingForm', () => {
   })
 
   it('should not show HaMode config when AA FF is OFF in add mode', () => {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
     renderClusterForm()
     expect(screen.queryByText('High-Availability Mode')).not.toBeInTheDocument()
   })
@@ -88,6 +89,55 @@ describe('EdgeClusterSettingForm', () => {
     expect(screen.queryByText(/Active-Active/)).not.toBeInTheDocument()
     expect(screen.getByText(/Active-Standby/)).toBeInTheDocument()
     expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
+  it('should disable add-edge button after adding 4 edges uder AA mode', async () => {
+    mockHaAaEnabled()
+    renderClusterForm()
+
+    // Add to maximum 4 nodes
+    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    for (let i = 0; i < 3; i++) {
+      await userEvent.click(addBtn)
+    }
+    await waitFor(() =>
+      expect(screen.getAllByRole('textbox', { name: 'SmartEdge Name' }).length).toBe(4)
+    )
+    // Add button is disabled after having 4 nodes
+    expect(addBtn).toBeDisabled()
+
+    // Delete 1 node
+    const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
+    await userEvent.click(deleteBtns[0])
+    await waitFor(async () =>
+      expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(3)
+    )
+    // Add button becomes enabled again
+    expect(addBtn).toBeEnabled()
+  })
+
+  it('should disable HaMode when Edge count goes beyond', async () => {
+    mockHaAaEnabled()
+    renderClusterForm()
+
+    // Select AA mode
+    const activeActiveRadio = screen.getAllByRole('radio')
+      .find((element) =>element.id === 'ACTIVE_ACTIVE')
+    expect(activeActiveRadio).toBeInTheDocument()
+    await userEvent.click(activeActiveRadio!)
+
+    // Add 3 Edges that beyond the maximum allowed count for AB mode
+    const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
+    for (let i = 0; i < 2; i++) {
+      await userEvent.click(addBtn)
+    }
+    await waitFor(() =>
+      expect(screen.getAllByRole('textbox', { name: 'SmartEdge Name' }).length).toBe(3)
+    )
+
+    const activeStandbyRadio = screen.getAllByRole('radio')
+      .find((element) => element.id === 'ACTIVE_STANDBY')
+    expect(activeStandbyRadio).toBeDisabled()
   })
 
   it('should render EdgeClusterSettingForm successfully', async () => {
@@ -196,7 +246,7 @@ describe('EdgeClusterSettingForm', () => {
   })
 
   function setupHaModeInEditMode (haMode: ClusterHighAvailabilityModeEnum) {
-    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    mockHaAaEnabled()
     let mockData = mockEdgeClusterList.data[0]
     mockData.highAvailabilityMode = haMode
     renderEditClusterForm(mockData as unknown as EdgeClusterTableDataType)
@@ -230,5 +280,10 @@ describe('EdgeClusterSettingForm', () => {
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
+  }
+
+  function mockHaAaEnabled () {
+    jest.mocked(useIsEdgeFeatureReady).mockImplementation((feature) =>
+      feature === Features.EDGE_HA_AA_TOGGLE)
   }
 })

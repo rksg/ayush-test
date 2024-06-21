@@ -53,6 +53,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   const { form } = useStepFormContext()
   const formListRef = useRef<NodeListRef>()
   const smartEdges = Form.useWatch('smartEdges', form) as EdgeClusterSettingFormType['smartEdges']
+  const haMode = Form.useWatch('highAvailabilityMode', form) as ClusterHighAvailabilityModeEnum
   const { venueOptions, isLoading: isVenuesListLoading } = useVenuesListQuery({
     params: { tenantId }, payload: venueOptionsDefaultPayload }, {
     selectFromResult: ({ data, isLoading }) => {
@@ -82,8 +83,6 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
   }, [editData])
 
   const editMode = !!editData
-
-  const maxNodeCount = 2
 
   const clusterWarningMsg = $t({ defaultMessage: `The cluster function will operate
   when there are at least two nodes present. Please add more nodes to establish
@@ -118,6 +117,21 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
     if(target) {
       showDeleteModal([target], () => formListRef.current?.remove(fieldName))
     }
+  }
+
+  const maxActiveActiveNodes = 4
+  const maxActiveStandyNodes = 2
+  const isAaSelected = () => {
+    return haMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE
+  }
+  const getMaxNodes = () => {
+    return isAaSelected() ? maxActiveActiveNodes : maxActiveStandyNodes
+  }
+  const isDisableAddEdgeButton = () => {
+    return (smartEdges?.length ?? 0) >= getMaxNodes()
+  }
+  const isDisableHaModeRadio = () => {
+    return isAaSelected() && (smartEdges?.length ?? 0) > maxActiveStandyNodes
   }
 
   return (
@@ -177,7 +191,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                     <RadioDescription>{activeStandbyMessage}</RadioDescription>
                   </div>
               ) : (
-                <Radio.Group>
+                <Radio.Group disabled={isDisableHaModeRadio()}>
                   <Space direction='vertical'>
                     <Radio
                       key={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
@@ -216,7 +230,7 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                 type='link'
                 children={$t({ defaultMessage: 'Add another SmartEdge' })}
                 onClick={() => formListRef.current?.add()}
-                disabled={(smartEdges?.length ?? 0) >= maxNodeCount}
+                disabled={isDisableAddEdgeButton()}
               />
             </Col>
             {
