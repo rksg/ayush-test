@@ -33,7 +33,7 @@ export const rwgApi = baseRWGApi.injectEndpoints({
       },
       transformResponse: ({ response }) => {
 
-        const _res: RWGRow[] = response.items.map((rwg: RWG) => rwg.isCluster ? {
+        const _res: RWGRow[] = response.data.map((rwg: RWG) => rwg.isCluster ? {
           ...rwg,
           ip: rwg.hostname,
           rowId: rwg.rwgId,
@@ -54,8 +54,8 @@ export const rwgApi = baseRWGApi.injectEndpoints({
         } : { ...rwg, rwgId: rwg.rwgId, rowId: rwg.rwgId })
         return {
           data: _res,
-          totalCount: response.totalSizes,
-          page: response.totalPages
+          totalCount: response.totalCount,
+          page: response.page
         }
       },
       keepUnusedDataFor: 0,
@@ -190,6 +190,12 @@ export const rwgApi = baseRWGApi.injectEndpoints({
           : data?.response || {}
       },
       providesTags: [{ type: 'RWG', id: 'DETAIL' }]
+    }),
+    refreshRwg: build.mutation<void, void>({
+      queryFn: async () => {
+        return { data: undefined }
+      },
+      invalidatesTags: [{ type: 'RWG', id: 'DETAIL' }]
     })
   })
 })
@@ -205,5 +211,6 @@ export const {
   useGetGatewayDashboardQuery,
   useGetGatewayTopProcessQuery,
   useGetGatewayFileSystemsQuery,
-  useGetGatewayDetailsQuery
+  useGetGatewayDetailsQuery,
+  useRefreshRwgMutation
 } = rwgApi
