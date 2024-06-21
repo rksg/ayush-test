@@ -32,7 +32,7 @@ const Column1:ReactNode = (<div style={{ flexDirection: 'column' }}>
     <label style={{ fontWeight: 600 }}>Full Optimization</label>
   </div>
   <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '6px', paddingTop: '10px' }}>
-    <span>AP: Radio Channell</span>
+    <span>AP: Radio Channel</span>
     <span>AP: Radio Channel Width</span>
     <span>AP: Radio Transmit Power</span>
     <span>Zone: Radio Channel Range</span>
@@ -59,7 +59,7 @@ Default.args = {
   name: 'tradeOff',
   currentValue: 'value1',
   label: 'What\'s more important to you for this network?',
-  headers: ['Intent Priority', 'AI Driven - Configuration change'],
+  headers: ['Intent Priority', 'IntentAI Scope'],
   radios: [
     {
       key: 'value1',

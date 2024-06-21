@@ -29,7 +29,7 @@ describe('TradeOff', () => {
     </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Intent Priority')).toBeVisible()
-    expect(await screen.findByText('AI Driven - Configuration change')).toBeVisible()
+    expect(await screen.findByText('IntentAI Scope')).toBeVisible()
     expect(screen.getByRole('radio', {
       name: 'Maximize client density - simultaneous connected clients (Default)'
     })).toBeChecked()
