@@ -2,7 +2,7 @@
 import { forwardRef, Ref } from 'react'
 
 import { Badge, Space } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl }      from 'react-intl'
 
 import {
   ColumnType,
