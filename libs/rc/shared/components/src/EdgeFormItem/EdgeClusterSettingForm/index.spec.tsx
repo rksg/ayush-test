@@ -103,8 +103,8 @@ describe('EdgeClusterSettingForm', () => {
     await waitFor(() =>
       expect(screen.getAllByRole('textbox', { name: 'SmartEdge Name' }).length).toBe(4)
     )
-    // Add button is disabled after having 4 nodes
-    expect(addBtn).toBeDisabled()
+    // Add button is hidden after having 4 nodes
+    expect(screen.queryByRole('button', { name: 'Add another SmartEdge' })).not.toBeInTheDocument()
 
     // Delete 1 node
     const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
@@ -113,7 +113,7 @@ describe('EdgeClusterSettingForm', () => {
       expect((await screen.findAllByRole('textbox', { name: 'SmartEdge Name' })).length).toBe(3)
     )
     // Add button becomes enabled again
-    expect(addBtn).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Add another SmartEdge' })).toBeInTheDocument()
   })
 
   it('should disable HaMode when Edge count goes beyond the max AB mode allows', async () => {
@@ -163,7 +163,7 @@ describe('EdgeClusterSettingForm', () => {
     await waitFor(async () =>
       expect((await screen.findAllByRole('textbox', { name: 'Serial Number' })).length).toBe(2)
     )
-    await waitFor(() => expect(addBtn).toBeDisabled())
+    expect(screen.queryByRole('button', { name: 'Add another SmartEdge' })).not.toBeInTheDocument()
     const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
     await userEvent.click(deleteBtns[0])
     await waitFor(async () =>

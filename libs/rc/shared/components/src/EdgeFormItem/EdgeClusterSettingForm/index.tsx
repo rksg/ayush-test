@@ -225,14 +225,6 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                 }
               </Subtitle>
             </Col>
-            <Col style={{ textAlign: 'end' }} span={13}>
-              <Button
-                type='link'
-                children={$t({ defaultMessage: 'Add another SmartEdge' })}
-                onClick={() => formListRef.current?.add()}
-                disabled={isDisableAddEdgeButton()}
-              />
-            </Col>
             {
               showClusterWarning &&
               <Col span={21}>
@@ -256,6 +248,19 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
               )
             }
           </Form.List>
+          {
+            !isDisableAddEdgeButton() &&
+            <Row>
+              <Col span={13}>
+                <Button
+                  type='link'
+                  children={$t({ defaultMessage: 'Add another SmartEdge' })}
+                  onClick={() => formListRef.current?.add()}
+                  disabled={isDisableAddEdgeButton()}
+                />
+              </Col>
+            </Row>
+          }
           {
             showOtpMessage &&
             <Row>
