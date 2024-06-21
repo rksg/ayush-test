@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
+import _                                           from 'lodash'
 
 import {
   ApCompatibility,
@@ -34,6 +35,8 @@ import {
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+import { filterNetworksByVenueApGroupFilters, getVenueApGroupFilters } from './networkVenueUtils'
 
 
 const RKS_NEW_UI = {
@@ -610,8 +613,23 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
+    newApGroupNetworkList: build.query<TableResult<Network>, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { apGroupNetworkListQuery,
+          networkList,
+          venueNetworkApGroupList,
+          networkDeepListList } = await fetchRbacApGroupNetworkVenueList(arg, fetchWithBQ)
 
+        const aggregatedList = aggregatedRbacVenueNetworksData(
+          networkList, venueNetworkApGroupList, networkDeepListList)
 
+        return apGroupNetworkListQuery.data
+          ? { data: aggregatedList }
+          : { error: apGroupNetworkListQuery.error as FetchBaseQueryError }
+      },
+      providesTags: [{ type: 'Network', id: 'LIST' }],
+      extraOptions: { maxRetries: 5 }
+    }),
     getApCompatibilitiesNetwork: build.query<ApCompatibilityResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WifiUrlsInfo.getApCompatibilitiesNetwork, params, { ...ignoreErrorModal })
@@ -950,13 +968,13 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
 }
 
 export const fetchApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
-  // TODO: CommonUrlsInfo.getApGroupNetworkList should be replaced with CommonUrlsInfo.getWifiNetworksList
   const apGroupNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList
       : CommonUrlsInfo.getApGroupNetworkList, arg.params),
     body: arg.payload
   }
+
   const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
   const networkList = apGroupNetworkListQuery.data as TableResult<Network>
 
@@ -1148,17 +1166,52 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
   }
 }
 
+export const aggregatedRbacVenueNetworksData = (networkList: TableResult<Network>,
+  venueNetworkApGroupList:{ data: NetworkVenue[] },
+  networkDeepListList:{ response: NetworkDetail[] },
+  apCompatibilities:{ [key:string]: number } = {}) => {
+  const data:Network[] = []
+  const venueNetworkApGroupsData = venueNetworkApGroupList?.data
+  networkList.data.forEach(item => {
+    const networkApGroup = venueNetworkApGroupsData?.find(
+      i => i.networkId === item.id
+    )
+    const deepNetwork = networkDeepListList?.response?.find(
+      i => i.id === item.id
+    )
+
+    if (item?.dsaeOnboardNetwork) {
+      item = { ...item,
+        ...{ children: [{ ...item?.dsaeOnboardNetwork,
+          isOnBoarded: true,
+          activated: calculateNetworkActivated(networkApGroup) } as Network] }
+      }
+    }
+
+    data.push({
+      ...item,
+      activated: calculateNetworkActivated(networkApGroup),
+      deepNetwork: deepNetwork,
+      incompatible: apCompatibilities[item.id] ?? 0
+    })
+  })
+
+  return {
+    ...networkList,
+    data
+  }
+}
+
 export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
-  // TODO: CommonUrlsInfo.getApGroupNetworkList should be replaced with CommonUrlsInfo.getWifiNetworksList
   const apGroupNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList
       : CommonUrlsInfo.getApGroupNetworkList, arg.params),
     body: arg.payload
   }
+
   const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
   const networkList = apGroupNetworkListQuery.data as TableResult<Network>
-
   let venueNetworkApGroupList = {} as { data: NetworkVenue[] }
   let networkDeepListList = {} as { response: NetworkDetail[] }
 
@@ -1191,7 +1244,69 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
   }
 }
 
-const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false) => {
+export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
+  const venueApGroupFilters = getVenueApGroupFilters(arg.payload.filters)
+  const isFilterByIsAllApGroups = venueApGroupFilters.includes('venueApGroups.isAllApGroups')
+  const apGroupNetworkListInfo = arg.payload.isTemplate
+    ? {
+      ...createHttpRequest(VenueConfigTemplateUrlsInfo.getApGroupNetworkList, arg.params),
+      body: arg.payload
+    }
+    : {
+      ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, arg.params, GetApiVersionHeader(ApiVersionEnum.v1)),
+      body: JSON.stringify({
+        ...arg.payload,
+        filters: isFilterByIsAllApGroups
+          ? { ..._.omit(arg.payload.filters, 'venueApGroups.isAllApGroups') }
+          : arg.payload.filters
+      })
+    }
+
+  const apGroupNetworkListQuery = await fetchWithBQ(apGroupNetworkListInfo)
+  const networkList = apGroupNetworkListQuery.data as TableResult<WifiNetwork>
+  if (venueApGroupFilters.length > 1) {
+    networkList.data = filterNetworksByVenueApGroupFilters(networkList.data, arg.payload.filters)
+    networkList.totalCount = networkList.data.length
+  }
+
+  let venueNetworkApGroupList = {} as { data: NetworkVenue[] }
+  let networkDeepListList = {} as { response: NetworkDetail[] }
+
+  if (networkList && networkList.data.length > 0) {
+    const filters = networkList.data.map(item => ({
+      networkId: item.id,
+      venueId: arg.params?.venueId
+    }))
+    const networkIds = networkList.data.map(item => item.id)
+
+    const venueNetworkApGroupInfo = {
+      ...createHttpRequest(arg.payload.isTemplate
+        ? VenueConfigTemplateUrlsInfo.networkActivations
+        : CommonUrlsInfo.networkActivations, arg.params,
+      arg.payload.isTemplate
+        ? {}
+        : apiV2CustomHeader),
+      body: JSON.stringify({ filters })
+    }
+    const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
+    venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
+
+    // `deepNetwork.venues` is deprecated in GET v1 /wifiNetworks/:networkId
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
+  }
+
+  return { apGroupNetworkListQuery,
+    networkList,
+    venueNetworkApGroupList,
+    networkDeepListList
+  }
+}
+
+const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false, enableRbac: boolean = false) => {
+  const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+  const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+  const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
   const networkDeepList: NetworkDetail[] = []
 
   if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
@@ -1200,8 +1315,8 @@ const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTempl
 
   for (let i=0; i<networkIds.length; i++) {
     const networkQuery = await fetchWithBQ(createHttpRequest(
-      isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : WifiUrlsInfo.getNetwork
-      , { networkId: networkIds[i] }))
+      isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : urlsInfo.getNetwork
+      , { networkId: networkIds[i] }, apiCustomHeader))
     networkDeepList.push(networkQuery.data)
   }
 
@@ -1246,6 +1361,8 @@ export const {
   useVenueNetworkTableV2Query,
   useApGroupNetworkListV2Query,
   useLazyApGroupNetworkListV2Query,
+  useNewApGroupNetworkListQuery,
+  useLazyNewApGroupNetworkListQuery,
   useGetApCompatibilitiesNetworkQuery,
   useLazyGetApCompatibilitiesNetworkQuery,
   useDashboardOverviewQuery,

@@ -149,7 +149,6 @@ export function ApGroupGeneralTab () {
     }
   }, [isEditMode, apGroupData, isApGroupDataLoading, venueId])
 
-
   const handleVenueChange = async (value: string,
     extraMemberList?: { name: string; key: string; }[]) => {
     const defaultApGroupOption: { name: string, key: string }[] = []
@@ -165,7 +164,7 @@ export function ApGroupGeneralTab () {
         const list = (await apGroupsList({
           payload,
           enableRbac: isWifiRbacEnabled
-        }, true).unwrap()).data
+        }, true).unwrap())?.data ?? []
 
         defaultApGroupOption.push(...(list?.flatMap(item =>
           (item.aps ?? ([] as ApDeep[])).map((ap) => ({
