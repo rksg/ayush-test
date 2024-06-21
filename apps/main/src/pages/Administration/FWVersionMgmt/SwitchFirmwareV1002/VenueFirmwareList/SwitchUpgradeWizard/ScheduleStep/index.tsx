@@ -16,7 +16,8 @@ import {
   FirmwareVersion,
   SwitchFirmwareVersion1002,
   SwitchFirmware,
-  switchSchedule
+  switchSchedule,
+  SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 
 import { DowngradeTag } from '../../../styledComponents'
@@ -34,7 +35,7 @@ export interface ScheduleStepProps {
   icx8200Count: number
   hasVenue: boolean,
   data: FirmwareSwitchVenueV1002[],
-  upgradeVenueList: FirmwareSwitchVenue[],
+  upgradeVenueList: FirmwareSwitchVenueV1002[],
   upgradeSwitchList: SwitchFirmware[],
   setShowSubTitle: (visible: boolean) => void
 }
@@ -49,6 +50,36 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
   const [selectedVersion, setSelectedVersion] = useState('')
   const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
+
+  //Switch model group
+  const [selectedICX71Version, setSelecteedICX71Version] = useState('')
+  const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
+  const [selectedICX82Version, setSelecteedICX82Version] = useState('')
+
+  const ICX71Count = availableVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0].switchCount || 0
+  const ICX7XCount = availableVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0].switchCount || 0
+  const ICX82Count = availableVersions?.filter(
+    v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0].switchCount || 0
+
+  const handleICX71Change = (value: RadioChangeEvent) => {
+    setSelecteedICX71Version(value.target.value)
+    form.setFieldValue('selectedICX71Version', value.target.value)
+    form.validateFields(['selectVersionStep'])
+  }
+  const handleICX7XChange = (value: RadioChangeEvent) => {
+    setSelecteedICX7XVersion(value.target.value)
+    form.setFieldValue('selectedICX7XVersion', value.target.value)
+    form.validateFields(['selectVersionStep'])
+  }
+  const handleICX82Change = (value: RadioChangeEvent) => {
+    setSelecteedICX82Version(value.target.value)
+    form.setFieldValue('selectedICX82Version', value.target.value)
+    form.validateFields(['selectVersionStep'])
+  }
+
+
   const [hasSelectedDate, setHasSelectedDate] = useState<boolean>(false)
   const getCurrentChecked = function () {
     if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
@@ -117,18 +148,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
   //   return firmwareAvailableVersions
   // }
 
-  const handleChange = (value: RadioChangeEvent) => {
-    setSelectedVersion(value.target.value)
-    form.setFieldValue('switchVersion', value.target.value)
-    form.validateFields(['selectVersionStep'])
-  }
-
-  const handleChangeForVersionAboveTen = (value: RadioChangeEvent) => {
-    setSelectedAboveTenVersion(value.target.value)
-    form.setFieldValue('switchVersionAboveTen', value.target.value)
-    form.validateFields(['selectVersionStep'])
-  }
-
   const startDate = dayjs().endOf('day')
   const endDate = startDate.add(21, 'day')
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
@@ -150,6 +169,33 @@ export function ScheduleStep (props: ScheduleStepProps) {
   const onPreDownloadChange = (checked: boolean) => {
     setChecked(checked)
     form.setFieldValue('preDownloadChecked', checked)
+  }
+
+  const getAvailableVersions =
+  (modelGroup: SwitchFirmwareModelGroup, currentScheduleVersion?: string) => {
+    let firmwareAvailableVersions = availableVersions?.filter(
+      (v: SwitchFirmwareVersion1002) => v.modelGroup === modelGroup
+    )
+    // Handle versions inUse/Download/current schedule versions
+
+    // if (currentScheduleVersion) {
+    //   const currentVersionInSchedule = firmwareAvailableVersions?.filter((v: FirmwareVersion) =>
+    //     currentScheduleVersion === v.id)
+
+    //   if (currentVersionInSchedule?.length === 0) {
+    //     firmwareAvailableVersions?.push({
+    //       id: currentScheduleVersion,
+    //       name: currentScheduleVersion,
+    //       category: FirmwareCategory.REGULAR
+    //     } as FirmwareVersion)
+    //   }
+    // }
+
+    if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
+      return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
+    }
+
+    return []
   }
 
   return (
@@ -181,63 +227,92 @@ export function ScheduleStep (props: ScheduleStepProps) {
             validateFirst
             children={<> </>}
           />
-          {(hasVenue || icx8200Count > 0) && <>
+
+
+          {(hasVenue || ICX71Count > 0) && <>
             <Subtitle level={4}>
-              {intl.$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 7100 Series' })}
               &nbsp;
-              ({icx8200Count} {intl.$t({ defaultMessage: 'switches' })})
+              ({ICX71Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>
             <Radio.Group
               style={{ margin: 12 }}
-              onChange={handleChangeForVersionAboveTen}
-              value={selectedAboveTenVersion}>
+              onChange={handleICX71Change}
+              value={selectedICX71Version}>
               <Space direction={'vertical'}>
-                {/* { // eslint-disable-next-line max-len
-                  getAvailableVersionsByPrefix(availableVersions, true, currentScheduleVersionAboveTen)?.map(v =>
+                { // eslint-disable-next-line max-len
+                  getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
                     <Radio value={v.id} key={v.id} disabled={v.inUse}>
                       <span style={{ lineHeight: '22px' }}>
                         {getSwitchVersionLabel(intl, v)}
                         {v.isDowngradeVersion && !v.inUse &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                       </span>
-                    </Radio>)} */}
+                    </Radio>)}
+
                 <Radio value='' key='0'>
                   {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
                 </Radio>
               </Space>
             </Radio.Group>
           </>}
-          {(hasVenue || nonIcx8200Count > 0) &&
-            <UI.Section>
-              <Subtitle level={4}>
-                {intl.$t({
-                  defaultMessage:
-                    'Firmware available for ICX 7150/7550/7650/7850 Series'
-                })}
-                &nbsp;
-                ({nonIcx8200Count} {intl.$t({ defaultMessage: 'switches' })})
-              </Subtitle>
-              <Radio.Group
-                style={{ margin: 12 }}
-                onChange={handleChange}
-                value={selectedVersion}>
-                <Space direction={'vertical'}>
-                  {/* { // eslint-disable-next-line max-len
-                    getAvailableVersionsByPrefix(availableVersions, false, currentScheduleVersion)?.map(v =>
-                      <Radio value={v.id} key={v.id} disabled={v.inUse}>
-                        <span style={{ lineHeight: '22px' }}>
-                          {getSwitchVersionLabel(intl, v)}
-                          {v.isDowngradeVersion && !v.inUse &&
-                            <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
-                        </span>
-                      </Radio>)} */}
-                  <Radio value='' key='0'>
-                    {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
-                  </Radio>
-                </Space>
-              </Radio.Group>
-            </UI.Section>
-          }
+
+          {(hasVenue || ICX7XCount > 0) && <>
+            <Subtitle level={4}>
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 7550-7850 Series' })}
+              &nbsp;
+              ({ICX7XCount} {intl.$t({ defaultMessage: 'switches' })})
+            </Subtitle>
+            <Radio.Group
+              style={{ margin: 12 }}
+              onChange={handleICX7XChange}
+              value={selectedICX7XVersion}>
+              <Space direction={'vertical'}>
+                { // eslint-disable-next-line max-len
+                  getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
+                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
+
+                <Radio value='' key='0'>
+                  {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </>}
+
+          {(hasVenue || ICX82Count > 0) && <>
+            <Subtitle level={4}>
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 8200 Series' })}
+              &nbsp;
+              ({ICX82Count} {intl.$t({ defaultMessage: 'switches' })})
+            </Subtitle>
+            <Radio.Group
+              style={{ margin: 12 }}
+              onChange={handleICX82Change}
+              value={selectedICX82Version}>
+              <Space direction={'vertical'}>
+                { // eslint-disable-next-line max-len
+                  getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
+                    <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                      <span style={{ lineHeight: '22px' }}>
+                        {getSwitchVersionLabel(intl, v)}
+                        {v.isDowngradeVersion && !v.inUse &&
+                          <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
+                      </span>
+                    </Radio>)}
+
+                <Radio value='' key='0'>
+                  {intl.$t({ defaultMessage: 'Do not update firmware on these switches' })}
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </>}
+
         </div>
 
       </Form.Item>

@@ -147,6 +147,7 @@ export interface FirmwareVersion1002 {
 export interface SwitchFirmwareVersion1002 {
   modelGroup: SwitchFirmwareModelGroup;
   versions: SwitchVersion1002[];
+  switchCount?: number;
 }
 
 export interface ABFVersion {

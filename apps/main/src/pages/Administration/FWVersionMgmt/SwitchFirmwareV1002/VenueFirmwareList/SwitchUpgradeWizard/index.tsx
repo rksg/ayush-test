@@ -85,11 +85,18 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     // currentVersion.id === defaultRodanFirmware?.id)
   }
 
+
+  const filterVersions = function () {
+
+
+    return
+  }
+
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
   const [hasVenue, setHasVenue] = useState<boolean>(false)
   const [upgradeSwitchList, setUpgradeSwitchList] = useState<SwitchFirmware[]>([])
-  const [upgradeVenueList, setUpgradeVenueList] = useState<FirmwareSwitchVenue[]>([])
+  const [upgradeVenueList, setUpgradeVenueList] = useState<FirmwareSwitchVenueV1002[]>([])
 
   const wizardTitle = {
     [SwitchFirmwareWizardType.update]: $t({ defaultMessage: 'Update Now' }),
@@ -181,7 +188,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.skip]: async () => {
       const upgradeList: {
         currentUpgradeSwitchList: SwitchFirmware[],
-        currentUpgradeVenueList: FirmwareSwitchVenue[]
+        currentUpgradeVenueList: FirmwareSwitchVenueV1002[]
       } = saveSwitchStep()
       form.validateFields()
 
@@ -239,7 +246,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     // let filterVersions: FirmwareVersion1002[] = [...availableVersions as FirmwareVersion1002[] ?? []]
     let nonIcx8200Count = 0, icx8200Count = 0
     let currentUpgradeSwitchList = [] as SwitchFirmware[]
-    let currentUpgradeVenueList = [] as FirmwareSwitchVenue[]
+    let currentUpgradeVenueList = [] as FirmwareSwitchVenueV1002[]
 
     const nestedData = form.getFieldValue('nestedData')
     const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
@@ -268,14 +275,13 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     //     })
     //   }
     // })
-    // currentUpgradeVenueList =
-    //         _.filter(props.data, obj =>
-    //           selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenue[]
+    currentUpgradeVenueList = _.filter(props.data, obj =>
+      selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenueV1002[]
 
     setUpgradeSwitchList(currentUpgradeSwitchList)
     setUpgradeVenueList(currentUpgradeVenueList)
     setHasVenue(selectedVenueRowKeys.length > 0 || (nonIcx8200Count + icx8200Count === 0))
-    setUpgradeVersions(availableVersions)
+    setUpgradeVersions(availableVersions || [])
     setNonIcx8200Count(nonIcx8200Count)
     setIcx8200Count(icx8200Count)
     return { currentUpgradeSwitchList, currentUpgradeVenueList }
@@ -347,7 +353,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   visible={true}
                   hasVenue={hasVenue}
                   data={props.data}
-                  upgradeVenueList={upgradeVenueList as FirmwareSwitchVenue[]}
+                  upgradeVenueList={upgradeVenueList as FirmwareSwitchVenueV1002[]}
                   upgradeSwitchList={upgradeSwitchList as SwitchFirmware[]}
                   availableVersions={upgradeVersions}//{filterVersions(upgradeVersions)}
                   nonIcx8200Count={nonIcx8200Count}
