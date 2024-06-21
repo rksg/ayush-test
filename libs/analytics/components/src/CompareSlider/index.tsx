@@ -4,7 +4,15 @@ import { ReactCompareSlider, ReactCompareSliderDetailedProps } from 'react-compa
 import * as UI from './styledComponents'
 
 // https://react-compare-slider.vercel.app/?path=/docs/docs-api--docs
-export type CompareSliderProps = typeof ReactCompareSliderDetailedProps
+export type CompareSliderProps = typeof ReactCompareSliderDetailedProps & {
+  style?: React.CSSProperties
+}
+
+const defaultStyle: React.CSSProperties = {
+  width: '600px',
+  height: '400px',
+  border: '2px solid #BEBEBE'
+}
 
 const Line = () => <div style={{
   height: '100%',
@@ -19,8 +27,8 @@ const CircleWithArrows = () => {
     gridAutoFlow: 'column',
     placeContent: 'center',
     flexShrink: 0,
-    width: '56px',  //16
-    height: '56px', //16
+    width: '24px',
+    height: '24px',
     borderRadius: '50%',
     pointerEvents: 'auto',
     backgroundColor: 'white'
@@ -49,20 +57,23 @@ const CustomHandle: React.FC = () => {
 export const CompareSlider = (props: CompareSliderProps) => {
   const { itemOne, itemTwo,
     disabled = false, portrait = false, boundsPadding = 0, position = 50,
-    changePositionOnHover = false, keyboardIncrement = 0, onlyHandleDraggable = true
+    changePositionOnHover = false, keyboardIncrement = 0, onlyHandleDraggable = true,
+    style = defaultStyle
   } = props
   return (
-    <ReactCompareSlider
-      handle={<CustomHandle />}
-      itemOne={itemOne}
-      itemTwo={itemTwo}
-      disabled={disabled}
-      portrait={portrait}
-      boundsPadding={boundsPadding}
-      position={position}
-      changePositionOnHover={changePositionOnHover}
-      keyboardIncrement={keyboardIncrement}
-      onlyHandleDraggable={onlyHandleDraggable}
-    />
+    <div style={style}>
+      <ReactCompareSlider
+        handle={<CustomHandle />}
+        itemOne={itemOne}
+        itemTwo={itemTwo}
+        disabled={disabled}
+        portrait={portrait}
+        boundsPadding={boundsPadding}
+        position={position}
+        changePositionOnHover={changePositionOnHover}
+        keyboardIncrement={keyboardIncrement}
+        onlyHandleDraggable={onlyHandleDraggable}
+      />
+    </div>
   )
 }

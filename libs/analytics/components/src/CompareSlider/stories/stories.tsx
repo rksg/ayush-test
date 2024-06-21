@@ -49,6 +49,11 @@ Default.args = {
 
 export const TwoComponents = Template.bind({})
 TwoComponents.args = {
+  style: {
+    width: '270px',
+    height: '178px',
+    border: '2px solid #FFFF00'
+  },
   itemOne: <ComponentOne />,
   itemTwo: <ComponentTwo />,
   disabled: false,
@@ -68,6 +73,10 @@ const zoomScale = scalePow()
 export const TwoGraphs = Template.bind({})
 TwoGraphs.args = {
   ...TwoComponents.args,
+  style: {
+    width: 1100,
+    border: '2px solid #0000FF'
+  },
   itemOne:
     <Graph
       chartRef={() => {}}

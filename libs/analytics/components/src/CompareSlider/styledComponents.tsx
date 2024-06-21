@@ -6,8 +6,8 @@ const arrowStyle = css`
   path {
     stroke: var(--acx-primary-black);
   }
-  width: 24px;
-  height: 24px;
+  width: 8px;
+  height: 8px;
   vertical-align: middle;
 `
 export const LeftArrow = styled(ArrowChevronLeft)`
