@@ -438,6 +438,17 @@ export const mspApi = baseMspApi.injectEndpoints({
       },
       providesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
+    mspRbacAssignmentHistory: build.query<TableResult<MspAssignmentHistory>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspAssignmentHistoryReq =
+          createHttpRequest(MspRbacUrlsInfo.getMspAssignmentHistory, params)
+        return {
+          ...mspAssignmentHistoryReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'Msp', id: 'LIST' }]
+    }),
     addCustomer: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const mspUrlsInfo = getMspUrls(enableRbac)
@@ -748,8 +759,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     addMspAssignment: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.addMspAssignment, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.addMspAssignment, params)
         return {
           ...req,
           body: payload
@@ -758,8 +770,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     updateMspAssignment: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspAssignment, params, {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.updateMspAssignment, params, {
           ...ignoreErrorModal
         })
         return {
@@ -770,8 +783,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     deleteMspAssignment: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.deleteMspAssignment, params, {
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.deleteMspAssignment, params, {
           ...ignoreErrorModal
         })
         return {
@@ -987,6 +1001,7 @@ export const {
   useUpdateMspEcAdminMutation,
   useMspEcAdminListQuery,
   useMspAssignmentHistoryQuery,
+  useMspRbacAssignmentHistoryQuery,
   useAddCustomerMutation,
   useUpdateCustomerMutation,
   useUpdateMspEcDelegatedAdminsMutation,
