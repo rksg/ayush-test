@@ -116,7 +116,7 @@ describe('EdgeClusterSettingForm', () => {
     expect(addBtn).toBeEnabled()
   })
 
-  it('should disable HaMode when Edge count goes beyond', async () => {
+  it('should disable HaMode when Edge count goes beyond the max AB mode allows', async () => {
     mockHaAaEnabled()
     renderClusterForm()
 
@@ -126,7 +126,7 @@ describe('EdgeClusterSettingForm', () => {
     expect(activeActiveRadio).toBeInTheDocument()
     await userEvent.click(activeActiveRadio!)
 
-    // Add 3 Edges that beyond the maximum allowed count for AB mode
+    // Add 3 Edges that goes beyond the maximum allowed count for AB mode
     const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
     for (let i = 0; i < 2; i++) {
       await userEvent.click(addBtn)
