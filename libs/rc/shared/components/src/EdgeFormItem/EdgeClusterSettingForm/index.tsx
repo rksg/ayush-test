@@ -181,13 +181,15 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
                   <Space direction='vertical'>
                     <Radio
                       key={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
-                      value={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}>
+                      value={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}
+                      id={ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE}>
                       {$t({ defaultMessage: 'Active-Active' })}
                       <RadioDescription>{activeActiveMessage}</RadioDescription>
                     </Radio>
                     <Radio
                       key={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}
-                      value={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}>
+                      value={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}
+                      id={ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY}>
                       {$t({ defaultMessage: 'Active-Standby' })}
                       <RadioDescription>{activeStandbyMessage}</RadioDescription>
                     </Radio>

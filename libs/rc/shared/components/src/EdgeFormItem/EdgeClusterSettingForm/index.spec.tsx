@@ -1,11 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                                                                    from '@acx-ui/components'
-import { venueApi }                                                                     from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeClusterTableDataType, EdgeGeneralFixtures, VenueFixtures } from '@acx-ui/rc/utils'
-import { Provider, store }                                                              from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }                                          from '@acx-ui/test-utils'
+import { StepsForm }                                                                                                     from '@acx-ui/components'
+import { venueApi }                                                                                                      from '@acx-ui/rc/services'
+import { ClusterHighAvailabilityModeEnum, CommonUrlsInfo, EdgeClusterTableDataType, EdgeGeneralFixtures, VenueFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                               from '@acx-ui/store'
+import { mockServer, render, screen, waitFor }                                                                           from '@acx-ui/test-utils'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 import { EdgeClusterSettingForm } from '.'
 
@@ -34,7 +36,8 @@ jest.mock('antd', () => {
 const mockShowDeleteModalFn = jest.fn()
 jest.mock('../../useEdgeActions', () => ({
   ...jest.requireActual('../../useEdgeActions'),
-  showDeleteModal: () => mockShowDeleteModalFn()
+  showDeleteModal: () => mockShowDeleteModalFn(),
+  useIsEdgeFeatureReady: jest.fn()
 }))
 
 const { mockVenueOptions } = VenueFixtures
@@ -56,18 +59,39 @@ describe('EdgeClusterSettingForm', () => {
     )
   })
 
+  it('should show HaMode config when AA FF is ON in add mode', () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    renderClusterForm()
+
+    expect(screen.getByText('High-Availability Mode')).toBeInTheDocument()
+
+    const activeActiveRadio = screen.getAllByRole('radio')
+      .find((element) => element.id === 'ACTIVE_ACTIVE')
+    expect(activeActiveRadio).toBeChecked()
+  })
+
+  it('should not show HaMode config when AA FF is OFF in add mode', () => {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(false)
+    renderClusterForm()
+    expect(screen.queryByText('High-Availability Mode')).not.toBeInTheDocument()
+  })
+
+  it('should show selected HaMode for AA cluster in edit mode', async () => {
+    setupHaModeInEditMode(ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE)
+    expect(screen.getByText(/Active-Active/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Active-Standby/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
+  it('should show selected HaMode for AB cluster in edit mode', async () => {
+    setupHaModeInEditMode(ClusterHighAvailabilityModeEnum.ACTIVE_STANDBY)
+    expect(screen.queryByText(/Active-Active/)).not.toBeInTheDocument()
+    expect(screen.getByText(/Active-Standby/)).toBeInTheDocument()
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
   it('should render EdgeClusterSettingForm successfully', async () => {
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeClusterSettingForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>
-      , {
-        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
-      })
+    renderClusterForm()
     expect(screen.getByRole('combobox', { name: 'Venue' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Cluster Name' })).toBeVisible()
     expect(screen.getByRole('textbox', { name: 'Description' })).toBeVisible()
@@ -79,17 +103,8 @@ describe('EdgeClusterSettingForm', () => {
   })
 
   it('should add and delete edge correctly', async () => {
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeClusterSettingForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>
-      , {
-        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
-      })
+    renderClusterForm()
+
     const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
     await userEvent.click(addBtn)
     await waitFor(async () =>
@@ -111,17 +126,8 @@ describe('EdgeClusterSettingForm', () => {
   })
 
   it('should derive vSmartEdge model correctly', async () => {
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeClusterSettingForm />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>
-      , {
-        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
-      })
+    renderClusterForm()
+
     const addBtn = screen.getByRole('button', { name: 'Add another SmartEdge' })
     await userEvent.click(addBtn)
     await waitFor(async () =>
@@ -145,19 +151,8 @@ describe('EdgeClusterSettingForm', () => {
   it('should show edit data correctly', async () => {
     let mockData = mockEdgeClusterList.data[0]
     mockData.edgeList[0].serialNumber = '968E1BDBCED13611EE9078AE968A3B9E8B'
-    render(
-      <Provider>
-        <StepsForm>
-          <StepsForm.StepForm>
-            <EdgeClusterSettingForm
-              editData={mockData as unknown as EdgeClusterTableDataType}
-            />
-          </StepsForm.StepForm>
-        </StepsForm>
-      </Provider>
-      , {
-        route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
-      })
+    renderEditClusterForm(mockData as unknown as EdgeClusterTableDataType)
+
     await waitFor(() =>
       expect(screen.getByRole('combobox', { name: 'Venue' })).toHaveValue('mock_venue_1')
     )
@@ -181,6 +176,33 @@ describe('EdgeClusterSettingForm', () => {
   })
 
   it('should show otp message correctly', async () => {
+    renderClusterForm()
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Serial Number' }),
+      '9612345678901234567890123456789012'
+    )
+    expect(await screen.findByText(/The one-time-password \(OTP\) will be/i)).toBeVisible()
+  })
+
+  it('should show confirm delete dialog when deleting existed edge', async () => {
+    renderEditClusterForm(mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType)
+
+    await waitFor(() =>
+      expect(screen.getAllByRole('button', { name: 'delete' }).length).toBe(2)
+    )
+    const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
+    await userEvent.click(deleteBtns[0])
+    expect(mockShowDeleteModalFn).toBeCalled()
+  })
+
+  function setupHaModeInEditMode (haMode: ClusterHighAvailabilityModeEnum) {
+    jest.mocked(useIsEdgeFeatureReady).mockReturnValue(true)
+    let mockData = mockEdgeClusterList.data[0]
+    mockData.highAvailabilityMode = haMode
+    renderEditClusterForm(mockData as unknown as EdgeClusterTableDataType)
+  }
+
+  function renderClusterForm () {
     render(
       <Provider>
         <StepsForm>
@@ -192,20 +214,15 @@ describe('EdgeClusterSettingForm', () => {
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
-    await userEvent.type(
-      screen.getByRole('textbox', { name: 'Serial Number' }),
-      '9612345678901234567890123456789012'
-    )
-    expect(await screen.findByText(/The one-time-password \(OTP\) will be/i)).toBeVisible()
-  })
+  }
 
-  it('should show confirm delete dialog when deleting existed edge', async () => {
+  function renderEditClusterForm (editData: EdgeClusterTableDataType) {
     render(
       <Provider>
         <StepsForm>
           <StepsForm.StepForm>
             <EdgeClusterSettingForm
-              editData={mockEdgeClusterList.data[0] as unknown as EdgeClusterTableDataType}
+              editData={editData}
             />
           </StepsForm.StepForm>
         </StepsForm>
@@ -213,11 +230,5 @@ describe('EdgeClusterSettingForm', () => {
       , {
         route: { params, path: '/:tenantId/devices/edge/cluster/:clusterId/edit/:activeTab' }
       })
-    await waitFor(() =>
-      expect(screen.getAllByRole('button', { name: 'delete' }).length).toBe(2)
-    )
-    const deleteBtns = screen.getAllByRole('button', { name: 'delete' })
-    await userEvent.click(deleteBtns[0])
-    expect(mockShowDeleteModalFn).toBeCalled()
-  })
+  }
 })
