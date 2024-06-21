@@ -1,18 +1,20 @@
 /* eslint-disable max-len */
 import { forwardRef, Ref } from 'react'
 
-import { Badge }   from 'antd'
+import { Badge, Space } from 'antd'
 import { useIntl } from 'react-intl'
 
 import {
   ColumnType,
   deviceStatusColors,
-  TableProps
+  TableProps,
+  Tooltip
 } from '@acx-ui/components'
 import {
   Features,
   useIsSplitOn
 } from '@acx-ui/feature-toggle'
+import { LeafSolidIcon } from '@acx-ui/icons'
 import {
   ApDeviceStatusEnum,
   APExtended,
@@ -21,8 +23,10 @@ import {
   APMeshRole,
   APView,
   DeviceConnectionStatus,
+  getPowerSavingStatusEnabledApStatus,
   NewAPExtendedGrouped,
   NewAPModelExtended,
+  PowerSavingStatusEnum,
   TableQuery,
   TableResult,
   transformApStatus,
@@ -41,7 +45,7 @@ export const defaultApPayload = {
     'name', 'deviceStatus', 'model', 'IP', 'apMac', 'venueName',
     'switchName', 'meshRole', 'clients', 'deviceGroupName',
     'apStatusData', 'tags', 'serialNumber',
-    'venueId', 'poePort', 'fwVersion', 'apRadioDeploy'
+    'venueId', 'poePort', 'fwVersion', 'apRadioDeploy', 'powerSavingStatus'
   ]
 }
 
@@ -85,16 +89,27 @@ export const retriedApIds = (
 }
 
 export const APStatus = (
-  { status, showText = true }: { status: ApDeviceStatusEnum, showText?: boolean }
+  { status, showText = true, powerSavingStatus = PowerSavingStatusEnum.NORMAL }: { status: ApDeviceStatusEnum, showText?: boolean, powerSavingStatus?: PowerSavingStatusEnum }
 ) => {
   const intl = useIntl()
+  const { $t } = useIntl()
   const apStatus = transformApStatus(intl, status, APView.AP_LIST)
+  const isSupportPowerSavingMode = useIsSplitOn(Features.WIFI_POWER_SAVING_MODE_TOGGLE)
+
   return (
-    <span>
+    <Space>
       <Badge color={handleStatusColor(apStatus.deviceStatus)}
         text={showText ? apStatus.message : ''}
       />
-    </span>
+      { isSupportPowerSavingMode &&
+        getPowerSavingStatusEnabledApStatus(status, powerSavingStatus) &&
+        <Tooltip
+          title={$t({ defaultMessage: 'AI-Driven GreenFlex mode. Radio may not be broadcasting' })}
+          placement='bottom'
+        >
+          <LeafSolidIcon/>
+        </Tooltip>}
+    </Space>
   )
 }
 

@@ -204,9 +204,9 @@ describe('Switch Overview VLAN', () => {
       await userEvent.click(await screen.findByText(/Add Ports/i))
 
       const vlansPortModal = await screen.findByTestId('vlanSettingModal')
-      const untagged1_1_5 = await within(vlansPortModal).findByTestId('untagged_module1_4')
-      const untagged1_1_6 = await within(vlansPortModal).findByTestId('untagged_module1_5')
-      const untagged1_1_7 = await within(vlansPortModal).findByTestId('untagged_module1_6')
+      const untagged1_1_5 = await within(vlansPortModal).findByTestId('untagged_module1_1_5')
+      const untagged1_1_6 = await within(vlansPortModal).findByTestId('untagged_module1_1_6')
+      const untagged1_1_7 = await within(vlansPortModal).findByTestId('untagged_module1_1_7')
       expect(untagged1_1_5).toHaveAttribute('data-disabled', 'true')
       expect(untagged1_1_6).toHaveAttribute('data-disabled', 'true')
       expect(untagged1_1_7).toHaveAttribute('data-disabled', 'true')
@@ -215,9 +215,9 @@ describe('Switch Overview VLAN', () => {
       await waitFor(async () => expect(await screen.findByRole('tooltip')).toBeInTheDocument())
       expect(screen.getByRole('tooltip')).toHaveTextContent('Port is member of LAG – LAG1')
 
-      await userEvent.click(await within(vlansPortModal).findByTestId('untagged_module1_2'))
+      await userEvent.click(await within(vlansPortModal).findByTestId('untagged_module1_1_3'))
       await userEvent.click( await within(vlansPortModal).findByRole('button', { name: 'Next' }))
-      await userEvent.click(await within(vlansPortModal).findByTestId('tagged_module1_3'))
+      await userEvent.click(await within(vlansPortModal).findByTestId('tagged_module1_1_4'))
       await userEvent.click( await within(vlansPortModal).findByRole('button', { name: 'Add' }))
 
       const portsTable = await within(drawer).findByRole('table')

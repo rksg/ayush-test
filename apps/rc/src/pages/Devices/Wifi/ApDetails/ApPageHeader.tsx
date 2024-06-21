@@ -10,12 +10,18 @@ import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
+import {
+  useApDetailHeaderQuery,
+  isAPLowPower,
+  useGetApCapabilitiesQuery,
+  useApViewModelQuery
+}                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
   useApContext,
-  ApStatus
+  ApStatus,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -51,6 +57,13 @@ function ApPageHeader () {
 
   const apAction = useApActions()
   const { activeTab } = useParams()
+  const apViewModelPayload = {
+    entityType: 'aps',
+    fields: ['powerSavingStatus'],
+    filters: { serialNumber: [serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ serialNumber, payload: apViewModelPayload })
+  const powerSavingStatus = apViewModelQuery.data?.powerSavingStatus as PowerSavingStatusEnum
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -108,7 +121,13 @@ function ApPageHeader () {
   return (
     <PageHeader
       title={data?.title || ''}
-      titleExtra={<APStatus status={status} showText={!currentApOperational} />}
+      titleExtra={
+        <APStatus
+          status={status}
+          showText={!currentApOperational}
+          powerSavingStatus={powerSavingStatus}
+        />
+      }
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
