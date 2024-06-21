@@ -289,23 +289,24 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/aps/:serialNumber',
     newApi: true
   },
-  /*
   getApPhoto: {
     method: 'get',
-    url: '/venues/aps/:serialNumber/pictures',
+    //url: '/venues/aps/:serialNumber/pictures',
+    url: '/venues/:venueId/aps/:serialNumber/pictures',
     newApi: true
   },
   addApPhoto: {
     method: 'put',
-    url: '/venues/aps/:serialNumber/pictures',
+    //url: '/venues/aps/:serialNumber/pictures',
+    url: '/venues/:venueId/aps/:serialNumber/pictures',
     newApi: true
   },
   deleteApPhoto: {
     method: 'delete',
-    url: '/venues/aps/:serialNumber/pictures',
+    //url: '/venues/aps/:serialNumber/pictures',
+    url: '/venues/:venueId/aps/:serialNumber/pictures',
     newApi: true
   },
-  */
   getApRadioCustomization: {
     method: 'get',
     //url: '/venues/aps/:serialNumber/radioSettings',

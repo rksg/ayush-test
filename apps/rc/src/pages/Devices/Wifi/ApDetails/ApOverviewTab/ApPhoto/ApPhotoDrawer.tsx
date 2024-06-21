@@ -4,7 +4,8 @@ import { Row, Col, Upload, Slider } from 'antd'
 import Cropper                      from 'react-easy-crop'
 import { useIntl }                  from 'react-intl'
 
-import { Button, Drawer } from '@acx-ui/components'
+import { Button, Drawer }         from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
@@ -32,10 +33,11 @@ interface cropImageType {
 }
 
 export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { $t } = useIntl()
   const params = useApContext()
 
-  const apPhoto = useGetApPhotoQuery({ params })
+  const apPhoto = useGetApPhotoQuery({ params, enableRbac: isUseRbacApi })
   const [addApPhoto] = useAddApPhotoMutation()
   const [deleteApPhoto] = useDeleteApPhotoMutation()
 
@@ -66,8 +68,9 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
   useEffect(() => {
     if (!apPhoto.isLoading && apPhoto?.data) {
-      setImageUrl(apPhoto?.data.imageUrl)
-      setImageName(apPhoto?.data.imageName)
+      const { url, imageUrl, name, imageName } = apPhoto.data
+      setImageUrl((isUseRbacApi? url : imageUrl)!)
+      setImageName((isUseRbacApi? name : imageName)!)
       setKey(generateHexKey(10))
     }
   }, [apPhoto, apViewModelQuery])
@@ -88,7 +91,8 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
 
       await addApPhoto({
         params: { ...params },
-        payload: formData
+        payload: formData,
+        enableRbac: isUseRbacApi
       })
 
       setZoom(1)
@@ -132,7 +136,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
         <Button type='link'
           key='view'
           onClick={() => {
-            deleteApPhoto({ params })
+            deleteApPhoto({ params, enableRbac: isUseRbacApi })
             setVisible(false)
           }}
           data-testid='delete'

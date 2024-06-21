@@ -497,9 +497,11 @@ export interface ApRadio {
 export interface APPhoto {
   createdDate: string,
   id: string,
-  imageId: string,
-  imageName: string,
-  imageUrl: string,
+  imageId?: string,   // nonRBAC API
+  imageName?: string, // nonRBAC API
+  imageUrl?: string,  // nonRBAC API
+  name?: string,      // RBAC API
+  url?: string,       // RBAC API
   updatedDate: string
 }
 

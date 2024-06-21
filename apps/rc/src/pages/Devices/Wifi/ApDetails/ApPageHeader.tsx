@@ -13,7 +13,6 @@ import { useApActions }                                                  from '@
 import {
   useApDetailHeaderQuery,
   isAPLowPower,
-  useGetApCapabilitiesQuery,
   useApViewModelQuery
 }                          from '@acx-ui/rc/services'
 import {

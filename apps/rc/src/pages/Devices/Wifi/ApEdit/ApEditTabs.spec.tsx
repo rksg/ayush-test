@@ -15,7 +15,7 @@ import {
 import {
   apDetailsList,
   deviceAps,
-  venueCaps,
+  r650Cap,
   venueData
 } from '../../__tests__/fixtures'
 
@@ -49,7 +49,13 @@ describe('ApEditTabs', () => {
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(deviceAps))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps)))
+        (_, res, ctx) => res(ctx.json(r650Cap))),
+
+      // rbac
+      rest.get(
+        WifiRbacUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(r650Cap))
+      )
     )
   })
 
