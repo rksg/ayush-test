@@ -268,13 +268,24 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/venues/citylist/query'
   },
-  /*
-  UpdateApPosition: {
-    method: 'put',
-    url: '/venues/aps/:serialNumber/floorPositions',
-    oldUrl: '/api/tenant/:tenantId/wifi/ap/:serialNumber/position',
+  GetApPosition: {
+    method: 'get',
+    url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
     newApi: true
   },
+  UpdateApPosition: {
+    method: 'put',
+    // url: '/venues/aps/:serialNumber/floorPositions',
+    url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
+    newApi: true
+  },
+  RemoveApPosition: {
+    method: 'delete',
+    // url: '/venues/aps/:serialNumber/floorPositions',
+    url: '/venues/:venueId/floorplans/:floorplanId/aps/:serialNumber/floorPositions',
+    newApi: true
+  },
+  /*
   UpdateCloudpathServerPosition: {
     method: 'put',
     url: '/cloudpaths/:cloudpathServerId/floorPositions',
@@ -464,8 +475,7 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   addGuestPass: {
     method: 'post',
-    url: '/guestUsers',
-    oldUrl: '/api/tenant/:tenantId/wifi/guest-user',
+    url: '/wifiNetworks/:networkId/guestUsers',
     newApi: true
   },
   /*

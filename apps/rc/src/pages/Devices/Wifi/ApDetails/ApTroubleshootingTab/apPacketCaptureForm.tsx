@@ -47,7 +47,10 @@ export function ApPacketCaptureForm () {
 
   const [startPacketCapture] = useStartPacketCaptureMutation()
   const [stopPacketCapture] = useStopPacketCaptureMutation()
-  const packetCaptureState = useGetPacketCaptureStateQuery({ params })
+  const packetCaptureState = useGetPacketCaptureStateQuery({
+    params: { tenantId, serialNumber, venueId },
+    enableRbac: isUseWifiRbacApi
+  })
   const getAp = useGetApQuery({
     params,
     enableRbac: isUseWifiRbacApi
@@ -252,7 +255,11 @@ export function ApPacketCaptureForm () {
                   }
                   delete payload.wiredCaptureInterface
                   // eslint-disable-next-line
-                  const result = await startPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
+                  const result = await startPacketCapture({ 
+                    params: { tenantId, serialNumber, venueId },
+                    payload,
+                    enableRbac: isUseWifiRbacApi
+                  }).unwrap()
                   setIsCapturing(true)
                   setSessionId(result.requestId || '')
                 } catch (error) {
@@ -266,7 +273,11 @@ export function ApPacketCaptureForm () {
     } else { // Stop
       const payload = { sessionId }
       try {
-        await stopPacketCapture({ params: { tenantId, serialNumber }, payload }).unwrap()
+        await stopPacketCapture({
+          params: { tenantId, serialNumber, venueId },
+          payload,
+          enableRbac: isUseWifiRbacApi
+        }).unwrap()
         packetCaptureStateRefetch()
         setIsPrepare(true)
         setHasRequest(true)

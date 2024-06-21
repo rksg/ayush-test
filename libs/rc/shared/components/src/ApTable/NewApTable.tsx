@@ -74,7 +74,7 @@ interface ImportFileFormType {
   venueId: string
 }
 
-const newApPayload = {
+export const newApPayload = {
   searchString: '',
   searchTargetFields: ['name', 'model', 'networkStatus', 'macAddress', 'tags', 'serialNumber'],
   fields: [
@@ -517,7 +517,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       visible = selectedRows.length === 1
     }
     if (visible && deviceStatus && deviceStatus.length > 0) {
-      visible = selectedRows.every(ap => deviceStatus.includes(ap.status))
+      visible = selectedRows.every(ap => ap.status && deviceStatus.includes(ap.status))
     }
     return visible
   }
