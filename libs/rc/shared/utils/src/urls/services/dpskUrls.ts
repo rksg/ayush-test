@@ -136,5 +136,15 @@ export const DpskUrls: { [key: string]: ApiInfo } = {
     url: NewDpskPassphraseDevices,
     oldUrl: DpskPassphraseDevices,
     newApi: true
+  },
+  deleteDpskPolicySet: {
+    method: 'delete',
+    url: NewDpskBaseUrlWithId + '/policySets/:policySetId',
+    newApi: true
+  },
+  updateDpskPolicySet: {
+    method: 'put',
+    url: NewDpskBaseUrlWithId + '/policySets/:policySetId',
+    newApi: true
   }
 }

@@ -29,7 +29,9 @@ import {
   CustomRole,
   PrivilegeGroup,
   EntitlementPendingActivations,
-  AdminRbacUrlsInfo
+  AdminRbacUrlsInfo,
+  NotificationSmsUsage,
+  NotificationSmsConfig
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -801,6 +803,49 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getNotificationSms: build.query<NotificationSmsUsage, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSms, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateNotificationSms: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateNotificationSms, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    getNotificationSmsProvider: build.query<NotificationSmsConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSmsProvider, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
+    }),
+    deleteNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
 
   })
@@ -875,5 +920,10 @@ export const {
   useGetPrivilegeGroupsQuery,
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,
-  useDeletePrivilegeGroupMutation
+  useDeletePrivilegeGroupMutation,
+  useGetNotificationSmsQuery,
+  useUpdateNotificationSmsMutation,
+  useGetNotificationSmsProviderQuery,
+  useUpdateNotificationSmsProviderMutation,
+  useDeleteNotificationSmsProviderMutation
 } = administrationApi

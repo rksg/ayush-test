@@ -103,7 +103,9 @@ function HealthPill ({ filters, kpi, timeWindow, threshold }: {
   const { queryResults, percent } = usePillQuery({
     kpi, filters, timeWindow: { startDate, endDate }, threshold
   })
-  const { success, total, length } = queryResults.data as PillData
+  let { success, total, length } = queryResults.data as PillData
+  // We need this check in case if wrong data is reported by an ICX.
+  if ( success > total) success = total
 
   const { pillSuffix, description, thresholdDesc, thresholdFormatter, tooltip } = pill
   const countFormat = formatter('countFormat')

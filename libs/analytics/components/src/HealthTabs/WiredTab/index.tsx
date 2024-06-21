@@ -2,6 +2,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
 import { Alert, GridCol, GridRow, Tabs }                 from '@acx-ui/components'
+import { get }                                           from '@acx-ui/config'
 import { useNavigate, useParams, useTenantLink }         from '@acx-ui/react-router-dom'
 import type { AnalyticsFilter }                          from '@acx-ui/utils'
 
@@ -11,9 +12,9 @@ import * as UI                       from '../../Health/styledComponents'
 import Kpis             from './Kpi'
 import { SummaryBoxes } from './SummaryBoxes'
 
-const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
+const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?: boolean }) => {
   const { $t } = useIntl()
-  const { filters: widgetFilters } = props
+  const { filters: widgetFilters, noSwitches } = props
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
 
@@ -21,14 +22,25 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
   const basePath = useTenantLink(props.path ?? '/analytics/health/wired/tab/')
-  const switchFirmwareVersionMsg = <FormattedMessage
-    defaultMessage={
-      'Data is displayed for switches with firmware version <b>10.0.10c</b> or above.'
-    }
-    values={{
-      b: (content) => <b >{content}</b>
-    }}
-  />
+  const switchFirmwareVersionMsg = get('IS_MLISA_SA') ?
+    <FormattedMessage
+      defaultMessage={
+      // eslint-disable-next-line max-len
+        'Data is displayed for switches with firmware version <b>10.0.10d</b> and SmartZone version <b>7.x</b> or above.'
+      }
+      values={{
+        b: (content) => <b >{content}</b>
+      }}
+    />
+    :
+    <FormattedMessage
+      defaultMessage={
+        'Data is displayed for switches with firmware version <b>10.0.10d</b> or above.'
+      }
+      values={{
+        b: (content) => <b >{content}</b>
+      }}
+    />
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -41,6 +53,7 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string }) => {
         <Alert message={switchFirmwareVersionMsg} type='info' showIcon/>
         <SummaryBoxes
           filters={healthPageFilters}
+          noSwitches={noSwitches}
         />
       </GridCol>
       <HealthPageContextProvider>

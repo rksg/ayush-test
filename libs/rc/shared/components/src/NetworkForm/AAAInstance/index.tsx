@@ -91,6 +91,10 @@ export const AAAInstance = (props: AAAInstanceProps) => {
           initialValue={watchedRadiusId ?? ''}
           children={<Select
             style={{ width: 210 }}
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label as string).toLowerCase().includes(input.toLowerCase())
+            }
             options={[
               { label: $t({ defaultMessage: 'Select RADIUS' }), value: '' },
               ...aaaDropdownItems

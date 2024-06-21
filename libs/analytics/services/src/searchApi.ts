@@ -97,8 +97,8 @@ export interface ClientList {
   clientsByTraffic: ClientByTraffic[]
 }
 
-const addQueryPart = (permission: RaiPermission, query: string) =>
-  hasRaiPermission('READ_REPORTS') || hasRaiPermission(permission) ? query : ''
+const addQueryPart = (permissions: RaiPermission[], query: string) =>
+  permissions.some(permission => hasRaiPermission(permission)) ? query : ''
 
 export const searchApi = dataApiSearch.injectEndpoints({
   endpoints: (build) => ({
@@ -112,7 +112,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
           $limit: Int
         ) {
           search(start: $start, end: $end, query: $query, limit: $limit) {
-            ${addQueryPart('READ_ACCESS_POINTS_LIST', `
+            ${addQueryPart(['READ_REPORTS', 'READ_ACCESS_POINTS_LIST'], `
             aps {
               apName,
               macAddress,
@@ -123,7 +123,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               networkPath {name type}
             }
             `)}
-            ${addQueryPart('READ_INCIDENTS', `
+            ${addQueryPart(['READ_REPORTS', 'READ_INCIDENTS'], `
             networkHierarchy {
               name
               root
@@ -133,7 +133,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               switchCount
             }
             `)}
-            ${addQueryPart('READ_CLIENT_TROUBLESHOOTING', `
+            ${addQueryPart(['READ_WIRELESS_CLIENTS_REPORT', 'READ_CLIENT_TROUBLESHOOTING'], `
             clients {
               hostname
               username
@@ -144,7 +144,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               manufacturer
             }
             `)}
-            ${addQueryPart('READ_SWITCH_LIST', `
+            ${addQueryPart(['READ_SWITCH_LIST'], `
             switches {
               switchName
               switchMac: switchId
@@ -152,7 +152,7 @@ export const searchApi = dataApiSearch.injectEndpoints({
               switchVersion: switchFirmware
             }
             `)}
-            ${addQueryPart('READ_WIFI_NETWORKS_LIST', `
+            ${addQueryPart(['READ_WIFI_NETWORKS_LIST'], `
             wifiNetworks {
               name
               apCount

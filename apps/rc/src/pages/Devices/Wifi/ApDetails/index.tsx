@@ -1,5 +1,5 @@
-import { useParams }               from '@acx-ui/react-router-dom'
-import { goToNotFound, hasAccess } from '@acx-ui/user'
+import { useParams }                   from '@acx-ui/react-router-dom'
+import { goToNotFound, hasPermission } from '@acx-ui/user'
 
 import { ApAnalyticsTab }       from './ApAnalyticsTab'
 import { ApClientsTab }         from './ApClientsTab'
@@ -15,7 +15,7 @@ import { ApTroubleshootingTab } from './ApTroubleshootingTab'
 
 const tabs = {
   overview: ApOverviewTab,
-  analytics: () => hasAccess() ? <ApAnalyticsTab/> : null,
+  analytics: () => hasPermission() ? <ApAnalyticsTab/> : null,
   troubleshooting: ApTroubleshootingTab,
   reports: ApReportsTab,
   networks: ApNetworksTab,

@@ -10,12 +10,19 @@ import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@
 import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery, isAPLowPower }                          from '@acx-ui/rc/services'
+import {
+  useApDetailHeaderQuery,
+  isAPLowPower,
+  useGetApCapabilitiesQuery,
+  useApViewModelQuery
+}                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
   useApContext,
-  ApStatus
+  ApStatus,
+  Capabilities,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -23,6 +30,7 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
@@ -31,10 +39,20 @@ import ApTabs from './ApTabs'
 function ApPageHeader () {
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData, afcEnabled } = useApContext()
+  const { tenantId, serialNumber, apStatusData, afcEnabled, model } = useApContext()
   const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
+  //eslint-disable-next-line
+  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
+
   const apAction = useApActions()
   const { activeTab } = useParams()
+  const apViewModelPayload = {
+    entityType: 'aps',
+    fields: ['powerSavingStatus'],
+    filters: { serialNumber: [serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ serialNumber, payload: apViewModelPayload })
+  const powerSavingStatus = apViewModelQuery.data?.powerSavingStatus as PowerSavingStatusEnum
 
   const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
@@ -90,10 +108,22 @@ function ApPageHeader () {
   const enableTimeFilter = () =>
     !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
 
+  const isAPOutdoor = (): boolean | undefined => {
+    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
+    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === model)
+    return currentApModel?.isOutdoor
+  }
+
   return (
     <PageHeader
       title={data?.title || ''}
-      titleExtra={<APStatus status={status} showText={!currentApOperational} />}
+      titleExtra={
+        <APStatus
+          status={status}
+          showText={!currentApOperational}
+          powerSavingStatus={powerSavingStatus}
+        />
+      }
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
@@ -109,16 +139,19 @@ function ApPageHeader () {
           />
           : <></>,
         ...filterByAccess([
-          <Dropdown overlay={menu}>{()=>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <CaretDownSolidIcon />
-              </Space>
-            </Button>
-          }</Dropdown>,
+          <Dropdown
+            scopeKey={[WifiScopes.DELETE, WifiScopes.UPDATE]}
+            overlay={menu}>{()=>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>}
+          </Dropdown>,
           <Button
             type='primary'
+            scopeKey={[WifiScopes.UPDATE]}
             onClick={() => {
               navigate({
                 ...basePath,
@@ -136,7 +169,11 @@ function ApPageHeader () {
         {
           AFC_Featureflag && afcEnabled &&
           isAPLowPower(ApStatusData?.afcInfo) &&
-          <LowPowerBannerAndModal afcInfo={ApStatusData.afcInfo} from={'ap'}/>
+          <LowPowerBannerAndModal
+            afcInfo={ApStatusData.afcInfo}
+            from={'ap'}
+            isOutdoor={isAPOutdoor()}
+          />
         }
         <ApTabs apDetail={data as ApDetailHeader} />
       </>}

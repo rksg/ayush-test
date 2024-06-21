@@ -4,6 +4,7 @@ import { Path, rest } from 'msw'
 
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import { MspUrlsInfo }                                                       from '@acx-ui/msp/utils'
+import { LicenseUrlsInfo }                                                   from '@acx-ui/rc/utils'
 import { Provider }                                                          from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, waitForElementToBeRemoved  } from '@acx-ui/test-utils'
 
@@ -128,6 +129,14 @@ describe('Subscriptions', () => {
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
         (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        LicenseUrlsInfo.getEntitlementsList.url,
+        (req, res, ctx) => res(ctx.json(entitlement))
+      ),
+      rest.post(
+        LicenseUrlsInfo.getEntitlementSummary.url,
+        (req, res, ctx) => res(ctx.json(summary))
       )
     )
     params = {
@@ -173,5 +182,21 @@ describe('Subscriptions', () => {
     const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
     fireEvent.click(refreshButton)
   })
+  it('should render correctly rbac feature flag on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.ENTITLEMENT_RBAC_API)
+    render(
+      <Provider>
+        <Subscriptions />
+      </Provider>, {
+        route: { params, path: '/:tenantId/mspLicenses' }
+      })
 
+    const generateUsageButton = await screen.findByRole('button', { name: 'Generate Usage Report' })
+    fireEvent.click(generateUsageButton)
+    const licenseManagementButton =
+    await screen.findByRole('button', { name: 'Manage Subscriptions' })
+    fireEvent.click(licenseManagementButton)
+    const refreshButton = await screen.findByRole('button', { name: 'Refresh' })
+    fireEvent.click(refreshButton)
+  })
 })

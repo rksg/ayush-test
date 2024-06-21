@@ -45,7 +45,7 @@ function EnableR1Beta (props: EnableR1BetaProps) {
     if (!isChecked) {
       showActionModal({
         type: 'confirm',
-        width: 450,
+        width: 460,
         title: $t({ defaultMessage: 'Disable Early Access Features?' }),
         content: $t(MessageMapping.enable_r1_beta_disable_description, { br1: <br/>, br2: <br/> }),
         okText: $t({ defaultMessage: 'Disable Early Access Features' }),

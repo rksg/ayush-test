@@ -26,9 +26,10 @@ import {
   networkTypes,
   NetworkTypeEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useParams } from '@acx-ui/react-router-dom'
-import { RequestPayload }        from '@acx-ui/types'
-import { noDataDisplay }         from '@acx-ui/utils'
+import { TenantLink, useParams }      from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
+import { noDataDisplay }              from '@acx-ui/utils'
 
 import { ClientHealthIcon } from '../ClientHealthIcon'
 
@@ -639,6 +640,7 @@ export const ConnectedClientsTable = (props: {
   const rowActions: TableProps<ClientList>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Disconnect' }),
+      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
       onClick: async (selectedRows, clearRowSelections) => {
         const selectedVenues = selectedRows.map((row) => row.venueId)
         const allAps = (await getApList({ params, payload: {
@@ -660,6 +662,7 @@ export const ConnectedClientsTable = (props: {
     },
     {
       label: $t({ defaultMessage: 'Revoke' }),
+      scopeKey: [WifiScopes.UPDATE, WifiScopes.DELETE],
       tooltip: (tableSelected.actionButton.revoke.disable ?
         $t({ defaultMessage: 'Only clients connected to captive portal networks may have their access revoked' })
         :''
@@ -708,7 +711,7 @@ export const ConnectedClientsTable = (props: {
         </Subtitle>
         <Table<ClientList>
           rowSelection={(wifiEDAClientRevokeToggle ? rowSelection : undefined)}
-          rowActions={(wifiEDAClientRevokeToggle ? rowActions : undefined)}
+          rowActions={(wifiEDAClientRevokeToggle ? filterByAccess(rowActions) : undefined)}
           settingsId={settingsId}
           columns={GetCols(useIntl(), showAllColumns)}
           dataSource={tableQuery.data?.data}
