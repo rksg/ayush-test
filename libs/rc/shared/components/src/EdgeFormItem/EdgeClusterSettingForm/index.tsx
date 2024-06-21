@@ -164,13 +164,13 @@ export const EdgeClusterSettingForm = (props: EdgeClusterSettingFormProps) => {
               children={editMode ? (
                 form.getFieldValue('highAvailabilityMode') ===
                   ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
-                  <div style={{ marginTop: 14 }}>
+                  <div style={{ marginTop: 4 }}>
                     <StepsForm.FieldLabel width='100%'>
                       {$t({ defaultMessage: 'Active-Active' })}
                     </StepsForm.FieldLabel>
                     <RadioDescription>{activeActiveMessage}</RadioDescription>
                   </div> :
-                  <div style={{ marginTop: 14 }}>
+                  <div style={{ marginTop: 4 }}>
                     <StepsForm.FieldLabel width='100%'>
                       {$t({ defaultMessage: 'Active-Standby' })}
                     </StepsForm.FieldLabel>
