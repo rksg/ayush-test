@@ -9,11 +9,13 @@ import { DateRange }                                   from '@acx-ui/utils'
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
 import { RecommendationTabContent } from '../Recommendations'
+import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
   CRRM = 'recommendations/crrm',
-  AIOPS = 'recommendations/aiOps'
+  AIOPS = 'recommendations/aiOps',
+  INTENTAI = 'intentAI'
 }
 
 interface Tab {
@@ -45,6 +47,12 @@ const useTabs = () : Tab[] => {
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
   }
 
+  const intenAITab = {
+    key: AIAnalyticsTabEnum.INTENTAI,
+    title: $t({ defaultMessage: 'Intent AI' }),
+    component: <></>,
+    headerExtra: useHeaderExtra({ datepicker: 'dropdown'})
+  }
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
     if (get('IS_MLISA_SA')) { // RAI
@@ -60,11 +68,15 @@ const useTabs = () : Tab[] => {
     }
     return recommendationTabs
   }
-
+  const isIntentAIEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
+    useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  ].some(Boolean)
 
   return [
     incidentsTab,
-    ...getRecommendationTabs()
+    ...getRecommendationTabs(),
+    ...(isIntentAIEnabled ? [intenAITab] : [])
   ]
 }
 
