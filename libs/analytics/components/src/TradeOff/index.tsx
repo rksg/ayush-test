@@ -24,6 +24,7 @@ export function TradeOff (props: TradeOffProps) {
   const { key: tradeOffKey, title, label, name,
     headers=[], radios = [], currentValue, onChange } = props
   const fieldName = name as unknown as NamePath
+  const selectIndex = radios?.map(radios => radios.value).indexOf(currentValue)
 
   const renderOptionRows =
   (radio: TradeOffRadio, rowIndex: number) => {
@@ -59,7 +60,7 @@ export function TradeOff (props: TradeOffProps) {
           <Col span={12} key={`tradeH_${hIndex}`}><span>{header}</span></Col>
         ))}
       </HeaderWrapper>
-      <DividerWrapper />
+      <DividerWrapper style={selectIndex === 0 ? { borderColor: 'transparent' } : {}}/>
       {radios.map((radio, rowIndex) =>
         renderOptionRows(radio, rowIndex))}
     </TradeOffWrapper>
