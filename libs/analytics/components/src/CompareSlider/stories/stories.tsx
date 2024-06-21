@@ -79,7 +79,7 @@ TwoGraphs.args = {
   },
   itemOne:
     <Graph
-      chartRef={() => {}}
+      chartRef={() => { }}
       title='Current'
       data={deriveInterfering(sample, BandEnum._5_GHz)}
       zoomScale={zoomScale}
@@ -91,7 +91,7 @@ TwoGraphs.args = {
     />,
   itemTwo:
     <Graph
-      chartRef={() => {}}
+      chartRef={() => { }}
       title='Future'
       data={deriveInterfering({ ...sample, interferingLinks: [] }, BandEnum._5_GHz)}
       zoomScale={zoomScale}

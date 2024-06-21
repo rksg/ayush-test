@@ -1,4 +1,6 @@
 import './type.d'
+import React from 'react'
+
 import { ReactCompareSlider, ReactCompareSliderDetailedProps } from 'react-compare-slider'
 
 import * as UI from './styledComponents'
@@ -11,47 +13,23 @@ export type CompareSliderProps = typeof ReactCompareSliderDetailedProps & {
 const defaultStyle: React.CSSProperties = {
   width: '600px',
   height: '400px',
-  border: '2px solid #BEBEBE'
+  border: '2px solid #BEBEBE',
+  borderRadius: '5px'
 }
 
-const Line = () => <div style={{
-  height: '100%',
-  width: '2px',
-  backgroundColor: 'white',
-  pointerEvents: 'auto'
-}} />
-
 const CircleWithArrows = () => {
-  return <div style={{
-    display: 'grid',
-    gridAutoFlow: 'column',
-    placeContent: 'center',
-    flexShrink: 0,
-    width: '24px',
-    height: '24px',
-    borderRadius: '50%',
-    pointerEvents: 'auto',
-    backgroundColor: 'white'
-  }}>
+  return <UI.CircleWrapper>
     <UI.LeftArrow />
     <UI.RightArrow />
-  </div>
+  </UI.CircleWrapper>
 }
 
 const CustomHandle: React.FC = () => {
-  return <div style={{
-    display: 'flex',
-    flexDirection: 'column',
-    placeItems: 'center',
-    height: '100%',
-    cursor: 'ew-resize',
-    pointerEvents: 'none',
-    color: 'rgb(255, 255, 255)'
-  }}>
-    <Line />
+  return <UI.CustomHandleWrapper>
+    <UI.LineStyleWrapper />
     <CircleWithArrows />
-    <Line />
-  </div>
+    <UI.LineStyleWrapper />
+  </UI.CustomHandleWrapper>
 }
 
 export const CompareSlider = (props: CompareSliderProps) => {
