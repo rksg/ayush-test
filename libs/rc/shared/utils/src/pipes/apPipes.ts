@@ -242,18 +242,15 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
 
 // eslint-disable-next-line
 export const AFCStatusRender = (afcInfo?: AFCInfo|NewAFCInfo, apRadioDeploy?: string) => {
+  if (apRadioDeploy !== '2-5-6') {
+    return '--'
+  }
+
   const { $t } = getIntl()
-  const powerMode = afcInfo?.hasOwnProperty('powerMode') ?
-    (afcInfo as AFCInfo)?.powerMode :
-    (afcInfo as NewAFCInfo)?.powerState
+  const displayList = []
   const afcStatus = afcInfo?.hasOwnProperty('afcStatus') ?
     (afcInfo as AFCInfo)?.afcStatus :
     (afcInfo as NewAFCInfo)?.afcState
-  const displayList = []
-
-  if(apRadioDeploy !== '2-5-6') {
-    return '--'
-  }
 
   switch(afcStatus) {
     case AFCStatus.WAIT_FOR_LOCATION:
