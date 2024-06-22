@@ -13,13 +13,18 @@ import {
   useGetNotificationSmsQuery,
   useUpdateNotificationSmsMutation
 } from '@acx-ui/rc/services'
-import { NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
-import { store }                                 from '@acx-ui/store'
+import { NotificationSmsConfig, NotificationSmsUsage, SmsProviderType } from '@acx-ui/rc/utils'
+import { store }                                                        from '@acx-ui/store'
 
 import { ButtonWrapper }  from '../AuthServerFormItem/styledComponents'
 import { MessageMapping } from '../MessageMapping'
 
 import { SetupSmsProviderDrawer } from './SetupSmsProviderDrawer'
+
+export interface SmsProviderData {
+  providerType: SmsProviderType,
+  providerData: NotificationSmsConfig
+}
 
 export const getProviderQueryParam = (providerType: SmsProviderType) => {
   switch(providerType) {
@@ -51,6 +56,7 @@ const SmsProviderItem = () => {
   const [ruckusOneUsed, setRuckusOneUsed] = useState<number>(0)
   const [smsThreshold, setSmsThreshold] = useState<number>(80)
   const [smsProviderType, setSmsProviderType] = useState<SmsProviderType>()
+  const [smsProviderData, setSmsProviderData] = useState<SmsProviderData>()
   const [smsProviderConfigured, setSmsProviderConfigured] = useState(false)
   const [isInGracePeriod, setIsInGracePeriod] = useState(false)
   const [isChangeGP, setIsChangeGP] = useState(false)
@@ -77,7 +83,7 @@ const SmsProviderItem = () => {
   }
 
   const smsUsage = useGetNotificationSmsQuery({ params })
-  let smsProvider = useGetNotificationSmsProviderQuery(
+  const smsProvider = useGetNotificationSmsProviderQuery(
     { params: { provider: getProviderQueryParam(smsProviderType as SmsProviderType) } },
     { skip: !smsProviderConfigured })
 
@@ -92,6 +98,13 @@ const SmsProviderItem = () => {
       setIsInGracePeriod(usedSms > FREE_SMS_POOL)
       setFreeSmsPool(true)
     }
+    if(smsProvider && smsProvider.data) {
+      setSmsProviderData({
+        providerType: smsProviderType as SmsProviderType,
+        providerData: smsProvider.data as NotificationSmsConfig
+      })
+    }
+
   }, [smsUsage, smsProviderConfigured])
 
   const data = ruckusOneUsed > FREE_SMS_POOL
@@ -408,7 +421,7 @@ const SmsProviderItem = () => {
     {drawerVisible && <SetupSmsProviderDrawer
       visible={drawerVisible}
       isEditMode={isEditMode}
-      editData={smsProvider.data}
+      editData={smsProviderData}
       setVisible={setDrawerVisible}
     />}
   </>
