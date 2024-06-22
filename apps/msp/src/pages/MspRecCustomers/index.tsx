@@ -61,12 +61,13 @@ export function MspRecCustomers () {
   const [drawerIntegratorVisible, setDrawerIntegratorVisible] = useState(false)
   const [techParnersData, setTechPartnerData] = useState([] as MspEc[])
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
   const [deleteMspEc, { isLoading: isDeleteEcUpdating }] = useDeleteMspEcMutation()
   const { delegateToMspEcPath } = useDelegateToMspEcPath()
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const linkVarPath = useTenantLink('/dashboard/varCustomers/', 'v')
   const mspUtils = MSPUtils()
 
@@ -422,7 +423,7 @@ export function MspRecCustomers () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id }, enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }

@@ -171,7 +171,7 @@ export const clientApi = baseClientApi.injectEndpoints({
         const clientListQuery = await fetchWithBQ({
           ...createHttpRequest(ClientUrlsInfo.getClientList,
             arg.params,
-            GetApiVersionHeader(ApiVersionEnum.v1_1)),
+            GetApiVersionHeader(ApiVersionEnum.v1)),
           body: JSON.stringify(clientPayload)
         })
         const clientList = clientListQuery.data as TableResult<GuestClient>
