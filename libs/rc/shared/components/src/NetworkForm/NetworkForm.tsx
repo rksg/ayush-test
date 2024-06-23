@@ -152,7 +152,6 @@ export function NetworkForm (props:{
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
-  const originalPoolId = useRef<string>()
 
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
@@ -239,9 +238,8 @@ export function NetworkForm (props:{
         form?.setFieldsValue(resolvedData)
       }
       updateSaveData({ ...resolvedData, certificateTemplateId })
-      originalPoolId.current = vlanPoolId
     }
-  }, [data, certificateTemplateId, vlanPoolId])
+  }, [data, certificateTemplateId])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
@@ -621,7 +619,7 @@ export function NetworkForm (props:{
       }
 
       // eslint-disable-next-line max-len
-      updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, originalPoolId.current)
+      updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
