@@ -614,12 +614,13 @@ export function NetworkForm (props:{
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
+      // eslint-disable-next-line max-len
+      updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
 
-      // eslint-disable-next-line max-len
-      updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
+      
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
