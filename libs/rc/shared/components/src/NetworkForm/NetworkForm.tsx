@@ -620,7 +620,7 @@ export function NetworkForm (props:{
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
 
-      
+
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
