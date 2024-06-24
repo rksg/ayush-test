@@ -40,8 +40,7 @@ export const CompareSlider = (props: CompareSliderProps) => {
     <UI.CompareSliderWrapper>
       <ReactCompareSlider className='compare-slider'
         style={style ?? {}}
-        handle={<CustomHandle lineStyle={lineStyle}
-          cirecleStyle={circleStyle} />}
+        handle={<CustomHandle lineStyle={lineStyle} cirecleStyle={circleStyle} />}
         itemOne={itemOne}
         itemTwo={itemTwo}
         disabled={disabled}
