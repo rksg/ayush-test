@@ -6,9 +6,9 @@ import { useParams }                                      from 'react-router-dom
 
 
 import { Button, Card, cssStr, DonutChart, PasswordInput, showActionModal, Tooltip } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import {
   administrationApi,
-  useDeleteNotificationSmsProviderMutation,
   useGetNotificationSmsProviderQuery,
   useGetNotificationSmsQuery,
   useUpdateNotificationSmsMutation
@@ -59,13 +59,13 @@ const SmsProviderItem = () => {
   const [smsProviderData, setSmsProviderData] = useState<SmsProviderData>()
   const [smsProviderConfigured, setSmsProviderConfigured] = useState(false)
   const [isInGracePeriod, setIsInGracePeriod] = useState(false)
-  const [isChangeGP, setIsChangeGP] = useState(false)
+  const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [freeSmsPool, setFreeSmsPool] = useState(true)
+  const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
 
   const FREE_SMS_POOL = 100
 
   const [updateNotificationSms] = useUpdateNotificationSmsMutation()
-  const [deleteNotificationSms] = useDeleteNotificationSmsProviderMutation()
 
   const onSetUpValue = () => {
     setEditMode(false)
@@ -74,9 +74,18 @@ const SmsProviderItem = () => {
 
   const onSaveUtilization = () => {
     const payload: NotificationSmsUsage = {
-      threshold: 70,
-      provider: SmsProviderType.RUCKUS_ONE,
-      ruckusOneUsed: 0
+      threshold: 60, //smsThreshold,
+      provider: SmsProviderType.RUCKUS_ONE
+    }
+    updateNotificationSms({ params , payload: payload }).then()
+    setIsChangeThreshold(false)    
+    reloadSmsNotification(2)
+  }
+
+  const selectedProvider = (selectedType: SmsProviderType) => {
+    const payload: NotificationSmsUsage = {
+      threshold: smsThreshold,
+      provider: selectedType
     }
     updateNotificationSms({ params , payload: payload }).then()
     reloadSmsNotification(2)
@@ -95,7 +104,7 @@ const SmsProviderItem = () => {
       setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
       setSmsProviderConfigured((smsUsage.data?.provider &&
         smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
-      setIsInGracePeriod(usedSms > FREE_SMS_POOL)
+      setIsInGracePeriod(usedSms > FREE_SMS_POOL && !isGracePeriodEnabled)
       setFreeSmsPool(true)
     }
     if(smsProvider && smsProvider.data) {
@@ -144,8 +153,11 @@ const SmsProviderItem = () => {
               okText: $t({ defaultMessage: 'Yes, Remove Provider' }),
               cancelText: $t({ defaultMessage: 'No, Keep Provider' }),
               onOk: () => {
-                deleteNotificationSms({ params:
-                  { provider: getProviderQueryParam(smsProviderType as SmsProviderType) } })
+                const payload: NotificationSmsUsage = {
+                  threshold: smsThreshold,
+                  provider: SmsProviderType.RUCKUS_ONE
+                }
+                updateNotificationSms({ params: params, payload: payload })
                   .then()
                 reloadSmsNotification(2)
               }
@@ -339,18 +351,20 @@ const SmsProviderItem = () => {
         colon={false}
         label={$t({ defaultMessage: 'Utilization Alert Threshold' })}
       />
-      {!isChangeGP && <div>
+      {!isChangeThreshold && <div>
         <label>{smsThreshold}%</label>
         <Button
           style={{ marginLeft: '40px' }}
           type='link'
           size='small'
-          onClick={() => { setIsChangeGP(true) }}>{$t({ defaultMessage: 'Change' })}</Button>
+          onClick={() => { setIsChangeThreshold(true) }}>{$t({ defaultMessage: 'Change' })}</Button>
       </div>}
-      {isChangeGP && <div>
+      {isChangeThreshold && <div>
         <Input
-          style={{ padding: 3, width: '45px', height: '28px' }}
-          type='number'/>
+          style={{ padding: 3, width: '50px', height: '28px' }}
+          type='number'
+          min={50}
+          max={100}/>
         <Button
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
@@ -360,7 +374,7 @@ const SmsProviderItem = () => {
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
           size='small'
-          onClick={() => { setIsChangeGP(false) }}>{$t({ defaultMessage: 'Cancel' })}</Button>
+          onClick={() => { setIsChangeThreshold(false) }}>{$t({ defaultMessage: 'Cancel' })}</Button>
       </div>}
     </>
   }
@@ -419,7 +433,7 @@ const SmsProviderItem = () => {
           )}
         />}
 
-        {!smsProviderConfigured && freeSmsPool && <FreeSmsPool/>}
+        {!smsProviderConfigured && <FreeSmsPool/>}
       </Col>
     </Row>
 
@@ -428,6 +442,7 @@ const SmsProviderItem = () => {
       isEditMode={isEditMode}
       editData={smsProviderData}
       setVisible={setDrawerVisible}
+      setSelected={selectedProvider}
     />}
   </>
   )

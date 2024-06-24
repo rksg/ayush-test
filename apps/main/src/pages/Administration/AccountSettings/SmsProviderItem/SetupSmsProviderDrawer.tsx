@@ -23,13 +23,14 @@ interface SetupSmsProviderDrawerProps {
   isEditMode: boolean
   editData?: SmsProviderData
   setVisible: (visible: boolean) => void
+  setSelected: (selectedType: SmsProviderType) => void
 }
 
 export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const { $t } = useIntl()
 
   const params = useParams()
-  const { visible, isEditMode, setVisible, editData } = props
+  const { visible, isEditMode, setVisible, editData, setSelected } = props
   const [providerType, setProviderType] = useState<SmsProviderType>()
   const [form] = Form.useForm()
   const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(true)
@@ -85,9 +86,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             accountSid: form.getFieldValue('accountSid'),
             authToken: form.getFieldValue('authToken'),
             fromNumber: form.getFieldValue('phoneNumber')
-            // others
-            // apiKey: form.getFieldValue('apiKey'),
-            // url: form.getFieldValue('sendUrl')
           }
           : {
             // esendex
@@ -97,9 +95,12 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       await updateSmsProvider({
         params: { provider: getProviderQueryParam(providerType as SmsProviderType) },
         payload: providerData }).unwrap()
-
+      setSelected(providerType as SmsProviderType)
       onClose()
     } catch (error) {
+      // remove after Backend fix
+      setSelected(providerType as SmsProviderType)
+      onClose()
       console.log(error) // eslint-disable-line no-console
     }
   }
@@ -112,10 +113,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Esendex' }),
       value: SmsProviderType.ESENDEX
-    // },
-    // {
-    //   label: $t({ defaultMessage: 'Other' }),
-    //   value: SmsProviderType.OTHERS
     }
   ]
 
@@ -127,7 +124,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     <Form.Item
       name='smsProvider'
       label={$t({ defaultMessage: 'SMS Provider' })}
-      initialValue={editData?.providerType}
+      initialValue={editData?.providerType && editData?.providerType !== SmsProviderType.RUCKUS_ONE}
       rules={[
         { required: true,
           message: $t({ defaultMessage:
@@ -180,7 +177,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         name='phoneNumber'
         label={$t({ defaultMessage: 'Phone Number' })}
         rules={[
-          // { required: true },
           { validator: () => {
             return !isValidTwiliosNumber ? Promise.reject(
               `${$t(MessageMapping.received_invalid_twilios_number)}`
@@ -191,7 +187,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           options={incomingPhoneList}
           placeholder={$t({ defaultMessage: 'Select...' })}
           disabled={!isValidTwiliosNumber}
-          onChange={handleProviderChange}
         />}
       />
     </>}
