@@ -22,9 +22,16 @@ export function VersionBannerPerApModel () {
 
       let updateGroups = convertApModelFirmwaresToUpdateGroups(data)
 
-      // ACX-56531: At least display the latest version where there is no AP in the tenant
-      if (updateGroups.length === 0) {
-        updateGroups = [extractLatestVersionToUpdateGroup(data)]
+      const tenantLatestVersionUpdateGroup = extractLatestVersionToUpdateGroup(data)
+      if (updateGroups.length === 0) { // ACX-56531: At least display the latest version where there is no AP in the tenant
+        updateGroups.push(tenantLatestVersionUpdateGroup)
+      } else { // ACX-61022: Always display the latest version information in the banner
+        const existingGroup = updateGroups.find((group: ApFirmwareUpdateGroupType) => {
+          return group.firmwares[0].name === tenantLatestVersionUpdateGroup.firmwares[0].name
+        })
+        if (!existingGroup) {
+          updateGroups.unshift(tenantLatestVersionUpdateGroup)
+        }
       }
 
       const updateGroupsWithLatestVersion = updateGroups

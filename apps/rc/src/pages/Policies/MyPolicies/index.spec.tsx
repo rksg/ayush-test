@@ -42,6 +42,10 @@ describe('MyPolicies', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
         AccessControlUrls.getEnhancedAccessControlProfiles.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
