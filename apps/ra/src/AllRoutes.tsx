@@ -85,7 +85,7 @@ function AllRoutes () {
         <Route path=':activeTab' element={<Profile />} />
       </Route>
       <Route path='intentAI'>
-        <Route path='aiDrivenRRM' element={<IntentAIDrivenRRM />} />
+        <Route path='crrm/optimize/:id' element={<IntentAIDrivenRRM />} />
       </Route>
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />

@@ -2,27 +2,20 @@
 import { defineMessage } from 'react-intl'
 
 export const mapping = {
-  title: 'AI-Driven RRM',
-  sideNotes: {
-    introduction: defineMessage({ defaultMessage: '<p>AI-Driven Cloud RRM constantly monitors the network, adjusting the channel plan, bandwidth, and AP transmit power to minimize co-channel interference. These changes are reflected in the Key Performance Indicators. The number of interfering links may fluctuate based on network changes, configurations, and rogue AP activities.</p>' }),
-    tradeOff: defineMessage({ defaultMessage: '<p>AI-Driven Cloud RRM will be applied at the zone level, potentially overwriting all configurations, including static settings for channel, bandwidth, Auto Channel Selection, Auto Cell Sizing, and AP transmit power. <br></br><br></br> DFS channels with excessive radar events will be restricted automatically. <br> </br><br></br> Note that unlicensed APs added after AI-Driven Cloud RRM is applied will not be considered, possibly resulting in suboptimal channel planning.</p>' })
-  },
   intent: 'Client density vs Client throughput',
   category: 'Wi-Fi Experience',
-  zone: 'SPS-Hospitality-BLR',
-  status: 'New',
-  lastUpdate: 'May 20 2024 14:45',
+  sideNotes: {
+    introduction: defineMessage({ defaultMessage: '<p>Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.</p>' }),
+    tradeoff: defineMessage({ defaultMessage: '<p>In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, making networks more prone to signal degradation and interference, which could compromise overall performance and reliability.</p>' })
+  },
   clientThroughput: {
-    title: defineMessage({ defaultMessage: '<b>Client Throughput</b>' }),
-    content: defineMessage({ defaultMessage: '<p>This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.</p>' }),
-    combined: defineMessage({ defaultMessage: '<p><b>Client Throughput</b>: This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.</p>' })
+    title: defineMessage({ defaultMessage: '<p>High client throughput in sparse network</p>' }),
+    content: defineMessage({ defaultMessage: '<p>In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.</p>' })
   },
   clientDensity: {
-    title: defineMessage({ defaultMessage: '<b>Client Density</b>' }),
-    content: defineMessage({ defaultMessage: '<p>This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.</p>' }),
-    combined: defineMessage({ defaultMessage: '<p><b>Client Density</b>: This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.</p>' })
-  },
-  summary: defineMessage({ defaultMessage: '<p>This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.</p>' })
+    title: defineMessage({ defaultMessage: '<p>High number of clients in a dense network</p>' }),
+    content: defineMessage({ defaultMessage: '<p>High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.</p>' })
+  }
 }
 
 export const demoLink = 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi'
