@@ -165,7 +165,7 @@ export function RadioSettingsForm (props:{
           <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
             {$t({ defaultMessage: 'Enable Indoor AFC:' })}
             <Tooltip
-              title={$t({ defaultMessage: 'For outdoor APs, outdoor AFC will be enabled automatically.' })}
+              title={$t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically' })}
               placement='bottom'>
               <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
             </Tooltip>

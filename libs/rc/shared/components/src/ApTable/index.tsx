@@ -502,7 +502,7 @@ export const ApTable = forwardRef((props : ApTableProps, ref?: Ref<ApTableRefTyp
     ...(AFC_Featureflag ? [{
       key: 'afcStatus',
       title: $t({ defaultMessage: 'AFC Status' }),
-      dataIndex: ['apStatusData','afcInfo','powerMode'],
+      dataIndex: ['apStatusData','afcInfo','afcStatus'],
       show: false,
       sorter: false,
       width: 200,
