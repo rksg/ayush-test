@@ -7,7 +7,9 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import { networkApi, venueApi }   from '@acx-ui/rc/services'
 import {
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
+  WifiNetworkFixtures,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
@@ -38,11 +40,11 @@ import {
 
 import { NetworkVenuesTab } from './index'
 
+const { mockedNetworkList } = WifiNetworkFixtures
+
 // isMapEnabled = false && SD-LAN not enabled
-jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
-  && ff !== Features.EDGES_SD_LAN_TOGGLE
-  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE
-)
+const disabledFFs = [Features.G_MAP, Features.EDGES_SD_LAN_TOGGLE, Features.EDGES_SD_LAN_HA_TOGGLE, Features.WIFI_RBAC_API]
+jest.mocked(useIsSplitOn).mockImplementation(ff => !disabledFFs.includes(ff as Features))
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean
@@ -143,6 +145,10 @@ describe('NetworkVenuesTab', () => {
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedNetworkList }))
       )
     )
   })
@@ -461,6 +467,10 @@ describe('NetworkVenues table with APGroup/Scheduling dialog', () => {
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
         (_, res, ctx) => res(ctx.json({ data: vlanPoolList }))
+      ),
+      rest.post(
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_, res, ctx) => res(ctx.json({ data: mockedNetworkList }))
       )
     )
   })
