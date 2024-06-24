@@ -8,7 +8,7 @@ import { PageHeader, StepsForm, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
-import { statusTrailMsgs }                                           from './config'
+// import { statusTrailMsgs }                                           from './config'
 import { mapping, demoLink, guideLink }                              from './mapping'
 import { useRecommendationCodeQuery, useRecommendationDetailsQuery } from './services'
 import * as UI                                                       from './styledComponents'
@@ -34,9 +34,6 @@ export function IntentAIDrivenRRM () {
     br: () => <br />
   }
 
-  // eslint-disable-next-line max-len
-  const calendarText = defineMessage({ defaultMessage: 'This recommendation will be applied at the chosen time whenever there is a need to change the channel plan. Schedule a time during off-hours when the number of WiFi clients is at the minimum.' })
-
   return (
     <Loader states={[detailsQuery]}>
       <PageHeader
@@ -49,7 +46,7 @@ export function IntentAIDrivenRRM () {
         subTitle={
           <>
             {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'Intent: ' })} {mapping.intent} | {$t({ defaultMessage: 'Zone: ' })} {details?.sliceValue}
+            {$t({ defaultMessage: 'Intent: Client density vs Client throughput' })} | {$t({ defaultMessage: 'Zone: ' })} {details?.sliceValue}
           </>
         }
       />
@@ -66,18 +63,19 @@ export function IntentAIDrivenRRM () {
                 <UI.Content>
                   <UI.ContentText>
                     <span>
-                      {$t({ defaultMessage: 'Intent:' })} <b>{mapping.intent}</b>
+                      {$t({ defaultMessage: 'Intent:' })}
+                      <b>{$t({ defaultMessage: 'Client density vs Client throughput' })}</b>
                     </span>
                   </UI.ContentText>
                   <UI.ContentText>
-                    {$t({ defaultMessage: 'Category:' })} {mapping.category}
+                    {$t({ defaultMessage: 'Category: Wi-Fi Client Experience' })}
                   </UI.ContentText>
                   <UI.ContentText>
                     {$t({ defaultMessage: 'Zone:' })} {details?.sliceValue}
                   </UI.ContentText>
                   <UI.ContentText>
                     {$t({ defaultMessage: 'Status:' })} {details?.status}
-                    {$t({ defaultMessage: 'Status:' })} {$t(statusTrailMsgs[details?.status])}
+                    {/* {$t({ defaultMessage: 'Status:' })} {$t(statusTrailMsgs[details?.status])} */}
                   </UI.ContentText>
                   <UI.ContentText>
                     {$t({ defaultMessage: 'Last update:' })} {details?.updatedAt}
@@ -88,24 +86,12 @@ export function IntentAIDrivenRRM () {
                     {$t({ defaultMessage:
                       'Wireless network design involves balancing different priorities:' })}
                   </UI.Subtitle>
-                  <b>
-                    <FormattedMessage
-                      {...mapping.clientDensity.title}
-                      values={{ ...values }}
-                    />
-                  </b>
                   <FormattedMessage
-                    {...mapping.clientDensity.content}
+                    {...mapping.clientDensity.introduction}
                     values={{ ...values }}
                   />
-                  <b>
-                    <FormattedMessage
-                      {...mapping.clientThroughput.title}
-                      values={{ ...values }}
-                    />
-                  </b>
                   <FormattedMessage
-                    {...mapping.clientThroughput.content}
+                    {...mapping.clientThroughput.introduction}
                     values={{ ...values }}
                   />
                 </UI.Content>
@@ -206,7 +192,7 @@ export function IntentAIDrivenRRM () {
               <UI.Wrapper>
                 <UI.Title>{$t({ defaultMessage: 'Settings' })}</UI.Title>
                 <UI.Content>
-                  {$t(calendarText)}
+                  <FormattedMessage {...mapping.calendarText} values={{ ...values }} />
                 </UI.Content>
               </UI.Wrapper>
             </Col>
