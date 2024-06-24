@@ -11,7 +11,7 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { commonQueryFn } from './common'
+import { commonQueryFn } from '../servicePolicy.utils'
 
 export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({

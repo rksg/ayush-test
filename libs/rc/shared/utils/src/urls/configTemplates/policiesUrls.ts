@@ -299,5 +299,15 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/:venueId/roguePolicies/:policyId',
     newApi: true
+  },
+  getVenueRogueApRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/roguePolicySettings',
+    newApi: true
+  },
+  updateVenueRogueApRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/roguePolicySettings',
+    newApi: true
   }
 }

@@ -17,6 +17,12 @@ export function GetApiVersionHeader (version: ApiVersionEnum | undefined) {
   return apiCustomHeader
 }
 
+export function GetApiVersionAcceptHeader (version: ApiVersionEnum | undefined) {
+  const header = GetApiVersionHeader(version)
+
+  return header ? { Accept: header.Accept } : undefined
+}
+
 export function GetUploadApiVersionHeader (version: ApiVersionEnum | undefined) {
   if (!version) return undefined
 
