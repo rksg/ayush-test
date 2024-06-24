@@ -198,9 +198,9 @@ export const apList = {
   ]
 }
 
-export const apCompatibilities = [
+export const apCompatibilities = { apCompatibilities: [
   {
-    id: '000000000001',
+    id: '302002030366',
     incompatibleFeatures: [ {
       featureName: 'EXAMPLE-FEATURE-1',
       requiredFw: '7.0.0.0.123',
@@ -231,7 +231,7 @@ export const apCompatibilities = [
     total: 1,
     incompatible: 1
   },{
-    id: '000000000003',
+    id: '922102004888',
     incompatibleFeatures: [],
     total: 0,
     incompatible: 1
@@ -246,7 +246,7 @@ export const apCompatibilities = [
     total: 0,
     incompatible: 1
   }
-]
+] }
 
 export const getApGroupsList = {
   data: [{
