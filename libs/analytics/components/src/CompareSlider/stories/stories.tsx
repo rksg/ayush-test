@@ -51,8 +51,7 @@ export const TwoComponents = Template.bind({})
 TwoComponents.args = {
   style: {
     width: '270px',
-    height: '178px',
-    border: '2px solid #FFFF00'
+    height: '178px'
   },
   itemOne: <ComponentOne />,
   itemTwo: <ComponentTwo />,
@@ -76,6 +75,12 @@ TwoGraphs.args = {
   style: {
     width: 1100,
     border: '2px solid #0000FF'
+  },
+  circleStyle: {
+    backgroundColor: 'yellow'
+  },
+  lineStyle: {
+    backgroundColor: 'green'
   },
   itemOne:
     <Graph
