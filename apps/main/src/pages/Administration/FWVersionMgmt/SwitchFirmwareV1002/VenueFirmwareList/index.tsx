@@ -337,7 +337,7 @@ export function VenueFirmwareList () {
         onChange={tableQuery.handleTableChange}
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
-        rowKey='id'
+        rowKey='venueId'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox' }}
         actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? [{

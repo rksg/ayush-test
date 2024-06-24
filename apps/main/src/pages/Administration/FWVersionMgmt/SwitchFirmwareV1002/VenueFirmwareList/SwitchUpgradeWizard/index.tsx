@@ -57,7 +57,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const { $t } = useIntl()
   const params = useParams()
   const { wizardType } = props
-  const { checkCurrentVersions } = useSwitchFirmwareUtils()
+  const { checkCurrentVersionsV1002 } = useSwitchFirmwareUtils()
   const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesMutation()
 
   const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
@@ -243,7 +243,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
   const saveSwitchStep = function () {
     // eslint-disable-next-line max-len
-    // let filterVersions: FirmwareVersion1002[] = [...availableVersions as FirmwareVersion1002[] ?? []]
+    let filterVersions: SwitchFirmwareVersion1002[] = availableVersions || []
     let nonIcx8200Count = 0, icx8200Count = 0
     let currentUpgradeSwitchList = [] as SwitchFirmware[]
     let currentUpgradeVenueList = [] as FirmwareSwitchVenueV1002[]
@@ -251,37 +251,34 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     const nestedData = form.getFieldValue('nestedData')
     const selectedVenueRowKeys = form.getFieldValue('selectedVenueRowKeys')
 
-    // props.data.forEach((row: FirmwareSwitchVenueV1002) => {
-    //   if (selectedVenueRowKeys.includes(row.id)) {
-    //     const version = row.switchFirmwareVersion?.id
-    //     const rodanVersion = row.switchFirmwareVersionAboveTen?.id
-    //     filterVersions = checkCurrentVersions(version, rodanVersion, filterVersions)
-    //     nonIcx8200Count = nonIcx8200Count + (row.switchCount ? row.switchCount : 0)
-    //     icx8200Count = icx8200Count +
-    //               (row.aboveTenSwitchCount ? row.aboveTenSwitchCount : 0)
-    //   } else if (nestedData[row.id]) {
-    //     nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
-    //       const fw = row.currentFirmware || ''
-    //       if (row.switchId) {
-    //         currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
-    //       }
-    //       if (fw.includes('090')) { //Need use regular expression
-    //         filterVersions = checkCurrentVersions(fw, '', filterVersions)
-    //         nonIcx8200Count = nonIcx8200Count +1
-    //       } else if (fw.includes('100')) {
-    //         filterVersions = checkCurrentVersions('', fw, filterVersions)
-    //         icx8200Count = icx8200Count+1
-    //       }
-    //     })
-    //   }
-    // })
+    props.data.forEach((row: FirmwareSwitchVenueV1002) => {
+      if (selectedVenueRowKeys.includes(row.venueId)) {
+        filterVersions = checkCurrentVersionsV1002(
+          row, availableVersions || [], (defaultReleaseVersions || [])) || []
+
+      } else if (nestedData[row.venueId]) {
+      //   nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
+      //     const fw = row.currentFirmware || ''
+      //     if (row.switchId) {
+      //       currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
+      //     }
+      //     if (fw.includes('090')) { //Need use regular expression
+      //       filterVersions = checkCurrentVersions(fw, '', filterVersions)
+      //       nonIcx8200Count = nonIcx8200Count +1
+      //     } else if (fw.includes('100')) {
+      //       filterVersions = checkCurrentVersions('', fw, filterVersions)
+      //       icx8200Count = icx8200Count+1
+      //     }
+      //   })
+      }
+    })
     currentUpgradeVenueList = _.filter(props.data, obj =>
-      selectedVenueRowKeys.includes(obj.id)) as FirmwareSwitchVenueV1002[]
+      selectedVenueRowKeys.includes(obj.venueId)) as FirmwareSwitchVenueV1002[]
 
     setUpgradeSwitchList(currentUpgradeSwitchList)
     setUpgradeVenueList(currentUpgradeVenueList)
     setHasVenue(selectedVenueRowKeys.length > 0 || (nonIcx8200Count + icx8200Count === 0))
-    setUpgradeVersions(availableVersions || [])
+    setUpgradeVersions(filterVersions)
     setNonIcx8200Count(nonIcx8200Count)
     setIcx8200Count(icx8200Count)
     return { currentUpgradeSwitchList, currentUpgradeVenueList }

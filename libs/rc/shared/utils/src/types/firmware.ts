@@ -275,8 +275,7 @@ export interface FirmwareSwitchVenueSwitchCountsV1002 {
 }
 
 export interface FirmwareSwitchVenueV1002 {
-  id: string;
-  venueId?: string;
+  venueId: string;
   venueName: string;
   preDownload: boolean;
   versions:FirmwareSwitchVenueVersionsV1002[];

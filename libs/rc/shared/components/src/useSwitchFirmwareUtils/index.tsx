@@ -12,7 +12,8 @@ import {
   convertSwitchVersionFormat,
   firmwareTypeTrans,
   compareSwitchVersion,
-  FirmwareSwitchVenueV1002
+  FirmwareSwitchVenueV1002,
+  SwitchFirmwareVersion1002
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -127,6 +128,50 @@ export function useSwitchFirmwareUtils () {
       return sortFn(valueA, valueB)
     }
   }
+  const checkCurrentVersionsV1002 = function (
+    selectedVersion: FirmwareSwitchVenueV1002,
+    availableVersions: SwitchFirmwareVersion1002[],
+    defaultVersions: SwitchFirmwareVersion1002[]) {
+    const defaultVersion = switchVersions?.data?.generalVersions
+    const getParseVersion = function (version: string) {
+      if (defaultVersion?.includes(version)) {
+        return version.replace(/_[^_]*$/, '')
+      }
+      return version
+    }
+    let filterVersions = availableVersions.map(availableVersion => {
+
+      const versions = availableVersion.versions.map(v => {
+        const inUseVersion = selectedVersion?.versions.find(
+          sc => sc.modelGroup === availableVersion.modelGroup)?.version || ''
+
+
+        if ((getParseVersion(v.id) === getParseVersion(inUseVersion))) {
+          return v = { ...v, inUse: true }
+        } else if (isDowngradeVersionV1002(inUseVersion, v.id)) {
+          return v = { ...v, isDowngradeVersion: true }
+        }
+
+        // eslint-disable-next-line no-console
+        console.log(defaultVersions)
+        return v
+      })
+
+      return {
+        modelGroup: availableVersion.modelGroup,
+        switchCount: (availableVersion.switchCount || 0) +
+          (selectedVersion.switchCounts.find(
+            sc => sc.modelGroup === availableVersion.modelGroup)?.count || 0),
+        versions: versions
+      }
+    }
+    )
+
+
+    return filterVersions
+
+  }
+
 
   const checkCurrentVersions = function (version: string, rodanVersion: string,
     filterVersions: FirmwareVersion[]): FirmwareVersion[] {
@@ -161,6 +206,10 @@ export function useSwitchFirmwareUtils () {
     return false
   }
 
+  function isDowngradeVersionV1002 (inUseVersion: string, version: string) {
+    return compareSwitchVersion(version, inUseVersion) > 0
+  }
+
   return {
     parseSwitchVersion,
     getSwitchVersionLabel,
@@ -170,6 +219,7 @@ export function useSwitchFirmwareUtils () {
     getSwitchVenueAvailableVersions,
     sortAvailableVersionProp,
     checkCurrentVersions,
+    checkCurrentVersionsV1002,
     isDowngradeVersion
   }
 }

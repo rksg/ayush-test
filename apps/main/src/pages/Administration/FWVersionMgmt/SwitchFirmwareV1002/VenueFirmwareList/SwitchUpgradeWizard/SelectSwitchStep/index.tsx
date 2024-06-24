@@ -200,14 +200,14 @@ export const SelectSwitchStep = (
 
   const handleExpand = async (_expanded: unknown, record: FirmwareSwitchVenueV1002) => {
     const count = record.switchCounts.reduce((sum, switchCount) => sum + switchCount.count, 0)
-    if (_.isEmpty(nestedData[record.id]?.initialData) ||
+    if (_.isEmpty(nestedData[record.venueId]?.initialData) ||
       (count)
-      !== nestedData[record.id]?.initialData.length) {
+      !== nestedData[record.venueId]?.initialData.length) {
       setIsLoading(true)
       const switchListPayload = {
-        venueIdList: [record.id]
+        venueIdList: [record.venueId]
       }
-      const switchList = record.id
+      const switchList = record.venueId
         ? (await getSwitchFirmwareList({
           params: { tenantId: tenantId },
           payload: switchListPayload,
@@ -215,12 +215,12 @@ export const SelectSwitchStep = (
         }, false)).data?.data
         : []
 
-      const hasSelectedVenue = selectedVenueRowKeys.includes(record.id)
+      const hasSelectedVenue = selectedVenueRowKeys.includes(record.venueId)
       const result = {
-        ...nestedData, [record.id]: {
+        ...nestedData, [record.venueId]: {
           initialData: switchList,
           selectedData: hasSelectedVenue ? switchList :
-            (nestedData[record.id]?.selectedData || [])
+            (nestedData[record.venueId]?.selectedData || [])
         }
       }
 
@@ -235,7 +235,7 @@ export const SelectSwitchStep = (
       if (hasSelectedVenue && Array.isArray(switchList)) {
         setSelectedSwitchRowKeys({
           ...selectedSwitchRowKeys,
-          [record.id]: switchList.map(s => s.switchId) as Key[]
+          [record.venueId]: switchList.map(s => s.switchId) as Key[]
         })
       }
     }
@@ -262,7 +262,7 @@ export const SelectSwitchStep = (
         emptyText: ' '
       }}
       style={{ paddingLeft: '0px !important' }}
-      dataSource={nestedData[record.id]?.initialData ?? [] as SwitchFirmware[]}
+      dataSource={nestedData[record.venueId]?.initialData ?? [] as SwitchFirmware[]}
       sticky={false}
       tableAlertRender={false}
       showHeader={false}
@@ -275,12 +275,12 @@ export const SelectSwitchStep = (
       rowSelection={{
         type: 'checkbox',
         // columnWidth: '30px',
-        selectedRowKeys: selectedSwitchRowKeys[record.id],
+        selectedRowKeys: selectedSwitchRowKeys[record.venueId],
         onChange: (selectedKeys) => {
-          const currentSwitchList = nestedData[record.id]?.initialData
+          const currentSwitchList = nestedData[record.venueId]?.initialData
           const result = {
             ...nestedData,
-            [record.id]: {
+            [record.venueId]: {
               initialData: currentSwitchList,
               selectedData: currentSwitchList.filter(c => selectedKeys.includes(c.switchId))
             }
@@ -293,15 +293,15 @@ export const SelectSwitchStep = (
           })
 
           if (currentSwitchList.length === selectedKeys.length) {
-            setSelectedVenueRowKeys([...selectedVenueRowKeys, record.id])
+            setSelectedVenueRowKeys([...selectedVenueRowKeys, record.venueId])
           } else {
             setSelectedVenueRowKeys(selectedVenueRowKeys.filter(
-              venueId => { return venueId !== record.id }))
+              venueId => { return venueId !== record.venueId }))
           }
 
           setSelectedSwitchRowKeys({
             ...selectedSwitchRowKeys,
-            [record.id]: selectedKeys
+            [record.venueId]: selectedKeys
           })
 
           form.validateFields()
@@ -320,7 +320,7 @@ export const SelectSwitchStep = (
   const setSearchResultData = async function (searchText: string) {
     let selectedKey = [] as Key[]
     const switchListPayload = {
-      venueIdList: data.map(d => d.id),
+      venueIdList: data.map(d => d.venueId),
       search: searchText
     }
     const searchSwitchList = (await getSwitchFirmwareList({
@@ -343,8 +343,8 @@ export const SelectSwitchStep = (
   }
   const [selectedSearchSwitchRowKeys, setSelectedSearchSwitchRowKeys] = useState([] as Key[])
   const isIndeterminate = (record: FirmwareSwitchVenueV1002) => {
-    const venueId = record.id
-    if (selectedVenueRowKeys.includes(record.id)) {
+    const venueId = record.venueId
+    if (selectedVenueRowKeys.includes(record.venueId)) {
       return false
     }
 
@@ -435,12 +435,12 @@ export const SelectSwitchStep = (
                       || selectedRow
                   })
 
-                  const currentVenue = data.filter(d => d.id === currentRow.venueId)[0]
+                  const currentVenue = data.filter(d => d.venueId === currentRow.venueId)[0]
                   const currentVenueCount = currentVenue?.switchCounts?.reduce(
                     (sum, switchCount) => sum + switchCount.count, 0) || 0
                   if ((currentVenueCount)
                     === newSelectedSwitchRowKeys[currentRow.venueId].length) {
-                    newSelectedVenueRowKeys = [...newSelectedVenueRowKeys, currentVenue.id]
+                    newSelectedVenueRowKeys = [...newSelectedVenueRowKeys, currentVenue.venueId]
                   }
 
                   newNestedData = {
@@ -472,10 +472,10 @@ export const SelectSwitchStep = (
                     [deleteRow.venueId]: newSelectedSwitchRowKeys[deleteRow.venueId].filter(
                       s => s !== deleteRowId)
                   }
-                  const currentVenue = data.filter(d => d.id === deleteRow.venueId)[0]
-                  if (newSelectedVenueRowKeys.includes(currentVenue.id)) {
+                  const currentVenue = data.filter(d => d.venueId === deleteRow.venueId)[0]
+                  if (newSelectedVenueRowKeys.includes(currentVenue.venueId)) {
                     newSelectedVenueRowKeys =
-                      newSelectedVenueRowKeys.filter(v => currentVenue.id !== v)
+                      newSelectedVenueRowKeys.filter(v => currentVenue.venueId !== v)
                   }
 
 
@@ -547,7 +547,7 @@ export const SelectSwitchStep = (
                 }
               }}
               enableApiFilter={true}
-              rowKey='id'
+              rowKey='venueId'
               rowSelection={{
                 type: 'checkbox',
                 // columnWidth: '30px',
@@ -568,7 +568,7 @@ export const SelectSwitchStep = (
                     addedVenue.forEach(async (venue) => {
 
                       let initialData = nestedData[venue]?.initialData ?? []
-                      const row = data.filter(v => v.id === venue)
+                      const row = data.filter(v => v.venueId === venue)
                       const rowCount = row[0]?.switchCounts?.reduce(
                         (sum, switchCount) => sum + switchCount.count, 0) || 0
                       if (_.isEmpty(initialData) &&

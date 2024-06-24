@@ -46,8 +46,8 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      params: { venueId: props.data.id },
-      payload: { venueIdList: [props.data.id] },
+      params: { venueId: props.data.venueId },
+      payload: { venueIdList: [props.data.venueId] },
       enableRbac: true
     }, false)).data?.data
     if (switchList) {
@@ -57,10 +57,10 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   }
 
   useEffect(() => {
-    if (props.data.id && props.visible) {
+    if (props.data.venueId && props.visible) {
       setSwitchList()
     }
-  }, [props.data.id, props.visible])
+  }, [props.data.venueId, props.visible])
 
   const onClose = () => {
     props.setVisible(false)

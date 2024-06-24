@@ -46,8 +46,8 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      payload: { venueId: props.data.id },
-      params: { venueId: props.data.id },
+      payload: { venueId: props.data.venueId },
+      params: { venueId: props.data.venueId },
       enableRbac: true
     }, false)).data?.data
     setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
@@ -58,7 +58,7 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
   }
 
   useEffect(() => {
-    if (props.data.id && props.visible) {
+    if (props.data.venueId && props.visible) {
       setSwitchList()
     }
   }, [props.data, props.visible])
