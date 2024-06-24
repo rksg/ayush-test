@@ -175,11 +175,11 @@ describe('TunnelProfileForm', () => {
         </Form>
       )
 
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      const typeField = await screen.findByRole('combobox', { name: 'Network Segment Type' })
       expect(typeField).not.toBeDisabled()
       await userEvent.selectOptions(
         typeField,
-        await screen.findByRole('option', { name: 'VxLAN' })
+        await screen.findByRole('option', { name: 'VNI' })
       )
     })
 
@@ -196,7 +196,7 @@ describe('TunnelProfileForm', () => {
         </Form>
       )
 
-      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
+      const typeField = await screen.findByRole('combobox', { name: 'Network Segment Type' })
       expect(typeField).toBeDisabled()
     })
   })

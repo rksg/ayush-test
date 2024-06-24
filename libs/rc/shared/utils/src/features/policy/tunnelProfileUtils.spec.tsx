@@ -243,4 +243,8 @@ describe('tunnelProfileUtils', () => {
         })
     })
   })
+
+  describe('mtuRequestTimeoutUnitConversion', () => {
+    
+  }
 })

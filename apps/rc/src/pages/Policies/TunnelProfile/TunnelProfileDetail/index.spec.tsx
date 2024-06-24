@@ -108,12 +108,12 @@ describe('TunnelProfileDetail', () => {
         })
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
-      await screen.findByText('Tunnel Type')
-      await screen.findByText('VxLAN')
+      await screen.findByText('Network Segment Type')
+      await screen.findByText('VNI')
       await checkNetworkTable()
     })
 
-    it('should display VxLAN as default tunnel type', async () => {
+    it('should display VNI as default tunnel type', async () => {
       const mockedDataWithoutType = {
         ...mockedTunnelProfileViewData
       }
@@ -135,8 +135,8 @@ describe('TunnelProfileDetail', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
       await screen.findByText('tunnelProfile2')
-      await screen.findByText('Tunnel Type')
-      await screen.findByText('VxLAN')
+      await screen.findByText('Network Segment Type')
+      await screen.findByText('VNI')
       await checkNetworkTable()
     })
 
@@ -156,7 +156,7 @@ describe('TunnelProfileDetail', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       await waitFor(() => expect(mockedGetVMNetworksList).toBeCalled())
       await screen.findByText('Default tunnel profile (SD-LAN)')
-      await screen.findByText('VLAN-VxLAN')
+      await screen.findByText('VLAN to VNI map')
       expect(screen.queryByRole('button', { name: 'Configure' })).toBeDisabled()
       await checkNetworkTable()
     })

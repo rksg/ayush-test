@@ -14,6 +14,7 @@ import { useIntl } from 'react-intl'
 import { Features }         from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
+  MtuRequestTimeoutUnit,
   MtuTypeEnum,
   getTunnelTypeOptions,
   servicePolicyNameRegExp
@@ -44,6 +45,22 @@ async function validateAgeTimeValue (value: number, ageTimeUnit: string) {
   return Promise.resolve()
 }
 
+export const mtuRequestTimeMapping: { [key: string]: number } = {
+  seconds: 10,
+  milliseconds: 10000
+}
+
+async function validateMtuRequestTimeValue (value: number, mtuRequestUnit: string) {
+  const { $t } = getIntl()
+  if (value < (mtuRequestUnit === MtuRequestTimeoutUnit.SECONDS ? 1 : 10) ||
+        value > mtuRequestTimeMapping[mtuRequestUnit]) {
+    return Promise.reject($t({
+      defaultMessage: 'Value must between 10-10000 milliseconds or 1-10 seconds'
+    }))
+  }
+  return Promise.resolve()
+}
+
 interface TunnelProfileFormProps {
   isDefaultTunnelProfile?: boolean
 }
@@ -54,7 +71,9 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const form = Form.useFormInstance()
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
+  const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
   const disabledFields = form.getFieldValue('disabledFields')
   const tunnelTypeOptions = getTunnelTypeOptions($t)
@@ -67,6 +86,15 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
 
   const handelAgeTimeUnitChange = () => {
     form.validateFields(['ageTimeMinutes'])
+  }
+
+  const mtuRequestTimeoutUnitOptions = [
+    { label: $t({ defaultMessage: 'Seconds' }), value: MtuRequestTimeoutUnit.SECONDS },
+    { label: $t({ defaultMessage: 'Milliseconds' }), value: MtuRequestTimeoutUnit.MILLISECONDS }
+  ]
+
+  const handelMtuRequestTimeUnitChange = () => {
+    form.validateFields(['mtuRequestTimeout'])
   }
 
   return (
@@ -93,6 +121,20 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           children={<Select mode='tags' />}
         />
       </Col> */}
+      { (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
+        <Col span={14}>
+          <Form.Item
+            name='type'
+            label={$t({ defaultMessage: 'Network Segment Type' })}
+            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
+          >
+            <Select
+              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}
+              options={tunnelTypeOptions}
+            />
+          </Form.Item>
+        </Col>
+      }
       <Col span={24}>
         <Form.Item
           name='mtuType'
@@ -150,6 +192,74 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           }
         />
       </Col>
+      {
+        (isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) &&
+        <Col span={24}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Path MTU Request Timeout' })}
+            tooltip={$t(MessageMapping.mtu_request_timeout_tooltip)}
+          >
+            <Space>
+              <Form.Item
+                name='mtuRequestTimeout'
+                rules={[
+                  { required: isEdgeVxLanTunnelKaReady },
+                  { validator: (_, value) =>
+                    validateMtuRequestTimeValue(value, mtuRequestTimeoutUnit) }
+                ]}
+                children={<InputNumber disabled={isDefaultTunnelProfile ||
+                  !!disabledFields?.includes('mtuRequestTimeout')}/>}
+                validateFirst
+                noStyle
+                hasFeedback
+              />
+              <Form.Item
+                name='mtuRequestTimeoutUnit'
+                children={
+                  <Select
+                    options={mtuRequestTimeoutUnitOptions}
+                    disabled={isDefaultTunnelProfile ||
+                      !!disabledFields?.includes('mtuRequestTimeoutUnit')}
+                    onChange={handelMtuRequestTimeUnitChange}
+                  />
+                }
+                noStyle
+              />
+            </Space>
+          </Form.Item>
+        </Col>
+      }
+      {(isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) &&
+        <Col span={24}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Path MTU Request Reties' })}
+            tooltip={$t(MessageMapping.mtu_request_retry_tooltip)}
+          >
+            <Space>
+              <Form.Item
+                name='mtuRequestRetry'
+                rules={[
+                  {
+                    required: isEdgeVxLanTunnelKaReady
+                  },
+                  {
+                    type: 'number',
+                    min: 3,
+                    max: 64
+                  }
+                ]}
+                children={<InputNumber
+                  disabled={isDefaultTunnelProfile ||
+                    !!disabledFields?.includes('mtuRequestRetry')}/>}
+                validateFirst
+                noStyle
+                hasFeedback
+              />
+              <div>{$t({ defaultMessage: 'retries' })}</div>
+            </Space>
+          </Form.Item>
+        </Col>
+      }
       <Col span={14}>
         <UI.StyledSpace align='center'>
           <UI.FormItemWrapper>
@@ -199,17 +309,65 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Space>
         </Form.Item>
       </Col>
-      { (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
-        <Col span={14}>
+      {
+        isEdgeVxLanTunnelKaReady &&
+        <Col span={24}>
           <Form.Item
-            name='type'
-            label={$t({ defaultMessage: 'Tunnel Type' })}
-            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
+            label={$t({ defaultMessage: 'Tunnel Keep Alive Interval' })}
+            tooltip={$t(MessageMapping.keep_alive_interval_tooltip)}
           >
-            <Select
-              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}
-              options={tunnelTypeOptions}
-            />
+            <Space>
+              <Form.Item
+                name='keepAliveInterval'
+                rules={[
+                  {
+                    required: isEdgeVxLanTunnelKaReady
+                  },
+                  {
+                    type: 'number',
+                    min: 1,
+                    max: 5
+                  }
+                ]}
+                children={<InputNumber disabled={isDefaultTunnelProfile ||
+                  !!disabledFields?.includes('keepAliveInterval')}/>}
+                validateFirst
+                noStyle
+                hasFeedback
+              />
+              <div>{$t({ defaultMessage: 'seconds' })}</div>
+            </Space>
+          </Form.Item>
+        </Col>
+      }
+      {
+        isEdgeVxLanTunnelKaReady &&
+        <Col span={24}>
+          <Form.Item
+            label={$t({ defaultMessage: 'Tunnel Keep Alive Retries' })}
+            tooltip={$t(MessageMapping.keep_alive_retry_tooltip)}
+          >
+            <Space>
+              <Form.Item
+                name='keepAliveRetry'
+                rules={[
+                  {
+                    required: isEdgeVxLanTunnelKaReady
+                  },
+                  {
+                    type: 'number',
+                    min: 3,
+                    max: 10
+                  }
+                ]}
+                children={<InputNumber disabled={isDefaultTunnelProfile ||
+                  !!disabledFields?.includes('keepAliveRetry')}/>}
+                validateFirst
+                noStyle
+                hasFeedback
+              />
+              <div>{$t({ defaultMessage: 'retries' })}</div>
+            </Space>
           </Form.Item>
         </Col>
       }
