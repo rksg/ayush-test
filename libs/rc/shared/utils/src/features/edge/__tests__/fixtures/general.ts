@@ -1,5 +1,5 @@
-import { ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
-import { ClusterNetworkSettings }                                                                                                                                                         from '../../../../types/edge'
+import { ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, ClusterStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, NodeClusterRoleEnum } from '../../../../models/EdgeEnum'
+import { ClusterNetworkSettings }                                                                                                                                                                                          from '../../../../types/edge'
 
 export const mockEdgeList = {
   fields: [
@@ -171,6 +171,7 @@ export const mockEdgeClusterList = {
       venueId: 'mock_venue_1',
       venueName: 'venue_1',
       clusterStatus: ClusterStatusEnum.CLUSTER_READY,
+      highAvailabilityMode: ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE,
       edgeList: [
         {
           name: 'Smart Edge 1',
