@@ -362,7 +362,7 @@ export enum SmsProviderType {
 export interface NotificationSmsUsage
 {
   ruckusOneUsed?: number,
-  thredshold?: number,
+  threshold?: number,
   provider?: SmsProviderType
 }
 
