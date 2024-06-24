@@ -371,7 +371,7 @@ export function VenuesForm (props: VenuesFormProps) {
           onFinish={saveHandlerMap[action]}
           onCancel={onCancel}
           buttonLabel={{ submit: action === 'edit' ?
-            intl.$t({ defaultMessage: 'Save' }):
+            intl.$t({ defaultMessage: 'Apply' }):
             intl.$t({ defaultMessage: 'Add' }) }}
         >
           <StepsFormLegacy.StepForm>
