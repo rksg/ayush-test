@@ -156,7 +156,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/bssColoringSettings',
     newApi: true
   },
-  getVenueDhcpProfile: {
+  getVenueDHCPServiceProfile: {
     method: 'get',
     url: '/templates/venues/:venueId/dhcpConfigServiceProfileSettings',
     newApi: true
@@ -179,6 +179,31 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deactivateVenueDhcpPool: {
     method: 'delete',
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
+    newApi: true
+  },
+  getDhcpUsagesRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiDhcpPoolUsages',
+    newApi: true
+  },
+  bindVenueDhcpProfile: {
+    method: 'put',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  unbindVenueDhcpProfile: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  queryDHCPProfiles: {
+    method: 'post',
+    url: '/templates/dhcpConfigServiceProfiles/query',
+    newApi: true
+  },
+  getVenueDHCPServiceProfileRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
     newApi: true
   },
   getVenueCityList: {

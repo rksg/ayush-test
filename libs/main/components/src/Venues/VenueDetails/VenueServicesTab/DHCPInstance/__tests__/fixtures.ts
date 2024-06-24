@@ -1,7 +1,7 @@
 
 import { rest,RestHandler } from 'msw'
 
-import { CommonUrlsInfo, DHCPUrls } from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, DHCPUrls, ServicesConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
 
 const aps ={
   fields: ['serialNumber', 'venueId', 'name'],
@@ -335,7 +335,7 @@ const wifiDhcpPoolUsagesData = {
   ]
 }
 
-const handlers:Array<RestHandler> = [
+export const handlers:Array<RestHandler> = [
   rest.post(CommonUrlsInfo.getApsList.url,(_,res,ctx) =>
     res(ctx.json(aps))
   ),
@@ -380,4 +380,89 @@ const handlers:Array<RestHandler> = [
   )
 ]
 
-export default handlers
+
+const queryConfigTemplate = {
+  fields: null,
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '931c333abb84474aba1e24f72f391ba9',
+      name: 'dhcpConfigTemplate1',
+      dhcpPools: [
+        {
+          name: 'pool1',
+          startAddress: '1.1.1.1',
+          endAddress: '1.1.1.100',
+          networkAddress: '1.1.1.0'
+        },
+        {
+          name: 'pool2',
+          startAddress: '2.2.2.1',
+          endAddress: '2.2.2.100',
+          networkAddress: '2.2.2.0'
+        }
+      ],
+      venueIds: [
+        'f6b580778ca54db78611ba4dcf2e29ba'
+      ]
+    }
+  ]
+}
+
+const configTemplateVenueDhcpProfile = {
+  wanPortSelectionMode: 'Dynamic',
+  activeDhcpPoolNames: [
+    'pool1'
+  ],
+  deviceIpMode: 'IPV4'
+}
+
+const getConfigTemplateDhcpProfileDetail = {
+  dhcpPools: [
+    {
+      startIpAddress: '1.1.1.1',
+      endIpAddress: '1.1.1.100',
+      name: 'pool1',
+      vlanId: 301,
+      subnetAddress: '1.1.1.0',
+      subnetMask: '255.255.255.0',
+      leaseTimeHours: 24,
+      leaseTimeMinutes: 0
+    },
+    {
+      startIpAddress: '2.2.2.1',
+      endIpAddress: '2.2.2.100',
+      name: 'pool2',
+      vlanId: 302,
+      subnetAddress: '2.2.2.0',
+      subnetMask: '255.255.255.0',
+      leaseTimeHours: 24,
+      leaseTimeMinutes: 0
+    }
+  ],
+  dhcpMode: 'EnableOnEachAPs',
+  serviceName: 'dhcpConfigTemplate1',
+  id: '931c333abb84474aba1e24f72f391ba9'
+}
+
+const configTemplateWifiDhcpPoolUsages = { name: 'pool1' }
+
+
+export const configTemplateHandlers = [
+  rest.post(VenueConfigTemplateUrlsInfo.queryDHCPProfiles.url, (_, res, ctx) =>
+    res(ctx.json(queryConfigTemplate))
+  ),
+  rest.get(VenueConfigTemplateUrlsInfo.getVenueDHCPServiceProfileRbac.url, (_, res, ctx) =>
+    res(ctx.json(configTemplateVenueDhcpProfile))
+  ),
+  rest.get(ServicesConfigTemplateUrlsInfo.getDHCProfileDetail.url, (_, res, ctx) =>
+    res(ctx.json(getConfigTemplateDhcpProfileDetail))
+  ),
+  rest.get(VenueConfigTemplateUrlsInfo.getVenueSettings.url, (_, res, ctx) =>
+    res(ctx.json(mockVenueData))
+  ),
+  rest.get(VenueConfigTemplateUrlsInfo.getDhcpUsagesRbac.url, (_, res, ctx) =>
+    res(ctx.json(configTemplateWifiDhcpPoolUsages))
+  )
+]

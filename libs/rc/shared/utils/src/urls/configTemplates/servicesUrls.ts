@@ -41,7 +41,7 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/dhcpConfigServiceProfiles/:serviceId',
     newApi: true
   },
-  getDhcp: {
+  getDHCProfileDetail: {
     method: 'get',
     url: '/templates/dhcpConfigServiceProfiles/:serviceId',
     newApi: true
@@ -49,6 +49,11 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   deleteDhcp: {
     method: 'delete',
     url: '/templates/dhcpConfigServiceProfiles/:templateId',
+    newApi: true
+  },
+  queryDHCPProfiles: {
+    method: 'post',
+    url: '/templates/dhcpConfigServiceProfiles/query',
     newApi: true
   },
   getPortal: {

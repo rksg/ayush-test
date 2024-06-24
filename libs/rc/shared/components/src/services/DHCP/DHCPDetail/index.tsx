@@ -1,8 +1,8 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { PageHeader, GridRow, GridCol, Tabs, Button } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { PageHeader, GridRow, GridCol, Tabs, Button, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useGetDHCPProfileQuery,
   useGetDhcpTemplateQuery,
@@ -32,12 +32,15 @@ export function DHCPDetail () {
   const params = useParams()
   const breadcrumb = useServiceListBreadcrumb(ServiceType.DHCP)
 
-  const { data } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
+  const { data, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
-    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE),
+    enableTemplateRbac: useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE),
+    payload: { needUsage: true }
   })
-  const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
+  // eslint-disable-next-line max-len
+  const { data: venuesList, isFetching: isVenueFetching } = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
     useQueryFn: useVenuesListQuery,
     useTemplateQueryFn: useGetVenuesTemplateListQuery,
     skip: !data,
@@ -50,7 +53,10 @@ export function DHCPDetail () {
   })
 
   return (
-    <>
+    <Loader states={[ {
+      isFetching: isFetching || isVenueFetching,
+      isLoading: false
+    } ]}>
       <PageHeader
         title={data?.serviceName}
         breadcrumb={breadcrumb}
@@ -61,7 +67,8 @@ export function DHCPDetail () {
             serviceId={params.serviceId!}
             children={
               <Button key='configure'
-                disabled={(venuesList.data && venuesList.data.data.length > 0)}
+                disabled={
+                  isVenueFetching || isFetching || (venuesList && venuesList.data.length > 0)}
                 type='primary'
               >{$t({ defaultMessage: 'Configure' })}</Button>
             }
@@ -87,6 +94,6 @@ export function DHCPDetail () {
           </GridRow>
         </Tabs.TabPane>
       </Tabs>
-    </>
+    </Loader>
   )
 }

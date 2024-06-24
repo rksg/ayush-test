@@ -62,6 +62,7 @@ export function SettingForm (props: DHCPFormProps) {
   const types = isTemplate ? [DHCPConfigTypeEnum.SIMPLE] : Object.values(DHCPConfigTypeEnum)
   const params = useParams()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const [ getDHCPProfileList ] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData[]>({
     useLazyQueryFn: useLazyGetDHCPProfileListQuery,
     useLazyTemplateQueryFn: useLazyGetDhcpTemplateListQuery
@@ -70,7 +71,8 @@ export function SettingForm (props: DHCPFormProps) {
   const id = Form.useWatch<string>('id', form)
 
   const nameValidator = async (value: string) => {
-    const list = (await getDHCPProfileList({ params, enableRbac }).unwrap())
+    const list = (await getDHCPProfileList({ params,
+      enableRbac: isTemplate ? enableTemplateRbac : enableRbac }).unwrap())
       .filter(dhcpProfile => dhcpProfile.id !== id)
       .map(dhcpProfile => ({ serviceName: dhcpProfile.serviceName }))
     // eslint-disable-next-line max-len
@@ -81,7 +83,7 @@ export function SettingForm (props: DHCPFormProps) {
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !editMode,
-    enableRbac
+    enableRbac, enableTemplateRbac
   })
 
   const isDefaultService = editMode && data?.serviceName === DEFAULT_GUEST_DHCP_NAME

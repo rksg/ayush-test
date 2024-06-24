@@ -32,6 +32,7 @@ export default function VenuePoolTable (
   const params = useParams()
   const { $t } = useIntl()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
   // eslint-disable-next-line max-len
@@ -40,7 +41,7 @@ export default function VenuePoolTable (
     useTemplateQueryFn: useGetVenueTemplateDhcpPoolsQuery,
     skip: isFetching,
     payload: { venueDHCPProfile, dhcpProfile },
-    enableRbac
+    enableRbac, enableTemplateRbac
   })
 
   const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher({
@@ -59,16 +60,16 @@ export default function VenuePoolTable (
         ...rest,
         activeDhcpPoolNames: [...(venueDHCPProfile?.activeDhcpPoolNames ?? []), dhcpPoolName] } : {}
       await activateDHCPPool({
-        params: { ...params, dhcppoolId, serviceId: venueDHCPProfile?.serviceProfileId },
-        payload, enableRbac }).unwrap()
+        params: { ...params, dhcppoolId, serviceId: serviceProfileId },
+        payload, enableRbac, enableTemplateRbac }).unwrap()
     } else {
       const payload = venueDHCPProfile ? {
         ...rest,
         activeDhcpPoolNames: venueDHCPProfile?.activeDhcpPoolNames?.filter((name)=>
           name!==dhcpPoolName) } : {}
       await deactivateDHCPPool({
-        params: { ...params, dhcppoolId, serviceId: venueDHCPProfile?.serviceProfileId },
-        payload, enableRbac }).unwrap()
+        params: { ...params, dhcppoolId, serviceId: serviceProfileId },
+        payload, enableRbac, enableTemplateRbac }).unwrap()
     }
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){

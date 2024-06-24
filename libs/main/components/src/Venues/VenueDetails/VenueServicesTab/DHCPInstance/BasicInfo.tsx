@@ -14,12 +14,14 @@ import {
   useGetVenueSettingsQuery,
   useGetVenueTemplateSettingsQuery,
   useLazyGetDHCPProfileQuery,
+  useLazyGetDhcpTemplateQuery,
   useUpdateVenueDHCPProfileMutation,
   useUpdateVenueTemplateDhcpProfileMutation
 } from '@acx-ui/rc/services'
 import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
   useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
@@ -51,6 +53,7 @@ export default function BasicInfo () {
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
     useQueryFn: useGetVenueSettingsQuery,
     useTemplateQueryFn: useGetVenueTemplateSettingsQuery
@@ -59,16 +62,19 @@ export default function BasicInfo () {
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
-    skip: enableRbac,
-    enableRbac
+    skip: enableRbac || enableTemplateRbac,
+    enableRbac, enableTemplateRbac
   })
 
-  const [getDhcpProfile] = useLazyGetDHCPProfileQuery()
+  const [getDhcpProfile] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData | null>({
+    useLazyQueryFn: useLazyGetDHCPProfileQuery,
+    useLazyTemplateQueryFn: useLazyGetDhcpTemplateQuery
+  })
 
   const getSelectedDHCP = async (dhcpServiceID:string)=> {
-    if(enableRbac && !isTemplate) {
-      // eslint-disable-next-line max-len
-      const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID }, enableRbac }).unwrap()
+    if(enableRbac || enableTemplateRbac) {
+      const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID },
+        enableRbac: isTemplate ? enableTemplateRbac : enableRbac }).unwrap()
       return result
     }
     if(dhcpProfileList && dhcpServiceID){
@@ -214,14 +220,15 @@ export default function BasicInfo () {
                 delete payload.serviceProfileId
               }
             }
-            if (enableRbac && !isTemplate) {
+            if (enableRbac || enableTemplateRbac) {
               payload.activeDhcpPoolNames = selectedDhcp?.dhcpPools.map(pool => pool.name) || []
               delete payload.serviceProfileId
               delete payload.enabled
               delete payload.id
             }
             await updateVenueDHCPProfile({
-              params: { ...params, serviceId }, payload, enableRbac, enableService
+              params: { ...params, serviceId },
+              payload, enableRbac, enableTemplateRbac, enableService
             }).unwrap()
             setVisible(false)
           }

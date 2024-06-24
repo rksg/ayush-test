@@ -59,6 +59,8 @@ import { baseServiceApi }             from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
+import { getDhcpProfile } from './servicePolicy.utils'
+
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
   sortOrder: 'ASC',
@@ -130,16 +132,14 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfiles
-        const req = createHttpRequest(url, params)
+        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
         return {
           ...req,
-          ...(enableRbac ? { body: { pageSize: DHCP_LIMIT_NUMBER } } : {})
+          ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
         }
       },
-      // eslint-disable-next-line max-len
       transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {
         if(arg.enableRbac) {
-          // eslint-disable-next-line max-len
           return (response as TableResult<DHCPSaveData>).data.map((item) => ({ ...item, serviceName: item.name || '' }))
         }
         return response as DHCPSaveData[]
@@ -164,10 +164,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfilesViewModel
-        const req = createHttpRequest(url, params)
+        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
@@ -189,14 +189,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        const dhcpDetailReq = createHttpRequest(DHCPUrls.getDHCProfileDetail, params, headers)
-        return {
-          ...dhcpDetailReq
-        }
-      },
-      transformResponse: transformDhcpResponse,
+      queryFn: getDhcpProfile(),
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({

@@ -2,10 +2,12 @@
 import {
   AAAPolicyType,
   AAAViewModalType,
+  ApiVersionEnum,
   ApplyConfigTemplatePaylod,
   CommonResult,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
+  GetApiVersionHeader,
   Network,
   NetworkSaveData,
   TableResult,
@@ -238,13 +240,15 @@ export const {
 
 const requestMethodWithPayload = ['post', 'put', 'PATCH']
 
-export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
-  return ({ params, payload }: RequestPayload) => {
-    const req = createHttpRequest(apiInfo, params)
+export function commonQueryFn (nonRbacApiInfo: ApiInfo, withPayload?: boolean, rbacHeaderVersion?: ApiVersionEnum, rbacApiInfo?: ApiInfo) {
+  return ({ params, payload, enableRbac }: RequestPayload) => {
+    const headers = GetApiVersionHeader(enableRbac ? rbacHeaderVersion : undefined)
+    const apiInfo = enableRbac && rbacApiInfo ? rbacApiInfo : nonRbacApiInfo
+    const req = createHttpRequest(apiInfo, params, headers)
     const needPayload = withPayload ?? requestMethodWithPayload.includes(apiInfo.method)
     return {
       ...req,
-      ...(needPayload ? { body: payload } : {})
+      ...(needPayload ? { body: JSON.stringify(payload) } : {})
     }
   }
 }
