@@ -48,24 +48,6 @@ export const reloadSmsNotification = (timeoutSec?: number) => {
   }, milisec)
 }
 
-// mocked data
-// const mockedSmsTwilioProvider = {
-//   data: {
-//     threshold: 80,
-//     provider: SmsProviderType.TWILIO,
-//     ruckusOneUsed: 0
-//   }
-// }
-// const mockedTwilioData = {
-//   data: {
-//     accountSid: 'AC1234567890abcdef1234567890abcdef',
-//     authToken: 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6',
-//     fromNumber: '+19388887785',
-//     apiKey: '29b04e7f-3bfb-4fed-b333-a49327981cab',
-//     url: 'test.com'
-//   }
-// }
-
 const SmsProviderItem = () => {
   const { $t } = useIntl()
   const params = useParams()
@@ -104,9 +86,6 @@ const SmsProviderItem = () => {
   const smsProvider = useGetNotificationSmsProviderQuery(
     { params: { provider: getProviderQueryParam(smsProviderType as SmsProviderType) } },
     { skip: !smsProviderConfigured })
-
-  // const smsUsage = mockedSmsTwilioProvider
-  // const smsProvider = mockedTwilioData
 
   useEffect(() => {
     if (smsUsage) {

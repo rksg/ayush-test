@@ -7,21 +7,11 @@ import {
   render,
   screen,
   waitFor,
-  mockServer
+  mockServer,
+  fireEvent
 } from '@acx-ui/test-utils'
 
 import { SmsProviderItem } from '.'
-
-// const TwilioData = [
-//   {
-//     providerType: SmsProviderType.TWILIO,
-//     providerData: {
-//       accountSid: 'AC1234567890abcdef1234567890abcdef',
-//       authToken: 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6',
-//       fromNumber: '+19388887785'
-//     }
-//   }
-// ]
 
 const fakeSmsNoProvider = {
   threshold: 80,
@@ -35,7 +25,7 @@ const fakeSmsTwilioProvider = {
   ruckusOneUsed: 0
 }
 
-const FakedTwilioData = {
+const fakedTwilioData = {
   data: {
     accountSid: 'AC1234567890abcdef1234567890abcdef',
     authToken: 'A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6',
@@ -43,6 +33,18 @@ const FakedTwilioData = {
     apiKey: '29b04e7f-3bfb-4fed-b333-a49327981cab',
     url: 'test.com'
   }
+}
+
+const fakeSmsEsendexProvider = {
+  threshold: 80,
+  provider: SmsProviderType.ESENDEX,
+  ruckusOneUsed: 0
+}
+
+const fakeSmsOthersProvider = {
+  threshold: 80,
+  provider: SmsProviderType.OTHERS,
+  ruckusOneUsed: 0
 }
 
 
@@ -59,31 +61,37 @@ describe('SMS Provider Form Item', () => {
     services.useGetAdminListQuery = jest.fn().mockImplementation(() => {
       return { data: [] }
     })
+    jest.spyOn(services, 'useUpdateNotificationSmsMutation')
     jest.spyOn(services, 'useDeleteNotificationSmsProviderMutation')
     mockServer.use(
       rest.get(
-        AdministrationUrlsInfo.getNotificationSms.url,
-        (req, res, ctx) => res(ctx.json({ fakeSmsNoProvider }))
-      ),
-      rest.get(
         AdministrationUrlsInfo.getNotificationSmsProvider.url,
-        (req, res, ctx) => res(ctx.json({ FakedTwilioData }))
+        (req, res, ctx) => res(ctx.json({ fakedTwilioData }))
       ),
       rest.post(
         AdministrationUrlsInfo.updateNotificationSmsProvider.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       ),
+      rest.post(
+        AdministrationUrlsInfo.updateNotificationSms.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'abc' }))
+      ),
       rest.delete(
-        AdministrationUrlsInfo.DeleteNotificationSmsProvider.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
+        AdministrationUrlsInfo.deleteNotificationSmsProvider.url,
+        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
-
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
-  it('should render layout correctly when no data exists', async () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+  it('should render correctly when no data exists', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeSmsNoProvider }
+    })
     render(
       <Provider>
         <SmsProviderItem/>
@@ -92,27 +100,14 @@ describe('SMS Provider Form Item', () => {
       })
 
     expect(screen.getByText('SMS Provider')).toBeVisible()
+    expect(screen.getByText('This account has a 100 SMS pool for')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Set SMS Provider' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
   })
-  it('should show drawer when Set SMS Provider button is clicked', async () => {
-    render(
-      <Provider>
-        <SmsProviderItem/>
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(screen.getByText('SMS Provider')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Set SMS Provider' }))
-    expect(screen.getByText('Set SMS Provider')).toBeVisible()
-  })
-  it('should render layout correctly when twilio data exists', async () => {
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getNotificationSms.url,
-        (req, res, ctx) => res(ctx.json({ fakeSmsTwilioProvider }))
-      )
-    )
+  it('should update threshold correctly', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeSmsNoProvider }
+    })
     render(
       <Provider>
         <SmsProviderItem/>
@@ -122,58 +117,105 @@ describe('SMS Provider Form Item', () => {
 
     expect(screen.getByText('SMS Provider')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
-  })
-  it('should show drawer when change button is clicked', async () => {
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getNotificationSms.url,
-        (req, res, ctx) => res(ctx.json({ fakeSmsTwilioProvider }))
-      )
-    )
-    render(
-      <Provider>
-        <SmsProviderItem/>
-      </Provider>, {
-        route: { params }
-      })
-
-    expect(screen.getByText('SMS Provider')).toBeVisible()
     await userEvent.click(screen.getByRole('button', { name: 'Change' }))
-    expect(screen.getByText('Set SMS Provider')).toBeVisible()
-  })
-  it('should remove SMS provider correctly', async () => {
-    mockServer.use(
-      rest.get(
-        AdministrationUrlsInfo.getNotificationSms.url,
-        (req, res, ctx) => res(ctx.json({ fakeSmsTwilioProvider }))
-      )
-    )
-    render(
-      <Provider>
-        <SmsProviderItem/>
-      </Provider>, {
-        route: { params }
-      })
+    expect(await screen.findByRole('button', { name: 'Cancel' })).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }))
+    expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: 'Change' }))
+    expect(await screen.findByRole('button', { name: 'Save' })).toBeVisible()
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '70' } } )
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
 
-    expect(screen.getByText('SMS Provider')).toBeVisible()
-    await userEvent.click(screen.getByRole('button', { name: 'Remove' }))
-    expect(await screen.findByText('Remove SMS Provider')).toBeVisible()
-    const button = screen.getByRole('button', { name: 'Yes, Remove Provider' })
-    await waitFor(() => {
-      expect(button).toBeEnabled()
-    })
-    await userEvent.click(button)
     const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
-      data: { requestId: '123' },
+      data: { requestId: 'abc' },
       status: 'fulfilled'
     })]
     await waitFor(()=> {
-      expect(services.useDeleteNotificationSmsProviderMutation).toHaveLastReturnedWith(value)
+      expect(services.useUpdateNotificationSmsMutation).toHaveLastReturnedWith(value)
     })
-    await waitFor(() => {
-      expect(screen.queryByText('Delete Azure AD SSO Service')).toBeNull()
+  })
+  it('should render layout correctly when in grace period', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: { ...fakeSmsNoProvider, ruckusOneUsed: 110 } }
     })
+    render(
+      <Provider>
+        <SmsProviderItem/>
+      </Provider>, {
+        route: { params }
+      })
 
+    expect(screen.getByText('SMS Provider')).toBeVisible()
+    expect(screen.getByText('Attention! RUCKUS SMS pool for Captive')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Set SMS Provider' })).toBeVisible()
+  })
+  it('should show drawer when Set SMS Provider button is clicked', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeSmsNoProvider }
+    })
+    render(
+      <Provider>
+        <SmsProviderItem/>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('SMS Provider')).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Set SMS Provider' }))
+    expect(screen.getAllByText('Set SMS Provider')).toHaveLength(2)
+  })
+  it('should render layout correctly when twilio data exists', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeSmsTwilioProvider }
+    })
+    render(
+      <Provider>
+        <SmsProviderItem/>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('SMS Provider')).toBeVisible()
+    expect(screen.getByText('Account SID')).toBeVisible()
+    expect(screen.getByText('Auth Token')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
+  })
+  it('should show drawer when change button clicked', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeSmsEsendexProvider }
+    })
+    render(
+      <Provider>
+        <SmsProviderItem/>
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(screen.getByText('SMS Provider')).toBeVisible()
+    expect(screen.getByText('API Token')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Change' }))
+    expect(await screen.findAllByText('SMS Provider')).toHaveLength(2)
+  })
+  it('should delete correctly when remove button clicked', async () => {
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: fakeSmsOthersProvider }
+    })
+    render(
+      <Provider>
+        <SmsProviderItem/>
+      </Provider>, {
+        route: { params }
+      })
+    expect(screen.getByText('SMS Provider')).toBeVisible()
+    expect(screen.getByText('API Token')).toBeVisible()
+    expect(screen.getByText('Send URL')).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
+    expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Remove' }))
+    expect(await screen.findByRole('button', { name: 'Yes, Remove Provider' })).toBeVisible()
   })
 })

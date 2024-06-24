@@ -112,10 +112,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Esendex' }),
       value: SmsProviderType.ESENDEX
-    },
-    {
-      label: $t({ defaultMessage: 'Other' }),
-      value: SmsProviderType.OTHERS
+    // },
+    // {
+    //   label: $t({ defaultMessage: 'Other' }),
+    //   value: SmsProviderType.OTHERS
     }
   ]
 
