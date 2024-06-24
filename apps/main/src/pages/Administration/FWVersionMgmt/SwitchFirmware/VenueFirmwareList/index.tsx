@@ -10,8 +10,8 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }         from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery, //TODO
   useUpdateSwitchUpgradePreferencesMutation, //TODO

@@ -11,7 +11,7 @@ import {
   showActionModal,
   Loader
 } from '@acx-ui/components'
-import { EdgeServiceStatusLight }    from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight }     from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useGetEdgeListQuery,

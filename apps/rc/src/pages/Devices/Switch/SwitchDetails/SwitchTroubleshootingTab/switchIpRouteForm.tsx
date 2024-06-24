@@ -6,9 +6,9 @@ import _                  from 'lodash'
 import { useIntl }        from 'react-intl'
 import { useParams }      from 'react-router-dom'
 
-import { Button, Loader }               from '@acx-ui/components'
-import { useIsSplitOn, Features }       from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import { Button, Loader }                from '@acx-ui/components'
+import { useIsSplitOn, Features }        from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }     from '@acx-ui/formatter'
 import {
   useGetTroubleshootingQuery,
   useIpRouteMutation,

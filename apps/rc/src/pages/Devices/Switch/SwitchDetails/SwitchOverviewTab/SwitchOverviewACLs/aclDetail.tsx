@@ -3,8 +3,8 @@ import {
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { TableProps }  from '@acx-ui/components'
-import { Table }       from '@acx-ui/components'
+import { TableProps }   from '@acx-ui/components'
+import { Table }        from '@acx-ui/components'
 import {
   Acl,
   AclRule,

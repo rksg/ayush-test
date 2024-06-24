@@ -8,7 +8,7 @@ import {
   Loader,
   Tabs
 } from '@acx-ui/components'
-import { SwitchInfoWidget } from '@acx-ui/rc/components'
+import { SwitchInfoWidget }  from '@acx-ui/rc/components'
 import {
   useGetVenueQuery,
   useStackMemberListQuery

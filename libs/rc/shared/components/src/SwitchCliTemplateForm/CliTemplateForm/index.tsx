@@ -10,7 +10,7 @@ import {
   showToast,
   StepsForm
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
 import {
   useGetCliTemplateQuery,
   useLazyGetCliTemplatesQuery,

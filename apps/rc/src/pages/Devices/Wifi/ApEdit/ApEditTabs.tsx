@@ -2,9 +2,9 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, cssStr }                           from '@acx-ui/components'
-import { useApViewModelQuery }                    from '@acx-ui/rc/services'
-import { ApViewModel, LocationExtended }          from '@acx-ui/rc/utils'
+import { Tabs, cssStr }                            from '@acx-ui/components'
+import { useApViewModelQuery }                     from '@acx-ui/rc/services'
+import { ApViewModel, LocationExtended }           from '@acx-ui/rc/utils'
 import {
   useLocation,
   useNavigate,

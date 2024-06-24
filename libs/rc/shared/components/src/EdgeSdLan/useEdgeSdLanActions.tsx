@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
-import { showActionModal }              from '@acx-ui/components'
-import { Features }                     from '@acx-ui/feature-toggle'
+import { showActionModal }               from '@acx-ui/components'
+import { Features }                      from '@acx-ui/feature-toggle'
 import {
   useActivateEdgeSdLanDmzClusterMutation,
   useActivateEdgeSdLanDmzTunnelProfileMutation,

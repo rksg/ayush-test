@@ -1,6 +1,6 @@
 import { RefObject, useState } from 'react'
 
-import { Button }      from '@acx-ui/components'
+import { Button }       from '@acx-ui/components'
 import {
   MagnifyingGlassMinusOutlined,
   MagnifyingGlassPlusOutlined,

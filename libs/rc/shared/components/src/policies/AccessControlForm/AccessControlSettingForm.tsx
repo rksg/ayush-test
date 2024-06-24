@@ -5,8 +5,8 @@ import { Form, Input } from 'antd'
 import { get }         from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow }         from '@acx-ui/components'
-import { StepsFormLegacy }          from '@acx-ui/components'
+import { GridCol, GridRow }          from '@acx-ui/components'
+import { StepsFormLegacy }           from '@acx-ui/components'
 import {
   useGetAccessControlProfileListQuery,
   useGetAccessControlProfileQuery

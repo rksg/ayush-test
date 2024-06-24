@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { firmwareApi }     from '@acx-ui/rc/services'
+import { firmwareApi }      from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenue,
   FirmwareUrlsInfo,
@@ -14,7 +14,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { VenueFirmwareList }          from '..'
+import { VenueFirmwareList }           from '..'
 import {
   switchVenue,
   preference,

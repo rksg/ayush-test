@@ -1,7 +1,7 @@
 import { Input as AntInput } from 'antd'
 import styled                from 'styled-components/macro'
 
-import { LayoutUI }     from '@acx-ui/components'
+import { LayoutUI }      from '@acx-ui/components'
 import {
   SendMessageOutlined
 }                          from '@acx-ui/icons'

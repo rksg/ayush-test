@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { serviceApi }                           from '@acx-ui/rc/services'
+import { serviceApi }                            from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo, ConfigTemplateUrlsInfo,
   EPDG,

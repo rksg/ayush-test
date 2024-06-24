@@ -8,8 +8,8 @@ import {
   screen } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
-import { UserUrlsInfo }     from './services'
-import { UserProfile }      from './types'
+import { UserUrlsInfo }      from './services'
+import { UserProfile }       from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,

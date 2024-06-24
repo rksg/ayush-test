@@ -7,7 +7,7 @@ import {
 import { Form }    from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Modal, Transfer }                    from '@acx-ui/components'
+import { Button, Modal, Transfer }                     from '@acx-ui/components'
 import {
   useGetEnhancedWifiCallingServiceListQuery,
   useGetEnhancedWifiCallingServiceTemplateListQuery

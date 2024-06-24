@@ -13,8 +13,8 @@ import {
   cssStr,
   Tooltip
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { useIsEdgeReady }            from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }             from '@acx-ui/rc/components'
 import {
   useVenuesListQuery,
   useVenuesTableQuery,

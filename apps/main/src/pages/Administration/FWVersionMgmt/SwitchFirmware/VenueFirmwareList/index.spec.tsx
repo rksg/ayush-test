@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { firmwareApi }                       from '@acx-ui/rc/services'
+import { firmwareApi }                        from '@acx-ui/rc/services'
 import {
   FirmwareUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'

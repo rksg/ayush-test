@@ -4,7 +4,7 @@ import { Form, Input } from 'antd'
 import { cloneDeep }   from 'lodash'
 import { useIntl }     from 'react-intl'
 
-import { Drawer, Select }   from '@acx-ui/components'
+import { Drawer, Select }    from '@acx-ui/components'
 import {
   EapType,
   IdentityProviderActionType,

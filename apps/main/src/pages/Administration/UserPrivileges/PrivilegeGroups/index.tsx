@@ -10,8 +10,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { useGetMspProfileQuery }    from '@acx-ui/msp/services'
-import { MSPUtils }                 from '@acx-ui/msp/utils'
+import { useGetMspProfileQuery }     from '@acx-ui/msp/services'
+import { MSPUtils }                  from '@acx-ui/msp/utils'
 import {
   useGetPrivilegeGroupsQuery,
   useDeletePrivilegeGroupMutation

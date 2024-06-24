@@ -9,10 +9,10 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
-import { SpaceWrapper }               from '@acx-ui/rc/components'
+import { get }                         from '@acx-ui/config'
+import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }   from '@acx-ui/formatter'
+import { SpaceWrapper }                from '@acx-ui/rc/components'
 import {
   useGetEntitlementActivationsQuery
 } from '@acx-ui/rc/services'

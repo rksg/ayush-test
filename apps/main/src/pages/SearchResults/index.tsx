@@ -1,8 +1,8 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { PageHeader, Loader }          from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { PageHeader, Loader }           from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import {
   ApTable,
   defaultApPayload,

@@ -6,7 +6,7 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 
-import * as contents     from '../../contents'
+import * as contents      from '../../contents'
 import {
   ServiceGuardFormDto,
   TestType as TestTypeEnum,

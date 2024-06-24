@@ -2,7 +2,7 @@ import { pick }                   from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { Tabs }         from '@acx-ui/components'
+import { Tabs }          from '@acx-ui/components'
 import {
   ActivityTable,
   EventTable,

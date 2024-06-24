@@ -2,8 +2,8 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsForm }                         from '@acx-ui/components'
-import { nsgApi }                            from '@acx-ui/rc/services'
+import { StepsForm }                          from '@acx-ui/components'
+import { nsgApi }                             from '@acx-ui/rc/services'
 import {
   EdgeNSGFixtures, NetworkSegmentationUrls
 } from '@acx-ui/rc/utils'

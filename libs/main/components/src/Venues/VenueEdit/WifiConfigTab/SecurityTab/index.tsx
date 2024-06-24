@@ -41,7 +41,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
-import { VenueEditContext }               from '../..'
+import { VenueEditContext }                from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher

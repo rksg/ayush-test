@@ -7,7 +7,7 @@ import {
   useStepFormContext
 } from '@acx-ui/components'
 
-import { authMethodsByCode }                         from '../../authMethods'
+import { authMethodsByCode }                          from '../../authMethods'
 import {
   ServiceGuardFormDto,
   AuthenticationMethod as AuthenticationMethodEnum

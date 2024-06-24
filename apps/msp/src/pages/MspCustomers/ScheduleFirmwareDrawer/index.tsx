@@ -11,7 +11,7 @@ import {
   DatePicker,
   Drawer
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import {
   useMspEcFirmwareUpgradeSchedulesMutation
 } from '@acx-ui/msp/services'

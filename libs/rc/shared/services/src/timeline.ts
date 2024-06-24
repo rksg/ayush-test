@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
-import { Filter }             from '@acx-ui/components'
+import { Filter }              from '@acx-ui/components'
 import {
   Activity,
   EventBase,

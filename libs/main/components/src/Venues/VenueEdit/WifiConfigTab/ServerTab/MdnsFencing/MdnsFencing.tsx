@@ -11,7 +11,7 @@ import {
   showActionModal,
   StepsFormLegacy
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useGetVenueMdnsFencingQuery,
   useGetVenueTemplateMdnsFencingQuery,
@@ -24,7 +24,7 @@ import {
   VenueMdnsFencingPolicy
 } from '@acx-ui/rc/utils'
 
-import { VenueEditContext }               from '../../..'
+import { VenueEditContext }                from '../../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher

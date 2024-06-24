@@ -3,7 +3,7 @@ import { QRCodeSVG }                             from 'qrcode.react'
 import { useIntl }                               from 'react-intl'
 import styled                                    from 'styled-components/macro'
 
-import { Drawer }              from '@acx-ui/components'
+import { Drawer }               from '@acx-ui/components'
 import {
   MFAMethod,
   useMfaRegisterPhoneQuery,

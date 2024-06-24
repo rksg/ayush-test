@@ -10,7 +10,7 @@ import { CommonRbacUrlsInfo, CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/util
 import { Provider, store }                                 from '@acx-ui/store'
 import { mockServer, render, screen, waitFor }             from '@acx-ui/test-utils'
 
-import { VenueEditContext }     from '../..'
+import { VenueEditContext }      from '../..'
 import {
   venueData,
   venueRogueAp,

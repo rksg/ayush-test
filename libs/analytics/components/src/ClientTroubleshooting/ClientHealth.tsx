@@ -9,7 +9,7 @@ import { WarningTriangleOutlined }                      from '@acx-ui/icons'
 import type { AnalyticsFilter }                         from '@acx-ui/utils'
 import { noDataDisplay }                                from '@acx-ui/utils'
 
-import { LabelledQuality }            from './config'
+import { LabelledQuality }             from './config'
 import {
   ClientConnectionQualities,
   ConnectionQuality,

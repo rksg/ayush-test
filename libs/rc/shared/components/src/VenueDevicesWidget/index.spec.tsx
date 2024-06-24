@@ -1,5 +1,5 @@
-import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { CommonUrlsInfo }      from '@acx-ui/rc/utils'
+import { Provider  }           from '@acx-ui/store'
 import { render,
   screen, mockRestApiQuery,
   waitForElementToBeRemoved

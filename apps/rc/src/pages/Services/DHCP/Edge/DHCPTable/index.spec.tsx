@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { edgeApi, edgeDhcpApi }   from '@acx-ui/rc/services'
+import { edgeApi, edgeDhcpApi }    from '@acx-ui/rc/services'
 import {
   EdgeDhcpUrls,
   EdgeGeneralFixtures,

@@ -13,8 +13,8 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useIntl }      from 'react-intl'
 
-import { Loader, Fieldset, Transfer, AnchorContext }                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                         from '@acx-ui/feature-toggle'
+import { Loader, Fieldset, Transfer, AnchorContext }                                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import {
   useGetAaaSettingQuery, useVenueSwitchAAAServerListQuery,
   useGetVenueTemplateSwitchAaaSettingQuery, useGetVenueTemplateSwitchAAAServerListQuery

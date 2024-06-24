@@ -11,7 +11,7 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Features }         from '@acx-ui/feature-toggle'
+import { Features }          from '@acx-ui/feature-toggle'
 import {
   AgeTimeUnit,
   MtuTypeEnum,

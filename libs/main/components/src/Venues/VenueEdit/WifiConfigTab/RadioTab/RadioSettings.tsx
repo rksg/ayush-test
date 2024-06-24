@@ -70,8 +70,8 @@ import {
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
-import { VenueUtilityContext }            from '..'
-import { VenueEditContext }               from '../..'
+import { VenueUtilityContext }             from '..'
+import { VenueEditContext }                from '../..'
 import {
   useVenueConfigTemplateMutationFnSwitcher,
   useVenueConfigTemplateQueryFnSwitcher

@@ -4,8 +4,8 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useGetApGroupQuery, useGetApGroupTemplateQuery,
   useGetVLANPoolPolicyViewModelListQuery, useGetVLANPoolPolicyViewModeTemplateListQuery,

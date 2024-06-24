@@ -2,7 +2,7 @@ import { Form, Input } from 'antd'
 import { useIntl }     from 'react-intl'
 import { useParams }   from 'react-router-dom'
 
-import { GridCol, GridRow }                  from '@acx-ui/components'
+import { GridCol, GridRow }                   from '@acx-ui/components'
 import {
   useLazyAdaptivePolicySetListByQueryQuery
 } from '@acx-ui/rc/services'

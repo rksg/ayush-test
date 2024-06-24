@@ -3,7 +3,7 @@ import { Col, FormInstance, Row }   from 'antd'
 import { useIntl }                  from 'react-intl'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { PageHeader, StepsForm }               from '@acx-ui/components'
+import { PageHeader, StepsForm }                from '@acx-ui/components'
 import {
   TunnelProfileForm as TunnelProfileFormBase
 } from '@acx-ui/rc/components'

@@ -1,8 +1,8 @@
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useSwitchFirmwareUtils }        from '@acx-ui/rc/components'
 import {
   useGetSwitchDefaultFirmwareListQuery,
   useGetSwitchLatestFirmwareListQuery

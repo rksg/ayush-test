@@ -7,8 +7,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import {
   useMspAssignmentHistoryQuery,
   useMspRbacAssignmentHistoryQuery
