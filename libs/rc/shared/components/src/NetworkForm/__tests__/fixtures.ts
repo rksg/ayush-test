@@ -687,6 +687,12 @@ export const devicePolicyListResponse = {
   totalPages: 1,
   page: 1
 }
+export const devicePolicyDetailResponse = {
+  id: '361a8e49222a4cbeae2bc6c7f0127dca',
+  name: 'device1',
+  rulesCount: 1,
+  networksCount: 0
+}
 
 export const applicationPolicyListResponse = {
   data: [
@@ -706,43 +712,78 @@ export const applicationPolicyListResponse = {
   page: 1
 }
 
-export const layer2PolicyListResponse = [
-  {
-    id: 'dee8918e1c40474a9f779b39ee672c5b',
-    name: 'layer2policy1',
-    macAddressesCount: 1,
-    networksCount: 0
-  }
-]
-
-export const layer3PolicyListResponse = [
-  {
-    id: '4dee545ff0e04100b13774aa0ba6fc57',
-    name: 'layer3policy1',
-    rulesCount: 1,
-    networksCount: 0
-  }
-]
-
-export const accessControlListResponse = [
-  {
-    l2AclPolicy: {
+export const layer2PolicyListResponse = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
       id: 'dee8918e1c40474a9f779b39ee672c5b',
-      enabled: true
-    },
-    l3AclPolicy: {
+      name: 'layer2policy1',
+      networkCount: 0
+    }
+  ]
+}
+
+export const layer3PolicyListResponse = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
       id: '4dee545ff0e04100b13774aa0ba6fc57',
-      enabled: true
-    },
-    name: 'acl-1',
-    rateLimiting: {
-      uplinkLimit: 0,
-      downlinkLimit: 0,
-      enabled: false
-    },
-    id: '2918e310075a4f5bb1b0d161769f6f64'
-  }
-]
+      name: 'layer3policy1',
+      networkCount: 0
+    }
+  ]
+}
+
+export const accessControlListResponse = {
+  fields: [
+    'clientRateUpLinkLimit',
+    'l3AclPolicyId',
+    'applicationPolicyName',
+    'clientRateDownLinkLimit',
+    'networkCount',
+    'devicePolicyName',
+    'l2AclPolicyId',
+    'networkIds',
+    'name',
+    'applicationPolicyId',
+    'id',
+    'l3AclPolicyName',
+    'l2AclPolicyName',
+    'devicePolicyId'
+  ],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: '2918e310075a4f5bb1b0d161769f6f64',
+      name: 'acl-1',
+      l2AclPolicyName: 'layer2policy1',
+      l2AclPolicyId: 'dee8918e1c40474a9f779b39ee672c5b',
+      l3AclPolicyName: 'layer3policy1',
+      l3AclPolicyId: '4dee545ff0e04100b13774aa0ba6fc57',
+      devicePolicyName: '',
+      devicePolicyId: '',
+      applicationPolicyName: '',
+      applicationPolicyId: '',
+      clientRateUpLinkLimit: 0,
+      clientRateDownLinkLimit: 0,
+      networkIds: [
+        '7f52e203c2d9402896df8075a17dbcf8'
+      ],
+      networkCount: 1
+    }
+  ]
+}
 
 export const dhcpResponse = {
   id: '6cf550cdb67641d798d804793aaa82db',

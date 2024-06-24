@@ -106,6 +106,12 @@ describe('ApplicationDrawer Component with view mode', () => {
             ctx.json(applicationDetail)
           )
         }),
+      rest.get(
+        AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ version: 'versionValue' }))
+        }
+      ),
       rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))))
   })
@@ -176,6 +182,11 @@ describe('ApplicationDrawer Component', () => {
           return res(
             ctx.json(applicationDetail)
           )
+        }
+      ), rest.get(
+        AccessControlUrls.applicationLibrarySettings.url,
+        (_, res, ctx) => {
+          return res(ctx.json({ version: 'versionValue' }))
         }
       ), rest.post(PoliciesConfigTemplateUrlsInfo.getEnhancedApplicationPolicies.url,
         (req, res, ctx) => res(ctx.json(enhancedApplicationPolicyListResponse))))

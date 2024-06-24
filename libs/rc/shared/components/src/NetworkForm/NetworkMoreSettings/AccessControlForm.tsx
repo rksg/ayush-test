@@ -315,24 +315,6 @@ function SaveAsAcProfileButton (props: AcProfileModalProps) {
   )
 }
 
-function getAccessControlProfile <
-  // eslint-disable-next-line max-len
-  Key extends keyof Omit<AccessControlProfile, 'name' | 'id' | 'rateLimiting' | 'description' | 'policyName'>,
-  Policies extends Array<{ id: string, name: string }>
-> (
-  policies: Policies | undefined,
-  accessControlProfile: AccessControlProfile | undefined,
-  policyKey: Key
-) {
-  if (!accessControlProfile) return transformDisplayText()
-  let name
-  const policy = accessControlProfile[policyKey]
-  if (policy?.enabled && policies) {
-    name = policies.find(item => item.id === policy.id)?.name
-  }
-  return transformDisplayText(name)
-}
-
 function getAccessControlProfileTemplate <
   // eslint-disable-next-line max-len
   Key extends keyof Omit<AccessControlProfileTemplate, 'name' | 'id' | 'clientRateUpLinkLimit' | 'clientRateDownLinkLimit'>,
@@ -571,10 +553,10 @@ const GetL2AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedLayer2: getAccessControlProfile(
+        selectedLayer2: getAccessControlProfileTemplate(
           data?.data,
           state.selectedAccessControlProfile,
-          'l2AclPolicy'
+          'l2AclPolicyName'
         )
       }
     },
@@ -615,10 +597,10 @@ const GetL3AclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTyp
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedLayer3: getAccessControlProfile(
+        selectedLayer3: getAccessControlProfileTemplate(
           data?.data,
           state.selectedAccessControlProfile,
-          'l3AclPolicy'
+          'l3AclPolicyName'
         )
       }
     },
@@ -658,10 +640,10 @@ const GetDeviceAclPolicyListFromNwInstance = (state: SelectedAccessControlProfil
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedDevicePolicy: getAccessControlProfile(
+        selectedDevicePolicy: getAccessControlProfileTemplate(
           data?.data,
           state.selectedAccessControlProfile,
-          'devicePolicy'
+          'devicePolicyName'
         )
       }
     },
@@ -701,10 +683,10 @@ const GetAppAclPolicyListFromNwInstance = (state: SelectedAccessControlProfileTy
   }, {
     selectFromResult ({ data }) {
       return {
-        selectedApplicationPolicy: getAccessControlProfile(
+        selectedApplicationPolicy: getAccessControlProfileTemplate(
           data?.data,
           state.selectedAccessControlProfile,
-          'applicationPolicy'
+          'applicationPolicyName'
         )
       }
     },
@@ -778,7 +760,17 @@ const GetAclPolicyListFromNwInstance = () => {
     searchString: '',
     fields: [
       'id',
-      'name'
+      'name',
+      'l2AclPolicyName',
+      'l2AclPolicyId',
+      'l3AclPolicyName',
+      'l3AclPolicyId',
+      'devicePolicyName',
+      'devicePolicyId',
+      'applicationPolicyName',
+      'applicationPolicyId',
+      'clientRateUpLinkLimit',
+      'clientRateDownLinkLimit'
     ]
   }
   const { isTemplate } = useConfigTemplate()

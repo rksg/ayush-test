@@ -5,7 +5,7 @@ import { Path }  from 'react-router-dom'
 import {
   AccessControlUrls, CommonUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
+import { Provider }                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -113,6 +113,6 @@ describe('AccessControlTable - Device', () => {
     await userEvent.click(await screen.findByText('Delete'))
     await userEvent.click(await screen.findByText('Delete Policy'))
 
-    await waitForElementToBeRemoved(() => screen.queryAllByText('Edit'))
+    await waitForElementToBeRemoved(() => screen.queryAllByText('Delete Policy'))
   })
 })
