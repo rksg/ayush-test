@@ -12,12 +12,13 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { MdnsProxySelector }                                         from '@acx-ui/rc/components'
 import { useGetApQuery }                                             from '@acx-ui/rc/services'
 import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
 import { useParams }                                                 from '@acx-ui/react-router-dom'
 
-import { ApEditContext } from '../..'
+import { ApDataContext, ApEditContext } from '../..'
 
 import * as UI from './styledComponents'
 
@@ -66,6 +67,7 @@ export function MdnsProxy () {
   const params = useParams()
   const { serialNumber } = params
   const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -74,6 +76,7 @@ export function MdnsProxy () {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
+  const { apData } = useContext(ApDataContext)
 
   const {
     data: apDetail,
@@ -81,7 +84,10 @@ export function MdnsProxy () {
     isLoading,
     isSuccess,
     refetch
-  } = useGetApQuery({ params })
+  } = useGetApQuery({
+    params: { ...params, venueId: apData?.venueId },
+    enableRbac: isUseWifiRbacApi
+  })
 
   const [ addMdnsProxyAps, { isLoading: isUpdating } ] = useAddMdnsProxyApsMutation()
   const [ deleteMdnsProxyAps, { isLoading: isDeleting } ] = useDeleteMdnsProxyApsMutation()
