@@ -161,6 +161,7 @@ export function ManageIntegrator () {
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -201,7 +202,8 @@ export function ManageIntegrator () {
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const ecList = useTableQuery({
@@ -420,7 +422,8 @@ export function ManageIntegrator () {
       }
 
       const result =
-      await addIntegrator({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addIntegrator({ params: { tenantId: tenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -494,8 +497,9 @@ export function ManageIntegrator () {
         }
         customer.licenses = assignLicense
       }
-      await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
-        payload: customer }).unwrap()
+      await updateIntegrator({
+        params: { mspEcTenantId: mspEcTenantId },
+        payload: customer, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {
