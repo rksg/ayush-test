@@ -1,9 +1,9 @@
 import { Button }                   from 'antd'
 import { defineMessage, IntlShape } from 'react-intl'
 
-import { ApDeviceStatusEnum, APExtended } from '@acx-ui/rc/utils'
-import { Params, TenantLink }             from '@acx-ui/react-router-dom'
-import { getIntl }                        from '@acx-ui/utils'
+import { ApDeviceStatusEnum, APExtended, PowerSavingStatusEnum } from '@acx-ui/rc/utils'
+import { Params, TenantLink }                                    from '@acx-ui/react-router-dom'
+import { getIntl }                                               from '@acx-ui/utils'
 
 import { APStatus } from '.'
 
@@ -56,7 +56,10 @@ export const getGroupableConfig = (
       {
         key: 'deviceStatus',
         renderer: (record: APExtended) => (
-          <APStatus status={record.deviceStatus as ApDeviceStatusEnum} />
+          <APStatus
+            status={record.deviceStatus as ApDeviceStatusEnum}
+            powerSavingStatus={record.powerSavingStatus as PowerSavingStatusEnum}
+          />
         )
       },
       ...commonAttributes($t)
@@ -138,5 +141,6 @@ export const groupedFields = [
   'cog',
   'venueId',
   'apStatusData.APRadio.radioId',
-  'apStatusData.APRadio.channel'
+  'apStatusData.APRadio.channel',
+  'powerSavingStatus'
 ]

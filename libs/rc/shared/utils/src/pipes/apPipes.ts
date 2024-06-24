@@ -242,46 +242,36 @@ export const APPropertiesAFCPowerStateRender = (afcInfo?: AFCInfo, apRadioDeploy
 
 // eslint-disable-next-line
 export const AFCStatusRender = (afcInfo?: AFCInfo|NewAFCInfo, apRadioDeploy?: string) => {
-  const { $t } = getIntl()
-  const powerMode = afcInfo?.hasOwnProperty('powerMode') ?
-    (afcInfo as AFCInfo)?.powerMode :
-    (afcInfo as NewAFCInfo)?.powerState
-  const afcStatus = afcInfo?.hasOwnProperty('afcStatus') ?
-    (afcInfo as AFCInfo)?.afcStatus :
-    (afcInfo as NewAFCInfo)?.afcState
-  const displayList = []
-
-  if(!powerMode || apRadioDeploy !== '2-5-6') {
+  if (apRadioDeploy !== '2-5-6') {
     return '--'
   }
 
-  if (powerMode === AFCPowerMode.STANDARD_POWER){
-    displayList.push($t({ defaultMessage: 'Standard power' }))
-  }
+  const { $t } = getIntl()
+  const displayList = []
+  const afcStatus = afcInfo?.hasOwnProperty('afcStatus') ?
+    (afcInfo as AFCInfo)?.afcStatus :
+    (afcInfo as NewAFCInfo)?.afcState
 
-  else if (powerMode === AFCPowerMode.LOW_POWER) {
-    switch(afcStatus) {
-      case AFCStatus.WAIT_FOR_LOCATION:
-        displayList.push($t({ defaultMessage: 'Wait for location' }))
-        break
-      case AFCStatus.REJECTED:
-        displayList.push($t({ defaultMessage: 'Rejected' }))
-        break
-      case AFCStatus.WAIT_FOR_RESPONSE:
-        displayList.push($t({ defaultMessage: 'Wait for response' }))
-        break
-      case AFCStatus.AFC_NOT_REQUIRED:
-        displayList.push($t({ defaultMessage: 'N/A' }))
-        break
-      case AFCStatus.PASSED:
-        displayList.push($t({ defaultMessage: 'Passed' }))
-        break
-      case AFCStatus.AFC_SERVER_FAILURE:
-        displayList.push($t({ defaultMessage: 'AFC Server failure' }))
-        break
-    }
+  switch(afcStatus) {
+    case AFCStatus.WAIT_FOR_LOCATION:
+      displayList.push($t({ defaultMessage: 'Wait for location' }))
+      break
+    case AFCStatus.REJECTED:
+      displayList.push($t({ defaultMessage: 'Rejected' }))
+      break
+    case AFCStatus.WAIT_FOR_RESPONSE:
+      displayList.push($t({ defaultMessage: 'Wait for response' }))
+      break
+    case AFCStatus.AFC_NOT_REQUIRED:
+      displayList.push($t({ defaultMessage: 'N/A' }))
+      break
+    case AFCStatus.PASSED:
+      displayList.push($t({ defaultMessage: 'Passed' }))
+      break
+    case AFCStatus.AFC_SERVER_FAILURE:
+      displayList.push($t({ defaultMessage: 'AFC Server failure' }))
+      break
   }
-
 
   return (displayList.length === 0) ? '--' : displayList.join(' ')
 }

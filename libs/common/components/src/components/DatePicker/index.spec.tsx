@@ -14,7 +14,7 @@ import {
   AccountTier
 } from '@acx-ui/utils'
 
-import { DatePicker, DateTimePicker, RangePicker } from '.'
+import { DatePicker, DateTimePicker, RangePicker, restrictDateTo3Months } from '.'
 
 const mockGetJwtTokenPayload = getJwtTokenPayload as jest.Mock
 const mockUseDateFilter = useDateFilter as jest.Mock
@@ -262,6 +262,30 @@ describe('RangePicker', () => {
     const hourSelect = await screen.findAllByText('20')
     await user.click(hourSelect[hourSelect.length - 1])
     expect(screen.getByRole('display-date-range')).toHaveTextContent('20:')
+  })
+  it('should limit to 3months sliding window within 12months for reports', async () => {
+    render(
+      <IntlProvider locale='en'>
+        <RangePicker
+          isReport
+          selectionType={DateRange.custom}
+          selectedRange={{
+            startDate: moment().subtract(7, 'months').seconds(0),
+            endDate: moment().subtract(6, 'months').seconds(0)
+          }}
+          onDateApply={() => {}}
+        />
+      </IntlProvider>
+    )
+    const user = userEvent.setup()
+    const calenderSelect = await screen.findByPlaceholderText('Start date')
+    await user.click(calenderSelect)
+    const yesterday = moment().subtract(7, 'months').subtract(1, 'day')
+    const dateSelect = await screen.findAllByTitle(yesterday.format('YYYY-MM-DD'))
+    await user.click(dateSelect[0])
+    const today = formatter(DateFormatEnum.DateFormat)(moment().subtract(6, 'months'))
+    const yestFormat = formatter(DateFormatEnum.DateFormat)(yesterday)
+    expect(screen.getByRole('display-date-range')).toHaveTextContent(`${yestFormat} - ${today}`)
   })
   it('should display selection for null values', async () => {
     render(
@@ -578,5 +602,41 @@ describe('DateTimePicker', () => {
       mockedInitialDate.clone().add(15, 'minutes').add(9, 'hours'))
     expect(mockDisableHours).toBeCalled()
     expect(mockDisableMinutes).toBeCalled()
+  })
+})
+describe('restrictDateTo3Months', () => {
+  it('does not change the range if shorter than 3 months', () => {
+    expect(restrictDateTo3Months([
+      null,
+      null
+    ], '')).toEqual({ startDate: null, endDate: null })
+    expect(restrictDateTo3Months([
+      moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
+      moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
+    ], 'start')).toEqual({
+      startDate: moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
+      endDate: moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
+    })
+    expect(restrictDateTo3Months([
+      moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
+      moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
+    ], 'end')).toEqual({
+      startDate: moment('07-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
+      endDate: moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
+    })
+  })
+  it('changes the range if longer than 3 months', () => {
+    expect(JSON.stringify(restrictDateTo3Months([
+      moment('01-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
+      moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
+    ], 'start'))).toEqual(
+      '{"startDate":"2023-01-15T14:30:00.000Z","endDate":"2023-04-15T14:30:00.000Z"}'
+    )
+    expect(JSON.stringify(restrictDateTo3Months([
+      moment('01-15-2023 14:30', 'MM-DD-YYYY HH:mm'),
+      moment('07-16-2023 14:30', 'MM-DD-YYYY HH:mm')
+    ], 'end'))).toEqual(
+      '{"startDate":"2023-04-16T14:30:00.000Z","endDate":"2023-07-16T14:30:00.000Z"}'
+    )
   })
 })

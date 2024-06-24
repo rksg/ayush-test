@@ -1,23 +1,28 @@
+import '@testing-library/jest-dom'
+import userEvent   from '@testing-library/user-event'
 import { message } from 'antd'
 import { rest }    from 'msw'
-import '@testing-library/jest-dom'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { apApi }                  from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
+  DHCPUrls,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
-  screen,
-  fireEvent,
   act,
-  within,
-  waitFor,
+  fireEvent,
   mockServer,
-  renderHook
+  renderHook,
+  screen,
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
+
+import { apList, dhcpApSetting, dhcpList, dhcpResponse } from './__tests__/fixtures'
 
 import { useApActions } from '.'
 
@@ -25,51 +30,12 @@ const serialNumber = ':serialNumber'
 const tenantId = ':tenantId'
 const venueId = ':venueId'
 
-const apList = {
-  totalCount: 1,
-  page: 1,
-  data: [
-    {
-      serialNumber: '000000000001',
-      name: 'mock-ap-1',
-      model: 'R510',
-      fwVersion: '6.2.0.103.261', // invalid Ap Fw version for reset
-      venueId: '01d74a2c947346a1a963a310ee8c9f6f',
-      venueName: 'Mock-Venue',
-      deviceStatus: '2_00_Operational',
-      IP: '10.00.000.101',
-      apMac: '00:00:00:00:00:01',
-      apStatusData: {
-        APRadio: [
-          {
-            txPower: null,
-            channel: 10,
-            band: '2.4G',
-            Rssi: null,
-            radioId: 0
-          },
-          {
-            txPower: null,
-            channel: 120,
-            band: '5G',
-            Rssi: null,
-            radioId: 1
-          }
-        ]
-      },
-      meshRole: 'DISABLED',
-      deviceGroupId: '4fe4e02d7ef440c4affd28c620f93073',
-      tags: '',
-      deviceGroupName: ''
-    }
-  ]
-}
-
 describe('Test useApActions', () => {
 
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
     message.destroy()
+    store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
       rest.post(
@@ -102,6 +68,16 @@ describe('Test useApActions', () => {
   })
 
   it('showDeleteAp', async () => {
+    mockServer.use(
+      rest.post(
+        DHCPUrls.queryDHCPProfiles.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getDhcpAp.url,
+        (req, res, ctx) => res(ctx.json({}))
+      )
+    )
     const { result } = renderHook(() => useApActions(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -181,5 +157,37 @@ describe('Test useApActions', () => {
     })
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('AP LEDs Blink')
+  })
+
+  it('should show warning when there is an active dhcp ap', async () => {
+    mockServer.use(
+      rest.post(
+        DHCPUrls.queryDHCPProfiles.url,
+        (req, res, ctx) => res(ctx.json(dhcpList))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getDhcpAp.url,
+        (req, res, ctx) => res(ctx.json(dhcpApSetting))
+      ),
+      rest.get(
+        DHCPUrls.getDHCProfileDetail.url,
+        (req, res, ctx) => res(ctx.json(dhcpResponse))
+      )
+    )
+    const { result } = renderHook(() => useApActions(), {
+      wrapper: ({ children }) => <Provider children={children} />
+    })
+
+    const { showDeleteAp } = result.current
+
+    act(() => {
+      showDeleteAp('000000000001', tenantId)
+    })
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveTextContent('Not allow to delete DHCP APs')
+    const OKBtn = within(dialog).getByRole('button', { name: 'OK' })
+    await userEvent.click(OKBtn)
+    await waitFor(() => expect(dialog).not.toBeVisible())
+    jest.clearAllMocks()
   })
 })

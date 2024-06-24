@@ -1,6 +1,9 @@
 /* eslint-disable max-len */
-import _          from 'lodash'
-import { Params } from 'react-router-dom'
+import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { find, isNil, omit, pick, reduce, uniq, uniqueId }    from 'lodash'
+import { Params }                                             from 'react-router-dom'
 
 import { Filter }                    from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
@@ -31,21 +34,34 @@ import {
   ApLedSettings,
   ApLldpNeighborsResponse,
   ApManagementVlan,
+  ApNeighborsResponse,
+  ApPosition,
   ApRadioBands,
   ApRadioCustomization,
   ApRfNeighborsResponse,
   ApViewModel,
   ApiVersionEnum,
   Capabilities,
+  CapabilitiesApModel,
   CommonRbacUrlsInfo,
   CommonResult,
   CommonUrlsInfo,
+  DHCPSaveData,
+  DHCPUrls,
   DhcpAp,
+  DhcpApInfo,
+  DhcpModeEnum,
   GetApiVersionHeader,
+  GetUploadFormDataApiVersionHeader,
   ImportErrorRes,
   LanPortStatusProperties,
   MeshUplinkAp,
+  NewAPModel,
   NewAPModelExtended,
+  NewApGroupViewModelResponseType,
+  NewDhcpAp,
+  NewGetApGroupResponseType,
+  NewPacketCaptureState,
   PacketCaptureOperationResponse,
   PacketCaptureState,
   PingAp,
@@ -65,17 +81,26 @@ import {
   WifiUrlsInfo,
   downloadFile,
   onActivityMessageReceived,
-  onSocketActivityChanged,
-  NewAPModel,
-  NewApGroupViewModelResponseType,
-  NewGetApGroupResponseType
+  onSocketActivityChanged
 } from '@acx-ui/rc/utils'
 import { baseApApi }                                    from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { aggregateApGroupApInfo, aggregateApGroupNetworkInfo, aggregateApGroupVenueInfo, getApGroupNewFieldFromOld, getNewApGroupViewmodelPayloadFromOld, transformApGroupFromNewType } from './apGroupUtils'
-import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel }                                                                                  from './apUtils'
+import {
+  aggregateApGroupApInfo,
+  aggregateApGroupNetworkInfo,
+  aggregateApGroupVenueInfo,
+  getApGroupNewFieldFromOld,
+  getNewApGroupViewmodelPayloadFromOld,
+  transformApGroupFromNewType
+} from './apGroupUtils'
+import {
+  aggregateApGroupInfo,
+  aggregatePoePortInfo,
+  aggregateVenueInfo,
+  transformApListFromNewModel
+} from './apUtils'
 
 
 export type ApsExportPayload = {
@@ -170,7 +195,7 @@ export const apApi = baseApApi.injectEndpoints({
           const apGroupList = apGroupListRes.data as TableResult<ApGroup>
           aggregateApGroupInfo(apList, apGroupList)
         }
-        const capabilitiesRes = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities))
+        const capabilitiesRes = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities, apiCustomHeader))
         const capabilities = capabilitiesRes.data as Capabilities
         aggregatePoePortInfo(apList, capabilities)
         return { data: transformApListFromNewModel(apListRes.data as TableResult<NewAPModelExtended, ApExtraParams>) }
@@ -222,13 +247,13 @@ export const apApi = baseApApi.injectEndpoints({
           // simplely map new fields into old fields
           const rbacApGroups = apGroupListQuery.data as TableResult<NewApGroupViewModelResponseType>
           apGroups = {
-            ..._.omit(rbacApGroups, ['data']),
+            ...omit(rbacApGroups, ['data']),
             data: [] as ApGroupViewModel[]
           } as TableResult<ApGroupViewModel>
 
           rbacApGroups.data.forEach(group => {
             apGroups.data.push({
-              ..._.pick(group, ['id', 'name', 'venueId', 'isDefault']),
+              ...pick(group, ['id', 'name', 'venueId', 'isDefault']),
               clients: group.clientCount
             } as ApGroupViewModel)
           })
@@ -239,7 +264,7 @@ export const apApi = baseApApi.injectEndpoints({
           }
 
           // fetch venue name
-          const venueIds = _.uniq(rbacApGroups.data.map(item => item.venueId))
+          const venueIds = uniq(rbacApGroups.data.map(item => item.venueId))
           if (venueIds.length && isPayloadHasField(payload, 'venueName')) {
             const venueListQuery = await fetchWithBQ({
               ...createHttpRequest(CommonUrlsInfo.getVenuesList),
@@ -250,7 +275,7 @@ export const apApi = baseApApi.injectEndpoints({
           }
 
           // fetch networks name
-          const networkIds = _.uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('networks') as keyof typeof item]))
+          const networkIds = uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('networks') as keyof typeof item]))
           if (networkIds.length && isPayloadHasField(payload, 'networks')) {
             const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, customHeaders)
             const networkListQuery = await fetchWithBQ({
@@ -262,9 +287,9 @@ export const apApi = baseApApi.injectEndpoints({
           }
 
           // fetch aps name
-          const apIds = _.uniq(rbacApGroups.data
+          const apIds = uniq(rbacApGroups.data
             .flatMap(item => item[getApGroupNewFieldFromOld('members') as keyof typeof item])
-            .filter(i => !_.isNil(i)))
+            .filter(i => !isNil(i)))
 
           if (apIds.length && isPayloadHasField(payload, ['members', 'aps'])) {
             const apQueryPayload = {
@@ -437,12 +462,8 @@ export const apApi = baseApApi.injectEndpoints({
     importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.addAp, params, {
-          ...apiCustomHeader,
-          'Content-Type': undefined,
-          ...(enableRbac ? {} : { Accept: '*/*' })
-        })
+        const apiCustomHeader = GetUploadFormDataApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.addAp, params, apiCustomHeader)
         return {
           ...req,
           body: payload
@@ -557,8 +578,10 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
     wifiCapabilities: build.query<Capabilities, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getWifiCapabilities, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getWifiCapabilities, params, apiCustomHeader)
         return {
           ...req
         }
@@ -582,12 +605,37 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
     getDhcpAp: build.query<DhcpAp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if(!enableRbac) {
+          const req = createHttpRequest(WifiUrlsInfo.getDhcpAp, params)
+          const res = await fetchWithBQ({ ...req, body: payload })
+          return { data: res.data as DhcpAp }
         }
+
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const newPayload = payload as { venueId: string, serialNumber: string }[]
+        const venueDhcpMap = await getVenueDhcpRelation(newPayload, fetchWithBQ)
+        const result = [] as DhcpApInfo[]
+        const cacheDhcpProfileData: { [dhcpId: string]: DHCPSaveData } = {}
+        for(let item of newPayload) {
+          const dhcpApReq = createHttpRequest(
+            WifiRbacUrlsInfo.getDhcpAp,
+            { venueId: item.venueId, serialNumber: item.serialNumber },
+            customHeaders
+          )
+          const dhcpApRes = await fetchWithBQ(dhcpApReq)
+          const dhcpAp = dhcpApRes.data as NewDhcpAp
+          if(!dhcpAp) continue
+
+          const dhcpId = venueDhcpMap[item.venueId]
+          await setDhcpProfileToCache(cacheDhcpProfileData, fetchWithBQ, dhcpId)
+          result.push({
+            ...dhcpAp,
+            venueDhcpEnabled: Boolean(dhcpId),
+            venueDhcpMode: cacheDhcpProfileData[dhcpId ?? '']?.dhcpMode as unknown as DhcpModeEnum
+          })
+        }
+        return { data: result }
       }
     }),
     downloadApLog: build.mutation<{ fileURL: string, fileUrl: string }, RequestPayload>({
@@ -622,12 +670,42 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     apDetails: build.query<ApDetails, RequestPayload>({
-      query: ({ params, enableRbac }) => {
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getAp, params, apiCustomHeader)
+        const apDetailReq = createHttpRequest(urlsInfo.getAp, params, apiCustomHeader)
+        const apDetailRes = await fetchWithBQ({ ...apDetailReq })
+        const apDetail = apDetailRes.data as ApDetails
+        if(!enableRbac) {
+          return { data: apDetail }
+        }
+
+        const apListPayload = {
+          fields: ['floorplanId'],
+          filters: {
+            serialNumber: [params?.serialNumber]
+          }
+        }
+        const apListReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, params, apiCustomHeader)
+        const apListRes = await fetchWithBQ({ ...apListReq, body: JSON.stringify(apListPayload as Object) })
+        const apList = apListRes.data as TableResult<NewAPModel>
+        const floorplanId = apList.data[0].floorplanId
+        const floorplanReq = createHttpRequest(
+          CommonRbacUrlsInfo.GetApPosition,
+          { ...params, floorplanId },
+          apiCustomHeader
+        )
+        const floorplanRes = await fetchWithBQ(floorplanReq)
+        const floorplan = floorplanRes.data as ApPosition
         return {
-          ...req
+          data: {
+            ...apDetail,
+            venueId: params?.venueId,
+            position: {
+              ...floorplan,
+              floorplanId
+            }
+          } as ApDetails
         }
       }
     }),
@@ -671,7 +749,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-
     pingAp: build.mutation<PingAp, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
@@ -695,8 +772,10 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApRadioCustomization: build.query<ApRadioCustomization, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApRadioCustomization, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApRadioCustomization, params, apiCustomHeader)
         return {
           ...req
         }
@@ -714,48 +793,80 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     updateApRadioCustomization: build.mutation<ApRadioCustomization, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateApRadioCustomization, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.updateApRadioCustomization, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'RADIO' }]
     }),
     getApCapabilities: build.query<Capabilities, RequestPayload>({
-      query: ({ params }) => {
+      query: ({ params }) => { // non RBAC API
         const req = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
         return {
           ...req
         }
       }
     }),
-    getPacketCaptureState: build.query<PacketCaptureState, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getPacketCaptureState, params)
+    getOldApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) { // non RBAC API
+        const { params } = arg
+        let modelName = arg.modelName
+        const apCapReq = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
+        const apCapQuery = await fetchWithBQ(apCapReq)
+        const apCaps = apCapQuery.data as Capabilities
+
+        if (!modelName) {
+          const apReq = createHttpRequest(WifiUrlsInfo.getAp, params)
+          const apQuery = await fetchWithBQ(apReq)
+          const apData = apQuery.data as ApDetails
+          modelName = apData.model
+        }
+        const curApCap = (apCaps?.apModels?.find(cap => cap.model === modelName) ?? {}) as CapabilitiesApModel
+
+        return apCapQuery.data
+          ? { data: curApCap }
+          : { error: apCapQuery.error as FetchBaseQueryError }
+      }
+    }),
+    getApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
+      query: ({ params }) => { // RBAC API
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApCapabilities, params, apiCustomHeader)
         return {
           ...req
         }
       }
     }),
-
     getApPhoto: build.query<APPhoto, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getApPhoto, params)
-        return{
-          ...req
-        }
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+        const { params, enableRbac } = arg
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...ignoreErrorModal
+        } : undefined
+
+        const apPhotoReq = createHttpRequest(urlsInfo.getApPhoto, params, apiCustomHeader)
+        const apPhotoQuery = await fetchWithBQ(apPhotoReq)
+        const data = (apPhotoQuery.data ?? {}) as APPhoto
+
+        return data
+          ? { data: data }
+          : { error: apPhotoQuery.error as FetchBaseQueryError }
       },
       providesTags: [{ type: 'Ap', id: 'PHOTO' }],
       keepUnusedDataFor: 0
     }),
     addApPhoto: build.mutation<{}, RequestFormData>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.addApPhoto, params, {
-          'Content-Type': undefined,
-          'Accept': '*/*'
-        })
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetUploadFormDataApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.addApPhoto, params, apiCustomHeader)
         return {
           ...req,
           body: payload
@@ -764,29 +875,59 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
     }),
     deleteApPhoto: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteApPhoto, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.deleteApPhoto, params, apiCustomHeader)
         return{
           ...req
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'PHOTO' }]
     }),
+    getPacketCaptureState: build.query<PacketCaptureState, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getPacketCaptureState, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      transformResponse (res, meta, requestArgs: RequestPayload) {
+        if(!requestArgs.enableRbac) {
+          return res as PacketCaptureState
+        }
+        const result = res as NewPacketCaptureState
+        return {
+          status: result.state,
+          fileName: result.fileName,
+          fileUrl: result.fileUrl,
+          sessionId: result.sessionId
+        }
+      }
+    }),
     startPacketCapture: build.mutation<PacketCaptureOperationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.startPacketCapture, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.startPacketCapture, params, customHeaders)
+        const reqPayload = enableRbac ? { ...(payload as Object), action: 'START' } : payload
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(reqPayload)
         }
       }
     }),
     stopPacketCapture: build.mutation<PingAp, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.stopPacketCapture, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.stopPacketCapture, params, customHeaders)
+        const reqPayload = enableRbac ? { ...(payload as Object), action: 'STOP' } : payload
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(reqPayload)
         }
       }
     }),
@@ -1117,11 +1258,23 @@ export const apApi = baseApApi.injectEndpoints({
         }
       }
     }),
-    detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
+    getApNeighbors: build.query<ApNeighborsResponse, RequestPayload>({
       query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.getApNeighbors, params, { ...customHeaders, ...ignoreErrorModal })
         return {
-          ...createHttpRequest(WifiUrlsInfo.detectApNeighbors, params, { ...ignoreErrorModal }),
-          body: payload
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    detectApNeighbors: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        return {
+          ...createHttpRequest(urlsInfo.detectApNeighbors, params, { ...customHeaders, ...ignoreErrorModal }),
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -1280,8 +1433,12 @@ export const {
   useUpdateApAntennaTypeSettingsMutation,
   useGetApBssColoringQuery,
   useUpdateApBssColoringMutation,
-  useGetApCapabilitiesQuery,
-  useLazyGetApCapabilitiesQuery,
+  useGetApCapabilitiesQuery,     // deprecated
+  useLazyGetApCapabilitiesQuery, // deprecated
+  useGetOldApCapabilitiesByModelQuery,
+  useLazyGetOldApCapabilitiesByModelQuery,
+  useGetApCapabilitiesByModelQuery,
+  useLazyGetApCapabilitiesByModelQuery,
   useGetApValidChannelQuery,
   useLazyGetApValidChannelQuery,
   useGetApDirectedMulticastQuery,
@@ -1312,21 +1469,22 @@ export const {
   useGetApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
-  useLazyGetApFeatureSetsQuery
+  useLazyGetApFeatureSetsQuery,
+  useLazyGetApNeighborsQuery
 } = apApi
 
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const setAPRadioInfo = (row: APExtended, APRadio: RadioProperties[], channelColunnnShow: any) => {
 
-  const apRadio24 = _.find(APRadio, r => r.band === ApRadioBands.band24)
-  const apRadioU50 = _.find(APRadio,
+  const apRadio24 = find(APRadio, r => r.band === ApRadioBands.band24)
+  const apRadioU50 = find(APRadio,
     r => r.band === ApRadioBands.band50 && r.radioId === 2)
-  const apRadio50 = !apRadioU50 &&_.find(APRadio,
+  const apRadio50 = !apRadioU50 && find(APRadio,
     r => r.band === ApRadioBands.band50 && r.radioId === 1)
-  const apRadio60 = !apRadioU50 && _.find(APRadio,
+  const apRadio60 = !apRadioU50 && find(APRadio,
     r => r.radioId === 2)
-  const apRadioL50 = apRadioU50 && _.find(APRadio,
+  const apRadioL50 = apRadioU50 && find(APRadio,
     r => r.band === ApRadioBands.band50 && r.radioId === 1)
 
   row.channel24 = apRadio24?.channel || undefined
@@ -1351,7 +1509,7 @@ const setPoEPortStatus = (row: APExtended, lanPortStatus: LanPortStatusPropertie
     return
   }
 
-  const poeStatus = _.find(lanPortStatus, status => status.port === row.poePort)
+  const poeStatus = find(lanPortStatus, status => status.port === row.poePort)
   if (poeStatus) {
     const [poeStatusUp, poePortInfo] = poeStatus.phyLink.split(' ')
     row.hasPoeStatus = !!poeStatus
@@ -1395,7 +1553,7 @@ const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraPara
     channel60: false
   }
   result.data = result.data.map(item => {
-    let newItem = { ...item, children: [] as APExtended[], serialNumber: _.uniqueId() }
+    let newItem = { ...item, children: [] as APExtended[], serialNumber: uniqueId() }
     const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
       const { APRadio, lanPortStatus } = ap.apStatusData || {}
 
@@ -1431,15 +1589,15 @@ const transformApViewModel = (result: ApViewModel) => {
 
   // set Radio Properties fields.
   if (APRadio) {
-    const apRadio24 = _.find(APRadio,
+    const apRadio24 = find(APRadio,
       r => r.band === ApRadioBands.band24)
-    const apRadioU50 = _.find(APRadio,
+    const apRadioU50 = find(APRadio,
       r => r.band === ApRadioBands.band50 && r.radioId === 2)
-    const apRadio50 = !apRadioU50 && _.find(APRadio,
+    const apRadio50 = !apRadioU50 && find(APRadio,
       r => r.band === ApRadioBands.band50 && r.radioId === 1)
-    const apRadio60 = !apRadioU50 && _.find(APRadio,
+    const apRadio60 = !apRadioU50 && find(APRadio,
       r => r.radioId === 2)
-    const apRadioL50 = apRadioU50 && _.find(APRadio,
+    const apRadioL50 = apRadioU50 && find(APRadio,
       r => r.band === ApRadioBands.band50 && r.radioId === 1)
 
     ap.channel24 = apRadio24 as RadioProperties
@@ -1462,7 +1620,6 @@ const transformApViewModel = (result: ApViewModel) => {
   return ap
 }
 
-
 export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
   if (!afcInfo) return false
   return (
@@ -1477,4 +1634,49 @@ const isPayloadHasField = (payload: RequestPayload['payload'], fields: string[] 
   return (Array.isArray(fields)
     ? fields.some(a => payloadFields?.includes(a))
     : payloadFields?.includes(fields)) ?? false
+}
+
+const getVenueDhcpRelation = async (
+  payload: { venueId: string, serialNumber: string }[],
+  fetchWithBQ: (arg: string | FetchArgs) =>
+  MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>
+) => {
+  const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+  const newPayload = payload as { venueId: string, serialNumber: string }[]
+  const dhcpListPayload = {
+    fields: ['id', 'venueIds'],
+    filters: {
+      venueIds: newPayload.map(item => item.venueId)
+    }
+  }
+  const dhcpListReq = createHttpRequest(DHCPUrls.queryDHCPProfiles, undefined, customHeaders)
+  const dhcpListRes = await fetchWithBQ({ ...dhcpListReq, body: JSON.stringify(dhcpListPayload) })
+  const dhcpList = (dhcpListRes.data as TableResult<DHCPSaveData>).data
+  return reduce(newPayload,
+    (result, item) => {
+      const dhcpInfo = dhcpList?.find(dhcpItem => dhcpItem.venueIds?.includes(item.venueId))
+      result[item.venueId] = dhcpInfo?.id
+      return result
+    }, {} as { [venueId: string]: string|undefined }) // {venueId: dhcpId}
+}
+
+const setDhcpProfileToCache = async (
+  cacheDhcpProfileData: { [dhcpId: string]: DHCPSaveData },
+  fetchWithBQ: (arg: string | FetchArgs) =>
+    MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>,
+  dhcpId?: string
+) => {
+  if(
+    dhcpId &&
+    !Boolean(cacheDhcpProfileData[dhcpId])
+  ) {
+    const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+    const venueDhcpSettingReq = createHttpRequest(
+      DHCPUrls.getDHCProfileDetail,
+      { serviceId: dhcpId },
+      customHeaders
+    )
+    const venueDhcpSettingRes = await fetchWithBQ(venueDhcpSettingReq)
+    cacheDhcpProfileData[dhcpId] = venueDhcpSettingRes.data as DHCPSaveData
+  }
 }

@@ -3,10 +3,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { apApi, networkApi, venueApi }                                       from '@acx-ui/rc/services'
-import { APGeneralFixtures, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                   from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { apApi, networkApi, venueApi }                                                 from '@acx-ui/rc/services'
+import { APGeneralFixtures, CommonUrlsInfo, DHCPUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                             from '@acx-ui/store'
 import {
   act,
   cleanup,
@@ -205,10 +205,12 @@ describe('Aps', () => {
 
     mockServer.use(
       rest.post(
-        WifiUrlsInfo.getDhcpAp.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '456', response: [{
-          venueDhcpEnabled: true
-        }] }))
+        DHCPUrls.queryDHCPProfiles.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getDhcpAp.url,
+        (req, res, ctx) => res(ctx.json({}))
       ),
       rest.delete(
         WifiRbacUrlsInfo.deleteAp.url,

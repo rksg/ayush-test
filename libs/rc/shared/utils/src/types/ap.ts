@@ -2,6 +2,7 @@ import { APMeshRole, ApDeviceStatusEnum } from '../constants'
 import {
   ApAntennaTypeEnum,
   ApDeep,
+  ApDhcpRoleEnum,
   ApPacketCaptureStateEnum,
   ApPosition,
   BandModeEnum,
@@ -67,26 +68,27 @@ export interface AP {
   poePort?: string,
   healthStatus?: string,
   downLinkCount?: number,
-  apRadioDeploy?: string
+  apRadioDeploy?: string,
+  powerSavingStatus?: string
 }
 
 export interface NewAPModel {
   serialNumber: string
-  name: string
-  apGroupId: string
-  venueId: string
-  tags: string[]
-  model: string
-  supportSecureBoot: boolean
-  macAddress: string
-  firmwareVersion: string
-  uptime: number
-  lastUpdatedTime: Date
-  lastSeenTime: Date
-  statusSeverity: ApVenueStatusEnum
-  status: ApDeviceStatusEnum
-  meshRole: string
-  networkStatus: {
+  name?: string
+  apGroupId?: string
+  venueId?: string
+  tags?: string[]
+  model?: string
+  supportSecureBoot?: boolean
+  macAddress?: string
+  firmwareVersion?: string
+  uptime?: number
+  lastUpdatedTime?: Date
+  lastSeenTime?: Date
+  statusSeverity?: ApVenueStatusEnum
+  status?: ApDeviceStatusEnum
+  meshRole?: string
+  networkStatus?: {
     ipAddress: string
     externalIpAddress: string
     ipAddressType: string
@@ -96,11 +98,11 @@ export interface NewAPModel {
     secondaryDnsServer: string
     managementTrafficVlan: number
   }
-  lanPortStatuses: {
+  lanPortStatuses?: {
     id: string
     physicalLink: string
   }[]
-  radioStatuses: {
+  radioStatuses?: {
     id: number
     band: string
     transmitterPower: string
@@ -108,7 +110,8 @@ export interface NewAPModel {
     channelBandwidth: string
     rssi: number
   }[]
-  afcStatus: NewAFCInfo
+  afcStatus?: NewAFCInfo
+  floorplanId?: string
 }
 
 export interface ApViewModel extends AP {
@@ -494,9 +497,11 @@ export interface ApRadio {
 export interface APPhoto {
   createdDate: string,
   id: string,
-  imageId: string,
-  imageName: string,
-  imageUrl: string,
+  imageId?: string,   // nonRBAC API
+  imageName?: string, // nonRBAC API
+  imageUrl?: string,  // nonRBAC API
+  name?: string,      // RBAC API
+  url?: string,       // RBAC API
   updatedDate: string
 }
 
@@ -507,8 +512,21 @@ export type DhcpApResponse = {
 
 export type DhcpAp = DhcpApResponse | DhcpApInfo[]
 
+export interface NewDhcpAp {
+  dhcpApRole: ApDhcpRoleEnum
+  serialNumber: string
+}
+
 export interface PacketCaptureState {
   status: ApPacketCaptureStateEnum,
+  fileName?: string,
+  fileUrl?: string,
+  sessionId?: string
+}
+
+export interface NewPacketCaptureState {
+  errorMsg?: string
+  state: ApPacketCaptureStateEnum,
   fileName?: string,
   fileUrl?: string,
   sessionId?: string
@@ -741,6 +759,13 @@ export interface ApRfNeighborsResponse {
 export interface ApLldpNeighborsResponse {
   detectedTime: string,
   neighbors: ApLldpNeighbor[]
+}
+
+export interface ApNeighborsResponse {
+  neighbors: (ApRfNeighbor|ApLldpNeighbor)[]
+  page: number
+  totalCount: number
+  totalPages: number
 }
 
 export interface SupportCcdVenue {

@@ -19,6 +19,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 
 describe('ClientTroubleshootingTab', () => {
   beforeEach(() => {
+    Date.now = jest.fn(() => new Date('2023-02-21T00:00:00.000Z').getTime())
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
       data: {
         client: {

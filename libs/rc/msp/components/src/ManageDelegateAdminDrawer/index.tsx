@@ -11,6 +11,7 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   useGetMspEcDelegatedAdminsQuery,
   useMspAdminListQuery,
@@ -51,6 +52,7 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
   const [selectedRows, setSelectedRows] = useState<MspAdministrator[]>([])
   const [selectedRoles, setSelectedRoles] = useState<{ id: string, role: string }[]>([])
   const [ecPrivilegeGroups, setEcPrivilegeGroups] = useState<PrivilegeGroup[]>([])
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const isSkip = tenantId === undefined
   const isTechPartner =
@@ -70,8 +72,8 @@ export const ManageDelegateAdminDrawer = (props: ManageDelegateAdminDrawerProps)
   }
 
   const delegatedAdmins =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId } },
-        { skip: isSkip })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId: tenantId },
+        enableRbac: isRbacEnabled }, { skip: isSkip })
   const queryResults = useMspAdminListQuery({ params: useParams() })
 
   const ecPrivilegeGroupList =

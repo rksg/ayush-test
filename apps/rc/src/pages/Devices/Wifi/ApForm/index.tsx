@@ -103,7 +103,10 @@ export function ApForm () {
   const { data: apDetails, isLoading: isApDetailsLoading }
     // eslint-disable-next-line max-len
     = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
-  const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
+  const wifiCapabilities = useWifiCapabilitiesQuery({
+    params: { tenantId },
+    enableRbac: isUseWifiRbacApi
+  })
 
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
@@ -153,33 +156,43 @@ export function ApForm () {
 
   useEffect(() => {
     if (isEditMode && !isVenuesListLoading && !isApDetailsLoading && apDetails) {
+      const { venueId, serialNumber, meshRole, deviceGps } = apDetails
+
       const setData = async (apDetails: ApDeep) => {
         const selectVenue = getVenueById(
-          venuesList?.data as unknown as VenueExtended[], apDetails.venueId)
+          venuesList?.data as unknown as VenueExtended[], venueId)
         const venueLatLng = pick(selectVenue, ['latitude', 'longitude'])
-        const options = await getApGroupOptions(apDetails.venueId)
+        const options = await getApGroupOptions(venueId)
         const dhcpApResponse = await getDhcpAp({
-          params: { tenantId }, payload: [serialNumber] }, true).unwrap()
+          params: { tenantId },
+          payload: isUseWifiRbacApi ?
+            [{ venueId: apDetails.venueId, serialNumber }] :
+            [serialNumber],
+          enableRbac: isUseWifiRbacApi
+        }, true).unwrap()
         const dhcpAp = retrieveDhcpAp(dhcpApResponse)
 
         setSelectedVenue(selectVenue as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])
-        setApMeshRoleDisabled(
-          !!apDetails?.meshRole
-          && (apDetails?.meshRole !== APMeshRole.DISABLED)
-          && (apDetails?.meshRole !== 'DOWN'))
+        setApMeshRoleDisabled(!!meshRole
+          && (meshRole !== APMeshRole.DISABLED)
+          && (meshRole !== 'DOWN'))
         setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
-        setDeviceGps((apDetails?.deviceGps || venueLatLng) as unknown as DeviceGps)
+        setDeviceGps((deviceGps || venueLatLng) as unknown as DeviceGps)
 
         formRef?.current?.setFieldsValue({ description: '', ...apDetails })
         // eslint-disable-next-line
-        const afcEnabled = (await getApValidChannel({ params: { tenantId, serialNumber: apDetails?.serialNumber } })).data?.afcEnabled
+        const afcEnabled = (await getApValidChannel({ 
+          params: { venueId, serialNumber },
+          enableRbac: isUseWifiRbacApi
+        })).data?.afcEnabled
+
         if (afcEnabled) {
           setAfcEnabled(afcEnabled)
         }
         if (supportTlsKeyEnhance) {
           // eslint-disable-next-line
-          const tlsEnhancedKeyEnabled = (await getVenueApEnhancedKey({ params: { venueId: apDetails?.venueId } })).data?.tlsKeyEnhancedModeEnabled
+          const tlsEnhancedKeyEnabled = (await getVenueApEnhancedKey({ params: { venueId } })).data?.tlsKeyEnhancedModeEnabled
           if (tlsEnhancedKeyEnabled) {
             setTlsEnhancedKeyEnabled(tlsEnhancedKeyEnabled)
           }

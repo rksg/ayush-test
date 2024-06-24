@@ -632,15 +632,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const { response: rwgDevices } = ((responses[1] && responses[1].data) || {}) as {
           requestId: string,
           response : {
-            items: RWG[],
-            totalPages: number,
-            totalSizes: number
+            data: RWG[],
+            totalCount: number,
+            page: number
           }
         }
 
         let rwgList: NetworkDevice[] = []
-        if (rwgDevices?.items?.length) {
-          const rwgs = rwgDevices.items
+        if (rwgDevices?.data?.length) {
+          const rwgs = rwgDevices.data
 
           rwgList = rwgs.map(_rwg => {
             return {
@@ -672,7 +672,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateApPosition',
             'UpdateRwgPosition',
             'UpdateCloudpathServerPosition',
-            'DeleteFloorPlan'], () => {
+            'DeleteFloorPlan',
+            'ActivateApFloorPosition',
+            'DeactivateApFloorPosition'
+          ], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' },
               { type: 'RWG', id: 'List' }]))
           })
@@ -690,11 +693,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     updateApPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateApPosition, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.UpdateApPosition, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    removeApPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CommonRbacUrlsInfo.RemoveApPosition, params, apiCustomHeader)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
@@ -1878,8 +1893,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueAntennaType, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1895,11 +1913,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueAntennaType, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.updateVenueAntennaType, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
@@ -2035,7 +2056,8 @@ export const {
   useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
-  useUpdateVenueAntennaTypeMutation
+  useUpdateVenueAntennaTypeMutation,
+  useRemoveApPositionMutation
 } = venueApi
 
 
