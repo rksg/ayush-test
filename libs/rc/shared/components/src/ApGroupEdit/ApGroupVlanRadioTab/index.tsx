@@ -23,7 +23,7 @@ import {
 
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
 import { usePathBasedOnConfigTemplate }                  from '../../configTemplates'
-import { ApGroupEditContext }                            from '../index'
+import { ApGroupEditContext }                            from '../context'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'
@@ -55,7 +55,9 @@ export function ApGroupVlanRadioTab () {
   const {
     isEditMode,
     isApGroupTableFlag,
-    setEditContextData
+    isWifiRbacEnabled,
+    setEditContextData,
+    venueId: contextVenueId
   } = useContext(ApGroupEditContext)
 
   const { tenantId, apGroupId = '' } = useParams()
@@ -71,9 +73,10 @@ export function ApGroupVlanRadioTab () {
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !(isApGroupTableFlag && isEditMode),
+    skip: !(isApGroupTableFlag && isEditMode) || (isWifiRbacEnabled && !contextVenueId),
     payload: null,
-    extraParams: { tenantId, apGroupId }
+    extraParams: { tenantId, apGroupId, venueId: contextVenueId },
+    enableRbac: isWifiRbacEnabled
   })
 
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
