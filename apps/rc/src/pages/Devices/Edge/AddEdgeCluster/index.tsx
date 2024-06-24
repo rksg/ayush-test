@@ -20,6 +20,7 @@ const AddEdgeCluster = () => {
       const payload = {
         name: values.name,
         description: values.description,
+        highAvailabilityMode: values.highAvailabilityMode,
         smartEdges: values.smartEdges?.map(item => ({
           serialNumber: item.serialNumber,
           name: item.name
