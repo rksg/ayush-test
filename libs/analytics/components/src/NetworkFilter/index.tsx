@@ -9,10 +9,10 @@ import {
   calculateSeverity,
   defaultNetworkPath,
   Incident } from '@acx-ui/analytics/utils'
-import { Cascader, Loader, RadioBand } from '@acx-ui/components'
-import type { CascaderOption }         from '@acx-ui/components'
-import { useReportsFilter }            from '@acx-ui/reports/utils'
-import { NetworkPath, getIntl }        from '@acx-ui/utils'
+import { Cascader, Loader, RadioBand }           from '@acx-ui/components'
+import type { CascaderOption }                   from '@acx-ui/components'
+import { useReportsFilter }                      from '@acx-ui/reports/utils'
+import { NetworkPath, getIntl, AnalyticsFilter } from '@acx-ui/utils'
 
 import { useIncidentsListQuery } from '../IncidentTable/services'
 import { useIncidentToggles }    from '../useIncidentToggles'
@@ -32,18 +32,19 @@ export type NodesWithSeverity = Pick<Incident, 'sliceType'> & {
 
 export type VenuesWithSeverityNodes = { [key: string]: NodesWithSeverity[] }
 type ConnectedNetworkFilterProps = {
-    shouldQuerySwitch: boolean,
-    shouldQueryAp: boolean,
-    shouldShowOnlyVenues?: boolean,
-    withIncidents?: boolean,
-    showRadioBand?: boolean,
-    multiple?: boolean,
-    filterFor?: 'analytics' | 'reports',
-    defaultValue?: SingleValueType | SingleValueType[],
-    defaultRadioBand?: RadioBand[],
-    isRadioBandDisabled?: boolean,
-    radioBandDisabledReason?: string
-  }
+  shouldQuerySwitch: boolean,
+  shouldQueryAp: boolean,
+  shouldShowOnlyVenues?: boolean,
+  withIncidents?: boolean,
+  showRadioBand?: boolean,
+  multiple?: boolean,
+  filterFor?: 'analytics' | 'reports',
+  defaultValue?: SingleValueType | SingleValueType[],
+  defaultRadioBand?: RadioBand[],
+  isRadioBandDisabled?: boolean,
+  radioBandDisabledReason?: string,
+  overrideFilters? : AnalyticsFilter | {}
+}
 const getSeverityFromIncidents = (
   incidentsList: Incident[]
 ): VenuesWithSeverityNodes =>
@@ -224,19 +225,20 @@ export const modifyRawValue = (
 
 export { ConnectedNetworkFilter as NetworkFilter }
 
-function ConnectedNetworkFilter (
-  { shouldQuerySwitch,
-    shouldQueryAp,
-    shouldShowOnlyVenues,
-    withIncidents,
-    showRadioBand,
-    filterFor='analytics',
-    multiple,
-    defaultValue,
-    defaultRadioBand,
-    isRadioBandDisabled=false,
-    radioBandDisabledReason } : ConnectedNetworkFilterProps
-) {
+function ConnectedNetworkFilter ({
+  shouldQuerySwitch,
+  shouldQueryAp,
+  shouldShowOnlyVenues,
+  withIncidents,
+  showRadioBand,
+  filterFor='analytics',
+  multiple,
+  defaultValue,
+  defaultRadioBand,
+  isRadioBandDisabled=false,
+  radioBandDisabledReason,
+  overrideFilters = {}
+} : ConnectedNetworkFilterProps) {
   const { $t } = useIntl()
   const toggles = useIncidentToggles()
   const [ open, setOpen ] = useState(false)
@@ -245,7 +247,7 @@ function ConnectedNetworkFilter (
     raw: reportsRaw, filters: reportsFilter } = useReportsFilter()
   let { bands: selectedBands } = reportsFilter
   const incidentsList = useIncidentsListQuery(
-    { ...filters, toggles, includeMuted: false, filter: {} },
+    { ...filters, ...overrideFilters, toggles, includeMuted: false, filter: {} },
     {
       skip: !Boolean(withIncidents),
       selectFromResult: ({ data }) => ({
@@ -258,6 +260,7 @@ function ConnectedNetworkFilter (
     startDate: filters.startDate,
     endDate: filters.endDate,
     range: filters.range,
+    ...overrideFilters,
     shouldQuerySwitch,
     shouldQueryAp
   }, {
