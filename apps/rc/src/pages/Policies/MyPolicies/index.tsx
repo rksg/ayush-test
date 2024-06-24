@@ -176,7 +176,9 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
     {
       type: PolicyType.VLAN_POOL,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetVLANPoolPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
+      totalCount: useGetVLANPoolPolicyViewModelListQuery(
+        { params, payload: { } , enableRbac }
+      ).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
     },
