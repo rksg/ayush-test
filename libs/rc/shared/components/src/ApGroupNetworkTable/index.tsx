@@ -149,7 +149,7 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
 
   const rbacTableQuery = useTableQuery({
     useQuery: useNewApGroupNetworkListQuery,
-    apiParams: { venueId: venueId || '' },
+    apiParams: { venueId: venueId! },
     defaultPayload: {
       ...defaultNewApGroupNetworkPayload,
       filters: {
@@ -158,7 +158,7 @@ const useApGroupNetworkList = (props: { settingsId: string, venueId?: string
       isTemplate: isTemplate
     },
     pagination: { settingsId },
-    option: { skip: !isWifiRbacEnabled || !apGroupId }
+    option: { skip: !isWifiRbacEnabled || !venueId || !apGroupId }
   })
 
   return isWifiRbacEnabled ? rbacTableQuery : nonRbacTableQuery
