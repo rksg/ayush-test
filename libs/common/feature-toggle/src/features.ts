@@ -139,6 +139,7 @@ export enum Features {
   WIFI_POWER_SAVING_MODE_TOGGLE = 'wifi-power-saving-mode-indicator-toggle',
   ZERO_TOUCH_MESH = 'wifi-eda-zero-touch-mesh-toggle',
   EDGE_HA_TOGGLE = 'edge-ha-toggle',
+  EDGE_HA_AA_TOGGLE = 'edge-ha-aa-toggle',
   WIFI_EDA_BRANCH_LEVEL_SUPPORTED_MODELS_TOGGLE = 'wifi-eda-branch-level-supported-models-toggle',
   SWITCH_NEXT_GENERATION_TOPOLOGY_TOGGLE = 'switch-next-generation-topology-toggle',
   RUCKUS_AI_USERS_TOGGLE = 'ruckus-ai-sso-toggle',
@@ -150,7 +151,8 @@ export enum Features {
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
-  WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle'
+  WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
+  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
