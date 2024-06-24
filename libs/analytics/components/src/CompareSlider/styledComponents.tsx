@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components/macro'
 
-import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
-
 const arrowStyle = css`
   path {
     stroke: var(--acx-primary-black);
@@ -10,14 +8,6 @@ const arrowStyle = css`
   height: 8px;
   vertical-align: middle;
 `
-export const LeftArrow = styled(ArrowChevronLeft)`
-  ${arrowStyle}
-  stroke-width: 2px;
-  `
-export const RightArrow = styled(ArrowChevronRight)`
-  ${arrowStyle}
-  stroke-width: 2px;
-  `
 export const LineStyleWrapper = styled.div`
   height: 100%;
   width: 2px;
@@ -34,6 +24,16 @@ export const CircleWrapper = styled.div`
   border-radius: 50%;
   pointer-events: auto;
   background-color: var(--acx-primary-white);
+
+  .arrow-left {
+    ${arrowStyle}
+    stroke-width: 2px;
+  }
+
+  .arrow-right {
+    ${arrowStyle}
+    stroke-width: 2px;
+  }
 `
 export const CustomHandleWrapper = styled.div`
   display: flex;

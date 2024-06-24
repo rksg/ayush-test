@@ -3,6 +3,8 @@ import React from 'react'
 
 import { ReactCompareSlider, ReactCompareSliderDetailedProps } from 'react-compare-slider'
 
+import { ArrowChevronLeft, ArrowChevronRight } from '@acx-ui/icons'
+
 import * as UI from './styledComponents'
 
 // https://react-compare-slider.vercel.app/?path=/docs/docs-api--docs
@@ -13,14 +15,14 @@ export type CompareSliderProps = typeof ReactCompareSliderDetailedProps & {
 const defaultStyle: React.CSSProperties = {
   width: '600px',
   height: '400px',
-  border: '2px solid #BEBEBE',
+  border: '2px solid var(--acx-neutrals-40)',
   borderRadius: '5px'
 }
 
 const CircleWithArrows = () => {
   return <UI.CircleWrapper>
-    <UI.LeftArrow />
-    <UI.RightArrow />
+    <ArrowChevronLeft className='arrow-left' />
+    <ArrowChevronRight className='arrow-right' />
   </UI.CircleWrapper>
 }
 
