@@ -254,6 +254,20 @@ export const clientApi = baseClientApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
     }),
+    validateGuestPassword: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(ClientUrlsInfo.validateGuestPassword,
+          params,
+          { ...GetApiVersionHeader(ApiVersionEnum.v1),
+            ...ignoreErrorModal
+          })
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Guest', id: 'LIST' }]
+    }),
     getGuests: build.mutation<{ data: BlobPart }, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(ClientUrlsInfo.getGuests, params, {
@@ -531,6 +545,7 @@ export const {
   useGetGuestsMutation,
   useDeleteGuestMutation,
   useEnableGuestsMutation,
+  useValidateGuestPasswordMutation,
   useDisableGuestsMutation,
   useGenerateGuestPasswordMutation,
   useImportGuestPassMutation,
