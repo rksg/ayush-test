@@ -103,13 +103,13 @@ const PendingActivationsTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Activation Period Ends on' }),
-      dataIndex: 'spaEndDate',
-      key: 'spaEndDate',
+      title: $t({ defaultMessage: 'Last Day of Grace Activation Period' }),
+      dataIndex: 'spaStartDate',
+      key: 'spaStartDate',
       render: function (_, row) {
-        return row.productClass === 'ACX-TRIAL-NEW'
+        return row.productClass === 'ACX-TRIAL-NEW' || row.trial
           ? noDataDisplay
-          : formatter(DateFormatEnum.DateFormat)(row.spaEndDate)
+          : formatter(DateFormatEnum.DateFormat)(row.spaStartDate)
       }
     }
   ]

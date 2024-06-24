@@ -63,7 +63,7 @@ const gatewayResponse = {
     venueName: 'My-Venue',
     name: 'ruckusdemos',
     hostname: 'rxgs5-vpoc.ruckusdemos.net',
-    apiKey: 'xxxxxxxxxxxxxxxxxxx',
+    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
     status: RWGStatusEnum.ONLINE,
     isCluster: false
   } as RWG
@@ -72,15 +72,15 @@ const gatewayResponse = {
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
-    totalSizes: 1,
-    totalPages: 1,
-    items: [{
+    totalCount: 1,
+    page: 1,
+    data: [{
       rwgId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
       name: 'ruckusdemos',
       hostname: 'rxgs5-vpoc.ruckusdemos.net',
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       status: RWGStatusEnum.OFFLINE,
       isCluster: false
     }] as RWG[]
@@ -147,7 +147,8 @@ describe('Gateway Form', () => {
     await fireEvent.change(URLInput, { target: { value: 'test.com' } })
 
     const passwordInput = screen.getByLabelText('API Key')
-    await fireEvent.change(passwordInput, { target: { value: 'Temp!2345' } })
+    // eslint-disable-next-line max-len
+    await fireEvent.change(passwordInput, { target: { value: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' } })
 
     await userEvent.click(actions.getByRole('button', { name: 'Add' }))
 

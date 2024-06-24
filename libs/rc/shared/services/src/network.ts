@@ -5,30 +5,31 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/
 import _                                           from 'lodash'
 
 import {
-  CommonUrlsInfo,
-  NetworkVenue,
-  NetworkSaveData,
-  onSocketActivityChanged,
-  onActivityMessageReceived,
-  TableResult,
-  Dashboard,
-  Network,
-  Venue,
-  NetworkDetailHeader,
-  CommonResult,
-  NetworkDetail,
-  WifiUrlsInfo,
-  ExternalProviders,
   ApCompatibility,
   ApCompatibilityResponse,
-  transformNetwork,
-  WifiNetwork,
-  ConfigTemplateUrlsInfo,
-  WifiRbacUrlsInfo,
-  VenueConfigTemplateUrlsInfo,
-  NetworkRadiusSettings,
-  GetApiVersionHeader,
   ApiVersionEnum,
+  CommonRbacUrlsInfo,
+  CommonResult,
+  CommonUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  Dashboard,
+  ExternalProviders,
+  GetApiVersionHeader,
+  Network,
+  NetworkDetail,
+  NetworkDetailHeader,
+  NetworkRadiusSettings,
+  NetworkSaveData,
+  NetworkVenue,
+  TableResult,
+  Venue,
+  VenueConfigTemplateUrlsInfo,
+  WifiNetwork,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo,
+  onActivityMessageReceived,
+  onSocketActivityChanged,
+  transformNetwork,
   RadioTypeEnum
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
@@ -773,8 +774,12 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'Overview' }]
     }),
     externalProviders: build.query<ExternalProviders, RequestPayload>({
-      query: ({ params }) => {
-        const externalProvidersReq = createHttpRequest(CommonUrlsInfo.getExternalProviders, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const externalProvidersReq = createHttpRequest(urlsInfo.getExternalProviders, params, apiCustomHeader)
         return {
           ...externalProvidersReq
         }
@@ -1051,6 +1056,7 @@ export const aggregatedVenueNetworksData = (networkList: TableResult<Network>,
 }
 
 export const fetchApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
+  // TODO: CommonUrlsInfo.getApGroupNetworkList should be replaced with CommonUrlsInfo.getWifiNetworksList
   const apGroupNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList
@@ -1249,6 +1255,7 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
 }
 
 export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
+  // TODO: CommonUrlsInfo.getApGroupNetworkList should be replaced with CommonUrlsInfo.getWifiNetworksList
   const apGroupNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
       ? VenueConfigTemplateUrlsInfo.getApGroupNetworkList

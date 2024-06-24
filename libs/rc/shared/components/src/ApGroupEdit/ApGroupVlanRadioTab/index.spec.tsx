@@ -6,7 +6,7 @@ import { Provider, store }                          from '@acx-ui/store'
 import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { apGroupMembers, apGroupNetworkLinks, networkApGroup, networkDeepList, oneApGroupList, vlanPoolList } from '../__tests__/fixtures'
-import { ApGroupEditContext }                                                                                 from '../index'
+import { ApGroupEditContext }                                                                                 from '../context'
 
 import { ApGroupVlanRadioTab } from './index'
 
@@ -23,7 +23,14 @@ jest.mock('./ApGroupVlanRadioTable', () => ({
 
 const mockGetApGroup = jest.fn()
 const setEditContextDataFn = jest.fn()
-
+const venueId = oneApGroupList.data[0].venueId
+const defaultApGroupCxtdata = {
+  isEditMode: true,
+  isApGroupTableFlag: true,
+  isWifiRbacEnabled: false,
+  venueId,
+  setEditContextData: setEditContextDataFn
+}
 describe('AP Group vlan & radio tab', () => {
 
   beforeEach(() => {
@@ -81,11 +88,7 @@ describe('AP Group vlan & radio tab', () => {
 
     render(
       <Provider>
-        <ApGroupEditContext.Provider value={{
-          isEditMode: true,
-          isApGroupTableFlag: true,
-          setEditContextData: setEditContextDataFn
-        }} >
+        <ApGroupEditContext.Provider value={defaultApGroupCxtdata} >
           <ApGroupVlanRadioTab />
         </ApGroupEditContext.Provider>
       </Provider>, {

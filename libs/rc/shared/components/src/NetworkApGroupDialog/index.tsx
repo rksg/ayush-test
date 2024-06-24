@@ -88,6 +88,7 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
@@ -129,7 +130,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       networkId: networkVenue?.networkId,
       venueId: networkVenue?.venueId,
       isTemplate: isTemplate
-    }]
+    }],
+    enableRbac: isWifiRbacEnabled
   }, { skip: !isUseWifiApiV2 || !networkVenue || !wlan })
 
   const formInitData = useMemo(() => {
