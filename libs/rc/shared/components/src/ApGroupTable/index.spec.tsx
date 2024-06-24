@@ -15,7 +15,7 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { ApGroupTable } from '.'
+import { ApGroupTable } from '..'
 
 
 const apGroupList = {

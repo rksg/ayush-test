@@ -1122,6 +1122,12 @@ export const VLAN_PREFIX = {
   POOL: 'VLAN Pool: '
 }
 
+export enum PowerSavingStatusEnum {
+  NORMAL = 'NORMAL',
+  POWER_SAVING = 'POWER_SAVING',
+  POWER_SAVING_PLUS = 'POWER_SAVING_PLUS'
+}
+
 export const PORTAL_LIMIT_NUMBER = 256
 export const DHCP_LIMIT_NUMBER = 120
 export const VLAN_LIMIT_NUMBER = 64
