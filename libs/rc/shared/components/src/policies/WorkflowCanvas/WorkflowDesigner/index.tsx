@@ -20,7 +20,7 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
       width={'100vw'}
       drawerType={DrawerTypes.FullHeight}
       push={false}
-      onClose={onClose}
+      onClose={(e) => e && onClose()}
     >
       <WorkflowPanel workflowId={workflowId} isEditMode={true} />
     </Drawer>

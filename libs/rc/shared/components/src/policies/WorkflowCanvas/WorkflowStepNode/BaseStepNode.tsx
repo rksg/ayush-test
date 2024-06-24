@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { Popover }                                from 'antd'
 import { useIntl }                                from 'react-intl'
@@ -11,7 +11,8 @@ import { useDeleteWorkflowStepByIdMutation }                                    
 import { ActionType }                                                                            from '@acx-ui/rc/utils'
 
 
-import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
+import { ActionPreviewDrawer } from '../ActionPreviewDrawer'
+import { useWorkflowContext }  from '../WorkflowPanel/WorkflowContextProvider'
 
 import * as UI from './styledComponents'
 
@@ -21,6 +22,7 @@ export default function BaseStepNode (props: NodeProps
   const { $t } = useIntl()
   const nodeId = useNodeId()
   const { policyId } = useParams()
+  const [ isPreviewOpen, setIsPreviewOpen ] = useState(false)
   const {
     nodeState, actionDrawerState,
     stepDrawerState
@@ -32,6 +34,7 @@ export default function BaseStepNode (props: NodeProps
   }
 
   const onEditClick = () => {
+    onPreviewClose()
     onHandleNode(props)
     stepDrawerState.onOpen(true, 'definitionId', props.type as ActionType)
   }
@@ -42,6 +45,7 @@ export default function BaseStepNode (props: NodeProps
   }
 
   const onDeleteClick = () => {
+    onPreviewClose()
     onHandleNode(props)
     stepDrawerState.onClose()
 
@@ -61,7 +65,11 @@ export default function BaseStepNode (props: NodeProps
   }
 
   const onPreviewClick = () => {
-    // TODO: Need to implement
+    setIsPreviewOpen(true)
+  }
+
+  const onPreviewClose = () => {
+    setIsPreviewOpen(false)
   }
 
   const stepToolBar = (<>
@@ -90,6 +98,14 @@ export default function BaseStepNode (props: NodeProps
       ]}>
         {props.children}
       </Loader>
+
+      {(isPreviewOpen && props?.data?.enrollmentActionId) &&
+        <ActionPreviewDrawer
+          actionType={props.type as ActionType}
+          actionId={props?.data?.enrollmentActionId}
+          onClose={onPreviewClose}
+        />
+      }
 
       {props.selected &&
         <Popover
