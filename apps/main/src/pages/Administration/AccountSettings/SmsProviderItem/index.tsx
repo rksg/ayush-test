@@ -60,8 +60,7 @@ const SmsProviderItem = () => {
   const [smsProviderConfigured, setSmsProviderConfigured] = useState(false)
   const [isInGracePeriod, setIsInGracePeriod] = useState(false)
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
-  const [freeSmsPool, setFreeSmsPool] = useState(true)
-  const isGracePeriodEnabled = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
+  const isGracePeriodEnded = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
 
   const FREE_SMS_POOL = 100
 
@@ -104,8 +103,7 @@ const SmsProviderItem = () => {
       setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
       setSmsProviderConfigured((smsUsage.data?.provider &&
         smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
-      setIsInGracePeriod(usedSms > FREE_SMS_POOL && !isGracePeriodEnabled)
-      setFreeSmsPool(true)
+      setIsInGracePeriod(usedSms > FREE_SMS_POOL && !isGracePeriodEnded)
     }
     if(smsProvider && smsProvider.data) {
       setSmsProviderData({
@@ -120,14 +118,25 @@ const SmsProviderItem = () => {
     ? [
       { value: 100, name: 'usage', color: cssStr('--acx-accents-blue-50') }
     ]
-    : [
-      { value: ruckusOneUsed, name: 'usage', color: cssStr('--acx-accents-blue-50') },
-      { value: smsThreshold - ruckusOneUsed,
-        name: 'remaining1', color: cssStr('--acx-neutrals-50') },
-      { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
-      { value: FREE_SMS_POOL - smsThreshold,
-        name: 'remaining2', color: cssStr('--acx-neutrals-50') }
-    ]
+    : (smsThreshold > ruckusOneUsed  
+      ? [
+        { value: ruckusOneUsed, name: 'usage', color: cssStr('--acx-accents-blue-50') },
+        { value: smsThreshold - ruckusOneUsed,
+          name: 'remaining1', color: cssStr('--acx-neutrals-50') },
+        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: FREE_SMS_POOL - smsThreshold,
+          name: 'remaining2', color: cssStr('--acx-neutrals-50') }
+      ]
+      : [
+        { value: smsThreshold, name: 'usage', color: cssStr('--acx-accents-blue-50') },
+        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: ruckusOneUsed - smsThreshold,
+          name: 'remaining1', color: cssStr('--acx-accents-blue-50') },
+        { value: FREE_SMS_POOL - ruckusOneUsed,
+          name: 'remaining2', color: cssStr('--acx-neutrals-50') }
+      ]
+    )
+
 
   const SmsProviderDualButtons = () => {
     return <Space style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -223,39 +232,10 @@ const SmsProviderItem = () => {
     </Col>
   }
 
-  const ProviderOther = () => {
-    return <Col style={{ width: '381px', paddingLeft: 0 }}>
-      <Card type='solid-bg' >
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Provider' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {'Other'}</h3>
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'API Token' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.apiKey}</h3>
-        </div>
-        <div>
-          <Form.Item
-            colon={false}
-            label={$t({ defaultMessage: 'Send URL' })} />
-          <h3 style={{ marginTop: '-18px', wordWrap: 'break-word', width: '320px' }}>
-            {smsProvider.data?.url}</h3>
-        </div>
-      </Card>
-    </Col>
-  }
-
   const DisplaySmsProvider = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       {smsProviderType === SmsProviderType.TWILIO && <ProviderTwillo/>}
       {smsProviderType === SmsProviderType.ESENDEX && <ProviderEsendex/>}
-      {smsProviderType === SmsProviderType.OTHERS && <ProviderOther/>}
     </Col>
   }
 
@@ -416,7 +396,7 @@ const SmsProviderItem = () => {
           </Col>
         }
 
-        {!freeSmsPool && <List
+        {isGracePeriodEnded && <List
           style={{ marginTop: '15px', marginBottom: 0 }}
           split={false}
           dataSource={[
@@ -433,7 +413,7 @@ const SmsProviderItem = () => {
           )}
         />}
 
-        {!smsProviderConfigured && <FreeSmsPool/>}
+        {!smsProviderConfigured && !isGracePeriodEnded && <FreeSmsPool/>}
       </Col>
     </Row>
 
