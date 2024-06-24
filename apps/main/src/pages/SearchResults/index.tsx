@@ -38,7 +38,10 @@ import {
   SwitchRow,
   ClientList,
   SwitchClient,
-  Client
+  Client,
+  APExtended,
+  NewAPModelExtended,
+  TableQuery
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
 
@@ -105,7 +108,10 @@ const searches = [
     return {
       result,
       title: $t({ defaultMessage: 'APs' }),
-      component: <ApTable tableQuery={result} searchable={false} />
+      component: <ApTable
+        // eslint-disable-next-line max-len
+        tableQuery={result as TableQuery<APExtended|NewAPModelExtended, RequestPayload<unknown>, ApExtraParams>}
+        searchable={false} />
     }
   },
 

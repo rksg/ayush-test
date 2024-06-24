@@ -22,8 +22,9 @@ export function VenueFirmwareInformation (props: VenueInformationProps) {
   const { isEditMode, venue, apDetails } = props
   const { $t } = useIntl()
   const supportUpgradeByModel = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
-  const { triApModels } = useWifiCapabilitiesQuery({}, {
+  const { triApModels } = useWifiCapabilitiesQuery({ enableRbac: isUseWifiRbacApi }, {
     skip: supportUpgradeByModel,
     selectFromResult: ({ data }) => ({
       triApModels: data?.apModels
