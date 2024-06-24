@@ -5,8 +5,11 @@ import { useIntl } from 'react-intl'
 import { Button, Modal, ModalType }        from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { AAAPolicyType, AAA_LIMIT_NUMBER } from '@acx-ui/rc/utils'
+import { WifiScopes }                      from '@acx-ui/types'
+import { hasPermission }                   from '@acx-ui/user'
 
 import { AAAForm } from '../../policies/AAAForm'
+
 
 export default function AAAPolicyModal (props:{
   type?: string,
@@ -30,6 +33,9 @@ export default function AAAPolicyModal (props:{
       onClose()
       if(data)updateInstance(data)
     }}/>
+
+  if (!hasPermission({ scopes: [WifiScopes.CREATE] })) return null
+
   return (
     <>
       <Button type='link'

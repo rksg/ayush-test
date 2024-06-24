@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { MspUrlsInfo }                                                             from '@acx-ui/msp/utils'
-import { CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateType, ConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }  from '@acx-ui/test-utils'
+import { MspUrlsInfo }                                                                                                                                         from '@acx-ui/msp/utils'
+import { AdministrationUrlsInfo, CONFIG_TEMPLATE_PATH_PREFIX, ConfigTemplateContext, ConfigTemplateType, ConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                            from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved, within }                                                                              from '@acx-ui/test-utils'
 
-import { ConfigTemplateTabKey }                            from '..'
-import { mockedConfigTemplateList, mockedMSPCustomerList } from '../__tests__/fixtures'
+import { ConfigTemplateTabKey }                                                                        from '..'
+import { mockVenueTemplateList, mockedConfigTemplateList, mockedMSPCustomerList, mockedVenueTemplate } from '../__tests__/fixtures'
 
 import { ConfigTemplateList } from '.'
 
@@ -121,7 +121,7 @@ describe('ConfigTemplateList component', () => {
     const targetEcRow3 = await within(applyTemplateDrawer).findByRole('row', { name: /Camel-Tel/i })
     expect(within(targetEcRow3).getByRole('checkbox')).toBeDisabled()
 
-    await userEvent.click(await screen.findByRole('button', { name: /Next/ }))
+    await userEvent.click(await within(applyTemplateDrawer).findByRole('button', { name: /Next/ }))
 
     await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
 
@@ -131,6 +131,102 @@ describe('ConfigTemplateList component', () => {
     await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Apply Template/ }))
 
     await waitFor(() => expect(applyFn).toHaveBeenCalledTimes(2))
+
+    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(0))
+  })
+
+  it('should override the Venue config template', async () => {
+    const applyFn = jest.fn()
+
+    mockServer.use(
+      rest.post(
+        ConfigTemplateUrlsInfo.applyConfigTemplate.url,
+        (req, res, ctx) => {
+          applyFn(req.body)
+          return res(ctx.json({ requestId: '123456789ABCDEFG' }))
+        }
+      ),
+      rest.get(
+        VenueConfigTemplateUrlsInfo.getVenueTemplate.url,
+        (req, res, ctx) => res(ctx.json(mockedVenueTemplate))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockVenueTemplateList))
+      ),
+      rest.get(
+        AdministrationUrlsInfo.getPreferences.url,
+        (_req, res, ctx) => res(ctx.json({ global: { mapRegion: 'TW' } }))
+      )
+    )
+
+    render(
+      <Provider>
+        <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+          <ConfigTemplateList />
+        </ConfigTemplateContext.Provider>
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    await userEvent.click(await screen.findByRole('row', { name: /Template 1/i })) // Network type config template
+    await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
+
+    const applyTemplateDrawerForNetworkType = await screen.findByRole('dialog')
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await within(applyTemplateDrawerForNetworkType).findByRole('row', { name: /ec-1/i }))
+
+    // Only Venue template can be overridden
+    expect(
+      within(applyTemplateDrawerForNetworkType).queryByRole('button', { name: /Override Template/ })
+    ).toBeNull()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await within(applyTemplateDrawerForNetworkType).findByRole('button', { name: /Cancel/ }))
+
+    await userEvent.click(await screen.findByRole('row', { name: /Venue Template/i }))
+    await userEvent.click(await screen.findByRole('button', { name: /Apply Template/ }))
+
+    const applyTemplateDrawerForVenueType = await screen.findByRole('dialog')
+
+    // Verify if the override column is shown
+    expect(
+      await within(applyTemplateDrawerForVenueType).findByRole('columnheader',
+        { name: /Template Override Value/i })
+    ).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await within(applyTemplateDrawerForVenueType).findByRole('row', { name: /ec-1/i }))
+    // eslint-disable-next-line max-len
+    await userEvent.click(await within(applyTemplateDrawerForVenueType).findByRole('button', { name: /Override Template/ }))
+
+    // eslint-disable-next-line max-len
+    const venueOverrideDialog = await screen.findByRole('dialog', { name: /Override Venue Template/ })
+    // eslint-disable-next-line max-len
+    const venueNameInput = await within(venueOverrideDialog).findByDisplayValue(mockedVenueTemplate.name)
+
+    await userEvent.clear(venueNameInput)
+    await userEvent.type(venueNameInput, 'Overridden Venue Name')
+    await userEvent.click(within(venueOverrideDialog).getByRole('button', { name: /Add/ }))
+
+    // Verify if the overrides values is shown in the column
+    expect(
+      await within(applyTemplateDrawerForVenueType).findByRole('cell',
+        { name: /Overridden Venue Name/ })
+    ).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(within(applyTemplateDrawerForVenueType).getByRole('button', { name: /Next/ }))
+
+    await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(2))
+
+    const confirmationDrawer = screen.queryAllByRole('dialog')[1]
+    // eslint-disable-next-line max-len
+    await userEvent.click(within(confirmationDrawer).getByRole('button', { name: /Apply Template/ }))
+
+    await waitFor(() => expect(applyFn).toHaveBeenCalledTimes(1))
 
     await waitFor(() => expect(screen.queryAllByRole('dialog').length).toBe(0))
   })

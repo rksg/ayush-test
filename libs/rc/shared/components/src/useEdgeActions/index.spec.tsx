@@ -129,7 +129,7 @@ describe('useEdgeActions', () => {
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Shutdown "Smart Edge 1"?')
     // eslint-disable-next-line max-len
-    expect(dialog).toHaveTextContent('Shutdown will safely terminate all ongoing operations on SmartEdge. Are you sure you want to shutdown this SmartEdge?')
+    expect(dialog).toHaveTextContent('Shutdown will safely end all operations on SmartEdge. You will need to manually restart the device. Are you sure you want to shut down this SmartEdge?')
     await userEvent.click(within(dialog).getByRole('button', { name: 'Shutdown' }))
     await waitFor(() => {
       expect(mockedShutdownApi).toBeCalledTimes(1)

@@ -9,6 +9,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery, useGetEdgeClusterQuery
@@ -68,6 +69,7 @@ export const EdgeDetailsPageHeader = () => {
 
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
+  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
 
   const menuConfig = [
     {
@@ -76,12 +78,12 @@ export const EdgeDetailsPageHeader = () => {
       key: 'reboot',
       showupstatus: rebootShutdownEdgeStatusWhiteList
     },
-    {
+    ...(isGracefulShutdownReady ? [{
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Shutdown' }),
       key: 'shutdown',
       showupstatus: rebootShutdownEdgeStatusWhiteList
-    },
+    }] : []),
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reset & Recover' }),
