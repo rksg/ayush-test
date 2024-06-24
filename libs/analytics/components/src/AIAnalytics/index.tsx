@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { hasPermission }                               from '@acx-ui/user'
 import { DateRange }                                   from '@acx-ui/utils'
@@ -9,7 +10,6 @@ import { DateRange }                                   from '@acx-ui/utils'
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
 import { RecommendationTabContent } from '../Recommendations'
-import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
@@ -50,8 +50,8 @@ const useTabs = () : Tab[] => {
   const intenAITab = {
     key: AIAnalyticsTabEnum.INTENTAI,
     title: $t({ defaultMessage: 'Intent AI' }),
-    component: <></>,
-    headerExtra: useHeaderExtra({ datepicker: 'dropdown'})
+    component: <div data-testid='intentAI' />,
+    headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
   }
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
