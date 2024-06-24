@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { EmbeddedReport }   from '../EmbeddedReport'
+import { EmbeddedReport }  from '../EmbeddedReport'
 import {
   ReportType,
   reportTypeLabelMapping

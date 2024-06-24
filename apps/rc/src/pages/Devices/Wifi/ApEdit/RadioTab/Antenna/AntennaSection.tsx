@@ -5,9 +5,9 @@ import { cloneDeep, find } from 'lodash'
 import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
-import { AnchorContext, Loader }            from '@acx-ui/components'
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { ApAntennaTypeSelector }            from '@acx-ui/rc/components'
+import { AnchorContext, Loader }           from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
+import { ApAntennaTypeSelector }           from '@acx-ui/rc/components'
 import {
   useLazyGetApAntennaTypeSettingsQuery,
   useLazyGetVenueAntennaTypeQuery,

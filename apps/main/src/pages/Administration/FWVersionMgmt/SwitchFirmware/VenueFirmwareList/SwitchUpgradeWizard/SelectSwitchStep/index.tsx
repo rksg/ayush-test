@@ -29,7 +29,7 @@ import { SwitchFirmwareWizardType } from '..'
 import {
   getNextScheduleTpl
 } from '../../../../FirmwareUtils'
-import * as UI                from '../../styledComponents'
+import * as UI               from '../../styledComponents'
 import {
   getHightlightSearch,
   getSwitchNextScheduleTpl

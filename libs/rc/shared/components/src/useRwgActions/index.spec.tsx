@@ -3,7 +3,7 @@ import { message } from 'antd'
 import { rest }    from 'msw'
 import '@testing-library/jest-dom'
 
-import { useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                    from '@acx-ui/feature-toggle'
 import {
   CommonRbacUrlsInfo, RWG, RWGStatusEnum
 } from '@acx-ui/rc/utils'

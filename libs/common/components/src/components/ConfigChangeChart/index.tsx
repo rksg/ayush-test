@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import ReactECharts from 'echarts-for-react'
 import { useIntl }  from 'react-intl'
 
-import { cssStr }           from '../../theme/helper'
+import { cssStr }          from '../../theme/helper'
 import {
   legendTextStyleOptions,
   tooltipOptions,

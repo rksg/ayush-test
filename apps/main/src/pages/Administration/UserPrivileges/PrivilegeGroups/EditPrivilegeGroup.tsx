@@ -19,8 +19,8 @@ import {
   StepsForm,
   Tabs
 } from '@acx-ui/components'
-import { useMspCustomerListQuery }   from '@acx-ui/msp/services'
-import { MspEcWithVenue }            from '@acx-ui/msp/utils'
+import { useMspCustomerListQuery }  from '@acx-ui/msp/services'
+import { MspEcWithVenue }           from '@acx-ui/msp/utils'
 import {
   useAddPrivilegeGroupMutation,
   useGetOnePrivilegeGroupQuery,

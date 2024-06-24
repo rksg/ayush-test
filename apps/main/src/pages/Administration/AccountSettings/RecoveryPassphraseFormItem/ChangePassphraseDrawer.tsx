@@ -6,7 +6,7 @@ import { useParams }  from 'react-router-dom'
 import styled         from 'styled-components/macro'
 
 
-import { Drawer, Button }                from '@acx-ui/components'
+import { Drawer, Button }               from '@acx-ui/components'
 import {
   useUpdateRecoveryPassphraseMutation
 } from '@acx-ui/rc/services'

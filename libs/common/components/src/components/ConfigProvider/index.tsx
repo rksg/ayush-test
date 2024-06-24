@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ConfigProvider as AntConfigProvider }     from 'antd'
+import { ConfigProvider as AntConfigProvider }    from 'antd'
 import {
   default as AntProConfigProvider,
   ConfigProviderProps as AntConfigProviderProps

@@ -5,7 +5,7 @@ import TextArea                          from 'antd/lib/input/TextArea'
 import { useIntl }                       from 'react-intl'
 import { useParams }                     from 'react-router-dom'
 
-import { StepsForm }                                                      from '@acx-ui/components'
+import { StepsForm }                                                     from '@acx-ui/components'
 import {
   useGetEnhancedWifiCallingServiceListQuery, useGetEnhancedWifiCallingServiceTemplateListQuery,
   useGetWifiCallingServiceQuery, useGetWifiCallingServiceTemplateQuery

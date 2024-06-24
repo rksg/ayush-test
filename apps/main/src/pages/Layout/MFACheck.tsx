@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import {
   MFASetupModal
 } from '@acx-ui/msp/components'
-import { Outlet }                   from '@acx-ui/react-router-dom'
+import { Outlet }                  from '@acx-ui/react-router-dom'
 import {
   MfaDetailStatus,
   useLazyGetMfaTenantDetailsQuery,

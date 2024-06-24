@@ -10,7 +10,7 @@ import { StepsForm as ProAntStepsForm } from '../StepsFormProAnt'
 
 import * as UI from './styledComponents'
 
-import type { ButtonProps }               from '../Button'
+import type { ButtonProps }              from '../Button'
 import type {
   StepsFormProps as ProAntStepsFormProps,
   StepFormProps as ProAntStepFormProps

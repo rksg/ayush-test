@@ -51,8 +51,8 @@ import { SwitchScopes }  from '@acx-ui/types'
 import { hasPermission } from '@acx-ui/user'
 import { getIntl }       from '@acx-ui/utils'
 
-import { ACLSettingDrawer }        from './ACLSettingDrawer'
-import { EditLldpModal }           from './editLldpModal'
+import { ACLSettingDrawer }       from './ACLSettingDrawer'
+import { EditLldpModal }          from './editLldpModal'
 import {
   checkVlanOptions,
   checkLldpListEqual,

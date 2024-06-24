@@ -2345,7 +2345,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
-    applicationLibrariesApplicationList: build.query<CommonResult, RequestPayload>({
+                  applicationLibrariesApplicationList: build.query<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const applicationListReq = createHttpRequest(
           AccessControlUrls.applicationLibrariesApplicationList,

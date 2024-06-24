@@ -5,9 +5,9 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, SummaryCard }                  from '@acx-ui/components'
-import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { ServiceConfigTemplateLinkSwitcher }   from '@acx-ui/rc/components'
+import { Modal, SummaryCard }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { ServiceConfigTemplateLinkSwitcher }  from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,

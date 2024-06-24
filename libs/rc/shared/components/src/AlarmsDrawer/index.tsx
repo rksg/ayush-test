@@ -12,7 +12,7 @@ import {
   Tooltip,
   Button
 } from '@acx-ui/components'
-import { formatter }   from '@acx-ui/formatter'
+import { formatter }  from '@acx-ui/formatter'
 import {
   useAlarmsListQuery,
   useClearAlarmMutation,

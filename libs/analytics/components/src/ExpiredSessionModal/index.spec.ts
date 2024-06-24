@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 
-import { screen }   from '@acx-ui/test-utils'
+import { screen }  from '@acx-ui/test-utils'
 import {
   getIntl,
   setUpIntl,

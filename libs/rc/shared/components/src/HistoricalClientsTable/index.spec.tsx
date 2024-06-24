@@ -1,8 +1,8 @@
 import { rest } from 'msw'
 
-import { clientApi }           from '@acx-ui/rc/services'
-import { CommonUrlsInfo }      from '@acx-ui/rc/utils'
-import { Provider, store }     from '@acx-ui/store'
+import { clientApi }          from '@acx-ui/rc/services'
+import { CommonUrlsInfo }     from '@acx-ui/rc/utils'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockServer,
   render,

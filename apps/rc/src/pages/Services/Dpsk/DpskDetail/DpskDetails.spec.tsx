@@ -10,8 +10,8 @@ import {
   getServiceRoutePath,
   ServiceOperation
 } from '@acx-ui/rc/utils'
-import { To, useTenantLink }   from '@acx-ui/react-router-dom'
-import { Provider, store }     from '@acx-ui/store'
+import { To, useTenantLink }  from '@acx-ui/react-router-dom'
+import { Provider, store }    from '@acx-ui/store'
 import {
   mockServer,
   render,

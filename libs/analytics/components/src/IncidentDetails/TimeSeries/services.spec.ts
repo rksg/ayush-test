@@ -4,8 +4,8 @@ import { fakeIncident1 }     from '@acx-ui/analytics/utils'
 import { dataApiURL, store } from '@acx-ui/store'
 import { mockGraphqlQuery }  from '@acx-ui/test-utils'
 
-import { buffer6hr }              from './__tests__/fixtures'
-import { TimeSeriesChartTypes }   from './config'
+import { buffer6hr }             from './__tests__/fixtures'
+import { TimeSeriesChartTypes }  from './config'
 import {
   Api,
   getIncidentTimeSeriesPeriods

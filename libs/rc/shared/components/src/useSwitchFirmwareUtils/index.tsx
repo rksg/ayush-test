@@ -1,6 +1,6 @@
 import { IntlShape } from 'react-intl'
 
-import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   useGetSwitchCurrentVersionsQuery
 } from '@acx-ui/rc/services'

@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
-import { Provider }                    from '@acx-ui/store'
+import { Provider }                   from '@acx-ui/store'
 import {
   mockServer,
   render,

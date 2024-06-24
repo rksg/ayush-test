@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { venueApi }                                                       from '@acx-ui/rc/services'
+import { venueApi }                                                      from '@acx-ui/rc/services'
 import {
   PropertyUrlsInfo, ServiceOperation, ServiceType, getServiceRoutePath
 } from '@acx-ui/rc/utils'

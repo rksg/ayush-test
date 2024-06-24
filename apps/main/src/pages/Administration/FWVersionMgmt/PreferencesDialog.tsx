@@ -7,7 +7,7 @@ import { useIntl }                                          from 'react-intl'
 import {
   Modal
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useUpdateSwitchFirmwarePredownloadMutation
 } from '@acx-ui/rc/services'
