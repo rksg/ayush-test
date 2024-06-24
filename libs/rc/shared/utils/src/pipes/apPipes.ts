@@ -241,41 +241,32 @@ export const AFCStatusRender = (afcInfo?: AFCInfo, apRadioDeploy?: string) => {
 
   const { $t } = useIntl()
 
-  const powerMode = afcInfo?.powerMode
-
   const displayList = []
 
-  if(!powerMode || apRadioDeploy !== '2-5-6') {
+  if(apRadioDeploy !== '2-5-6') {
     return '--'
   }
 
-  if (powerMode === AFCPowerMode.STANDARD_POWER){
-    displayList.push($t({ defaultMessage: 'Standard power' }))
+  switch(afcInfo?.afcStatus) {
+    case AFCStatus.WAIT_FOR_LOCATION:
+      displayList.push($t({ defaultMessage: 'Wait for location' }))
+      break
+    case AFCStatus.REJECTED:
+      displayList.push($t({ defaultMessage: 'Rejected' }))
+      break
+    case AFCStatus.WAIT_FOR_RESPONSE:
+      displayList.push($t({ defaultMessage: 'Wait for response' }))
+      break
+    case AFCStatus.AFC_NOT_REQUIRED:
+      displayList.push($t({ defaultMessage: 'N/A' }))
+      break
+    case AFCStatus.PASSED:
+      displayList.push($t({ defaultMessage: 'Passed' }))
+      break
+    case AFCStatus.AFC_SERVER_FAILURE:
+      displayList.push($t({ defaultMessage: 'AFC Server failure' }))
+      break
   }
-
-  else if (powerMode === AFCPowerMode.LOW_POWER) {
-    switch(afcInfo?.afcStatus) {
-      case AFCStatus.WAIT_FOR_LOCATION:
-        displayList.push($t({ defaultMessage: 'Wait for location' }))
-        break
-      case AFCStatus.REJECTED:
-        displayList.push($t({ defaultMessage: 'Rejected' }))
-        break
-      case AFCStatus.WAIT_FOR_RESPONSE:
-        displayList.push($t({ defaultMessage: 'Wait for response' }))
-        break
-      case AFCStatus.AFC_NOT_REQUIRED:
-        displayList.push($t({ defaultMessage: 'N/A' }))
-        break
-      case AFCStatus.PASSED:
-        displayList.push($t({ defaultMessage: 'Passed' }))
-        break
-      case AFCStatus.AFC_SERVER_FAILURE:
-        displayList.push($t({ defaultMessage: 'AFC Server failure' }))
-        break
-    }
-  }
-
 
   return (displayList.length === 0) ? '--' : displayList.join(' ')
 }

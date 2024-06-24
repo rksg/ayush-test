@@ -624,15 +624,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const { response: rwgDevices } = ((responses[1] && responses[1].data) || {}) as {
           requestId: string,
           response : {
-            items: RWG[],
-            totalPages: number,
-            totalSizes: number
+            data: RWG[],
+            totalCount: number,
+            page: number
           }
         }
 
         let rwgList: NetworkDevice[] = []
-        if (rwgDevices?.items?.length) {
-          const rwgs = rwgDevices.items
+        if (rwgDevices?.data?.length) {
+          const rwgs = rwgDevices.data
 
           rwgList = rwgs.map(_rwg => {
             return {
