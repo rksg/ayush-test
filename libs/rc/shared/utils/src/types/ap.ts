@@ -67,7 +67,8 @@ export interface AP {
   poePort?: string,
   healthStatus?: string,
   downLinkCount?: number,
-  apRadioDeploy?: string
+  apRadioDeploy?: string,
+  powerSavingStatus?: string
 }
 
 export interface ApViewModel extends AP {
