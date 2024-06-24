@@ -282,7 +282,8 @@ export interface EntitlementActivations {
   orderCreateDate: string,
   orderRegistrationCode: string,
   orderAcxRegistrationCode:string,
-  isChild?: boolean
+  isChild?: boolean,
+  trial?: boolean
 }
 
 export type EntitlementDeviceTypes = Array<{ label: string, value: EntitlementDeviceType }>

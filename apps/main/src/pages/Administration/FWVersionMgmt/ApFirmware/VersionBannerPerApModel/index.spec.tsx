@@ -92,4 +92,33 @@ describe('VersionBannerPerApModel', () => {
     expect(await screen.findByText('7.0.0.104.1242')).toBeVisible()
     expect(screen.getByText('For devices --')).toBeVisible()
   })
+
+  it('should render the banner with the latest version group', async () => {
+    generateApModelFirmwares.mockReturnValue([{
+      id: '7.0.0.104.1242',
+      name: '7.0.0.104.1242',
+      supportedApModels: [],
+      releaseDate: '2024-02-27T07:27:53.405+00:00',
+      onboardDate: '2024-02-21T05:18:57.254+0000',
+      category: FirmwareCategory.RECOMMENDED
+    }, {
+      id: '6.2.2.103.143',
+      name: '6.2.2.103.143',
+      supportedApModels: ['R550', 'R720'],
+      releaseDate: '2023-11-16T09:13:48.863+00:00',
+      onboardDate: '2023-07-22T05:49:47.774+0000',
+      category: FirmwareCategory.RECOMMENDED
+    }])
+
+    render(
+      <Provider>
+        <VersionBannerPerApModel />
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt' }
+      }
+    )
+
+    expect(await screen.findByText('7.0.0.104.1242')).toBeVisible()
+    expect(screen.getByText('For devices --')).toBeVisible()
+  })
 })
