@@ -50,7 +50,7 @@ export function TradeOff (props: TradeOffProps) {
         label={label}
         initialValue={currentValue}
       >
-        <Radio.Group onChange={e => onChange && onChange(e.target.value)}>
+        <Radio.Group onChange={e => onChange(e.target.value)}>
           {radios.map((radioProps) =>
             (<div key={`tradeR_${radioProps.key}`}><Radio {...radioProps} /></div>))}
         </Radio.Group>
