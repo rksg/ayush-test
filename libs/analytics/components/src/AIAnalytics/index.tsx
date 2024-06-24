@@ -53,6 +53,7 @@ const useTabs = () : Tab[] => {
     component: <div data-testid='intentAI' />,
     headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
   }
+  let displayIntentAI = false
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
     if (get('IS_MLISA_SA')) { // RAI
@@ -62,9 +63,13 @@ const useTabs = () : Tab[] => {
       if (hasPermission({ permission: 'READ_AI_OPERATIONS' })) {
         recommendationTabs.push(aiOpsTab as Tab)
       }
+      if (hasPermission({ permission: 'READ_INTENT_AI' })) {
+       displayIntentAI = true
+      }
     } else { // R1
       recommendationTabs.push(crrmTab as Tab)
       recommendationTabs.push(aiOpsTab as Tab)
+      displayIntentAI = true
     }
     return recommendationTabs
   }
@@ -76,7 +81,7 @@ const useTabs = () : Tab[] => {
   return [
     incidentsTab,
     ...getRecommendationTabs(),
-    ...(isIntentAIEnabled ? [intenAITab] : [])
+    ...(isIntentAIEnabled && displayIntentAI ? [intenAITab] : [])
   ]
 }
 
