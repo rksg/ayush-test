@@ -1,17 +1,15 @@
-import { useEffect, useState } from 'react'
 import 'reactflow/dist/style.css' // Very important css must be imported!
 
-import { Card }    from 'antd'
-import { useIntl } from 'react-intl'
+import { useEffect, useState } from 'react'
+
+import { Card }   from 'antd'
 import {
   ConnectionLineType,
   Edge,
   Node,
   ReactFlowProvider,
   useEdgesState,
-  useNodesState,
-  useViewport,
-  XYPosition
+  useNodesState
 } from 'reactflow'
 
 
@@ -46,19 +44,16 @@ const composeNext = (
 
   if (!step) return
 
-  console.log('Compose Next step : ', step)
-
   const {
     id,
     nextStepId,
-    enrollmentActionId, splitOptionId,
     type,
     actionType
   } = step
   const nodeType: ActionType = (actionType ?? 'START') as ActionType
   const nextStep = stepMap.get(nextStepId ?? '')
 
-  console.log('Step :: ', nodeType, type, enrollmentActionId)
+  // console.log('Step :: ', nodeType, type, enrollmentActionId)
 
   nodes.push({
     id,
@@ -90,10 +85,6 @@ const composeNext = (
   }
 }
 
-// TODO:
-//  If I want to use the ContextProvider, I need to move these functions into Canvas component.
-//  => It is fine actually, because of no others needed.
-//  => I need the ActionDefinitions to determine the ActionType
 function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, ActionType>)
   : { nodes: Node[], edges: Edge[] } {
   const nodes: Node<WorkflowStep, ActionType>[] = []
@@ -105,7 +96,6 @@ function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, Acti
     return { nodes: getInitialNodes(START_X, START_Y), edges }
   }
 
-  console.groupCollapsed('[Processing] - toReactFlowData')
   const firstStep = findFirstStep(steps)
   const stepMap = toStepMap(steps, definitionMap)
 
@@ -113,8 +103,6 @@ function toReactFlowData (steps: WorkflowStep[], definitionMap: Map<string, Acti
     composeNext(firstStep.id, stepMap, nodes, edges,
       START_X, START_Y, firstStep.type === StepType.Start)
   }
-
-  console.groupEnd()
 
   return { nodes, edges }
 }
@@ -135,21 +123,17 @@ const useRequiredDependency = () => {
   useEffect(() => {
     if (isLoading || !actionDefsData) return
     const gen = async () => {
-      console.groupCollapsed('[Processing] - useRequiredDependency gen()')
       for (const def of actionDefsData?.content) {
         if (def.dependencyType === 'NONE') {
-          console.log('NONE - ', def)
           requiredDependency[def.actionType] = {
             type: def.dependencyType,
             required: new Set()
           }
         } else {
-          console.log('Other - ', def)
           await getRequiredDefinitionByIdQuery({
             params: { definitionId: def.id }
           })
             .then(result => {
-              console.log('Required = ', result)
               requiredDependency[def.actionType] = {
                 type: def.dependencyType ?? 'NONE',
                 required: result?.data?.content?.reduce((set, def) =>
@@ -159,7 +143,6 @@ const useRequiredDependency = () => {
             })
         }
       }
-      console.groupEnd()
     }
 
     gen().then(() => {
@@ -176,7 +159,6 @@ const useRequiredDependency = () => {
 
 
 function WorkflowPanelWrapper (props: WorkflowPanelProps) {
-  const { $t } = useIntl()
   const { workflowId: policyId, isEditMode } = props
   const {
     nodeState,
@@ -185,8 +167,6 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   } = useWorkflowContext()
   const [nodes, setNodes] = useNodesState([])
   const [edges, setEdges] = useEdgesState([])
-  const { x, y, zoom } = useViewport()
-  const [originalPosition, setOriginalPosition] = useState<XYPosition>()
 
   const requiredDependency = useRequiredDependency()
   // console.log('const requiredDependency = useRequiredDependency()', requiredDependency)
@@ -211,7 +191,6 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
     } = toReactFlowData(stepsData?.content, defsMap)
     setNodes(inputNodes)
     setEdges(inputEdges)
-    console.log('USE effect = ', inputNodes, inputEdges)
   }, [stepsData, actionDefsData])
 
   const onClickAction = (definitionId: string, type: ActionType) => {

@@ -25,7 +25,8 @@ export const StepNode = styled.div<{ selected?: boolean }>`
     border: 1px solid var(--acx-accents-orange-50);
   }
 
-  // Hide the handler and adjust the position to let the edge line can connect with each Nodes without space
+  // Hide the handler and adjust the position to
+  // let the edge line can connect with each Nodes without space
   .react-flow__handle {
     opacity: 0;
   }

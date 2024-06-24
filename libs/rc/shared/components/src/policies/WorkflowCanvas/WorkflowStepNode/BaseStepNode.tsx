@@ -42,8 +42,6 @@ export default function BaseStepNode (props: NodeProps
   }
 
   const onDeleteClick = () => {
-    // console.log('[DeleteBtnClick]', nodeId, props)
-
     onHandleNode(props)
     stepDrawerState.onClose()
 

@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 
 import { useIntl } from 'react-intl'
 
@@ -24,7 +23,6 @@ interface ActionLibraryProps {
 }
 
 
-// TODO: Split each ActionType to related Toggle (Starter, Authorization, Results...)
 const starterActions: ActionType[] = [
   ActionType.AUP,
   ActionType.DISPLAY_MESSAGE
@@ -55,11 +53,11 @@ export default function ActionLibraryDrawer (props: ActionLibraryProps) {
     )
   })
 
-  useEffect(() => {
-    console.log('existingActionTypes = ', existingActionTypes)
-    console.log('Definitions :: ', defMap)
-    console.log('RelationshipMap :: ', relationshipMap)
-  }, [existingActionTypes])
+  // useEffect(() => {
+  //   console.log('existingActionTypes = ', existingActionTypes)
+  //   console.log('Definitions :: ', defMap)
+  //   console.log('RelationshipMap :: ', relationshipMap)
+  // }, [existingActionTypes])
 
   const onClick = (type: ActionType) => {
     if(defMap?.get(type)) {

@@ -1,6 +1,6 @@
 import { useIntl } from 'react-intl'
 
-import { Drawer } from '@acx-ui/components'
+import { Drawer, DrawerTypes } from '@acx-ui/components'
 
 import { WorkflowPanel } from '../WorkflowPanel'
 
@@ -17,7 +17,8 @@ export function WorkflowDesigner (props: WorkflowDesignerProps) {
     <Drawer
       visible
       title={$t({ defaultMessage: 'Workflow Designer' })}
-      width={'80vw'}
+      width={'100vw'}
+      drawerType={DrawerTypes.FullHeight}
       push={false}
       onClose={onClose}
     >

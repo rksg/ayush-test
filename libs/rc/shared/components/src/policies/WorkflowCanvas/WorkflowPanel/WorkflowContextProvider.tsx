@@ -37,7 +37,6 @@ interface WorkflowContextProps {
   }
 }
 
-// TODO: Move the ContextProvider to another file for more clearly
 const WorkflowContext = createContext<WorkflowContextProps>({} as WorkflowContextProps)
 export const useWorkflowContext = () => useContext(WorkflowContext)
 
@@ -52,7 +51,7 @@ export const WorkflowContextProvider = (props: { children: ReactNode }) => {
   const [stepDrawerEditMode, setStepDrawerEditMode] = useState(false)
   const [stepDrawerActionDef, setStepDrawerActionDef] = useState<WorkflowActionDef | undefined>()
 
-  const [selectedActionId, setSelectedActionId] = useState<string | undefined>()
+  // const [selectedActionId, setSelectedActionId] = useState<string | undefined>()
 
   const [definitionMap, setDefinitionMap] = useState<Map<string, ActionType>>(new Map())
 
@@ -62,18 +61,14 @@ export const WorkflowContextProvider = (props: { children: ReactNode }) => {
 
   useEffect(() => {
     const findDependencies = (startId: string, dependencies: Set<ActionType>): Set<ActionType> => {
-      console.log('1. Current State : Node = ', nodes, ' and \nEdge = ', edges)
 
       const node = nodes.find(node => node.id === startId)
       if (!node) return dependencies
 
-      console.log(`2. Found Node(${node.id}) with ActionType = ${node.type}`)
       dependencies.add(node.type as ActionType)
 
       const priorEdge = edges.find(edge => edge.target === node.id)
       if (!priorEdge) return dependencies
-
-      console.log(`3. Found prior Node(${priorEdge.source})`)
 
       return findDependencies(priorEdge.source, dependencies)
     }
@@ -106,24 +101,21 @@ export const WorkflowContextProvider = (props: { children: ReactNode }) => {
           setStepDrawerActionDef({ id: definitionId, actionType })
         },
         onClose: () => {
-          console.log('step drawer onClose')
           setStepDrawerVisible(false)
           setStepDrawerEditMode(false)
           setActionDrawerVisible(false)
           setStepDrawerActionDef(undefined)
-          setSelectedActionId(undefined)
+          // setSelectedActionId(undefined)
         }
       },
 
       actionDrawerState: {
         visible: actionDrawerVisible,
-        onOpen: (node?: NodeProps) => {
-          console.log('OpenActionDrawer', node)
+        onOpen: () => {
           setStepDrawerVisible(false)
           setActionDrawerVisible(true)
         },
         onClose: () => {
-          console.log('CloseActionDrawer')
           setActionDrawerVisible(false)
         }
       }

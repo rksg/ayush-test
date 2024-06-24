@@ -19,15 +19,13 @@ export function AupSettings () {
 
   useEffect(() => {
     if (typeof aupFileLocation === 'string') {
-      console.log('Location value = ', aupFileLocation)
       if (aupFileLocation.trim() === '') return
       loadImageWithJWT(aupFileLocation)
         .then(res => {
           setDownloadUrl(res)
         })
-        .catch(ex => {
+        .catch(() => {
           // FIXME: Try to display the error result to the user
-          console.log('Error', ex)
         })
     }
   }, [aupFileLocation])

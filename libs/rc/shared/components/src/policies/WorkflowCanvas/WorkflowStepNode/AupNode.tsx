@@ -1,6 +1,6 @@
 
-import { useIntl }              from 'react-intl'
-import { useNodeId, NodeProps } from 'reactflow'
+import { useIntl }   from 'react-intl'
+import { NodeProps } from 'reactflow'
 
 import { Loader }                          from '@acx-ui/components'
 import { AupIcon }                         from '@acx-ui/icons'
@@ -15,7 +15,6 @@ import BasicActionContent from './BasicActionContent'
 
 export function AupNode (props: NodeProps<WorkflowStep>) {
   const { $t } = useIntl()
-  const nodeId = useNodeId()
   const { data, isLoading, isFetching } = useGetActionByIdQuery({
     params: { actionId: props.data.enrollmentActionId }
   }, { skip: !props.data?.enrollmentActionId })

@@ -48,10 +48,6 @@ export const toStepMap = (steps: WorkflowStep[], definitionMap: Map<string, Acti
     })
   })
 
-  console.groupCollapsed('[toStepMap]')
-  console.log('[StepMap]:', map)
-  console.groupEnd()
-
   return map
 }
 

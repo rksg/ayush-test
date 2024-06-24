@@ -98,7 +98,6 @@ export default function ActionSelectedForm (props: ActionSelectedFormProps) {
             <ActionGenericForm
               actionType={actionDef.actionType}
               modalCallback={() => {
-                console.log('Modal callback')
                 setIsModalVisible(false)
               }}
             />}

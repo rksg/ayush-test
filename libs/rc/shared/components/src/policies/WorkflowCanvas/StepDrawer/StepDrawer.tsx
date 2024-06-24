@@ -41,7 +41,7 @@ export default function StepDrawer (props: StepDrawerProps) {
   const { $t } = useIntl()
   const {
     workflowId: policyId, visible, onClose,
-    actionType, priorNode, selectedActionDef,
+    actionType, priorNode,
     isEdit, actionId
   } = props
   const defaultValue = useGetActionDefaultValueByType(actionType)
@@ -82,13 +82,12 @@ export default function StepDrawer (props: StepDrawerProps) {
   const onSave = async () => {
     try {
       const formContent = await formInstance.validateFields()
-      console.log('SaveData = ', formInstance.getFieldsValue())
 
       isEdit
         ? actionData && await patchActionMutation(actionData, formContent).then(onClose)
         : await createStep(policyId, actionType, formContent, priorNode?.id, onClose)
-    } catch (ex) {
-      console.error('Failed to create/update step. isEdit=', isEdit, ' reason=', ex)
+    } catch (ignore) {
+
     }
   }
 

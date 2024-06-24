@@ -59,8 +59,6 @@ export default function ActionGenericForm (props: ActionGenericFormProps) {
   }
 
   const findDiff = (originalObject: GenericActionData, updatedObject: GenericActionData) => {
-    console.log('Original = ', originalObject)
-    console.log('Updated = ', updatedObject)
     const differences: Partial<Record<keyof GenericActionData, object>> = {}
 
     Object.keys(updatedObject).forEach((key) => {
@@ -75,7 +73,6 @@ export default function ActionGenericForm (props: ActionGenericFormProps) {
 
   const handleUpdateAction = async (formData: GenericActionData) => {
     const patchData = findDiff(data!, formData)
-    console.log('diff', patchData)
 
     await processUploadFile(patchData as unknown as GenericActionData)
 
@@ -91,11 +88,7 @@ export default function ActionGenericForm (props: ActionGenericFormProps) {
       if (formData[fieldKey] !== undefined) {
         try {
           const file: RcFile = formData[fieldKey]!
-          console.log('Process File :: ', file)
           const uploadResource = await getUploadUrl(file)
-
-          console.log('Upload id = ', uploadResource.fileId)
-          console.log('Upload url = ', uploadResource.signedUrl)
 
           await handleUploadFile(file, uploadResource.signedUrl)
           Object.assign(formData, { [fieldKey]: uploadResource.fileId })
@@ -115,21 +108,14 @@ export default function ActionGenericForm (props: ActionGenericFormProps) {
 
   const handleUploadFile = async (file: RcFile, url: string) => {
     return await fetch(url, { method: 'put', body: file, headers: { 'Content-Type': '' } })
-      .then((res) => {
-        console.log('then', res)
-      })
-      .catch((ex) => {
-        console.log('catch', ex)
-      })
   }
 
   const saveData = async (formData: GenericActionData) => {
-    const result = isEdit
+    isEdit
       ? await handleUpdateAction(formData)
       : await handleCreateAction(formData)
 
     modalCallback?.()
-    console.log('Saving data = ', formData, ' and get result = ', result)
   }
 
   return (
