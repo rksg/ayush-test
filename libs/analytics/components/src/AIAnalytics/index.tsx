@@ -64,7 +64,7 @@ const useTabs = () : Tab[] => {
         recommendationTabs.push(aiOpsTab as Tab)
       }
       if (hasPermission({ permission: 'READ_INTENT_AI' })) {
-       displayIntentAI = true
+        displayIntentAI = true
       }
     } else { // R1
       recommendationTabs.push(crrmTab as Tab)
