@@ -5,7 +5,7 @@ import { useIntl }                                        from 'react-intl'
 import { useParams }                                      from 'react-router-dom'
 
 
-import { Button, Card, cssStr, DonutChart, showActionModal, Tooltip } from '@acx-ui/components'
+import { Button, Card, cssStr, DonutChart, PasswordInput, showActionModal, Tooltip } from '@acx-ui/components'
 import {
   administrationApi,
   useDeleteNotificationSmsProviderMutation,
@@ -31,7 +31,7 @@ export const getProviderQueryParam = (providerType: SmsProviderType) => {
     case SmsProviderType.TWILIO:
       return 'twilios'
     case SmsProviderType.ESENDEX:
-      return 'esendex'
+      return 'esendexes'
     case SmsProviderType.OTHERS:
       return 'others'
   }
@@ -219,9 +219,14 @@ const SmsProviderItem = () => {
         <div>
           <Form.Item
             colon={false}
-            label={$t({ defaultMessage: 'API Token' })} />
-          <h3 style={{ marginTop: '-18px' }}>
-            {smsProvider.data?.apiKey}</h3>
+            label={$t({ defaultMessage: 'API Token' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <PasswordInput
+            bordered={false}
+            value={smsProvider.data?.apiKey}
+            style={{ padding: '0px' }}
+          />
         </div>
       </Card>
     </Col>
