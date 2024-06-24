@@ -149,7 +149,7 @@ export enum Features {
   SESSION_DURATION_TOGGLE = 'wifi-guest-pass-portal-session-duration-toggle',
   WIFI_INCREASE_RADIUS_INSTANCE_1024 = 'wifi-increase-radius-instance-1024',
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
-  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
+  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-api-config-template-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle'
