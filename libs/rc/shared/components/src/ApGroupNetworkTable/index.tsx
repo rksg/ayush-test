@@ -6,7 +6,6 @@ import { useIntl } from 'react-intl'
 import { Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
-  transformApGroupNetworkVenueListRbacPayload,
   useApGroupNetworkListQuery,
   useApGroupNetworkListV2Query,
   useNewApGroupNetworkListQuery
@@ -42,15 +41,36 @@ export const defaultApGroupNetworkPayload = {
     'isOweMaster',
     'owePairNetworkId',
     'dsaeOnboardNetwork',
-    'isAllApGroups',
+    'isAllApGroups'
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC'
+}
+
+export const defaultNewApGroupNetworkPayload = {
+  searchString: '',
+  fields: [
+    'check-all',
+    'name',
+    'description',
+    'nwSubType',
+    'clients',
+    'vlan',
+    'cog',
+    'ssid',
+    'vlanPool',
+    'captiveType',
+    'id',
+    'isOweMaster',
+    'owePairNetworkId',
+    'dsaeOnboardNetwork',
+    'venueApGroups.isAllApGroups',
     'venueApGroups.venueId',
     'venueApGroups.apGroupIds'
   ],
   sortField: 'name',
   sortOrder: 'ASC'
 }
-
-export const defaultNewApGroupNetworkPayload = transformApGroupNetworkVenueListRbacPayload(defaultApGroupNetworkPayload)
 
 const defaultArray: NetworkExtended[] = []
 
