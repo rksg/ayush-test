@@ -256,7 +256,7 @@ export const EdgeClusterTable = () => {
       }
     },
     {
-      scopeKey: [EdgeScopes.CREATE],
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
@@ -266,7 +266,7 @@ export const EdgeClusterTable = () => {
       }
     },
     {
-      scopeKey: [EdgeScopes.CREATE],
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) =>
         (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
