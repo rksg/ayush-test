@@ -490,7 +490,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {maxCount} switches are reachable.' }),
+      description: '',
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
