@@ -250,5 +250,15 @@ export const FirmwareUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/apModelFirmwareSchedules',
     newApi: true
+  },
+  getApModelScheduledFirmware: {
+    method: 'get',
+    url: '/apModelFirmwares?status=scheduled',
+    newApi: true
+  },
+  getDistinctFirmwareIdList: {
+    method: 'get',
+    url: '/apModelFirmwares?status=distinctFirmwareVersion',
+    newApi: true
   }
 }
