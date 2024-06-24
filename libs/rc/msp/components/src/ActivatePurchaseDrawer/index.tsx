@@ -53,7 +53,12 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
   const [isTermsAndConditionsChecked, setTermsAndConditions] = useState(false)
   const [form] = useForm()
   const [activatePurchase] = usePatchEntitlementsActivationsMutation()
-  const isActivationEnddatePassed = moment(activationData?.spaEndDate).isBefore(new Date())
+  const isActivationStartdatePassed = moment(activationData?.spaStartDate).isBefore(new Date())
+  const acivationStartDate = activationData?.trial
+    ? activationData.orderCreateDate
+    : (isActivationStartdatePassed
+      ? moment(activationData?.spaStartDate)
+      : moment(new Date()))
 
   const onClose = () => {
     setVisible(false)
@@ -150,9 +155,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       label={$t({ defaultMessage:
             'Select Starting Date for your RUCKUS One hosted cloud services' })}
       style={{ marginTop: '30px' }}
-      initialValue={isActivationEnddatePassed
-        ? moment(activationData?.spaEndDate)
-        : moment(new Date())}
+      initialValue={moment(acivationStartDate)}
 
       rules={[
         { required: true,
@@ -162,10 +165,10 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       children={
         <DatePicker
           format={formatter(DateFormatEnum.DateFormat)}
-          disabled={isActivationEnddatePassed}
+          disabled={isActivationStartdatePassed || activationData?.trial}
           disabledDate={(current) => {
             return current && (current < moment().startOf('day') ||
-            current > moment(activationData?.spaEndDate).endOf('day'))
+            current > moment(activationData?.spaStartDate).endOf('day'))
           }}
           style={{ width: '300px' }}
         />

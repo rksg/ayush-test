@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 
-import userEvent from '@testing-library/user-event'
-import _         from 'lodash'
-import { rest }  from 'msw'
+import userEvent     from '@testing-library/user-event'
+import { cloneDeep } from 'lodash'
+import { rest }      from 'msw'
 
 import { venueApi }                                      from '@acx-ui/rc/services'
 import { WifiUrlsInfo }                                  from '@acx-ui/rc/utils'
@@ -157,8 +157,8 @@ describe('ApPacketCaptureForm', () => {
 
   it('should render enable50G correctly', async () => {
     const apRadioResponse = { ...apRadio, enable24G: false, enable50G: true }
-    let capResponse = _.cloneDeep(r650Cap)
-    capResponse.apModels[0].supportTriRadio = false
+    let capResponse = cloneDeep(r650Cap)
+    capResponse.supportTriRadio = false
 
     mockServer.use(
       rest.get(

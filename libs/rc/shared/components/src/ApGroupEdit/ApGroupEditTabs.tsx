@@ -13,7 +13,9 @@ import {
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
 
-import { ApGroupEditContext, showUnsavedModal } from './index'
+import { ApGroupEditContext } from './context'
+
+import { showUnsavedModal } from '.'
 
 import type { History, Transition } from 'history'
 

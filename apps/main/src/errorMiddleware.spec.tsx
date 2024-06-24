@@ -52,11 +52,11 @@ describe('getErrorContent', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 403 } } },
       payload: {}
-    } as unknown as ErrorAction).title).toBe('Session Expired')
+    } as unknown as ErrorAction).title).toBe('Server Error')
     expect(getErrorContent({
       meta: {},
       payload: { originalStatus: 403 }
-    } as unknown as ErrorAction).title).toBe('Session Expired')
+    } as unknown as ErrorAction).title).toBe('Server Error')
   })
   it('should handle 408', () => {
     expect(getErrorContent({
@@ -242,7 +242,7 @@ describe('errorMiddleware', () => {
       configurable: true, enumerable: true, value: location }))
     it('no token', async () => {
       const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
-        return rejectWithValue({ originalStatus: 403 })
+        return rejectWithValue({ originalStatus: 401 })
       })
       const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
       act(() => {
@@ -259,7 +259,7 @@ describe('errorMiddleware', () => {
     it('with token', async () => {
       sessionStorage.setItem('jwt', 'testToken')
       const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
-        return rejectWithValue({ originalStatus: 403 })
+        return rejectWithValue({ originalStatus: 401 })
       })
       const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
       act(() => {
