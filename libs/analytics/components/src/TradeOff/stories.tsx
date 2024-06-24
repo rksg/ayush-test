@@ -20,7 +20,11 @@ const Template: ComponentStory<typeof TradeOff> = (props: TradeOffProps) => {
     <StepsForm>
       <StepsForm.StepForm>
         <TradeOff {...props}
-          onChange={(current) => setValue(current as string)}
+          onChange={(current) => {
+            // eslint-disable-next-line no-console
+            console.debug('onChange', current)
+            setValue(current as string)
+          }}
           currentValue={value}/>
       </StepsForm.StepForm>
     </StepsForm>

@@ -17,7 +17,7 @@ export type TradeOffProps = {
     headers: React.ReactNode[]
     radios: TradeOffRadio[],
     currentValue: RawValue,
-    onChange?: (value: RawValue) => void
+    onChange: (value: RawValue) => void
 }
 
 export function TradeOff (props: TradeOffProps) {
