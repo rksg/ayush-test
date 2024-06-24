@@ -1,12 +1,14 @@
 
-import { useIsSplitOn }              from '@acx-ui/feature-toggle'
-import { Provider }                  from '@acx-ui/store'
-import { fireEvent, render, screen } from '@acx-ui/test-utils'
+import { rest } from 'msw'
+
+import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { WifiRbacUrlsInfo, APGroupFixtures }     from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import { ApGroupEdit } from './index'
 
-
-
+const { mockAPGroupList } = APGroupFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -25,6 +27,14 @@ describe('AP Group Edit', () => {
   beforeEach(() => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     mockedUsedNavigate.mockClear()
+
+    mockServer.use(
+      rest.post(
+        WifiRbacUrlsInfo.getApGroupsList.url,
+        (_, res, ctx) => {
+          return res(ctx.json(mockAPGroupList))
+        }
+      ))
   })
 
   it('should render correctly - Add ApGroup', async () => {
