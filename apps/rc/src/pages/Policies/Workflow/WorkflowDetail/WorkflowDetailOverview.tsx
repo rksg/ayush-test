@@ -67,14 +67,16 @@ export function WorkflowDetailOverview () {
 
   return (
     <>
-      <Space direction={'vertical'}>
+      <Space direction={'vertical'} style={{ paddingBottom: '24px' }}>
         <SummaryCard
           data={workflowInfo}
           isLoading={workflowQuery.isLoading}
           isFetching={workflowQuery.isFetching}
         />
       </Space>
-      <WorkflowPanel workflowId={policyId!} />
+      <WorkflowPanel
+        workflowId={policyId!}
+      />
     </>
   )
 }

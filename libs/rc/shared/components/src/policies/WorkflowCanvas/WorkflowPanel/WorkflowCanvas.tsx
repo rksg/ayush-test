@@ -1,4 +1,3 @@
-import 'reactflow/dist/style.css' // Very important css must be imported!
 
 import { MouseEvent, useCallback, useEffect, useState } from 'react'
 
@@ -53,6 +52,7 @@ interface WorkflowProps {
 
 export default function WorkflowCanvas (props: WorkflowProps) {
   const { $t } = useIntl()
+  const { isEditMode } = props
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
   const { x, y, zoom } = useViewport()
@@ -135,7 +135,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
         onConnect={onConnect}
         minZoom={0.1}
         attributionPosition={'top-right'}
-        // elementsSelectable={false} -> Editor Mode
+        elementsSelectable={!!isEditMode}
       >
         {/*<MiniMap position={'bottom-left'} />*/}
         <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />

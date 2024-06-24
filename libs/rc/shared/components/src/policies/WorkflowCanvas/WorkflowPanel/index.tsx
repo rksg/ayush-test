@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import 'reactflow/dist/style.css' // Very important css must be imported!
 
+import { Card }    from 'antd'
 import { useIntl } from 'react-intl'
 import {
   ConnectionLineType,
@@ -13,7 +15,7 @@ import {
 } from 'reactflow'
 
 
-import { Card, Loader }                              from '@acx-ui/components'
+import { Loader }                                    from '@acx-ui/components'
 import {
   useGetWorkflowActionDefinitionListQuery,
   useGetWorkflowStepsByIdQuery,
@@ -31,8 +33,6 @@ import { useWorkflowContext, WorkflowContextProvider } from './WorkflowContextPr
 interface WorkflowPanelProps {
   workflowId: string,
   isEditMode?: boolean
-  height?: string,
-  width?: string
 }
 
 const composeNext = (
@@ -177,7 +177,7 @@ const useRequiredDependency = () => {
 
 function WorkflowPanelWrapper (props: WorkflowPanelProps) {
   const { $t } = useIntl()
-  const { workflowId: policyId } = props
+  const { workflowId: policyId, isEditMode } = props
   const {
     nodeState,
     stepDrawerState,
@@ -224,6 +224,7 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
       defQuery
     ]}>
       <WorkflowCanvas
+        isEditMode={isEditMode}
         initialNodes={nodes}
         initialEdges={edges}
       />
@@ -258,17 +259,16 @@ function WorkflowPanelWrapper (props: WorkflowPanelProps) {
 }
 
 export function WorkflowPanel (props: WorkflowPanelProps) {
-  const { width = '80vw', height = '80vh' } = props
+
   return (
-    <Card>
+    <Card
+      style={{ flexGrow: 1, width: '100%', height: '100%', display: 'grid' }}
+    >
       <ReactFlowProvider>
         <WorkflowContextProvider>
-          {/* TODO: The height, width calculate by parent? or based on content size? */}
-          <div style={{ width, height }}>
-            <WorkflowPanelWrapper
-              {...props}
-            />
-          </div>
+          <WorkflowPanelWrapper
+            {...props}
+          />
         </WorkflowContextProvider>
       </ReactFlowProvider>
     </Card>
