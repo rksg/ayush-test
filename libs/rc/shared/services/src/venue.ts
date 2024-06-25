@@ -1009,7 +1009,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       query: ({ params, payload, enableRbac, enableSeparation = false }) => {
         const urlsInfo = (enableSeparation || enableRbac)? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-        (enableRbac ? ApiVersionEnum.v1 : undefined)
+          (enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getVenueRadioCustomization, params, apiCustomHeader)
