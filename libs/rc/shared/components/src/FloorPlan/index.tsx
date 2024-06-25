@@ -13,6 +13,7 @@ import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined } from '@acx-ui/icons'
 import {
   useAddFloorPlanMutation, useApListQuery, useDeleteFloorPlanMutation,
   useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery,
+  useRemoveApPositionMutation,
   useUpdateApPositionMutation,
   useUpdateCloudpathServerPositionMutation,
   useUpdateFloorPlanMutation,
@@ -69,6 +70,7 @@ export function FloorPlan () {
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
   const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const defaultDevices = {
     ap: [],
@@ -188,6 +190,11 @@ export function FloorPlan () {
     updateApPosition,
     { isLoading: isUpdateApPosition }
   ] = useUpdateApPositionMutation()
+
+  const [
+    removeApPosition,
+    { isLoading: isRemoveApPosition }
+  ] = useRemoveApPositionMutation()
 
   const [
     updateCloudpathServerPosition,
@@ -344,12 +351,26 @@ export function FloorPlan () {
   function publishDevicePositionUpdate (device: NetworkDevice, clear: boolean) {
     switch (device.networkDeviceType) {
       case NetworkDeviceType.ap:
-        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
-          payload: (clear ? clearDevicePositionValues : device.position) })
-        break
       case NetworkDeviceType.lte_ap:
-        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
-          payload: (clear ? clearDevicePositionValues : device.position) })
+        if(clear && isUseWifiRbacApi) {
+          removeApPosition({
+            params: {
+              ...params,
+              floorplanId: device.floorplanId,
+              serialNumber: device.serialNumber
+            }
+          })
+        } else {
+          updateApPosition({
+            params: {
+              ...params,
+              floorplanId: device.position?.floorplanId,
+              serialNumber: device.serialNumber
+            },
+            payload: (clear ? clearDevicePositionValues : device.position),
+            enableRbac: isUseWifiRbacApi
+          })
+        }
         break
       case NetworkDeviceType.switch:
         updateSwitchPosition({ params: { ...params, serialNumber: device.serialNumber },
@@ -391,7 +412,7 @@ export function FloorPlan () {
       { isLoading: false, isFetching: isAddFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateSwitchPosition },
-      { isLoading: false, isFetching: isUpdateApPosition },
+      { isLoading: false, isFetching: isUpdateApPosition || isRemoveApPosition },
       { isLoading: false, isFetching: isUpdateCloudpathServerPosition },
       { isLoading: false, isFetching: isUpdateRwgPosition }
     ]}>

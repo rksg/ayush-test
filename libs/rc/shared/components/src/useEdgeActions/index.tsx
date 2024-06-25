@@ -7,6 +7,7 @@ import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
   useRebootEdgeMutation,
+  useShutdownEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
 import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
@@ -29,6 +30,7 @@ export const useEdgeActions = () => {
   const { $t } = useIntl()
   const [ invokeDeleteEdge ] = useDeleteEdgeMutation()
   const [ invokeRebootEdge ] = useRebootEdgeMutation()
+  const [ invokeShutdownEdge ] = useShutdownEdgeMutation()
   const [ invokeFactoryResetEdge ] = useFactoryResetEdgeMutation()
   const [ invokeSendOtp ] = useSendOtpMutation()
 
@@ -56,6 +58,42 @@ export const useEdgeActions = () => {
           closeAfterAction: true,
           handler: () => {
             invokeRebootEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
+          }
+        }]
+      }
+    })
+  }
+
+  const shutdown = (data: EdgeStatus, callback?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t(
+        { defaultMessage: 'Shutdown "{edgeName}"?' },
+        { edgeName: data.name }
+      ),
+      content: $t({
+        defaultMessage: `Shutdown will safely end all operations on SmartEdge. You will need to 
+        manually restart the device. Are you sure you want to shut down this SmartEdge?`
+      }),
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel'
+        }, {
+          text: $t({ defaultMessage: 'Shutdown' }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler: () => {
+            invokeShutdownEdge({
               params: {
                 venueId: data.venueId,
                 edgeClusterId: data.clusterId,
@@ -159,6 +197,7 @@ export const useEdgeActions = () => {
 
   return {
     reboot,
+    shutdown,
     factoryReset,
     deleteEdges,
     sendOtp

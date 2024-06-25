@@ -6,9 +6,8 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { formatter, FormatterType } from '@acx-ui/formatter'
-import { TenantLink }               from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }     from '@acx-ui/utils'
+import { TenantLink }           from '@acx-ui/react-router-dom'
+import type { AnalyticsFilter } from '@acx-ui/utils'
 
 import {
   WidgetType, PieChartResult,
@@ -47,20 +46,6 @@ export const ImpactedClientsTable = ({
     return data[wiredDevicesQueryMapping[type] as keyof ImpactedClientsResult]
   }
 
-  const metricTableColLabelMapping: Record<Exclude<WidgetType, 'cpuUsage' | 'dhcpFailure'>, {
-    title: string
-    formatterType: FormatterType
-  }> = {
-    congestion: {
-      title: $t({ defaultMessage: 'Out Utilization' }),
-      formatterType: 'percentFormat'
-    },
-    portStorm: {
-      title: $t({ defaultMessage: 'Multicast Pkt Count' }),
-      formatterType: 'countFormat'
-    }
-  }
-
   // Get the list of impacted switches
   const impactedSwitches = usePieChartDataQuery({
     ...payload,
@@ -89,11 +74,6 @@ export const ImpactedClientsTable = ({
       }
     }
   })
-
-  const {
-    title: metricTitle,
-    formatterType
-  } = metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping]
 
   const columns: TableProps<ImpactedClients>['columns'] = [
     {
@@ -146,16 +126,6 @@ export const ImpactedClientsTable = ({
       dataIndex: 'devicePortType',
       key: '7',
       sorter: { compare: sortProp('devicePortType', defaultSort) }
-    },
-    {
-      title: metricTitle,
-      dataIndex: 'metricValue',
-      key: '8',
-      sorter: { compare: sortProp('metricValue', defaultSort) },
-      render: (_, { metricValue }) => {
-        return formatter(formatterType)(
-          formatterType === 'percentFormat' ? (metricValue as number/100) : metricValue)
-      }
     }
   ]
 

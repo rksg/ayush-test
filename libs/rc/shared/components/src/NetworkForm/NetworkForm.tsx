@@ -24,6 +24,9 @@ import {
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
   useDeactivateIdentityProviderOnWifiNetworkMutation,
+  useActivateVlanPoolMutation,
+  useDeactivateVlanPoolMutation,
+  useGetVLANPoolPolicyViewModelListQuery,
   useActivateWifiCallingServiceMutation,
   useDeactivateWifiCallingServiceMutation
 } from '@acx-ui/rc/services'
@@ -42,7 +45,8 @@ import {
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   WlanSecurityEnum,
-  useConfigTemplatePageHeaderTitle
+  useConfigTemplatePageHeaderTitle,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -125,10 +129,9 @@ export function NetworkForm (props:{
   const location = useLocation()
   const linkToNetworks = usePathBasedOnConfigTemplate('/networks', '/templates')
   const params = useParams()
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
@@ -146,6 +149,8 @@ export function NetworkForm (props:{
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
+  const activateVlanPool = useVlanPoolActivation()
+  const deactivateVlanPool = useVlanPoolDeactivation()
   const updateWifiCallingActivations = useUpdateWifiCallingActivation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
@@ -192,7 +197,21 @@ export function NetworkForm (props:{
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
       selectFromResult: ({ data }) => ({ certificateTemplateId: data?.data[0]?.id })
     })
-
+  const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
+    params: { tenantId: params.tenantId },
+    payload: {
+      fields: ['name', 'id'],
+      filters: { wifiNetworkIds: [data?.id] },
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    },
+    enableRbac: isPolicyRbacEnabled
+  }, {
+    skip: !isPolicyRbacEnabled || !editMode,
+    selectFromResult: ({ data }) => ({ vlanPoolId: data?.data[0]?.id })
+  })
   // Config Template related states
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
@@ -503,9 +522,10 @@ export function NetworkForm (props:{
       const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
+      updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
       await updateRadiusServer(saveState, data, networkId)
 
-      if (enableRbac) {
+      if (isPolicyRbacEnabled) {
         await updateWifiCallingActivations(networkId, originalNetworkData, saveState)
       }
 
@@ -517,7 +537,6 @@ export function NetworkForm (props:{
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
       }
-
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -585,6 +604,18 @@ export function NetworkForm (props:{
     }
   }
 
+  const updateVlanPoolActivation = async (networkId?: string,
+    vlanPool?: VlanPool | null, originalPoolId?: string) => {
+    if (!isPolicyRbacEnabled)
+      return
+    if (!vlanPool && !originalPoolId)
+      return
+    if (originalPoolId && !vlanPool)
+      await deactivateVlanPool(networkId, originalPoolId)
+    if (vlanPool && originalPoolId !== vlanPool.id)
+      await activateVlanPool(vlanPool, networkId, vlanPool.id)
+  }
+
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       processData(formData)
@@ -594,13 +625,17 @@ export function NetworkForm (props:{
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
 
-      if (enableRbac) {
+      if (isPolicyRbacEnabled) {
         await updateWifiCallingActivations(payload.id, originalNetworkData, formData)
       }
 
+      // eslint-disable-next-line max-len
+      updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
+
+
 
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
@@ -981,6 +1016,34 @@ function useUpdateHotspot20Activation () {
     }
 
   return updateHotspot20Activations
+}
+
+
+function useVlanPoolActivation () {
+  const [activate] = useActivateVlanPoolMutation()
+  const activateIdentityProvider =
+    async (payload: { name: string, vlanMembers: string[] },
+      networkId?: string, providerId?: string) => {
+      return networkId && providerId ?
+        await activate({
+          params: { networkId: networkId, profileId: providerId },
+          payload: payload
+        }).unwrap(): null
+    }
+
+  return activateIdentityProvider
+}
+
+function useVlanPoolDeactivation () {
+  const [deactivate] = useDeactivateVlanPoolMutation()
+  const deactivateIdentityProvider =
+    async (networkId?: string, providerId?: string) => {
+      return networkId && providerId ?
+        await deactivate({ params: { networkId: networkId, profileId: providerId } })
+          .unwrap() : null
+    }
+
+  return deactivateIdentityProvider
 }
 
 function useUpdateWifiCallingActivation () {

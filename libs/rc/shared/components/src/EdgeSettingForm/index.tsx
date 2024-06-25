@@ -45,6 +45,7 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
   const { $t } = useIntl()
   const params = useParams()
   const isEdgeHaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeHaAaEnabled = useIsEdgeFeatureReady(Features.EDGE_HA_AA_TOGGLE)
   const [showOtpMessage, setShowOtpMessage] = useState(false)
   // const [addClusterDrawerVisible, setAddClusterDrawerVisible] = useState(false)
   const { form } = useStepFormContext<EdgeGeneralSetting>()
@@ -100,8 +101,12 @@ export const EdgeSettingForm = (props: EdgeSettingFormProps) => {
               <Form.Item
                 name='clusterId'
                 label={$t({ defaultMessage: 'Cluster' })}
-                // eslint-disable-next-line max-len
-                extra={$t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using SmartEdge’s name by default.' })}
+                extra={isEdgeHaAaEnabled ?
+                  // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up an active-active HA mode cluster using SmartEdge’s name by default.' }) :
+                  // eslint-disable-next-line max-len
+                  $t({ defaultMessage: 'If no cluster is chosen, it automatically sets up a default cluster using SmartEdge’s name by default.' })
+                }
               >
                 <Select options={[
                   {
