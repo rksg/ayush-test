@@ -2,6 +2,8 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { WifiNetworkMessages } from 'libs/rc/shared/utils/src/contents'
 
 import { Provider } from '@acx-ui/store'
 import {
@@ -11,7 +13,6 @@ import {
 } from '@acx-ui/test-utils'
 
 import { LanPortSettings } from '.'
-import { WifiNetworkMessages } from 'libs/rc/shared/utils/src/contents'
 
 const selectedModelCaps = {
   canSupportPoeMode: true,
