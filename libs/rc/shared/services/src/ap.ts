@@ -1075,9 +1075,9 @@ export const apApi = baseApApi.injectEndpoints({
     }),
     getApValidChannel: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac?
-          (enableSeparation ? ApiVersionEnum.v1_1: ApiVersionEnum.v1) : undefined
+        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
+          ( enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getApValidChannel, params, apiCustomHeader)
