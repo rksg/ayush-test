@@ -5,7 +5,6 @@ import {
   AIAnalyticsTabEnum,
   HealthPage,
   IncidentDetails,
-  IncidentListPage,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   RecommendationDetails,
@@ -41,9 +40,7 @@ export default function AnalyticsRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
-        element={(!canUseAnltAdv
-          ? <IncidentListPage />
-          : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)}
+        element={<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />}
       />
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
       <Route path='analytics/health' element={HealthComponent} />
