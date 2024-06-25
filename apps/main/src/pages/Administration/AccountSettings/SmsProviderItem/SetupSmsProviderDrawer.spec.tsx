@@ -96,14 +96,5 @@ describe('Set SMS Provider Drawer', () => {
 
     expect(screen.getByText('Set SMS Provider')).toBeVisible()
 
-    // await userEvent.click(screen.getAllByRole('radio')[1])
-    // expect(screen.getByText('Client ID')).toBeVisible()
-    // expect(screen.getByText('Client secret')).toBeVisible()
-    // expect(screen.queryByText('IdP Metadata')).toBeNull()
-
-    // await userEvent.click(screen.getAllByRole('radio')[0])
-    // expect(screen.getByText('IdP Metadata')).toBeVisible()
-    // expect(screen.queryByText('Client ID')).toBeNull()
-    // expect(screen.queryByText('Client secret')).toBeNull()
   })
 })

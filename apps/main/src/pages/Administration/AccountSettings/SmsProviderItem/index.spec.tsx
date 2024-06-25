@@ -206,7 +206,6 @@ describe('SMS Provider Form Item', () => {
       })
     expect(screen.getByText('SMS Provider')).toBeVisible()
     expect(screen.getByText('API Token')).toBeVisible()
-    // expect(screen.getByText('Send URL')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
 

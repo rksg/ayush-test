@@ -51,6 +51,7 @@ export const reloadSmsNotification = (timeoutSec?: number) => {
 const SmsProviderItem = () => {
   const { $t } = useIntl()
   const params = useParams()
+  const [form] = Form.useForm()
   const [drawerVisible, setDrawerVisible] = useState(false)
   const [isEditMode, setEditMode] = useState(false)
   const [ruckusOneUsed, setRuckusOneUsed] = useState<number>(0)
@@ -73,7 +74,7 @@ const SmsProviderItem = () => {
 
   const onSaveUtilization = () => {
     const payload: NotificationSmsUsage = {
-      threshold: 60, //smsThreshold,
+      threshold: form.getFieldValue('threshold'),
       provider: SmsProviderType.RUCKUS_ONE
     }
     updateNotificationSms({ params , payload: payload }).then()
@@ -340,11 +341,19 @@ const SmsProviderItem = () => {
           onClick={() => { setIsChangeThreshold(true) }}>{$t({ defaultMessage: 'Change' })}</Button>
       </div>}
       {isChangeThreshold && <div>
-        <Input
-          style={{ padding: 3, width: '50px', height: '28px' }}
-          type='number'
-          min={50}
-          max={100}/>
+        <Form.Item
+          name='threshold'
+          noStyle
+          initialValue={smsThreshold}
+          children={
+            <Input
+              type='number'
+              min={50}
+              max={100}
+              style={{ padding: 3, width: '50px', height: '28px' }}
+            />
+          }
+        />
         <Button
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
