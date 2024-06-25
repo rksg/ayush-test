@@ -747,16 +747,16 @@ export const wiredKPIsForTab = () => {
     },
     connection: {
       kpis: [
-        'switchAuthentication',
-        'switchDhcp'
+        'switchAuthentication'
+        //'switchDhcp'
       ]
     },
     performance: {
       kpis: [
         'switchPortUtilization',
         'switchUplinkPortUtilization',
-        'switchInterfaceAnomalies',
-        'switchStormControl'
+        'switchInterfaceAnomalies'
+        //'switchStormControl'
       ]
     },
     infrastructure: {
