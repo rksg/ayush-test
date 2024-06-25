@@ -15,7 +15,7 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
-import { DetailLevel, setUserProfile, UserProfile, UserProfileContext, UserProfileContextProps, UserUrlsInfo } from '@acx-ui/user'
+import { DetailLevel, setUserProfile, UserProfile, UserProfileContext, UserProfileContextProps, UserRbacUrlsInfo, UserUrlsInfo } from '@acx-ui/user'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
@@ -146,8 +146,22 @@ describe('Convert NonVAR MSP Button', () => {
         UserUrlsInfo.getAllUserSettings.url,
         (_req, res, ctx) => res(ctx.json({}))
       ),
+      rest.get(
+        UserRbacUrlsInfo.getAllUserSettings.url,
+        (_req, res, ctx) => res(ctx.json({}))
+      ),
       rest.put(
         UserUrlsInfo.saveUserSettings.url,
+        (req, res, ctx) => {
+          mockedSaveFn({
+            params: req.url.pathname,
+            body: req.body
+          })
+          return res(ctx.status(202))
+        }
+      ),
+      rest.patch(
+        UserRbacUrlsInfo.saveUserSettings.url,
         (req, res, ctx) => {
           mockedSaveFn({
             params: req.url.pathname,
@@ -185,7 +199,7 @@ describe('Convert NonVAR MSP Button', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
-        params: '/admins/admins-settings/ui/COMMON',
+        params: '/admins/settings/ui/COMMON',
         body: {
           MSP: { nonVarMspOnboard: true }
         }
@@ -202,6 +216,13 @@ describe('Convert NonVAR MSP Button', () => {
     mockServer.use(
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
+        (_req, res, ctx) => res(ctx.json({ COMMON: JSON.stringify({
+          other: true,
+          MSP: { mspEcNameChanged: false }
+        }) }))
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getAllUserSettings.url,
         (_req, res, ctx) => res(ctx.json({ COMMON: JSON.stringify({
           other: true,
           MSP: { mspEcNameChanged: false }
@@ -231,7 +252,7 @@ describe('Convert NonVAR MSP Button', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
-        params: '/admins/admins-settings/ui/COMMON',
+        params: '/admins/settings/ui/COMMON',
         body: {
           other: true,
           MSP: {

@@ -16,6 +16,10 @@ import {
   BetaStatus
 } from './types'
 
+const getUserUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? UserRbacUrlsInfo : UserUrlsInfo
+}
+
 export const UserUrlsInfo = {
   getCloudMessageBanner: {
     method: 'get',
@@ -222,8 +226,7 @@ export const {
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
-      query: ({ params, enableRbac }) => createHttpRequest(enableRbac
-        ? UserUrlsInfo.getAllUserSettings : UserUrlsInfo.getAllUserSettings, params),
+      query: ({ params }) => createHttpRequest(UserRbacUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
         let result:UserSettingsUIModel = {}
         Object.keys(userSettings).forEach((key: string) => {
@@ -233,16 +236,15 @@ export const {
       }
     }),
     saveUserSettings: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => ({
-        ...createHttpRequest(enableRbac
-          ? UserRbacUrlsInfo.saveUserSettings : UserUrlsInfo.saveUserSettings, params),
+      query: ({ params, payload }) => ({
+        ...createHttpRequest(UserRbacUrlsInfo.saveUserSettings, params),
         body: payload
       })
     }),
     getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(enableRbac
-          ? UserRbacUrlsInfo.getAccountTier : UserUrlsInfo.getAccountTier, params)
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.getAccountTier, params)
         return {
           ...req
         }
@@ -365,8 +367,8 @@ export const {
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const req = createHttpRequest(enableRbac
-          ? UserRbacUrlsInfo.getBetaStatus : UserUrlsInfo.getBetaStatus, params)
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.getBetaStatus, params)
         return {
           ...req
         }
@@ -377,8 +379,8 @@ export const {
     }),
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const req = createHttpRequest(enableRbac
-          ? UserRbacUrlsInfo.toggleBetaStatus : UserUrlsInfo.toggleBetaStatus, params)
+        const userUrlsInfo = getUserUrls(enableRbac)
+        const req = createHttpRequest(userUrlsInfo.toggleBetaStatus, params)
         return {
           ...req,
           body: payload
