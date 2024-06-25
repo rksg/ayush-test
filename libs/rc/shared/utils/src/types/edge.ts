@@ -1,7 +1,7 @@
 import type { TimeStamp } from '@acx-ui/types'
 
-import { FirmwareCategory, SkippedVersion }                                                                                                                                                    from '..'
-import { ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
+import { FirmwareCategory, SkippedVersion }                                                                                                                                                                                     from '..'
+import { ClusterHighAvailabilityModeEnum, ClusterNodeStatusEnum, EdgeIpModeEnum, EdgeLagLacpModeEnum, EdgeLagTimeoutEnum, EdgeLagTypeEnum, EdgePortTypeEnum, EdgeServiceTypeEnum, EdgeStatusSeverityEnum, NodeClusterRoleEnum } from '../models/EdgeEnum'
 
 export type EdgeSerialNumber = string
 export const PRODUCT_CODE_VIRTUAL_EDGE = '96'
@@ -385,7 +385,8 @@ export interface EdgeClusterStatus {
   clusterStatus?: string
   edgeList?: EdgeStatus[]
   description?: string
-  hasCorePort?: boolean
+  hasCorePort?: boolean,
+  highAvailabilityMode?: ClusterHighAvailabilityModeEnum
 }
 
 export interface EdgeClusterTableDataType extends EdgeStatus,

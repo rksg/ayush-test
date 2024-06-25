@@ -258,11 +258,10 @@ function Hotspot20Form () {
           <Button type='link'
             disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
             onClick={handleAddOperator}
-            children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '10px' }} />
+            children={$t({ defaultMessage: 'Add' })} />
         </Space>
 
-        <Space>
+        <Space align='start'>
           <Form.Item
             label='Identity Provider'
             name={['hotspot20Settings', 'identityProviders']}
@@ -287,7 +286,7 @@ function Hotspot20Form () {
             disabled={disabledAddProvider.current}
             onClick={handleAddProvider}
             children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '10px' }} />
+            style={{ paddingTop: '36px' }} />
         </Space>
 
         {editMode &&

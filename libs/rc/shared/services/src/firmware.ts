@@ -156,11 +156,19 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       }
     }),
     getFirmwareVersionIdList: build.query<string[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getFirmwareVersionIdList, params)
-        return {
-          ...req
+      query: ({ params, enableRbac }) => {
+        const apiHeaders = enableRbac ? v1Header : {}
+        // eslint-disable-next-line max-len
+        const apiInfo = FirmwareUrlsInfo[enableRbac ? 'getDistinctFirmwareIdList' : 'getFirmwareVersionIdList']
+
+        return createHttpRequest(apiInfo, params, apiHeaders)
+      },
+      transformResponse: (response: string[] | { id: string }[], _meta, arg: RequestPayload) => {
+        if (arg.enableRbac) {
+          const res = response as { id: string }[]
+          return res.map(r => r.id)
         }
+        return response as string[]
       },
       providesTags: [{ type: 'Firmware', id: 'LIST' }]
     }),
@@ -588,7 +596,23 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       invalidatesTags: [{ type: 'EdgeFirmware', id: 'LIST' }]
     }),
     getScheduledFirmware: build.query<CloudVersion, RequestPayload>({
-      query: ({ params }) => createHttpRequest(FirmwareUrlsInfo.getScheduledFirmware, params)
+      query: ({ params, enableRbac }) => {
+        const apiHeaders = enableRbac ? v1Header : {}
+        // eslint-disable-next-line max-len
+        const apiInfo = FirmwareUrlsInfo[enableRbac ? 'getApModelScheduledFirmware' : 'getScheduledFirmware']
+
+        return createHttpRequest(apiInfo, params, apiHeaders)
+      },
+      // eslint-disable-next-line max-len
+      transformResponse: (response: CloudVersion | { id: string }[], _meta, arg: RequestPayload) => {
+        if (arg.enableRbac) {
+          const res = response as { id: string }[]
+          return {
+            scheduleVersionList: res.map(r => r.id)
+          }
+        }
+        return response as CloudVersion
+      }
     }),
     // eslint-disable-next-line max-len
     getVenueApModelFirmwareList: build.query<TableResult<FirmwareVenuePerApModel>, RequestPayload>({

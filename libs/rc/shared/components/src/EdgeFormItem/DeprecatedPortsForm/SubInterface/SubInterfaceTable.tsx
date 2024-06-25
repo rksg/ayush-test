@@ -5,12 +5,13 @@ import { Col, Row }            from 'antd'
 import { useIntl }             from 'react-intl'
 
 import { Loader, Table, TableProps, showActionModal } from '@acx-ui/components'
-import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
+import { Features }                                   from '@acx-ui/feature-toggle'
 import { EdgeSubInterface, TableQuery }               from '@acx-ui/rc/utils'
 import { RequestPayload }                             from '@acx-ui/types'
 import { filterByAccess, hasAccess }                  from '@acx-ui/user'
 
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '../../../ImportFileDrawer'
+import { useIsEdgeFeatureReady }                           from '../../../useEdgeActions'
 import * as UI                                             from '../styledComponents'
 
 import SubInterfaceDrawer from './SubInterfaceDrawer'
@@ -36,7 +37,8 @@ const importTemplateLink = 'assets/templates/sub-interfaces_import_template.csv'
 
 export const SubInterfaceTable = (props: SubInterfaceTableProps) => {
   const { $t } = useIntl()
-  const isEdgeSubInterfaceCSVEnabled = useIsSplitOn(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
+  // eslint-disable-next-line max-len
+  const isEdgeSubInterfaceCSVEnabled = useIsEdgeFeatureReady(Features.EDGES_SUB_INTERFACE_CSV_TOGGLE)
   const {
     currentTab,
     ip,

@@ -596,64 +596,60 @@ export const r650ap = {
 }
 
 export const r650Cap = {
-  version: '6.2.0.103.513',
-  apModels: [
+  model: 'R650',
+  lanPorts: [
     {
-      model: 'R650',
-      lanPorts: [
-        {
-          id: '1',
-          defaultType: 'TRUNK',
-          untagId: 1,
-          vlanMembers: '1-4094',
-          trunkPortOnly: false,
-          supportDisable: true,
-          isPoePort: false,
-          isPoeOutPort: false
-        },
-        {
-          id: '2',
-          defaultType: 'TRUNK',
-          untagId: 1,
-          vlanMembers: '1-4094',
-          trunkPortOnly: false,
-          supportDisable: false,
-          isPoePort: true,
-          isPoeOutPort: false
-        }
-      ],
-      allowDfsCountry: ['US', 'SG'],
-      allowCbandCountry: ['GB'],
-      lldpEnable: true,
-      lldpAdInterval: 30,
-      lldpHoldTime: 120,
-      lldpMgmtEnable: true,
-      ledOn: true,
-      isOutdoor: false,
-      has160MHzChannelBandwidth: true,
-      canSupportPoeOut: false,
-      canSupportPoeMode: true,
-      canSupportLacp: true,
-      requireOneEnabledTrunkPort: true,
-      poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
-      lanPortPictureDownloadUrl: 'https://storage.googleapis.com/',
-      pictureDownloadUrl:
-        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/',
-      canSupportCellular: false,
-      simCardPrimaryEnabled: true,
-      simCardPrimaryRoaming: true,
-      simCardSecondaryEnabled: true,
-      simCardSecondaryRoaming: true,
-      capabilityScore: 140,
-      supportTriRadio: true,
-      supportDual5gMode: true,
-      supportChannel144: true,
-      support11AX: true,
-      maxChannelization24G: 40,
-      maxChannelization5G: 160,
-      supportMesh: true
+      id: '1',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: true,
+      isPoePort: false,
+      isPoeOutPort: false
+    },
+    {
+      id: '2',
+      defaultType: 'TRUNK',
+      untagId: 1,
+      vlanMembers: '1-4094',
+      trunkPortOnly: false,
+      supportDisable: false,
+      isPoePort: true,
+      isPoeOutPort: false
     }
-  ]
+  ],
+  allowDfsCountry: ['US', 'SG'],
+  allowCbandCountry: ['GB'],
+  lldpEnable: true,
+  lldpAdInterval: 30,
+  lldpHoldTime: 120,
+  lldpMgmtEnable: true,
+  ledOn: true,
+  isOutdoor: false,
+  has160MHzChannelBandwidth: true,
+  canSupportPoeOut: false,
+  canSupportPoeMode: true,
+  canSupportLacp: true,
+  requireOneEnabledTrunkPort: true,
+  poeModeCapabilities: ['Auto', '802.3af', '802.3at'],
+  lanPortPictureDownloadUrl: 'https://storage.googleapis.com/',
+  pictureDownloadUrl:
+        'https://storage.googleapis.com/dev-alto-file-storage-0/wifi/',
+  canSupportCellular: false,
+  simCardPrimaryEnabled: true,
+  simCardPrimaryRoaming: true,
+  simCardSecondaryEnabled: true,
+  simCardSecondaryRoaming: true,
+  capabilityScore: 140,
+  supportTriRadio: true,
+  supportDual5gMode: true,
+  supportChannel144: true,
+  support11AX: true,
+  maxChannelization24G: 40,
+  maxChannelization5G: 160,
+  supportMesh: true
+
 }
 
 export const r760Ap = {

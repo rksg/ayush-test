@@ -196,7 +196,7 @@ describe('RBAC API', () => {
   })
   it('deleteUserResourceGroup api should work', async () => {
     mockServer.use(
-      rest.delete(`${rbacApiURL}/users/resourceGroup`, (_req, res, ctx) => res(ctx.status(204)))
+      rest.delete(`${rbacApiURL}/users`, (_req, res, ctx) => res(ctx.status(204)))
     )
     const { data } = await store.dispatch(
       rbacApi.endpoints.deleteUserResourceGroup.initiate({

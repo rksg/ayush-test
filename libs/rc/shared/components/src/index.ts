@@ -13,10 +13,10 @@ export { ApsTabContext } from './ApTable/context'
 export { groupedFields } from './ApTable/config'
 export { CountAndNamesTooltip } from './CountAndNamesTooltip'
 export { ApAntennaTypeSelector } from './ApAntennaTypeSelector'
-export { ApGroupTable, defaultApGroupPayload } from './ApGroupTable'
+export { ApGroupTable  } from './ApGroupTable'
+export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ApGroupEdit } from './ApGroupEdit'
 export { ApGroupNetworksTable } from './ApGroupNetworkTable'
-export { ApGroupsTabContext } from './ApGroupTable/context'
 export { ApGroupDetails } from './ApGroupDetails'
 export { ClientTabContext } from './ClientDualTable/context'
 export { ClientDualTable } from './ClientDualTable'
@@ -97,6 +97,7 @@ export { SwitchVeTable } from './SwitchVeTable'
 export { ToggleButton } from './ToggleButton'
 export { TopologyFloorPlanWidget } from './TopologyFloorPlanWidget'
 export { useApActions } from './useApActions'
+export { useApGroupsFilterOpts, defaultApGroupsFilterOptsPayload } from './useApGroupActions'
 export { useSwitchActions } from './useSwitchActions'
 export { useSwitchFirmwareUtils } from './useSwitchFirmwareUtils'
 export { VenueDevicesWidget } from './VenueDevicesWidget'
@@ -166,7 +167,8 @@ export type {
 } from './PersonalIdentityNetworkDetailTableGroup/AccessSwitchTable'
 export {
   useEdgeActions,
-  useIsEdgeFeatureReady
+  useIsEdgeFeatureReady,
+  useIsEdgeReady
 } from './useEdgeActions'
 export { EdgeServiceStatusLight } from './EdgeServiceStatusLight'
 export { PropertyManagementForm } from './PropertyManagementForm'
