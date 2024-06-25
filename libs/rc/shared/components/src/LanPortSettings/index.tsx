@@ -165,7 +165,7 @@ export function LanPortSettings (props: {
       name={['lan', index, 'untagId']}
       label={<>
         {$t({ defaultMessage: 'VLAN untag ID' })}
-        { lan?.type === ApLanPortTypeEnum.TRUNK ?
+        { lan?.type === ApLanPortTypeEnum.TRUNK && isTrunkPortUntaggedVlanEnabled ?
           <ApCompatibilityToolTip
             title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
             visible={supportApCompatibleCheck}
