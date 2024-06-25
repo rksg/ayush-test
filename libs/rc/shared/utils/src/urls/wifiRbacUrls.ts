@@ -310,13 +310,13 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getApRadioCustomization: {
     method: 'get',
     //url: '/venues/aps/:serialNumber/radioSettings',
-    url: '/venues//:venueId/aps/:serialNumber/radioSettings',
+    url: '/venues/:venueId/aps/:serialNumber/radioSettings',
     newApi: true
   },
   updateApRadioCustomization: {
     method: 'put',
     //url: '/venues/aps/:serialNumber/radioSettings',
-    url: '/venues//:venueId/aps/:serialNumber/radioSettings',
+    url: '/venues/:venueId/aps/:serialNumber/radioSettings',
     newApi: true
   },
   pingAp: {
