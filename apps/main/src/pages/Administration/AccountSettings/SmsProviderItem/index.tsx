@@ -77,7 +77,7 @@ const SmsProviderItem = () => {
       provider: SmsProviderType.RUCKUS_ONE
     }
     updateNotificationSms({ params , payload: payload }).then()
-    setIsChangeThreshold(false)    
+    setIsChangeThreshold(false)
     reloadSmsNotification(2)
   }
 
@@ -118,7 +118,7 @@ const SmsProviderItem = () => {
     ? [
       { value: 100, name: 'usage', color: cssStr('--acx-accents-blue-50') }
     ]
-    : (smsThreshold > ruckusOneUsed  
+    : (smsThreshold > ruckusOneUsed
       ? [
         { value: ruckusOneUsed, name: 'usage', color: cssStr('--acx-accents-blue-50') },
         { value: smsThreshold - ruckusOneUsed,
@@ -354,7 +354,8 @@ const SmsProviderItem = () => {
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
           size='small'
-          onClick={() => { setIsChangeThreshold(false) }}>{$t({ defaultMessage: 'Cancel' })}</Button>
+          onClick={() => { setIsChangeThreshold(false) }}>{$t({ defaultMessage: 'Cancel' })}
+        </Button>
       </div>}
     </>
   }

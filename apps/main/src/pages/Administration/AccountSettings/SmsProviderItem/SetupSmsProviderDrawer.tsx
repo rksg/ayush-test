@@ -98,9 +98,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       setSelected(providerType as SmsProviderType)
       onClose()
     } catch (error) {
-      // remove after Backend fix
-      setSelected(providerType as SmsProviderType)
-      onClose()
       console.log(error) // eslint-disable-line no-console
     }
   }
