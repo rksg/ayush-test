@@ -1,16 +1,8 @@
-import styled, { css } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
-const arrowStyle = css`
-  path {
-    stroke: var(--acx-primary-black);
-  }
-  width: 8px;
-  height: 8px;
-  vertical-align: middle;
-`
 export const CompareSliderWrapper = styled.div`
   .compare-slider {
-    border: 2px solid var(--acx-neutrals-40);
+    border: 1px solid var(--acx-neutrals-40);
     border-radius: 5px;
   }
 
@@ -36,20 +28,20 @@ export const CompareSliderWrapper = styled.div`
     grid-auto-flow: column;
     place-content: center;
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     pointer-events: auto;
     background-color: var(--acx-primary-white);
   }
 
-  .arrow-left {
-    ${arrowStyle}
-    stroke-width: 2px;
-  }
-
-  .arrow-right {
-    ${arrowStyle}
-    stroke-width: 2px;
+  .arrow-left, .arrow-right {
+    path {
+      stroke: var(--acx-primary-black);
+    }
+    width: 8px;
+    height: 8px;
+    vertical-align: middle;
+    stroke-width: 4px;
   }
 `
