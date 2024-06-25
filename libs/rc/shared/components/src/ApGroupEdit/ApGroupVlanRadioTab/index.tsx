@@ -216,7 +216,7 @@ export function ApGroupVlanRadioTab () {
 export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
   const { tenantId } = useParams()
   const { isTemplate } = useConfigTemplate()
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
     vlanPoolingNameMap: data?.data
       ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
@@ -233,7 +233,8 @@ export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
 
   const vlanPoolingNonTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId },
-    payload: vlanPoolPayload
+    payload: vlanPoolPayload,
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: skipQuery || isTemplate,
     selectFromResult: transformVlanPoolData
