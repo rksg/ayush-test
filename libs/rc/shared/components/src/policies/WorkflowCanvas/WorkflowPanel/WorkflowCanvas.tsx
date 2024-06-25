@@ -63,12 +63,17 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodesDraggable={false}
       nodesConnectable={false}
       minZoom={0.1}
-      attributionPosition={'top-right'}
+      attributionPosition={'bottom-left'}
       elementsSelectable={!!isEditMode}
+      // style={{ background: isEditMode ? 'var(--acx-neutrals-15)' : '' }}
     >
       {/*<MiniMap position={'bottom-left'} />*/}
-      <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />
-      <Background color='#ccc' variant={BackgroundVariant.Dots} />
+      {isEditMode &&
+        <>
+          <Controls fitViewOptions={{ maxZoom: 1 }} position={'bottom-right'} />
+          <Background color='#ccc' variant={BackgroundVariant.Dots} />
+        </>
+      }
     </ReactFlow>
   )
 }
