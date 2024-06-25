@@ -1077,7 +1077,7 @@ export const apApi = baseApApi.injectEndpoints({
       query: ({ params, enableRbac, enableSeparation = false }) => {
         const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
         const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-          ( enableRbac ? ApiVersionEnum.v1 : undefined)
+          (enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getApValidChannel, params, apiCustomHeader)
