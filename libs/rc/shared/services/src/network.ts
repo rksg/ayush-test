@@ -2,7 +2,6 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import _                                           from 'lodash'
 
 import {
   ApCompatibility,
@@ -36,8 +35,14 @@ import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { filterNetworksByVenueApGroupFilters, getVenueApGroupFilters } from './networkVenueUtils'
-
+import {
+  aggregatedRbacNetworksVenueData,
+  aggregatedRbacVenueNetworksData,
+  fetchRbacApGroupNetworkVenueList,
+  fetchRbacNetworkVenueList,
+  fetchRbacVenueNetworkList,
+  getNetworkDeepList
+} from './networkVenueUtils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -872,19 +877,6 @@ export const networkApi = baseNetworkApi.injectEndpoints({
   })
 })
 
-const calculateRbacNetworkActivated = (network: WifiNetwork, venueId?: string) => {
-  // TODO: isDisabled, validation
-  const activatedObj = { isActivated: false, isDisabled: false, errors: [] as string[] }
-
-  if (network.venueApGroups) {
-    activatedObj.isActivated = venueId
-      ? network.venueApGroups.some(venue => venue.venueId === venueId)
-      : Boolean(network.venueApGroups?.length)
-  }
-
-  return activatedObj
-}
-
 const calculateNetworkActivated = (res?: NetworkVenue) => {
   const activatedObj = { isActivated: false, isDisabled: false, errors: [] as string[] }
   let errorsCounter = 0
@@ -1187,95 +1179,6 @@ export const aggregatedNetworksVenueDataV2 = (venueList: TableResult<Venue>,
   }
 }
 
-export const fetchRbacNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
-  const networkVenuesListInfo = {
-    ...createHttpRequest(arg.payload.isTemplate
-      ? ConfigTemplateUrlsInfo.getVenuesTemplateList
-      : CommonUrlsInfo.getVenuesList
-    , arg.params),
-    body: arg.payload
-  }
-  const networkVenuesListQuery = await fetchWithBQ(networkVenuesListInfo)
-  const networkVenuesList = networkVenuesListQuery.data as TableResult<Venue>
-  const venueIds:string[] = networkVenuesList.data?.filter(v => {
-    if (v.aggregatedApStatus) {
-      return Object.values(v.aggregatedApStatus || {}).reduce((a, b) => a + b, 0) > 0
-    }
-    return false
-  }).map(v => v.id) || []
-
-  const networkDeepList = await getNetworkDeepList([arg.params?.networkId], fetchWithBQ, arg.payload.isTemplate)
-  const networkDeep = Array.isArray(networkDeepList?.response) ?
-    networkDeepList?.response[0] : undefined
-  let networkViewmodel = {} as WifiNetwork
-
-  if (!arg.params?.networkId) {
-    // eslint-disable-next-line no-console
-    console.error('missing networkId', arg.params?.networkId)
-  }
-
-  if (networkDeep?.wlan?.ssid && arg.params?.networkId) {
-    const networkListResult = await fetcRbacNetworkList({
-      payload: {
-        fields: ['id', 'name', 'venueApGroups'],
-        filters: { id: [arg.params?.networkId] }
-      }
-    }, fetchWithBQ)
-    networkViewmodel = networkListResult.data?.data[0]
-  }
-
-  return {
-    error: networkVenuesListQuery.error,
-    networkVenuesList,
-    networkViewmodel,
-    networkDeep,
-    venueIds
-  }
-}
-
-export const aggregatedRbacNetworksVenueData = (
-  venueList: TableResult<Venue>,
-  networkViewmodel: WifiNetwork,
-  networkDeep?: NetworkDetail,
-  venueIdsToIncompatible:{ [key:string]: number } = {}
-) => {
-  const data:Venue[] = []
-  venueList.data.forEach(item => {
-    const deepVenue = networkDeep?.venues?.find(
-      i => i.venueId === item.id
-    )
-    data.push({
-      ...item,
-      activated: calculateRbacNetworkActivated(networkViewmodel, item.id),
-      deepVenue: deepVenue,
-      incompatible: venueIdsToIncompatible[item.id] ?? 0
-    })
-  })
-  return {
-    ...venueList,
-    data
-  }
-}
-
-export const fetchRbacVenueNetworkList = async (arg: any, fetchWithBQ: any) => {
-  const networkListResult = await fetcRbacNetworkList(arg, fetchWithBQ)
-  const networkList = networkListResult.data
-
-  let networkDeepListList = {} as { response: NetworkDetail[] }
-
-  const networkIds = networkList?.data?.map(item => item.id) || []
-
-  if (networkIds.length > 0) {
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
-  }
-  return {
-    error: networkListResult.error as FetchBaseQueryError,
-    networkList,
-    networkDeepListList,
-    networkIds
-  }
-}
-
 export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
   const venueNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
@@ -1355,40 +1258,6 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
   }
 }
 
-export const aggregatedRbacVenueNetworksData = (
-  venueId: string,
-  networkList: TableResult<WifiNetwork>,
-  networkDeepListList:{ response: NetworkDetail[] },
-  apCompatibilities:{ [key:string]: number } = {}) => {
-
-  const data:Network[] = []
-  networkList.data.forEach(item => {
-    const deepNetwork = networkDeepListList?.response?.find(
-      i => i.id === item.id
-    )
-
-    if (item?.dsaeOnboardNetwork) {
-      item = { ...item,
-        ...{ children: [{ ...item?.dsaeOnboardNetwork,
-          isOnBoarded: true,
-          activated: calculateRbacNetworkActivated(item, venueId) } as WifiNetwork] }
-      }
-    }
-
-    data.push({
-      ...(item as Network),
-      activated: calculateRbacNetworkActivated(item, venueId),
-      deepNetwork: deepNetwork,
-      incompatible: apCompatibilities[item.id] ?? 0
-    })
-  })
-
-  return {
-    ...networkList,
-    data
-  }
-}
-
 export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
   const apGroupNetworkListInfo = {
     ...createHttpRequest(arg.payload.isTemplate
@@ -1430,78 +1299,6 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
     networkDeepListList
   }
 }
-
-const fetcRbacNetworkList = async (arg:any, fetchWithBQ:any) => {
-  const venueApGroupFilters = getVenueApGroupFilters(arg.payload.filters)
-  const isFilterByIsAllApGroups = venueApGroupFilters.includes('venueApGroups.isAllApGroups')
-  const networkListInfo = arg.payload.isTemplate
-    ? {
-      ...createHttpRequest(VenueConfigTemplateUrlsInfo.getApGroupNetworkList, arg.params),
-      body: arg.payload
-    }
-    : {
-      ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, arg.params, GetApiVersionHeader(ApiVersionEnum.v1)),
-      body: JSON.stringify({
-        ...arg.payload,
-        filters: isFilterByIsAllApGroups
-          ? { ..._.omit(arg.payload.filters, 'venueApGroups.isAllApGroups') }
-          : arg.payload.filters
-      })
-    }
-
-  const networkListQuery = await fetchWithBQ(networkListInfo)
-  const networkList = networkListQuery.data as TableResult<WifiNetwork>
-  if (networkList.data?.length && venueApGroupFilters.length > 1) {
-    networkList.data = filterNetworksByVenueApGroupFilters(networkList.data, arg.payload.filters)
-    networkList.totalCount = networkList.data.length
-  }
-  return {
-    data: networkList,
-    error: networkListQuery.error
-  }
-}
-
-export const fetchRbacApGroupNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
-  const networkListResult = await fetcRbacNetworkList(arg, fetchWithBQ)
-  const networkList = networkListResult.data
-
-  let networkDeepListList = {} as { response: NetworkDetail[] }
-
-  if (networkList?.data.length) {
-    const networkIds = networkList.data.map(item => item.id)
-    // `deepNetwork.venues` is deprecated in GET v1 /wifiNetworks/:networkId
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
-  }
-
-  return {
-    error: networkListResult.error,
-    networkList: networkList ?? ([] as WifiNetwork[]),
-    networkDeepListList
-  }
-}
-
-const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false, enableRbac: boolean = false) => {
-  const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-  const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
-  const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-
-  const networkDeepList: NetworkDetail[] = []
-
-  if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
-    return { response: networkDeepList }
-  }
-
-  for (let i=0; i<networkIds.length; i++) {
-    const networkQuery = await fetchWithBQ(createHttpRequest(
-      isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : urlsInfo.getNetwork
-      , { networkId: networkIds[i] }, apiCustomHeader))
-    networkDeepList.push(networkQuery.data)
-  }
-
-  return { response: networkDeepList }
-}
-
-
 
 export const {
   useNetworkListQuery,

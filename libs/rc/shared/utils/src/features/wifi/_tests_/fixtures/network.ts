@@ -1,6 +1,6 @@
 import { WifiNetwork } from '../../../../types/network'
 
-export const mockedNetworkList = [
+export const mockedRbacWifiNetworkList = [
   {
     name: 'dsaeNetwork',
     id: '942f4ae83e824a3c8fc3adea2b3adb5b',
