@@ -6,7 +6,7 @@ import { EdgeIpModeEnum, EdgePortTypeEnum, EdgeServiceStatusEnum, EdgeStatusEnum
 import { EdgeAlarmFixtures, EdgeGeneralFixtures } from './__tests__/fixtures'
 import { mockEdgePortConfig }                     from './__tests__/fixtures/portsConfig'
 import {
-  allowRebootForStatus,
+  allowRebootShutdownForStatus,
   allowResetForStatus,
   edgeSerialNumberValidator,
   getEdgeServiceHealth,
@@ -49,7 +49,7 @@ describe('Edge utils', () => {
 
   it('reboot & reset should be allowed only for a set of specific statuses', () => {
     Object.values(EdgeStatusEnum).forEach(status => {
-      expect(allowRebootForStatus(status)).toBe(status === EdgeStatusEnum.OPERATIONAL ||
+      expect(allowRebootShutdownForStatus(status)).toBe(status === EdgeStatusEnum.OPERATIONAL ||
         status === EdgeStatusEnum.APPLYING_CONFIGURATION ||
         status === EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED ||
         status === EdgeStatusEnum.FIRMWARE_UPDATE_FAILED)

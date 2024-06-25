@@ -20,22 +20,33 @@ import {
   venueDefaultApGroup,
   venuelist
 } from '../__tests__/fixtures'
-import { ApGroupEditContext } from '../index'
+import { ApGroupEditContext } from '../context'
 
 import { ApGroupGeneralTab } from './index'
 
+const setEditContextDataFn = jest.fn()
 const mockedUsedNavigate = jest.fn()
+const mockedUpdateApGroupReq = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
 
-
+const venueId = venuelist.data[0].id
+const defaultApGroupCxtdata = {
+  isEditMode: false,
+  isApGroupTableFlag: false,
+  isWifiRbacEnabled: false,
+  venueId,
+  setEditContextData: setEditContextDataFn
+}
 describe('AP Group General tab', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     mockedUsedNavigate.mockReset()
+    setEditContextDataFn.mockReset()
+    mockedUpdateApGroupReq.mockReset()
     initialize()
 
     mockServer.use(
@@ -48,21 +59,21 @@ describe('AP Group General tab', () => {
       rest.get(WifiUrlsInfo.getApGroup.url,
         (_, res, ctx) => res(ctx.json(getApGroup))),
       rest.put(WifiUrlsInfo.updateApGroup.url,
-        (_, res, ctx) => res(ctx.json({ requestId: 'request-id' }))),
+        (_, res, ctx) => {
+          mockedUpdateApGroupReq()
+          return res(ctx.json({ requestId: 'request-id' }))
+        }),
       rest.post(WifiUrlsInfo.addApGroup.url,
         (_, res, ctx) => res(ctx.json({ requestId: 'request-id' })))
     )
 
   })
 
-  const setEditContextDataFn = jest.fn()
   it('should render correctly', async () => {
     const params = { tenantId: 'tenant-id', action: 'add' }
 
     render(<Provider>
-      <ApGroupEditContext.Provider value={{
-        isEditMode: false, isApGroupTableFlag: false,
-        setEditContextData: setEditContextDataFn }}>
+      <ApGroupEditContext.Provider value={defaultApGroupCxtdata}>
         <ApGroupGeneralTab />
       </ApGroupEditContext.Provider>
     </Provider>, {
@@ -82,9 +93,7 @@ describe('AP Group General tab', () => {
   it('add ap group', async () => {
     const params = { tenantId: 'tenant-id', action: 'add' }
     render(<Provider>
-      <ApGroupEditContext.Provider value={{
-        isEditMode: false, isApGroupTableFlag: false,
-        setEditContextData: setEditContextDataFn }}>
+      <ApGroupEditContext.Provider value={defaultApGroupCxtdata}>
         <ApGroupGeneralTab />
       </ApGroupEditContext.Provider>
     </Provider>, {
@@ -115,8 +124,9 @@ describe('AP Group General tab', () => {
     render(
       <Provider>
         <ApGroupEditContext.Provider value={{
-          isEditMode: true, isApGroupTableFlag: true,
-          setEditContextData: setEditContextDataFn }}>
+          ...defaultApGroupCxtdata,
+          isEditMode: true, isApGroupTableFlag: true
+        }}>
           <ApGroupGeneralTab />
         </ApGroupEditContext.Provider>
       </Provider>, {
@@ -126,10 +136,11 @@ describe('AP Group General tab', () => {
     await waitFor(() => screen.findByText(/for ap group 2/i))
     await userEvent.click(screen.getByText(/for ap group 2/i))
     await userEvent.click(screen.getByRole('button', { name: /right add/i }))
-    const nameInput = await screen.findByRole('textbox', { name: /Group Name/ })
+    const nameInput = screen.getByRole('textbox', { name: /Group Name/ })
     await userEvent.type(nameInput, 'test')
-    const saveButton = await screen.findByRole('button', { name: 'Apply' })
+    const saveButton = screen.getByRole('button', { name: 'Apply' })
     await userEvent.click(saveButton)
+    await waitFor(() => expect(mockedUpdateApGroupReq).toBeCalled())
     expect(saveButton).toBeVisible()
   })
 })

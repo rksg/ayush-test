@@ -2,6 +2,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal }                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                  from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                                                                       from '@acx-ui/rc/components'
 import { useDelVLANPoolPolicyMutation, useGetVenuesQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
@@ -16,7 +17,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 export default function VLANPoolTable () {
   const { $t } = useIntl()
@@ -25,10 +26,18 @@ export default function VLANPoolTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelVLANPoolPolicyMutation()
   const settingsId = 'policies-vlan-pool-table'
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetVLANPoolPolicyViewModelListQuery,
+    enableRbac: isPolicyRbacEnabled,
     defaultPayload: {
-      fields: [
+      fields: isPolicyRbacEnabled ? [
+        'id',
+        'name',
+        'vlanMembers',
+        'wifiNetworkIds',
+        'wifiNetworkVenueApGroups'
+      ] : [
         'id',
         'name',
         'vlanMembers',
@@ -57,7 +66,8 @@ export default function VLANPoolTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { ...params, policyId: id } }).then(clearSelection)
+            deleteFn({ params: { ...params, policyId: id }, enableRbac: isPolicyRbacEnabled })
+              .then(clearSelection)
           }
         })
       }
@@ -116,7 +126,9 @@ export default function VLANPoolTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

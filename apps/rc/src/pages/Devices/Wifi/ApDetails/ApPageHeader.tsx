@@ -13,7 +13,6 @@ import { useApActions }                                                  from '@
 import {
   useApDetailHeaderQuery,
   isAPLowPower,
-  useGetApCapabilitiesQuery,
   useApViewModelQuery
 }                          from '@acx-ui/rc/services'
 import {
@@ -21,7 +20,6 @@ import {
   ApDeviceStatusEnum,
   useApContext,
   ApStatus,
-  Capabilities,
   PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import {
@@ -34,15 +32,27 @@ import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
 
+import { useGetApCapabilities } from '../hooks'
+
 import ApTabs from './ApTabs'
 
 function ApPageHeader () {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber, apStatusData, afcEnabled, model } = useApContext()
-  const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
-  //eslint-disable-next-line
-  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber } })
+  const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
+  const params = { venueId, serialNumber }
+  const { data } = useApDetailHeaderQuery({ params })
+
+  const { data: apCapabilities } = useGetApCapabilities({
+    params,
+    modelName: model,
+    enableRbac: isUseRbacApi
+  })
+
+  const isOutdoorAp = apCapabilities?.isOutdoor
 
   const apAction = useApActions()
   const { activeTab } = useParams()
@@ -53,8 +63,6 @@ function ApPageHeader () {
   }
   const apViewModelQuery = useApViewModelQuery({ serialNumber, payload: apViewModelPayload })
   const powerSavingStatus = apViewModelQuery.data?.powerSavingStatus as PowerSavingStatusEnum
-
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -77,7 +85,8 @@ function ApPageHeader () {
     if (e.key === 'delete') {
       actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
     } else {
-      actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
+      // eslint-disable-next-line max-len
+      (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
     }
   }
 
@@ -107,12 +116,6 @@ function ApPageHeader () {
 
   const enableTimeFilter = () =>
     !['clients', 'networks', 'troubleshooting'].includes(activeTab as string)
-
-  const isAPOutdoor = (): boolean | undefined => {
-    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
-    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === model)
-    return currentApModel?.isOutdoor
-  }
 
   return (
     <PageHeader
@@ -172,7 +175,7 @@ function ApPageHeader () {
           <LowPowerBannerAndModal
             afcInfo={ApStatusData.afcInfo}
             from={'ap'}
-            isOutdoor={isAPOutdoor()}
+            isOutdoor={isOutdoorAp}
           />
         }
         <ApTabs apDetail={data as ApDetailHeader} />
