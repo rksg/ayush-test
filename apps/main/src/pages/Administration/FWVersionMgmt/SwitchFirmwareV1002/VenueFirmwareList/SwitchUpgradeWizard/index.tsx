@@ -20,13 +20,12 @@ import {
   useGetSwitchDefaultFirmwareListV1002Query,
   useGetSwitchAvailableFirmwareListV1002Query } from '@acx-ui/rc/services'
 import {
-  FirmwareCategory,
-  FirmwareSwitchVenue,
   FirmwareSwitchVenueV1002,
-  FirmwareVersion1002,
   SwitchFirmwareVersion1002,
   SwitchFirmware,
-  UpdateScheduleRequest
+  UpdateScheduleRequest,
+  FirmwareSwitchV1002,
+  getSwitchModelGroup
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -35,7 +34,6 @@ import * as UI from '../styledComponents'
 import { ScheduleStep }     from './ScheduleStep'
 import { SelectSwitchStep } from './SelectSwitchStep'
 import { UpdateNowStep }    from './UpdateNowStep'
-import { getReleaseFirmware } from '../../../FirmwareUtils'
 
 
 export enum SwitchFirmwareWizardType {
@@ -62,35 +60,9 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
   const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
   const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
-  // const filterVersions = function (availableVersions: FirmwareVersion1002[]) {
-
-  //   return availableVersions?.map((version) => {
-  //     if (version?.category === FirmwareCategory.RECOMMENDED && !isRecommendedVersion(version)) {
-  //       return {
-  //         ...version,
-  //         id: version?.id, name: version?.name, category: FirmwareCategory.REGULAR
-  //       }
-  //     } return version
-  //   })
-  // }
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
 
-  const isRecommendedVersion = function (currentVersion: SwitchFirmwareVersion1002) {
-    // if(_.isEmpty(currentVersion?.id)) return false
-    const defaultVersions = defaultReleaseVersions
-    const defaultFirmware = ''//defaultVersions.filter(v => v.id.startsWith('090'))[0]
-    const defaultRodanFirmware = ''//defaultVersions.filter(v => v.id.startsWith('100'))[0]
-    return false//(currentVersion.id === defaultFirmware?.id ||
-    // currentVersion.id === defaultRodanFirmware?.id)
-  }
-
-
-  const filterVersions = function () {
-
-
-    return
-  }
 
   const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
   const [icx8200Count, setIcx8200Count] = useState<number>(0)
@@ -254,22 +226,22 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     props.data.forEach((row: FirmwareSwitchVenueV1002) => {
       if (selectedVenueRowKeys.includes(row.venueId)) {
         filterVersions = checkCurrentVersionsV1002(
-          row, availableVersions || [], (defaultReleaseVersions || [])) || []
+          row, filterVersions || [], (defaultReleaseVersions || [])) || []
 
       } else if (nestedData[row.venueId]) {
-      //   nestedData[row.id].selectedData.forEach((row: SwitchFirmware) => {
-      //     const fw = row.currentFirmware || ''
-      //     if (row.switchId) {
-      //       currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
-      //     }
-      //     if (fw.includes('090')) { //Need use regular expression
-      //       filterVersions = checkCurrentVersions(fw, '', filterVersions)
-      //       nonIcx8200Count = nonIcx8200Count +1
-      //     } else if (fw.includes('100')) {
-      //       filterVersions = checkCurrentVersions('', fw, filterVersions)
-      //       icx8200Count = icx8200Count+1
-      //     }
-      //   })
+        nestedData[row.venueId].selectedData.forEach((row: SwitchFirmware) => {
+          if (row.switchId) {
+            currentUpgradeSwitchList = currentUpgradeSwitchList.concat(row)
+          }
+
+          const modelGroup = getSwitchModelGroup(row.model)
+          const selectedSwitch: FirmwareSwitchV1002 = {
+            versions: [{ modelGroup, version: row.currentFirmware }],
+            switchCounts: [{ modelGroup, count: 1 }]
+          }
+          filterVersions = checkCurrentVersionsV1002(
+            selectedSwitch, filterVersions || [], (defaultReleaseVersions || [])) || []
+        })
       }
     })
     currentUpgradeVenueList = _.filter(props.data, obj =>

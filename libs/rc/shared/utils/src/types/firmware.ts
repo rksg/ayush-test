@@ -287,6 +287,12 @@ export interface FirmwareSwitchVenueV1002 {
 
 }
 
+export interface FirmwareSwitchV1002 {
+  versions:FirmwareSwitchVenueVersionsV1002[];
+  switchCounts: FirmwareSwitchVenueSwitchCountsV1002[];
+}
+
+
 export enum SwitchFirmwareStatusType {
   NONE = 'NONE',
   INITIATE = 'INITIATE',

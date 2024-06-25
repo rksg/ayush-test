@@ -1,5 +1,7 @@
 import _ from 'lodash'
 
+import { SwitchFirmwareModelGroup } from '../../types'
+
 export const checkVersionAtLeast10010b = (version: string): boolean => {
   if (_.isString(version) && version.includes('10010b')) {
     return true
@@ -94,3 +96,16 @@ export const convertSwitchVersionFormat = (version: string) => {
   return version
 }
 
+export const getSwitchModelGroup = (model: string): SwitchFirmwareModelGroup => {
+  const modelLowerCase = model.toLowerCase()
+  const prefixICX7X = ['ICX75', 'ICX76', 'ICX78']
+  if (modelLowerCase.startsWith(SwitchFirmwareModelGroup.ICX71.toLowerCase())) {
+    return SwitchFirmwareModelGroup.ICX71
+  } else if (prefixICX7X.some(prefix => modelLowerCase.startsWith(prefix.toLowerCase()))) {
+    return SwitchFirmwareModelGroup.ICX7X
+  } else if (modelLowerCase.startsWith(SwitchFirmwareModelGroup.ICX82.toLowerCase())) {
+    return SwitchFirmwareModelGroup.ICX82
+  } else {
+    return SwitchFirmwareModelGroup.ICX7X // Others
+  }
+}

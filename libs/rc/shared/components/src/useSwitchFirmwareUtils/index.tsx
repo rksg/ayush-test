@@ -13,7 +13,9 @@ import {
   firmwareTypeTrans,
   compareSwitchVersion,
   FirmwareSwitchVenueV1002,
-  SwitchFirmwareVersion1002
+  SwitchFirmwareVersion1002,
+  FirmwareCategory,
+  FirmwareSwitchV1002
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -129,7 +131,7 @@ export function useSwitchFirmwareUtils () {
     }
   }
   const checkCurrentVersionsV1002 = function (
-    selectedVersion: FirmwareSwitchVenueV1002,
+    selectedVersion: FirmwareSwitchVenueV1002 | FirmwareSwitchV1002,
     availableVersions: SwitchFirmwareVersion1002[],
     defaultVersions: SwitchFirmwareVersion1002[]) {
     const defaultVersion = switchVersions?.data?.generalVersions
@@ -144,29 +146,27 @@ export function useSwitchFirmwareUtils () {
       const versions = availableVersion.versions.map(v => {
         const inUseVersion = selectedVersion?.versions.find(
           sc => sc.modelGroup === availableVersion.modelGroup)?.version || ''
+        const recommendedVersions = defaultVersions.find(
+          sc => sc.modelGroup === availableVersion.modelGroup)?.versions.map(v=>v.id)
+        const category = recommendedVersions?.includes(v.id) ?
+          FirmwareCategory.RECOMMENDED : FirmwareCategory.REGULAR
 
-
-        if ((getParseVersion(v.id) === getParseVersion(inUseVersion))) {
-          return v = { ...v, inUse: true }
-        } else if (isDowngradeVersionV1002(inUseVersion, v.id)) {
-          return v = { ...v, isDowngradeVersion: true }
+        return {
+          ...v,
+          inUse: (getParseVersion(v.id) === getParseVersion(inUseVersion)),
+          isDowngradeVersion: isDowngradeVersionV1002(inUseVersion, v.id),
+          category
         }
-
-        // eslint-disable-next-line no-console
-        console.log(defaultVersions)
-        return v
       })
 
       return {
         modelGroup: availableVersion.modelGroup,
         switchCount: (availableVersion.switchCount || 0) +
-          (selectedVersion.switchCounts.find(
+          (selectedVersion.switchCounts?.find(
             sc => sc.modelGroup === availableVersion.modelGroup)?.count || 0),
         versions: versions
       }
-    }
-    )
-
+    })
 
     return filterVersions
 
