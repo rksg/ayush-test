@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { difference, zip }     from 'lodash'
-import { Params }              from 'react-router-dom'
 
 import {
   MacRegistration, MacRegistrationPool, MacRegListUrlsInfo,
@@ -23,6 +22,9 @@ import {
   WifiOperatorViewModel,
   IdentityProviderUrls,
   IdentityProviderViewModel,
+  LbsServerProfile,
+  LbsServerProfileViewModel,
+  LbsServerProfileUrls,
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
   ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
@@ -50,6 +52,13 @@ import {
   CertificateTemplateMutationResult,
   downloadCertExtension,
   CertificateAcceptType,
+  VlanPoolRbacUrls,
+  VLANPoolViewModelRbacType,
+  CommonUrlsInfo,
+  Venue,
+  VenueApGroupRbacType,
+  VLANPoolNetworkType,
+  VenueAPGroup,
   RbacApSnmpPolicy,
   ApSnmpRbacUrls,
   RbacApSnmpViewModelData,
@@ -89,6 +98,12 @@ const IdentityProviderMutationUseCases = [
   'AddHotspot20IdentityProvider',
   'UpdateHotspot20IdentityProvider',
   'DeleteHotspot20IdentityProvider'
+]
+
+const LbsServerProfileMutationUseCases = [
+  'AddLbsServerProfile',
+  'UpdateLbsServerProfile',
+  'DeleteLbsServerProfile'
 ]
 
 const L2AclUseCases = [
@@ -1504,12 +1519,194 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       }
     }),
-    getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>,RequestPayload>({
+    addLbsServerProfile: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVlanPoolViewModelList, params)
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.addLbsServerProfile, params, customHeaders)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'LbsServerProfile', id: 'LIST' }],
+      async onCacheEntryAdded (args, api) {
+        await onSocketActivityChanged(args, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (args.callback && response && msg.useCase === 'AddLbsProfile' &&
+              msg.status === TxStatus.SUCCESS) {
+              (args.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    updateLbsServerProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.updateLbsServerProfile, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'LbsServerProfile', id: 'LIST' }]
+    }),
+    deleteLbsServerProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.deleteLbsServerProfile, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'LbsServerProfile', id: 'LIST' }]
+    }),
+    getLbsServerProfile: build.query<LbsServerProfile, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.getLbsServerProfile, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'LbsServerProfile', id: 'LIST' }]
+    }),
+    getLbsServerProfileList: build.query<TableResult<LbsServerProfileViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.getLbsServerProfileList, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'LbsServerProfile', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, LbsServerProfileMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'LbsServerProfile', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    activateLbsServerProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          LbsServerProfileUrls.activateLbsServerProfileOnVenue, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateLbsServerProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          LbsServerProfileUrls.deactivateLbsServerProfileOnVenue, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    // eslint-disable-next-line max-len
+    getVLANPoolPolicyViewModelList: build.query<TableResult<VLANPoolViewModelType>, RequestPayload>({
+      // eslint-disable-next-line max-len
+      queryFn: async ( { params, payload, enableRbac = false }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const url = enableRbac ? VlanPoolRbacUrls.getVLANPoolPolicyList:
+          WifiUrlsInfo.getVlanPoolViewModelList
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url , params, headers)
+        const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
+
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
+        }
+        if (!enableRbac) {
+          return { data: res.data as TableResult<VLANPoolViewModelType> }
+        } else {
+          const data = res.data as TableResult<VLANPoolViewModelRbacType>
+          const networkIds: string[] = [...new Set(data.data.map(v => v.wifiNetworkIds ?? []).flat())]
+          const networkMap = new Map<string, VenueApGroupRbacType[]>()
+          if (networkIds.length > 0) {
+            const networkQuery = await fetchWithBQ({
+              ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, headers),
+              body: JSON.stringify({
+                filters: { id: networkIds },
+                fields: ['id', 'name', 'venueApGroups'],
+                pageSize: 10000
+              })
+            })
+
+            if (networkQuery.error) {
+              return { error: networkQuery.error as FetchBaseQueryError }
+            }
+
+            const networkData = networkQuery.data as TableResult<VLANPoolNetworkType>
+            networkData.data?.forEach(v => {
+              const network = v as VLANPoolNetworkType
+              networkMap.set(network.id, network.venueApGroups)
+            })
+          }
+
+          const aggregated: VLANPoolViewModelType[] = data.data.map( v => {
+            let val = v as VLANPoolViewModelRbacType
+            const venueApGroups: VenueAPGroup[] = []
+            const venueIds: string[] = []
+            val.wifiNetworkIds?.forEach(networkId => {
+              networkMap.get(networkId)?.forEach(group => {
+                if (group.isAllApGroups) {
+                  venueApGroups.push({
+                    id: group.venueId,
+                    apGroups: [{
+                      id: '',
+                      allApGroups: true,
+                      default: true
+                    }]
+                  })
+                  venueIds.push(group.venueId)
+                }
+              })
+            })
+            val.wifiNetworkVenueApGroups?.forEach(group => {
+              venueIds.push(group.venueId)
+              if (!group.isAllApGroups) {
+                venueApGroups.push({
+                  id: group.venueId,
+                  apGroups: group.apGroupIds.map(id => {
+                    return {
+                      id: id,
+                      default: false,
+                      allApGroups: false
+                    }
+                  })
+                })
+              }
+            })
+
+            return {
+              id: val.id,
+              name: val.name,
+              vlanMembers: val.vlanMembers,
+              networkIds: val.wifiNetworkIds,
+              venueApGroups: venueApGroups,
+              venueIds: venueIds
+            } as VLANPoolViewModelType
+          })
+
+          const ret: TableResult<VLANPoolViewModelType> = {
+            totalCount: data.totalCount,
+            data: aggregated,
+            page: data.page
+          }
+          return { data: ret }
         }
       },
       providesTags: [{ type: 'VLANPool', id: 'LIST' }],
@@ -1520,7 +1717,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
             'UpdateVlanPool',
             'DeleteVlanPool',
             'PatchVlanPool',
-            'DeleteVlanPools'
+            'DeleteVlanPools',
+            'AddVlanPoolProfile',
+            'UpdateVlanPoolProfile',
+            'DeleteVlanPoolProfile'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'VLANPool', id: 'LIST' }]))
           })
@@ -1529,8 +1729,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getVLANPoolPolicyDetail: build.query<VLANPoolPolicyType, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolPolicy, params)
+      query: ({ params, enableRbac = false }) => {
+        const url = enableRbac ? VlanPoolRbacUrls.getVLANPoolPolicy : VlanPoolUrls.getVLANPoolPolicy
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req
         }
@@ -1542,28 +1744,36 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'VLANPool', id: 'DETAIL' }]
     }),
     addVLANPoolPolicy: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
-        const req = createHttpRequest(VlanPoolUrls.addVLANPoolPolicy, params)
+      query: ({ params, payload, enableRbac = false }) => {
+        const url = enableRbac ? VlanPoolRbacUrls.addVLANPoolPolicy : VlanPoolUrls.addVLANPoolPolicy
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     updateVLANPoolPolicy: build.mutation<VLANPoolPolicyType, RequestPayload>({
-      query: ({ params, payload }:{ params:Params<string>, payload:VLANPoolPolicyType }) => {
-        const req = createHttpRequest(VlanPoolUrls.updateVLANPoolPolicy, params)
+      query: ({ params, payload, enableRbac = false }) => {
+        const url = enableRbac ? VlanPoolRbacUrls.updateVLANPoolPolicy
+          : VlanPoolUrls.updateVLANPoolPolicy
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     delVLANPoolPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(VlanPoolUrls.deleteVLANPoolPolicy, params)
+      query: ({ params, enableRbac = false }) => {
+        const url = enableRbac ? VlanPoolRbacUrls.deleteVLANPoolPolicy
+          : VlanPoolUrls.deleteVLANPoolPolicy
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
         return {
           ...req
         }
@@ -1571,11 +1781,87 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getVLANPoolVenues: build.query<TableResult<VLANPoolVenues>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(VlanPoolUrls.getVLANPoolVenues, params)
-        return {
-          ...req,
-          body: payload
+      // eslint-disable-next-line max-len
+      queryFn: async ({ params, payload ,enableRbac = false }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const url = enableRbac ? VlanPoolRbacUrls.getVLANPoolPolicyList :
+            VlanPoolUrls.getVLANPoolVenues
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+          const req = createHttpRequest(url, params, headers)
+          const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+          if (!enableRbac) {
+            return { data: res.data as TableResult<VLANPoolVenues> }
+          } else {
+            const result = res.data as TableResult<VLANPoolViewModelRbacType>
+            if (result.totalCount > 0) {
+              const allApGroupVenueSet = new Set<string> ()
+              if((result.data[0].wifiNetworkIds?.length ?? 0) > 0) {
+                const networkQuery = await fetchWithBQ({
+                  ...createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, headers),
+                  body: JSON.stringify({
+                    filters: { id: result.data[0].wifiNetworkIds },
+                    fields: ['id', 'name', 'venueApGroups'],
+                    pageSize: 10000
+                  })
+                })
+
+                if (networkQuery.error) {
+                  return { error: networkQuery.error as FetchBaseQueryError }
+                }
+                const networkData = networkQuery.data as TableResult<VLANPoolNetworkType>
+                networkData.data?.forEach(v => {
+                  const val = v as VLANPoolNetworkType
+                  val.venueApGroups.filter(group => group.isAllApGroups)
+                    .forEach(group => allApGroupVenueSet.add(group.venueId))
+                })
+              }
+
+              const venueApGroupMap = new Map<string, VenueApGroupRbacType>()
+              result.data[0].wifiNetworkVenueApGroups
+                .forEach(group => {venueApGroupMap.set(group.venueId, group)})
+              const venueIds = [...venueApGroupMap.keys(), ...allApGroupVenueSet.keys()]
+              if (venueIds.length === 0) {
+                return { data: {} as TableResult<VLANPoolVenues> }
+              }
+
+              const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params, headers)
+              const venueRes = await fetchWithBQ({ ...venueReq,
+                body: JSON.stringify({
+                  filters: { id: venueIds },
+                  fields: ['id', 'name', 'aggregatedApStatus'],
+                  pageSize: 10000
+                }) })
+              if ( venueRes.error) {
+                return { error: venueRes.error as FetchBaseQueryError }
+              }
+
+              const venues = venueRes.data as TableResult<Venue>
+              return { data: {
+                totalCount: venues.totalCount,
+                page: 1,
+                data: venues.data.map(venue => {
+                  const venueApGroup = venueApGroupMap.get(venue.id)
+                  return {
+                    venueId: venue.id,
+                    venueName: venue.name,
+                    venueApCount: venue.aggregatedApStatus ?
+                      Object.values(venue.aggregatedApStatus).reduce((a, b) => a + b, 0):
+                      0,
+                    apGroupData: allApGroupVenueSet.has(venue.id) ? [
+                      { apGroupName: 'ALL_APS' }
+                    ] : venueApGroup?.apGroupIds.map(id => { return { apGroupId: id }})
+                  } as VLANPoolVenues
+                })
+              } as TableResult<VLANPoolVenues> }
+            } else {
+              return { data: {} as TableResult<VLANPoolVenues> }
+            }
+          }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       providesTags: [{ type: 'VLANPool', id: 'LIST' }],
@@ -3068,6 +3354,14 @@ export const {
   useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,
   useDeactivateIdentityProviderOnWifiNetworkMutation,
+  // LBS Server Profile
+  useAddLbsServerProfileMutation,
+  useUpdateLbsServerProfileMutation,
+  useDeleteLbsServerProfileMutation,
+  useGetLbsServerProfileQuery,
+  useGetLbsServerProfileListQuery,
+  useActivateLbsServerProfileOnVenueMutation,
+  useDeactivateLbsServerProfileOnVenueMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
