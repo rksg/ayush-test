@@ -65,7 +65,7 @@ const SmsProviderItem = () => {
 
   const FREE_SMS_POOL = 100
 
-  const [updateNotificationSms] = useUpdateNotificationSmsMutation()
+  const [ updateNotificationSms ] = useUpdateNotificationSmsMutation()
 
   const onSetUpValue = () => {
     setEditMode(false)
@@ -372,30 +372,31 @@ const SmsProviderItem = () => {
   return ( <>
     <Row gutter={24} style={{ marginBottom: '15px' }}>
       <Col span={10}>
-        <Form.Item
-          style={{ marginBottom: 0 }}
-          colon={false}
-          label={<>
-            {$t({ defaultMessage: 'SMS Provider' })}
-            <Tooltip.Question
-              title={<>
-                <div>{$t({ defaultMessage: 'The SMS Provider is utilized for SMS functionalities '
+        <Form form={form}>
+          <Form.Item
+            style={{ marginBottom: 0 }}
+            colon={false}
+            label={<>
+              {$t({ defaultMessage: 'SMS Provider' })}
+              <Tooltip.Question
+                title={<>
+                  <div>{$t({ defaultMessage: 'The SMS Provider is utilized for SMS functionalities '
                  + 'across several applicable capabilities:' })}</div>
-                <div>{$t({ defaultMessage: '- Captive Portal with Host Approval' })}</div>
-                <div>{$t({ defaultMessage: '- Captive Portal Self Sign-In' })}</div>
-                <div>{$t({ defaultMessage: '- Generating a New Guest User Password' })}</div>
-                <div>{$t({ defaultMessage: '- Recipient of System Notifications' })}</div>
-                <div>{$t({ defaultMessage: '- AI Notifications  ' })}</div>
-              </>}
-              placement='right'
-            />
-          </>}
-          children={smsProviderConfigured && <SmsProviderDualButtons/>}
-        />
+                  <div>{$t({ defaultMessage: '- Captive Portal with Host Approval' })}</div>
+                  <div>{$t({ defaultMessage: '- Captive Portal Self Sign-In' })}</div>
+                  <div>{$t({ defaultMessage: '- Generating a New Guest User Password' })}</div>
+                  <div>{$t({ defaultMessage: '- Recipient of System Notifications' })}</div>
+                  <div>{$t({ defaultMessage: '- AI Notifications  ' })}</div>
+                </>}
+                placement='right'
+              />
+            </>}
+            children={smsProviderConfigured && <SmsProviderDualButtons/>}
+          />
 
-        {smsProviderConfigured && <DisplaySmsProvider/>}
+          {smsProviderConfigured && <DisplaySmsProvider/>}
 
-        {!smsProviderConfigured &&
+          {!smsProviderConfigured &&
           <Col style={{ width: '381px', paddingLeft: 0 }}>
             <Card type='solid-bg' >
               <Button
@@ -404,26 +405,27 @@ const SmsProviderItem = () => {
                 onClick={onSetUpValue}>{$t({ defaultMessage: 'Set SMS Provider' })}</Button>
             </Card>
           </Col>
-        }
+          }
 
-        {isGracePeriodEnded && <List
-          style={{ marginTop: '15px', marginBottom: 0 }}
-          split={false}
-          dataSource={[
-            $t({ defaultMessage:
+          {isGracePeriodEnded && <List
+            style={{ marginTop: '15px', marginBottom: 0 }}
+            split={false}
+            dataSource={[
+              $t({ defaultMessage:
                     'The SMS pool provided by RUCKUS has been depleted. We recommend' }),
-            $t({ defaultMessage: 'setting up an SMS provider promptly.' })
-          ]}
-          renderItem={(item) => (
-            <List.Item>
-              <Typography.Text className='description greyText'>
-                {item}
-              </Typography.Text>
-            </List.Item>
-          )}
-        />}
+              $t({ defaultMessage: 'setting up an SMS provider promptly.' })
+            ]}
+            renderItem={(item) => (
+              <List.Item>
+                <Typography.Text className='description greyText'>
+                  {item}
+                </Typography.Text>
+              </List.Item>
+            )}
+          />}
 
-        {!smsProviderConfigured && !isGracePeriodEnded && <FreeSmsPool/>}
+          {!smsProviderConfigured && !isGracePeriodEnded && <FreeSmsPool/>}
+        </Form>
       </Col>
     </Row>
 
