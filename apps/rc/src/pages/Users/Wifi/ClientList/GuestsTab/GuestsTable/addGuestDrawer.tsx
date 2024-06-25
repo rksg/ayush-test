@@ -20,6 +20,7 @@ import { useIntl }                                    from 'react-intl'
 import { useParams }                                  from 'react-router-dom'
 
 import { Button, Drawer, cssStr, showActionModal, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                              from '@acx-ui/formatter'
 import { PhoneInput }                                             from '@acx-ui/rc/components'
 import {
@@ -262,7 +263,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
     { label: $t({ defaultMessage: 'Hours' }), value: 'Hour' },
     { label: $t({ defaultMessage: 'Days' }), value: 'Day' }
   ]
-
+  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
   const [getNetworkList] = useLazyGetGuestNetworkListQuery()
   const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
   const [allowedNetworkList, setAllowedNetworkList] = useState<Network[]>()
@@ -454,6 +455,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         options={numberOfDevicesOptions}
       />}
     />
+    {isGuestManualPasswordEnabled &&
     <Form.Item
       label={$t({ defaultMessage: 'Guest Pass' })}
       valuePropName={'checked'}
@@ -476,7 +478,6 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
                 { (guestPasswordOption === 'manual') ? (
                   <Form.Item
                     name={'password'}
-                    validateTrigger={['onChange', 'onBlur']}
                     style={{ width: '100%' }}
                     rules={[
                       { required: true },
@@ -491,11 +492,11 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
                           try{
                             await validateGuestPassword({ params: { ...params, networkId: formValues.wifiNetworkId }, payload }).unwrap()
                           } catch(e) {
-                            return Promise.reject($t({ defaultMessage: 'Password duplicate' }))
+                            return Promise.reject($t({ defaultMessage: 'Passwords on the same network should be unique.' }))
                           }
                           return Promise.resolve()
                         }
-                      }, validateTrigger: 'onBlur' }
+                      } }
                     ]}
                     children={<PasswordInput />}
                   />
@@ -506,6 +507,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         </FullWidthSpace>
       </Radio.Group>
     </Form.Item>
+    }
     <Form.Item
       name={'deliveryMethods'}
       initialValue={['PRINT']}

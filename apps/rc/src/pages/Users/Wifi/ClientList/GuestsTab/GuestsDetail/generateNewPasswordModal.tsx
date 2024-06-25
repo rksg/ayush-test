@@ -1,16 +1,31 @@
 import { useState } from 'react'
 
-import { Checkbox, Form, Tooltip, Typography } from 'antd'
-import moment, { LocaleSpecifier }             from 'moment-timezone'
+import {
+  Checkbox,
+  Form,
+  Tooltip,
+  Typography,
+  RadioChangeEvent,
+  Radio,
+  Row,
+  Col
+} from 'antd'
+import moment, { LocaleSpecifier } from 'moment-timezone'
+import { useParams }               from 'react-router-dom'
 
-import { cssStr, Modal }                    from '@acx-ui/components'
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
-import { useGenerateGuestPasswordMutation } from '@acx-ui/rc/services'
+import { cssStr, Modal, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import {
+  useGenerateGuestPasswordMutation,
+  useValidateGuestPasswordMutation
+} from '@acx-ui/rc/services'
 import {
   getGuestDictionaryByLangCode,
   Guest,
   LangCode,
-  PdfGeneratorService
+  PdfGeneratorService,
+  guestPasswordValidator
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
@@ -24,7 +39,8 @@ import {
   CheckboxLabel,
   EnvelopClosedOutlinedIcon,
   MobilePhoneOutlinedIcon,
-  PrinterOutlinedIcon
+  PrinterOutlinedIcon,
+  FullWidthSpace
 } from '../styledComponents'
 
 
@@ -129,9 +145,16 @@ export function GenerateNewPasswordModal (props: {
 
   const { $t } = getIntl()
   const [form] = Form.useForm()
+  const params = useParams()
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const hasEmailAddress = Boolean(props.guestDetail.emailAddress)
   const hasMobilePhoneNumber = Boolean(props.guestDetail.mobilePhoneNumber)
+  const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
+  const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
+  const [guestPasswordOption, setGuestPasswordOption] = useState('auto')
+  const guestPasswordOptionChange = (event: RadioChangeEvent) => {
+    setGuestPasswordOption(event.target.value)
+  }
   return (<Modal
     data-testid='generate-password-modal'
     title={$t({ defaultMessage: 'Generate New Password' })}
@@ -142,12 +165,6 @@ export function GenerateNewPasswordModal (props: {
     onCancel={closeModal}
     onOk={saveModal}
   >
-    <Typography.Text style={{
-      display: 'block', marginBottom: '20px',
-      color: cssStr('--acx-neutrals-60')
-    }}>
-      {$t({ defaultMessage: 'How would you like to give the new password to the guest:' })}
-    </Typography.Text>
     <Form
       form={form}
       onFieldsChange={() =>
@@ -155,6 +172,70 @@ export function GenerateNewPasswordModal (props: {
           form.getFieldsError().some((field) => field.errors.length > 0)
         )
       }>
+      {isGuestManualPasswordEnabled &&
+      <Form.Item
+        label={$t({ defaultMessage: 'Guest Pass' })}
+        valuePropName={'checked'}
+        initialValue={'auto'}
+      >
+        <Radio.Group
+          style={{ width: '100%' }}
+          onChange={guestPasswordOptionChange}
+          value={guestPasswordOption}>
+          <FullWidthSpace
+            direction='vertical'
+            style={{ width: '100%' }}>
+            <Radio value='auto'>Auto generated</Radio>
+            <Radio value='manual' style={{ width: '100%' }}>
+              <Row>
+                <Col span={3}>
+                Manual
+                </Col>
+                <Col span={21}>
+                  { (guestPasswordOption === 'manual') ? (
+                    <Form.Item
+                      name={'password'}
+                      style={{ width: '100%' }}
+                      rules={[
+                        { required: true },
+                        { min: 6 },
+                        { max: 16 },
+                        { validator: (_, value) => guestPasswordValidator(value) },
+                        { validator: async (_, value: string) => {
+                        // Add length limit otherwise it will still trigger validation and get 400 from backend.
+                          if(value && value.length >= 6 && value.length <= 16) {
+                            setButtonDisabled(true)
+                            const payload = { action: 'passwordValidation', password: value }
+                            try{
+                              await validateGuestPassword({ params:
+                                { ...params,
+                                  networkId: props.guestDetail.wifiNetworkId
+                                }, payload }).unwrap()
+                            } catch(e) {
+                              // eslint-disable-next-line max-len
+                              return Promise.reject($t({ defaultMessage: 'Passwords on the same network should be unique.' }))
+                            }
+                            setButtonDisabled(false)
+                            return Promise.resolve()
+                          }
+                        } }
+                      ]}
+                      children={<PasswordInput />}
+                    />
+                  ) : <></> }
+                </Col>
+              </Row>
+            </Radio>
+          </FullWidthSpace>
+        </Radio.Group>
+      </Form.Item>
+      }
+      <Typography.Text style={{
+        display: 'block', marginBottom: '20px',
+        color: cssStr('--acx-neutrals-60')
+      }}>
+        {$t({ defaultMessage: 'How would you like to give the new password to the guest:' })}
+      </Typography.Text>
       <Form.Item
         name='outputInterface'
         rules={[{
