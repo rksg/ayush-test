@@ -22,6 +22,9 @@ import {
   WifiOperatorViewModel,
   IdentityProviderUrls,
   IdentityProviderViewModel,
+  LbsServerProfile,
+  LbsServerProfileViewModel,
+  LbsServerProfileUrls,
   ClientIsolationViewModel,
   ApSnmpUrls, ApSnmpPolicy, VenueApSnmpSettings,
   ApSnmpSettings, ApSnmpApUsage, ApSnmpViewModelData,
@@ -95,6 +98,12 @@ const IdentityProviderMutationUseCases = [
   'AddHotspot20IdentityProvider',
   'UpdateHotspot20IdentityProvider',
   'DeleteHotspot20IdentityProvider'
+]
+
+const LbsServerProfileMutationUseCases = [
+  'AddLbsServerProfile',
+  'UpdateLbsServerProfile',
+  'DeleteLbsServerProfile'
 ]
 
 const L2AclUseCases = [
@@ -1505,6 +1514,103 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
         const req = createHttpRequest(
           IdentityProviderUrls.deactivateIdentityProviderOnWifiNetwork, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    addLbsServerProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.addLbsServerProfile, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'LbsServerProfile', id: 'LIST' }],
+      async onCacheEntryAdded (args, api) {
+        await onSocketActivityChanged(args, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+            if (args.callback && response && msg.useCase === 'AddLbsProfile' &&
+              msg.status === TxStatus.SUCCESS) {
+              (args.callback as Function)(response.data)
+            }
+          } catch {
+          }
+        })
+      }
+    }),
+    updateLbsServerProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.updateLbsServerProfile, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'LbsServerProfile', id: 'LIST' }]
+    }),
+    deleteLbsServerProfile: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.deleteLbsServerProfile, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'LbsServerProfile', id: 'LIST' }]
+    }),
+    getLbsServerProfile: build.query<LbsServerProfile, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.getLbsServerProfile, params, customHeaders)
+        return {
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Policy', id: 'DETAIL' }, { type: 'LbsServerProfile', id: 'LIST' }]
+    }),
+    getLbsServerProfileList: build.query<TableResult<LbsServerProfileViewModel>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(LbsServerProfileUrls.getLbsServerProfileList, params, customHeaders)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      providesTags: [{ type: 'LbsServerProfile', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, LbsServerProfileMutationUseCases, () => {
+            api.dispatch(policyApi.util.invalidateTags([
+              { type: 'Policy', id: 'LIST' },
+              { type: 'LbsServerProfile', id: 'LIST' }
+            ]))
+          })
+        })
+      },
+      extraOptions: { maxRetries: 5 }
+    }),
+    activateLbsServerProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          LbsServerProfileUrls.activateLbsServerProfileOnVenue, params, customHeaders)
+        return {
+          ...req
+        }
+      }
+    }),
+    deactivateLbsServerProfileOnVenue: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(
+          LbsServerProfileUrls.deactivateLbsServerProfileOnVenue, params, customHeaders)
         return {
           ...req
         }
@@ -3248,6 +3354,14 @@ export const {
   useDeactivateIdentityProviderRadiusMutation,
   useActivateIdentityProviderOnWifiNetworkMutation,
   useDeactivateIdentityProviderOnWifiNetworkMutation,
+  // LBS Server Profile
+  useAddLbsServerProfileMutation,
+  useUpdateLbsServerProfileMutation,
+  useDeleteLbsServerProfileMutation,
+  useGetLbsServerProfileQuery,
+  useGetLbsServerProfileListQuery,
+  useActivateLbsServerProfileOnVenueMutation,
+  useDeactivateLbsServerProfileOnVenueMutation,
   useLazyGetMacRegListQuery,
   useUploadMacRegistrationMutation,
   useAddSyslogPolicyMutation,
