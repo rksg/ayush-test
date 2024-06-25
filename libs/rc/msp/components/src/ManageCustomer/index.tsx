@@ -40,7 +40,8 @@ import {
   useMspAssignmentHistoryQuery,
   useMspAdminListQuery,
   useMspCustomerListQuery,
-  usePatchCustomerMutation
+  usePatchCustomerMutation,
+  useMspRbacAssignmentHistoryQuery
 } from '@acx-ui/msp/services'
 import {
   dateDisplayText,
@@ -173,6 +174,8 @@ export function ManageCustomer () {
   const createEcWithTierEnabled = useIsSplitOn(Features.MSP_EC_CREATE_WITH_TIER)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
   const isPatchTierEnabled = useIsSplitOn(Features.MSP_PATCH_TIER)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const navigate = useNavigate()
   const linkToCustomers = useTenantLink('/dashboard/mspcustomers', 'v')
@@ -210,6 +213,7 @@ export function ManageCustomer () {
   const [addCustomer] = useAddCustomerMutation()
   const [updateCustomer] = useUpdateCustomerMutation()
   const [patchCustomer] = usePatchCustomerMutation()
+  const params = useParams()
 
   const { Option } = Select
   const { Paragraph } = Typography
@@ -218,17 +222,28 @@ export function ManageCustomer () {
 
   const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
-  const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
+  const { data: assignment } = useMspAssignmentHistoryQuery({ params: params },
+    { skip: isEntitlementRbacApiEnabled })
+  const { data: rbacAssignment } = useTableQuery({
+    useQuery: useMspRbacAssignmentHistoryQuery,
+    defaultPayload: {},
+    option: {
+      skip: !isEntitlementRbacApiEnabled
+    }
+  })
+  const licenseAssignment = isEntitlementRbacApiEnabled ? rbacAssignment?.data : assignment
   const { data } =
       useGetMspEcQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const { data: ecSupport } =
-      useGetMspEcSupportQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcSupportQuery({
+        params: { mspEcTenantId }, enableRbac: isRbacEnabled }, { skip: action !== 'edit' })
   const { data: techPartners } = useTableQuery({
     useQuery: useMspCustomerListQuery,
     pagination: {
@@ -412,7 +427,7 @@ export function ManageCustomer () {
 
   const ecSupportOnChange = (checked: boolean) => {
     if (checked) {
-      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      enableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -421,7 +436,7 @@ export function ManageCustomer () {
           setEcSupport(true)
         })
     } else {
-      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId } })
+      disableMspEcSupport({ params: { mspEcTenantId: mspEcTenantId }, enableRbac: isRbacEnabled })
         .then(() => {
           showToast({
             type: 'success',
@@ -512,7 +527,8 @@ export function ManageCustomer () {
       }
 
       const result =
-      await addCustomer({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addCustomer({ params: { tenantId: tenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -622,7 +638,9 @@ export function ManageCustomer () {
         }
         customer.licenses = assignLicense
       }
-      await updateCustomer({ params: { mspEcTenantId: mspEcTenantId }, payload: customer }).unwrap()
+      await updateCustomer({
+        params: { mspEcTenantId: mspEcTenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
 
       if (isPatchTierEnabled && originalTier !== ecFormData.tier) {
         const patchTier: MspEcTierPayload = {

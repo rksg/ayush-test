@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom'
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, FirmwareUrlsInfo }               from '@acx-ui/rc/utils'
-import { Provider, rbacApiURL }                           from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                   from '@acx-ui/user'
+import { Features, useIsSplitOn, useIsTierAllowed }               from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, FirmwareRbacUrlsInfo, FirmwareUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, rbacApiURL }                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor }         from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                           from '@acx-ui/user'
+import { AccountVertical, getJwtTokenPayload, isDelegationMode }  from '@acx-ui/utils'
 
 import HspContext from '../../HspContext'
 
@@ -161,6 +162,20 @@ jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   hasConfigTemplateAccess: () => mockedHasConfigTemplateAccess
 }))
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: jest.fn().mockReturnValue({
+    lastName: '',
+    firstName: '',
+    userName: '',
+    exp: 0,
+    tenantId: '',
+    acx_account_vertical: ''
+  }),
+  isDelegationMode: jest.fn().mockImplementation(() => {
+    return false
+  })
+}))
 jest.mock('@acx-ui/main/components', () => ({
   ...jest.requireActual('@acx-ui/main/components'),
   LicenseBanner: () => <div data-testid='license-banner' />,
@@ -228,6 +243,14 @@ describe('Layout', () => {
           upgradeVenueViewList: []
         }))
       ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        FirmwareRbacUrlsInfo.getSwitchVenueVersionList.url,
+        (req, res, ctx) => res(ctx.json([]))
+      ),
       rest.get(
         'https://docs.cloud.ruckuswireless.com/ruckusone/userguide/mapfile/doc-mapper.json',
         (req, res, ctx) => res(ctx.json({}))
@@ -256,6 +279,7 @@ describe('Layout', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
   })
+
   it('should render layout correctly for support', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile1 }
@@ -305,6 +329,16 @@ describe('Layout', () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile2 }
     })
+    jest.mocked(isDelegationMode).mockReturnValue(true)
+    jest.mocked(getJwtTokenPayload).mockReturnValue({
+      lastName: '',
+      firstName: '',
+      userName: '',
+      exp: 0,
+      tenantId: '',
+      acx_account_vertical: AccountVertical.HOSPITALITY
+    })
+
     render(
       <Provider>
         <Layout />
@@ -313,6 +347,8 @@ describe('Layout', () => {
     await waitFor(async () => {
       expect(await screen.findByText('My Customers')).toBeVisible()
     })
+    expect(await screen.findByText('Support Home')).toBeVisible()
+    expect(await screen.findByText('Hospitality Edition')).toBeVisible()
     expect(screen.queryByRole('menuitem', { name: 'Tech Partners' })).toBeNull()
     expect(screen.getByRole('menuitem', { name: 'Device Inventory' })).toBeVisible()
     expect(screen.getByRole('menuitem', { name: 'Subscriptions' })).toBeVisible()

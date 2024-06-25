@@ -6,13 +6,15 @@ import _                         from 'lodash'
 import { useIntl }               from 'react-intl'
 
 import { Button, Loader, Tooltip }                                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                      from '@acx-ui/feature-toggle'
 import { usePingApMutation }                                           from '@acx-ui/rc/services'
 import { targetHostRegExp, WifiTroubleshootingMessages, useApContext } from '@acx-ui/rc/utils'
 
 
 export function ApPingForm () {
   const { $t } = useIntl()
-  const { tenantId, serialNumber } = useApContext()
+  const { tenantId, serialNumber, venueId } = useApContext()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [pingForm] = Form.useForm()
   const [isValid, setIsValid] = useState(false)
   const [pingAp, { isLoading: isPingingAp }] = usePingApMutation()
@@ -22,7 +24,11 @@ export function ApPingForm () {
         targetHost: pingForm.getFieldValue('name'),
         action: 'ping'
       }
-      const pingApResult = await pingAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+      const pingApResult = await pingAp({
+        params: { tenantId, serialNumber, venueId },
+        payload,
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
       if (pingApResult) {
 
         pingForm.setFieldValue('result', _.get(pingApResult, 'response.response'))
