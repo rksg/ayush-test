@@ -86,7 +86,6 @@ jest.mock('@acx-ui/analytics/components', () => ({
   AIAnalytics: () => <div data-testid='aiAnalytics' />,
   HealthPage: () => <div data-testid='healthPage' />,
   IncidentDetails: () => <div data-testid='incidentDetails' />,
-  IncidentListPage: () => <div data-testid='incidentListPage' />,
   VideoCallQoe: () => <div data-testid='VideoCallQoePage' />,
   useVideoCallQoe: () => ({
     component: <div data-testid='VideoCallQoePage' />
@@ -112,7 +111,7 @@ test('should redirect analytics to analytics/incidents', async () => {
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('incidentListPage')).toBeVisible()
+  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
 })
 test('should navigate to analytics/incidents page', async () => {
   render(<Provider><AnalyticsRoutes /></Provider>, {
@@ -121,7 +120,7 @@ test('should navigate to analytics/incidents page', async () => {
       wrapRoutes: false
     }
   })
-  expect(screen.getByTestId('incidentListPage')).toBeVisible()
+  expect(screen.getByTestId('aiAnalytics')).toBeVisible()
 })
 test('should navigate to analytics/incidents tab', async () => {
   jest.mocked(useIsTierAllowed).mockReturnValue(true)
