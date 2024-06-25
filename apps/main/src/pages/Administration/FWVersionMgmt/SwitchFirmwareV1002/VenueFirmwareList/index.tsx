@@ -105,7 +105,7 @@ export function VenueFirmwareList () {
   const intl = useIntl()
   const params = useParams()
   const {
-    getSwitchNextScheduleTplTooltip
+    getSwitchNextScheduleTplTooltipV1002
   } = useSwitchFirmwareUtils()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const [modelVisible, setModelVisible] = useState(false)
@@ -265,7 +265,7 @@ export function VenueFirmwareList () {
             </UI.TextButton></div>
         }
         return <Tooltip
-          title={getSwitchNextScheduleTplTooltip(row) ||
+          title={getSwitchNextScheduleTplTooltipV1002(intl, row) ||
             intl.$t({ defaultMessage: 'Not scheduled' })}
           placement='bottom' >
           <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>

@@ -31,8 +31,6 @@ import type { RangePickerProps } from 'antd/es/date-picker'
 export interface ScheduleStepProps {
   visible: boolean,
   availableVersions?: SwitchFirmwareVersion1002[]
-  nonIcx8200Count: number
-  icx8200Count: number
   hasVenue: boolean,
   data: FirmwareSwitchVenueV1002[],
   upgradeVenueList: FirmwareSwitchVenueV1002[],
@@ -41,15 +39,15 @@ export interface ScheduleStepProps {
 }
 
 export function ScheduleStep (props: ScheduleStepProps) {
-  const { availableVersions, nonIcx8200Count, icx8200Count,
+  const { availableVersions,
     hasVenue, upgradeVenueList, upgradeSwitchList,
     setShowSubTitle } = props
 
   const intl = useIntl()
   const { form, current } = useStepFormContext()
   const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
-  const [selectedVersion, setSelectedVersion] = useState('')
-  const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
+  // const [selectedVersion, setSelectedVersion] = useState('')
+  // const [selectedAboveTenVersion, setSelectedAboveTenVersion] = useState<string>('')
 
   //Switch model group
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
@@ -90,37 +88,37 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
   const [checked, setChecked] = useState(getCurrentChecked())
 
-  const getCurrentSchedule = function () {
-    if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
-      return upgradeVenueList.length === 1 ?
-        upgradeVenueList[0].nextSchedule : upgradeSwitchList[0].switchNextSchedule
-    }
-    return {} as switchSchedule
-  }
+  // const getCurrentSchedule = function () {
+  //   if (upgradeVenueList.length + upgradeSwitchList.length === 1) {
+  //     return upgradeVenueList.length === 1 ?
+  //       upgradeVenueList[0].nextSchedule : upgradeSwitchList[0].switchNextSchedule
+  //   }
+  //   return {} as switchSchedule
+  // }
 
-  const currentSchedule = getCurrentSchedule()
-  const currentScheduleVersion = currentSchedule?.version?.name ?? ''
-  const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen?.name ?? ''
+  // const currentSchedule = getCurrentSchedule()
+  // const currentScheduleVersion = currentSchedule?.version?.name ?? ''
+  // const currentScheduleVersionAboveTen = currentSchedule?.versionAboveTen?.name ?? ''
 
 
   useEffect(()=>{
     setShowSubTitle(false)
   }, [current])
 
-  useEffect(() => {
-    if ((hasVenue || nonIcx8200Count > 0)) {
-      setSelectedVersion(currentScheduleVersion || '')
-      form.setFieldValue('switchVersion', currentScheduleVersion)
-    }
+  // useEffect(() => {
+  //   if ((hasVenue || nonIcx8200Count > 0)) {
+  //     setSelectedVersion(currentScheduleVersion || '')
+  //     form.setFieldValue('switchVersion', currentScheduleVersion)
+  //   }
 
-    if ((hasVenue || icx8200Count > 0)) {
-      setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
-      form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
-    }
+  //   if ((hasVenue || icx8200Count > 0)) {
+  //     setSelectedAboveTenVersion(currentScheduleVersionAboveTen || '')
+  //     form.setFieldValue('switchVersionAboveTen', currentScheduleVersionAboveTen)
+  //   }
 
-    form.setFieldValue('preDownloadChecked', getCurrentChecked())
+  //   form.setFieldValue('preDownloadChecked', getCurrentChecked())
 
-  }, [upgradeVenueList, upgradeSwitchList])
+  // }, [upgradeVenueList, upgradeSwitchList])
 
   // const getAvailableVersionsByPrefix = (availableVersions?: FirmwareVersion[],
   //   aboveTenPrefix?: boolean, currentScheduleVersion?: string) => {
@@ -176,20 +174,6 @@ export function ScheduleStep (props: ScheduleStepProps) {
     let firmwareAvailableVersions = availableVersions?.filter(
       (v: SwitchFirmwareVersion1002) => v.modelGroup === modelGroup
     )
-    // Handle versions inUse/Download/current schedule versions
-
-    // if (currentScheduleVersion) {
-    //   const currentVersionInSchedule = firmwareAvailableVersions?.filter((v: FirmwareVersion) =>
-    //     currentScheduleVersion === v.id)
-
-    //   if (currentVersionInSchedule?.length === 0) {
-    //     firmwareAvailableVersions?.push({
-    //       id: currentScheduleVersion,
-    //       name: currentScheduleVersion,
-    //       category: FirmwareCategory.REGULAR
-    //     } as FirmwareVersion)
-    //   }
-    // }
 
     if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
       return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
@@ -214,9 +198,12 @@ export function ScheduleStep (props: ScheduleStepProps) {
             rules={[
               {
                 validator: () => {
-                  const switchVersionAboveTen = form.getFieldValue('switchVersionAboveTen')
-                  const switchVersion = form.getFieldValue('switchVersion')
-                  if (_.isEmpty(switchVersionAboveTen) && _.isEmpty(switchVersion)) {
+                  const selectedVersions = [
+                    form.getFieldValue('selectedICX82Version'),
+                    form.getFieldValue('selectedICX71Version'),
+                    form.getFieldValue('selectedICX7XVersion')
+                  ]
+                  if (selectedVersions.every(_.isEmpty)) {
                     return Promise.reject(
                       intl.$t({ defaultMessage: 'Please select at least 1 version.' }))
                   }
@@ -231,7 +218,7 @@ export function ScheduleStep (props: ScheduleStepProps) {
 
           {(hasVenue || ICX71Count > 0) && <>
             <Subtitle level={4}>
-              {intl.$t({ defaultMessage: 'Firmware available for ICX 7100 Series' })}
+              {intl.$t({ defaultMessage: 'Firmware available for ICX 7150 Series' })}
               &nbsp;
               ({ICX71Count} {intl.$t({ defaultMessage: 'switches' })})
             </Subtitle>

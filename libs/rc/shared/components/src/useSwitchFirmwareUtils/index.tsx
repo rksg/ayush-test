@@ -15,7 +15,8 @@ import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
   FirmwareCategory,
-  FirmwareSwitchV1002
+  FirmwareSwitchV1002,
+  SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -57,7 +58,7 @@ export function useSwitchFirmwareUtils () {
   }
 
   const getSwitchNextScheduleTplTooltip =
-   (venue: FirmwareSwitchVenue | FirmwareSwitchVenueV1002): string | undefined => {
+   (venue: FirmwareSwitchVenue): string | undefined => {
      if (venue.nextSchedule) {
        const versionName = venue.nextSchedule.version?.name
        const versionAboveTenName = venue.nextSchedule.versionAboveTen?.name
@@ -71,6 +72,26 @@ export function useSwitchFirmwareUtils () {
          names.push(parseSwitchVersion(versionAboveTenName))
        }
        return names.join(', ')
+     }
+     return ''
+   }
+
+  const getSwitchNextScheduleTplTooltipV1002 =
+   (intl: IntlShape, venue: FirmwareSwitchVenueV1002): string | undefined => {
+     if (venue.nextSchedule?.supportModelGroupVersions) {
+       const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
+       let tooltipText: string[] = []
+       const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+         [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
+         [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
+         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
+       }
+
+       supportModelGroupVersions.forEach(v => {
+         tooltipText.push(modelGroupDisplayText[v.modelGroup] + ':' + parseSwitchVersion(v.version))
+       })
+
+       return tooltipText.join('\n')
      }
      return ''
    }
@@ -214,6 +235,7 @@ export function useSwitchFirmwareUtils () {
     parseSwitchVersion,
     getSwitchVersionLabel,
     getSwitchNextScheduleTplTooltip,
+    getSwitchNextScheduleTplTooltipV1002,
     getSwitchScheduleTpl,
     getSwitchFirmwareList,
     getSwitchVenueAvailableVersions,

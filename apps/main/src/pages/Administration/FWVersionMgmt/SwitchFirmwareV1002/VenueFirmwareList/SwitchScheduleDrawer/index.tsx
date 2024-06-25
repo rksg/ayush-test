@@ -33,7 +33,7 @@ export interface SwitchScheduleDrawerProps {
 export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const intl = useIntl()
   const {
-    getSwitchNextScheduleTplTooltip,
+    getSwitchNextScheduleTplTooltipV1002,
     getSwitchScheduleTpl
   } = useSwitchFirmwareUtils()
 
@@ -144,7 +144,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
       <Row style={{ lineHeight: '24px' }}>
         <Typography.Text>
           <b>{intl.$t({ defaultMessage: 'Target Firmware:' })}</b> {
-            getSwitchNextScheduleTplTooltip(props.data) ||
+            getSwitchNextScheduleTplTooltipV1002(intl, props.data) ||
             intl.$t({ defaultMessage: 'Not been set up yet' })}
         </Typography.Text>
       </Row>

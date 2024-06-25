@@ -245,6 +245,15 @@ export interface switchSchedule {
   }
 }
 
+export interface SwitchScheduleV1002 {
+  timeSlot: {
+    endDateTime?: string;
+    startDateTime?: string;
+    versionInfo?: ScheduleVersionInfo;
+  };
+  supportModelGroupVersions: FirmwareSwitchVenueVersionsV1002[];
+}
+
 export interface FirmwareSwitchVenue {
   id: string;
   venueId?: string;
@@ -279,12 +288,11 @@ export interface FirmwareSwitchVenueV1002 {
   venueName: string;
   preDownload: boolean;
   versions:FirmwareSwitchVenueVersionsV1002[];
-  nextSchedule?: switchSchedule;
+  nextSchedule?: SwitchScheduleV1002;
   lastScheduleUpdateTime: string;
   switchCounts: FirmwareSwitchVenueSwitchCountsV1002[];
   status: SwitchFirmwareStatusType;
   scheduleCount: number;
-
 }
 
 export interface FirmwareSwitchV1002 {

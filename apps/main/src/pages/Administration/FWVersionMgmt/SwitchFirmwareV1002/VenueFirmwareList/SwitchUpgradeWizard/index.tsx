@@ -15,8 +15,8 @@ import {
 import { WarningCircleOutlined }                from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }               from '@acx-ui/rc/components'
 import {
-  useBatchSkipSwitchUpgradeSchedulesMutation,
-  useBatchUpdateSwitchVenueSchedulesMutation,
+  useBatchSkipSwitchUpgradeSchedulesV1002Mutation,
+  useBatchUpdateSwitchVenueSchedulesV1002Mutation,
   useGetSwitchDefaultFirmwareListV1002Query,
   useGetSwitchAvailableFirmwareListV1002Query } from '@acx-ui/rc/services'
 import {
@@ -25,7 +25,8 @@ import {
   SwitchFirmware,
   UpdateScheduleRequest,
   FirmwareSwitchV1002,
-  getSwitchModelGroup
+  getSwitchModelGroup,
+  SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -56,16 +57,13 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const params = useParams()
   const { wizardType } = props
   const { checkCurrentVersionsV1002 } = useSwitchFirmwareUtils()
-  const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesMutation()
+  const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesV1002Mutation()
 
   const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
   const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
 
-
-  const [nonIcx8200Count, setNonIcx8200Count] = useState<number>(0)
-  const [icx8200Count, setIcx8200Count] = useState<number>(0)
   const [hasVenue, setHasVenue] = useState<boolean>(false)
   const [upgradeSwitchList, setUpgradeSwitchList] = useState<SwitchFirmware[]>([])
   const [upgradeVenueList, setUpgradeVenueList] = useState<FirmwareSwitchVenueV1002[]>([])
@@ -88,17 +86,42 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.skip]: '1120px'
   }
 
-  const [batchSkipSwitchUpgradeSchedules] = useBatchSkipSwitchUpgradeSchedulesMutation()
+  const [batchSkipSwitchUpgradeSchedules] = useBatchSkipSwitchUpgradeSchedulesV1002Mutation()
+
+  const getVersionsPayload = function () {
+
+    let versionsPayload = []
+    if (form.getFieldValue('selectedICX71Version')) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX71,
+        version: form.getFieldValue('selectedICX71Version')
+      })
+    }
+    if (form.getFieldValue('selectedICX7XVersion')) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX7X,
+        version: form.getFieldValue('selectedICX7XVersion')
+      })
+    }
+    if (form.getFieldValue('selectedICX82Version')) {
+      versionsPayload.push({
+        modelGroup: SwitchFirmwareModelGroup.ICX82,
+        version: form.getFieldValue('selectedICX82Version')
+      })
+    }
+    return versionsPayload
+  }
+
 
   const wizardFinish = {
     [SwitchFirmwareWizardType.update]: async () => {
       try {
+        const versions = getVersionsPayload()
         const venueIds = form.getFieldValue('selectedVenueRowKeys')
         const venueRequests = Object.keys(venueIds).map(item => ({
           params: { venueId: venueIds[item] },
           payload: {
-            switchVersion: form.getFieldValue('switchVersion') || '',
-            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+            versions
           }
         }))
         await batchUpdateSwitchVenueSchedules(venueRequests)
@@ -109,8 +132,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
             params: { venueId: key },
             payload: {
               switchIds: switchVenueGroups[key].map(item => item.switchId),
-              switchVersion: form.getFieldValue('switchVersion') || '',
-              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+              versions
             }
           }))
         await batchUpdateSwitchVenueSchedules(switchRequests)
@@ -123,6 +145,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     },
     [SwitchFirmwareWizardType.schedule]: async () => {
       try {
+        const versions = getVersionsPayload()
         const venueIds = form.getFieldValue('selectedVenueRowKeys')
         const venueRequests = Object.keys(venueIds).map(item => ({
           params: { venueId: venueIds[item] },
@@ -130,8 +153,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
             date: moment(form.getFieldValue('selectDateStep')).format('YYYY-MM-DD') || '',
             time: form.getFieldValue('selectTimeStep') || '',
             preDownload: form.getFieldValue('preDownloadChecked') || false,
-            switchVersion: form.getFieldValue('switchVersion') || '',
-            switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+            versions
           }
         }))
         await batchUpdateSwitchVenueSchedules(venueRequests)
@@ -145,8 +167,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
               time: form.getFieldValue('selectTimeStep') || '',
               preDownload: form.getFieldValue('preDownloadChecked') || false,
               switchIds: switchVenueGroups[key].map(item => item.switchId),
-              switchVersion: form.getFieldValue('switchVersion') || '',
-              switchVersionAboveTen: form.getFieldValue('switchVersionAboveTen') || ''
+              versions
             }
           }))
         await batchUpdateSwitchVenueSchedules(switchRequests)
@@ -216,7 +237,6 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const saveSwitchStep = function () {
     // eslint-disable-next-line max-len
     let filterVersions: SwitchFirmwareVersion1002[] = availableVersions || []
-    let nonIcx8200Count = 0, icx8200Count = 0
     let currentUpgradeSwitchList = [] as SwitchFirmware[]
     let currentUpgradeVenueList = [] as FirmwareSwitchVenueV1002[]
 
@@ -249,10 +269,8 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
 
     setUpgradeSwitchList(currentUpgradeSwitchList)
     setUpgradeVenueList(currentUpgradeVenueList)
-    setHasVenue(selectedVenueRowKeys.length > 0 || (nonIcx8200Count + icx8200Count === 0))
+    setHasVenue(selectedVenueRowKeys.length > 0)
     setUpgradeVersions(filterVersions)
-    setNonIcx8200Count(nonIcx8200Count)
-    setIcx8200Count(icx8200Count)
     return { currentUpgradeSwitchList, currentUpgradeVenueList }
   }
 
@@ -315,8 +333,6 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   visible={true}
                   hasVenue={hasVenue}
                   availableVersions={upgradeVersions}//{filterVersions(upgradeVersions)}
-                  nonIcx8200Count={nonIcx8200Count}
-                  icx8200Count={icx8200Count}
                 /> : <ScheduleStep
                   setShowSubTitle={setShowSubTitle}
                   visible={true}
@@ -325,8 +341,6 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   upgradeVenueList={upgradeVenueList as FirmwareSwitchVenueV1002[]}
                   upgradeSwitchList={upgradeSwitchList as SwitchFirmware[]}
                   availableVersions={upgradeVersions}//{filterVersions(upgradeVersions)}
-                  nonIcx8200Count={nonIcx8200Count}
-                  icx8200Count={icx8200Count}
                 />
             }
           </StepsForm.StepForm>
