@@ -38,7 +38,6 @@ describe('HealthDrillDown', () => {
         <HealthDrillDown
           filters={filters}
           drilldownSelection='connectionFailure'
-          setDrilldownSelection={() => {}}
         />
       </Provider>
     )
@@ -51,7 +50,6 @@ describe('HealthDrillDown', () => {
         <HealthDrillDown
           filters={filters}
           drilldownSelection='connectionFailure'
-          setDrilldownSelection={() => {}}
         />
       </Provider>
     )
@@ -64,7 +62,6 @@ describe('HealthDrillDown', () => {
         <HealthDrillDown
           filters={filters}
           drilldownSelection='ttc'
-          setDrilldownSelection={() => {}}
         />
       </Provider>
     )
@@ -80,7 +77,6 @@ describe('HealthDrillDown', () => {
         <HealthDrillDown
           filters={filters}
           drilldownSelection='connectionFailure'
-          setDrilldownSelection={() => {}}
         />
       </Provider>
     )
@@ -93,28 +89,11 @@ describe('HealthDrillDown', () => {
         <HealthDrillDown
           filters={filters}
           drilldownSelection='connectionFailure'
-          setDrilldownSelection={() => {}}
         />
       </Provider>
     )
     await userEvent.click(await screen.findByRole('Association'))
     expect(await screen.findByText('PIE chart')).toBeVisible()
-  })
-  it('should close on close icon click', async () => {
-    mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
-    const mockSetDrilldownSelection = jest.fn()
-    render(
-      <Provider>
-        <HealthDrillDown
-          filters={filters}
-          drilldownSelection='connectionFailure'
-          setDrilldownSelection={mockSetDrilldownSelection}
-        />
-      </Provider>
-    )
-    await userEvent.click(await screen.findByTestId('CloseSymbol'))
-    expect(mockSetDrilldownSelection).toBeCalled()
-    jest.resetAllMocks()
   })
 
   describe('Point', () => {

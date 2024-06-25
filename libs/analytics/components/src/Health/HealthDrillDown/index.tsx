@@ -5,7 +5,6 @@ import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, Loader, cssStr } from '@acx-ui/components'
 import { formatter }                        from '@acx-ui/formatter'
-import { CloseSymbol }                      from '@acx-ui/icons'
 import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import {
@@ -26,9 +25,8 @@ import { Point, Separator, Title, DrillDownRow }             from './styledCompo
 const HealthDrillDown = (props: {
   filters: AnalyticsFilter;
   drilldownSelection: DrilldownSelection;
-  setDrilldownSelection: CallableFunction;
 }) => {
-  const { drilldownSelection, setDrilldownSelection, filters } = props
+  const { drilldownSelection, filters } = props
   const { $t } = useIntl()
   const colors = [
     cssStr('--acx-accents-blue-80'),
@@ -107,16 +105,8 @@ const HealthDrillDown = (props: {
     <DrillDownRow>
       <GridCol col={{ span: 24 }}>
         <GridRow>
-          <GridCol col={{ span: 12 }}>
+          <GridCol col={{ span: 24 }}>
             <Title>{$t(titleConfig?.[drilldownSelection])}</Title>
-          </GridCol>
-          <GridCol col={{ span: 12 }} style={{ alignItems: 'end' }}>
-            <CloseSymbol
-              style={{ cursor: 'pointer' }}
-              onClick={() => {
-                setDrilldownSelection(null)
-              }}
-            />
           </GridCol>
         </GridRow>
         <Loader states={[funnelChartData]}>
