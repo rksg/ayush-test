@@ -74,9 +74,9 @@ interface ImportFileFormType {
   venueId: string
 }
 
-export const newApPayload = {
+export const newDefaultApPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'networkStatus', 'macAddress', 'tags', 'serialNumber'],
+  searchTargetFields: ['name', 'model', 'networkStatus.ipAddress', 'macAddress', 'tags', 'serialNumber'],
   fields: [
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
     'switchName', 'meshRole', 'clients', 'apGroupId',
@@ -111,12 +111,12 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const apListTableQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
     defaultPayload: {
-      ...newApPayload,
+      ...newDefaultApPayload,
       // groupByFields: groupedFields,
       filters
     },
     search: {
-      searchTargetFields: newApPayload.searchTargetFields
+      searchTargetFields: newDefaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
@@ -385,7 +385,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       searchable: searchable,
-      sorter: true
+      sorter: true,
+      render: (data: ReactNode, row: NewAPModelExtended) => (
+        row.tags?.join(', ')
+      )
     }, {
       key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),

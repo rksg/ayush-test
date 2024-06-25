@@ -55,12 +55,14 @@ import {
   GetUploadFormDataApiVersionHeader,
   ImportErrorRes,
   LanPortStatusProperties,
+  MdnsProxyUrls,
   MeshUplinkAp,
   NewAPModel,
   NewAPModelExtended,
   NewApGroupViewModelResponseType,
   NewDhcpAp,
   NewGetApGroupResponseType,
+  NewMdnsProxyData,
   NewPacketCaptureState,
   PacketCaptureOperationResponse,
   PacketCaptureState,
@@ -500,13 +502,30 @@ export const apApi = baseApApi.injectEndpoints({
       keepUnusedDataFor: 0
     }),
     getAp: build.query<ApDeep, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getAp, params, apiCustomHeader)
-        return {
-          ...req
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if(!enableRbac) {
+          const req = createHttpRequest(WifiUrlsInfo.getAp, params)
+          const res = await fetchWithBQ({ ...req })
+          return { data: res.data as ApDeep }
         }
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const getApReq = createHttpRequest(WifiRbacUrlsInfo.getAp, params, apiCustomHeader)
+        const getApRes = await fetchWithBQ({ ...getApReq })
+        const apData = getApRes.data as ApDeep
+        const mDnsProxyPayload = {
+          fields: ['id', 'apSerialNumbers'],
+          filters: {
+            apSerialNumbers: [params?.serialNumber]
+          }
+        }
+        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.getMdnsProxyListRbac, undefined, apiCustomHeader)
+        const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
+        const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
+        const targetMdnsData = mDnsProxyList?.[0]
+        if(targetMdnsData) {
+          apData.multicastDnsProxyServiceProfileId = targetMdnsData.id
+        }
+        return { data: apData }
       },
       providesTags: [{ type: 'Ap', id: 'Details' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -689,22 +708,29 @@ export const apApi = baseApApi.injectEndpoints({
         const apListReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, params, apiCustomHeader)
         const apListRes = await fetchWithBQ({ ...apListReq, body: JSON.stringify(apListPayload as Object) })
         const apList = apListRes.data as TableResult<NewAPModel>
-        const floorplanId = apList.data[0].floorplanId
-        const floorplanReq = createHttpRequest(
-          CommonRbacUrlsInfo.GetApPosition,
-          { ...params, floorplanId },
-          apiCustomHeader
-        )
-        const floorplanRes = await fetchWithBQ(floorplanReq)
-        const floorplan = floorplanRes.data as ApPosition
+        const floorplanId = apList.data[0]?.floorplanId
+        let floorplan = {} as ApPosition
+        if(floorplanId) {
+          const floorplanReq = createHttpRequest(
+            CommonRbacUrlsInfo.GetApPosition,
+            { ...params, floorplanId },
+            apiCustomHeader
+          )
+          const floorplanRes = await fetchWithBQ(floorplanReq)
+          floorplan = floorplanRes.data as ApPosition
+        }
         return {
           data: {
             ...apDetail,
             venueId: params?.venueId,
-            position: {
-              ...floorplan,
-              floorplanId
-            }
+            ...(
+              floorplanId ? {
+                position: {
+                  ...floorplan,
+                  floorplanId
+                }
+              } : {}
+            )
           } as ApDetails
         }
       }
