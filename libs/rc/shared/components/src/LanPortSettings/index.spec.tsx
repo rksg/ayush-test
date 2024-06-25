@@ -3,7 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Provider } from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import {
   fireEvent,
   render,
@@ -11,8 +12,6 @@ import {
 } from '@acx-ui/test-utils'
 
 import { LanPortSettings } from '.'
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { WifiNetworkMessages } from '@acx-ui/rc/utils'
 
 const selectedModelCaps = {
   canSupportPoeMode: true,
