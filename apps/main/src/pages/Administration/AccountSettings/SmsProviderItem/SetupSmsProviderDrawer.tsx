@@ -41,6 +41,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   useEffect(() => {
     if(isEditMode && editData?.providerType ) {
       setProviderType(editData?.providerType)
+      form.setFieldValue('smsProvider', editData?.providerType)
     }
   }, [])
 
@@ -48,13 +49,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     setVisible(false)
     form.resetFields()
   }
-
-  let incomingPhoneList = [
-    {
-      label: $t({ defaultMessage: '+19388887785' }),
-      value: '+19388887785'
-    }
-  ]
 
   const handleGetTwiliosIncomingPhoneNumbers = async () => {
     try {
@@ -66,10 +60,11 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       const phoneList = await getTwiliosIncomingPhoneNumbers({
         params: params, payload: payload })
       const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
-      incomingPhoneList = myNumber?.map((item) => ({
+      const incomingPhoneList = myNumber?.map((item) => ({
         label: item,
         value: item
       }))
+      form.setFieldValue('phoneNumber', incomingPhoneList)
       setIsValidTwiliosNumber(myNumber.length > 0)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -98,6 +93,9 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       setSelected(providerType as SmsProviderType)
       onClose()
     } catch (error) {
+      // remove after backend fix
+      setSelected(providerType as SmsProviderType)
+      onClose()
       console.log(error) // eslint-disable-line no-console
     }
   }
@@ -121,7 +119,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     <Form.Item
       name='smsProvider'
       label={$t({ defaultMessage: 'SMS Provider' })}
-      initialValue={editData?.providerType && editData?.providerType !== SmsProviderType.RUCKUS_ONE}
       rules={[
         { required: true,
           message: $t({ defaultMessage:
@@ -181,7 +178,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           }
         ]}
         children={<Select
-          options={incomingPhoneList}
           placeholder={$t({ defaultMessage: 'Select...' })}
           disabled={!isValidTwiliosNumber}
         />}
