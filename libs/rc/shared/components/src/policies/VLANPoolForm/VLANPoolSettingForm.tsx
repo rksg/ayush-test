@@ -3,6 +3,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 
 
 import { GridCol, GridRow, StepsFormLegacy, Tooltip }                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { useGetEnhancedVlanPoolPolicyTemplateListQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import {
   PolicyType,
@@ -22,6 +23,7 @@ type VLANPoolSettingFormProps = {
 const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
   const { $t } = useIntl()
   const { edit } = props
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const form = Form.useFormInstance()
   const id = Form.useWatch<string>('id', form) || form.getFieldValue('id')
   // eslint-disable-next-line max-len
@@ -31,7 +33,8 @@ const VLANPoolSettingForm = (props: VLANPoolSettingFormProps) => {
     payload: {
       fields: ['name', 'id'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   })
 
   const nameValidator = async (_rule: unknown, value: string) => {

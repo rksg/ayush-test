@@ -70,7 +70,11 @@ export function ExternalAntennaSection () {
       useUpdateVenueTemplateExternalAntennaMutation
     )
 
-  const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({ params }, { skip: !supportAntennaTypeSelection })
+  const { data: antennaTypeSettings } = useGetVenueAntennaTypeQuery({
+    params,
+    enableRbac: isUseRbacApi
+  }, { skip: !supportAntennaTypeSelection })
+
   const [updateVenueAntennaType, { isLoading: isUpdateAntennaType }] = useUpdateVenueAntennaTypeMutation()
 
   const handleUpdateExternalAntenna = async (data: ExternalAntenna[]) => {
@@ -87,7 +91,7 @@ export function ExternalAntennaSection () {
 
   const handleUpdateAntennaType = async (data: VeuneApAntennaTypeSettings[]) => {
     try {
-      await updateVenueAntennaType({ params, payload: [ ...data ] })
+      await updateVenueAntennaType({ params, payload: [ ...data ], enableRbac: isUseRbacApi })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
