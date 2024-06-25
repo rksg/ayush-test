@@ -113,7 +113,7 @@ const SmsProviderItem = () => {
       })
     }
 
-  }, [smsUsage, smsProviderConfigured])
+  }, [smsUsage, smsProvider, smsProviderConfigured])
 
   const data = ruckusOneUsed > FREE_SMS_POOL
     ? [

@@ -42,12 +42,23 @@ const fakeSmsEsendexProvider = {
   ruckusOneUsed: 0
 }
 
+const fakeSmsOthersProvider = {
+  threshold: 80,
+  provider: SmsProviderType.OTHERS,
+  ruckusOneUsed: 0
+}
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+
 const services = require('@acx-ui/rc/services')
+const mockMutation = jest.fn().mockImplementation(() => Promise.resolve())
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useUpdateNotificationSmsMutation: () => ([ mockMutation ])
+}))
 
 describe('SMS Provider Form Item', () => {
   let params: { tenantId: string }
@@ -55,24 +66,10 @@ describe('SMS Provider Form Item', () => {
     services.useGetAdminListQuery = jest.fn().mockImplementation(() => {
       return { data: [] }
     })
-    jest.spyOn(services, 'useUpdateNotificationSmsMutation')
-    jest.spyOn(services, 'useDeleteNotificationSmsProviderMutation')
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getNotificationSmsProvider.url,
         (req, res, ctx) => res(ctx.json({ fakedTwilioData }))
-      ),
-      rest.post(
-        AdministrationUrlsInfo.updateNotificationSmsProvider.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '123' }))
-      ),
-      rest.post(
-        AdministrationUrlsInfo.updateNotificationSms.url,
-        (req, res, ctx) => res(ctx.json({ requestId: 'abc' }))
-      ),
-      rest.delete(
-        AdministrationUrlsInfo.deleteNotificationSmsProvider.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '456' }))
       )
     )
     params = {
@@ -80,7 +77,7 @@ describe('SMS Provider Form Item', () => {
     }
   })
   afterEach(() => {
-    jest.clearAllMocks()
+    mockServer.resetHandlers()
   })
   it('should render correctly when no data exists', async () => {
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
@@ -120,12 +117,11 @@ describe('SMS Provider Form Item', () => {
     fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '70' } } )
     await userEvent.click(screen.getByRole('button', { name: 'Save' }))
 
-    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
-      data: { requestId: 'abc' },
-      status: 'fulfilled'
-    })]
+    const value: [Function, Object] = expect.objectContaining({
+      payload: { provider: SmsProviderType.RUCKUS_ONE, threshold: '70' }
+    })
     await waitFor(()=> {
-      expect(services.useUpdateNotificationSmsMutation).toHaveLastReturnedWith(value)
+      expect(mockMutation).toHaveBeenLastCalledWith(value)
     })
   })
   it('should render layout correctly when in grace period', async () => {
@@ -194,9 +190,9 @@ describe('SMS Provider Form Item', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Change' }))
     expect(await screen.findAllByText('SMS Provider')).toHaveLength(2)
   })
-  it.skip('should delete correctly when remove button clicked', async () => {
+  it('should delete correctly when remove button clicked', async () => {
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: fakeSmsEsendexProvider }
+      return { data: fakeSmsOthersProvider }
     })
     render(
       <Provider>
@@ -205,11 +201,18 @@ describe('SMS Provider Form Item', () => {
         route: { params }
       })
     expect(screen.getByText('SMS Provider')).toBeVisible()
-    expect(screen.getByText('API Token')).toBeVisible()
     expect(screen.getByRole('button', { name: 'Change' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Remove' })).toBeVisible()
 
     await userEvent.click(screen.getByRole('button', { name: 'Remove' }))
     expect(await screen.findByRole('button', { name: 'Yes, Remove Provider' })).toBeVisible()
+    await userEvent.click(screen.getByRole('button', { name: 'Yes, Remove Provider' }))
+
+    const value: [Function, Object] = expect.objectContaining({
+      payload: { provider: SmsProviderType.RUCKUS_ONE, threshold: 80 }
+    })
+    await waitFor(()=> {
+      expect(mockMutation).toHaveBeenLastCalledWith(value)
+    })
   })
 })

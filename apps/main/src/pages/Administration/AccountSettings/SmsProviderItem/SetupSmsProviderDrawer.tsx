@@ -33,7 +33,8 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
   const { visible, isEditMode, setVisible, editData, setSelected } = props
   const [providerType, setProviderType] = useState<SmsProviderType>()
   const [form] = Form.useForm()
-  const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(true)
+  const [isValidTwiliosNumber, setIsValidTwiliosNumber] = useState(false)
+  const [phoneNumbers, setPhoneNumbers] = useState<string[]>()
 
   const [updateSmsProvider] = useUpdateNotificationSmsProviderMutation()
   const [getTwiliosIncomingPhoneNumbers] = useLazyGetTwiliosIncomingPhoneNumbersQuery()
@@ -45,6 +46,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     }
   }, [])
 
+  useEffect(() => {
+    form.validateFields(['phoneNumber'])
+  }, [phoneNumbers])
+
   const onClose = () => {
     setVisible(false)
     form.resetFields()
@@ -52,7 +57,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
   const handleGetTwiliosIncomingPhoneNumbers = async () => {
     try {
-      await form.validateFields()
+      await form.validateFields(['accountSid', 'authToken'])
       const payload: NotificationSmsConfig = {
         accountSid: form.getFieldValue('accountSid'),
         authToken: form.getFieldValue('authToken')
@@ -60,6 +65,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       const phoneList = await getTwiliosIncomingPhoneNumbers({
         params: params, payload: payload })
       const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
+      setPhoneNumbers(myNumber)
       const incomingPhoneList = myNumber?.map((item) => ({
         label: item,
         value: item
@@ -112,7 +118,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     setProviderType(value as SmsProviderType)
   }
 
-  const formContent = <Form layout='vertical'form={form} >
+  const formContent = <Form layout='vertical' form={form} >
     <Form.Item
       name='smsProvider'
       label={$t({ defaultMessage: 'SMS Provider' })}
@@ -122,6 +128,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             'Please select the provider' })
         }
       ]}
+      initialValue={providerType}
     >
       <Select
         options={providerList}
