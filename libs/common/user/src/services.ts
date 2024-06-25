@@ -52,15 +52,14 @@ export const UserUrlsInfo = {
   },
   getAllUserSettings: {
     method: 'get',
-    url: '/admins/settings/ui',
-    oldUrl: '/admins/admins-settings/ui',
+    url: '/admins/admins-settings/ui',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui',
     newApi: true
   },
   saveUserSettings: {
-    // method: 'put',
-    method: 'PATCH',
-    url: '/admins/settings/ui/:productKey',
-    oldUrl: '/admins/admins-settings/ui/:productKey',
+    method: 'put',
+    url: '/admins/admins-settings/ui/:productKey',
+    oldUrl: '/api/tenant/:tenantId/admin-settings/ui/:productKey',
     newApi: true
   },
   wifiAllowedOperations: {
@@ -167,18 +166,18 @@ export const UserRbacUrlsInfo = {
     oldUrl: '/tenants/accountTier',
     newApi: true
   },
-  // getAllUserSettings: {
-  //   method: 'get',
-  //   url: '/admins/settings/ui',
-  //   oldUrl: '/admins/admins-settings/ui',
-  //   newApi: true
-  // },
-  // saveUserSettings: {
-  //   method: 'put',
-  //   url: '/admins/settings/ui/:productKey',
-  //   oldUrl: '/admins/admins-settings/ui/:productKey',
-  //   newApi: true
-  // },
+  getAllUserSettings: {
+    method: 'get',
+    url: '/admins/settings/ui',
+    oldUrl: '/admins/admins-settings/ui',
+    newApi: true
+  },
+  saveUserSettings: {
+    method: 'PATCH',
+    url: '/admins/settings/ui/:productKey',
+    oldUrl: '/admins/admins-settings/ui/:productKey',
+    newApi: true
+  },
   getBetaStatus: {
     method: 'get',
     url: '/tenants/self/query?betaStatus',
@@ -223,7 +222,8 @@ export const {
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserUrlsInfo.getAllUserSettings, params),
+      query: ({ params, enableRbac }) => createHttpRequest(enableRbac
+        ? UserUrlsInfo.getAllUserSettings : UserUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
         let result:UserSettingsUIModel = {}
         Object.keys(userSettings).forEach((key: string) => {
@@ -233,8 +233,9 @@ export const {
       }
     }),
     saveUserSettings: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(UserUrlsInfo.saveUserSettings, params),
+      query: ({ params, payload, enableRbac }) => ({
+        ...createHttpRequest(enableRbac
+          ? UserRbacUrlsInfo.saveUserSettings : UserUrlsInfo.saveUserSettings, params),
         body: payload
       })
     }),

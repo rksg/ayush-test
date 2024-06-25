@@ -34,7 +34,6 @@ function EnableR1Beta (props: EnableR1BetaProps) {
   const isDisabled = isUpdating
   const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
-
   const openR1BetaTermsConditionDrawer = () => {
     setBetaTermsConditionDrawer(true)
   }
