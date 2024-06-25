@@ -269,8 +269,8 @@ export const EdgeClusterTable = () => {
     },
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
-      visible: (selectedRows) =>
-        (selectedRows.filter(row => row.isFirstLevel).length === 0 &&
+      visible: (selectedRows) => (isGracefulShutdownReady &&
+        selectedRows.filter(row => row.isFirstLevel).length === 0 &&
         selectedRows.filter(row => !allowRebootShutdownForStatus(row?.deviceStatus)).length === 0),
       label: $t({ defaultMessage: 'Shutdown' }),
       onClick: (selectedRows, clearSelection) => {
