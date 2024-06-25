@@ -3,7 +3,7 @@ import { useState, useContext } from 'react'
 
 import { Form, Switch } from 'antd'
 import { NamePath }     from 'antd/es/form/interface'
-import _                from 'lodash'
+import { clone, set }   from 'lodash'
 import { useIntl }      from 'react-intl'
 
 import { ApRadioTypeEnum, SingleRadioSettings, LPIButtonText, SupportRadioChannelsContext } from '@acx-ui/rc/components'
@@ -40,8 +40,9 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   const bandwidthOptions = bandwidthRadioOptions[radioType]
 
   const handleEnableChanged = (checked: boolean) => {
-    onEnableChanged(checked)
+    onEnableChanged(checked, radioType)
   }
+
   const [enableAfc, setEnableAfc] = useState(false)
 
   const {
@@ -63,11 +64,11 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
   }
 
   function setLPIToggleText () {
-    let newButtonTextSetting = _.clone(defaultButtonTextSetting)
+    let newButtonTextSetting = clone(defaultButtonTextSetting)
     const afcInfo = apViewContextData?.apStatusData?.afcInfo || undefined
     let newButtonText : JSX.Element = (<p style={{ fontSize: '12px', margin: '0px' }}> {$t({ defaultMessage: 'Standard power' })} </p>)
 
-    if(isUseVenueSettings){
+    if (isUseVenueSettings) {
       newButtonText = ( <p style={{ fontSize: '12px', margin: '0px' }}>
         {enableAfc ?
           $t({ defaultMessage: 'On ' }):
@@ -75,6 +76,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
         }
       </p>)
     }
+
     else {
       if (isAPLowPower(afcInfo) && enableAfc) {
         let defaultButtonText = $t({ defaultMessage: 'Standard power' })
@@ -96,7 +98,7 @@ export function ApSingleRadioSettings (props: ApSingleRadioSettingsPorps) {
       }
     }
 
-    _.set(newButtonTextSetting, 'buttonText', newButtonText)
+    set(newButtonTextSetting, 'buttonText', newButtonText)
     return newButtonTextSetting
   }
 

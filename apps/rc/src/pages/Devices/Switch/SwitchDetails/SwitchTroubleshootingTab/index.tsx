@@ -3,9 +3,10 @@ import { useContext } from 'react'
 import { useIntl }                from 'react-intl'
 import { useParams, useNavigate } from 'react-router-dom'
 
-import { Tabs }          from '@acx-ui/components'
-import { isRouter }      from '@acx-ui/rc/utils'
-import { useTenantLink } from '@acx-ui/react-router-dom'
+import { Tabs }                   from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { isRouter, isVerGEVer }   from '@acx-ui/rc/utils'
+import { useTenantLink }          from '@acx-ui/react-router-dom'
 
 import { SwitchDetailsContext } from '..'
 
@@ -23,6 +24,7 @@ export function SwitchTroubleshootingTab () {
   const navigate = useNavigate()
   // eslint-disable-next-line max-len
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}/details/troubleshooting/`)
+  const isSwitchCliEnabled = useIsSplitOn(Features.SWITCH_CLI_MODE)
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -41,21 +43,18 @@ export function SwitchTroubleshootingTab () {
 
 
   const isSupportMacAddress = function () {
-
-    return false //Currently, ICX does not support Troubleshooting Mac Address feature
-
-    // Switch troubleshooting only support switch version >= SPS09010g
-    // 1.  If the version number is 09010, The last English number must be greater than or equal to "g"
-    // 2.  Or the version number is grater than 09010
-
-    // const switchVersionReg = /^(?:[A-Z]{3,})?(?<major>\d{4,})(?<minor>[a-z]*)(?:_b(?<build>\d+))?$/
-    // const firmwareGroups =
-    //   switchDetailsContextData.switchDetailHeader?.firmware?.match(switchVersionReg)?.groups
-    // if (firmwareGroups?.major === '09010' && firmwareGroups?.minor) {
-    //   return firmwareGroups.minor.charAt(0) >= 'g'
-    // } else {
-    //   return ((firmwareGroups?.major || '0') > '09010')
-    // }
+    if(switchDetailsContextData.switchDetailHeader?.firmware){
+      const fwVersion = switchDetailsContextData.switchDetailHeader?.firmware
+      /*
+      Only support the firmware versions listed below:
+      1. > 10010e < 10020
+      2. > 10020b
+      */
+      return isVerGEVer(fwVersion, '10010e', false) &&
+      (!isVerGEVer(fwVersion, '10020', false) || isVerGEVer(fwVersion, '10020b', false))
+    }else{
+      return false
+    }
   }
 
   return (
@@ -79,7 +78,7 @@ export function SwitchTroubleshootingTab () {
         </TabPane>
       }
       {
-        isSupportMacAddress() &&
+        isSupportMacAddress() && isSwitchCliEnabled &&
         <TabPane tab={$t({ defaultMessage: 'MAC Address Table' })} key='macTable'>
           <SwitchMacAddressForm />
         </TabPane>

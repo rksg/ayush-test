@@ -13,6 +13,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import {
   InformationSolid
 } from '@acx-ui/icons'
@@ -72,7 +73,8 @@ export function WISPrForm () {
   const wlanSecurity = useWatch('pskProtocol')
   const externalProviderRegion = useWatch(['guestPortal','wisprPage','externalProviderRegion'])
   const networkSecurity = useWatch(['networkSecurity'])
-  const providerData = useExternalProvidersQuery({ params })
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const providerData = useExternalProvidersQuery({ params, enableRbac: isUseRbacApi })
   const [enablePreShared, setEnablePreShared ] = useState(false)
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
   const [regionOption, setRegionOption]=useState<Regions[]>()

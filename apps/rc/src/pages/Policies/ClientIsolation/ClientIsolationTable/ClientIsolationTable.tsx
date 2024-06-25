@@ -19,7 +19,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
@@ -107,7 +107,10 @@ export default function ClientIsolationTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={
+            // eslint-disable-next-line max-len
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
