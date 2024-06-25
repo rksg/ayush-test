@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                                          from '@acx-ui/store'
 import {
@@ -26,7 +27,9 @@ jest.mock('../../HaStatusBadge', () => ({
 
 const mockedDeleteApi = jest.fn()
 const mockedRebootApi = jest.fn()
+const mockedShutdownApi = jest.fn()
 const mockedResetApi = jest.fn()
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
 
 describe('Edge Detail Page Header', () => {
   const currentEdge = mockEdgeList.data[0]
@@ -50,6 +53,13 @@ describe('Edge Detail Page Header', () => {
         EdgeUrlsInfo.reboot.url,
         (req, res, ctx) => {
           mockedRebootApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.shutdown.url,
+        (req, res, ctx) => {
+          mockedShutdownApi()
           return res(ctx.status(202))
         }
       ),
@@ -80,7 +90,7 @@ describe('Edge Detail Page Header', () => {
       })
 
     await userEvent.click(screen.getByRole('button', { name: 'More Actions' }))
-    expect((await screen.findAllByRole('menuitem')).length).toBe(3)
+    expect((await screen.findAllByRole('menuitem')).length).toBe(4)
   })
 
   it('should redirect to edge general setting page after clicked configure', async () => {
@@ -152,6 +162,31 @@ describe('Edge Detail Page Header', () => {
     })
     await waitFor(() => {
       expect(rebootDialog).not.toBeVisible()
+    })
+  })
+
+  it('should shutdown edge correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    const shutdownBtn = await screen.findByRole('menuitem', { name: 'Shutdown' })
+    await userEvent.click(shutdownBtn)
+
+    const shutdwonDialog = await screen.findByRole('dialog')
+    await within(shutdwonDialog).findByText(`Shutdown "${currentEdge.name}"?`)
+    await userEvent.click(within(shutdwonDialog).getByRole('button', { name: 'Shutdown' }))
+    await waitFor(() => {
+      expect(mockedShutdownApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(shutdwonDialog).not.toBeVisible()
     })
   })
 

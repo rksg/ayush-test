@@ -50,8 +50,8 @@ export const getEdgeServiceHealth = (alarmSummary?: EdgeAlarmSummary[]) => {
   return EdgeServiceStatusEnum.UNKNOWN
 }
 
-export const allowRebootForStatus = (edgeStatus: string) => {
-  const stringStatus: string[] = rebootableEdgeStatuses
+export const allowRebootShutdownForStatus = (edgeStatus: string) => {
+  const stringStatus: string[] = rebootShutdownEdgeStatusWhiteList
   return stringStatus.includes(edgeStatus)
 }
 
@@ -66,17 +66,17 @@ export const allowSendOtpForStatus = (edgeStatus: string) => {
 }
 
 export const allowSendFactoryResetStatus = (edgeStatus: string) => {
-  const stringStatus: string[] = rebootableEdgeStatuses
+  const stringStatus: string[] = rebootShutdownEdgeStatusWhiteList
   return stringStatus.includes(edgeStatus)
 }
 
-export const rebootableEdgeStatuses = [
+export const rebootShutdownEdgeStatusWhiteList = [
   EdgeStatusEnum.OPERATIONAL,
   EdgeStatusEnum.APPLYING_CONFIGURATION,
   EdgeStatusEnum.CONFIGURATION_UPDATE_FAILED,
   EdgeStatusEnum.FIRMWARE_UPDATE_FAILED]
 
-export const resettabaleEdgeStatuses = rebootableEdgeStatuses
+export const resettabaleEdgeStatuses = rebootShutdownEdgeStatusWhiteList
 
 export const unconfigedEdgeStatuses = [EdgeStatusEnum.NEVER_CONTACTED_CLOUD]
 
