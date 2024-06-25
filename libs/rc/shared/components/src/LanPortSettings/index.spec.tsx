@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import { LanPortSettings } from '.'
+import { WifiNetworkMessages } from 'libs/rc/shared/utils/src/contents'
 
 const selectedModelCaps = {
   canSupportPoeMode: true,
@@ -60,6 +61,11 @@ const lanData = [{
   enabled: true
 }]
 
+const acVlanIdTooltipMsg = WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP
+  .defaultMessage[0].value
+const vlanIdTooltipMsg = WifiNetworkMessages.LAN_PORTS_VLAN_UNTAG_TOOLTIP
+  .defaultMessage[0].value
+
 describe('LanPortSettings', () => {
   it('should render correctly', async () => {
     const { asFragment } = render(<Provider>
@@ -86,6 +92,9 @@ describe('LanPortSettings', () => {
     expect(screen.getByLabelText(/VLAN member/)).toHaveValue('1-4094')
     expect(screen.getByLabelText(/VLAN untag ID/)).toBeDisabled()
     expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
+    const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+    fireEvent.mouseEnter(toolips[1])
+    await screen.findByText(vlanIdTooltipMsg, { exact: true })
 
     fireEvent.mouseDown(screen.getByLabelText(/Port type/))
     await userEvent.click(screen.getAllByText('GENERAL')[1])
@@ -140,6 +149,10 @@ describe('LanPortSettings', () => {
 
     fireEvent.change(screen.getByLabelText(/VLAN untag ID/), { target: { value: 2 } })
     expect(screen.getByLabelText(/VLAN member/).value).toBe('1-4094')
+
+    const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+    fireEvent.mouseEnter(toolips[1])
+    await screen.findByText(acVlanIdTooltipMsg, { exact: true })
   })
 
   it('should render read-only mode correctly with trunk port untagged vlan toggle', async () => {

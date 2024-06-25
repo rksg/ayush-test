@@ -187,7 +187,6 @@ exports[`LanPortSettings should render correctly 1`] = `
             VLAN untag ID
             <svg
               data-testid="QuestionMarkCircleOutlined"
-              style="height: 16px; width: 16px; margin-bottom: -3px;"
             />
           </label>
         </div>
