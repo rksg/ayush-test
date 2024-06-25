@@ -8,8 +8,8 @@ import {
   screen } from '@acx-ui/test-utils'
 import { RolesEnum } from '@acx-ui/types'
 
-import { UserRbacUrlsInfo, UserUrlsInfo } from './services'
-import { UserProfile }                    from './types'
+import {  UserUrlsInfo }    from './services'
+import { UserProfile }      from './types'
 import {
   useUserProfileContext,
   UserProfileProvider,
@@ -89,8 +89,6 @@ describe('UserProfileContext', () => {
       rest.get(UserUrlsInfo.rcgAllowedOperations.url,
         (_req, res, ctx) => res(ctx.json(['some-operation', 'venueOps']))),
       rest.get(UserUrlsInfo.getAccountTier.url as string,
-        (_req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
-      rest.get(UserRbacUrlsInfo.getAccountTier.url as string,
         (_req, res, ctx) => { return res(ctx.json({ acx_account_tier: 'Gold' }))}),
       rest.get(UserUrlsInfo.getBetaStatus.url,(_req, res, ctx) =>
         res(ctx.status(200))),

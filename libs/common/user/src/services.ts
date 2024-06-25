@@ -239,10 +239,9 @@ export const {
       })
     }),
     getAccountTier: build.query<TenantAccountTierValue, RequestPayload>({
-      query: ({ params }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const req = createHttpRequest(rbacApiEnabled
-          ? UserRbacUrlsInfo.getAccountTier : UserRbacUrlsInfo.getAccountTier, params)
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(enableRbac
+          ? UserRbacUrlsInfo.getAccountTier : UserUrlsInfo.getAccountTier, params)
         return {
           ...req
         }
@@ -364,9 +363,8 @@ export const {
       invalidatesTags: [{ type: 'Mfa', id: 'DETAIL' }]
     }),
     getBetaStatus: build.query<BetaStatus, RequestPayload>({
-      query: ({ params }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const req = createHttpRequest(rbacApiEnabled
+      query: ({ params, enableRbac }) => {
+        const req = createHttpRequest(enableRbac
           ? UserRbacUrlsInfo.getBetaStatus : UserUrlsInfo.getBetaStatus, params)
         return {
           ...req
@@ -377,9 +375,8 @@ export const {
       providesTags: [{ type: 'Beta', id: 'DETAIL' }]
     }),
     toggleBetaStatus: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const rbacApiEnabled = params && params.hasOwnProperty('isRbacApi')
-        const req = createHttpRequest(rbacApiEnabled
+      query: ({ params, payload, enableRbac }) => {
+        const req = createHttpRequest(enableRbac
           ? UserRbacUrlsInfo.toggleBetaStatus : UserUrlsInfo.toggleBetaStatus, params)
         return {
           ...req,

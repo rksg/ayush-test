@@ -95,8 +95,7 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
     const triggerAction = isChecked ? enableAccessSupport : disableAccessSupport
 
     try {
-      await triggerAction(isPtenantRbacApiEnabled
-        ? { params: { isRbacApi: 'true' } } : { params }).unwrap()
+      await triggerAction({ params, enableRbac: isPtenantRbacApiEnabled }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

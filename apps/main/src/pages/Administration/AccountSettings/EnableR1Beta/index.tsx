@@ -52,10 +52,9 @@ function EnableR1Beta (props: EnableR1BetaProps) {
         cancelText: $t({ defaultMessage: 'Keep Early Access Features' }),
         onOk: async () => {
           try {
-            await toggleBetaStatus(isPtenantRbacApiEnabled
-              ? { params: { isRbacApi: 'true' }, payload: { enabled: isChecked } }
-              : { params: { enable: isChecked + '' }
-              }).unwrap()
+            await toggleBetaStatus({ params: { enable: isChecked + '' },
+              payload: { enabled: isChecked }, enableRbac: isPtenantRbacApiEnabled
+            }).unwrap()
           } catch (error) {
             console.log(error) // eslint-disable-line no-console
           }
