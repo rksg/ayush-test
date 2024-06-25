@@ -60,7 +60,7 @@ export function useMenuConfig () {
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
-  
+
   const aiAnalyticsMenu = [{
     permission: 'READ_INCIDENTS',
     uri: '/analytics/incidents',
