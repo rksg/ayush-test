@@ -59,27 +59,25 @@ export function useMenuConfig () {
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
-  const isIntentAIEnabled = [
-    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
-    useIsSplitOn(Features.INTENT_AI_TOGGLE)
-  ].some(Boolean)
+  const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  
   const aiAnalyticsMenu = [{
     permission: 'READ_INCIDENTS',
-    uri: '/incidents',
+    uri: '/analytics/incidents',
     label: $t({ defaultMessage: 'Incidents' })
   }, {
     permission: 'READ_AI_DRIVEN_RRM',
-    uri: '/recommendations/crrm',
+    uri: '/analytics/recommendations/crrm',
     label: $t({ defaultMessage: 'AI-Driven RRM' })
   }, {
     permission: 'READ_AI_OPERATIONS',
-    uri: '/recommendations/aiOps',
+    uri: '/analytics/recommendations/aiOps',
     label: $t({ defaultMessage: 'AI Operations' })
   }]
   if (isIntentAIEnabled) {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
-      uri: '/intentAI',
+      uri: '/analytics/intentAI',
       label: $t({ defaultMessage: 'Intent AI' })
     })
   }
