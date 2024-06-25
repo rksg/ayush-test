@@ -1,0 +1,107 @@
+import { useIntl } from 'react-intl'
+
+import { Card, Loader, Table, TableProps }         from '@acx-ui/components'
+import { Features, useIsSplitOn }                  from '@acx-ui/feature-toggle'
+import { SimpleListTooltip }                       from '@acx-ui/rc/components'
+import { useVenuesListQuery, useVenuesTableQuery } from '@acx-ui/rc/services'
+import {
+  LbsServerProfileViewModel,
+  Venue,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { TenantLink } from '@acx-ui/react-router-dom'
+
+const defaultVenuePayload = {
+  searchString: '',
+  fields: [
+    'id',
+    'name',
+    'aggregatedApStatus',
+    'networks'
+  ],
+  page: 1,
+  pageSize: 1024
+}
+
+export function LbsServerProfileInstancesTable (props: { data: LbsServerProfileViewModel }) {
+  const { $t } = useIntl()
+  const { data } = props
+
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const venueIds = data?.venueIds || []
+
+  const tableQuery = useTableQuery<Venue>({
+    useQuery: supportApCompatibleCheck ? useVenuesTableQuery : useVenuesListQuery,
+    defaultPayload: {
+      ...defaultVenuePayload,
+      filters: { id: venueIds }
+    },
+    option: {
+      skip: !venueIds?.length
+    }
+  })
+
+  const columns: TableProps<Venue>['columns'] = [
+    {
+      title: $t({ defaultMessage: 'Venue Name' }),
+      dataIndex: 'name',
+      key: 'name',
+      searchable: true,
+      sorter: true,
+      fixed: 'left',
+      render: (_, row) => {
+        return <TenantLink to={`venues/${row.id}/venue-details/overview`}>
+          {row.name}
+        </TenantLink>
+      }
+    },
+    {
+      title: $t({ defaultMessage: '# of APs' }),
+      key: 'aggregatedApStatus',
+      dataIndex: 'aggregatedApStatus',
+      sorter: true,
+      render: function (_, row) {
+        const count = row.aggregatedApStatus
+          ? Object.values(row.aggregatedApStatus)
+            .reduce((a, b) => a + b, 0)
+          : 0
+        return (
+          <TenantLink
+            to={`/venues/${row.id}/venue-details/devices`}
+            children={count ? count : 0}
+          />
+        )
+      }
+    },
+    {
+      title: $t({ defaultMessage: '# of Networks' }),
+      dataIndex: 'networks',
+      key: 'networks',
+      sorter: true,
+      render: (_, row) => {
+        return (
+          row.networks ?
+            <SimpleListTooltip
+              items={row.networks?.names}
+              displayText={row.networks?.count}
+            /> : 0
+        )
+      }
+    }
+  ]
+
+  return (
+    <Card title={$t({ defaultMessage: 'Instances ({count})' },
+      { count: tableQuery.data?.totalCount ?? 0 }
+    )}>
+      <Loader states={[tableQuery]} >
+        <Table
+          columns={columns}
+          onChange={tableQuery.handleTableChange}
+          dataSource={tableQuery.data?.data}
+          rowKey='id'
+        />
+      </Loader>
+    </Card>
+  )
+}
