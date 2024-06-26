@@ -3,8 +3,8 @@ import React from 'react'
 import { Row, Col, Radio, Space, Form } from 'antd'
 import { useIntl, defineMessage }       from 'react-intl'
 
-import * as constants from '../constants'
-import * as UI        from '../styledComponents'
+import * as config from '../config'
+import * as UI     from '../styledComponents'
 
 const name = 'intentType' as const
 const label = defineMessage({ defaultMessage: 'Intent Type' })
@@ -16,7 +16,7 @@ export enum IntentType {
 
 export function Priority () {
   const { $t } = useIntl()
-  const title: React.ReactNode = $t(constants.steps.priority)
+  const title: React.ReactNode = $t(config.steps.title.priority)
 
   return <Row gutter={20}>
     <Col span={15}>
@@ -36,10 +36,10 @@ export function Priority () {
             <Radio.Group>
               <Space direction='vertical'>
                 <Radio value={IntentType.DENSITY}>
-                  {$t(constants.content.clientDensity.title)}
+                  {$t(config.steps.clientDensity.title)}
                 </Radio>
                 <Radio value={IntentType.THROUGHPUT}>
-                  {$t(constants.content.clientThroughput.title)}
+                  {$t(config.steps.clientThroughput.title)}
                 </Radio>
               </Space>
             </Radio.Group>
@@ -53,14 +53,14 @@ export function Priority () {
         <UI.SideNote>
           <UI.SideNoteHeader>
             <UI.SideNoteTitle>
-              {$t(constants.content.sideNotes.title)}
+              {$t(config.steps.sideNotes.title)}
             </UI.SideNoteTitle>
           </UI.SideNoteHeader>
           <UI.SideNoteSubtitle>
             {$t({ defaultMessage: 'Potential trade-off' })}
           </UI.SideNoteSubtitle>
           <UI.SideNoteContent>
-            {$t(constants.content.sideNotes.tradeoff)}
+            {$t(config.steps.sideNotes.tradeoff)}
           </UI.SideNoteContent>
         </UI.SideNote>
       </UI.Wrapper>

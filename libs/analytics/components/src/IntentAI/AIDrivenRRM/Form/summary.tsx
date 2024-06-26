@@ -5,7 +5,7 @@ import { useIntl }  from 'react-intl'
 
 import { useStepFormContext } from '@acx-ui/components'
 
-import * as constants             from '../constants'
+import * as config                from '../config'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
 
@@ -13,7 +13,7 @@ import { IntentType, Priority } from './priority'
 
 export function Summary () {
   const { $t } = useIntl()
-  const title = $t(constants.steps.summary)
+  const title = $t(config.steps.title.summary)
   const { form } = useStepFormContext<EnhancedRecommendation>()
   const intentType = form.getFieldValue(Priority.fieldName)
 
@@ -31,14 +31,14 @@ export function Summary () {
         <UI.SideNote>
           <UI.SideNoteHeader>
             <UI.SideNoteTitle>
-              {$t(constants.content.sideNotes.title)}
+              {$t(config.steps.sideNotes.title)}
             </UI.SideNoteTitle>
           </UI.SideNoteHeader>
           <UI.SideNoteSubtitle>
-            {$t(constants.content[intentType as IntentType]?.title)}
+            {$t(config.steps[intentType as IntentType]?.title)}
           </UI.SideNoteSubtitle>
           <UI.SideNoteContent>
-            {$t(constants.content[intentType as IntentType]?.content)}
+            {$t(config.steps[intentType as IntentType]?.content)}
           </UI.SideNoteContent>
         </UI.SideNote>
       </UI.Wrapper>

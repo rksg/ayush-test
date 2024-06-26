@@ -5,7 +5,7 @@ import { useIntl }  from 'react-intl'
 
 import { useStepFormContext } from '@acx-ui/components'
 
-import * as constants             from '../constants'
+import * as config                from '../config'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
 
@@ -13,7 +13,7 @@ import { IntentType, Priority } from './priority'
 
 export function Settings () {
   const { $t } = useIntl()
-  const title: React.ReactNode = $t(constants.steps.settings)
+  const title: React.ReactNode = $t(config.steps.title.settings)
   const { form } = useStepFormContext<EnhancedRecommendation>()
   const intentType = form.getFieldValue(Priority.fieldName)
 
@@ -22,7 +22,7 @@ export function Settings () {
       <UI.Wrapper>
         <UI.Title>{title}</UI.Title>
         <UI.Content>
-          {$t(constants.content.calendarText)}
+          {$t(config.steps.calendarText)}
         </UI.Content>
       </UI.Wrapper>
     </Col>
@@ -32,14 +32,14 @@ export function Settings () {
         <UI.SideNote>
           <UI.SideNoteHeader>
             <UI.SideNoteTitle>
-              {$t(constants.content.sideNotes.title)}
+              {$t(config.steps.sideNotes.title)}
             </UI.SideNoteTitle>
           </UI.SideNoteHeader>
           <UI.SideNoteSubtitle>
-            {$t(constants.content[intentType as IntentType]?.title)}
+            {$t(config.steps[intentType as IntentType]?.title)}
           </UI.SideNoteSubtitle>
           <UI.SideNoteContent>
-            {$t(constants.content[intentType as IntentType]?.content)}
+            {$t(config.steps[intentType as IntentType]?.content)}
           </UI.SideNoteContent>
         </UI.SideNote>
       </UI.Wrapper>

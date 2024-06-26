@@ -6,8 +6,7 @@ import { useIntl, FormattedMessage, defineMessage } from 'react-intl'
 import { useStepFormContext }        from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-import { statusTrailMsgs }        from '../config'
-import * as constants             from '../constants'
+import * as config                from '../config'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
 
@@ -15,7 +14,7 @@ import * as UI                    from '../styledComponents'
 export function Introduction () {
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedRecommendation>()
-  const title: React.ReactNode = $t(constants.steps.introduction)
+  const title: React.ReactNode = $t(config.steps.title.introduction)
   const status = initialValues?.status!
 
   const values = {
@@ -41,7 +40,7 @@ export function Introduction () {
             {$t({ defaultMessage: 'Zone:' })} {initialValues?.sliceValue}
           </UI.ContentText>
           <UI.ContentText>
-            {$t({ defaultMessage: 'Status:' })} {$t(statusTrailMsgs[status])}
+            {$t({ defaultMessage: 'Status:' })} {$t(config.statusTrailMsgs[status])}
           </UI.ContentText>
           <UI.ContentText>
             {$t({ defaultMessage: 'Last update:' })}&nbsp;
@@ -54,11 +53,11 @@ export function Introduction () {
                       'Wireless network design involves balancing different priorities:' })}
           </UI.Subtitle>
           <FormattedMessage
-            {...constants.content.clientDensity.introduction}
+            {...config.steps.clientDensity.introduction}
             values={{ ...values }}
           />
           <FormattedMessage
-            {...constants.content.clientThroughput.introduction}
+            {...config.steps.clientThroughput.introduction}
             values={{ ...values }}
           />
         </UI.Content>
@@ -70,24 +69,24 @@ export function Introduction () {
         <UI.SideNote>
           <UI.SideNoteHeader>
             <UI.SideNoteTitle>
-              {$t(constants.content.sideNotes.title)}
+              {$t(config.steps.sideNotes.title)}
             </UI.SideNoteTitle>
           </UI.SideNoteHeader>
           <UI.SideNoteSubtitle>
             {$t({ defaultMessage: 'Benefits' })}
           </UI.SideNoteSubtitle>
           <UI.SideNoteContent>
-            {$t(constants.content.sideNotes.introduction)}
+            {$t(config.steps.sideNotes.introduction)}
           </UI.SideNoteContent>
           <UI.SideNoteSubtitle>
             {$t({ defaultMessage: 'Resources:' })}
           </UI.SideNoteSubtitle>
           <UI.SideNoteContent>
-            <UI.Link href={constants.demoLink} target='_blank'>
+            <UI.Link href={config.steps.link.demoLink} target='_blank'>
               <UI.LinkVideoIcon />
               {$t(defineMessage({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }))}
             </UI.Link>
-            <UI.Link href={constants.guideLink} target='_blank'>
+            <UI.Link href={config.steps.link.guideLink} target='_blank'>
               <UI.LinkDocumentIcon />
               {$t(defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }))}
             </UI.Link>

@@ -3,12 +3,10 @@ import { snakeCase, findLast } from 'lodash'
 import moment                  from 'moment-timezone'
 import { MessageDescriptor }   from 'react-intl'
 
-import { recommendationApi }    from '@acx-ui/store'
-import { NetworkPath, getIntl } from '@acx-ui/utils'
+import { recommendationApi } from '@acx-ui/store'
+import { NetworkPath }       from '@acx-ui/utils'
 
-import { StateType, codes, IconValue, StatusTrail, ConfigurationValue, crrmStates, states } from './config'
-import { CRRMStates }                                                                       from './states'
-import { isDataRetained }                                                                   from './utils'
+import { StateType, codes, IconValue, StatusTrail, ConfigurationValue } from './config'
 
 export type BasicRecommendation = {
   id: string;
@@ -87,68 +85,12 @@ export type RecommendationAp = {
   version: string;
 }
 
-const optimizedStates = [ 'applied', 'applyscheduleinprogress', 'applyscheduled']
-
-export const unknownStates = [
-  CRRMStates.insufficientLicenses,
-  CRRMStates.verificationError,
-  CRRMStates.verified,
-  CRRMStates.unqualifiedZone,
-  CRRMStates.noAps,
-  CRRMStates.unknown
-]
-
-export const getCrrmOptimizedState = (state: StateType) => {
-  return optimizedStates.includes(state)
-    ? crrmStates.optimized
-    : unknownStates.includes(state as CRRMStates)
-      ? crrmStates[state as CRRMStates]
-      : crrmStates.nonOptimized
-}
-
-export function extractBeforeAfter (value: CrrmListItem['kpis']) {
-  const { current, previous, projected } = value!
-  const [before, after] = [previous, current, projected]
-    .filter(value => value !== null)
-  return [before, after]
-}
-
-const getCrrmInterferingLinksText = (
-  status: StateType,
-  dataEndTime: string,
-  kpi_number_of_interfering_links: RecommendationKpi['']
-) => {
-  const { $t } = getIntl()
-  if (!isDataRetained(dataEndTime))
-    return $t({ defaultMessage: 'Beyond data retention period' })
-  if (status === 'reverted') return $t(states.reverted.text)
-  if (status === 'applyfailed') return $t(states.applyfailed.text)
-  if (status === 'revertfailed') return $t(states.revertfailed.text)
-  const [before, after] = extractBeforeAfter(kpi_number_of_interfering_links)
-
-  if (status === 'new') return $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: '{before} interfering {before, plural, one {link} other {links}} can be optimized to {after}',
-    description: 'Translation string - interfering, link, links, can be optimized to'
-  }, { before, after }) as string
-
-  return $t({
-    // eslint-disable-next-line max-len
-    defaultMessage: 'From {before} to {after} interfering {after, plural, one {link} other {links}}',
-    description: 'Translation string - From, to, interfering, link, links'
-  }, { before, after }) as string
-}
-
 export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
     code,
     statusTrail,
     status,
-    appliedTime,
-    dataEndTime,
-    currentValue,
-    recommendedValue,
-    kpi_number_of_interfering_links
+    appliedTime
   } = details
   const {
     priority, category, summary, recommendedValueTooltipContent
@@ -162,12 +104,10 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
   )
     ? { until: appliedPlus24h.toISOString() }
     : null
-  const tooltipContent = typeof recommendedValueTooltipContent === 'function'
-    ? recommendedValueTooltipContent(status, currentValue, recommendedValue)
-    : recommendedValueTooltipContent
+  const tooltipContent = recommendedValueTooltipContent
   const appliedOnce = Boolean(statusTrail.find(t => t.status === 'applied'))
   const firstAppliedAt = findLast(statusTrail, t => t.status === 'applied')?.createdAt
-  const intentType = code.includes('crrm') ? 'clientDensity' : '' // to be changed when confirmed intentType
+  const intentType = code.includes('crrm') && 'clientDensity' // to be changed when confirmed intentType
   return {
     ...details,
     monitoring,
@@ -177,15 +117,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     summary,
     appliedOnce,
     firstAppliedAt,
-    intentType,
-    ...(code.includes('crrm') && {
-      crrmOptimizedState: getCrrmOptimizedState(status),
-      crrmInterferingLinksText: getCrrmInterferingLinksText(
-        status,
-        dataEndTime,
-        kpi_number_of_interfering_links!
-      )
-    })
+    intentType
   } as EnhancedRecommendation
 }
 

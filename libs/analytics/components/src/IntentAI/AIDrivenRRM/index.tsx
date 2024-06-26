@@ -7,7 +7,7 @@ import { PageHeader, StepsForm, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
-import { steps }                                                           from './constants'
+import * as config                                                         from './config'
 import { Introduction }                                                    from './Form/introduction'
 import { Priority }                                                        from './Form/priority'
 import { Settings }                                                        from './Form/settings'
@@ -53,19 +53,19 @@ export function IntentAIDrivenRRM () {
         initialValues={detailsQuery?.data!}
       >
         <StepsForm.StepForm
-          title={$t(steps.introduction)}
+          title={$t(config.steps.title.introduction)}
           children={<Introduction />}
         />
         <StepsForm.StepForm
-          title={$t(steps.priority)}
+          title={$t(config.steps.title.priority)}
           children={<Priority />}
         />
         <StepsForm.StepForm
-          title={$t(steps.settings)}
+          title={$t(config.steps.title.settings)}
           children={<Settings />}
         />
         <StepsForm.StepForm
-          title={$t(steps.summary)}
+          title={$t(config.steps.title.summary)}
           children={<Summary />}
         />
       </StepsForm>
