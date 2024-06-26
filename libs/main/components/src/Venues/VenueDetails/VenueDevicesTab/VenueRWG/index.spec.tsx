@@ -16,14 +16,14 @@ import { VenueRWG } from '.'
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
-    items: [{
+    data: [{
       rwgId: 'bbc41563473348d29a36b76e95c50381',
       rowId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
       venueName: 'My-Venue',
       name: 'ruckusdemos',
       hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       status: RWGStatusEnum.ONLINE,
       isCluster: false
     }, {
@@ -33,7 +33,7 @@ const rwgList = {
       venueName: 'My-Venue',
       name: 'rwg1',
       hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       status: RWGStatusEnum.OFFLINE,
       isCluster: false
     }, {
@@ -43,7 +43,7 @@ const rwgList = {
       venueName: 'My-Venue',
       name: 'cluster',
       hostname: 'https://rxgs5-vpoc.ruckusdemos.net',
-      apiKey: 'xxxxxxxxxxxxxxxxxxx',
+      apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       status: RWGStatusEnum.RWG_STATUS_UNKNOWN,
       isCluster: true,
       clusterNodes: [{

@@ -41,6 +41,20 @@ export const mockedConfigTemplateList = {
       createdBy: 'Author 4',
       templateType: 'Layer 2 Policy',
       lastModified: 1690598500000
+    },
+    {
+      id: '974eea0ed9da41fa95608e8c34d74f35',
+      name: 'Venue Template',
+      type: 'VENUE',
+      tenantId: 'dc2146381a874d04a824bdd8c7bb991d',
+      appliedOnTenants: [
+        'a48e45a0331b4c7cac85965e3a72021e',
+        'f5dab8103d974152af1dfc805008953f'
+      ],
+      createdBy: 'msp.cfgtemp.9@rwbigdog.com',
+      createdOn: 1716466685000,
+      lastModified: 1717472163000,
+      lastApplied: 1717581994984
     }
   ] as ConfigTemplate[]
 }
@@ -286,4 +300,41 @@ export const mockedNetworkTemplates = {
 export const mockedEnhancedPortalList = {
   data: [{ id: 'test', name: 'test', displayLangCode: 'en', wifiNetworkIds: ['networkId'] }],
   paging: { page: 1, pageSize: 10, totalCount: 1 }
+}
+
+
+export const mockedVenueTemplate = {
+  address: {
+    addressLine: '1093 Main St, New York, NY, 10044, United States',
+    city: 'New York',
+    country: 'United States',
+    latitude: 40.7690084,
+    longitude: -73.9431541,
+    timezone: 'America/New_York'
+  },
+  createdDate: '2022-07-08T04:59:22.351+00:00',
+  description: '',
+  floorPlans: [],
+  id: '4c778ed630394b76b17bce7fe230cf9f',
+  name: 'My Template Venue',
+  updatedDate: '2022-07-08T04:59:22.351+00:00'
+}
+
+export const mockVenueTemplateList = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '069c06765c9841fcaf35bb5dbd2319eb',
+      name: 'My1stVenueTemplate1'
+    },
+    {
+      id: 'eb9555414ea444aa984d5399f0c1c892',
+      name: 'My1stVenueTemplate2'
+    }
+  ]
 }

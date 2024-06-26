@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ApPhoto should upload photo correctly 1`] = `
+exports[`ApPhoto should reset upload photo correctly 1`] = `
 <DocumentFragment>
   <div
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
@@ -140,7 +140,7 @@ exports[`ApPhoto should upload photo correctly 1`] = `
               >
                 <img
                   class="ant-image-img"
-                  src="/ap/sample.png"
+                  src="placeholder.svg"
                 />
                 <div
                   class="ant-image-mask"

@@ -22,7 +22,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }                                              from '@acx-ui/types'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 export default function AAATable () {
   const { $t } = useIntl()
@@ -125,7 +125,10 @@ export default function AAATable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={
+            // eslint-disable-next-line max-len
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

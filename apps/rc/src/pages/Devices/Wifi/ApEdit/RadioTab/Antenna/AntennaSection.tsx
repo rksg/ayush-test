@@ -6,6 +6,7 @@ import { useIntl }         from 'react-intl'
 import { useParams }       from 'react-router-dom'
 
 import { AnchorContext, Loader }           from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { ApAntennaTypeSelector }           from '@acx-ui/rc/components'
 import {
   useLazyGetApAntennaTypeSettingsQuery,
@@ -24,6 +25,8 @@ type paramsType = {
 }
 
 export function AntennaSection () {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { $t } = useIntl()
   const {
     editContextData,
@@ -64,10 +67,18 @@ export function AntennaSection () {
         serialNumber: serialNumber!
       }
       const setData = async () => {
-        const apAntType = (await getApAntennaType({ params: { venueId, serialNumber } }).unwrap())
+        const apAntType = (await getApAntennaType({
+          params: { venueId, serialNumber },
+          enableRbac: isUseRbacApi
+        }).unwrap())
+
         customAntennaTypeRef.current = cloneDeep(apAntType)
 
-        const venueAntType = (await getVenueAntennaType({ params: { venueId } }, true).unwrap())
+        const venueAntType = (await getVenueAntennaType({
+          params: { venueId },
+          enableRbac: isUseRbacApi
+        }, true).unwrap())
+
         if (venueAntType) {
           // eslint-disable-next-line max-len
           const findSettings = find(venueAntType, (antTypeSettings: VeuneApAntennaTypeSettings) => antTypeSettings.model === model)
@@ -133,7 +144,7 @@ export function AntennaSection () {
         useVenueSettings: isUseVenueSettingsRef.current,
         antennaType: form.getFieldValue('antennaType')
       }
-      await updateApAntTypeSettings({ params, payload }).unwrap()
+      await updateApAntTypeSettings({ params, payload, enableRbac: isUseRbacApi }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

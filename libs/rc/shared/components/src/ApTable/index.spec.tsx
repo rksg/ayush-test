@@ -58,6 +58,11 @@ jest.mock('../ImportFileDrawer', () => ({
     </div>
 }))
 
+const mockFileSaver = jest.fn()
+jest.mock('file-saver', () => (data: string, fileName: string) => {
+  mockFileSaver(data, fileName)
+})
+
 describe('Aps', () => {
   afterEach(() => {
     mockedUsedNavigate.mockClear()
@@ -144,11 +149,14 @@ describe('Aps', () => {
     expect(await within(row1).findByRole('checkbox')).toBeChecked()
 
     const downloadButton = await screen.findByRole('button', { name: 'Download Log' })
-    await userEvent.click(downloadButton) // TODO: Fix error > Not implemented: navigation (except hash changes)
+    await userEvent.click(downloadButton)
 
     const toast = await screen.findByText('Preparing log', { exact: false })
     expect(toast).toBeVisible()
-
+    await waitFor(() =>
+      expect(mockFileSaver)
+        .toHaveBeenCalledWith(fakeDownloadUrl, expect.stringContaining('SupportLog_'))
+    )
     expect(await screen.findByText('Log is ready.', { exact: false })).toBeVisible()
 
     await userEvent.click(await screen.findByRole('button', { name: 'Reboot' }))

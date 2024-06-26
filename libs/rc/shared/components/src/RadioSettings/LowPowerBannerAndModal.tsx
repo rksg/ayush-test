@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
@@ -28,13 +28,11 @@ export function LowPowerBannerAndModal (props: {
   const { $t } = useIntl()
   const { venueId } = useParams()
 
-  const [bannerText, setBannerText] = useState('')
-
   const navigate = useNavigate()
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/wifi/radio/Normal6GHz`)
 
-  useEffect(()=> {
+  const displayModalMessage = useMemo(() => {
 
     let modalMessage = ''
 
@@ -46,7 +44,7 @@ export function LowPowerBannerAndModal (props: {
       const messageList: string[] = []
 
       if (isOutdoor) {
-        messageList.push($t({ defaultMessage: '6 GHz radio has been turned off.' }))
+        messageList.push($t({ defaultMessage: 'The 6GHz radio is not currently operable.' }))
       } else {
         messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
       }
@@ -71,8 +69,9 @@ export function LowPowerBannerAndModal (props: {
 
     }
 
-    setBannerText(modalMessage)
-  }, [])
+    return modalMessage
+
+  }, [from, isOutdoor, afcInfo])
 
   return <Row
     data-testid='low-power-banner'
@@ -84,7 +83,7 @@ export function LowPowerBannerAndModal (props: {
       <StyledAlert showIcon={true}
         style={{ verticalAlign: 'middle' }}
         message={<>
-          {bannerText}
+          {displayModalMessage}
           { from === 'ap' ?
             <Button type='link'
               data-testid='how-to-fix-this-button'>

@@ -1,8 +1,8 @@
 import { useIntl } from 'react-intl'
 
-import { showActionModal }        from '@acx-ui/components'
+import { showActionModal }                               from '@acx-ui/components'
 import {
-  useBatchDeleteGatewayMutation
+  useBatchDeleteGatewayMutation, useRefreshRwgMutation
 } from '@acx-ui/rc/services'
 import {
   RWG
@@ -11,6 +11,7 @@ import {
 export function useRwgActions () {
   const { $t } = useIntl()
   const [batchDeleteGateway] = useBatchDeleteGatewayMutation()
+  const [refreshGatewayMutation] = useRefreshRwgMutation()
 
   const deleteGateways = async ( rows: RWG[], tenantId?: string, callBack?: ()=>void ) => {
     showActionModal({
@@ -31,7 +32,12 @@ export function useRwgActions () {
     })
   }
 
+  const refreshGateway = async () => {
+    refreshGatewayMutation()
+  }
+
   return {
-    deleteGateways
+    deleteGateways,
+    refreshGateway
   }
 }
