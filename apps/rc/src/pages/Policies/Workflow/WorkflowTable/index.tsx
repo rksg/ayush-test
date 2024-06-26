@@ -112,24 +112,28 @@ export default function WorkflowTable () {
     pagination: { settingsId }
   })
 
+  const fetchVersionHistory = async (workflows: Workflow[]) => {
+    for (let i = 0; i < workflows.length; i++) {
+      if (workflowMap.has(workflows[i].id!!)) continue
+      try {
+        setWorkflowMap(map => new Map(map.set(workflows[i].id!!, workflows[i])))
+        const result = await searchVersionedWorkflowById(
+          { params: { id: workflows[i].id, excludeContent: 'false' } }
+        ).unwrap()
+        if (result) {
+          result.data.forEach(v => {
+            if (v.publishedDetails?.status === 'PUBLISHED') {
+              setWorkflowMap(map => new Map(map.set(workflows[i].id!!, v)))
+            }
+          })
+        }
+      } catch (e) {}
+    }
+  }
+
   useEffect(() => {
     if (tableQuery.isLoading) return
-    const workflowMap = new Map()
-    tableQuery.data?.data?.forEach(workflow => {
-      workflowMap.set(workflow.id, workflow)
-      searchVersionedWorkflowById({ params: { id: workflow.id, excludeContent: 'false' } })
-        .then(result => {
-          if (result.data) {
-            result.data.data.forEach(v => {
-              if (v.publishedDetails?.status === 'PUBLISHED') {
-                workflowMap.set(workflow.id, v)
-              }
-            })
-          }
-        // eslint-disable-next-line no-console
-        }).catch(e => console.log(e))
-      setWorkflowMap(workflowMap)
-    })
+    fetchVersionHistory(tableQuery.data?.data ?? [])
   }, [tableQuery.data])
 
 
