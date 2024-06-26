@@ -131,6 +131,11 @@ export const EdgeUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/reboot',
     newApi: true
   },
+  shutdown: {
+    method: 'post',
+    url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/shutdown',
+    newApi: true
+  },
   factoryReset: {
     method: 'post',
     url: '/venues/:venueId/edgeClusters/:edgeClusterId/edges/:serialNumber/configReset',
