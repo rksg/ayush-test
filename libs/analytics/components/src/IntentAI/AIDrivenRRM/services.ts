@@ -60,6 +60,7 @@ export type EnhancedRecommendation = RecommendationDetails & {
   tooltipContent: string | MessageDescriptor;
   crrmOptimizedState?: IconValue;
   crrmInterferingLinksText?: React.ReactNode;
+  intentType?: string;
 }
 
 export type CrrmListItem = {
@@ -166,6 +167,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     : recommendedValueTooltipContent
   const appliedOnce = Boolean(statusTrail.find(t => t.status === 'applied'))
   const firstAppliedAt = findLast(statusTrail, t => t.status === 'applied')?.createdAt
+  const intentType = code.includes('crrm') ? 'density' : '' // to be changed when confirmed intentType
   return {
     ...details,
     monitoring,
@@ -175,6 +177,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     summary,
     appliedOnce,
     firstAppliedAt,
+    intentType,
     ...(code.includes('crrm') && {
       crrmOptimizedState: getCrrmOptimizedState(status),
       crrmInterferingLinksText: getCrrmInterferingLinksText(

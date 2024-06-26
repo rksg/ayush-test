@@ -89,7 +89,8 @@ describe('recommendation services', () => {
         status: 'new'
       }],
       preferences: { crrmFullOptimization: true },
-      trigger: 'once'
+      trigger: 'once',
+      intentType: ''
     } as unknown as EnhancedRecommendation)
   })
 
@@ -145,7 +146,8 @@ describe('recommendation services', () => {
         statusTrail: mockedRecommendationCRRM.statusTrail,
         crrmOptimizedState: crrmStates.optimized,
         crrmInterferingLinksText: 'From 2 to 0 interfering links',
-        trigger: 'daily'
+        trigger: 'daily',
+        intentType: 'density'
       } as unknown as EnhancedRecommendation)
       expect(spy).toBeCalledWith(mockedRecommendationCRRM.dataEndTime)
     })
@@ -201,7 +203,8 @@ describe('recommendation services', () => {
         statusTrail: mockedRecommendationCRRM.statusTrail,
         crrmOptimizedState: crrmStates.optimized,
         crrmInterferingLinksText: 'Beyond data retention period',
-        trigger: 'daily'
+        trigger: 'daily',
+        intentType: 'density'
       } as unknown as EnhancedRecommendation)
       expect(spy).toBeCalledWith(mockedRecommendationCRRM.dataEndTime)
     })
