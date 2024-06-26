@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                from '@acx-ui/store'
+import { useIsSplitOn }                                                  from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                               from '@acx-ui/rc/services'
+import { CommonUrlsInfo, MdnsProxyUrls, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                               from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -55,6 +55,10 @@ describe('ApEditTabs', () => {
       rest.get(
         WifiRbacUrlsInfo.getApCapabilities.url,
         (_, res, ctx) => res(ctx.json(r650Cap))
+      ),
+      rest.post(
+        MdnsProxyUrls.getMdnsProxyListRbac.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
