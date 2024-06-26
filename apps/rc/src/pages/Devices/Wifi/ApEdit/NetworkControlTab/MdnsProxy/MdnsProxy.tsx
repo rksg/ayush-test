@@ -76,7 +76,7 @@ export function MdnsProxy () {
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
-  const { apData } = useContext(ApDataContext)
+  const { venueData } = useContext(ApDataContext)
 
   const {
     data: apDetail,
@@ -85,7 +85,7 @@ export function MdnsProxy () {
     isSuccess,
     refetch
   } = useGetApQuery({
-    params: { ...params, venueId: apData?.venueId },
+    params: { ...params, venueId: venueData?.id },
     enableRbac: isUseWifiRbacApi
   })
 
