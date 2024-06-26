@@ -7,8 +7,8 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
-import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
+import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useVenuesListQuery
@@ -42,12 +42,11 @@ export default function useApsTable () {
 
   const apgroupFilterOptions = useApGroupsFilterOpts()
 
-  // TODO This query needs to be updated after apViewModel changes to the RBAC api
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
-      ...defaultApPayload,
-      groupByFields: groupedFields
+      fields: ['serialNumber', 'name'],
+      groupByFields: groupedFields // can be removed?
     },
     enableRbac: isUseWifiRbacApi
   })

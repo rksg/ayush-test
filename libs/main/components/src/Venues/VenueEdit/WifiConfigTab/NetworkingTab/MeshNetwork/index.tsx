@@ -124,7 +124,7 @@ export function MeshNetwork () {
       },
       pageSize: 1
     }
-    const { data } = await apList({ params, payload }, true)
+    const { data } = await apList({ params, payload, enableRbac: isWifiRbacEnabled }, true)
     setHasMeshAPs(!!(data?.totalCount && data.totalCount > 0))
   }
 

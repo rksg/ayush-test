@@ -101,7 +101,9 @@ import {
   aggregateApGroupInfo,
   aggregatePoePortInfo,
   aggregateVenueInfo,
-  transformApListFromNewModel
+  getNewApViewmodelPayloadFromOld,
+  transformApListFromNewModel,
+  transformRbacApList
 } from './apUtils'
 
 
@@ -114,22 +116,32 @@ export const apApi = baseApApi.injectEndpoints({
   endpoints: (build) => ({
     apList: build.query<TableResult<APExtended | APExtendedGrouped, ApExtraParams>,
     RequestPayload>({
-      query: ({ params, payload }:{ payload:Record<string,unknown>, params: Params<string> }) => {
+      query: ({ params, payload, enableRbac }:{ payload:Record<string,unknown>, params: Params<string>, enableRbac?: boolean }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+
         const hasGroupBy = payload?.groupBy
         const fields = hasGroupBy ? payload.groupByFields : payload.fields
         const apsReq = hasGroupBy
           ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
-          : createHttpRequest(CommonUrlsInfo.getApsList, params)
+          : createHttpRequest(urlsInfo.getApsList, params, customHeaders)
+
+        const newPayload = enableRbac
+          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload))
+          : { ...payload, fields: fields }
+
         return {
           ...apsReq,
-          body: { ...payload, fields: fields }
+          body: newPayload
         }
       },
       transformResponse (
         result: TableResult<APExtended, ApExtraParams>,
         _: unknown,
-        args: { payload : Record<string,unknown> }
+        args: { payload : Record<string,unknown>, enableRbac?: boolean }
       ) {
+        if (args.enableRbac) return transformRbacApList(result as unknown as TableResult<NewAPModel>)
+
         if((args?.payload)?.groupBy)
           return transformGroupByList(result as TableResult<APExtendedGrouped, ApExtraParams>)
         return transformApList(result)
@@ -153,6 +165,29 @@ export const apApi = baseApApi.injectEndpoints({
         })
       },
       extraOptions: { maxRetries: 5 }
+    }),
+    apViewModel: build.query<ApViewModel, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getApsList, params, customHeaders)
+
+        const newPayload = enableRbac
+          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
+          : payload
+
+        return {
+          ...req,
+          body: newPayload
+        }
+      },
+      transformResponse (result: TableResult<ApViewModel, ApExtraParams>,
+        _: unknown,
+        args: { enableRbac?: boolean }
+      ) {
+        if (args.enableRbac) return transformRbacApList(result as unknown as TableResult<NewAPModel>)
+        return transformApViewModel(result?.data[0])
+      }
     }),
     newApList: build.query<TableResult<NewAPModelExtended, ApExtraParams>,
     RequestPayload>({
@@ -279,7 +314,7 @@ export const apApi = baseApApi.injectEndpoints({
           // fetch networks name
           const networkIds = uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('networks') as keyof typeof item]))
           if (networkIds.length && isPayloadHasField(payload, 'networks')) {
-            const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, customHeaders)
+            const networkListReq = createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, params, customHeaders)
             const networkListQuery = await fetchWithBQ({
               ...networkListReq,
               body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: networkIds } })
@@ -675,18 +710,6 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'DETAIL' }]
-    }),
-    apViewModel: build.query<ApViewModel, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getApsList, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      transformResponse (result: TableResult<ApViewModel, ApExtraParams>) {
-        return transformApViewModel(result?.data[0])
-      }
     }),
     apDetails: build.query<ApDetails, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {

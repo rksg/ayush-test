@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { find } from 'lodash'
+import { cloneDeep, find, forIn, invert, set } from 'lodash'
 
 import {
   ApRadioBands,
@@ -9,7 +9,9 @@ import {
   NewAPModel,
   NewAPModelExtended,
   Venue,
-  TableResult
+  TableResult,
+  FILTER,
+  APExtended
 } from '@acx-ui/rc/utils'
 
 
@@ -130,4 +132,66 @@ export const aggregateApGroupInfo = (
     apItem.apGroupName = apGroupListData?.find(apGroupItem =>
       apGroupItem.id === apItem.apGroupId)?.name
   })
+}
+
+const apOldNewFieldsMapping: Record<string, string> = {
+  'apMac': 'macAddress',
+  'deviceStatus': 'status',
+  'deviceStatusSeverity': 'statusSeverity',
+  'fwVersion': 'firmwareVersion',
+  'deviceGroupId': 'apGroupId',
+  'IP': 'networkStatus.ipAddress',
+  'clients': 'clientCount',
+  'apStatusData.lanPortStatus': 'lanPortStatuses'
+}
+
+const apNewOldFieldsMapping = invert(apOldNewFieldsMapping)
+
+export const getApNewFieldFromOld = (oldFieldName: string) => {
+  return apOldNewFieldsMapping[oldFieldName] ?? oldFieldName
+}
+
+export const getApOldFieldFromNew = (newFieldName: string) => {
+  return apNewOldFieldsMapping[newFieldName] ?? newFieldName
+}
+
+export const getNewApViewmodelPayloadFromOld = (payload: Record<string, unknown>) => {
+  const newPayload = cloneDeep(payload) as Record<string, unknown>
+
+  if (newPayload.fields) {
+    // eslint-disable-next-line max-len
+    newPayload.fields = (newPayload.fields as string[])?.map(field => getApNewFieldFromOld(field))
+  }
+  if (newPayload.searchTargetFields) {
+  // eslint-disable-next-line max-len
+    newPayload.searchTargetFields = (newPayload.searchTargetFields as string[])?.map(field => getApNewFieldFromOld(field))
+  }
+
+  newPayload.sortField = getApNewFieldFromOld(payload.sortField as string)
+
+  if (payload.filters) {
+    const filters = {} as FILTER
+    forIn(payload.filters, (val, key) => {
+      filters[getApNewFieldFromOld(key)] = val
+    })
+    newPayload.filters = filters
+  }
+
+  return newPayload
+}
+
+export const transformApFromNewType = (rbacAp: NewAPModel): APExtended => {
+  const oldAp = {} as Record<string, unknown>
+  for(const [key, value] of Object.entries(rbacAp)) {
+    const oldApFieldName = getApOldFieldFromNew(key)
+    set(oldAp, oldApFieldName, value)
+  }
+  return oldAp as unknown as APExtended
+}
+
+export const transformRbacApList = (rbacApList: TableResult<NewAPModel>): TableResult<APExtended, ApExtraParams> => {
+  return {
+    ...rbacApList,
+    data: rbacApList.data.map(ap => transformApFromNewType(ap))
+  } as TableResult<APExtended, ApExtraParams>
 }

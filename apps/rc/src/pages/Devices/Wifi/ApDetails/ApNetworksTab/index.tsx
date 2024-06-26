@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }                                                   from '@acx-ui/components'
-import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
 import { useGetNetworkTunnelInfo, useIsEdgeFeatureReady, useSdLanScopedVenueNetworks } from '@acx-ui/rc/components'
 import { useApNetworkListQuery, useApViewModelQuery }                                  from '@acx-ui/rc/services'
 import {
@@ -26,6 +26,9 @@ const defaultPayload = {
 
 export function ApNetworksTab () {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+
   const apiParams = useApContext() as Record<string, string>
   const settingsId = 'ap-networks-table'
   const tableQuery = useTableQuery({
@@ -34,14 +37,17 @@ export function ApNetworksTab () {
     apiParams,
     pagination: { settingsId }
   })
-  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const apViewModelPayload = {
     entityType: 'aps',
     fields: ['name', 'serialNumber', 'venueId'],
     filters: { serialNumber: [apiParams.serialNumber] }
   }
-  const apViewModelQuery = useApViewModelQuery({ apiParams, payload: apViewModelPayload },
-    { skip: !isEdgeSdLanHaReady })
+  const apViewModelQuery = useApViewModelQuery({
+    apiParams,
+    payload: apViewModelPayload,
+    enableRbac: isWifiRbacEnabled
+  },
+  { skip: !isEdgeSdLanHaReady })
 
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(apViewModelQuery.data?.venueId
     , tableQuery.data?.data?.map(item => item.id))

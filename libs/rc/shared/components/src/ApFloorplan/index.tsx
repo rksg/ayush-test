@@ -55,6 +55,8 @@ export function ApFloorplan (props: {
   const [imageUrl, setImageUrl] = useState('')
   const { $t } = useIntl()
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   // eslint-disable-next-line max-len
   const [isApMeshTopologyEnabled, setIsApMeshTopologyEnabled] = useState<boolean>(isApMeshTopologyFFOn)
 
@@ -65,7 +67,8 @@ export function ApFloorplan (props: {
       filters: {
         floorplanId: [apPosition?.floorplanId]
       }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   const { data: rogueApDevices } = useGetRogueApLocationQuery({ params: {

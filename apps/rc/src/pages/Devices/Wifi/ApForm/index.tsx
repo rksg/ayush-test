@@ -77,6 +77,7 @@ const defaultPayload = {
 }
 
 const defaultApPayload = {
+  // TODO: [RBAC] 'apStatusData' is splitted into lanPortStatuses, radioStatuses
   fields: ['serialNumber', 'name', 'venueId', 'apStatusData'],
   pageSize: 10000
 }
@@ -97,7 +98,11 @@ export function ApForm () {
     editContextData, setEditContextData, previousPath, isOnlyOneTab
   } = useContext(ApEditContext)
 
-  const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
+  const { data: apList } = useApListQuery({
+    params: { tenantId },
+    payload: defaultApPayload,
+    enableRbac: isUseWifiRbacApi
+  })
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
   const { data: apDetails, isLoading: isApDetailsLoading }

@@ -5,6 +5,7 @@ import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Loader, Button, Drawer, Table, TableProps }                       from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import { APStatus, seriesMappingAP }                                       from '@acx-ui/rc/components'
 import { useApListQuery }                                                  from '@acx-ui/rc/services'
 import { AP, ApDeviceStatusEnum, ApVenueStatusEnum, useTableQuery, Venue } from '@acx-ui/rc/utils'
@@ -25,6 +26,7 @@ export interface MdnsProxyScopeApDrawerProps {
 
 export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
   const { $t } = useIntl()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { venue, selectedApsId, visible, setVisible, setAps } = props
   const [ activatedAps, setActivatedAps ] = useState<SimpleApRecord[]>([])
   const [ tableData, setTableData ] = useState<AP[]>([])
@@ -44,7 +46,8 @@ export function MdnsProxyScopeApDrawer (props: MdnsProxyScopeApDrawerProps) {
       search: {
         searchTargetFields: ['name', 'model']
       }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   // Set AP table data source

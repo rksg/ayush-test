@@ -39,6 +39,7 @@ import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledC
 
 const { Option } = AntSelect
 const defaultAPPayload = {
+  // TODO: [RBAC] 'apStatusData' is splitted into lanPortStatuses, radioStatuses
   fields: ['serialNumber', 'name', 'venueId', 'apStatusData', 'deviceStatus'],
   pageSize: 10000
 }
@@ -51,6 +52,7 @@ const VenueDHCPForm = (props: {
   const dhcpInfo = useDHCPInfo()
   const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const addDhcpPath = usePathBasedOnConfigTemplate(
     getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })
   )
@@ -73,7 +75,8 @@ const VenueDHCPForm = (props: {
     payload: {
       ...defaultAPPayload,
       filters: { venueId: params.venueId ? [params.venueId] : [] }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   }, { skip: isTemplate })
 
   const [selectedAPs, setSelectedAPs] = useState<string[]>([])

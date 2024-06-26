@@ -64,7 +64,10 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
       'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
     filters: { serialNumber: [params.serialNumber] }
   }
-  const apViewModelQuery = useApViewModelQuery({ params, payload: apViewModelPayload })
+  const apViewModelQuery = useApViewModelQuery({
+    params, payload: apViewModelPayload,
+    enableRbac: isUseRbacApi
+  })
 
   useEffect(() => {
     if (!apPhoto.isLoading && apPhoto?.data) {

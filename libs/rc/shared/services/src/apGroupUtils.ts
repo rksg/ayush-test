@@ -1,5 +1,4 @@
-import { omit } from 'lodash'
-import _        from 'lodash'
+import { omit, uniq, cloneDeep, forIn } from 'lodash'
 
 import {
   ApDeep,
@@ -11,40 +10,38 @@ import {
   NewGetApGroupResponseType,
   TableResult,
   Venue,
-  WifiNetwork
+  WifiNetwork,
+  FILTER
 } from '@acx-ui/rc/utils'
 
+const apGroupOldNewFieldsMapping: Record<string, string> = {
+  aps: 'apSerialNumbers',
+  members: 'apSerialNumbers',
+  networks: 'wifiNetworkIds',
+  clients: 'clientCount'
+}
+
 export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
-  switch(oldFieldName) {
-    case 'members':
-    case 'aps':
-      return'apSerialNumbers'
-    case 'networks':
-      return 'wifiNetworkIds'
-    case 'clients':
-      return 'clientCount'
-    default:
-      return oldFieldName
-  }
+  return apGroupOldNewFieldsMapping[oldFieldName] ?? oldFieldName
 }
 
 export const getNewApGroupViewmodelPayloadFromOld = (payload: Record<string, unknown>) => {
-  const newPayload = _.cloneDeep(payload) as Record<string, unknown>
+  const newPayload = cloneDeep(payload) as Record<string, unknown>
 
   if (newPayload.fields) {
     // eslint-disable-next-line max-len
-    newPayload.fields = _.uniq((newPayload.fields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
+    newPayload.fields = uniq((newPayload.fields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
   }
   if (newPayload.searchTargetFields) {
   // eslint-disable-next-line max-len
-    newPayload.searchTargetFields = _.uniq((newPayload.searchTargetFields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
+    newPayload.searchTargetFields = uniq((newPayload.searchTargetFields as string[])?.map(field => getApGroupNewFieldFromOld(field)))
   }
 
   newPayload.sortField = getApGroupNewFieldFromOld(payload.sortField as string)
 
   if (payload.filters) {
-    const filters = {} as Record<string, unknown>
-    _.forIn(payload.filters, (val, key) => {
+    const filters = {} as FILTER
+    forIn(payload.filters, (val, key) => {
       filters[getApGroupNewFieldFromOld(key)] = val
     })
     newPayload.filters = filters
