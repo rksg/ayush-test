@@ -6,6 +6,7 @@ import {
   ApGroup,
   ApGroupViewModel,
   CountAndNames,
+  FILTER,
   NewAPModel,
   NewApGroupViewModelResponseType,
   NewGetApGroupResponseType,
@@ -43,8 +44,8 @@ export const getNewApGroupViewmodelPayloadFromOld = (payload: Record<string, unk
   newPayload.sortField = getApGroupNewFieldFromOld(payload.sortField as string)
 
   if (payload.filters) {
-    const filters = {} as Record<string, unknown>
-    _.forIn(payload.filters, (val, key) => {
+    const filters = {} as FILTER
+    _.forIn((payload.filters as FILTER), (val, key) => {
       filters[getApGroupNewFieldFromOld(key)] = val
     })
     newPayload.filters = filters
