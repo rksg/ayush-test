@@ -3,17 +3,20 @@ import React from 'react'
 import { Row, Col }                                 from 'antd'
 import { useIntl, FormattedMessage, defineMessage } from 'react-intl'
 
-import { useStepFormContext } from '@acx-ui/components'
+import { useStepFormContext }        from '@acx-ui/components'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
-// import { statusTrailMsgs }                                           from './config'
+import { statusTrailMsgs }        from '../config'
 import * as constants             from '../constants'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
+
 
 export function Introduction () {
   const { $t } = useIntl()
   const { initialValues } = useStepFormContext<EnhancedRecommendation>()
   const title: React.ReactNode = $t(constants.steps.introduction)
+  const status = initialValues?.status!
 
   const values = {
     p: (text: string) => <UI.Para>{text}</UI.Para>,
@@ -38,11 +41,11 @@ export function Introduction () {
             {$t({ defaultMessage: 'Zone:' })} {initialValues?.sliceValue}
           </UI.ContentText>
           <UI.ContentText>
-            {$t({ defaultMessage: 'Status:' })} {initialValues?.status}
-            {/* {$t({ defaultMessage: 'Status:' })} {$t(statusTrailMsgs[initialValues?.status])} */}
+            {$t({ defaultMessage: 'Status:' })} {$t(statusTrailMsgs[status])}
           </UI.ContentText>
           <UI.ContentText>
-            {$t({ defaultMessage: 'Last update:' })} {initialValues?.updatedAt}
+            {$t({ defaultMessage: 'Last update:' })}&nbsp;
+            {formatter(DateFormatEnum.DateTimeFormat)(initialValues?.updatedAt)}
           </UI.ContentText>
         </UI.Content>
         <UI.Content>

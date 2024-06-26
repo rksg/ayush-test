@@ -16,11 +16,7 @@ export enum IntentType {
 
 export function Priority () {
   const { $t } = useIntl()
-  // const { initialValues } = useStepFormContext<EnhancedRecommendation>()
   const title: React.ReactNode = $t(constants.steps.priority)
-  // const initialIntent = initialValues?.intentType || IntentType.DENSITY
-  // const intentType = Form.useWatch(Priority.fieldName)
-  // console.log('intenttype111', intentType)
 
   return <Row gutter={20}>
     <Col span={15}>

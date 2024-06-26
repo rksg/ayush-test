@@ -3,353 +3,446 @@
 exports[`AIDrivenRRM should match snapshot 1`] = `
 <DocumentFragment>
   <div
-    class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
-      class="ant-page-header ant-page-header-ghost"
+      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
     >
       <div
-        class="ant-page-header-heading"
+        class="ant-page-header ant-page-header-ghost"
       >
         <div
-          class="ant-page-header-heading-left"
+          class="ant-page-header-heading"
+        >
+          <div
+            class="ant-page-header-heading-left"
+          >
+            <span
+              class="ant-page-header-heading-title"
+            >
+              <h1
+                class="ant-typography ant-typography-ellipsis ant-typography-single-line"
+              >
+                <div
+                  class="styledComponents__Header-sc-4zzubw-17 cedMYn"
+                >
+                  <svg
+                    class="styledComponents__AIDrivenRRMIcon-sc-4zzubw-13 hsrWtl"
+                    data-testid="AIDrivenRRM"
+                  />
+                  <div
+                    class="styledComponents__HeaderTitle-sc-4zzubw-16 WuRWU"
+                  >
+                    AI-Driven RRM
+                  </div>
+                </div>
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+                >
+                  lg
+                </span>
+                <span
+                  aria-hidden="true"
+                  style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+                >
+                  <span
+                    aria-hidden="true"
+                  >
+                    ...
+                  </span>
+                </span>
+              </h1>
+            </span>
+          </div>
+        </div>
+        <div
+          class="ant-page-header-content"
         >
           <span
-            class="ant-page-header-heading-title"
+            class="ant-typography ant-typography-ellipsis ant-typography-single-line"
           >
-            <h1
-              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+            Intent: Client density vs Client throughput | Zone: 21_US_Beta_Samsung
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
             >
-              AI-Driven RRM
-            </h1>
+              lg
+            </span>
+            <span
+              aria-hidden="true"
+              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; width: 0px; white-space: normal; margin: 0px; padding: 0px;"
+            >
+              <span
+                aria-hidden="true"
+              >
+                ...
+              </span>
+            </span>
           </span>
         </div>
       </div>
-      <div
-        class="ant-page-header-content"
-      >
-        <span
-          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
-        >
-          Intent: Throughput vs Client Density | Zone: SPS-Hospitality-BLR
-        </span>
-      </div>
     </div>
-  </div>
-  <section
-    class="styledComponents__Wrapper-sc-1ibvcih-0 fTZbEo"
-    data-testid="steps-form"
-  >
-    <form
-      class="ant-form ant-form-vertical"
-      step="0"
+    <section
+      class="styledComponents__Wrapper-sc-1ibvcih-0 fTZbEo"
+      data-testid="steps-form"
     >
-      <div
-        class="ant-row"
-        style="margin-left: -10px; margin-right: -10px;"
+      <form
+        class="ant-form ant-form-vertical"
+        step="0"
       >
         <div
-          class="ant-col ant-col-4"
-          data-testid="steps-form-steps"
-          style="padding-left: 10px; padding-right: 10px;"
+          class="ant-row"
+          style="margin-left: -10px; margin-right: -10px;"
         >
           <div
-            class="ant-steps ant-steps-vertical styledComponents__Steps-sc-1ibvcih-1 blEEjE ant-steps-dot"
+            class="ant-col ant-col-4"
+            data-testid="steps-form-steps"
+            style="padding-left: 10px; padding-right: 10px;"
           >
             <div
-              class="ant-steps-item ant-steps-item-process ant-steps-item-active"
+              class="ant-steps ant-steps-vertical styledComponents__Steps-sc-1ibvcih-1 blEEjE ant-steps-dot"
             >
               <div
-                class="ant-steps-item-container"
-                role="button"
-                tabindex="0"
+                class="ant-steps-item ant-steps-item-process ant-steps-item-active"
               >
                 <div
-                  class="ant-steps-item-tail"
-                />
-                <div
-                  class="ant-steps-item-icon"
-                >
-                  <span
-                    class="ant-steps-icon"
-                  >
-                    <span
-                      class="ant-steps-icon-dot"
-                    />
-                  </span>
-                </div>
-                <div
-                  class="ant-steps-item-content"
+                  class="ant-steps-item-container"
+                  role="button"
+                  tabindex="0"
                 >
                   <div
-                    class="ant-steps-item-title"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    Introduction
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      Introduction
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
-            >
               <div
-                class="ant-steps-item-container"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
-                  class="ant-steps-item-tail"
-                />
-                <div
-                  class="ant-steps-item-icon"
-                >
-                  <span
-                    class="ant-steps-icon"
-                  >
-                    <span
-                      class="ant-steps-icon-dot"
-                    />
-                  </span>
-                </div>
-                <div
-                  class="ant-steps-item-content"
+                  class="ant-steps-item-container"
                 >
                   <div
-                    class="ant-steps-item-title"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    Trade-off
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      Intent Priority
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
-            >
               <div
-                class="ant-steps-item-container"
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
               >
                 <div
-                  class="ant-steps-item-tail"
-                />
-                <div
-                  class="ant-steps-item-icon"
-                >
-                  <span
-                    class="ant-steps-icon"
-                  >
-                    <span
-                      class="ant-steps-icon-dot"
-                    />
-                  </span>
-                </div>
-                <div
-                  class="ant-steps-item-content"
+                  class="ant-steps-item-container"
                 >
                   <div
-                    class="ant-steps-item-title"
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
                   >
-                    Benefit
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      Settings
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+              >
+                <div
+                  class="ant-steps-item-container"
+                >
+                  <div
+                    class="ant-steps-item-tail"
+                  />
+                  <div
+                    class="ant-steps-item-icon"
+                  >
+                    <span
+                      class="ant-steps-icon"
+                    >
+                      <span
+                        class="ant-steps-icon-dot"
+                      />
+                    </span>
+                  </div>
+                  <div
+                    class="ant-steps-item-content"
+                  >
+                    <div
+                      class="ant-steps-item-title"
+                    >
+                      Summary
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div
-          class="ant-col ant-col-20"
-          data-testid="steps-form-body"
-          style="padding-left: 10px; padding-right: 10px;"
-        >
           <div
-            class="ant-row"
-            style="margin-left: -10px; margin-right: -10px;"
+            class="ant-col ant-col-20"
+            data-testid="steps-form-body"
+            style="padding-left: 10px; padding-right: 10px;"
           >
             <div
-              class="ant-col ant-col-15"
-              style="padding-left: 10px; padding-right: 10px;"
+              class="ant-row"
+              style="margin-left: -10px; margin-right: -10px;"
             >
               <div
-                class="styledComponents__Wrapper-sc-4zzubw-0 gRbsuR"
+                class="ant-col ant-col-15"
+                style="padding-left: 10px; padding-right: 10px;"
               >
-                <h2
-                  class="ant-typography styledComponents__Title-sc-4zzubw-1"
-                >
-                  Introduction
-                </h2>
                 <div
-                  class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
+                  class="styledComponents__Wrapper-sc-4zzubw-0 gRbsuR"
                 >
-                  <span
-                    class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
+                  <h2
+                    class="ant-typography styledComponents__Title-sc-4zzubw-1"
                   >
-                    <span>
-                      Intent:
-                      <b>
-                        Throughput vs Client Density
-                      </b>
+                    Introduction
+                  </h2>
+                  <div
+                    class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
+                  >
+                    <span
+                      class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
+                    >
+                      <span>
+                        Intent:
+                        <b>
+                           Client density vs Client throughput
+                        </b>
+                      </span>
                     </span>
-                  </span>
-                  <span
-                    class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
-                  >
-                    Zone:SPS-Hospitality-BLR
-                  </span>
-                  <span
-                    class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
-                  >
-                    Date:May 20 2024 14:45
-                  </span>
-                </div>
-                <div
-                  class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
-                >
-                  <div
-                    class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-4zzubw-3 hYNJuf dkSJVk"
-                  >
-                    Wireless network design involves balancing different priorities:
-                  </div>
-                  <p
-                    class="styledComponents__Para-sc-4zzubw-10 juRNhN"
-                  >
-                    <b
-                      class="styledComponents__Bold-sc-4zzubw-11 JAUmv"
+                    <span
+                      class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
                     >
-                      Maximum Throughput
-                    </b>
-                    : This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.
-                  </p>
-                  <p
-                    class="styledComponents__Para-sc-4zzubw-10 juRNhN"
-                  >
-                    <b
-                      class="styledComponents__Bold-sc-4zzubw-11 JAUmv"
+                      Category: Wi-Fi Client Experience
+                    </span>
+                    <span
+                      class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
                     >
-                      High Client Density
-                    </b>
-                    : This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div
-              class="ant-col ant-col-6 ant-col-offset-3"
-              style="padding-left: 10px; padding-right: 10px;"
-            >
-              <div
-                class="styledComponents__Wrapper-sc-4zzubw-0 gRbsuR"
-              >
-                <div
-                  class="styledComponents__SideNote-sc-4zzubw-6 eBBLPk"
-                >
-                  <div
-                    class="styledComponents__SideNoteHeader-sc-4zzubw-7 gobUNj"
-                  >
-                    <h3
-                      class="ant-typography styledComponents__SideNoteTitle-sc-4zzubw-2"
+                      Zone: 21_US_Beta_Samsung
+                    </span>
+                    <span
+                      class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
                     >
-                      Side Notes
-                    </h3>
+                      Status: Scheduled
+                    </span>
+                    <span
+                      class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
+                    >
+                      Last update: 06/26/2023 06:04
+                    </span>
                   </div>
                   <div
-                    class="styledComponents__SideNoteSubtitle-sc-4zzubw-8 iBeFmB"
+                    class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
                   >
-                    Why the recommendation?
-                  </div>
-                  <span
-                    class="styledComponents__SideNoteContent-sc-4zzubw-9 kmFhts"
-                  >
+                    <div
+                      class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-4zzubw-3 hYNJuf dkSJVk"
+                    >
+                      Wireless network design involves balancing different priorities:
+                    </div>
                     <p
                       class="styledComponents__Para-sc-4zzubw-10 juRNhN"
                     >
-                      AI-Driven Cloud RRM constantly monitors the network, adjusting the channel plan, bandwidth, and AP transmit power to minimize co-channel interference. These changes are reflected in the Key Performance Indicators. The number of interfering links may fluctuate based on network changes, configurations, and rogue AP activities.
+                      <b
+                        class="styledComponents__Bold-sc-4zzubw-11 JAUmv"
+                      >
+                        High number of clients in a dense network: 
+                      </b>
+                      High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
                     </p>
-                  </span>
-                  <div
-                    class="styledComponents__SideNoteSubtitle-sc-4zzubw-8 iBeFmB"
-                  >
-                    Resources:
+                    <p
+                      class="styledComponents__Para-sc-4zzubw-10 juRNhN"
+                    >
+                      <b
+                        class="styledComponents__Bold-sc-4zzubw-11 JAUmv"
+                      >
+                        High client throughput in sparse network
+                      </b>
+                      : In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.
+                    </p>
                   </div>
-                  <span
-                    class="styledComponents__SideNoteContent-sc-4zzubw-9 kmFhts"
+                </div>
+              </div>
+              <div
+                class="ant-col ant-col-7 ant-col-offset-2"
+                style="padding-left: 10px; padding-right: 10px;"
+              >
+                <div
+                  class="styledComponents__Wrapper-sc-4zzubw-0 gRbsuR"
+                >
+                  <div
+                    class="styledComponents__SideNote-sc-4zzubw-6 eBBLPk"
                   >
-                    <a
-                      class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
-                      href="https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi"
-                      target="_blank"
+                    <div
+                      class="styledComponents__SideNoteHeader-sc-4zzubw-7 gobUNj"
                     >
-                      RUCKUS AI - AI-Driven RRM Demo
-                    </a>
-                    <a
-                      class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
-                      href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
-                      target="_blank"
+                      <h3
+                        class="ant-typography styledComponents__SideNoteTitle-sc-4zzubw-2"
+                      >
+                        Side Notes
+                      </h3>
+                    </div>
+                    <div
+                      class="styledComponents__SideNoteSubtitle-sc-4zzubw-8 iBeFmB"
                     >
-                      RUCKUS AI User Guide
-                    </a>
-                  </span>
+                      Benefits
+                    </div>
+                    <span
+                      class="styledComponents__SideNoteContent-sc-4zzubw-9 kmFhts"
+                    >
+                      Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
+                    </span>
+                    <div
+                      class="styledComponents__SideNoteSubtitle-sc-4zzubw-8 iBeFmB"
+                    >
+                      Resources:
+                    </div>
+                    <span
+                      class="styledComponents__SideNoteContent-sc-4zzubw-9 kmFhts"
+                    >
+                      <a
+                        class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
+                        href="https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi"
+                        target="_blank"
+                      >
+                        <svg
+                          class="styledComponents__LinkVideoIcon-sc-4zzubw-14 kfOxcC"
+                          data-testid="LinkVideo"
+                        />
+                        RUCKUS AI - AI-Driven RRM Demo
+                      </a>
+                      <a
+                        class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
+                        href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
+                        target="_blank"
+                      >
+                        <svg
+                          class="styledComponents__LinkDocumentIcon-sc-4zzubw-15 bKsUgt"
+                          data-testid="LinkDocument"
+                        />
+                        RUCKUS AI User Guide
+                      </a>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="styledComponents__ActionsContainer-sc-1ibvcih-2 fnzQeO"
-        data-testid="steps-form-actions"
-      >
         <div
-          class="ant-space ant-space-horizontal ant-space-align-center styledComponents__ActionsButtons-sc-1ibvcih-3"
+          class="styledComponents__ActionsContainer-sc-1ibvcih-2 fnzQeO"
+          data-testid="steps-form-actions"
         >
           <div
-            class="ant-space-item"
-            style="margin-right: 12px;"
-          >
-            <button
-              class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
-              type="button"
-            >
-              <span>
-                Cancel
-              </span>
-            </button>
-          </div>
-          <div
-            class="ant-space-item"
+            class="ant-space ant-space-horizontal ant-space-align-center styledComponents__ActionsButtons-sc-1ibvcih-3"
           >
             <div
-              class="ant-space ant-space-horizontal ant-space-align-center"
+              class="ant-space-item"
+              style="margin-right: 12px;"
+            >
+              <button
+                class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                type="button"
+              >
+                <span>
+                  Cancel
+                </span>
+              </button>
+            </div>
+            <div
+              class="ant-space-item"
             >
               <div
-                class="ant-space-item"
-                style="margin-right: 12px;"
+                class="ant-space ant-space-horizontal ant-space-align-center"
               >
-                <button
-                  class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
-                  hidden=""
-                  type="button"
-                  value="pre"
+                <div
+                  class="ant-space-item"
+                  style="margin-right: 12px;"
                 >
-                  <span>
-                    Back
-                  </span>
-                </button>
-              </div>
-              <div
-                class="ant-space-item"
-              >
-                <button
-                  class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kBDiup"
-                  type="button"
-                  value="next"
+                  <button
+                    class="ant-btn ant-btn-default styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    hidden=""
+                    type="button"
+                    value="pre"
+                  >
+                    <span>
+                      Back
+                    </span>
+                  </button>
+                </div>
+                <div
+                  class="ant-space-item"
                 >
-                  <span>
-                    Next
-                  </span>
-                </button>
+                  <button
+                    class="ant-btn ant-btn-primary styledComponents__Button-sc-zk1lj8-0 kBDiup"
+                    type="button"
+                    value="next"
+                  >
+                    <span>
+                      Next
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>
-  </section>
+      </form>
+    </section>
+  </div>
 </DocumentFragment>
 `;

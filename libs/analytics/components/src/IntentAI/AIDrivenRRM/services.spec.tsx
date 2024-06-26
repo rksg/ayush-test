@@ -48,7 +48,7 @@ describe('recommendation services', () => {
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate({
+      api.endpoints.configRecommendationDetails.initiate({
         ...recommendationPayload, code: 'c-aclb-enable', isCrrmPartialEnabled: true })
     )
     expect(status).toBe('fulfilled')
@@ -104,7 +104,7 @@ describe('recommendation services', () => {
         }
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.recommendationDetails.initiate({
+        api.endpoints.configRecommendationDetails.initiate({
           ...recommendationPayload, isCrrmPartialEnabled: true })
       )
       expect(status).toBe('fulfilled')
@@ -147,7 +147,7 @@ describe('recommendation services', () => {
         crrmOptimizedState: crrmStates.optimized,
         crrmInterferingLinksText: 'From 2 to 0 interfering links',
         trigger: 'daily',
-        intentType: 'density'
+        intentType: 'clientDensity'
       } as unknown as EnhancedRecommendation)
       expect(spy).toBeCalledWith(mockedRecommendationCRRM.dataEndTime)
     })
@@ -161,7 +161,7 @@ describe('recommendation services', () => {
         }
       })
       const { status, data, error } = await store.dispatch(
-        api.endpoints.recommendationDetails.initiate({
+        api.endpoints.configRecommendationDetails.initiate({
           ...recommendationPayload, isCrrmPartialEnabled: true })
       )
       expect(status).toBe('fulfilled')
@@ -204,7 +204,7 @@ describe('recommendation services', () => {
         crrmOptimizedState: crrmStates.optimized,
         crrmInterferingLinksText: 'Beyond data retention period',
         trigger: 'daily',
-        intentType: 'density'
+        intentType: 'clientDensity'
       } as unknown as EnhancedRecommendation)
       expect(spy).toBeCalledWith(mockedRecommendationCRRM.dataEndTime)
     })
@@ -256,7 +256,7 @@ describe('recommendation services', () => {
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate({
+      api.endpoints.configRecommendationDetails.initiate({
         ...recommendationPayload, isCrrmPartialEnabled: true
       })
     )
@@ -283,7 +283,7 @@ describe('recommendation services', () => {
       }
     })
     const { status, data, error } = await store.dispatch(
-      api.endpoints.recommendationDetails.initiate({
+      api.endpoints.configRecommendationDetails.initiate({
         ...recommendationPayload, isCrrmPartialEnabled: false
       })
     )
