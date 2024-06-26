@@ -62,6 +62,7 @@ export const SyslogForm = (props: SyslogFormProps) => {
   const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, initialValues)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
   const [ createSyslog ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddSyslogPolicyMutation,
@@ -115,13 +116,13 @@ export const SyslogForm = (props: SyslogFormProps) => {
         await createSyslog({
           params,
           payload: transformPayload(state, false),
-          enableRbac
+          enableRbac, enableTemplateRbac
         }).unwrap()
       } else {
         await updateSyslog({
           params,
           payload: transformPayload(state, true),
-          enableRbac
+          enableRbac, enableTemplateRbac
         }).unwrap()
       }
       navigate(linkToInstanceList, { replace: true })

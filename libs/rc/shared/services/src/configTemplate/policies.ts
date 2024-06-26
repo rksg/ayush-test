@@ -14,7 +14,6 @@ import {
   ApplicationPolicy, TableResult,
   VLANPoolPolicyType,
   VLANPoolVenues,
-  SyslogContextType,
   SyslogPolicyDetailType,
   VenueSyslogPolicyType,
   ConfigTemplateUrlsInfo,
@@ -24,10 +23,15 @@ import {
   RogueAPDetectionTempType,
   VenueRoguePolicyType, VenueRogueAp,
   VenueSyslogSettingType,
-  VLANPoolViewModelType
+  VLANPoolViewModelType,
+  ApiVersionEnum,
+  GetApiVersionHeader
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
+
+import { addSyslogPolicy, getSyslogPolicy, transformGetVenueSyslog, updateSyslogPolicy } from '../servicePolicy.utils/syslog'
 
 import { commonQueryFn, configTemplateApi } from './common'
 import {
@@ -268,24 +272,34 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VlanPoolTemplate', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    addSyslogPolicyTemplate: build.mutation<SyslogContextType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addSyslogPolicy),
+    addSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      queryFn: addSyslogPolicy(true),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     delSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy, false, ApiVersionEnum.v1_1),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
-    updateSyslogPolicyTemplate: build.mutation<SyslogContextType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateSyslogPolicy),
+    updateSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
+      queryFn: updateSyslogPolicy(true),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     getSyslogPolicyTemplate: build.query<SyslogPolicyDetailType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicy),
+      queryFn: getSyslogPolicy(true),
       providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     getSyslogPolicyTemplateList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicyList),
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ? PoliciesConfigTemplateUrlsInfo.querySyslog
+          : PoliciesConfigTemplateUrlsInfo.syslogPolicyList
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
       providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -303,11 +317,35 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getVenueTemplateSyslogSettings: build.query<VenueSyslogSettingType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueSyslogSettings),
-      providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac ? PoliciesConfigTemplateUrlsInfo.querySyslog
+          : PoliciesConfigTemplateUrlsInfo.getVenueSyslogSettings
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(url, params, headers)
+        return{
+          ...req,
+          ...enableRbac ? {
+            body: JSON.stringify({ filters: { venueIds: [params!.venueId] } }) } : {}
+        }
+      },
+      providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
+      transformResponse: transformGetVenueSyslog
     }),
-    updateVenueTemplateSyslogSettings: build.mutation<VenueSyslogSettingType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVenueSyslogSettings),
+    // eslint-disable-next-line max-len
+    updateVenueTemplateSyslogSettings: build.mutation<VenueSyslogSettingType, RequestPayload<VenueSyslogSettingType>>({
+      query: ({ params, payload, enableTemplateRbac: enableRbac }) => {
+        const url = enableRbac ?
+          // eslint-disable-next-line max-len
+          (payload!.enabled ? PoliciesConfigTemplateUrlsInfo.bindVenueSyslog : PoliciesConfigTemplateUrlsInfo.unbindVenueSyslog)
+          : PoliciesConfigTemplateUrlsInfo.updateVenueSyslogAp
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const param = enableRbac ? { ...params, policyId: payload!.serviceProfileId } : params
+        const req = createHttpRequest(url, param, headers)
+        return {
+          ...req,
+          ...(enableRbac ? {} : { body: payload })
+        }
+      },
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
     }),
     addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({

@@ -1,3 +1,8 @@
+/* eslint-disable max-len */
+import { RetryOptions }                                                     from '@reduxjs/toolkit/dist/query/retry'
+import { BaseQueryApi, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { MaybePromise, QueryReturnValue }                                   from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
+
 import { AAARbacViewModalType, AAAViewModalType, ApiVersionEnum, GetApiVersionHeader, Radius, TableResult } from '@acx-ui/rc/utils'
 import { RequestPayload }                                                                                   from '@acx-ui/types'
 import { ApiInfo, createHttpRequest }                                                                       from '@acx-ui/utils'
@@ -54,3 +59,12 @@ export function createFetchArgsBasedOnRbac (props: CreateFetchArgsBasedOnRbacPro
     body: resolvedPayload
   }
 }
+
+export type FetchWithBQ = (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>
+export type QueryFn<Result=unknown, Payload=unknown> = (args: Payload, _queryApi: BaseQueryApi, _extraOptions: RetryOptions, fetchWithBQ: FetchWithBQ) => Promise<{
+  error: FetchBaseQueryError;
+  data?: undefined;
+} | {
+  data: Result;
+  error?: undefined;
+}>

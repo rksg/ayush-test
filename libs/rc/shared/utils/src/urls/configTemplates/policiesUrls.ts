@@ -230,6 +230,21 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/syslogServerProfileSettings',
     newApi: true
   },
+  querySyslog: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles/query',
+    newApi: true
+  },
+  bindVenueSyslog: {
+    method: 'PUT',
+    url: '/templates/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  unbindVenueSyslog: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true
+  },
   addRoguePolicy: {
     method: 'post',
     url: '/templates/rogueApPolicyProfiles',

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
-import { difference, zip }     from 'lodash'
+import { zip }                 from 'lodash'
 import { Params }              from 'react-router-dom'
 
 import {
@@ -68,6 +68,7 @@ import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
 import { convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac } from './servicePolicy.utils'
+import { getSyslogPolicy, transformGetVenueSyslog, updateSyslogPolicy }        from './servicePolicy.utils/syslog'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -1694,32 +1695,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     updateSyslogPolicy: build.mutation<CommonResult, RequestPayload<SyslogPolicyDetailType>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const { id, venues, oldVenues, ...rest } = payload!
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-        const res = await fetchWithBQ({
-          ...createHttpRequest(SyslogUrls.updateSyslogPolicy, params, headers),
-          body: JSON.stringify(enableRbac ? { id, ...rest } : payload)
-        })
-
-        if(res.error) {
-          return { error: res.error as FetchBaseQueryError }
-        }
-
-        if (enableRbac) {
-          const unbindReqs = difference(oldVenues, venues || []).map(venue => ({
-            params: { policyId: id, venueId: venue.id }
-          }))
-          const bindReqs = difference(venues, oldVenues || []).map(venue => ({
-            params: { policyId: id, venueId: venue.id }
-          }))
-          await Promise.all([
-            batchApi(SyslogUrls.unbindVenueSyslog, unbindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1)),
-            batchApi(SyslogUrls.bindVenueSyslog, bindReqs, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
-          ])
-        }
-        return { data: res.data as CommonResult }
-      },
+      queryFn: updateSyslogPolicy(),
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
@@ -1734,35 +1710,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSyslogPolicy: build.query<SyslogPolicyDetailType, RequestPayload>({
-      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        if (enableRbac) {
-          const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params, GetApiVersionHeader(ApiVersionEnum.v1_1))
-          const viewmodelReq = createHttpRequest(SyslogUrls.querySyslog, params, GetApiVersionHeader(ApiVersionEnum.v1))
-          const [res, viewmodelRes] = await Promise.all([
-            fetchWithBQ(req),
-            fetchWithBQ({
-              ...viewmodelReq,
-              body: JSON.stringify({ filters: { id: [params!.policyId] } })
-            })
-          ])
-          if (res.error || viewmodelRes.error) {
-            return { error: res.error ?? viewmodelRes.error as FetchBaseQueryError }
-          }
-
-          const venueIds =
-            (viewmodelRes.data as TableResult<SyslogPolicyListType>).data?.[0]?.venueIds
-          const mergeData = {
-            ...res.data as SyslogPolicyDetailType,
-            // eslint-disable-next-line max-len
-            ...(venueIds && venueIds?.length > 0) ? { venues: venueIds.map(id => ({ id, name: '' })) } : {}
-          }
-          return { data: mergeData as SyslogPolicyDetailType }
-        } else {
-          const req = createHttpRequest(SyslogUrls.getSyslogPolicy, params)
-          const res = await fetchWithBQ(req)
-          return { data: res.data as SyslogPolicyDetailType }
-        }
-      },
+      queryFn: getSyslogPolicy(),
       providesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     getVenueSyslogAp: build.query<VenueSyslogSettingType, RequestPayload>({
@@ -1776,15 +1724,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             body: JSON.stringify({ filters: { venueIds: [params!.venueId] } }) } : {}
         }
       },
-      transformResponse: (response: VenueSyslogSettingType | TableResult<SyslogPolicyListType>, _meta, arg: RequestPayload) => {
-        if (arg.enableRbac) {
-          const res = response as TableResult<SyslogPolicyListType>
-          return res.data.length > 0
-            ? { serviceProfileId: res.data[0].id, enabled: true } as VenueSyslogSettingType
-            : { enabled: false } as VenueSyslogSettingType
-        }
-        return response as VenueSyslogSettingType
-      },
+      transformResponse: transformGetVenueSyslog,
       providesTags: [{ type: 'Syslog', id: 'VENUE' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -1824,12 +1764,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
-            'AddSyslogServerProfileV1_1',
             'UpdateSyslogServerProfile',
-            'UpdateSyslogServerProfileV1_1',
             'DeleteSyslogServerProfile',
-            'DeleteSyslogServerProfiles',
-            'DeleteSyslogServerProfileV1_1'
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })
@@ -1861,12 +1798,9 @@ export const policyApi = basePolicyApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'AddSyslogServerProfile',
-            'AddSyslogServerProfileV1_1',
             'UpdateSyslogServerProfile',
-            'UpdateSyslogServerProfileV1_1',
             'DeleteSyslogServerProfile',
-            'DeleteSyslogServerProfiles',
-            'DeleteSyslogServerProfileV1_1'
+            'DeleteSyslogServerProfiles'
           ], () => {
             api.dispatch(policyApi.util.invalidateTags([{ type: 'Syslog', id: 'LIST' }]))
           })

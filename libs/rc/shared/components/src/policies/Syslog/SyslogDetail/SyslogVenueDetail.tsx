@@ -35,6 +35,7 @@ const SyslogVenueDetail = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
@@ -69,7 +70,7 @@ const SyslogVenueDetail = () => {
   const { data: syslogPolicy } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
-    enableRbac
+    enableRbac, enableTemplateRbac
   })
 
   const tableQuery = useTableQuery({
@@ -80,7 +81,8 @@ const SyslogVenueDetail = () => {
     },
     option: {
       skip: (syslogPolicy?.venues ?? []).length === 0
-    }
+    },
+    enableRbac: enableTemplateRbac
   })
 
   useEffect(() => {

@@ -37,7 +37,8 @@ import {
   SyslogPolicyListType
 } from '@acx-ui/rc/utils'
 
-import SyslogContext from '../SyslogContext'
+import { PROFILE_MAX_COUNT } from '../constants'
+import SyslogContext         from '../SyslogContext'
 
 const { Option } = Select
 
@@ -54,17 +55,18 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
 
   const form = Form.useFormInstance()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data: policyData } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
     skip: !edit,
-    enableRbac
+    enableRbac, enableTemplateRbac
   })
   const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
     useQueryFn: useSyslogPolicyListQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
-    payload: { page: 1, pageSize: 10000 },
-    enableRbac
+    payload: { page: 1, pageSize: PROFILE_MAX_COUNT },
+    enableRbac, enableTemplateRbac
   })
 
   useEffect(() => {

@@ -13,6 +13,7 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
@@ -64,6 +65,7 @@ export function ConfigTemplateList () {
   const [ applyTemplateDrawerVisible, setApplyTemplateDrawerVisible ] = useState(false)
   const [ appliedToTenantDrawerVisible, setAppliedToTenantDrawerVisible ] = useState(false)
   const [ selectedTemplates, setSelectedTemplates ] = useState<ConfigTemplate[]>([])
+  const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const deleteMutationMap = useDeleteMutation()
   const mspTenantLink = useTenantLink('', 'v')
   // eslint-disable-next-line max-len
@@ -121,7 +123,7 @@ export function ConfigTemplateList () {
 
             if (!deleteFn) return
 
-            deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
+            deleteFn({ params: { templateId: selectedRow.id! }, enableRbac }).then(clearSelection)
           }
         })
       }
