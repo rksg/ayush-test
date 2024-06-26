@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import { Tooltip, Typography } from 'antd'
 import * as _                  from 'lodash'
@@ -45,6 +45,7 @@ import * as UI                                           from './styledComponent
 import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
 import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
 import { VenueStatusDrawer }                             from './VenueStatusDrawer'
+import React from 'react'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -170,9 +171,11 @@ export function VenueFirmwareList () {
       filterKey: 'includeExpired',
       render: function (_, row) {
 
-        let versionValue = []
+        let currentVersionDisplay = []
+        let tooltipArray = []
 
         for (const key in SwitchFirmwareModelGroup) {
+          const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
           const modelGroupValue =
             SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
           const versionGroup = row?.versions?.filter(
@@ -181,19 +184,33 @@ export function VenueFirmwareList () {
           if (versionGroup) {
             const modelGroupText = modelGroupDisplayText[modelGroupValue]
             const switchVersion = parseSwitchVersion(versionGroup.version)
-            versionValue.push(
-              <span key={modelGroupValue}>
+            const tooltipMargin = index === 0 ||
+              index === tooltipArray.length - 1 ? '5px 0px' : '10px 0px'
+
+            currentVersionDisplay.push(
+              <Fragment key={modelGroupValue}>
                 {modelGroupText} <b>{switchVersion}</b>;
-              </span>
+              </Fragment>
+            )
+
+            tooltipArray.push(
+              <div key={modelGroupValue}
+                style={{
+                  margin: tooltipMargin
+                }}>
+                <div style={{ color: '#c4c4c4' }}>
+                  {`${$t({ defaultMessage: 'ICX Models' })} ${modelGroupText}`}
+                </div>
+                <div> {switchVersion} </div>
+              </div>
             )
           }
         }
 
-
-
-        return versionValue.length > 0 ? <Tooltip
-          title={<div>{versionValue}</div>}
-          placement='bottom' ><div>{versionValue}</div></Tooltip> : noDataDisplay
+        return currentVersionDisplay.length > 0 ?
+          <Tooltip title={<div>{tooltipArray}</div>} placement='bottom' >
+            <div>{currentVersionDisplay}</div>
+          </Tooltip> : noDataDisplay
       }
     },
     {
