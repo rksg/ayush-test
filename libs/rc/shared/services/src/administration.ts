@@ -48,6 +48,16 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
+    updateTenantSelf: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateTenantSelf, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DETAIL' }]
+    }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getAccountDetails, params)
@@ -870,6 +880,7 @@ const transformAdministratorList = (data: Administrator[]) => {
 
 export const {
   useGetTenantDetailsQuery,
+  useUpdateTenantSelfMutation,
   useLazyGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,
