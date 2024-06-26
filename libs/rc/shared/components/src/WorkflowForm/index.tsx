@@ -184,7 +184,7 @@ export function WorkflowForm (props: WorkflowFormProps) {
         layout={'vertical'}
       >
         <Loader states={[{
-          isLoading: isLoading,
+          isLoading: isLoading || !ready,
           isFetching: isUpdating
         }]}>
           <WorkflowSettingForm policyId={isEdit? policyId : originData.current?.id}/>
