@@ -2,7 +2,7 @@ export interface Workflow {
   id?: string
   name: string
   description?: string
-  publishDetails?: PublishDetail
+  publishedDetails?: PublishDetail
   allowedIps?: string[]
   disallowedIps?: string[]
   startStepId?: string

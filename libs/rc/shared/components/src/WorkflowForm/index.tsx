@@ -10,7 +10,8 @@ import {
 import {
   useGetWorkflowByIdQuery,
   useAddWorkflowMutation,
-  useUpdateWorkflowMutation
+  useUpdateWorkflowMutation,
+  AsyncResponse
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
@@ -66,11 +67,12 @@ export function WorkflowForm (props: WorkflowFormProps) {
     updateWorkflow,
     { isLoading: isUpdating }
   ] = useUpdateWorkflowMutation()
-  const handleAddWorkflow = async (submittedData: Partial<Workflow>) => {
+  const handleAddWorkflow = async (data: Workflow, callback?: (v: AsyncResponse)=>void) => {
     return addWorkflow({ payload: {
-      ...submittedData,
+      ...data,
       publishedDetails: { status: 'WORK_IN_PROGRESS' as PublishStatus }
-    }
+    },
+    callback: callback
     }).unwrap()
   }
 
@@ -108,12 +110,11 @@ export function WorkflowForm (props: WorkflowFormProps) {
   useEffect(() => {
     const createDraft = async () => {
       let draftName = 'draft-' + uuidv4()
-      await handleAddWorkflow({ name: draftName })
-        .then(res => {
-          const workflow = { id: res.id, name: draftName } as Workflow
-          originData.current = workflow
-        })
-      setReady(true)
+      await handleAddWorkflow({ name: draftName }, (response: AsyncResponse) => {
+        const workflow = { id: response.id, name: draftName } as Workflow
+        originData.current = workflow
+        setReady(true)
+      })
     }
     if (!ready) {
       createDraft()
@@ -186,7 +187,7 @@ export function WorkflowForm (props: WorkflowFormProps) {
           isLoading: isLoading,
           isFetching: isUpdating
         }]}>
-          <WorkflowSettingForm/>
+          <WorkflowSettingForm policyId={isEdit? policyId : originData.current?.id}/>
         </Loader>
       </StepsForm.StepForm>
     </StepsForm>)

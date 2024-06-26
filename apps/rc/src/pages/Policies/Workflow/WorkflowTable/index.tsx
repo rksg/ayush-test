@@ -65,7 +65,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
         PUBLISHED {Published}
         other {Draft}
       }` }, {
-        status: workflowMap.get(row.id!)?.publishDetails?.status
+        status: workflowMap.get(row.id!)?.publishedDetails?.status
       })
     },
     {
@@ -82,7 +82,7 @@ function useColumns (workflowMap: Map<string, Workflow>) {
       title: $t({ defaultMessage: 'URL' }),
       dataIndex: 'url',
       render: (_, row) => {
-        if (workflowMap.get(row.id!)?.publishDetails?.status === 'PUBLISHED') {
+        if (workflowMap.get(row.id!)?.publishedDetails?.status === 'PUBLISHED') {
           const link = workflowMap.get(row.id!)?.links?.find(v => v.rel === 'enrollmentPortal')
           if (link) return <EnrollmentPortalLink name={row.name} url={link.href}/>
         }
@@ -121,7 +121,7 @@ export default function WorkflowTable () {
         .then(result => {
           if (result.data) {
             result.data.data.forEach(v => {
-              if (v.publishDetails?.status === 'PUBLISHED') {
+              if (v.publishedDetails?.status === 'PUBLISHED') {
                 workflowMap.set(workflow.id, v)
               }
             })

@@ -48,15 +48,29 @@ type UnionAction = AupAction | DataPromptAction
 export const workflowApi = baseWorkflowApi.injectEndpoints({
   endpoints: build => ({
     /** Workflow Management */
-    addWorkflow: build.mutation<Workflow, RequestPayload>({
+    // eslint-disable-next-line max-len
+    addWorkflow: build.mutation<AsyncResponse, RequestPayload<Workflow> & { callback?: (response: AsyncResponse) => void }>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(WorkflowUrls.createWorkflow, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
-      invalidatesTags: [{ type: 'Workflow', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Workflow', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, async (msg) => {
+          try {
+            const response = await api.cacheDataLoaded
+
+            if (response.data.requestId === msg.requestId
+              && msg.status === 'SUCCESS'
+              && msg.useCase === 'CREATE_WORKFLOW') {
+              requestArgs.callback?.(response.data)
+            }
+          } catch { }
+        })
+      }
     }),
     deleteWorkflow: build.mutation({
       query: ({ params }) => {

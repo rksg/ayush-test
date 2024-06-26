@@ -16,7 +16,7 @@ const workflows:Workflow[] = [{
 const publishedWorkflows: Workflow[] = [{
   id: 'id1',
   name: 'workflow-1',
-  publishDetails: {
+  publishedDetails: {
     status: 'PUBLISHED',
     version: 1,
     publishedDate: '2024-02-01'

@@ -6,16 +6,15 @@ import { useIntl }     from 'react-intl'
 import { Button, GridCol, GridRow }                 from '@acx-ui/components'
 import { useLazySearchInProgressWorkflowListQuery } from '@acx-ui/rc/services'
 import {  checkObjectNotExists }                    from '@acx-ui/rc/utils'
-import { useParams }                                from '@acx-ui/react-router-dom'
 
 import { WorkflowDesigner } from '../../policies/WorkflowCanvas/WorkflowDesigner'
 import { WorkflowPanel }    from '../../policies/WorkflowCanvas/WorkflowPanel'
 
 
 
-export function WorkflowSettingForm () {
+export function WorkflowSettingForm (props: { policyId?: string }) {
   const { $t } = useIntl()
-  const { policyId } = useParams()
+  const { policyId } = props
   const form = Form.useFormInstance()
   const [isDesignerOpen, setIsDesignerOpen] = useState(false)
   const [searchWorkflowList] = useLazySearchInProgressWorkflowListQuery()
@@ -25,7 +24,7 @@ export function WorkflowSettingForm () {
         payload: { filters: { name: name }, pageSize: '2000', page: '1' },
         params: { excludeContent: 'false' }
       }, true)
-        .unwrap()).data.filter(g => g.id !== form.getFieldValue('id') ?? '')
+        .unwrap()).data.filter(g => g.id !== policyId ?? '')
         .map(g => ({ name: g.name }))
       return checkObjectNotExists(list, { name } , $t({ defaultMessage: 'Workflow' }))
     } catch (e) {

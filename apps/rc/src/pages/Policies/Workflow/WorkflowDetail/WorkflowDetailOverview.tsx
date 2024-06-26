@@ -27,7 +27,7 @@ export function WorkflowDetailOverview () {
       .then(result => {
         if (result.data) {
           result.data.data.forEach(v => {
-            if (v.publishDetails?.status === 'PUBLISHED') {
+            if (v.publishedDetails?.status === 'PUBLISHED') {
               setData(v)
             }
           })
@@ -44,7 +44,7 @@ export function WorkflowDetailOverview () {
         PUBLISHED_INACTIVE {Published}
         other {Draft}
       }` }, {
-        status: data?.publishDetails?.status
+        status: data?.publishedDetails?.status
       }),
       colSpan: 2
     },
@@ -55,7 +55,7 @@ export function WorkflowDetailOverview () {
     },
     {
       title: $t({ defaultMessage: 'URL' }),
-      visible: data?.publishDetails?.status === 'PUBLISHED',
+      visible: data?.publishedDetails?.status === 'PUBLISHED',
       content: () => {
         const link = data?.links?.find(v => v.rel === 'enrollmentPortal')
         if (link) return <EnrollmentPortalLink name={data?.name!!} url={link.href} />
