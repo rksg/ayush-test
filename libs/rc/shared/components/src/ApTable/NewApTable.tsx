@@ -3,7 +3,7 @@ import React, { ReactNode, Ref, forwardRef, useContext, useEffect, useImperative
 
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/dist/query'
 import { Badge, Divider, Form } from 'antd'
-import { find }                 from 'lodash'
+import { cloneDeep, find }      from 'lodash'
 import { useIntl }              from 'react-intl'
 
 import {
@@ -90,7 +90,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const navigate = useNavigate()
   const location = useLocation()
   const params = useParams()
-  const filters = getFilters(params) as FILTER
+  const filters = cloneDeep(getFilters(params) as FILTER)
   const { searchable, filterables, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const { setApsCount } = useContext(ApsTabContext)
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
@@ -108,12 +108,15 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
 
+  const { deviceGroupId , ...otherFilters } = filters
+  const newFilters = { ...otherFilters, apGroupId: deviceGroupId }
+
   const apListTableQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
     defaultPayload: {
       ...newDefaultApPayload,
       // groupByFields: groupedFields,
-      filters
+      filters: newFilters
     },
     search: {
       searchTargetFields: newDefaultApPayload.searchTargetFields
