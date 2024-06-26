@@ -21,3 +21,10 @@ export const mapping = {
 
 export const demoLink = 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi'
 export const guideLink = 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'
+
+export const steps = {
+  introduction: defineMessage({ defaultMessage: 'Introduction' }),
+  priority: defineMessage({ defaultMessage: 'Intent Priority' }),
+  settings: defineMessage({ defaultMessage: 'Settings' }),
+  summary: defineMessage({ defaultMessage: 'Summary' })
+}
