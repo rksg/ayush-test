@@ -490,7 +490,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are reachable.' }),
+      description: '',
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
@@ -566,7 +566,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are under safe thresholds of temperature.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {maxCount} switches are under safe thresholds of temperature.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
