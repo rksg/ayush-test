@@ -468,7 +468,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
         <FullWidthSpace
           direction='vertical'
           style={{ width: '100%' }}>
-          <Radio value='auto'>Auto generated</Radio>
+          <Radio value='auto' data-testid='auto-radio'>Auto generated</Radio>
           <Radio value='manual' style={{ width: '100%' }} data-testid='manual-radio'>
             <Row>
               <Col span={3}>
