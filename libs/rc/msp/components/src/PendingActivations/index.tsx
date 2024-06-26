@@ -20,6 +20,8 @@ import {
   EntitlementActivations
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
+import { RolesEnum }     from '@acx-ui/types'
+import { hasRoles }      from '@acx-ui/user'
 import { noDataDisplay } from '@acx-ui/utils'
 
 import { ActivatePurchaseDrawer } from '../ActivatePurchaseDrawer'
@@ -30,6 +32,8 @@ const PendingActivationsTable = () => {
   const [drawerActivateVisible, setDrawerActivateVisible] = useState(false)
   const isActivatePendingActivationEnabled =
     useIsSplitOn(Features.ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE)
+  const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
+  const showActivateLink = isPrimeAdmin && isActivatePendingActivationEnabled
 
   const pendingActivationPayload = {
     filters: { status: ['PENDING'] }
@@ -68,7 +72,7 @@ const PendingActivationsTable = () => {
       dataIndex: 'productCode',
       key: 'productCode',
       render: function (_, row) {
-        return isActivatePendingActivationEnabled ? <Button
+        return showActivateLink ? <Button
           type='link'
           onClick={() => {
             setDrawerActivateVisible(true)
@@ -99,13 +103,13 @@ const PendingActivationsTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Activation Period Ends on' }),
-      dataIndex: 'spaEndDate',
-      key: 'spaEndDate',
+      title: $t({ defaultMessage: 'Last Day of Grace Activation Period' }),
+      dataIndex: 'spaStartDate',
+      key: 'spaStartDate',
       render: function (_, row) {
-        return row.productClass === 'ACX-TRIAL-NEW'
+        return row.productClass === 'ACX-TRIAL-NEW' || row.trial
           ? noDataDisplay
-          : formatter(DateFormatEnum.DateFormat)(row.spaEndDate)
+          : formatter(DateFormatEnum.DateFormat)(row.spaStartDate)
       }
     }
   ]

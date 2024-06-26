@@ -2,6 +2,8 @@ import { defineMessage } from 'react-intl'
 
 import { SwitchModelInfoMap } from './types'
 
+export const SWITCH_DEFAULT_VLAN_NAME = 'DEFAULT-VLAN'
+
 export enum NetworkTypeEnum {
   PSK = 'psk',
   OPEN = 'open',
@@ -1117,6 +1119,12 @@ export const ICX_MODELS_INFORMATION: SwitchModelInfoMap = {
 export const VLAN_PREFIX = {
   VLAN: 'VLAN-',
   POOL: 'VLAN Pool: '
+}
+
+export enum PowerSavingStatusEnum {
+  NORMAL = 'NORMAL',
+  POWER_SAVING = 'POWER_SAVING',
+  POWER_SAVING_PLUS = 'POWER_SAVING_PLUS'
 }
 
 export const PORTAL_LIMIT_NUMBER = 256

@@ -50,11 +50,6 @@ export interface CommonResult {
   }
 }
 
-export interface CommonResultWithEntityResponse<EntityType> {
-  requestId: string
-  response: EntityType
-}
-
 export interface CommonErrorsResult<T> {
   data: {
     errors: T[];
@@ -151,7 +146,12 @@ export interface RWG {
   apiKey: string
   rwgId: string
   clusterNodes?: RWGClusterNode[]
-  isCluster: boolean
+  isCluster: boolean,
+  floorplanId?: string,
+  xPercent?: number,
+  yPercent?: number,
+  x?: number,
+  y?: number
 }
 
 export interface RWGClusterNode{
@@ -166,11 +166,22 @@ export interface RWGRow extends RWG {
   isNode?: boolean
   children?: RWGRow[]
   ip?: string
-  rowId: string
+  rowId?: string
 }
 
 export interface GatewayAlarms {
-  total: number
+  data: GatewayAlarm[],
+  totalCount: number,
+  page: number
+}
+export interface GatewayAlarm {
+  createdAt: string,
+  curedAt: string,
+  curedShortMessage: string,
+  name: string,
+  severity: string,
+  shortMessage: string,
+  updatedAt: string
 }
 export interface MinMaxValue {
   max: number,

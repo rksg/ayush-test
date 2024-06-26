@@ -57,7 +57,8 @@ import {
   KeyValue, VLANPoolViewModelType
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                    from '@acx-ui/user'
+import { WifiScopes }                                        from '@acx-ui/types'
+import { filterByAccess, hasPermission }                     from '@acx-ui/user'
 
 
 import type { FormFinishInfo } from 'rc-field-form/es/FormContext'
@@ -94,6 +95,7 @@ interface schedule {
 
 export function VenueNetworksTab () {
   const { $t } = useIntl()
+  const hasUpdatePermission = hasPermission({ scopes: [WifiScopes.UPDATE] })
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
@@ -108,7 +110,6 @@ export function VenueNetworksTab () {
     pagination: { settingsId }
   })
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const [tableData, setTableData] = useState(defaultArray)
   const [apGroupModalState, setApGroupModalState] = useState<ApGroupModalState>({
     visible: false
@@ -137,7 +138,7 @@ export function VenueNetworksTab () {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(params.venueId, tableQuery.data?.data.map(item => item.id))
   const getNetworkTunnelInfo = useGetNetworkTunnelInfo()
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { vlanPoolingNameMap }: { vlanPoolingNameMap: KeyValue<string, string>[] } = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -146,7 +147,8 @@ export function VenueNetworksTab () {
       sortOrder: 'ASC',
       page: 1,
       pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
@@ -196,7 +198,7 @@ export function VenueNetworksTab () {
           if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
-          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue })
+          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue, enableRbac: isPolicyRbacEnabled })
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
             if (networkVenue.venueId === params.venueId) {
@@ -221,7 +223,7 @@ export function VenueNetworksTab () {
   }
 
   const isSystemCreatedNetwork = (row: Network) => {
-    return supportOweTransition && row?.isOweMaster === false && row?.owePairNetworkId !== undefined
+    return row?.isOweMaster === false && row?.owePairNetworkId !== undefined
   }
 
   const getTenantLink = (row: Network) => {
@@ -248,6 +250,7 @@ export function VenueNetworksTab () {
   const actions: TableProps<Network>['actions'] = [
     {
       label: $t({ defaultMessage: 'Add Network' }),
+      scopeKey: [WifiScopes.CREATE],
       onClick: () => {
         navigate(`${isTemplate ? linkToAddNetworkTemplate.pathname : linkToAddNetwork.pathname}`)
       }
@@ -303,24 +306,25 @@ export function VenueNetworksTab () {
       sorter: true,
       render: function (__, row) {
         let disabled = false
-        // eslint-disable-next-line max-len
-        let title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting' })
-        if((get(row,'deepNetwork.enableDhcp') && get(venueDetailsQuery.data,'venue.mesh.enabled'))){
-          disabled = true
-        } else if (row?.isOnBoarded) {
-          disabled = true
-          title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this <venueSingular></venueSingular> is tied to the Service network exclusively.' })
-        } else if (isSystemCreatedNetwork(row)) {
-          disabled = true
-          title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
-        } else {
-          title = ''
+        let title = ''
+
+        if (hasUpdatePermission) {
+          if((get(row,'deepNetwork.enableDhcp') && get(venueDetailsQuery.data,'venue.mesh.enabled'))){
+            disabled = true
+            title = $t({ defaultMessage: 'You cannot activate the DHCP Network on this <venueSingular></venueSingular> because it already enabled mesh setting' })
+          } else if (row?.isOnBoarded) {
+            disabled = true
+            title = $t({ defaultMessage: 'This is a Onboarding network for WPA3-DPSK3 for DPSK, so its activation on this <venueSingular></venueSingular> is tied to the Service network exclusively.' })
+          } else if (isSystemCreatedNetwork(row)) {
+            disabled = true
+            title = $t({ defaultMessage: 'Activating the OWE network also enables the read-only OWE transition network.' })
+          }
         }
         return <Tooltip
           title={title}
           placement='bottom'><Switch
             checked={Boolean(row.activated?.isActivated)}
-            disabled={disabled}
+            disabled={!hasUpdatePermission || disabled}
             onClick={(checked, event) => {
               if (!checked) {
                 checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworks.scopedNetworkIds, [row.id], () => {
@@ -340,12 +344,13 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'VLAN' }),
       dataIndex: 'vlan',
       render: function (_, row) {
+        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
         return transformVLAN(
           getCurrentVenue(row),
           row.deepNetwork,
           vlanPoolingNameMap,
           (e) => handleClickApGroups(row, e),
-          isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
+          isReadOnly)
       }
     },
     {
@@ -354,7 +359,13 @@ export function VenueNetworksTab () {
       dataIndex: 'aps',
       width: 80,
       render: function (_, row) {
-        return transformAps(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded, row?.incompatible)
+        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
+        return transformAps(
+          getCurrentVenue(row),
+          row.deepNetwork,
+          (e) => handleClickApGroups(row, e),
+          isReadOnly,
+          row?.incompatible)
       }
     },
     {
@@ -363,7 +374,12 @@ export function VenueNetworksTab () {
       dataIndex: 'radios',
       width: 140,
       render: function (_, row) {
-        return transformRadios(getCurrentVenue(row), row.deepNetwork, (e) => handleClickApGroups(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
+        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
+        return transformRadios(
+          getCurrentVenue(row),
+          row.deepNetwork,
+          (e) => handleClickApGroups(row, e),
+          isReadOnly)
       }
     },
     {
@@ -371,7 +387,12 @@ export function VenueNetworksTab () {
       title: $t({ defaultMessage: 'Scheduling' }),
       dataIndex: 'scheduling',
       render: function (_, row) {
-        return transformScheduling(getCurrentVenue(row), scheduleSlotIndexMap[row.id], (e) => handleClickScheduling(row, e), isSystemCreatedNetwork(row) || !!row?.isOnBoarded)
+        const isReadOnly = !hasUpdatePermission || isSystemCreatedNetwork(row) || !!row?.isOnBoarded
+        return transformScheduling(
+          getCurrentVenue(row),
+          scheduleSlotIndexMap[row.id],
+          (e) => handleClickScheduling(row, e),
+          isReadOnly)
       }
     }
   ]
@@ -443,22 +464,21 @@ export function VenueNetworksTab () {
     updateNetworkVenue({ params: {
       tenantId: params.tenantId,
       networkVenueId: payload.id
-    }, payload: payload }).then(()=>{
+    }, payload: payload, enableRbac: isPolicyRbacEnabled }).then(()=>{
       setScheduleModalState({
         visible: false
       })
     })
   }
 
-  const handleFormFinish = (name: string, newData: FormFinishInfo) => {
+  const handleFormFinish = async (name: string, newData: FormFinishInfo) => {
     if (name === 'networkApGroupForm') {
       let oldData = cloneDeep(apGroupModalState.networkVenue)
       const payload = aggregateApGroupPayload(newData, oldData)
-
       updateNetworkVenue({ params: {
         tenantId: params.tenantId,
         networkVenueId: payload.id
-      }, payload: payload }).then(()=>{
+      }, payload: { ...payload, oldNetworkVenue: oldData }, enableRbac: isPolicyRbacEnabled }).then(()=>{
         setApGroupModalState({
           visible: false
         })

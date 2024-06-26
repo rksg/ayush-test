@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { edgeApi, venueApi }            from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
@@ -25,6 +26,7 @@ jest.mock('react-router-dom', () => ({
 const mockedDeleteApi = jest.fn()
 const mockedSendOtpApi = jest.fn()
 const mockedRebootApi = jest.fn()
+const mockedShutdownApi = jest.fn()
 
 describe('Edge Table', () => {
   let params: { tenantId: string }
@@ -62,6 +64,13 @@ describe('Edge Table', () => {
         EdgeUrlsInfo.reboot.url,
         (req, res, ctx) => {
           mockedRebootApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
+        EdgeUrlsInfo.shutdown.url,
+        (req, res, ctx) => {
+          mockedShutdownApi()
           return res(ctx.status(202))
         }
       )
@@ -285,6 +294,30 @@ describe('Edge Table', () => {
     })
     await waitFor(() => {
       expect(rebootDialg).not.toBeVisible()
+    })
+  })
+
+  it('should shutdown the selected SmartEdge', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(
+      ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <EdgesTable rowSelection={{ type: 'checkbox' }}/>
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    const row5 = await screen.findByRole('row', { name: /Smart Edge 5/i })
+    await user.click(within(row5).getByRole('checkbox'))
+    await user.click(screen.getByRole('button', { name: 'Shutdown' }))
+    const shutdownDialg = await screen.findByRole('dialog')
+    within(shutdownDialg).getByText('Shutdown "Smart Edge 5"?')
+    await user.click(within(shutdownDialg).getByRole('button', { name: 'Shutdown' }))
+    await waitFor(() => {
+      expect(mockedShutdownApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(shutdownDialg).not.toBeVisible()
     })
   })
 

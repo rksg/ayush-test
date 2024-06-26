@@ -24,9 +24,9 @@ import { VenueEdit } from './index'
 jest.mock('./SwitchConfigTab/SwitchAAATab/SwitchAAATab', () => ({
   SwitchAAATab: () => <div data-testid='SwitchAAATab' />
 }))
-jest.mock('./WifiConfigTab/NetworkingTab/DirectedMulticast', () => () => {
-  return <div data-testid='DirectedMulticast' />
-})
+jest.mock('./WifiConfigTab/NetworkingTab/DirectedMulticast', () => ({
+  DirectedMulticast: () => <div data-testid='DirectedMulticast' />
+}))
 jest.mock('./WifiConfigTab/NetworkingTab/CellularOptions/CellularOptionsForm', () => ({
   CellularOptionsForm: () => <div data-testid='CellularOptionsForm' />
 }))
@@ -208,7 +208,7 @@ describe('VenueEdit - handle unsaved/invalid changes modal', () => {
           rest.put(CommonUrlsInfo.updateVenueSwitchSetting.url,
             (_, res, ctx) => res(ctx.json({}))
           ),
-          rest.post(CommonUrlsInfo.getConfigProfiles.url,
+          rest.post(SwitchUrlsInfo.getProfiles.url,
             (_, res, ctx) => res(ctx.json({ data: configProfiles } ))
           ),
           rest.get(SwitchUrlsInfo.getSwitchConfigProfile.url,

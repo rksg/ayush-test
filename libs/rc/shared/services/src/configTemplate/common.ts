@@ -2,8 +2,8 @@
 import {
   AAAPolicyType,
   AAAViewModalType,
+  ApplyConfigTemplatePaylod,
   CommonResult,
-  CommonResultWithEntityResponse,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
   Network,
@@ -39,7 +39,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    applyConfigTemplate: build.mutation<CommonResult, RequestPayload>({
+    applyConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
@@ -83,7 +83,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
-    addAAAPolicyTemplate: build.mutation<CommonResultWithEntityResponse<AAAPolicyType>, RequestPayload>({
+    addAAAPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.addAAAPolicyTemplate),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'AAATemplate', id: 'LIST' }]
     }),

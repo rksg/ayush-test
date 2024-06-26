@@ -1,13 +1,13 @@
 import { Badge }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                                          from '@acx-ui/components'
-import { useGetVenuesQuery, useRwgListQuery }                                                                                 from '@acx-ui/rc/services'
-import { defaultSort, FILTER, getRwgStatus, RWGRow, SEARCH, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
-import { TenantLink, useNavigate, useParams }                                                                                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                          from '@acx-ui/user'
+import { Button, ColumnType, Loader, PageHeader, Table, TableProps }                                          from '@acx-ui/components'
+import { useRwgActions }                                                                                      from '@acx-ui/rc/components'
+import { useGetVenuesQuery, useRwgListQuery }                                                                 from '@acx-ui/rc/services'
+import { defaultSort, getRwgStatus, RWGRow, seriesMappingRWG, sortProp, transformDisplayText, useTableQuery } from '@acx-ui/rc/utils'
+import { TenantLink, useNavigate, useParams }                                                                 from '@acx-ui/react-router-dom'
+import { filterByAccess, hasAccess }                                                                          from '@acx-ui/user'
 
-import { useRwgActions } from '../useRwgActions'
 
 
 function useColumns (
@@ -44,7 +44,7 @@ function useColumns (
       filterValueNullable: true,
       filterKey: 'status',
       filterable: filterables ? filterables['status'] : false,
-      sorter: { compare: sortProp('status', defaultSort) },
+      sorter: false,
       render: function (_, row) {
         const { name, color } = getRwgStatus(row.status)
 
@@ -67,7 +67,7 @@ function useColumns (
       filterValueNullable: true,
       filterKey: 'status',
       filterable: filterables ? filterables['status'] : false,
-      sorter: { compare: sortProp('status', defaultSort) },
+      sorter: false,
       render: function (_, row) {
         const { name, color } = getRwgStatus(row.status)
         return !row.isCluster ? (
@@ -88,7 +88,7 @@ function useColumns (
       filterValueNullable: true,
       filterKey: 'venueName',
       filterable: filterables ? filterables['venueName'] : false,
-      sorter: { compare: sortProp('venueName', defaultSort) },
+      sorter: false,
       render: function (_, row) {
         return !row.isCluster ? (
           <TenantLink to={`/venues/${row.venueId}/venue-details/overview`}>
@@ -102,7 +102,7 @@ function useColumns (
       dataIndex: 'hostname',
       key: 'hostname',
       filterMultiple: false,
-      sorter: false,
+      sorter: { compare: sortProp('hostname', defaultSort) },
       render: function (_, row) {
         return !row.isCluster ? row.hostname : ''
       }
@@ -119,18 +119,16 @@ export function RWGTable () {
   const rwgActions = useRwgActions()
 
   const rwgPayload = {
-    pageNumber: 1,
-    pageSize: 10,
-    sortBy: 'RwgHostname'
+    filters: {}
   }
-
+  const settingsId = 'rwg-table'
   const tableQuery = useTableQuery({
     useQuery: useRwgListQuery,
     defaultPayload: rwgPayload,
+    pagination: { settingsId },
     search: {
       searchTargetFields: ['name']
-    },
-    enableSelectAllPagesData: ['rwgId', 'name']
+    }
   })
 
 
@@ -165,15 +163,27 @@ export function RWGTable () {
     }
   },
   {
+    visible: (selectedRows) => selectedRows.length === 1,
+    label: $t({ defaultMessage: 'Configure' }),
+    onClick: (selectedRows) => {
+      window.open('https://' + (selectedRows[0]?.hostname)?.toString() + '/admin',
+        '_blank')
+    }
+  },
+  {
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (rows, clearSelection) => {
       rwgActions.deleteGateways(rows, tenantId, clearSelection)
     }
   }]
 
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    const payload = { ...tableQuery.payload, filters: { name: customSearch?.searchString ?? '' } }
-    tableQuery.setPayload(payload)
+  const handleTableChange: TableProps<RWGRow>['onChange'] = (
+    pagination, filters, sorter, extra
+  ) => {
+    tableQuery.setPayload({
+      ...tableQuery.payload
+    })
+    tableQuery.handleTableChange?.(pagination, filters, sorter, extra)
   }
 
   const rowSelection = () => {
@@ -183,7 +193,6 @@ export function RWGTable () {
       })
     }
   }
-
 
   return (
     <>
@@ -198,14 +207,16 @@ export function RWGTable () {
       <Loader states={[
         tableQuery
       ]}>
-        <Table
-          settingsId='rgw-table'
+        <Table<RWGRow>
+          settingsId={settingsId}
           columns={columns}
           dataSource={tableQuery?.data?.data}
-          onFilterChange={handleFilterChange}
+          pagination={{ total: tableQuery?.data?.totalCount }}
+          onFilterChange={tableQuery.handleFilterChange}
           rowKey='rowId'
           rowActions={filterByAccess(rowActions)}
           rowSelection={hasAccess() && { ...rowSelection() }}
+          onChange={handleTableChange}
         />
       </Loader>
     </>

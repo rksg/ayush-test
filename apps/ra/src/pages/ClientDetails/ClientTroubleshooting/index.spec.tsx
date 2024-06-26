@@ -7,7 +7,8 @@ import {
   screen,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
-import { DateRange, useDateFilter } from '@acx-ui/utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
+import { DateRange, useDateFilter }          from '@acx-ui/utils'
 
 import { ClientTroubleshootingTab } from './index'
 
@@ -18,6 +19,7 @@ jest.mock('@acx-ui/analytics/utils', () => ({
 
 describe('ClientTroubleshootingTab', () => {
   beforeEach(() => {
+    Date.now = jest.fn(() => new Date('2023-02-21T00:00:00.000Z').getTime())
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
       data: {
         client: {
@@ -37,6 +39,11 @@ describe('ClientTroubleshootingTab', () => {
         }
       }
     })
+    setRaiPermissions({
+      READ_WIRELESS_CLIENTS_REPORT: true,
+      READ_CLIENT_TROUBLESHOOTING: true,
+      READ_INCIDENTS: true
+    } as RaiPermissions)
   })
 
   it('should render correctly', async () => {

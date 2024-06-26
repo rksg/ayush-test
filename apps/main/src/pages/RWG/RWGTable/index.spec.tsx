@@ -16,7 +16,7 @@ import { RWGTable } from '.'
 const rwgList = {
   requestId: '4cde2a1a-f916-4a19-bcac-869620d7f96f',
   response: {
-    items: [{
+    data: [{
       rwgId: 'bbc41563473348d29a36b76e95c50381',
       rowId: 'bbc41563473348d29a36b76e95c50381',
       venueId: '3f10af1401b44902a88723cb68c4bc77',
@@ -51,7 +51,9 @@ const rwgList = {
         ip: '4.4.4.4',
         id: '1'
       }]
-    }] as RWGRow[]
+    }] as RWGRow[],
+    totalCount: 3,
+    page: 1
   }
 }
 

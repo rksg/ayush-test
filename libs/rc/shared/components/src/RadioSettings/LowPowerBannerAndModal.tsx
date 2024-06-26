@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable max-len */
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 
 import { Col, Row } from 'antd'
 import { useIntl }  from 'react-intl'
@@ -20,20 +20,19 @@ const StyledAlert = styled(Alert)`
 export function LowPowerBannerAndModal (props: {
     afcInfo?: AFCInfo
     from: string
+    isOutdoor?: boolean
 }) {
 
-  const { afcInfo, from } = props
+  const { afcInfo, from, isOutdoor } = props
 
   const { $t } = useIntl()
   const { venueId } = useParams()
-
-  const [bannerText, setBannerText] = useState('')
 
   const navigate = useNavigate()
   const location = useLocation()
   const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/wifi/radio/Normal6GHz`)
 
-  useEffect(()=> {
+  const displayModalMessage = useMemo(() => {
 
     let modalMessage = ''
 
@@ -44,16 +43,20 @@ export function LowPowerBannerAndModal (props: {
       // when from 'AP'
       const messageList: string[] = []
 
-      messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
+      if (isOutdoor) {
+        messageList.push($t({ defaultMessage: 'The 6GHz radio is not currently operable.' }))
+      } else {
+        messageList.push($t({ defaultMessage: '6 GHz radio operating in Low Power Indoor Mode.' }))
+      }
 
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_LOCATION) {
-        messageList.push($t({ defaultMessage: '(Geo Location not set)' }))
+        messageList.push($t({ defaultMessage: '(AFC Geo-Location not set)' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.REJECTED) {
-        messageList.push($t({ defaultMessage: '(No channels available)' }))
+        messageList.push($t({ defaultMessage: '(Rejected by FCC DB due to no available channels)' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.WAIT_FOR_RESPONSE) {
-        messageList.push($t({ defaultMessage: '(Pending response from the AFC server)' }))
+        messageList.push($t({ defaultMessage: '(Wait for AFC server response)' }))
       }
       if (afcInfo?.afcStatus === AFCStatus.PASSED) {
         messageList.push($t({ defaultMessage: '(AP is working on LPI channel)' }))
@@ -66,8 +69,9 @@ export function LowPowerBannerAndModal (props: {
 
     }
 
-    setBannerText(modalMessage)
-  }, [])
+    return modalMessage
+
+  }, [from, isOutdoor, afcInfo])
 
   return <Row
     data-testid='low-power-banner'
@@ -79,7 +83,7 @@ export function LowPowerBannerAndModal (props: {
       <StyledAlert showIcon={true}
         style={{ verticalAlign: 'middle' }}
         message={<>
-          {bannerText}
+          {displayModalMessage}
           { from === 'ap' ?
             <Button type='link'
               data-testid='how-to-fix-this-button'>

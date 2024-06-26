@@ -3,8 +3,9 @@ import { useMemo, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { useLazyGetApLldpNeighborsQuery }                         from '@acx-ui/rc/services'
+import { Button, Drawer, Loader, Table, TableColumn, TableProps }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { useLazyGetApLldpNeighborsQuery, useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApLldpNeighbor,
   CatchErrorResponse,
@@ -13,11 +14,12 @@ import {
   useApContext
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
-import { defaultPagination }              from './constants'
-import { lldpNeighborsFieldLabelMapping } from './contents'
-import { useApNeighbors }                 from './useApNeighbors'
+import { NewApNeighborTypes, defaultPagination } from './constants'
+import { lldpNeighborsFieldLabelMapping }        from './contents'
+import { useApNeighbors }                        from './useApNeighbors'
 
 import { apNeighborValueRender } from '.'
 
@@ -25,14 +27,19 @@ import type { LldpNeighborsDisplayFields } from './contents'
 
 export default function ApLldpNeighbors () {
   const { $t } = useIntl()
-  const { serialNumber } = useApContext()
-  const [ getApLldpNeighbors, getApLldpNeighborsStates ] = useLazyGetApLldpNeighborsQuery()
+  const { serialNumber, venueId } = useApContext()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const apNeighborQuery = isUseWifiRbacApi ?
+    useLazyGetApNeighborsQuery :
+    useLazyGetApLldpNeighborsQuery
+  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
   // eslint-disable-next-line max-len
-  const { doDetect, isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler)
+  const { doDetect, isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const [ selectedApLldpNeighbor, setSelectedApLldpNeighbor ] = useState<ApLldpNeighbor>()
 
   const tableActions = [{
+    scopeKey: [WifiScopes.UPDATE],
     label: $t({ defaultMessage: 'Detect' }),
     disabled: isDetecting,
     onClick: () => doDetect()
@@ -40,14 +47,21 @@ export default function ApLldpNeighbors () {
 
   async function socketHandler () {
     try {
-      await getApLldpNeighbors({ params: { serialNumber } }).unwrap()
+      await getApNeighbors({
+        params: { serialNumber, venueId },
+        payload: {
+          filters: [{ type: NewApNeighborTypes.LLDP_NEIGHBOR }],
+          page: 1,
+          pageSize: 10000
+        }
+      }).unwrap()
     } catch (error) {
       handleApiError(error as CatchErrorResponse)
     }
   }
 
   const isTableFetching = () => {
-    return getApLldpNeighborsStates.isFetching || isDetecting
+    return getApNeighborsStates.isFetching || isDetecting
   }
 
   const getRowKey = (record: ApLldpNeighbor): string => {
@@ -55,14 +69,14 @@ export default function ApLldpNeighbors () {
   }
 
   return <Loader states={[{
-    isLoading: getApLldpNeighborsStates.isLoading,
+    isLoading: getApNeighborsStates.isLoading,
     isFetching: isTableFetching()
   }]}>
     <Table
       settingsId='ap-lldp-neighbors-table'
       rowKey={getRowKey}
       columns={useColumns(setDetailsDrawerVisible, setSelectedApLldpNeighbor)}
-      dataSource={getApLldpNeighborsStates.data?.neighbors ?? []}
+      dataSource={(getApNeighborsStates.data?.neighbors as ApLldpNeighbor[]) ?? []}
       pagination={defaultPagination}
       actions={filterByAccess(tableActions)}
     />

@@ -1,63 +1,55 @@
+import { useEffect } from 'react'
+
 import { FormattedMessage, useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader } from '@acx-ui/components'
-import { useAaaNetworkInstancesQuery }     from '@acx-ui/rc/services'
+import { Table, TableProps, Card, Loader }                     from '@acx-ui/components'
+import { Features, useIsSplitOn }                              from '@acx-ui/feature-toggle'
+import { useGetNetworkTemplateListQuery, useNetworkListQuery } from '@acx-ui/rc/services'
 import {
-  AAAPolicyNetwork, captiveNetworkTypes, ConfigTemplateType,
-  GuestNetworkTypeEnum, NetworkTypeEnum, networkTypes,
+  captiveNetworkTypes, ConfigTemplateType,
+  GuestNetworkTypeEnum, Network, NetworkTypeEnum, networkTypes,
   useConfigTemplate, useTableQuery
 } from '@acx-ui/rc/utils'
-import { TenantLink } from '@acx-ui/react-router-dom'
+import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
+import { useGetAAAPolicyInstanceList }          from '../AAAForm/aaaPolicyQuerySwitcher'
 
-export default function AAAInstancesTable (){
+export default function AAAInstancesTable () {
   const { isTemplate } = useConfigTemplate()
   const { $t } = useIntl()
-  const tableQuery = useTableQuery({
-    useQuery: useAaaNetworkInstancesQuery,
-    defaultPayload: {
-      fields: ['networkName', 'networkId', 'guestNetworkType', 'networkType'],
-      filters: {}
-    },
-    sorter: {
-      sortField: 'networkName',
-      sortOrder: 'DESC'
-    },
-    search: {
-      searchTargetFields: ['networkName'],
-      searchString: ''
-    }
-  })
-  const columns: TableProps<AAAPolicyNetwork>['columns'] = [
+
+  const tableQuery = useAaaInstanceTableQuery()
+
+  const columns: TableProps<Network>['columns'] = [
     {
-      key: 'NetworkName',
+      key: 'name',
       title: $t({ defaultMessage: 'Network Name' }),
-      dataIndex: 'networkName',
+      dataIndex: 'name',
       searchable: true,
       sorter: true,
       fixed: 'left',
       render: function (_, row) {
         return isTemplate
           // eslint-disable-next-line max-len
-          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.networkId, row.networkName)
+          ? renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, row.name)
           // eslint-disable-next-line max-len
-          : <TenantLink to={`/networks/wireless/${row.networkId}/network-details/aps`}>{row.networkName}</TenantLink>
+          : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>{row.name}</TenantLink>
       }
     },
     {
-      key: 'Type',
+      key: 'nwSubType',
       title: $t({ defaultMessage: 'Type' }),
-      dataIndex: 'networkType',
+      dataIndex: 'nwSubType',
       sorter: true,
       render: (_, row) => {
-        const message = networkTypes[row.networkType.toLowerCase() as NetworkTypeEnum]
-        return row.networkType === 'GUEST'
+        const message = networkTypes[row.nwSubType.toLowerCase() as NetworkTypeEnum]
+        return row.nwSubType === 'GUEST'
           ? <FormattedMessage
             defaultMessage={'Captive Portal - {captiveNetworkType}'}
             values={{
               captiveNetworkType: $t(captiveNetworkTypes[
-                row.guestNetworkType as GuestNetworkTypeEnum || GuestNetworkTypeEnum.Cloudpath
+                row.captiveType as GuestNetworkTypeEnum || GuestNetworkTypeEnum.Cloudpath
               ])
             }}
           />
@@ -80,4 +72,50 @@ export default function AAAInstancesTable (){
       </Card>
     </Loader>
   )
+}
+
+
+function useAaaInstanceTableQuery () {
+  const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const params = useParams()
+  const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
+    customPayload: { filters: { id: [ params?.policyId ] } }
+  })
+
+  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
+  const tableQuery = useTableQuery<Network>({
+    useQuery,
+    defaultPayload: {
+      fields: ['name', 'id', 'captiveType', 'nwSubType']
+    },
+    sorter: {
+      sortField: 'name',
+      sortOrder: 'DESC'
+    },
+    pagination: {
+      pageSize: 10000
+    },
+    search: {
+      searchTargetFields: ['name'],
+      searchString: ''
+    },
+    enableRbac,
+    option: {
+      skip: !aaaPolicyViewModel
+    }
+  })
+
+  useEffect(() => {
+    if (!aaaPolicyViewModel) return
+
+    const networkIds = aaaPolicyViewModel.data[0]?.networkIds ?? []
+
+    tableQuery.setPayload({
+      ...tableQuery.payload,
+      filters: { id: networkIds.length > 0 ? networkIds : ['NO_NETWORK'] }
+    })
+  }, [aaaPolicyViewModel])
+
+  return tableQuery
 }

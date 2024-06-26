@@ -1,15 +1,14 @@
 import { rest } from 'msw'
 
-import { useIsSplitOn, useIsTierAllowed }                                  from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { r650Cap } from '../__tests__/fixtures'
 
 import EdgeList from './index'
 
@@ -26,7 +25,7 @@ jest.mock('./EdgeClusterTable', () => ({
 describe('EdgeList', () => {
   let params: { tenantId: string }
   beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     params = {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
@@ -39,15 +38,12 @@ describe('EdgeList', () => {
       rest.post(
         CommonUrlsInfo.getVenues.url,
         (req, res, ctx) => res(ctx.json([]))
-      ),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (req, res, ctx) => res(ctx.json(r650Cap))
       )
     )
   })
 
   it('feature flag off', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     render(
       <Provider>
         <EdgeList />
@@ -58,6 +54,8 @@ describe('EdgeList', () => {
   })
 
   it('should create EdgeList successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
+
     render(
       <Provider>
         <EdgeList />

@@ -15,7 +15,7 @@ import {
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
-  Network, NetworkExtended,
+  Network,
   NetworkVenue, useConfigTemplate, useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   VLANPoolViewModelType
@@ -23,7 +23,7 @@ import {
 
 import { defaultApGroupNetworkPayload, getCurrentVenue } from '../../ApGroupNetworkTable'
 import { usePathBasedOnConfigTemplate }                  from '../../configTemplates'
-import { ApGroupEditContext }                            from '../index'
+import { ApGroupEditContext }                            from '../context'
 
 import { ApGroupVlanRadioDrawer, ApGroupVlanRadioDrawerState } from './ApGroupVlanRadioDrawer'
 import { ApGroupVlanRadioTable }                               from './ApGroupVlanRadioTable'
@@ -45,7 +45,7 @@ export const ApGroupVlanRadioContext = createContext({} as {
   vlanPoolingNameMap: KeyValue<string, string>[]
 })
 
-type VlanPoolNameMapType = { vlanPoolingNameMap: KeyValue<string, string>[] }
+export type VlanPoolNameMapType = { vlanPoolingNameMap: KeyValue<string, string>[] }
 
 
 export function ApGroupVlanRadioTab () {
@@ -55,7 +55,9 @@ export function ApGroupVlanRadioTab () {
   const {
     isEditMode,
     isApGroupTableFlag,
-    setEditContextData
+    isWifiRbacEnabled,
+    setEditContextData,
+    venueId: contextVenueId
   } = useContext(ApGroupEditContext)
 
   const { tenantId, apGroupId = '' } = useParams()
@@ -63,18 +65,18 @@ export function ApGroupVlanRadioTab () {
   const updateDataRef = useRef<NetworkVenue[]>([])
 
   const navigate = useNavigate()
-  const basePath = usePathBasedOnConfigTemplate('/devices/')
-
-  const navigatePathName = (isApGroupTableFlag)?
-    `${basePath.pathname}/wifi/apgroups` :
-    `${basePath.pathname}/wifi`
+  const basePath = usePathBasedOnConfigTemplate('/devices/', '')
+  const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
+    ? `${basePath.pathname}/wifi/apgroups`
+    : `${basePath.pathname}/wifi`)
 
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !(isApGroupTableFlag && isEditMode),
+    skip: !(isApGroupTableFlag && isEditMode) || (isWifiRbacEnabled && !contextVenueId),
     payload: null,
-    extraParams: { tenantId, apGroupId }
+    extraParams: { tenantId, apGroupId, venueId: contextVenueId },
+    enableRbac: isWifiRbacEnabled
   })
 
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
@@ -89,7 +91,7 @@ export function ApGroupVlanRadioTab () {
   const [drawerStatus, setDrawerStatus] = useState(defaultDrawerStatus)
 
   // eslint-disable-next-line max-len
-  const { vlanPoolingNameMap }: VlanPoolNameMapType = useGetVLANPoolPolicyInstance(tableData)
+  const { vlanPoolingNameMap }: VlanPoolNameMapType = useGetVLANPoolPolicyInstance(!tableData.length)
 
   useEffect(() => {
     if (apGroupData && !isApGroupDataLoading) {
@@ -211,10 +213,10 @@ export function ApGroupVlanRadioTab () {
   )
 }
 
-const useGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
+export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
   const { tenantId } = useParams()
   const { isTemplate } = useConfigTemplate()
-
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const transformVlanPoolData = ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
     vlanPoolingNameMap: data?.data
       ? data.data.map(vlanPool => ({ key: vlanPool.id!, value: vlanPool.name }))
@@ -229,21 +231,20 @@ const useGetVLANPoolPolicyInstance = (tableData: NetworkExtended[]) => {
     pageSize: 10000
   }
 
-  // eslint-disable-next-line max-len
   const vlanPoolingNonTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModelListQuery({
     params: { tenantId },
-    payload: vlanPoolPayload
+    payload: vlanPoolPayload,
+    enableRbac: isPolicyRbacEnabled
   }, {
-    skip: !tableData.length && isTemplate,
+    skip: skipQuery || isTemplate,
     selectFromResult: transformVlanPoolData
   })
 
-  // eslint-disable-next-line max-len
   const vlanPoolingTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModeTemplateListQuery({
     params: { tenantId },
     payload: vlanPoolPayload
   }, {
-    skip: !tableData.length && !isTemplate,
+    skip: skipQuery || !isTemplate,
     selectFromResult: transformVlanPoolData
   })
 

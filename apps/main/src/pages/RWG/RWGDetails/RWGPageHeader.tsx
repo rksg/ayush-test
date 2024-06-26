@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { Badge }   from 'antd'
-import { useIntl } from 'react-intl'
+import { Badge, Menu, MenuProps } from 'antd'
+import { useIntl }                from 'react-intl'
 
-import { Button, cssStr, PageHeader }                       from '@acx-ui/components'
+import { Button, cssStr, Dropdown, PageHeader }             from '@acx-ui/components'
+import { CaretDownOutlined }                                from '@acx-ui/icons'
+import { useRwgActions }                                    from '@acx-ui/rc/components'
 import { useGetRwgQuery }                                   from '@acx-ui/rc/services'
 import { getRwgStatus, RWG, RWGClusterNode, RWGStatusEnum } from '@acx-ui/rc/utils'
 import {
@@ -13,8 +15,6 @@ import {
   useParams
 } from '@acx-ui/react-router-dom'
 import { filterByAccess } from '@acx-ui/user'
-
-import { useRwgActions } from '../useRwgActions'
 
 import RWGTabs from './RWGTabs'
 
@@ -46,6 +46,7 @@ function RWGPageHeader () {
       setGatewayStatus(rwg.status)
     } else {
       setGatewayData(_gatewayData)
+      setGatewayStatus(_gatewayData?.status)
     }
   }, [_gatewayData])
 
@@ -63,6 +64,34 @@ function RWGPageHeader () {
       }
     })}
 
+
+  const handleMenuClick: MenuProps['onClick'] = (e) => {
+
+    if (e.key === 'configure-rwg') {
+      window.open('https://' + (gatewayData?.hostname)?.toString() + '/admin',
+        '_blank')
+    } else {
+      window.open('https://' + (gatewayData?.hostname)?.toString() + '/conferences',
+        '_blank')
+    }
+
+  }
+
+  const menu = (
+    <Menu
+      onClick={handleMenuClick}
+      items={
+        [{
+          key: 'configure-rwg',
+          label: $t({ defaultMessage: 'Configure RWG' })
+        }, {
+          key: 'configure-conference',
+          label: $t({ defaultMessage: 'Configure Conferences' })
+        }]
+      }
+    />
+  )
+
   return (
     <PageHeader
       title={gatewayData?.name}
@@ -78,20 +107,26 @@ function RWGPageHeader () {
         { text: $t({ defaultMessage: 'RUCKUS WAN Gateways' }), link: '/ruckus-wan-gateway' }
       ]}
       extra={[
-        ...filterByAccess([<Button
-          type='default'
-          onClick={() =>
-            rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
-          }
-          disabled={!!clusterNodeId}
-        >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
-        <Button
-          type='primary'
-          onClick={() =>
-            window.open('https://' + (gatewayData?.hostname)?.toString(),
-              '_blank')
-          }
-        >{$t({ defaultMessage: 'Configure' })}</Button>])
+        ...filterByAccess([
+          <Button
+            type='default'
+            onClick={() =>
+              rwgActions.refreshGateway()
+            }
+          >{$t({ defaultMessage: 'Refresh' })}</Button>,
+          <Button
+            type='default'
+            onClick={() =>
+              rwgActions.deleteGateways([gatewayData as RWG], tenantId, redirectToList)
+            }
+            disabled={!!clusterNodeId}
+          >{$t({ defaultMessage: 'Delete Gateway' })}</Button>,
+          <Dropdown
+            overlay={menu}>
+            { () => <Button
+              type='primary'
+            >{$t({ defaultMessage: 'Configure' })} <CaretDownOutlined /></Button> }
+          </Dropdown>])
       ]}
       footer={<RWGTabs gatewayDetail={gatewayData as RWG} />}
     />

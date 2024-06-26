@@ -6,9 +6,8 @@ import { get }            from '@acx-ui/config'
 import { TenantNavigate } from '@acx-ui/react-router-dom'
 import {
   RolesEnum as Role,
-  EdgeScopes,
-  SwitchScopes,
-  WifiScopes } from '@acx-ui/types'
+  ScopeKeys
+} from '@acx-ui/types'
 
 import type { UserProfile, RaiPermission, RaiPermissions } from './types'
 
@@ -18,7 +17,7 @@ type Profile = {
   accountTier?: string
   betaEnabled?: boolean
   abacEnabled?: boolean
-  scopes?: (WifiScopes|SwitchScopes|EdgeScopes)[]
+  scopes?: ScopeKeys
   isCustomRole?: boolean
 }
 const userProfile: Profile = {
@@ -32,10 +31,10 @@ const userProfile: Profile = {
 const SHOW_WITHOUT_RBAC_CHECK = 'SHOW_WITHOUT_RBAC_CHECK'
 
 interface FilterItemType {
-  scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
+  scopeKey?: ScopeKeys,
   key?: string,
   props?: {
-    scopeKey?: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopeKey?: ScopeKeys,
     key?: string
   }
 }
@@ -111,7 +110,7 @@ export function hasPermission (props?: {
     // RAI
     permission?: RaiPermission,
     // R1
-    scopes?:(WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopes?: ScopeKeys,
     allowedOperations?:string
 }): boolean {
   const { scopes = [], allowedOperations, permission } = props || {}
@@ -133,10 +132,25 @@ export function hasPermission (props?: {
   }
 }
 
-export function hasScope (userScopes: (WifiScopes|SwitchScopes|EdgeScopes)[]) {
-  const { abacEnabled, scopes, isCustomRole } = getUserProfile()
+/**
+ * Check if the user has the required scopes based on the user's profile.
+ *
+ * @param userScopes The scopes to check against the user's profile.
+ *
+ *  WifiScopes|SwitchScopes|EdgeScopes: means the scope is optional, and the user can have any one of these scopes.
+ * (WifiScopes|SwitchScopes|EdgeScopes)[]: means the user must have these specific scopes.
+ *
+ */
+export function hasScope (userScopes: ScopeKeys) {
+  const { abacEnabled, scopes = [], isCustomRole } = getUserProfile()
   if(abacEnabled && isCustomRole) {
-    return scopes?.some(scope => userScopes.includes(scope))
+    return userScopes?.some(scope => {
+      if(Array.isArray(scope)) {
+        return scope.every(i => scopes.includes(i))
+      } else {
+        return scopes.includes(scope)
+      }
+    })
   }
   return true
 }
@@ -151,7 +165,7 @@ export function hasRoles (roles: string | string[]) {
 }
 
 export function AuthRoute (props: {
-    scopes: (WifiScopes|SwitchScopes|EdgeScopes)[],
+    scopes: ScopeKeys,
     children: ReactElement
   }) {
   const { scopes, children } = props

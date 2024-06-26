@@ -45,7 +45,6 @@ export function RadioSettingsForm (props:{
   LPIButtonText?: LPIButtonText
 }) {
   const { $t } = useIntl()
-  const radio6GRateControlFeatureFlag = useIsSplitOn(Features.RADIO6G_RATE_CONTROL)
   const afcFeatureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
   const {
     radioType,
@@ -108,6 +107,10 @@ export function RadioSettingsForm (props:{
   useEffect(() => {
     form.setFieldValue(enableMulticastRateLimitingFieldName,
       form.getFieldValue(enableUploadLimitFieldName) || form.getFieldValue(enableDownloadLimitFieldName))
+
+    if (props?.isAFCEnabled === false) {
+      form.setFieldValue(enableAfcFieldName, false)
+    }
   }, [] )
 
   useEffect(()=> {
@@ -127,7 +130,6 @@ export function RadioSettingsForm (props:{
   }
 
   const getDownloadMaxValue = () => getDLMax(form.getFieldValue(bssMinRate6gFieldName))
-  const multicastRateLimitFlag = useIsSplitOn(Features.MULTICAST_RATE_LIMIT_TOGGLE)
 
   const handleBSSMinRateOnChange = (value: unknown) => {
     if (value) {
@@ -136,15 +138,53 @@ export function RadioSettingsForm (props:{
     onChangedByCustom('bssMinRate')
   }
 
-  const AFCEnableValidation = () => {
+  const AFCEnableValidation = (ignoreFloorValidation: boolean) => {
     const { maxFloor, minFloor } = venueRadio?.radioParams6G?.venueHeight || {}
 
-    return [
-      (showAfcItems),
-      (context === 'ap'),
-      (enableAfc),
-      (maxFloor === undefined || minFloor === undefined)
-    ].every(Boolean)
+    if (ignoreFloorValidation) {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc),
+        (!LPIButtonText?.isAPOutdoor)
+      ].every(Boolean)
+    } else {
+      return [
+        (showAfcItems),
+        (context === 'ap'),
+        (enableAfc),
+        (maxFloor === undefined || minFloor === undefined)
+      ].every(Boolean)
+    }
+  }
+
+  const displayEnableAFCFormItemTag = () => {
+    if (context === 'venue') {
+      if(isAFCEnabled) {
+        return (
+          <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+            {$t({ defaultMessage: 'Enable Indoor AFC:' })}
+            <Tooltip
+              title={$t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })}
+              placement='bottom'>
+              <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
+            </Tooltip>
+          </Space>
+        )
+      } else {
+        return (
+          <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+            {$t({ defaultMessage: 'Enable Indoor AFC:' })}
+          </Space>
+        )
+      }
+    }
+
+    return (
+      <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
+        {$t({ defaultMessage: 'Enable AFC:' })}
+      </Space>
+    )
   }
 
 
@@ -152,73 +192,94 @@ export function RadioSettingsForm (props:{
   return (
     <>
       { showAfcItems &&
-        // No need to bring enableAfc property when AP is outdoor ap and AFC is no enabled.
-        // Also no need to show on the page.
-        !(LPIButtonText?.isAPOutdoor || props.isAFCEnabled === false) &&
-        <FieldLabel width='150px'
+        <FieldLabel width='180px'
         // Hide the label when afcEnable is false or ap is outdoor under ap context
-          style={(context === 'ap') ? { display: 'none' } : undefined}>
-          {$t({ defaultMessage: 'Enable AFC:' })}
+          style={(context === 'ap' && (LPIButtonText?.isAPOutdoor || props?.isAFCEnabled === false)) ?
+            { display: 'none' } : { display: 'flex' }}>
+          {displayEnableAFCFormItemTag()}
           <Form.Item
             style={{ width: '50px' }}
             name={enableAfcFieldName}
             valuePropName={'checked'}
-            initialValue={true}
+            initialValue={false}
             rules={[
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              { validator: (_, value) => AFCEnableValidation() ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
+              { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
-              LPIButtonText?.buttonText :
-              <Switch
-                disabled={!isAFCEnabled || isUseVenueSettings}
-                onChange={() => {
-                  onChangedByCustom('enableAfc')
-                  form.validateFields()
-                }}
-              />}
+              LPIButtonText?.buttonText : (isAFCEnabled ?
+                <Switch
+                  disabled={!isAFCEnabled || isUseVenueSettings}
+                  onChange={() => {
+                    onChangedByCustom('enableAfc')
+                    form.validateFields()
+                  }}
+                /> :
+                <Tooltip title={
+                  <div style={{ textAlign: 'center' }}>
+                    <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
+                  </div>
+                }>
+                  <Switch disabled={!isAFCEnabled || isUseVenueSettings} />
+                </Tooltip>
+              )
+            }
           </Form.Item>
         </FieldLabel>
       }
-      {showAfcItems && enableAfc &&
-        <Alert type='info'
-          showIcon={true}
-          message={<>
-            <span style={{ marginRight: '30px' }}>
-              {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
-            </span>
-            <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
-              target='_blank'
-              rel='noreferrer'>
-              {$t({ defaultMessage: 'How to configure?' })}
-            </a>
-          </>
-          }
-        />
-      }
-      { AFCEnableValidation() &&
-        <Alert type='error'
-          showIcon={true}
-          message={<>
-            <span style={{ marginRight: '30px' }}>
-              {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
-            </span>
-            <Button type='link'
-              data-testid='set-it-up-button'
-              onClick={() => {
-                navigate(detailsPath, { state: { from: location } })
-              }}
-            >
-              <span style={{ fontSize: '12px' }}>
-                {$t({ defaultMessage: 'Set it up now' })}
+      {
+        AFCEnableValidation(true) && (
+          <Alert
+            type='info'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'Please ensure that you are familiar with the requirements for AFC Geo-Location.' })}
               </span>
-            </Button>
-          </>
-          }
-        />
+              <a href='https://docs.cloud.ruckuswireless.com/ruckusone/userguide/GUID-C1324048-5F2A-436C-A8BE-9B94BCB5CF14.html'
+                target='_blank'
+                rel='noreferrer'>
+                {$t({ defaultMessage: 'How to configure?' })}
+              </a>
+            </>
+            }
+            showIcon={true}
+          />
+        )
+      }
+      {
+        AFCEnableValidation(false) && (
+          <Alert
+            type='error'
+            message={<>
+              <span style={{ marginRight: '30px' }}>
+                {$t({ defaultMessage: 'AFC in the 6 GHz band requires a <venueSingular></venueSingular> height to be set for standard power operation.' })}
+              </span>
+              <Button type='link'
+                data-testid='set-it-up-button'
+                onClick={() => {
+                  navigate(detailsPath, {
+                    state: {
+                      from: location
+                    }
+                  })
+                }}
+              >
+                <span style={{
+                  fontSize: '12px'
+                }}>
+                  {$t({ defaultMessage: 'Set it up now' })}
+                </span>
+              </Button>
+            </>
+            }
+            showIcon={true}
+          />
+        )
       }
       {showAfcItems && context === 'venue' &&
-        <FieldLabel width='150px'>
+        <FieldLabel width='150px'
+          style={(isAFCEnabled === false) ? { display: 'none' } : {}}
+        >
           {$t({ defaultMessage: 'AFC <VenueSingular></VenueSingular> Height:' })}
           <Form.Item>
             <Input.Group compact
@@ -261,9 +322,9 @@ export function RadioSettingsForm (props:{
               </Form.Item>
               <p style={{ margin: '0px 10px', lineHeight: '30px' }}>Floor</p>
               <Tooltip
-                title={$t({ defaultMessage: 'When grand floor=0' })}
+                title={$t({ defaultMessage: 'Please enter the min and max floors, with the ground floor set to 0.' })}
                 placement='bottom'>
-                <QuestionMarkCircleOutlined style={{ width: '18px', marginTop: '5px' }}/>
+                <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
               </Tooltip>
             </Input.Group>
           </Form.Item>
@@ -358,7 +419,7 @@ export function RadioSettingsForm (props:{
           onChange={() => onChangedByCustom('txPower')}
         />
       </Form.Item>
-      {(radioType === ApRadioTypeEnum.Radio6G && radio6GRateControlFeatureFlag) &&
+      {radioType === ApRadioTypeEnum.Radio6G &&
       <>
         <Form.Item
           label={$t({ defaultMessage: 'BSS Min Rate:' })}
@@ -385,7 +446,7 @@ export function RadioSettingsForm (props:{
           />
         </Form.Item>
 
-        {multicastRateLimitFlag && <>
+        <>
           <FieldLabel width='175px'>
             <Space style={{ marginBottom: '10px' }}>
               {$t({ defaultMessage: 'Multicast Rate Limiting' })}
@@ -494,7 +555,7 @@ export function RadioSettingsForm (props:{
               }
             </div>
           </>}
-        </>}
+        </>
       </>
       }
     </>

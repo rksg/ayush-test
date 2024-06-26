@@ -18,7 +18,13 @@ import { TimeLine }                                                   from './Ev
 import { useClientInfoQuery, useClientIncidentsInfoQuery }            from './services'
 import * as UI                                                        from './styledComponents'
 
-
+type CTIncidentCategoryOption = {
+  value: string
+  label: {
+    defaultMessage: string;
+  }
+ isVisible: CallableFunction
+}
 export type Filters = {
   category?: [];
   type?: [];
@@ -117,32 +123,39 @@ export function ClientTroubleshooting ({ clientMac } : { clientMac: string }) {
         <Row style={{ justifyContent: 'end' }} gutter={[20, 32]}>
           <Col span={historyContentToggle ? 24 : 21}>
             <Row style={{ justifyContent: 'end' }} gutter={[12, 6]} wrap={false}>
-              {ClientTroubleShootingConfig.selection.map((config) => (
-                <Col flex='185px' key={config.selectionType}>
-                  <Cascader
-                    entityName={config.entityName}
-                    multiple
-                    defaultValue={
-                      filters?.[
+              {ClientTroubleShootingConfig.selection
+                .filter(({ isVisible }) => isVisible())
+                .map((config) => (
+                  <Col flex='185px' key={config.selectionType}>
+                    <Cascader
+                      entityName={config.entityName}
+                      multiple
+                      defaultValue={
+                        filters?.[
                         config.selectionType as keyof Filters
-                      ]
-                        ? filters?.[
-                            config.selectionType as keyof Filters
                         ]
-                        : config.defaultValue
-                    }
-                    placeholder={$t(config.placeHolder)}
-                    options={config.options.map((option) => {
-                      return { ...option, label: $t(option.label) }
-                    })}
-                    style={{ minWidth: 150 }}
-                    onApply={(value: selectionType) =>
-                      write({ ...filters, [config.selectionType]: value })
-                    }
-                    allowClear
-                  />
-                </Col>
-              ))}
+                          ? filters?.[
+                            config.selectionType as keyof Filters
+                          ]
+                          : config.defaultValue
+                      }
+                      placeholder={$t(config.placeHolder)}
+                      options={config.options
+                        .filter((option) => {
+                          const { isVisible } = (option as CTIncidentCategoryOption)
+                          return typeof isVisible === 'function' ? isVisible() : true
+                        })
+                        .map((option) => {
+                          return { ...option, label: $t(option.label) }
+                        })}
+                      style={{ minWidth: 150 }}
+                      onApply={(value: selectionType) =>
+                        write({ ...filters, [config.selectionType]: value })
+                      }
+                      allowClear
+                    />
+                  </Col>
+                ))}
             </Row>
           </Col>
           {!historyContentToggle && (

@@ -32,8 +32,12 @@ export interface ConfigTemplate {
   name: string,
   createdBy: string,
   createdOn: number,
-  appliedOnTenants: string[],
+  appliedOnTenants?: string[],
   type: ConfigTemplateType,
   lastModified: number,
   lastApplied: number
+}
+
+export interface ApplyConfigTemplatePaylod {
+  overrides: Array<{ [key in string]: string | number | boolean | [] }>
 }

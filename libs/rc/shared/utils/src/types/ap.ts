@@ -2,6 +2,7 @@ import { APMeshRole, ApDeviceStatusEnum } from '../constants'
 import {
   ApAntennaTypeEnum,
   ApDeep,
+  ApDhcpRoleEnum,
   ApPacketCaptureStateEnum,
   ApPosition,
   BandModeEnum,
@@ -67,7 +68,50 @@ export interface AP {
   poePort?: string,
   healthStatus?: string,
   downLinkCount?: number,
-  apRadioDeploy?: string
+  apRadioDeploy?: string,
+  powerSavingStatus?: string
+}
+
+export interface NewAPModel {
+  serialNumber: string
+  name?: string
+  apGroupId?: string
+  venueId?: string
+  tags?: string[]
+  model?: string
+  supportSecureBoot?: boolean
+  macAddress?: string
+  firmwareVersion?: string
+  uptime?: number
+  lastUpdatedTime?: Date
+  lastSeenTime?: Date
+  statusSeverity?: ApVenueStatusEnum
+  status?: ApDeviceStatusEnum
+  meshRole?: string
+  networkStatus?: {
+    ipAddress: string
+    externalIpAddress: string
+    ipAddressType: string
+    netmask: string
+    gateway: string
+    primaryDnsServer: string
+    secondaryDnsServer: string
+    managementTrafficVlan: number
+  }
+  lanPortStatuses?: {
+    id: string
+    physicalLink: string
+  }[]
+  radioStatuses?: {
+    id: number
+    band: string
+    transmitterPower: string
+    channel: number
+    channelBandwidth: string
+    rssi: number
+  }[]
+  afcStatus?: NewAFCInfo
+  floorplanId?: string
 }
 
 export interface ApViewModel extends AP {
@@ -100,6 +144,33 @@ export interface APExtended extends AP {
   switchId?: string,
   switchName?: string,
   rogueCategory?: { [key: string]: number },
+  incompatible?: number
+}
+
+export interface NewAPModelExtended extends NewAPModel {
+  venueName?: string
+  poePort?: string
+  apGroupName?: string
+  channel24?: string | number
+  channel50?: string | number
+  channelL50?: string | number
+  channelU50?: string | number
+  channel60?: string | number
+  hasPoeStatus?: boolean
+  isPoEStatusUp?: boolean
+  poePortInfo?: string
+  xPercent?: number
+  yPercent?: number
+  members?: number
+  incidents?: number
+  clients?: number
+  networks?: {
+    count?: number
+  }
+  switchSerialNumber?: string
+  switchId?: string
+  switchName?: string
+  rogueCategory?: { [key: string]: number }
   incompatible?: number
 }
 
@@ -196,8 +267,27 @@ export interface ApGroupViewModel extends ApGroup {
   incidents?: unknown
 }
 
+export interface NewApGroupViewModelResponseType {
+  id?: string,
+  name?: string,
+  description?: string,
+  isDefault?: boolean,
+  venueId?: string,
+  apSerialNumbers?: string[],
+  wifiNetworkIds?: string[],
+  clientCount?: number,
+}
+
+export interface NewGetApGroupResponseType {
+  id: string,
+  name: string,
+  description: string,
+  isDefault: boolean,
+  apSerialNumbers?: string[],  // undefined: when no ap associated
+}
+
 export interface AddApGroup {
-  venueId: string,
+  venueId: string,  // deprecated in v1.1
   apSerialNumbers?: unknown[],
   name: string,
   id?: string
@@ -407,9 +497,11 @@ export interface ApRadio {
 export interface APPhoto {
   createdDate: string,
   id: string,
-  imageId: string,
-  imageName: string,
-  imageUrl: string,
+  imageId?: string,   // nonRBAC API
+  imageName?: string, // nonRBAC API
+  imageUrl?: string,  // nonRBAC API
+  name?: string,      // RBAC API
+  url?: string,       // RBAC API
   updatedDate: string
 }
 
@@ -420,8 +512,21 @@ export type DhcpApResponse = {
 
 export type DhcpAp = DhcpApResponse | DhcpApInfo[]
 
+export interface NewDhcpAp {
+  dhcpApRole: ApDhcpRoleEnum
+  serialNumber: string
+}
+
 export interface PacketCaptureState {
   status: ApPacketCaptureStateEnum,
+  fileName?: string,
+  fileUrl?: string,
+  sessionId?: string
+}
+
+export interface NewPacketCaptureState {
+  errorMsg?: string
+  state: ApPacketCaptureStateEnum,
   fileName?: string,
   fileUrl?: string,
   sessionId?: string
@@ -486,6 +591,15 @@ export interface APExtendedGrouped extends APExtended {
   children?: APExtended[],
   id?: number | string
 }
+export interface NewAPExtendedGrouped extends NewAPModelExtended {
+  members: number
+  incidents: number
+  model: string
+  clients: number
+  aps: NewAPModelExtended[],
+  children?: NewAPModelExtended[],
+  id?: number | string
+}
 export type ImportErrorRes = {
   errors: {
     code: number
@@ -495,6 +609,7 @@ export type ImportErrorRes = {
   downloadUrl?: string
   txId: string
   fileErrorsCount: number
+  fileErrorCount?: number
 }
 
 export enum MeshModeEnum {
@@ -549,6 +664,15 @@ export type AFCInfo = {
   powerMode?: AFCPowerMode,
   minPowerDbm?: number,
   maxPowerDbm?: number
+}
+
+export type NewAFCInfo = {
+  afcState?: AFCStatus,
+  availableChannels?: number[]
+  geoLocationSource?: string
+  hasGeoLocation?: boolean
+  maxPower?: number
+  powerState?: AFCPowerMode
 }
 
 export interface GeoLocation {
@@ -635,6 +759,13 @@ export interface ApRfNeighborsResponse {
 export interface ApLldpNeighborsResponse {
   detectedTime: string,
   neighbors: ApLldpNeighbor[]
+}
+
+export interface ApNeighborsResponse {
+  neighbors: (ApRfNeighbor|ApLldpNeighbor)[]
+  page: number
+  totalCount: number
+  totalPages: number
 }
 
 export interface SupportCcdVenue {

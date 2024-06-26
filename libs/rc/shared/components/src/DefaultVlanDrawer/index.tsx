@@ -10,22 +10,24 @@ import {
 } from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Drawer, Alert, Tooltip }                            from '@acx-ui/components'
-import { QuestionMarkCircleOutlined }                        from '@acx-ui/icons'
-import { validateDuplicateVlanName, validateVlanName, Vlan } from '@acx-ui/rc/utils'
+import { Drawer, Alert, Tooltip }                          from '@acx-ui/components'
+import { QuestionMarkCircleOutlined }                      from '@acx-ui/icons'
+import { validateDuplicateVlanId, validateVlanName, Vlan } from '@acx-ui/rc/utils'
 
-export interface ACLSettingDrawerProps {
+export interface DefaultVlanDrawerProps {
   defaultVlan?: Vlan
   setDefaultVlan: (r: Vlan) => void
   visible: boolean
   setVisible: (v: boolean) => void
   isRuleUnique?: (r: Vlan) => boolean
+  isSwitchLevel?: boolean
+  isAppliedACL?: boolean
   vlansList: Vlan[]
 }
 
-export function DefaultVlanDrawer (props: ACLSettingDrawerProps) {
+export function DefaultVlanDrawer (props: DefaultVlanDrawerProps) {
   const { $t } = useIntl()
-  const { defaultVlan, setDefaultVlan, visible, setVisible, vlansList } = props
+  const { defaultVlan, setDefaultVlan, visible, setVisible, vlansList, isSwitchLevel, isAppliedACL } = props
   const [form] = Form.useForm<Vlan>()
 
   const onClose = () => {
@@ -44,6 +46,8 @@ export function DefaultVlanDrawer (props: ACLSettingDrawerProps) {
           defaultVlan={defaultVlan}
           setDefaultVlan={setDefaultVlan}
           vlansList={vlansList}
+          isSwitchLevel={isSwitchLevel}
+          isAppliedACL={isAppliedACL}
         />
       }
       footer={
@@ -72,12 +76,14 @@ interface DefaultVlanFormProps {
   defaultVlan?: Vlan
   setDefaultVlan: (r: Vlan) => void
   vlansList: Vlan[]
+  isSwitchLevel?: boolean
+  isAppliedACL?: boolean
 }
 
 function DefaultVlanForm (props: DefaultVlanFormProps) {
   const { Option } = Select
   const { $t } = useIntl()
-  const { form, defaultVlan, setDefaultVlan, vlansList } = props
+  const { form, defaultVlan, setDefaultVlan, vlansList, isSwitchLevel, isAppliedACL } = props
 
   useEffect(() => {
     if(defaultVlan){
@@ -100,7 +106,14 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
         form.resetFields()
       }}
     >
-      <Alert type='info' message={$t({ defaultMessage: 'Default VLAN change will be applied to all the switches linked to this profile. Changing the default VLAN may cause network disruption unless the VLAN-ID already exists on the switch(es)' })} />
+      <Alert type='info'
+        message={
+          $t({ defaultMessage: '{profileMsg}Changing the default VLAN may cause network disruption unless the VLAN-ID already exists on the switch(es)' }, {
+            profileMsg: !isSwitchLevel
+              ? $t({ defaultMessage: 'Default VLAN change will be applied to all the switches linked to this profile. ' })
+              : ''
+          })
+        } />
       <Form.Item
         label={<>
           {$t({ defaultMessage: 'VLAN ID' })}
@@ -117,9 +130,11 @@ function DefaultVlanForm (props: DefaultVlanFormProps) {
         rules={[
           { required: true },
           { validator: (_, value) => validateVlanName(value) },
-          { validator: (_, value) => validateDuplicateVlanName(value, vlansList) }
+          { validator: (_, value) => validateDuplicateVlanId(
+            value, vlansList.filter(v => v.vlanId !== defaultVlan?.vlanId)
+          ) }
         ]}
-        children={<InputNumber />}
+        children={<InputNumber disabled={isAppliedACL} />}
       />
       <Form.Item
         name='spanningTreeProtocol'

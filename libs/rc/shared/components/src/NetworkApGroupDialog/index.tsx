@@ -13,9 +13,8 @@ import {
   Space,
   Spin
 } from 'antd'
-import { DefaultOptionType } from 'antd/lib/select'
-import _                     from 'lodash'
-import { useIntl }           from 'react-intl'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Modal,
@@ -89,11 +88,14 @@ export interface ApGroupModalWidgetProps extends AntdModalProps {
 export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
   const { $t } = useIntl()
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const { isTemplate } = useConfigTemplate()
 
   const { networkVenue, venueName, network, formName, tenantId } = props
   const { wlan, type } = network || {}
-  const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<DefaultOptionType[]>()
+
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const [vlanPoolSelectOptions, setVlanPoolSelectOptions] = useState<VlanPool[]>()
 
   const [form] = Form.useForm()
 
@@ -128,7 +130,8 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
       networkId: networkVenue?.networkId,
       venueId: networkVenue?.venueId,
       isTemplate: isTemplate
-    }]
+    }],
+    enableRbac: isWifiRbacEnabled
   }, { skip: !isUseWifiApiV2 || !networkVenue || !wlan })
 
   const formInitData = useMemo(() => {
@@ -167,12 +170,15 @@ export function NetworkApGroupDialog (props: ApGroupModalWidgetProps) {
     payload: {
       fields: ['name', 'id', 'vlanMembers'], sortField: 'name',
       sortOrder: 'ASC', page: 1, pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   })
 
   useEffect(() => {
     if (instanceListResult) {
-      setVlanPoolSelectOptions(instanceListResult.data.map(m => ({ label: m.name, value: m.id })))
+      setVlanPoolSelectOptions(instanceListResult.data.map(m => {
+        return { name: m.name, id: m.id } as VlanPool
+      }) as VlanPool[])
     }
   },[instanceListResult])
 

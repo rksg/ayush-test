@@ -169,4 +169,25 @@ describe('VlanSettingDrawer', () => {
     fireEvent.click(await screen.findByRole('button', { name: /Add Model/i }))
     expect(await screen.findByTestId('VlanPortsModal')).toBeVisible()
   })
+
+  it('should render correctly in switch level', async () => {
+    const applyVlan =jest.fn()
+    render(<IntlProvider locale='en'>
+      <VlanSettingDrawer
+        editMode={false}
+        visible={true}
+        setVisible={jest.fn()}
+        vlan={{}}
+        setVlan={jest.fn()}
+        vlansList={[]}
+        switchFamilyModel='ICX7150-C08P'
+        enablePortModelConfigure={true}
+        setVlan={applyVlan}
+        vlansList={[]}
+      />
+    </IntlProvider>)
+    expect(screen.getByText('Add VLAN')).toBeDefined()
+    expect(await screen.findByText('Add Ports')).toBeVisible()
+    await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+  })
 })

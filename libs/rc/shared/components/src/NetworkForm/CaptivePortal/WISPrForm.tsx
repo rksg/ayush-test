@@ -8,16 +8,14 @@ import {
   Input,
   InputRef
 } from 'antd'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import _                       from 'lodash'
-import { useIntl }             from 'react-intl'
-import { useParams }           from 'react-router-dom'
+import _             from 'lodash'
+import { useIntl }   from 'react-intl'
+import { useParams } from 'react-router-dom'
 
 import { Button, GridCol, GridRow, StepsFormLegacy, Tooltip, PasswordInput } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
 import {
-  InformationSolid,
-  QuestionMarkCircleOutlined
+  InformationSolid
 } from '@acx-ui/icons'
 import { useGetMspEcProfileQuery }   from '@acx-ui/msp/services'
 import { MSPUtils }                  from '@acx-ui/msp/utils'
@@ -66,7 +64,6 @@ export function WISPrForm () {
     setData
   } = useContext(NetworkFormContext)
   const { disableMLO } = useContext(MLOContext)
-  const enableOweEncryption = useIsSplitOn(Features.WIFI_EDA_OWE_TOGGLE)
   const { $t } = useIntl()
   const params = useParams()
   const { data: mspEcProfileData } = useGetMspEcProfileQuery({ params })
@@ -76,7 +73,8 @@ export function WISPrForm () {
   const wlanSecurity = useWatch('pskProtocol')
   const externalProviderRegion = useWatch(['guestPortal','wisprPage','externalProviderRegion'])
   const networkSecurity = useWatch(['networkSecurity'])
-  const providerData = useExternalProvidersQuery({ params })
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const providerData = useExternalProvidersQuery({ params, enableRbac: isUseRbacApi })
   const [enablePreShared, setEnablePreShared ] = useState(false)
   const [externalProviders, setExternalProviders]=useState<Providers[]>()
   const [regionOption, setRegionOption]=useState<Regions[]>()
@@ -219,13 +217,7 @@ export function WISPrForm () {
   useEffect(()=>{
     const { wlanSecurity } = data?.wlan || {}
     if (wlanSecurity) {
-      if (!enableOweEncryption) {
-        const enablePsk = wlanSecurity !== WlanSecurityEnum.None &&
-                          wlanSecurity !== WlanSecurityEnum.OWE
-        form.setFieldValue('enablePreShared', enablePsk)
-        setEnablePreShared(enablePsk)
-        form.setFieldValue('pskProtocol', wlanSecurity)
-      } else if (wlanSecurity === WlanSecurityEnum.None) {
+      if (wlanSecurity === WlanSecurityEnum.None) {
         form.setFieldValue('networkSecurity', 'NONE')
       } else if (wlanSecurity === WlanSecurityEnum.OWE) {
         form.setFieldValue('networkSecurity', 'OWE')
@@ -335,10 +327,6 @@ export function WISPrForm () {
         }
       }
     })
-  }
-
-  const onPskChange = async (e: CheckboxChangeEvent) => {
-    setEnablePreShared(e.target.checked)
   }
 
   const region = regionOption?.length === 1? regionOption?.[0]:
@@ -451,24 +439,7 @@ export function WISPrForm () {
               </Button></div>}
           children={<Input readOnly style={{ width: 200 }} ref={inputKey}/>}
         />
-        {!enableOweEncryption && <Form.Item>
-          <Form.Item
-            name='enablePreShared'
-            noStyle
-            valuePropName='checked'
-            initialValue={false}
-            children={
-              <Checkbox onChange={onPskChange}>
-                {$t({ defaultMessage: 'Enable Pre-Shared Key (PSK)' })}
-              </Checkbox>
-            }
-          />
-          <Tooltip title={$t({ defaultMessage: 'Require users to enter a passphrase to connect' })}
-            placement='bottom'>
-            <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
-          </Tooltip>
-        </Form.Item>}
-        {enableOweEncryption && <Form.Item
+        <Form.Item
           name='networkSecurity'
           initialValue={'NONE'}
           label={$t({ defaultMessage: 'Secure your network' })}
@@ -508,7 +479,7 @@ export function WISPrForm () {
                 onProtocolChange(security)
               }}
             />}
-        />}
+        />
 
         {enablePreShared && wlanSecurity !== WlanSecurityEnum.WEP &&
          wlanSecurity !== WlanSecurityEnum.WPA3 &&

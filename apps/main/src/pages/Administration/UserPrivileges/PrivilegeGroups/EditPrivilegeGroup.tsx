@@ -227,7 +227,7 @@ export function EditPrivilegeGroup () {
   useEffect(() => {
     if (privilegeGroup) {
       const delegation = privilegeGroup.delegation || false
-      form.setFieldValue('name', isClone ? (privilegeGroup.name + ' - copy') : privilegeGroup.name)
+      form.setFieldValue('name', isClone ? (privilegeGroup.name + '-copy') : privilegeGroup.name)
       form.setFieldValue('description', privilegeGroup?.description)
       form.setFieldValue('role', privilegeGroup?.roleName)
       setDisplayMspScope(delegation)
@@ -267,7 +267,7 @@ export function EditPrivilegeGroup () {
       form.setFieldValue('mspcustomers', ecCustomersWithVenue.length > 0
         ? ChoiceCustomerEnum.SPECIFIC_CUSTOMER : ChoiceCustomerEnum.ALL_CUSTOMERS)
       const memberCount = privilegeGroup?.memberCount || 0
-      setDisableNameChange(memberCount > 0)
+      setDisableNameChange(memberCount > 0 && !isClone)
     }
   }, [privilegeGroup, venuesList?.data, customerList?.data])
 

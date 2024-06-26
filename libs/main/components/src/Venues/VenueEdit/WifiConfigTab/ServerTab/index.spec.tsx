@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
 import { ApSnmpUrls, CommonRbacUrlsInfo, CommonUrlsInfo, SyslogUrls }                from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
@@ -41,7 +41,8 @@ jest.mock('react-router-dom', () => ({
 describe('ServerTab', () => {
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.RBAC_SERVICE_POLICY_TOGGLE)
     mockServer.use(
       rest.get(
         SyslogUrls.getVenueSyslogAp.url,

@@ -1,4 +1,4 @@
-import { compareSwitchVersion } from './switch.firmware.utils'
+import { compareSwitchVersion, isVerGEVer } from './switch.firmware.utils'
 
 
 describe('switch.firmware.utils', () => {
@@ -43,4 +43,36 @@ describe('switch.firmware.utils', () => {
   })
 
 
+  it('should check version', () => {
+    expect(isVerGEVer('SPR09010f_b28.bin', '09010f_b401', true)).toBe(false)
+    expect(isVerGEVer('TNR09010f.bin', '09010f_b19', true)).toBe(true)
+    expect(isVerGEVer('09010e_b392.bin', '09010f_b19', true)).toBe(false)
+    expect(isVerGEVer('RDR10010.bin', '10010_rc2', true)).toBe(true)
+    expect(isVerGEVer('RDR10010a.bin', '10010b_b36', true)).toBe(false)
+    expect(isVerGEVer('RDR10010a.bin', '10010a_cd1_b3', true)).toBe(false)
+    expect(isVerGEVer('10010a_b3', '10010a_cd1_b3', true)).toBe(false)
+    expect(isVerGEVer('10010b_b36', '10010a_cd1_b3', true)).toBe(true)
+    expect(isVerGEVer('10010b_b36', '10010b_cd1', true)).toBe(false)
+
+    expect(isVerGEVer('10010b_b36', '9010', false)).toBe(true)
+    expect(isVerGEVer('09010f_b19', '10010a', false)).toBe(false)
+    expect(isVerGEVer('10010b_b36', '10010a', false)).toBe(true)
+    expect(isVerGEVer('10010b_b36', '10000', false)).toBe(true)
+
+    expect(isVerGEVer('SPS09010f.bin', '9010', true)).toBe(true)
+    expect(isVerGEVer('SPS09010f.bin', '9010h', false)).toBe(false)
+    expect(isVerGEVer('SPR09010h.bin', '9010h', false)).toBe(true)
+    expect(isVerGEVer('SPR09010h.bin', '10000', false)).toBe(false)
+    expect(isVerGEVer('RDR10010a.bin', '9010h', true)).toBe(true)
+
+    expect(isVerGEVer('09010h_rc80', '9010h', true)).toBe(true)
+    expect(isVerGEVer('09010h_rc80', '9010i', true)).toBe(false)
+    expect(isVerGEVer('09010h_rc80', '09010h_b28', true)).toBe(true)
+    expect(isVerGEVer('09010h_rc80', '09010h_rc3', true)).toBe(true)
+    expect(isVerGEVer('09010h_b28', '09010h_rc80', true)).toBe(false)
+    expect(isVerGEVer('09010h_rc200', '09010h_rc80', true)).toBe(true)
+    expect(isVerGEVer('09010h_b333', '09010h_b28', true)).toBe(true)
+    expect(isVerGEVer('09010h_rc80', '09010h_cd1_b2', true)).toBe(false)
+    expect(isVerGEVer('09010h_cd1_rc80', '09010h_cd1_b2', true)).toBe(true)
+  })
 })

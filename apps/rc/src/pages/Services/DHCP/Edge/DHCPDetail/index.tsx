@@ -3,8 +3,7 @@ import { Space, Typography } from 'antd'
 import { useIntl }           from 'react-intl'
 
 import { Button, Card, Loader, PageHeader, SummaryCard, Table, TableProps }                                                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                                                                        from '@acx-ui/feature-toggle'
-import { EdgeServiceStatusLight }                                                                                                                        from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight, useIsEdgeReady }                                                                                                        from '@acx-ui/rc/components'
 import { useGetDhcpStatsQuery, useGetDhcpUeSummaryStatsQuery }                                                                                           from '@acx-ui/rc/services'
 import { DhcpUeSummaryStats, ServiceOperation, ServiceType, defaultSort, getServiceDetailsLink, getServiceListRoutePath, getServiceRoutePath, sortProp } from '@acx-ui/rc/utils'
 import { TenantLink, useParams }                                                                                                                         from '@acx-ui/react-router-dom'
@@ -17,7 +16,7 @@ const EdgeDHCPDetail = () => {
   const { $t } = useIntl()
   const params = useParams()
 
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeReady = useIsEdgeReady()
   const getDhcpStatsPayload = {
     fields: [
       'id',
