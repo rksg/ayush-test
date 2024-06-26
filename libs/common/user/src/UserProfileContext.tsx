@@ -49,13 +49,12 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
       { params: { tenantId }, payload: [abacFF, ptenantRbacFF] },
       { skip: !Boolean(profile) }
     )
-  // test for now
-  const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF]
+  const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF] ?? false
 
   const { data: beta } = useGetBetaStatusQuery(
     { params: { tenantId }, enableRbac: ptenantRbacEnable },
     { skip: !Boolean(profile) })
-  const betaEnabled = (beta?.enabled === 'true')? true : false
+  const betaEnabled = beta?.enabled === 'true'
   const { data: accTierResponse } = useGetAccountTierQuery(
     { params: { tenantId }, enableRbac: ptenantRbacEnable },
     { skip: !Boolean(profile) })
