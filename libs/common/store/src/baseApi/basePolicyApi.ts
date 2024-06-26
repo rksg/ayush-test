@@ -12,6 +12,7 @@ export const basePolicyApi = createApi({
     'ClientIsolation',
     'WifiOperator',
     'IdentityProvider',
+    'LbsServerProfile',
     'Syslog',
     'SnmpAgent',
     'VLANPool',

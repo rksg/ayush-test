@@ -21,6 +21,7 @@ import { useApActions } from '.'
 
 const serialNumber = ':serialNumber'
 const tenantId = ':tenantId'
+const venueId = ':venueId'
 
 const apList = {
   totalCount: 1,
@@ -135,7 +136,7 @@ describe('Test useApActions', () => {
     const callback = jest.fn()
 
     act(() => {
-      showRebootAp(serialNumber, tenantId, callback)
+      showRebootAp(serialNumber, tenantId, venueId, callback)
     })
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Rebooting the AP will disconnect all connected clients')
@@ -155,7 +156,7 @@ describe('Test useApActions', () => {
     const callback = jest.fn()
 
     act(() => {
-      showDownloadApLog(serialNumber, tenantId, callback)
+      showDownloadApLog(serialNumber, tenantId, venueId, callback)
     })
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('Preparing log')

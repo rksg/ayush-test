@@ -545,5 +545,25 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'PUT',
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
+  },
+  activateVlanPool: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  deactivateVlanPool: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  activateApGroupVlanPool: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  deactivateApGroupVlanPool: {
+    method: 'delete',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true
   }
 }

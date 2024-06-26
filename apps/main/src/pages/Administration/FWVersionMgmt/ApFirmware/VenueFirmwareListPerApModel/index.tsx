@@ -5,9 +5,11 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader, Table, TableProps, Tooltip, showActionModal }                                                            from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                         from '@acx-ui/feature-toggle'
 import { useGetFirmwareVersionIdListQuery, useGetVenueApModelFirmwareListQuery, useSkipVenueSchedulesPerApModelMutation } from '@acx-ui/rc/services'
 import { FirmwareType, FirmwareVenuePerApModel, Schedule, dateSort, defaultSort, sortProp, useTableQuery }                from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                                                                      from '@acx-ui/user'
+import { WifiScopes }                                                                                                     from '@acx-ui/types'
+import { filterByAccess, hasPermission }                                                                                  from '@acx-ui/user'
 import { noDataDisplay }                                                                                                  from '@acx-ui/utils'
 
 import { compareVersions, getApNextScheduleTpl, getApSchedules, getNextSchedulesTooltip, toUserDate } from '../../FirmwareUtils'
@@ -65,6 +67,7 @@ export function VenueFirmwareListPerApModel () {
 
   const rowActions: TableProps<FirmwareVenuePerApModel>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.UPDATE],
       visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
       label: $t({ defaultMessage: 'Update Now' }),
       onClick: (rows) => {
@@ -73,6 +76,7 @@ export function VenueFirmwareListPerApModel () {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       visible: (rows) => rows.some(row => !row.isFirmwareUpToDate),
       label: $t({ defaultMessage: 'Change Update Schedule' }),
       onClick: (rows) => {
@@ -81,6 +85,7 @@ export function VenueFirmwareListPerApModel () {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       visible: (rows) => rows.every(row => hasApSchedule(row)),
       label: $t({ defaultMessage: 'Skip Update' }),
       onClick: (rows, clearSelection) => {
@@ -88,6 +93,7 @@ export function VenueFirmwareListPerApModel () {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       visible: (rows) => canDowngrade(rows),
       // eslint-disable-next-line max-len
       label: $t({ defaultMessage: 'Downgrade' }),
@@ -108,11 +114,12 @@ export function VenueFirmwareListPerApModel () {
         enableApiFilter={true}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox', selectedRowKeys }}
-        actions={filterByAccess([{
+        // eslint-disable-next-line max-len
+        rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE] }) && { type: 'checkbox', selectedRowKeys }}
+        actions={hasPermission({ scopes: [WifiScopes.UPDATE] }) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setPreferencesModalVisible(true)
-        }])}
+        }] : []}
       />
     </Loader>
     {updateNowVisible && selectedRows && <UpdateNowPerApModelDialog
@@ -207,7 +214,10 @@ function useColumns () {
 }
 
 function useVersionFilterOptions () {
-  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({ params: useParams() }, {
+  const { versionFilterOptions } = useGetFirmwareVersionIdListQuery({
+    params: useParams(),
+    enableRbac: useIsSplitOn(Features.WIFI_RBAC_API)
+  }, {
     refetchOnMountOrArgChange: false,
     selectFromResult ({ data }) {
       return {

@@ -16,6 +16,7 @@ export interface Node {
 	isConnectedCloud?: boolean;
 	ipAddress?: string;
 	meshRole?: string;
+	powerSavingStatus?: string;
 }
 
 export interface NodeData extends Node {
