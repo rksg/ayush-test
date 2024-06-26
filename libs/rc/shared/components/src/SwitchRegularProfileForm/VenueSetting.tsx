@@ -201,7 +201,9 @@ export function VenueSetting () {
                 <UI.Hint>
                   <Tooltip
                     // eslint-disable-next-line max-len
-                    title={$t({ defaultMessage: 'Turn off the toggle button to apply profile updates only to the newly added switches.' })}>
+                    title={$t({ defaultMessage: 'Turn off the toggle button to apply profile updates only to the newly added switches.' })}
+                    overlayStyle={{ minWidth: '330px' }}
+                  >
                     <InformationSolid />
                   </Tooltip>
                 </UI.Hint>

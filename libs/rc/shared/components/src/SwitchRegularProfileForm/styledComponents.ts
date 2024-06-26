@@ -15,7 +15,7 @@ export const Hint = styled.span`
   svg {
     height: 18px;
     width: 18px;
-    margin-left: 5px;
+    margin-left: 3px;
     color: var(--acx-primary-white);
     path {
       stroke: var(--acx-neutrals-70);
