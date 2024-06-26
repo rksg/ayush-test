@@ -50,17 +50,67 @@ describe('Health Page', () => {
   })
 
   describe('SummaryBoxes open drawer', () => {
-    it('should handle open drawer connectionFailure', async () => {
+    it('should match snapshot open drawer connectionFailure', async () => {
+      mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
+      const { asFragment } = render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/Successful Connections/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      tiles.forEach( async tile => {
+        await userEvent.click(tile)
+      })
+      expect(asFragment()).toMatchSnapshot()
+    })
+
+    it('should handle open drawer Successful Connections', async () => {
       mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
       mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
       render(<Router><Provider>
         <SummaryBoxes filters={filters} /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
+      expect(await screen.findByText(/Successful Connections/i)).toBeVisible()
       const tiles = screen.getAllByText(/\(more details\)/i)
       expect(tiles).toHaveLength(4)
-      expect(await screen.findByText(/Successful Connections/i)).toBeVisible()
       await act(async () => await userEvent.click(tiles[0]))
+      const dialog = await screen.findByRole('dialog')
+      expect(await within(dialog).findByText(/Connection Failures/i)).toBeVisible()
+      const icon = await within(dialog).findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+      await userEvent.click(icon)
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('should handle open drawer Failed Connections', async () => {
+      mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
+      render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/Failed Connections/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      await act(async () => await userEvent.click(tiles[1]))
+      const dialog = await screen.findByRole('dialog')
+      expect(await within(dialog).findByText(/Connection Failures/i)).toBeVisible()
+      const icon = await within(dialog).findByTestId('CloseSymbol')
+      expect(icon).toBeVisible()
+      await userEvent.click(icon)
+      await waitFor(() => expect(dialog).not.toBeVisible())
+    })
+
+    it('should handle open drawer Connection Success Ratio', async () => {
+      mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
+      mockGraphqlQuery(dataApiURL, 'HealthSummary', { data: fakeSummary })
+      render(<Router><Provider>
+        <SummaryBoxes filters={filters} /></Provider></Router>)
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByText(/Connection Success Ratio/i)).toBeVisible()
+      const tiles = screen.getAllByText(/\(more details\)/i)
+      expect(tiles).toHaveLength(4)
+      await act(async () => await userEvent.click(tiles[2]))
       const dialog = await screen.findByRole('dialog')
       expect(await within(dialog).findByText(/Connection Failures/i)).toBeVisible()
       const icon = await within(dialog).findByTestId('CloseSymbol')
@@ -75,10 +125,9 @@ describe('Health Page', () => {
       render(<Router><Provider>
         <SummaryBoxes filters={filters} /></Provider></Router>)
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
-
+      expect(await screen.findByText(/Avg Time To Connect/i)).toBeVisible()
       const tiles = screen.getAllByText(/\(more details\)/i)
       expect(tiles).toHaveLength(4)
-      expect(await screen.findByText(/Avg Time To Connect/i)).toBeVisible()
       await act(async () => await userEvent.click(tiles[3]))
       const dialog = await screen.findByRole('dialog')
       expect(await within(dialog).findByText(/Average Time To Connect/i)).toBeVisible()

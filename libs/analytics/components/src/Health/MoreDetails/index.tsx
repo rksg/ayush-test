@@ -20,7 +20,7 @@ export interface MoreDetailsDrawerProps {
   visible: boolean
   setVisible: (visible: boolean) => void
   widget: WidgetType
-  setWidget: CallableFunction
+  setWidget: (widget: WidgetType) => void
   filters: AnalyticsFilter
 }
 
@@ -42,22 +42,22 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
   const mapping: MoreDetailsWidgetsMapping = [
     {
       type: 'successCount',
-      title: $t({ defaultMessage: 'Successful Connections' }),
+      title: $t({ defaultMessage: 'Connection Failures' }),
       drilldownSelection: 'connectionFailure'
     },
     {
       type: 'failureCount',
-      title: $t({ defaultMessage: 'Failed Connections' }),
+      title: $t({ defaultMessage: 'Connection Failures' }),
       drilldownSelection: 'connectionFailure'
     },
     {
       type: 'successPercentage',
-      title: $t({ defaultMessage: 'Connection Success Ratio' }),
+      title: $t({ defaultMessage: 'Connection Failures' }),
       drilldownSelection: 'connectionFailure'
     },
     {
       type: 'averageTtc',
-      title: $t({ defaultMessage: 'Avg Time To Connect' }),
+      title: $t({ defaultMessage: 'Average Time To Connect' }),
       drilldownSelection: 'ttc'
     }
   ]
@@ -76,7 +76,7 @@ export const MoreDetailsDrawer = (props: MoreDetailsDrawerProps) => {
       visible={visible}
       onClose={onClose}
       children={
-        <GridRow style={{ paddingTop: 20 }}>
+        <GridRow>
           <GridCol col={{ span: 24 }} key={`drawer-${type}`} style={{ height: 220, minWidth: 380 }}>
             <HealthDrillDown
               filters={filters}

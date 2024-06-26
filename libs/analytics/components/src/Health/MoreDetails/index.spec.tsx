@@ -8,8 +8,8 @@ import {
 } from '@acx-ui/test-utils'
 import { AnalyticsFilter } from '@acx-ui/utils'
 
-import { mockConnectionDrillDown } from '../HealthDrillDown/__tests__/fixtures'
-import { api }                     from '../HealthDrillDown/services'
+import { mockConnectionDrillDown, mockTtcDrillDown } from '../HealthDrillDown/__tests__/fixtures'
+import { api }                                       from '../HealthDrillDown/services'
 
 import { MoreDetailsDrawerProps, MoreDetailsDrawer } from './index'
 
@@ -31,7 +31,7 @@ describe('MoreDetailsDrawer', () => {
     mockGraphqlQuery(dataApiURL, 'ConnectionDrilldown', { data: mockConnectionDrillDown })
   })
 
-  it('should render drawer layout correctly', () => {
+  it('should render drawer connectionFailure layout correctly', () => {
     render(
       <Provider>
         <MoreDetailsDrawer {...props}/>
@@ -39,15 +39,29 @@ describe('MoreDetailsDrawer', () => {
         route: {}
       })
 
-    expect(screen.getByText('Successful Connections')).toBeVisible()
+    expect(screen.getByText('Connection Failures')).toBeVisible()
+  })
+
+  it('should render drawer ttc layout correctly', () => {
+    mockGraphqlQuery(dataApiURL, 'TTCDrilldown', { data: mockTtcDrillDown })
+    render(
+      <Provider>
+        <MoreDetailsDrawer {...props} widget='averageTtc'/>
+      </Provider>, {
+        route: {}
+      })
+
+    expect(screen.getByText('Average Time To Connect')).toBeVisible()
   })
 
   it('should close drawer', async () => {
     const setVisible = jest.fn()
+    const setWidget = jest.fn()
     render(
       <Provider>
         <MoreDetailsDrawer
           {...props}
+          setWidget={setWidget}
           setVisible={setVisible}/>
       </Provider>, {
         route: {}
@@ -56,5 +70,6 @@ describe('MoreDetailsDrawer', () => {
     expect(icon).toBeVisible()
     await userEvent.click(icon)
     expect(setVisible).toHaveBeenCalledWith(false)
+    expect(setWidget).toHaveBeenCalledWith(null)
   })
 })
