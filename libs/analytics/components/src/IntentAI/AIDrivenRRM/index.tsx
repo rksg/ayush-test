@@ -64,7 +64,7 @@ export function IntentAIDrivenRRM () {
                   <UI.ContentText>
                     <span>
                       {$t({ defaultMessage: 'Intent:' })}
-                      <b>{$t({ defaultMessage: 'Client density vs Client throughput' })}</b>
+                      <b>&nbsp;{$t({ defaultMessage: 'Client density vs Client throughput' })}</b>
                     </span>
                   </UI.ContentText>
                   <UI.ContentText>

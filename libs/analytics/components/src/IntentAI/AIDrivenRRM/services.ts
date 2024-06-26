@@ -74,6 +74,11 @@ export type CrrmListItem = {
   metadata: {}
 } & Partial<RecommendationKpi>
 
+type RecommendationApPayload = {
+  id: string;
+  search: string;
+}
+
 export type RecommendationAp = {
   name: string;
   mac: string;
@@ -92,7 +97,7 @@ export const unknownStates = [
   CRRMStates.unknown
 ]
 
-const getCrrmOptimizedState = (state: StateType) => {
+export const getCrrmOptimizedState = (state: StateType) => {
   return optimizedStates.includes(state)
     ? crrmStates.optimized
     : unknownStates.includes(state as CRRMStates)
@@ -238,8 +243,32 @@ export const api = recommendationApi.injectEndpoints({
       transformResponse: (response: { recommendation: RecommendationDetails }) =>
         transformDetailsResponse(response.recommendation),
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_DETAILS' }]
+    }),
+    getAps: build.query<RecommendationAp[], RecommendationApPayload>({
+      query: (payload) => ({
+        document: gql`
+          query GetAps($id: String, $n: Int, $search: String, $key: String) {
+            recommendation(id: $id) {
+              APs: APs(n: $n, search: $search, key: $key) {
+                name
+                mac
+                model
+                version
+              }
+            }
+          }
+        `,
+        variables: {
+          id: payload.id,
+          n: 100,
+          search: payload.search,
+          key: 'aps-on-latest-fw-version'
+        }
+      }),
+      transformResponse: (response: { recommendation: { APs: RecommendationAp[] } }) =>
+        response.recommendation.APs
     })
   })
 })
 
-export const { useRecommendationCodeQuery, useRecommendationDetailsQuery } = api
+export const { useRecommendationCodeQuery, useRecommendationDetailsQuery, useGetApsQuery } = api
