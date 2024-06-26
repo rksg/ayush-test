@@ -42,7 +42,7 @@ const wirelessFields = `
       type: "apMac"
   })
   avgPerAPClientCount
-  apTotalTraffic: totalTraffic
+  apTotalTraffic: userTraffic
   poeUnderPoweredApCount
   apCount
 `

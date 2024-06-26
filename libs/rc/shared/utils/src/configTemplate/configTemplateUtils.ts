@@ -58,7 +58,7 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
     params: { ...params, ...(extraParams ?? {}) },
     ...(resolvedPayload ? ({ payload: resolvedPayload }) : {}),
     ...(resolvedEnableRbac ? ({ enableRbac: resolvedEnableRbac }) : {}),
-    ...(resolvedEnableSeparation ? ({ enableSeparation: resolvedEnableRbac }) : {})
+    ...(resolvedEnableSeparation ? ({ enableSeparation: resolvedEnableSeparation }) : {})
   }
   const result = useQueryFn(requestPayload, { skip: skip || isTemplate })
   const templateResult = useTemplateQueryFn(requestPayload, { skip: skip || !isTemplate })
