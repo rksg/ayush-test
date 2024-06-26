@@ -167,7 +167,7 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     : recommendedValueTooltipContent
   const appliedOnce = Boolean(statusTrail.find(t => t.status === 'applied'))
   const firstAppliedAt = findLast(statusTrail, t => t.status === 'applied')?.createdAt
-  const intentType = code.includes('crrm') ? 'density' : '' // to be changed when confirmed intentType
+  const intentType = code.includes('crrm') ? 'clientDensity' : '' // to be changed when confirmed intentType
   return {
     ...details,
     monitoring,
@@ -222,7 +222,7 @@ export const api = recommendationApi.injectEndpoints({
         response.recommendation,
       providesTags: [{ type: 'Monitoring', id: 'RECOMMENDATION_CODE' }]
     }),
-    recommendationDetails: build.query<
+    configRecommendationDetails: build.query<
       EnhancedRecommendation,
       BasicRecommendation & { isCrrmPartialEnabled: boolean, status: string }
     >({
@@ -274,4 +274,8 @@ export const api = recommendationApi.injectEndpoints({
   })
 })
 
-export const { useRecommendationCodeQuery, useRecommendationDetailsQuery, useGetApsQuery } = api
+export const {
+  useRecommendationCodeQuery,
+  useConfigRecommendationDetailsQuery,
+  useGetApsQuery
+} = api

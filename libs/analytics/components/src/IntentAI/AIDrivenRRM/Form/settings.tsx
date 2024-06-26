@@ -1,68 +1,48 @@
 import React from 'react'
 
-import { Row, Col, Form }            from 'antd'
-import { useIntl, FormattedMessage } from 'react-intl'
+import { Row, Col } from 'antd'
+import { useIntl }  from 'react-intl'
 
-import { StepsForm, useStepFormContext } from '@acx-ui/components'
+import { useStepFormContext } from '@acx-ui/components'
 
-import { mapping, steps }         from '../constants'
+import * as constants             from '../constants'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
 
-import { Priority } from './priority'
+import { IntentType, Priority } from './priority'
 
 export function Settings () {
   const { $t } = useIntl()
+  const title: React.ReactNode = $t(constants.steps.settings)
   const { form } = useStepFormContext<EnhancedRecommendation>()
-  const title: React.ReactNode = $t(steps.settings)
-  const intentType = Form.useWatch(Priority.fieldName, form)
+  const intentType = form.getFieldValue(Priority.fieldName)
 
-  console.log('intenttype', intentType)
+  return <Row gutter={20}>
+    <Col span={15}>
+      <UI.Wrapper>
+        <UI.Title>{title}</UI.Title>
+        <UI.Content>
+          {$t(constants.content.calendarText)}
+        </UI.Content>
+      </UI.Wrapper>
+    </Col>
 
-  const values = {
-    p: (text: string) => <UI.Para>{text}</UI.Para>,
-    b: (text: string) => <UI.Bold>{text}</UI.Bold>
-  }
-
-  return <>
-    <StepsForm.StepForm children={title} />
-    <Row gutter={20}>
-      <Col span={15}>
-        <UI.Wrapper>
-          <UI.Title>{title}</UI.Title>
-          <UI.Content>
-            <FormattedMessage {...mapping.calendarText} values={{ ...values }} />
-          </UI.Content>
-        </UI.Wrapper>
-      </Col>
-      <Col span={7} offset={2}>
-        <UI.Wrapper>
-          <UI.SideNote>
-            <UI.SideNoteHeader>
-              <UI.SideNoteTitle>
-                {$t({ defaultMessage: 'Side Notes' })}
-              </UI.SideNoteTitle>
-            </UI.SideNoteHeader>
-            {/* <UI.SideNoteSubtitle>
-              <FormattedMessage
-                {...(radio === 0
-                  ? mapping.clientDensity.title : mapping.clientThroughput.title)}
-                values={{ ...values }}
-              />
-            </UI.SideNoteSubtitle>
-            <UI.SideNoteContent>
-              <FormattedMessage
-                {...(radio === 0
-                  ? mapping.clientDensity.content : mapping.clientThroughput.content)}
-                values={{ ...values }}
-              />
-            </UI.SideNoteContent> */}
-          </UI.SideNote>
-        </UI.Wrapper>
-      </Col>
-    </Row>
-  </>
-
-
-
+    <Col span={7} offset={2}>
+      <UI.Wrapper>
+        <UI.SideNote>
+          <UI.SideNoteHeader>
+            <UI.SideNoteTitle>
+              {$t(constants.content.sideNotes.title)}
+            </UI.SideNoteTitle>
+          </UI.SideNoteHeader>
+          <UI.SideNoteSubtitle>
+            {$t(constants.content[intentType as IntentType]?.title)}
+          </UI.SideNoteSubtitle>
+          <UI.SideNoteContent>
+            {$t(constants.content[intentType as IntentType]?.content)}
+          </UI.SideNoteContent>
+        </UI.SideNote>
+      </UI.Wrapper>
+    </Col>
+  </Row>
 }

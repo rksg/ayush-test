@@ -7,14 +7,13 @@ import { PageHeader, StepsForm, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
 import { useParams }                     from '@acx-ui/react-router-dom'
 
-// import { statusTrailMsgs }                                           from './config'
-import { steps }                                                     from './constants'
-import { Introduction }                                              from './Form/introduction'
-import { Priority }                                                  from './Form/priority'
-import { Settings }                                                  from './Form/settings'
-import { Summary }                                                   from './Form/summary'
-import { useRecommendationCodeQuery, useRecommendationDetailsQuery } from './services'
-import * as UI                                                       from './styledComponents'
+import { steps }                                                           from './constants'
+import { Introduction }                                                    from './Form/introduction'
+import { Priority }                                                        from './Form/priority'
+import { Settings }                                                        from './Form/settings'
+import { Summary }                                                         from './Form/summary'
+import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery } from './services'
+import * as UI                                                             from './styledComponents'
 
 export function IntentAIDrivenRRM () {
   const { $t } = useIntl()
@@ -25,14 +24,14 @@ export function IntentAIDrivenRRM () {
     useIsSplitOn(Features.CRRM_PARTIAL)
   ].some(Boolean)
   const codeQuery = useRecommendationCodeQuery({ id }, { skip: !Boolean(id) })
-  const detailsQuery = useRecommendationDetailsQuery(
+  const detailsQuery = useConfigRecommendationDetailsQuery(
     { ...codeQuery.data!, isCrrmPartialEnabled },
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!
 
   return (
-    <Loader states={[detailsQuery]}>
+    <Loader states={[codeQuery, detailsQuery]}>
       <PageHeader
         title={<UI.Header>
           <UI.AIDrivenRRMIcon />
