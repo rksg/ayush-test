@@ -469,7 +469,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
           direction='vertical'
           style={{ width: '100%' }}>
           <Radio value='auto'>Auto generated</Radio>
-          <Radio value='manual' style={{ width: '100%' }}>
+          <Radio value='manual' style={{ width: '100%' }} data-testid='manual-radio'>
             <Row>
               <Col span={3}>
                 Manual
@@ -498,7 +498,7 @@ export function GuestFields ({ withBasicFields = true }: { withBasicFields?: boo
                         }
                       } }
                     ]}
-                    children={<PasswordInput />}
+                    children={<PasswordInput data-testid='manual-password-input' />}
                   />
                 ) : <></> }
               </Col>

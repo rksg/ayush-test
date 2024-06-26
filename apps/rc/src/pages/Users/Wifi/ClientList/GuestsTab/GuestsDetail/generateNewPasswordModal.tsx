@@ -18,7 +18,7 @@ import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import {
   useGenerateGuestPasswordMutation,
-  useValidateGuestPasswordMutation
+  useEnableGuestsMutation
 } from '@acx-ui/rc/services'
 import {
   getGuestDictionaryByLangCode,
@@ -60,10 +60,19 @@ export function GenerateNewPasswordModal (props: {
 
   const saveModal = (async () => {
     try {
-      const payload = {
-        action: 'regeneratePassword',
+
+      const result = await form.validateFields()
+      if (result?.errorFields?.length > 0) return
+
+      let payload = {
         deliveryMethods: form.getFieldValue('outputInterface')
       }
+
+      const password = form.getFieldValue('password')
+      if(password && password.length > 6 && password.length < 16){
+        payload = Object.assign({}, payload, { password: password })
+      }
+
       const params = {
         tenantId: props.tenantId,
         guestId: props.guestDetail.id,
@@ -73,8 +82,11 @@ export function GenerateNewPasswordModal (props: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .then((data: any) => {
           handleGuestPassResponse(data.response)
+          setGuestPasswordOption('auto')
+          form.resetFields()
           closeModal()
         })
+
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -150,7 +162,7 @@ export function GenerateNewPasswordModal (props: {
   const hasEmailAddress = Boolean(props.guestDetail.emailAddress)
   const hasMobilePhoneNumber = Boolean(props.guestDetail.mobilePhoneNumber)
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
-  const [ validateGuestPassword ] = useValidateGuestPasswordMutation()
+  const [ validateGuestPassword ] = useEnableGuestsMutation()
   const [guestPasswordOption, setGuestPasswordOption] = useState('auto')
   const guestPasswordOptionChange = (event: RadioChangeEvent) => {
     setGuestPasswordOption(event.target.value)
@@ -186,7 +198,7 @@ export function GenerateNewPasswordModal (props: {
             direction='vertical'
             style={{ width: '100%' }}>
             <Radio value='auto'>Auto generated</Radio>
-            <Radio value='manual' style={{ width: '100%' }}>
+            <Radio value='manual' style={{ width: '100%' }} data-testid='manual-radio'>
               <Row>
                 <Col span={3}>
                 Manual
@@ -209,7 +221,8 @@ export function GenerateNewPasswordModal (props: {
                             try{
                               await validateGuestPassword({ params:
                                 { ...params,
-                                  networkId: props.guestDetail.wifiNetworkId
+                                  networkId: props.guestDetail.wifiNetworkId,
+                                  guestId: props.guestDetail.id
                                 }, payload }).unwrap()
                             } catch(e) {
                               // eslint-disable-next-line max-len
@@ -220,7 +233,7 @@ export function GenerateNewPasswordModal (props: {
                           }
                         } }
                       ]}
-                      children={<PasswordInput />}
+                      children={<PasswordInput data-testid='manual-password-input' />}
                     />
                   ) : <></> }
                 </Col>
