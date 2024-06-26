@@ -1,7 +1,19 @@
+import { BaseQueryApi } from '@reduxjs/toolkit/query'
+
 import { ApiVersionEnum, GetApiVersionHeader } from '@acx-ui/rc/utils'
 
-import { executeAddRoguePolicy, executeGetVenueRoguePolicy, executeUpdateRoguePolicy, executeUpdateVenueRoguePolicy } from './rogueAp'
+import { addRoguePolicyFn, getVenueRoguePolicyFn, updateRoguePolicyFn, updateVenueRoguePolicyFn } from './rogueAp'
 
+/* eslint-disable max-len */
+const mockQueryApi: BaseQueryApi = {
+  dispatch: jest.fn(),
+  getState: jest.fn(),
+  abort: jest.fn(),
+  extra: {},
+  signal: new AbortController().signal,
+  endpoint: '',
+  type: 'query'
+}
 const mockedCreateHttpRequest = jest.fn()
 const mockedBatchApi = jest.fn()
 jest.mock('@acx-ui/utils', () => ({
@@ -21,12 +33,11 @@ describe('rogueAp.utils', () => {
     const mockProps = {
       queryArgs: {
         params: {},
-        // eslint-disable-next-line max-len
         payload: { id: undefined, name: 'name', description: 'desc', rules: [], venues: [], oldVenues: [], defaultPolicyId: 'defaultID' },
         enableRbac: true
       },
       apiInfo: { url: '/api/regular', method: 'get' },
-      rbacApiInfo: { url: '/api/rbac', method: 'get' },
+      rbacApiInfo: { url: '/roguePolicies', method: 'post', newApi: true },
       rbacApiVersionKey: ApiVersionEnum.v1,
       activateRoguePolicyApiInfo: { url: '/api/activate', method: 'put' },
       fetchWithBQ: jest.fn()
@@ -35,25 +46,22 @@ describe('rogueAp.utils', () => {
     it('should return error when fetchWithBQ fails', async () => {
       mockProps.fetchWithBQ.mockResolvedValueOnce({ error: 'error' })
 
-      const result = await executeAddRoguePolicy(mockProps)
-      // eslint-disable-next-line max-len
+      const result = await addRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(mockedCreateHttpRequest).toHaveBeenCalledWith(mockProps.rbacApiInfo, mockProps.queryArgs.params, GetApiVersionHeader(mockProps.rbacApiVersionKey))
       expect(result).toEqual({ error: 'error' })
     })
 
     it('should call batchApi with correct parameters when enableRbac is true', async () => {
       mockProps.fetchWithBQ.mockResolvedValueOnce({ data: { response: { id: '987654321' } } })
-      const result = await executeAddRoguePolicy(mockProps)
+      const result = await addRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(mockedBatchApi).toHaveBeenCalled()
       expect(result).toEqual({ data: { response: { id: '987654321' } } })
     })
 
     it('should return correct response when enableRbac is false', async () => {
-      // eslint-disable-next-line max-len
       const mockNonRbacProps = { ...mockProps, queryArgs: { ...mockProps.queryArgs, enableRbac: false } }
-      // eslint-disable-next-line max-len
       mockNonRbacProps.fetchWithBQ.mockResolvedValueOnce({ data: { response: { id: '987654321' } } })
-      const result = await executeAddRoguePolicy(mockNonRbacProps)
+      const result = await addRoguePolicyFn()(mockNonRbacProps.queryArgs, mockQueryApi, {}, mockNonRbacProps.fetchWithBQ)
       expect(mockedBatchApi).not.toHaveBeenCalled()
       expect(result).toEqual({ data: { response: { id: '987654321' } } })
     })
@@ -80,7 +88,7 @@ describe('rogueAp.utils', () => {
     it('should return error when fetchWithBQ fails', async () => {
       mockProps.fetchWithBQ.mockResolvedValueOnce({ error: 'error' })
 
-      const result = await executeUpdateRoguePolicy(mockProps)
+      const result = await updateRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(result).toEqual({ error: 'error' })
     })
 
@@ -88,7 +96,7 @@ describe('rogueAp.utils', () => {
       mockProps.fetchWithBQ.mockResolvedValueOnce({ data: {} })
       mockedBatchApi.mockResolvedValue({})
 
-      const result = await executeUpdateRoguePolicy(mockProps)
+      const result = await updateRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(mockedBatchApi).toHaveBeenCalledTimes(2)
       expect(result).toEqual({ data: {} })
     })
@@ -107,14 +115,14 @@ describe('rogueAp.utils', () => {
     it('should return error when fetchWithBQ fails', async () => {
       mockProps.fetchWithBQ.mockRejectedValueOnce({ error: 'error' })
 
-      const result = await executeGetVenueRoguePolicy(mockProps)
+      const result = await getVenueRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(result).toEqual({ error: { error: 'error' } })
     })
 
     it('should return correcr response when enableRbac is true', async () => {
       // eslint-disable-next-line max-len
       mockProps.fetchWithBQ.mockResolvedValue({ data: { totalCount: 0, data: [], reportThreshold: 100 } })
-      const result = await executeGetVenueRoguePolicy(mockProps)
+      const result = await getVenueRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(mockProps.fetchWithBQ).toHaveBeenCalledTimes(2)
       expect(result).toEqual({
         data: {
@@ -126,10 +134,9 @@ describe('rogueAp.utils', () => {
     })
 
     it('should return correct response when enableRbac is false', async () => {
-      // eslint-disable-next-line max-len
       const mockNonRbacProps = { ...mockProps, queryArgs: { ...mockProps.queryArgs, enableRbac: false } }
       mockNonRbacProps.fetchWithBQ.mockResolvedValueOnce({ data: {} })
-      const result = await executeGetVenueRoguePolicy(mockNonRbacProps)
+      const result = await getVenueRoguePolicyFn()(mockNonRbacProps.queryArgs, mockQueryApi, {}, mockNonRbacProps.fetchWithBQ)
       expect(mockNonRbacProps.fetchWithBQ).toHaveBeenCalled()
       expect(result).toEqual({ data: {} })
     })
@@ -148,25 +155,21 @@ describe('rogueAp.utils', () => {
         },
         enableRbac: true
       },
-      apiInfo: { url: '/api/regular', method: 'get' },
-      rbacApiInfo: { url: '/api/rbac', method: 'get' },
-      rbacApiVersionKey: ApiVersionEnum.v1,
-      activateRoguePolicy: { url: '/api/activate', method: 'put' },
-      deactivateRoguePolicy: { url: '/api/deactivate', method: 'delete' },
+      _queryApi: mockQueryApi,
+      _extraOptions: {},
       fetchWithBQ: jest.fn()
     }
 
     it('should return error when fetchWithBQ fails', async () => {
       mockProps.fetchWithBQ.mockRejectedValueOnce({ error: 'error' })
 
-      const result = await executeUpdateVenueRoguePolicy(mockProps)
+      const result = await updateVenueRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(result).toEqual({ error: { error: 'error' } })
     })
 
-    // eslint-disable-next-line max-len
     it('should return correct response when both enable Rogue AP and enableRbac is true', async () => {
       mockProps.fetchWithBQ.mockResolvedValue({})
-      const result = await executeUpdateVenueRoguePolicy(mockProps)
+      const result = await updateVenueRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
       expect(mockProps.fetchWithBQ).toHaveBeenCalledTimes(2)
       const { enabled, reportThreshold, roguePolicyId } = mockProps.queryArgs.payload
       expect(result).toEqual({
@@ -174,20 +177,17 @@ describe('rogueAp.utils', () => {
       })
     })
 
-    // eslint-disable-next-line max-len
     it('should return correct response when enable Rogue AP is false and enableRbac is true', async () => {
-      // eslint-disable-next-line max-len
       const newMockProps = { ...mockProps, queryArgs: { ...mockProps.queryArgs, payload: { ...mockProps.queryArgs.payload, enabled: false } } }
       newMockProps.fetchWithBQ.mockResolvedValue({})
-      await executeUpdateVenueRoguePolicy(newMockProps)
+      await updateVenueRoguePolicyFn()(newMockProps.queryArgs, mockQueryApi, {}, newMockProps.fetchWithBQ)
       expect(newMockProps.fetchWithBQ).toHaveBeenCalledTimes(1)
     })
 
     it('should return correct response when enableRbac is false', async () => {
-      // eslint-disable-next-line max-len
       const newMockProps = { ...mockProps, queryArgs: { ...mockProps.queryArgs, enableRbac: false } }
       newMockProps.fetchWithBQ.mockResolvedValue({ data: {} })
-      const result = await executeUpdateVenueRoguePolicy(newMockProps)
+      const result = await updateVenueRoguePolicyFn()(newMockProps.queryArgs, mockQueryApi, {}, newMockProps.fetchWithBQ)
       expect(result).toEqual({ data: {} })
     })
   })

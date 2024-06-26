@@ -34,9 +34,9 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { executeAddRoguePolicy, commonQueryFn, executeUpdateRoguePolicy, executeGetVenueRoguePolicy, executeUpdateVenueRoguePolicy } from '../servicePolicy.utils'
+import { addRoguePolicyFn, commonQueryFn, updateRoguePolicyFn, getVenueRoguePolicyFn, updateVenueRoguePolicyFn } from '../servicePolicy.utils'
 
-import { configTemplateApi }              from './common'
+import { configTemplateApi }             from './common'
 import {
   AccessControlTemplateUseCases, ApplicationTemplateUseCases,
   DeviceTemplateUseCases, L2AclTemplateUseCases, L3AclTemplateUseCases,
@@ -318,16 +318,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
     }),
     addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeAddRoguePolicy({
-          queryArgs,
-          apiInfo: PoliciesConfigTemplateUrlsInfo.addRoguePolicy,
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.addRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          activateRoguePolicyApiInfo: PoliciesConfigTemplateUrlsInfo.activateRoguePolicy
-        })
-      },
+      queryFn: addRoguePolicyFn(true),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getRoguePolicyTemplate: build.query<RogueAPDetectionContextType, RequestPayload>({
@@ -362,16 +353,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     updateRoguePolicyTemplate: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeUpdateRoguePolicy<RogueAPDetectionTempType>({
-          queryArgs,
-          apiInfo: PoliciesConfigTemplateUrlsInfo.updateRoguePolicy,
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.updateRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          activateRoguePolicyApiInfo: PoliciesConfigTemplateUrlsInfo.activateRoguePolicy
-        })
-      },
+      queryFn: updateRoguePolicyFn(true),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     delRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -401,16 +383,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     getVenueRogueApTemplate: build.query<VenueRogueAp, RequestPayload>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeGetVenueRoguePolicy({
-          queryArgs,
-          apiInfo: PoliciesConfigTemplateUrlsInfo.getVenueRogueAp,
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.getVenueRogueApRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          roguePolicyListRbacApiInfo: PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac
-        })
-      },
+      queryFn: getVenueRoguePolicyFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -426,17 +399,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     updateVenueRogueApTemplate: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeUpdateVenueRoguePolicy({
-          queryArgs,
-          apiInfo: PoliciesConfigTemplateUrlsInfo.updateVenueRogueAp,
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.updateVenueRogueApRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          activateRoguePolicy: PoliciesConfigTemplateUrlsInfo.activateRoguePolicy,
-          deactivateRoguePolicy: PoliciesConfigTemplateUrlsInfo.deactivateRoguePolicy
-        })
-      },
+      queryFn: updateVenueRoguePolicyFn(true),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'LIST' }]
     })
   })

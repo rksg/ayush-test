@@ -91,7 +91,6 @@ import {
   ApiVersionEnum,
   Mesh,
   ApGroupConfigTemplateUrlsInfo,
-  RogueApUrls,
   RogueApSettingsRequest,
   WifiDHCPClientLeases,
   WifiDhcpPoolUsages,
@@ -103,8 +102,8 @@ import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { executeGetVenueRoguePolicy, executeUpdateVenueRoguePolicy } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                         from './utils'
+import { getVenueRoguePolicyFn, updateVenueRoguePolicyFn } from './servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess }               from './utils'
 
 const customHeaders = {
   v1: {
@@ -1083,16 +1082,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     getVenueRogueAp: build.query<VenueRogueAp, RequestPayload>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeGetVenueRoguePolicy({
-          queryArgs,
-          apiInfo: CommonUrlsInfo.getVenueRogueAp,
-          rbacApiInfo: CommonRbacUrlsInfo.getVenueRogueAp,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          roguePolicyListRbacApiInfo: RogueApUrls.getRoguePolicyListRbac
-        })
-      },
+      queryFn: getVenueRoguePolicyFn(),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -1127,17 +1117,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeUpdateVenueRoguePolicy({
-          queryArgs,
-          apiInfo: CommonUrlsInfo.updateVenueRogueAp,
-          rbacApiInfo: CommonRbacUrlsInfo.updateVenueRogueAp,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          activateRoguePolicy: RogueApUrls.activateRoguePolicy,
-          deactivateRoguePolicy: RogueApUrls.deactivateRoguePolicy
-        })
-      },
+      queryFn: updateVenueRoguePolicyFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     getRoguePolicies: build.query<RogueClassificationPolicy[], RequestPayload>({

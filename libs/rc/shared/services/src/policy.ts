@@ -67,7 +67,7 @@ import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, executeAddRoguePolicy, executeUpdateRoguePolicy } from './servicePolicy.utils'
+import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, addRoguePolicyFn, updateRoguePolicyFn } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -139,16 +139,7 @@ const defaultCertTempVersioningHeaders = {
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeAddRoguePolicy({
-          queryArgs,
-          apiInfo: RogueApUrls.addRoguePolicy,
-          rbacApiInfo: RogueApUrls.addRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          activateRoguePolicyApiInfo: RogueApUrls.activateRoguePolicy
-        })
-      },
+      queryFn: addRoguePolicyFn(),
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
@@ -652,16 +643,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
-      queryFn: async (queryArgs, _queryApi, _extraOptions, fetchWithBQ) => {
-        return executeUpdateRoguePolicy<RogueAPDetectionTempType>({
-          queryArgs,
-          apiInfo: RogueApUrls.updateRoguePolicy,
-          rbacApiInfo: RogueApUrls.updateRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          fetchWithBQ,
-          activateRoguePolicyApiInfo: RogueApUrls.activateRoguePolicy
-        })
-      },
+      queryFn: updateRoguePolicyFn(),
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
