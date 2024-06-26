@@ -101,7 +101,7 @@ export const RangePicker = ({
     (current: Moment) => (
       (boundary === 'start' && current.isAfter(range.startDate?.clone().add(3, 'months'))) ||
       (boundary === 'end' && current.isBefore(range.endDate?.clone().subtract(3, 'months'))) ||
-      !current.isBetween(allowedDateRange[0], allowedDateRange[1])
+      !current.isBetween(allowedDateRange[0], allowedDateRange[1], null, '[]')
     ),
     [allowedDateRange, boundary, range.endDate, range.startDate]
   )
