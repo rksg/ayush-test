@@ -5,9 +5,10 @@ import { Graph, deriveInterfering } from '@acx-ui/components'
 import { BandEnum }                 from '@acx-ui/components'
 
 import { CompareSlider, CompareSliderProps } from '..'
+import { sample }                            from '../__tests__/fixtures'
 
 import { ComponentOne, ComponentTwo } from './CustomComponents'
-import { sample }                     from './mockData'
+
 
 const story = {
   title: 'CompareSlider',
