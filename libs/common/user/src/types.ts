@@ -200,7 +200,10 @@ export enum raiPermissionsList {
   'READ_WEBHOOKS',
   'WRITE_WEBHOOKS',
 
-  'READ_BRAND360'
+  'READ_BRAND360',
+
+  'READ_INTENT_AI',
+  'WRITE_INTENT_AI'
 }
 export type RaiPermission = keyof typeof raiPermissionsList
 export type RaiPermissions = Record<RaiPermission, boolean>
