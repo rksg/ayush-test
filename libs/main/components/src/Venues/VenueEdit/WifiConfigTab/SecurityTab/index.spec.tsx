@@ -274,7 +274,6 @@ describe('SecurityTab', () => {
   // eslint-disable-next-line max-len
   it('should render correctly with RogueApProfile settings with RBAC_CONFIG_TEMPLATE_TOGGLE turned on', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-    // mockedUseConfigTemplate.mockReturnValue({ isTemplate: false })
 
     const mockGetRoguePolicyTemplate = jest.fn()
     mockServer.use(
