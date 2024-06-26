@@ -13,12 +13,12 @@ import {
 import moment, { LocaleSpecifier } from 'moment-timezone'
 import { useParams }               from 'react-router-dom'
 
-import { cssStr, Modal, PasswordInput } from '@acx-ui/components'
-import { Features, useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
+import { cssStr, Modal, PasswordInput }       from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }          from '@acx-ui/formatter'
 import {
   useGenerateGuestPasswordMutation,
-  useEnableGuestsMutation
+  useValidateGuestPasswordByGuestIdMutation
 } from '@acx-ui/rc/services'
 import {
   getGuestDictionaryByLangCode,
@@ -162,7 +162,7 @@ export function GenerateNewPasswordModal (props: {
   const hasEmailAddress = Boolean(props.guestDetail.emailAddress)
   const hasMobilePhoneNumber = Boolean(props.guestDetail.mobilePhoneNumber)
   const isGuestManualPasswordEnabled = useIsSplitOn(Features.GUEST_MANUAL_PASSWORD_TOGGLE)
-  const [ validateGuestPassword ] = useEnableGuestsMutation()
+  const [ validateGuestPassword ] = useValidateGuestPasswordByGuestIdMutation()
   const [guestPasswordOption, setGuestPasswordOption] = useState('auto')
   const guestPasswordOptionChange = (event: RadioChangeEvent) => {
     setGuestPasswordOption(event.target.value)
@@ -197,7 +197,7 @@ export function GenerateNewPasswordModal (props: {
           <FullWidthSpace
             direction='vertical'
             style={{ width: '100%' }}>
-            <Radio value='auto'>Auto generated</Radio>
+            <Radio value='auto' data-testid='auto-radio'>Auto generated</Radio>
             <Radio value='manual' style={{ width: '100%' }} data-testid='manual-radio'>
               <Row>
                 <Col span={3}>
