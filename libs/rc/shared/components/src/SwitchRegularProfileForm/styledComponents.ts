@@ -13,8 +13,8 @@ export const Hint = styled.span`
   line-height: var(--acx-body-4-line-height);
   align-items: center;
   svg {
-    height: 18px;
-    width: 18px;
+    height: 16px;
+    width: 16px;
     margin-left: 3px;
     color: var(--acx-primary-white);
     path {

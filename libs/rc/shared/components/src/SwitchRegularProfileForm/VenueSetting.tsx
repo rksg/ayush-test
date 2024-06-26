@@ -186,7 +186,7 @@ export function VenueSetting () {
           <StepsFormLegacy.Title children={$t({ defaultMessage: '<VenuePlural></VenuePlural>' })} />
           {
             profileOnboardOnlyEnabled &&
-              <Form.Item>
+              <Form.Item style={{ marginBottom: '0px' }}>
                 <Form.Item
                   noStyle
                   name='applyOnboardOnly'

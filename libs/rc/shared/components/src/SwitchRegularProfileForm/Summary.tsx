@@ -4,10 +4,10 @@ import { Row, Col, Form } from 'antd'
 import { useIntl }        from 'react-intl'
 
 
-import { StepsFormLegacy }                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { useGetVenuesTemplateListQuery, useVenuesListQuery }    from '@acx-ui/rc/services'
-import { TableResult, Venue, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { StepsFormLegacy }                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { useGetVenuesTemplateListQuery, useVenuesListQuery }                           from '@acx-ui/rc/services'
+import { TableResult, Venue, transformDisplayOnOff, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 
@@ -70,9 +70,7 @@ export function Summary () {
           profileOnboardOnlyEnabled &&
           <Form.Item
             label={$t({ defaultMessage: 'Apply profile updates to existing switches:' })}
-            children={currentData.applyOnboardOnly
-              ? $t({ defaultMessage: 'ON' })
-              : $t({ defaultMessage: 'OFF' })}
+            children={transformDisplayOnOff(currentData.applyOnboardOnly || false)}
           />
         }
         <Form.Item
