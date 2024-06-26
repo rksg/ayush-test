@@ -170,7 +170,7 @@ export function VenueFirmwareList () {
       filterKey: 'includeExpired',
       render: function (_, row) {
 
-        let versionValue = ''
+        let versionValue = []
 
         for (const key in SwitchFirmwareModelGroup) {
           const modelGroupValue =
@@ -179,12 +179,21 @@ export function VenueFirmwareList () {
             (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
 
           if (versionGroup) {
-            versionValue += modelGroupDisplayText[modelGroupValue] +
-              parseSwitchVersion(versionGroup.version) + ';'
+            const modelGroupText = modelGroupDisplayText[modelGroupValue]
+            const switchVersion = parseSwitchVersion(versionGroup.version)
+            versionValue.push(
+              <span key={modelGroupValue}>
+                {modelGroupText} <b>{switchVersion}</b>;
+              </span>
+            )
           }
         }
 
-        return versionValue || noDataDisplay
+
+
+        return versionValue.length > 0 ? <Tooltip
+          title={<div>{versionValue}</div>}
+          placement='bottom' ><div>{versionValue}</div></Tooltip> : noDataDisplay
       }
     },
     {
