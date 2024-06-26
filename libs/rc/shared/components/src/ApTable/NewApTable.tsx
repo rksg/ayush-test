@@ -254,7 +254,8 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       title: $t({ defaultMessage: 'IP Address' }),
       dataIndex: 'networkStatus.ipAddress',
       searchable: searchable,
-      sorter: true
+      sorter: true,
+      render: (_, { networkStatus }) => (networkStatus?.ipAddress)
     }, {
       key: 'macAddress',
       title: $t({ defaultMessage: 'MAC Address' }),
