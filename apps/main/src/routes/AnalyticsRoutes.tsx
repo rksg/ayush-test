@@ -43,6 +43,10 @@ export default function AnalyticsRoutes () {
         element={<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />}
       />
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
+      <Route path='analytics/intentAI'>
+        <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
+        <Route index={false} path=':intentId' element={<></>} />
+      </Route>
       <Route path='analytics/health' element={HealthComponent} />
       <Route path='analytics/health/:activeSubTab' element={HealthComponent}>
         <Route path='tab/:categoryTab' element={HealthComponent} />
