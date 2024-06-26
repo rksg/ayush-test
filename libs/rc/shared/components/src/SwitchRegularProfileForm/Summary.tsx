@@ -5,6 +5,7 @@ import { useIntl }        from 'react-intl'
 
 
 import { StepsFormLegacy }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
 import { useGetVenuesTemplateListQuery, useVenuesListQuery }    from '@acx-ui/rc/services'
 import { TableResult, Venue, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 
@@ -21,6 +22,8 @@ const defaultPayload = {
 }
 
 export function Summary () {
+  const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
+
   const { $t } = useIntl()
   const { currentData } = useContext(ConfigurationProfileFormContext)
 
@@ -63,6 +66,15 @@ export function Summary () {
           label={$t({ defaultMessage: 'Description:' })}
           children={currentData.description || $t({ defaultMessage: 'None' })}
         />
+        {
+          profileOnboardOnlyEnabled &&
+          <Form.Item
+            label={$t({ defaultMessage: 'Apply profile updates to existing switches:' })}
+            children={currentData.applyOnboardOnly
+              ? $t({ defaultMessage: 'ON' })
+              : $t({ defaultMessage: 'OFF' })}
+          />
+        }
         <Form.Item
           label={$t({ defaultMessage: 'VLANs:' })}
           children={(currentData.vlans && currentData.vlans.length > 0 &&
