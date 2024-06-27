@@ -3,11 +3,17 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                            from '@acx-ui/feature-toggle'
-import { policyApi }                                                         from '@acx-ui/rc/services'
-import { RogueAPDetectionContextType, RogueApUrls, RogueAPRule, RogueVenue } from '@acx-ui/rc/utils'
-import { Provider, store }                                                   from '@acx-ui/store'
-import { act, mockServer, render, screen, within }                           from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { policyApi }                                      from '@acx-ui/rc/services'
+import {
+  RogueAPDetectionContextType,
+  RogueApUrls,
+  RogueAPRule,
+  RogueVenue,
+  PoliciesConfigTemplateUrlsInfo, ConfigTemplateContext
+} from '@acx-ui/rc/utils'
+import { Provider, store }                         from '@acx-ui/store'
+import { act, mockServer, render, screen, within } from '@acx-ui/test-utils'
 
 import { detailContent, mockedRogueApPolicyRbac } from '../__tests__/fixtures'
 import RogueAPDetectionContext                    from '../RogueAPDetectionContext'
@@ -220,4 +226,45 @@ describe('RuleTable', () => {
       name: /category/i
     })).toBeTruthy()
   })
+
+  // eslint-disable-next-line max-len
+  it('should render RuleTable successfully with RBAC_CONFIG_TEMPLATE_TOGGLE turned on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+
+    mockServer.use(
+      rest.get(PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac.url,
+        (_, res, ctx) => res(ctx.json(mockedRogueApPolicyRbac))
+      ))
+
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <RogueAPDetectionContext.Provider value={{
+          state: initState,
+          dispatch: setRogueAPConfigure
+        }}>
+          <RuleTable edit={false}/>
+        </RogueAPDetectionContext.Provider>
+      </ConfigTemplateContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    expect(screen.getByRole('columnheader', {
+      name: /priority/i
+    })).toBeTruthy()
+    expect(screen.getByRole('columnheader', {
+      name: /rule name/i
+    })).toBeTruthy()
+    expect(screen.getByRole('columnheader', {
+      name: /rule type/i
+    })).toBeTruthy()
+    expect(screen.getByRole('columnheader', {
+      name: /category/i
+    })).toBeTruthy()
+  })
+
 })
