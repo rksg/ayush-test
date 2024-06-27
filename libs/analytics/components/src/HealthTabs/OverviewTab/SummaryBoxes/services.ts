@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
-import { getFilterPayload, incidentsToggle } from '@acx-ui/analytics/utils'
-import { dataApi }                           from '@acx-ui/store'
-import type { NodesFilter }                  from '@acx-ui/utils'
+import { getFilterPayload, wiredIncidentCodes, wirelessIncidentCodes } from '@acx-ui/analytics/utils'
+import { dataApi }                                                     from '@acx-ui/store'
+import type { NodesFilter }                                            from '@acx-ui/utils'
 
 
 export interface RequestPayload {
@@ -38,8 +38,7 @@ export interface SwitchCount {
 const wirelessFields = `
   apIncidentCount: incidentCount(
     filter: {
-      code: $code
-      type: "apMac"
+      code: $wirelessIncidentCodes
   })
   avgPerAPClientCount
   apTotalTraffic: userTraffic
@@ -50,8 +49,7 @@ const wirelessFields = `
 const wiredFields = `
   switchIncidentCount: incidentCount(
     filter: {
-      code: $code
-      type: "switchId"
+      code: $wiredIncidentCodes
   }),
   timeSeries(granularity: "all") {
     switchTotalTraffic
@@ -66,7 +64,7 @@ export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
     summaryData: build.query<SummaryResult, RequestPayload>({
       query: payload => {
-        const { wirelessOnly = false } = payload
+        const { wirelessOnly = false, ...restPayload } = payload
         return ({
           document: gql`
           query SummaryQuery(
@@ -74,7 +72,8 @@ export const api = dataApi.injectEndpoints({
           $start: DateTime,
           $end: DateTime,
           $filter: FilterInput,
-          $code: [String]
+          ${!wirelessOnly ? '$wiredIncidentCodes: [String]' : ''}
+          $wirelessIncidentCodes: [String]
           $enableSwitchFirmwareFilter: Boolean
           ) {
             network(start: $start, end: $end, filter: $filter, 
@@ -86,9 +85,10 @@ export const api = dataApi.injectEndpoints({
             }
           }`,
           variables: {
-            ...payload,
-            ...getFilterPayload(payload),
-            code: incidentsToggle({}),
+            ...restPayload,
+            ...getFilterPayload(restPayload),
+            wiredIncidentCodes: !wirelessOnly ? wiredIncidentCodes : undefined,
+            wirelessIncidentCodes: wirelessIncidentCodes,
             enableSwitchFirmwareFilter: true
           }
         })
