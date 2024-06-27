@@ -20,7 +20,7 @@ import {
 import { useGetNotificationSmsQuery }     from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
-  GuestNetworkTypeEnum, NetworkTypeEnum
+  GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
 } from '@acx-ui/rc/utils'
 import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
@@ -97,10 +97,9 @@ export function SelfSignInForm () {
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const params = useParams()
-  const smsUsage = useGetNotificationSmsQuery({ params })
+  const smsUsage = useGetNotificationSmsQuery({ params }, {skip: !isSmsProviderEnabled})
   const isSMSTokenAvailable = isSmsProviderEnabled ?
-    !(smsUsage?.data?.provider?.length === 1 &&
-      smsUsage?.data?.provider?.includes('RUCKUS_ONE') &&
+    !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
      (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
     : true
 
