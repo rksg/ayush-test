@@ -98,7 +98,7 @@ export function SelfSignInForm () {
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
-  const isSMSTokenAvailable = isSmsProviderEnabled ?
+  const isSMSTokenAvailable = (!editMode && isSmsProviderEnabled) ?
     !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
      (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
     : true

@@ -123,8 +123,12 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
       return { data: mockNotificationSmsResponse }
     })
-    render(
-      <Provider>
+    render(<Provider>
+      <NetworkFormContext.Provider
+        value={{
+          editMode: false, cloneMode: false, data: selfsignData
+        }}
+      >
         <MLOContext.Provider value={{
           isDisableMLO: false,
           disableMLO: jest.fn()
@@ -135,7 +139,8 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
             </StepsFormLegacy.StepForm>
           </StepsFormLegacy>
         </MLOContext.Provider>
-      </Provider>, { route: { params } })
+      </NetworkFormContext.Provider>
+    </Provider>, { route: { params } })
     const formItem = screen.getByRole('checkbox', { name: 'SMS Token' })
     expect(formItem).toBeDisabled()
   })
