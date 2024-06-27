@@ -295,6 +295,11 @@ describe('SecurityTab', () => {
           return res(ctx.json(rogueApPolicyNotDefaultProfile))
         }),
       rest.get(
+        PoliciesConfigTemplateUrlsInfo.getVenueRogueApRbac.url,
+        (_, res, ctx) => {
+          return res(ctx.json(venueRogueAp))
+        }),
+      rest.get(
         VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection.url,
         (_, res, ctx) => res(ctx.json(venueDosProtection)))
     )
