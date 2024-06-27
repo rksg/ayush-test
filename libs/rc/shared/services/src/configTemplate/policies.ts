@@ -11,7 +11,8 @@ import {
   PoliciesConfigTemplateUrlsInfo,
   L2AclPolicy,
   L3AclPolicy,
-  ApplicationPolicy, TableResult,
+  ApplicationPolicy,
+  TableResult,
   VLANPoolPolicyType,
   VLANPoolVenues,
   SyslogContextType,
@@ -22,14 +23,20 @@ import {
   RogueAPDetectionContextType,
   EnhancedRoguePolicyType,
   RogueAPDetectionTempType,
-  VenueRoguePolicyType, VenueRogueAp,
+  VenueRoguePolicyType,
+  VenueRogueAp,
   VenueSyslogSettingType,
-  VLANPoolViewModelType
+  VLANPoolViewModelType,
+  ApiVersionEnum,
+  RoguePolicyRequest,
+  RogueApSettingsRequest
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { commonQueryFn, configTemplateApi } from './common'
+import { addRoguePolicyFn, commonQueryFn, updateRoguePolicyFn, getVenueRoguePolicyFn, updateVenueRoguePolicyFn } from '../servicePolicy.utils'
+
+import { configTemplateApi }             from './common'
 import {
   AccessControlTemplateUseCases, ApplicationTemplateUseCases,
   DeviceTemplateUseCases, L2AclTemplateUseCases, L3AclTemplateUseCases,
@@ -310,16 +317,28 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVenueSyslogSettings),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }]
     }),
-    addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.addRoguePolicy),
+    addRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
+      queryFn: addRoguePolicyFn(true),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getRoguePolicyTemplate: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getRoguePolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.getRoguePolicy,
+        {
+          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac,
+          rbacApiVersionKey: ApiVersionEnum.v1
+        }
+      ),
       providesTags: [{ type: 'RogueApTemplate', id: 'DETAIL' }]
     }),
     getRoguePolicyTemplateList: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList,
+        {
+          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac,
+          rbacApiVersionKey: ApiVersionEnum.v1
+        }
+      ),
       providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -332,20 +351,39 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    updateRoguePolicyTemplate: build.mutation<RogueAPDetectionTempType, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateRoguePolicy),
+    // eslint-disable-next-line max-len
+    updateRoguePolicyTemplate: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
+      queryFn: updateRoguePolicyFn(true),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     delRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy),
+      query: commonQueryFn(
+        PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy,
+        {
+          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.deleteRoguePolicyRbac,
+          rbacApiVersionKey: ApiVersionEnum.v1
+        }
+      ),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
-      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'ActivateRoguePolicyOnVenueTemplate',
+            'DeactivateRoguePolicyOnVenueTemplate'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            // eslint-disable-next-line max-len
+            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'LIST' }]))
+          })
+        })
+      },
+      providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }, { type: 'VenueTemplate', id: 'LIST' }]
     }),
     getVenueRogueApTemplate: build.query<VenueRogueAp, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getVenueRogueAp),
+      queryFn: getVenueRoguePolicyFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -359,8 +397,9 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         })
       }
     }),
-    updateVenueRogueApTemplate: build.mutation<VenueRogueAp, RequestPayload>({
-      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.updateVenueRogueAp),
+    // eslint-disable-next-line max-len
+    updateVenueRogueApTemplate: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
+      queryFn: updateVenueRoguePolicyFn(true),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'LIST' }]
     })
   })
