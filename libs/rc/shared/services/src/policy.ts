@@ -158,10 +158,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(
-        RogueApUrls.deleteRoguePolicy,
-        { rbacApiInfo: RogueApUrls.deleteRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
-      ),
+      query: commonQueryFn(RogueApUrls.deleteRoguePolicy, RogueApUrls.deleteRoguePolicyRbac),
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
@@ -650,10 +647,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: commonQueryFn(
-        RogueApUrls.getRoguePolicy,
-        { rbacApiInfo: RogueApUrls.getRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
-      ),
+      query: commonQueryFn(RogueApUrls.getRoguePolicy, RogueApUrls.getRoguePolicyRbac),
       providesTags: [{ type: 'RogueAp', id: 'DETAIL' }]
     }),
     // eslint-disable-next-line max-len
@@ -684,10 +678,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: commonQueryFn(
-        RogueApUrls.getEnhancedRoguePolicyList,
-        { rbacApiInfo: RogueApUrls.getRoguePolicyListRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
-      ),
+      query: commonQueryFn(RogueApUrls.getEnhancedRoguePolicyList, RogueApUrls.getRoguePolicyListRbac),
       providesTags: [{ type: 'RogueAp', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

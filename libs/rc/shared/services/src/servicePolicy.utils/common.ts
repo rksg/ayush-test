@@ -14,15 +14,11 @@ import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 // eslint-disable-next-line max-len
 export type QueryFn<ResultType, QueryArg = never> = ({ params, payload, enableRbac }: RequestPayload<QueryArg>, _queryApi: BaseQueryApi, _extraOptions: RetryOptions, fetchWithBQ: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>) => MaybePromise<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>
 
-export function commonQueryFn (
-  apiInfo: ApiInfo,
-  // eslint-disable-next-line max-len
-  restInfo?: { rbacApiInfo: ApiInfo, rbacApiVersionKey: ApiVersionEnum }
-) {
+export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo?: ApiInfo) {
   return (queryArgs: RequestPayload) => {
     return createFetchArgsBasedOnRbac({
       apiInfo,
-      ...(restInfo ?? {}),
+      rbacApiInfo,
       queryArgs
     })
   }

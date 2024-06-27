@@ -52,36 +52,57 @@ export const RogueApUrls: { [key: string]: ApiInfo } = {
   getRoguePolicyListRbac: {
     method: 'post',
     url: '/roguePolicies/query',
-    newApi: true
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addRoguePolicyRbac: {
     method: 'post',
     url: '/roguePolicies',
-    newApi: true
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getRoguePolicyRbac: {
     method: 'get',
     url: '/roguePolicies/:policyId',
-    newApi: true
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateRoguePolicyRbac: {
     method: 'put',
     url: '/roguePolicies/:policyId',
-    newApi: true
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteRoguePolicyRbac: {
     method: 'delete',
     url: '/roguePolicies/:policyId',
-    newApi: true
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateRoguePolicy: {
     method: 'put',
     url: '/venues/:venueId/roguePolicies/:policyId',
-    newApi: true
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateRoguePolicy: {
     method: 'delete',
     url: '/venues/:venueId/roguePolicies/:policyId',
-    newApi: true
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
