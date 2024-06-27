@@ -5,7 +5,7 @@ import { NodeProps } from 'reactflow'
 
 import { Plus } from '@acx-ui/icons'
 
-import { useWorkflowContext } from '../WorkflowPanel/WorkflowContextProvider'
+import { useWorkflowContext } from '../WorkflowContextProvider'
 
 import * as UI from './styledComponents'
 

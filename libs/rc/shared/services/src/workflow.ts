@@ -431,7 +431,7 @@ export const workflowApi = baseWorkflowApi.injectEndpoints({
         })
       }
     }),
-    patchAction: build.mutation<UnionAction, RequestPayload>({
+    patchAction: build.mutation<GenericActionData, RequestPayload>({
       query: ({ params, payload }) => {
         return {
           ...createHttpRequest(WorkflowUrls.patchAction, params),

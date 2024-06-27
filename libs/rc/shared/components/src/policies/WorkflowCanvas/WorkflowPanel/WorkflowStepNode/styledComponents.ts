@@ -145,18 +145,3 @@ export const PlusButton = styled.div`
     }
   }
 `
-
-export const Collapse = styled(AntCollapse)`
-  grid-area: 1 / 1 / 1 / 1;
-
-  .ant-collapse-item {
-    flex: 1;
-
-    > .ant-collapse-content > .ant-collapse-content-box {
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-      margin-top: 16px;
-    }
-  }
-`

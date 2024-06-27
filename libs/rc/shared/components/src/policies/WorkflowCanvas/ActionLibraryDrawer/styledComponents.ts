@@ -1,6 +1,8 @@
 import { Card as AntCard, Button as AntButton, Space as AntSpace } from 'antd'
 import styled                                                      from 'styled-components'
 
+import { Collapse as AntCollapse } from '@acx-ui/components'
+
 
 export const Card = styled(AntCard)<{ $disabled: boolean }>`
   height: 100%;
@@ -74,4 +76,19 @@ export const Button = styled(AntButton)`
   opacity: 0;
   width: fit-content;
   margin-top: auto;
+`
+
+export const Collapse = styled(AntCollapse)`
+  grid-area: 1 / 1 / 1 / 1;
+
+  .ant-collapse-item {
+    flex: 1;
+
+    > .ant-collapse-content > .ant-collapse-content-box {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin-top: 16px;
+    }
+  }
 `

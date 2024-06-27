@@ -11,8 +11,8 @@ import { useDeleteWorkflowStepByIdMutation }                                    
 import { ActionType }                                                                            from '@acx-ui/rc/utils'
 
 
-import { ActionPreviewDrawer } from '../ActionPreviewDrawer'
-import { useWorkflowContext }  from '../WorkflowPanel/WorkflowContextProvider'
+import { ActionPreviewDrawer } from '../../ActionPreviewDrawer'
+import { useWorkflowContext }  from '../WorkflowContextProvider'
 
 import * as UI from './styledComponents'
 

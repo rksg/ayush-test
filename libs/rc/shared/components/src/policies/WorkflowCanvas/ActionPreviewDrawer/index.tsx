@@ -4,7 +4,7 @@ import { Drawer, DrawerTypes, Loader } from '@acx-ui/components'
 import { useGetActionByIdQuery }       from '@acx-ui/rc/services'
 import { ActionType, ActionTypeTitle } from '@acx-ui/rc/utils'
 
-import { AupPreview } from '../WorkflowActionPreview/AupPreview'
+import { AupPreview } from './WorkflowActionPreview'
 
 const previewMap = {
   [ActionType.AUP]: AupPreview,

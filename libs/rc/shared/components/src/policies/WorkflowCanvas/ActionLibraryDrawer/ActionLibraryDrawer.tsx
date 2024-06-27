@@ -7,9 +7,9 @@ import { ActionType }                                 from '@acx-ui/rc/utils'
 
 
 import { RequiredDependency } from '../WorkflowPanel'
-import * as UI                from '../WorkflowStepNode/styledComponents'
 
 import ActionCard from './ActionCard'
+import * as UI    from './styledComponents'
 
 const { Panel } = Collapse
 

@@ -2,7 +2,6 @@
 import { RcFile } from 'antd/lib/upload'
 
 // Mapping the enum based on enrollment-actions definitions:
-//  - Code: https://bitbucket.rks-cloud.com/projects/RKSCLOUD/repos/workflow-actions/browse/workflow-action-common/src/main/java/com/ruckus/cloud/workflow/action/workflow/payload/ActionDto.java#21
 //  - HLD: https://jira-wiki.ruckuswireless.com/pages/viewpage.action?pageId=345069328#EnrollmentActionHLD(UNDERCONSTRUCTION)-Respondtoenrollmentstepexecutionevents:~:text=developed%20in%20phases.-,Terminology,-Action%20Template
 export enum ActionType {
   AUP = 'AUP',
@@ -10,19 +9,8 @@ export enum ActionType {
   DISPLAY_MESSAGE = 'DISPLAY_MESSAGE'
 }
 
-export interface WorkflowAction {
-  id: string,
-  name: string
-
-  // TODO: confusing between the `id` and `actionId`
-  actionId: string
-  actionType: ActionType,
-  version: number
-}
-
 export interface ActionBase {
   id: string,
-  // actionId: string,  // Replace as id?!
   name: string,
   description: string,
   actionType: ActionType,
@@ -90,16 +78,13 @@ export interface DisplayMessageActionContext {
   continueButtonText: string
 }
 
-export type AupAction = ActionBase & AupActionContext
-export type DpskAction = ActionBase & DpskActionContext
+export type AupAction = ActionBase & AupActionFormContext
 export type DataPromptAction = ActionBase & DataPromptActionContext
-export type UserSelectionAction = ActionBase & UserSelectionSplitContext
 export type DisplayMessageAction = ActionBase & DisplayMessageActionContext
 
 export type GenericActionData =
   ActionBase &
   AupActionFormContext &
   DataPromptActionContext &
-  UserSelectionAction &
-  DisplayMessageAction
+  DisplayMessageActionContext
 

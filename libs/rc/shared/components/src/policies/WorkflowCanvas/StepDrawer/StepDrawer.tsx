@@ -9,13 +9,13 @@ import { EyeOpenSolid }                                                         
 import {  useLazyGetActionByIdQuery }                                                                        from '@acx-ui/rc/services'
 import { ActionType, ActionTypeTitle, GenericActionData, WorkflowActionDef, useGetActionDefaultValueByType } from '@acx-ui/rc/utils'
 
+import { useWorkflowStepActions } from './useWorkflowStepAction'
 import {
   AupSettings,
   DataPromptSettings,
   DisplayMessageSetting
-} from '../WorkflowActionSettingForm'
+} from './WorkflowActionSettingForm'
 
-import { useWorkflowStepActions } from './useWorkflowStepAction'
 
 
 export interface StepDrawerProps {
@@ -104,7 +104,7 @@ export default function StepDrawer (props: StepDrawerProps) {
             { isLoading: isActionLoading, isFetching: isActionFetching }
           ]}
         >
-          <Form
+          <Form<GenericActionData>
             disabled={isActionError}
             preserve={false}
             form={formInstance}

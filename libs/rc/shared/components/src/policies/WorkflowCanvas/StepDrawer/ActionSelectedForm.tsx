@@ -12,7 +12,7 @@ import {
   WorkflowActionDef
 } from '@acx-ui/rc/utils'
 
-import ActionGenericForm from '../WorkflowActionSettingForm/ActionGenericForm'
+import ActionGenericForm from './WorkflowActionSettingForm/ActionGenericForm'
 
 
 interface ActionSelectedFormProps {

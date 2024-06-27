@@ -21,7 +21,7 @@ import {
   DataPromptNode,
   DisplayMessageNode,
   StartNode
-} from '../WorkflowStepNode'
+} from './WorkflowStepNode'
 
 
 const nodeTypes: NodeTypes = {
