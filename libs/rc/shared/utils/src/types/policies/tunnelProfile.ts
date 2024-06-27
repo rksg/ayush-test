@@ -11,8 +11,8 @@ export interface TunnelProfile {
   type: TunnelTypeEnum
   mtuRequestRetry?: number
   mtuRequestTimeout?: number // unit is seconds
-  keepAliveRetry: number
-  keepAliveInterval: number // unit is milliseconds
+  keepAliveRetry?: number
+  keepAliveInterval?: number // unit is milliseconds
 }
 
 export interface TunnelProfileViewData {

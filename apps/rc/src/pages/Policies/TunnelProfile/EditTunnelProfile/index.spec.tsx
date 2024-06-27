@@ -183,7 +183,7 @@ describe('EditTunnelProfile', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqNSG).toBeCalled()
-      const typeField = await screen.findByRole('combobox', { name: 'Network Segment Type' })
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()
     })
 
@@ -216,7 +216,7 @@ describe('EditTunnelProfile', () => {
       await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
       expect(mockedReqSdLan).toBeCalled()
       expect(mockedReqNSG).not.toBeCalled()
-      const typeField = await screen.findByRole('combobox', { name: 'Network Segment Type' })
+      const typeField = await screen.findByRole('combobox', { name: 'Tunnel Type' })
       expect(typeField).toBeDisabled()
     })
   })

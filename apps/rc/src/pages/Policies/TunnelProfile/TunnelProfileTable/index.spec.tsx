@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
 import { networkApi, nsgApi, tunnelProfileApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
@@ -46,6 +47,11 @@ jest.mock('react-router-dom', () => ({
 jest.mock('@acx-ui/utils', () => ({
   ...jest.requireActual('@acx-ui/utils'),
   getTenantId: jest.fn().mockReturnValue(tenantId)
+}))
+
+jest.mock('@acx-ui/rc/components', () => ({
+  ...jest.requireActual('@acx-ui/rc/components'),
+  useIsEdgeFeatureReady: jest.fn().mockReturnValue(false)
 }))
 
 const mockedSingleDeleteApi = jest.fn()
@@ -225,6 +231,32 @@ describe('TunnelProfileList', () => {
     const row = await screen.findAllByRole('row', { name: /Default/i })
     await user.click(within(row[0]).getByRole('checkbox'))
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
+  })
+
+  describe('when Keep Alive is ready', () => {
+    beforeEach(() => {
+      mockServer.use(
+        rest.post(
+          TunnelProfileUrls.getTunnelProfileViewDataList.url,
+          (req, res, ctx) => res(ctx.json(mockedDefaultVlanVxlanTunnelProfileViewData))
+        )
+      )
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+    })
+
+    it('should display Network Segment Type column', async () => {
+      render(
+        <Provider>
+          <TunnelProfileTable />
+        </Provider>, {
+          route: { params, path: tablePath }
+        })
+
+      await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+      expect(await screen.findByRole('columnheader', { name: 'Network Segment Type' }))
+        .toBeVisible()
+    })
   })
 
   describe('when SD-LAN is ready', () => {

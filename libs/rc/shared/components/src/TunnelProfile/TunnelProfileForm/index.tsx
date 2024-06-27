@@ -16,6 +16,7 @@ import {
   AgeTimeUnit,
   MtuRequestTimeoutUnit,
   MtuTypeEnum,
+  TunnelTypeEnum,
   getTunnelTypeOptions,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
@@ -72,6 +73,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
   const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const isEdgeVxLanTunnelKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
+  const isEdgePinHaReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const ageTimeUnit = useWatch<AgeTimeUnit>('ageTimeUnit')
   const mtuRequestTimeoutUnit = useWatch<MtuRequestTimeoutUnit>('mtuRequestTimeoutUnit')
   const mtuType = useWatch('mtuType')
@@ -104,7 +106,9 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           name='name'
           label={$t({ defaultMessage: 'Profile Name' })}
           rules={[
-            { required: true },
+            { required: true,
+              message: $t({ defaultMessage: 'Please enter Profile Name' })
+            },
             { min: 2 },
             { max: 32 },
             { validator: (_, value) => servicePolicyNameRegExp(value) }
@@ -121,11 +125,11 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           children={<Select mode='tags' />}
         />
       </Col> */}
-      { (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
+      { !isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
         <Col span={14}>
           <Form.Item
             name='type'
-            label={$t({ defaultMessage: 'Network Segment Type' })}
+            label={$t({ defaultMessage: 'Tunnel Type' })}
             tooltip={$t(MessageMapping.tunnel_type_tooltip)}
           >
             <Select
@@ -133,6 +137,31 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               options={tunnelTypeOptions}
             />
           </Form.Item>
+        </Col>
+      }
+      { isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
+        <Col span={24}>
+          <Form.Item
+            name='type'
+            label={$t({ defaultMessage: 'Network Segment Type' })}
+            initialValue={TunnelTypeEnum.VLAN_VXLAN}
+            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
+            children={
+              <Radio.Group disabled={isDefaultTunnelProfile
+                    || !!disabledFields?.includes('type')}>
+                <Space direction='vertical'>
+                  <Radio value={TunnelTypeEnum.VLAN_VXLAN}>
+                    {$t({ defaultMessage: 'VLAN to VNI map' })}
+                  </Radio>
+                  { isEdgePinHaReady &&
+                    <Radio value={TunnelTypeEnum.VXLAN}>
+                      {$t({ defaultMessage: 'VNI' })}
+                    </Radio>
+                  }
+                </Space>
+              </Radio.Group>
+            }
+          />
         </Col>
       }
       <Col span={24}>
@@ -169,12 +198,15 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                           rules={[
                             {
                               required: mtuType === MtuTypeEnum.MANUAL,
-                              message: 'Please enter MTU size'
+                              message: 'Please enter Path MTU size'
                             },
                             {
                               type: 'number',
                               min: 68,
-                              max: 1450
+                              max: 1450,
+                              message: $t({
+                                defaultMessage: 'Path MTU size must be between 68 and 1450'
+                              })
                             }
                           ]}
                           children={<InputNumber
@@ -203,9 +235,12 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
               <Form.Item
                 name='mtuRequestTimeout'
                 rules={[
-                  { required: isEdgeVxLanTunnelKaReady },
+                  { required: true,
+                    message: $t({ defaultMessage: 'Please enter Path MTU Request Timeout' })
+                  },
                   { validator: (_, value) =>
-                    validateMtuRequestTimeValue(value, mtuRequestTimeoutUnit) }
+                    validateMtuRequestTimeValue(value, mtuRequestTimeoutUnit)
+                  }
                 ]}
                 children={<InputNumber disabled={isDefaultTunnelProfile ||
                   !!disabledFields?.includes('mtuRequestTimeout')}/>}
@@ -232,7 +267,7 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
       {(isEdgeVxLanTunnelKaReady && mtuType === MtuTypeEnum.AUTO) &&
         <Col span={24}>
           <Form.Item
-            label={$t({ defaultMessage: 'Path MTU Request Reties' })}
+            label={$t({ defaultMessage: 'Path MTU Request Retries' })}
             tooltip={$t(MessageMapping.mtu_request_retry_tooltip)}
           >
             <Space>
@@ -240,12 +275,16 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                 name='mtuRequestRetry'
                 rules={[
                   {
-                    required: isEdgeVxLanTunnelKaReady
+                    required: true,
+                    message: $t({ defaultMessage: 'Please enter Path MTU Request Retries' })
                   },
                   {
                     type: 'number',
                     min: 3,
-                    max: 64
+                    max: 64,
+                    message: $t({
+                      defaultMessage: 'Path MTU Request Retries must be between 3 and 64'
+                    })
                   }
                 ]}
                 children={<InputNumber
@@ -286,7 +325,9 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
             <Form.Item
               name='ageTimeMinutes'
               rules={[
-                { required: true },
+                { required: true,
+                  message: $t({ defaultMessage: 'Please enter Tunnel Idle Timeout' })
+                },
                 { validator: (_, value) => validateAgeTimeValue(value, ageTimeUnit) }
               ]}
               children={<InputNumber
@@ -321,12 +362,16 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                 name='keepAliveInterval'
                 rules={[
                   {
-                    required: isEdgeVxLanTunnelKaReady
+                    required: true,
+                    message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Interval' })
                   },
                   {
                     type: 'number',
                     min: 1,
-                    max: 5
+                    max: 5,
+                    message: $t({
+                      defaultMessage: 'Tunnel Keep Alive Interval must be between 1 and 5'
+                    })
                   }
                 ]}
                 children={<InputNumber disabled={isDefaultTunnelProfile ||
@@ -352,12 +397,16 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
                 name='keepAliveRetry'
                 rules={[
                   {
-                    required: isEdgeVxLanTunnelKaReady
+                    required: true,
+                    message: $t({ defaultMessage: 'Please enter Tunnel Keep Alive Retries' })
                   },
                   {
                     type: 'number',
                     min: 3,
-                    max: 10
+                    max: 10,
+                    message: $t({
+                      defaultMessage: 'Tunnel Keep Alive Retries must be between 3 and 10'
+                    })
                   }
                 ]}
                 children={<InputNumber disabled={isDefaultTunnelProfile ||

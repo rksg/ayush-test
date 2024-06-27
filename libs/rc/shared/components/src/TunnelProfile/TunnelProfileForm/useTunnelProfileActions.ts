@@ -2,8 +2,11 @@ import { cloneDeep } from 'lodash'
 
 import { useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation }         from '@acx-ui/rc/services'
 import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType } from '@acx-ui/rc/utils'
+import { Features }                                      from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/components'
 
 export const useTunnelProfileActions = () => {
+  const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const [create, { isLoading: isTunnelProfileCreating }] = useCreateTunnelProfileMutation()
   const [update, { isLoading: isTunnelProfileUpdating }] = useUpdateTunnelProfileMutation()
 
@@ -15,18 +18,28 @@ export const useTunnelProfileActions = () => {
       result.ageTimeMinutes = data.ageTimeMinutes * 24 * 60
     }
 
-    if (data.mtuRequestTimeoutUnit === MtuRequestTimeoutUnit.SECONDS
-        && !!data.mtuRequestTimeout) {
-      result.mtuRequestTimeout = data.mtuRequestTimeout * 1000
-    }
 
-    if (data.mtuType === MtuTypeEnum.MANUAL) {
+    if (isEdgeVxLanKaReady) {
+      if (data.mtuRequestTimeoutUnit === MtuRequestTimeoutUnit.SECONDS
+          && !!data.mtuRequestTimeout) {
+        result.mtuRequestTimeout = data.mtuRequestTimeout * 1000
+      }
+
+      if (data.mtuType === MtuTypeEnum.MANUAL) {
+        delete result.mtuRequestRetry
+        delete result.mtuRequestTimeout
+      }
+      
+      delete result.mtuRequestTimeoutUnit
+    } else {
+      delete result.keepAliveInterval
+      delete result.keepAliveRetry
       delete result.mtuRequestRetry
       delete result.mtuRequestTimeout
+      delete result.mtuRequestTimeoutUnit
     }
 
     delete result.ageTimeUnit
-    delete result.mtuRequestTimeoutUnit
 
     // remove UI used data
     delete result.disabledFields

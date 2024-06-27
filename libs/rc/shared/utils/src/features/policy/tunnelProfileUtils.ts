@@ -61,12 +61,15 @@ export const getTunnelProfileOptsWithDefault = (
   return tunnelOpts
 }
 
-export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum) => {
+export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum,
+  isEdgeVxLanKaReady?: boolean) => {
   switch (type) {
     case TunnelTypeEnum.VXLAN:
-      return $t({ defaultMessage: 'VNI' })
+      return isEdgeVxLanKaReady ? $t({ defaultMessage: 'VNI' }) : $t({ defaultMessage: 'VxLAN' })
     case TunnelTypeEnum.VLAN_VXLAN:
-      return $t({ defaultMessage: 'VLAN to VNI map' })
+      return isEdgeVxLanKaReady ? $t({ defaultMessage: 'VLAN to VNI map' })
+        : $t({ defaultMessage: 'VLAN-VxLAN' })
+
     default:
       return ''
   }
