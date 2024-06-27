@@ -159,7 +159,8 @@ export enum Features {
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
-  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle'
+  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
+  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
