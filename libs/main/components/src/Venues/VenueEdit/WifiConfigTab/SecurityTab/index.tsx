@@ -94,6 +94,7 @@ export function SecurityTab () {
   const isConfigTemplateEnabledByType = useIsConfigTemplateEnabledByType(ConfigTemplateType.ROGUE_AP_DETECTION)
   const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
   const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
 
@@ -181,7 +182,7 @@ export function SecurityTab () {
     if (!roguePolicyIdValue && selected?.id) {
       setRoguePolicyIdValue(selected.id)
     }
-  }, [selectOptions, selected])
+  }, [roguePolicyIdValue, selectOptions, selected])
 
   useEffect(() => {
     if (!dosProctectionData) return
@@ -242,12 +243,13 @@ export function SecurityTab () {
           currentRoguePolicyId: venueRogueApData?.roguePolicyId,
           currentReportThreshold: venueRogueApData?.reportThreshold
         }
-        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac })
+        // eslint-disable-next-line max-len
+        await updateVenueRogueAp({ params, payload: rogueApPayload, enableRbac: (isTemplate) ? enableTemplateRbac : enableRbac })
         setTriggerRogueAPDetection(false)
       }
 
       if(triggerTlsEnhancedKey){
-        handleUpdateApEnhancedKey(data?.tlsEnhancedKeyEnabled)
+        await handleUpdateApEnhancedKey(data?.tlsEnhancedKeyEnabled)
       }
 
       setEditContextData({
