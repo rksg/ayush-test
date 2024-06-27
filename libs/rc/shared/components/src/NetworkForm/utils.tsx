@@ -295,6 +295,7 @@ export function useVlanPool () {
     selectFromResult: ({ data }) => ({ vlanPoolId: data?.data[0]?.id })
   })
 
+  // eslint-disable-next-line max-len
   const activateVlanPool = async (payload: { name: string, vlanMembers: string[] }, networkId?: string, providerId?: string) => {
     return networkId && providerId ?
       await activate({
@@ -308,10 +309,12 @@ export function useVlanPool () {
       await deactivate({ params: { networkId: networkId, profileId: providerId } }).unwrap() : null
   }
 
+  // eslint-disable-next-line max-len
   const updateVlanPoolActivation = async (networkId?: string, vlanPool?: VlanPool | null, originalPoolId?: string) => {
     if (!isPolicyRbacEnabled) return
     if (!vlanPool && !originalPoolId) return
     if (originalPoolId && !vlanPool) await deactivateVlanPool(networkId, originalPoolId)
+    // eslint-disable-next-line max-len
     if (vlanPool && originalPoolId !== vlanPool.id) await activateVlanPool(vlanPool, networkId, vlanPool.id)
   }
 

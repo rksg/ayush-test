@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { networkApi, venueApi }           from '@acx-ui/rc/services'
+import { networkApi, venueApi }                     from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   IdentityProviderUrls,
@@ -98,7 +98,7 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))
       ),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (_, res, ctx) => res(ctx.json({totalCount: 0, page: 1, data: []}))),
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] })))
     )
   })
 

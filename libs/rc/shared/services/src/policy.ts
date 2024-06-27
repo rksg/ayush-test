@@ -13,7 +13,7 @@ import {
   transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
   l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
-  VlanPool, WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
+  WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
