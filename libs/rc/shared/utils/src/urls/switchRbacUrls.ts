@@ -361,6 +361,11 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/switchProfiles/:profileId',
     newApi: true
   },
+  getCliFamilyModels: {
+    method: 'get',
+    url: '/cliProfiles/venues',
+    newApi: true
+  },
   deleteSwitchProfile: {
     method: 'delete',
     url: '/switchProfiles/:switchProfileId',

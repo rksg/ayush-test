@@ -563,7 +563,7 @@ export const SwitchUrlsInfo: { [key: string]: ApiInfo } = {
   getCliFamilyModels: {
     method: 'get',
     oldUrl: '/api/switch/tenant/:tenantId/cliProfile/familyModels',
-    url: '/cliProfiles/venues',
+    url: '/cliProfiles/familyModels',
     newApi: true
   },
   deleteProfiles: {
