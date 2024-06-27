@@ -120,6 +120,16 @@ describe('Pill without kpi threshold', () => {
     ],
     data: [null, [null, null], [0, 0], [4, 5], [4, 5]]
   }
+  const sampleTSForSwitchTemperature = {
+    time: [
+      '2022-04-07T09:15:00.000Z',
+      '2022-04-07T09:30:00.000Z',
+      '2022-04-07T09:45:00.000Z',
+      '2022-04-07T10:00:00.000Z',
+      '2022-04-07T10:15:00.000Z'
+    ],
+    data: [null, [null, null], [0, 0], [4, 7], [4, 5]]
+  }
   const sampleIncorrectTS = {
     time: [
       '2022-04-07T09:15:00.000Z',
@@ -248,5 +258,24 @@ describe('Pill without kpi threshold', () => {
     )
     await screen.findByText('Online APs')
     expect(await screen.findByText('80%')).toBeVisible()
+  })
+  it('should calculate results according to time window for switch temperature KPI', async () => {
+    mockGraphqlQuery(dataApiURL, 'timeseriesKPI', {
+      data: { network: { timeSeries: sampleTSForSwitchTemperature } }
+    })
+    const timeWindow: [string, string] = ['2022-04-07T09:15:00.000Z', '2022-04-07T10:00:00.000Z']
+    render(
+      <Provider><HealthPageContext.Provider value={{ ...healthContext }}>
+        <HealthPill
+          filters={filters}
+          kpi={'switchesTemperature'}
+          timeWindow={timeWindow}
+          threshold={0}
+        />
+      </HealthPageContext.Provider></Provider>
+    )
+    await screen.findByText('Temperature')
+    expect(await screen
+      .findByText('2 of 7 switches are under safe thresholds of temperature.')).toBeVisible()
   })
 })
