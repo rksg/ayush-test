@@ -47,7 +47,8 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
-  CertificateCategoryType
+  CertificateCategoryType,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -618,14 +619,18 @@ function ServiceRoutes () {
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
         element={<DpskTable />}
       />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
-        element={<DpskForm />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
-        element={<DpskForm editMode={true} />}
-      />
+      {hasDpskAccess() &&
+        <>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+            element={<DpskForm />}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+            element={<DpskForm editMode={true} />}
+          />
+        </>
+      }
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
         element={<DpskDetails />}
