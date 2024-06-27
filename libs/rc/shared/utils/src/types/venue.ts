@@ -448,6 +448,7 @@ export interface ConfigurationProfile {
 	vlans?: Vlan[],
 	acls?: Acl[],
 	venues?: string[]
+	applyOnboardOnly: boolean
 }
 export interface TriBandSettings {
   enabled: boolean

@@ -80,6 +80,7 @@ export function PortalSettings () {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const params = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const linkDashboard = useTenantLink('/dashboard', 'v')
@@ -111,7 +112,7 @@ export function PortalSettings () {
   const [addMspLabel] = useAddMspLabelMutation()
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
-  const { data: provider } = useExternalProvidersQuery({ params })
+  const { data: provider } = useExternalProvidersQuery({ params, enableRbac: isUseRbacApi })
   const { data: baseUrl } = useGetMspBaseURLQuery({ params, enableRbac: isRbacEnabled })
   const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
 

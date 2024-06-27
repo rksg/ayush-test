@@ -248,6 +248,8 @@ describe.skip('SwitchMacAddressForm', () => {
     act(() => {
       fireEvent.change(textbox, { target: { value: 'aa:aa:aa' } })
       textbox.focus()
+      fireEvent.change(textbox, { target: { value: '000c.' } })
+      textbox.focus()
     })
     await userEvent.click(await screen.findByRole('button', { name: /show table/i }))
   })

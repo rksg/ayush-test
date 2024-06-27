@@ -2,6 +2,7 @@ module.exports = {
   displayName: 'msp',
   preset: '../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
@@ -10,7 +11,7 @@ module.exports = {
   coverageThreshold: {
     global: {
       statements: 94,
-      branches: 88,
+      branches: 90,
       functions: 91,
       lines: 94
     }

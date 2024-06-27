@@ -63,10 +63,7 @@ export const ApplyTemplateDrawer = (props: ApplyTemplateDrawerProps) => {
 
       return applyConfigTemplate({
         params: { templateId: selectedTemplate.id, tenantId: ec.id },
-        ...(overrideValue
-          ? { payload: transformOverrideValues(overrideValue) }
-          : {}
-        )
+        payload: transformOverrideValues(overrideValue)
       }).unwrap()
     })
 
