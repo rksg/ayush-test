@@ -1,9 +1,10 @@
 import { cloneDeep } from 'lodash'
 
+import { Features }                                                               from '@acx-ui/feature-toggle'
 import { useCreateTunnelProfileMutation, useUpdateTunnelProfileMutation }         from '@acx-ui/rc/services'
 import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelProfileFormType } from '@acx-ui/rc/utils'
-import { Features }                                      from '@acx-ui/feature-toggle'
-import { useIsEdgeFeatureReady }                         from '@acx-ui/rc/components'
+
+import { useIsEdgeFeatureReady } from '../../useEdgeActions'
 
 export const useTunnelProfileActions = () => {
   const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
@@ -29,7 +30,7 @@ export const useTunnelProfileActions = () => {
         delete result.mtuRequestRetry
         delete result.mtuRequestTimeout
       }
-      
+
       delete result.mtuRequestTimeoutUnit
     } else {
       delete result.keepAliveInterval
