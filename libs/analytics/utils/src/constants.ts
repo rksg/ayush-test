@@ -1,3 +1,4 @@
+import { partition }                        from 'lodash'
 import { defineMessage, MessageDescriptor } from 'react-intl'
 
 import { get }                    from '@acx-ui/config'
@@ -113,6 +114,11 @@ export const incidentCodes: IncidentCode[] = [
   'i-apinfra-poe-low',
   'i-apinfra-wanthroughput-low'
 ]
+
+export const [wiredIncidentCodes, wirelessIncidentCodes] = partition(
+  allIncidentCodes,
+  code => code.includes('switch')
+)
 
 export type CategoryOption = 'connection' | 'performance' | 'infrastructure'
 export const categoryOptions = [
