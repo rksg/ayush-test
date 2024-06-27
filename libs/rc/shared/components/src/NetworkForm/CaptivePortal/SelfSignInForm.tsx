@@ -99,8 +99,9 @@ export function SelfSignInForm () {
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params })
   const isSMSTokenAvailable = isSmsProviderEnabled ?
-    !((smsUsage?.data?.provider ?? []) == ['RUCKUS_ONE'] &&
-     (smsUsage?.data?.ruckusOneUsed ?? 0) >= (smsUsage?.data?.thredshold ?? 0))
+    !(smsUsage?.data?.provider?.length === 1 &&
+      smsUsage?.data?.provider?.includes('RUCKUS_ONE') &&
+     (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
     : true
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
