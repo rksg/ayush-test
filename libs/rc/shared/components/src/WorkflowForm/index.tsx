@@ -46,6 +46,7 @@ export function WorkflowForm (props: WorkflowFormProps) {
   const { policyId } = useParams()
   const { mode } = props
   const isEdit = mode === WorkflowFormMode.EDIT
+  const [ hasMutated, setHasMutated ] = useState(false)
   const [ready, setReady] = useState(isEdit)
   const [form] = Form.useForm<WorkflowFormField>()
   const originData = useRef<Workflow>()
@@ -111,13 +112,18 @@ export function WorkflowForm (props: WorkflowFormProps) {
     const createDraft = async () => {
       let draftName = 'draft-' + uuidv4()
       await handleAddWorkflow({ name: draftName }, (response: AsyncResponse) => {
-        const workflow = { id: response.id, name: draftName } as Workflow
-        originData.current = workflow
+        originData.current = { id: response.id, name: draftName } as Workflow
         setReady(true)
       })
     }
-    if (!ready) {
-      createDraft()
+
+    if (!hasMutated && !ready) {
+      setHasMutated((state) => {
+        if (!state) {
+          createDraft()
+        }
+        return true
+      })
     }
   }, [])
 
