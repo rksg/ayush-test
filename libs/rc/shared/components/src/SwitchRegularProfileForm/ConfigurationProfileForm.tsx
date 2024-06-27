@@ -53,6 +53,7 @@ export function ConfigurationProfileForm () {
   const [form] = Form.useForm()
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
 
   const [getProfiles] = useLazyGetProfilesQuery()
   const [batchAssociateSwitchProfile] = useBatchAssociateSwitchProfileMutation()
@@ -267,6 +268,11 @@ export function ConfigurationProfileForm () {
     }
     if(data.voiceVlanConfigs && !data.voiceVlanConfigs.length) {
       delete data.voiceVlanConfigs
+    }
+    if (profileOnboardOnlyEnabled) {
+      data.applyOnboardOnly = !data.applyOnboardOnly
+    } else {
+      data.applyOnboardOnly = false
     }
     return data
   }

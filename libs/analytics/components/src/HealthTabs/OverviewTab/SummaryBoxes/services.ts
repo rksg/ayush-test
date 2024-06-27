@@ -41,7 +41,7 @@ const wirelessFields = `
       code: $wirelessIncidentCodes
   })
   avgPerAPClientCount
-  apTotalTraffic: totalTraffic
+  apTotalTraffic: userTraffic
   poeUnderPoweredApCount
   apCount
 `
