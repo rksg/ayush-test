@@ -3,26 +3,89 @@ import React from 'react'
 import { Row, Col } from 'antd'
 import { useIntl }  from 'react-intl'
 
-import { useStepFormContext } from '@acx-ui/components'
+import { kpiDelta, TrendTypeEnum }                                               from '@acx-ui/analytics/utils'
+import { useStepFormContext, recommendationBandMapping, ProcessedCloudRRMGraph } from '@acx-ui/components'
+import { formatter }                                                             from '@acx-ui/formatter'
 
 import * as config                from '../config'
+import { CloudRRMGraph }          from '../Graph'
+import { useCRRMQuery }           from '../Graph/services'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
+import { isDataRetained }         from '../utils'
 
 import { IntentType, Priority } from './priority'
 
 export function Summary () {
   const { $t } = useIntl()
   const title = $t(config.steps.title.summary)
-  const { form } = useStepFormContext<EnhancedRecommendation>()
+  const { form, initialValues } = useStepFormContext<EnhancedRecommendation>()
   const intentType = form.getFieldValue(Priority.fieldName)
+
+  // kpi for interfering links
+  const { before, after } = initialValues?.crrmInterferingLinks!
+  const deltaSign = '-'
+  const format = formatter('percentFormat')
+  const links = kpiDelta(before, after, deltaSign, format)
+
+  // kpi for average interfering links per AP
+  const band = recommendationBandMapping[
+    initialValues?.code as keyof typeof recommendationBandMapping]
+  const queryResult = useCRRMQuery(initialValues as EnhancedRecommendation, band)
+  const crrmData = queryResult?.data
+
+  function calculateAverageLinks (data: ProcessedCloudRRMGraph[]) {
+    const kpiBefore = data[0]
+    const kpiAfter = data[1]
+
+    const beforeLinks = kpiBefore?.interferingLinks || 0
+    const afterLinks = kpiAfter?.interferingLinks || 0
+    const beforeAPs = kpiBefore?.affectedAPs || 0
+    const afterAPs = kpiAfter?.affectedAPs || 0
+
+    const averageBefore = beforeAPs ? beforeLinks / beforeAPs : 0
+    const averageAfter = afterAPs ? afterLinks / afterAPs : 0
+
+    const averageLinks = kpiDelta(averageBefore, averageAfter, deltaSign, format)
+
+    return {
+      averageLinks, averageAfter
+    }
+  }
+  const kpi = calculateAverageLinks(crrmData)
+
 
   return <Row gutter={20}>
     <Col span={15}>
       <UI.Wrapper>
         <UI.Title>{title}</UI.Title>
         <UI.Content>
+          {$t({ defaultMessage: 'Projected interfering links reduction' })}
+          { initialValues
+            && isDataRetained(initialValues.dataEndTime)
+            && <CloudRRMGraph
+              details={initialValues as EnhancedRecommendation}
+            />}
         </UI.Content>
+        <UI.ContentText>
+          {$t({ defaultMessage: 'Interfering links' })}
+        </UI.ContentText>
+        <UI.ContentText>
+          {after}
+          <UI.TrendPill value={links.value as string} trend={links.trend as TrendTypeEnum} />
+        </UI.ContentText>
+        <UI.ContentText>
+          {$t({ defaultMessage: 'Average interfering links per AP' })}
+        </UI.ContentText>
+        <UI.ContentText>
+          {Math.ceil(kpi.averageAfter)}
+          <UI.TrendPill
+            value={kpi.averageLinks.value as string}
+            trend={kpi.averageLinks.trend as TrendTypeEnum} />
+        </UI.ContentText>
+        <UI.ContentText>
+          {$t({ defaultMessage: 'Schedule' })}
+        </UI.ContentText>
       </UI.Wrapper>
     </Col>
 

@@ -17,9 +17,9 @@ import { getIntl }           from '@acx-ui/utils'
 import { EnhancedRecommendation } from '../services'
 
 
-const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
+const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   endpoints: (build) => ({
-    cloudRRMGraph: build.query<{
+    intentCloudRRMGraph: build.query<{
       data: ReturnType<typeof trimPairedGraphs>
       csv: ReturnType<typeof getCrrmCsvData>
     }, { id: string, band: BandEnum }>({
@@ -49,6 +49,20 @@ const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
         const processedGraphs: ReturnType<typeof deriveTxPowerHighlight> = flow(
           [ deriveInterferingGraphs, pairGraphs, deriveTxPowerHighlight]
         )(Object.values(sortedData!).filter(v => v !== null), band)
+
+        processedGraphs.forEach(graph => {
+          const affectedAPs = new Set()
+          const interferingLinks = graph.links.filter(link => link.category === 'highlight')
+
+          interferingLinks.forEach(link => {
+            affectedAPs.add(link.source)
+            affectedAPs.add(link.target)
+          })
+
+          graph.affectedAPs = affectedAPs.size
+          graph.interferingLinks = interferingLinks.length * 2
+        })
+
         return {
           data: trimPairedGraphs(processedGraphs),
           csv: getCrrmCsvData(processedGraphs, getIntl().$t)
@@ -59,7 +73,7 @@ const { useCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
 })
 
 export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
-  const queryResult = useCloudRRMGraphQuery(
+  const queryResult = useIntentCloudRRMGraphQuery(
     { id: String(details.id), band }, {
       skip: !Boolean(details.id),
       selectFromResult: result => {

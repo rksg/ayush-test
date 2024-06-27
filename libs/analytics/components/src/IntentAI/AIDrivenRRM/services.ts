@@ -58,8 +58,8 @@ export type EnhancedRecommendation = RecommendationDetails & {
   tooltipContent: string | MessageDescriptor;
   crrmOptimizedState?: IconValue;
   crrmInterferingLinks?: {
-    before: (number | number[] | null)[];
-    after: (number | number[] | null)[];
+    before: number;
+    after: number;
   }
   intentType?: string;
 }

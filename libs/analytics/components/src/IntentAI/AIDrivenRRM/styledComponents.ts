@@ -1,7 +1,7 @@
 import { Typography }  from 'antd'
 import styled, { css } from 'styled-components/macro'
 
-import { Card }                                 from '@acx-ui/components'
+import { Card, TrendPill as Pill }              from '@acx-ui/components'
 import { AIDrivenRRM, LinkDocument, LinkVideo } from '@acx-ui/icons'
 
 export const Wrapper = styled.div`
@@ -105,4 +105,9 @@ export const detailsHeaderFontStyles = css`
   font-size: var(--acx-headline-3-font-size);
   line-height: var(--acx-headline-3-line-height);
   font-weight: var(--acx-headline-3-font-weight);
+`
+
+export const TrendPill = styled(Pill)`
+  width: 40px;
+  text-align: center;
 `
