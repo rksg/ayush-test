@@ -301,7 +301,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     getSyslogPolicyTemplateList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
       query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.syslogPolicyList,
+        PoliciesConfigTemplateUrlsInfo.getSyslogPolicyList,
         {
           rbacApiInfo: PoliciesConfigTemplateUrlsInfo.querySyslog,
           rbacApiVersionKey: ApiVersionEnum.v1
@@ -343,7 +343,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         const url = enableRbac ?
           // eslint-disable-next-line max-len
           (payload!.enabled ? PoliciesConfigTemplateUrlsInfo.bindVenueSyslog : PoliciesConfigTemplateUrlsInfo.unbindVenueSyslog)
-          : PoliciesConfigTemplateUrlsInfo.updateVenueSyslogAp
+          : PoliciesConfigTemplateUrlsInfo.updateVenueSyslogSettings
         const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const param = enableRbac ? { ...params, policyId: payload!.serviceProfileId } : params
         const req = createHttpRequest(url, param, headers)

@@ -35,7 +35,6 @@ const SyslogVenueDetail = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
