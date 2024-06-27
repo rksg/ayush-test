@@ -402,7 +402,7 @@ export const SwitchRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getJwtToken: {
     method: 'get',
-    url: '/switches/:serialNumber/jwtToken', // TODO: Karen - Need backend support
+    url: '/venues/:venueId/switches/:switchId/jwtToken',
     newApi: true
   },
   getSwitchDetailHeader: {
