@@ -10,9 +10,9 @@ export interface TunnelProfile {
   ageTimeMinutes: number
   type: TunnelTypeEnum
   mtuRequestRetry?: number
-  mtuRequestTimeout?: number // unit is seconds
+  mtuRequestTimeout?: number // unit is milliseconds
   keepAliveRetry?: number
-  keepAliveInterval?: number // unit is milliseconds
+  keepAliveInterval?: number // unit is seconds
 }
 
 export interface TunnelProfileViewData {

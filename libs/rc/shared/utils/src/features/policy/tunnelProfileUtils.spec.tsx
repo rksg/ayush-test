@@ -229,7 +229,11 @@ describe('tunnelProfileUtils', () => {
         mtuSize: 0,
         ageTimeMinutes: 1440*2,
         forceFragmentation: false,
-        type: 'VXLAN'
+        type: 'VXLAN',
+        keepAliveInterval: 6,
+        keepAliveRetry: 6,
+        mtuRequestRetry: 6,
+        mtuRequestTimeout: 6
       } as TunnelProfile))
         .toStrictEqual({
           mtuType: MtuTypeEnum.AUTO,
@@ -239,7 +243,12 @@ describe('tunnelProfileUtils', () => {
           name: 'mockd_tunnel_3',
           mtuSize: 0,
           forceFragmentation: false,
-          type: 'VXLAN'
+          type: 'VXLAN',
+          keepAliveInterval: 6,
+          keepAliveRetry: 6,
+          mtuRequestRetry: 6,
+          mtuRequestTimeout: 6,
+          mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.MILLISECONDS
         })
     })
   })
