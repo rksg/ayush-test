@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { rest } from 'msw'
 
 import {
@@ -5,17 +7,30 @@ import {
   ServiceType,
   DpskDetailsTabKey,
   getServiceRoutePath,
-  ServiceOperation
+  ServiceOperation,
+  ConfigTemplateType,
+  ConfigTemplateUrlsInfo,
+  ConfigTemplateContext
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import { mockedNetworks } from './__tests__/fixtures'
 import DpskInstancesTable from './DpskInstancesTable'
+
+const mockedRenderConfigTemplateDetailsComponent = jest.fn()
+jest.mock('../../configTemplates', () => ({
+  ...jest.requireActual('../../configTemplates'),
+  renderConfigTemplateDetailsComponent: (type: ConfigTemplateType, id: string, name: ReactNode) => {
+    mockedRenderConfigTemplateDetailsComponent({ type, id, name })
+    return <div>{name}</div>
+  }
+}))
 
 describe('DpskInstancesTable', () => {
   const params = {
@@ -48,5 +63,30 @@ describe('DpskInstancesTable', () => {
 
     const targetRow = await screen.findByRole('link', { name: targetNetwork.name })
     expect(targetRow).toHaveAttribute('href', networkLink)
+  })
+
+  it('should render Network link for Config Template successfully', async () => {
+    mockServer.use(
+      rest.post(
+        ConfigTemplateUrlsInfo.getNetworkTemplateList.url,
+        (_, res, ctx) => res(ctx.json(mockedNetworks))
+      )
+    )
+
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <Provider><DpskInstancesTable /></Provider>
+      </ConfigTemplateContext.Provider>, { route: { params } }
+    )
+
+    const targetNetwork = mockedNetworks.data[0]
+
+    await waitFor(() => {
+      expect(mockedRenderConfigTemplateDetailsComponent).toHaveBeenCalledWith({
+        type: ConfigTemplateType.NETWORK,
+        name: targetNetwork.name,
+        id: targetNetwork.id
+      })
+    })
   })
 })

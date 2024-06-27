@@ -69,6 +69,7 @@ export function Integrators () {
 
   const isSupportToMspDashboardAllowed =
     useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
@@ -76,8 +77,8 @@ export function Integrators () {
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const onBoard = mspLabel?.msp_label
 
   const columns: TableProps<MspEc>['columns'] = [
@@ -214,7 +215,7 @@ export function Integrators () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id }, enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }

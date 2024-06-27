@@ -3,10 +3,10 @@ import { Modal } from 'antd'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
-import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                             from '@acx-ui/feature-toggle'
+import { apApi, venueApi }                                                                                    from '@acx-ui/rc/services'
+import { AdministrationUrlsInfo, CommonUrlsInfo, DHCPUrls, FirmwareUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                    from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -30,7 +30,8 @@ import {
   venueLanPorts,
   venueSetting,
   venueVersionList,
-  deviceAps
+  deviceAps,
+  r650Cap
 } from '../../__tests__/fixtures'
 
 import { ApEdit } from './'
@@ -78,12 +79,17 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: jest.fn().mockReturnValue({ state: { venueId: '123' } })
 }))
+
+const excludedFlags = [
+  Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE,
+  Features.AP_FW_MGMT_UPGRADE_BY_MODEL,
+  Features.WIFI_RBAC_API
+]
 describe('ApEdit', () => {
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
-    jest.mocked(useIsSplitOn).mockImplementation(ff =>
-      ff !== Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => !excludedFlags.includes(ff as Features))
 
     mockServer.use(
       rest.get(CommonUrlsInfo.getVenue.url,
@@ -91,15 +97,17 @@ describe('ApEdit', () => {
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venuelist))),
       rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(venueCaps))),
+        (_, res, ctx) => res(ctx.json(r650Cap))),
       rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
         (_, res, ctx) => res(ctx.json([]))),
+      rest.get(WifiUrlsInfo.getWifiCapabilities.url,
+        (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => res(ctx.json(successResponse))),
       rest.get(WifiUrlsInfo.getAp.url.replace('?operational=false', ''),
-        (_, res, ctx) => res(ctx.json(apDetailsList[0]))),
+        (req, res, ctx) => res(ctx.json(apDetailsList[0]))),
       rest.get(WifiUrlsInfo.getAp.url.split(':serialNumber')[0],
         (_, res, ctx) => res(ctx.json(apDetailsList))),
       rest.post(WifiUrlsInfo.getDhcpAp.url,
@@ -123,6 +131,27 @@ describe('ApEdit', () => {
       rest.get(
         CommonUrlsInfo.getVenueApEnhancedKey.url,
         (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        DHCPUrls.queryDHCPProfiles.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      // rbac API
+      rest.get(
+        WifiRbacUrlsInfo.getDhcpAp.url,
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (req, res, ctx) => res(ctx.json(apDetailsList[0]))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(r650Cap))
       )
     )
   })
@@ -353,7 +382,7 @@ describe('ApEdit', () => {
         rest.get(WifiUrlsInfo.getApLanPorts.url,
           (_, res, ctx) => res(ctx.json(apLanPorts[0]))),
         rest.get(WifiUrlsInfo.getApCapabilities.url,
-          (_, res, ctx) => res(ctx.json(venueCaps))),
+          (_, res, ctx) => res(ctx.json(r650Cap))),
         rest.get(CommonUrlsInfo.getVenue.url,
           (_, res, ctx) => res(ctx.json(venueData))),
         rest.get(CommonUrlsInfo.getVenueSettings.url,
@@ -363,7 +392,12 @@ describe('ApEdit', () => {
         rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
           (_, res, ctx) => res(ctx.json([]))),
         rest.post(CommonUrlsInfo.getApsList.url,
-          (_, res, ctx) => res(ctx.json(deviceAps)))
+          (_, res, ctx) => res(ctx.json(deviceAps))),
+
+        // rbac
+        rest.get(WifiRbacUrlsInfo.getApCapabilities.url,
+          (_, res, ctx) => res(ctx.json(r650Cap))
+        )
       )
     })
     afterEach(() => Modal.destroyAll())

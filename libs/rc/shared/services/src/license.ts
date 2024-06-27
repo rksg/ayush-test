@@ -2,7 +2,13 @@ import {
   LicenseUrlsInfo,
   Entitlement,
   EntitlementBanner,
-  EntitlementBannersData
+  EntitlementBannersData,
+  onSocketActivityChanged,
+  onActivityMessageReceived,
+  EntitlementSummaries,
+  RbacEntitlementSummary,
+  MspEntitlement,
+  TableResult
 } from '@acx-ui/rc/utils'
 import { baseLicenseApi }    from '@acx-ui/store'
 import { RequestPayload }    from '@acx-ui/types'
@@ -40,6 +46,51 @@ export const licenseApi = baseLicenseApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'License', id: 'BANNERS' }]
+    }),
+    rbacEntitlementSummary: build.query<EntitlementSummaries[], RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspEntitlementSummaryReq = createHttpRequest(
+          LicenseUrlsInfo.getMspEntitlementSummary, params)
+        return {
+          ...mspEntitlementSummaryReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'License', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'MSP license refresh flow'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(licenseApi.util.invalidateTags([{ type: 'License', id: 'LIST' }]))
+          })
+        })
+      },
+      transformResponse: (response) => {
+        return (response as RbacEntitlementSummary).data
+      }
+    }),
+    rbacEntitlementList: build.query<TableResult<MspEntitlement>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const mspEntitlementListReq = createHttpRequest(
+          LicenseUrlsInfo.getMspEntitlement, params)
+        return {
+          ...mspEntitlementListReq,
+          body: payload
+        }
+      },
+      providesTags: [{ type: 'License', id: 'LIST' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          const activities = [
+            'MSP license refresh flow'
+          ]
+          onActivityMessageReceived(msg, activities, () => {
+            api.dispatch(licenseApi.util.invalidateTags([{ type: 'License', id: 'LIST' }]))
+          })
+        })
+      }
     })
   })
 })
@@ -47,5 +98,7 @@ export const licenseApi = baseLicenseApi.injectEndpoints({
 export const {
   useEntitlementListQuery,
   useEntitlementBannersQuery,
-  useGetBannersQuery
+  useGetBannersQuery,
+  useRbacEntitlementSummaryQuery,
+  useRbacEntitlementListQuery
 } = licenseApi

@@ -113,6 +113,7 @@ export function NetworkVenuesTab () {
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const settingsId = 'network-venues-table'
   const tableQuery = useTableQuery({
     useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
@@ -182,7 +183,8 @@ export function NetworkVenuesTab () {
       sortOrder: 'ASC',
       page: 1,
       pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({

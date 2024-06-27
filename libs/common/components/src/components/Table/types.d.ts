@@ -163,6 +163,7 @@ export type RecordWithChildren <RecordType> = RecordType & {
 export type TableAction = {
   key?: string
   scopeKey?: ScopeKeys
+  allowedOperationUrl?: string
   label: string
   disabled?: boolean
   tooltip?: string
@@ -173,6 +174,7 @@ export type TableAction = {
 export type TableRowAction<RecordType> = {
   key?: string
   scopeKey?: ScopeKeys
+  allowedOperationUrl?: string
   label: string
   disabled?: boolean | ((selectedItems: RecordType[]) => boolean)
   tooltip?: string | ((selectedItems: RecordType[]) => string | undefined)

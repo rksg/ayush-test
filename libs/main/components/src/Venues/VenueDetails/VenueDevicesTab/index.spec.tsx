@@ -2,7 +2,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed }       from '@acx-ui/feature-toggle'
+import { useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }                                 from '@acx-ui/rc/components'
 import { venueApi, apApi }                                from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo }                   from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
@@ -48,7 +49,8 @@ jest.mock('@acx-ui/rc/components', () => ({
       apCompatibilities: apCompatibilitiesData(),
       incompatible: 1
     }
-  }
+  },
+  useIsEdgeReady: jest.fn().mockReturnValue(false)
 }))
 
 const meshData = {
@@ -119,10 +121,6 @@ const meshData = {
 
 describe('VenueWifi', () => {
   beforeEach(() => {
-    jest.mocked(useIsTierAllowed).mockImplementation((feature: string) => {
-      return feature === Features.EDGES ? false: true
-    })
-
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
@@ -192,8 +190,7 @@ describe('Venue device tab', () => {
   let params: { tenantId: string, venueId: string, activeTab: string, activeSubTab: string }
 
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsEdgeReady).mockReturnValue(true)
 
     params = {
       tenantId: 'd1ec841a4ff74436b23bca6477f6a631',

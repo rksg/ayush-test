@@ -1,11 +1,11 @@
-import _ from 'lodash'
+import { isNumber } from 'lodash'
 
 export const gpsToFixed = (val?: string | number): string => {
   if (!val) {
     return ''
   }
 
-  if (_.isNumber(val)) {
+  if (isNumber(val)) {
     return (val as number).toFixed(6)
   }
 

@@ -48,6 +48,7 @@ export const NotificationsTable = () => {
   const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
   const allowIncidentsEmail = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
+  const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -166,6 +167,10 @@ export const NotificationsTable = () => {
     }
   ]
 
+  const titleNotification = notificationChannelEnabled
+    ? $t({ defaultMessage: 'Notifications Preferences' })
+    : $t({ defaultMessage: 'AI Notifications' })
+
   const tableActions = [
     {
       label: $t({ defaultMessage: 'Add Recipient' }),
@@ -173,7 +178,7 @@ export const NotificationsTable = () => {
     },
     ...(allowIncidentsEmail
       ? [{
-        label: $t({ defaultMessage: 'AI Notifications' }),
+        label: titleNotification,
         onClick: handleEnableIncidents
       }]
       : [])

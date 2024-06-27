@@ -165,7 +165,7 @@ export function RadioSettingsForm (props:{
           <Space style={{ marginBottom: '10px', marginRight: '20px' }}>
             {$t({ defaultMessage: 'Enable Indoor AFC:' })}
             <Tooltip
-              title={$t({ defaultMessage: 'For outdoor APs, outdoor AFC will be enabled automatically.' })}
+              title={$t({ defaultMessage: 'For outdoor APs, AFC will be enabled automatically.' })}
               placement='bottom'>
               <QuestionMarkCircleOutlined style={{ width: '14px', marginBottom: '-7px' }}/>
             </Tooltip>
@@ -207,24 +207,22 @@ export function RadioSettingsForm (props:{
               { validator: (_, value) => AFCEnableValidation(false) ? Promise.reject($t(validationMessages.EnableAFCButNoVenueHeight)) : Promise.resolve() }
             ]}>
             {isUseVenueSettings ?
-              LPIButtonText?.buttonText : (
-                <Tooltip
-                  title={
-                    (isAFCEnabled ? undefined :
-                      <div style={{ textAlign: 'center' }}>
-                        <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
-                      </div>
-                    )
-                  }
-                >
-                  <Switch
-                    disabled={!isAFCEnabled || isUseVenueSettings}
-                    onChange={() => {
-                      onChangedByCustom('enableAfc')
-                      form.validateFields()
-                    }}
-                  />
-                </Tooltip>)
+              LPIButtonText?.buttonText : (isAFCEnabled ?
+                <Switch
+                  disabled={!isAFCEnabled || isUseVenueSettings}
+                  onChange={() => {
+                    onChangedByCustom('enableAfc')
+                    form.validateFields()
+                  }}
+                /> :
+                <Tooltip title={
+                  <div style={{ textAlign: 'center' }}>
+                    <p>{$t({ defaultMessage: 'Your country does not support AFC.' })}</p>
+                  </div>
+                }>
+                  <Switch disabled={!isAFCEnabled || isUseVenueSettings} />
+                </Tooltip>
+              )
             }
           </Form.Item>
         </FieldLabel>

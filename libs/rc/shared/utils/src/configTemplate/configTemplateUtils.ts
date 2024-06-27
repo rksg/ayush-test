@@ -37,7 +37,8 @@ interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
   extraParams?: Params<string>
   templatePayload?: Payload
   enableRbac?: boolean
-  enableTemplateRbac?: boolean
+  enableTemplateRbac?: boolean,
+  enableSeparation?: boolean
 }
 export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
   props: UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload>
@@ -45,17 +46,19 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
 
   const {
     useQueryFn, useTemplateQueryFn, skip = false, payload, templatePayload,
-    extraParams, enableRbac, enableTemplateRbac
+    extraParams, enableRbac, enableTemplateRbac, enableSeparation = false
   } = props
 
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
   const resolvedPayload = isTemplate && templatePayload ? templatePayload : payload
   const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
+  const resolvedEnableSeparation = isTemplate ? enableTemplateRbac : enableSeparation
   const requestPayload = {
     params: { ...params, ...(extraParams ?? {}) },
     ...(resolvedPayload ? ({ payload: resolvedPayload }) : {}),
-    ...(resolvedEnableRbac ? ({ enableRbac: resolvedEnableRbac }) : {})
+    ...(resolvedEnableRbac ? ({ enableRbac: resolvedEnableRbac }) : {}),
+    ...(resolvedEnableSeparation ? ({ enableSeparation: resolvedEnableSeparation }) : {})
   }
   const result = useQueryFn(requestPayload, { skip: skip || isTemplate })
   const templateResult = useTemplateQueryFn(requestPayload, { skip: skip || !isTemplate })

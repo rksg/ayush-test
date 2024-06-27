@@ -93,3 +93,8 @@ export enum NodeClusterRoleEnum {
   CLUSTER_ROLE_ACTIVE = 'CLUSTER_ROLE_ACTIVE',
   CLUSTER_ROLE_BACKUP = 'CLUSTER_ROLE_BACKUP'
 }
+
+export enum ClusterHighAvailabilityModeEnum {
+  ACTIVE_ACTIVE = 'ACTIVE_ACTIVE',
+  ACTIVE_STANDBY = 'ACTIVE_STANDBY'
+}

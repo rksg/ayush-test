@@ -27,7 +27,8 @@ import {
   RWG,
   excludeSpaceRegExp,
   domainNameRegExp,
-  getRwgStatus
+  getRwgStatus,
+  trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -103,7 +104,8 @@ export function RWGForm () {
     try {
       const formData = { ...values, rwgId: data?.rwgId } // rwg update API use post method where rwgId is required to pass
       await updateGateway({ params, payload: formData }).unwrap()
-      // TODO: after update need to redirect to gateway detail page
+
+      navigate(linkToGateways, { replace: true })
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -179,11 +181,12 @@ export function RWGForm () {
                   rules={[
                     { type: 'string', required: true },
                     { min: 2, transform: (value) => value.trim() },
-                    { max: 255, transform: (value) => value.trim() },
+                    { max: 32, transform: (value) => value.trim() },
                     { validator: (_, value) => whitespaceOnlyRegExp(value) },
                     {
                       validator: (_, value) => nameValidator(value)
-                    }
+                    },
+                    { validator: (_, value) => trailingNorLeadingSpaces(value) }
                   ]}
                   validateFirst
                   hasFeedback
@@ -196,7 +199,7 @@ export function RWGForm () {
                   label={<>{$t({ defaultMessage: 'FQDN / IP' })}
                     <Tooltip.Question
                       title={$t({ defaultMessage:
-                        'Fully Qualified Domain Name or IP address of the RWG Device' })}
+                        'Fully qualified domain name or IP address of the RWG Device.' })}
                       placement='right'
                       iconStyle={{
                         width: 16,
@@ -221,7 +224,7 @@ export function RWGForm () {
                     <Tooltip.Question
                       title={$t({ defaultMessage:
                         // eslint-disable-next-line max-len
-                        'API keys can be generated and copied from the RWG administrator UI without any expiration date. They are 80-character strings' })}
+                        'API keys (80-character strings) can be generated and copied from the RWG Administrator UI. API Keys do not expire.' })}
                       placement='right'
                       iconStyle={{
                         width: 16,
@@ -232,7 +235,8 @@ export function RWGForm () {
                   rules={[
                     { required: true,
                       message: $t({ defaultMessage: 'Please enter API Key' }) },
-                    { max: 80 },
+                    { max: 80, min: 80,
+                      message: $t({ defaultMessage: 'API key must be 80 characters long.' }) },
                     { validator: (_, value) => excludeSpaceRegExp(value) }
                   ]}
                   children={<PasswordInput />}
