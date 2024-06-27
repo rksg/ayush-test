@@ -15,6 +15,7 @@ export interface MdnsProxyFormData {
   name: string;
   rules?: MdnsProxyForwardingRule[];
   scope?: MdnsProxyScopeData[];
+  oldScope?: MdnsProxyScopeData[];
 }
 
 export interface MdnsProxyCreateApiPayload {
@@ -40,10 +41,16 @@ export interface MdnsProxyAp {
   rules: MdnsProxyForwardingRule[]
 }
 
+export interface MdnsActivation {
+  venueId: string,
+  apSerialNumbers: string[]
+}
+
 export interface MdnsProxyViewModel {
   id: string;
   name: string;
   rules: MdnsProxyForwardingRule[];
   tenantId: string;
   venueIds?: string[];
+  activations?: MdnsActivation[];
 }

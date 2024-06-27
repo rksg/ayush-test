@@ -66,6 +66,7 @@ export function MdnsProxy () {
   const { $t } = useIntl()
   const params = useParams()
   const { serialNumber } = params
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
@@ -146,15 +147,17 @@ export function MdnsProxy () {
     const originalServiceId = apDetail?.multicastDnsProxyServiceProfileId
 
     try {
-      if (formData.serviceEnabled) {
+      if (formData.serviceEnabled && serialNumber) {
         await addMdnsProxyAps({
-          params: { ...params, serviceId: formData.serviceId },
-          payload: [serialNumber]
+          params: { ...params, serviceId: formData.serviceId, venueId: apDetail?.venueId },
+          payload: [serialNumber],
+          enableRbac
         }).unwrap().then(resetForm)
-      } else if (originalServiceId) { // Disable the mDNS Proxy which has been applied before
+      } else if (originalServiceId && serialNumber) { // Disable the mDNS Proxy which has been applied before
         await deleteMdnsProxyAps({
-          params: { ...params, serviceId: originalServiceId },
-          payload: [serialNumber]
+          params: { ...params, serviceId: originalServiceId, venueId: apDetail?.venueId },
+          payload: [serialNumber],
+          enableRbac
         }).unwrap().then(resetForm)
       }
     } catch (error) {

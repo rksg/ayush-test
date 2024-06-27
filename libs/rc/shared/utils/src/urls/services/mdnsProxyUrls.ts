@@ -60,5 +60,41 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
     url: '/enhancedMdnsProxyProfiles/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedMdnsProxyProfiles/query',
     newApi: true
+  },
+
+  queryMdnsProxy: {
+    method: 'post',
+    url: '/multicastDnsProxyProfiles/query',
+    newApi: true
+  },
+  getMdnsProxyRbac: {
+    method: 'get',
+    url: '/multicastDnsProxyProfiles/:serviceId',
+    newApi: true
+  },
+  addMdnsProxyRbac: {
+    method: 'post',
+    url: '/multicastDnsProxyProfiles',
+    newApi: true
+  },
+  updateMdnsProxyRbac: {
+    method: 'put',
+    url: '/multicastDnsProxyProfiles/:serviceId',
+    newApi: true
+  },
+  deleteMdnsProxyRbac: {
+    method: 'delete',
+    url: '/multicastDnsProxyProfiles/:serviceId',
+    newApi: true
+  },
+  addMdnsProxyApsRbac: {
+    method: 'put',
+    url: '/venues/:venueId/aps/:apSerialNumber/multicastDnsProxyProfiles/:serviceId',
+    newApi: true
+  },
+  deleteMdnsProxyApsRbac: {
+    method: 'delete',
+    url: '/venues/:venueId/aps/:apSerialNumber/multicastDnsProxyProfiles/:serviceId',
+    newApi: true
   }
 }

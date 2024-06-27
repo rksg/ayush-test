@@ -9,6 +9,7 @@ import {
   showActionModal,
   Tooltip
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
 import { MdnsProxyForwardingRulesTable, SimpleListTooltip }                                from '@acx-ui/rc/components'
 import { useDeleteMdnsProxyMutation, useGetEnhancedMdnsProxyListQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
@@ -24,7 +25,7 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { filterByAccess, hasAccess }                               from '@acx-ui/user'
 
 const defaultPayload = {
-  fields: ['id', 'name', 'rules', 'venueIds'],
+  fields: ['id', 'name', 'rules', 'venueIds', 'activations'],
   searchString: '',
   filters: {}
 }
@@ -34,11 +35,13 @@ export default function MdnsProxyTable () {
   const { tenantId } = useParams()
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteFn ] = useDeleteMdnsProxyMutation()
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedMdnsProxyListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac
   })
 
   const rowActions: TableProps<MdnsProxyViewModel>['rowActions'] = [
@@ -53,7 +56,10 @@ export default function MdnsProxyTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).unwrap().then(clearSelection)
+            deleteFn({
+              params: { tenantId, serviceId: id },
+              enableRbac
+            }).unwrap().then(clearSelection)
           }
         })
       }

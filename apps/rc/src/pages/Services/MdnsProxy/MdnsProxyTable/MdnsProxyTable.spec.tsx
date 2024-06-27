@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   getServiceDetailsLink,
@@ -30,6 +31,22 @@ const mockedTableResult = {
     name: 'My mDNS Proxy 1',
     type: 'mDNS Proxy',
     scope: '5'
+  }]
+}
+
+const mockedTableResultRbac = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'My mDNS Proxy 1',
+    type: 'mDNS Proxy',
+    activations: [
+      {
+        venueId: 'v1',
+        apSerialNumbers: []
+      }
+    ]
   }]
 }
 
@@ -144,6 +161,54 @@ describe('MdnsProxyTable', () => {
     await waitFor(() => {
       expect(screen.queryByRole('dialog')).toBeNull()
     })
+  })
+
+  it('should delete selected row via RBAC api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        MdnsProxyUrls.deleteMdnsProxyRbac.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      ),
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => res(ctx.json(mockedTableResultRbac))
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const target = mockedTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+
+    jest.mocked(useIsSplitOn).mockRestore()
   })
 
   it('should navigate to the Edit view', async () => {

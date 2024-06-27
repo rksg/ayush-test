@@ -53,11 +53,12 @@ import {
   ApplicationPolicy,
   DHCP_LIMIT_NUMBER,
   ApiVersionEnum,
-  GetApiVersionHeader
+  GetApiVersionHeader,
+  convertMdnsProxyViewModelToMdnsProxyFormData
 } from '@acx-ui/rc/utils'
-import { baseServiceApi }             from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseServiceApi }                       from '@acx-ui/store'
+import { RequestPayload }                       from '@acx-ui/types'
+import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -76,7 +77,9 @@ const mDnsProxyMutationUseCases = [
   'DeleteMulticastDnsProxyServiceProfiles',
   'UpdateMulticastDnsProxyServiceProfile',
   'ActivateMulticastDnsProxyServiceProfileAps',
-  'DeactivateMulticastDnsProxyServiceProfileAps'
+  'DeactivateMulticastDnsProxyServiceProfileAps',
+  'ActivateMulticastDnsProxyProfile',
+  'DeactivateMulticastDnsProxyProfile'
 ]
 
 const defaultDpskVersioningHeaders = {
@@ -224,27 +227,61 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'Service', id: 'LIST' }]
     }),
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxy, params)
-        return {
-          ...req,
-          body: payload
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxy
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(apiInfo, params, headers)
+
+        if (enableRbac) {
+          const payload = {
+            fields: ['id', 'name', 'rules', 'activations'],
+            page: 1,
+            pageSize: 10,
+            filters: { id: [params?.serviceId] }
+          }
+
+          const res = await fetchWithBQ({ ...req,body: JSON.stringify(payload) })
+
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+          const response = (res.data as TableResult<MdnsProxyViewModel>).data
+
+          return (response && response.length > 0)
+            ? { data: convertMdnsProxyViewModelToMdnsProxyFormData(response[0] as MdnsProxyViewModel) }
+            : { error: { status: 404, data: 'Not found' } as FetchBaseQueryError }
+        } else {
+          const res = await fetchWithBQ({ ...req })
+          return res.data
+            ? { data: convertApiPayloadToMdnsProxyFormData(res.data as MdnsProxyGetApiResponse) }
+            : { error: res.error as FetchBaseQueryError }
         }
-      },
-      transformResponse (response: MdnsProxyGetApiResponse) {
-        return convertApiPayloadToMdnsProxyFormData(response)
       },
       providesTags: [{ type: 'MdnsProxy', id: 'DETAIL' }]
     }),
     getMdnsProxyList: build.query<MdnsProxyFormData[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyList, params)
+      query: ({ params, enableRbac }) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxyList
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(apiInfo, params, headers)
+        const queryPayload = {
+          fields: [ 'id','name', 'rules', 'activations'],
+          page: 1,
+          pageSize: 1000
+        }
         return {
-          ...req
+          ...req,
+          body: enableRbac ? JSON.stringify(queryPayload) : undefined
         }
       },
-      transformResponse (response: MdnsProxyGetApiResponse[]) {
-        return response.map(result => convertApiPayloadToMdnsProxyFormData(result))
+      transformResponse (response: MdnsProxyGetApiResponse[] | TableResult<MdnsProxyViewModel>, _meta, arg) {
+        if (arg.enableRbac) {
+          const data = (response as TableResult<MdnsProxyViewModel>).data
+          return data.map(result => convertMdnsProxyViewModelToMdnsProxyFormData(result))
+        } else {
+          const data = response as MdnsProxyGetApiResponse[]
+          return data.map(result => convertApiPayloadToMdnsProxyFormData(result))
+        }
       },
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -259,12 +296,26 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getEnhancedMdnsProxyList: build.query<TableResult<MdnsProxyViewModel>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getEnhancedMdnsProxyList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getEnhancedMdnsProxyList
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(apiInfo, params, headers)
+
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
+      },
+      transformResponse: (result: TableResult<MdnsProxyViewModel>, _meta, arg) => {
+        return arg.enableRbac
+          ? {
+            ...result,
+            data: result.data?.map(profile => ({
+              ...profile,
+              venueIds: profile.activations?.map(activation => activation.venueId) ?? []
+            }))
+          }
+          : result
       },
       providesTags: [{ type: 'MdnsProxy', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -278,20 +329,60 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    updateMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.updateMdnsProxy, params)
-        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
-        return {
+    updateMdnsProxy: build.mutation<CommonResult, RequestPayload<MdnsProxyFormData>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.updateMdnsProxyRbac : MdnsProxyUrls.updateMdnsProxy
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(apiInfo, params, headers)
+        const res = await fetchWithBQ({
           ...req,
-          body: convertedPayload
+          body: JSON.stringify(convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData))
+        })
+
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
         }
+
+        if (enableRbac) {
+          const activateApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
+          const deactivateApiInfo = MdnsProxyUrls.deleteMdnsProxyApsRbac
+          const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+
+          const oldScope = payload?.oldScope?.flatMap(s =>
+            s.aps.map(ap => (s.venueId + '/' + ap.serialNumber))
+          )
+          const newScope = payload?.scope?.flatMap(s =>
+            s.aps.map(ap => (s.venueId + '/' + ap.serialNumber))
+          )
+
+          const activateRequests = (newScope || [])
+            .filter(s => !oldScope?.includes(s))
+            .map(scope => {
+              const pair = scope.split('/')
+              return { params: { ...params, venueId: pair[0], apSerialNumber: pair[1] } }
+            })
+          const deactivateRequests = (oldScope || [])
+            .filter(s => !newScope?.includes(s))
+            .map(scope => {
+              const pair = scope.split('/')
+              return { params: { ...params, venueId: pair[0], apSerialNumber: pair[1] } }
+            })
+
+          await Promise.all([
+            batchApi(activateApiInfo, activateRequests, fetchWithBQ, headers),
+            batchApi(deactivateApiInfo, deactivateRequests, fetchWithBQ, headers)
+          ])
+        }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxy, params)
+      query: ({ params, enableRbac }) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.deleteMdnsProxyRbac : MdnsProxyUrls.deleteMdnsProxy
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(apiInfo, params, customHeaders)
         return {
           ...req
         }
@@ -307,52 +398,173 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }, { type: 'Service', id: 'LIST' }]
     }),
-    addMdnsProxy: build.mutation<MdnsProxyFormData, RequestPayload<MdnsProxyFormData>>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxy, params)
-        const convertedPayload = convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData)
-
-        return {
+    addMdnsProxy: build.mutation<CommonResult, RequestPayload<MdnsProxyFormData>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const apiInfo = enableRbac ? MdnsProxyUrls.addMdnsProxyRbac : MdnsProxyUrls.addMdnsProxy
+        const req = createHttpRequest(apiInfo, params, headers)
+        const res = await fetchWithBQ({
           ...req,
-          body: convertedPayload
+          body: JSON.stringify(convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData))
+        })
+
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
         }
+
+        if (enableRbac) {
+          const { response } = res.data as CommonResult
+          const activateApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
+          const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+          const serviceId = response?.id
+
+          if (serviceId) {
+            const requests: { params: Params<string> }[] = []
+
+            payload?.scope?.forEach(scope => {
+              const venueId = scope.venueId
+              scope.aps.forEach(ap => {
+                requests.push({
+                  params: { serviceId, venueId, apSerialNumber: ap.serialNumber }
+                })
+              })
+            })
+
+            await batchApi(activateApiInfo, requests, fetchWithBQ, headers)
+          }
+        }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
-    addMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.addMdnsProxyAps, params)
-        return {
-          ...req,
-          body: payload
+    addMdnsProxyAps: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.addMdnsProxyApsRbac : MdnsProxyUrls.addMdnsProxyAps
+
+        if (enableRbac) {
+          const headers = GetApiVersionHeader(ApiVersionEnum.v1)
+          const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
+          await batchApi(apiInfo, requests, fetchWithBQ, headers)
+
+          return { data: {} as CommonResult }
+        } else {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(apiInfo, params),
+            body: payload
+          })
+
+          return res.data
+            ? { data: res.data as CommonResult }
+            : { error: res.error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
-    deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MdnsProxyUrls.deleteMdnsProxyAps, params)
-        return {
-          ...req,
-          body: payload
+    deleteMdnsProxyAps: build.mutation<CommonResult, RequestPayload<string[]>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.deleteMdnsProxyApsRbac : MdnsProxyUrls.deleteMdnsProxyAps
+
+        if (enableRbac) {
+          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+          const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
+          await batchApi(apiInfo, requests, fetchWithBQ, headers)
+
+          return { data: {} as CommonResult }
+        } else {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(apiInfo, params),
+            body: payload
+          })
+
+          return res.data
+            ? { data: res.data as CommonResult }
+            : { error: res.error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }]
     }),
     getMdnsProxyAps: build.query<TableResult<MdnsProxyAp>, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MdnsProxyUrls.getMdnsProxyApsByVenue, params)
-        return {
-          ...req
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxyApsByVenue
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(apiInfo, params, headers)
+        const queryPayload = {
+          fields: ['id', 'name', 'rules', 'activations'],
+          page: 1,
+          pageSize: 10,
+          filters: { venueIds: [params?.venueId] }
+        }
+        const res = await fetchWithBQ({ ...req, body: enableRbac ? JSON.stringify(queryPayload) : undefined })
+
+        if (enableRbac) {
+          const queryVenuePayload = {
+            fields: ['id', 'name'],
+            page: 1,
+            pageSize: 1000,
+            filters: { ids: [params?.venueId] }
+          }
+          const queryApPayload = {
+            fields: ['id', 'name'],
+            page: 1,
+            pageSize: 1000,
+            filters: { ids: [params?.venueId] }
+          }
+          // const venueReq = createHttpRequest(CommonUrlsInfo.getVenues)
+          // const venueReq = createHttpRequest(CommonUrlsInfo.getApsList)
+
+          const result = (res.data ?? []) as TableResult<MdnsProxyViewModel>
+          return {
+            data: {
+              ...result,
+              data: result.data.map(model => ({
+                ...model,
+                serviceId: model.id,
+                serviceName: model.name,
+                serialNumber: '',
+                apName: '',
+                venueId: '',
+                venueName: ''
+              }))
+            }
+          }
+        } else {
+          const res = (await fetchWithBQ({ ...req }))
+
+          if (res.error) {
+            return { error: res.error }
+          }
+
+          const result = (res.data ?? []) as MdnsProxyAp[]
+          return {
+            data: {
+              data: result,
+              page: 0,
+              totalCount: result.length
+            }
+          }
         }
       },
-      transformResponse (response: MdnsProxyAp[]) {
-        return {
-          data: response,
-          page: 0,
-          totalCount: response.length
-        }
-      },
+      // transformResponse (response: MdnsProxyAp[] | TableResult<MdnsProxyViewModel>, _meta, arg) {
+      //   console.log('api.response', response)
+
+      //   if (arg.enableRbac) {
+      //     const data = response as TableResult<MdnsProxyViewModel>
+
+      //     return {
+      //       data: [] as MdnsProxyAp[],
+      //       page: 0,
+      //       totalCount: data.totalCount
+      //     }
+      //   } else {
+      //     const data = response as MdnsProxyAp[]
+      //     return {
+      //       data,
+      //       page: 0,
+      //       totalCount: data.length
+      //     }
+      //   }
+      // },
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -989,7 +1201,7 @@ export const {
   useAddMdnsProxyMutation,
   useUpdateMdnsProxyMutation,
   useDeleteMdnsProxyMutation,
-  useDeleteMdnsProxyListMutation,
+  // useDeleteMdnsProxyListMutation, no use and no support for RBAC
   useAddMdnsProxyApsMutation,
   useDeleteMdnsProxyApsMutation,
   useGetMdnsProxyApsQuery,
