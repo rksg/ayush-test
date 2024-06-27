@@ -2,7 +2,8 @@ import userEvent from '@testing-library/user-event'
 import _         from 'lodash'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { edgeSdLanApi }           from '@acx-ui/rc/services'
 import {
   EdgeSdLanUrls,
   EdgeSdLanSettingP2,
@@ -10,7 +11,7 @@ import {
   CatchErrorDetails,
   EdgeSdLanFixtures
 } from '@acx-ui/rc/utils'
-import { Provider }                                from '@acx-ui/store'
+import { Provider, store }                         from '@acx-ui/store'
 import { mockServer, renderHook, waitFor, screen } from '@acx-ui/test-utils'
 import { RequestPayload }                          from '@acx-ui/types'
 
@@ -463,7 +464,10 @@ describe('useEdgeSdLanActions', () => {
 describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
   const mockedReq = jest.fn()
   beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_HA_TOGGLE)
+    store.dispatch(edgeSdLanApi.util.resetApiState())
+
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
     mockedReq.mockClear()
 
     mockServer.use(
@@ -518,7 +522,8 @@ describe('useGetEdgeSdLanByEdgeOrClusterId', () => {
   })
 
   it('should return the first get data by edgeId when only P1 FF on', async () => {
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_SD_LAN_TOGGLE)
+    // eslint-disable-next-line max-len
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE || ff === Features.EDGES_SD_LAN_TOGGLE)
 
     const { result } = renderHook(() => useGetEdgeSdLanByEdgeOrClusterId('edge_id'), {
       wrapper: ({ children }) => <Provider children={children} />
@@ -603,7 +608,6 @@ describe('SD-LAN feature functions', () => {
   describe('useSdLanScopedVenueNetworks', () => {
     const mockVenueId = 'mock_venue'
     beforeEach(() => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 
@@ -676,7 +680,6 @@ describe('SD-LAN feature functions', () => {
 
   describe('useSdLanScopedNetworkVenues', () => {
     beforeEach(() => {
-      jest.mocked(useIsTierAllowed).mockReturnValue(true)
       jest.mocked(useIsSplitOn).mockReturnValue(true)
     })
 

@@ -1,7 +1,7 @@
 import { useIntl } from 'react-intl'
 
-import { LayoutProps }                                            from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { LayoutProps }                              from '@acx-ui/components'
+import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import {
   AIOutlined,
   AISolid,
@@ -27,6 +27,7 @@ import {
   DataStudioOutlined,
   DataStudioSolid
 } from '@acx-ui/icons'
+import { useIsEdgeReady } from '@acx-ui/rc/components'
 import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
@@ -42,7 +43,7 @@ export function useMenuConfig () {
   const { data: userProfileData, isCustomRole } = useUserProfileContext()
   const isAnltAdvTier = useIsTierAllowed('ANLT-ADV')
   const showConfigChange = useIsSplitOn(Features.CONFIG_CHANGE)
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+  const isEdgeEnabled = useIsEdgeReady()
   const isServiceEnabled = useIsSplitOn(Features.SERVICES)
   const isPolicyEnabled = useIsSplitOn(Features.POLICIES)
   const isCloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
@@ -58,7 +59,28 @@ export function useMenuConfig () {
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
+  const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
 
+  const aiAnalyticsMenu = [{
+    permission: 'READ_INCIDENTS',
+    uri: '/analytics/incidents',
+    label: $t({ defaultMessage: 'Incidents' })
+  }, {
+    permission: 'READ_AI_DRIVEN_RRM',
+    uri: '/analytics/recommendations/crrm',
+    label: $t({ defaultMessage: 'AI-Driven RRM' })
+  }, {
+    permission: 'READ_AI_OPERATIONS',
+    uri: '/analytics/recommendations/aiOps',
+    label: $t({ defaultMessage: 'AI Operations' })
+  }]
+  if (isIntentAIEnabled) {
+    aiAnalyticsMenu.push({
+      permission: 'READ_INTENT_AI',
+      uri: '/analytics/intentAI',
+      label: $t({ defaultMessage: 'Intent AI' })
+    })
+  }
   const config: LayoutProps['menuConfig'] = [
     {
       uri: '/dashboard',
@@ -74,20 +96,7 @@ export function useMenuConfig () {
         {
           type: 'group' as const,
           label: $t({ defaultMessage: 'AI Analytics' }),
-          children: [
-            {
-              uri: '/analytics/incidents',
-              label: $t({ defaultMessage: 'Incidents' })
-            },
-            {
-              uri: '/analytics/recommendations/crrm',
-              label: $t({ defaultMessage: 'AI-Driven RRM' })
-            },
-            {
-              uri: '/analytics/recommendations/aiOps',
-              label: $t({ defaultMessage: 'AI Operations' })
-            }
-          ]
+          children: aiAnalyticsMenu
         },
         {
           type: 'group' as const,

@@ -1,13 +1,14 @@
 import { createContext, useEffect, useState } from 'react'
 
-import { showActionModal, CustomButtonProps, Loader }                                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                          from '@acx-ui/feature-toggle'
-import { useApViewModelQuery, useGetApCapabilitiesQuery, useGetApQuery, useGetVenueQuery } from '@acx-ui/rc/services'
-import { ApDeep,  ApViewModel, CapabilitiesApModel, VenueExtended }                        from '@acx-ui/rc/utils'
-import { useParams }                                                                       from '@acx-ui/react-router-dom'
-import { goToNotFound }                                                                    from '@acx-ui/user'
-import { getIntl }                                                                         from '@acx-ui/utils'
+import { CustomButtonProps, Loader, showActionModal }              from '@acx-ui/components'
+import { Features, useIsSplitOn }                                  from '@acx-ui/feature-toggle'
+import { useApViewModelQuery, useGetApQuery, useGetVenueQuery }    from '@acx-ui/rc/services'
+import { ApDeep, ApViewModel, CapabilitiesApModel, VenueExtended } from '@acx-ui/rc/utils'
+import { useParams }                                               from '@acx-ui/react-router-dom'
+import { goToNotFound }                                            from '@acx-ui/user'
+import { getIntl }                                                 from '@acx-ui/utils'
 
+import { useGetApCapabilities } from '../hooks'
 
 import { AdvancedTab, ApAdvancedContext }             from './AdvancedTab'
 import ApEditPageHeader                               from './ApEditPageHeader'
@@ -64,9 +65,8 @@ export interface ApEditContextExtendedProps extends ApEditContextProps {
 export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 
 export function ApEdit () {
-  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
-  const params = useParams()
-  const { activeTab } = params
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { serialNumber, activeTab } = useParams()
   const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   const [previousPath, setPreviousPath] = useState('')
@@ -88,25 +88,31 @@ export function ApEdit () {
   const {
     data: apViewmodel
   } = useApViewModelQuery({
-    params,
     payload: {
       entityType: 'aps',
       fields: ['name', 'serialNumber', 'venueId'],
-      filters: { serialNumber: [params.serialNumber] }
-    } }, { skip: !isWifiRbacEnabled })
+      filters: { serialNumber: [serialNumber] }
+    } }, { skip: !isUseWifiRbacApi })
 
-  const {
-    data: getedApData,
-    isLoading: isGetApLoading
-  } = useGetApQuery({ params })
-
-  const {
-    data: capabilities,
-    isLoading: isGetApCapsLoading
-  } = useGetApCapabilitiesQuery({ params }, { skip: isLoaded })
+  const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
+    params: { serialNumber, venueId: apViewmodel?.venueId },
+    enableRbac: isUseWifiRbacApi
+  }, { skip: isUseWifiRbacApi && !apViewmodel?.venueId })
 
   // venueId is not exist in RBAC version AP data
-  const targetVenueId = isWifiRbacEnabled ? apViewmodel?.venueId : getedApData?.venueId
+  const targetVenueId = isUseWifiRbacApi ? apViewmodel?.venueId : getedApData?.venueId
+
+  const params = {
+    venueId: targetVenueId,
+    serialNumber
+  }
+
+  const { data: capabilities, isLoading: isGetApCapsLoading } = useGetApCapabilities({
+    params,
+    modelName: getedApData?.model,
+    skip: isLoaded,
+    enableRbac: isUseWifiRbacApi
+  })
 
   // fetch venueName
   const {
@@ -121,21 +127,16 @@ export function ApEdit () {
     if (!isGetApLoading && !isGetApCapsLoading) {
       const modelName = getedApData?.model
       if (modelName && capabilities) {
-        const setData = async () => {
-          const curApCapabilities = capabilities.apModels.find(cap => cap.model === modelName)
+        setApData(getedApData)
+        setApCapabilities(capabilities)
 
-          setApData(getedApData)
-          setApCapabilities(curApCapabilities as CapabilitiesApModel)
-
-          setIsLoaded(true)
-        }
-
-        setData()
+        setIsLoaded(true)
       }
     }
   }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
 
-  const isLoading = !targetVenueId
+  // need to wait venueData ready, venueData.id is using inside all tabs.
+  const isLoading = !venueData
 
   return <ApDataContext.Provider value={{ apData, apCapabilities, venueData }}>
     <ApEditContext.Provider value={{

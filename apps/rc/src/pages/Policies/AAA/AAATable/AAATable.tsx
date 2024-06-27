@@ -21,7 +21,8 @@ import {
   AAA_LIMIT_NUMBER
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 export default function AAATable () {
   const { $t } = useIntl()
@@ -65,10 +66,12 @@ export default function AAATable () {
 
   const rowActions: TableProps<AAAViewModalType>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows, clearSelection) => doDelete(selectedRows, clearSelection)
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows: AAAViewModalType[]) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
@@ -102,8 +105,10 @@ export default function AAATable () {
           }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}>
+          <TenantLink
+            to={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
+            scopeKey={[WifiScopes.CREATE]}
+          >
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= radiusMaxiumnNumber
@@ -120,7 +125,10 @@ export default function AAATable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={
+            // eslint-disable-next-line max-len
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

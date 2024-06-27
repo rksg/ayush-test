@@ -3,17 +3,19 @@ import { useEffect, useState } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 import { useParams }              from 'react-router-dom'
 
-import { Button }                                                  from '@acx-ui/components'
-import { ApGroupTable, ApGroupsTabContext, defaultApGroupPayload } from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useVenuesListQuery }                from '@acx-ui/rc/services'
-import { usePollingTableQuery }                                    from '@acx-ui/rc/utils'
-import { TenantLink }                                              from '@acx-ui/react-router-dom'
-import { WifiScopes }                                              from '@acx-ui/types'
+import { Button }                                   from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { ApGroupTable, ApGroupsTabContext }         from '@acx-ui/rc/components'
+import { useApGroupsListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
+import { ApGroupViewModel, usePollingTableQuery }   from '@acx-ui/rc/utils'
+import { TenantLink }                               from '@acx-ui/react-router-dom'
+import { WifiScopes }                               from '@acx-ui/types'
 
 
 export default function useApGroupsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ apGroupsCount, setApGroupsCount ] = useState(0)
 
   const { venueFilterOptions } = useVenuesListQuery(
@@ -33,11 +35,13 @@ export default function useApGroupsTable () {
     }
   )
 
-  const apGroupListTableQuery = usePollingTableQuery({
+  const apGroupListTableQuery = usePollingTableQuery<ApGroupViewModel>({
     useQuery: useApGroupsListQuery,
     defaultPayload: {
-      ...defaultApGroupPayload
-    }
+      fields: ['id', 'name'],
+      filters: { isDefault: [false] }
+    },
+    enableRbac: isWifiRbacEnabled
   })
 
   useEffect(() => {

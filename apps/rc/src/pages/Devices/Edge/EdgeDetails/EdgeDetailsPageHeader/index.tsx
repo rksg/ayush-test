@@ -9,12 +9,13 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Button, CaretDownSolidIcon, Dropdown, PageHeader, RangePicker } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import { EdgeStatusLight, useEdgeActions }                               from '@acx-ui/rc/components'
 import {
   useEdgeBySerialNumberQuery, useGetEdgeClusterQuery
 } from '@acx-ui/rc/services'
 import {
-  EdgeStatusEnum, rebootableEdgeStatuses, resettabaleEdgeStatuses
+  EdgeStatusEnum, rebootShutdownEdgeStatusWhiteList, resettabaleEdgeStatuses
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -64,18 +65,25 @@ export const EdgeDetailsPageHeader = () => {
 
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-  const { reboot, factoryReset, deleteEdges } = useEdgeActions()
+  const { reboot, shutdown, factoryReset, deleteEdges } = useEdgeActions()
 
   const status = currentEdge?.deviceStatus as EdgeStatusEnum
   const currentEdgeOperational = status === EdgeStatusEnum.OPERATIONAL
+  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
 
   const menuConfig = [
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reboot' }),
       key: 'reboot',
-      showupstatus: rebootableEdgeStatuses
+      showupstatus: rebootShutdownEdgeStatusWhiteList
     },
+    ...(isGracefulShutdownReady ? [{
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      label: $t({ defaultMessage: 'Shutdown' }),
+      key: 'shutdown',
+      showupstatus: rebootShutdownEdgeStatusWhiteList
+    }] : []),
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       label: $t({ defaultMessage: 'Reset & Recover' }),
@@ -101,6 +109,9 @@ export const EdgeDetailsPageHeader = () => {
       case 'reboot':
         reboot(currentEdge)
         break
+      case 'shutdown':
+        shutdown(currentEdge)
+        break
       case 'factoryReset':
         factoryReset(currentEdge)
         break
@@ -120,9 +131,8 @@ export const EdgeDetailsPageHeader = () => {
       items={
         menuConfig.filter(item =>
           item.showupstatus?.includes(status) && hasPermission({ scopes: item.scopeKey })
-        ).map(item => {
-          delete item.showupstatus
-          return item
+        ).map(({ showupstatus, scopeKey, ...itemFields }) => {
+          return { ...itemFields }
         })
       }
     />
@@ -159,7 +169,7 @@ export const EdgeDetailsPageHeader = () => {
         />,
         ...filterByAccess([
           <Dropdown
-            scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
+            // scopeKey={[EdgeScopes.DELETE, EdgeScopes.UPDATE]}
             overlay={menu}>{()=>
               <Button>
                 <Space>

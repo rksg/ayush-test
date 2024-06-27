@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { administrationApi, apApi, firmwareApi, venueApi }                        from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
@@ -202,6 +203,10 @@ describe('AP Form - Add', () => {
       rest.get(
         CommonUrlsInfo.getVenueApEnhancedKey.url,
         (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_req, res, ctx) => res(ctx.json([]))
       )
     )
   })
@@ -238,7 +243,8 @@ describe('AP Form - Add', () => {
 
   describe('handle Add AP and Coordinates Modal', () => {
     beforeEach(async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
     })
 
     it('should handle Add AP correctly', async () => {
@@ -313,7 +319,8 @@ describe('AP Form - Add', () => {
 
   describe('handle error occurred', () => {
     beforeEach(async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
     })
 
     it('should handle error occurred', async () => {

@@ -11,7 +11,8 @@ import {
   SwitchVlan,
   PortSettingModel,
   VenueMessages,
-  Vlan
+  Vlan,
+  VlanModalType
 } from '@acx-ui/rc/utils'
 import { useParams }     from '@acx-ui/react-router-dom'
 import { SwitchScopes }  from '@acx-ui/types'
@@ -48,7 +49,8 @@ export function SelectVlanModal (props: {
   switchIds?: string[],
   venueId?: string,
   updateSwitchVlans?: (vlan: Vlan) => void,
-  vlanDisabledTooltip: string
+  vlanDisabledTooltip: string,
+  defaultTabKey?: VlanModalType
 }) {
   const { $t } = getIntl()
   const params = useParams()
@@ -56,7 +58,7 @@ export function SelectVlanModal (props: {
     setUseVenueSettings, onValuesChange, hasSwitchProfile, cliApplied,
     vlanDisabledTooltip, defaultVlan, switchVlans, switchIds, venueId, switchFamilyModel,
     vlanUsedByVe = [], taggedVlans = '', untaggedVlan,
-    showVoiceVlan, voiceVlan, isVoiceVlanInvalid
+    showVoiceVlan, voiceVlan, isVoiceVlanInvalid, defaultTabKey = VlanModalType.UNTAGGED
   } = props
 
   const isSwitchLevelVlanEnabled = useIsSplitOn(Features.SWITCH_LEVEL_VLAN)
@@ -331,10 +333,10 @@ export function SelectVlanModal (props: {
         </Space>
       ]}
     >
-      <Tabs stickyTop={false} defaultActiveKey='untaggedVlan'>
+      <Tabs stickyTop={false} defaultActiveKey={defaultTabKey}>
         <Tabs.TabPane
           tab={$t({ defaultMessage: 'Untagged VLAN' })}
-          key='untaggedVlan'
+          key={VlanModalType.UNTAGGED}
         >
           <Typography.Text style={{
             display: 'inline-block', fontSize: '12px', marginBottom: '6px'
@@ -364,7 +366,7 @@ export function SelectVlanModal (props: {
             {$t({ defaultMessage: 'Tagged VLANs' })}
             {isVoiceVlanInvalidTmp && <InformationSolid />}
           </UI.TaggedVlanTab>}
-          key='taggedVlans'
+          key={VlanModalType.TAGGED}
         >
           <Typography.Text style={{
             display: 'inline-block', fontSize: '12px', marginBottom: '6px'

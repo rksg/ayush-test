@@ -324,7 +324,7 @@ export function SelfSignInForm () {
             valuePropName='checked'
             initialValue={false}
             children={
-              <Checkbox disabled={!isSocial}
+              <Checkbox disabled={!(isSocial || enableEmailLogin)}
                 onChange={(e) => {
                   if (e.target.checked) {
                     form.setFieldValue(['guestPortal', 'socialDomains'], allowedDomainsValue)
@@ -373,7 +373,7 @@ export function SelfSignInForm () {
             name={['guestPortal', 'socialEmails']}
             valuePropName='checked'
             initialValue={false}>
-            <Checkbox disabled={!isSocial}>
+            <Checkbox disabled={!(isSocial || enableEmailLogin)}>
               {!isSocial && <Tooltip title={$t({
                 defaultMessage: 'This option applies only when signing ' +
                   'in with social media platforms is supported'
@@ -392,7 +392,8 @@ export function SelfSignInForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip></>
         </Form.Item>
-        {enableSmsLogin && <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
+        {(enableSmsLogin || enableEmailLogin) &&
+        <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
           <Space align='start'>
             <Form.Item
               noStyle

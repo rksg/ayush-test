@@ -23,7 +23,7 @@ import {
   EdgeStatusEnum,
   TABLE_QUERY,
   TableQuery,
-  allowRebootForStatus,
+  allowRebootShutdownForStatus,
   allowResetForStatus,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
@@ -86,7 +86,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-
+  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
@@ -112,7 +112,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     })
 
-  const { deleteEdges, factoryReset, reboot, sendOtp } = useEdgeActions()
+  const { deleteEdges, factoryReset, reboot, shutdown, sendOtp } = useEdgeActions()
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
@@ -243,10 +243,19 @@ export const EdgesTable = (props: EdgesTableProps) => {
     {
       scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
-        allowRebootForStatus(selectedRows[0]?.deviceStatus)),
+        allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (rows, clearSelection) => {
         reboot(rows[0], clearSelection)
+      }
+    },
+    {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
+        allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
+      label: $t({ defaultMessage: 'Shutdown' }),
+      onClick: (rows, clearSelection) => {
+        shutdown(rows[0], clearSelection)
       }
     },
     {

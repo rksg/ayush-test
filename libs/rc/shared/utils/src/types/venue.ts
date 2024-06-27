@@ -448,6 +448,7 @@ export interface ConfigurationProfile {
 	vlans?: Vlan[],
 	acls?: Acl[],
 	venues?: string[]
+	applyOnboardOnly: boolean
 }
 export interface TriBandSettings {
   enabled: boolean
@@ -491,6 +492,13 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
+  } | {
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
   },
   'afcEnabled': boolean
 }

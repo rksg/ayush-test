@@ -45,7 +45,8 @@ closeTooltip: Function
       'apStatusData.cellularInfo',
       'healthStatus',
       'clients',
-      'downLinkCount'
+      'downLinkCount',
+      'powerSavingStatus'
     ]
   }
 

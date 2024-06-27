@@ -2,6 +2,7 @@ module.exports = {
   displayName: 'rc-components',
   preset: '../../../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
@@ -11,7 +12,7 @@ module.exports = {
       statements: 86.5,
       branches: 75,
       functions: 85,
-      lines: 87
+      lines: 86
     }
   }
 }

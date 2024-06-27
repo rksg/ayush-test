@@ -1,12 +1,13 @@
 import { Form, Input, Modal }       from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { showActionModal }                                        from '@acx-ui/components'
-import { useIsSplitOn, useIsTierAllowed, Features, TierFeatures } from '@acx-ui/feature-toggle'
+import { showActionModal }        from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
   useRebootEdgeMutation,
+  useShutdownEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
 import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
@@ -14,17 +15,22 @@ import { getIntl }                    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
-export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
+export const useIsEdgeReady = () => {
   const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  return isEdgeReady
+}
+
+export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
+  const isEdgeEnabled = useIsEdgeReady()
   const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
-  return isEdgeEnabled && isEdgeReady && isEdgeFeatureReady
+  return isEdgeEnabled && isEdgeFeatureReady
 }
 
 export const useEdgeActions = () => {
   const { $t } = useIntl()
   const [ invokeDeleteEdge ] = useDeleteEdgeMutation()
   const [ invokeRebootEdge ] = useRebootEdgeMutation()
+  const [ invokeShutdownEdge ] = useShutdownEdgeMutation()
   const [ invokeFactoryResetEdge ] = useFactoryResetEdgeMutation()
   const [ invokeSendOtp ] = useSendOtpMutation()
 
@@ -52,6 +58,42 @@ export const useEdgeActions = () => {
           closeAfterAction: true,
           handler: () => {
             invokeRebootEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
+          }
+        }]
+      }
+    })
+  }
+
+  const shutdown = (data: EdgeStatus, callback?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t(
+        { defaultMessage: 'Shutdown "{edgeName}"?' },
+        { edgeName: data.name }
+      ),
+      content: $t({
+        defaultMessage: `Shutdown will safely end all operations on SmartEdge. You will need to 
+        manually restart the device. Are you sure you want to shut down this SmartEdge?`
+      }),
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel'
+        }, {
+          text: $t({ defaultMessage: 'Shutdown' }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler: () => {
+            invokeShutdownEdge({
               params: {
                 venueId: data.venueId,
                 edgeClusterId: data.clusterId,
@@ -155,6 +197,7 @@ export const useEdgeActions = () => {
 
   return {
     reboot,
+    shutdown,
     factoryReset,
     deleteEdges,
     sendOtp

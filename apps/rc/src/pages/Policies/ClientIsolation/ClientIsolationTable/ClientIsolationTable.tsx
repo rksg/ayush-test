@@ -18,7 +18,8 @@ import {
   ClientIsolationViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
@@ -53,12 +54,14 @@ export default function ClientIsolationTable () {
 
   const rowActions: TableProps<ClientIsolationViewModel>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (selectedRows: ClientIsolationViewModel[], clearSelection) => {
         doDelete(selectedRows, clearSelection)
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedRows) => selectedRows?.length === 1,
       onClick: ([{ id }]) => {
@@ -86,8 +89,11 @@ export default function ClientIsolationTable () {
           }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}>
+          <TenantLink
+            // eslint-disable-next-line max-len
+            to={getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.CREATE })}
+            scopeKey={[WifiScopes.CREATE]}
+          >
             <Button type='primary'>{$t({ defaultMessage: 'Add Client Isolation Profile' })}</Button>
           </TenantLink>
         ])}
@@ -101,7 +107,10 @@ export default function ClientIsolationTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={
+            // eslint-disable-next-line max-len
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
