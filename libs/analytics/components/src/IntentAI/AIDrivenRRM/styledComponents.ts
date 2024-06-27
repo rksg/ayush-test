@@ -1,5 +1,5 @@
-import { Typography } from 'antd'
-import styled         from 'styled-components/macro'
+import { Typography }  from 'antd'
+import styled, { css } from 'styled-components/macro'
 
 import { Card }                                 from '@acx-ui/components'
 import { AIDrivenRRM, LinkDocument, LinkVideo } from '@acx-ui/icons'
@@ -97,4 +97,12 @@ export const HeaderTitle = styled.div`
 
 export const Header = styled.div`
   display: flex;
+`
+
+export const detailsHeaderFontStyles = css`
+  color: var(--acx-primary-black);
+  font-family: var(--acx-accent-brand-font);
+  font-size: var(--acx-headline-3-font-size);
+  line-height: var(--acx-headline-3-line-height);
+  font-weight: var(--acx-headline-3-font-weight);
 `

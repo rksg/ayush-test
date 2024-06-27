@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Legend should render properly 1`] = `
+<DocumentFragment>
+  <div
+    class="sc-iIPllB gFjFRm"
+  >
+    <span>
+      <div
+        class="sc-ezWOiH hiYxwv"
+      >
+        Channel Bandwidth
+      </div>
+      <div
+        class="sc-gicCDI eSzauw"
+      >
+        <span
+          class="sc-kLLXSd wbxZu"
+        />
+        <div
+          class="sc-bZkfAO hhlPmm"
+        >
+          40 MHz
+        </div>
+        <span
+          class="sc-kLLXSd gjzfIO"
+        />
+        <div
+          class="sc-bZkfAO hhlPmm"
+        >
+          20 MHz
+        </div>
+      </div>
+    </span>
+    <span>
+      <div
+        class="sc-ezWOiH hiYxwv"
+      >
+        Transmit Power
+      </div>
+      <div
+        class="sc-gicCDI eSzauw"
+      >
+        <span
+          class="sc-ikZpkk fnTkzs"
+        />
+        <div
+          class="sc-bZkfAO hhlPmm"
+        >
+          No interfering links
+        </div>
+        <span
+          class="sc-ikZpkk hWDleh"
+        />
+        <div
+          class="sc-bZkfAO hhlPmm"
+        >
+          Has interfering links
+        </div>
+        <span
+          class="sc-ikZpkk bBFhYA"
+        />
+        <div
+          class="sc-bZkfAO hhlPmm"
+        >
+          Reduction in transmit power
+        </div>
+      </div>
+    </span>
+  </div>
+</DocumentFragment>
+`;

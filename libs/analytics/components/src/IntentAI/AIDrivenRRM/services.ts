@@ -57,7 +57,10 @@ export type EnhancedRecommendation = RecommendationDetails & {
   monitoring: null | { until: string };
   tooltipContent: string | MessageDescriptor;
   crrmOptimizedState?: IconValue;
-  crrmInterferingLinksText?: React.ReactNode;
+  crrmInterferingLinks?: {
+    before: (number | number[] | null)[];
+    after: (number | number[] | null)[];
+  }
   intentType?: string;
 }
 
@@ -85,12 +88,27 @@ export type RecommendationAp = {
   version: string;
 }
 
+export function extractBeforeAfter (value: CrrmListItem['kpis']) {
+  const { current, previous, projected } = value!
+  const [before, after] = [previous, current, projected]
+    .filter(value => value !== null)
+  return [before, after]
+}
+
+export const getCrrmInterferingLinks = (
+  kpi_number_of_interfering_links: RecommendationKpi['']
+) => {
+  const [before, after] = extractBeforeAfter(kpi_number_of_interfering_links)
+  return { before, after }
+}
+
 export const transformDetailsResponse = (details: RecommendationDetails) => {
   const {
     code,
     statusTrail,
     status,
-    appliedTime
+    appliedTime,
+    kpi_number_of_interfering_links
   } = details
   const {
     priority, category, summary, recommendedValueTooltipContent
@@ -117,7 +135,8 @@ export const transformDetailsResponse = (details: RecommendationDetails) => {
     summary,
     appliedOnce,
     firstAppliedAt,
-    intentType
+    intentType,
+    crrmInterferingLinks: getCrrmInterferingLinks(kpi_number_of_interfering_links!)
   } as EnhancedRecommendation
 }
 

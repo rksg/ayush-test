@@ -28,7 +28,7 @@ export function IntentAIDrivenRRM () {
     { ...codeQuery.data!, isCrrmPartialEnabled },
     { skip: !Boolean(codeQuery.data?.code) }
   )
-  const details = detailsQuery.data!
+  const details = detailsQuery?.data!
 
   return (
     <Loader states={[codeQuery, detailsQuery]}>
@@ -50,7 +50,7 @@ export function IntentAIDrivenRRM () {
         buttonLabel={{
           submit: 'Apply'
         }}
-        initialValues={detailsQuery?.data!}
+        initialValues={details}
       >
         <StepsForm.StepForm
           title={$t(config.steps.title.introduction)}
