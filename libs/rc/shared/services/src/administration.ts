@@ -511,7 +511,18 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Activate Entitlement'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'ACTIVATIONS' }
+            ]))
+          })
+        })
+      }
     }),
     patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
