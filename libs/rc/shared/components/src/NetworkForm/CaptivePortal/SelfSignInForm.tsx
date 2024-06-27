@@ -17,7 +17,7 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
-import { useGetNotificationSmsQuery }     from '@acx-ui/rc/services'
+import { useGetNotificationSmsQuery }                      from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
@@ -97,7 +97,7 @@ export function SelfSignInForm () {
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const params = useParams()
-  const smsUsage = useGetNotificationSmsQuery({ params }, {skip: !isSmsProviderEnabled})
+  const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
   const isSMSTokenAvailable = isSmsProviderEnabled ?
     !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
      (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
