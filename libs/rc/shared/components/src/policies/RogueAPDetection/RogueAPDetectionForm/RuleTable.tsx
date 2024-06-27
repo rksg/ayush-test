@@ -32,7 +32,6 @@ type DragItemProps = {
 
 const RuleTable = (props: RuleTableProps) => {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { $t } = useIntl()
   const { edit } = props
 
@@ -42,8 +41,7 @@ const RuleTable = (props: RuleTableProps) => {
     useQueryFn: useRoguePolicyQuery,
     useTemplateQueryFn: useGetRoguePolicyTemplateQuery,
     skip: !edit,
-    enableRbac,
-    enableTemplateRbac
+    enableRbac
   })
 
   const [ruleName, setRuleName] = useState('')

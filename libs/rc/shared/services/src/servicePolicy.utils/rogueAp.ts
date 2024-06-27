@@ -1,8 +1,8 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 
 import {
-  ApiVersionEnum,
-  CommonResult,
+  ApiVersionEnum, CommonRbacUrlsInfo,
+  CommonResult, CommonUrlsInfo,
   EnhancedRoguePolicyType,
   GetApiVersionHeader,
   PoliciesConfigTemplateUrlsInfo,
@@ -102,13 +102,13 @@ export function updateRoguePolicyFn (isTemplate : boolean = false) : QueryFn<Rog
 }
 
 export function getVenueRoguePolicyFn (isTemplate : boolean = false) : QueryFn<VenueRogueAp> {
-  const api = isTemplate ? PoliciesConfigTemplateUrlsInfo : RogueApUrls
   return async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
+      const api = isTemplate ? PoliciesConfigTemplateUrlsInfo : RogueApUrls
       const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
       if (enableRbac) {
         const [venueRogueApResponse, roguePolicyResponse] = await Promise.all([
-          fetchWithBQ(createHttpRequest(api.getVenueRogueApRbac, params, customHeaders)),
+          fetchWithBQ(createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.getVenueRogueApRbac : CommonRbacUrlsInfo.getVenueRogueAp, params, customHeaders)),
           fetchWithBQ({
             ...createHttpRequest(api.getRoguePolicyListRbac, params, customHeaders),
             body: JSON.stringify({ filters: { venueIds: [params?.venueId] }, fields: ['id'] })
@@ -125,7 +125,7 @@ export function getVenueRoguePolicyFn (isTemplate : boolean = false) : QueryFn<V
           } as VenueRogueAp
         }
       } else {
-        const req = createHttpRequest(api.getVenueRogueAp, params, customHeaders)
+        const req = createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.getVenueRogueAp : CommonUrlsInfo.getVenueRogueAp, params, customHeaders)
         const res = await fetchWithBQ(req)
         // Ensure the return type is QueryReturnValue
         if (res.error) {
@@ -159,7 +159,7 @@ export function updateVenueRoguePolicyFn (isTemplate : boolean = false) : QueryF
 
           if (currentReportThreshold !== reportThreshold) {
             const updateVenueRogueApPromise = fetchWithBQ({
-              ...createHttpRequest(api.updateVenueRogueApRbac, params, customHeaders),
+              ...createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.updateVenueRogueApRbac : CommonRbacUrlsInfo.updateVenueRogueAp, params, customHeaders),
               body: JSON.stringify({ reportThreshold })
             })
             promises.push(updateVenueRogueApPromise)
@@ -175,7 +175,7 @@ export function updateVenueRoguePolicyFn (isTemplate : boolean = false) : QueryF
         return { data: { enabled, reportThreshold, roguePolicyId } as VenueRogueAp }
       } else {
         const req = {
-          ...createHttpRequest(api.updateVenueRogueAp, params, customHeaders),
+          ...createHttpRequest(isTemplate ? PoliciesConfigTemplateUrlsInfo.updateVenueRogueAp : CommonUrlsInfo.updateVenueRogueAp, params, customHeaders),
           body: payload
         }
         const res = await fetchWithBQ(req)

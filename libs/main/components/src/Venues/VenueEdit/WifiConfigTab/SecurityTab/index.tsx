@@ -127,8 +127,7 @@ export function SecurityTab () {
   const { data: venueRogueApData } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetVenueRogueApQuery,
     useTemplateQueryFn: useGetVenueRogueApTemplateQuery,
-    enableRbac,
-    enableTemplateRbac
+    enableRbac
   })
 
   // eslint-disable-next-line max-len
@@ -137,8 +136,7 @@ export function SecurityTab () {
       useQueryFn: useEnhancedRoguePoliciesQuery,
       useTemplateQueryFn: useGetRoguePolicyTemplateListQuery,
       payload: DEFAULT_PAYLOAD,
-      enableRbac,
-      enableTemplateRbac
+      enableRbac
     })
 
     if (data?.totalCount === 0) {
