@@ -1,3 +1,6 @@
+import { Fragment } from 'react'
+
+import { Tooltip }   from 'antd'
 import { IntlShape } from 'react-intl'
 
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
@@ -231,6 +234,60 @@ export function useSwitchFirmwareUtils () {
     return compareSwitchVersion(version, inUseVersion) > 0
   }
 
+  function getCurrentFirmwareDisplay (
+    intl: IntlShape,
+    row: FirmwareSwitchVenueV1002
+  ) {
+
+    let currentVersionDisplay = []
+    let tooltipArray = []
+
+    const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+      [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: '(7150)' }),
+      [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: '(7550-7850)' }),
+      [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: '(8200)' })
+    }
+
+
+    for (const key in SwitchFirmwareModelGroup) {
+      const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
+      const modelGroupValue =
+        SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
+      const versionGroup = row?.versions?.filter(
+        (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
+
+      if (versionGroup) {
+        const modelGroupText = modelGroupDisplayText[modelGroupValue]
+        const switchVersion = parseSwitchVersion(versionGroup.version)
+        const tooltipMargin = index === 0 ||
+          index === tooltipArray.length - 1 ? '5px 0px' : '10px 0px'
+
+        currentVersionDisplay.push(
+          <Fragment key={modelGroupValue}>
+            {modelGroupText} <b>{switchVersion}</b>;
+          </Fragment>
+        )
+
+        tooltipArray.push(
+          <div key={modelGroupValue}
+            style={{
+              margin: tooltipMargin
+            }}>
+            <div style={{ color: '#c4c4c4' }}>
+              {`${intl.$t({ defaultMessage: 'ICX Models' })} ${modelGroupText}`}
+            </div>
+            <div> {switchVersion} </div>
+          </div>
+        )
+      }
+    }
+
+    return currentVersionDisplay.length > 0 ?
+      <Tooltip title={<div>{tooltipArray}</div>} placement='bottom' >
+        <div>{currentVersionDisplay}</div>
+      </Tooltip> : noDataDisplay
+  }
+
   return {
     parseSwitchVersion,
     getSwitchVersionLabel,
@@ -242,6 +299,7 @@ export function useSwitchFirmwareUtils () {
     sortAvailableVersionProp,
     checkCurrentVersions,
     checkCurrentVersionsV1002,
-    isDowngradeVersion
+    isDowngradeVersion,
+    getCurrentFirmwareDisplay
   }
 }

@@ -45,7 +45,6 @@ import * as UI                                           from './styledComponent
 import { SwitchScheduleDrawer }                          from './SwitchScheduleDrawer'
 import { SwitchFirmwareWizardType, SwitchUpgradeWizard } from './SwitchUpgradeWizard'
 import { VenueStatusDrawer }                             from './VenueStatusDrawer'
-import React from 'react'
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
@@ -58,7 +57,7 @@ export const useDefaultVenuePayload = (): RequestPayload => {
 
 export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
-  const { parseSwitchVersion } = useSwitchFirmwareUtils()
+  const { parseSwitchVersion, getCurrentFirmwareDisplay } = useSwitchFirmwareUtils()
   const { $t } = useIntl()
 
   const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
@@ -170,47 +169,7 @@ export function VenueFirmwareList () {
       filterMultiple: false,
       filterKey: 'includeExpired',
       render: function (_, row) {
-
-        let currentVersionDisplay = []
-        let tooltipArray = []
-
-        for (const key in SwitchFirmwareModelGroup) {
-          const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
-          const modelGroupValue =
-            SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
-          const versionGroup = row?.versions?.filter(
-            (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
-
-          if (versionGroup) {
-            const modelGroupText = modelGroupDisplayText[modelGroupValue]
-            const switchVersion = parseSwitchVersion(versionGroup.version)
-            const tooltipMargin = index === 0 ||
-              index === tooltipArray.length - 1 ? '5px 0px' : '10px 0px'
-
-            currentVersionDisplay.push(
-              <Fragment key={modelGroupValue}>
-                {modelGroupText} <b>{switchVersion}</b>;
-              </Fragment>
-            )
-
-            tooltipArray.push(
-              <div key={modelGroupValue}
-                style={{
-                  margin: tooltipMargin
-                }}>
-                <div style={{ color: '#c4c4c4' }}>
-                  {`${$t({ defaultMessage: 'ICX Models' })} ${modelGroupText}`}
-                </div>
-                <div> {switchVersion} </div>
-              </div>
-            )
-          }
-        }
-
-        return currentVersionDisplay.length > 0 ?
-          <Tooltip title={<div>{tooltipArray}</div>} placement='bottom' >
-            <div>{currentVersionDisplay}</div>
-          </Tooltip> : noDataDisplay
+        return getCurrentFirmwareDisplay(intl, row)
       }
     },
     {
