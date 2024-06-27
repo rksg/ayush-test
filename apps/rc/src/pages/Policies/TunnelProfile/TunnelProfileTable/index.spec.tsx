@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }               from '@acx-ui/feature-toggle'
+import { Features }                             from '@acx-ui/feature-toggle'
 import { useIsEdgeFeatureReady }                from '@acx-ui/rc/components'
 import { networkApi, nsgApi, tunnelProfileApi } from '@acx-ui/rc/services'
 import {
@@ -260,11 +260,6 @@ describe('TunnelProfileList', () => {
   })
 
   describe('when SD-LAN is ready', () => {
-    const whiteListFlags = [
-      Features.EDGES_TOGGLE,
-      Features.EDGES_SD_LAN_TOGGLE,
-      Features.EDGES_SD_LAN_HA_TOGGLE
-    ]
     const mockedSdLanReq = jest.fn()
     const mockedSdLanDataList = {
       totalCount: 1,
@@ -272,9 +267,10 @@ describe('TunnelProfileList', () => {
     }
 
     beforeEach(() => {
-      // eslint-disable-next-line max-len
-      jest.mocked(useIsSplitOn).mockImplementation((flag) => whiteListFlags.includes(flag as Features))
-
+      jest.mocked(useIsEdgeFeatureReady)
+        .mockImplementation(ff => ff === Features.EDGES_TOGGLE
+          || ff === Features.EDGES_SD_LAN_TOGGLE
+          || ff === Features.EDGES_SD_LAN_HA_TOGGLE)
       mockServer.use(
         rest.post(
           TunnelProfileUrls.getTunnelProfileViewDataList.url,

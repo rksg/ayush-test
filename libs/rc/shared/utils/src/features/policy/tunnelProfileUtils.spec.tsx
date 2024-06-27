@@ -217,7 +217,12 @@ describe('tunnelProfileUtils', () => {
       expect(getTunnelProfileFormDefaultValues(undefined)).toStrictEqual({
         mtuType: MtuTypeEnum.AUTO,
         ageTimeMinutes: 20,
-        ageTimeUnit: AgeTimeUnit.MINUTES
+        ageTimeUnit: AgeTimeUnit.MINUTES,
+        keepAliveInterval: 2,
+        keepAliveRetry: 5,
+        mtuRequestRetry: 5,
+        mtuRequestTimeout: 2,
+        mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.SECONDS
       })
     })
 
