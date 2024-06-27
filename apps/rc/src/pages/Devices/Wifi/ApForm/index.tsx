@@ -33,7 +33,8 @@ import {
   useLazyGetVenueApManagementVlanQuery,
   useLazyGetApManagementVlanQuery,
   useLazyGetApValidChannelQuery,
-  useLazyApGroupsListQuery
+  useLazyApGroupsListQuery,
+  useMoveApToTargetApGroupMutation
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -118,6 +119,7 @@ export function ApForm () {
   const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
   const [getApValidChannel] = useLazyGetApValidChannelQuery()
   const [getVenueApEnhancedKey] = useLazyGetVenueApEnhancedKeyQuery()
+  const [moveApToTargetApGroup] = useMoveApToTargetApGroupMutation()
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
@@ -226,13 +228,19 @@ export function ApForm () {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
-        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
+        ...omit(
+          values,
+          'deviceGps',
+          (isUseWifiRbacApi ? 'venueId' : ''),
+          (isUseWifiRbacApi ? 'apGroupId' : '')
+        ),
         ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
       }
       await addAp({
         params: {
           tenantId: tenantId,
-          venueId: values.venueId
+          venueId: values.venueId,
+          apGroupId: values.apGroupId
         },
         payload: isUseWifiRbacApi ? payload : [payload],
         enableRbac: isUseWifiRbacApi
@@ -318,6 +326,15 @@ export function ApForm () {
         payload,
         enableRbac: isUseWifiRbacApi
       }).unwrap()
+      if(isUseWifiRbacApi) {
+        await moveApToTargetApGroup({
+          params: {
+            venueId: values.venueId,
+            apGroupId: values.apGroupId,
+            serialNumber
+          }
+        }).unwrap()
+      }
       if (isOnlyOneTab) {
         redirectPreviousPage(navigate, previousPath, basePath)
       }

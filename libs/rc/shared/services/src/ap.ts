@@ -461,11 +461,22 @@ export const apApi = baseApApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
     }),
+    moveApToTargetApGroup: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(WifiRbacUrlsInfo.moveApToTargetApGroup, params, apiCustomHeader)
+        return req
+      },
+      invalidatesTags: [{ type: 'Ap', id: 'LIST' }]
+    }),
     importAp: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = GetUploadFormDataApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.addAp, params, apiCustomHeader)
+        const req = createHttpRequest(
+          enableRbac ? WifiRbacUrlsInfo.addApWithDefaultGroup : WifiUrlsInfo.addAp,
+          params,
+          apiCustomHeader
+        )
         return {
           ...req,
           body: payload
@@ -1496,7 +1507,8 @@ export const {
   useLazyGetApManagementVlanQuery,
   useUpdateApManagementVlanMutation,
   useLazyGetApFeatureSetsQuery,
-  useLazyGetApNeighborsQuery
+  useLazyGetApNeighborsQuery,
+  useMoveApToTargetApGroupMutation
 } = apApi
 
 

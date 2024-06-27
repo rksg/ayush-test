@@ -175,7 +175,18 @@ export const WifiRbacUrlsInfo: { [key: string]: ApiInfo } = {
   addAp: {
     method: 'post',
     // url: '/venues/aps',
+    url: '/venues/:venueId/apGroups/:apGroupId/aps',
+    newApi: true
+  },
+  addApWithDefaultGroup: {
+    method: 'post',
+    // url: '/venues/aps',
     url: '/venues/:venueId/aps',
+    newApi: true
+  },
+  moveApToTargetApGroup: {
+    method: 'put',
+    url: '/venues/:venueId/apGroups/:apGroupId/aps/:serialNumber',
     newApi: true
   },
   updateAp: {
