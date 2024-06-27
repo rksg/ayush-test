@@ -111,3 +111,19 @@ export const TrendPill = styled(Pill)`
   width: 40px;
   text-align: center;
 `
+
+export const SummaryText = styled.div`
+  display: ruby;
+`
+
+export const SummaryContent = styled.div`
+  padding-right: 10px;
+`
+
+export const SummaryTitle = styled.div`
+  margin-top: 20px;
+  font-size: var(--acx-headline-5-font-size);
+  line-height: var(--acx-subtitle-5-line-height);
+  color: var(--acx-primary-black);
+  opacity: 0.7;
+`

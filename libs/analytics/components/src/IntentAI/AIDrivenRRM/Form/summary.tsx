@@ -60,32 +60,35 @@ export function Summary () {
       <UI.Wrapper>
         <UI.Title>{title}</UI.Title>
         <UI.Content>
-          {$t({ defaultMessage: 'Projected interfering links reduction' })}
           { initialValues
             && isDataRetained(initialValues.dataEndTime)
             && <CloudRRMGraph
               details={initialValues as EnhancedRecommendation}
             />}
         </UI.Content>
-        <UI.ContentText>
+        <UI.SummaryTitle>
           {$t({ defaultMessage: 'Interfering links' })}
-        </UI.ContentText>
+        </UI.SummaryTitle>
         <UI.ContentText>
-          {after}
-          <UI.TrendPill value={links.value as string} trend={links.trend as TrendTypeEnum} />
+          <UI.SummaryText>
+            <UI.SummaryContent>{after}</UI.SummaryContent>
+            <UI.TrendPill value={links.value as string} trend={links.trend as TrendTypeEnum} />
+          </UI.SummaryText>
         </UI.ContentText>
-        <UI.ContentText>
+        <UI.SummaryTitle>
           {$t({ defaultMessage: 'Average interfering links per AP' })}
-        </UI.ContentText>
+        </UI.SummaryTitle>
         <UI.ContentText>
-          {Math.ceil(kpi.averageAfter)}
-          <UI.TrendPill
-            value={kpi.averageLinks.value as string}
-            trend={kpi.averageLinks.trend as TrendTypeEnum} />
+          <UI.SummaryText>
+            <UI.SummaryContent>{Math.ceil(kpi.averageAfter)}</UI.SummaryContent>
+            <UI.TrendPill
+              value={kpi.averageLinks.value as string}
+              trend={kpi.averageLinks.trend as TrendTypeEnum} />
+          </UI.SummaryText>
         </UI.ContentText>
-        <UI.ContentText>
+        <UI.SummaryTitle>
           {$t({ defaultMessage: 'Schedule' })}
-        </UI.ContentText>
+        </UI.SummaryTitle>
       </UI.Wrapper>
     </Col>
 

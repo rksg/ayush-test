@@ -11,7 +11,7 @@ export const Legend = () => {
   const { $t } = useIntl()
   return <UI.LegendsWrapper>
     <span>
-      <UI.LegendTitle>{$t({ defaultMessage: 'Transmit Power' })}</UI.LegendTitle>
+      <UI.LegendTitle>{$t({ defaultMessage: 'Legend' })}</UI.LegendTitle>
       <UI.LegendWrapper>
         {Object.entries(categoryStyles).map(([key, value]) => <React.Fragment key={key}>
           <UI.Square $color={value.color} />

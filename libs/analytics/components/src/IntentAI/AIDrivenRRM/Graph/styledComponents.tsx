@@ -24,7 +24,7 @@ export const ClickableWrapper = styled.div`
 
 export const GraphWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 3fr 3fr 1fr;
   height: 100%;
   width: 100%;
 `

@@ -76,7 +76,8 @@ const drawerZoomScale = scalePow()
 
 export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
-  const title = $t({ defaultMessage: 'Key Performance Indications' })
+  const title = $t({ defaultMessage: 'Projected interfering links reduction' })
+  const drawerTitle = $t({ defaultMessage: 'Key Performance Indications' })
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
   const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
@@ -91,7 +92,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
         type='no-border'
         title={title}
         action={{
-          actionName: $t({ defaultMessage: 'More details' }),
+          actionName: $t({ defaultMessage: 'View more' }),
           onActionClick: showDrawer
         }}
         children={<GraphWrapper>{
@@ -101,7 +102,7 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
         key={key}
         drawerType={DrawerTypes.FullHeight}
         width={'90vw'}
-        title={title}
+        title={drawerTitle}
         visible={visible}
         onClose={closeDrawer}
         children={
