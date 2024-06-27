@@ -1214,18 +1214,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
     }),
-    vlanPoolList: build.query<VlanPool[], RequestPayload>({
-      query: ({ params }) => {
-        const vlanPoolListReq = createHttpRequest(
-          WifiUrlsInfo.getVlanPools,
-          params
-        )
-        return {
-          ...vlanPoolListReq
-        }
-      },
-      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
-    }),
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
         // eslint-disable-next-line max-len
@@ -3323,7 +3311,6 @@ export const {
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
   useGetVLANPoolPolicyViewModelListQuery,
-  useVlanPoolListQuery,
   useGetVLANPoolPolicyDetailQuery,
   useGetVLANPoolVenuesQuery,
   useAddClientIsolationMutation,

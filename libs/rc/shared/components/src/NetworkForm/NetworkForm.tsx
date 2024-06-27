@@ -5,7 +5,6 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useAddNetworkMutation,
   useAddNetworkVenuesMutation,
@@ -23,10 +22,7 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation,
-  useActivateVlanPoolMutation,
-  useDeactivateVlanPoolMutation,
-  useGetVLANPoolPolicyViewModelListQuery
+  useDeactivateIdentityProviderOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -43,8 +39,7 @@ import {
   useConfigTemplate,
   useConfigTemplateMutationFnSwitcher,
   WlanSecurityEnum,
-  useConfigTemplatePageHeaderTitle,
-  VlanPool
+  useConfigTemplatePageHeaderTitle
 } from '@acx-ui/rc/utils'
 import { useLocation, useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -74,7 +69,7 @@ import {
   updateClientIsolationAllowlist
 } from './parser'
 import PortalInstance                                                                    from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer } from './utils'
+import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer, useVlanPool } from './utils'
 import { Venues }                                                                        from './Venues/Venues'
 
 export interface MLOContextType {
@@ -129,7 +124,6 @@ export function NetworkForm (props:{
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
@@ -147,9 +141,8 @@ export function NetworkForm (props:{
   const activateCertificateTemplate = useCertificateTemplateActivation()
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
-  const activateVlanPool = useVlanPoolActivation()
-  const deactivateVlanPool = useVlanPoolDeactivation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
+  const { vlanPoolId, updateVlanPoolActivation} = useVlanPool()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
@@ -193,21 +186,7 @@ export function NetworkForm (props:{
       skip: !(editMode || cloneMode) || !data?.useCertificateTemplate,
       selectFromResult: ({ data }) => ({ certificateTemplateId: data?.data[0]?.id })
     })
-  const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
-    params: { tenantId: params.tenantId },
-    payload: {
-      fields: ['name', 'id'],
-      filters: { wifiNetworkIds: [data?.id] },
-      sortField: 'name',
-      sortOrder: 'ASC',
-      page: 1,
-      pageSize: 10000
-    },
-    enableRbac: isPolicyRbacEnabled
-  }, {
-    skip: !isPolicyRbacEnabled || !editMode,
-    selectFromResult: ({ data }) => ({ vlanPoolId: data?.data[0]?.id })
-  })
+
   // Config Template related states
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: intl.$t({ defaultMessage: 'Wi-Fi' }) },
@@ -517,7 +496,7 @@ export function NetworkForm (props:{
       const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
-      updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
+      await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
       await updateRadiusServer(saveState, data, networkId)
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
@@ -594,18 +573,6 @@ export function NetworkForm (props:{
     }
   }
 
-  const updateVlanPoolActivation = async (networkId?: string,
-    vlanPool?: VlanPool | null, originalPoolId?: string) => {
-    if (!isPolicyRbacEnabled)
-      return
-    if (!vlanPool && !originalPoolId)
-      return
-    if (originalPoolId && !vlanPool)
-      await deactivateVlanPool(networkId, originalPoolId)
-    if (vlanPool && originalPoolId !== vlanPool.id)
-      await activateVlanPool(vlanPool, networkId, vlanPool.id)
-  }
-
   const handleEditNetwork = async (formData: NetworkSaveData) => {
     try {
       processData(formData)
@@ -615,7 +582,7 @@ export function NetworkForm (props:{
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
       // eslint-disable-next-line max-len
-      updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
+      await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
@@ -1001,32 +968,4 @@ function useUpdateHotspot20Activation () {
     }
 
   return updateHotspot20Activations
-}
-
-
-function useVlanPoolActivation () {
-  const [activate] = useActivateVlanPoolMutation()
-  const activateIdentityProvider =
-    async (payload: { name: string, vlanMembers: string[] },
-      networkId?: string, providerId?: string) => {
-      return networkId && providerId ?
-        await activate({
-          params: { networkId: networkId, profileId: providerId },
-          payload: payload
-        }).unwrap(): null
-    }
-
-  return activateIdentityProvider
-}
-
-function useVlanPoolDeactivation () {
-  const [deactivate] = useDeactivateVlanPoolMutation()
-  const deactivateIdentityProvider =
-    async (networkId?: string, providerId?: string) => {
-      return networkId && providerId ?
-        await deactivate({ params: { networkId: networkId, profileId: providerId } })
-          .unwrap() : null
-    }
-
-  return deactivateIdentityProvider
 }
