@@ -68,9 +68,9 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                                                                    from './PortalInstance'
+import PortalInstance                                                                                 from './PortalInstance'
 import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer, useVlanPool } from './utils'
-import { Venues }                                                                        from './Venues/Venues'
+import { Venues }                                                                                     from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -142,7 +142,7 @@ export function NetworkForm (props:{
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
-  const { vlanPoolId, updateVlanPoolActivation} = useVlanPool()
+  const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
