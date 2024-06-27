@@ -11,7 +11,8 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { filterByAccess } from '@acx-ui/user'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { MdnsProxyForwardingRuleDrawer } from '../MdnsProxyForwardingRuleDrawer'
 
@@ -99,7 +100,8 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
       setDrawerVisible(true)
       setDrawerEditMode(true)
       setDrawerFormRule(selectedRows[0])
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   },{
     label: $t({ defaultMessage: 'Delete' }),
     onClick: (selectedRows: MdnsProxyForwardingRule[], clearSelection) => {
@@ -119,7 +121,8 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
           clearSelection()
         }
       })
-    }
+    },
+    scopeKey: [WifiScopes.DELETE]
   }]
 
   const actions = [{
@@ -129,7 +132,8 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
     tooltip: hasReachedMaxLimit(rules)
       // eslint-disable-next-line max-len
       ? $t({ defaultMessage: 'The rule has reached the limit ({maxCount}).' }, { maxCount: RULES_MAX_COUNT })
-      : undefined
+      : undefined,
+    scopeKey: [WifiScopes.CREATE]
   }]
 
   return (
@@ -158,7 +162,9 @@ export function MdnsProxyForwardingRulesTable (props: MdnsProxyForwardingRulesTa
         rowKey='id'
         actions={readonly ? [] : filterByAccess(actions)}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={readonly ? false : { type: 'radio' }}
+        rowSelection={readonly ? false :
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }
+        }
       />
     </>
   )

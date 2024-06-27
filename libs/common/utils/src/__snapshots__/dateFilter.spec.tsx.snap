@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`useDateFilter ignores period params when it is set beyond available start date 1`] = `
+<DocumentFragment>
+  <div>
+    {"dateFilter":{"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours"},"startDate":"2021-12-31T00:01:00+00:00","endDate":"2022-01-01T00:01:00+00:00","range":"Last 24 Hours"}
+  </div>
+</DocumentFragment>
+`;
+
 exports[`useDateFilter sets period params when calling setDateFilter 1`] = `
 <DocumentFragment>
   <div>

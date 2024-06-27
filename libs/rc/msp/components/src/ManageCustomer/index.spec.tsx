@@ -262,6 +262,9 @@ describe('ManageCustomer', () => {
     services.useMspAssignmentHistoryQuery = jest.fn().mockImplementation(() => {
       return { data: assignmentHistory }
     })
+    utils.useTableQuery = jest.fn().mockImplementation(() => {
+      return { data: { data: assignmentHistory } }
+    })
     services.useGetMspEcQuery = jest.fn().mockImplementation(() => {
       return { data: mspEcAccount }
     })

@@ -1,44 +1,48 @@
 import { IntlShape, useIntl } from 'react-intl'
 import { useParams }          from 'react-router-dom'
 
-import { PageHeader, Loader }          from '@acx-ui/components'
-import { Features, useIsSplitOn }      from '@acx-ui/feature-toggle'
+import { Loader, PageHeader }     from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApTable,
-  defaultApPayload,
-  NetworkTable,
-  defaultNetworkPayload,
-  EventTable,
-  SwitchTable,
-  defaultSwitchPayload,
-  defaultClientPayload,
   ConnectedClientsTable,
-  defaultSwitchClientPayload,
-  ClientsTable as SwitchClientTable,
-  eventDefaultSearch,
-  useEventsTableQuery,
+  defaultApPayload,
+  defaultClientPayload,
   defaultHistoricalClientPayload,
-  GlobalSearchHistoricalClientsTable
+  defaultNetworkPayload,
+  defaultSwitchClientPayload,
+  defaultSwitchPayload,
+  eventDefaultSearch,
+  EventTable,
+  GlobalSearchHistoricalClientsTable,
+  NetworkTable,
+  newDefaultApPayload,
+  ClientsTable as SwitchClientTable,
+  SwitchTable,
+  useEventsTableQuery
 } from '@acx-ui/rc/components'
 import {
   useApListQuery,
-  useNetworkListQuery,
-  useVenuesListQuery,
-  useSwitchListQuery,
   useGetClientListQuery,
+  useGetHistoricalClientListQuery,
   useGetSwitchClientListQuery,
-  useGetHistoricalClientListQuery
+  useNetworkListQuery,
+  useNewApListQuery,
+  useSwitchListQuery,
+  useVenuesListQuery
 } from '@acx-ui/rc/services'
 import {
-  useTableQuery,
-  Network,
-  Venue,
-  AP,
+  APExtended,
   ApExtraParams,
-  SwitchRow,
+  Client,
   ClientList,
+  Network,
+  NewAPModelExtended,
   SwitchClient,
-  Client
+  SwitchRow,
+  TableQuery,
+  useTableQuery,
+  Venue
 } from '@acx-ui/rc/utils'
 import { RequestPayload } from '@acx-ui/types'
 
@@ -47,6 +51,10 @@ import { useDefaultVenuePayload, VenueTable } from '../Venues'
 import NoData              from './NoData'
 import { Collapse, Panel } from './styledComponents'
 
+interface EnableRbacType {
+  isSwitchRbacEnabled?: boolean
+  isWifiRbacEnabled?: boolean
+}
 
 const pagination = { pageSize: 5, showSizeChanger: false }
 
@@ -90,22 +98,26 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t']) => {
-    const result = useTableQuery<AP, RequestPayload<unknown>, ApExtraParams>({
-      useQuery: useApListQuery,
-      defaultPayload: {
-        ...defaultApPayload
-      },
+  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
+    // eslint-disable-next-line max-len
+    const result = useTableQuery<APExtended|NewAPModelExtended, RequestPayload<unknown>, ApExtraParams>({
+      useQuery: enableRbac.isWifiRbacEnabled ? useNewApListQuery : useApListQuery,
+      defaultPayload: enableRbac.isWifiRbacEnabled ? newDefaultApPayload :defaultApPayload,
       search: {
         searchString,
-        searchTargetFields: defaultApPayload.searchTargetFields
+        searchTargetFields: enableRbac.isWifiRbacEnabled ?
+          newDefaultApPayload.searchTargetFields :
+          defaultApPayload.searchTargetFields
       },
       pagination
     })
     return {
       result,
       title: $t({ defaultMessage: 'APs' }),
-      component: <ApTable tableQuery={result} searchable={false} />
+      component: <ApTable
+        // eslint-disable-next-line max-len
+        tableQuery={result as TableQuery<APExtended|NewAPModelExtended, RequestPayload<unknown>, ApExtraParams>}
+        searchable={false} />
     }
   },
 
@@ -128,10 +140,10 @@ const searches = [
     }
   },
 
-  (searchString: string, $t: IntlShape['$t'], enableRbac?: boolean) => {
+  (searchString: string, $t: IntlShape['$t'], enableRbac: EnableRbacType) => {
     const result = useTableQuery<SwitchRow, RequestPayload<unknown>, unknown>({
       useQuery: useSwitchListQuery,
-      enableRbac,
+      enableRbac: enableRbac.isSwitchRbacEnabled,
       defaultPayload: {
         ...defaultSwitchPayload
       },
@@ -204,7 +216,7 @@ const searches = [
 ]
 
 function SearchResult ({ searchVal, enableRbac }:
-  { searchVal: string | undefined, enableRbac?:boolean }) {
+  { searchVal: string | undefined, enableRbac:EnableRbacType }) {
   const { $t } = useIntl()
   const results = searches.map(search => search(searchVal as string, $t, enableRbac))
   const count = results.reduce((count, { result }) => count + (result.data?.totalCount || 0), 0)
@@ -241,5 +253,13 @@ function SearchResult ({ searchVal, enableRbac }:
 export default function SearchResults () {
   const { searchVal } = useParams()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-  return <SearchResult key={searchVal} searchVal={searchVal} enableRbac={isSwitchRbacEnabled} />
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+  return <SearchResult
+    key={searchVal}
+    searchVal={searchVal}
+    enableRbac={{
+      isSwitchRbacEnabled,
+      isWifiRbacEnabled
+    }}
+  />
 }
