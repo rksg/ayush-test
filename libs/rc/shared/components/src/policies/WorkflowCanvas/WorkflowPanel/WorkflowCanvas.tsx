@@ -7,9 +7,11 @@ import ReactFlow, {
   Controls,
   Edge,
   Node,
+  NodeChange,
   NodeTypes,
   useEdgesState,
-  useNodesState
+  useNodesState,
+  useReactFlow
 } from 'reactflow'
 
 import { ActionType } from '@acx-ui/rc/utils'
@@ -37,8 +39,18 @@ interface WorkflowProps {
 
 export default function WorkflowCanvas (props: WorkflowProps) {
   const { isEditMode } = props
+  const reactFlowInstance = useReactFlow()
   const [nodes, setNodes, onNodesChange] = useNodesState(props?.initialNodes ?? [])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
+
+  const onCustomNodesChange = (changes: NodeChange[]) => {
+    onNodesChange(changes)
+
+    // only trigger fitView at the first time and nodes changes
+    if (changes.findIndex(c => c.type === 'dimensions') !== -1) {
+      reactFlowInstance.fitView({ nodes: props.initialNodes })
+    }
+  }
 
   useEffect(() => {
     if (props.initialNodes) {
@@ -58,7 +70,7 @@ export default function WorkflowCanvas (props: WorkflowProps) {
       nodes={nodes}
       edges={edges}
       nodeTypes={nodeTypes}
-      onNodesChange={onNodesChange}
+      onNodesChange={onCustomNodesChange}
       onEdgesChange={onEdgesChange}
       nodesDraggable={false}
       nodesConnectable={false}

@@ -13,6 +13,7 @@ export * from './tunnelProfile'
 export * from './rulesManagement'
 export * from './connectionMetering'
 export * from './workflow'
+export * from './workflowAction'
 export * from './certificateTemplate'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'

@@ -7,8 +7,6 @@ export * from './networkSegmentationService'
 export * from './mdnsProxyService'
 export * from './portalService'
 export * from './edgeSdLanService'
-export * from './workflow'
-export * from './workflowAction'
 
 export enum AccessEnum {
   ALLOW = 'Allow',
