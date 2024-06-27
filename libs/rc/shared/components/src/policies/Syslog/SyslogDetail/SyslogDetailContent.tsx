@@ -17,11 +17,10 @@ import { SyslogDetailContext } from './SyslogDetailView'
 const SyslogDetailContent = () => {
   const { $t } = useIntl()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)

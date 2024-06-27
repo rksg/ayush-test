@@ -91,8 +91,6 @@ import {
   ApiVersionEnum,
   Mesh,
   ApGroupConfigTemplateUrlsInfo,
-  RogueApUrls,
-  EnhancedRoguePolicyType,
   RogueApSettingsRequest,
   WifiDHCPClientLeases,
   WifiDhcpPoolUsages,
@@ -104,7 +102,8 @@ import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { handleCallbackWhenActivitySuccess } from './utils'
+import { getVenueRoguePolicyFn, updateVenueRoguePolicyFn } from './servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess }               from './utils'
 
 const customHeaders = {
   v1: {
@@ -235,8 +234,12 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getVenue: build.query<VenueExtended, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(CommonUrlsInfo.getVenue, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getVenue, params, apiCustomHeader)
         return{
           ...req
         }
@@ -359,11 +362,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'WIFI_SETTINGS' }, { type: 'Venue', id: 'VENUE_MESH_SETTINGS' }]
     }),
     updateVenueCellularSettings: build.mutation<VenueApModelCellular[], RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueCellularSettings, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.updateVenueCellularSettings, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       }
     }),
@@ -418,9 +425,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getNetworkApGroupsV2: build.query<NetworkVenue[], RequestPayload>({
-      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
 
-        const payloadData = arg.payload as { venueId: string, networkId: string, isTemplate: boolean }[]
+        const payloadData = payload as { venueId: string, networkId: string, isTemplate: boolean }[]
         const filters = payloadData.map(item => ({
           venueId: item.venueId,
           networkId: item.networkId
@@ -443,7 +450,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
           const apGroupListInfo = {
             ...createHttpRequest(payloadData[0].isTemplate
               ? ApGroupConfigTemplateUrlsInfo.getApGroupsList
-              : WifiUrlsInfo.getApGroupsList, arg.params),
+              : (enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo).getApGroupsList, params),
             body: apGroupPayload
           }
 
@@ -478,7 +485,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
 
         const networkVenuesApGroupInfo = {
-          ...createHttpRequest(CommonUrlsInfo.networkActivations, arg.params, apiV2CustomHeader),
+          ...createHttpRequest(CommonUrlsInfo.networkActivations, params, apiV2CustomHeader),
           body: JSON.stringify({ filters })
         }
 
@@ -664,7 +671,10 @@ export const venueApi = baseVenueApi.injectEndpoints({
             'UpdateApPosition',
             'UpdateRwgPosition',
             'UpdateCloudpathServerPosition',
-            'DeleteFloorPlan'], () => {
+            'DeleteFloorPlan',
+            'ActivateApFloorPosition',
+            'DeactivateApFloorPosition'
+          ], () => {
             api.dispatch(venueApi.util.invalidateTags([{ type: 'VenueFloorPlan', id: 'DEVICE' },
               { type: 'RWG', id: 'List' }]))
           })
@@ -682,11 +692,23 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
     }),
     updateApPosition: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(CommonUrlsInfo.UpdateApPosition, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? CommonRbacUrlsInfo : CommonUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.UpdateApPosition, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
+    }),
+    removeApPosition: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const req = createHttpRequest(CommonRbacUrlsInfo.RemoveApPosition, params, apiCustomHeader)
+        return {
+          ...req
         }
       },
       invalidatesTags: [{ type: 'VenueFloorPlan', id: 'DEVICE' }]
@@ -791,16 +813,24 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     getAvailableLteBands: build.query<AvailableLteBands[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getAvailableLteBands, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getAvailableLteBands, params, apiCustomHeader)
         return{
           ...req
         }
       }
     }),
     getVenueApModelCellular: build.query<VenueApModelCellular, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueApModelCellular, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac ? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+
+        const req = createHttpRequest(urlsInfo.getVenueApModelCellular, params, apiCustomHeader)
         return{
           ...req
         }
@@ -950,9 +980,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac?
-          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
+          (enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getVenueDefaultRegulatoryChannels, params, apiCustomHeader)
@@ -963,9 +993,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getDefaultRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac?
-          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
+          (enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getDefaultRadioCustomization, params, apiCustomHeader)
@@ -976,9 +1006,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
       query: ({ params, payload, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac?
-          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+        const urlsInfo = (enableSeparation || enableRbac)? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
+          (enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.getVenueRadioCustomization, params, apiCustomHeader)
@@ -999,9 +1029,9 @@ export const venueApi = baseVenueApi.injectEndpoints({
     }),
     updateVenueRadioCustomization: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableRbac?
-          (enableSeparation ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1) : undefined
+        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
+          (enableRbac? ApiVersionEnum.v1 : undefined)
         const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
 
         const req = createHttpRequest(urlsInfo.updateVenueRadioCustomization, params, apiCustomHeader)
@@ -1083,41 +1113,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     getVenueRogueAp: build.query<VenueRogueAp, RequestPayload>({
-      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          if (enableRbac) {
-            const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-            const [venueRogueApResponse, roguePolicyResponse] = await Promise.all([
-              fetchWithBQ(createHttpRequest(CommonRbacUrlsInfo.getVenueRogueAp, params, customHeaders)),
-              fetchWithBQ({
-                ...createHttpRequest(RogueApUrls.getRoguePolicyListRbac, params, customHeaders),
-                body: JSON.stringify({ filters: { venueIds: [params?.venueId] }, fields: ['id'] })
-              })
-            ])
-
-            const roguePolicySetting = venueRogueApResponse.data as VenueRogueAp
-            const roguePolicy = roguePolicyResponse.data as TableResult<EnhancedRoguePolicyType>
-            return {
-              data: {
-                enabled: roguePolicy.totalCount > 0,
-                roguePolicyId: (roguePolicy.totalCount > 0) ? roguePolicy.data[0].id : null,
-                reportThreshold: roguePolicySetting.reportThreshold
-              } as VenueRogueAp
-            }
-          } else {
-            const req = createHttpRequest(CommonUrlsInfo.getVenueRogueAp, params)
-            const res = await fetchWithBQ(req)
-            // Ensure the return type is QueryReturnValue
-            if (res.error) {
-              return { error: res.error as FetchBaseQueryError }
-            } else {
-              return { data: res.data as VenueRogueAp }
-            }
-          }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: getVenueRoguePolicyFn(),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -1152,51 +1148,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateVenueRogueAp: build.mutation<VenueRogueAp, RequestPayload<RogueApSettingsRequest>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const customHeaders = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
-          if (enableRbac) {
-            const { enabled, reportThreshold, roguePolicyId, currentRoguePolicyId, currentReportThreshold } = payload!
-            if (enabled) {
-              const promises = []
-              if (currentRoguePolicyId !== roguePolicyId) {
-                const activateRoguePolicyPromise = fetchWithBQ(createHttpRequest(RogueApUrls.activateRoguePolicy, {
-                  policyId: roguePolicyId,
-                  venueId: params?.venueId
-                }, customHeaders))
-                promises.push(activateRoguePolicyPromise)
-              }
-
-              if (currentReportThreshold !== reportThreshold) {
-                const updateVenueRogueApPromise = fetchWithBQ({
-                  ...createHttpRequest(CommonRbacUrlsInfo.updateVenueRogueAp, params, customHeaders),
-                  body: { reportThreshold }
-                })
-                promises.push(updateVenueRogueApPromise)
-              }
-
-              await Promise.all(promises)
-            } else {
-              await fetchWithBQ(createHttpRequest(RogueApUrls.deactivateRoguePolicy, { policyId: currentRoguePolicyId, venueId: params?.venueId }, customHeaders))
-            }
-            return { data: { enabled, reportThreshold, roguePolicyId } as VenueRogueAp }
-          } else {
-            const req = {
-              ...createHttpRequest(CommonUrlsInfo.updateVenueRogueAp, params),
-              body: payload
-            }
-            const res = await fetchWithBQ(req)
-            // Ensure the return type is QueryReturnValue
-            if (res.error) {
-              return { error: res.error as FetchBaseQueryError }
-            } else {
-              return { data: res.data as VenueRogueAp }
-            }
-          }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: updateVenueRoguePolicyFn(),
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }]
     }),
     getRoguePolicies: build.query<RogueClassificationPolicy[], RequestPayload>({
@@ -1862,8 +1814,11 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'PropertyUnit', id: 'LIST' }]
     }),
     getVenueAntennaType: build.query< VeuneApAntennaTypeSettings[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.getVenueAntennaType, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.getVenueAntennaType, params, apiCustomHeader)
         return{
           ...req
         }
@@ -1879,11 +1834,14 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueAntennaType: build.mutation< CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateVenueAntennaType, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const rbacApiVersion = enableRbac? ApiVersionEnum.v1 : undefined
+        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
+        const req = createHttpRequest(urlsInfo.updateVenueAntennaType, params, apiCustomHeader)
         return{
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'ExternalAntenna', id: 'LIST' }]
@@ -2019,7 +1977,8 @@ export const {
   useUpdateVenueApEnhancedKeyMutation,
   useGetVenueAntennaTypeQuery,
   useLazyGetVenueAntennaTypeQuery,
-  useUpdateVenueAntennaTypeMutation
+  useUpdateVenueAntennaTypeMutation,
+  useRemoveApPositionMutation
 } = venueApi
 
 

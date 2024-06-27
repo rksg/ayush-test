@@ -2,12 +2,10 @@
 import {
   AAAPolicyType,
   AAAViewModalType,
-  ApiVersionEnum,
   ApplyConfigTemplatePaylod,
   CommonResult,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
-  GetApiVersionHeader,
   Network,
   NetworkSaveData,
   TableResult,
@@ -15,11 +13,11 @@ import {
   onSocketActivityChanged,
   transformNetwork
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi }      from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseConfigTemplateApi } from '@acx-ui/store'
+import { RequestPayload }        from '@acx-ui/types'
 
-import { networkApi } from '../network'
+import { networkApi }    from '../network'
+import { commonQueryFn } from '../servicePolicy.utils'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -156,7 +154,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkVenuesTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenuesTemplate, true),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenuesTemplate),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -237,18 +235,3 @@ export const {
   useUpdateNetworkVenueTemplateMutation,
   useAddNetworkVenueTemplatesMutation
 } = configTemplateApi
-
-const requestMethodWithPayload = ['post', 'put', 'PATCH']
-
-export function commonQueryFn (nonRbacApiInfo: ApiInfo, withPayload?: boolean, rbacHeaderVersion?: ApiVersionEnum, rbacApiInfo?: ApiInfo) {
-  return ({ params, payload, enableRbac }: RequestPayload) => {
-    const headers = GetApiVersionHeader(enableRbac ? rbacHeaderVersion : undefined)
-    const apiInfo = enableRbac && rbacApiInfo ? rbacApiInfo : nonRbacApiInfo
-    const req = createHttpRequest(apiInfo, params, headers)
-    const needPayload = withPayload ?? requestMethodWithPayload.includes(apiInfo.method)
-    return {
-      ...req,
-      ...(needPayload ? { body: JSON.stringify(payload) } : {})
-    }
-  }
-}

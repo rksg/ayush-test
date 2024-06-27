@@ -490,7 +490,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are reachable.' }),
+      description: '',
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
@@ -566,7 +566,7 @@ export const kpiConfig = {
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are under safe thresholds of temperature.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {maxCount} switches are under safe thresholds of temperature.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
@@ -747,16 +747,18 @@ export const wiredKPIsForTab = () => {
     },
     connection: {
       kpis: [
-        'switchAuthentication',
-        'switchDhcp'
+        'switchAuthentication'
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchDhcp'
       ]
     },
     performance: {
       kpis: [
         'switchPortUtilization',
         'switchUplinkPortUtilization',
-        'switchInterfaceAnomalies',
-        'switchStormControl'
+        'switchInterfaceAnomalies'
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchStormControl'
       ]
     },
     infrastructure: {

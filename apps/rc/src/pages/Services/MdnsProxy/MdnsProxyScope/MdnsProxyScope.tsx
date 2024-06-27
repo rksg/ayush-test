@@ -7,7 +7,8 @@ import { useIntl } from 'react-intl'
 import { StepsFormLegacy, Table, Loader, TableProps } from '@acx-ui/components'
 import { useVenuesListQuery }                         from '@acx-ui/rc/services'
 import { useTableQuery, Venue, MdnsProxyScopeData }   from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                  from '@acx-ui/user'
+import { WifiScopes }                                 from '@acx-ui/types'
+import { filterByAccess,  hasPermission }             from '@acx-ui/user'
 
 import MdnsProxyFormContext from '../MdnsProxyForm/MdnsProxyFormContext'
 
@@ -84,7 +85,8 @@ export function MdnsProxyScope () {
       label: $t({ defaultMessage: 'Select APs' }),
       onClick: (rows: Venue[]) => {
         handleSelectAps(rows)
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE, WifiScopes.CREATE]
     }
   ]
 
@@ -136,7 +138,10 @@ export function MdnsProxyScope () {
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
-            rowSelection={hasAccess() && { type: 'radio' }}
+            rowSelection={
+              hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.CREATE] }) &&
+              { type: 'radio' }
+            }
             columns={columns}
             dataSource={tableData}
             pagination={tableQuery.pagination}

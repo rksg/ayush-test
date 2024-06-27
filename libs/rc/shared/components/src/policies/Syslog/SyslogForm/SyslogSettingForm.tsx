@@ -55,18 +55,17 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
 
   const form = Form.useFormInstance()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data: policyData } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
     skip: !edit,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
   const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
     useQueryFn: useSyslogPolicyListQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
     payload: { page: 1, pageSize: PROFILE_MAX_COUNT },
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   useEffect(() => {

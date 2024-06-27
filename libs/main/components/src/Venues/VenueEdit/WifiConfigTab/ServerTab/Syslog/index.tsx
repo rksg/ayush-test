@@ -67,7 +67,7 @@ export function Syslog () {
     useQueryFn: useSyslogPolicyListQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
     payload: { page: 1, pageSize: PROFILE_MAX_COUNT },
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   const {
@@ -76,7 +76,7 @@ export function Syslog () {
   } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>({
     useQueryFn: useGetVenueSyslogApQuery,
     useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   const [

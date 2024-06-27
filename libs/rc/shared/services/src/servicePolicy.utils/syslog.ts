@@ -9,7 +9,7 @@ import { createHttpRequest, batchApi }                                          
 
 import { QueryFn } from '../servicePolicy.utils'
 
-export function addSyslogPolicy (isTemplate = false): QueryFn<CommonResult, RequestPayload<SyslogPolicyDetailType>> {
+export function addSyslogPolicy (isTemplate = false): QueryFn<CommonResult, SyslogPolicyDetailType> {
   const syslogApis = isTemplate ? PoliciesConfigTemplateUrlsInfo : SyslogUrls
   return async (args, _queryApi, _extraOptions, fetchWithBQ) => {
     const { params, payload, enableRbac, enableTemplateRbac } = args
@@ -36,7 +36,7 @@ export function addSyslogPolicy (isTemplate = false): QueryFn<CommonResult, Requ
   }
 }
 
-export function updateSyslogPolicy (isTemplate = false): QueryFn<CommonResult, RequestPayload<SyslogPolicyDetailType>> {
+export function updateSyslogPolicy (isTemplate = false): QueryFn<CommonResult, SyslogPolicyDetailType> {
   const syslogApis = isTemplate ? PoliciesConfigTemplateUrlsInfo : SyslogUrls
   return async ({ params, payload, enableRbac, enableTemplateRbac }, _queryApi, _extraOptions,
     fetchWithBQ) => {
@@ -67,7 +67,7 @@ export function updateSyslogPolicy (isTemplate = false): QueryFn<CommonResult, R
   }
 }
 
-export function getSyslogPolicy (isTemplate = false): QueryFn<SyslogPolicyDetailType, RequestPayload> {
+export function getSyslogPolicy (isTemplate = false): QueryFn<SyslogPolicyDetailType> {
   const syslogApis = isTemplate ? PoliciesConfigTemplateUrlsInfo : SyslogUrls
   return async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     if (enableRbac) {
@@ -85,7 +85,7 @@ export function getSyslogPolicy (isTemplate = false): QueryFn<SyslogPolicyDetail
       }
 
       const venueIds =
-          (viewmodelRes.data as TableResult<SyslogPolicyListType>).data?.[0]?.venueIds
+          (viewmodelRes.data as unknown as TableResult<SyslogPolicyListType>).data?.[0]?.venueIds
       const mergeData = {
         ...res.data as SyslogPolicyDetailType,
         ...(venueIds && venueIds?.length > 0) ? { venues: venueIds.map(id => ({ id, name: '' })) } : {}

@@ -7,6 +7,7 @@ import {
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import {
   useGetVLANPoolPolicyDetailQuery, useAddVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation, useAddVlanPoolPolicyTemplateMutation,
@@ -40,13 +41,16 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
   const params = useParams()
   const isEdit = edit && !networkView
   const formRef = useRef<StepsFormLegacyInstance<VLANPoolPolicyType>>()
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetVLANPoolPolicyDetailQuery,
     useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery,
+    enableRbac: isPolicyRbacEnabled,
     skip: !isEdit
   })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
   const pageTitle = usePolicyPageHeaderTitle(isEdit, PolicyType.VLAN_POOL)
+
   const [ createInstance ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddVLANPoolPolicyMutation,
     useTemplateMutationFn: useAddVlanPoolPolicyTemplateMutation
@@ -71,11 +75,14 @@ export const VLANPoolForm = (props: VLANPoolFormProps) => {
 
     try {
       if (!isEdit) {
-        await createInstance({ params, payload }).unwrap().then(res => {
-          formData.id = res.response?.id
-        })
+        await createInstance({ params, payload, enableRbac: isPolicyRbacEnabled }
+        ).unwrap()
+          .then(res => {
+            formData.id = res.response?.id
+          })
       } else {
-        await updateInstance({ params, payload }).unwrap()
+        await updateInstance({ params, payload, enableRbac: isPolicyRbacEnabled })
+          .unwrap()
       }
       networkView ? backToNetwork?.(formData) : navigate(linkToInstanceList, { replace: true })
     } catch (error) {

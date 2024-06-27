@@ -70,7 +70,7 @@ const SyslogVenueDetail = () => {
   const { data: syslogPolicy } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   const tableQuery = useTableQuery({
@@ -81,8 +81,7 @@ const SyslogVenueDetail = () => {
     },
     option: {
       skip: (syslogPolicy?.venues ?? []).length === 0
-    },
-    enableRbac: enableTemplateRbac
+    }
   })
 
   useEffect(() => {
