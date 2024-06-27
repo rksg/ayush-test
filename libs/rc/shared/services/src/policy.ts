@@ -76,7 +76,7 @@ import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, addRoguePolicyFn, updateRoguePolicyFn } from './servicePolicy.utils'
+import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, addRoguePolicyFn, updateRoguePolicyFn } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -701,13 +701,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: (queryArgs) => {
-        return createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.addAAAPolicy,
-          rbacApiVersionKey: ApiVersionEnum.v1_1,
-          queryArgs
-        })
-      },
+      query: commonQueryFn(AaaUrls.addAAAPolicy),
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload<string[]>>({
@@ -730,14 +724,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
       async queryFn (queryArgs, _queryApi, _extraOptions, baseQuery) {
-        const resolvedFetchArgs = createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.getAAAPolicyViewModelList,
-          rbacApiInfo: AaaUrls.queryAAAPolicyList,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          queryArgs
-        })
-
-        const result = await baseQuery(resolvedFetchArgs)
+        const query = commonQueryFn(AaaUrls.getAAAPolicyViewModelList, AaaUrls.queryAAAPolicyList)
+        const result = await baseQuery(query(queryArgs))
 
         if (result.error) return { error: result.error as FetchBaseQueryError }
 
@@ -775,13 +763,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: (queryArgs) => {
-        return createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.updateAAAPolicy,
-          rbacApiVersionKey: ApiVersionEnum.v1_1,
-          queryArgs
-        })
-      },
+      query: commonQueryFn(AaaUrls.updateAAAPolicy),
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({

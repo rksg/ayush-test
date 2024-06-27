@@ -11,7 +11,11 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/radius',
     url: '/radiusServerProfiles',
-    newApi: true
+    newApi: true,
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1_1+json',
+      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+    }
   },
   getAAAPolicy: {
     method: 'get',
@@ -23,7 +27,11 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
     url: '/radiusServerProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1_1+json',
+      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+    }
   },
   getAAAPolicyViewModelList: {
     method: 'post',
@@ -34,7 +42,11 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
   queryAAAPolicyList: {
     method: 'post',
     url: '/radiusServerProfiles/query',
-    newApi: true
+    newApi: true,
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteAAAPolicy: {
     method: 'delete',
