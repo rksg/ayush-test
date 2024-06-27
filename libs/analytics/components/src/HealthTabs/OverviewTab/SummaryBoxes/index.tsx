@@ -38,13 +38,13 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
   )
 
   const incidents : StatsCardProps['values'] = [{
-    title: defineMessage({ defaultMessage: 'at AP level' }),
+    title: defineMessage({ defaultMessage: 'Wireless' }),
     value: formatValue(summaryData?.apIncidentCount)
   }]
 
   !wirelessOnly && incidents.push(
     {
-      title: defineMessage({ defaultMessage: 'at Switch level' }),
+      title: defineMessage({ defaultMessage: 'Wired' }),
       value: formatValue(summaryData?.switchIncidentCount)
     }
   )

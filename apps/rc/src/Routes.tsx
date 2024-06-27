@@ -558,11 +558,19 @@ function ServiceRoutes () {
       <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
-        element={<MdnsProxyForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <MdnsProxyForm />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
-        element={<MdnsProxyForm editMode={true} />}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <MdnsProxyForm editMode={true} />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
