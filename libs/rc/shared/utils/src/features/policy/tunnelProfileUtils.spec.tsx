@@ -1,9 +1,9 @@
 import { getTenantId } from '@acx-ui/utils'
 
-import { AgeTimeUnit, MtuTypeEnum, TunnelTypeEnum } from '../../models'
-import { TunnelProfile, TunnelProfileViewData }     from '../../types/policies/tunnelProfile'
+import { AgeTimeUnit, MtuRequestTimeoutUnit, MtuTypeEnum, TunnelTypeEnum } from '../../models'
+import { TunnelProfile, TunnelProfileViewData }                            from '../../types/policies/tunnelProfile'
 
-import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile } from './tunnelProfileUtils'
+import { ageTimeUnitConversion, getTunnelProfileFormDefaultValues, getTunnelProfileOptsWithDefault, getVlanVxlanDefaultTunnelProfileOpt, getVxlanDefaultTunnelProfileOpt, isDefaultTunnelProfile, isVlanVxlanDefaultTunnelProfile, isVxlanDefaultTunnelProfile, mtuRequestTimeoutUnitConversion } from './tunnelProfileUtils'
 
 const tenantId = 'ecc2d7cf9d2342fdb31ae0e24958fcac'
 const defaultVxLANProfileName = 'Default tunnel profile (PIN)'
@@ -245,6 +245,26 @@ describe('tunnelProfileUtils', () => {
   })
 
   describe('mtuRequestTimeoutUnitConversion', () => {
-    
-  }
+    it('should parse into MILLISECONDS', () => {
+      expect(mtuRequestTimeoutUnitConversion(10)).toStrictEqual({
+        value: 10,
+        unit: MtuRequestTimeoutUnit.MILLISECONDS
+      })
+      expect(mtuRequestTimeoutUnitConversion(990)).toStrictEqual({
+        value: 990,
+        unit: MtuRequestTimeoutUnit.MILLISECONDS
+      })
+    })
+
+    it('should parse into SECONDS', () => {
+      expect(mtuRequestTimeoutUnitConversion(3000)).toStrictEqual({
+        value: 3,
+        unit: MtuRequestTimeoutUnit.SECONDS
+      })
+    })
+
+    it('should handle undefined', () => {
+      expect(mtuRequestTimeoutUnitConversion(undefined)).toStrictEqual(undefined)
+    })
+  })
 })
