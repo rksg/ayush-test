@@ -16,8 +16,7 @@ export type QueryFn<ResultType, QueryArg = never> = ({ params, payload, enableRb
 
 export function commonQueryFn (
   apiInfo: ApiInfo,
-  // eslint-disable-next-line max-len
-  restInfo?: { rbacApiInfo: ApiInfo, rbacApiVersionKey: ApiVersionEnum }
+  restInfo?: { rbacApiInfo?: ApiInfo, rbacApiVersionKey?: ApiVersionEnum }
 ) {
   return (queryArgs: RequestPayload) => {
     return createFetchArgsBasedOnRbac({
@@ -47,7 +46,7 @@ export function createFetchArgsBasedOnRbac (props: RbacFetchProps) {
   // eslint-disable-next-line max-len
   const apiVersionHeaders = getApiVersionHeaderBaseOnPayload(payload, enableRbac ? rbacApiVersionKey : apiVersionKey)
   // eslint-disable-next-line max-len
-  const resolvedPayload = apiVersionHeaders && apiVersionHeaders.hasOwnProperty('Content-Type') && payload ? JSON.stringify(payload) : payload
+  const resolvedPayload = apiVersionHeaders?.hasOwnProperty('Content-Type') && payload ? JSON.stringify(payload) : payload
 
   return {
     ...createHttpRequest(resolvedApiInfo, params, apiVersionHeaders),

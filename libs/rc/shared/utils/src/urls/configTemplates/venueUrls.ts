@@ -1,39 +1,30 @@
 import { ApiInfo } from '@acx-ui/utils'
 
-interface NewApiInfo extends ApiInfo {
-  handled: boolean
-}
-
-export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
+export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   addVenueTemplate: {
     method: 'post',
     url: '/templates/venues',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   deleteVenueTemplate: {
     method: 'delete',
     url: '/templates/venues/:templateId',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueTemplate: {
     method: 'put',
     url: '/templates/venues/:venueId',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueTemplate: {
     method: 'get',
     url: '/templates/venues/:venueId',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueApCapabilities: {
     method: 'get',
     url: '/templates/venues/:venueId/aps/capabilities',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueApCapabilitiesRbac: {
     method: 'get',
@@ -53,8 +44,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueDefaultRegulatoryChannels: {
     method: 'get',
     url: '/templates/venues/:venueId/channels',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueDefaultRegulatoryChannelsRbac: {
     method: 'get',
@@ -64,8 +54,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getDefaultRadioCustomization: {
     method: 'get',
     url: '/templates/venues/:venueId/radioSettings?defaultOnly=true',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getDefaultRadioCustomizationRbac: {
     method: 'get',
@@ -75,8 +64,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueRadioCustomization: {
     method: 'get',
     url: '/templates/venues/:venueId/radioSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueRadioCustomizationRbac: {
     method: 'get',
@@ -86,8 +74,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueRadioCustomization: {
     method: 'put',
     url: '/templates/venues/:venueId/radioSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueRadioCustomizationRbac: {
     method: 'put',
@@ -97,8 +84,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueLoadBalancing: {
     method: 'get',
     url: '/templates/venues/:venueId/loadBalancingSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueLoadBalancingRbac: {
     method: 'get',
@@ -108,8 +94,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueLoadBalancing: {
     method: 'put',
     url: '/templates/venues/:venueId/loadBalancingSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueLoadBalancingRbac: {
     method: 'put',
@@ -119,8 +104,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueClientAdmissionControl: {
     method: 'get',
     url: '/templates/venues/:venueId/clientAdmissionControlSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueClientAdmissionControlRbac: {
     method: 'get',
@@ -130,8 +114,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueClientAdmissionControl: {
     method: 'put',
     url: '/templates/venues/:venueId/clientAdmissionControlSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueClientAdmissionControlRbac: {
     method: 'put',
@@ -141,8 +124,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueExternalAntenna: {
     method: 'get',
     url: '/templates/venues/:venueId/externalAntennaSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueExternalAntennaRbac: {
     method: 'get',
@@ -152,15 +134,14 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueExternalAntenna: {
     method: 'put',
     url: '/templates/venues/:venueId/externalAntennaSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueExternalAntennaRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apModelExternalAntennaSettings',
     newApi: true
   },
-  getVenueSettings: {
+  getVenueSettings: { // TODO
     method: 'get',
     url: '/templates/venues/:venueId/wifiSettings',
     newApi: true
@@ -168,8 +149,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueMesh: {
     method: 'put',
     url: '/templates/venues/:venueId/meshSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueMeshRbac: {
     method: 'put',
@@ -179,10 +159,9 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueLanPorts: {
     method: 'get',
     url: '/templates/venues/:venueId/lanPortSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
-  getVenueLanPortsRbac: {
+  getVenueLanPortsRbac: { // TODO
     method: 'get',
     url: '/templates/venues/:venueId/apModelLanPortSettings',
     newApi: true
@@ -190,10 +169,9 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueLanPorts: {
     method: 'put',
     url: '/templates/venues/:venueId/lanPortSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
-  updateVenueLanPortsRbac: {
+  updateVenueLanPortsRbac: { // TODO
     method: 'put',
     url: '/templates/venues/:venueId/apModelLanPortSettings',
     newApi: true
@@ -201,8 +179,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueDirectedMulticast: {
     method: 'get',
     url: '/templates/venues/:venueId/directedMulticastSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueDirectedMulticastRbac: {
     method: 'get',
@@ -212,8 +189,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueDirectedMulticast: {
     method: 'put',
     url: '/templates/venues/:venueId/directedMulticastSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueDirectedMulticastRbac: {
     method: 'put',
@@ -223,8 +199,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueRadiusOptions: {
     method: 'get',
     url: '/templates/venues/:venueId/radiusOptions',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueRadiusOptionsRbac: {
     method: 'get',
@@ -234,8 +209,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueRadiusOptions: {
     method: 'put',
     url: '/templates/venues/:venueId/radiusOptions',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueRadiusOptionsRbac: {
     method: 'put',
@@ -245,8 +219,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getDenialOfServiceProtection: {
     method: 'get',
     url: '/templates/venues/:venueId/dosProtectionSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getDenialOfServiceProtectionRbac: {
     method: 'get',
@@ -256,8 +229,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateDenialOfServiceProtection: {
     method: 'put',
     url: '/templates/venues/:venueId/dosProtectionSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateDenialOfServiceProtectionRbac: {
     method: 'put',
@@ -267,8 +239,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueMdnsFencingPolicy: {
     method: 'get',
     url: '/templates/venues/:venueId/mDnsFencingSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueMdnsFencingPolicyRbac: {
     method: 'get',
@@ -278,8 +249,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueMdnsFencingPolicy: {
     method: 'put',
     url: '/templates/venues/:venueId/mDnsFencingSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueMdnsFencingPolicyRbac: {
     method: 'put',
@@ -289,8 +259,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueBssColoring: {
     method: 'get',
     url: '/templates/venues/:venueId/bssColoringSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueBssColoringRbac: {
     method: 'get',
@@ -300,8 +269,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   updateVenueBssColoring: {
     method: 'put',
     url: '/templates/venues/:venueId/bssColoringSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueBssColoringRbac: {
     method: 'put',
@@ -311,34 +279,29 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: NewApiInfo } = {
   getVenueDhcpProfile: {
     method: 'get',
     url: '/templates/venues/:venueId/dhcpConfigServiceProfileSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   updateVenueDhcpProfile: {
     method: 'post',
     url: '/templates/venues/:venueId/dhcpConfigServiceProfileSettings',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   getVenueDhcpActivePools: {
     method: 'get',
     url: '/templates/venues/:venueId/dhcpPools',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   activateVenueDhcpPool: {
     method: 'post',
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
-    newApi: true,
-    handled: true
+    newApi: true
   },
   deactivateVenueDhcpPool: {
     method: 'delete',
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
-    newApi: true,
-    handled: true
+    newApi: true
   },
-  getVenueCityList: {
+  getVenueCityList: { // TODO
     method: 'post',
     url: '/api/viewmodel/:tenantId/venuetemplate/citylist',
     newApi: true

@@ -127,8 +127,10 @@ export function RadioSettings () {
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { isTemplate } = useConfigTemplate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
-  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const {
     editContextData,
@@ -167,7 +169,9 @@ export function RadioSettings () {
       useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
       enableRbac: isUseRbacApi,
-      enableSeparation: is6gChannelSeparation
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   // default radio data
@@ -176,7 +180,9 @@ export function RadioSettings () {
       useQueryFn: useGetDefaultRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRadioCustomizationQuery,
       enableRbac: isUseRbacApi,
-      enableSeparation: is6gChannelSeparation
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   // Custom radio data
@@ -185,7 +191,9 @@ export function RadioSettings () {
       useQueryFn: useGetVenueRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateRadioCustomizationQuery,
       enableRbac: isUseRbacApi,
-      enableSeparation: is6gChannelSeparation
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useVenueConfigTemplateMutationFnSwitcher(
@@ -734,7 +742,7 @@ export function RadioSettings () {
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
         payload: data,
-        enableRbac: isUseRbacApi,
+        enableRbac: resolvedRbacEnabled,
         enableSeparation: is6gChannelSeparation
       }).unwrap()
     } catch (error) {
