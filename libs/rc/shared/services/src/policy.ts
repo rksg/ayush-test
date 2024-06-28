@@ -13,7 +13,7 @@ import {
   transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
   l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
-  VlanPool, WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
+  WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
@@ -1122,18 +1122,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
-    }),
-    vlanPoolList: build.query<VlanPool[], RequestPayload>({
-      query: ({ params }) => {
-        const vlanPoolListReq = createHttpRequest(
-          WifiUrlsInfo.getVlanPools,
-          params
-        )
-        return {
-          ...vlanPoolListReq
-        }
-      },
-      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
@@ -3165,7 +3153,6 @@ export const {
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
   useGetVLANPoolPolicyViewModelListQuery,
-  useVlanPoolListQuery,
   useGetVLANPoolPolicyDetailQuery,
   useGetVLANPoolVenuesQuery,
   useAddClientIsolationMutation,
