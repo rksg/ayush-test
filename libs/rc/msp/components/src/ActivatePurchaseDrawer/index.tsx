@@ -100,7 +100,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
           title: $t({ defaultMessage: 'Select Region' }),
           type: 'confirm',
           /* eslint-disable max-len */
-          content: $t({ defaultMessage: 'You have selected <{selRegion}> region for availability of the licenses, which is a different region from the instance you are currently logged in. {br}{br}Are you sure you want to continue?' },
+          content: $t({ defaultMessage: 'You have selected {selRegion} region for availability of the licenses, which is a different region from the instance you are currently logged in. {br}{br}Are you sure you want to continue?' },
             { selRegion: <b>{selRegion?.label}</b>, br: <br></br> }),
           okText: $t({ defaultMessage: 'Yes' }),
           cancelText: $t({ defaultMessage: 'No' }),
