@@ -13,7 +13,7 @@ import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { createDpskHttpRequest }         from '../service'
+import { createDpskHttpRequest }           from '../service'
 import { commonQueryFn, getDhcpProfileFn } from '../servicePolicy.utils'
 
 import {

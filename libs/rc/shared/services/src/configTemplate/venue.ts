@@ -37,7 +37,7 @@ import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
 import { commonQueryFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                                      from '../utils'
+import { handleCallbackWhenActivitySuccess }                                        from '../utils'
 
 import { configTemplateApi }                                                         from './common'
 import { useCasesToRefreshVenueTemplateList, useCasesToRefreshVlanPoolTemplateList } from './constants'

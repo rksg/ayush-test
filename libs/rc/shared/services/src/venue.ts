@@ -102,7 +102,7 @@ import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                                                                        from './utils'
+import { handleCallbackWhenActivitySuccess }                                                                          from './utils'
 
 const customHeaders = {
   v1: {
