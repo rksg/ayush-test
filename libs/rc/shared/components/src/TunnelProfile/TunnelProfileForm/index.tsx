@@ -125,20 +125,6 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           children={<Select mode='tags' />}
         />
       </Col> */}
-      { !isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
-        <Col span={14}>
-          <Form.Item
-            name='type'
-            label={$t({ defaultMessage: 'Tunnel Type' })}
-            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
-          >
-            <Select
-              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}
-              options={tunnelTypeOptions}
-            />
-          </Form.Item>
-        </Col>
-      }
       { isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
         <Col span={24}>
           <Form.Item
@@ -350,6 +336,20 @@ export const TunnelProfileForm = (props: TunnelProfileFormProps) => {
           </Space>
         </Form.Item>
       </Col>
+      { !isEdgeVxLanTunnelKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) &&
+        <Col span={14}>
+          <Form.Item
+            name='type'
+            label={$t({ defaultMessage: 'Tunnel Type' })}
+            tooltip={$t(MessageMapping.tunnel_type_tooltip)}
+          >
+            <Select
+              disabled={isDefaultTunnelProfile || !!disabledFields?.includes('type')}
+              options={tunnelTypeOptions}
+            />
+          </Form.Item>
+        </Col>
+      }
       {
         isEdgeVxLanTunnelKaReady &&
         <Col span={24}>

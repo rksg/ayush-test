@@ -58,12 +58,6 @@ const TunnelProfileDetail = () => {
     //   title: $t({ defaultMessage: 'Tags' }),
     //   content: () => (tunnelProfileData.tags)
     // },
-    ...(!isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
-      title: $t({ defaultMessage: 'Tunnel Type' }),
-      content: () => {
-        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
-      }
-    }] : []),
     ...(isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
       title: $t({ defaultMessage: 'Network Segment Type' }),
       content: () => {
@@ -109,6 +103,12 @@ const TunnelProfileDetail = () => {
         })
       }
     },
+    ...(!isEdgeVxLanKaReady && (isEdgeSdLanReady || isEdgeSdLanHaReady) ? [{
+      title: $t({ defaultMessage: 'Tunnel Type' }),
+      content: () => {
+        return getTunnelTypeString($t, tunnelProfileData.type || TunnelTypeEnum.VXLAN)
+      }
+    }] : []),
     ...(isEdgeVxLanKaReady ? [
       {
         title: $t({ defaultMessage: 'Keep Alive Interval' }),
