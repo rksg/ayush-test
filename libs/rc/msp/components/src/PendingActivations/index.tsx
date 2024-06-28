@@ -46,6 +46,7 @@ const PendingActivationsTable = () => {
       title: $t({ defaultMessage: 'Order Date' }),
       dataIndex: 'orderCreateDate',
       key: 'orderCreateDate',
+      width: 120,
       render: function (_, row) {
         return row.isChild ? '' : formatter(DateFormatEnum.DateFormat)(row.orderCreateDate)
       }
@@ -53,6 +54,7 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'SPA Activation Code' }),
       dataIndex: 'orderAcxRegistrationCode',
+      width: 220,
       key: 'orderAcxRegistrationCode',
       render: function (_, row) {
         return row.isChild ? '' : <Button
@@ -71,6 +73,7 @@ const PendingActivationsTable = () => {
       title: $t({ defaultMessage: 'Part Number' }),
       dataIndex: 'productCode',
       key: 'productCode',
+      width: 220,
       render: function (_, row) {
         return showActivateLink ? <Button
           type='link'
@@ -84,18 +87,21 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'Part Number Description' }),
       dataIndex: 'productName',
+      width: 220,
       key: 'productName'
     },
     {
       title: $t({ defaultMessage: 'Quantity' }),
       dataIndex: 'quantity',
       key: 'quantity',
+      width: 90,
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Subscription Term' }),
       dataIndex: 'subscriptionTerm',
       key: 'subscriptionTerm',
+      width: 160,
       render: function (_, row) {
         const terms =
           moment.duration(moment(row.spaEndDate).diff(moment(row.spaStartDate))).asDays()/30
@@ -103,13 +109,14 @@ const PendingActivationsTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Activation Period Ends on' }),
-      dataIndex: 'spaEndDate',
-      key: 'spaEndDate',
+      title: $t({ defaultMessage: 'Last Day of Grace Activation Period' }),
+      dataIndex: 'spaStartDate',
+      key: 'spaStartDate',
+      width: 260,
       render: function (_, row) {
-        return row.productClass === 'ACX-TRIAL-NEW'
+        return row.productClass === 'ACX-TRIAL-NEW' || row.trial
           ? noDataDisplay
-          : formatter(DateFormatEnum.DateFormat)(row.spaEndDate)
+          : formatter(DateFormatEnum.DateFormat)(row.spaStartDate)
       }
     }
   ]
@@ -135,6 +142,7 @@ const PendingActivationsTable = () => {
     <Loader states={[pendingActivationResults
     ]}>
       <Table
+        settingsId='pending-activation-table'
         columns={columns}
         dataSource={subscriptionData}
         rowKey='orderId'

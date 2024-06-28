@@ -56,7 +56,7 @@ export function useDowngradePerApModel () {
     // eslint-disable-next-line max-len
     const apModelIndividualDisplayData = convertToApModelIndividualDisplayData(apModelFirmwares, selectedVenues, undefined, false)
 
-    return apModelIndividualDisplayData.length > 0
+    return apModelIndividualDisplayData.filter(data => data.versionOptions.length > 0).length > 0
   }
 
   return {

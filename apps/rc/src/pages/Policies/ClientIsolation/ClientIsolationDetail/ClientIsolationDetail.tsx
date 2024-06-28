@@ -12,6 +12,7 @@ import {
   getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
 import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
@@ -45,7 +46,8 @@ export default function ClientIsolationDetail () {
             type: PolicyType.CLIENT_ISOLATION,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}>
+          })}
+          scopeKey={[WifiScopes.UPDATE]}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

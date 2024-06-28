@@ -31,6 +31,7 @@ export function CloudMessageBanner () {
   const navigate = useNavigate()
   const isEdgeScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
   const layout = useLayoutContext()
 
   const linkToAdministration = useTenantLink('/administration/')
@@ -68,7 +69,7 @@ export function CloudMessageBanner () {
   }, [cloudVersion, userSettings])
 
   const checkWifiScheduleExists = async () => {
-    return await getCloudScheduleVersion({ params }).unwrap()
+    return await getCloudScheduleVersion({ params, enableRbac: isUpgradeByModelEnabled }).unwrap()
       .then(cloudScheduleVersion => {
         if (cloudScheduleVersion) {
           const updateVersion = {

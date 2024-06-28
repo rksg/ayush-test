@@ -123,7 +123,8 @@ const activations = {
     spaEndDate: '2024-07-22',
     productClass: 'ACX-TRIAL-NEW',
     orderCreateDate: '2024-04-22T08:53:05.000+0000',
-    orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE'
+    orderAcxRegistrationCode: 'ACX-03726426-BUG-HIT-AXE',
+    trial: true
   },
   {
     orderId: 'a0EO3000001haUHMAY',

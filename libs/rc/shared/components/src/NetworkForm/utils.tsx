@@ -8,12 +8,15 @@ import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   covertAAAViewModalTypeToRadius,
   useActivateRadiusServerMutation,
+  useActivateVlanPoolMutation,
   useBindClientIsolationMutation,
   useDeactivateRadiusServerMutation,
+  useDeactivateVlanPoolMutation,
   useGetAAAPolicyViewModelListQuery,
   useGetEnhancedClientIsolationListQuery,
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation
 } from '@acx-ui/rc/services'
@@ -30,7 +33,8 @@ import {
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
   CommonResult,
-  NetworkVenue
+  NetworkVenue,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
@@ -335,4 +339,55 @@ export function useClientIsolationActivations (shouldSkipMode: boolean,
   }
 
   return { updateClientIsolationActivations }
+}
+
+export function useVlanPool () {
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { networkId } = useParams()
+
+  const [activate] = useActivateVlanPoolMutation()
+  const [deactivate] = useDeactivateVlanPoolMutation()
+
+  const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
+    payload: {
+      fields: ['name', 'id'],
+      filters: { wifiNetworkIds: [networkId] },
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    },
+    enableRbac: isPolicyRbacEnabled
+  }, {
+    skip: !isPolicyRbacEnabled || !networkId,
+    selectFromResult: ({ data }) => ({ vlanPoolId: data?.data[0]?.id })
+  })
+
+  // eslint-disable-next-line max-len
+  const activateVlanPool = async (payload: { name: string, vlanMembers: string[] }, networkId?: string, providerId?: string) => {
+    return networkId && providerId ?
+      await activate({
+        params: { networkId: networkId, profileId: providerId },
+        payload: payload
+      }).unwrap(): null
+  }
+
+  const deactivateVlanPool = async (networkId?: string, providerId?: string) => {
+    return networkId && providerId ?
+      await deactivate({ params: { networkId: networkId, profileId: providerId } }).unwrap() : null
+  }
+
+  // eslint-disable-next-line max-len
+  const updateVlanPoolActivation = async (networkId?: string, vlanPool?: VlanPool | null, originalPoolId?: string) => {
+    if (!isPolicyRbacEnabled) return
+    if (!vlanPool && !originalPoolId) return
+    if (originalPoolId && !vlanPool) await deactivateVlanPool(networkId, originalPoolId)
+    // eslint-disable-next-line max-len
+    if (vlanPool && originalPoolId !== vlanPool.id) await activateVlanPool(vlanPool, networkId, vlanPool.id)
+  }
+
+  return {
+    vlanPoolId,
+    updateVlanPoolActivation
+  }
 }

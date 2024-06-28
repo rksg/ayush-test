@@ -340,6 +340,13 @@ export const edgeApi = baseEdgeApi.injectEndpoints({
       invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
         { type: 'Edge', id: 'CLUSTER_LIST' }]
     }),
+    shutdownEdge: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(EdgeUrlsInfo.shutdown, params)
+      },
+      invalidatesTags: [{ type: 'Edge', id: 'LIST' }, { type: 'Edge', id: 'DETAIL' },
+        { type: 'Edge', id: 'CLUSTER_LIST' }]
+    }),
     factoryResetEdge: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
         return createHttpRequest(EdgeUrlsInfo.factoryReset, params)
@@ -1011,6 +1018,7 @@ export const {
   useLazyGetEdgePortsStatusListQuery,
   useGetEdgeSubInterfacesStatusListQuery,
   useRebootEdgeMutation,
+  useShutdownEdgeMutation,
   useFactoryResetEdgeMutation,
   useDownloadEdgesCSVMutation,
   useGetEdgeUptimeQuery,

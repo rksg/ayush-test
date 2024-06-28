@@ -24,7 +24,8 @@ import {
 
 export interface RequestFormData <FormData = unknown> {
   params?: Params<string>
-  payload?: FormData
+  payload?: FormData,
+  enableRbac?: boolean
 }
 
 export interface TableResult <ResultItemType, ResultExtra = unknown> {

@@ -26,6 +26,7 @@ import {
   GridCol,
   GridRow
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddMspLabelMutation,
   useGetMspBaseURLQuery,
@@ -79,7 +80,9 @@ export function PortalSettings () {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const params = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
   const [selectedLogo, setSelectedLogo] = useState('defaultLogo')
@@ -109,9 +112,9 @@ export function PortalSettings () {
   const [addMspLabel] = useAddMspLabelMutation()
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
-  const { data: provider } = useExternalProvidersQuery({ params })
-  const { data: baseUrl } = useGetMspBaseURLQuery({ params })
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const { data: provider } = useExternalProvidersQuery({ params, enableRbac: isUseRbacApi })
+  const { data: baseUrl } = useGetMspBaseURLQuery({ params, enableRbac: isRbacEnabled })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
 
   useEffect(() => {
     const fetchImages = async (mspLabel: MspPortal) => {
@@ -398,7 +401,7 @@ export function PortalSettings () {
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
       const formData = await getMspPortalToSave(values)
-      await addMspLabel({ params, payload: formData }).unwrap()
+      await addMspLabel({ params, payload: formData, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
       window.location.reload()
     } catch(error) {
@@ -415,7 +418,7 @@ export function PortalSettings () {
   const handleUpdateMspLabel = async (values: MspPortal) => {
     try {
       const portal: MspPortal = await getMspPortalToSave(values)
-      await updateMspLabel({ params, payload: portal }).unwrap()
+      await updateMspLabel({ params, payload: portal, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch(error) {
       const respData = error as { status: number, data: { [key: string]: string } }

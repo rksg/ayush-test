@@ -14,7 +14,6 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  apCaps,
   clientList,
   clientApList,
   clientVenueList,
@@ -94,8 +93,6 @@ describe('ClientDetails', () => {
         (_, res, ctx) => res(ctx.json(histClientList ))),
       graphql.link(dataApiURL).query('ClientStatisics', (_, res, ctx) =>
         res(ctx.data({ client: clientReportList[0] }))),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(apCaps))),
       rest.patch(ClientUrlsInfo.disconnectClient.url,
         (_, res, ctx) => {
           requestDisconnectClientSpy()

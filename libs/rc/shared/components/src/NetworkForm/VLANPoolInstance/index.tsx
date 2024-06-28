@@ -6,6 +6,7 @@ import _                              from 'lodash'
 import { useIntl }                    from 'react-intl'
 
 import { Tooltip }                                                                               from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                from '@acx-ui/feature-toggle'
 import { useGetEnhancedVlanPoolPolicyTemplateListQuery, useGetVLANPoolPolicyViewModelListQuery } from '@acx-ui/rc/services'
 import { TableResult, VLANPoolViewModelType, useConfigTemplateQueryFnSwitcher }                  from '@acx-ui/rc/utils'
 
@@ -19,12 +20,14 @@ const listPayload = {
 
 const VLANPoolInstance = () => {
   const { $t } = useIntl()
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const form = Form.useFormInstance()
   // eslint-disable-next-line max-len
   const { data: instanceListResult } = useConfigTemplateQueryFnSwitcher<TableResult<VLANPoolViewModelType>>({
     useQueryFn: useGetVLANPoolPolicyViewModelListQuery,
     useTemplateQueryFn: useGetEnhancedVlanPoolPolicyTemplateListQuery,
-    payload: listPayload
+    payload: listPayload,
+    enableRbac: isPolicyRbacEnabled
   })
 
   const [ vlanPoolList, setVlanPoolList ]= useState<DefaultOptionType[]>()

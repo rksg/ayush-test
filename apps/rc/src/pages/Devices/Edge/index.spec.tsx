@@ -1,15 +1,14 @@
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { r650Cap } from '../__tests__/fixtures'
 
 import EdgeList from './index'
 
@@ -39,9 +38,6 @@ describe('EdgeList', () => {
       rest.post(
         CommonUrlsInfo.getVenues.url,
         (req, res, ctx) => res(ctx.json([]))
-      ),
-      rest.get(WifiUrlsInfo.getApCapabilities.url,
-        (req, res, ctx) => res(ctx.json(r650Cap))
       )
     )
   })

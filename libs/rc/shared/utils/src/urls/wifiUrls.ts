@@ -555,5 +555,25 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     newApi: true,
     url: '/venues/:venueId/wifiNetworks/:networkId/clientIsolationProfiles/:policyId'
+  },
+  activateVlanPool: {
+    method: 'put',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  deactivateVlanPool: {
+    method: 'delete',
+    url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  activateApGroupVlanPool: {
+    method: 'put',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true
+  },
+  deactivateApGroupVlanPool: {
+    method: 'delete',
+    url: '/venues/:venueId/wifiNetworks/:networkId/apGroups/:apGroupId/vlanPoolProfiles/:profileId',
+    newApi: true
   }
 }
