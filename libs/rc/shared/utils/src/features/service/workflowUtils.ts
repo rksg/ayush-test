@@ -2,7 +2,11 @@ import { MessageDescriptor }      from '@formatjs/intl'
 import { defineMessage, useIntl } from 'react-intl'
 import { Node }                   from 'reactflow'
 
-import { AccessPointOutlined, EnvelopOpenOutlined, PoliciesOutlined } from '@acx-ui/icons'
+import {
+  AupIcon,
+  DataPromptIcon,
+  DisplayMessageIcon
+} from '@acx-ui/icons'
 
 import {
   ActionType,
@@ -72,9 +76,9 @@ export const ActionNodeDisplay: Record<ActionType, MessageDescriptor> = {
 }
 
 export const ActionTypeCardIcon: Record<ActionType, React.FunctionComponent> = {
-  [ActionType.AUP]: AccessPointOutlined,
-  [ActionType.DATA_PROMPT]: PoliciesOutlined,
-  [ActionType.DISPLAY_MESSAGE]: EnvelopOpenOutlined
+  [ActionType.AUP]: AupIcon,
+  [ActionType.DATA_PROMPT]: DataPromptIcon,
+  [ActionType.DISPLAY_MESSAGE]: DisplayMessageIcon
 }
 
 export const ActionTypeTitle: Record<ActionType, MessageDescriptor> = {
