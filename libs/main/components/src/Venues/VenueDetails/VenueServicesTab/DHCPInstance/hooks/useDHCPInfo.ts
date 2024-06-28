@@ -15,12 +15,11 @@ export default function useDHCPInfo () {
   const { isTemplate } = useConfigTemplate()
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
     useQueryFn: useVenueDHCPProfileQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
     extraParams: params,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   // eslint-disable-next-line max-len
@@ -33,7 +32,7 @@ export default function useDHCPInfo () {
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !venueDHCPProfile?.serviceProfileId,
     extraParams: { serviceId: venueDHCPProfile?.serviceProfileId },
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   let primaryServerSN='', backupServerSN='', gatewayList:DHCPProfileAps[]=[]

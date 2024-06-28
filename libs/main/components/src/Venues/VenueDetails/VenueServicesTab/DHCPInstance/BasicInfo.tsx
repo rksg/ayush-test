@@ -54,16 +54,16 @@ export default function BasicInfo () {
   const [form] = Form.useForm()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
     useQueryFn: useGetVenueSettingsQuery,
     useTemplateQueryFn: useGetVenueTemplateSettingsQuery
   })
-
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
-    skip: enableRbac || enableTemplateRbac,
-    enableRbac, enableTemplateRbac
+    skip: resolvedEnableRbac,
+    enableRbac
   })
 
   const [getDhcpProfile] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData | null>({
@@ -72,7 +72,7 @@ export default function BasicInfo () {
   })
 
   const getSelectedDHCP = async (dhcpServiceID:string)=> {
-    if(enableRbac || enableTemplateRbac) {
+    if(resolvedEnableRbac) {
       const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID },
         enableRbac: isTemplate ? enableTemplateRbac : enableRbac }).unwrap()
       return result
@@ -220,7 +220,7 @@ export default function BasicInfo () {
                 delete payload.serviceProfileId
               }
             }
-            if (enableRbac || enableTemplateRbac) {
+            if (resolvedEnableRbac) {
               payload.activeDhcpPoolNames = selectedDhcp?.dhcpPools.map(pool => pool.name) || []
               delete payload.serviceProfileId
               delete payload.enabled

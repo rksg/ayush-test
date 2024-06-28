@@ -62,12 +62,12 @@ const VenueDHCPForm = (props: {
     useQueryFn: useVenueDHCPProfileQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
     extraParams: params,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
   const { data: apList } = useApListQuery({
     params,

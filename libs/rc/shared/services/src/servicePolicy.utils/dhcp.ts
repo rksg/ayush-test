@@ -1,66 +1,14 @@
 /* eslint-disable max-len */
 import { RetryOptions }                                                     from '@reduxjs/toolkit/dist/query/retry'
-import { BaseQueryApi, FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta, BaseQueryApi } from '@reduxjs/toolkit/query'
 import { MaybePromise, QueryReturnValue }                                   from '@rtk-query/graphql-request-base-query/dist/GraphqlBaseQueryTypes'
-import { assign, each, keyBy }                                              from 'lodash'
+import { each, keyBy, assign }                                              from 'lodash'
 import { Params }                                                           from 'react-router-dom'
 import { v4 as uuidv4 }                                                     from 'uuid'
 
-import { AAARbacViewModalType, AAAViewModalType, ApiVersionEnum, GetApiVersionHeader, Radius, TableResult, DHCPConfigTypeEnum, DHCPSaveData, DHCPUrls, DHCPUsage, IpUtilsService, LeaseUnit, ServicesConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo, VenueDHCPPoolInst, VenueDHCPProfile, WifiDhcpPoolUsages } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                                                                                                                                                                                           from '@acx-ui/types'
-import { ApiInfo, createHttpRequest }                                                                                                                                                                                                                                                                               from '@acx-ui/utils'
-
-export function convertRbacDataToAAAViewModelPolicyList (input: TableResult<AAARbacViewModalType>): TableResult<AAAViewModalType> {
-  const resolvedData = input.data.map(aaaRbacPolicy => {
-    const { wifiNetworkIds, ...rest } = aaaRbacPolicy
-    return { ...rest, networkIds: wifiNetworkIds }
-  })
-  return {
-    ...input,
-    data: resolvedData
-  }
-}
-
-export function covertAAAViewModalTypeToRadius (data: AAAViewModalType): Radius {
-  const { id, name, primary, secondary = '', type } = data
-  const splitPrimary = primary.split(':')
-  const splitSecondary = secondary.split(':')
-
-  return {
-    id,
-    name,
-    type,
-    primary: {
-      ip: splitPrimary[0],
-      port: Number(splitPrimary[1])
-    },
-    ...(splitSecondary.length > 1 ? {
-      secondary: {
-        ip: splitSecondary[0],
-        port: Number(splitSecondary[1])
-      }
-    } : {})
-  }
-}
-
-interface CreateFetchArgsBasedOnRbacProps {
-  apiInfo: ApiInfo
-  rbacApiInfo?: ApiInfo
-  rbacApiVersionKey?: ApiVersionEnum
-  queryArgs: RequestPayload
-}
-export function createFetchArgsBasedOnRbac (props: CreateFetchArgsBasedOnRbacProps) {
-  const { apiInfo, rbacApiInfo = apiInfo, rbacApiVersionKey, queryArgs } = props
-  const enableRbac = queryArgs.enableRbac ?? false
-  const resolvedApiInfo = enableRbac ? rbacApiInfo : apiInfo
-  const apiVersionHeaders = GetApiVersionHeader(enableRbac ? rbacApiVersionKey : undefined)
-  const resolvedPayload = enableRbac ? JSON.stringify(queryArgs.payload) : queryArgs.payload
-
-  return {
-    ...createHttpRequest(resolvedApiInfo, queryArgs.params, apiVersionHeaders),
-    body: resolvedPayload
-  }
-}
+import { ServicesConfigTemplateUrlsInfo, DHCPUrls, VenueConfigTemplateUrlsInfo, GetApiVersionHeader, ApiVersionEnum, DHCPSaveData, DHCPConfigTypeEnum, WifiDhcpPoolUsages, LeaseUnit, IpUtilsService, TableResult, DHCPUsage, VenueDHCPProfile, VenueDHCPPoolInst } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                                                                                                                                                           from '@acx-ui/types'
+import { createHttpRequest }                                                                                                                                                                                                                                        from '@acx-ui/utils'
 
 export const getDhcpProfile = (isTemplate = false) => {
   const dhcpApis = isTemplate ? ServicesConfigTemplateUrlsInfo : DHCPUrls

@@ -30,7 +30,8 @@ import {
   PrivilegeGroup,
   EntitlementPendingActivations,
   NotificationSmsUsage,
-  NotificationSmsConfig
+  NotificationSmsConfig,
+  TwiliosIncommingPhoneNumbers
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
@@ -46,6 +47,16 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Administration', id: 'DETAIL' }]
+    }),
+    updateTenantSelf: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateTenantSelf, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
@@ -500,7 +511,18 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Activate Entitlement'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'ACTIVATIONS' }
+            ]))
+          })
+        })
+      }
     }),
     patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -803,7 +825,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         return{
           ...req
         }
-      }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     updateNotificationSms: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -812,7 +835,8 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     getNotificationSmsProvider: build.query<NotificationSmsConfig, RequestPayload>({
       query: ({ params }) => {
@@ -829,11 +853,22 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           ...req,
           body: payload
         }
-      }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
     }),
     deleteNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    getTwiliosIncomingPhoneNumbers: build.query<TwiliosIncommingPhoneNumbers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosIncomingPhoneNumbers, params)
         return {
           ...req,
           body: payload
@@ -856,6 +891,7 @@ const transformAdministratorList = (data: Administrator[]) => {
 
 export const {
   useGetTenantDetailsQuery,
+  useUpdateTenantSelfMutation,
   useLazyGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,
@@ -918,5 +954,7 @@ export const {
   useUpdateNotificationSmsMutation,
   useGetNotificationSmsProviderQuery,
   useUpdateNotificationSmsProviderMutation,
-  useDeleteNotificationSmsProviderMutation
+  useDeleteNotificationSmsProviderMutation,
+  useGetTwiliosIncomingPhoneNumbersQuery,
+  useLazyGetTwiliosIncomingPhoneNumbersQuery
 } = administrationApi

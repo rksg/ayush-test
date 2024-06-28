@@ -36,16 +36,17 @@ export function DHCPForm (props: DHCPFormProps) {
   const { editMode = false } = props
   const formRef = useRef<StepsFormLegacyInstance<DHCPSaveData>>()
   const navigate = useNavigate()
+  const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
-  const { isTemplate } = useConfigTemplate()
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   // eslint-disable-next-line max-len
   const { pathname: previousPath, returnParams } = useServicePreviousPath(ServiceType.DHCP, ServiceOperation.LIST)
   const { data, isLoading, isFetching } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !editMode,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   // eslint-disable-next-line max-len
@@ -72,12 +73,11 @@ export function DHCPForm (props: DHCPFormProps) {
         dhcpPools: formData.dhcpPools.map(({ id, allowWired, ...pool })=>{
           return {
             ...pool,
-            ...(id.indexOf('_NEW_')!==-1 || (enableRbac || enableTemplateRbac)) ? {} : { id }
+            ...(id.indexOf('_NEW_')!==-1 || resolvedEnableRbac) ? {} : { id }
           }
         })
       }
-      await saveOrUpdateDHCP({ params, payload,
-        enableRbac: isTemplate ? enableTemplateRbac : enableRbac }).unwrap()
+      await saveOrUpdateDHCP({ params, payload, enableRbac: resolvedEnableRbac }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }

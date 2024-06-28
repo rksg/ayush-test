@@ -2,6 +2,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { edgeApi }                                           from '@acx-ui/rc/services'
 import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                   from '@acx-ui/store'
@@ -17,12 +18,14 @@ import { EdgeClusterTable } from './EdgeClusterTable'
 
 const mockedDeleteFn = jest.fn()
 const mockedRebootFn = jest.fn()
+const mockedShutdownFn = jest.fn()
 
 jest.mock('@acx-ui/rc/components', () => ({
   ...jest.requireActual('@acx-ui/rc/components'),
   useEdgeClusterActions: () => ({
     deleteNodeAndCluster: mockedDeleteFn,
-    reboot: mockedRebootFn
+    reboot: mockedRebootFn,
+    shutdown: mockedShutdownFn
   })
 }))
 const mockedUsedNavigate = jest.fn()
@@ -109,6 +112,23 @@ describe('Edge Cluster Table', () => {
     await userEvent.click(within(subRow).getByRole('checkbox'))
     await userEvent.click(screen.getByRole('button', { name: 'Reboot' }))
     expect(mockedRebootFn).toBeCalled()
+  })
+
+  it('should shutdown selected items successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
+    render(
+      <Provider>
+        <EdgeClusterTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/devices/edge' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: /Edge Cluster 1/i })
+    await userEvent.click(within(row).getByRole('button'))
+    const subRow = screen.getByRole('row', { name: /Smart Edge 1/i })
+    await userEvent.click(within(subRow).getByRole('checkbox'))
+    await userEvent.click(screen.getByRole('button', { name: 'Shutdown' }))
+    expect(mockedShutdownFn).toBeCalled()
   })
 
   it('should navigate to correct path while clicking edit button (Node)', async () => {

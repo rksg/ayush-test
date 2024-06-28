@@ -37,8 +37,7 @@ export function WifiConfigTab () {
     useVenueConfigTemplateQueryFnSwitcher<Capabilities>({
       useQueryFn: useGetVenueApCapabilitiesQuery,
       useTemplateQueryFn: useGetVenueTemplateApCapabilitiesQuery,
-      enableRbac: isUseRbacApi,
-      enableTemplateRbac: false
+      enableRbac: isUseRbacApi
     })
 
   const onTabChange = (tab: string) => {

@@ -36,10 +36,10 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { getVenueDHCPProfile, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                       from '../utils'
+import { commonQueryFn, getVenueDHCPProfile, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess }                                      from '../utils'
 
-import { commonQueryFn, configTemplateApi }                                          from './common'
+import { configTemplateApi }                                                         from './common'
 import { useCasesToRefreshVenueTemplateList, useCasesToRefreshVlanPoolTemplateList } from './constants'
 import { policiesConfigTemplateApi }                                                 from './policies'
 

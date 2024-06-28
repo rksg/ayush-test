@@ -35,7 +35,6 @@ const DHCPInstance = () => {
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { data: leasesList } = useVenuesLeasesListQuery(
     { params, enableRbac }, { skip: isTemplate })
 
@@ -48,7 +47,7 @@ const DHCPInstance = () => {
     useQueryFn: useVenueDHCPProfileQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
     extraParams: params,
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   // eslint-disable-next-line max-len
@@ -57,7 +56,7 @@ const DHCPInstance = () => {
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     skip: !venueDHCPProfile?.serviceProfileId,
     extraParams: { serviceId: venueDHCPProfile?.serviceProfileId },
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   const leaseContent = $t({ defaultMessage: 'Lease Table ({count} Online)' },

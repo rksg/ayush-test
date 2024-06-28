@@ -22,7 +22,6 @@ export default function DHCPInstancesTable (){
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE),
-    enableTemplateRbac: useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE),
     payload: { needUsage: true }
   })
 

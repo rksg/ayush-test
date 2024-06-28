@@ -36,7 +36,6 @@ export function DHCPDetail () {
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
     enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE),
-    enableTemplateRbac: useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE),
     payload: { needUsage: true }
   })
   // eslint-disable-next-line max-len

@@ -41,7 +41,7 @@ export default function VenuePoolTable (
     useTemplateQueryFn: useGetVenueTemplateDhcpPoolsQuery,
     skip: isFetching,
     payload: { venueDHCPProfile, dhcpProfile },
-    enableRbac, enableTemplateRbac
+    enableRbac
   })
 
   const [activateDHCPPool] = useConfigTemplateMutationFnSwitcher({
