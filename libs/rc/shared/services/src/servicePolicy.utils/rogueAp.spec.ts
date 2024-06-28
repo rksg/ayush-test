@@ -1,6 +1,6 @@
 import { BaseQueryApi } from '@reduxjs/toolkit/query'
 
-import { ApiVersionEnum, GetApiVersionHeader } from '@acx-ui/rc/utils'
+import { ApiVersionEnum } from '@acx-ui/rc/utils'
 
 import { addRoguePolicyFn, getVenueRoguePolicyFn, updateRoguePolicyFn, updateVenueRoguePolicyFn } from './rogueAp'
 
@@ -37,7 +37,10 @@ describe('rogueAp.utils', () => {
         enableRbac: true
       },
       apiInfo: { url: '/api/regular', method: 'get' },
-      rbacApiInfo: { url: '/roguePolicies', method: 'post', newApi: true },
+      rbacApiInfo: { url: '/roguePolicies', method: 'post', headers: {
+        'Accept': 'application/vnd.ruckus.v1+json',
+        'Content-Type': 'application/vnd.ruckus.v1+json'
+      } },
       rbacApiVersionKey: ApiVersionEnum.v1,
       activateRoguePolicyApiInfo: { url: '/api/activate', method: 'put' },
       fetchWithBQ: jest.fn()
@@ -47,7 +50,7 @@ describe('rogueAp.utils', () => {
       mockProps.fetchWithBQ.mockResolvedValueOnce({ error: 'error' })
 
       const result = await addRoguePolicyFn()(mockProps.queryArgs, mockQueryApi, {}, mockProps.fetchWithBQ)
-      expect(mockedCreateHttpRequest).toHaveBeenCalledWith(mockProps.rbacApiInfo, mockProps.queryArgs.params, GetApiVersionHeader(mockProps.rbacApiVersionKey))
+      expect(mockedCreateHttpRequest).toHaveBeenCalledWith(mockProps.rbacApiInfo, mockProps.queryArgs.params)
       expect(result).toEqual({ error: 'error' })
     })
 
