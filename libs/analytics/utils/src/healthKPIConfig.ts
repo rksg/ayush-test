@@ -431,7 +431,7 @@ export const kpiConfig = {
     }
   },
   switchPoeUtilization: {
-    text: defineMessage({ defaultMessage: 'PoE Utilization' }),
+    text: defineMessage({ defaultMessage: 'PoE Utilization Compliance' }),
     enableSwitchFirmwareFilter: shouldAddFirmwareFilter,
     isBeta: false,
     timeseries: {
@@ -457,7 +457,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: formatter('percentFormat'),
-      tooltip: defineMessage({ defaultMessage: 'Indication of switches where power consumption is above a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where power consumed is within budget allocation.' })
     }
   },
   onlineAPs: {
@@ -498,7 +498,7 @@ export const kpiConfig = {
     }
   },
   switchMemoryUtilization: {
-    text: defineMessage({ defaultMessage: 'Memory' }),
+    text: defineMessage({ defaultMessage: 'Memory Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -524,11 +524,11 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric of switches with memory utilisation above a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with memory utilization below a threshold.' })
     }
   },
   switchCpuUtilization: {
-    text: defineMessage({ defaultMessage: 'CPU' }),
+    text: defineMessage({ defaultMessage: 'CPU Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -554,7 +554,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric of switches with CPU utilisation above a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with CPU utilization below a threshold.' })
     }
   },
   switchesTemperature: {
@@ -570,11 +570,11 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Metric of switches with temperature above or below the operating conditions.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of switches within safe temperature operating conditions.' })
     }
   },
   switchUplinkPortUtilization: {
-    text: defineMessage({ defaultMessage: 'Uplink Port Utilization' }),
+    text: defineMessage({ defaultMessage: 'Uplink Port Utilization Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -600,11 +600,11 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric that refers to amount of network traffic that is transmitted effectively through the uplink port of wired switches.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to amount of network traffic that is transmitted effectively through the uplink port of wired switches.' })
     }
   },
   switchPortUtilization: {
-    text: defineMessage({ defaultMessage: 'Port Utilization' }),
+    text: defineMessage({ defaultMessage: 'Port Utilization Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
@@ -630,7 +630,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric that refers to traffic being transmitted effectively if its within the network capacity.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to traffic being transmitted effectively if its within the network capacity.' })
     }
   },
   switchInterfaceAnomalies: {

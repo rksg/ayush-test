@@ -42,6 +42,7 @@ export enum Features {
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EDGE_GRACEFUL_SHUTDOWN_TOGGLE = 'edge-graceful-shutdown-toggle',
+  EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
@@ -160,7 +161,8 @@ export enum Features {
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
-  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle'
+  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
+  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag

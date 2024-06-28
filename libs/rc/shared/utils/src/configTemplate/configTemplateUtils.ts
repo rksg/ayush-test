@@ -1,6 +1,7 @@
 import { UseLazyQuery, UseMutation }           from '@reduxjs/toolkit/dist/query/react/buildHooks'
 import { MutationDefinition, QueryDefinition } from '@reduxjs/toolkit/query'
 
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import { Params, TenantType, useParams }       from '@acx-ui/react-router-dom'
 import { RequestPayload, RolesEnum, UseQuery } from '@acx-ui/types'
 import { hasRoles }                            from '@acx-ui/user'
@@ -37,7 +38,6 @@ interface UseConfigTemplateQueryFnSwitcherProps<ResultType, Payload = unknown> {
   extraParams?: Params<string>
   templatePayload?: Payload
   enableRbac?: boolean
-  enableTemplateRbac?: boolean,
   enableSeparation?: boolean
 }
 export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> (
@@ -46,9 +46,10 @@ export function useConfigTemplateQueryFnSwitcher<ResultType, Payload = unknown> 
 
   const {
     useQueryFn, useTemplateQueryFn, skip = false, payload, templatePayload,
-    extraParams, enableRbac, enableTemplateRbac, enableSeparation = false
+    extraParams, enableRbac, enableSeparation = false
   } = props
 
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { isTemplate } = useConfigTemplate()
   const params = useParams()
   const resolvedPayload = isTemplate && templatePayload ? templatePayload : payload
