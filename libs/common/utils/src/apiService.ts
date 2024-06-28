@@ -10,18 +10,16 @@ import { RequestPayload } from '@acx-ui/types'
 import { getTenantId }                       from './getTenantId'
 import { getJwtTokenPayload, getJwtHeaders } from './jwtToken'
 
-interface Headers {
-  'Content-Type'?: string,
-  'Accept'?: string
-}
-
 export interface ApiInfo {
   url: string;
   method: string;
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
-  headers?: Headers;
+  headers?: {
+    'Content-Type'?: string;
+    'Accept'?: string
+  };
 }
 
 export const isDelegationMode = () => {
