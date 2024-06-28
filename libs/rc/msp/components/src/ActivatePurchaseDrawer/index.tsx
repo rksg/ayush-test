@@ -55,7 +55,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
   const { visible, setVisible, activationData } = props
   const [resetField, setResetField] = useState(false)
   const [isTermsAndConditionsChecked, setTermsAndConditions] = useState(false)
-  const [currentRegion, setCurrentRegion] = useState('US')
+  const [currentRegion, setCurrentRegion] = useState(RegionRadioButtonEnum.US)
   const [form] = useForm()
   const [activatePurchase] = usePatchEntitlementsActivationsMutation()
   const isActivationStartdatePassed = moment(activationData?.spaStartDate).isBefore(new Date())
@@ -70,7 +70,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
       const region = _.find(userProfile?.allowedRegions,(item)=>{
         return item.current === true
       })
-      setCurrentRegion(region?.name as string)
+      setCurrentRegion(region?.name as RegionRadioButtonEnum)
     }
   },[userProfile])
 
@@ -105,21 +105,15 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
           okText: $t({ defaultMessage: 'Yes' }),
           cancelText: $t({ defaultMessage: 'No' }),
           onOk: () => {
-            activatePurchase({ payload, params: { orderId: activationData?.orderId } })
-              .then(() => {
-                setVisible(false)
-                resetFields()
-              })
+            activatePurchase({ payload, params: { orderId: activationData?.orderId } }).unwrap()
             setVisible(false)
+            resetFields()
           }
         })
       } else {
-        activatePurchase({ payload, params: { orderId: activationData?.orderId } })
-          .then(() => {
-            setVisible(false)
-            resetFields()
-          })
+        activatePurchase({ payload, params: { orderId: activationData?.orderId } }).unwrap()
         setVisible(false)
+        resetFields()
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
