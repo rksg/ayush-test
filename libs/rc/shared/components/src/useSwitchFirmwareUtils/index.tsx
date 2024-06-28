@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, ReactElement } from 'react'
 
 import { Tooltip }   from 'antd'
 import { IntlShape } from 'react-intl'
@@ -80,21 +80,42 @@ export function useSwitchFirmwareUtils () {
    }
 
   const getSwitchNextScheduleTplTooltipV1002 =
-   (intl: IntlShape, venue: FirmwareSwitchVenueV1002): string | undefined => {
+   (intl: IntlShape, venue: FirmwareSwitchVenueV1002) => {
      if (venue.nextSchedule?.supportModelGroupVersions) {
        const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
-       let tooltipText: string[] = []
+       let tooltipText: ReactElement[] = []
        const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
          [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
          [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
          [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
        }
 
-       supportModelGroupVersions.forEach(v => {
-         tooltipText.push(modelGroupDisplayText[v.modelGroup] + ':' + parseSwitchVersion(v.version))
-       })
+       for (const key in SwitchFirmwareModelGroup) {
+         const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
+         const modelGroupVersions = supportModelGroupVersions?.filter(
+           (v => v.modelGroup === key))
+         if (modelGroupVersions.length > 0) {
+           const { modelGroup, version } = modelGroupVersions[0]
+           const tooltipMargin = index === 0 ||
+             index === tooltipText.length - 1 ? '5px 0px' : '10px 0px'
+           const modelGroupText = modelGroupDisplayText[modelGroup]
+           const switchVersion = parseSwitchVersion(version)
 
-       return tooltipText.join('\n')
+           tooltipText.push(
+             <div key={modelGroup}
+               style={{
+                 margin: tooltipMargin
+               }}>
+               <div style={{ color: '#c4c4c4' }}>
+                 {`${modelGroupText}`}
+               </div>
+               <div> {switchVersion} </div>
+             </div>
+           )
+         }
+       }
+
+       return <div>{tooltipText}</div>
      }
      return ''
    }

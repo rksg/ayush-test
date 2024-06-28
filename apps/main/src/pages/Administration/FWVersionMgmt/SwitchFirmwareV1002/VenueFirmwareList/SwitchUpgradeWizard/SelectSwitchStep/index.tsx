@@ -26,7 +26,7 @@ import { noDataDisplay }  from '@acx-ui/utils'
 
 import { SwitchFirmwareWizardType } from '..'
 import {
-  getNextScheduleTpl
+  getNextScheduleTplV1002
 } from '../../../../FirmwareUtils'
 import * as UI               from '../../styledComponents'
 import {
@@ -44,8 +44,10 @@ const getTooltipText = function (value: string, customDisplayValue?: string | Re
 
 function useColumns () {
   const intl = useIntl()
-  const { getSwitchNextScheduleTplTooltip,
-    getSwitchFirmwareList } = useSwitchFirmwareUtils()
+  const {
+    getSwitchNextScheduleTplTooltipV1002,
+    getCurrentFirmwareDisplay
+  } = useSwitchFirmwareUtils()
 
   const columns: TableProps<FirmwareSwitchVenueV1002>['columns'] = [
     {
@@ -74,10 +76,7 @@ function useColumns () {
       dataIndex: 'version',
       width: 150,
       render: function (_, row) {
-        // let versionList = getSwitchFirmwareList(row)
-        // const version = versionList.length > 0 ? versionList.join(', ') : noDataDisplay
-        // return getTooltipText(version)
-        return ''
+        return getCurrentFirmwareDisplay(intl, row)
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -85,11 +84,12 @@ function useColumns () {
       dataIndex: 'nextSchedule',
       width: 200,
       render: function (_, row) {
-        return ''
-        // const tooltip = getSwitchNextScheduleTplTooltip(row) ||
-        //   intl.$t({ defaultMessage: 'Not scheduled' })
-        // const customDisplayValue = getNextScheduleTpl(intl, row)
-        // return getTooltipText(tooltip, customDisplayValue)
+        return <Tooltip
+          title={getSwitchNextScheduleTplTooltipV1002(intl, row) ||
+            intl.$t({ defaultMessage: 'Not scheduled' })}
+          placement='bottom' >
+          <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>
+        </Tooltip >
       }
     }
   ]

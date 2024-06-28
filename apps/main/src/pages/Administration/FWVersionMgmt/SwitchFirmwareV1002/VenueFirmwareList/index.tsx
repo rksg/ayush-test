@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 
 import { Tooltip, Typography } from 'antd'
 import * as _                  from 'lodash'
@@ -21,7 +21,6 @@ import {
 } from '@acx-ui/rc/services'
 import {
   UpgradePreferences,
-  FirmwareVersion,
   sortProp,
   defaultSort,
   usePollingTableQuery,
