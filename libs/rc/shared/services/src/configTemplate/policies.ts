@@ -35,7 +35,7 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { addRoguePolicyFn, commonQueryFn, updateRoguePolicyFn, getVenueRoguePolicyFn, updateVenueRoguePolicyFn, addSyslogPolicy, getSyslogPolicy, transformGetVenueSyslog, updateSyslogPolicy } from '../servicePolicy.utils'
+import { addRoguePolicyFn, commonQueryFn, updateRoguePolicyFn, getVenueRoguePolicyFn, updateVenueRoguePolicyFn, addSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, updateSyslogPolicyFn } from '../servicePolicy.utils'
 
 
 import { configTemplateApi }             from './common'
@@ -278,7 +278,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      queryFn: addSyslogPolicy(true),
+      queryFn: addSyslogPolicyFn(true),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     delSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -292,11 +292,11 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     updateSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      queryFn: updateSyslogPolicy(true),
+      queryFn: updateSyslogPolicyFn(true),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     getSyslogPolicyTemplate: build.query<SyslogPolicyDetailType, RequestPayload>({
-      queryFn: getSyslogPolicy(true),
+      queryFn: getSyslogPolicyFn(true),
       providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     getSyslogPolicyTemplateList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({

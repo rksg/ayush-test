@@ -76,7 +76,7 @@ import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, addRoguePolicyFn, updateRoguePolicyFn, updateSyslogPolicy, getSyslogPolicy, transformGetVenueSyslog } from './servicePolicy.utils'
+import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, addRoguePolicyFn, updateRoguePolicyFn, updateSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, addSyslogPolicyFn } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -1830,26 +1830,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'Policy', id: 'LIST' }]
     }),
     addSyslogPolicy: build.mutation<CommonResult, RequestPayload<SyslogPolicyDetailType>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-        const { venues, ...rest } = payload!
-        const res = await fetchWithBQ({
-          ...createHttpRequest(SyslogUrls.addSyslogPolicy, params, headers),
-          body: JSON.stringify(enableRbac ? { ...rest } : payload)
-        })
-        if (res.error) {
-          return { error: res.error as FetchBaseQueryError }
-        }
-        if (enableRbac) {
-          const { response } = res.data as CommonResult
-          const requests = venues?.map(venue => ({
-            params: { policyId: response?.id, venueId: venue.id }
-          }))
-          await batchApi(SyslogUrls.bindVenueSyslog, requests ?? [], fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
-        }
-
-        return { data: res.data as CommonResult }
-      },
+      queryFn: addSyslogPolicyFn(),
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
@@ -1877,7 +1858,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     updateSyslogPolicy: build.mutation<CommonResult, RequestPayload<SyslogPolicyDetailType>>({
-      queryFn: updateSyslogPolicy(),
+      queryFn: updateSyslogPolicyFn(),
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
@@ -1892,7 +1873,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getSyslogPolicy: build.query<SyslogPolicyDetailType, RequestPayload>({
-      queryFn: getSyslogPolicy(),
+      queryFn: getSyslogPolicyFn(),
       providesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
     getVenueSyslogAp: build.query<VenueSyslogSettingType, RequestPayload>({

@@ -5,7 +5,7 @@ import { ApiVersionEnum, FacilityEnum, FlowLevelEnum, GetApiVersionHeader, Polic
 import { RequestPayload }                                                                                                                                                                                  from '@acx-ui/types'
 import { batchApi, createHttpRequest }                                                                                                                                                                     from '@acx-ui/utils'
 
-import { addSyslogPolicy, getSyslogPolicy, transformGetVenueSyslog, updateSyslogPolicy } from './syslog'
+import { addSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, updateSyslogPolicyFn } from './syslog'
 
 jest.mock('@acx-ui/utils')
 describe('addSyslogPolicy', () => {
@@ -31,7 +31,7 @@ describe('addSyslogPolicy', () => {
     }
     const mockResponse = { data: { response: { id: 'policy-id' }, requestId: '123' } }
     fetchWithBQ.mockResolvedValue(mockResponse)
-    await addSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    await addSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.addSyslogPolicy, args.params, undefined)
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
@@ -49,7 +49,7 @@ describe('addSyslogPolicy', () => {
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)
 
-    await addSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    await addSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.addSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
@@ -72,7 +72,7 @@ describe('addSyslogPolicy', () => {
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)
 
-    await addSyslogPolicy(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    await addSyslogPolicyFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.addSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
     expect(batchApi).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.bindVenueSyslog, [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }], fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
@@ -105,7 +105,7 @@ describe('updateSyslogPolicy', () => {
     }
     const mockResponse = { data: { requestId: '123' } }
     fetchWithBQ.mockResolvedValue(mockResponse)
-    await updateSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    await updateSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.updateSyslogPolicy, args.params, undefined)
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
@@ -122,7 +122,7 @@ describe('updateSyslogPolicy', () => {
     }
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)
-    await updateSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    await updateSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.updateSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
@@ -147,7 +147,7 @@ describe('updateSyslogPolicy', () => {
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)
 
-    await updateSyslogPolicy(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    await updateSyslogPolicyFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.updateSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
     const expectedBindVenueIds = [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }, { params: { venueId: 'venueId2', policyId: 'policy-id' } }]
@@ -171,7 +171,7 @@ describe('getSyslogPolicy', () => {
     const mockResponse = { data: { id: 'policy-id', name: 'test-policy', primary: {}, secondary: {} } }
     fetchWithBQ.mockResolvedValue(mockResponse)
 
-    const result = await getSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.getSyslogPolicy, args.params)
     expect(result).toEqual({ data: mockResponse.data })
@@ -188,7 +188,7 @@ describe('getSyslogPolicy', () => {
       .mockResolvedValueOnce(mockRes)
       .mockResolvedValueOnce(mockViewModelRes)
 
-    const result = await getSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.getSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
     expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.querySyslog, args.params, GetApiVersionHeader(ApiVersionEnum.v1))
@@ -212,7 +212,7 @@ describe('getSyslogPolicy', () => {
     const mockError = { error: { status: 500, data: 'Internal Server Error' } }
     fetchWithBQ.mockResolvedValue(mockError)
 
-    const result = await getSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(result).toEqual({ error: mockError.error })
   })
@@ -227,7 +227,7 @@ describe('getSyslogPolicy', () => {
       .mockResolvedValueOnce(mockError)
       .mockResolvedValueOnce({ data: {} })
 
-    const result = await getSyslogPolicy()(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(result).toEqual({ error: mockError.error })
   })
@@ -240,7 +240,7 @@ describe('getSyslogPolicy', () => {
     const mockResponse = { data: { id: 'policy-id', name: 'test-policy', primary: {}, secondary: {} } }
     fetchWithBQ.mockResolvedValue(mockResponse)
 
-    const result = await getSyslogPolicy(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getSyslogPolicyFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.getSyslogPolicy, args.params)
     expect(result).toEqual({ data: mockResponse.data })
