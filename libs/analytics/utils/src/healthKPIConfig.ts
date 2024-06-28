@@ -558,7 +558,7 @@ export const kpiConfig = {
     }
   },
   switchesTemperature: {
-    text: defineMessage({ defaultMessage: 'Temperature' }),
+    text: defineMessage({ defaultMessage: 'Temperature Compliance' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
@@ -570,7 +570,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Metric of switches within safe temperature operating conditions.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches within safe temperature operating conditions.' })
     }
   },
   switchUplinkPortUtilization: {
@@ -634,7 +634,7 @@ export const kpiConfig = {
     }
   },
   switchInterfaceAnomalies: {
-    text: defineMessage({ defaultMessage: 'Interface Anomalies' }),
+    text: defineMessage({ defaultMessage: 'Interface Health Compliance' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
@@ -646,7 +646,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Anomalies refer to unexpected and abnormal networking behaviour can occur due to cable issues, failed negotiation, and MTU Errors, Input errors contributing to bad user minutes.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to unexpected and abnormal networking behaviour can occur due to cable issues, failed negotiation, and MTU Errors, Input errors contributing to bad user minutes.' })
     }
   },
   switchStormControl: {
