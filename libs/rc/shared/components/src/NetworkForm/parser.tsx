@@ -505,11 +505,12 @@ export function updateClientIsolationAllowlist (data: NetworkSaveData): NetworkS
 
   // eslint-disable-next-line max-len
   const clientIsolationAllowlistEnabled = get(data, 'wlan.advancedCustomization.clientIsolationAllowlistEnabled')
+  const clientIsolationEnabled = get(data, 'wlan.advancedCustomization.clientIsolation')
   const clientIsolationVenues = get(data, 'wlan.advancedCustomization.clientIsolationVenues')
 
   let updatedVenues
 
-  if (clientIsolationAllowlistEnabled) {
+  if (clientIsolationEnabled && clientIsolationAllowlistEnabled) {
     updatedVenues = updateVenueClientIsolationAllowlist(data.venues, clientIsolationVenues)
   } else {
     updatedVenues = cleanClientIsolationAllowlistId(data.venues)
