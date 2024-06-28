@@ -59,7 +59,7 @@ import { baseServiceApi }             from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { getDhcpProfile } from './servicePolicy.utils'
+import { getDhcpProfileFn } from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -189,7 +189,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
-      queryFn: getDhcpProfile(),
+      queryFn: getDhcpProfileFn(),
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({

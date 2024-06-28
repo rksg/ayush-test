@@ -101,7 +101,7 @@ import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { getVenueDHCPProfile, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
+import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                                                        from './utils'
 
 const customHeaders = {
@@ -1169,7 +1169,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'Syslog' }]
     }),
     venueDHCPProfile: build.query<VenueDHCPProfile, RequestPayload>({
-      queryFn: getVenueDHCPProfile(),
+      queryFn: getVenueDHCPProfileFn(),
       providesTags: [{ type: 'Venue', id: 'DHCPProfile' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

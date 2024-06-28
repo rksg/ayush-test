@@ -14,7 +14,7 @@ import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import { createDpskHttpRequest }         from '../service'
-import { commonQueryFn, getDhcpProfile } from '../servicePolicy.utils'
+import { commonQueryFn, getDhcpProfileFn } from '../servicePolicy.utils'
 
 import {
   useCasesToRefreshDhcpTemplateList,
@@ -99,7 +99,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getDhcpTemplate: build.query<DHCPSaveData | null, RequestPayload>({
-      queryFn: getDhcpProfile(true),
+      queryFn: getDhcpProfileFn(true),
       providesTags: [{ type: 'DhcpTemplate', id: 'DETAIL' }]
     }),
     createOrUpdateDhcpTemplate: build.mutation<DHCPSaveData, RequestPayload>({

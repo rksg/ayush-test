@@ -36,7 +36,7 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { createHttpRequest }     from '@acx-ui/utils'
 
-import { commonQueryFn, getVenueDHCPProfile, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
+import { commonQueryFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse } from '../servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                      from '../utils'
 
 import { configTemplateApi }                                                         from './common'
@@ -251,7 +251,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueBssColoring)
     }),
     getVenueTemplateDhcpProfile: build.query<VenueDHCPProfile, RequestPayload>({
-      queryFn: getVenueDHCPProfile(true),
+      queryFn: getVenueDHCPProfileFn(true),
       providesTags: [{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {

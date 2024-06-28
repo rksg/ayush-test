@@ -10,7 +10,7 @@ import { ServicesConfigTemplateUrlsInfo, DHCPUrls, VenueConfigTemplateUrlsInfo, 
 import { RequestPayload }                                                                                                                                                                                                                                           from '@acx-ui/types'
 import { createHttpRequest }                                                                                                                                                                                                                                        from '@acx-ui/utils'
 
-export const getDhcpProfile = (isTemplate = false) => {
+export const getDhcpProfileFn = (isTemplate = false) => {
   const dhcpApis = isTemplate ? ServicesConfigTemplateUrlsInfo : DHCPUrls
   const venueApis = isTemplate ? VenueConfigTemplateUrlsInfo : DHCPUrls
 
@@ -113,7 +113,7 @@ export const getDhcpProfile = (isTemplate = false) => {
   }
 }
 
-export const getVenueDHCPProfile = (isTemplate = false) => {
+export const getVenueDHCPProfileFn = (isTemplate = false) => {
   const venueApis = isTemplate ? VenueConfigTemplateUrlsInfo : DHCPUrls
   return async ({ params, enableRbac }: RequestPayload, _queryApi: BaseQueryApi, _extraOptions: RetryOptions, fetchWithBQ: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>) => {
     if (!enableRbac) {

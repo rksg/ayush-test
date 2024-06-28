@@ -3,8 +3,12 @@ import { BaseQueryApi, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 import { DHCPUrls, GetApiVersionHeader, ApiVersionEnum } from '@acx-ui/rc/utils'
 import { createHttpRequest }                             from '@acx-ui/utils'
 
-import { getDhcpProfile, getVenueDHCPProfile, transformGetVenueDHCPPoolsResponse } from './dhcp'
+import { getDhcpProfileFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse } from './dhcp'
 
+jest.mock('@acx-ui/utils')
+jest.mock('uuid', () => ({
+  v4: jest.fn().mockReturnValue('mock-uuid')
+}))
 describe('getDhcpProfile', () => {
   let fetchWithBQ = jest.fn()
 
@@ -18,7 +22,7 @@ describe('getDhcpProfile', () => {
 
     const params = { serviceId: 'service1' }
     // eslint-disable-next-line max-len
-    const result = await getDhcpProfile()( { params, enableRbac: false }, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getDhcpProfileFn()( { params, enableRbac: false }, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.getDHCProfileDetail, params)
     expect(result).toEqual({ data: response.data })
@@ -40,7 +44,7 @@ describe('getDhcpProfile', () => {
 
     const params = { serviceId: 'service1' }
     // eslint-disable-next-line max-len
-    const result = await getDhcpProfile()( { params, enableRbac: true }, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getDhcpProfileFn()( { params, enableRbac: true }, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.queryDHCPProfiles,
       params, GetApiVersionHeader(ApiVersionEnum.v1))
@@ -77,7 +81,7 @@ describe('getVenueDHCPProfile', () => {
 
     const params = { venueId: 'venue1' }
     // eslint-disable-next-line max-len
-    const result = await getVenueDHCPProfile()( { params, enableRbac: false }, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getVenueDHCPProfileFn()( { params, enableRbac: false }, {} as BaseQueryApi, {}, fetchWithBQ)
 
     // eslint-disable-next-line max-len
     expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.getVenueDHCPServiceProfile, params)
@@ -94,7 +98,7 @@ describe('getVenueDHCPProfile', () => {
 
     const params = { venueId: 'venue1' }
     // eslint-disable-next-line max-len
-    const result = await getVenueDHCPProfile()( { params, enableRbac: true }, {} as BaseQueryApi, {}, fetchWithBQ)
+    const result = await getVenueDHCPProfileFn()( { params, enableRbac: true }, {} as BaseQueryApi, {}, fetchWithBQ)
 
     expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.queryDHCPProfiles,
       params, GetApiVersionHeader(ApiVersionEnum.v1))
