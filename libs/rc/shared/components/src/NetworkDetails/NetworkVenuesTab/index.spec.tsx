@@ -43,6 +43,7 @@ jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
   && ff !== Features.EDGES_SD_LAN_TOGGLE
   && ff !== Features.EDGES_SD_LAN_HA_TOGGLE
   && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
+  && ff !== Features.SWITCH_RBAC_API
 )
 
 type MockDialogProps = React.PropsWithChildren<{
