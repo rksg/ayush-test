@@ -28,7 +28,7 @@ export const SwitchConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getCliFamilyModels: {
     method: 'get',
-    url: '/templates/cliProfiles/familyModels',
+    url: '/templates/cliProfiles/venues',
     newApi: true
   }
 }

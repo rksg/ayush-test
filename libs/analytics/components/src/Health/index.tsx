@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { useIntl } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
@@ -12,8 +10,6 @@ import type { AnalyticsFilter }                          from '@acx-ui/utils'
 import { Header } from '../Header'
 
 import ConnectedClientsOverTime      from './ConnectedClientsOverTime'
-import { HealthDrillDown }           from './HealthDrillDown'
-import { DrilldownSelection }        from './HealthDrillDown/config'
 import { HealthPageContextProvider } from './HealthPageContext'
 import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
@@ -38,7 +34,6 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string, showHead
     }
   })
   const healthPageFilters = widgetFilters ? widgetFilters : filters
-  const [drilldownSelection, setDrilldownSelection] = useState<DrilldownSelection>(null)
 
   const onTabChange = (tab: string) =>
     navigate({
@@ -61,13 +56,6 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string, showHead
         <GridCol col={{ span: 24 }} style={{ minHeight: '105px' }}>
           <SummaryBoxes
             filters={healthPageFilters}
-            drilldownSelection={drilldownSelection}
-            setDrilldownSelection={setDrilldownSelection}
-          />
-          <HealthDrillDown
-            filters={healthPageFilters}
-            drilldownSelection={drilldownSelection}
-            setDrilldownSelection={setDrilldownSelection}
           />
         </GridCol>
         <HealthPageContextProvider>
