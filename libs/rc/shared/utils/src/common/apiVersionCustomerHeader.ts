@@ -33,6 +33,12 @@ export function GetUploadFormDataApiVersionHeader (version: ApiVersionEnum | und
   return apiCustomHeader
 }
 
+export function GetApiVersionAcceptHeader (version: ApiVersionEnum | undefined) {
+  const header = GetApiVersionHeader(version)
+
+  return header ? { Accept: header.Accept } : undefined
+}
+
 export function GetDownloadApiVersionHeader (version: ApiVersionEnum | undefined) {
   if (!version) return undefined
 

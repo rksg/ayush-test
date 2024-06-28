@@ -12,7 +12,8 @@ import {
   SchedulerTypeEnum,
   Hotspot20AccessNetworkTypeEnum,
   Hotspot20Ipv4AddressTypeEnum,
-  NetworkHotspot20Settings
+  NetworkHotspot20Settings,
+  SmsProviderType
 } from '@acx-ui/rc/utils'
 
 export const networksResponse = {
@@ -2176,4 +2177,10 @@ export const macRegistrationList = {
   size: 10,
   number: 0,
   empty: false
+}
+
+export const mockNotificationSmsResponse = {
+  threshold: 80,
+  provider: SmsProviderType.RUCKUS_ONE,
+  ruckusOneUsed: 100
 }
