@@ -26,7 +26,8 @@ export enum PolicyType {
   LBS_SERVER_PROFILE = 'Location Based Service Server',
   CERTIFICATE_TEMPLATE = 'Certificate Template',
   CERTIFICATE_AUTHORITY = 'Certificate Authority',
-  CERTIFICATE = 'Certificate'
+  CERTIFICATE = 'Certificate',
+  WORKFLOW = 'Workflow'
 }
 
 export enum PolicyTechnology {
@@ -66,7 +67,8 @@ export const policyTypeDescMapping: Record<PolicyType, MessageDescriptor> = {
   [PolicyType.LBS_SERVER_PROFILE]: defineMessage({ defaultMessage: 'Create your own Location Based Service profile with RUCKUS One Pre Engine - RSSI client data from your venue’s access points' }),
   [PolicyType.CERTIFICATE_TEMPLATE]: defineMessage({ defaultMessage: 'Create certificates to establish secure communication and verify the identity of entities in a network' }),
   [PolicyType.CERTIFICATE_AUTHORITY]: defineMessage({ defaultMessage: 'Certificate Authority' }),
-  [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' })
+  [PolicyType.CERTIFICATE]: defineMessage({ defaultMessage: 'Certificate' }),
+  [PolicyType.WORKFLOW]: defineMessage({ defaultMessage: 'A customizable onboarding process that provides more control over who is granted network access' })
 }
 
 export const downloadCertExtension: Record<CertificateAcceptType, String> = {

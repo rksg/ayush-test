@@ -41,6 +41,7 @@ import {
   notificationApi,
   baseEdgeSdLanApi,
   baseConfigTemplateApi,
+  baseWorkflowApi,
   smartZoneApi
 } from './baseApi'
 
@@ -86,6 +87,7 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [baseEdgeSdLanApi.reducerPath]: baseEdgeSdLanApi.reducer,
     [baseConfigTemplateApi.reducerPath]: baseConfigTemplateApi.reducer,
+    [baseWorkflowApi.reducerPath]: baseWorkflowApi.reducer,
     [smartZoneApi.reducerPath]: smartZoneApi.reducer
   },
 
@@ -133,6 +135,7 @@ export const store = configureStore({
       notificationApi.middleware,
       baseEdgeSdLanApi.middleware,
       baseConfigTemplateApi.middleware,
+      baseWorkflowApi.middleware,
       smartZoneApi.middleware
     ])
   },

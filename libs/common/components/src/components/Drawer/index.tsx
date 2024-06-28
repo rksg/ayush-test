@@ -22,7 +22,7 @@ interface DrawerHeaderProps {
 
 export interface DrawerProps extends
   Omit<AntDrawerProps,
-    'title'|'placement'|'extra'|'footerStyle'|'maskClosable'|'maskStyle'|'mask'|'closeIcon'>,
+    'title'|'placement'|'extra'|'maskClosable'|'maskStyle'|'mask'|'closeIcon'>,
   DrawerHeaderProps {}
 
 const Header = (props: DrawerHeaderProps) => {

@@ -13,9 +13,10 @@ export * from './tunnelProfile'
 export * from './rulesManagement'
 export * from './connectionMetering'
 export * from './lbsServerProfile'
+export * from './workflow'
+export * from './workflowAction'
 export * from './certificateTemplate'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'
 export { OsVendorEnum } from '../../models/OsVendorEnum'
-
 export * from './common'
