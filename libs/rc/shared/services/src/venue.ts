@@ -102,8 +102,8 @@ import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { getVenueRoguePolicyFn, updateVenueRoguePolicyFn }                                from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                                              from './utils'
+import { getVenueRoguePolicyFn, updateVenueRoguePolicyFn }                               from './servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess }                                             from './utils'
 import {
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs

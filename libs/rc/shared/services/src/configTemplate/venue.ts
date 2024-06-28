@@ -33,8 +33,8 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { commonQueryFn }                                                                  from '../servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }                                              from '../utils'
+import { commonQueryFn }                                                                 from '../servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess }                                             from '../utils'
 import {
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
   createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
