@@ -741,8 +741,9 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        'switchUplinkPortUtilization',
-        'switchReachability'
+        'switchUplinkPortUtilization'
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchReachability'
       ]
     },
     connection: {
@@ -763,7 +764,8 @@ export const wiredKPIsForTab = () => {
     },
     infrastructure: {
       kpis: [
-        'switchReachability',
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchReachability',
         'switchMemoryUtilization',
         'switchCpuUtilization',
         'switchesTemperature',
