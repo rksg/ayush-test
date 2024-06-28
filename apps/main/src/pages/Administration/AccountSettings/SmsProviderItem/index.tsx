@@ -130,10 +130,10 @@ const SmsProviderItem = () => {
           name: 'remaining2', color: cssStr('--acx-neutrals-50') }
       ]
       : [
-        { value: smsThreshold, name: 'usage', color: cssStr('--acx-accents-blue-50') },
-        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: smsThreshold, name: 'usage', color: cssStr('--acx-semantics-red-70') },
+        { value: 2, name: 'threshold', color: cssStr('--acx-neutrals-50') },
         { value: ruckusOneUsed - smsThreshold,
-          name: 'remaining1', color: cssStr('--acx-accents-blue-50') },
+          name: 'remaining1', color: cssStr('--acx-semantics-red-70') },
         { value: FREE_SMS_POOL - ruckusOneUsed,
           name: 'remaining2', color: cssStr('--acx-neutrals-50') }
       ]
@@ -409,7 +409,6 @@ const SmsProviderItem = () => {
                   <div>{$t({ defaultMessage: '- Captive Portal Self Sign-In' })}</div>
                   <div>{$t({ defaultMessage: '- Generating a New Guest User Password' })}</div>
                   <div>{$t({ defaultMessage: '- Recipient of System Notifications' })}</div>
-                  <div>{$t({ defaultMessage: '- AI Notifications  ' })}</div>
                 </>}
                 placement='right'
               />
