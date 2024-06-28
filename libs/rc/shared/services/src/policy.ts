@@ -13,7 +13,7 @@ import {
   transferToTableResult, AAAPolicyType, AaaUrls, AAAViewModalType,
   l3AclPolicyInfoType, l2AclPolicyInfoType, L2AclPolicy, L3AclPolicy, AvcCategory, AvcApp,
   appPolicyInfoType, ApplicationPolicy, AccessControlInfoType,
-  VlanPool, WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
+  WifiUrlsInfo, AccessControlUrls, ClientIsolationSaveData, ClientIsolationUrls,
   createNewTableHttpRequest, TableChangePayload, ClientIsolationListUsageByVenue,
   VenueUsageByClientIsolation,
   IdentityProvider,
@@ -76,7 +76,7 @@ import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac } from './servicePolicy.utils'
+import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, addRoguePolicyFn, updateRoguePolicyFn } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -154,51 +154,14 @@ const defaultCertTempVersioningHeaders = {
 export const policyApi = basePolicyApi.injectEndpoints({
   endpoints: (build) => ({
     addRoguePolicy: build.mutation<CommonResult, RequestPayload<RoguePolicyRequest>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) =>{
-        try {
-          // eslint-disable-next-line max-len
-          const { name, description, rules, venues } = payload!
-          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-          const res = await fetchWithBQ({
-            // eslint-disable-next-line max-len
-            ...createHttpRequest(enableRbac ? RogueApUrls.addRoguePolicyRbac : RogueApUrls.addRoguePolicy, params, headers),
-            body: JSON.stringify({
-              name,
-              description,
-              rules,
-              venues
-            })
-          })
-          // Ensure the return type is QueryReturnValue
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
-
-          if (enableRbac) { // Continue with venue activation if RBAC is enabled
-            const { response } = res.data as CommonResult
-            const requests = venues.map(venue => ({
-              params: { policyId: response?.id, venueId: venue.id }
-            }))
-            // eslint-disable-next-line max-len
-            await batchApi(RogueApUrls.activateRoguePolicy, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
-          }
-
-          return { data: res.data as CommonResult }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: addRoguePolicyFn(),
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const url = enableRbac ? RogueApUrls.deleteRoguePolicyRbac : RogueApUrls.deleteRoguePolicy
-        const req = createHttpRequest(url, params, headers)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(
+        RogueApUrls.deleteRoguePolicy,
+        { rbacApiInfo: RogueApUrls.deleteRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
+      ),
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
@@ -687,64 +650,15 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const url = enableRbac ? RogueApUrls.getRoguePolicyRbac : RogueApUrls.getRoguePolicy
-        const req = createHttpRequest(url, params, headers)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(
+        RogueApUrls.getRoguePolicy,
+        { rbacApiInfo: RogueApUrls.getRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
+      ),
       providesTags: [{ type: 'RogueAp', id: 'DETAIL' }]
     }),
     // eslint-disable-next-line max-len
     updateRoguePolicy: build.mutation<RogueAPDetectionTempType, RequestPayload<RoguePolicyRequest>>({
-      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        try {
-          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-          // eslint-disable-next-line max-len
-          const { id: policyId, name, description, rules, venues, oldVenues, defaultPolicyId } = payload!
-
-          const res = await fetchWithBQ({
-            // eslint-disable-next-line max-len
-            ...createHttpRequest(enableRbac ? RogueApUrls.updateRoguePolicyRbac : RogueApUrls.updateRoguePolicy, params, headers),
-            body: JSON.stringify({
-              policyId,
-              name,
-              description,
-              rules,
-              venues
-            })
-          })
-          // Ensure the return type is QueryReturnValue
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
-
-          if (enableRbac) {
-            const deactivateRequests = oldVenues
-              .filter(oldVenue => !venues.some(venue => venue.id === oldVenue.id))
-              .map(venue => ({ params: { policyId: defaultPolicyId, venueId: venue.id } }))
-
-            const activateRequests = venues
-              .filter(venue => !oldVenues.some(oldVenue => oldVenue.id === venue.id))
-              .map(venue => ({ params: { policyId, venueId: venue.id } }))
-
-            const [deactivationRes, activationRes] = await Promise.all([
-              batchApi(RogueApUrls.activateRoguePolicy, deactivateRequests, fetchWithBQ, headers),
-              batchApi(RogueApUrls.activateRoguePolicy, activateRequests, fetchWithBQ, headers)
-            ])
-
-            if (deactivationRes.error || activationRes.error) {
-              return { error: deactivationRes.error || activationRes.error as FetchBaseQueryError }
-            }
-          }
-
-          return { data: res.data as RogueAPDetectionTempType }
-        } catch (error) {
-          return { error: error as FetchBaseQueryError }
-        }
-      },
+      queryFn: updateRoguePolicyFn(),
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     venueRoguePolicy: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({
@@ -770,15 +684,10 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        // eslint-disable-next-line max-len
-        const url = enableRbac ? RogueApUrls.getRoguePolicyListRbac : RogueApUrls.getEnhancedRoguePolicyList
-        const req = createHttpRequest(url, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
+      query: commonQueryFn(
+        RogueApUrls.getEnhancedRoguePolicyList,
+        { rbacApiInfo: RogueApUrls.getRoguePolicyListRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
+      ),
       providesTags: [{ type: 'RogueAp', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -1213,18 +1122,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Policy', id: 'LIST' }, { type: 'ClientIsolation', id: 'LIST' }]
-    }),
-    vlanPoolList: build.query<VlanPool[], RequestPayload>({
-      query: ({ params }) => {
-        const vlanPoolListReq = createHttpRequest(
-          WifiUrlsInfo.getVlanPools,
-          params
-        )
-        return {
-          ...vlanPoolListReq
-        }
-      },
-      providesTags: [{ type: 'VLANPool', id: 'LIST' }]
     }),
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params }) => {
@@ -3323,7 +3220,6 @@ export const {
   useDelVLANPoolPolicyMutation,
   useUpdateVLANPoolPolicyMutation,
   useGetVLANPoolPolicyViewModelListQuery,
-  useVlanPoolListQuery,
   useGetVLANPoolPolicyDetailQuery,
   useGetVLANPoolVenuesQuery,
   useAddClientIsolationMutation,

@@ -28,7 +28,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -51,11 +51,11 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -105,13 +105,13 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  at AP level
+                  Wireless
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -128,17 +128,17 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  at Switch level
+                  Wired
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -177,7 +177,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -210,11 +210,11 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -264,7 +264,7 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bSHWEV"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
                 style="width: 50%;"
               >
                 <div
@@ -292,11 +292,11 @@ exports[`SummaryBoxes should render correctly for wired and wireless 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 caeYMJ"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 mUsHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bSHWEV"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
                 style="width: 50%;"
               >
                 <div
@@ -360,7 +360,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -405,13 +405,13 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  at AP level
+                  Wireless
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -450,7 +450,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -505,7 +505,7 @@ exports[`SummaryBoxes should render correctly for wireless only view 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 hOdqjD"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 guBiUm"
                 style="width: 100%;"
               >
                 <div
@@ -569,7 +569,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -592,11 +592,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -646,13 +646,13 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  at AP level
+                  Wireless
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -669,17 +669,17 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
                   class="ant-statistic-title"
                 >
-                  at Switch level
+                  Wired
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -718,7 +718,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -737,11 +737,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 hyqyGB"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 fXmmHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fZCZax"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cpYJvE"
                 style="width: 50%;"
               >
                 <div
@@ -782,7 +782,7 @@ exports[`SummaryBoxes should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bSHWEV"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
                 style="width: 50%;"
               >
                 <div
@@ -810,11 +810,11 @@ exports[`SummaryBoxes should show - when no data 1`] = `
                 </div>
               </div>
               <div
-                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 caeYMJ"
+                class="ant-divider ant-divider-vertical styledComponents__Divider-sc-1jdne8l-5 mUsHQ"
                 role="separator"
               />
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 bSHWEV"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 gfXYEA"
                 style="width: 50%;"
               >
                 <div

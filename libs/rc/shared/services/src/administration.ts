@@ -53,6 +53,16 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       },
       providesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
+    updateTenantSelf: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateTenantSelf, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DETAIL' }]
+    }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
         const req = createHttpRequest(AdministrationUrlsInfo.getAccountDetails, params)
@@ -508,7 +518,18 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Activate Entitlement'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'ACTIVATIONS' }
+            ]))
+          })
+        })
+      }
     }),
     patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -877,6 +898,7 @@ const transformAdministratorList = (data: Administrator[]) => {
 
 export const {
   useGetTenantDetailsQuery,
+  useUpdateTenantSelfMutation,
   useLazyGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,

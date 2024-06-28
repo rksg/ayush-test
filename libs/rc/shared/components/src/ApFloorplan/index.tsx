@@ -172,7 +172,15 @@ export function ApFloorplan (props: {
           state={{
             param: { floorplan: floorplan }
           }}>
-          {floorplan?.name}
+          {floorplan?.name} {
+            $t({ defaultMessage: `({floor, selectordinal,
+                one {#st}
+                two {#nd}
+                few {#rd}
+                other {#th}
+            } Floor)` },
+            { floor: floorplan?.floorNumber })
+          }
         </Link>
       </Col>
       <Col>

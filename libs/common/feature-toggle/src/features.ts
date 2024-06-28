@@ -42,6 +42,7 @@ export enum Features {
   EDGE_FIREWALL_HA_TOGGLE = 'edge-firewall-ha-toggle',
   EDGE_PIN_HA_TOGGLE = 'edge-pin-ha-toggle',
   EDGE_GRACEFUL_SHUTDOWN_TOGGLE = 'edge-graceful-shutdown-toggle',
+  EDGE_VXLAN_TUNNEL_KA_TOGGLE = 'edge-vxlan-tunnel-ka-toggle',
   ENTITLEMENT_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-toggle',
   ENTITLEMENT_ACTIVATE_PENDING_ACTIVATION_TOGGLE = 'entitlement-pending-activation-activate-toggle',
   ENTITLEMENT_RBAC_API = 'acx-ui-rbac-api-entitlement-toggle',
@@ -83,6 +84,7 @@ export enum Features {
   NETWORK_SEGMENTATION = 'acx-ui-network-segmentation-toggle',
   NETWORK_SEGMENTATION_SWITCH = 'switch-consumer-nsg-toggle',
   NEW_OS_VENDOR_IN_DEVICE_POLICY = 'acx-ui-new-os-vendor-in-device-policy-toggle',
+  NOTIFICATION_CHANNEL_SELECTION_TOGGLE = 'nuvo-notification-channel-selection',
   NUVO_SMS_PROVIDER_TOGGLE = 'nuvo-customer-owned-sms-provider',
   NUVO_SMS_GRACE_PERIOD_TOGGLE = 'nuvo-sms-grace-period',
   PLM_FF = 'ACX-PLM-FF',
@@ -119,6 +121,7 @@ export enum Features {
   SWITCH_UPGRADE_BY_SWITCH = 'switch-consumer-upgrade-by-switch-toggle',
   SWITCH_CYCLE_POE = 'switch-cycle-poe-toggle',
   SWITCH_PORT_TRAFFIC = 'switch-traffic-displayed-by-port-toggle',
+  SWITCH_PROFILE_ONBOARD_ONLY= 'switch-config-profile-onboarding-only-toggle',
   TECH_PARTNER_ASSIGN_ECS = 'mspservice-techpartner-assign-ecs',
   TECH_PARTNER_GET_MSP_CUSTOMERS_TOGGLE = 'viewmodel-techpartner-getmspcustomers',
   VENUE_AP_MANAGEMENT_VLAN_TOGGLE = 'wifi-venue-ap-mgmt-vlan-toggle',
@@ -159,7 +162,8 @@ export enum Features {
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
-  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle'
+  SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',
+  RBAC_CONFIG_TEMPLATE_TOGGLE = 'acx-ui-rbac-config-template-toggle'
 }
 
 export enum TierFeatures { // for Tier (ex: Beta) feature flag
