@@ -50,10 +50,10 @@ export function useWorkflowStepActions () {
 
     return await createAction({
       payload: { ...formData, actionType },
-      callback: (response: AsyncResponse) => {
+      callback: async (response: AsyncResponse) => {
         if (response.id) {
+          await createStepCallback(policyId, actionType, response.id, priorNodeId)
           onClose?.()
-          createStepCallback(policyId, actionType, response.id, priorNodeId)
         }
       } }).unwrap()
   }
