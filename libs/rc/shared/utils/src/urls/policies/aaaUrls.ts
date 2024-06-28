@@ -11,11 +11,7 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     oldUrl: '/api/tenant/:tenantId/wifi/radius',
     url: '/radiusServerProfiles',
-    newApi: true,
-    headers: {
-      'Accept': 'application/vnd.ruckus.v1_1+json',
-      'Content-Type': 'application/vnd.ruckus.v1_1+json'
-    }
+    newApi: true
   },
   getAAAPolicy: {
     method: 'get',
@@ -27,11 +23,7 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
     url: '/radiusServerProfiles/:policyId',
-    newApi: true,
-    headers: {
-      'Accept': 'application/vnd.ruckus.v1_1+json',
-      'Content-Type': 'application/vnd.ruckus.v1_1+json'
-    }
+    newApi: true
   },
   getAAAPolicyViewModelList: {
     method: 'post',
@@ -52,5 +44,25 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/radiusServerProfiles/:policyId',
     newApi: true
+  },
+  addAAAPolicyRbac: {
+    method: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/radius',
+    url: '/radiusServerProfiles',
+    newApi: true,
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1_1+json',
+      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+    }
+  },
+  updateAAAPolicyRbac: {
+    method: 'put',
+    oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
+    url: '/radiusServerProfiles/:policyId',
+    newApi: true,
+    headers: {
+      'Accept': 'application/vnd.ruckus.v1_1+json',
+      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+    }
   }
 }

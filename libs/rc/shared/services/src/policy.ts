@@ -701,7 +701,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(AaaUrls.addAAAPolicy),
+      query: commonQueryFn(AaaUrls.addAAAPolicy, AaaUrls.addAAAPolicyRbac),
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload<string[]>>({
@@ -763,7 +763,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(AaaUrls.updateAAAPolicy),
+      query: commonQueryFn(AaaUrls.updateAAAPolicy, AaaUrls.updateAAAPolicyRbac),
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({
