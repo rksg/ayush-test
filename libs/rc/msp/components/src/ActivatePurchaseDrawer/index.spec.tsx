@@ -14,6 +14,7 @@ import {
 import { ActivatePurchaseDrawer } from './'
 
 const services = require('@acx-ui/rc/services')
+const user = require('@acx-ui/user')
 
 const fakeActivationData =
 {
@@ -53,6 +54,44 @@ const fakeActivationDataPassEnddate =
   orderCreateDate: '2023-04-22T08:52:12.000+0000',
   orderRegistrationCode: 'BUG-HIT-ACE',
   orderAcxRegistrationCode: 'ACX-03726424-BUG-HIT-ACE'
+}
+
+const userProfile1 = {
+  adminId: '9b85c591260542c188f6a12c62bb3912',
+  companyName: 'msp.eleu1658',
+  dateFormat: 'mm/dd/yyyy',
+  detailLevel: 'debug',
+  email: 'msp.eleu1658@mail.com',
+  externalId: '0032h00000gXuBNAA0',
+  firstName: 'msp',
+  lastName: 'eleu1658',
+  role: 'PRIME_ADMIN',
+  support: true,
+  tenantId: '3061bd56e37445a8993ac834c01e2710',
+  username: 'msp.eleu1658@rwbigdog.com',
+  var: true,
+  varTenantId: '3061bd56e37445a8993ac834c01e2710',
+  allowedRegions:
+  [
+    {
+      name: 'Asia',
+      description: 'APAC region',
+      link: 'https://int.ruckus.cloud',
+      current: false
+    },
+    {
+      name: 'EU',
+      description: 'European Union',
+      link: 'https://qa.ruckus.cloud',
+      current: false
+    },
+    {
+      name: 'US',
+      description: 'United States of America',
+      link: 'https://dev.ruckus.cloud',
+      current: true
+    }
+  ]
 }
 
 describe('Activate Purchase Drawer', () => {
@@ -118,6 +157,9 @@ describe('Activate Purchase Drawer', () => {
     expect(mockedCloseDrawer).toHaveBeenCalled()
   })
   it('should save correctly', async () => {
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile1 }
+    })
     const mockedCloseDrawer = jest.fn()
     render(
       <Provider>
@@ -130,7 +172,7 @@ describe('Activate Purchase Drawer', () => {
       })
 
     expect(screen.getByText('Activate Purchase')).toBeVisible()
-    await userEvent.click(screen.getAllByRole('radio')[0])
+    await userEvent.click(screen.getAllByRole('radio')[2])
     await userEvent.click(screen.getByRole('checkbox'))
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Activate' })).toBeEnabled()
