@@ -1,13 +1,16 @@
 import '@testing-library/jest-dom'
+import React from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }                                                    from '@acx-ui/components'
-import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
-import { AccessControlUrls, CommonUrlsInfo, TunnelProfileUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                                                           from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent }                              from '@acx-ui/test-utils'
-import { UserUrlsInfo }                                                       from '@acx-ui/user'
+import { StepsFormLegacy, StepsFormLegacyInstance } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
+import { venueApi }                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo }             from '@acx-ui/rc/utils'
+import { Provider, store, userApi }                 from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent }    from '@acx-ui/test-utils'
+import { UserUrlsInfo }                             from '@acx-ui/user'
 
 import {
   venueListResponse,
@@ -21,6 +24,22 @@ import NetworkFormContext from '../NetworkFormContext'
 import { SelfSignInForm } from './SelfSignInForm'
 
 const services = require('@acx-ui/rc/services')
+const SelfSignInFormNetworkComponent: React.FC = () => {
+  const formRef = React.useRef<StepsFormLegacyInstance>()
+  return (
+    <StepsFormLegacy formRef={formRef}>
+      <StepsFormLegacy.StepForm>
+        <SelfSignInForm />
+      </StepsFormLegacy.StepForm>
+    </StepsFormLegacy>
+  )}
+
+jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
+  NetworkMoreSettingsForm: () => <div data-testid='rc-NetworkMoreSettingsForm'/>
+}))
+jest.mocked(useIsSplitOn).mockReturnValue(false)
+store.dispatch(userApi.util.resetApiState())
+store.dispatch(venueApi.util.resetApiState())
 
 describe('CaptiveNetworkForm-SelfSignIn', () => {
   beforeEach(() => {
@@ -28,18 +47,6 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     const selfSignInRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
       guestPortal: selfsignData.guestPortal }
     mockServer.use(
-      rest.get(AccessControlUrls.getDevicePolicyList.url,
-        (req, res, ctx) => res(ctx.json([]))),
-      rest.get(AccessControlUrls.getAppPolicyList.url,
-        (_, res, ctx) => res(ctx.json([]))),
-      rest.get(AccessControlUrls.getAccessControlProfileList.url,
-        (_, res, ctx) => res(ctx.json([]))),
-      rest.get(AccessControlUrls.getL2AclPolicyList.url,
-        (_, res, ctx) => res(ctx.json([]))),
-      rest.get(AccessControlUrls.getL3AclPolicyList.url,
-        (_, res, ctx) => res(ctx.json([]))),
-      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
-        (_, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -67,11 +74,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
             isDisableMLO: false,
             disableMLO: jest.fn()
           }}>
-            <StepsFormLegacy>
-              <StepsFormLegacy.StepForm>
-                <SelfSignInForm />
-              </StepsFormLegacy.StepForm>
-            </StepsFormLegacy>
+            <SelfSignInFormNetworkComponent/>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>, { route: { params } })
@@ -110,11 +113,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
           isDisableMLO: false,
           disableMLO: jest.fn()
         }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <SelfSignInForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <SelfSignInFormNetworkComponent/>
         </MLOContext.Provider>
       </NetworkFormContext.Provider>
     </Provider>, { route: { params } })
@@ -145,11 +144,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
           isDisableMLO: false,
           disableMLO: jest.fn()
         }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <SelfSignInForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <SelfSignInFormNetworkComponent/>
         </MLOContext.Provider>
       </NetworkFormContext.Provider>
     </Provider>, { route: { params } })
@@ -173,11 +168,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
             isDisableMLO: false,
             disableMLO: jest.fn()
           }}>
-            <StepsFormLegacy>
-              <StepsFormLegacy.StepForm>
-                <SelfSignInForm />
-              </StepsFormLegacy.StepForm>
-            </StepsFormLegacy>
+            <SelfSignInFormNetworkComponent/>
           </MLOContext.Provider>
         </NetworkFormContext.Provider>
       </Provider>, { route: { params } })
@@ -200,11 +191,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
           isDisableMLO: false,
           disableMLO: jest.fn()
         }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <SelfSignInForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <SelfSignInFormNetworkComponent/>
         </MLOContext.Provider>
       </NetworkFormContext.Provider>
     </Provider>, { route: { params } })
@@ -227,11 +214,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
           isDisableMLO: false,
           disableMLO: jest.fn()
         }}>
-          <StepsFormLegacy>
-            <StepsFormLegacy.StepForm>
-              <SelfSignInForm />
-            </StepsFormLegacy.StepForm>
-          </StepsFormLegacy>
+          <SelfSignInFormNetworkComponent/>
         </MLOContext.Provider>
       </NetworkFormContext.Provider>
     </Provider>, { route: { params } })

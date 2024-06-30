@@ -102,6 +102,7 @@ export function SelfSignInForm () {
     !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
      (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
     : true
+  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -160,8 +161,7 @@ export function SelfSignInForm () {
         form.setFieldValue('redirectCheckbox', true)
       }
       const allowedSignValueTemp = []
-      if (!(cloneMode && !isSMSTokenAvailable) &&
-        data.guestPortal?.enableSmsLogin) {
+      if (data.guestPortal?.enableSmsLogin && !isRestEnableSmsLogin) {
         allowedSignValueTemp.push('enableSmsLogin')
       }
       if (data.guestPortal?.enableEmailLogin) {
@@ -185,7 +185,7 @@ export function SelfSignInForm () {
     if(!editMode) {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
-      if (cloneMode && !isSMSTokenAvailable)
+      if (isRestEnableSmsLogin)
         form.setFieldValue(['guestPortal', 'enableSmsLogin'], false)
     }
   }, [data])
