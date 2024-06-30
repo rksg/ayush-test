@@ -10,13 +10,9 @@ import { useSwitchFirmwareUtils }       from '@acx-ui/rc/components'
 import {
   AVAILABLE_SLOTS,
   compareSwitchVersion,
-  FirmwareCategory,
-  FirmwareSwitchVenue,
   FirmwareSwitchVenueV1002,
-  FirmwareVersion,
   SwitchFirmwareVersion1002,
   SwitchFirmware,
-  switchSchedule,
   SwitchFirmwareModelGroup
 } from '@acx-ui/rc/utils'
 
@@ -178,6 +174,9 @@ export function ScheduleStep (props: ScheduleStepProps) {
     if (_.isArray(firmwareAvailableVersions) && firmwareAvailableVersions.length > 0) {
       return firmwareAvailableVersions[0].versions.sort((a, b) => compareSwitchVersion(a.id, b.id))
     }
+
+    //Need setting current schedule
+    console.log(currentScheduleVersion) // eslint-disable-line no-console
 
     return []
   }

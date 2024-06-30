@@ -9,14 +9,16 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { useSwitchFirmwareUtils }          from '@acx-ui/rc/components'
+import { InformationSolid }                    from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
 import {
-  useGetSwitchUpgradePreferencesQuery, //TODO
-  useUpdateSwitchUpgradePreferencesMutation, //TODO
-  useGetSwitchFirmwarePredownloadQuery, // Done
+  useGetSwitchUpgradePreferencesQuery,
+  useUpdateSwitchUpgradePreferencesMutation,
+  useGetSwitchFirmwarePredownloadQuery,
   useGetSwitchVenueVersionListV1002Query,
   useGetSwitchAvailableFirmwareListV1002Query,
-  useGetSwitchCurrentVersionsV1002Query
+  useGetSwitchCurrentVersionsV1002Query,
+  useGetSwitchDefaultFirmwareListV1002Query
 
 } from '@acx-ui/rc/services'
 import {
@@ -27,7 +29,8 @@ import {
   SwitchFirmwareStatusType,
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
-  SwitchFirmwareVersion1002
+  SwitchFirmwareVersion1002,
+  compareSwitchVersion
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
@@ -146,6 +149,10 @@ export function VenueFirmwareList () {
       console.log(error) // eslint-disable-line no-console
     }
   }
+
+  const { data: recommendedSwitchReleaseVersions } =
+    useGetSwitchDefaultFirmwareListV1002Query({ params })
+    || { data: [] as SwitchFirmwareVersion1002[] }
   const columns: TableProps<FirmwareSwitchVenueV1002>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -155,7 +162,30 @@ export function VenueFirmwareList () {
       searchable: true,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
-        return row.venueName
+
+        const recommended71 = recommendedSwitchReleaseVersions?.filter(
+          r => r.modelGroup === SwitchFirmwareModelGroup.ICX71)[0].versions[0].id
+        const recommended7X = recommendedSwitchReleaseVersions?.filter(
+          r => r.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0].versions[0].id
+        const recommended82 = recommendedSwitchReleaseVersions?.filter(
+          r => r.modelGroup === SwitchFirmwareModelGroup.ICX82)[0].versions[0].id
+
+        const hasOutdated71 = compareSwitchVersion(recommended71,
+          row.versions.filter(v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.version)
+          || false
+        const hasOutdated7X = compareSwitchVersion(recommended7X,
+          row.versions.filter(v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.version)
+          || false
+        const hasOutdated82 = compareSwitchVersion(recommended82,
+          row.versions.filter(v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.version)
+          || false
+
+        const hasRecomendedSwitchFirmware = (hasOutdated71 || hasOutdated7X || hasOutdated82)
+
+        const tooltip = hasRecomendedSwitchFirmware ? <Tooltip children={<InformationSolid />} //TODO: Need backend to check it
+        // eslint-disable-next-line max-len
+          title={$t({ defaultMessage: 'Switches in this <VenueSingular></VenueSingular> are running an older version. We recommend that you update the <VenueSingular></VenueSingular> to the recommended firmware version.' })} /> : <></>
+        return <div>{row.venueName} {tooltip}</div>
       }
     },
     {
