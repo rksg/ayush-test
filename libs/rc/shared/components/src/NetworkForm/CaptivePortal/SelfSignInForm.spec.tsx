@@ -2,12 +2,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }                       from '@acx-ui/components'
-import { Features, useIsSplitOn }                from '@acx-ui/feature-toggle'
-import { CommonUrlsInfo, WifiUrlsInfo }          from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                          from '@acx-ui/user'
+import { StepsFormLegacy }                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                             from '@acx-ui/feature-toggle'
+import { AccessControlUrls, CommonUrlsInfo, TunnelProfileUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                           from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent }                              from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                                       from '@acx-ui/user'
 
 import {
   venueListResponse,
@@ -28,6 +28,18 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     const selfSignInRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
       guestPortal: selfsignData.guestPortal }
     mockServer.use(
+      rest.get(AccessControlUrls.getDevicePolicyList.url,
+        (req, res, ctx) => res(ctx.json([]))),
+      rest.get(AccessControlUrls.getAppPolicyList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(AccessControlUrls.getL2AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(AccessControlUrls.getL3AclPolicyList.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.post(TunnelProfileUrls.getTunnelProfileViewDataList.url,
+        (_, res, ctx) => res(ctx.json([]))),
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -43,7 +55,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
 
   const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
 
-  it.skip('should test Self sign in network successfully', async () => {
+  it('should test Self sign in network successfully', async () => {
     render(
       <Provider>
         <NetworkFormContext.Provider
@@ -87,7 +99,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       { name: /LinkedIn/ }))
     await userEvent.click(await screen.findByText('Add'))
   })
-  it.skip('should create Self sign in network successfully', async () => {
+  it('should create Self sign in network successfully', async () => {
     render(<Provider>
       <NetworkFormContext.Provider
         value={{
@@ -118,7 +130,62 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       { name: /LinkedIn/ }))
     await userEvent.click(await screen.findByText('Add'))
   })
-  it('should disable SMS Token checkbox.', async () => {
+  it('should uncheck and disable SMS Token checkbox when clone network', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: mockNotificationSmsResponse }
+    })
+    render(<Provider>
+      <NetworkFormContext.Provider
+        value={{
+          editMode: false, cloneMode: true, data: selfsignData
+        }}
+      >
+        <MLOContext.Provider value={{
+          isDisableMLO: false,
+          disableMLO: jest.fn()
+        }}>
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <SelfSignInForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </MLOContext.Provider>
+      </NetworkFormContext.Provider>
+    </Provider>, { route: { params } })
+    const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+    expect(formItem).not.toBeChecked()
+    expect(formItem).toBeDisabled()
+  })
+  it('should be checked and editable SMS Token checkbox when clone network with FF off',
+    async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.NUVO_SMS_PROVIDER_TOGGLE)
+      services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+        return { data: mockNotificationSmsResponse }
+      })
+      render(<Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false, cloneMode: true, data: selfsignData
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <SelfSignInForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+      const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+      expect(formItem).toBeChecked()
+      expect(formItem).not.toBeDisabled()
+    })
+  it('should disable SMS Token checkbox when create network', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
       return { data: mockNotificationSmsResponse }
@@ -141,7 +208,35 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
         </MLOContext.Provider>
       </NetworkFormContext.Provider>
     </Provider>, { route: { params } })
-    const formItem = screen.getByRole('checkbox', { name: 'SMS Token' })
+    const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+    expect(formItem).not.toBeChecked()
     expect(formItem).toBeDisabled()
+  })
+  it('should not disable SMS Token checkbox when edit network', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
+    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
+      return { data: mockNotificationSmsResponse }
+    })
+    render(<Provider>
+      <NetworkFormContext.Provider
+        value={{
+          editMode: true, cloneMode: false, data: selfsignData
+        }}
+      >
+        <MLOContext.Provider value={{
+          isDisableMLO: false,
+          disableMLO: jest.fn()
+        }}>
+          <StepsFormLegacy>
+            <StepsFormLegacy.StepForm>
+              <SelfSignInForm />
+            </StepsFormLegacy.StepForm>
+          </StepsFormLegacy>
+        </MLOContext.Provider>
+      </NetworkFormContext.Provider>
+    </Provider>, { route: { params } })
+    const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
+    expect(formItem).toBeChecked()
+    expect(formItem).not.toBeDisabled()
   })
 })

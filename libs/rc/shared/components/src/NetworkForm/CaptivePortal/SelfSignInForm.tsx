@@ -98,7 +98,7 @@ export function SelfSignInForm () {
   const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
   const params = useParams()
   const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
-  const isSMSTokenAvailable = (!editMode && isSmsProviderEnabled) ?
+  const isSMSTokenAvailable = isSmsProviderEnabled ?
     !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
      (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
     : true
@@ -160,7 +160,8 @@ export function SelfSignInForm () {
         form.setFieldValue('redirectCheckbox', true)
       }
       const allowedSignValueTemp = []
-      if (data.guestPortal?.enableSmsLogin) {
+      if (!(cloneMode && !isSMSTokenAvailable) &&
+        data.guestPortal?.enableSmsLogin) {
         allowedSignValueTemp.push('enableSmsLogin')
       }
       if (data.guestPortal?.enableEmailLogin) {
@@ -184,6 +185,8 @@ export function SelfSignInForm () {
     if(!editMode) {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      if (cloneMode && !isSMSTokenAvailable)
+        form.setFieldValue(['guestPortal', 'enableSmsLogin'], false)
     }
   }, [data])
   const globalValues= get('CAPTIVE_PORTAL_DOMAIN_NAME')
@@ -214,7 +217,7 @@ export function SelfSignInForm () {
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
                 checked={enableSmsLogin}
-                disabled={!isSMSTokenAvailable}
+                disabled={!editMode && !isSMSTokenAvailable}
                 >
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}
