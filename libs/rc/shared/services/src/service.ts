@@ -54,7 +54,8 @@ import {
   DHCP_LIMIT_NUMBER,
   ApiVersionEnum,
   GetApiVersionHeader,
-  convertMdnsProxyViewModelToMdnsProxyFormData
+  convertMdnsProxyViewModelToMdnsProxyFormData,
+  APExtended
 } from '@acx-ui/rc/utils'
 import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
@@ -492,40 +493,55 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const queryPayload = {
           fields: ['id', 'name', 'rules', 'activations'],
           page: 1,
-          pageSize: 10,
+          pageSize: 1000,
           filters: { venueIds: [params?.venueId] }
         }
         const res = await fetchWithBQ({ ...req, body: enableRbac ? JSON.stringify(queryPayload) : undefined })
 
         if (enableRbac) {
-          const queryVenuePayload = {
-            fields: ['id', 'name'],
-            page: 1,
-            pageSize: 1000,
-            filters: { ids: [params?.venueId] }
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
           }
           const queryApPayload = {
-            fields: ['id', 'name'],
+            fields: ['serialNumber', 'name', 'venueName'],
             page: 1,
             pageSize: 1000,
-            filters: { ids: [params?.venueId] }
+            ...(params?.venueIa ? {
+              filters: {
+                venueId: [params.venueId]
+              }
+            } : {})
           }
-          // const venueReq = createHttpRequest(CommonUrlsInfo.getVenues)
-          // const venueReq = createHttpRequest(CommonUrlsInfo.getApsList)
-
+          const apReq = createHttpRequest(CommonUrlsInfo.getApsList)
+          const apResult = await fetchWithBQ({ ...apReq, body: queryApPayload })
+          const apMap = new Map<string, APExtended>()
+          if (apResult.data) {
+            const apData = apResult.data as TableResult<APExtended>
+            apData.data.forEach(ap => apMap.set(ap.serialNumber, ap))
+          }
           const result = (res.data ?? []) as TableResult<MdnsProxyViewModel>
+
+          const mdnsProxyApList = result.data.flatMap(profile => {
+            const activation = profile.activations?.find(a => a.venueId === params?.venueId)
+            if (!activation) return []
+            return activation.apSerialNumbers.map(serialNumber => {
+              const ap = apMap.get(serialNumber)
+              return {
+                serialNumber,
+                apName: ap?.name ?? serialNumber,
+                venueId: params?.venueId,
+                venueName: ap?.venueName ?? params?.venueId ?? '',
+                serviceId: profile.id,
+                serviceName: profile.name
+              } as MdnsProxyAp
+            })
+          })
+
           return {
             data: {
-              ...result,
-              data: result.data.map(model => ({
-                ...model,
-                serviceId: model.id,
-                serviceName: model.name,
-                serialNumber: '',
-                apName: '',
-                venueId: '',
-                venueName: ''
-              }))
+              data: mdnsProxyApList,
+              page: 0,
+              totalCount: mdnsProxyApList.length
             }
           }
         } else {
@@ -545,26 +561,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           }
         }
       },
-      // transformResponse (response: MdnsProxyAp[] | TableResult<MdnsProxyViewModel>, _meta, arg) {
-      //   console.log('api.response', response)
-
-      //   if (arg.enableRbac) {
-      //     const data = response as TableResult<MdnsProxyViewModel>
-
-      //     return {
-      //       data: [] as MdnsProxyAp[],
-      //       page: 0,
-      //       totalCount: data.totalCount
-      //     }
-      //   } else {
-      //     const data = response as MdnsProxyAp[]
-      //     return {
-      //       data,
-      //       page: 0,
-      //       totalCount: data.length
-      //     }
-      //   }
-      // },
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
