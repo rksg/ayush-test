@@ -71,6 +71,7 @@ export const Statistic = styled(AntStatistic)<{ $type: string }>`
     font-size: var(--acx-body-4-font-size);
     min-height: ${props => props.style?.width !== '100%' ? '24px' : '0px'};
     margin-bottom: 0px;
+    padding: 0px 5px;
   }
   .ant-statistic-content {
     color: var(${props => colors[props.$type as Type].text});
@@ -85,5 +86,5 @@ export const Statistic = styled(AntStatistic)<{ $type: string }>`
 `
 export const Divider = styled(AntDivider)<{ $color: string }>`
   background-color: var(${props => colors[props.$color as Type].text});
-  height: 90%;
+  height: 95%;
 `
