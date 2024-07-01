@@ -1,7 +1,9 @@
 import moment                               from 'moment'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { getIntl } from '@acx-ui/utils'
+import { RolesEnum } from '@acx-ui/types'
+import { hasRoles }  from '@acx-ui/user'
+import { getIntl }   from '@acx-ui/utils'
 
 import { EXPIRATION_TIME_FORMAT }                 from '../../pipes/networkPipes'
 import { NewDpskPassphrase, PolicyDefaultAccess } from '../../types'
@@ -49,4 +51,8 @@ export function displayDefaultAccess (defaultAccess: boolean | undefined) {
       ? PolicyDefaultAccess.REJECT
       : PolicyDefaultAccess.ACCEPT
   ])
+}
+
+export function hasDpskAccess () {
+  return hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR, RolesEnum.DPSK_ADMIN])
 }
