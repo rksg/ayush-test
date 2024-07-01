@@ -79,7 +79,7 @@ export function useMenuConfig () {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
       uri: '/intentAI',
-      label: $t({ defaultMessage: 'Intent AI' })
+      label: $t({ defaultMessage: 'IntentAI' })
     })
   }
   return buildMenu([{

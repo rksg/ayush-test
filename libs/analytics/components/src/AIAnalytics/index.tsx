@@ -49,7 +49,7 @@ const useTabs = () : Tab[] => {
 
   const intenAITab = {
     key: AIAnalyticsTabEnum.INTENTAI,
-    title: $t({ defaultMessage: 'Intent AI' }),
+    title: $t({ defaultMessage: 'IntentAI' }),
     component: <div data-testid='intentAI' />,
     headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
   }
