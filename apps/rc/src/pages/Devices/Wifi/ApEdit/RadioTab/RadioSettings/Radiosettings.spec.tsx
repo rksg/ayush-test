@@ -11,6 +11,7 @@ import {
   ApRadioParams24G,
   ApRadioParams50G,
   ApRadioParams6G,
+  CommonRbacUrlsInfo,
   CommonUrlsInfo,
   WifiRbacUrlsInfo,
   WifiUrlsInfo
@@ -25,9 +26,12 @@ import { ApDataContext, ApEditContext } from '../..'
 import {
   apDeviceRadio,
   apR760DeviceRadio,
+  apT670DeviceRadio,
   r560Ap,
   r760Ap,
+  t670Ap,
   triBandApCap,
+  tripleBandMode,
   validRadioChannels,
   venuelist,
   venueRadioCustomization,
@@ -52,6 +56,7 @@ const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 
 
 const r760Cap = triBandApCap.apModels.find(cap => cap.model === 'R760')
 const r560Cap = triBandApCap.apModels.find(cap => cap.model === 'R560')
+const t670Cap = triBandApCap.apModels.find(cap => cap.model === 'T670')
 
 const defaultApEditCxtData = {
   editContextData: {
@@ -537,6 +542,147 @@ describe('RadioSettingsTab', ()=> {
       await userEvent.click(enableUpper5GBtn)
 
       await screen.findByText('Upper 5 GHz Radio is disabled')
+    })
+  })
+
+  describe('RadioSettingsTab with T670 AP', () => {
+    const defaultT670ApDataCxtData = {
+      apData: t670Ap,
+      apCapabilities: t670Cap,
+      venueData: venueRadioDetail
+    }
+
+    beforeEach(() => {
+      store.dispatch(apApi.util.resetApiState())
+      store.dispatch(venueApi.util.resetApiState())
+      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      mockServer.use(
+        rest.get(
+          CommonUrlsInfo.getDashboardOverview.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        rest.get(
+          CommonUrlsInfo.getVenuesList.url,
+          (_, res, ctx) => res(ctx.json(venuelist))),
+        rest.get(CommonUrlsInfo.getVenue.url,
+          (_, res, ctx) => res(ctx.json(venueRadioDetail))),
+        rest.get(
+          WifiUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
+        rest.get(
+          WifiUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        // rbac
+        rest.get(
+          WifiRbacUrlsInfo.getApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(apT670DeviceRadio))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueDefaultRegulatoryChannels.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getApValidChannel.url,
+          (_, res, ctx) => res(ctx.json(validRadioChannels))),
+        rest.get(
+          WifiRbacUrlsInfo.getVenueRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json(venueRadioCustomization))),
+        rest.put(
+          WifiRbacUrlsInfo.updateApRadioCustomization.url,
+          (_, res, ctx) => res(ctx.json({}))),
+        rest.put(
+          CommonRbacUrlsInfo.getVenueApModelBandModeSettings.url,
+          (_, res, ctx) => res(ctx.json(tripleBandMode))
+        )
+      )
+    })
+
+    afterEach(() => cleanup())
+
+    it('should render 6G channels correctly for T670 when separation FF is on', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
+      render(
+        <Provider>
+          <ApEditContext.Provider value={{
+            ...defaultApEditCxtData,
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
+            }
+          }}
+          >
+            <ApDataContext.Provider value={defaultT670ApDataCxtData}>
+              <RadioSettings />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await screen.findByRole('tab', { name: '6 GHz' })
+
+      const r6gTab = await screen.findByRole('tab', { name: '6 GHz' })
+      await userEvent.click(r6gTab)
+      const outdoorChannel = await screen.findByText('93')
+      expect(outdoorChannel).toBeInTheDocument()
+      expect(screen.queryAllByText('97').length).toBe(0)
+      expect(screen.queryAllByText('101').length).toBe(0)
+      expect(screen.queryAllByText('105').length).toBe(0)
+      expect(screen.queryAllByText('109').length).toBe(0)
+      expect(screen.queryAllByText('113').length).toBe(0)
+      expect(screen.queryAllByText('185').length).toBe(0)
+      expect(screen.queryAllByText('189').length).toBe(0)
+      expect(screen.queryAllByText('193').length).toBe(0)
+      expect(screen.queryAllByText('197').length).toBe(0)
+      expect(screen.queryAllByText('221').length).toBe(0)
+    })
+
+    it('should render 6G channels correctly for T670 when separation FF is off', async () => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.WIFI_RBAC_API)
+      render(
+        <Provider>
+          <ApEditContext.Provider value={{
+            ...defaultApEditCxtData,
+            apViewContextData: {
+              apStatusData: {
+                afcInfo: {
+                  afcStatus: AFCStatus.PASSED,
+                  powerMode: AFCPowerMode.STANDARD_POWER
+                }
+              }
+            }
+          }}
+          >
+            <ApDataContext.Provider value={defaultT670ApDataCxtData}>
+              <RadioSettings />
+            </ApDataContext.Provider>
+          </ApEditContext.Provider>
+        </Provider>, { route: { params } })
+
+      await screen.findByRole('tab', { name: '6 GHz' })
+
+      const r6gTab = await screen.findByRole('tab', { name: '6 GHz' })
+      await userEvent.click(r6gTab)
+      const outdoorChannel = await screen.findByText('93')
+      expect(outdoorChannel).toBeInTheDocument()
+      expect(screen.queryAllByText('97').length).toBe(1)
+      expect(screen.queryAllByText('101').length).toBe(1)
+      expect(screen.queryAllByText('105').length).toBe(1)
+      expect(screen.queryAllByText('109').length).toBe(1)
+      expect(screen.queryAllByText('113').length).toBe(1)
+      expect(screen.queryAllByText('185').length).toBe(1)
+      expect(screen.queryAllByText('189').length).toBe(1)
+      expect(screen.queryAllByText('193').length).toBe(1)
+      expect(screen.queryAllByText('197').length).toBe(1)
+      expect(screen.queryAllByText('221').length).toBe(1)
     })
   })
 })

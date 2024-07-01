@@ -23,7 +23,7 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -69,7 +69,7 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -115,7 +115,7 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -156,7 +156,7 @@ exports[`Health Page SummaryBoxes open drawer should match snapshot open drawer 
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 hOdqjD"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 guBiUm"
                 style="width: 100%;"
               >
                 <div
@@ -211,7 +211,7 @@ exports[`Health Page should match snapshot 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -257,7 +257,7 @@ exports[`Health Page should match snapshot 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -303,7 +303,7 @@ exports[`Health Page should match snapshot 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -344,7 +344,7 @@ exports[`Health Page should match snapshot 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 hOdqjD"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 guBiUm"
                 style="width: 100%;"
               >
                 <div
@@ -399,7 +399,7 @@ exports[`Health Page should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -445,7 +445,7 @@ exports[`Health Page should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -491,7 +491,7 @@ exports[`Health Page should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 cvcdcz"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 fFJVuK"
                 style="width: 100%;"
               >
                 <div
@@ -532,7 +532,7 @@ exports[`Health Page should show - when no data 1`] = `
               class="styledComponents__ContentWrapper-sc-1jdne8l-2 dNRGZs"
             >
               <div
-                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 hOdqjD"
+                class="ant-statistic styledComponents__Statistic-sc-1jdne8l-4 guBiUm"
                 style="width: 100%;"
               >
                 <div

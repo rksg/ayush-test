@@ -61,6 +61,7 @@ const SmsProviderItem = () => {
   const [smsProviderConfigured, setSmsProviderConfigured] = useState(false)
   const [isInGracePeriod, setIsInGracePeriod] = useState(false)
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
+  const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
   const isGracePeriodEnded = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
 
   const FREE_SMS_POOL = 100
@@ -72,7 +73,7 @@ const SmsProviderItem = () => {
     setDrawerVisible(true)
   }
 
-  const onSaveUtilization = () => {
+  const onSaveUtilization = async () => {
     const payload: NotificationSmsUsage = {
       threshold: form.getFieldValue('threshold'),
       provider: SmsProviderType.RUCKUS_ONE
@@ -345,6 +346,18 @@ const SmsProviderItem = () => {
           name='threshold'
           noStyle
           initialValue={smsThreshold}
+          validateFirst
+          rules={[
+            { validator: (_, val) => {
+              if (val >= 50 && val <= 100) {
+                setSubmittableThreshold(true)
+                return Promise.resolve()
+              } else {
+                setSubmittableThreshold(false)
+                return Promise.reject()
+              }}
+            }
+          ]}
           children={
             <Input
               type='number'
@@ -358,13 +371,23 @@ const SmsProviderItem = () => {
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
           size='small'
+          disabled={submittableThreshold !== true}
           onClick={() => { onSaveUtilization() }}>{$t({ defaultMessage: 'Save' })}</Button>
         <Button
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
           size='small'
-          onClick={() => { setIsChangeThreshold(false) }}>{$t({ defaultMessage: 'Cancel' })}
+          onClick={() => {
+            setSubmittableThreshold(true)
+            form.setFieldValue('threshold', smsThreshold)
+            setIsChangeThreshold(false)
+          }}>{$t({ defaultMessage: 'Cancel' })}
         </Button>
+        {(submittableThreshold !== true) &&
+          <div style={{ marginTop: '4px', color: 'var(--acx-semantics-red-60)' }}>
+            {$t({ defaultMessage: 'Threshold must be between 50 and 100' })}
+          </div>
+        }
       </div>}
     </>
   }

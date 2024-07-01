@@ -1,8 +1,9 @@
-import { useState } from 'react'
-import React        from 'react'
+import { useEffect, useState } from 'react'
+import React                   from 'react'
 
 import { Checkbox, Divider, Form, Radio } from 'antd'
 import { useForm }                        from 'antd/lib/form/Form'
+import _                                  from 'lodash'
 import moment                             from 'moment'
 import { defineMessage, useIntl }         from 'react-intl'
 
@@ -10,12 +11,14 @@ import {
   Button,
   DatePicker,
   Descriptions,
-  Drawer
+  Drawer,
+  showActionModal
 } from '@acx-ui/components'
 import { DateFormatEnum, formatter }               from '@acx-ui/formatter'
 import { SpaceWrapper }                            from '@acx-ui/rc/components'
 import { usePatchEntitlementsActivationsMutation } from '@acx-ui/rc/services'
 import { EntitlementActivations }                  from '@acx-ui/rc/utils'
+import { useUserProfileContext }                   from '@acx-ui/user'
 
 interface ActivatePurchaseDrawerProps {
   visible: boolean
@@ -48,9 +51,11 @@ const getRegions = () => {
 export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
   const { $t } = useIntl()
 
+  const { data: userProfile } = useUserProfileContext()
   const { visible, setVisible, activationData } = props
   const [resetField, setResetField] = useState(false)
   const [isTermsAndConditionsChecked, setTermsAndConditions] = useState(false)
+  const [currentRegion, setCurrentRegion] = useState(RegionRadioButtonEnum.US)
   const [form] = useForm()
   const [activatePurchase] = usePatchEntitlementsActivationsMutation()
   const isActivationStartdatePassed = moment(activationData?.spaStartDate).isBefore(new Date())
@@ -59,6 +64,15 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
     : (isActivationStartdatePassed
       ? moment(activationData?.spaStartDate)
       : moment(new Date()))
+
+  useEffect(()=>{
+    if(userProfile){
+      const region = _.find(userProfile?.allowedRegions,(item)=>{
+        return item.current === true
+      })
+      setCurrentRegion(region?.name as RegionRadioButtonEnum)
+    }
+  },[userProfile])
 
   const onClose = () => {
     setVisible(false)
@@ -72,18 +86,35 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
   const handleActivate = async () => {
     try {
       await form.validateFields()
+      const region = form.getFieldValue(['region'])
       let payload = {
-        region: form.getFieldValue(['region']),
+        region: region,
         startDate: moment((form.getFieldValue(['startDate']))).format('YYYY-MM-DD'),
         orderAcxRegistrationCode: activationData?.orderAcxRegistrationCode
       }
-
-      activatePurchase({ payload, params: { orderId: activationData?.orderId } })
-        .then(() => {
-          setVisible(false)
-          resetFields()
+      if (region !== currentRegion) {
+        const selRegion = _.find(regionList,(item)=>{
+          return item.value === region
         })
-      setVisible(false)
+        showActionModal({
+          title: $t({ defaultMessage: 'Select Region' }),
+          type: 'confirm',
+          /* eslint-disable max-len */
+          content: $t({ defaultMessage: 'You have selected {selRegion} region for availability of the licenses, which is a different region from the instance you are currently logged in. {br}{br}Are you sure you want to continue?' },
+            { selRegion: <b>{selRegion?.label}</b>, br: <br></br> }),
+          okText: $t({ defaultMessage: 'Yes' }),
+          cancelText: $t({ defaultMessage: 'No' }),
+          onOk: () => {
+            activatePurchase({ payload, params: { orderId: activationData?.orderId } }).unwrap()
+            setVisible(false)
+            resetFields()
+          }
+        })
+      } else {
+        activatePurchase({ payload, params: { orderId: activationData?.orderId } }).unwrap()
+        setVisible(false)
+        resetFields()
+      }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
