@@ -98,12 +98,14 @@ import {
   WifiDhcpPoolUsages,
   RWG,
   NetworkDevice,
-  NetworkDeviceType
+  NetworkDeviceType,
+  ApPosition
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
+import { getNewApViewmodelPayloadFromOld }   from './apUtils'
 import { handleCallbackWhenActivitySuccess } from './utils'
 
 const customHeaders = {
@@ -376,22 +378,56 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     meshAps: build.query<TableResult<APMesh>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
+
+        const newPayload = enableRbac
+          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
+          : payload
+
         return {
-          ...venueMeshReq,
-          body: payload
+          ...req,
+          body: newPayload
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }],
       extraOptions: { maxRetries: 5 }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const venueMeshReq = createHttpRequest(CommonUrlsInfo.getMeshAps, params)
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+
+        const newPayload = enableRbac
+          ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
+          : payload
+        const apListReq = createHttpRequest(urlsInfo.getMeshAps, params, customHeaders)
+        const apListRes = await fetchWithBQ({ ...apListReq, body: newPayload })
+        const apListData = apListRes.data as TableResult<FloorPlanMeshAP>
+
+        // fetch ap position data
+        const fields = (payload as Record<string, unknown>).fields as string[]
+        if (enableRbac && (fields.includes('xPercent') || fields.includes('yPercent'))) {
+          const floorplanId = apListData.data[0].floorplanId
+          const floorplanReq = createHttpRequest(
+            CommonRbacUrlsInfo.GetApPosition,
+            {
+              venueId: apListData.data[0].venueId,
+              floorplanId,
+              serialNumber: apListData.data[0].serialNumber
+            },
+            customHeaders
+          )
+          const floorplanRes = await fetchWithBQ(floorplanReq)
+          const floorplan = floorplanRes.data as ApPosition
+          apListData.data[0].xPercent = floorplan?.xPercent
+          apListData.data[0].yPercent = floorplan?.yPercent
+        }
+
         return {
-          ...venueMeshReq,
-          body: payload
+          data: apListData
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }, { type: 'VenueFloorPlan', id: 'DEVICE' }]

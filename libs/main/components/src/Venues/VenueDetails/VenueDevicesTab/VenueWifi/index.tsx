@@ -394,6 +394,8 @@ export function VenueWifi () {
 
 export function VenueMeshApsTable () {
   const params = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const defaultPayload = {
     fields: [
       'clients',
@@ -421,7 +423,8 @@ export function VenueMeshApsTable () {
   const tableQuery = useTableQuery({
     useQuery: useMeshApsQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac: isWifiRbacEnabled
   })
 
   return (

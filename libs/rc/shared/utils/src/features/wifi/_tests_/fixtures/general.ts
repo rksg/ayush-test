@@ -28,6 +28,7 @@ export const mockAPList = {
       name: 'mock-ap-1',
       apGroupId: 'f2863482681e489ab8566e2f229572aa',
       venueId: '0e2f68ab79154ffea64aa52c5cc48826',
+      floorplanId: '94bed28abef24175ab58a3800d01e24a',
       tags: [
         ''
       ],
@@ -133,6 +134,25 @@ export const mockAPList = {
       ]
     }
   ]
+}
+export const mockedMeshAps = {
+  ...mockAPList,
+  totalCount: 1,
+  data: [{
+    ...mockAPList.data[0],
+    downlink: [],
+    uplink: [],
+    meshRole: 'RAP',
+    hops: 0,
+    floorplanId: '94bed28abef24175ab58a3800d01e24a',
+    downlinkCount: 2,
+    healthStatus: 'Unknown'
+  }]
+}
+
+export const mockedApPosition = {
+  xPercent: 79.716515,
+  yPercent: 31.556149
 }
 
 export const mockAPModels = {

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { cloneDeep } from 'lodash'
+import { cloneDeep, find } from 'lodash'
 
 import {
   APGeneralFixtures,
@@ -12,7 +12,13 @@ import {
   Venue
 } from '@acx-ui/rc/utils'
 
-import { aggregateApGroupInfo, aggregatePoePortInfo, aggregateVenueInfo, transformApListFromNewModel } from './apUtils'
+import {
+  aggregateApGroupInfo,
+  aggregatePoePortInfo,
+  aggregateVenueInfo,
+  transformApListFromNewModel,
+  transformApFromNewType
+} from './apUtils'
 
 const { mockAPList, mockAPModels } = APGeneralFixtures
 const { mockAPGroupList } = APGroupFixtures
@@ -96,5 +102,44 @@ describe('Test apUtils', () => {
     aggregateApGroupInfo(cloneData, mockAPGroupList as unknown as TableResult<ApGroup>)
     expect(cloneData.data[0].apGroupName).toBe('joe-apg-02')
     expect(cloneData.data[1].apGroupName).toBe('joe-apg-01')
+  })
+
+  describe('transformApFromNewType', () => {
+    it('test transformApFromNewType', async () => {
+      const cloneData = cloneDeep(mockAPList) as unknown as TableResult<NewAPModelExtended, ApExtraParams>
+      const target = cloneData.data[0]
+      const result = transformApFromNewType(target) as APExtended
+      expect(result.fwVersion).toBe(target.firmwareVersion)
+      expect(result.apMac).toBe(target.macAddress)
+      expect(result.deviceStatus).toBe(target.status)
+      expect(result.deviceGroupId).toBe(target.apGroupId)
+      expect(result.IP).toBe(target.networkStatus?.ipAddress)
+
+      // LAN port
+      target.lanPortStatuses?.forEach(lanPort => {
+        const data = find(result.apStatusData.lanPortStatus, { port: lanPort.id })
+        expect(data.phyLink).toBe(lanPort.physicalLink)
+      })
+
+      // AP radio
+      target.radioStatuses?.forEach(radio => {
+        const data = find(result.apStatusData.APRadio, { radioId: radio.id })
+        expect(data.txPower).toBe(radio.transmitterPower)
+        expect(data.channel).toBe(radio.channel)
+        expect(data.band).toBe(radio.band)
+        expect(data.Rssi).toBe(radio.rssi)
+        expect(data.operativeChannelBandwidth).toBe(radio.channelBandwidth)
+      })
+
+      // AP system
+      expect(result.APSystem.uptime).toBe(target.uptime)
+      expect(result.APSystem.ipType).toBe(target.networkStatus.ipAddressType)
+      expect(result.APSystem.netmask).toBe(target.networkStatus.netmask)
+      expect(result.APSystem.gateway).toBe(target.networkStatus?.gateway)
+      expect(result.APSystem.primaryDnsServer).toBe(target.networkStatus?.primaryDnsServer)
+      expect(result.APSystem.secondaryDnsServer).toBe(target.networkStatus?.secondaryDnsServer)
+      expect(result.APSystem.secureBootEnabled).toBe(target.supportSecureBoot)
+      expect(result.APSystem.managementVlan).toBe(target.managementTrafficVlan)
+    })
   })
 })

@@ -69,7 +69,7 @@ export interface AP {
   healthStatus?: string,
   downLinkCount?: number,
   apRadioDeploy?: string,
-  powerSavingStatus?: string
+  powerSavingStatus?: string,
 }
 
 export interface NewAPModel {
@@ -364,6 +364,8 @@ export interface APMesh {
 }
 export interface FloorPlanMeshAP extends APMesh {
   floorplanId?: string;
+  xPercent?: number;
+  yPercent?: number;
 }
 export interface Uplink{
   txFrames: string,

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { cloneDeep, find, forIn, invert, set } from 'lodash'
+import { cloneDeep, find, forIn, invert, set, uniq } from 'lodash'
 
 import {
   ApRadioBands,
@@ -141,8 +141,21 @@ const apOldNewFieldsMapping: Record<string, string> = {
   'fwVersion': 'firmwareVersion',
   'deviceGroupId': 'apGroupId',
   'IP': 'networkStatus.ipAddress',
+  'extIp': 'externalIpAddress',
   'clients': 'clientCount',
-  'apStatusData.lanPortStatus': 'lanPortStatuses'
+  'apStatusData.lanPortStatus': 'lanPortStatuses',
+  'apStatusData.APRadio': 'radioStatuses',
+  'apRadioDeploy': 'radioStatuses',
+  'APSystem.uptime': 'uptime',
+  'APSystem.ipType': 'networkStatus.ipAddressType',
+  'APSystem.netmask': 'networkStatus.netmask',
+  'APSystem.gateway': 'networkStatus.gateway',
+  'APSystem.primaryDnsServer': 'networkStatus.primaryDnsServer',
+  'APSystem.secondaryDnsServer': 'networkStatus.secondaryDnsServer',
+  'APSystem.secureBootEnabled': 'supportSecureBoot',
+  'APSystem.managementVlan': 'managementTrafficVlan',
+  'lastUpdTime': 'lastUpdatedTime'
+
 }
 
 const apNewOldFieldsMapping = invert(apOldNewFieldsMapping)
@@ -160,11 +173,11 @@ export const getNewApViewmodelPayloadFromOld = (payload: Record<string, unknown>
 
   if (newPayload.fields) {
     // eslint-disable-next-line max-len
-    newPayload.fields = (newPayload.fields as string[])?.map(field => getApNewFieldFromOld(field))
+    newPayload.fields = uniq((newPayload.fields as string[])?.map(field => getApNewFieldFromOld(field)))
   }
   if (newPayload.searchTargetFields) {
   // eslint-disable-next-line max-len
-    newPayload.searchTargetFields = (newPayload.searchTargetFields as string[])?.map(field => getApNewFieldFromOld(field))
+    newPayload.searchTargetFields = uniq((newPayload.searchTargetFields as string[])?.map(field => getApNewFieldFromOld(field)))
   }
 
   newPayload.sortField = getApNewFieldFromOld(payload.sortField as string)
@@ -180,13 +193,55 @@ export const getNewApViewmodelPayloadFromOld = (payload: Record<string, unknown>
   return newPayload
 }
 
-export const transformApFromNewType = (rbacAp: NewAPModel): APExtended => {
-  const oldAp = {} as Record<string, unknown>
-  for(const [key, value] of Object.entries(rbacAp)) {
-    const oldApFieldName = getApOldFieldFromNew(key)
-    set(oldAp, oldApFieldName, value)
+const parsingApFromNewType = (rbacAp: Record<string, unknown>, result:APExtended, parentPath: string[] = []) => {
+  for(const key in rbacAp) {
+    const value = rbacAp[key]
+    const namePath = parentPath.concat(key)
+
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) {
+        if (['lanPortStatuses', 'radioStatuses', 'tags'].includes(key) === false) continue
+        const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
+
+        if (key === 'tags') {
+          set(result, oldApFieldName, value.join(','))
+        } else {
+          set(result, oldApFieldName, value.map(item => {
+            switch(key) {
+              case 'lanPortStatuses':
+                return {
+                  port: item.id,
+                  phyLink: item.physicalLink
+                }
+              case 'radioStatuses':
+                return {
+                  radioId: item.id,
+                  operativeChannelBandwidth: item.channelBandwidth,
+                  Rssi: item.rssi,
+                  band: item.band,
+                  channel: item.channel,
+                  txPower: item.transmitterPower
+                }
+              default:
+                return undefined
+            }
+          }))
+        }
+      } else {
+        parsingApFromNewType(value as Record<string, unknown>, result, namePath)
+      }
+    } else {
+      const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
+      set(result, oldApFieldName, value)
+    }
   }
-  return oldAp as unknown as APExtended
+}
+
+export const transformApFromNewType = (rbacAp: NewAPModel): APExtended => {
+  const oldAp = {} as unknown as APExtended
+  parsingApFromNewType(rbacAp as unknown as Record<string, unknown>, oldAp)
+  oldAp.apRadioDeploy = rbacAp.radioStatuses?.length === 3 ? '2-5-6' : ''
+  return oldAp
 }
 
 export const transformRbacApList = (rbacApList: TableResult<NewAPModel>): TableResult<APExtended, ApExtraParams> => {

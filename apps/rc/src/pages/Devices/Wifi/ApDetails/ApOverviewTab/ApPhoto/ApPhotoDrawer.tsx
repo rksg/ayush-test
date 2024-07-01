@@ -9,8 +9,7 @@ import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetApPhotoQuery,
   useAddApPhotoMutation,
-  useDeleteApPhotoMutation,
-  useApViewModelQuery
+  useDeleteApPhotoMutation
 } from '@acx-ui/rc/services'
 import { generateHexKey, useApContext } from '@acx-ui/rc/utils'
 
@@ -55,20 +54,6 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
     height: 0
   })
 
-  const apViewModelPayload = {
-    entityType: 'aps',
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags'],
-    filters: { serialNumber: [params.serialNumber] }
-  }
-  const apViewModelQuery = useApViewModelQuery({
-    params, payload: apViewModelPayload,
-    enableRbac: isUseRbacApi
-  })
-
   useEffect(() => {
     if (!apPhoto.isLoading && apPhoto?.data) {
       const { url, imageUrl, name, imageName } = apPhoto.data
@@ -76,7 +61,7 @@ export const ApPhotoDrawer = (props: ApPhotoDrawerProps) => {
       setImageName((isUseRbacApi? name : imageName)!)
       setKey(generateHexKey(10))
     }
-  }, [apPhoto, apViewModelQuery])
+  }, [apPhoto])
 
   const onCropComplete = useCallback(
     (croppedArea: cropImageType, croppedAreaPixels: cropImageType) => {

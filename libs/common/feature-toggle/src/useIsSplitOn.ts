@@ -4,6 +4,8 @@ import { useTreatments } from '@splitsoftware/splitio-react'
 
 import { useTenantId } from '@acx-ui/utils'
 
+import { Features } from './features'
+
 enum FeatureFlag {
   ON = 'on',
   OFF = 'off'
@@ -14,5 +16,5 @@ export function useIsSplitOn (splitName: string): boolean {
   const treatments = useTreatments([splitName], { tenantKey })
   const treatment = treatments[splitName].treatment
   useDebugValue(`${splitName}: ${treatment}`) // used to display a label for custom hooks in React DevTools
-  return treatment === FeatureFlag.ON
+  return splitName === Features.WIFI_RBAC_API || treatment === FeatureFlag.ON
 }
