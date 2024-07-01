@@ -85,9 +85,6 @@ function AllRoutes () {
       <Route path='profile'>
         <Route path=':activeTab' element={<Profile />} />
       </Route>
-      <Route path='intentAI'>
-        <Route path='aiDrivenRRM' element={<IntentAIDrivenRRM />} />
-      </Route>
       <Route path='recommendations'>
         <Route path=':activeTab' element={<Recommendations/>} />
         <Route path='aiOps/:id' element={check('READ_AI_OPERATIONS', <RecommendationDetails/>)}/>
@@ -101,6 +98,7 @@ function AllRoutes () {
       <Route path='intentAI' element={check('READ_INTENT_AI')}>
         <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
         <Route index={false} path=':intentId' element={<></>} />
+        <Route path='aiDrivenRRM' element={<IntentAIDrivenRRM />} />
       </Route>
       <Route path='networks/wireless' element={check('READ_WIFI_NETWORKS_LIST')}>
         <Route index={true} element={<WiFiNetworksPage tab={NetworkTabsEnum.LIST} />} />
