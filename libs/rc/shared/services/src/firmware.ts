@@ -316,19 +316,23 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       query: ({ params, payload }) => {
         const headers = v1_2Header
         // eslint-disable-next-line max-len
-        const queryString = payload as { searchString: string, filters: { filterModelVersion: [] } }
+        const queryString = payload as { searchString: string, filters: { filterModelVersion: string[] } }
         const request =
             createHttpRequest(FirmwareRbacUrlsInfo.getSwitchVenueVersionList, params, headers)
+
+        let filterObject = {}
         const modelVersion = queryString?.filters?.filterModelVersion || []
-        const filterObject = modelVersion?.length > 0 ? {
-          firmwareVersion: modelVersion[0].split(',')[1],
-          modelGroup: modelVersion[0].split(',')[0]
-        } : {}
+        if (modelVersion.length > 0) {
+          const [modelGroup, firmwareVersion] = modelVersion[0]?.split(',')
+          filterObject = {
+            firmwareVersion: firmwareVersion,
+            modelGroup: modelGroup
+          }
+        }
         return {
           ...request,
           body: JSON.stringify({
             // eslint-disable-next-line max-len
-            // firmwareVersion: queryString?.filters?.version ? queryString.filters.version.join(',') : '',
             searchFilter: queryString?.searchString ?? '',
             ...filterObject
           })

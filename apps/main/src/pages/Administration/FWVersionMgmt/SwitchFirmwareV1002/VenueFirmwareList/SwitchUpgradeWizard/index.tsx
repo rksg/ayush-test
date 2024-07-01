@@ -12,13 +12,13 @@ import {
   StepsForm,
   showActionModal
 } from '@acx-ui/components'
-import { WarningCircleOutlined }                from '@acx-ui/icons'
-import { useSwitchFirmwareUtils }               from '@acx-ui/rc/components'
+import { WarningCircleOutlined }               from '@acx-ui/icons'
+import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
 import {
-  useBatchSkipSwitchUpgradeSchedulesV1002Mutation,
   useBatchUpdateSwitchVenueSchedulesV1002Mutation,
   useGetSwitchDefaultFirmwareListV1002Query,
-  useGetSwitchAvailableFirmwareListV1002Query } from '@acx-ui/rc/services'
+  useGetSwitchAvailableFirmwareListV1002Query,
+  useBatchSkipSwitchUpgradeSchedulesMutation } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
@@ -86,7 +86,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     [SwitchFirmwareWizardType.skip]: '1120px'
   }
 
-  const [batchSkipSwitchUpgradeSchedules] = useBatchSkipSwitchUpgradeSchedulesV1002Mutation()
+  const [batchSkipSwitchUpgradeSchedules] = useBatchSkipSwitchUpgradeSchedulesMutation()
 
   const getVersionsPayload = function () {
 

@@ -30,9 +30,7 @@ import {
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
-  compareSwitchVersion,
-  FILTER,
-  SEARCH
+  compareSwitchVersion
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
@@ -339,23 +337,6 @@ export function VenueFirmwareList () {
     scopes: [SwitchScopes.UPDATE]
   })
 
-
-  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
-    if (customFilters.filterModelVersion) { //TODO: check the filter
-      // const version = customFilters.filterModelVersion//.split(',')
-
-      //   customFilters.modelGroup = version[0]
-      // customFilters.firmwareVersion = version[0]
-    } else {
-      delete customFilters.modelGroup
-      delete customFilters.firmwareVersion
-    }
-
-    tableQuery.handleFilterChange(customFilters, customSearch)
-  }
-
-
-
   return (
     <Loader states={[tableQuery,
       { isLoading: false }
@@ -365,7 +346,7 @@ export function VenueFirmwareList () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={handleFilterChange}
+        onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
         rowKey='venueId'
         rowActions={filterByAccess(rowActions)}
