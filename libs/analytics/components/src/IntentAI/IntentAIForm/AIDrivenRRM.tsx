@@ -8,7 +8,7 @@ import { PageHeader, StepsForm } from '@acx-ui/components'
 import { mapping, demoLink, guideLink } from './mapping'
 import * as UI                          from './styledComponents'
 
-export function IntentAIDrivenRRM () {
+export function AIDrivenRRM () {
   const { $t } = useIntl()
   const values = {
     p: (text: string) => <UI.Para>{text}</UI.Para>,

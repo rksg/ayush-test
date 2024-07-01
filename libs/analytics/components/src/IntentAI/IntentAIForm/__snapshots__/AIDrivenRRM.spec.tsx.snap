@@ -20,7 +20,19 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
             >
-              AI-Driven RRM
+              <div
+                class="styledComponents__Header-sc-ki2m8o-17 iDjbIZ"
+              >
+                <svg
+                  class="styledComponents__AIDrivenRRMIcon-sc-ki2m8o-13 dGgFez"
+                  data-testid="AIDrivenRRM"
+                />
+                <div
+                  class="styledComponents__HeaderTitle-sc-ki2m8o-16 kBofea"
+                >
+                  AI-Driven RRM
+                </div>
+              </div>
             </h1>
           </span>
         </div>
@@ -31,7 +43,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
         <span
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
-          Intent: Throughput vs Client Density | Zone: SPS-Hospitality-BLR
+          Intent: Client density vs Client throughput | Zone: SPS-Hospitality-BLR
         </span>
       </div>
     </div>
@@ -115,7 +127,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                   <div
                     class="ant-steps-item-title"
                   >
-                    Trade-off
+                    Choose priority
                   </div>
                 </div>
               </div>
@@ -146,7 +158,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                   <div
                     class="ant-steps-item-title"
                   >
-                    Benefit
+                    Summary
                   </div>
                 </div>
               </div>
@@ -167,121 +179,139 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
               style="padding-left: 10px; padding-right: 10px;"
             >
               <div
-                class="styledComponents__Wrapper-sc-4zzubw-0 gRbsuR"
+                class="styledComponents__Wrapper-sc-ki2m8o-0 jmJZQT"
               >
                 <h2
-                  class="ant-typography styledComponents__Title-sc-4zzubw-1"
+                  class="ant-typography styledComponents__Title-sc-ki2m8o-1"
                 >
                   Introduction
                 </h2>
                 <div
-                  class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
+                  class="styledComponents__Content-sc-ki2m8o-4 jGdJiG"
                 >
                   <span
-                    class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
+                    class="styledComponents__ContentText-sc-ki2m8o-5 ncnPS"
                   >
                     <span>
-                      Intent:
+                      Intent: 
                       <b>
-                        Throughput vs Client Density
+                        Client density vs Client throughput
                       </b>
                     </span>
                   </span>
                   <span
-                    class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
+                    class="styledComponents__ContentText-sc-ki2m8o-5 ncnPS"
                   >
-                    Zone:SPS-Hospitality-BLR
+                    Category: Wi-Fi Experience
                   </span>
                   <span
-                    class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
+                    class="styledComponents__ContentText-sc-ki2m8o-5 ncnPS"
                   >
-                    Date:May 20 2024 14:45
+                    Zone: SPS-Hospitality-BLR
+                  </span>
+                  <span
+                    class="styledComponents__ContentText-sc-ki2m8o-5 ncnPS"
+                  >
+                    Status: New
+                  </span>
+                  <span
+                    class="styledComponents__ContentText-sc-ki2m8o-5 ncnPS"
+                  >
+                    Last update: May 20 2024 14:45
                   </span>
                 </div>
                 <div
-                  class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
+                  class="styledComponents__Content-sc-ki2m8o-4 jGdJiG"
                 >
                   <div
-                    class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-4zzubw-3 hYNJuf dkSJVk"
+                    class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-ki2m8o-3 hYNJuf btSbLK"
                   >
                     Wireless network design involves balancing different priorities:
                   </div>
                   <p
-                    class="styledComponents__Para-sc-4zzubw-10 juRNhN"
+                    class="styledComponents__Para-sc-ki2m8o-10 dLlKTz"
                   >
                     <b
-                      class="styledComponents__Bold-sc-4zzubw-11 JAUmv"
+                      class="styledComponents__Bold-sc-ki2m8o-11 kypGFp"
                     >
-                      Maximum Throughput
-                    </b>
-                    : This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.
-                  </p>
-                  <p
-                    class="styledComponents__Para-sc-4zzubw-10 juRNhN"
-                  >
-                    <b
-                      class="styledComponents__Bold-sc-4zzubw-11 JAUmv"
-                    >
-                      High Client Density
+                      Client Density
                     </b>
                     : This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.
+                  </p>
+                  <p
+                    class="styledComponents__Para-sc-ki2m8o-10 dLlKTz"
+                  >
+                    <b
+                      class="styledComponents__Bold-sc-ki2m8o-11 kypGFp"
+                    >
+                      Client Throughput
+                    </b>
+                    : This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.
                   </p>
                 </div>
               </div>
             </div>
             <div
-              class="ant-col ant-col-6 ant-col-offset-3"
+              class="ant-col ant-col-7 ant-col-offset-2"
               style="padding-left: 10px; padding-right: 10px;"
             >
               <div
-                class="styledComponents__Wrapper-sc-4zzubw-0 gRbsuR"
+                class="styledComponents__Wrapper-sc-ki2m8o-0 jmJZQT"
               >
                 <div
-                  class="styledComponents__SideNote-sc-4zzubw-6 eBBLPk"
+                  class="styledComponents__SideNote-sc-ki2m8o-6 hmSaFe"
                 >
                   <div
-                    class="styledComponents__SideNoteHeader-sc-4zzubw-7 gobUNj"
+                    class="styledComponents__SideNoteHeader-sc-ki2m8o-7 MVeqR"
                   >
                     <h3
-                      class="ant-typography styledComponents__SideNoteTitle-sc-4zzubw-2"
+                      class="ant-typography styledComponents__SideNoteTitle-sc-ki2m8o-2"
                     >
                       Side Notes
                     </h3>
                   </div>
                   <div
-                    class="styledComponents__SideNoteSubtitle-sc-4zzubw-8 iBeFmB"
+                    class="styledComponents__SideNoteSubtitle-sc-ki2m8o-8 hBCZqv"
                   >
                     Why the recommendation?
                   </div>
                   <span
-                    class="styledComponents__SideNoteContent-sc-4zzubw-9 kmFhts"
+                    class="styledComponents__SideNoteContent-sc-ki2m8o-9 EMjnS"
                   >
                     <p
-                      class="styledComponents__Para-sc-4zzubw-10 juRNhN"
+                      class="styledComponents__Para-sc-ki2m8o-10 dLlKTz"
                     >
                       AI-Driven Cloud RRM constantly monitors the network, adjusting the channel plan, bandwidth, and AP transmit power to minimize co-channel interference. These changes are reflected in the Key Performance Indicators. The number of interfering links may fluctuate based on network changes, configurations, and rogue AP activities.
                     </p>
                   </span>
                   <div
-                    class="styledComponents__SideNoteSubtitle-sc-4zzubw-8 iBeFmB"
+                    class="styledComponents__SideNoteSubtitle-sc-ki2m8o-8 hBCZqv"
                   >
                     Resources:
                   </div>
                   <span
-                    class="styledComponents__SideNoteContent-sc-4zzubw-9 kmFhts"
+                    class="styledComponents__SideNoteContent-sc-ki2m8o-9 EMjnS"
                   >
                     <a
-                      class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
+                      class="styledComponents__Link-sc-ki2m8o-12 cEmACy"
                       href="https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi"
                       target="_blank"
                     >
+                      <svg
+                        class="styledComponents__LinkVideoIcon-sc-ki2m8o-14 fwgFCQ"
+                        data-testid="LinkVideo"
+                      />
                       RUCKUS AI - AI-Driven RRM Demo
                     </a>
                     <a
-                      class="styledComponents__Link-sc-4zzubw-12 lkmLvc"
+                      class="styledComponents__Link-sc-ki2m8o-12 cEmACy"
                       href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
                       target="_blank"
                     >
+                      <svg
+                        class="styledComponents__LinkDocumentIcon-sc-ki2m8o-15 cOxakn"
+                        data-testid="LinkDocument"
+                      />
                       RUCKUS AI User Guide
                     </a>
                   </span>

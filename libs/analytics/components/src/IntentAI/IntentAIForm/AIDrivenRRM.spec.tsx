@@ -1,10 +1,10 @@
 import { render } from '@acx-ui/test-utils'
 
-import { IntentAIDrivenRRM } from '.'
+import { AIDrivenRRM } from './AIDrivenRRM'
 
 describe('AIDrivenRRM', () => {
   it('should match snapshot', () => {
-    const { asFragment } = render(<IntentAIDrivenRRM />)
+    const { asFragment } = render(<AIDrivenRRM />)
     expect(asFragment()).toMatchSnapshot()
   })
 })
