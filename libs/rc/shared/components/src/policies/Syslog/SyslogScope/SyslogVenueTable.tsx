@@ -13,7 +13,8 @@ import {
   useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import SyslogContext from '../SyslogContext'
 
@@ -181,7 +182,8 @@ const SyslogVenueTable = () => {
       onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'checkbox' }}
+      // eslint-disable-next-line max-len
+      rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }}
     />
   )
 }
