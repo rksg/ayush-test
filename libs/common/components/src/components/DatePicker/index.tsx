@@ -45,8 +45,23 @@ interface DatePickerProps {
   selectionType: DateRange;
   showAllTime?: boolean;
   showLast8hours?: boolean;
+  isReport?: boolean;
 }
 const AntRangePicker = AntDatePicker.RangePicker
+
+export const restrictDateTo3Months = (values: RangeValueType, range: string) => {
+  let startDate = values?.[0] || null
+  let endDate = values?.[1] || null
+  if (endDate && startDate && endDate.diff(startDate, 'months') > 3) {
+    if (range === 'start') {
+      endDate = startDate.clone().add(3, 'months')
+    }
+    if (range === 'end') {
+      startDate = endDate.clone().subtract(3, 'months')
+    }
+  }
+  return { startDate, endDate }
+}
 
 export const RangePicker = ({
   showTimePicker,
@@ -55,6 +70,7 @@ export const RangePicker = ({
   onDateApply,
   showAllTime,
   selectionType,
+  isReport,
   showLast8hours
 }: DatePickerProps) => {
   const { $t } = useIntl()
@@ -72,16 +88,22 @@ export const RangePicker = ({
   const componentRef = useRef<HTMLDivElement | null>(null)
   const rangeRef = useRef<RangeRef>(null)
   const [range, setRange] = useState<DateRangeType>(selectedRange)
+  const [boundary, setBoundary] = useState<string>('')
   const [isCalendarOpen, setIsCalendarOpen] = useState<boolean>(false)
   const { acx_account_tier: accountTier } = getJwtTokenPayload()
-  const allowedDateRange = accountTier === AccountTier.GOLD
-    ? dateRangeForLast(1,'month')
-    : dateRangeForLast(3,'months')
+  const allowedDateRange = isReport
+    ? dateRangeForLast(12,'months')
+    : (accountTier === AccountTier.GOLD
+      ? dateRangeForLast(1,'month')
+      : dateRangeForLast(3,'months')
+    )
   const disabledDate = useCallback(
-    (current: Moment) => {
-      return allowedDateRange[0] >= current || allowedDateRange[1] < current.seconds(0)
-    },
-    [allowedDateRange]
+    (current: Moment) => (
+      (boundary === 'start' && current.isAfter(range.startDate?.clone().add(3, 'months'))) ||
+      (boundary === 'end' && current.isBefore(range.endDate?.clone().subtract(3, 'months'))) ||
+      !current.isBetween(allowedDateRange[0], allowedDateRange[1], null, '[]')
+    ),
+    [allowedDateRange, boundary, range.endDate, range.startDate]
   )
 
   useEffect(
@@ -131,8 +153,11 @@ export const RangePicker = ({
         onClick={() => setIsCalendarOpen(true)}
         getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
         suffixIcon={<ClockOutlined />}
-        onCalendarChange={(values: RangeValueType) =>
-          setRange({ startDate: values?.[0] || null, endDate: values?.[1] || null })}
+        onCalendarChange={(values: RangeValueType, _: string[], info: { range: string }) => {
+          const { range } = info
+          setBoundary(range)
+          setRange(restrictDateTo3Months(values, range))
+        }}
         mode={['date', 'date']}
         renderExtraFooter={() => (
           <DatePickerFooter

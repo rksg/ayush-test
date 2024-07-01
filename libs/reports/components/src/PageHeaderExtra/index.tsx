@@ -24,7 +24,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
   const isAPReport = ['ap','both'].includes(reportType)
   const isNetworkFilterDisabled = networkFilterDisabledReports.includes(type)
 
-  const { startDate, endDate, setDateFilter, range } = useDateFilter()
+  const { startDate, endDate, setDateFilter, range } = useDateFilter(moment().subtract(12, 'month'))
 
   const component = [
     <RangePicker
@@ -33,6 +33,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
       onDateApply={setDateFilter as CallableFunction}
       showTimePicker
       selectionType={range}
+      isReport
     />
   ]
   showFilter && !isNetworkFilterDisabled && component.unshift(
@@ -40,7 +41,9 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
       ? <SANetworkFilter
         key={getShowWithoutRbacCheckKey('sa-network-filter')}
         shouldQueryAp={isAPReport}
-        shouldQuerySwitch={isSwitchReport}/>
+        shouldQuerySwitch={isSwitchReport}
+        overrideFilters={{ startDate, endDate }}
+      />
       : <NetworkFilter
         key={getShowWithoutRbacCheckKey('reports-network-filter')}
         shouldQuerySwitch={isSwitchReport}
@@ -50,6 +53,7 @@ export function usePageHeaderExtra (type: ReportType, showFilter = true) {
         filterFor={'reports'}
         isRadioBandDisabled={isRadioBandDisabled}
         radioBandDisabledReason={radioBandDisabledReason}
+        overrideFilters={{ startDate, endDate }}
       />
   )
 

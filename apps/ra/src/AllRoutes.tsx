@@ -16,6 +16,8 @@ import {
   ServiceGuardTestGuard,
   ServiceGuardDetails,
   Profile,
+  AIAnalytics,
+  AIAnalyticsTabEnum,
   IntentAIDrivenRRM
 } from '@acx-ui/analytics/components'
 import { updateSelectedTenant, getUserProfile }                          from '@acx-ui/analytics/utils'
@@ -26,7 +28,6 @@ import ClientDetails                         from './pages/ClientDetails'
 import Clients, { AIClientsTabEnum }         from './pages/Clients'
 import ConfigChange                          from './pages/ConfigChange'
 import IncidentDetails                       from './pages/IncidentDetails'
-import Incidents                             from './pages/Incidents'
 import Layout                                from './pages/Layout'
 import Recommendations                       from './pages/Recommendations'
 import SearchResults                         from './pages/SearchResults'
@@ -94,8 +95,12 @@ function AllRoutes () {
         <Route path='crrm/unknown/*' element={check('READ_AI_DRIVEN_RRM', <UnknownDetails />)}/>
       </Route>
       <Route path='incidents' element={check('READ_INCIDENTS')}>
-        <Route index={true} element={<Incidents />} />
+        <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />} />
         <Route index={false} path=':incidentId' element={<IncidentDetails />} />
+      </Route>
+      <Route path='intentAI' element={check('READ_INTENT_AI')}>
+        <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
+        <Route index={false} path=':intentId' element={<></>} />
       </Route>
       <Route path='networks/wireless' element={check('READ_WIFI_NETWORKS_LIST')}>
         <Route index={true} element={<WiFiNetworksPage tab={NetworkTabsEnum.LIST} />} />

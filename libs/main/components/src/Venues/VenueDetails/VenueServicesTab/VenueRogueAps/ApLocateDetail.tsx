@@ -5,6 +5,7 @@ import { useIntl }                 from 'react-intl'
 import { useParams }               from 'react-router-dom'
 
 import { Alert, Button, Card, Descriptions, Modal } from '@acx-ui/components'
+import { Features, useIsSplitOn }                   from '@acx-ui/feature-toggle'
 import { VenueMarkerGrey, VenueMarkerOrange }       from '@acx-ui/icons'
 import { ApFloorplan }                              from '@acx-ui/rc/components'
 import {
@@ -27,6 +28,7 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   const { $t } = useIntl()
   const [visible, setVisible] = useState(false)
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const apViewModelPayload = {
     fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
@@ -48,8 +50,10 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
         apMac: currentAP?.apMac,
         serialNumber: currentAP?.serialNumber,
         tenantId: params.tenantId,
-        venueName: currentAP?.venueName
-      }
+        venueName: currentAP?.venueName,
+        venueId: currentAP?.venueId
+      },
+      enableRbac: isUseWifiRbacApi
     }, { skip: !currentAP })
 
   useEffect(() => {

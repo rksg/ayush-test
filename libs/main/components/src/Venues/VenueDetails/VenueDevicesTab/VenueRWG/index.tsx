@@ -43,7 +43,7 @@ function useColumns (
       filterValueNullable: true,
       filterKey: 'status',
       filterable: filterables ? filterables['status'] : false,
-      sorter: { compare: sortProp('status', defaultSort) },
+      sorter: false,
       render: function (_, row) {
         const { name, color } = getRwgStatus(row.status)
 
@@ -66,7 +66,7 @@ function useColumns (
       filterValueNullable: true,
       filterKey: 'status',
       filterable: filterables ? filterables['status'] : false,
-      sorter: { compare: sortProp('status', defaultSort) },
+      sorter: false,
       render: function (_, row) {
         const { name, color } = getRwgStatus(row.status)
         return !row.isCluster ? (
@@ -84,7 +84,7 @@ function useColumns (
       dataIndex: 'hostname',
       key: 'hostname',
       filterMultiple: false,
-      sorter: false,
+      sorter: { compare: sortProp('hostname', defaultSort) },
       render: function (_, row) {
         return !row.isCluster ? row.hostname : ''
       }

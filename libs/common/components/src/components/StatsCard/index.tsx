@@ -1,3 +1,5 @@
+import { Fragment } from 'react'
+
 import { MessageDescriptor, useIntl, defineMessage } from 'react-intl'
 
 import {
@@ -31,7 +33,7 @@ export const StatsCard = (props: StatsCardProps) => {
     <ContentWrapper>
       {
         values.map((value, index) => (
-          <>
+          <Fragment key={`statsCardContent${index}`}>
             <Statistic
               style={{ width: `${100 / values.length}%` }}
               $type={type}
@@ -40,7 +42,7 @@ export const StatsCard = (props: StatsCardProps) => {
               suffix={value.suffix}
             />
             { index < values.length - 1 && <Divider type='vertical' $color={type}/>}
-          </>
+          </Fragment>
         ))
       }
     </ContentWrapper>

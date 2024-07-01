@@ -102,28 +102,7 @@ export interface PlmMessageBanner {
 
 // not sure if it is really belongs to user
 export interface CloudVersion {
-  versionUpgradeDate: string,
-  currentVersion: VersionInfo,
-  futureVersion: VersionInfo,
-  scheduleVersionList: string[],
-  messageBanner: string
-}
-
-// not sure if it is really belongs to user
-enum UpgradeType { STANDDARD, HOTFIX }
-
-// not sure if it is really belongs to user
-interface VersionInfo {
-  affectsNetwork: boolean
-  createdDate: string
-  description: string
-  name: string
-  id: string
-  releaseNotesUrl: string
-  scheduleNow: boolean
-  upgradeTime: string
-  type: UpgradeType | undefined
-  features: string[]
+  scheduleVersionList: string[]
 }
 
 export interface MfaDetailStatus {
@@ -221,7 +200,10 @@ export enum raiPermissionsList {
   'READ_WEBHOOKS',
   'WRITE_WEBHOOKS',
 
-  'READ_BRAND360'
+  'READ_BRAND360',
+
+  'READ_INTENT_AI',
+  'WRITE_INTENT_AI'
 }
 export type RaiPermission = keyof typeof raiPermissionsList
 export type RaiPermissions = Record<RaiPermission, boolean>

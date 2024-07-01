@@ -84,6 +84,10 @@ describe('NetworkingTab', () => {
       ),
       rest.get(WifiRbacUrlsInfo.getVenueDirectedMulticast.url,
         (_, res, ctx) => res(ctx.json(mockDirectedMulticast))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getVenueApModelCellular.url,
+        (_req, res, ctx) => res(ctx.json(mockCellularSettings))
       )
     )
   })
