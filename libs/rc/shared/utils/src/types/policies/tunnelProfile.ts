@@ -9,6 +9,10 @@ export interface TunnelProfile {
   forceFragmentation: boolean
   ageTimeMinutes: number
   type: TunnelTypeEnum
+  mtuRequestRetry?: number
+  mtuRequestTimeout?: number // unit is milliseconds
+  keepAliveRetry?: number
+  keepAliveInterval?: number // unit is seconds
 }
 
 export interface TunnelProfileViewData {
@@ -23,9 +27,14 @@ export interface TunnelProfileViewData {
   networkIds: string[]
   sdLanIds?: string[]
   type: TunnelTypeEnum
+  mtuRequestRetry: number
+  mtuRequestTimeout: number // unit is seconds
+  keepAliveRetry: number
+  keepAliveInterval: number // unit is milliseconds
 }
 
 export interface TunnelProfileFormType extends TunnelProfile {
   ageTimeUnit? : string
+  mtuRequestTimeoutUnit? : string
   disabledFields?: string[]
 }
