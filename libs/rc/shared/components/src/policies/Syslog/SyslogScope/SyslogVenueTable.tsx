@@ -4,6 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showToast, Table, TableProps }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { useGetVenueSyslogListQuery, useGetVenueTemplateForSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
   SyslogActionPayload,
@@ -41,6 +42,9 @@ const SyslogVenueTable = () => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SyslogContext)
   const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
 
   const activateVenue = (selectRows: VenueSyslogPolicyType[]) => {
     dispatch({
@@ -130,7 +134,8 @@ const SyslogVenueTable = () => {
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenueTemplateForSyslogPolicyQuery : useGetVenueSyslogListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac: resolvedEnableRbac
   })
 
   const basicData = tableQuery.data?.data?.map((venue) => {

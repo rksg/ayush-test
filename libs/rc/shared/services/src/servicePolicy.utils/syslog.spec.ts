@@ -26,8 +26,7 @@ describe('addSyslogPolicy', () => {
     const args = {
       params: {},
       payload: mockPolicyPayload,
-      enableRbac: false,
-      enableTemplateRbac: false
+      enableRbac: false
     }
     const mockResponse = { data: { response: { id: 'policy-id' }, requestId: '123' } }
     fetchWithBQ.mockResolvedValue(mockResponse)
@@ -43,8 +42,7 @@ describe('addSyslogPolicy', () => {
     const args = {
       params: {},
       payload: mockPolicyPayload,
-      enableRbac: true,
-      enableTemplateRbac: false
+      enableRbac: true
     }
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)
@@ -66,8 +64,7 @@ describe('addSyslogPolicy', () => {
     const args = {
       params: {},
       payload: mockPolicyPayload,
-      enableRbac: false,
-      enableTemplateRbac: true
+      enableRbac: true
     }
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)
@@ -100,8 +97,7 @@ describe('updateSyslogPolicy', () => {
     const args = {
       params: {},
       payload: mockPolicyPayload,
-      enableRbac: false,
-      enableTemplateRbac: false
+      enableRbac: false
     }
     const mockResponse = { data: { requestId: '123' } }
     fetchWithBQ.mockResolvedValue(mockResponse)
@@ -117,8 +113,7 @@ describe('updateSyslogPolicy', () => {
     const args = {
       params: {},
       payload: mockPolicyPayload,
-      enableRbac: true,
-      enableTemplateRbac: false
+      enableRbac: true
     }
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)
@@ -141,8 +136,7 @@ describe('updateSyslogPolicy', () => {
     const args = {
       params: {},
       payload: mockPolicyPayload,
-      enableRbac: false,
-      enableTemplateRbac: true
+      enableRbac: true
     }
     const mockResponse = { data: { response: { id: 'policy-id' } } }
     fetchWithBQ.mockResolvedValue(mockResponse)

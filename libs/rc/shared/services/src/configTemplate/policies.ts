@@ -318,7 +318,10 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getVenueTemplateForSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList, {
+        rbacApiInfo: ConfigTemplateUrlsInfo.getVenuesTemplateList,
+        rbacApiVersionKey: ApiVersionEnum.v1
+      }),
       providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
       extraOptions: { maxRetries: 5 }
     }),

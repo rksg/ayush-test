@@ -1861,17 +1861,6 @@ export const policyApi = basePolicyApi.injectEndpoints({
       queryFn: updateSyslogPolicyFn(),
       invalidatesTags: [{ type: 'Syslog', id: 'LIST' }]
     }),
-    venueSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Syslog', id: 'VENUE' }],
-      extraOptions: { maxRetries: 5 }
-    }),
     getSyslogPolicy: build.query<SyslogPolicyDetailType, RequestPayload>({
       queryFn: getSyslogPolicyFn(),
       providesTags: [{ type: 'Syslog', id: 'LIST' }]
@@ -1937,11 +1926,12 @@ export const policyApi = basePolicyApi.injectEndpoints({
       }
     }),
     getVenueSyslogList: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Syslog', id: 'VENUE' }]
@@ -3178,7 +3168,6 @@ export const {
   useDelSyslogPolicyMutation,
   useDelSyslogPoliciesMutation,
   useUpdateSyslogPolicyMutation,
-  useVenueSyslogPolicyQuery,
   useGetSyslogPolicyQuery,
   useGetVenueSyslogApQuery,
   useUpdateVenueSyslogApMutation,
