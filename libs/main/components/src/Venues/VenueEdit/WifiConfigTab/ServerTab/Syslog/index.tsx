@@ -34,9 +34,12 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import { VenueEditContext } from '../../..'
 import * as UI              from '../../styledComponents'
+
 
 
 export interface VenueSettings {
@@ -204,7 +207,7 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            <Button type='link'
+            { hasPermission({ scopes: [WifiScopes.CREATE] }) && <Button type='link'
               style={{ marginLeft: '20px' }}
               onClick={async () => {
                 await setEditContextData({
@@ -222,7 +225,7 @@ export function Syslog () {
               }}
             >
               {$t({ defaultMessage: 'Add Server Profile' })}
-            </Button>
+            </Button> }
           </Form.Item>
           {defaultSyslogValue &&
           <UI.FieldGroup>
