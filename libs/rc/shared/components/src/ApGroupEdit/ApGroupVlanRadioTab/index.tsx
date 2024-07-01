@@ -4,8 +4,8 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }                                                from '@acx-ui/components'
-import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
 import {
   useGetApGroupQuery, useGetApGroupTemplateQuery,
   useGetVLANPoolPolicyViewModelListQuery, useGetVLANPoolPolicyViewModeTemplateListQuery,
@@ -55,7 +55,7 @@ export function ApGroupVlanRadioTab () {
   const {
     isEditMode,
     isApGroupTableFlag,
-    isWifiRbacEnabled,
+    isRbacEnabled,
     setEditContextData,
     venueId: contextVenueId
   } = useContext(ApGroupEditContext)
@@ -73,10 +73,10 @@ export function ApGroupVlanRadioTab () {
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !(isApGroupTableFlag && isEditMode) || (isWifiRbacEnabled && !contextVenueId),
+    skip: !(isApGroupTableFlag && isEditMode) || (isRbacEnabled && !contextVenueId),
     payload: null,
     extraParams: { tenantId, apGroupId, venueId: contextVenueId },
-    enableRbac: isWifiRbacEnabled
+    enableRbac: isRbacEnabled
   })
 
   const [getApGroupNetworkList] = useLazyApGroupNetworkListQuery()
@@ -136,7 +136,10 @@ export function ApGroupVlanRadioTab () {
     const updateData = updateDataRef.current
 
     if (updateData.length > 0) {
-      await updateNetworkVenues({ payload: updateData }).unwrap()
+      await updateNetworkVenues({
+        payload: updateData,
+        enableRbac: isRbacEnabled
+      }).unwrap()
     }
 
     setEditContextData({

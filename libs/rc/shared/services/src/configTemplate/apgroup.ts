@@ -11,7 +11,8 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { commonQueryFn } from '../servicePolicy.utils'
+import {getApGroupFn, getApGroupsListFn, updateApGroupFn} from '../apGroupUtils'
+import { commonQueryFn }     from '../servicePolicy.utils'
 
 export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -23,11 +24,11 @@ export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'VenueTemplateApGroup', id: 'LIST' }]
     }),
     getApGroupTemplate: build.query<ApGroup, RequestPayload>({
-      query: commonQueryFn(ApGroupConfigTemplateUrlsInfo.getApGroup),
+      queryFn: getApGroupFn(true),
       providesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }]
     }),
     getApGroupsTemplateList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
-      query: commonQueryFn(ApGroupConfigTemplateUrlsInfo.getApGroupsList),
+      queryFn: getApGroupsListFn(true),
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'ApGroupTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -52,8 +53,8 @@ export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         { type: 'ApGroupTemplate', id: 'LIST' }
       ]
     }),
-    updateApGroupTemplate: build.mutation<ApGroup, RequestPayload>({
-      query: commonQueryFn(ApGroupConfigTemplateUrlsInfo.updateApGroup),
+    updateApGroupTemplate: build.mutation<AddApGroup, RequestPayload>({
+      queryFn: updateApGroupFn(true),
       invalidatesTags: [
         { type: 'VenueTemplateApGroup', id: 'LIST' },
         { type: 'ApGroupTemplate', id: 'LIST' }

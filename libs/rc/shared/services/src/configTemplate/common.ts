@@ -11,7 +11,7 @@ import {
   TableResult,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  transformNetwork
+  transformNetwork, RogueApUrls, ApiVersionEnum
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
@@ -174,7 +174,10 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate),
+      query: commonQueryFn(
+        ConfigTemplateUrlsInfo.updateNetworkVenueTemplate,
+        { rbacApiInfo: RogueApUrls.deleteRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
+      ),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [

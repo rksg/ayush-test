@@ -1,5 +1,5 @@
-import { omit } from 'lodash'
-import _        from 'lodash'
+import { isNil, omit, pick, uniq } from 'lodash'
+import _                           from 'lodash'
 
 import {
   ApDeep,
@@ -11,8 +11,19 @@ import {
   NewGetApGroupResponseType,
   TableResult,
   Venue,
-  WifiNetwork
+  WifiNetwork,
+  WifiRbacUrlsInfo,
+  WifiUrlsInfo,
+  GetApiVersionHeader,
+  ApiVersionEnum,
+  CommonUrlsInfo, CommonRbacUrlsInfo, ApGroupConfigTemplateUrlsInfo, ConfigTemplateUrlsInfo, AddApGroup, VenueRogueAp
 } from '@acx-ui/rc/utils'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
+
+import { isPayloadHasField } from './apUtils'
+import { QueryFn }           from './servicePolicy.utils'
+import {FetchBaseQueryError} from "@reduxjs/toolkit/query";
 
 export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
   switch(oldFieldName) {
@@ -108,3 +119,170 @@ export const aggregateApGroupApInfo = (
     } as CountAndNames
   })
 }
+
+// eslint-disable-next-line max-len
+export const getApGroupsListFn = (isTemplate: boolean = false) : QueryFn<TableResult<ApGroupViewModel>, RequestPayload> => {
+  return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+    const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
+    const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+    const apGroupListReq = createHttpRequest(apis.getApGroupsList, params, customHeaders)
+
+    let apGroups: TableResult<ApGroupViewModel>
+    if (enableRbac) {
+      const newPayload = getNewApGroupViewmodelPayloadFromOld(payload as Record<string, unknown>)
+      const apGroupListQuery = await fetchWithBQ({
+        ...apGroupListReq,
+        body: JSON.stringify(newPayload)
+      })
+
+      // simplely map new fields into old fields
+      const rbacApGroups = apGroupListQuery.data as TableResult<NewApGroupViewModelResponseType>
+      apGroups = {
+        ...omit(rbacApGroups, ['data']),
+        data: [] as ApGroupViewModel[]
+      } as TableResult<ApGroupViewModel>
+
+      rbacApGroups.data.forEach(group => {
+        apGroups.data.push({
+          ...pick(group, ['id', 'name', 'venueId', 'isDefault']),
+          clients: group.clientCount
+        } as ApGroupViewModel)
+      })
+
+      const defaultIdNamePayload = {
+        fields: ['name', 'id'],
+        pageSize: 10000
+      }
+
+      // fetch venue name
+      const venueIds = uniq(rbacApGroups.data.map(item => item.venueId))
+      if (venueIds.length && isPayloadHasField(payload, 'venueName')) {
+        const venueListQuery = await fetchWithBQ({
+          // eslint-disable-next-line max-len
+          ...createHttpRequest(isTemplate ? ConfigTemplateUrlsInfo.getVenuesTemplateList : CommonUrlsInfo.getVenuesList),
+          body: { ...defaultIdNamePayload, filters: { id: venueIds } }
+        })
+        const venueList = venueListQuery.data as unknown as TableResult<Venue>
+        aggregateApGroupVenueInfo(apGroups, venueList)
+      }
+
+      // fetch networks name
+      // eslint-disable-next-line max-len
+      const networkIds = uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('networks') as keyof typeof item]))
+      if (networkIds.length && isPayloadHasField(payload, 'networks')) {
+        // eslint-disable-next-line max-len
+        const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, customHeaders)
+        const networkListQuery = await fetchWithBQ({
+          ...networkListReq,
+          body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: networkIds } })
+        })
+        const networks = networkListQuery.data as unknown as TableResult<WifiNetwork>
+        aggregateApGroupNetworkInfo(apGroups, rbacApGroups, networks)
+      }
+
+      // fetch aps name
+      const apIds = uniq(rbacApGroups.data
+        .flatMap(item => item[getApGroupNewFieldFromOld('members') as keyof typeof item])
+        .filter(i => !isNil(i)))
+
+      if (!isTemplate && apIds.length && isPayloadHasField(payload, ['members', 'aps'])) {
+        const apQueryPayload = {
+          fields: ['name', 'serialNumber'],
+          pageSize: 10000,
+          filters: { id: apIds }
+        }
+        const apsListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
+          body: JSON.stringify(apQueryPayload)
+        })
+        const aps = apsListQuery.data as unknown as TableResult<NewAPModel>
+        aggregateApGroupApInfo(apGroups, rbacApGroups, aps)
+      }
+    } else {
+      const apGroupListQuery = await fetchWithBQ({
+        ...apGroupListReq,
+        body: JSON.stringify(payload)
+      })
+      apGroups = apGroupListQuery.data as TableResult<ApGroupViewModel>
+    }
+
+    return { data: apGroups }
+  }
+}
+
+// eslint-disable-next-line max-len
+export const getApGroupFn = (isTemplate: boolean = false) : QueryFn<ApGroup, RequestPayload> => {
+  return async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+    const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
+    const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+    // eslint-disable-next-line max-len
+    const apGroupQuery = await fetchWithBQ(createHttpRequest(apis.getApGroup, params, customHeaders))
+
+    let apGroup: ApGroup
+    if (enableRbac) {
+      const newApGroupData = apGroupQuery.data as unknown as NewGetApGroupResponseType
+      let rbacAps: TableResult<NewAPModel> = {
+        data: [],
+        totalCount: 0,
+        page: 1
+      }
+      if (newApGroupData.apSerialNumbers?.length) {
+        const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+        const apListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
+          body: JSON.stringify({
+            fields: ['serialNumber', 'name'],
+            filters: { serialNumber: newApGroupData.apSerialNumbers },
+            pageSize: 10000,
+            sortField: 'name',
+            sortOrder: 'ASC'
+          })
+        })
+
+        rbacAps = apListQuery.data as unknown as TableResult<NewAPModel>
+      }
+
+      apGroup = transformApGroupFromNewType(newApGroupData, rbacAps)
+      apGroup.venueId = params!.venueId as string
+    } else {
+      apGroup = apGroupQuery.data as ApGroup
+    }
+
+    return { data: apGroup }
+  }
+}
+
+// eslint-disable-next-line max-len
+export const updateApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGroup, RequestPayload> => {
+  return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    try {
+      const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+      const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
+      const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+      const req = createHttpRequest(apis.updateApGroup, params, customHeaders)
+
+      let newPayload: AddApGroup = { ...(payload as unknown as AddApGroup) }
+      // transform payload
+      if (enableRbac) {
+        newPayload.apSerialNumbers = newPayload.apSerialNumbers
+          ?.map(i => (i as { serialNumber: string }).serialNumber) ?? []
+      }
+
+      const res = await fetchWithBQ({
+        ...req,
+        body: JSON.stringify(newPayload)
+      })
+      if (res.error) {
+        return { error: res.error as FetchBaseQueryError }
+      } else {
+        return { data: res.data as AddApGroup }
+      }
+    } catch (error) {
+      return { error: error as FetchBaseQueryError }
+    }
+  }
+}
+
+

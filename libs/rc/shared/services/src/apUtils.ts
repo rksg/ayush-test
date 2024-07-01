@@ -11,6 +11,7 @@ import {
   Venue,
   TableResult
 } from '@acx-ui/rc/utils'
+import {RequestPayload} from "@acx-ui/types";
 
 
 export const transformApListFromNewModel = (
@@ -130,4 +131,13 @@ export const aggregateApGroupInfo = (
     apItem.apGroupName = apGroupListData?.find(apGroupItem =>
       apGroupItem.id === apItem.apGroupId)?.name
   })
+}
+
+export const isPayloadHasField = (payload: RequestPayload['payload'], fields: string[] | string): boolean => {
+  const typedPayload = payload as Record<string, unknown>
+  const hasGroupBy = typedPayload?.groupBy
+  const payloadFields = (hasGroupBy ? typedPayload.groupByFields : typedPayload.fields) as (string[] | undefined)
+  return (Array.isArray(fields)
+    ? fields.some(a => payloadFields?.includes(a))
+    : payloadFields?.includes(fields)) ?? false
 }

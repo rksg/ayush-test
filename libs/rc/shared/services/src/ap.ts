@@ -92,15 +92,15 @@ import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 import {
   aggregateApGroupApInfo,
   aggregateApGroupNetworkInfo,
-  aggregateApGroupVenueInfo,
-  getApGroupNewFieldFromOld,
+  aggregateApGroupVenueInfo, getApGroupFn,
+  getApGroupNewFieldFromOld, getApGroupsListFn,
   getNewApGroupViewmodelPayloadFromOld,
-  transformApGroupFromNewType
+  transformApGroupFromNewType, updateApGroupFn
 } from './apGroupUtils'
 import {
   aggregateApGroupInfo,
   aggregatePoePortInfo,
-  aggregateVenueInfo,
+  aggregateVenueInfo, isPayloadHasField,
   transformApListFromNewModel
 } from './apUtils'
 
@@ -233,89 +233,7 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
-      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const apGroupListReq = createHttpRequest(urlsInfo.getApGroupsList, params, customHeaders)
-
-        let apGroups: TableResult<ApGroupViewModel>
-        if (enableRbac) {
-          const newPayload = getNewApGroupViewmodelPayloadFromOld(payload as Record<string, unknown>)
-          const apGroupListQuery = await fetchWithBQ({
-            ...apGroupListReq,
-            body: JSON.stringify(newPayload)
-          })
-
-          // simplely map new fields into old fields
-          const rbacApGroups = apGroupListQuery.data as TableResult<NewApGroupViewModelResponseType>
-          apGroups = {
-            ...omit(rbacApGroups, ['data']),
-            data: [] as ApGroupViewModel[]
-          } as TableResult<ApGroupViewModel>
-
-          rbacApGroups.data.forEach(group => {
-            apGroups.data.push({
-              ...pick(group, ['id', 'name', 'venueId', 'isDefault']),
-              clients: group.clientCount
-            } as ApGroupViewModel)
-          })
-
-          const defaultIdNamePayload = {
-            fields: ['name', 'id'],
-            pageSize: 10000
-          }
-
-          // fetch venue name
-          const venueIds = uniq(rbacApGroups.data.map(item => item.venueId))
-          if (venueIds.length && isPayloadHasField(payload, 'venueName')) {
-            const venueListQuery = await fetchWithBQ({
-              ...createHttpRequest(CommonUrlsInfo.getVenuesList),
-              body: { ...defaultIdNamePayload, filters: { id: venueIds } }
-            })
-            const venueList = venueListQuery.data as TableResult<Venue>
-            aggregateApGroupVenueInfo(apGroups, venueList)
-          }
-
-          // fetch networks name
-          const networkIds = uniq(rbacApGroups.data.flatMap(item => item[getApGroupNewFieldFromOld('networks') as keyof typeof item]))
-          if (networkIds.length && isPayloadHasField(payload, 'networks')) {
-            const networkListReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, customHeaders)
-            const networkListQuery = await fetchWithBQ({
-              ...networkListReq,
-              body: JSON.stringify({ ...defaultIdNamePayload, filters: { id: networkIds } })
-            })
-            const networks = networkListQuery.data as TableResult<WifiNetwork>
-            aggregateApGroupNetworkInfo(apGroups, rbacApGroups, networks)
-          }
-
-          // fetch aps name
-          const apIds = uniq(rbacApGroups.data
-            .flatMap(item => item[getApGroupNewFieldFromOld('members') as keyof typeof item])
-            .filter(i => !isNil(i)))
-
-          if (apIds.length && isPayloadHasField(payload, ['members', 'aps'])) {
-            const apQueryPayload = {
-              fields: ['name', 'serialNumber'],
-              pageSize: 10000,
-              filters: { id: apIds }
-            }
-            const apsListQuery = await fetchWithBQ({
-              ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
-              body: JSON.stringify(apQueryPayload)
-            })
-            const aps = apsListQuery.data as TableResult<NewAPModel>
-            aggregateApGroupApInfo(apGroups, rbacApGroups, aps)
-          }
-        } else {
-          const apGroupListQuery = await fetchWithBQ({
-            ...apGroupListReq,
-            body: JSON.stringify(payload)
-          })
-          apGroups = apGroupListQuery.data as TableResult<ApGroupViewModel>
-        }
-
-        return { data: apGroups }
-      },
+      queryFn: getApGroupsListFn(),
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'ApGroup', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -333,43 +251,7 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApGroup: build.query<ApGroup, RequestPayload>({
-      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const apGroupQuery = await fetchWithBQ(createHttpRequest(urlsInfo.getApGroup, params, customHeaders))
-
-        let apGroup: ApGroup
-        if (enableRbac) {
-          const newApGroupData = apGroupQuery.data as NewGetApGroupResponseType
-          let rbacAps: TableResult<NewAPModel> = {
-            data: [],
-            totalCount: 0,
-            page: 1
-          }
-          if (newApGroupData.apSerialNumbers?.length) {
-            const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
-            const apListQuery = await fetchWithBQ({
-              ...createHttpRequest(CommonRbacUrlsInfo.getApsList, params, customHeaders),
-              body: JSON.stringify({
-                fields: ['serialNumber', 'name'],
-                filters: { serialNumber: newApGroupData.apSerialNumbers },
-                pageSize: 10000,
-                sortField: 'name',
-                sortOrder: 'ASC'
-              })
-            })
-
-            rbacAps = apListQuery.data as TableResult<NewAPModel>
-          }
-
-          apGroup = transformApGroupFromNewType(newApGroupData, rbacAps)
-          apGroup.venueId = params!.venueId as string
-        } else {
-          apGroup = apGroupQuery.data as ApGroup
-        }
-
-        return { data: apGroup }
-      },
+      queryFn: getApGroupFn(),
       providesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
     addApGroup: build.mutation<AddApGroup, RequestPayload>({
@@ -393,23 +275,7 @@ export const apApi = baseApApi.injectEndpoints({
       invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
     updateApGroup: build.mutation<AddApGroup, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.updateApGroup, params, customHeaders)
-
-        let newPayload: AddApGroup = { ...(payload as AddApGroup) }
-        // transform payload
-        if (enableRbac) {
-          newPayload.apSerialNumbers = newPayload.apSerialNumbers
-            ?.map(i => (i as { serialNumber: string }).serialNumber) ?? []
-        }
-
-        return {
-          ...req,
-          body: JSON.stringify(newPayload)
-        }
-      },
+      queryFn: updateApGroupFn(),
       invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
     deleteApGroup: build.mutation<ApGroup, RequestPayload>({
@@ -1651,15 +1517,6 @@ export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
   return (
     afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
     afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
-}
-
-const isPayloadHasField = (payload: RequestPayload['payload'], fields: string[] | string): boolean => {
-  const typedPayload = payload as Record<string, unknown>
-  const hasGroupBy = typedPayload?.groupBy
-  const payloadFields = (hasGroupBy ? typedPayload.groupByFields : typedPayload.fields) as (string[] | undefined)
-  return (Array.isArray(fields)
-    ? fields.some(a => payloadFields?.includes(a))
-    : payloadFields?.includes(fields)) ?? false
 }
 
 const getVenueDhcpRelation = async (
