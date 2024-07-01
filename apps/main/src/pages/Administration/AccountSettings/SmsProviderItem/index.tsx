@@ -6,10 +6,16 @@ import ReactECharts                                       from 'echarts-for-reac
 import { useIntl }                                        from 'react-intl'
 import { useParams }                                      from 'react-router-dom'
 
-
-
-import { Button, Card, cssNumber, cssStr, PasswordInput, showActionModal, Tooltip, tooltipOptions } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import {
+  Button,
+  Card,
+  cssNumber,
+  cssStr,
+  PasswordInput,
+  showActionModal,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   administrationApi,
   useGetNotificationSmsProviderQuery,
@@ -194,10 +200,6 @@ const SmsProviderItem = () => {
           radius: ['58%', '82%'],
           avoidLabelOverlap: true,
           label: { show: false },
-          tooltip: {
-            ...tooltipOptions(),
-            show: !isEmpty
-          },
           emphasis: {
             disabled: isEmpty,
             scaleSize: 5
