@@ -50,6 +50,11 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     form.validateFields(['phoneNumber'])
   }, [phoneNumbers])
 
+  const twilioPhoneNumberList = phoneNumbers?.map((item) => ({
+    label: item,
+    value: item
+  }))
+
   const onClose = () => {
     setVisible(false)
     form.resetFields()
@@ -66,11 +71,6 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         params: params, payload: payload })
       const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
       setPhoneNumbers(myNumber)
-      const incomingPhoneList = myNumber?.map((item) => ({
-        label: item,
-        value: item
-      }))
-      form.setFieldValue('phoneNumber', incomingPhoneList)
       setIsValidTwiliosNumber(myNumber.length > 0)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -182,6 +182,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
           }
         ]}
         children={<Select
+          options={twilioPhoneNumberList}
           placeholder={$t({ defaultMessage: 'Select...' })}
           disabled={!isValidTwiliosNumber}
         />}
