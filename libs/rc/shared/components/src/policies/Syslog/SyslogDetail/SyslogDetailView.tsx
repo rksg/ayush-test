@@ -11,6 +11,7 @@ import {
 } from '@acx-ui/components'
 import { PolicyType, SyslogConstant, SyslogDetailContextType, usePolicyListBreadcrumb } from '@acx-ui/rc/utils'
 import { PolicyOperation }                                                              from '@acx-ui/rc/utils'
+import { WifiScopes }                                                                   from '@acx-ui/types'
 import { filterByAccess }                                                               from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -34,6 +35,7 @@ export const SyslogDetailView = () => {
         breadcrumb={breadcrumb}
         extra={policyName !== SyslogConstant.DefaultProfile ? filterByAccess([
           <PolicyConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={PolicyType.SYSLOG}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}
