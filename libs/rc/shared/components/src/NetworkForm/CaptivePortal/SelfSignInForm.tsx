@@ -7,7 +7,8 @@ import {
   Form,
   Select,
   Space,
-  Input
+  Input,
+  Button
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -22,8 +23,8 @@ import {
   domainsNameRegExp, NetworkSaveData,
   GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
 } from '@acx-ui/rc/utils'
-import { useParams }          from '@acx-ui/react-router-dom'
-import { validationMessages } from '@acx-ui/utils'
+import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { validationMessages }    from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
@@ -129,6 +130,73 @@ export function SelfSignInForm () {
     form.setFieldValue('allowSign', allowedSignValueTemp)
     setAllowedSignValue(allowedSignValueTemp)
   }
+
+  const displaySMSTokenToolTips = () => {
+    const provider = smsUsage?.data?.provider
+    const usedPools = smsUsage?.data?.ruckusOneUsed ?? 0
+    // eslint-disable-next-line max-len
+    const defaultMessage = $t({ defaultMessage: 'Captive Portal Self-sign-in via SMS One-time Passcode.' })
+
+    // when FF is off
+    if (!isSmsProviderEnabled) {
+      // eslint-disable-next-line max-len
+      return $t({ defaultMessage: 'Self-service signup using one time token sent to a mobile number' })
+    }
+
+    // when provider is not ruckus one, no needs to consider used pools at this condition
+    if (provider !== SmsProviderType.RUCKUS_ONE) {
+      return defaultMessage
+    }
+    // when provider is ruckus one but there's pool still remains
+    if(usedPools < 100) {
+      return (
+        <FormattedMessage
+          defaultMessage={
+            `{defaultMessage}<br></br>
+              You have {poolCount} messages remaining in the RUCKUS-provided pool. 
+              To ensure uninterrupted service, kindly set up an SMS provider on the 
+              <SMSLink></SMSLink> page.`}
+          values={{
+            defaultMessage: defaultMessage,
+            poolCount: 100 - usedPools,
+            br: () => <br/>,
+            SMSLink: () => {
+              return (<TenantLink to='/administration/accountSettings'>
+                <Button
+                  data-testid='button-has-pool'
+                  type='link'
+                  style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
+                  { $t({ defaultMessage: 'Administration > Settings' }) }
+                </Button>
+              </TenantLink>)}
+          }}
+        />
+      )
+    } else {
+      // when provider is ruckus one, no pool remains
+      return (
+        <FormattedMessage
+          defaultMessage={
+            `{defaultMessage}<br></br>
+              To activate the SMS option, configure an SMS provider 
+              on the <SMSLink></SMSLink> page.`}
+          values={{
+            defaultMessage,
+            br: () => <br/>,
+            SMSLink: () => {
+              return (<TenantLink to='/administration/accountSettings'>
+                <Button
+                  data-testid='button-no-pool'
+                  type='link'
+                  style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
+                  { $t({ defaultMessage: 'Administration > Settings' }) }
+                </Button>
+              </TenantLink>)}
+          }}
+        />
+      )
+    }
+  }
   const checkSocial = (value: string | string[]) => {
     if (!value || value.length < 1) {
       return Promise.reject($t({ defaultMessage: 'Please configure sign-in option' }))
@@ -222,11 +290,9 @@ export function SelfSignInForm () {
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}
                 </UI.Checkbox>
-                <Tooltip title={$t({
-                  defaultMessage: 'Self-service signup using one ' +
-                    'time token sent to a mobile number'
-                })}
-                placement='bottom'>
+                <Tooltip
+                  title={displaySMSTokenToolTips()}
+                  placement='bottom'>
                   <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
                 </Tooltip>
               </>
