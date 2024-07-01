@@ -46,11 +46,12 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      payload: { venueId: props.data.venueId },
       params: { venueId: props.data.venueId },
       enableRbac: true
     }, false)).data?.data
-    setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
+    if (switchList) {
+      setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
+    }
   }
 
   const onClose = () => {
