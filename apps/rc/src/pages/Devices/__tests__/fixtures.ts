@@ -1095,6 +1095,11 @@ export const triBandApCap = {
   ]
 }
 
+export const tripleBandMode = {
+  bandMode: 'TRIPLE',
+  useVenueSettings: true
+}
+
 export const apRadio = {
   apRadioParams24G: {
     manualChannel: 0,
