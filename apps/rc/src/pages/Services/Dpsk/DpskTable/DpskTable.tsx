@@ -26,11 +26,12 @@ import {
   getServiceListRoutePath,
   PassphraseFormatEnum,
   displayDeviceCountLimit,
-  displayDefaultAccess
+  displayDefaultAccess,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                               from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasRoles }                     from '@acx-ui/user'
+import { filterByAccess, hasRoles }                                from '@acx-ui/user'
 
 const defaultPayload = {
   filters: {}
@@ -114,7 +115,7 @@ export default function DpskTable () {
       <PageHeader
         title={title}
         breadcrumb={breadCrumb}
-        extra={filterByAccess([
+        extra={hasDpskAccess() && filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}>
             <Button type='primary'>{intl.$t({ defaultMessage: 'Add DPSK Service' })}</Button>
@@ -130,7 +131,7 @@ export default function DpskTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={hasDpskAccess() && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />

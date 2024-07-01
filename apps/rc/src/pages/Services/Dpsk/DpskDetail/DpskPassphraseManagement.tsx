@@ -31,14 +31,15 @@ import {
   NetworkTypeEnum,
   NewDpskPassphrase,
   getPassphraseStatus,
+  hasDpskAccess,
   transformAdvancedDpskExpirationText,
   unlimitedNumberOfDeviceLabel,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { useParams }                           from '@acx-ui/react-router-dom'
-import { RolesEnum }                           from '@acx-ui/types'
-import { filterByAccess, hasAccess, hasRoles } from '@acx-ui/user'
-import { getIntl, validationMessages }         from '@acx-ui/utils'
+import { useParams }                   from '@acx-ui/react-router-dom'
+import { RolesEnum }                   from '@acx-ui/types'
+import { filterByAccess, hasRoles }    from '@acx-ui/user'
+import { getIntl, validationMessages } from '@acx-ui/utils'
 
 import DpskPassphraseDrawer, { DpskPassphraseEditMode } from './DpskPassphraseDrawer'
 import ManageDevicesDrawer                              from './ManageDevicesDrawer'
@@ -399,9 +400,9 @@ export default function DpskPassphraseManagement () {
         pagination={tableQuery.pagination}
         getAllPagesData={tableQuery.getAllPagesData}
         onChange={tableQuery.handleTableChange}
-        actions={filterByAccess(actions)}
+        actions={hasDpskAccess() ? filterByAccess(actions) : []}
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={hasDpskAccess() && { type: 'checkbox' }}
         rowKey='id'
         onFilterChange={tableQuery.handleFilterChange}
         enableApiFilter={true}
