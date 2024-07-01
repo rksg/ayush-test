@@ -31,6 +31,7 @@ import {
   CliTemplateForm,
   CliProfileForm,
   IdentityProviderForm,
+  LbsServerProfileForm,
   ApGroupDetails,
   useIsEdgeFeatureReady
 } from '@acx-ui/rc/components'
@@ -943,6 +944,24 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.DETAIL })}
         element={<IdentityProviderDetail />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.CREATE })}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <LbsServerProfileForm editMode={false} />
+          </AuthRoute>
+        }
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.EDIT })}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <LbsServerProfileForm editMode={true} />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
