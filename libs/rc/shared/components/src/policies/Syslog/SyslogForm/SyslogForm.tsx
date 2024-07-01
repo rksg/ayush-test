@@ -23,7 +23,8 @@ import {
   usePolicyListBreadcrumb,
   usePolicyPageHeaderTitle,
   usePolicyPreviousPath,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -60,8 +61,11 @@ export const SyslogForm = (props: SyslogFormProps) => {
   const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.SYSLOG)
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.SYSLOG, PolicyOperation.LIST)
   const form = Form.useFormInstance()
+  const { isTemplate } = useConfigTemplate()
   const [state, dispatch] = useReducer(mainReducer, initialValues)
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
 
   const [ createSyslog ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddSyslogPolicyMutation,
@@ -115,13 +119,13 @@ export const SyslogForm = (props: SyslogFormProps) => {
         await createSyslog({
           params,
           payload: transformPayload(state, false),
-          enableRbac
+          enableRbac: resolvedEnableRbac
         }).unwrap()
       } else {
         await updateSyslog({
           params,
           payload: transformPayload(state, true),
-          enableRbac
+          enableRbac: resolvedEnableRbac
         }).unwrap()
       }
       navigate(linkToInstanceList, { replace: true })
