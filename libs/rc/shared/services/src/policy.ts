@@ -1681,8 +1681,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       // eslint-disable-next-line max-len
       queryFn: async ({ params, payload ,enableRbac = false }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
-          const url = enableRbac ? VlanPoolRbacUrls.getVLANPoolPolicyList :
-            VlanPoolUrls.getVLANPoolVenues
+          const url = enableRbac ? VlanPoolRbacUrls.getVLANPoolPolicyList : VlanPoolUrls.getVLANPoolVenues
           const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
           const req = createHttpRequest(url, params, headers)
           const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
@@ -1724,12 +1723,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
                 return { data: {} as TableResult<VLANPoolVenues> }
               }
 
+              const { sortField = 'name', sortOrder } = payload as { sortField?: string, sortOrder?: string }
               const venueReq = createHttpRequest(CommonUrlsInfo.getVenuesList, params, headers)
               const venueRes = await fetchWithBQ({ ...venueReq,
                 body: JSON.stringify({
                   filters: { id: venueIds },
                   fields: ['id', 'name', 'aggregatedApStatus'],
-                  pageSize: 10000
+                  pageSize: 10000,
+                  ...(['venueName', 'name'].includes(sortField) && sortOrder ? { sortField: 'name', sortOrder } : {})
                 }) })
               if ( venueRes.error) {
                 return { error: venueRes.error as FetchBaseQueryError }
@@ -1749,7 +1750,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
                       0,
                     apGroupData: allApGroupVenueSet.has(venue.id) ? [
                       { apGroupName: 'ALL_APS' }
-                    ] : venueApGroup?.apGroupIds.map(id => { return { apGroupId: id }})
+                    ] : venueApGroup?.apGroupIds.map(id => ({ apGroupId: id }))
                   } as VLANPoolVenues
                 })
               } as TableResult<VLANPoolVenues> }
