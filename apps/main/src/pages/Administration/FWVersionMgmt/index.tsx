@@ -142,7 +142,7 @@ const FWVersionMgmt = () => {
     },
     switchFirmware: isSwitchFirmwareV1002Enabled ? {
       title: <UI.TabWithHint>{$t({ defaultMessage: 'Switch Firmware' })}
-        {hasRecomendedSwitchFirmware && <Tooltip children={<InformationSolid />} //TODO: need check with UX
+        {hasRecomendedSwitchFirmware && <Tooltip children={<InformationSolid />}
           // eslint-disable-next-line max-len
           title={$t({ defaultMessage: 'There are new recommended Switch firmware versions available' })} />}
       </UI.TabWithHint>,

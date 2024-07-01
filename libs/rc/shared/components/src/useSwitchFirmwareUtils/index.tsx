@@ -255,6 +255,18 @@ export function useSwitchFirmwareUtils () {
     return compareSwitchVersion(version, inUseVersion) > 0
   }
 
+  function checkSwitchModelGroup (switchModel: string) {
+    if (switchModel.includes(SwitchFirmwareModelGroup.ICX71)) {
+      return SwitchFirmwareModelGroup.ICX71
+    }
+
+    if (switchModel.includes(SwitchFirmwareModelGroup.ICX82)) {
+      return SwitchFirmwareModelGroup.ICX82
+    }
+
+    return SwitchFirmwareModelGroup.ICX7X
+  }
+
   function getCurrentFirmwareDisplay (
     intl: IntlShape,
     row: FirmwareSwitchVenueV1002
@@ -264,9 +276,9 @@ export function useSwitchFirmwareUtils () {
     let tooltipArray = []
 
     const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
-      [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: '(7150)' }),
-      [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: '(7550-7850)' }),
-      [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: '(8200)' })
+      [SwitchFirmwareModelGroup.ICX71]: '(7150)',
+      [SwitchFirmwareModelGroup.ICX7X]: '(7550-7850)',
+      [SwitchFirmwareModelGroup.ICX82]: '(8200)'
     }
 
 
@@ -321,6 +333,7 @@ export function useSwitchFirmwareUtils () {
     checkCurrentVersions,
     checkCurrentVersionsV1002,
     isDowngradeVersion,
-    getCurrentFirmwareDisplay
+    getCurrentFirmwareDisplay,
+    checkSwitchModelGroup
   }
 }

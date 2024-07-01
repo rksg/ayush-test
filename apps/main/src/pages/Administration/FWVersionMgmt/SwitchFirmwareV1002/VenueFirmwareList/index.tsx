@@ -9,7 +9,7 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
-import { InformationSolid }                    from '@acx-ui/icons'
+import { InformationOutlined }                 from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }              from '@acx-ui/rc/components'
 import {
   useGetSwitchUpgradePreferencesQuery,
@@ -30,7 +30,9 @@ import {
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
-  compareSwitchVersion
+  compareSwitchVersion,
+  FILTER,
+  SEARCH
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
@@ -80,10 +82,7 @@ export function VenueFirmwareList () {
     params: useParams()
   }, {
     selectFromResult ({ data }) {
-
-
       const filterOptions = []
-
       for (const key in SwitchFirmwareModelGroup) {
         const modelGroupValue =
           SwitchFirmwareModelGroup[key as keyof typeof SwitchFirmwareModelGroup]
@@ -95,7 +94,7 @@ export function VenueFirmwareList () {
             // eslint-disable-next-line max-len
             label: `${$t({ defaultMessage: 'ICX Models' })} ${modelGroupDisplayText[modelGroupValue]}`,
             options: versionGroup.versions.map(
-              (v) => ({ value: v, label: parseSwitchVersion(v) }))
+              (v) => ({ value: `${modelGroupValue},${v}`, label: parseSwitchVersion(v) }))
           })
         }
       }
@@ -182,7 +181,7 @@ export function VenueFirmwareList () {
 
         const hasRecomendedSwitchFirmware = (hasOutdated71 || hasOutdated7X || hasOutdated82)
 
-        const tooltip = hasRecomendedSwitchFirmware ? <Tooltip children={<InformationSolid />} //TODO: Need backend to check it
+        const tooltip = hasRecomendedSwitchFirmware ? <Tooltip children={<InformationOutlined />}
         // eslint-disable-next-line max-len
           title={$t({ defaultMessage: 'Switches in this <VenueSingular></VenueSingular> are running an older version. We recommend that you update the <VenueSingular></VenueSingular> to the recommended firmware version.' })} /> : <></>
         return <div>{row.venueName} {tooltip}</div>
@@ -196,7 +195,7 @@ export function VenueFirmwareList () {
       filterable: true,
       fitlerCustomOptions: versionFilterOptions || [],
       filterMultiple: false,
-      filterKey: 'includeExpired',
+      filterKey: 'filterModelVersion',
       render: function (_, row) {
         return getCurrentFirmwareDisplay(intl, row)
       }
@@ -340,6 +339,23 @@ export function VenueFirmwareList () {
     scopes: [SwitchScopes.UPDATE]
   })
 
+
+  const handleFilterChange = (customFilters: FILTER, customSearch: SEARCH) => {
+    if (customFilters.filterModelVersion) { //TODO: check the filter
+      // const version = customFilters.filterModelVersion//.split(',')
+
+      //   customFilters.modelGroup = version[0]
+      // customFilters.firmwareVersion = version[0]
+    } else {
+      delete customFilters.modelGroup
+      delete customFilters.firmwareVersion
+    }
+
+    tableQuery.handleFilterChange(customFilters, customSearch)
+  }
+
+
+
   return (
     <Loader states={[tableQuery,
       { isLoading: false }
@@ -349,7 +365,7 @@ export function VenueFirmwareList () {
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
-        onFilterChange={tableQuery.handleFilterChange}
+        onFilterChange={handleFilterChange}
         enableApiFilter={true}
         rowKey='venueId'
         rowActions={filterByAccess(rowActions)}

@@ -130,6 +130,12 @@ export enum SwitchFirmwareModelGroup {
   ICX82 = 'ICX82'
 }
 
+export const SwitchModelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+  [SwitchFirmwareModelGroup.ICX71]: '(7150)' ,
+  [SwitchFirmwareModelGroup.ICX7X]: '(7550-7850)',
+  [SwitchFirmwareModelGroup.ICX82]: '(8200)'
+}
+
 export interface SwitchVersion1002 {
   id: string;
   name: string;
