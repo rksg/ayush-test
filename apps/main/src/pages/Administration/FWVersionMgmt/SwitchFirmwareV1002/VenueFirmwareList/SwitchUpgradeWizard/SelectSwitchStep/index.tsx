@@ -54,7 +54,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venueName',
       dataIndex: 'venueName',
-      width: 150,
+      width: 100,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const venueName = row.venueName
@@ -74,7 +74,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      width: 150,
+      width: 250,
       render: function (_, row) {
         return getCurrentFirmwareDisplay(intl, row)
       }
@@ -82,7 +82,7 @@ function useColumns () {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'nextSchedule',
       dataIndex: 'nextSchedule',
-      width: 200,
+      width: 100,
       render: function (_, row) {
         return <Tooltip
           title={getSwitchNextScheduleTplTooltipV1002(intl, row) ||
@@ -158,7 +158,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
       dataIndex: 'switchName',
-      width: 150,
+      width: 100,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
         const stackLabel = row.isStack ? intl.$t({ defaultMessage: '(Stack)' }) : ''
@@ -177,7 +177,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
       dataIndex: 'currentFirmware',
-      width: 150,
+      width: 250,
       filterMultiple: false,
       render: function (_, row) {
         const version = row.currentFirmware ?
@@ -188,7 +188,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Scheduling' }),
       key: 'switchNextSchedule',
       dataIndex: 'switchNextSchedule',
-      width: 200,
+      width: 100,
       render: function (_, row) {
         const tooltip = getSwitchScheduleTpl(row) ||
           intl.$t({ defaultMessage: 'Not scheduled' })

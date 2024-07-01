@@ -58,12 +58,11 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
   const { wizardType } = props
   const { checkCurrentVersionsV1002 } = useSwitchFirmwareUtils()
   const [batchUpdateSwitchVenueSchedules] = useBatchUpdateSwitchVenueSchedulesV1002Mutation()
-
-  const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
-  const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
   const { data: defaultReleaseVersions } = useGetSwitchDefaultFirmwareListV1002Query({ params })
 
+  const [upgradeVersions, setUpgradeVersions] = useState<SwitchFirmwareVersion1002[]>([])
+  const [showSubTitle, setShowSubTitle] = useState<boolean>(true)
   const [hasVenue, setHasVenue] = useState<boolean>(false)
   const [upgradeSwitchList, setUpgradeSwitchList] = useState<SwitchFirmware[]>([])
   const [upgradeVenueList, setUpgradeVenueList] = useState<FirmwareSwitchVenueV1002[]>([])
@@ -332,7 +331,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   setShowSubTitle={setShowSubTitle}
                   visible={true}
                   hasVenue={hasVenue}
-                  availableVersions={upgradeVersions}//{filterVersions(upgradeVersions)}
+                  availableVersions={upgradeVersions}
                 /> : <ScheduleStep
                   setShowSubTitle={setShowSubTitle}
                   visible={true}
@@ -340,7 +339,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
                   data={props.data}
                   upgradeVenueList={upgradeVenueList as FirmwareSwitchVenueV1002[]}
                   upgradeSwitchList={upgradeSwitchList as SwitchFirmware[]}
-                  availableVersions={upgradeVersions}//{filterVersions(upgradeVersions)}
+                  availableVersions={upgradeVersions}
                 />
             }
           </StepsForm.StepForm>

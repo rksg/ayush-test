@@ -30,7 +30,8 @@ import {
   SwitchFirmwareModelGroup,
   FirmwareSwitchVenueV1002,
   SwitchFirmwareVersion1002,
-  compareSwitchVersion
+  compareSwitchVersion,
+  SwitchModelGroupDisplayText
 } from '@acx-ui/rc/utils'
 import { useParams }                     from '@acx-ui/react-router-dom'
 import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
@@ -50,10 +51,7 @@ import { VenueStatusDrawer }                             from './VenueStatusDraw
 
 export const useDefaultVenuePayload = (): RequestPayload => {
   return {
-    firmwareType: '',
-    firmwareVersion: '',
-    search: '',
-    updateAvailable: ''
+    search: ''
   }
 }
 
@@ -61,12 +59,6 @@ export function VenueFirmwareList () {
   const venuePayload = useDefaultVenuePayload()
   const { parseSwitchVersion, getCurrentFirmwareDisplay } = useSwitchFirmwareUtils()
   const { $t } = useIntl()
-
-  const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
-    [SwitchFirmwareModelGroup.ICX71]: $t({ defaultMessage: '(7150)' }),
-    [SwitchFirmwareModelGroup.ICX7X]: $t({ defaultMessage: '(7550-7850)' }),
-    [SwitchFirmwareModelGroup.ICX82]: $t({ defaultMessage: '(8200)' })
-  }
 
   const tableQuery = usePollingTableQuery<FirmwareSwitchVenueV1002>({
     useQuery: useGetSwitchVenueVersionListV1002Query,
@@ -90,7 +82,7 @@ export function VenueFirmwareList () {
         if (versionGroup) {
           filterOptions.push({
             // eslint-disable-next-line max-len
-            label: `${$t({ defaultMessage: 'ICX Models' })} ${modelGroupDisplayText[modelGroupValue]}`,
+            label: `${$t({ defaultMessage: 'ICX Models' })} ${SwitchModelGroupDisplayText[modelGroupValue]}`,
             options: versionGroup.versions.map(
               (v) => ({ value: `${modelGroupValue},${v}`, label: parseSwitchVersion(v) }))
           })
@@ -107,25 +99,21 @@ export function VenueFirmwareList () {
     getSwitchNextScheduleTplTooltipV1002
   } = useSwitchFirmwareUtils()
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListV1002Query({ params })
+  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
+    params, enableRbac: true
+  })
+  const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
+  const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
+
   const [modelVisible, setModelVisible] = useState(false)
   const [updateNowWizardVisible, setUpdateNowWizardVisible] = useState(false)
   const [updateStatusDrawerVisible, setUpdateStatusDrawerVisible] = useState(false)
   const [clickedRowData, setClickedRowData] =
     useState<FirmwareSwitchVenueV1002>({} as FirmwareSwitchVenueV1002)
   const [switchScheduleDrawerVisible, setSwitchScheduleDrawerVisible] = useState(false)
-
   const [wizardType, setWizardType] =
     useState<SwitchFirmwareWizardType>(SwitchFirmwareWizardType.update)
-
   const [selectedVenueList, setSelectedVenueList] = useState<FirmwareSwitchVenueV1002[]>([])
-
-  const { data: preDownload } = useGetSwitchFirmwarePredownloadQuery({
-    params,
-    enableRbac: true
-  })
-
-  const [updateUpgradePreferences] = useUpdateSwitchUpgradePreferencesMutation()
-  const { data: preferencesData } = useGetSwitchUpgradePreferencesQuery({ params })
 
   const preferenceDays = preferencesData?.days?.map((day) => {
     return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase()
@@ -149,7 +137,7 @@ export function VenueFirmwareList () {
 
   const { data: recommendedSwitchReleaseVersions } =
     useGetSwitchDefaultFirmwareListV1002Query({ params })
-    || { data: [] as SwitchFirmwareVersion1002[] }
+    // || { data: [] as SwitchFirmwareVersion1002[] }
   const columns: TableProps<FirmwareSwitchVenueV1002>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
@@ -160,28 +148,27 @@ export function VenueFirmwareList () {
       defaultSortOrder: 'ascend',
       render: function (_, row) {
 
-        const recommended71 = recommendedSwitchReleaseVersions?.filter(
-          r => r.modelGroup === SwitchFirmwareModelGroup.ICX71)[0].versions[0].id
-        const recommended7X = recommendedSwitchReleaseVersions?.filter(
-          r => r.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0].versions[0].id
-        const recommended82 = recommendedSwitchReleaseVersions?.filter(
-          r => r.modelGroup === SwitchFirmwareModelGroup.ICX82)[0].versions[0].id
+        const modelGroups = [
+          SwitchFirmwareModelGroup.ICX71,
+          SwitchFirmwareModelGroup.ICX7X,
+          SwitchFirmwareModelGroup.ICX82
+        ]
 
-        const hasOutdated71 = compareSwitchVersion(recommended71,
-          row.versions.filter(v => v.modelGroup === SwitchFirmwareModelGroup.ICX71)[0]?.version)
-          || false
-        const hasOutdated7X = compareSwitchVersion(recommended7X,
-          row.versions.filter(v => v.modelGroup === SwitchFirmwareModelGroup.ICX7X)[0]?.version)
-          || false
-        const hasOutdated82 = compareSwitchVersion(recommended82,
-          row.versions.filter(v => v.modelGroup === SwitchFirmwareModelGroup.ICX82)[0]?.version)
-          || false
+        const getRecommendedVersion = (modelGroup: SwitchFirmwareModelGroup) => {
+          return recommendedSwitchReleaseVersions
+            ?.find(r => r.modelGroup === modelGroup)?.versions[0]?.id
+        }
 
-        const hasRecomendedSwitchFirmware = (hasOutdated71 || hasOutdated7X || hasOutdated82)
+        const hasOutdatedVersion = modelGroups.some(modelGroup => {
+          const recommendedVersion = getRecommendedVersion(modelGroup)
+          const currentVersion = row.versions.find(v => v.modelGroup === modelGroup)?.version
+          return compareSwitchVersion(recommendedVersion, currentVersion)
+        })
 
-        const tooltip = hasRecomendedSwitchFirmware ? <Tooltip children={<InformationOutlined />}
-        // eslint-disable-next-line max-len
-          title={$t({ defaultMessage: 'Switches in this <VenueSingular></VenueSingular> are running an older version. We recommend that you update the <VenueSingular></VenueSingular> to the recommended firmware version.' })} /> : <></>
+        const tooltip = hasOutdatedVersion ?
+          <Tooltip children={<InformationOutlined style={{ marginBottom: '-4px' }} />}
+            // eslint-disable-next-line max-len
+            title={$t({ defaultMessage: 'Switches in this <VenueSingular></VenueSingular> are running an older version. We recommend that you update the <VenueSingular></VenueSingular> to the recommended firmware version.' })} /> : <></>
         return <div>{row.venueName} {tooltip}</div>
       }
     },
@@ -189,6 +176,7 @@ export function VenueFirmwareList () {
       title: $t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
+      width: 250,
       sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: true,
       fitlerCustomOptions: versionFilterOptions || [],

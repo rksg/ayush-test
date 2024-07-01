@@ -19,7 +19,8 @@ import {
   SwitchFirmwareVersion1002,
   FirmwareCategory,
   FirmwareSwitchV1002,
-  SwitchFirmwareModelGroup
+  SwitchFirmwareModelGroup,
+  SwitchModelGroupDisplayText
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -275,13 +276,6 @@ export function useSwitchFirmwareUtils () {
     let currentVersionDisplay = []
     let tooltipArray = []
 
-    const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
-      [SwitchFirmwareModelGroup.ICX71]: '(7150)',
-      [SwitchFirmwareModelGroup.ICX7X]: '(7550-7850)',
-      [SwitchFirmwareModelGroup.ICX82]: '(8200)'
-    }
-
-
     for (const key in SwitchFirmwareModelGroup) {
       const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
       const modelGroupValue =
@@ -290,7 +284,7 @@ export function useSwitchFirmwareUtils () {
         (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
 
       if (versionGroup) {
-        const modelGroupText = modelGroupDisplayText[modelGroupValue]
+        const modelGroupText = SwitchModelGroupDisplayText[modelGroupValue]
         const switchVersion = parseSwitchVersion(versionGroup.version)
         const tooltipMargin = index === 0 ||
           index === tooltipArray.length - 1 ? '5px 0px' : '10px 0px'
