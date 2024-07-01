@@ -1846,14 +1846,14 @@ export const policyApi = basePolicyApi.injectEndpoints({
             page: 1,
             pageSize: 10000
           }
-          const venueReq = createHttpRequest(CommonUrlsInfo.getVenues)
-          const venueRes = await fetchWithBQ({ ...venueReq, body: venueQueryPayload })
+          const venueReq = createHttpRequest(CommonUrlsInfo.getVenues, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          const venueRes = await fetchWithBQ({ ...venueReq, body: JSON.stringify(venueQueryPayload) })
           if (venueRes.error) return defaultRes
           const venueData = venueRes.data as TableResult<VenueDetail>
           const venueIds = venueData.data.map(v => v.id)
 
           // query activations
-          const req = createHttpRequest(ClientIsolationUrls.queryClientIsolation, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+          const req = createHttpRequest(ClientIsolationUrls.queryClientIsolation, params, GetApiVersionHeader(ApiVersionEnum.v1))
           const activationPayload = { filters: { id: [tableChangePayload.id],
             ...(tableChangePayload.searchVenueNameString && venueIds.length > 0 ? { venueIds } : {}) } }
           const res = await fetchWithBQ({ ...req, body: JSON.stringify(activationPayload) })
@@ -1874,7 +1874,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
             page: 1,
             pageSize: 10000
           }
-          const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+          const networkReq = createHttpRequest(CommonUrlsInfo.getWifiNetworksList, params, GetApiVersionHeader(ApiVersionEnum.v1))
           const networkRes = await fetchWithBQ({ ...networkReq, body: JSON.stringify(networkQueryPayload) })
           if (networkRes.error) return defaultRes
           const networkData = networkRes.data as TableResult<Network>
