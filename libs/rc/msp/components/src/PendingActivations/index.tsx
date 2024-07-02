@@ -145,6 +145,7 @@ const PendingActivationsTable = () => {
         settingsId='pending-activation-table'
         columns={columns}
         dataSource={subscriptionData}
+        stickyHeaders={false}
         rowKey='orderId'
       />
       {drawerActivateVisible && <ActivatePurchaseDrawer
