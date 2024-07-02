@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import { PersonaUrls }                     from '@acx-ui/rc/utils'
 import { Provider }                        from '@acx-ui/store'
 import { mockServer, renderHook, waitFor } from '@acx-ui/test-utils'
@@ -62,6 +63,7 @@ describe('usePersonaGroupActions', () => {
   })
 
   it('Should create persona group with dpsk and macRegistration via multiple steps', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.CLOUDPATH_ASYNC_API_TOGGLE)
     const { result } = renderHook(() => usePersonaGroupAction(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -76,9 +78,13 @@ describe('usePersonaGroupActions', () => {
 
     await waitFor(() => expect(spyAssociateDpsk).toBeCalled())
     await waitFor(() => expect(spyAssociateMacRegistration).toBeCalled())
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('Should update persona group, dpsk, macRegistration via multiple steps', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation((ff) => ff === Features.CLOUDPATH_ASYNC_API_TOGGLE)
+
     const { result } = renderHook(() => usePersonaGroupAction(), {
       wrapper: ({ children }) => <Provider children={children} />
     })
@@ -93,6 +99,8 @@ describe('usePersonaGroupActions', () => {
     expect(spyUpdatePersonaGroup).toBeCalled()
     expect(spyAssociateDpsk).toBeCalled()
     expect(spyAssociateMacRegistration).toBeCalled()
+
+    jest.mocked(useIsSplitOn).mockReset()
   })
 
   it('Should not trigger update api with empty changes', async () => {

@@ -4,6 +4,7 @@ import { Switch }  from 'antd'
 import { useIntl } from 'react-intl'
 
 import { showToast, Table, TableProps }                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                              from '@acx-ui/feature-toggle'
 import { useGetVenueSyslogListQuery, useGetVenueTemplateForSyslogPolicyQuery } from '@acx-ui/rc/services'
 import {
   SyslogActionPayload,
@@ -12,7 +13,8 @@ import {
   useTableQuery,
   VenueSyslogPolicyType
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import SyslogContext from '../SyslogContext'
 
@@ -41,6 +43,9 @@ const SyslogVenueTable = () => {
   const { $t } = useIntl()
   const { state, dispatch } = useContext(SyslogContext)
   const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
 
   const activateVenue = (selectRows: VenueSyslogPolicyType[]) => {
     dispatch({
@@ -130,7 +135,8 @@ const SyslogVenueTable = () => {
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetVenueTemplateForSyslogPolicyQuery : useGetVenueSyslogListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac: resolvedEnableRbac
   })
 
   const basicData = tableQuery.data?.data?.map((venue) => {
@@ -176,7 +182,8 @@ const SyslogVenueTable = () => {
       onChange={tableQuery.handleTableChange}
       rowKey='id'
       rowActions={filterByAccess(rowActions)}
-      rowSelection={hasAccess() && { type: 'checkbox' }}
+      // eslint-disable-next-line max-len
+      rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }}
     />
   )
 }
