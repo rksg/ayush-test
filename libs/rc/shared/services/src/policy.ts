@@ -76,7 +76,7 @@ import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, addRoguePolicyFn, updateRoguePolicyFn, updateSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, addSyslogPolicyFn } from './servicePolicy.utils'
+import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, addRoguePolicyFn, updateRoguePolicyFn, updateSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, addSyslogPolicyFn } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
