@@ -266,7 +266,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueCityList: {
     method: 'post',
-    url: '/venues/citylist/query'
+    url: '/venues/citylist/query',
+    newApi: true
   },
   GetApPosition: {
     method: 'get',
