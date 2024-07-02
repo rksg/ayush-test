@@ -107,6 +107,37 @@ describe('MdnsProxyTable', () => {
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
   })
 
+  it('should render table via RBAC api', async () => {
+    const queryRbacFn = jest.fn()
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    mockServer.use(
+      rest.post(
+        MdnsProxyUrls.queryMdnsProxy.url,
+        (_, res, ctx) => {
+          queryRbacFn()
+          return res(ctx.json(mockedTableResultRbac))
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <MdnsProxyTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    await waitFor(() => expect(queryRbacFn).toHaveBeenCalled())
+
+    const targetServiceName = mockedTableResultRbac.data[0].name
+    expect(await screen.findByRole('button', { name: /Add mDNS Proxy Service/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
+
+    jest.mocked(useIsSplitOn).mockReset()
+  })
+
   it('should render breadcrumb correctly', async () => {
     render(
       <Provider>
