@@ -127,7 +127,11 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
                       content: $t({ defaultMessage: 'Start firmware upgrade retry' })
                     })
                   }
-                  switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
+                  switchAction.doRetryFirmwareUpdate({
+                    switchId,
+                    tenantId: params.tenantId,
+                    venueId: props.data.id
+                  }, callback)
                 }}>
                 {$t({ defaultMessage: 'Retry' })}
               </UI.TextButton></div>

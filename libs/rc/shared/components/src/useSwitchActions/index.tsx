@@ -202,10 +202,14 @@ export function useSwitchActions () {
 
   }
 
-  const doRetryFirmwareUpdate= async (switchId: string, tenantId?: string, callBack?: ()=>void ) => {
+  const doRetryFirmwareUpdate = async (
+    params: {
+      switchId: string, tenantId?: string, venueId?: string
+    },
+    callBack?: () => void) => {
     try {
       await retryFirmwareUpdate({
-        params: { tenantId, switchId },
+        params,
         enableRbac: rbacApiToggle,
         payload: {}
       }).unwrap()
