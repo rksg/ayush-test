@@ -20,6 +20,19 @@ import { useApFilter } from '../apFilter'
 import { ApPhoto }      from './ApPhoto'
 import { ApProperties } from './ApProperties'
 
+const apViewModelRbacPayloadFields = [
+  'name', 'venueId', 'venueName', 'apGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'macAddress', 'networkStatus', 'externalIpAddress', 'model', 'firmwareVersion',
+  'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
+  'meshEnabled', 'lastUpdatedTime', 'deviceModelType',
+  'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus']
+
+const apViewModelPayloadFields = [
+  'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+  'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+  'isMeshEnable', 'lastUpdTime', 'deviceModelType',
+  'venueId', 'uplink', 'apStatusData', 'tags', 'apRadioDeploy']
 
 export function ApOverviewTab () {
   const [currentApDevice, setCurrentApDevice] = useState<NetworkDevice>({} as NetworkDevice)
@@ -27,16 +40,14 @@ export function ApOverviewTab () {
   const params = useApContext()
   const apFilter = useApFilter(params)
   const apViewModelPayload = {
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType',
-      'venueId', 'uplink', 'apStatusData', 'tags', 'apRadioDeploy'],
+    fields: isUseWifiRbacApi ? apViewModelRbacPayloadFields : apViewModelPayloadFields,
     filters: { serialNumber: [params.serialNumber] }
   }
+
   const { data: currentAP, isLoading: isLoadingApViewModel, isFetching: isFetchingApViewModel }
   = useApViewModelQuery({
-    params, payload: apViewModelPayload
+    params, payload: apViewModelPayload,
+    enableRbac: isUseWifiRbacApi
   })
   const { data: apDetails, isLoading: isLoadingApDetails, isFetching: isFetchingApDetails }
   = useApDetailsQuery({ params, enableRbac: isUseWifiRbacApi })
@@ -48,7 +59,7 @@ export function ApOverviewTab () {
       setCurrentApDevice(_currentApDevice)
     }
   }, [currentAP])
-
+  console.log(currentAP)
 
   return (
     <GridRow>

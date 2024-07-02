@@ -46,8 +46,7 @@ export function ApNetworksTab () {
     apiParams,
     payload: apViewModelPayload,
     enableRbac: isWifiRbacEnabled
-  },
-  { skip: !isEdgeSdLanHaReady })
+  }, { skip: !isEdgeSdLanHaReady })
 
   const sdLanScopedNetworks = useSdLanScopedVenueNetworks(apViewModelQuery.data?.venueId
     , tableQuery.data?.data?.map(item => item.id))

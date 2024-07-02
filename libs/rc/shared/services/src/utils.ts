@@ -51,3 +51,14 @@ export async function handleCallbackWhenActivitySuccess (
     console.error(error)
   }
 }
+
+// eslint-disable-next-line max-len
+export const isPayloadHasField = (payload: RequestPayload['payload'], fields: string[] | string): boolean => {
+  const typedPayload = payload as Record<string, unknown>
+  const hasGroupBy = typedPayload?.groupBy
+  // eslint-disable-next-line max-len
+  const payloadFields = (hasGroupBy ? typedPayload.groupByFields : typedPayload.fields) as (string[] | undefined)
+  return (Array.isArray(fields)
+    ? fields.some(a => payloadFields?.includes(a))
+    : payloadFields?.includes(fields)) ?? false
+}

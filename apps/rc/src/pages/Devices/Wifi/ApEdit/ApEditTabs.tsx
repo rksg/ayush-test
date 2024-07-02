@@ -2,8 +2,8 @@ import { useContext, useEffect, useRef } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, cssStr }                           from '@acx-ui/components'
-import { useApViewModelQuery }                    from '@acx-ui/rc/services'
+import { Tabs, cssStr } from '@acx-ui/components'
+// import { useApViewModelQuery }                    from '@acx-ui/rc/services'
 import { ApViewModel, LocationExtended }          from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -24,6 +24,8 @@ function ApEditTabs () {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink(`/devices/wifi/${params.serialNumber}/edit/`)
+  // const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const {
     editContextData,
     setEditContextData,
@@ -36,20 +38,24 @@ function ApEditTabs () {
     editAdvancedContextData,
     setEditAdvancedContextData,
     setPreviousPath,
-    setIsOnlyOneTab,
-    setApViewContextData
+    // setIsOnlyOneTab,
+    setApViewContextData,
+    apViewContextData
   } = useContext(ApEditContext)
 
-  const apViewModelPayload = {
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
-      'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
-    filters: { serialNumber: [params.serialNumber] }
-  }
-  const { data: currentAP } = useApViewModelQuery({ params, payload: apViewModelPayload })
+  // const apViewModelPayload = {
+  //   fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+  //     'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+  //     'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+  //     'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+  //     'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
+  //     'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
+  //   filters: { serialNumber: [params.serialNumber] }
+  // }
+  // const { data: currentAP } = useApViewModelQuery({
+  //   params, payload: apViewModelPayload,
+  //   enableRbac: isWifiRbacEnabled
+  // })
 
   const onTabChange = (tab: string) => {
     navigate({
@@ -110,16 +116,16 @@ function ApEditTabs () {
       unblockRef.current?.()
     }
 
-    setApViewContextData(currentAP ?? {} as ApViewModel)
+    setApViewContextData(apViewContextData ?? {} as ApViewModel)
   }, [editContextData])
 
-  useEffect(() => {
-    if (currentAP) {
-      setIsOnlyOneTab(!currentAP?.model)
-      setApViewContextData(currentAP)
-    }
+  // useEffect(() => {
+  //   if (currentAP) {
+  //     setIsOnlyOneTab(!currentAP?.model)
+  //     setApViewContextData(currentAP)
+  //   }
 
-  }, [currentAP])
+  // }, [currentAP])
 
   useEffect(() => {
     setPreviousPath((location as LocationExtended)?.state?.from?.pathname)
@@ -129,7 +135,7 @@ function ApEditTabs () {
   return (
     <Tabs onChange={onTabChange} activeKey={params.activeTab}>
       <Tabs.TabPane tab={tabTitleMap('general')} key='general' />
-      { typeof currentAP?.model !== 'undefined' && (
+      { typeof apViewContextData?.model !== 'undefined' && (
         ApEditTabKeys.map(tabKey => <Tabs.TabPane tab={tabTitleMap(tabKey)} key={tabKey} />)
       )}
     </Tabs>

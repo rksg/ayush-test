@@ -61,8 +61,11 @@ function ApPageHeader () {
     fields: ['powerSavingStatus'],
     filters: { serialNumber: [serialNumber] }
   }
-  // TODO: RBAC API
-  const apViewModelQuery = useApViewModelQuery({ serialNumber, payload: apViewModelPayload })
+
+  const apViewModelQuery = useApViewModelQuery({
+    payload: apViewModelPayload,
+    enableRbac: isUseRbacApi
+  })
   const powerSavingStatus = apViewModelQuery.data?.powerSavingStatus as PowerSavingStatusEnum
 
   const navigate = useNavigate()

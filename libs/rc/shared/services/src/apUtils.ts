@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
-import { cloneDeep, find, forIn, invert, set, uniq } from 'lodash'
+import { FetchBaseQueryError }                              from '@reduxjs/toolkit/query'
+import { cloneDeep, find, forIn, invert, isNil, set, uniq } from 'lodash'
+
 
 import {
   ApRadioBands,
@@ -11,8 +13,22 @@ import {
   Venue,
   TableResult,
   FILTER,
-  APExtended
+  APExtended,
+  GetApiVersionHeader,
+  CommonRbacUrlsInfo,
+  ApiVersionEnum,
+  CommonUrlsInfo,
+  CommonResult,
+  WifiRbacUrlsInfo,
+  NewApGroupViewModelResponseType,
+  CapabilitiesApModel,
+  ApModelTypeEnum
 } from '@acx-ui/rc/utils'
+import { RequestPayload }    from '@acx-ui/types'
+import { createHttpRequest } from '@acx-ui/utils'
+
+import { QueryFn }           from './servicePolicy.utils'
+import { isPayloadHasField } from './utils'
 
 
 export const transformApListFromNewModel = (
@@ -134,6 +150,23 @@ export const aggregateApGroupInfo = (
   })
 }
 
+const getApDeviceModelType = (apModelCapabilities?: CapabilitiesApModel) => {
+  return isNil(apModelCapabilities?.isOutdoor)
+    ? undefined
+    : (apModelCapabilities.isOutdoor ? ApModelTypeEnum.OUTDOOR : ApModelTypeEnum.INDOOR)
+}
+
+export const aggregateApDeviceModelTypeInfo = (
+  apList?: TableResult<NewAPModelExtended, ApExtraParams>,
+  wifiCapabilities?: Capabilities
+) => {
+  const apListData = apList?.data
+  apListData?.forEach(apItem => {
+    apItem.deviceModelType = getApDeviceModelType(wifiCapabilities?.apModels.find(cap =>
+      cap.model === apItem.model))
+  })
+}
+
 const apOldNewFieldsMapping: Record<string, string> = {
   'apMac': 'macAddress',
   'deviceStatus': 'status',
@@ -143,19 +176,20 @@ const apOldNewFieldsMapping: Record<string, string> = {
   'IP': 'networkStatus.ipAddress',
   'extIp': 'externalIpAddress',
   'clients': 'clientCount',
+  'isMeshEnable': 'meshEnabled',
+  'apRadioDeploy': 'radioStatuses',
   'apStatusData.lanPortStatus': 'lanPortStatuses',
   'apStatusData.APRadio': 'radioStatuses',
-  'apRadioDeploy': 'radioStatuses',
-  'APSystem.uptime': 'uptime',
-  'APSystem.ipType': 'networkStatus.ipAddressType',
-  'APSystem.netmask': 'networkStatus.netmask',
-  'APSystem.gateway': 'networkStatus.gateway',
-  'APSystem.primaryDnsServer': 'networkStatus.primaryDnsServer',
-  'APSystem.secondaryDnsServer': 'networkStatus.secondaryDnsServer',
-  'APSystem.secureBootEnabled': 'supportSecureBoot',
-  'APSystem.managementVlan': 'managementTrafficVlan',
+  'apStatusData.APSystem.uptime': 'uptime',
+  'apStatusData.APSystem.ipType': 'networkStatus.ipAddressType',
+  'apStatusData.APSystem.netmask': 'networkStatus.netmask',
+  'apStatusData.APSystem.gateway': 'networkStatus.gateway',
+  'apStatusData.APSystem.primaryDnsServer': 'networkStatus.primaryDnsServer',
+  'apStatusData.APSystem.secondaryDnsServer': 'networkStatus.secondaryDnsServer',
+  'apStatusData.APSystem.secureBootEnabled': 'supportSecureBoot',
+  'apStatusData.APSystem.managementVlan': 'managementTrafficVlan',
+  'apStatusData.afcInfo': 'afcStatus',
   'lastUpdTime': 'lastUpdatedTime'
-
 }
 
 const apNewOldFieldsMapping = invert(apOldNewFieldsMapping)
@@ -197,6 +231,7 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result:APExtended
   for(const key in rbacAp) {
     const value = rbacAp[key]
     const namePath = parentPath.concat(key)
+    const oldApFieldNameExist = isNil(apNewOldFieldsMapping[namePath.join('.')]) === false
 
     if (typeof value === 'object') {
       if (Array.isArray(value)) {
@@ -227,6 +262,9 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result:APExtended
             }
           }))
         }
+      } else if (oldApFieldNameExist) {
+        const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
+        set(result, oldApFieldName, value)
       } else {
         parsingApFromNewType(value as Record<string, unknown>, result, namePath)
       }
@@ -237,7 +275,9 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result:APExtended
   }
 }
 
-export const transformApFromNewType = (rbacAp: NewAPModel): APExtended => {
+export const transformApFromNewType = (rbacAp: NewAPModel | undefined): APExtended | undefined=> {
+  if (isNil(rbacAp)) return rbacAp
+
   const oldAp = {} as unknown as APExtended
   parsingApFromNewType(rbacAp as unknown as Record<string, unknown>, oldAp)
   oldAp.apRadioDeploy = rbacAp.radioStatuses?.length === 3 ? '2-5-6' : ''
@@ -249,4 +289,60 @@ export const transformRbacApList = (rbacApList: TableResult<NewAPModel>): TableR
     ...rbacApList,
     data: rbacApList.data.map(ap => transformApFromNewType(ap))
   } as TableResult<APExtended, ApExtraParams>
+}
+
+export const getApViewmodelListFn = (): QueryFn<CommonResult, RequestPayload> => {
+  return async ({ payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    try {
+      const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+      const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+      const apsReq = createHttpRequest(urlsInfo.getApsList, undefined, customHeaders)
+
+      const newPayload = enableRbac
+        ? JSON.stringify(getNewApViewmodelPayloadFromOld(payload as Record<string, unknown>))
+        : payload
+
+      const apListQuery = await fetchWithBQ({ ...apsReq, body: newPayload })
+      const apListData = apListQuery.data as TableResult<NewAPModel>
+
+      // fetch venue name
+      const venueIds = uniq(apListData.data.map(item => item.venueId).filter(item => item))
+      if (venueIds.length && isPayloadHasField(payload, 'venueName')) {
+        const venueListQuery = await fetchWithBQ({
+          ...createHttpRequest(CommonRbacUrlsInfo.getVenuesList),
+          body: {
+            fields: ['name', 'id'],
+            pageSize: 10000,
+            filters: { id: venueIds }
+          }
+        })
+        const venueList = venueListQuery.data as TableResult<Venue>
+        aggregateVenueInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, venueList)
+      }
+
+      const apGroupIds = uniq(apListData.data.map(item => item.apGroupId).filter(item => item))
+      if (apGroupIds.length && isPayloadHasField(payload, 'apGroupName')) {
+        const apGroupsListQuery = await fetchWithBQ({
+          ...createHttpRequest(WifiRbacUrlsInfo.getApGroupsList),
+          body: {
+            fields: ['name', 'id'],
+            pageSize: 10000,
+            filters: { id: apGroupIds }
+          }
+        })
+        const apGroupList = apGroupsListQuery.data as TableResult<NewApGroupViewModelResponseType>
+        aggregateApGroupInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, apGroupList as TableResult<ApGroup>)
+      }
+
+      if (isPayloadHasField(payload, 'deviceModelType')) {
+        const wifiCapabilitiesQuery = await fetchWithBQ(createHttpRequest(WifiRbacUrlsInfo.getWifiCapabilities))
+        const capabilitiesList = wifiCapabilitiesQuery.data as Capabilities
+        aggregateApDeviceModelTypeInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, capabilitiesList)
+      }
+
+      return { data: apListData }
+    } catch (error) {
+      return { error: error as FetchBaseQueryError }
+    }
+  }
 }

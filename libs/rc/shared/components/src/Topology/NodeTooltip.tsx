@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { useApViewModelQuery, useSwitchDetailHeaderQuery } from '@acx-ui/rc/services'
 import { ApViewModel, DeviceTypes, Node, SwitchViewModel } from '@acx-ui/rc/utils'
 
@@ -16,6 +17,7 @@ closeTooltip: Function
 
   const { tooltipPosition, tooltipNode, closeTooltip } = props
   const params = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const defaultApPayload = {
     fields: [
@@ -57,7 +59,8 @@ closeTooltip: Function
           tooltipNode?.serialNumber || tooltipNode?.serial
         ]
       }
-    }
+    },
+    enableRbac: isWifiRbacEnabled
   },
   { skip: skipAPCall(tooltipNode?.type as DeviceTypes)
   })

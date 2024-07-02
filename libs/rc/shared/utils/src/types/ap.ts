@@ -151,6 +151,7 @@ export interface NewAPModelExtended extends NewAPModel {
   venueName?: string
   poePort?: string
   apGroupName?: string
+  deviceModelType?: ApModelTypeEnum
   channel24?: string | number
   channel50?: string | number
   channelL50?: string | number
@@ -392,6 +393,10 @@ export interface LanPort {
   vni: number
 }
 
+export enum ApModelTypeEnum {
+  INDOOR = 'indoor',
+  OUTDOOR = 'outdoor'
+}
 export interface CapabilitiesApModel {
   allowDfsCountry: string[],
   canSupportCellular: boolean,

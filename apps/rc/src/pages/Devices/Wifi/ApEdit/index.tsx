@@ -85,14 +85,28 @@ export function ApEdit () {
   const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  const {
-    data: apViewmodel
-  } = useApViewModelQuery({
-    payload: {
-      entityType: 'aps',
-      fields: ['name', 'serialNumber', 'venueId'],
-      filters: { serialNumber: [serialNumber] }
-    } }, { skip: !isUseWifiRbacApi })
+  // const {
+  //   data: apViewmodel
+  // } = useApViewModelQuery({
+  //   payload: {
+  //     entityType: 'aps',
+  //     fields: ['name', 'serialNumber', 'venueId'],
+  //     filters: { serialNumber: [serialNumber] }
+  //   } }, { skip: !isUseWifiRbacApi })
+
+  const apViewModelPayload = {
+    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
+      'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
+    filters: { serialNumber: [serialNumber] }
+  }
+  const { data: apViewmodel } = useApViewModelQuery({
+    payload: apViewModelPayload,
+    enableRbac: isUseWifiRbacApi
+  })
 
   const { data: getedApData, isLoading: isGetApLoading } = useGetApQuery({
     params: { serialNumber, venueId: apViewmodel?.venueId },
@@ -134,6 +148,14 @@ export function ApEdit () {
       }
     }
   }, [isGetApLoading, getedApData?.venueId, isGetApCapsLoading, capabilities])
+
+  useEffect(() => {
+    if (apViewmodel) {
+      setIsOnlyOneTab(!apViewmodel?.model)
+      setApViewContextData(apViewmodel)
+    }
+
+  }, [apViewmodel])
 
   // need to wait venueData ready, venueData.id is using inside all tabs.
   const isLoading = !venueData

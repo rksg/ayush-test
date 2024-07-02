@@ -5,9 +5,9 @@ import _                          from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useLocation, useParams } from 'react-router-dom'
 
-import { Modal, SummaryCard }                 from '@acx-ui/components'
-import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
-import { ServiceConfigTemplateLinkSwitcher }  from '@acx-ui/rc/components'
+import { Modal, SummaryCard }                from '@acx-ui/components'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { ServiceConfigTemplateLinkSwitcher } from '@acx-ui/rc/components'
 import {
   useGetDHCPProfileListQuery,
   useGetDhcpTemplateListQuery,
@@ -15,7 +15,8 @@ import {
   useGetVenueTemplateSettingsQuery,
   useLazyGetDHCPProfileQuery,
   useUpdateVenueDHCPProfileMutation,
-  useUpdateVenueTemplateDhcpProfileMutation
+  useUpdateVenueTemplateDhcpProfileMutation,
+  useGetVenueMeshQuery
 } from '@acx-ui/rc/services'
 import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
@@ -30,6 +31,23 @@ import { useVenueConfigTemplateQueryFnSwitcher } from '../../../venueConfigTempl
 import useDHCPInfo   from './hooks/useDHCPInfo'
 import VenueDHCPForm from './VenueDHCPForm'
 
+const useIsMeshEnabled = (venueId: string | undefined) => {
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
+  const { data: venueWifiSetting } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
+    useQueryFn: useGetVenueSettingsQuery,
+    useTemplateQueryFn: useGetVenueTemplateSettingsQuery,
+    skip: isWifiRbacEnabled
+  })
+
+  const { data: venueMeshSettings } = useGetVenueMeshQuery({
+    params: { venueId } },
+  { skip: !isWifiRbacEnabled })
+
+  return (isWifiRbacEnabled
+    ? venueMeshSettings?.enabled
+    : venueWifiSetting?.mesh?.enabled) ?? false
+}
 
 interface DHCPFormRefType {
   resetForm: Function,
@@ -51,10 +69,7 @@ export default function BasicInfo () {
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
-  const { data: venue } = useVenueConfigTemplateQueryFnSwitcher<VenueSettings>({
-    useQueryFn: useGetVenueSettingsQuery,
-    useTemplateQueryFn: useGetVenueTemplateSettingsQuery
-  })
+  const meshEnable = useIsMeshEnabled(params.venueId)
 
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
@@ -128,7 +143,6 @@ export default function BasicInfo () {
     }
     return payload
   }
-  const meshEnable = venue?.mesh?.enabled
 
   const dhcpData = [
     {

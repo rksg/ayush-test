@@ -102,9 +102,11 @@ import {
   aggregatePoePortInfo,
   aggregateVenueInfo,
   getNewApViewmodelPayloadFromOld,
+  transformApFromNewType,
   transformApListFromNewModel,
   transformRbacApList
 } from './apUtils'
+import { isPayloadHasField } from './utils'
 
 
 export type ApsExportPayload = {
@@ -140,7 +142,7 @@ export const apApi = baseApApi.injectEndpoints({
         _: unknown,
         args: { payload : Record<string,unknown>, enableRbac?: boolean }
       ) {
-        if (args.enableRbac) return transformRbacApList(result as unknown as TableResult<NewAPModel>)
+        if (args.enableRbac) return transformApList(transformRbacApList(result as unknown as TableResult<NewAPModel>))
 
         if((args?.payload)?.groupBy)
           return transformGroupByList(result as TableResult<APExtendedGrouped, ApExtraParams>)
@@ -185,8 +187,10 @@ export const apApi = baseApApi.injectEndpoints({
         _: unknown,
         args: { enableRbac?: boolean }
       ) {
-        if (args.enableRbac) return transformRbacApList(result as unknown as TableResult<NewAPModel>)
-        return transformApViewModel(result?.data[0])
+        if (args.enableRbac) {
+          return transformApViewModel(transformApFromNewType(result.data[0] as unknown as NewAPModel) as ApViewModel)
+        }
+        return transformApViewModel(result.data[0])
       }
     }),
     newApList: build.query<TableResult<NewAPModelExtended, ApExtraParams>,
@@ -304,7 +308,7 @@ export const apApi = baseApApi.injectEndpoints({
           const venueIds = uniq(rbacApGroups.data.map(item => item.venueId))
           if (venueIds.length && isPayloadHasField(payload, 'venueName')) {
             const venueListQuery = await fetchWithBQ({
-              ...createHttpRequest(CommonUrlsInfo.getVenuesList),
+              ...createHttpRequest(CommonRbacUrlsInfo.getVenuesList),
               body: { ...defaultIdNamePayload, filters: { id: venueIds } }
             })
             const venueList = venueListQuery.data as TableResult<Venue>
@@ -1674,15 +1678,6 @@ export function isAPLowPower (afcInfo? : AFCInfo) : boolean {
   return (
     afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&
     afcInfo?.afcStatus !== AFCStatus.AFC_NOT_REQUIRED)
-}
-
-const isPayloadHasField = (payload: RequestPayload['payload'], fields: string[] | string): boolean => {
-  const typedPayload = payload as Record<string, unknown>
-  const hasGroupBy = typedPayload?.groupBy
-  const payloadFields = (hasGroupBy ? typedPayload.groupByFields : typedPayload.fields) as (string[] | undefined)
-  return (Array.isArray(fields)
-    ? fields.some(a => payloadFields?.includes(a))
-    : payloadFields?.includes(fields)) ?? false
 }
 
 const getVenueDhcpRelation = async (

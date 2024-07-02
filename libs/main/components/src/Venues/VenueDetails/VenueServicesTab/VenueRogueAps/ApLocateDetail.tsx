@@ -40,7 +40,8 @@ const ApLocateDetail = (props: { row: RogueOldApResponseType }) => {
   }
   const { data: currentAP }
     = useApViewModelQuery({
-      payload: apViewModelPayload
+      payload: apViewModelPayload,
+      enableRbac: isUseWifiRbacApi
     }, { skip: !row.closestAp.apSerialNumber })
   const { data: apDetails }
     = useApDetailsQuery({
