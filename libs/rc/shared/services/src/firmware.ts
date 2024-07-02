@@ -226,14 +226,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.skipSwitchUpgradeSchedules, requests, fetchWithBQ, v1Header
         )
-      }
-    }),
-    batchSkipSwitchUpgradeSchedulesV1002: build.mutation<void, RequestPayload[]>({
-      async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
-        return batchApi(
-          FirmwareRbacUrlsInfo.skipSwitchUpgradeSchedules, requests, fetchWithBQ, v1_2Header
-        )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     updateSwitchVenueSchedules: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -250,14 +244,16 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.updateSwitchVenueSchedules, requests, fetchWithBQ, v1Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     batchUpdateSwitchVenueSchedulesV1002: build.mutation<void, RequestPayload[]>({
       async queryFn (requests, _queryApi, _extraOptions, fetchWithBQ) {
         return batchApi(
           FirmwareRbacUrlsInfo.updateSwitchVenueSchedules, requests, fetchWithBQ, v1_2Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -782,8 +778,7 @@ export const {
   useGetVenueApModelFirmwaresQuery,
   useUpdateVenueSchedulesPerApModelMutation,
   useSkipVenueSchedulesPerApModelMutation,
-  useBatchSkipSwitchUpgradeSchedulesMutation,
-  useBatchSkipSwitchUpgradeSchedulesV1002Mutation
+  useBatchSkipSwitchUpgradeSchedulesMutation
 } = firmwareApi
 
 
