@@ -37,7 +37,8 @@ describe('Threshold Histogram chart', () => {
   it('should return correct intl for ACX', async () => {
     const { $t } = getIntl()
     expect($t(getDisabledToolTip(true, undefined))).toEqual(
-      'Cannot save threshold at organization level. Please select a Venue or AP to set a threshold.'
+      'Cannot save threshold at organization level. Please select a Venue or any other ' +
+      'network node to set a threshold.'
     )
   })
   it('should return correct intl for RA', async () => {

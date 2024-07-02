@@ -1,12 +1,21 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form, Col, List, Row, Space, Typography, Input } from 'antd'
+import { EChartsOption }                                  from 'echarts'
+import ReactECharts                                       from 'echarts-for-react'
 import { useIntl }                                        from 'react-intl'
 import { useParams }                                      from 'react-router-dom'
 
-
-import { Button, Card, cssStr, DonutChart, PasswordInput, showActionModal, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import {
+  Button,
+  Card,
+  cssNumber,
+  cssStr,
+  PasswordInput,
+  showActionModal,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   administrationApi,
   useGetNotificationSmsProviderQuery,
@@ -125,19 +134,80 @@ const SmsProviderItem = () => {
         { value: ruckusOneUsed, name: 'usage', color: cssStr('--acx-accents-blue-50') },
         { value: smsThreshold - ruckusOneUsed,
           name: 'remaining1', color: cssStr('--acx-neutrals-50') },
-        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: 1, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
         { value: FREE_SMS_POOL - smsThreshold,
           name: 'remaining2', color: cssStr('--acx-neutrals-50') }
       ]
       : [
-        { value: smsThreshold, name: 'usage', color: cssStr('--acx-accents-blue-50') },
-        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: smsThreshold, name: 'usage', color: cssStr('--acx-semantics-red-70') },
+        { value: 1, name: 'threshold', color: cssStr('--acx-neutrals-50') },
         { value: ruckusOneUsed - smsThreshold,
-          name: 'remaining1', color: cssStr('--acx-accents-blue-50') },
+          name: 'remaining1', color: cssStr('--acx-semantics-red-70') },
         { value: FREE_SMS_POOL - ruckusOneUsed,
           name: 'remaining2', color: cssStr('--acx-neutrals-50') }
       ]
     )
+
+  const getOption = (text: string, showTotal: boolean, subtext?: string) => {
+    const option: EChartsOption = {
+      tooltip: { show: false },
+      title: [
+        {
+          show: true,
+          text: text,
+          left: showTotal ? 24 : 'center',
+          top: 'center',
+          textVerticalAlign: 'middle',
+          textStyle: {
+            color: cssStr('--acx-primary-black'),
+            fontFamily: cssStr('--acx-neutral-brand-font'),
+            fontSize: cssNumber('--acx-body-2-font-size') }
+        },
+        {
+          show: showTotal,
+          text: '/100',
+          right: 22,
+          top: 'center',
+          textVerticalAlign: 'middle',
+          textStyle: {
+            color: cssStr('--acx-primary-black'),
+            fontFamily: cssStr('--acx-neutral-brand-font'),
+            fontSize: cssNumber('--acx-body-4-font-size'),
+            fontWeight: cssNumber('--acx-body-font-weight') }
+        },
+        {
+          show: true,
+          subtext: subtext,
+          left: 'center',
+          top: 'center',
+          itemGap: 8,
+          subtextStyle: {
+            color: cssStr('--acx-primary-black'),
+            fontFamily: cssStr('--acx-neutral-brand-font'),
+            fontSize: cssNumber('--acx-body-5-font-size'),
+            fontWeight: cssNumber('--acx-body-font-weight'),
+            width: 50 }
+        }],
+      color: data.map(series => series.color),
+      series: [
+        {
+          animation: false,
+          data,
+          type: 'pie',
+          cursor: 'auto',
+          center: ['50%', '50%'],
+          radius: ['58%', '82%'],
+          avoidLabelOverlap: true,
+          label: { show: false },
+          emphasis: {
+            disabled: true
+          },
+          labelLine: { show: false }
+        }
+      ]
+    }
+    return option
+  }
 
 
   const SmsProviderDualButtons = () => {
@@ -253,15 +323,16 @@ const SmsProviderItem = () => {
           <Card type='solid-bg' >
             <div>
               <div style={{ float: 'left' }}>
-                <DonutChart
-                  showLegend={false}
-                  showTotal={false}
-                  style={{ width: 100, height: 100 }}
-                  title={ruckusOneUsed + '/100'}
-                  value={undefined}
-                  size='x-large'
-                  data={data}
-                />
+                <Space direction='vertical' size={0}>
+                  <ReactECharts
+                    {...{
+                      style: { width: 100, height: 100 }
+                    }}
+                    opts={{ renderer: 'svg' }}
+                    option={
+                      getOption(ruckusOneUsed.toString(),ruckusOneUsed < FREE_SMS_POOL,'SMS Sent')
+                    } />
+                </Space>
               </div>
               <div style={{ float: 'right', marginTop: '15px' }}>
                 <List
@@ -293,15 +364,14 @@ const SmsProviderItem = () => {
       <Card type='solid-bg' >
         <div>
           <div style={{ float: 'left' }}>
-            <DonutChart
-              showLegend={false}
-              showTotal={false}
-              style={{ width: 100, height: 100 }}
-              title={ruckusOneUsed.toString()}
-              value={undefined}
-              size='x-large'
-              data={data}
-            />
+            <Space direction='vertical' size={0}>
+              <ReactECharts
+                {...{
+                  style: { width: 100, height: 100 }
+                }}
+                opts={{ renderer: 'svg' }}
+                option={getOption(ruckusOneUsed.toString(), false, 'SMS Sent')} />
+            </Space>
           </div>
           <div style={{ float: 'right', marginTop: '15px' }}>
             <List
@@ -329,7 +399,7 @@ const SmsProviderItem = () => {
   const UtilizationAlertThreshold = () => {
     return <>
       <Form.Item
-        style={{ marginTop: '10px', marginBottom: 0 }}
+        style={{ marginTop: '8px', marginBottom: 0, fontWeight: 600 }}
         colon={false}
         label={$t({ defaultMessage: 'Utilization Alert Threshold' })}
       />
@@ -409,7 +479,6 @@ const SmsProviderItem = () => {
                   <div>{$t({ defaultMessage: '- Captive Portal Self Sign-In' })}</div>
                   <div>{$t({ defaultMessage: '- Generating a New Guest User Password' })}</div>
                   <div>{$t({ defaultMessage: '- Recipient of System Notifications' })}</div>
-                  <div>{$t({ defaultMessage: '- AI Notifications  ' })}</div>
                 </>}
                 placement='right'
               />
