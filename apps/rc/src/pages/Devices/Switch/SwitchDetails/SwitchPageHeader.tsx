@@ -61,9 +61,14 @@ function SwitchPageHeader () {
   const basePath = useTenantLink(`/devices/switch/${switchId}/${serialNumber}`)
   const linkToSwitch = useTenantLink('/devices/switch/')
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [getSwitchList] = useLazyGetSwitchListQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
-  const jwtToken = useGetJwtTokenQuery({ params: { tenantId, serialNumber } })
+  const jwtToken = useGetJwtTokenQuery({
+    params: { tenantId, serialNumber, venueId: switchDetailHeader?.venueId },
+    enableRbac: isSwitchRbacEnabled
+  })
 
   const [isSyncing, setIsSyncing] = useState(false)
   const [syncDataEndTime, setSyncDataEndTime] = useState('')
@@ -80,8 +85,6 @@ function SwitchPageHeader () {
   const isSyncedSwitchConfig = switchDetailHeader?.syncedSwitchConfig
 
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-
-  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     switch(e.key) {

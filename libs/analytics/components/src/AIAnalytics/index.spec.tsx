@@ -34,12 +34,14 @@ jest.mock('../Recommendations', () => ({
   RecommendationTabContent: () => <div data-testid='Recommendations' />
 }))
 
+
 describe('NetworkAssurance', () => {
   beforeEach(() => {
     setRaiPermissions({
       READ_INCIDENTS: true,
       READ_AI_OPERATIONS: true,
-      READ_AI_DRIVEN_RRM: true
+      READ_AI_DRIVEN_RRM: true,
+      READ_INTENT_AI: true
     } as RaiPermissions)
   })
   afterEach(() => {
@@ -52,6 +54,22 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(await screen.findByTestId('Incidents')).toBeVisible()
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
+  })
+  it('should render intent AI tab', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockGet.mockReturnValue(true)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('AI Analytics')).toBeVisible()
+    expect(await screen.findByTestId('intentAI')).toBeVisible()
+  })
+  it('should not render intent AI tab when FF or permission not enabled', async () => {
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('AI Analytics')).toBeVisible()
+    expect(screen.queryByTestId('intentAI')).not.toBeInTheDocument()
   })
   it('should handle recommendation tab click in RA SA', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)

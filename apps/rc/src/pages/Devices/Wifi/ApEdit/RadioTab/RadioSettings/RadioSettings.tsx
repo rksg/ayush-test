@@ -437,7 +437,9 @@ export function RadioSettings () {
     })
 
     // 6G
-    const supportCh6g = (availableChannels && availableChannels['6GChannels']) || {}
+    const availableCh6g = (availableChannels && availableChannels['6GChannels'])
+    const supportCh6g =
+      (is6gChannelSeparation ? (availableCh6g && availableCh6g[apModelType]) : availableCh6g) || {}
     const bandwidth6g = GetSupportBandwidth(channelBandwidth6GOptions, supportCh6g, {
       isSupport160Mhz: is6GHas160Mhz,
       isSupport320Mhz: is6GHas320Mhz
@@ -532,16 +534,37 @@ export function RadioSettings () {
           }
         }
 
+        const getVenue6GRadioSetting = (radioParams: any) => {
+          if (!radioParams) {
+            return undefined
+          }
+
+          const allowedChannels = (apModelType === 'indoor') ? radioParams.allowedIndoorChannels : radioParams.allowedOutdoorChannels
+          const { changeInterval, channelBandwidth, method, txPower, bssMinRate6G, mgmtTxRate6G, channelBandwidth320MhzGroup, enableAfc } = radioParams
+          return {
+            allowedChannels,
+            changeInterval,
+            channelBandwidth,
+            method,
+            txPower,
+            bssMinRate6G,
+            mgmtTxRate6G,
+            channelBandwidth320MhzGroup,
+            enableAfc
+          }
+        }
+
         const {
           radioParams24G: venueRadioParams24G,
           radioParams50G,
           radioParamsDual5G,
-          radioParams6G: venueRadioParams6G } = data
+          radioParams6G } = data
 
         const venueRadioParams50G = getVenue5GRadioSetting(radioParams50G)
         const venueRadioParamsUpper5G = getVenue5GRadioSetting(radioParamsDual5G?.radioParamsUpper5G)
         const venueRadioParamsLower5G = getVenue5GRadioSetting(radioParamsDual5G?.radioParamsLower5G)
         const venueRadioParamsDual5G = (venueRadioParamsUpper5G || venueRadioParamsLower5G)? new ApRadioParamsDual5G() : undefined
+        const venueRadioParams6G = getVenue6GRadioSetting(radioParams6G)
 
         if (venueRadioParamsDual5G) {
           venueRadioParamsDual5G.enabled = isSupportDual5GAp && (radioParamsDual5G?.enabled === true)
