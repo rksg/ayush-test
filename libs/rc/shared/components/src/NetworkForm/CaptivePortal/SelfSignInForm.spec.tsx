@@ -177,6 +177,20 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
       const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
       expect(formItem).toBeChecked()
       expect(formItem).not.toBeDisabled()
+
+      // eslint-disable-next-line
+    const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+
+      fireEvent.mouseOver(tooltips[0])
+      await waitFor(async () => {
+        expect(
+          await screen.findByRole('tooltip', {
+            value: {
+              text: 'Self-service signup using one time token sent to a mobile number'
+            }
+          })
+        ).toBeInTheDocument()
+      })
     })
   it('should disable SMS Token checkbox when create network', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
@@ -200,6 +214,22 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     const formItem = screen.getByRole('checkbox', { name: /SMS Token/ })
     expect(formItem).not.toBeChecked()
     expect(formItem).toBeDisabled()
+
+    // eslint-disable-next-line
+    const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+
+    fireEvent.mouseOver(tooltips[0])
+
+    await waitFor(async () => {
+      expect(
+        await screen.findByRole('tooltip', {
+          value: {
+            text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
+          }
+        })
+      ).toBeInTheDocument()
+    })
+    expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
   })
   it('should not disable SMS Token checkbox when edit network', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.NUVO_SMS_PROVIDER_TOGGLE)
@@ -225,14 +255,15 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     expect(formItem).not.toBeDisabled()
   })
 
-  it('should display SMS tooltips correctly - FF is off', async () => {
+  it('should display SMS tooltips correctly - Provider not Ruckus One', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsResponse }
+      return { data: mockNotificationSmsProviderNotR1Response }
     })
     render(<Provider>
       <NetworkFormContext.Provider
         value={{
-          editMode: true, cloneMode: false, data: selfsignData
+          editMode: false, cloneMode: false, data: selfsignData
         }}
       >
         <MLOContext.Provider value={{
@@ -245,40 +276,6 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     </Provider>, { route: { params } })
     // eslint-disable-next-line
     const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
-
-    fireEvent.mouseOver(tooltips[0])
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('tooltip', {
-          value: {
-            text: 'Self-service signup using one time token sent to a mobile number'
-          }
-        })
-      ).toBeInTheDocument()
-    })
-  })
-
-  it('should display SMS tooltips correctly - Provider not Ruckus One', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsProviderNotR1Response }
-    })
-    render(<Provider>
-      <NetworkFormContext.Provider
-        value={{
-          editMode: true, cloneMode: false, data: selfsignData
-        }}
-      >
-        <MLOContext.Provider value={{
-          isDisableMLO: false,
-          disableMLO: jest.fn()
-        }}>
-          <SelfSignInFormNetworkComponent/>
-        </MLOContext.Provider>
-      </NetworkFormContext.Provider>
-    </Provider>, { route: { params } })
-    // eslint-disable-next-line
-      const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
 
     fireEvent.mouseOver(tooltips[0])
 
@@ -296,42 +293,6 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
   })
 
   // eslint-disable-next-line
-  it('should display SMS tooltips correctly - Provider is Ruckus One has no pool remain', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
-      return { data: mockNotificationSmsResponse }
-    })
-    render(<Provider>
-      <NetworkFormContext.Provider
-        value={{
-          editMode: true, cloneMode: false, data: selfsignData
-        }}
-      >
-        <MLOContext.Provider value={{
-          isDisableMLO: false,
-          disableMLO: jest.fn()
-        }}>
-          <SelfSignInFormNetworkComponent/>
-        </MLOContext.Provider>
-      </NetworkFormContext.Provider>
-    </Provider>, { route: { params } })
-    // eslint-disable-next-line
-    const tooltips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
-
-    fireEvent.mouseOver(tooltips[0])
-
-    await waitFor(async () => {
-      expect(
-        await screen.findByRole('tooltip', {
-          value: {
-            text: 'Captive Portal Self-sign-in via SMS One-time Passcode.'
-          }
-        })
-      ).toBeInTheDocument()
-    })
-    expect(await screen.findByTestId('button-no-pool')).toBeInTheDocument()
-  })
-  // eslint-disable-next-line
   it('should display SMS tooltips correctly - Provider is Ruckus One has pool remain', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
@@ -340,7 +301,7 @@ describe('CaptiveNetworkForm-SelfSignIn', () => {
     render(<Provider>
       <NetworkFormContext.Provider
         value={{
-          editMode: true, cloneMode: false, data: selfsignData
+          editMode: false, cloneMode: false, data: selfsignData
         }}
       >
         <MLOContext.Provider value={{
