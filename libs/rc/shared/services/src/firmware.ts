@@ -218,7 +218,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.skipSwitchUpgradeSchedules, requests, fetchWithBQ, v1Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     updateSwitchVenueSchedules: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -235,7 +236,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.updateSwitchVenueSchedules, requests, fetchWithBQ, v1Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -357,7 +359,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       transformResponse (result: { upgradeStatusDetailsViewList: SwitchFirmwareStatus[] }) {
         return {
-          data: result.upgradeStatusDetailsViewList
+          data: result.upgradeStatusDetailsViewList || result
         } as unknown as TableResult<SwitchFirmwareStatus>
       }
     }),
