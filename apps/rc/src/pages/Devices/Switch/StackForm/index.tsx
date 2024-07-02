@@ -765,7 +765,7 @@ export function StackForm () {
       }
       const model = checkSwitchModelGroup(activeSerialNumber)
       const currentVersion = currentFirmwareV1002?.find(v=> v.modelGroup === model)?.version || ''
-      const miniMembers = getStackUnitsMinLimitationV1002(switchModel, currentVersion)
+      const miniMembers = getStackUnitsMinLimitationV1002(model, currentVersion)
       setTableData(tableData.splice(0, miniMembers))
 
 
