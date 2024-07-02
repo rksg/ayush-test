@@ -135,6 +135,13 @@ export const kpiHelper = (code: string) => {
     .trim()
 }
 
+export function extractBeforeAfter (value: CrrmListItem['kpis']) {
+  const { current, previous, projected } = value!
+  const [before, after] = [previous, current, projected]
+    .filter(value => value !== null)
+  return [before, after]
+}
+
 type BasicRecommendationWithStatus = BasicRecommendation & {
   status: string
 }
