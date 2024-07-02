@@ -304,10 +304,49 @@ const SmsProviderItem = () => {
     </Col>
   }
 
+  const ProviderOthers = () => {
+    return <Col style={{ width: '381px', paddingLeft: 0 }}>
+      <Card type='solid-bg' >
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Provider' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {'Other'}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'API Token' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <PasswordInput
+            bordered={false}
+            value={smsProvider.data?.apiKey}
+            style={{ padding: '0px' }}
+          />
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Send URL' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <PasswordInput
+            bordered={false}
+            value={smsProvider.data?.url}
+            style={{ padding: '0px' }}
+          />
+        </div>
+      </Card>
+    </Col>
+  }
+
   const DisplaySmsProvider = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       {smsProviderType === SmsProviderType.TWILIO && <ProviderTwillo/>}
       {smsProviderType === SmsProviderType.ESENDEX && <ProviderEsendex/>}
+      {smsProviderType === SmsProviderType.OTHERS && <ProviderOthers/>}
     </Col>
   }
 

@@ -89,8 +89,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
             fromNumber: form.getFieldValue('phoneNumber')
           }
           : {
-            // esendex
-            apiKey: form.getFieldValue('apiKey')
+            // esendex, other
+            apiKey: form.getFieldValue('apiKey'),
+            url: providerType === SmsProviderType.ESENDEX
+              ? undefined : form.getFieldValue('sendUrl')
           }
 
       await updateSmsProvider({
@@ -111,6 +113,10 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
     {
       label: $t({ defaultMessage: 'Esendex' }),
       value: SmsProviderType.ESENDEX
+    },
+    {
+      label: $t({ defaultMessage: 'Other' }),
+      value: SmsProviderType.OTHERS
     }
   ]
 
@@ -210,6 +216,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='sendUrl'
         label={$t({ defaultMessage: 'Send URL' })}
+        tooltip={true}
         rules={[
           { required: true }
         ]}
