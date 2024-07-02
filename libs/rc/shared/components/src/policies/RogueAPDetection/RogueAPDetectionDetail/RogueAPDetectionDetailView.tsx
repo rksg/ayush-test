@@ -16,6 +16,7 @@ import {
   PolicyOperation,
   usePolicyListBreadcrumb
 } from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -40,6 +41,7 @@ export const RogueAPDetectionDetailView = () => {
         breadcrumb={breadcrumb}
         extra={policyName !== RogueApConstant.DefaultProfile ? filterByAccess([
           <PolicyConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={PolicyType.ROGUE_AP_DETECTION}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}

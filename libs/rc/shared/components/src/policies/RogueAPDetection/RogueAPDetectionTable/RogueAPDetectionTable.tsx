@@ -21,8 +21,8 @@ import {
   Venue
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                                          from '@acx-ui/types'
-import { filterByAccess }                                          from '@acx-ui/user'
+import { RequestPayload, WifiScopes }                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 import { SimpleListTooltip } from '../../../SimpleListTooltip'
 import { useIsEdgeReady }    from '../../../useEdgeActions'
@@ -118,6 +118,7 @@ export function RogueAPDetectionTable () {
 
   const rowActions: TableProps<EnhancedRoguePolicyType>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedItems =>
         selectedItems.length > 0 && !selectedItems.map(item => item.name).includes(DEFAULT_PROFILE)
@@ -127,6 +128,7 @@ export function RogueAPDetectionTable () {
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems =>
         selectedItems.length === 1 && selectedItems[0].name !== DEFAULT_PROFILE
@@ -160,8 +162,11 @@ export function RogueAPDetectionTable () {
           }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}>
+          <TenantLink
+            // eslint-disable-next-line max-len
+            to={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
+            scopeKey={[WifiScopes.CREATE]}
+          >
             <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Rogue AP Detection Policy' })}
             </Button>
@@ -179,7 +184,10 @@ export function RogueAPDetectionTable () {
           enableApiFilter={true}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={{ type: 'checkbox' }}
+          rowSelection={
+            // eslint-disable-next-line max-len
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+          }
         />
       </Loader>
     </>
