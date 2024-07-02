@@ -6,10 +6,16 @@ import ReactECharts                                       from 'echarts-for-reac
 import { useIntl }                                        from 'react-intl'
 import { useParams }                                      from 'react-router-dom'
 
-
-
-import { Button, Card, cssNumber, cssStr, PasswordInput, showActionModal, Tooltip, tooltipOptions } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                   from '@acx-ui/feature-toggle'
+import {
+  Button,
+  Card,
+  cssNumber,
+  cssStr,
+  PasswordInput,
+  showActionModal,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   administrationApi,
   useGetNotificationSmsProviderQuery,
@@ -128,13 +134,13 @@ const SmsProviderItem = () => {
         { value: ruckusOneUsed, name: 'usage', color: cssStr('--acx-accents-blue-50') },
         { value: smsThreshold - ruckusOneUsed,
           name: 'remaining1', color: cssStr('--acx-neutrals-50') },
-        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: 1, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
         { value: FREE_SMS_POOL - smsThreshold,
           name: 'remaining2', color: cssStr('--acx-neutrals-50') }
       ]
       : [
         { value: smsThreshold, name: 'usage', color: cssStr('--acx-semantics-red-70') },
-        { value: 2, name: 'threshold', color: cssStr('--acx-neutrals-50') },
+        { value: 1, name: 'threshold', color: cssStr('--acx-neutrals-50') },
         { value: ruckusOneUsed - smsThreshold,
           name: 'remaining1', color: cssStr('--acx-semantics-red-70') },
         { value: FREE_SMS_POOL - ruckusOneUsed,
@@ -142,7 +148,6 @@ const SmsProviderItem = () => {
       ]
     )
 
-  const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
   const getOption = (text: string, showTotal: boolean, subtext?: string) => {
     const option: EChartsOption = {
       tooltip: { show: false },
@@ -194,13 +199,8 @@ const SmsProviderItem = () => {
           radius: ['58%', '82%'],
           avoidLabelOverlap: true,
           label: { show: false },
-          tooltip: {
-            ...tooltipOptions(),
-            show: !isEmpty
-          },
           emphasis: {
-            disabled: isEmpty,
-            scaleSize: 5
+            disabled: true
           },
           labelLine: { show: false }
         }
@@ -399,7 +399,7 @@ const SmsProviderItem = () => {
   const UtilizationAlertThreshold = () => {
     return <>
       <Form.Item
-        style={{ marginTop: '10px', marginBottom: 0 }}
+        style={{ marginTop: '8px', marginBottom: 0, fontWeight: 600 }}
         colon={false}
         label={$t({ defaultMessage: 'Utilization Alert Threshold' })}
       />
