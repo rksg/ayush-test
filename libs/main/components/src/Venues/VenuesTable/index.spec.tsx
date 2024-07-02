@@ -183,7 +183,7 @@ describe('Venues Table', () => {
   })
 
   it('should have ap compatibilies correct', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>
