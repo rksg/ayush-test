@@ -233,8 +233,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/syslogServerProfiles/:policyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      Accept: 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateSyslogPolicy: {
