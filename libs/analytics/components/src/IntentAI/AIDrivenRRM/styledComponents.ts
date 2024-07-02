@@ -117,7 +117,7 @@ export const SummaryText = styled.div`
 `
 
 export const SummaryContent = styled.div`
-  padding-right: 10px;
+  padding-right: 5px;
 `
 
 export const SummaryTitle = styled.div`
@@ -126,4 +126,12 @@ export const SummaryTitle = styled.div`
   line-height: var(--acx-subtitle-5-line-height);
   color: var(--acx-primary-black);
   opacity: 0.7;
+`
+
+export const GraphTitle = styled.div`
+  color: var(--acx-primary-black);
+  font-size: var(--acx-headline-4-font-size);
+  line-height: var(--acx-subtitle-4-line-height);
+  font-weight: var(--acx-headline-4-font-weight);
+  margin-bottom: -30px;
 `

@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
-import { Card } from '@acx-ui/components'
+import { Card }              from '@acx-ui/components'
+import { ArrowChevronRight } from '@acx-ui/icons'
 
 import { detailsHeaderFontStyles } from '../styledComponents'
 
@@ -24,7 +25,7 @@ export const ClickableWrapper = styled.div`
 
 export const GraphWrapper = styled.div`
   display: grid;
-  grid-template-columns: 3fr 3fr 1fr;
+  grid-template-columns: 3fr 0.25fr 3fr 1fr;
   height: 100%;
   width: 100%;
 `
@@ -37,6 +38,7 @@ export const DrawerGraphWrapper = styled.div`
   display: grid;
   grid-template-columns: 3fr 3fr 1fr;
   grid-template-rows: 19fr 1fr;
+  gap: 10px;
   width: 100%;
   height: 100%;
   ${DownloadWrapper} {
@@ -53,6 +55,7 @@ export const LegendsWrapper = styled.div`
   grid-template-columns: 1fr;
   grid-template-rows: min-content;
   grid-row-gap: 20px;
+  margin-left: 10px;
 `
 
 export const LegendWrapper = styled.div`
@@ -94,3 +97,5 @@ export const Square = styled.span<{ $color: string }>`
   height: 12px;
   justify-self: end;
 `
+
+export const RightArrow = styled(ArrowChevronRight)``

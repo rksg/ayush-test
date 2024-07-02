@@ -54,18 +54,18 @@ export function Summary () {
   }
   const kpi = calculateAverageLinks(crrmData)
 
-
   return <Row gutter={20}>
-    <Col span={15}>
+    <Col span={16}>
       <UI.Wrapper>
         <UI.Title>{title}</UI.Title>
-        <UI.Content>
-          { initialValues
-            && isDataRetained(initialValues.dataEndTime)
-            && <CloudRRMGraph
-              details={initialValues as EnhancedRecommendation}
-            />}
-        </UI.Content>
+        <UI.GraphTitle>
+          {$t({ defaultMessage: 'Projected interfering links reduction' })}
+        </UI.GraphTitle>
+        { initialValues
+          && isDataRetained(initialValues.dataEndTime)
+          && <CloudRRMGraph
+            details={initialValues as EnhancedRecommendation}
+          />}
         <UI.SummaryTitle>
           {$t({ defaultMessage: 'Interfering links' })}
         </UI.SummaryTitle>
@@ -92,7 +92,7 @@ export function Summary () {
       </UI.Wrapper>
     </Col>
 
-    <Col span={7} offset={2}>
+    <Col span={7} offset={1}>
       <UI.Wrapper>
         <UI.SideNote>
           <UI.SideNoteHeader>
