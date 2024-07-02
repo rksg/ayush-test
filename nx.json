@@ -22,14 +22,6 @@
       }
     }
   },
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
-  },
   "generators": {
     "@nrwl/react": {
       "application": {
@@ -46,5 +38,5 @@
       }
     }
   },
-  "defaultProject": "main"
+  "defaultProject": "none"
 }

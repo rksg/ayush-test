@@ -27,11 +27,12 @@ import TimelineBase                                         from './pages/Timeli
 import { UserProfile }                                      from './pages/UserProfile'
 import UsersBase                                            from './pages/Users'
 import { VenueDetails, VenuesForm, VenueEdit, VenuesTable } from './pages/Venues'
-
-const RcRoutes = React.lazy(() => import('rc/Routes'))
-const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+const MspRoutes = React.lazy(() => import('@msp/Routes'))
+const RcRoutes = React.lazy(() => import('@rc/Routes'))
 const ReportsRoutes = React.lazy(() => import('@reports/Routes'))
-const MspRoutes = React.lazy(() => import('msp/Routes'))
+/* eslint-enable @nrwl/nx/enforce-module-boundaries */
+const AnalyticsRoutes = React.lazy(() => import('./routes/AnalyticsRoutes'))
 
 function AllRoutes () {
   useStreamActivityMessagesQuery({})
