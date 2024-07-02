@@ -58,12 +58,11 @@ export function VenueFirmwareInformation (props: VenueInformationProps) {
   const contentInfo = $t({
     defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
       // eslint-disable-next-line max-len
-      'please update the firmware in this <venueSingular></venueSingular> to <b>{baseVersion}</b> or greater. ' +
+      'please update the firmware in this <venueSingular></venueSingular> to latest version. ' +
       'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
     b: chunks => <strong>{chunks}</strong>,
     apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
     lastApModel: triApModels.length > 1 ? triApModels.slice(-1) : 'R760',
-    baseVersion: BASE_VERSION,
     fwManagementLink: (<TenantLink to={'/administration/fwVersionMgmt'}>
       { $t({ defaultMessage: 'Firmware Management' }) }
     </TenantLink>)
