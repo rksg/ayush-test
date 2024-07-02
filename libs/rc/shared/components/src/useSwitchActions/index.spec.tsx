@@ -220,7 +220,7 @@ describe('Test useSwitchActions', () => {
     const { doRetryFirmwareUpdate } = result.current
     const callback = jest.fn()
     act(() => {
-      doRetryFirmwareUpdate({switchId: 'switch-id', tenantId: tenantId}, callback)
+      doRetryFirmwareUpdate({ switchId: 'switch-id', tenantId: tenantId }, callback)
     })
 
     await waitFor(async () => expect(callback).toBeCalled())
