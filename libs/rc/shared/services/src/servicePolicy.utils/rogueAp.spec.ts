@@ -37,7 +37,7 @@ describe('rogueAp.utils', () => {
         enableRbac: true
       },
       apiInfo: { url: '/api/regular', method: 'get' },
-      rbacApiInfo: { url: '/roguePolicies', method: 'post', defaultHeaders: {
+      rbacApiInfo: { url: '/roguePolicies', method: 'post', newApi: true, defaultHeaders: {
         'Accept': 'application/vnd.ruckus.v1+json',
         'Content-Type': 'application/vnd.ruckus.v1+json'
       } },

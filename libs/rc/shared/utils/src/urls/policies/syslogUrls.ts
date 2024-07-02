@@ -48,8 +48,7 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
     url: '/syslogServerProfiles/:policyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+      Accept: 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateSyslogPolicy: {
