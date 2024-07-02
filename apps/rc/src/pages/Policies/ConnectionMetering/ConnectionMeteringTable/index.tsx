@@ -40,7 +40,6 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }        from '@acx-ui/types'
 import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import {
@@ -183,8 +182,7 @@ export default function ConnectionMeteringTable () {
         })
         clearSelection()
       },
-      disabled: (selectedItems => selectedItems.length > 1),
-      scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE]
+      disabled: (selectedItems => selectedItems.length > 1)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
@@ -212,8 +210,7 @@ export default function ConnectionMeteringTable () {
                 console.log(e)
               })
           })
-      },
-      scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE]
+      }
     }
   ]
 
@@ -247,7 +244,6 @@ export default function ConnectionMeteringTable () {
               type: PolicyType.CONNECTION_METERING,
               oper: PolicyOperation.CREATE
             })}
-            scopeKey={[WifiScopes.CREATE, EdgeScopes.CREATE]}
           >
             <Button type='primary'>
               { $t({ defaultMessage: 'Add Data Usage Metering Profile' }) }
@@ -264,9 +260,7 @@ export default function ConnectionMeteringTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowSelection={hasPermission({
-          scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
-        }) && { type: 'radio' }}
+        rowSelection={hasPermission() && { type: 'radio' }}
       />
     </Loader>
   )

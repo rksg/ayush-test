@@ -36,8 +36,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }   from '@acx-ui/types'
-import { filterByAccess, hasScope } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -211,8 +210,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       }, { skip: !isConnectionMeteringEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
-      disabled: !isConnectionMeteringEnabled ||
-        !hasScope([WifiScopes.READ, EdgeScopes.READ])
+      disabled: !isConnectionMeteringEnabled
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,
