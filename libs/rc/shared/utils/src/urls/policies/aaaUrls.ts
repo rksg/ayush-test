@@ -51,8 +51,8 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/radiusServerProfiles',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1_1+json',
-      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   updateAAAPolicyRbac: {
@@ -61,8 +61,8 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     url: '/radiusServerProfiles/:policyId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1_1+json',
-      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   }
 }

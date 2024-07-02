@@ -205,8 +205,8 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/syslogServerProfiles/:templateId',
     newApi: true,
     defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1_1+json',
-      'Content-Type': 'application/vnd.ruckus.v1_1+json'
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
   addSyslogPolicy: {
@@ -214,15 +214,42 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/syslogServerProfiles',
     newApi: true
   },
+  addSyslogPolicyRbac: {
+    method: 'post',
+    url: '/templates/syslogServerProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getSyslogPolicy: {
     method: 'get',
     url: '/templates/syslogServerProfiles/:policyId',
     newApi: true
   },
+  getSyslogPolicyRbac: {
+    method: 'get',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateSyslogPolicy: {
     method: 'put',
     url: '/templates/syslogServerProfiles/:policyId',
     newApi: true
+  },
+  updateSyslogPolicyRbac: {
+    method: 'put',
+    url: '/templates/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getSyslogPolicyList: {
     method: 'post',
@@ -237,11 +264,7 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueSyslogSettings: {
     method: 'post',
     url: '/templates/venues/:venueId/syslogServerProfileSettings',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1+json',
-      'Content-Type': 'application/vnd.ruckus.v1+json'
-    }
+    newApi: true
   },
   querySyslog: {
     method: 'post',

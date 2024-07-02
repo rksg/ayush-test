@@ -1809,8 +1809,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicy, params, headers)
+        const url = enableRbac ? SyslogUrls.deleteSyslogPolicyRbac : SyslogUrls.deleteSyslogPolicy
+        const req = createHttpRequest(url, params)
         return {
           ...req
         }
@@ -1821,7 +1821,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         if (enableRbac) {
           const requests = (payload as string[]).map(policyId => ({ params: { policyId } }))
-          await batchApi(SyslogUrls.deleteSyslogPolicy, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
+          await batchApi(SyslogUrls.deleteSyslogPolicyRbac, requests, fetchWithBQ)
           return { data: {} as CommonResult }
         } else {
           const req = createHttpRequest(SyslogUrls.deleteSyslogPolicies, params)
@@ -1842,8 +1842,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getVenueSyslogAp: build.query<VenueSyslogSettingType, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? SyslogUrls.querySyslog : SyslogUrls.getVenueSyslogAp
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(url, params, headers)
+        const req = createHttpRequest(url, params)
         return{
           ...req,
           ...enableRbac ? {
@@ -1868,9 +1867,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const url = enableRbac ?
           (payload!.enabled ? SyslogUrls.bindVenueSyslog : SyslogUrls.unbindVenueSyslog)
           : SyslogUrls.updateVenueSyslogAp
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const param = enableRbac ? { ...params, policyId: payload!.serviceProfileId } : params
-        const req = createHttpRequest(url, param, headers)
+        const req = createHttpRequest(url, param)
         return {
           ...req,
           ...(enableRbac ? {} : { body: payload })
@@ -1901,8 +1899,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getVenueSyslogList: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params, headers)
+        const url = enableRbac ? SyslogUrls.getVenueSyslogListRbac : SyslogUrls.getVenueSyslogList
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1913,8 +1911,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     syslogPolicyList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? SyslogUrls.querySyslog : SyslogUrls.syslogPolicyList
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(url, params, headers)
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
