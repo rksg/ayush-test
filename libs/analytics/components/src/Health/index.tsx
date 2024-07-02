@@ -15,11 +15,11 @@ import Kpis                          from './Kpi'
 import * as UI                       from './styledComponents'
 import { SummaryBoxes }              from './SummaryBoxes'
 
-const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
+const HealthPage = (props: { filters? : AnalyticsFilter, path?: string, showHeader?: boolean }) => {
   const { $t } = useIntl()
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isMLISA = get('IS_MLISA_SA')
-  const { filters: widgetFilters } = props
+  const { filters: widgetFilters, showHeader = true } = props
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
   const navigate = useNavigate()
@@ -42,7 +42,7 @@ const HealthPage = (props: { filters? : AnalyticsFilter, path?: string }) => {
     })
   return (
     <>
-      {!widgetFilters && !canUseAnltAdv && !isMLISA &&
+      {showHeader && !widgetFilters && !canUseAnltAdv && !isMLISA &&
       <Header
         title={$t({ defaultMessage: 'Health' })}
         breadcrumb={[
