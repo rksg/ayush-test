@@ -47,7 +47,8 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
-  CertificateCategoryType
+  CertificateCategoryType,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -558,11 +559,19 @@ function ServiceRoutes () {
       <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
-        element={<MdnsProxyForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <MdnsProxyForm />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
-        element={<MdnsProxyForm editMode={true} />}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <MdnsProxyForm editMode={true} />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
@@ -592,32 +601,36 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
-        element={<DHCPForm/>}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}><DHCPForm/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-        element={<DHCPForm editMode={true}/>}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE]}><DHCPForm editMode={true}/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-        element={<DHCPDetail/>}
+        element={<AuthRoute scopes={[WifiScopes.READ]}><DHCPDetail/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })}
-        element={<DHCPTable/>}
+        element={<AuthRoute scopes={[WifiScopes.READ]}><DHCPTable/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
         element={<DpskTable />}
       />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
-        element={<DpskForm />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
-        element={<DpskForm editMode={true} />}
-      />
+      {hasDpskAccess() &&
+        <>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+            element={<DpskForm />}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+            element={<DpskForm editMode={true} />}
+          />
+        </>
+      }
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
         element={<DpskDetails />}
@@ -762,18 +775,18 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
-        element={<SyslogForm edit={false}/>}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}><SyslogForm edit={false}/></AuthRoute>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
-        element={<SyslogForm edit={true}/>}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE]}><SyslogForm edit={true}/></AuthRoute>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
-        element={<SyslogTable />} />
+        element={<AuthRoute scopes={[WifiScopes.READ]}><SyslogTable /></AuthRoute>} />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
-        element={<SyslogDetailView />}
+        element={<AuthRoute scopes={[WifiScopes.READ]}><SyslogDetailView /></AuthRoute>}
       />
       {isCloudpathBetaEnabled ? <>
         <Route

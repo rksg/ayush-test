@@ -12,8 +12,8 @@ import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import { createDpskHttpRequest, transformDhcpResponse } from '../service'
+import { commonQueryFn }                                from '../servicePolicy.utils'
 
-import { commonQueryFn }                     from './common'
 import {
   useCasesToRefreshDhcpTemplateList,
   useCasesToRefreshDpskTemplateList,
@@ -250,13 +250,13 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     createWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.addWifiCalling, true),
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.addWifiCalling),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
     }),
     getWifiCallingServiceTemplate: build.query<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCalling, true),
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCalling),
       providesTags: [
         { type: 'ConfigTemplate', id: 'DETAIL' }, { type: 'WifiCallingTemplate', id: 'DETAIL' }
       ]
@@ -279,7 +279,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceTemplateList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList, true),
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList),
       providesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ],
@@ -296,7 +296,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     updateWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.updateWifiCalling, true),
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.updateWifiCalling),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]

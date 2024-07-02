@@ -4,8 +4,9 @@ import {
   AIAnalytics,
   AIAnalyticsTabEnum,
   HealthPage,
+  HealthPageWithTabs,
+  HealthTabEnum,
   IncidentDetails,
-  IncidentListPage,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   RecommendationDetails,
@@ -28,6 +29,10 @@ import { hasRoles }                                 from '@acx-ui/user'
 export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   if (hasRoles([RolesEnum.GUEST_MANAGER, RolesEnum.DPSK_ADMIN]) ) return <React.Fragment />
@@ -41,16 +46,29 @@ export default function AnalyticsRoutes () {
       <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
-        element={(!canUseAnltAdv
-          ? <IncidentListPage />
-          : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)}
+        element={<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />}
       />
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
+      <Route path='analytics/intentAI'>
+        <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
+        <Route index={false} path=':intentId' element={<></>} />
+      </Route>
       <Route path='analytics/health' element={HealthComponent} />
       <Route path='analytics/health/:activeSubTab' element={HealthComponent}>
         <Route path='tab/:categoryTab' element={HealthComponent} />
       </Route>
-      <Route path='analytics/health/tab/:categoryTab' element={HealthComponent} />
+      {
+        // Below routes are used for Health page loaded as top level tabs
+        isSwitchHealthEnabled && !canUseAnltAdv &&
+        <Route path='analytics/health/'>
+          {Object.values(HealthTabEnum).map(tab => (
+            <Route key={tab} path={tab} element={<HealthPageWithTabs tab={tab}/>}>
+              <Route path='tab/:categoryTab' element={<HealthPageWithTabs tab={tab}/>} />
+            </Route>
+          ))}
+        </Route>
+      }
+
       <Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />

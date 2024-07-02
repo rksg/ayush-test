@@ -6,10 +6,10 @@ import { useIntl }       from 'react-intl'
 import { Card, Loader, Table, TableProps } from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
-  useVenueSyslogPolicyQuery ,
   useGetSyslogPolicyQuery,
   useGetVenueTemplateForSyslogPolicyQuery,
-  useGetSyslogPolicyTemplateQuery
+  useGetSyslogPolicyTemplateQuery,
+  useGetVenueSyslogListQuery
 } from '@acx-ui/rc/services'
 import { ConfigTemplateType, SyslogPolicyDetailType, SyslogVenue, useConfigTemplate, useConfigTemplateQueryFnSwitcher, useTableQuery, VenueSyslogPolicyType } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                                                         from '@acx-ui/react-router-dom'
@@ -35,6 +35,8 @@ const SyslogVenueDetail = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   const basicColumns: TableProps<VenueSyslogPolicyType>['columns'] = [
     {
       title: $t({ defaultMessage: '<VenueSingular></VenueSingular> Name' }),
@@ -73,14 +75,15 @@ const SyslogVenueDetail = () => {
   })
 
   const tableQuery = useTableQuery({
-    useQuery: isTemplate ? useGetVenueTemplateForSyslogPolicyQuery : useVenueSyslogPolicyQuery,
+    useQuery: isTemplate ? useGetVenueTemplateForSyslogPolicyQuery : useGetVenueSyslogListQuery,
     defaultPayload: {
       ...defaultPayload,
       filters: { id: (syslogPolicy?.venues ?? []).map(v => v.id) }
     },
     option: {
       skip: (syslogPolicy?.venues ?? []).length === 0
-    }
+    },
+    enableRbac: resolvedEnableRbac
   })
 
   useEffect(() => {
