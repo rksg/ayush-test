@@ -257,11 +257,11 @@ export function useSwitchFirmwareUtils () {
   }
 
   function checkSwitchModelGroup (switchModel: string) {
-    if (switchModel.includes(SwitchFirmwareModelGroup.ICX71)) {
+    if (switchModel?.includes(SwitchFirmwareModelGroup.ICX71)) {
       return SwitchFirmwareModelGroup.ICX71
     }
 
-    if (switchModel.includes(SwitchFirmwareModelGroup.ICX82)) {
+    if (switchModel?.includes(SwitchFirmwareModelGroup.ICX82)) {
       return SwitchFirmwareModelGroup.ICX82
     }
 

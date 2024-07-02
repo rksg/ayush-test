@@ -48,6 +48,23 @@ export const getStackUnitsMinLimitation = (
   }
 }
 
+export const getStackUnitsMinLimitationV1002 = (
+  switchModel: string,
+  currentFirmware: string): number => {
+
+  if (switchModel?.includes('ICX8200')) {
+    return checkVersionAtLeast10010b(currentFirmware) ? 12 : 4
+  } else if (switchModel?.includes('ICX7150')) {
+    return (checkVersionAtLeast09010h(currentFirmware) ? 4 : 2)
+  } else { // 7550, 7650, 7850
+    if (checkVersionAtLeast10010c(currentFirmware)) {
+      // For the switch's own firmware, this field contains the value '10010'.
+      return 12
+    }
+    return (checkVersionAtLeast09010h(currentFirmware) ? 8 : 4)
+  }
+}
+
 //The function will be deprecated in the future; please use the isVerGEVer function instead.
 //Important: compareVersion or targetVersion may be empty
 export const compareSwitchVersion = (compareVersion?: string, targetVersion?: string): number => {
