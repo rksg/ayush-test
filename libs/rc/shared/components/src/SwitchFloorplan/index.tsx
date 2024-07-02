@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { DndProvider }     from 'react-dnd'
 import { HTML5Backend }    from 'react-dnd-html5-backend'
+import { useIntl }         from 'react-intl'
 import { Link, useParams } from 'react-router-dom'
 
 import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
@@ -28,6 +29,7 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
   const [switchList, setSwitchList] = useState<NetworkDevice[]>([] as NetworkDevice[])
   const [containerWidth, setContainerWidth] = useState<number>(1)
   const [imageUrl, setImageUrl] = useState('')
+  const { $t } = useIntl()
 
   const { data: extendedSwitchList } = useSwitchListQuery({
     params,
@@ -115,7 +117,14 @@ export function SwitchFloorplan (props: { activeDevice: NetworkDevice,
     state={{
       param: { floorplan: floorplan }
     }}>
-      {floorplan?.name}
+      {floorplan?.name} {
+        $t({ defaultMessage: `({floor, selectordinal,
+                one {#st}
+                two {#nd}
+                few {#rd}
+                other {#th}
+            } Floor)` },
+        { floor: floorplan?.floorNumber })}
     </Link>
     <div
       ref={imageContainerRef}

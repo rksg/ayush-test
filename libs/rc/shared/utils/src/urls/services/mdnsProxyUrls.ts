@@ -96,5 +96,10 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/venues/:venueId/aps/:apSerialNumber/multicastDnsProxyProfiles/:serviceId',
     newApi: true
+  },
+  getMdnsProxyListRbac: {
+    method: 'post',
+    url: '/multicastDnsProxyProfiles/query',
+    newApi: true
   }
 }

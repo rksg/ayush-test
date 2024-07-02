@@ -12,6 +12,7 @@ import {
   getServiceListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
 import { MdnsProxyInstancesTable } from './MdnsProxyInstancesTable'
@@ -51,7 +52,9 @@ export default function MdnsProxyDetail () {
             oper: ServiceOperation.EDIT,
             serviceId: params.serviceId as string
           })}>
-            <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
+            <Button scopeKey={[WifiScopes.UPDATE]} key='configure' type='primary'>
+              {$t({ defaultMessage: 'Configure' })}
+            </Button>
           </TenantLink>
         ])}
       />

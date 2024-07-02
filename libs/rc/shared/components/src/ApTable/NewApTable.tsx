@@ -3,7 +3,7 @@ import React, { ReactNode, Ref, forwardRef, useContext, useEffect, useImperative
 
 import { FetchBaseQueryError }  from '@reduxjs/toolkit/dist/query'
 import { Badge, Divider, Form } from 'antd'
-import { find }                 from 'lodash'
+import { cloneDeep, find }      from 'lodash'
 import { useIntl }              from 'react-intl'
 
 import {
@@ -74,9 +74,9 @@ interface ImportFileFormType {
   venueId: string
 }
 
-export const newApPayload = {
+export const newDefaultApPayload = {
   searchString: '',
-  searchTargetFields: ['name', 'model', 'networkStatus', 'macAddress', 'tags', 'serialNumber'],
+  searchTargetFields: ['name', 'model', 'networkStatus.ipAddress', 'macAddress', 'tags', 'serialNumber'],
   fields: [
     'name', 'status', 'model', 'networkStatus', 'macAddress', 'venueName',
     'switchName', 'meshRole', 'clients', 'apGroupId',
@@ -90,7 +90,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const navigate = useNavigate()
   const location = useLocation()
   const params = useParams()
-  const filters = getFilters(params) as FILTER
+  const filters = cloneDeep(getFilters(params) as FILTER)
   const { searchable, filterables, enableApCompatibleCheck=false, settingsId = 'ap-table' } = props
   const { setApsCount } = useContext(ApsTabContext)
   const [ compatibilitiesDrawerVisible, setCompatibilitiesDrawerVisible ] = useState(false)
@@ -108,15 +108,18 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
   const [ getApCompatibilitiesNetwork ] = useLazyGetApCompatibilitiesNetworkQuery()
   const { data: wifiCapabilities } = useWifiCapabilitiesQuery({ params: { }, enableRbac: true })
 
+  const { deviceGroupId , ...otherFilters } = filters
+  const newFilters = { ...otherFilters, apGroupId: deviceGroupId }
+
   const apListTableQuery = usePollingTableQuery({
     useQuery: useNewApListQuery,
     defaultPayload: {
-      ...newApPayload,
+      ...newDefaultApPayload,
       // groupByFields: groupedFields,
-      filters
+      filters: newFilters
     },
     search: {
-      searchTargetFields: newApPayload.searchTargetFields
+      searchTargetFields: newDefaultApPayload.searchTargetFields
     },
     option: { skip: Boolean(props.tableQuery) },
     enableSelectAllPagesData: ['id', 'name', 'serialNumber', 'apGroupId',
@@ -252,7 +255,7 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
     }, {
       key: 'networkStatus.ipAddress',
       title: $t({ defaultMessage: 'IP Address' }),
-      dataIndex: 'networkStatus.ipAddress',
+      dataIndex: ['networkStatus', 'ipAddress'],
       searchable: searchable,
       sorter: true
     }, {
@@ -385,7 +388,10 @@ export const NewApTable = forwardRef((props: ApTableProps<NewAPModelExtended|New
       title: $t({ defaultMessage: 'Tags' }),
       dataIndex: 'tags',
       searchable: searchable,
-      sorter: true
+      sorter: true,
+      render: (data: ReactNode, row: NewAPModelExtended) => (
+        row.tags?.join(', ')
+      )
     }, {
       key: 'serialNumber',
       title: $t({ defaultMessage: 'Serial Number' }),

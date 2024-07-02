@@ -4,11 +4,17 @@ import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { venueApi }                                        from '@acx-ui/rc/services'
-import { CommonRbacUrlsInfo, CommonUrlsInfo, RogueApUrls } from '@acx-ui/rc/utils'
-import { Provider, store }                                 from '@acx-ui/store'
-import { mockServer, render, screen, waitFor }             from '@acx-ui/test-utils'
+import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
+import { venueApi }                          from '@acx-ui/rc/services'
+import {
+  CommonRbacUrlsInfo,
+  CommonUrlsInfo,
+  ConfigTemplateContext,
+  PoliciesConfigTemplateUrlsInfo,
+  RogueApUrls, VenueConfigTemplateUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { VenueEditContext }     from '../..'
 import {
@@ -109,6 +115,10 @@ describe('SecurityTab', () => {
         (_, res, ctx) => res(
           mockGetRoguePolicy(),
           ctx.json({ reportThreshold: 0 }))
+      ),
+      rest.get(
+        RogueApUrls.getRoguePolicyRbac.url,
+        (_, res, ctx) => res(ctx.json(rogueApPolicyNotDefaultProfile))
       )
     )
   })
@@ -261,4 +271,58 @@ describe('SecurityTab', () => {
 
   })
 
+  // eslint-disable-next-line max-len
+  it('should render correctly with RogueApProfile settings with RBAC_CONFIG_TEMPLATE_TOGGLE turned on', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+
+    const mockGetRoguePolicyTemplate = jest.fn()
+    mockServer.use(
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getVenueRogueAp.url,
+        (_, res, ctx) => {
+          return res(ctx.json({}))
+        }),
+      rest.post(
+        PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(
+          mockGetRoguePolicyTemplate(),
+          ctx.json(mockRogueApPoliciesListRbac)
+        )
+      ),
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac.url,
+        (_, res, ctx) => {
+          return res(ctx.json(rogueApPolicyNotDefaultProfile))
+        }),
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getVenueRogueApRbac.url,
+        (_, res, ctx) => {
+          return res(ctx.json(venueRogueAp))
+        }),
+      rest.get(
+        VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection.url,
+        (_, res, ctx) => res(ctx.json(venueDosProtection)))
+    )
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <Provider>
+          <VenueEditContext.Provider value={{
+            setEditContextData: jest.fn(),
+            setEditSecurityContextData: jest.fn()
+          }}>
+            <SecurityTab />
+          </VenueEditContext.Provider>
+        </Provider></ConfigTemplateContext.Provider>, { route: { params } })
+
+    await waitFor(() => expect(mockGetRoguePolicyTemplate).toBeCalled())
+
+    await screen.findByRole('option', { name: 'a123' })
+
+    await userEvent.selectOptions(
+      screen.getAllByRole('combobox')[0],
+      screen.getByRole('option', { name: 'a123' })
+    )
+
+    await userEvent.click(await screen.findByRole('button', { name: 'View Details' }))
+  })
 })

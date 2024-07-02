@@ -17,10 +17,12 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
+import { useGetNotificationSmsQuery }                      from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
-  GuestNetworkTypeEnum, NetworkTypeEnum
+  GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
 } from '@acx-ui/rc/utils'
+import { useParams }          from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
@@ -93,6 +95,14 @@ export function SelfSignInForm () {
   })
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
   const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
+  const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
+  const params = useParams()
+  const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
+  const isSMSTokenAvailable = isSmsProviderEnabled ?
+    !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
+     (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
+    : true
+  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable
 
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
@@ -151,7 +161,7 @@ export function SelfSignInForm () {
         form.setFieldValue('redirectCheckbox', true)
       }
       const allowedSignValueTemp = []
-      if (data.guestPortal?.enableSmsLogin) {
+      if (data.guestPortal?.enableSmsLogin && !isRestEnableSmsLogin) {
         allowedSignValueTemp.push('enableSmsLogin')
       }
       if (data.guestPortal?.enableEmailLogin) {
@@ -175,6 +185,8 @@ export function SelfSignInForm () {
     if(!editMode) {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      if (isRestEnableSmsLogin)
+        form.setFieldValue(['guestPortal', 'enableSmsLogin'], false)
     }
   }, [data])
   const globalValues= get('CAPTIVE_PORTAL_DOMAIN_NAME')
@@ -204,7 +216,9 @@ export function SelfSignInForm () {
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
-                checked={enableSmsLogin}>
+                checked={enableSmsLogin}
+                disabled={!editMode && !isSMSTokenAvailable}
+                >
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}
                 </UI.Checkbox>
@@ -324,7 +338,7 @@ export function SelfSignInForm () {
             valuePropName='checked'
             initialValue={false}
             children={
-              <Checkbox disabled={!isSocial}
+              <Checkbox disabled={!(isSocial || enableEmailLogin)}
                 onChange={(e) => {
                   if (e.target.checked) {
                     form.setFieldValue(['guestPortal', 'socialDomains'], allowedDomainsValue)
@@ -373,7 +387,7 @@ export function SelfSignInForm () {
             name={['guestPortal', 'socialEmails']}
             valuePropName='checked'
             initialValue={false}>
-            <Checkbox disabled={!isSocial}>
+            <Checkbox disabled={!(isSocial || enableEmailLogin)}>
               {!isSocial && <Tooltip title={$t({
                 defaultMessage: 'This option applies only when signing ' +
                   'in with social media platforms is supported'
@@ -392,7 +406,8 @@ export function SelfSignInForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip></>
         </Form.Item>
-        {enableSmsLogin && <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
+        {(enableSmsLogin || enableEmailLogin) &&
+        <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
           <Space align='start'>
             <Form.Item
               noStyle

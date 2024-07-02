@@ -33,9 +33,10 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
+import { commonQueryFn }                     from '../servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess } from '../utils'
 
-import { commonQueryFn, configTemplateApi }                                          from './common'
+import { configTemplateApi }                                                         from './common'
 import { useCasesToRefreshVenueTemplateList, useCasesToRefreshVlanPoolTemplateList } from './constants'
 import { policiesConfigTemplateApi }                                                 from './policies'
 
