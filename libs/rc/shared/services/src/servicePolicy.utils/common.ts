@@ -14,7 +14,7 @@ export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo?: ApiInfo) {
     const { params, payload, enableRbac = false } = queryArgs
     const resolvedApiInfo = enableRbac ? rbacApiInfo : apiInfo
     // eslint-disable-next-line max-len
-    const resolvedPayload = resolvedApiInfo?.headers?.['Content-Type'] ? JSON.stringify(payload) : payload
+    const resolvedPayload = resolvedApiInfo?.defaultHeaders?.['Content-Type'] ? JSON.stringify(payload) : payload
 
     return {
       ...createHttpRequest(resolvedApiInfo!, params),

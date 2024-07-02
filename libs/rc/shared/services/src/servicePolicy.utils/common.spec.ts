@@ -30,7 +30,7 @@ describe('servicePolicy.utils', () => {
     it('should create fetch args with RBAC', () => {
       const apiInfo: ApiInfo = { url: '/test', method: 'GET' }
       // eslint-disable-next-line max-len
-      const rbacApiInfo: ApiInfo = { url: '/rbac/test', method: 'GET', headers: { ...GetApiVersionHeader(ApiVersionEnum.v1) } }
+      const rbacApiInfo: ApiInfo = { url: '/rbac/test', method: 'GET', defaultHeaders: { ...GetApiVersionHeader(ApiVersionEnum.v1) } }
       const queryArgs: RequestPayload = { payload: { key: 'value' }, enableRbac: true }
 
       const result = commonQueryFn(apiInfo, rbacApiInfo)(queryArgs)

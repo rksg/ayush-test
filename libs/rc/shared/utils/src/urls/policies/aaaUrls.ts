@@ -35,7 +35,7 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/radiusServerProfiles/query',
     newApi: true,
-    headers: {
+    defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
@@ -50,7 +50,7 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/radius',
     url: '/radiusServerProfiles',
     newApi: true,
-    headers: {
+    defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1_1+json',
       'Content-Type': 'application/vnd.ruckus.v1_1+json'
     }
@@ -60,7 +60,7 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
     url: '/radiusServerProfiles/:policyId',
     newApi: true,
-    headers: {
+    defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1_1+json',
       'Content-Type': 'application/vnd.ruckus.v1_1+json'
     }

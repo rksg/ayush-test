@@ -16,7 +16,7 @@ export interface ApiInfo {
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
-  headers?: {
+  defaultHeaders?: {
     'Content-Type'?: string;
     'Accept'?: string
   };
@@ -84,9 +84,9 @@ export const createHttpRequest = (
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    ...(apiInfo.defaultHeaders),
     ...customHeaders,
-    ...getJwtHeaders({ ignoreDelegation }),
-    ...(apiInfo.headers)
+    ...getJwtHeaders({ ignoreDelegation })
   }
 
   const origin = window.location.origin

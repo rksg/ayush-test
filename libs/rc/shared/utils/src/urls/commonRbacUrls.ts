@@ -392,7 +392,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueRogueAp: {
     method: 'get',
     url: '/venues/:venueId/roguePolicySettings',
-    headers: {
+    newApi: true,
+    defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
@@ -400,7 +401,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRogueAp: {
     method: 'put',
     url: '/venues/:venueId/roguePolicySettings',
-    headers: {
+    newApi: true,
+    defaultHeaders: {
       'Accept': 'application/vnd.ruckus.v1+json',
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
