@@ -23,7 +23,7 @@ const apsCountQueryPayload = {
   groupByFields: groupedFields
 }
 
-const useApsCount = () => {
+const useApsCount = (): [number, React.Dispatch<React.SetStateAction<number>>] => {
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const [ apsCount, setApsCount ] = useState(0)
 
