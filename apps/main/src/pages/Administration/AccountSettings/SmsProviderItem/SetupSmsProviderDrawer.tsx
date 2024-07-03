@@ -11,7 +11,8 @@ import {
 } from '@acx-ui/rc/services'
 import {
   SmsProviderType,
-  NotificationSmsConfig
+  NotificationSmsConfig,
+  URLRegExp
 } from '@acx-ui/rc/utils'
 
 import { MessageMapping } from '../MessageMapping'
@@ -213,12 +214,14 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
         ]}
         children={<Input.TextArea rows={8} />}
       />
+
       <Form.Item
         name='sendUrl'
         label={$t({ defaultMessage: 'Send URL' })}
-        tooltip={true}
+        // eslint-disable-next-line max-len
+        tooltip={$t({ defaultMessage: 'The URL of this SMS provider. This should include variables for phone number, message, and API key.' })}
         rules={[
-          { required: true }
+          { validator: (_, value) => URLRegExp(value) }
         ]}
         children={<Input />}
       />
