@@ -70,7 +70,11 @@ describe('recommendation services', () => {
         },
         statusTrail: mockedRecommendationCRRM.statusTrail,
         trigger: 'daily',
-        intentType: 'clientDensity'
+        intentType: 'clientDensity',
+        crrmInterferingLinks: {
+          after: 0,
+          before: 2
+        }
       } as unknown as EnhancedRecommendation)
     })
   })

@@ -3,6 +3,7 @@
 exports[`useCRRMQuery should return correct data 1`] = `
 Array [
   Object {
+    "affectedAPs": 2,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -14,6 +15,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 2,
     "links": Array [
       Object {
         "category": "highlight",
@@ -93,6 +95,7 @@ Array [
     ],
   },
   Object {
+    "affectedAPs": 0,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -104,6 +107,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 0,
     "links": Array [
       Object {
         "category": "normal",
@@ -195,6 +199,7 @@ W10-R760-Doberman,5C:DF:89:0B:FE:E0,2.4 GHz,TRUE,120,36,80 MHz,80 MHz,Full,Full
 exports[`useCRRMQuery should return correct data for applied status 1`] = `
 Array [
   Object {
+    "affectedAPs": 2,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -206,6 +211,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 2,
     "links": Array [
       Object {
         "category": "highlight",
@@ -291,6 +297,7 @@ Array [
     ],
   },
   Object {
+    "affectedAPs": 0,
     "categories": Array [
       Object {
         "name": "highlight",
@@ -302,6 +309,7 @@ Array [
         "name": "txPower",
       },
     ],
+    "interferingLinks": 0,
     "links": Array [
       Object {
         "category": "normal",

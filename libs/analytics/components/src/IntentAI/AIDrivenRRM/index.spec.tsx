@@ -4,7 +4,7 @@ import { pick }  from 'lodash'
 import { recommendationUrl, Provider }                                         from '@acx-ui/store'
 import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
-import { mockedRecommendationCRRM } from './__tests__/fixtures'
+import { mockedCRRMGraphs, mockedRecommendationCRRM } from './__tests__/fixtures'
 
 import { IntentAIDrivenRRM } from '.'
 
@@ -23,6 +23,9 @@ describe('AIDrivenRRM', () => {
     })
     mockGraphqlQuery(recommendationUrl, 'ConfigRecommendationDetails', {
       data: { recommendation: mockedRecommendationCRRM }
+    })
+    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
+      data: { recommendation: mockedCRRMGraphs }
     })
     jest.spyOn(require('../Recommendations/utils'), 'isDataRetained')
       .mockImplementation(() => true)

@@ -81,15 +81,6 @@ export const LegendText = styled.div`
   font-weight: var(--acx-body-font-weight);
 `
 
-export const Circle = styled.span<{ $size: string }>`
-  display: inline-block;
-  width: ${props => props.$size};
-  height: ${props => props.$size};
-  border-radius: 50%;
-  border: 1px solid var(--acx-neutrals-60);
-  justify-self: end;
-`
-
 export const Square = styled.span<{ $color: string }>`
   background-color: ${props => props.$color};
   display: inline-block;

@@ -37,7 +37,7 @@ describe('CloudRRM', () => {
   it('should render correctly', async () => {
     const details = mockedRecommendationCRRM as EnhancedRecommendation
     render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
-    expect(await screen.findByText('More details')).toBeVisible()
+    expect(await screen.findByText('View More')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(2)
     expect(screen.queryByTestId('rrm-comparison-button')).toBeNull()
   })
@@ -45,10 +45,9 @@ describe('CloudRRM', () => {
   it('should handle drawer', async () => {
     const details = mockedRecommendationCRRM as EnhancedRecommendation
     render(<CloudRRMGraph details={details}/>, { wrapper: Provider })
-    await userEvent.click(await screen.findByText('More details'))
-    expect(await screen.findByTestId('rrm-legend')).toBeVisible()
+    await userEvent.click(await screen.findByText('View More'))
+    expect(await screen.findByText('Key Performance Indications')).toBeVisible()
     expect(await screen.findAllByTestId('rrm-graph')).toHaveLength(4)
-    expect(await screen.findByTestId('rrm-comparison-button')).toBeVisible()
     await userEvent.click(await screen.findByTestId('CloseSymbol'))
   })
 })
