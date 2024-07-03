@@ -57,11 +57,31 @@ const buildMenu = (config: Item[]): LayoutProps['menuConfig'] =>
 export function useMenuConfig () {
   const { $t } = useIntl()
   const [search] = useSearchParams()
-  const isZonesPageEnabled = useIsSplitOn(Features.RUCKUS_AI_ZONES_LIST)
   const isSwitchHealthEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
     useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
   ].some(Boolean)
+  const isIntentAIEnabled = useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE)
+  const aiAnalyticsMenu = [{
+    permission: 'READ_INCIDENTS',
+    uri: '/incidents',
+    label: $t({ defaultMessage: 'Incidents' })
+  }, {
+    permission: 'READ_AI_DRIVEN_RRM',
+    uri: '/recommendations/crrm',
+    label: $t({ defaultMessage: 'AI-Driven RRM' })
+  }, {
+    permission: 'READ_AI_OPERATIONS',
+    uri: '/recommendations/aiOps',
+    label: $t({ defaultMessage: 'AI Operations' })
+  }] as Item[]
+  if (isIntentAIEnabled) {
+    aiAnalyticsMenu.push({
+      permission: 'READ_INTENT_AI',
+      uri: '/intentAI',
+      label: $t({ defaultMessage: 'Intent AI' })
+    })
+  }
   return buildMenu([{
     uri: '/dashboard',
     permission: 'READ_DASHBOARD',
@@ -75,19 +95,7 @@ export function useMenuConfig () {
     children: [{
       type: 'group' as const,
       label: $t({ defaultMessage: 'AI Analytics' }),
-      children: [{
-        permission: 'READ_INCIDENTS',
-        uri: '/incidents',
-        label: $t({ defaultMessage: 'Incidents' })
-      }, {
-        permission: 'READ_AI_DRIVEN_RRM',
-        uri: '/recommendations/crrm',
-        label: $t({ defaultMessage: 'AI-Driven RRM' })
-      }, {
-        permission: 'READ_AI_OPERATIONS',
-        uri: '/recommendations/aiOps',
-        label: $t({ defaultMessage: 'AI Operations' })
-      }]
+      children: aiAnalyticsMenu
     }, {
       type: 'group' as const,
       label: $t({ defaultMessage: 'Network Assurance' }),
@@ -119,7 +127,6 @@ export function useMenuConfig () {
     }]
   }, {
     permission: 'READ_ZONES',
-    hidden: !isZonesPageEnabled,
     uri: '/zones',
     label: $t({ defaultMessage: 'Zones' }),
     inactiveIcon: LocationOutlined,

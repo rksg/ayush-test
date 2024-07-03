@@ -12,6 +12,10 @@ export class RadioParams6G {
 
   allowedChannels?: Channel6GEnum[]
 
+  allowedIndoorChannels?: Channel6GEnum[]
+
+  allowedOutdoorChannels?: Channel6GEnum[]
+
   channelBandwidth: ChannelBandwidth6GEnum
 
   changeInterval: number
@@ -34,6 +38,10 @@ export class RadioParams6G {
     this.method = ScanMethodEnum.CHANNELFLY
 
     this.allowedChannels = []
+
+    this.allowedIndoorChannels = []
+
+    this.allowedOutdoorChannels = []
 
     this.channelBandwidth = ChannelBandwidth6GEnum.AUTO
 

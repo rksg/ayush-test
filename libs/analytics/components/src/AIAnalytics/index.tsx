@@ -2,7 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
 import { get }                                         from '@acx-ui/config'
-import { useIsSplitOn, Features }                      from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
 import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
 import { hasPermission }                               from '@acx-ui/user'
 import { DateRange }                                   from '@acx-ui/utils'
@@ -14,7 +14,8 @@ import { RecommendationTabContent } from '../Recommendations'
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
   CRRM = 'recommendations/crrm',
-  AIOPS = 'recommendations/aiOps'
+  AIOPS = 'recommendations/aiOps',
+  INTENTAI = 'intentAI'
 }
 
 interface Tab {
@@ -26,8 +27,6 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
-  const crrmEnabled = useIsSplitOn(Features.AI_CRRM)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
@@ -48,6 +47,13 @@ const useTabs = () : Tab[] => {
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
   }
 
+  const intenAITab = {
+    key: AIAnalyticsTabEnum.INTENTAI,
+    title: $t({ defaultMessage: 'Intent AI' }),
+    component: <div data-testid='intentAI' />,
+    headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
+  }
+  let displayIntentAI = false
   const getRecommendationTabs = () => {
     let recommendationTabs = [] as Tab[]
     if (get('IS_MLISA_SA')) { // RAI
@@ -57,17 +63,25 @@ const useTabs = () : Tab[] => {
       if (hasPermission({ permission: 'READ_AI_OPERATIONS' })) {
         recommendationTabs.push(aiOpsTab as Tab)
       }
+      if (hasPermission({ permission: 'READ_INTENT_AI' })) {
+        displayIntentAI = true
+      }
     } else { // R1
-      crrmEnabled && recommendationTabs.push(crrmTab as Tab)
-      recommendationsEnabled && recommendationTabs.push(aiOpsTab as Tab)
+      recommendationTabs.push(crrmTab as Tab)
+      recommendationTabs.push(aiOpsTab as Tab)
+      displayIntentAI = true
     }
     return recommendationTabs
   }
-
+  const isIntentAIEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
+    useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  ].some(Boolean)
 
   return [
     incidentsTab,
-    ...getRecommendationTabs()
+    ...getRecommendationTabs(),
+    ...(isIntentAIEnabled && displayIntentAI ? [intenAITab] : [])
   ]
 }
 

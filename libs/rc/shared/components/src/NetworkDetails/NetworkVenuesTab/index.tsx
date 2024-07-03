@@ -113,6 +113,7 @@ export function NetworkVenuesTab () {
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const settingsId = 'network-venues-table'
   const tableQuery = useTableQuery({
     useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useNetworkVenueTableV2Query : useNetworkVenueListV2Query)
@@ -140,7 +141,6 @@ export function NetworkVenuesTab () {
 
   const params = useParams()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const [updateNetworkVenue] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateNetworkVenueMutation,
@@ -183,7 +183,8 @@ export function NetworkVenuesTab () {
       sortOrder: 'ASC',
       page: 1,
       pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({
@@ -220,14 +221,12 @@ export function NetworkVenuesTab () {
           // work around of read-only records from RTKQ
           activated: activatedVenue ? { isActivated: true } : { ...item.activated }
         })
-        if (supportOweTransition) {
-          setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
-        }
+        setSystemNetwork(networkQuery.data?.isOweMaster === false && networkQuery.data?.owePairNetworkId !== undefined)
       })
 
       setTableData(data)
     }
-  }, [tableQuery.data, networkQuery.data, supportOweTransition])
+  }, [tableQuery.data, networkQuery.data])
 
   const scheduleSlotIndexMap = useScheduleSlotIndexMap(tableData, isMapEnabled)
 
@@ -362,6 +361,7 @@ export function NetworkVenuesTab () {
   const rowActions: TableProps<Venue>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Activate' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: activation,
       onClick: (rows, clearSelection) => {
         const networkVenues = activateSelected(rows)
@@ -370,6 +370,7 @@ export function NetworkVenuesTab () {
     },
     {
       label: $t({ defaultMessage: 'Deactivate' }),
+      scopeKey: [WifiScopes.UPDATE],
       visible: activation,
       onClick: (rows, clearSelection) => {
         checkSdLanScopedNetworkDeactivateAction(sdLanScopedNetworkVenues?.networkVenueIds, rows.map(item => item.id), () => {

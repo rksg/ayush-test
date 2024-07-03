@@ -74,15 +74,14 @@ describe('Health KPI', () => {
       },
       connection: {
         kpis: [
-          'switchDhcp'
+          'switchAuthentication'
         ]
       },
       performance: {
         kpis: [
           'switchPortUtilization',
           'switchUplinkPortUtilization',
-          'switchInterfaceAnomalies',
-          'switchStormControl'
+          'switchInterfaceAnomalies'
         ]
       },
       infrastructure: {

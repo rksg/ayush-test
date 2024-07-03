@@ -3,20 +3,24 @@ import { Divider }              from 'antd'
 import { capitalize, includes } from 'lodash'
 import { useIntl }              from 'react-intl'
 
-import { Drawer, Descriptions, PasswordInput }                                                              from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
-import { useGetVenueQuery, useGetVenueSettingsQuery, useGetApValidChannelQuery, useGetApCapabilitiesQuery } from '@acx-ui/rc/services'
+import { Drawer, Descriptions, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
+import {
+  useGetVenueQuery,
+  useGetVenueSettingsQuery,
+  useGetApValidChannelQuery
+} from '@acx-ui/rc/services'
 import {
   ApDetails,
   ApVenueStatusEnum,
   ApViewModel,
   DeviceGps,
   gpsToFixed,
-  useApContext,
-  Capabilities,
   APPropertiesAFCPowerStateRender } from '@acx-ui/rc/utils'
 import { TenantLink }            from '@acx-ui/react-router-dom'
 import { useUserProfileContext } from '@acx-ui/user'
+
+import { useGetApCapabilities } from '../../../hooks'
 
 import { ApCellularProperties } from './ApCellularProperties'
 import * as UI                  from './styledComponents'
@@ -29,29 +33,32 @@ interface ApDetailsDrawerProps {
 }
 
 export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+
   const { $t } = useIntl()
   const { data: userProfile } = useUserProfileContext()
-  const { tenantId } = useApContext()
-  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+
   const { visible, setVisible, currentAP, apDetails } = props
   const { APSystem, cellularInfo: currentCellularInfo } = currentAP?.apStatusData || {}
   const ipTypeDisplay = (APSystem?.ipType) ? ` [${capitalize(APSystem?.ipType)}]` : ''
-  const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId, serialNumber: currentAP?.serialNumber } })
-  const { data: capabilities } = useGetApCapabilitiesQuery({ params: { tenantId, serialNumber: currentAP?.serialNumber } })
 
-  const { data: venueData } = useGetVenueQuery({
-    params: { tenantId, venueId: currentAP?.venueId }
-  },
-  {
-    skip: !currentAP?.venueId
-  })
+  const params = {
+    venueId: currentAP?.venueId,
+    serialNumber: currentAP?.serialNumber
+  }
+  const { data: apValidChannels } = useGetApValidChannelQuery({ params, enableRbac: isUseRbacApi },
+    { skip: !params.venueId })
 
-  const { data: venueSettings } = useGetVenueSettingsQuery({
-    params: { tenantId, venueId: currentAP?.venueId }
-  },
-  {
-    skip: !currentAP?.venueId
-  })
+  const { data: apCapabilities } = useGetApCapabilities({
+    params,
+    modelName: currentAP?.model,
+    enableRbac: isUseRbacApi })
+
+  const { data: venueData } = useGetVenueQuery({ params, enableRbac: isUseRbacApi }, { skip: !params.venueId })
+
+  const { data: venueSettings } = useGetVenueSettingsQuery({ params, enableRbac: isUseRbacApi },
+    { skip: !currentAP?.venueId })
 
   const onClose = () => {
     setVisible(false)
@@ -59,23 +66,23 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const displayAFCInfo = () => {
 
-    let displayContent = (<></>)
+    //let displayContent = (<></>)
+    const { supportTriRadio=false, isOutdoor=false } = apCapabilities ?? {}
 
-    const typeCastCapabilities = capabilities as unknown as Capabilities ?? {}
-    const currentApModel = typeCastCapabilities.apModels?.find((apModel) => apModel.model === currentAP.model)
     const enableAFC = apValidChannels?.afcEnabled
-    const apRadioDeploy = currentAP?.apRadioDeploy
+    const { apRadioDeploy, apStatusData } = currentAP ?? {}
 
-    if ([AFC_Featureflag, currentApModel?.supportTriRadio, enableAFC, (apRadioDeploy === '2-5-6')].every(Boolean)) {
-      displayContent = (<Descriptions.Item
+    if ([AFC_Featureflag, supportTriRadio, enableAFC, (apRadioDeploy === '2-5-6')].every(Boolean)) {
+      //displayContent = (<Descriptions.Item
+      return (<Descriptions.Item
         label={$t({ defaultMessage: 'AFC Power State' })}
         children={
-          APPropertiesAFCPowerStateRender(currentAP?.apStatusData?.afcInfo, apRadioDeploy)
+          APPropertiesAFCPowerStateRender(apStatusData?.afcInfo, apRadioDeploy, isOutdoor)
         }
       />)
     }
 
-    return displayContent
+    return null
   }
 
 

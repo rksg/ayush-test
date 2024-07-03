@@ -264,5 +264,50 @@ export const PoliciesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/templates/venues/:venueId/rogueApSettings',
     newApi: true
+  },
+  getRoguePolicyListRbac: {
+    method: 'post',
+    url: '/templates/roguePolicies/query',
+    newApi: true
+  },
+  addRoguePolicyRbac: {
+    method: 'post',
+    url: '/templates/roguePolicies',
+    newApi: true
+  },
+  getRoguePolicyRbac: {
+    method: 'get',
+    url: '/templates/roguePolicies/:policyId',
+    newApi: true
+  },
+  updateRoguePolicyRbac: {
+    method: 'put',
+    url: '/templates/roguePolicies/:policyId',
+    newApi: true
+  },
+  deleteRoguePolicyRbac: {
+    method: 'delete',
+    url: '/templates/roguePolicies/:templateId',
+    newApi: true
+  },
+  activateRoguePolicy: {
+    method: 'put',
+    url: '/templates/venues/:venueId/roguePolicies/:policyId',
+    newApi: true
+  },
+  deactivateRoguePolicy: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/roguePolicies/:policyId',
+    newApi: true
+  },
+  getVenueRogueApRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/roguePolicySettings',
+    newApi: true
+  },
+  updateVenueRogueApRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/roguePolicySettings',
+    newApi: true
   }
 }

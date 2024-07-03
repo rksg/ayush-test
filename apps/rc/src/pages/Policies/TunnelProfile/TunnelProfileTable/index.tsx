@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                      from '@acx-ui/feature-toggle'
+import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteTunnelProfileMutation,
   useGetEdgeSdLanViewDataListQuery,
@@ -9,19 +10,30 @@ import {
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, isDefaultTunnelProfile, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink }                                                                                                                             from '@acx-ui/react-router-dom'
-import { EdgeScopes, WifiScopes }                                                                                                                                                   from '@acx-ui/types'
-import { filterByAccess, hasPermission }                                                                                                                                            from '@acx-ui/user'
+import { getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  isDefaultTunnelProfile,
+  MtuTypeEnum,
+  PolicyOperation,
+  PolicyType,
+  TunnelProfileViewData,
+  useTableQuery,
+  getTunnelTypeString,
+  TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes, WifiScopes }                       from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const isEdgeSdLanReady = useIsSplitOn(Features.EDGES_SD_LAN_TOGGLE)
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
-  const isEdgePinReady = useIsSplitOn(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -101,6 +113,17 @@ const TunnelProfileTable = () => {
         )
       }
     },
+    ...((isEdgeVxLanKaReady)
+      ? [{
+        title: $t({ defaultMessage: 'Network Segment Type' }),
+        key: 'type',
+        dataIndex: 'type',
+        sorter: true,
+        render: (_, row) => getTunnelTypeString($t, row.type || TunnelTypeEnum.VXLAN,
+          isEdgeVxLanKaReady)
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      : []
+    ),
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
       key: 'mtuType',

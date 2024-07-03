@@ -38,13 +38,13 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
   )
 
   const incidents : StatsCardProps['values'] = [{
-    title: defineMessage({ defaultMessage: 'APs' }),
+    title: defineMessage({ defaultMessage: 'Wireless' }),
     value: formatValue(summaryData?.apIncidentCount)
   }]
 
   !wirelessOnly && incidents.push(
     {
-      title: defineMessage({ defaultMessage: 'Switches' }),
+      title: defineMessage({ defaultMessage: 'Wired' }),
       value: formatValue(summaryData?.switchIncidentCount)
     }
   )
@@ -75,7 +75,7 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
 
   !wirelessOnly && powerUtilization.push(
     {
-      title: defineMessage({ defaultMessage: 'Switches under PoE threshold' }),
+      title: defineMessage({ defaultMessage: 'Switches with surplus availability' }),
       value: formatValue(summaryData?.poeUnderPoweredSwitchCount),
       suffix: `/${formatValue(summaryData?.poeThresholdSwitchCount)}`
     }
@@ -99,7 +99,7 @@ export const SummaryBoxes = ({ filters, wirelessOnly }: {
     },
     {
       type: 'grey',
-      title: defineMessage({ defaultMessage: 'Power Utilization' }),
+      title: defineMessage({ defaultMessage: 'Power Utilization (PoE)' }),
       values: powerUtilization
     }
   ]

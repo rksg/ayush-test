@@ -28,6 +28,8 @@ export function getDeviceFilterLabel (networkDeviceType: NetworkDeviceType) {
       return $t({ defaultMessage: 'Switches' })
     case NetworkDeviceType.cloudpath:
       return $t({ defaultMessage: 'Cloudpath Servers' })
+    case NetworkDeviceType.rwg:
+      return $t({ defaultMessage: 'RWGs' })
     default:
       return undefined  // should not reach this statement
   }

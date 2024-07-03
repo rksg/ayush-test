@@ -5,6 +5,7 @@ import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
 import { Loader }                                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                                from '@acx-ui/feature-toggle'
 import { useApGroupsListQuery, useGetApGroupsTemplateListQuery } from '@acx-ui/rc/services'
 import { ApGroupViewModel, useConfigTemplate }                   from '@acx-ui/rc/utils'
 
@@ -26,7 +27,6 @@ export function ApGroupContextProvider (props: { children: ReactNode }) {
   const { apGroupId } = params
   const { $t } = useIntl()
   const fields = ['id', 'name', 'venueName', 'venueId', 'members', 'networks']
-
   const results = useApGroupsListInstance()
 
   const { data } = results
@@ -47,6 +47,7 @@ export function ApGroupContextProvider (props: { children: ReactNode }) {
 const useApGroupsListInstance = () => {
   const { isTemplate } = useConfigTemplate()
   const { tenantId, apGroupId } = useParams()
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
   const fields = ['id', 'name', 'venueName', 'venueId', 'members', 'networks']
 
   const apGroupsListPayload = {
@@ -59,7 +60,8 @@ const useApGroupsListInstance = () => {
     params: { tenantId },
     payload: apGroupsListPayload,
     page: 1,
-    pageSize: 10
+    pageSize: 10,
+    enableRbac: isWifiRbacEnabled
   }, {
     skip: isTemplate,
     selectFromResult: ({ data, ...rest }) => ({

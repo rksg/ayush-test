@@ -3,14 +3,17 @@ import { useEffect, useState } from 'react'
 
 import _ from 'lodash'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   covertAAAViewModalTypeToRadius,
   useActivateRadiusServerMutation,
+  useActivateVlanPoolMutation,
   useDeactivateRadiusServerMutation,
+  useDeactivateVlanPoolMutation,
   useGetAAAPolicyViewModelListQuery,
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useUpdateRadiusServerSettingsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -25,11 +28,13 @@ import {
   ConfigTemplateType,
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
-  CommonResult
+  CommonResult,
+  VlanPool
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 import { useIsConfigTemplateEnabledByType } from '../configTemplates'
+import { useIsEdgeReady }                   from '../useEdgeActions'
 
 export interface NetworkVxLanTunnelProfileInfo {
   enableTunnel: boolean,
@@ -114,14 +119,13 @@ export const hasVxLanTunnelProfile = (data: NetworkSaveData | null) => {
 
 export const useNetworkVxLanTunnelProfileInfo =
   (data: NetworkSaveData | null): NetworkVxLanTunnelProfileInfo => {
-    const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-    const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+    const isEdgeEnabled = useIsEdgeReady()
 
     const { data: tunnelProfileData } = useGetTunnelProfileViewDataListQuery(
       { payload: {
         filters: { networkIds: [data?.id] }
       } },
-      { skip: !isEdgeEnabled || !isEdgeReady || !data }
+      { skip: !isEdgeEnabled || !data }
     )
 
     const vxLanTunnels = tunnelProfileData?.data.filter(item => item.type === TunnelTypeEnum.VXLAN
@@ -265,5 +269,57 @@ export function useRadiusServer () {
   return {
     updateRadiusServer,
     radiusServerConfigurations
+  }
+}
+
+
+export function useVlanPool () {
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { networkId } = useParams()
+
+  const [activate] = useActivateVlanPoolMutation()
+  const [deactivate] = useDeactivateVlanPoolMutation()
+
+  const { vlanPoolId } = useGetVLANPoolPolicyViewModelListQuery({
+    payload: {
+      fields: ['name', 'id'],
+      filters: { wifiNetworkIds: [networkId] },
+      sortField: 'name',
+      sortOrder: 'ASC',
+      page: 1,
+      pageSize: 10000
+    },
+    enableRbac: isPolicyRbacEnabled
+  }, {
+    skip: !isPolicyRbacEnabled || !networkId,
+    selectFromResult: ({ data }) => ({ vlanPoolId: data?.data[0]?.id })
+  })
+
+  // eslint-disable-next-line max-len
+  const activateVlanPool = async (payload: { name: string, vlanMembers: string[] }, networkId?: string, providerId?: string) => {
+    return networkId && providerId ?
+      await activate({
+        params: { networkId: networkId, profileId: providerId },
+        payload: payload
+      }).unwrap(): null
+  }
+
+  const deactivateVlanPool = async (networkId?: string, providerId?: string) => {
+    return networkId && providerId ?
+      await deactivate({ params: { networkId: networkId, profileId: providerId } }).unwrap() : null
+  }
+
+  // eslint-disable-next-line max-len
+  const updateVlanPoolActivation = async (networkId?: string, vlanPool?: VlanPool | null, originalPoolId?: string) => {
+    if (!isPolicyRbacEnabled) return
+    if (!vlanPool && !originalPoolId) return
+    if (originalPoolId && !vlanPool) await deactivateVlanPool(networkId, originalPoolId)
+    // eslint-disable-next-line max-len
+    if (vlanPool && originalPoolId !== vlanPool.id) await activateVlanPool(vlanPool, networkId, vlanPool.id)
+  }
+
+  return {
+    vlanPoolId,
+    updateVlanPoolActivation
   }
 }

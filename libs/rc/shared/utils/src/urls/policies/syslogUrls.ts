@@ -60,5 +60,20 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
     url: '/enhancedSyslogServerProfiles/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedSyslogServerProfiles/query',
     newApi: true
+  },
+  querySyslog: {
+    method: 'post',
+    url: '/syslogServerProfiles/query',
+    newApi: true
+  },
+  bindVenueSyslog: {
+    method: 'PUT',
+    url: '/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true
+  },
+  unbindVenueSyslog: {
+    method: 'delete',
+    url: '/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true
   }
 }

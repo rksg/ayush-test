@@ -81,7 +81,8 @@ describe('useMenuConfig', () => {
       READ_CONFIG_CHANGE: false,
       READ_ACCESS_POINTS_LIST: false,
       READ_SWITCH_LIST: false,
-      READ_OCCUPANCY: false
+      READ_OCCUPANCY: false,
+      READ_INTENT_AI: false
     } as RaiPermissions)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     expect(result.current).toMatchSnapshot()
@@ -169,20 +170,7 @@ describe('useMenuConfig', () => {
     const match = find(flattenConfig(result.current), target)
     expect(match).toBeUndefined()
   })
-  it('should not return zones menu items if ruckus-ai-zones-toggle is not enabled', () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    setRaiPermissions({
-      ...defaultMockPermissions,
-      READ_ZONES: false
-    } as RaiPermissions)
-    const { result } = renderHook(() => useMenuConfig(), { route: true })
-    const target = {
-      uri: '/zones'
-    }
-    const match = find(flattenConfig(result.current), target)
-    expect(match).toBeUndefined()
-  })
-  it('should return zones menu items if ruckus-ai-zones-toggle is enabled', () => {
+  it('should return zones menu items', () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     const { result } = renderHook(() => useMenuConfig(), { route: true })
     const target = {

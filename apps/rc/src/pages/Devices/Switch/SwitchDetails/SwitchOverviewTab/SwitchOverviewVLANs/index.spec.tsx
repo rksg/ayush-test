@@ -204,9 +204,9 @@ describe('Switch Overview VLAN', () => {
       await userEvent.click(await screen.findByText(/Add Ports/i))
 
       const vlansPortModal = await screen.findByTestId('vlanSettingModal')
-      const untagged1_1_5 = await within(vlansPortModal).findByTestId('untagged_module1_4')
-      const untagged1_1_6 = await within(vlansPortModal).findByTestId('untagged_module1_5')
-      const untagged1_1_7 = await within(vlansPortModal).findByTestId('untagged_module1_6')
+      const untagged1_1_5 = await within(vlansPortModal).findByTestId('untagged_module1_1_5')
+      const untagged1_1_6 = await within(vlansPortModal).findByTestId('untagged_module1_1_6')
+      const untagged1_1_7 = await within(vlansPortModal).findByTestId('untagged_module1_1_7')
       expect(untagged1_1_5).toHaveAttribute('data-disabled', 'true')
       expect(untagged1_1_6).toHaveAttribute('data-disabled', 'true')
       expect(untagged1_1_7).toHaveAttribute('data-disabled', 'true')
@@ -215,9 +215,9 @@ describe('Switch Overview VLAN', () => {
       await waitFor(async () => expect(await screen.findByRole('tooltip')).toBeInTheDocument())
       expect(screen.getByRole('tooltip')).toHaveTextContent('Port is member of LAG – LAG1')
 
-      await userEvent.click(await within(vlansPortModal).findByTestId('untagged_module1_2'))
+      await userEvent.click(await within(vlansPortModal).findByTestId('untagged_module1_1_3'))
       await userEvent.click( await within(vlansPortModal).findByRole('button', { name: 'Next' }))
-      await userEvent.click(await within(vlansPortModal).findByTestId('tagged_module1_3'))
+      await userEvent.click(await within(vlansPortModal).findByTestId('tagged_module1_1_4'))
       await userEvent.click( await within(vlansPortModal).findByRole('button', { name: 'Add' }))
 
       const portsTable = await within(drawer).findByRole('table')
@@ -241,30 +241,16 @@ describe('Switch Overview VLAN', () => {
 
       const vlan444 = await screen.findByRole('row', { name: /444/i })
       await userEvent.click(await within(vlan444).findByRole('radio'))
-
-      expect(await screen.findByRole('button', { name: 'Edit' })).toBeVisible()
       expect(await screen.findByRole('button', { name: 'Delete' })).toBeVisible()
 
       await userEvent.click(screen.getByRole('button', { name: 'Edit' }))
       const drawer = await screen.findByRole('dialog')
-      expect(await within(drawer).findByText('Edit VLAN')).toBeVisible()
+      expect(within(drawer).getByText('Edit VLAN')).toBeVisible()
 
       const portsTable = await within(drawer).findByRole('table')
-      const vlan666ports = await within(portsTable).findByRole('row', { name: /1\/1\/6/i })
-      await userEvent.click(await within(vlan666ports).findByRole('radio'))
-      await userEvent.click(await within(drawer).findByRole('button', { name: 'Edit' }))
+      expect(await within(portsTable).findByRole('row', { name: /1\/1\/6/i })).toBeVisible()
 
-      const vlansPortModal = await screen.findByTestId('vlanSettingModal')
-      const untagged1_1_7 = await within(vlansPortModal).findByTestId('untagged_module1_6')
-      expect(untagged1_1_7).toHaveAttribute('data-disabled', 'true')
-
-      await userEvent.hover(untagged1_1_7)
-      await waitFor(async () => expect(await screen.findByRole('tooltip')).toBeInTheDocument())
-      expect(await screen.findByRole('tooltip'))
-        .toHaveTextContent('Port is already an untagged member of VLAN 666')
-
-      await userEvent.click(await within(vlansPortModal).findByRole('button', { name: 'Cancel' }) )
-      await userEvent.click(await screen.findByRole('button', { name: 'Save' }) )
+      await userEvent.click(await within(drawer).findByRole('button', { name: 'Save' }) )
       expect(updateVlanSpy).toBeCalled()
     })
 

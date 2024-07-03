@@ -96,13 +96,22 @@ export const useCasesToRefreshSyslogTemplateList = [
 export const useCasesToRefreshRogueAPTemplateList = [
   'AddRogueApPolicyProfileTemplate',
   'UpdateRogueApPolicyProfileTemplate',
-  'DeleteRogueApPolicyProfileTemplate'
+  'DeleteRogueApPolicyProfileTemplate',
+  'DeleteRoguePolicyTemplate',
+  'AddRoguePolicyTemplate',
+  'UpdateRoguePolicyTemplate'
 ]
 
 export const useCasesToRefreshSwitchConfigProfileTemplateList = [
   'AddSwitchConfigProfileTemplate',
   'UpdateSwitchConfigProfileTemplate',
   'DeleteSwitchConfigProfileTemplate'
+]
+
+export const useCasesToRefreshApGroupTemplateList = [
+  'AddApGroupTemplate',
+  'UpdateApGroupTemplate',
+  'DeleteApGroupTemplate'
 ]
 
 export const useCasesToRefreshTemplateList = [
@@ -118,5 +127,6 @@ export const useCasesToRefreshTemplateList = [
   ...useCasesToRefreshWifiCallingTemplateList,
   ...useCasesToRefreshSyslogTemplateList,
   ...useCasesToRefreshRogueAPTemplateList,
-  ...useCasesToRefreshSwitchConfigProfileTemplateList
+  ...useCasesToRefreshSwitchConfigProfileTemplateList,
+  ...useCasesToRefreshApGroupTemplateList
 ]

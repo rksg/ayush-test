@@ -7,6 +7,11 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId',
     newApi: true
   },
+  updateTenantSelf: {
+    method: 'PATCH',
+    url: '/tenants/self',
+    newApi: true
+  },
   getRegisteredUsersList: {
     method: 'get',
     url: '/admins/registered',
@@ -295,6 +300,36 @@ export const AdministrationUrlsInfo: { [key: string]: ApiInfo } = {
   deletePrivilegeGroup: {
     method: 'delete',
     url: '/roleAuthentications/privilegeGroups/:privilegeGroupId',
+    newApi: true
+  },
+  getNotificationSms: {
+    method: 'get',
+    url: '/notifications/sms',
+    newApi: true
+  },
+  updateNotificationSms: {
+    method: 'post',
+    url: '/notifications/sms',
+    newApi: true
+  },
+  getNotificationSmsProvider: {
+    method: 'get',
+    url: '/notifications/sms/providers/:provider',
+    newApi: true
+  },
+  updateNotificationSmsProvider: {
+    method: 'post',
+    url: '/notifications/sms/providers/:provider',
+    newApi: true
+  },
+  deleteNotificationSmsProvider: {
+    method: 'delete',
+    url: '/notifications/sms/providers/:provider',
+    newApi: true
+  },
+  getTwiliosIncomingPhoneNumbers: {
+    method: 'post',
+    url: '/notifications/sms/providers/twilios/incomingPhoneNumbers',
     newApi: true
   }
 }

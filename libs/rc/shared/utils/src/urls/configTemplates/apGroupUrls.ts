@@ -16,9 +16,9 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/apGroups/:apGroupId',
     newApi: true
   },
-  deleteApGroups: {
+  deleteApGroup: {
     method: 'delete',
-    url: '/templates/venues/apGroups',
+    url: '/templates/venues/apGroups/:templateId',
     newApi: true
   },
   getApGroup: {

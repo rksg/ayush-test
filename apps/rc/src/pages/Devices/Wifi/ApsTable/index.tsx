@@ -7,20 +7,22 @@ import {
   Button,
   Dropdown
 } from '@acx-ui/components'
-import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                                         from '@acx-ui/feature-toggle'
+import { ApTable, ApTableRefType, ApsTabContext, defaultApPayload, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
-  useApGroupsListQuery,
   useApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 
 export default function useApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
   const [ apsCount, setApsCount ] = useState(0)
   const apTableRef = useRef<ApTableRefType>(null)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -37,30 +39,17 @@ export default function useApsTable () {
         venueFilterOptions: data?.data.map(v=>({ key: v.id, value: v.name })) || true
       })
     })
-  const { apgroupFilterOptions } = useApGroupsListQuery(
-    {
-      params: { tenantId },
-      payload: {
-        fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-        pageSize: 10000,
-        sortField: 'name',
-        sortOrder: 'ASC',
-        filters: { isDefault: [false] }
-      }
-    },
-    {
-      selectFromResult: ({ data }) => ({
-        apgroupFilterOptions: data?.data.map((v) => ({ key: v.id, value: v.name })) || true
-      })
-    }
-  )
 
+  const apgroupFilterOptions = useApGroupsFilterOpts()
+
+  // TODO This query needs to be updated after apViewModel changes to the RBAC api
   const apListTableQuery = usePollingTableQuery({
     useQuery: useApListQuery,
     defaultPayload: {
       ...defaultApPayload,
       groupByFields: groupedFields
-    }
+    },
+    enableRbac: isUseWifiRbacApi
   })
 
   useEffect(() => {
@@ -94,9 +83,12 @@ export default function useApsTable () {
   })
 
   const extra = [
-    <Dropdown overlay={addMenu}>{() =>
-      <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
-    }</Dropdown>
+    <Dropdown
+      scopeKey={[WifiScopes.CREATE]}
+      overlay={addMenu}>{() =>
+        <Button type='primary'>{ $t({ defaultMessage: 'Add' }) }</Button>
+      }
+    </Dropdown>
   ]
 
   const component =

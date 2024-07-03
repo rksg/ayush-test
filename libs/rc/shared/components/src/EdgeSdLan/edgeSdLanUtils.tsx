@@ -1,10 +1,12 @@
-import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { EdgeSdLanViewDataP2 }    from '@acx-ui/rc/utils'
-import { TenantLink }             from '@acx-ui/react-router-dom'
-import { getIntl }                from '@acx-ui/utils'
+import { Features }            from '@acx-ui/feature-toggle'
+import { EdgeSdLanViewDataP2 } from '@acx-ui/rc/utils'
+import { TenantLink }          from '@acx-ui/react-router-dom'
+import { getIntl }             from '@acx-ui/utils'
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 export const useGetNetworkTunnelInfo = () => {
-  const isEdgeSdLanHaReady = useIsSplitOn(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
 
   return (networkId: string, sdLanInfo?: EdgeSdLanViewDataP2) => {
     const { $t } = getIntl()
