@@ -1,13 +1,13 @@
 export const useCasesToRefreshNetworkTemplateList = [
-  'AddNetworkTemplateRecord',
-  'UpdateNetworkTemplateRecord',
-  'DeleteNetworkTemplateRecord'
+  'AddNetworkTemplate',
+  'UpdateNetworkTemplate',
+  'DeleteNetworkTemplate'
 ]
 
 export const useCasesToRefreshVenueTemplateList = [
-  'AddVenueTemplateRecord',
-  'UpdateVenueTemplateRecord',
-  'DeleteVenueTemplateRecord'
+  'AddVenueTemplate',
+  'UpdateVenueTemplate',
+  'DeleteVenueTemplate'
 ]
 
 export const useCasesToRefreshDhcpTemplateList = [
@@ -17,9 +17,9 @@ export const useCasesToRefreshDhcpTemplateList = [
 ]
 
 export const useCasesToRefreshDpskTemplateList = [
-  'CREATE_POOL_TEMPLATE_RECORD',
-  'UPDATE_POOL_TEMPLATE_RECORD',
-  'DELETE_POOL_TEMPLATE_RECORD'
+  'CREATE_POOL_TEMPLATE',
+  'UPDATE_POOL_TEMPLATE',
+  'DELETE_POOL_TEMPLATE'
 ]
 
 export const useCasesToRefreshPortalTemplateList = [
@@ -59,9 +59,9 @@ export const AccessControlTemplateUseCases = [
 ]
 
 export const useCasesToRefreshAccessControlTemplateList = [
-  'AddAccessControlProfileTemplateRecord',
-  'UpdateAccessControlProfileTemplateRecord',
-  'DeleteAccessControlProfileTemplateRecord',
+  'AddAccessControlProfileTemplate',
+  'UpdateAccessControlProfileTemplate',
+  'DeleteAccessControlProfileTemplate',
   ...L2AclTemplateUseCases,
   ...L3AclTemplateUseCases,
   ...DeviceTemplateUseCases,
@@ -76,9 +76,9 @@ export const useCasesToRefreshVlanPoolTemplateList = [
 ]
 
 export const useCasesToRefreshRadiusServerTemplateList = [
-  'AddRadiusServerProfileTemplateRecord',
-  'UpdateRadiusServerProfileTemplateRecord',
-  'DeleteRadiusServerProfileTemplateRecord'
+  'AddRadiusServerProfileTemplate',
+  'UpdateRadiusServerProfileTemplate',
+  'DeleteRadiusServerProfileTemplate'
 ]
 
 export const useCasesToRefreshWifiCallingTemplateList = [
