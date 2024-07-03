@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Row, Col }                                 from 'antd'
 import { useIntl, FormattedMessage, defineMessage } from 'react-intl'
 
@@ -10,6 +8,14 @@ import * as UI                          from './styledComponents'
 
 export function AIDrivenRRM () {
   const { $t } = useIntl()
+  const breadcrumb = [
+    { text: $t({ defaultMessage: 'AI Assurance' }) },
+    { text: $t({ defaultMessage: 'AI Analytics' }) },
+    {
+      text: $t({ defaultMessage: 'IntentAI' }),
+      link: '/analytics/intentAI'
+    }
+  ]
   const values = {
     p: (text: string) => <UI.Para>{text}</UI.Para>,
     b: (text: string) => <UI.Bold>{text}</UI.Bold>,
@@ -19,18 +25,19 @@ export function AIDrivenRRM () {
   return (
     <>
       <PageHeader
-        title={<UI.Header>
-          <UI.AIDrivenRRMIcon />
-          <UI.HeaderTitle>
-            {$t({ defaultMessage: 'AI-Driven RRM' })}
-          </UI.HeaderTitle>
-        </UI.Header>}
-        subTitle={
-          <>
-            {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'Intent: ' })} {mapping.intent} | {$t({ defaultMessage: 'Zone: ' })} {mapping.zone}
-          </>
-        }
+        breadcrumb={breadcrumb}
+        titlePrefix={<UI.AIDrivenRRMIcon />}
+        title={$t({ defaultMessage: 'AI-Driven RRM' })}
+        subTitle={[
+          {
+            label: $t({ defaultMessage: 'Intent' }),
+            value: [mapping.intent]
+          },
+          {
+            label: $t({ defaultMessage: 'Zone' }),
+            value: [mapping.zone]
+          }
+        ]}
       />
       <StepsForm
         buttonLabel={{
