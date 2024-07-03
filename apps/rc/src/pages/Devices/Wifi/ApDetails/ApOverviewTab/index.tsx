@@ -59,7 +59,6 @@ export function ApOverviewTab () {
       setCurrentApDevice(_currentApDevice)
     }
   }, [currentAP])
-  console.log(currentAP)
 
   return (
     <GridRow>

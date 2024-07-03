@@ -77,7 +77,6 @@ const defaultPayload = {
 }
 
 const defaultApPayload = {
-  // TODO: [RBAC] 'apStatusData' is splitted into lanPortStatuses, radioStatuses
   fields: ['serialNumber', 'name', 'venueId', 'apStatusData'],
   pageSize: 10000
 }

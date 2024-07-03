@@ -85,7 +85,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
     return null
   }
 
-
+console.log(currentAP)
   const PropertiesTab = () => {
     return (<>
       <Descriptions labelWidthPercent={50}>

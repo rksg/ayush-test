@@ -24,7 +24,7 @@ export function ApProperties (props:{
   const onMoreAction = () => {
     setVisible(true)
   }
-  console.log(currentAP)
+
   return (
     <Loader states={[{ isLoading }]}>
       <Card title={$t({ defaultMessage: 'AP Properties' })}

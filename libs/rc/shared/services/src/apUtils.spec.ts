@@ -17,7 +17,8 @@ import {
   aggregatePoePortInfo,
   aggregateVenueInfo,
   transformApListFromNewModel,
-  transformApFromNewType
+  transformApFromNewType,
+  getNewApViewmodelPayloadFromOld
 } from './apUtils'
 
 const { mockAPList, mockAPModels } = APGeneralFixtures
@@ -102,6 +103,57 @@ describe('Test apUtils', () => {
     aggregateApGroupInfo(cloneData, mockAPGroupList as unknown as TableResult<ApGroup>)
     expect(cloneData.data[0].apGroupName).toBe('joe-apg-02')
     expect(cloneData.data[1].apGroupName).toBe('joe-apg-01')
+  })
+
+  describe('getNewApViewmodelPayloadFromOld', () => {
+    it('get apStatusData all fields', async () => {
+      const result = getNewApViewmodelPayloadFromOld({
+        fields: ['apStatusData']
+      })
+
+      expect(result.fields).toContain('networkStatus')
+      expect(result.fields).toContain('lanPortStatuses')
+      expect(result.fields).toContain('radioStatuses')
+      expect(result.fields).toContain('afcStatus')
+    })
+
+    it('get apStatusData partial fields', async () => {
+      const result = getNewApViewmodelPayloadFromOld({
+        fields: ['apStatusData.APSystem']
+      })
+
+      expect(result.fields).toContain('networkStatus')
+      expect(result.fields).not.toContain('afcStatus')
+    })
+
+    it('get apStatusData deep fields', async () => {
+      const result = getNewApViewmodelPayloadFromOld({
+        fields: ['apStatusData.APSystem.ipType']
+      })
+
+      expect(result.fields).toContain('networkStatus.ipAddressType')
+      expect(result.fields).not.toContain('networkStatus')
+      expect(result.fields).not.toContain('afcStatus')
+    })
+
+    it('get apStatusData special fields', async () => {
+      const result = getNewApViewmodelPayloadFromOld({
+        fields: [
+          'IP',
+          'apStatusData.APSystem.uptime',
+          'apStatusData.APSystem.secureBootEnabled',
+          'apStatusData.APSystem.managementVlan'
+        ]
+      })
+
+      expect(result.fields).toContain('networkStatus.ipAddress')
+      expect(result.fields).toContain('uptime')
+      expect(result.fields).toContain('supportSecureBoot')
+      expect(result.fields).toContain('managementTrafficVlan')
+      expect(result.fields).not.toContain('networkStatus.uptime')
+      expect(result.fields).not.toContain('networkStatus')
+      expect(result.fields).not.toContain('afcStatus')
+    })
   })
 
   describe('transformApFromNewType', () => {

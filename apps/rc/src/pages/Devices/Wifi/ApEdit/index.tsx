@@ -64,6 +64,21 @@ export interface ApEditContextExtendedProps extends ApEditContextProps {
 
 export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 
+const apViewModelRbacPayloadFields = [
+  'name', 'venueId', 'venueName', 'apGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'macAddress', 'networkStatus', 'externalIpAddress', 'model', 'firmwareVersion',
+  'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
+  'meshEnabled', 'lastUpdatedTime', 'deviceModelType',
+  'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus']
+
+const apViewModelPayloadFields = [
+  'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
+  'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
+  'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
+  'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
+  'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
+  'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy']
+
 export function ApEdit () {
   const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const { serialNumber, activeTab } = useParams()
@@ -85,22 +100,8 @@ export function ApEdit () {
   const [apCapabilities, setApCapabilities] = useState<CapabilitiesApModel>()
   const [isLoaded, setIsLoaded] = useState(false)
 
-  // const {
-  //   data: apViewmodel
-  // } = useApViewModelQuery({
-  //   payload: {
-  //     entityType: 'aps',
-  //     fields: ['name', 'serialNumber', 'venueId'],
-  //     filters: { serialNumber: [serialNumber] }
-  //   } }, { skip: !isUseWifiRbacApi })
-
   const apViewModelPayload = {
-    fields: ['name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',
-      'serialNumber', 'apMac', 'IP', 'extIp', 'model', 'fwVersion',
-      'meshRole', 'hops', 'apUpRssi', 'deviceStatus', 'deviceStatusSeverity',
-      'isMeshEnable', 'lastUpdTime', 'deviceModelType', 'apStatusData.APSystem.uptime',
-      'venueId', 'uplink', 'apStatusData', 'apStatusData.cellularInfo', 'tags',
-      'apStatusData.afcInfo.powerMode', 'apStatusData.afcInfo.afcStatus','apRadioDeploy'],
+    fields: isUseWifiRbacApi ? apViewModelRbacPayloadFields : apViewModelPayloadFields,
     filters: { serialNumber: [serialNumber] }
   }
   const { data: apViewmodel } = useApViewModelQuery({

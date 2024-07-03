@@ -16,7 +16,6 @@ export function ApContextProvider (props: { children: ReactNode }) {
   const fields = [
     'serialNumber', 'venueName',
     'apMac', 'venueId',
-    // TODO: [RBAC] 'apStatusData' is splitted into lanPortStatuses, radioStatuses
     'apStatusData', 'model']
 
   const results = useApListQuery({

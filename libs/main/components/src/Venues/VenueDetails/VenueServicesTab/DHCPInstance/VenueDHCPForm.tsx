@@ -39,7 +39,6 @@ import { AntSelect, IconContainer, AddBtnContainer, StyledForm } from './styledC
 
 const { Option } = AntSelect
 const defaultAPPayload = {
-  // TODO: [RBAC] 'apStatusData' is splitted into lanPortStatuses, radioStatuses
   fields: ['serialNumber', 'name', 'venueId', 'apStatusData', 'deviceStatus'],
   pageSize: 10000
 }

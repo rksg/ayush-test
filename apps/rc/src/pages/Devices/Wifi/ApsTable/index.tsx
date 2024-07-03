@@ -10,7 +10,7 @@ import {
 import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
-  useApListQuery,
+  useNewApListQuery,
   useVenuesListQuery
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
@@ -43,10 +43,10 @@ export default function useApsTable () {
   const apgroupFilterOptions = useApGroupsFilterOpts()
 
   const apListTableQuery = usePollingTableQuery({
-    useQuery: useApListQuery,
+    useQuery: useNewApListQuery,
     defaultPayload: {
       fields: ['serialNumber', 'name'],
-      groupByFields: groupedFields // can be removed?
+      groupByFields: groupedFields
     },
     enableRbac: isUseWifiRbacApi
   })
