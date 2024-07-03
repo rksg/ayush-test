@@ -2184,3 +2184,15 @@ export const mockNotificationSmsResponse = {
   provider: SmsProviderType.RUCKUS_ONE,
   ruckusOneUsed: 100
 }
+
+export const mockNotificationSmsHasPoolResponse = {
+  threshold: 80,
+  provider: SmsProviderType.RUCKUS_ONE,
+  ruckusOneUsed: 80
+}
+
+export const mockNotificationSmsProviderNotR1Response = {
+  threshold: 80,
+  provider: SmsProviderType.TWILIO,
+  ruckusOneUsed: 80
+}

@@ -6,6 +6,7 @@ import { cssStr, Loader, NoActiveContent, Table, TableProps } from '@acx-ui/comp
 import { formatter }                                          from '@acx-ui/formatter'
 import { useGetGatewayFileSystemsQuery }                      from '@acx-ui/rc/services'
 import { GatewayFileSystem }                                  from '@acx-ui/rc/utils'
+import { TABLE_QUERY_POLLING_INTERVAL }                       from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -17,7 +18,7 @@ export default function DiskFileSystemUtilization () {
   const { data: fileSystemData,
     isLoading: isFileSystemDataLoading, isFetching: isFileSystemDataFetching } =
   useGetGatewayFileSystemsQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
-    { skip: !gatewayId })
+    { skip: !gatewayId, pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   const bytesFormatter = formatter('bytesFormat')
 

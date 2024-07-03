@@ -65,6 +65,7 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'Name' }),
       dataIndex: 'name',
       key: 'name',
+      fixed: 'left',
       render: (_, row: SwitchDetails) => (
         <TenantLink to={`/devices/switch/${row.mac}/serial/details/incidents`}>
           {row.name}
@@ -76,6 +77,7 @@ export const ImpactedSwitchesTable = ({
       title: $t({ defaultMessage: 'MAC Address' }),
       dataIndex: 'mac',
       key: 'mac',
+      fixed: 'left',
       sorter: { compare: sortProp('mac', defaultSort) }
     },
     {
@@ -108,6 +110,7 @@ export const ImpactedSwitchesTable = ({
       title: metricTableColLabelMapping[queryType as keyof typeof metricTableColLabelMapping],
       dataIndex: metricField,
       key: metricField,
+      width: 160,
       sorter: { compare: sortProp(metricField, defaultSort) },
       render: (_, row) => {
         return formatter('countFormat')(row[metricField as keyof SwitchDetails])
