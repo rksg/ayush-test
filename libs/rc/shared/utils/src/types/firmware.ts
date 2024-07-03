@@ -244,11 +244,20 @@ export interface switchSchedule {
     id: string;
     name: string;
     category: FirmwareCategory;
-  }
+  };
   versionAboveTen?: {
     name: string;
     category: FirmwareCategory;
   }
+}
+
+export interface SwitchScheduleV1002 {
+  timeSlot: {
+    endDateTime?: string;
+    startDateTime?: string;
+    versionInfo?: ScheduleVersionInfo;
+  };
+  version: string;
 }
 
 export interface SwitchScheduleV1002 {
@@ -329,6 +338,24 @@ export interface SwitchFirmware {
   updatedAdvice?: VenueUpdateAdvice;
   availableVersions: switchVersion[];
   switchNextSchedule: switchSchedule;
+  venueNextSchedule: switchSchedule;
+}
+
+export interface SwitchFirmwareV1002 {
+  switchId: string;
+  id: string;
+  switchName: string;
+  isStack: boolean;
+  venueId: string;
+  model: string;
+  venueName: string;
+  preDownload: boolean;
+  isSwitchLevelSchedule: boolean;
+  currentFirmware: string;
+  availableVersion: switchVersion;
+  updatedAdvice?: VenueUpdateAdvice;
+  availableVersions: switchVersion[];
+  switchNextSchedule: SwitchScheduleV1002;
   venueNextSchedule: switchSchedule;
 }
 

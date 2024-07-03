@@ -4,7 +4,8 @@ import moment        from 'moment'
 import { IntlShape } from 'react-intl'
 
 import {
-  SwitchFirmware
+  SwitchFirmware,
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 
 import {
@@ -12,11 +13,12 @@ import {
   SCHEDULE_START_TIME_FORMAT
 } from '../../FirmwareUtils'
 
-export const enableSwitchScheduleTooltip = (s: SwitchFirmware) => {
+export const enableSwitchScheduleTooltip = (s: SwitchFirmware | SwitchFirmwareV1002) => {
   return s.switchNextSchedule
 }
 
-export const getSwitchNextScheduleTpl = (intl: IntlShape, s: SwitchFirmware) => {
+export const getSwitchNextScheduleTpl = (intl: IntlShape,
+  s: SwitchFirmware | SwitchFirmwareV1002) => {
   const schedule = s.switchNextSchedule
   if (schedule?.timeSlot?.startDateTime) {
     let endTime = moment(schedule.timeSlot.startDateTime).add(2, 'hours')

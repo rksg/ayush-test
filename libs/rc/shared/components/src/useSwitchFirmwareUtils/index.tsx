@@ -20,7 +20,8 @@ import {
   FirmwareCategory,
   FirmwareSwitchV1002,
   SwitchFirmwareModelGroup,
-  SwitchModelGroupDisplayText
+  SwitchModelGroupDisplayText,
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
 
@@ -137,6 +138,9 @@ export function useSwitchFirmwareUtils () {
       return names.join(', ')
     }
     return ''
+  }
+  const getSwitchScheduleTplV1002 = (s: SwitchFirmwareV1002): string => {
+    return s.switchNextSchedule?.version || ''
   }
 
   const getSwitchFirmwareList = function (row: FirmwareSwitchVenue) {
@@ -321,6 +325,7 @@ export function useSwitchFirmwareUtils () {
     getSwitchNextScheduleTplTooltip,
     getSwitchNextScheduleTplTooltipV1002,
     getSwitchScheduleTpl,
+    getSwitchScheduleTplV1002,
     getSwitchFirmwareList,
     getSwitchVenueAvailableVersions,
     sortAvailableVersionProp,

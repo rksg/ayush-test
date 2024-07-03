@@ -24,7 +24,8 @@ import {
   FirmwareRbacUrlsInfo,
   CurrentVersionsV1002,
   SwitchFirmwareVersion1002,
-  FirmwareSwitchVenueV1002
+  FirmwareSwitchVenueV1002,
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 import { baseFirmwareApi }             from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
@@ -491,6 +492,22 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         } as unknown as TableResult<SwitchFirmware>
       }
     }),
+    getSwitchFirmwareListV1002: build.query<TableResult<SwitchFirmwareV1002>, RequestPayload>({
+      query: ({ params, payload }) => {
+        const headers = v1_2Header
+        const req = createHttpRequest(FirmwareRbacUrlsInfo.getSwitchFirmwareList, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify({ payload })
+        }
+      },
+      providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
+      transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
+        return {
+          data: result
+        } as unknown as TableResult<SwitchFirmwareV1002>
+      }
+    }),
     getSwitchFirmwarePredownload: build.query<PreDownload, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const headers = enableRbac ? v1_1Header : v1Header
@@ -768,6 +785,8 @@ export const {
   useLazyGetVenueEdgeFirmwareListQuery,
   useGetSwitchFirmwareListQuery,
   useLazyGetSwitchFirmwareListQuery,
+  useGetSwitchFirmwareListV1002Query,
+  useLazyGetSwitchFirmwareListV1002Query,
   useGetSwitchFirmwareStatusListQuery,
   useLazyGetSwitchFirmwareStatusListQuery,
   useGetScheduledFirmwareQuery,

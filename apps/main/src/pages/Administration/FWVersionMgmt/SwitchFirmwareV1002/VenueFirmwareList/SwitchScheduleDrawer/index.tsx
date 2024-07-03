@@ -8,11 +8,11 @@ import {
   TableProps,
   Drawer
 } from '@acx-ui/components'
-import { useSwitchFirmwareUtils }            from '@acx-ui/rc/components'
-import { useLazyGetSwitchFirmwareListQuery } from '@acx-ui/rc/services'
+import { useSwitchFirmwareUtils }                 from '@acx-ui/rc/components'
+import { useLazyGetSwitchFirmwareListV1002Query } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
-  SwitchFirmware,
+  SwitchFirmwareV1002,
   defaultSort,
   sortProp
 } from '@acx-ui/rc/utils'
@@ -34,25 +34,23 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const intl = useIntl()
   const {
     getSwitchNextScheduleTplTooltipV1002,
-    getSwitchScheduleTpl
+    getSwitchScheduleTplV1002
   } = useSwitchFirmwareUtils()
 
 
-  const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListQuery({
+  const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListV1002Query({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })
   const [switchFimwareStatusList, setSwitchFirmwareStatusList] =
-    useState([] as SwitchFirmware[])
+    useState([] as SwitchFirmwareV1002[])
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      params: { venueId: props.data.venueId },
-      payload: { venueIdList: [props.data.venueId] },
-      enableRbac: true
+      params: { venueId: props.data.venueId }
     }, false)).data?.data
     if (switchList) {
       const filterSwitchList = switchList.filter(row => row.isSwitchLevelSchedule)
-      setSwitchFirmwareStatusList(filterSwitchList as SwitchFirmware[])
+      setSwitchFirmwareStatusList(filterSwitchList as SwitchFirmwareV1002[])
     }
   }
 
@@ -66,7 +64,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     props.setVisible(false)
   }
 
-  const columns: TableProps<SwitchFirmware>['columns'] = [
+  const columns: TableProps<SwitchFirmwareV1002>['columns'] = [
     {
       key: 'switchName',
       title: intl.$t({ defaultMessage: 'Switch' }),
@@ -114,10 +112,10 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
           </Tooltip>
           : <Tooltip title={
             <UI.ScheduleTooltipText>
-              {getSwitchScheduleTpl(row)}
+              {getSwitchScheduleTplV1002(row)}
             </UI.ScheduleTooltipText>}
           placement='bottom'>
-            <UI.WithTooltip>{getSwitchScheduleTpl(row)}</UI.WithTooltip>
+            <UI.WithTooltip>{getSwitchScheduleTplV1002(row)}</UI.WithTooltip>
           </Tooltip>
         )
       }

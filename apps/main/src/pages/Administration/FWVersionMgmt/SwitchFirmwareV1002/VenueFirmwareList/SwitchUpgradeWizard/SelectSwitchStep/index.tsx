@@ -14,11 +14,11 @@ import {
 import { ArrowExpand, SearchOutlined, ChevronRight } from '@acx-ui/icons'
 import { useSwitchFirmwareUtils }                    from '@acx-ui/rc/components'
 import {
-  useLazyGetSwitchFirmwareListQuery
+  useLazyGetSwitchFirmwareListV1002Query
 } from '@acx-ui/rc/services'
 import {
   FirmwareSwitchVenueV1002,
-  SwitchFirmware
+  SwitchFirmwareV1002
 } from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
 import { RequestPayload } from '@acx-ui/types'
@@ -120,20 +120,20 @@ export const SelectSwitchStep = (
 
   const { form, current } = useStepFormContext()
   const { tenantId } = useParams()
-  const { parseSwitchVersion, getSwitchScheduleTpl } = useSwitchFirmwareUtils()
+  const { parseSwitchVersion, getSwitchScheduleTplV1002 } = useSwitchFirmwareUtils()
 
-  const [ getSwitchFirmwareList ] = useLazyGetSwitchFirmwareListQuery()
+  const [ getSwitchFirmwareList ] = useLazyGetSwitchFirmwareListV1002Query()
 
   const [searchText, setSearchText] = useState('' as string)
   const [selectedVenueRowKeys, setSelectedVenueRowKeys] = useState([] as Key[])
-  const [searchSwitchList, setSearchSwitchList] = useState([] as SwitchFirmware[])
+  const [searchSwitchList, setSearchSwitchList] = useState([] as SwitchFirmwareV1002[])
   const [selectedSwitchRowKeys, setSelectedSwitchRowKeys] = useState({} as {
     [key: string]: Key[]
   })
   const [nestedData, setNestedData] = useState({} as {
     [key: string]: {
-      initialData: SwitchFirmware[],
-      selectedData: SwitchFirmware[]
+      initialData: SwitchFirmwareV1002[],
+      selectedData: SwitchFirmwareV1002[]
     }
   })
   const [isLoading, setIsLoading] = useState(false)
@@ -153,7 +153,7 @@ export const SelectSwitchStep = (
     setShowSubTitle(true)
   }, [current])
 
-  const switchColumns: TableProps<SwitchFirmware>['columns'] = [
+  const switchColumns: TableProps<SwitchFirmwareV1002>['columns'] = [
     {
       title: intl.$t({ defaultMessage: 'Switch' }),
       key: 'switchName',
@@ -190,7 +190,7 @@ export const SelectSwitchStep = (
       dataIndex: 'switchNextSchedule',
       width: 100,
       render: function (_, row) {
-        const tooltip = getSwitchScheduleTpl(row) ||
+        const tooltip = getSwitchScheduleTplV1002(row) ||
           intl.$t({ defaultMessage: 'Not scheduled' })
         const customDisplayValue = getSwitchNextScheduleTpl(intl, row)
         return getTooltipText(tooltip, customDisplayValue)
@@ -204,14 +204,9 @@ export const SelectSwitchStep = (
       (count)
       !== nestedData[record.venueId]?.initialData.length) {
       setIsLoading(true)
-      const switchListPayload = {
-        venueIdList: [record.venueId]
-      }
       const switchList = record.venueId
         ? (await getSwitchFirmwareList({
-          params: { tenantId: tenantId },
-          payload: switchListPayload,
-          enableRbac: true
+          params: { venueId: record.venueId }
         }, false)).data?.data
         : []
 
@@ -226,8 +221,8 @@ export const SelectSwitchStep = (
 
       setNestedData(result as {
         [key: string]: {
-          initialData: SwitchFirmware[],
-          selectedData: SwitchFirmware[]
+          initialData: SwitchFirmwareV1002[],
+          selectedData: SwitchFirmwareV1002[]
         }
       })
       setIsLoading(false)
@@ -252,7 +247,7 @@ export const SelectSwitchStep = (
   }, [selectedSwitchRowKeys, selectedVenueRowKeys, nestedData])
 
   const expandedRowRenderFunc = (record: FirmwareSwitchVenueV1002) => {
-    return <Table<SwitchFirmware>
+    return <Table<SwitchFirmwareV1002>
       columns={switchColumns}
       enableResizableColumn={false}
       className='switchTable'
@@ -262,7 +257,7 @@ export const SelectSwitchStep = (
         emptyText: ' '
       }}
       style={{ paddingLeft: '0px !important' }}
-      dataSource={nestedData[record.venueId]?.initialData ?? [] as SwitchFirmware[]}
+      dataSource={nestedData[record.venueId]?.initialData ?? [] as SwitchFirmwareV1002[]}
       sticky={false}
       tableAlertRender={false}
       showHeader={false}
@@ -287,8 +282,8 @@ export const SelectSwitchStep = (
           }
           setNestedData(result as {
             [key: string]: {
-              initialData: SwitchFirmware[],
-              selectedData: SwitchFirmware[]
+              initialData: SwitchFirmwareV1002[],
+              selectedData: SwitchFirmwareV1002[]
             }
           })
 
@@ -401,7 +396,7 @@ export const SelectSwitchStep = (
           minHeight: '50vh',
           marginBottom: '30px',
           overflowX: 'auto'
-        }}><Table<SwitchFirmware>
+        }}><Table<SwitchFirmwareV1002>
           columns={switchColumns}
           className='switchTable'
           data-testid='switch-search-table'
