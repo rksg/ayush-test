@@ -1,16 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import _ from 'lodash'
+import { FormInstance } from 'antd'
+import _                from 'lodash'
 
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   covertAAAViewModalTypeToRadius,
   useActivateRadiusServerMutation,
   useActivateVlanPoolMutation,
+  useActivateWifiCallingServiceMutation,
   useDeactivateRadiusServerMutation,
   useDeactivateVlanPoolMutation,
+  useDeactivateWifiCallingServiceMutation,
   useGetAAAPolicyViewModelListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
@@ -321,5 +325,62 @@ export function useVlanPool () {
   return {
     vlanPoolId,
     updateVlanPoolActivation
+  }
+}
+
+export function useWifiCalling (notReady: boolean, saveState: NetworkSaveData, updateSaveState: Function, form: FormInstance) {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { networkId } = useParams()
+  const { data: wifiCallingData } = useGetEnhancedWifiCallingServiceListQuery(
+    { payload: { page: 1, pageSize: 1000, filters: { networkIds: [networkId] } }, enableRbac },
+    { skip: !enableRbac || !networkId || notReady }
+  )
+  const wifiCallingIds = useMemo(() => wifiCallingData?.data.map(p => p.id) || [], [wifiCallingData])
+
+  const [ activate ] = useActivateWifiCallingServiceMutation()
+  const [ deactivate ] = useDeactivateWifiCallingServiceMutation()
+
+  const activateAll = async (networkId: string, ids: string[]) => {
+    if (ids.length === 0) return
+
+    return Promise.all(ids.map(serviceId => activate({ params: { networkId, serviceId } })))
+  }
+
+  const deactivateAll = async (networkId: string, ids: string[]) => {
+    if (ids.length === 0) return
+
+    return Promise.all(ids.map(serviceId => deactivate({ params: { networkId, serviceId } })))
+  }
+
+  const updateWifiCallingActivation = async (networkId?: string, newData?: NetworkSaveData) => {
+    if (!enableRbac || !networkId) return
+
+    const { wifiCallingEnabled = false, wifiCallingIds: newIds = [] }
+      = newData?.wlan?.advancedCustomization ?? {}
+    const { wifiCallingEnabled: originalEnabled = false, wifiCallingIds: originalIds = [] }
+      = { wifiCallingEnabled: wifiCallingIds.length !== 0, wifiCallingIds }
+
+    if (wifiCallingEnabled) {
+      if (originalEnabled) {
+        const activateIds = newIds.filter(id => !originalIds.includes(id))
+        const deactivateIds = originalIds.filter(id => !newIds.includes(id))
+
+        return Promise.all([
+          activateAll(networkId, activateIds),
+          deactivateAll(networkId, deactivateIds)
+        ])
+      } else {
+        return activateAll(networkId, newIds)
+      }
+    } else if (originalEnabled) {
+      return deactivateAll(networkId, originalIds)
+    }
+
+    return
+  }
+
+  return {
+    wifiCallingIds,
+    updateWifiCallingActivation
   }
 }

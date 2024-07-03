@@ -22,9 +22,7 @@ import {
   useGetCertificateTemplatesQuery,
   useUpdateNetworkVenueTemplateMutation,
   useDeleteNetworkVenuesTemplateMutation,
-  useDeactivateIdentityProviderOnWifiNetworkMutation,
-  useActivateWifiCallingServiceMutation,
-  useDeactivateWifiCallingServiceMutation
+  useDeactivateIdentityProviderOnWifiNetworkMutation
 } from '@acx-ui/rc/services'
 import {
   AuthRadiusEnum,
@@ -70,9 +68,15 @@ import {
   transferVenuesToSave,
   updateClientIsolationAllowlist
 } from './parser'
-import PortalInstance                                                                                 from './PortalInstance'
-import { useNetworkVxLanTunnelProfileInfo, deriveFieldsFromServerData, useRadiusServer, useVlanPool } from './utils'
-import { Venues }                                                                                     from './Venues/Venues'
+import PortalInstance from './PortalInstance'
+import {
+  useNetworkVxLanTunnelProfileInfo,
+  deriveFieldsFromServerData,
+  useRadiusServer,
+  useVlanPool,
+  useWifiCalling
+} from './utils'
+import { Venues } from './Venues/Venues'
 
 export interface MLOContextType {
   isDisableMLO: boolean,
@@ -148,7 +152,6 @@ export function NetworkForm (props:{
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
 
-  const [originalNetworkData, setOriginalNetworkData] = useState<NetworkSaveData | undefined>()
   const [saveState, updateSaveState] = useState<NetworkSaveData>({
     name: '',
     type: createType || NetworkTypeEnum.OPEN,
@@ -161,6 +164,7 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
+  const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '', saveState, updateSaveState, form)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
@@ -220,9 +224,24 @@ export function NetworkForm (props:{
         form?.setFieldsValue(resolvedData)
       }
       updateSaveData({ ...resolvedData, certificateTemplateId })
-      setOriginalNetworkData({ ...resolvedData })
     }
   }, [data, certificateTemplateId])
+
+  useEffect(() => {
+    if (!wifiCallingIds || wifiCallingIds.length === 0) return
+
+    const fullNetworkSaveData = _.merge(
+      {},
+      saveState,
+      { wlan: { advancedCustomization: { wifiCallingIds: wifiCallingIds, wifiCallingEnabled: true } } }
+    )
+    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+
+    form.setFieldValue('wlan.advancedCustomization.wifiCallingIds', wifiCallingIds)
+    form.setFieldValue('wlan.advancedCustomization.wifiCallingEnabled', true)
+
+    updateSaveData(resolvedNetworkSaveData)
+  }, [wifiCallingIds])
 
   useEffect(() => {
     if (!radiusServerConfigurations) return
@@ -502,10 +521,7 @@ export function NetworkForm (props:{
       await addHotspot20NetworkActivations(saveState, networkId)
       await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
       await updateRadiusServer(saveState, data, networkId)
-
-      if (isPolicyRbacEnabled) {
-        await updateWifiCallingActivations(networkId, originalNetworkData, saveState)
-      }
+      await updateWifiCallingActivation(networkId, saveState)
 
       // eslint-disable-next-line max-len
       const certResponse = await activateCertificateTemplate(saveState.certificateTemplateId, networkId)
@@ -590,10 +606,7 @@ export function NetworkForm (props:{
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
-
-      if (isPolicyRbacEnabled) {
-        await updateWifiCallingActivations(payload.id, originalNetworkData, formData)
-      }
+      await updateWifiCallingActivation(payload.id, formData)
 
       // eslint-disable-next-line max-len
       await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
@@ -982,48 +995,4 @@ function useUpdateHotspot20Activation () {
     }
 
   return updateHotspot20Activations
-}
-
-function useUpdateWifiCallingActivation () {
-  const [ activate ] = useActivateWifiCallingServiceMutation()
-  const [ deactivate ] = useDeactivateWifiCallingServiceMutation()
-
-  const activateAll = async (networkId: string, ids: string[]) => {
-    if (ids.length === 0) return
-
-    return Promise.all(ids.map(serviceId => activate({ params: { networkId, serviceId } })))
-  }
-
-  const deactivateAll = async (networkId: string, ids: string[]) => {
-    if (ids.length === 0) return
-
-    return Promise.all(ids.map(serviceId => deactivate({ params: { networkId, serviceId } })))
-  }
-
-  return async (networkId?: string, originalData?: NetworkSaveData, newData?: NetworkSaveData) => {
-    if (!networkId) return
-
-    const { wifiCallingEnabled = false, wifiCallingIds = [] }
-      = newData?.wlan?.advancedCustomization ?? {}
-    const { wifiCallingEnabled: originalEnabled = false, wifiCallingIds: originalIds = [] }
-      = originalData?.wlan?.advancedCustomization ?? {}
-
-    if (wifiCallingEnabled) {
-      if (originalEnabled) {
-        const activateIds = wifiCallingIds.filter(id => !originalIds.includes(id))
-        const deactivateIds = originalIds.filter(id => !wifiCallingIds.includes(id))
-
-        return Promise.all([
-          activateAll(networkId, activateIds),
-          deactivateAll(networkId, deactivateIds)
-        ])
-      } else {
-        return activateAll(networkId, wifiCallingIds)
-      }
-    } else if (originalEnabled) {
-      return deactivateAll(networkId, originalIds)
-    }
-
-    return
-  }
 }
