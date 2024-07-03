@@ -25,8 +25,8 @@ export interface PageHeaderProps
   extends Omit<AntPageHeaderProps, 'title' | 'subTitle' | 'breadcrumb' | 'children'>
 {
   title: React.ReactNode,
-  titlePrefix?: JSX.Element,
-  titleExtra?: JSX.Element,
+  titlePrefix?: React.ReactNode,
+  titleExtra?: React.ReactNode,
   subTitle?: AntPageHeaderProps['subTitle'] | PageHeaderSubTitle[],
   footerSpacer?: boolean,
   breadcrumb?: { text: string, link?: string, tenantType?: TenantType }[]
@@ -58,10 +58,10 @@ function PageHeader (props: PageHeaderProps) {
     layout.setPageHeaderY(top + height)
   })
 
-  let titleNodes: JSX.Element[] = [<Typography.Title ellipsis>{props.title}</Typography.Title>]
+  let titleNodes: React.ReactNode[] = [<Typography.Title ellipsis>{props.title}</Typography.Title>]
   if (props.titlePrefix) titleNodes = [props.titlePrefix, ...titleNodes]
   if (props.titleExtra) titleNodes = [...titleNodes, props.titleExtra]
-  pageHeaderProps.title = titleNodes
+  pageHeaderProps.title = (titleNodes as JSX.Element[])
     .map((node, index) => React.cloneElement(node, { key: `title-${index}` }))
 
   let subTitle = props.subTitle
