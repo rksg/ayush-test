@@ -62,6 +62,22 @@ export function useSwitchFirmwareUtils () {
     return displayVersion
   }
 
+  const getSwitchVersionLabelV1002 = (intl: IntlShape, version: FirmwareVersion): string => {
+    const transform = firmwareTypeTrans(intl.$t)
+    const versionName = parseSwitchVersion(version?.name)
+    const versionType = transform(version?.category)
+
+    let displayVersion = `${versionName} (${versionType})`
+    if (version.inUse) {
+      // eslint-disable-next-line max-len
+      return `${displayVersion} - ${intl.$t({ defaultMessage: 'Selected <VenuePlural></VenuePlural> are already on this release' })}`
+    } else if (version.isNonDowngradable) {
+      // eslint-disable-next-line max-len
+      return `${displayVersion} - ${intl.$t({ defaultMessage: 'The firmware version is already at version 10.0 and cannot be downgraded to version 9.0.' })}`
+    }
+    return displayVersion
+  }
+
   const getSwitchNextScheduleTplTooltip =
    (venue: FirmwareSwitchVenue): string | undefined => {
      if (venue.nextSchedule) {
@@ -203,8 +219,10 @@ export function useSwitchFirmwareUtils () {
 
         return {
           ...v,
-          inUse: (getParseVersion(v.id) === getParseVersion(inUseVersion)),
-          isDowngradeVersion: isDowngradeVersionV1002(inUseVersion, v.id),
+          inUse: (getParseVersion(v.id) === getParseVersion(inUseVersion)) ? true : v.inUse,
+          isDowngradeVersion: isDowngradeVersionV1002(inUseVersion, v.id) ?
+            true : v.isDowngradeVersion,
+          isNonDowngradable: isNonDowngradable(inUseVersion, v.id) ? true : v.isNonDowngradable,
           category
         }
       })
@@ -257,7 +275,14 @@ export function useSwitchFirmwareUtils () {
   }
 
   function isDowngradeVersionV1002 (inUseVersion: string, version: string) {
-    return compareSwitchVersion(version, inUseVersion) > 0
+    return compareSwitchVersion(inUseVersion, version) > 0
+  }
+
+  function isNonDowngradable (inUseVersion: string, version: string) {
+    if(inUseVersion?.includes('100') && version?.includes('090')) {
+      return true
+    }
+    return false
   }
 
   function checkSwitchModelGroup (switchModel: string) {
@@ -322,6 +347,7 @@ export function useSwitchFirmwareUtils () {
   return {
     parseSwitchVersion,
     getSwitchVersionLabel,
+    getSwitchVersionLabelV1002,
     getSwitchNextScheduleTplTooltip,
     getSwitchNextScheduleTplTooltipV1002,
     getSwitchScheduleTpl,

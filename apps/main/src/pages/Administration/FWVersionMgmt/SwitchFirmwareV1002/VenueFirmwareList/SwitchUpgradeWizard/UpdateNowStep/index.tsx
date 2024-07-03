@@ -32,7 +32,7 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
   const intl = useIntl()
   const { form, current } = useStepFormContext()
   const { availableVersions, hasVenue, setShowSubTitle } = props
-  const { getSwitchVersionLabel } = useSwitchFirmwareUtils()
+  const { getSwitchVersionLabelV1002 } = useSwitchFirmwareUtils()
 
   const [selectedICX71Version, setSelecteedICX71Version] = useState('')
   const [selectedICX7XVersion, setSelecteedICX7XVersion] = useState('')
@@ -122,10 +122,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               { // eslint-disable-next-line max-len
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX71)?.map(v =>
-                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse || v.isNonDowngradable}>
                     <span style={{ lineHeight: '22px' }}>
-                      {getSwitchVersionLabel(intl, v)}
-                      {v.isDowngradeVersion && !v.inUse &&
+                      {getSwitchVersionLabelV1002(intl, v)}
+                      {v.isDowngradeVersion && !v.inUse && !v.isNonDowngradable &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                     </span>
                   </Radio>)}
@@ -150,10 +150,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               { // eslint-disable-next-line max-len
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX7X)?.map(v =>
-                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse || v.isNonDowngradable}>
                     <span style={{ lineHeight: '22px' }}>
-                      {getSwitchVersionLabel(intl, v)}
-                      {v.isDowngradeVersion && !v.inUse &&
+                      {getSwitchVersionLabelV1002(intl, v)}
+                      {v.isDowngradeVersion && !v.inUse && !v.isNonDowngradable &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                     </span>
                   </Radio>)}
@@ -178,10 +178,10 @@ export function UpdateNowStep (props: UpdateNowStepProps) {
             <Space direction={'vertical'}>
               { // eslint-disable-next-line max-len
                 getAvailableVersions(SwitchFirmwareModelGroup.ICX82)?.map(v =>
-                  <Radio value={v.id} key={v.id} disabled={v.inUse}>
+                  <Radio value={v.id} key={v.id} disabled={v.inUse || v.isNonDowngradable}>
                     <span style={{ lineHeight: '22px' }}>
-                      {getSwitchVersionLabel(intl, v)}
-                      {v.isDowngradeVersion && !v.inUse &&
+                      {getSwitchVersionLabelV1002(intl, v)}
+                      {v.isDowngradeVersion && !v.inUse && !v.isNonDowngradable &&
                           <DowngradeTag>{intl.$t({ defaultMessage: 'Downgrade' })}</DowngradeTag>}
                     </span>
                   </Radio>)}

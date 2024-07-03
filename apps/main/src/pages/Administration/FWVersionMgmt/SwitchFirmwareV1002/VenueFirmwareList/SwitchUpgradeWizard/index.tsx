@@ -245,7 +245,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
     props.data.forEach((row: FirmwareSwitchVenueV1002) => {
       if (selectedVenueRowKeys.includes(row.venueId)) {
         filterVersions = checkCurrentVersionsV1002(
-          row, filterVersions || [], (defaultReleaseVersions || [])) || []
+          row, filterVersions || [], (defaultReleaseVersions || []))
 
       } else if (nestedData[row.venueId]) {
         nestedData[row.venueId].selectedData.forEach((row: SwitchFirmware) => {
@@ -259,7 +259,7 @@ export function SwitchUpgradeWizard (props: UpdateNowWizardProps) {
             switchCounts: [{ modelGroup, count: 1 }]
           }
           filterVersions = checkCurrentVersionsV1002(
-            selectedSwitch, filterVersions || [], (defaultReleaseVersions || [])) || []
+            selectedSwitch, filterVersions || [], (defaultReleaseVersions || []))
         })
       }
     })
