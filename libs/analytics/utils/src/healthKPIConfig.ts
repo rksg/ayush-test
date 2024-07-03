@@ -756,9 +756,9 @@ export const wiredKPIsForTab = () => {
     performance: {
       kpis: [
         'switchPortUtilization',
-        'switchUplinkPortUtilization',
-        'switchInterfaceAnomalies'
+        'switchUplinkPortUtilization'
         // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        // 'switchInterfaceAnomalies'
         //'switchStormControl'
       ]
     },
