@@ -158,6 +158,7 @@ export enum Features {
   RBAC_SERVICE_POLICY_TOGGLE = 'acx-ui-rbac-service-policy-toggle',
   GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE = 'guest-email-otp-self-sign-toggle',
   WIFI_6G_INDOOR_OUTDOOR_SEPARATION = 'wifi-ap-6g-channel-separation-toggle',
+  GUEST_MANUAL_PASSWORD_TOGGLE = 'guest-manual-password-toggle',
   RUCKUS_AI_INTENT_AI_TOGGLE = 'ruckus-ai-intent-ai-toggle',
   INTENT_AI_TOGGLE = 'acx-ui-intent-ai-toggle',
   SWITCH_CLI_MODE = 'switch-consumer-cli-mode-toggle',

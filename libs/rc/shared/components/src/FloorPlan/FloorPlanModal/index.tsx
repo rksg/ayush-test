@@ -149,6 +149,9 @@ export default function AddEditFloorplanModal ({ onAddEditFloorPlan,
           visible={open}
           onOk={onOk}
           confirmLoading={loading}
+          okButtonProps={{
+            loading
+          }}
           okText={$t({ defaultMessage: 'Save' })}
           onCancel={hideUserModal}
           cancelButtonProps={{ disabled: loading }}
