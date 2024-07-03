@@ -9,7 +9,7 @@ import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 // eslint-disable-next-line max-len
 export type QueryFn<ResultType, QueryArg = never> = ({ params, payload, enableRbac }: RequestPayload<QueryArg>, _queryApi: BaseQueryApi, _extraOptions: RetryOptions, fetchWithBQ: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>) => MaybePromise<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>
 
-export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo?: ApiInfo) {
+export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo: ApiInfo = apiInfo) {
   return (queryArgs: RequestPayload) => {
     const { params, payload, enableRbac = false } = queryArgs
     const resolvedApiInfo = enableRbac ? rbacApiInfo : apiInfo
@@ -17,9 +17,8 @@ export function commonQueryFn (apiInfo: ApiInfo, rbacApiInfo?: ApiInfo) {
     const resolvedPayload = resolvedApiInfo?.defaultHeaders?.['Content-Type'] ? JSON.stringify(payload) : payload
 
     return {
-      ...createHttpRequest(resolvedApiInfo!, params),
+      ...createHttpRequest(resolvedApiInfo, params),
       ...(resolvedPayload ? { body: resolvedPayload } : {})
     }
   }
 }
-
