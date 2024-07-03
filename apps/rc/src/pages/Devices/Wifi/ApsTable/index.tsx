@@ -11,18 +11,49 @@ import { Features, useIsSplitOn }                                               
 import { ApTable, ApTableRefType, ApsTabContext, groupedFields, useApGroupsFilterOpts } from '@acx-ui/rc/components'
 import {
   useNewApListQuery,
-  useVenuesListQuery
+  useVenuesListQuery,
+  useApListQuery
 } from '@acx-ui/rc/services'
 import { usePollingTableQuery }  from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 import { WifiScopes }            from '@acx-ui/types'
 
+const apsCountQueryPayload = {
+  fields: ['serialNumber', 'name'],
+  groupByFields: groupedFields
+}
+
+const useApsCount = () => {
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [ apsCount, setApsCount ] = useState(0)
+
+  const nonRbacQuery = usePollingTableQuery({
+    useQuery: useApListQuery,
+    defaultPayload: apsCountQueryPayload,
+    option: { skip: isUseWifiRbacApi }
+  })
+
+  const rbacQuery = usePollingTableQuery({
+    useQuery: useNewApListQuery,
+    defaultPayload: apsCountQueryPayload,
+    option: { skip: !isUseWifiRbacApi }
+  })
+
+  useEffect(() => {
+    setApsCount(isUseWifiRbacApi
+      ? rbacQuery.data?.totalCount!
+      : nonRbacQuery.data?.totalCount!
+    )
+  }, [isUseWifiRbacApi, nonRbacQuery.data, rbacQuery.data])
+
+  return [apsCount, setApsCount]
+}
+
 export default function useApsTable () {
   const { $t } = useIntl()
   const { tenantId } = useParams()
-  const [ apsCount, setApsCount ] = useState(0)
   const apTableRef = useRef<ApTableRefType>(null)
-  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const [apsCount, setApsCount] = useApsCount()
 
   const { venueFilterOptions } = useVenuesListQuery(
     {
@@ -41,19 +72,6 @@ export default function useApsTable () {
     })
 
   const apgroupFilterOptions = useApGroupsFilterOpts()
-
-  const apListTableQuery = usePollingTableQuery({
-    useQuery: useNewApListQuery,
-    defaultPayload: {
-      fields: ['serialNumber', 'name'],
-      groupByFields: groupedFields
-    },
-    enableRbac: isUseWifiRbacApi
-  })
-
-  useEffect(() => {
-    setApsCount(apListTableQuery.data?.totalCount!)
-  }, [apListTableQuery.data])
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (e.key === 'import-from-file') {

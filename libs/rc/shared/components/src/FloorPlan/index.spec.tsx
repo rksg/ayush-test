@@ -5,7 +5,7 @@ import { DndProvider }  from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { act }          from 'react-dom/test-utils'
 
-import { useIsSplitOn }                                                                                                                  from '@acx-ui/feature-toggle'
+import { useIsSplitOn, Features }                                                                                                        from '@acx-ui/feature-toggle'
 import { ApDeviceStatusEnum, CommonRbacUrlsInfo, CommonUrlsInfo, FloorPlanDto, NetworkDeviceType, RWG, RWGStatusEnum, SwitchStatusEnum } from '@acx-ui/rc/utils'
 import { Provider }                                                                                                                      from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved }                                                     from '@acx-ui/test-utils'
@@ -340,7 +340,7 @@ describe('Floor Plans', () => {
   })
 
   it('should render unplaced AP with mesh role', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.WIFI_RBAC_API)
 
     mockServer.use(
       rest.post(
