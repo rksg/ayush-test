@@ -4,14 +4,15 @@ import { cloneDeep }              from 'lodash'
 import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { StepsFormLegacy }                                                 from '@acx-ui/components'
-import { Features, useIsSplitOn }                                          from '@acx-ui/feature-toggle'
+import { StepsFormLegacy }                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import {
   useGetApGroupQuery, useGetApGroupTemplateQuery,
-  useGetVLANPoolPolicyViewModelListQuery, useGetVLANPoolPolicyViewModeTemplateListQuery,
+  useGetVLANPoolPolicyViewModelListQuery,
   useLazyApGroupNetworkListQuery,
   useLazyApGroupNetworkListV2Query,
-  useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation
+  useUpdateNetworkVenuesMutation, useUpdateNetworkVenueTemplateMutation,
+  useGetEnhancedVlanPoolPolicyTemplateListQuery
 } from '@acx-ui/rc/services'
 import {
   KeyValue,
@@ -243,7 +244,7 @@ export const useGetVLANPoolPolicyInstance = (skipQuery: boolean) => {
     selectFromResult: transformVlanPoolData
   })
 
-  const vlanPoolingTemplate: VlanPoolNameMapType = useGetVLANPoolPolicyViewModeTemplateListQuery({
+  const vlanPoolingTemplate: VlanPoolNameMapType = useGetEnhancedVlanPoolPolicyTemplateListQuery({
     params: { tenantId },
     payload: vlanPoolPayload
   }, {
