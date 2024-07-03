@@ -558,7 +558,7 @@ export function NetworkVenuesTab () {
       updateNetworkVenue({ params: {
         tenantId: params.tenantId,
         networkVenueId: payload.id
-      }, payload: payload }).then(()=>{
+      }, payload: { newData: payload } }).then(()=>{
         setApGroupModalState({
           visible: false
         })
@@ -603,7 +603,7 @@ export function NetworkVenuesTab () {
     updateNetworkVenue({ params: {
       tenantId: params.tenantId,
       networkVenueId: payload.id
-    }, payload: payload }).then(()=>{
+    }, payload: { newData: payload } }).then(()=>{
       setScheduleModalState({
         visible: false
       })
