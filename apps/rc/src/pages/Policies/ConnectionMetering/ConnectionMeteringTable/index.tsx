@@ -32,7 +32,8 @@ import {
   FILTER,
   SEARCH,
   PropertyConfigs,
-  PropertyConfigQuery
+  PropertyConfigQuery,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import {
   TenantLink,
@@ -40,7 +41,7 @@ import {
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { filterByAccess } from '@acx-ui/user'
 
 import {
   DataConsumptionLabel
@@ -260,7 +261,7 @@ export default function ConnectionMeteringTable () {
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
-        rowSelection={hasPermission() && { type: 'radio' }}
+        rowSelection={hasCloudpathAccess() && { type: 'radio' }}
       />
     </Loader>
   )

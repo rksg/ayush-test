@@ -48,7 +48,8 @@ import {
   getServiceListRoutePath,
   getServiceRoutePath,
   CertificateCategoryType,
-  hasDpskAccess
+  hasDpskAccess,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -1017,20 +1018,22 @@ function PolicyRoutes () {
           element={<ConnectionMeteringTable />}
         />
         <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
-          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
-        />
-        <Route
-        // eslint-disable-next-line max-len
-          path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
-          element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
-        />
-        <Route
-        // eslint-disable-next-line max-len
+          // eslint-disable-next-line max-len
           path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.DETAIL })}
           element={<ConnectionMeteringDetail/>}
         />
+        { hasCloudpathAccess() && <>
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.CREATE })}
+            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.CREATE} />}
+          />
+          <Route
+          // eslint-disable-next-line max-len
+            path={getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.EDIT })}
+            element={<ConnectionMeteringPageForm mode={ConnectionMeteringFormMode.EDIT} />}
+          />
+        </>}
       </>}
       {isCloudpathBetaEnabled && <>
         <Route

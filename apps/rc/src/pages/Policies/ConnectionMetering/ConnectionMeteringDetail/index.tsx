@@ -9,10 +9,10 @@ import {
   getPolicyListRoutePath,
   getPolicyDetailsLink,
   PolicyType,
-  PolicyOperation, getPolicyRoutePath
+  PolicyOperation, getPolicyRoutePath,
+  hasCloudpathAccess
 } from '@acx-ui/rc/utils'
-import { TenantLink }     from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
+import { TenantLink } from '@acx-ui/react-router-dom'
 
 import { DataConsumptionLabel }  from '../DataConsumptionHelper'
 import { RateLimitingTableCell } from '../RateLimitingHelper'
@@ -60,7 +60,7 @@ export default function ConnectionMeteringDetail () {
             })
           }
         ]}
-        extra={filterByAccess([
+        extra={hasCloudpathAccess() && [
           <TenantLink to={getPolicyDetailsLink({
             policyId: policyId!,
             type: PolicyType.CONNECTION_METERING,
@@ -69,7 +69,7 @@ export default function ConnectionMeteringDetail () {
           >
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
-        ])}
+        ]}
       />
       <GridRow>
         <GridCol col={{ span: 24 }}>
