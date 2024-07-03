@@ -209,6 +209,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='apiKey'
         label={$t({ defaultMessage: 'API Key' })}
+        initialValue={editData?.providerData.apiKey ?? ''}
         rules={[
           { required: true }
         ]}
@@ -218,6 +219,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='sendUrl'
         label={$t({ defaultMessage: 'Send URL' })}
+        initialValue={editData?.providerData.url ?? ''}
         // eslint-disable-next-line max-len
         tooltip={$t({ defaultMessage: 'The URL of this SMS provider. This should include variables for phone number, message, and API key.' })}
         rules={[
