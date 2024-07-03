@@ -26,8 +26,6 @@ import {
   VenueRogueAp,
   VenueSyslogSettingType,
   VLANPoolViewModelType,
-  ApiVersionEnum,
-  GetApiVersionHeader,
   RoguePolicyRequest,
   RogueApSettingsRequest
 } from '@acx-ui/rc/utils'
@@ -283,12 +281,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     delSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
       // eslint-disable-next-line max-len
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy,
-          rbacApiVersionKey: ApiVersionEnum.v1_1
-        }),
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicy, PoliciesConfigTemplateUrlsInfo.deleteSyslogPolicyRbac),
       invalidatesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     updateSyslogPolicyTemplate: build.mutation<CommonResult, RequestPayload>({
@@ -300,12 +293,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }]
     }),
     getSyslogPolicyTemplateList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.getSyslogPolicyList,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.querySyslog,
-          rbacApiVersionKey: ApiVersionEnum.v1
-        }),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getSyslogPolicyList, PoliciesConfigTemplateUrlsInfo.querySyslog),
       providesTags: [{ type: 'SyslogTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -318,10 +307,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getVenueTemplateForSyslogPolicy: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList, {
-        rbacApiInfo: ConfigTemplateUrlsInfo.getVenuesTemplateList,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(ConfigTemplateUrlsInfo.getVenuesTemplateList, ConfigTemplateUrlsInfo.getVenuesTemplateListRbac),
       providesTags: [{ type: 'SyslogTemplate', id: 'VENUE' }],
       extraOptions: { maxRetries: 5 }
     }),
@@ -329,8 +316,7 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? PoliciesConfigTemplateUrlsInfo.querySyslog
           : PoliciesConfigTemplateUrlsInfo.getVenueSyslogSettings
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(url, params, headers)
+        const req = createHttpRequest(url, params)
         return{
           ...req,
           ...enableRbac ? {
@@ -347,9 +333,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
           // eslint-disable-next-line max-len
           (payload!.enabled ? PoliciesConfigTemplateUrlsInfo.bindVenueSyslog : PoliciesConfigTemplateUrlsInfo.unbindVenueSyslog)
           : PoliciesConfigTemplateUrlsInfo.updateVenueSyslogSettings
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const param = enableRbac ? { ...params, policyId: payload!.serviceProfileId } : params
-        const req = createHttpRequest(url, param, headers)
+        const req = createHttpRequest(url, param)
         return {
           ...req,
           ...(enableRbac ? {} : { body: payload })
@@ -362,23 +347,13 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getRoguePolicyTemplate: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.getRoguePolicy,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1
-        }
-      ),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getRoguePolicy, PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac),
       providesTags: [{ type: 'RogueApTemplate', id: 'DETAIL' }]
     }),
     getRoguePolicyTemplateList: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1
-        }
-      ),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.getEnhancedRoguePolicyList, PoliciesConfigTemplateUrlsInfo.getRoguePolicyListRbac),
       providesTags: [{ type: 'RogueApTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -397,13 +372,8 @@ export const policiesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     delRoguePolicyTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(
-        PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy,
-        {
-          rbacApiInfo: PoliciesConfigTemplateUrlsInfo.deleteRoguePolicyRbac,
-          rbacApiVersionKey: ApiVersionEnum.v1
-        }
-      ),
+      // eslint-disable-next-line max-len
+      query: commonQueryFn(PoliciesConfigTemplateUrlsInfo.deleteRogueApPolicy, PoliciesConfigTemplateUrlsInfo.deleteRoguePolicyRbac),
       invalidatesTags: [{ type: 'RogueApTemplate', id: 'LIST' }]
     }),
     getVenueRoguePolicyTemplate: build.query<TableResult<VenueRoguePolicyType>, RequestPayload>({

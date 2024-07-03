@@ -76,7 +76,7 @@ import { basePolicyApi }               from '@acx-ui/store'
 import { RequestPayload }              from '@acx-ui/types'
 import { batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, createFetchArgsBasedOnRbac, addRoguePolicyFn, updateRoguePolicyFn, updateSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, addSyslogPolicyFn } from './servicePolicy.utils'
+import { commonQueryFn, convertRbacDataToAAAViewModelPolicyList, addRoguePolicyFn, updateRoguePolicyFn, updateSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, addSyslogPolicyFn } from './servicePolicy.utils'
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -158,10 +158,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     delRoguePolicy: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(
-        RogueApUrls.deleteRoguePolicy,
-        { rbacApiInfo: RogueApUrls.deleteRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
-      ),
+      query: commonQueryFn(RogueApUrls.deleteRoguePolicy, RogueApUrls.deleteRoguePolicyRbac),
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     addL2AclPolicy: build.mutation<CommonResult, RequestPayload>({
@@ -650,10 +647,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       invalidatesTags: [{ type: 'RogueAp', id: 'LIST' }]
     }),
     roguePolicy: build.query<RogueAPDetectionContextType, RequestPayload>({
-      query: commonQueryFn(
-        RogueApUrls.getRoguePolicy,
-        { rbacApiInfo: RogueApUrls.getRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
-      ),
+      query: commonQueryFn(RogueApUrls.getRoguePolicy, RogueApUrls.getRoguePolicyRbac),
       providesTags: [{ type: 'RogueAp', id: 'DETAIL' }]
     }),
     // eslint-disable-next-line max-len
@@ -684,10 +678,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     enhancedRoguePolicies: build.query<TableResult<EnhancedRoguePolicyType>, RequestPayload>({
-      query: commonQueryFn(
-        RogueApUrls.getEnhancedRoguePolicyList,
-        { rbacApiInfo: RogueApUrls.getRoguePolicyListRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
-      ),
+      query: commonQueryFn(RogueApUrls.getEnhancedRoguePolicyList, RogueApUrls.getRoguePolicyListRbac),
       providesTags: [{ type: 'RogueAp', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -710,13 +701,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: (queryArgs) => {
-        return createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.addAAAPolicy,
-          rbacApiVersionKey: ApiVersionEnum.v1_1,
-          queryArgs
-        })
-      },
+      query: commonQueryFn(AaaUrls.addAAAPolicy, AaaUrls.addAAAPolicyRbac),
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     deleteAAAPolicyList: build.mutation<CommonResult, RequestPayload<string[]>>({
@@ -739,14 +724,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getAAAPolicyViewModelList: build.query<TableResult<AAAViewModalType>, RequestPayload>({
       async queryFn (queryArgs, _queryApi, _extraOptions, baseQuery) {
-        const resolvedFetchArgs = createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.getAAAPolicyViewModelList,
-          rbacApiInfo: AaaUrls.queryAAAPolicyList,
-          rbacApiVersionKey: ApiVersionEnum.v1,
-          queryArgs
-        })
-
-        const result = await baseQuery(resolvedFetchArgs)
+        const query = commonQueryFn(AaaUrls.getAAAPolicyViewModelList, AaaUrls.queryAAAPolicyList)
+        const result = await baseQuery(query(queryArgs))
 
         if (result.error) return { error: result.error as FetchBaseQueryError }
 
@@ -784,13 +763,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
-      query: (queryArgs) => {
-        return createFetchArgsBasedOnRbac({
-          apiInfo: AaaUrls.updateAAAPolicy,
-          rbacApiVersionKey: ApiVersionEnum.v1_1,
-          queryArgs
-        })
-      },
+      query: commonQueryFn(AaaUrls.updateAAAPolicy, AaaUrls.updateAAAPolicyRbac),
       invalidatesTags: [{ type: 'AAA', id: 'LIST' }]
     }),
     l2AclPolicyList: build.query<L2AclPolicy[], RequestPayload>({
@@ -1836,8 +1809,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     delSyslogPolicy: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-        const req = createHttpRequest(SyslogUrls.deleteSyslogPolicy, params, headers)
+        const url = enableRbac ? SyslogUrls.deleteSyslogPolicyRbac : SyslogUrls.deleteSyslogPolicy
+        const req = createHttpRequest(url, params)
         return {
           ...req
         }
@@ -1848,7 +1821,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         if (enableRbac) {
           const requests = (payload as string[]).map(policyId => ({ params: { policyId } }))
-          await batchApi(SyslogUrls.deleteSyslogPolicy, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
+          await batchApi(SyslogUrls.deleteSyslogPolicyRbac, requests, fetchWithBQ)
           return { data: {} as CommonResult }
         } else {
           const req = createHttpRequest(SyslogUrls.deleteSyslogPolicies, params)
@@ -1869,8 +1842,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getVenueSyslogAp: build.query<VenueSyslogSettingType, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? SyslogUrls.querySyslog : SyslogUrls.getVenueSyslogAp
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(url, params, headers)
+        const req = createHttpRequest(url, params)
         return{
           ...req,
           ...enableRbac ? {
@@ -1895,9 +1867,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
         const url = enableRbac ?
           (payload!.enabled ? SyslogUrls.bindVenueSyslog : SyslogUrls.unbindVenueSyslog)
           : SyslogUrls.updateVenueSyslogAp
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const param = enableRbac ? { ...params, policyId: payload!.serviceProfileId } : params
-        const req = createHttpRequest(url, param, headers)
+        const req = createHttpRequest(url, param)
         return {
           ...req,
           ...(enableRbac ? {} : { body: payload })
@@ -1928,8 +1899,8 @@ export const policyApi = basePolicyApi.injectEndpoints({
     }),
     getVenueSyslogList: build.query<TableResult<VenueSyslogPolicyType>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(SyslogUrls.getVenueSyslogList, params, headers)
+        const url = enableRbac ? SyslogUrls.getVenueSyslogListRbac : SyslogUrls.getVenueSyslogList
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1940,8 +1911,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     syslogPolicyList: build.query<TableResult<SyslogPolicyListType>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? SyslogUrls.querySyslog : SyslogUrls.syslogPolicyList
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(url, params, headers)
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
