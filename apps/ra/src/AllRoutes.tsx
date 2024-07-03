@@ -18,7 +18,8 @@ import {
   Profile,
   IntentAIDrivenRRM,
   AIAnalytics,
-  AIAnalyticsTabEnum
+  AIAnalyticsTabEnum,
+  IntentAICrrmDetails
 } from '@acx-ui/analytics/components'
 import { updateSelectedTenant, getUserProfile }                          from '@acx-ui/analytics/utils'
 import { useSearchParams, Route, rootRoutes, Navigate, MLISA_BASE_PATH } from '@acx-ui/react-router-dom'
@@ -98,6 +99,7 @@ function AllRoutes () {
       <Route path='intentAI' element={check('READ_INTENT_AI')}>
         <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
         <Route index={false} path=':intentId' element={<></>} />
+        <Route path='crrm/:id' element={check('READ_AI_DRIVEN_RRM', <IntentAICrrmDetails />)}/>
         <Route path='crrm/optimize/:id' element={<IntentAIDrivenRRM />} />
       </Route>
       <Route path='networks/wireless' element={check('READ_WIFI_NETWORKS_LIST')}>
