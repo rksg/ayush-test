@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useMemo, useState } from 'react'
 
-import { FormInstance } from 'antd'
-import _                from 'lodash'
+import _ from 'lodash'
 
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {

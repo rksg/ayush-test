@@ -233,7 +233,14 @@ export function NetworkForm (props:{
     const fullNetworkSaveData = _.merge(
       {},
       saveState,
-      { wlan: { advancedCustomization: { wifiCallingIds: wifiCallingIds, wifiCallingEnabled: true } } }
+      {
+        wlan: {
+          advancedCustomization: {
+            wifiCallingIds: wifiCallingIds,
+            wifiCallingEnabled: true
+          }
+        }
+      }
     )
     const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
 
