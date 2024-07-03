@@ -34,11 +34,35 @@ export const AaaUrls: { [key: string]: ApiInfo } = {
   queryAAAPolicyList: {
     method: 'post',
     url: '/radiusServerProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteAAAPolicy: {
     method: 'delete',
     url: '/radiusServerProfiles/:policyId',
     newApi: true
+  },
+  addAAAPolicyRbac: {
+    method: 'post',
+    oldUrl: '/api/tenant/:tenantId/wifi/radius',
+    url: '/radiusServerProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateAAAPolicyRbac: {
+    method: 'put',
+    oldUrl: '/api/tenant/:tenantId/wifi/radius/:policyId',
+    url: '/radiusServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   }
 }

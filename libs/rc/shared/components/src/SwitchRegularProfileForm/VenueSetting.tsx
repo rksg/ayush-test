@@ -43,6 +43,7 @@ const defaultArray: Venue[] = []
 
 export function VenueSetting () {
   const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -55,7 +56,8 @@ export function VenueSetting () {
 
   const { data: venueAppliedToCli } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>({
     useQueryFn: useGetCliFamilyModelsQuery,
-    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery
+    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery,
+    enableRbac: isSwitchRbacEnabled
   })
   const [tableData, setTableData] = useState(defaultArray)
   const [venueList, setVenueList] = useState<string[]>([])
