@@ -97,15 +97,15 @@ import {
   RWG,
   NetworkDevice,
   NetworkDeviceType,
-  ApPosition
+  NewAPModel
 } from '@acx-ui/rc/utils'
 import { baseVenueApi }                        from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
-import { getNewApViewmodelPayloadFromOld }                 from './apUtils'
-import { getVenueRoguePolicyFn, updateVenueRoguePolicyFn } from './servicePolicy.utils'
-import { handleCallbackWhenActivitySuccess }               from './utils'
+import { getNewApViewmodelPayloadFromOld, fetchAppendApPositions, transformRbacApList } from './apUtils'
+import { getVenueRoguePolicyFn, updateVenueRoguePolicyFn }                              from './servicePolicy.utils'
+import { handleCallbackWhenActivitySuccess, isPayloadHasField }                         from './utils'
 
 const customHeaders = {
   v1: {
@@ -393,7 +393,15 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Device', id: 'MESH' }],
-      extraOptions: { maxRetries: 5 }
+      extraOptions: { maxRetries: 5 },
+      transformResponse: (
+        result: TableResult<APMesh>,
+        _: unknown,
+        args: RequestPayload) => {
+        return args.enableRbac
+          ? transformRbacApList(result as TableResult<NewAPModel>) as TableResult<APMesh>
+          : result
+      }
     }),
     getFloorPlanMeshAps: build.query<TableResult<FloorPlanMeshAP>, RequestPayload>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
@@ -408,22 +416,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
         const apListData = apListRes.data as TableResult<FloorPlanMeshAP>
 
         // fetch ap position data
-        const fields = (payload as Record<string, unknown>).fields as string[]
-        if (enableRbac && (fields.includes('xPercent') || fields.includes('yPercent'))) {
-          const floorplanId = apListData.data[0].floorplanId
-          const floorplanReq = createHttpRequest(
-            CommonRbacUrlsInfo.GetApPosition,
-            {
-              venueId: apListData.data[0].venueId,
-              floorplanId,
-              serialNumber: apListData.data[0].serialNumber
-            },
-            customHeaders
-          )
-          const floorplanRes = await fetchWithBQ(floorplanReq)
-          const floorplan = floorplanRes.data as ApPosition
-          apListData.data[0].xPercent = floorplan?.xPercent
-          apListData.data[0].yPercent = floorplan?.yPercent
+        if (enableRbac && (isPayloadHasField(payload, 'xPercent') || isPayloadHasField(payload, 'yPercent'))) {
+          await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
         }
 
         return {

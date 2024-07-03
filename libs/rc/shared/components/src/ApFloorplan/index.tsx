@@ -64,6 +64,7 @@ export function ApFloorplan (props: {
     params, payload: {
       pageSize: 10000,
       page: 1,
+      fields: ['serialNumber','name', 'deviceStatus', 'rogueCategory', 'xPercent', 'yPercent'],
       filters: {
         floorplanId: [apPosition?.floorplanId]
       }

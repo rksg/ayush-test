@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise } from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { cloneDeep, find, forIn, invert, isNil, set, uniq } from 'lodash'
+import { QueryReturnValue }                                      from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                          from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta }    from '@reduxjs/toolkit/query'
+import { cloneDeep, find, forIn, invert, isNil, set, uniq, get } from 'lodash'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -26,12 +26,14 @@ import {
   ApModelTypeEnum,
   ApViewModel,
   RadioProperties,
-  ApStatus
+  ApStatus,
+  FloorPlanMeshAP,
+  ApPosition
 } from '@acx-ui/rc/utils'
-import { RequestPayload } from '@acx-ui/types'
+import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
-import { isPayloadHasField } from './utils'
+import { isFulfilled, isPayloadHasField } from './utils'
 
 const getApRadiosInfo = (apRadio: (NewAPModel['radioStatuses'] | ApStatus['APRadio']), enableRbac?: boolean) => {
   const nonRbac = apRadio as ApStatus['APRadio']
@@ -40,15 +42,15 @@ const getApRadiosInfo = (apRadio: (NewAPModel['radioStatuses'] | ApStatus['APRad
   const apRadioData = enableRbac ? rbac : nonRbac
   const keyField = (enableRbac ? 'id' : 'radioId') as keyof typeof apRadio
 
-  const apRadio24 = find(apRadioData, r => r.band === ApRadioBands.band24)
+  const apRadio24 = find(apRadioData, r => get(r, 'band') === ApRadioBands.band24)
   const apRadioU50 = find(apRadioData,
-    r => r.band === ApRadioBands.band50 && r[keyField] === 2)
+    r => get(r, 'band') === ApRadioBands.band50 && r[keyField] === 2)
   const apRadio50 = !apRadioU50 && find(apRadioData,
-    r => r.band === ApRadioBands.band50 && r[keyField] === 1)
+    r => get(r, 'band') === ApRadioBands.band50 && r[keyField] === 1)
   const apRadio60 = !apRadioU50 && find(apRadioData,
     r => r[keyField] === 2)
   const apRadioL50 = apRadioU50 && find(apRadioData,
-    r => r.band === ApRadioBands.band50 && r[keyField] === 1)
+    r => get(r, 'band') === ApRadioBands.band50 && r[keyField] === 1)
 
   return {
     radio24: apRadio24,
@@ -110,11 +112,11 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
     const { APRadio, lanPortStatus } = item.apStatusData || {}
 
     if (APRadio) {
-      setAPRadioInfo(item, APRadio, channelColumnStatus)
+      setAPRadioInfo(item as unknown as NewAPModelExtended, APRadio, channelColumnStatus)
     }
 
     if (lanPortStatus) {
-      setPoEPortStatus(item, lanPortStatus)
+      setPoEPortStatus(item as unknown as NewAPModelExtended, lanPortStatus)
     }
 
     return item
@@ -161,11 +163,11 @@ const setAPRadioInfo = (
 ) => {
   const radios = getApRadiosInfo(APRadio, enableRbac)
 
-  row.channel24 = radios.radio24?.channel || undefined
-  row.channel50 = (radios.radio50 && radios.radio50.channel) || undefined
-  row.channelL50 = radios.radioL50?.channel || undefined
-  row.channelU50 = radios.radioU50?.channel || undefined
-  row.channel60 = (radios.radio60 && radios.radio60.channel) || undefined
+  row.channel24 = get(radios.radio24, 'channel') || undefined
+  row.channel50 = get(radios.radio50, 'channel') || undefined
+  row.channelL50 = get(radios.radioL50, 'channel') || undefined
+  row.channelU50 = get(radios.radioU50, 'channel') || undefined
+  row.channel60 = get(radios.radio60, 'channel') || undefined
 
   if (channelColumnShow) {
     if (!channelColumnShow.channel24 && radios.radio24) channelColumnShow.channel24 = true
@@ -259,8 +261,9 @@ const apOldNewFieldsMapping: Record<string, string> = {
   'deviceStatusSeverity': 'statusSeverity',
   'fwVersion': 'firmwareVersion',
   'deviceGroupId': 'apGroupId',
+  'deviceGroupName': 'apGroupName',
   'IP': 'networkStatus.ipAddress',
-  'extIp': 'externalIpAddress',
+  'extIp': 'networkStatus.externalIpAddress',
   'clients': 'clientCount',
   'isMeshEnable': 'meshEnabled',
   'apRadioDeploy': 'radioStatuses',
@@ -293,8 +296,7 @@ export const getNewApViewmodelPayloadFromOld = (payload: Record<string, unknown>
   const newPayload = cloneDeep(payload) as Record<string, unknown>
 
   if (newPayload.fields) {
-    // eslint-disable-next-line max-len
-    newPayload.fields = uniq((newPayload.fields as string[])?.flatMap(field => {
+    const newFields: string[] = uniq((newPayload.fields as string[])?.flatMap(field => {
       if (field === 'apStatusData') {
         // TODO: cellularInfo
         return ['networkStatus', 'lanPortStatuses', 'radioStatuses', 'afcStatus']
@@ -304,6 +306,17 @@ export const getNewApViewmodelPayloadFromOld = (payload: Record<string, unknown>
 
       return getApNewFieldFromOld(field)
     }))
+
+    if (!newFields.includes('venueId'))
+      newFields.push('venueId')
+
+    if (newFields.includes('apGroupName') && !newFields.includes('apGroupId'))
+      newFields.push('apGroupId')
+
+    if ((newFields.includes('xPercent') || newFields.includes('yPercent')) && !newFields.includes('floorplanId'))
+      newFields.push('floorplanId')
+
+    newPayload.fields = newFields
   }
   if (newPayload.searchTargetFields) {
     // eslint-disable-next-line max-len
@@ -436,7 +449,11 @@ const fetchApList = async ({ payload, enableRbac }: RequestPayload, fetchWithBQ:
         aggregateApDeviceModelTypeInfo(apListData as TableResult<NewAPModelExtended, ApExtraParams>, capabilitiesList)
       }
 
-      const rbacApList = transformRbacApList(transformApListFromNewModel(apListData))
+      if (isPayloadHasField(newPayload, 'xPercent') || isPayloadHasField(newPayload, 'yPercent')) {
+        await fetchAppendApPositions(apListData as TableResult<FloorPlanMeshAP>, fetchWithBQ)
+      }
+
+      const rbacApList = transformRbacApList(transformApListFromNewModel(apListData as TableResult<NewAPModelExtended, ApExtraParams>))
       return { data: rbacApList as TableResult<APExtended, ApExtraParams> }
     } else {
       const apListQuery = await fetchWithBQ({ ...apsReq, body: payload })
@@ -464,4 +481,31 @@ export const getApViewmodelListFn = async (args: RequestPayload, fetchWithBQ: fe
   } else {
     return { data: transformApViewModel((result.data as TableResult<ApViewModel>)?.data[0]) }
   }
+}
+
+export const fetchAppendApPositions = async (apListData: TableResult<FloorPlanMeshAP>, fetchWithBQ: fetchWithBQType<unknown>) => {
+  const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+  const floorPlanAps = apListData.data.filter(item => item.floorplanId)
+
+  const positionReqs = floorPlanAps.map(ap => {
+    if (!ap.floorplanId) return
+
+    const floorplanReq = createHttpRequest(
+      CommonRbacUrlsInfo.GetApPosition,
+      {
+        venueId: ap.venueId,
+        floorplanId: ap.floorplanId,
+        serialNumber: ap.serialNumber
+      },
+      customHeaders
+    )
+    return fetchWithBQ(floorplanReq)
+  })
+
+  const allData = await Promise.allSettled(positionReqs)
+  allData.filter(isFulfilled).forEach((p, idx) => {
+    const targetIdx = apListData.data.findIndex(item => item.serialNumber === floorPlanAps[idx].serialNumber)
+    apListData.data[targetIdx].xPercent = (p.value?.data as ApPosition).xPercent
+    apListData.data[targetIdx].yPercent = (p.value?.data as ApPosition).yPercent
+  })
 }

@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise } from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { find, isNil, omit, pick, reduce, uniq, uniqueId } from 'lodash'
+import { isNil, omit, pick, reduce, uniq }                    from 'lodash'
 
-import { Filter } from '@acx-ui/components'
+import { Filter }           from '@acx-ui/components'
 import {
   AFCInfo,
   AFCPowerMode,
@@ -33,7 +33,6 @@ import {
   ApManagementVlan,
   ApNeighborsResponse,
   ApPosition,
-  ApRadioBands,
   ApRadioCustomization,
   ApRfNeighborsResponse,
   ApViewModel,
@@ -51,7 +50,6 @@ import {
   GetApiVersionHeader,
   GetUploadFormDataApiVersionHeader,
   ImportErrorRes,
-  LanPortStatusProperties,
   MdnsProxyUrls,
   MeshUplinkAp,
   NewAPModel,
@@ -64,7 +62,6 @@ import {
   PacketCaptureOperationResponse,
   PacketCaptureState,
   PingAp,
-  RadioProperties,
   RequestFormData,
   SEARCH,
   SORTER,
@@ -82,8 +79,8 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged
 } from '@acx-ui/rc/utils'
-import { baseApApi } from '@acx-ui/store'
-import { RequestPayload } from '@acx-ui/types'
+import { baseApApi }                                    from '@acx-ui/store'
+import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
@@ -118,7 +115,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'Ap', id: 'LIST' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddAp',
@@ -191,7 +188,7 @@ export const apApi = baseApApi.injectEndpoints({
         },
         keepUnusedDataFor: 0,
         providesTags: [{ type: 'Ap', id: 'LIST' }],
-        async onCacheEntryAdded(requestArgs, api) {
+        async onCacheEntryAdded (requestArgs, api) {
           await onSocketActivityChanged(requestArgs, api, (msg) => {
             const activities = [
               'AddAp',
@@ -220,7 +217,7 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     apGroupsList: build.query<TableResult<ApGroupViewModel>, RequestPayload>({
-      async queryFn({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const apGroupListReq = createHttpRequest(urlsInfo.getApGroupsList, params, customHeaders)
@@ -305,7 +302,7 @@ export const apApi = baseApApi.injectEndpoints({
       },
       keepUnusedDataFor: 0,
       providesTags: [{ type: 'ApGroup', id: 'LIST' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'AddApGroup',
@@ -429,7 +426,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse(result: VenueDefaultApGroup) {
+      transformResponse (result: VenueDefaultApGroup) {
         return Array.isArray(result) ? result : [result]
       }
     }),
@@ -459,7 +456,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       invalidatesTags: [{ type: 'Ap', id: 'LIST' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
           try {
             const response = await api.cacheDataLoaded
@@ -515,7 +512,7 @@ export const apApi = baseApApi.injectEndpoints({
         return { data: apData }
       },
       providesTags: [{ type: 'Ap', id: 'Details' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateAp',
@@ -538,7 +535,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'Details' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateAp',
@@ -782,7 +779,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'RADIO' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApRadioCustomization'
@@ -814,7 +811,7 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getOldApCapabilitiesByModel: build.query<CapabilitiesApModel, RequestPayload>({
-      async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) { // non RBAC API
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) { // non RBAC API
         const { params } = arg
         let modelName = arg.modelName
         const apCapReq = createHttpRequest(WifiUrlsInfo.getApCapabilities, params)
@@ -844,7 +841,7 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApPhoto: build.query<APPhoto, RequestPayload>({
-      async queryFn(arg, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn (arg, _queryApi, _extraOptions, fetchWithBQ) {
         const { params, enableRbac } = arg
         const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
         const apiCustomHeader = enableRbac ? {
@@ -895,7 +892,7 @@ export const apApi = baseApApi.injectEndpoints({
           ...req
         }
       },
-      transformResponse(res, meta, requestArgs: RequestPayload) {
+      transformResponse (res, meta, requestArgs: RequestPayload) {
         if (!requestArgs.enableRbac) {
           return res as PacketCaptureState
         }
@@ -1027,7 +1024,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'ANTENNA' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApAntennaTypeSettings'
@@ -1099,7 +1096,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'DIRECTED_MULTICAST' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApDirectedMulticast',
@@ -1145,7 +1142,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'NETWORK_SETTINGS' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApNetworkSettings',
@@ -1188,7 +1185,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'MESH_SETTINGS' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApMeshOptions'
@@ -1219,7 +1216,7 @@ export const apApi = baseApApi.injectEndpoints({
           body: payload
         }
       },
-      transformResponse(result: TableResult<MeshUplinkAp>) {
+      transformResponse (result: TableResult<MeshUplinkAp>) {
         return result?.data[0]
       }
     }),
@@ -1346,7 +1343,7 @@ export const apApi = baseApApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Ap', id: 'ApManagementVlan' }],
-      async onCacheEntryAdded(requestArgs, api) {
+      async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'UpdateApManagementTrafficVlanSettings'
@@ -1547,7 +1544,7 @@ export const {
 //   return result
 // }
 
-export function isAPLowPower(afcInfo?: AFCInfo): boolean {
+export function isAPLowPower (afcInfo?: AFCInfo): boolean {
   if (!afcInfo) return false
   return (
     afcInfo?.powerMode === AFCPowerMode.LOW_POWER &&

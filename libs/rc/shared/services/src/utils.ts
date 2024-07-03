@@ -64,3 +64,7 @@ export const isPayloadHasField = (payload: RequestPayload['payload'], fields: st
     ? fields.some(a => payloadFields?.includes(a))
     : payloadFields?.includes(fields)) ?? false
 }
+
+export function isFulfilled <T,> (p: PromiseSettledResult<T>): p is PromiseFulfilledResult<T> {
+  return p.status === 'fulfilled'
+}

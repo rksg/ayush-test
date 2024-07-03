@@ -66,7 +66,7 @@ export const ApEditContext = createContext({} as ApEditContextExtendedProps)
 
 const apViewModelRbacPayloadFields = [
   'name', 'venueId', 'venueName', 'apGroupName', 'description', 'lastSeenTime',
-  'serialNumber', 'macAddress', 'networkStatus', 'externalIpAddress', 'model', 'firmwareVersion',
+  'serialNumber', 'macAddress', 'networkStatus', 'model', 'firmwareVersion',
   'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
   'meshEnabled', 'lastUpdatedTime', 'deviceModelType',
   'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus']
