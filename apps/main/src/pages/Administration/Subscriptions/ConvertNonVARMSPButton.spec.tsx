@@ -199,7 +199,7 @@ describe('Convert NonVAR MSP Button', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
-        params: '/admins/settings/ui/COMMON',
+        params: '/admins/admins-settings/ui/COMMON',
         body: {
           MSP: { nonVarMspOnboard: true }
         }
@@ -252,7 +252,7 @@ describe('Convert NonVAR MSP Button', () => {
     await userEvent.click(await screen.findByRole('button', { name: 'Take me to the MSP dashboard' }))
     await waitFor(() => {
       expect(mockedSaveFn).toBeCalledWith({
-        params: '/admins/settings/ui/COMMON',
+        params: '/admins/admins-settings/ui/COMMON',
         body: {
           other: true,
           MSP: {

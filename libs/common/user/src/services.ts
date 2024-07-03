@@ -226,7 +226,10 @@ export const {
 } = userApi.injectEndpoints({
   endpoints: (build) => ({
     getAllUserSettings: build.query<UserSettingsUIModel, RequestPayload>({
-      query: ({ params }) => createHttpRequest(UserRbacUrlsInfo.getAllUserSettings, params),
+      query: ({ params, enableRbac }) =>
+        createHttpRequest(enableRbac
+          ? UserRbacUrlsInfo.getAllUserSettings
+          : UserUrlsInfo.getAllUserSettings, params),
       transformResponse (userSettings: UserSettings) {
         let result:UserSettingsUIModel = {}
         Object.keys(userSettings).forEach((key: string) => {
@@ -236,8 +239,10 @@ export const {
       }
     }),
     saveUserSettings: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => ({
-        ...createHttpRequest(UserRbacUrlsInfo.saveUserSettings, params),
+      query: ({ params, payload, enableRbac }) => ({
+        ...createHttpRequest(enableRbac
+          ? UserRbacUrlsInfo.saveUserSettings
+          : UserUrlsInfo.saveUserSettings, params),
         body: payload
       })
     }),
