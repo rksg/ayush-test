@@ -37,10 +37,10 @@ import {
   switchSchedule,
   compareSwitchVersion
 } from '@acx-ui/rc/utils'
-import { useParams }                     from '@acx-ui/react-router-dom'
-import { RequestPayload, SwitchScopes }  from '@acx-ui/types'
-import { filterByAccess, hasPermission } from '@acx-ui/user'
-import { noDataDisplay }                 from '@acx-ui/utils'
+import { useParams }                                            from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes }                         from '@acx-ui/types'
+import { filterByAccess, hasPermission, useUserProfileContext } from '@acx-ui/user'
+import { noDataDisplay }                                        from '@acx-ui/utils'
 
 import {
   getNextScheduleTpl,
@@ -141,6 +141,8 @@ export const VenueFirmwareTable = (
   { tableQuery, searchable, filterables }: VenueTableProps) => {
   const { $t } = useIntl()
   const params = useParams()
+  const { isCustomRole } = useUserProfileContext()
+
   const { data: availableVersions } = useGetSwitchAvailableFirmwareListQuery({ params })
   const [skipSwitchUpgradeSchedules] = useSkipSwitchUpgradeSchedulesMutation()
   const [updateVenueSchedules] = useUpdateSwitchVenueSchedulesMutation()
@@ -397,10 +399,11 @@ export const VenueFirmwareTable = (
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         rowSelection={isSelectionVisible && { type: 'checkbox', selectedRowKeys }}
-        actions={hasPermission({ scopes: [SwitchScopes.UPDATE] }) ? [{
+        actions={(hasPermission({ scopes: [SwitchScopes.UPDATE] }) && !isCustomRole) ? [{
           label: $t({ defaultMessage: 'Preferences' }),
           onClick: () => setModelVisible(true)
         }] : []}
+        style={{ marginTop: isCustomRole ? '25px' : '' }}
       />
       <UpdateNowDialog
         visible={updateModelVisible}

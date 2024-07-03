@@ -71,6 +71,15 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/query',
     newApi: true
   },
+  getVenuesTemplateListRbac: {
+    method: 'post',
+    url: '/templates/venues/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   addNetworkVenueTemplate: {
     method: 'post',
     url: '/templates/networkActivations',

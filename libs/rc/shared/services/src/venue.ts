@@ -299,7 +299,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueCityList: build.query<{ name: string }[], RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
-        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params, headers)
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const req = createHttpRequest(urlsInfo.getVenueCityList, params, headers)
         return{
           ...req,
           body: JSON.stringify(payload)

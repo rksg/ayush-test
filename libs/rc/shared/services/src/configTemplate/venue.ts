@@ -1,6 +1,5 @@
 import {
   AAASetting,
-  ApiVersionEnum,
   CapabilitiesApModel,
   CommonResult,
   ConfigTemplateUrlsInfo,
@@ -80,10 +79,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getVenueTemplateApCapabilities: build.query<{ version: string, apModels: CapabilitiesApModel[] }, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueApCapabilities, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueApCapabilitiesRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      })
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueApCapabilities,
+        VenueConfigTemplateUrlsInfo.getVenueApCapabilitiesRbac
+      )
     }),
     getVenueTemplateTripleBandRadioSettings: build.query<TriBandSettings, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueTripleBandRadioSettings),
@@ -118,10 +117,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplateRadio', id: 'LIST' }]
     }),
     getVenueTemplateLoadBalancing: build.query<VenueLoadBalancing, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueLoadBalancing, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueLoadBalancingRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueLoadBalancing,
+        VenueConfigTemplateUrlsInfo.getVenueLoadBalancingRbac
+      ),
       providesTags: [{ type: 'VenueTemplate', id: 'LOAD_BALANCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -133,10 +132,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     updateVenueTemplateLoadBalancing: build.mutation<VenueLoadBalancing, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueLoadBalancing, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueLoadBalancingRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueLoadBalancing,
+        VenueConfigTemplateUrlsInfo.updateVenueLoadBalancingRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'LOAD_BALANCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
@@ -147,18 +146,18 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getVenueTemplateClientAdmissionControl: build.query<VenueClientAdmissionControl, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueClientAdmissionControl, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueClientAdmissionControlRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueClientAdmissionControl,
+        VenueConfigTemplateUrlsInfo.getVenueClientAdmissionControlRbac
+      ),
       providesTags: [{ type: 'VenueTemplate', id: 'ClientAdmissionControl' }]
     }),
     // eslint-disable-next-line max-len
     updateVenueTemplateClientAdmissionControl: build.mutation<VenueClientAdmissionControl, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueClientAdmissionControl, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueClientAdmissionControlRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueClientAdmissionControl,
+        VenueConfigTemplateUrlsInfo.updateVenueClientAdmissionControlRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'ClientAdmissionControl' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, async (msg) => {
@@ -168,10 +167,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getVenueTemplateExternalAntenna: build.query<ExternalAntenna[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueExternalAntenna, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueExternalAntennaRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueExternalAntenna,
+        VenueConfigTemplateUrlsInfo.getVenueExternalAntennaRbac
+      ),
       providesTags: [{ type: 'VenueTemplateExternalAntenna', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -183,10 +182,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     updateVenueTemplateExternalAntenna: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueExternalAntenna, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueExternalAntennaRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueExternalAntenna,
+        VenueConfigTemplateUrlsInfo.updateVenueExternalAntennaRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplateExternalAntenna', id: 'LIST' }]
     }),
     getVenueTemplateSettings: build.query<VenueSettings, RequestPayload>({
@@ -202,10 +201,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     updateVenueTemplateMesh: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueMesh, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueMeshRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueMesh,
+        VenueConfigTemplateUrlsInfo.updateVenueMeshRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'WIFI_SETTINGS' }]
     }),
     getVenueTemplateLanPorts: build.query<VenueLanPorts[], RequestPayload>({
@@ -215,10 +214,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueLanPorts)
     }),
     getVenueTemplateDirectedMulticast: build.query<VenueDirectedMulticast, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDirectedMulticast, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueDirectedMulticastRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueDirectedMulticast,
+        VenueConfigTemplateUrlsInfo.getVenueDirectedMulticastRbac
+      ),
       providesTags: [{ type: 'VenueTemplate', id: 'DIRECTED_MULTICAST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -230,17 +229,17 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     updateVenueTemplateDirectedMulticast: build.mutation<VenueDirectedMulticast, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueDirectedMulticast, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueDirectedMulticastRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueDirectedMulticast,
+        VenueConfigTemplateUrlsInfo.updateVenueDirectedMulticastRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DIRECTEDMULTICAST' }]
     }),
     getVenueTemplateRadiusOptions: build.query<VenueRadiusOptions, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueRadiusOptions, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueRadiusOptionsRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueRadiusOptions,
+        VenueConfigTemplateUrlsInfo.getVenueRadiusOptionsRbac
+      ),
       providesTags: [{ type: 'VenueTemplate', id: 'RADIUS_OPTIONS' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -252,29 +251,29 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     updateVenueTemplateRadiusOptions: build.mutation<VenueRadiusOptions, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueRadiusOptions, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueRadiusOptionsRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueRadiusOptions,
+        VenueConfigTemplateUrlsInfo.updateVenueRadiusOptionsRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'RADIUS_OPTIONS' }]
     }),
     getVenueTemplateDoSProtection: build.query<VenueDosProtection, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getDenialOfServiceProtectionRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      })
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getDenialOfServiceProtection,
+        VenueConfigTemplateUrlsInfo.getDenialOfServiceProtectionRbac
+      )
     }),
     updateVenueTemplateDoSProtection: build.mutation<VenueDosProtection, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateDenialOfServiceProtection, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateDenialOfServiceProtectionRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      })
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateDenialOfServiceProtection,
+        VenueConfigTemplateUrlsInfo.updateDenialOfServiceProtectionRbac
+      )
     }),
     getVenueTemplateMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueMdnsFencingPolicy, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueMdnsFencingPolicyRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueMdnsFencingPolicy,
+        VenueConfigTemplateUrlsInfo.getVenueMdnsFencingPolicyRbac
+      ),
       providesTags: [{ type: 'VenueTemplate', id: 'MDNS_FENCING' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -286,23 +285,23 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     updateVenueTemplateMdnsFencing: build.mutation<VenueMdnsFencingPolicy, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueMdnsFencingPolicy, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueMdnsFencingPolicyRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueMdnsFencingPolicy,
+        VenueConfigTemplateUrlsInfo.updateVenueMdnsFencingPolicyRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplate', id: 'MDNS_FENCING' }]
     }),
     getVenueTemplateBssColoring: build.query<VenueBssColoring, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueBssColoring, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.getVenueBssColoringRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      })
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueBssColoring,
+        VenueConfigTemplateUrlsInfo.getVenueBssColoringRbac
+      )
     }),
     updateVenueTemplateBssColoring: build.mutation<VenueBssColoring, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueBssColoring, {
-        rbacApiInfo: VenueConfigTemplateUrlsInfo.updateVenueBssColoringRbac,
-        rbacApiVersionKey: ApiVersionEnum.v1
-      })
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueBssColoring,
+        VenueConfigTemplateUrlsInfo.updateVenueBssColoringRbac
+      )
     }),
     getVenueTemplateDhcpProfile: build.query<VenueDHCPProfile, RequestPayload>({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDhcpProfile),
@@ -351,19 +350,22 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     getVenueTemplateSwitchSetting: build.query<VenueSwitchConfiguration, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchSetting, {
-        rbacApiVersionKey: ApiVersionEnum.v1_1
-      })
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueSwitchSetting,
+        VenueConfigTemplateUrlsInfo.getVenueSwitchSettingRbac
+      )
     }),
     updateVenueTemplateSwitchSetting: build.mutation<Venue, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchSetting, {
-        rbacApiVersionKey: ApiVersionEnum.v1_1
-      })
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueSwitchSetting,
+        VenueConfigTemplateUrlsInfo.updateVenueSwitchSettingRbac
+      )
     }),
     getVenueTemplateSwitchAaaSetting: build.query<AAASetting, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchAaaSetting, {
-        rbacApiVersionKey: ApiVersionEnum.v1_1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueSwitchAaaSetting,
+        VenueConfigTemplateUrlsInfo.getVenueSwitchAaaSettingRbac
+      ),
       providesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'DETAIL' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -379,45 +381,51 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     updateVenueTemplateSwitchAAASetting: build.mutation<AAASetting, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaSetting, {
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaSetting,
+        VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaSettingRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'DETAIL' }]
     }),
     // eslint-disable-next-line max-len
     getVenueTemplateSwitchAAAServerList: build.query<TableResult<RadiusServer | TacacsServer | LocalUser>, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueSwitchAaaServerList, {
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueSwitchAaaServerList,
+        VenueConfigTemplateUrlsInfo.getVenueSwitchAaaServerListRbac
+      ),
       providesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
     // eslint-disable-next-line max-len
     deleteVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deleteVenueSwitchAaaServer, {
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.deleteVenueSwitchAaaServer,
+        VenueConfigTemplateUrlsInfo.deleteVenueSwitchAaaServerRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
     bulkDeleteVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.bulkDeleteVenueSwitchAaaServer, {
-        rbacApiVersionKey: ApiVersionEnum.v1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.bulkDeleteVenueSwitchAaaServer,
+        VenueConfigTemplateUrlsInfo.bulkDeleteVenueSwitchAaaServerRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
     addVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.addVenueSwitchAaaServer, {
-        rbacApiVersionKey: ApiVersionEnum.v1_1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.addVenueSwitchAaaServer,
+        VenueConfigTemplateUrlsInfo.addVenueSwitchAaaServerRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
     updateVenueTemplateSwitchAAAServer: build.mutation<RadiusServer | TacacsServer | LocalUser, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServer, {
-        rbacApiVersionKey: ApiVersionEnum.v1_1
-      }),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServer,
+        VenueConfigTemplateUrlsInfo.updateVenueSwitchAaaServerRbac
+      ),
       invalidatesTags: [{ type: 'VenueTemplateSwitchAAA', id: 'LIST' }]
     })
   })

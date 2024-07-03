@@ -29,7 +29,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueApCapabilitiesRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apModelCapabilities',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueTripleBandRadioSettings: {
     method: 'get',
@@ -89,7 +93,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueLoadBalancingRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apLoadBalancingSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueLoadBalancing: {
     method: 'put',
@@ -99,7 +107,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueLoadBalancingRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apLoadBalancingSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueClientAdmissionControl: {
     method: 'get',
@@ -109,7 +121,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueClientAdmissionControlRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apClientAdmissionControlSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueClientAdmissionControl: {
     method: 'put',
@@ -119,7 +135,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueClientAdmissionControlRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apClientAdmissionControlSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueExternalAntenna: {
     method: 'get',
@@ -129,7 +149,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueExternalAntennaRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apModelExternalAntennaSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueExternalAntenna: {
     method: 'put',
@@ -139,7 +163,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueExternalAntennaRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apModelExternalAntennaSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueSettings: { // TODO
     method: 'get',
@@ -154,7 +182,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueMeshRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apMeshSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueLanPorts: {
     method: 'get',
@@ -184,7 +216,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueDirectedMulticastRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apDirectedMulticastSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueDirectedMulticast: {
     method: 'put',
@@ -194,7 +230,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueDirectedMulticastRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apDirectedMulticastSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueRadiusOptions: {
     method: 'get',
@@ -204,7 +244,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueRadiusOptionsRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apRadiusOptions',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueRadiusOptions: {
     method: 'put',
@@ -214,7 +258,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueRadiusOptionsRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apRadiusOptions',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getDenialOfServiceProtection: {
     method: 'get',
@@ -224,7 +272,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getDenialOfServiceProtectionRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apDosProtectionSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateDenialOfServiceProtection: {
     method: 'put',
@@ -234,7 +286,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateDenialOfServiceProtectionRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apDosProtectionSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueMdnsFencingPolicy: {
     method: 'get',
@@ -244,7 +300,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueMdnsFencingPolicyRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apMulticastDnsFencingSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueMdnsFencingPolicy: {
     method: 'put',
@@ -254,7 +314,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueMdnsFencingPolicyRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apMulticastDnsFencingSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueBssColoring: {
     method: 'get',
@@ -264,7 +328,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   getVenueBssColoringRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/apBssColoringSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueBssColoring: {
     method: 'put',
@@ -274,7 +342,11 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateVenueBssColoringRbac: {
     method: 'put',
     url: '/templates/venues/:venueId/apBssColoringSettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueDhcpProfile: {
     method: 'get',
@@ -311,45 +383,126 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/:venueId/switchSettings',
     newApi: true
   },
+  getVenueSwitchSettingRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/switchSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateVenueSwitchSetting: {
     method: 'put',
     url: '/templates/venues/:venueId/switchSettings',
     newApi: true
+  },
+  updateVenueSwitchSettingRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/switchSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getVenueSwitchAaaSetting: {
     method: 'get',
     url: '/templates/venues/:venueId/aaaSettings',
     newApi: true
   },
+  getVenueSwitchAaaSettingRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/aaaSettings',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateVenueSwitchAaaSetting: {
     method: 'put',
     url: '/templates/venues/:venueId/aaaSettings/:aaaSettingId',
     newApi: true
+  },
+  updateVenueSwitchAaaSettingRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/aaaSettings/:aaaSettingId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueSwitchAaaServerList: {
     method: 'post',
     url: '/templates/venues/aaaServers/query',
     newApi: true
   },
+  getVenueSwitchAaaServerListRbac: {
+    method: 'post',
+    url: '/templates/venues/aaaServers/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   addVenueSwitchAaaServer: {
     method: 'post',
     url: '/templates/venues/:venueId/aaaServers',
     newApi: true
+  },
+  addVenueSwitchAaaServerRbac: {
+    method: 'post',
+    url: '/templates/venues/:venueId/aaaServers',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   updateVenueSwitchAaaServer: {
     method: 'put',
     url: '/templates/venues/:venueId/aaaServers/:aaaServerId',
     newApi: true
   },
+  updateVenueSwitchAaaServerRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/aaaServers/:aaaServerId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   deleteVenueSwitchAaaServer: {
     method: 'delete',
     url: '/templates/venues/aaaServers/:aaaServerId',
     newApi: true
   },
+  deleteVenueSwitchAaaServerRbac: {
+    method: 'delete',
+    url: '/templates/venues/aaaServers/:aaaServerId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   bulkDeleteVenueSwitchAaaServer: {
     method: 'delete',
     url: '/templates/venues/aaaServers',
     newApi: true
+  },
+  bulkDeleteVenueSwitchAaaServerRbac: {
+    method: 'delete',
+    url: '/templates/venues/aaaServers',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueDefaultApGroup: {
     method: 'get',
