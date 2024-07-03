@@ -796,8 +796,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       invalidatesTags: [{ type: 'Msp', id: 'LIST' }]
     }),
     getMspAggregations: build.query<MspAggregations, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(MspUrlsInfo.getMspAggregations, params)
+      query: ({ params, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.getMspAggregations, params)
         return {
           ...req
         }
@@ -813,8 +814,9 @@ export const mspApi = baseMspApi.injectEndpoints({
       }
     }),
     updateMspAggregations: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(MspUrlsInfo.updateMspAggregations, params)
+      query: ({ params, payload, enableRbac }) => {
+        const mspUrlsInfo = getMspUrls(enableRbac)
+        const req = createHttpRequest(mspUrlsInfo.updateMspAggregations, params)
         return {
           ...req,
           body: payload

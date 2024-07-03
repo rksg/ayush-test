@@ -81,7 +81,7 @@ export const ImpactedClientsTable = ({
       dataIndex: 'switchName',
       key: '1',
       render: (_, row: ImpactedClients) => (
-        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/incidents`}>
+        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/reports`}>
           {row.switchName}
         </TenantLink>
       ),
