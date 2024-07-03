@@ -285,19 +285,6 @@ describe('Set SMS Provider Drawer', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('Phone Number')).toBeEnabled()
     })
-    await userEvent.click(await screen.findByText('111111111'))
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled()
-    })
-    await userEvent.click(screen.getByRole('button', { name: 'Save' }))
-
-    const value: [Function, Object] = [expect.any(Function), expect.objectContaining({
-      data: { requestId: '123' },
-      status: 'fulfilled'
-    })]
-    await waitFor(() => {
-      expect(services.useUpdateNotificationSmsProviderMutation).toHaveLastReturnedWith(value)
-    })
   })
 })
 

@@ -194,10 +194,12 @@ export function RWGTable () {
     }
   }
 
+  const count = tableQuery?.data?.totalCount || 0
+
   return (
     <>
       <PageHeader
-        title={$t({ defaultMessage: 'RUCKUS WAN Gateway' })}
+        title={$t({ defaultMessage: 'RUCKUS WAN Gateway ({count})' }, { count })}
         extra={filterByAccess([
           <TenantLink to='/ruckus-wan-gateway/add'>
             <Button type='primary'>{ $t({ defaultMessage: 'Add Gateway' }) }</Button>

@@ -2,8 +2,8 @@ import { IntlShape } from 'react-intl'
 
 import { getTenantId } from '@acx-ui/utils'
 
-import { AgeTimeUnit, MtuTypeEnum, TunnelTypeEnum }                    from '../../models'
-import { TunnelProfile, TunnelProfileViewData, TunnelProfileFormType } from '../../types/policies/tunnelProfile'
+import { AgeTimeUnit, MtuTypeEnum, TunnelTypeEnum, MtuRequestTimeoutUnit } from '../../models'
+import { TunnelProfile, TunnelProfileViewData, TunnelProfileFormType }     from '../../types/policies/tunnelProfile'
 
 // eslint-disable-next-line max-len
 export const isDefaultTunnelProfile = (profile: TunnelProfileViewData | TunnelProfile | undefined) => {
@@ -61,12 +61,15 @@ export const getTunnelProfileOptsWithDefault = (
   return tunnelOpts
 }
 
-export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum) => {
+export const getTunnelTypeString = ($t: IntlShape['$t'], type: TunnelTypeEnum,
+  isEdgeVxLanKaReady?: boolean) => {
   switch (type) {
     case TunnelTypeEnum.VXLAN:
-      return $t({ defaultMessage: 'VxLAN' })
+      return isEdgeVxLanKaReady ? $t({ defaultMessage: 'VNI' }) : $t({ defaultMessage: 'VxLAN' })
     case TunnelTypeEnum.VLAN_VXLAN:
-      return $t({ defaultMessage: 'VLAN-VxLAN' })
+      return isEdgeVxLanKaReady ? $t({ defaultMessage: 'VLAN to VNI map' })
+        : $t({ defaultMessage: 'VLAN-VxLAN' })
+
     default:
       return ''
   }
@@ -103,21 +106,50 @@ export const ageTimeUnitConversion = (ageTimeMinutes?: number):
   }
 }
 
+export const mtuRequestTimeoutUnitConversion = (mtuRequestTimeout?: number):
+{ value: number, unit: MtuRequestTimeoutUnit } | undefined => {
+  if(!mtuRequestTimeout) return undefined
+
+  if (mtuRequestTimeout % 1000 === 0) {
+    return {
+      value: mtuRequestTimeout / 1000,
+      unit: MtuRequestTimeoutUnit.SECONDS
+    }
+  } else {
+    return {
+      value: mtuRequestTimeout,
+      unit: MtuRequestTimeoutUnit.MILLISECONDS
+    }
+  }
+}
+
 const DEFAULT_AGE_TIME_MIN = 20
+const DEFAULT_KEEP_ALIVE_INTERVAL = 2
+const DEFAULT_MTU_REQUEST_TIMEOUT = 2000
+const DEFAULT_RETRY = 5
 export const tunnelProfileFormDefaultValues = {
   mtuType: MtuTypeEnum.AUTO,
   ageTimeMinutes: DEFAULT_AGE_TIME_MIN,
-  ageTimeUnit: AgeTimeUnit.MINUTES
+  ageTimeUnit: AgeTimeUnit.MINUTES,
+  mtuRequestTimeout: DEFAULT_MTU_REQUEST_TIMEOUT,
+  mtuRequestTimeoutUnit: MtuRequestTimeoutUnit.MILLISECONDS,
+  mtuRequestRetry: DEFAULT_RETRY,
+  keepAliveInterval: DEFAULT_KEEP_ALIVE_INTERVAL,
+  keepAliveRetry: DEFAULT_RETRY
 }
 
 export const getTunnelProfileFormDefaultValues
   = (profileData?: TunnelProfile): TunnelProfileFormType => {
     const ageTime = profileData?.ageTimeMinutes || DEFAULT_AGE_TIME_MIN
     const result = ageTimeUnitConversion(ageTime)
+    const mtuRequestTime = profileData?.mtuRequestTimeout || DEFAULT_MTU_REQUEST_TIMEOUT
+    const mtuRequestTimeResult = mtuRequestTimeoutUnitConversion(mtuRequestTime)
     return {
       ...tunnelProfileFormDefaultValues,
       ...profileData,
       ageTimeMinutes: result?.value!,
-      ageTimeUnit: result?.unit!
+      ageTimeUnit: result?.unit!,
+      mtuRequestTimeout: mtuRequestTimeResult?.value!,
+      mtuRequestTimeoutUnit: mtuRequestTimeResult?.unit!
     } as TunnelProfileFormType
   }
