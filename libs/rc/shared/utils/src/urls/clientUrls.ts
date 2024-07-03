@@ -37,6 +37,11 @@ export const ClientUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
     newApi: true
   },
+  validateGuestPassword: {
+    method: 'PATCH',
+    url: '/wifiNetworks/:networkId/guestUsers',
+    newApi: true
+  },
   disableGuests: {
     method: 'PATCH',
     url: '/wifiNetworks/:networkId/guestUsers/:guestId',
