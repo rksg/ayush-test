@@ -328,14 +328,16 @@ export function useVlanPool () {
   }
 }
 
-export function useWifiCalling (notReady: boolean, saveState: NetworkSaveData, updateSaveState: Function, form: FormInstance) {
+export function useWifiCalling (notReady: boolean) {
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { networkId } = useParams()
   const { data: wifiCallingData } = useGetEnhancedWifiCallingServiceListQuery(
     { payload: { page: 1, pageSize: 1000, filters: { networkIds: [networkId] } }, enableRbac },
     { skip: !enableRbac || !networkId || notReady }
   )
-  const wifiCallingIds = useMemo(() => wifiCallingData?.data.map(p => p.id) || [], [wifiCallingData])
+  const wifiCallingIds = useMemo(() =>
+    wifiCallingData?.data.map(p => p.id) || []
+  , [wifiCallingData])
 
   const [ activate ] = useActivateWifiCallingServiceMutation()
   const [ deactivate ] = useDeactivateWifiCallingServiceMutation()

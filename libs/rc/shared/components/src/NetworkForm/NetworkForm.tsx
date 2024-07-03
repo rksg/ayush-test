@@ -164,7 +164,7 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
-  const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '', saveState, updateSaveState, form)
+  const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){

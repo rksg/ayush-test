@@ -1,11 +1,12 @@
 import { rest } from 'msw'
 
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                                       from '@acx-ui/feature-toggle'
-import { ConfigTemplateType, DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                     from '@acx-ui/store'
-import { mockServer, renderHook, waitFor }                                                                                                              from '@acx-ui/test-utils'
 
-import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate } from './utils'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed }                                                                                                        from '@acx-ui/feature-toggle'
+import { ConfigTemplateType, DpskWlanAdvancedCustomization, GuestNetworkTypeEnum, NetworkSaveData, NetworkTypeEnum, TunnelProfileUrls, TunnelTypeEnum, WifiCallingUrls } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                                                      from '@acx-ui/store'
+import { mockServer, renderHook, waitFor }                                                                                                                               from '@acx-ui/test-utils'
+
+import { hasAccountingRadius, hasAuthRadius, hasVxLanTunnelProfile, useNetworkVxLanTunnelProfileInfo, useServicePolicyEnabledWithConfigTemplate, useWifiCalling } from './utils'
 
 const mockedUseConfigTemplate = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
@@ -336,6 +337,126 @@ describe('Network utils test', () => {
       const { result } = renderHook(() => useServicePolicyEnabledWithConfigTemplate(ConfigTemplateType.PORTAL))
 
       expect(result.current).toBe(true)
+    })
+  })
+
+  describe('useWifiCalling hook', () => {
+    const queryWifiCallingFn = jest.fn()
+    const activateFn = jest.fn()
+    const deactivateFn = jest.fn()
+
+    beforeEach(() => {
+      queryWifiCallingFn.mockClear()
+      activateFn.mockClear()
+      deactivateFn.mockClear()
+
+      mockServer.use(
+        rest.post(WifiCallingUrls.queryWifiCalling.url,
+          (_, res, ctx) => {
+            queryWifiCallingFn()
+            return res(ctx.json({ data: [
+              { id: 'service-id-1' },
+              { id: 'service-id-2' }
+            ] }))
+          }
+        ),
+        rest.put(WifiCallingUrls.activateWifiCalling.url,
+          (_, res, ctx) => {
+            activateFn()
+            return res(ctx.json({}))
+          }
+        ),
+        rest.delete(WifiCallingUrls.deactivateWifiCalling.url,
+          (_, res, ctx) => {
+            deactivateFn()
+            return res(ctx.json({}))
+          }
+        )
+      )
+    })
+
+    beforeAll(() => {
+      jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    })
+
+    afterAll(() => {
+      jest.mocked(useIsSplitOn).mockReset()
+    })
+
+    it('should get wifiCalling data via RBAC', async () => {
+      renderHook(() => useWifiCalling(false),
+        { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
+
+      await waitFor(() => expect(queryWifiCallingFn).toHaveBeenCalled())
+    })
+
+    it('should activateAll via RBAC', async () => {
+      mockServer.use(
+        rest.post(WifiCallingUrls.queryWifiCalling.url,
+          (_, res, ctx) => {
+            queryWifiCallingFn()
+            return res(ctx.json({ data: [] }))
+          }
+        )
+      )
+
+      const { result } = renderHook(() => useWifiCalling(false),
+        { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
+
+      await waitFor(() => expect(queryWifiCallingFn).toHaveBeenCalled())
+      const saveData = {
+        wlan: {
+          advancedCustomization: {
+            wifiCallingIds: ['new-service-id-1', 'new-service-id-2'],
+            wifiCallingEnabled: true
+          }
+        }
+      } as NetworkSaveData
+
+      result.current.updateWifiCallingActivation('network-id', saveData)
+
+      await waitFor(() => expect(activateFn).toHaveBeenCalledTimes(2))
+      await waitFor(() => expect(deactivateFn).not.toHaveBeenCalled())
+    })
+
+    it('should deactivateAll via RBAC', async () => {
+      const { result } = renderHook(() => useWifiCalling(false),
+        { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
+
+      await waitFor(() => expect(queryWifiCallingFn).toHaveBeenCalled())
+      const saveData = {
+        wlan: {
+          advancedCustomization: {
+            wifiCallingEnabled: false
+          }
+        }
+      } as NetworkSaveData
+
+      result.current.updateWifiCallingActivation('network-id', saveData)
+
+      await waitFor(() => expect(activateFn).not.toHaveBeenCalled())
+      await waitFor(() => expect(deactivateFn).toHaveBeenCalledTimes(2))
+    })
+
+    it('should activate/deactivate wifi calling via RBAC', async () => {
+      const { result } = renderHook(() => useWifiCalling(false),
+        { route: { params: { networkId: 'networkId' } }, wrapper: Provider })
+
+      await waitFor(() => expect(queryWifiCallingFn).toHaveBeenCalled())
+
+      const saveData = {
+        wlan: {
+          advancedCustomization: {
+            wifiCallingIds: ['new-service-id'],
+            wifiCallingEnabled: true
+          }
+        }
+      } as NetworkSaveData
+
+      result.current.updateWifiCallingActivation('network-id', saveData)
+
+      await waitFor(() => expect(activateFn).toHaveBeenCalled())
+      await waitFor(() => expect(deactivateFn).toHaveBeenCalled())
     })
   })
 })
