@@ -160,7 +160,7 @@ export function SwitchMacAddressForm () {
       }
     }
 
-  }, [getTroubleshooting.data])
+  }, [getTroubleshooting])
 
   const onSubmit = async () => {
     setIsLoading(true)

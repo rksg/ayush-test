@@ -46,7 +46,9 @@ export function MdnsFencing () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const {
     editContextData,
@@ -76,7 +78,7 @@ export function MdnsFencing () {
   const onInit = (data?: VenueMdnsFencingPolicy, needToSetInitData=false) => {
     const { enabled=false } = data || {}
 
-    const services = ((isUseRbacApi)? data?.rules : data?.services) ?? []
+    const services = ((resolvedRbacEnabled)? data?.rules : data?.services) ?? []
     setEnableMdnsFencing(enabled)
 
     const newData = updateRowIds(services).sort((a, b) => {
@@ -156,7 +158,7 @@ export function MdnsFencing () {
         return omit(service, ['rowId'])
       })
 
-      const payload = (isUseRbacApi)? {
+      const payload = (resolvedRbacEnabled)? {
         enabled: enableMdnsFencing,
         rules: newServices
       } : {
@@ -167,7 +169,7 @@ export function MdnsFencing () {
       await updateVenueMdnsFencing({
         params: { venueId },
         payload,
-        enableRbac: isUseRbacApi
+        enableRbac: resolvedRbacEnabled
       }).unwrap()
 
     } catch (error) {

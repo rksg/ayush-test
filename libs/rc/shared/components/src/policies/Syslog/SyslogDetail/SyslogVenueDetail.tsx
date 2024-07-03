@@ -101,7 +101,7 @@ const SyslogVenueDetail = () => {
     <Card title={
       $t(
         { defaultMessage: 'Instance ({count})' },
-        { count: tableQuery.data?.totalCount }
+        { count: tableQuery.data?.totalCount || 0 }
       )
     }>
       <Loader states={[tableQuery]}>
