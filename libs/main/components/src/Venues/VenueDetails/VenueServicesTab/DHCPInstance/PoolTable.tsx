@@ -18,7 +18,8 @@ import {
   useDeactivateVenueTemplateDhcpPoolMutation
 } from '@acx-ui/rc/services'
 import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { hasAccess }                                                                                                                                from '@acx-ui/user'
+import { WifiScopes }                                                                                                                               from '@acx-ui/types'
+import { hasPermission }                                                                                                                            from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
@@ -167,7 +168,7 @@ export default function VenuePoolTable (
       title: $t({ defaultMessage: 'Active' }),
       dataIndex: 'id',
       render: (__, row) => {
-        if (!hasAccess()) {
+        if (!hasPermission({ scopes: [WifiScopes.UPDATE] })) {
           return row.active ? $t({ defaultMessage: 'ON' }) : $t({ defaultMessage: 'OFF' })
         }
 

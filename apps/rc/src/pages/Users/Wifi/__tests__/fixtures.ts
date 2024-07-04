@@ -1001,3 +1001,21 @@ export const dpskPassphraseClient = {
   createDate: '2023-04-25T16:00:00.000+0000',
   expirationDate: '2023-04-27T16:00:00.000+0000'
 }
+
+export const validationFailed = {
+  requestId: '46bf9053-ab5c-457d-8108-415a9f0fd481',
+  error: {
+    rootCauseErrors: [
+      {
+        code: 'GUEST-422027',
+        message: 'Passwords on the same network should be unique'
+      }
+    ],
+    request: {},
+    status: 422
+  },
+  request: {
+    url: '/wifiNetworks/cf5dc74b0c5948918718e4e0a800fb39/guestUsers',
+    method: 'PATCH'
+  }
+}

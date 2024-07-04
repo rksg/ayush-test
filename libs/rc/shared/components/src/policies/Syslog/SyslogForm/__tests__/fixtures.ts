@@ -132,3 +132,45 @@ export const rbacQuerySyslogResult = {
     }
   ]
 }
+
+export const rbacTemplateVenueQuery = {
+  fields: [],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      id: '4ca20c8311024ac5956d366f15d96e0c',
+      name: 'venue1',
+      city: 'Sunnyvale, California',
+      country: 'United States',
+      status: '1_InSetupPhase',
+      rogueDetection: {
+        policyId: '195f9a51baf64105b89815ff95de9045',
+        policyName: 'Default profile',
+        enabled: true
+      },
+      syslogServer: {
+        policyId: '',
+        policyName: '',
+        enabled: false
+      }
+    },
+    {
+      id: 'c6b8299dabcb4979b51b2356b27fa41a',
+      name: 'venue2',
+      city: 'Taibao City, Chiayi County',
+      country: 'Taiwan',
+      status: '1_InSetupPhase',
+      rogueDetection: {
+        policyId: '195f9a51baf64105b89815ff95de9045',
+        policyName: 'Default profile',
+        enabled: true
+      },
+      syslogServer: {
+        policyId: 'a88e2c25ebe345f5b3f4752195d33717',
+        policyName: 'testSyslogomggg',
+        enabled: true
+      }
+    }
+  ]
+}

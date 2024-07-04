@@ -7,11 +7,31 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
     newApi: true
   },
+  addDHCPServiceRbac: {
+    method: 'post',
+    url: '/dhcpConfigServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateDHCPService: {
     method: 'put',
     url: '/dhcpConfigServiceProfiles/:serviceId',
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
     newApi: true
+  },
+  updateDHCPServiceRbac: {
+    method: 'put',
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getDHCProfileDetail: {
     method: 'get',
@@ -19,11 +39,31 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
     newApi: true
   },
+  getDHCProfileDetailRbac: {
+    method: 'get',
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   deleteDHCPProfile: {
     method: 'delete',
     url: '/dhcpConfigServiceProfiles/:serviceId',
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
     newApi: true
+  },
+  deleteDHCPProfileRbac: {
+    method: 'delete',
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getDHCPProfiles: {
     //Get DHCP Profiles LIST
@@ -84,7 +124,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   queryDHCPProfiles: {
     method: 'post',
     url: '/dhcpConfigServiceProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   bindVenueDhcpProfile: {
     method: 'PUT',
@@ -99,7 +143,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   getVenueDHCPServiceProfileRbac: {
     method: 'get',
     url: '/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueLeasesRbac: {
     method: 'get',
@@ -109,6 +157,10 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
   getDhcpUsagesRbac: {
     method: 'get',
     url: '/venues/:venueId/wifiDhcpPoolUsages',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

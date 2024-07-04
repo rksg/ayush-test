@@ -104,11 +104,10 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     createOrUpdateDhcpTemplate: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-        const req = createHttpRequest(params?.serviceId
-          ? ServicesConfigTemplateUrlsInfo.updateDhcp
-          : ServicesConfigTemplateUrlsInfo.addDhcp
-        , params, headers)
+        const addDhcpUrl = enableRbac ? ServicesConfigTemplateUrlsInfo.addDhcpRbac : ServicesConfigTemplateUrlsInfo.addDhcp
+        const updatedDhcpUrl = enableRbac ? ServicesConfigTemplateUrlsInfo.updateDhcpRbac : ServicesConfigTemplateUrlsInfo.updateDhcp
+        const url = _.isEmpty(params?.serviceId) ? addDhcpUrl : updatedDhcpUrl
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -117,16 +116,13 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }]
     }),
     deleteDhcpTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteDhcp, {
-        rbacApiInfo: ServicesConfigTemplateUrlsInfo.deleteDhcp,
-        rbacApiVersionKey: ApiVersionEnum.v1_1
-      }),
+      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteDhcp, ServicesConfigTemplateUrlsInfo.deleteDhcpRbac),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }, { type: 'DhcpTemplate', id: 'LIST' }]
     }),
     getDhcpTemplateList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? ServicesConfigTemplateUrlsInfo.queryDHCPProfiles : ServicesConfigTemplateUrlsInfo.getDhcpList
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})

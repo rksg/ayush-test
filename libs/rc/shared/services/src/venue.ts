@@ -103,6 +103,10 @@ import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import { getVenueDHCPProfileFn, getVenueRoguePolicyFn, transformGetVenueDHCPPoolsResponse, updateVenueRoguePolicyFn } from './servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                                                          from './utils'
+import {
+  createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
+  createVenueRadioCustomizationFetchArgs, createVenueUpdateRadioCustomizationFetchArgs
+}   from './venue.utils'
 
 const customHeaders = {
   v1: {
@@ -294,7 +298,8 @@ export const venueApi = baseVenueApi.injectEndpoints({
     getVenueCityList: build.query<{ name: string }[], RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const headers = enableRbac ? customHeaders.v1 : {}
-        const req = createHttpRequest(CommonUrlsInfo.getVenueCityList, params, headers)
+        const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
+        const req = createHttpRequest(urlsInfo.getVenueCityList, params, headers)
         return{
           ...req,
           body: JSON.stringify(payload)
@@ -978,44 +983,13 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     venueDefaultRegulatoryChannels: build.query<VenueDefaultRegulatoryChannels, RequestPayload>({
-      query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-          (enableRbac ? ApiVersionEnum.v1 : undefined)
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-
-        const req = createHttpRequest(urlsInfo.getVenueDefaultRegulatoryChannels, params, apiCustomHeader)
-        return{
-          ...req
-        }
-      }
+      query: createVenueDefaultRegulatoryChannelsFetchArgs()
     }),
     getDefaultRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-          (enableRbac ? ApiVersionEnum.v1 : undefined)
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-
-        const req = createHttpRequest(urlsInfo.getDefaultRadioCustomization, params, apiCustomHeader)
-        return{
-          ...req
-        }
-      }
+      query: createVenueDefaultRadioCustomizationFetchArgs()
     }),
     getVenueRadioCustomization: build.query<VenueRadioCustomization, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = (enableSeparation || enableRbac)? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-          (enableRbac ? ApiVersionEnum.v1 : undefined)
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-
-        const req = createHttpRequest(urlsInfo.getVenueRadioCustomization, params, apiCustomHeader)
-        return{
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
+      query: createVenueRadioCustomizationFetchArgs(),
       providesTags: [{ type: 'VenueRadio', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -1027,18 +1001,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
       }
     }),
     updateVenueRadioCustomization: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableRbac, enableSeparation = false }) => {
-        const urlsInfo = (enableSeparation || enableRbac) ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const rbacApiVersion = enableSeparation ? ApiVersionEnum.v1_1 :
-          (enableRbac? ApiVersionEnum.v1 : undefined)
-        const apiCustomHeader = GetApiVersionHeader(rbacApiVersion)
-
-        const req = createHttpRequest(urlsInfo.updateVenueRadioCustomization, params, apiCustomHeader)
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
+      query: createVenueUpdateRadioCustomizationFetchArgs(),
       invalidatesTags: [{ type: 'VenueRadio', id: 'LIST' }]
     }),
     getVenueTripleBandRadioSettings: build.query<TriBandSettings, RequestPayload>({

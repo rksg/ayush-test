@@ -132,7 +132,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfiles
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
@@ -164,7 +164,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfilesViewModel
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -195,10 +195,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload, enableRbac } :
         { params:Params, payload:DHCPSaveData, enableRbac: boolean }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        // eslint-disable-next-line max-len
-        const url = _.isEmpty(params.serviceId) ? DHCPUrls.addDHCPService : DHCPUrls.updateDHCPService
-        const dhcpReq = createHttpRequest(url, params, headers)
+        const addDHCPUrl = enableRbac ? DHCPUrls.addDHCPServiceRbac : DHCPUrls.addDHCPService
+        const updatedDHCPUrl = enableRbac ? DHCPUrls.updateDHCPServiceRbac : DHCPUrls.updateDHCPService
+        const url = _.isEmpty(params.serviceId) ? addDHCPUrl : updatedDHCPUrl
+        const dhcpReq = createHttpRequest(url, params)
         return {
           ...dhcpReq,
           body: JSON.stringify(payload)
@@ -208,8 +208,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params, headers)
+        const url = enableRbac ? DHCPUrls.deleteDHCPProfileRbac : DHCPUrls.deleteDHCPProfile
+        const req = createHttpRequest(url, params)
         return {
           ...req
         }

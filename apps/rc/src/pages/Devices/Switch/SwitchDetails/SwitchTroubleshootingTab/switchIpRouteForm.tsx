@@ -67,7 +67,7 @@ export function SwitchIpRouteForm () {
       form.setFieldValue('result', parseResult(response.result))
     }
 
-  }, [getTroubleshooting.data])
+  }, [getTroubleshooting])
 
   const onSubmit = async () => {
     setIsLoading(true)
