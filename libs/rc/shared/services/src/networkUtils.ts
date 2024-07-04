@@ -38,12 +38,10 @@ export const addNetworkVenueFn = (isTemplate: boolean = false) : QueryFn<CommonR
           customHeaders
         )
 
-        const updateRes = await fetchWithBQ({
+        await fetchWithBQ({
           ...updateReq,
           body: JSON.stringify(payload)
         })
-
-        console.log(updateRes)
       }
 
       if (res.error) {
