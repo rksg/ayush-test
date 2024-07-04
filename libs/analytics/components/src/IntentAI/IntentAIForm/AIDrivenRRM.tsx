@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { get }     from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { PageHeader, StepsForm, Loader } from '@acx-ui/components'
@@ -18,7 +17,11 @@ import * as UI                                                             from 
 export function AIDrivenRRM () {
   const { $t } = useIntl()
   const params = useParams()
-  const id = get(params, 'id', undefined) as string
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [ _, ...rest ] = params.intentId?.split('-') || []
+  const id = rest.join('-')
+
   const isCrrmPartialEnabled = [
     useIsSplitOn(Features.RUCKUS_AI_CRRM_PARTIAL),
     useIsSplitOn(Features.CRRM_PARTIAL)
@@ -47,11 +50,14 @@ export function AIDrivenRRM () {
         subTitle={[
           {
             label: $t({ defaultMessage: 'Intent' }),
-            value: [details?.intentType as string]
+            // value: $t([config.intentTypeMap[
+            //   details?.intentType! as keyof typeof config.intentTypeMap]
+            // ] as MessageDescriptor) as unknown as (string | number)[]
+            value: [details?.intentType!]
           },
           {
             label: $t({ defaultMessage: 'Zone' }),
-            value: [details?.zone as unknown as string]
+            value: [details?.sliceValue]
           }
         ]}
       />
