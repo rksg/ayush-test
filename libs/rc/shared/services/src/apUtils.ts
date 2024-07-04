@@ -255,6 +255,8 @@ export const aggregateApDeviceModelTypeInfo = (
   })
 }
 
+const apSystemNamePathHeading = 'apStatusData.APSystem'
+const cellularInfoNamePathHeading = 'apStatusData.cellularInfo'
 const apOldNewFieldsMapping: Record<string, string> = {
   'apMac': 'macAddress',
   'deviceStatus': 'status',
@@ -267,19 +269,42 @@ const apOldNewFieldsMapping: Record<string, string> = {
   'clients': 'clientCount',
   'isMeshEnable': 'meshEnabled',
   'apRadioDeploy': 'radioStatuses',
+  'lastUpdTime': 'lastUpdatedTime',
   'apStatusData.lanPortStatus': 'lanPortStatuses',
   'apStatusData.APRadio': 'radioStatuses',
-  'apStatusData.APSystem.uptime': 'uptime',
-  'apStatusData.APSystem.ipType': 'networkStatus.ipAddressType',
-  'apStatusData.APSystem.netmask': 'networkStatus.netmask',
-  'apStatusData.APSystem.gateway': 'networkStatus.gateway',
-  'apStatusData.APSystem.primaryDnsServer': 'networkStatus.primaryDnsServer',
-  'apStatusData.APSystem.secondaryDnsServer': 'networkStatus.secondaryDnsServer',
-  'apStatusData.APSystem.secureBootEnabled': 'supportSecureBoot',
-  'apStatusData.APSystem.managementVlan': 'networkStatus.managementTrafficVlan',
+  [`${apSystemNamePathHeading}.uptime`]: 'uptime',
+  [`${apSystemNamePathHeading}.ipType`]: 'networkStatus.ipAddressType',
+  [`${apSystemNamePathHeading}.netmask`]: 'networkStatus.netmask',
+  [`${apSystemNamePathHeading}.gateway`]: 'networkStatus.gateway',
+  [`${apSystemNamePathHeading}.primaryDnsServer`]: 'networkStatus.primaryDnsServer',
+  [`${apSystemNamePathHeading}.secondaryDnsServer`]: 'networkStatus.secondaryDnsServer',
+  [`${apSystemNamePathHeading}.secureBootEnabled`]: 'supportSecureBoot',
+  [`${apSystemNamePathHeading}.managementVlan`]: 'networkStatus.managementTrafficVlan',
   'apStatusData.afcInfo.powerMode': 'afcStatus.powerState', //?
   'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState', //?
-  'lastUpdTime': 'lastUpdatedTime'
+  [cellularInfoNamePathHeading]: 'cellularStatus',
+  [`${cellularInfoNamePathHeading}.cellularCountry`]: 'cellularStatus.country',
+  [`${cellularInfoNamePathHeading}.cellularOperator`]: 'cellularStatus.operator',
+  [`${cellularInfoNamePathHeading}.cellularActiveSim`]: 'cellularStatus.activeSim',
+  [`${cellularInfoNamePathHeading}.cellularIMEI`]: 'cellularStatus.imei',
+  [`${cellularInfoNamePathHeading}.cellularLTEFirmware`]: 'cellularStatus.lteFirmware',
+  [`${cellularInfoNamePathHeading}.cellularConnectionStatus`]: 'cellularStatus.connectionStatus',
+  [`${cellularInfoNamePathHeading}.cellular3G4GChannel`]: 'cellularStatus.connectionChannel',
+  [`${cellularInfoNamePathHeading}.cellularBand`]: 'cellularStatus.rfBand',
+  [`${cellularInfoNamePathHeading}.cellularWanInterface`]: 'cellularStatus.wanInterface',
+  [`${cellularInfoNamePathHeading}.cellularIPaddress`]: 'cellularStatus.ipAddress',
+  [`${cellularInfoNamePathHeading}.cellularSubnetMask`]: 'cellularStatus.netmask',
+  [`${cellularInfoNamePathHeading}.cellularDefaultGateway`]: 'cellularStatus.gateway',
+  [`${cellularInfoNamePathHeading}.cellularRoamingStatus`]: 'cellularStatus.roamingStatus',
+  [`${cellularInfoNamePathHeading}.cellularRadioUptime`]: 'cellularStatus.radioUptime',
+  [`${cellularInfoNamePathHeading}.cellularUplinkBandwidth`]: 'cellularStatus.uplinkBandwidth',
+  [`${cellularInfoNamePathHeading}.cellularDownlinkBandwidth`]: 'cellularStatus.downlinkBandwidth',
+  [`${cellularInfoNamePathHeading}.cellularSignalStrength`]: 'cellularStatus.signalStrength',
+  [`${cellularInfoNamePathHeading}.cellularECIO`]: 'cellularStatus.ecio',
+  [`${cellularInfoNamePathHeading}.cellularRSCP`]: 'cellularStatus.rscp',
+  [`${cellularInfoNamePathHeading}.cellularRSRP`]: 'cellularStatus.rsrp',
+  [`${cellularInfoNamePathHeading}.cellularRSRQ`]: 'cellularStatus.rsrq',
+  [`${cellularInfoNamePathHeading}.cellularSINR`]: 'cellularStatus.sinr'
 }
 
 const apNewOldFieldsMapping = invert(apOldNewFieldsMapping)
@@ -298,10 +323,9 @@ export const getNewApViewmodelPayloadFromOld = (payload: Record<string, unknown>
   if (newPayload.fields) {
     const newFields: string[] = uniq((newPayload.fields as string[])?.flatMap(field => {
       if (field === 'apStatusData') {
-        // TODO: cellularInfo
-        return ['networkStatus', 'lanPortStatuses', 'radioStatuses', 'afcStatus']
-      } else if (field === 'apStatusData.APSystem') {
-        return ['networkStatus', 'supportSecureBoot', 'managementTrafficVlan', 'uptime']
+        return ['networkStatus', 'lanPortStatuses', 'radioStatuses', 'afcStatus', 'cellularStatus']
+      } else if (field === apSystemNamePathHeading) {
+        return ['networkStatus', 'supportSecureBoot', 'uptime']
       }
 
       return getApNewFieldFromOld(field)
@@ -336,16 +360,82 @@ export const getNewApViewmodelPayloadFromOld = (payload: Record<string, unknown>
   return newPayload
 }
 
+const parsingCellularSimStatusFromNewType = (result: APExtended, namePathStr: string, value: unknown) => {
+  const simIdx = namePathStr === 'cellularStatus.primarySimStatus' ? 0 : 1
+
+  Object.entries(value as Record<string, unknown>).map(([fieldKey, fieldVal]) => {
+    let targetOldFieldName:string = ''
+    let newVal = fieldVal
+    switch(fieldKey) {
+      case 'iccid':
+        targetOldFieldName = `cellularICCIDSIM${simIdx}`
+        break
+      case 'imsi':
+        targetOldFieldName = `cellularIMSISIM${simIdx}`
+        break
+      case 'txBytes':
+        targetOldFieldName = `cellularTxBytesSIM${simIdx}`
+        newVal = (fieldVal ?? 0)+''
+        break
+      case 'rxBytes':
+        targetOldFieldName = `cellularRxBytesSIM${simIdx}`
+        newVal = (fieldVal ?? 0)+''
+        break
+      case 'cardRemovalCount':
+        targetOldFieldName = `cellularCardRemovalCountSIM${simIdx}`
+        newVal = (fieldVal ?? 0)+''
+        break
+      case 'dhcpTimeoutCount':
+        targetOldFieldName = `cellularDHCPTimeoutCountSIM${simIdx}`
+        newVal = (fieldVal ?? 0)+''
+        break
+      case 'networkLostCount':
+        targetOldFieldName = `cellularNWLostCountSIM${simIdx}`
+        newVal = (fieldVal ?? 0)+''
+        break
+      case 'switchCount':
+        targetOldFieldName = `cellularSwitchCountSIM${simIdx}`
+        newVal = (fieldVal ?? 0)+''
+        break
+      default:
+        break
+    }
+
+    if (targetOldFieldName)
+      set(result, `${cellularInfoNamePathHeading}.${targetOldFieldName}`, newVal)
+  })
+}
+
+const parsingCellularStatusFromNewType = (result: APExtended, value: unknown) => {
+  const isSim0Present = isNil(get(value, 'primarySimStatus')) ? 'NO' : 'YES'
+  set(result, `${cellularInfoNamePathHeading}.cellularIsSIM0Present`, isSim0Present)
+
+  const isSim1Present = isNil(get(value, 'secondarySimStatus')) ? 'NO' : 'YES'
+  set(result, `${cellularInfoNamePathHeading}.cellularIsSIM1Present`, isSim1Present)
+
+  Object.entries(value as Record<string, unknown>).forEach(([fieldKey, fieldVal]) => {
+    const namePathStr = ['cellularStatus'].concat(fieldKey).join('.')
+
+    if (fieldKey === 'primarySimStatus' || fieldKey === 'secondarySimStatus') {
+      parsingCellularSimStatusFromNewType(result, namePathStr, fieldVal)
+    } else {
+      const oldApFieldName = getApOldFieldFromNew(namePathStr)
+      set(result, oldApFieldName, fieldVal)
+    }
+  })
+}
+
 const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtended, parentPath: string[] = []) => {
   for (const key in rbacAp) {
     const value = rbacAp[key]
     const namePath = parentPath.concat(key)
-    const oldApFieldNameExist = isNil(apNewOldFieldsMapping[namePath.join('.')]) === false
+    const namePathStr = namePath.join('.')
+    const oldApFieldNameExist = isNil(apNewOldFieldsMapping[namePathStr]) === false
+    const oldApFieldName = getApOldFieldFromNew(namePathStr)
 
     if (typeof value === 'object') {
       if (Array.isArray(value)) {
         if (['lanPortStatuses', 'radioStatuses', 'tags'].includes(key) === false) continue
-        const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
 
         if (key === 'tags') {
           set(result, oldApFieldName, value.join(','))
@@ -371,14 +461,16 @@ const parsingApFromNewType = (rbacAp: Record<string, unknown>, result: APExtende
             }
           }))
         }
+      } else if (key === 'cellularStatus') {
+        parsingCellularStatusFromNewType(result, value)
       } else if (oldApFieldNameExist) {
-        const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
+        // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
         set(result, oldApFieldName, value)
       } else {
         parsingApFromNewType(value as Record<string, unknown>, result, namePath)
       }
     } else {
-      const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
+      // const oldApFieldName = getApOldFieldFromNew(namePath.join('.'))
       set(result, oldApFieldName, value)
     }
   }

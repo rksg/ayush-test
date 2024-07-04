@@ -23,6 +23,26 @@ export interface IpSettings {
   secondaryDnsServer?: string
 }
 
+interface NewApNetworkStatus {
+  ipAddress: string
+  externalIpAddress: string
+  ipAddressType: string
+  netmask: string
+  gateway: string
+  primaryDnsServer: string
+  secondaryDnsServer: string
+  managementTrafficVlan: number
+}
+
+interface NewApRadioProperties {
+    id: number
+    band: string
+    transmitterPower: string
+    channel: number
+    channelBandwidth: string
+    rssi: number
+}
+
 export interface APSystem extends IpSettings {
   uptime?: number
   secureBootEnabled?: boolean
@@ -88,28 +108,13 @@ export interface NewAPModel {
   statusSeverity?: ApVenueStatusEnum
   status?: ApDeviceStatusEnum
   meshRole?: string
-  networkStatus?: {
-    ipAddress: string
-    externalIpAddress: string
-    ipAddressType: string
-    netmask: string
-    gateway: string
-    primaryDnsServer: string
-    secondaryDnsServer: string
-    managementTrafficVlan: number
-  }
+  networkStatus?: NewApNetworkStatus
   lanPortStatuses?: {
     id: string
     physicalLink: string
   }[]
-  radioStatuses?: {
-    id: number
-    band: string
-    transmitterPower: string
-    channel: number
-    channelBandwidth: string
-    rssi: number
-  }[]
+  radioStatuses?: NewApRadioProperties[]
+  cellularStatus?: NewCelluarInfo
   afcStatus?: NewAFCInfo
   floorplanId?: string
 }
@@ -173,6 +178,50 @@ export interface NewAPModelExtended extends NewAPModel {
   switchName?: string
   rogueCategory?: { [key: string]: number }
   incompatible?: number
+}
+export interface NewCelluarInfo {
+  activeSim: string,
+  imei: string,
+  lteFirmware: string,
+  country: string,
+  operator: string,
+  connectionStatus: string,
+  connectionChannel: number,
+  rfBand: string,
+  wanInterface: string,
+  ipAddress: string,
+  netmask: string,
+  gateway: string,
+  roamingStatus: string,
+  radioUptime: number,
+  uplinkBandwidth: string,
+  downlinkBandwidth: string,
+  signalStrength: string,
+  ecio: number,
+  rscp: number,
+  rsrp: number,
+  rsrq: number,
+  sinr: number,
+  primarySimStatus: {
+    iccid: string,
+    imsi: string,
+    txBytes: number,
+    rxBytes: number,
+    cardRemovalCount: number,
+    dhcpTimeoutCount: number,
+    networkLostCount: number,
+    switchCount: number,
+  },
+  secondarySimStatus: {
+    iccid: string,
+    imsi: string,
+    txBytes: number,
+    rxBytes: number,
+    cardRemovalCount: number,
+    dhcpTimeoutCount: number,
+    networkLostCount: number,
+    switchCount: number,
+  }
 }
 
 export interface CelluarInfo {

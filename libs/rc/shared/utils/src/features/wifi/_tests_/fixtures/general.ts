@@ -18,7 +18,8 @@ export const mockAPList = {
     'model',
     'firmwareVersion',
     'poePort',
-    'status'
+    'status',
+    'cellularStatus'
   ],
   totalCount: 2,
   page: 1,
@@ -75,7 +76,34 @@ export const mockAPList = {
           channelBandwidth: '40',
           rssi: 52
         }
-      ]
+      ],
+      cellularStatus: {
+        activeSim: 'SIM 0',
+        imei: '861107037457984',
+        lteFirmware: 'EC25AU_FAR02A04M4G - SubEdition: V01',
+        connectionStatus: '2G',
+        connectionChannel: 10762,
+        rfBand: 'WCDMA 2100',
+        wanInterface: 'wwan0',
+        roamingStatus: 'not registered, searching',
+        radioUptime: 0,
+        signalStrength: '-113 dBm (bad)',
+        ecio: -7,
+        rscp: -81,
+        rsrp: 0,
+        rsrq: 0,
+        sinr: 0,
+        primarySimStatus: {
+          txBytes: 12,
+          rxBytes: 12,
+          cardRemovalCount: 0,
+          dhcpTimeoutCount: 0,
+          networkLostCount: 0,
+          switchCount: 0,
+          imsi: '',
+          iccid: ''
+        }
+      }
     },
     {
       serialNumber: '922102004888',
@@ -131,7 +159,24 @@ export const mockAPList = {
           channelBandwidth: '80',
           rssi: 36
         }
-      ]
+      ],
+      cellularStatus: {
+        activeSim: 'SIM 0',
+        imei: '861107037457984',
+        lteFirmware: 'EC25AU_FAR02A04M4G - SubEdition: V01',
+        connectionStatus: '2G',
+        connectionChannel: 10762,
+        rfBand: 'WCDMA 2100',
+        wanInterface: 'wwan0',
+        roamingStatus: 'not registered, searching',
+        radioUptime: 0,
+        signalStrength: '-113 dBm (bad)',
+        ecio: -7,
+        rscp: -81,
+        rsrp: 0,
+        rsrq: 0,
+        sinr: 0
+      }
     }
   ]
 }

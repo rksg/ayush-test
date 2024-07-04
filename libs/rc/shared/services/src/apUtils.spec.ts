@@ -193,6 +193,26 @@ describe('Test apUtils', () => {
       expect(result.apStatusData?.APSystem?.secondaryDnsServer).toBe(target.networkStatus?.secondaryDnsServer)
       expect(result.apStatusData?.APSystem?.secureBootEnabled).toBe(target.supportSecureBoot)
       expect(result.apStatusData?.APSystem?.managementVlan).toBe(target?.networkStatus?.managementTrafficVlan)
+
+      // cellular status
+      const cellularStatus = target.cellularStatus
+      expect(result.apStatusData?.cellularInfo?.cellularActiveSim).toBe(cellularStatus?.activeSim)
+      expect(result.apStatusData?.cellularInfo?.cellularBand).toBe(cellularStatus?.rfBand)
+      expect(result.apStatusData?.cellularInfo?.cellularCountry).toBe(undefined)
+      expect(result.apStatusData?.cellularInfo?.cellularOperator).toBe(undefined)
+      expect(result.apStatusData?.cellularInfo?.cellular3G4GChannel).toBe(cellularStatus?.connectionChannel)
+      expect(result.apStatusData?.cellularInfo?.cellularConnectionStatus).toBe(cellularStatus?.connectionStatus)
+      expect(result.apStatusData?.cellularInfo?.cellularECIO).toBe(cellularStatus?.ecio)
+      expect(result.apStatusData?.cellularInfo?.cellularDownlinkBandwidth).toBe(cellularStatus?.downlinkBandwidth)
+
+      expect(result.apStatusData?.cellularInfo?.cellularIsSIM0Present).toBe('YES')
+      expect(result.apStatusData?.cellularInfo?.cellularICCIDSIM0).toBe(cellularStatus?.primarySimStatus.iccid)
+      expect(result.apStatusData?.cellularInfo?.cellularRxBytesSIM0).toBe(cellularStatus?.primarySimStatus.rxBytes + '')
+
+      expect(result.apStatusData?.cellularInfo?.cellularIsSIM1Present).toBe('NO')
+      expect(result.apStatusData?.cellularInfo?.cellularICCIDSIM1).toBe(undefined)
+      expect(result.apStatusData?.cellularInfo?.cellularRxBytesSIM1).toBe(undefined)
+
     })
   })
 })
