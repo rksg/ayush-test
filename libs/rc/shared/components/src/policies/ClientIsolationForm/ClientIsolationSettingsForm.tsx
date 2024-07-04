@@ -2,17 +2,17 @@ import { Col, Form, Input, Row, Space } from 'antd'
 import { useIntl }                      from 'react-intl'
 import { useParams }                    from 'react-router-dom'
 
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
 import { useLazyGetClientIsolationListQuery } from '@acx-ui/rc/services'
 import {
   checkObjectNotExists,
+  CLIENT_ISOLATION_LIMIT_NUMBER,
   ClientIsolationClient,
   servicePolicyNameRegExp
 } from '@acx-ui/rc/utils'
 
 import { ClientIsolationAllowListTable } from './ClientIsolationAllowListTable'
 import * as UI                           from './styledComponents'
-
-export const ALLOW_LIST_MAX_COUNT = 64
 
 export default function ClientIsolationSettingsForm (props: { editMode: boolean }) {
   const { editMode } = props
@@ -21,11 +21,12 @@ export default function ClientIsolationSettingsForm (props: { editMode: boolean 
   const params = useParams()
   const allowlist = Form.useWatch('allowlist')
   const id = Form.useWatch<string>('id', form)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ clientIsolationList ] = useLazyGetClientIsolationListQuery()
 
   const nameValidator = async (value: string) => {
     try {
-      const list = (await clientIsolationList({ params }).unwrap())
+      const list = (await clientIsolationList({ params, enableRbac }).unwrap())
         .filter(clientIsolation => clientIsolation.id !== id)
         .map(clientIsolation => ({ name: clientIsolation.name }))
 
@@ -84,7 +85,7 @@ export default function ClientIsolationSettingsForm (props: { editMode: boolean 
             <UI.TableSubLabel>
               {$t(
                 { defaultMessage: 'Up to {maxClientCount} clients may be added' },
-                { maxClientCount: ALLOW_LIST_MAX_COUNT }
+                { maxClientCount: CLIENT_ISOLATION_LIMIT_NUMBER }
               )}
             </UI.TableSubLabel>
           </Space>
