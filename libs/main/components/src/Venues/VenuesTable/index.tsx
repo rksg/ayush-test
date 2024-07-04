@@ -19,14 +19,13 @@ import {
   useVenuesListQuery,
   useVenuesTableQuery,
   useDeleteVenueMutation,
-  useGetVenueCityListQuery,
-  useGetVenueTemplateCityListQuery
+  useGetVenueCityListQuery
 } from '@acx-ui/rc/services'
 import {
   Venue,
   ApVenueStatusEnum,
   TableQuery,
-  usePollingTableQuery, useConfigTemplate
+  usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useParams }                              from '@acx-ui/react-router-dom'
 import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum } from '@acx-ui/types'
@@ -369,15 +368,7 @@ function shouldShowConfirmation (selectedVenues: Venue[]) {
 
 function useGetVenueCityList () {
   const params = useParams()
-  const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
-
-  const venueCityListTemplate = useGetVenueTemplateCityListQuery({ params }, {
-    selectFromResult: ({ data }) => ({
-      cityFilterOptions: transformToCityListOptions(data)
-    }),
-    skip: !isTemplate
-  })
 
   const venueCityList = useGetVenueCityListQuery({
     params,
@@ -385,9 +376,8 @@ function useGetVenueCityList () {
   }, {
     selectFromResult: ({ data }) => ({
       cityFilterOptions: transformToCityListOptions(data)
-    }),
-    skip: isTemplate
+    })
   })
 
-  return isTemplate ? venueCityListTemplate : venueCityList
+  return venueCityList
 }

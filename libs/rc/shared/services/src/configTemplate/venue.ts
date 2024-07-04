@@ -344,7 +344,10 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
     }),
     getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueCityList),
+      query: commonQueryFn(
+        VenueConfigTemplateUrlsInfo.getVenueCityList,
+        VenueConfigTemplateUrlsInfo.getVenueCityListRbac
+      ),
       transformResponse: (result: { cityList: { name: string }[] }) => {
         return result.cityList
       }
