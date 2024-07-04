@@ -12,8 +12,8 @@ import {
   TrustedPort,
   TrustedPortTypeEnum
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl }                       from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -185,7 +185,7 @@ export function TrustedPorts () {
                 setSelected(undefined)
               }
             }])}
-            rowSelection={hasAccess() && {
+            rowSelection={hasPermission() && {
               type: 'radio',
               onChange: (keys: React.Key[]) => {
                 const selected = ruleList?.find((i: { model: string }) => i.model === keys[0])
