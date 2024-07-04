@@ -182,6 +182,7 @@ export function NetworkVenuesTab () {
   const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
   const { $t } = useIntl()
   const networkId = params.networkId
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const settingsId = 'network-venues-table'
 
   const tableQuery = useNetworkVenueList({ settingsId, networkId })
@@ -236,7 +237,8 @@ export function NetworkVenuesTab () {
       sortOrder: 'ASC',
       page: 1,
       pageSize: 10000
-    }
+    },
+    enableRbac: isPolicyRbacEnabled
   }, {
     skip: !tableData.length,
     selectFromResult: ({ data }: { data?: { data: VLANPoolViewModelType[] } }) => ({

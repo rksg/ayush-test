@@ -44,7 +44,13 @@ import { NetworkVenuesTab } from './index'
 const { mockedRbacWifiNetworkList } = WifiNetworkFixtures
 
 // isMapEnabled = false && SD-LAN not enabled
-const disabledFFs = [Features.G_MAP, Features.EDGES_SD_LAN_TOGGLE, Features.EDGES_SD_LAN_HA_TOGGLE, Features.WIFI_RBAC_API]
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.G_MAP
+  && ff !== Features.EDGES_SD_LAN_TOGGLE
+  && ff !== Features.EDGES_SD_LAN_HA_TOGGLE
+  && ff !== Features.RBAC_SERVICE_POLICY_TOGGLE
+  && ff !== Features.SWITCH_RBAC_API
+  && ff !== Features.WIFI_RBAC_API
+)
 
 type MockDialogProps = React.PropsWithChildren<{
   visible: boolean

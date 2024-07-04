@@ -41,7 +41,9 @@ export function BssColoring () {
   const tooltipInfo = $t({ defaultMessage: 'BSS coloring reduces interference between Wi-Fi access points by assigning unique colors, minimizing collisions. Supported model family: 802.11ax, 802.11be' })
   const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isTemplate = useConfigTemplate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const [ drawerVisible, setDrawerVisible ] = useState(false)
   const [enableBssColoring, setEnableBssColoring] = useState(false)
@@ -84,7 +86,7 @@ export function BssColoring () {
       await updateVenueBssColoring({
         params: { tenantId, venueId },
         payload: { bssColoringEnabled: checked },
-        enableRbac: isUseRbacApi
+        enableRbac: resolvedRbacEnabled
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

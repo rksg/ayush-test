@@ -13,6 +13,7 @@ import {
   showActionModal,
   Button
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, userDateTimeFormat }                                       from '@acx-ui/formatter'
 import {
   renderConfigTemplateDetailsComponent,
@@ -68,6 +69,7 @@ export function ConfigTemplateList () {
   const mspTenantLink = useTenantLink('', 'v')
   // eslint-disable-next-line max-len
   const [ accessControlSubPolicyVisible, setAccessControlSubPolicyVisible ] = useAccessControlSubPolicyVisible()
+  const enableRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
 
   const tableQuery = useTableQuery({
     useQuery: useGetConfigTemplateListQuery,
@@ -121,7 +123,7 @@ export function ConfigTemplateList () {
 
             if (!deleteFn) return
 
-            deleteFn({ params: { templateId: selectedRow.id! } }).then(clearSelection)
+            deleteFn({ params: { templateId: selectedRow.id! }, enableRbac }).then(clearSelection)
           }
         })
       }

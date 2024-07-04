@@ -6,7 +6,7 @@ import { useIntl }                                            from 'react-intl'
 
 import { Button, Modal, ModalType, Subtitle }                                                         from '@acx-ui/components'
 import { useGetEnhancedDpskListQuery, useLazySearchPersonaGroupListQuery, useSearchMacRegListsQuery } from '@acx-ui/rc/services'
-import { DpskSaveData, PersonaGroup, checkObjectNotExists, trailingNorLeadingSpaces }                 from '@acx-ui/rc/utils'
+import { DpskSaveData, PersonaGroup, checkObjectNotExists, hasDpskAccess, trailingNorLeadingSpaces }  from '@acx-ui/rc/utils'
 
 import { MacRegistrationListForm } from '../../policies/MacRegistrationListForm'
 import { DpskForm }                from '../../services/DpskForm/DpskForm'
@@ -135,7 +135,7 @@ export function PersonaGroupForm (props: {
             </Form.Item>
           </Col>
           <Col span={2}>
-            {!defaultValue?.dpskPoolId &&
+            {!defaultValue?.dpskPoolId && hasDpskAccess() &&
               <Button
                 data-testid='addDpskButton'
                 type={'link'}

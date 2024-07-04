@@ -766,6 +766,7 @@ export interface SwitchConfigurationProfile {
   trustedPorts: TrustedPort[]
   voiceVlanOptions?: VoiceVlanOption[]
   voiceVlanConfigs?: VoiceVlanConfig[]
+  applyOnboardOnly: boolean
 }
 
 export interface AclStandardRule {

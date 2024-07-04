@@ -12,6 +12,7 @@ export * from './radiusAttributeGroup'
 export * from './tunnelProfile'
 export * from './rulesManagement'
 export * from './connectionMetering'
+export * from './lbsServerProfile'
 export * from './certificateTemplate'
 
 export { DeviceTypeEnum } from '../../models/DeviceTypeEnum'

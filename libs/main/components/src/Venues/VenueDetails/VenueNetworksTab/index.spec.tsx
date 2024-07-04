@@ -11,8 +11,8 @@ import {
   networkApi,
   venueApi
 } from '@acx-ui/rc/services'
-import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, EdgeSdLanFixtures, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider, store }                                                                          from '@acx-ui/store'
+import { ApCompatibility, CommonUrlsInfo, ConfigTemplateUrlsInfo, EdgeSdLanFixtures, VlanPoolRbacUrls, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                            from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -143,6 +143,10 @@ describe('VenueNetworksTab', () => {
       ),
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
+        (_, res, ctx) => res(ctx.json({ data: [] }))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_, res, ctx) => res(ctx.json({ data: [] }))
       )
     )
