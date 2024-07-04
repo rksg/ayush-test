@@ -11,8 +11,13 @@ import {
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import {getApGroupFn, getApGroupsListFn, updateApGroupFn} from '../apGroupUtils'
-import { commonQueryFn }     from '../servicePolicy.utils'
+import {
+  addApGroupFn,
+  getApGroupFn,
+  getApGroupsListFn,
+  updateApGroupFn
+} from '../apGroupUtils'
+import { commonQueryFn } from '../servicePolicy.utils'
 
 export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
@@ -47,7 +52,7 @@ export const apGroupConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     addApGroupTemplate: build.mutation<AddApGroup, RequestPayload>({
-      query: commonQueryFn(ApGroupConfigTemplateUrlsInfo.addApGroup),
+      queryFn: addApGroupFn(true),
       invalidatesTags: [
         { type: 'VenueTemplateApGroup', id: 'LIST' },
         { type: 'ApGroupTemplate', id: 'LIST' }

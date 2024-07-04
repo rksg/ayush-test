@@ -11,13 +11,14 @@ import {
   TableResult,
   onActivityMessageReceived,
   onSocketActivityChanged,
-  transformNetwork, RogueApUrls, ApiVersionEnum
+  transformNetwork
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 
-import { networkApi }    from '../network'
-import { commonQueryFn } from '../servicePolicy.utils'
+import { networkApi }        from '../network'
+import { addNetworkVenueFn } from '../networkUtils'
+import { commonQueryFn }     from '../servicePolicy.utils'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -113,7 +114,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     addNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.addNetworkVenueTemplate),
+      queryFn: addNetworkVenueFn(true),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -174,10 +175,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     updateNetworkVenueTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(
-        ConfigTemplateUrlsInfo.updateNetworkVenueTemplate,
-        { rbacApiInfo: RogueApUrls.deleteRoguePolicyRbac, rbacApiVersionKey: ApiVersionEnum.v1 }
-      ),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.updateNetworkVenueTemplate),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [

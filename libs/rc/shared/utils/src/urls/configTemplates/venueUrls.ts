@@ -518,5 +518,10 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/templates/networkActivations/query',
     newApi: true
+  },
+  networkActivationsRbac: {
+    method: 'post',
+    url: '/templates/wifiNetworks/query',
+    newApi: true
   }
 }

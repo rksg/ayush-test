@@ -1,3 +1,4 @@
+import { FetchBaseQueryError }     from '@reduxjs/toolkit/query'
 import { isNil, omit, pick, uniq } from 'lodash'
 import _                           from 'lodash'
 
@@ -16,14 +17,17 @@ import {
   WifiUrlsInfo,
   GetApiVersionHeader,
   ApiVersionEnum,
-  CommonUrlsInfo, CommonRbacUrlsInfo, ApGroupConfigTemplateUrlsInfo, ConfigTemplateUrlsInfo, AddApGroup, VenueRogueAp
+  CommonUrlsInfo,
+  CommonRbacUrlsInfo,
+  ApGroupConfigTemplateUrlsInfo,
+  ConfigTemplateUrlsInfo,
+  AddApGroup
 } from '@acx-ui/rc/utils'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
 
 import { isPayloadHasField } from './apUtils'
 import { QueryFn }           from './servicePolicy.utils'
-import {FetchBaseQueryError} from "@reduxjs/toolkit/query";
 
 export const getApGroupNewFieldFromOld = (oldFieldName: string) => {
   switch(oldFieldName) {
@@ -218,7 +222,11 @@ export const getApGroupFn = (isTemplate: boolean = false) : QueryFn<ApGroup, Req
     const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
     const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
     // eslint-disable-next-line max-len
-    const apGroupQuery = await fetchWithBQ(createHttpRequest(apis.getApGroup, params, customHeaders))
+    const apGroupQuery = await fetchWithBQ(createHttpRequest(
+      isTemplate && enableRbac ? apis.getApGroupRbac : apis.getApGroup,
+      params,
+      customHeaders
+    ))
 
     let apGroup: ApGroup
     if (enableRbac) {
@@ -285,4 +293,34 @@ export const updateApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGrou
   }
 }
 
+// eslint-disable-next-line max-len
+export const addApGroupFn = (isTemplate: boolean = false) : QueryFn<AddApGroup, RequestPayload> => {
+  return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+    try {
+      const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
+      const apis = isTemplate ? ApGroupConfigTemplateUrlsInfo : urlsInfo
+      const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
+      const req = createHttpRequest(apis.addApGroup, params, customHeaders)
+
+      let newPayload: AddApGroup = { ...(payload as unknown as AddApGroup) }
+      // transform payload
+      if (enableRbac) {
+        newPayload.apSerialNumbers = newPayload.apSerialNumbers
+          ?.map(i => (i as { serialNumber: string }).serialNumber) ?? []
+      }
+
+      const res = await fetchWithBQ({
+        ...req,
+        body: JSON.stringify(newPayload)
+      })
+      if (res.error) {
+        return { error: res.error as FetchBaseQueryError }
+      } else {
+        return { data: res.data as AddApGroup }
+      }
+    } catch (error) {
+      return { error: error as FetchBaseQueryError }
+    }
+  }
+}
 

@@ -2,7 +2,7 @@
 import { QueryReturnValue }                                   from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { MaybePromise }                                       from '@reduxjs/toolkit/dist/query/tsHelpers'
 import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
-import { find, isNil, omit, pick, reduce, uniq, uniqueId }    from 'lodash'
+import { find, reduce, uniqueId }                             from 'lodash'
 import { Params }                                             from 'react-router-dom'
 
 import { Filter }                    from '@acx-ui/components'
@@ -59,9 +59,7 @@ import {
   MeshUplinkAp,
   NewAPModel,
   NewAPModelExtended,
-  NewApGroupViewModelResponseType,
   NewDhcpAp,
-  NewGetApGroupResponseType,
   NewMdnsProxyData,
   NewPacketCaptureState,
   PacketCaptureOperationResponse,
@@ -78,7 +76,6 @@ import {
   VenueDefaultApGroup,
   VenueDefaultRegulatoryChannels,
   WifiApSetting,
-  WifiNetwork,
   WifiRbacUrlsInfo,
   WifiUrlsInfo,
   downloadFile,
@@ -90,17 +87,15 @@ import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
 
 import {
-  aggregateApGroupApInfo,
-  aggregateApGroupNetworkInfo,
-  aggregateApGroupVenueInfo, getApGroupFn,
-  getApGroupNewFieldFromOld, getApGroupsListFn,
-  getNewApGroupViewmodelPayloadFromOld,
-  transformApGroupFromNewType, updateApGroupFn
+  addApGroupFn,
+  getApGroupFn,
+  getApGroupsListFn,
+  updateApGroupFn
 } from './apGroupUtils'
 import {
   aggregateApGroupInfo,
   aggregatePoePortInfo,
-  aggregateVenueInfo, isPayloadHasField,
+  aggregateVenueInfo,
   transformApListFromNewModel
 } from './apUtils'
 
@@ -255,23 +250,7 @@ export const apApi = baseApApi.injectEndpoints({
       providesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
     addApGroup: build.mutation<AddApGroup, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-        const req = createHttpRequest(urlsInfo.addApGroup, params, customHeaders)
-
-        let newPayload: AddApGroup = { ...(payload as AddApGroup) }
-        // transform payload
-        if (enableRbac) {
-          newPayload.apSerialNumbers = newPayload.apSerialNumbers
-            ?.map(i => (i as { serialNumber: string }).serialNumber) ?? []
-        }
-
-        return {
-          ...req,
-          body: JSON.stringify(newPayload)
-        }
-      },
+      queryFn: addApGroupFn(),
       invalidatesTags: [{ type: 'ApGroup', id: 'LIST' }, { type: 'Ap', id: 'LIST' }]
     }),
     updateApGroup: build.mutation<AddApGroup, RequestPayload>({

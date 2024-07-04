@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import { BaseQueryApi } from '@reduxjs/toolkit/query'
+import _                from 'lodash'
 
 import {
   APGeneralFixtures,
@@ -8,18 +9,23 @@ import {
   NewApGroupViewModelResponseType,
   TableResult,
   Venue,
-  WifiNetwork
+  WifiNetwork,
+  ApGroupConfigTemplateUrlsInfo
 } from '@acx-ui/rc/utils'
+import { createHttpRequest } from '@acx-ui/utils'
 
 import {
   aggregateApGroupApInfo,
   aggregateApGroupNetworkInfo,
-  aggregateApGroupVenueInfo,
+  aggregateApGroupVenueInfo, getApGroupsListFn,
   getNewApGroupViewmodelPayloadFromOld
 } from './apGroupUtils'
 
 const { mockRbacAPGroupList } = APGroupFixtures
 const { mockVenueList } = APGeneralFixtures
+
+jest.mock('@acx-ui/utils')
+const fetchWithBQ = jest.fn()
 
 describe('AP group utils', () => {
   describe('getNewApGroupViewmodelPayloadFromOld', () => {
@@ -189,5 +195,48 @@ describe('AP group utils', () => {
       expect(apGroupList.data[0].members).toStrictEqual({ count: 0, names: [] })
       expect(apGroupList.data[1].members).toStrictEqual({ count: 0, names: [] })
     })
+  })
+})
+
+describe('AP group utils Fn', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('getApGroupsListFn with rbac', async () => {
+    const mockPayload = {
+      fields: ['id', 'name', 'venueName', 'venueId', 'members', 'networks'],
+      searchTargetFields: ['id'],
+      searchString: 'apGroupId'
+    }
+
+    const mockTransformRbacPayload = {
+      fields: ['id', 'name', 'venueName', 'venueId', 'apSerialNumbers', 'wifiNetworkIds'],
+      searchTargetFields: ['id'],
+      searchString: 'apGroupId'
+    }
+
+    const args = {
+      // eslint-disable-next-line max-len
+      params: { tenantId: 'tenantId' },
+      payload: mockPayload,
+      page: 1,
+      pageSize: 10,
+      enableRbac: true
+    }
+    const mockResponse = { data: { data: [], requestId: 'req' } }
+    fetchWithBQ.mockResolvedValue(mockResponse)
+    await getApGroupsListFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
+
+    // eslint-disable-next-line max-len
+    expect(createHttpRequest).toHaveBeenCalledWith(
+      ApGroupConfigTemplateUrlsInfo.getApGroupsList,
+      args.params,
+      // eslint-disable-next-line max-len
+      { 'Accept': 'application/vnd.ruckus.v1+json', 'Content-Type': 'application/vnd.ruckus.v1+json' }
+    )
+    expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
+      body: JSON.stringify(mockTransformRbacPayload)
+    }))
   })
 })

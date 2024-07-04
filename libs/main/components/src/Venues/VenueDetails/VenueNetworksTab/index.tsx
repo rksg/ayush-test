@@ -99,13 +99,15 @@ export function VenueNetworksTab () {
   const { isTemplate } = useConfigTemplate()
   const isApCompatibleCheckEnabled = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
   const isUseWifiApiV2 = useIsSplitOn(Features.WIFI_API_V2_TOGGLE)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const settingsId = 'venue-networks-table'
   const tableQuery = useTableQuery({
     useQuery: isUseWifiApiV2? (isApCompatibleCheckEnabled ? useVenueNetworkTableV2Query: useVenueNetworkListV2Query)
       : (isApCompatibleCheckEnabled ? useVenueNetworkTableQuery: useVenueNetworkListQuery),
     defaultPayload: {
       ...defaultPayload,
-      isTemplate: isTemplate
+      isTemplate: isTemplate,
+      isTemplateRbacEnabled: isConfigTemplateRbacEnabled
     },
     pagination: { settingsId }
   })
@@ -198,7 +200,11 @@ export function VenueNetworksTab () {
           if (IsNetworkSupport6g(row.deepNetwork)) {
             newNetworkVenue.allApGroupsRadioTypes.push(RadioTypeEnum._6_GHz)
           }
-          addNetworkVenue({ params: { tenantId: params.tenantId }, payload: newNetworkVenue, enableRbac: isPolicyRbacEnabled })
+          addNetworkVenue({
+            params: { tenantId: params.tenantId, venueId: params.venueId, networkId: row.id },
+            payload: newNetworkVenue,
+            enableRbac: isPolicyRbacEnabled || isConfigTemplateRbacEnabled
+          })
         } else { // deactivate
           row.deepNetwork.venues.forEach((networkVenue) => {
             if (networkVenue.venueId === params.venueId) {

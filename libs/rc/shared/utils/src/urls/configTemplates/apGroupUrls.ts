@@ -26,6 +26,11 @@ export const ApGroupConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/venues/apGroups/:apGroupId',
     newApi: true
   },
+  getApGroupRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/apGroups/:apGroupId',
+    newApi: true
+  },
   getApGroupNetworkList: {
     method: 'post',
     url: '/templates/apGroups/:apGroupId/networks/query',

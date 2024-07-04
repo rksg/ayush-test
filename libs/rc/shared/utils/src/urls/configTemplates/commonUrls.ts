@@ -26,6 +26,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/networks/:networkId',
     newApi: true
   },
+  getNetworkTemplateRbac: {
+    method: 'get',
+    url: '/templates/wifiNetworks/:networkId',
+    newApi: true
+  },
   deleteNetworkTemplate: {
     method: 'delete',
     url: '/templates/networks/:templateId',
@@ -80,9 +85,14 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  addNetworkVenueTemplate: {
+  addNetworkVenue: {
     method: 'post',
     url: '/templates/networkActivations',
+    newApi: true
+  },
+  addNetworkVenueTemplateRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId',
     newApi: true
   },
   deleteNetworkVenueTemplate: {
@@ -98,6 +108,11 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
   updateNetworkVenueTemplate: {
     method: 'put',
     url: '/templates/networkActivations/:networkVenueId?quickAck=true',
+    newApi: true
+  },
+  updateNetworkVenueTemplateRbac: {
+    method: 'put',
+    url: '/templates/venues/:venueId/wifiNetworks/:networkId/settings',
     newApi: true
   },
   addNetworkVenuesTemplate: {

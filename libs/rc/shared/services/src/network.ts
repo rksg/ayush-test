@@ -30,7 +30,7 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork,
-  RadioTypeEnum
+  RadioTypeEnum, NetworkVenueRbac
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
@@ -907,6 +907,40 @@ const calculateNetworkActivated = (res?: NetworkVenue) => {
   return activatedObj
 }
 
+const calculateNetworkActivatedV2 = (res?: NetworkVenueRbac) => {
+  const activatedObj = { isActivated: false, isDisabled: false, errors: [] as string[] }
+  let errorsCounter = 0
+  if (res && !res.venueApGroups.every(apGroup => apGroup.isAllApGroups)) {
+    if (res.venueApGroups && res.venueApGroups.length) {
+      res.venueApGroups.forEach(apGroup => {
+        if (apGroup.venueId) {
+          activatedObj.isActivated = true
+        }
+        if (apGroup.validationError) {
+          ++errorsCounter
+          if (apGroup.validationErrorReachedMaxConnectedNetworksLimit) {
+            activatedObj.errors.push('validationErrorReachedMaxConnectedNetworksLimit')
+          }
+          if (apGroup.validationErrorSsidAlreadyActivated) {
+            activatedObj.errors.push('validationErrorSsidAlreadyActivated')
+          }
+          if (apGroup.validationErrorReachedMaxConnectedCaptiveNetworksLimit) {
+            activatedObj.errors.push('validationErrorReachedMaxConnectedCaptiveNetworksLimit')
+          }
+        }
+      })
+      if (errorsCounter === res.venueApGroups.length) {
+        activatedObj.isDisabled = true
+      }
+    }
+  } else if (res && res.venueApGroups.every(apgroup => apgroup.isAllApGroups)) {
+    activatedObj.isActivated = true
+  } else {
+    activatedObj.isActivated = false
+  }
+  return activatedObj
+}
+
 // it will be removed after the wifi-consumer is closed
 export const fetchNetworkVenueList = async (arg:any, fetchWithBQ:any) => {
   const networkVenuesListInfo = {
@@ -1133,12 +1167,20 @@ export const fetchNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) => {
 
     const networkVenuesApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
-        ? VenueConfigTemplateUrlsInfo.networkActivations
+        ? (arg.payload.isTemplateRbacEnabled ? VenueConfigTemplateUrlsInfo.networkActivationsRbac : VenueConfigTemplateUrlsInfo.networkActivations)
         : CommonUrlsInfo.networkActivations, arg.params,
       arg.payload.isTemplate
         ? {}
         : apiV2CustomHeader),
-      body: JSON.stringify({ filters })
+      body: arg.payload.isTemplate ? (arg.payload.isTemplateRbacEnabled ? {
+        deep: true,
+        fields: [],
+        filters: { id: filters.map(filter => filter.networkId) },
+        sortField: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10_000
+      } : {}) : JSON.stringify({ filters })
     }
     const networkVenuesApGroupQuery = await fetchWithBQ(networkVenuesApGroupInfo)
     networkVenuesApGroupList = networkVenuesApGroupQuery.data as { data: NetworkVenue[] }
@@ -1199,16 +1241,24 @@ export const fetchVenueNetworkListV2 = async (arg: any, fetchWithBQ: any) => {
 
     const venueNetworkApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
-        ? VenueConfigTemplateUrlsInfo.networkActivations
+        ? (arg.payload.isTemplateRbacEnabled ? VenueConfigTemplateUrlsInfo.networkActivationsRbac : VenueConfigTemplateUrlsInfo.networkActivations)
         : CommonUrlsInfo.networkActivations, arg.params,
       arg.payload.isTemplate
         ? {}
         : apiV2CustomHeader),
-      body: JSON.stringify({ filters })
+      body: arg.payload.isTemplate ? (arg.payload.isTemplateRbacEnabled ? {
+        deep: true,
+        fields: [],
+        filters: { id: filters.map(filter => filter.networkId) },
+        sortField: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10_000
+      } : {}) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
-    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate)
+    networkDeepListList = await getNetworkDeepList(networkIds, fetchWithBQ, arg.payload.isTemplate, arg.payload.isTemplateRbacEnabled)
   }
   return { venueNetworkListQuery,
     networkList,
@@ -1226,7 +1276,7 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
   const venueNetworkApGroupsData = venueNetworkApGroupList?.data
   networkList.data.forEach(item => {
     const networkApGroup = venueNetworkApGroupsData?.find(
-      i => i.networkId === item.id
+      i => i.networkId === item.id || i.id === item.id
     )
     const deepNetwork = networkDeepListList?.response?.find(
       i => i.id === item.id
@@ -1236,13 +1286,13 @@ export const aggregatedVenueNetworksDataV2 = (networkList: TableResult<Network>,
       item = { ...item,
         ...{ children: [{ ...item?.dsaeOnboardNetwork,
           isOnBoarded: true,
-          activated: calculateNetworkActivated(networkApGroup) } as Network] }
+          activated: calculateNetworkActivatedV2(networkApGroup as unknown as NetworkVenueRbac) } as Network] }
       }
     }
 
     data.push({
       ...item,
-      activated: calculateNetworkActivated(networkApGroup),
+      activated: calculateNetworkActivatedV2(networkApGroup as unknown as NetworkVenueRbac),
       deepNetwork: deepNetwork,
       incompatible: apCompatibilities[item.id] ?? 0
     })
@@ -1277,12 +1327,20 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
 
     const venueNetworkApGroupInfo = {
       ...createHttpRequest(arg.payload.isTemplate
-        ? VenueConfigTemplateUrlsInfo.networkActivations
+        ? (arg.payload.isTemplateRbacEnabled ? VenueConfigTemplateUrlsInfo.networkActivationsRbac : VenueConfigTemplateUrlsInfo.networkActivations)
         : CommonUrlsInfo.networkActivations, arg.params,
       arg.payload.isTemplate
         ? {}
         : apiV2CustomHeader),
-      body: JSON.stringify({ filters })
+      body: arg.payload.isTemplate ? (arg.payload.isTemplateRbacEnabled ? {
+        deep: true,
+        fields: [],
+        filters: { id: filters.map(filter => filter.networkId) },
+        sortField: 'name',
+        sortOrder: 'ASC',
+        page: 1,
+        pageSize: 10_000
+      } : {}) : JSON.stringify({ filters })
     }
     const venueNetworkApGroupQuery = await fetchWithBQ(venueNetworkApGroupInfo)
     venueNetworkApGroupList = venueNetworkApGroupQuery.data as { data: NetworkVenue[] }
@@ -1297,17 +1355,23 @@ export const fetchApGroupNetworkVenueListV2 = async (arg:any, fetchWithBQ:any) =
   }
 }
 
-const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false) => {
+const getNetworkDeepList = async (networkIds: string[], fetchWithBQ:any, isTemplate: boolean = false, isTemplateRbacEnabled: boolean = false) => {
   const networkDeepList: NetworkDetail[] = []
 
   if (networkIds.length === 1 && networkIds[0] === 'UNKNOWN-NETWORK-ID') {
     return { response: networkDeepList }
   }
 
+  const customHeaders = isTemplate && isTemplateRbacEnabled ? GetApiVersionHeader(ApiVersionEnum.v1) : {}
+
   for (let i=0; i<networkIds.length; i++) {
     const networkQuery = await fetchWithBQ(createHttpRequest(
-      isTemplate ? ConfigTemplateUrlsInfo.getNetworkTemplate : WifiUrlsInfo.getNetwork
-      , { networkId: networkIds[i] }))
+      isTemplate
+        ? (isTemplateRbacEnabled ? ConfigTemplateUrlsInfo.getNetworkTemplateRbac : ConfigTemplateUrlsInfo.getNetworkTemplate)
+        : WifiUrlsInfo.getNetwork,
+      { networkId: networkIds[i] },
+      customHeaders
+    ))
     networkDeepList.push(networkQuery.data)
   }
 
