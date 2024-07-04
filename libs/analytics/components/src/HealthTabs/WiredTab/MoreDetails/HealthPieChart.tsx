@@ -2,6 +2,7 @@ import { useIntl, FormattedMessage } from 'react-intl'
 import AutoSizer                     from 'react-virtualized-auto-sizer'
 
 import { DonutChart, NoData, qualitativeColorSet, Loader } from '@acx-ui/components'
+import { formatter }                                       from '@acx-ui/formatter'
 import { AnalyticsFilter }                                 from '@acx-ui/utils'
 
 import {
@@ -71,6 +72,12 @@ export const getPieData = (data: PieChartResult, type: WidgetType) => {
   return transformedData
 }
 
+export const tooltipFormatter = (
+  total: number,
+  dataFormatter: (value: unknown, tz?: string | undefined) => string
+) => (value: unknown) =>
+  `${formatter('percentFormat')(value as number / total)} (${dataFormatter(value)})`
+
 export const MoreDetailsPieChart = ({
   filters,
   queryType,
@@ -110,7 +117,7 @@ export const MoreDetailsPieChart = ({
   </ChartTitle>
 
   const pieData = queryResults.data
-
+  const total = pieData?.reduce((total, { value }) => total + value, 0)
   return (
     <PieChartWrapper>
       <Loader states={[queryResults]}>
@@ -129,6 +136,7 @@ export const MoreDetailsPieChart = ({
                   width: 170
                 }}
                 showLegend
+                dataFormatter={tooltipFormatter(total, formatter('countFormat'))}
               />
             )}
           </AutoSizer> :

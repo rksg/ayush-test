@@ -1,3 +1,4 @@
+import { formatter }                   from '@acx-ui/formatter'
 import { dataApiURL, Provider, store } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -5,10 +6,10 @@ import {
   screen }  from '@acx-ui/test-utils'
 import { AnalyticsFilter } from '@acx-ui/utils'
 
-import { moreDetailsDataFixture, noDataFixture } from './__tests__/fixtures'
-import { WidgetType }                            from './config'
-import { MoreDetailsPieChart, transformData }    from './HealthPieChart'
-import { moreDetailsApi }                        from './services'
+import { moreDetailsDataFixture, noDataFixture }                from './__tests__/fixtures'
+import { WidgetType }                                           from './config'
+import { MoreDetailsPieChart, tooltipFormatter, transformData } from './HealthPieChart'
+import { moreDetailsApi }                                       from './services'
 
 const switchInfo = {
   mac: 'mac1',
@@ -82,6 +83,12 @@ describe('MoreDetailsPieChart', () => {
       </Provider>
     )
     expect(await screen.findByText('No data to display')).toBeVisible()
+  })
+
+  describe('tooltipFormatter', () => {
+    it('returns formatted values and percentage', () => {
+      expect(tooltipFormatter(50, formatter('countFormat'))(25)).toEqual('50% (25)')
+    })
   })
 })
 

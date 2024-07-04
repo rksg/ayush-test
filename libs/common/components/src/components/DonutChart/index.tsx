@@ -84,7 +84,7 @@ export const tooltipFormatter = (
   const formattedTotal = dataFormatter(total)
   const formattedPercent = intl.$t(intlFormats.percentFormat, { value: percent })
   const tooltipFormat = format ?? defineMessage({
-    defaultMessage: '{name} <space><b>{formattedValue}</b></space>',
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
     description: 'DonutChart: default tooltip format for donut chart'
   })
 
