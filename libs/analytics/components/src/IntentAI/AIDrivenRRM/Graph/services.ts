@@ -72,7 +72,7 @@ const { useIntentCloudRRMGraphQuery } = recommendationApi.injectEndpoints({
   })
 })
 
-export function useCRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
+export function useIntentAICRRMQuery (details: EnhancedRecommendation, band: BandEnum) {
   const queryResult = useIntentCloudRRMGraphQuery(
     { id: String(details.id), band }, {
       skip: !Boolean(details.id),

@@ -5,9 +5,9 @@ import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
 import { mockedCRRMGraphs, mockedCRRMGraphsApplied, mockedRecommendationCRRM, mockedRecommendationCRRMApplied } from '../__tests__/fixtures'
 import { EnhancedRecommendation }                                                                               from '../services'
 
-import { useCRRMQuery } from './services'
+import { useIntentAICRRMQuery } from './services'
 
-describe('useCRRMQuery', () => {
+describe('useIntentAICRRMQuery', () => {
   afterEach(() => jest.resetAllMocks())
   it('should return correct data', async () => {
     mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
@@ -15,7 +15,7 @@ describe('useCRRMQuery', () => {
     })
     const band = recommendationBandMapping[
       mockedRecommendationCRRM.code as keyof typeof recommendationBandMapping]
-    const { result } = renderHook(() => useCRRMQuery(
+    const { result } = renderHook(() => useIntentAICRRMQuery(
       mockedRecommendationCRRM as EnhancedRecommendation,
       band
     ), { wrapper: Provider })
@@ -29,7 +29,7 @@ describe('useCRRMQuery', () => {
     })
     const band = recommendationBandMapping[
       mockedRecommendationCRRMApplied.code as keyof typeof recommendationBandMapping]
-    const { result } = renderHook(() => useCRRMQuery(
+    const { result } = renderHook(() => useIntentAICRRMQuery(
       mockedRecommendationCRRMApplied as EnhancedRecommendation,
       band
     ), { wrapper: Provider })

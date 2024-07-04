@@ -127,11 +127,3 @@ export const SummaryTitle = styled.div`
   color: var(--acx-primary-black);
   opacity: 0.7;
 `
-
-export const GraphTitle = styled.div`
-  color: var(--acx-primary-black);
-  font-size: var(--acx-headline-4-font-size);
-  line-height: var(--acx-subtitle-4-line-height);
-  font-weight: var(--acx-headline-4-font-weight);
-  margin-bottom: -30px;
-`

@@ -7,6 +7,7 @@ import ReactECharts   from 'echarts-for-react'
 import { useIntl }    from 'react-intl'
 import AutoSizer      from 'react-virtualized-auto-sizer'
 
+import { kpiDelta }  from '@acx-ui/analytics/utils'
 import {
   Card,
   Drawer,
@@ -21,9 +22,9 @@ import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import { EnhancedRecommendation } from '../services'
 
-import { Legend }       from './Legend'
-import { useCRRMQuery } from './services'
-import * as UI          from './styledComponents'
+import { Legend }               from './Legend'
+import { useIntentAICRRMQuery } from './services'
+import * as UI                  from './styledComponents'
 
 function useGraph (
   graphs: ProcessedCloudRRMGraph[],
@@ -79,13 +80,13 @@ const drawerZoomScale = scalePow()
   .domain([3, 10, 63, 125, 250, 375, 500])
   .range([2.5, 1, 0.3, 0.2, 0.15, 0.125, 0.04])
 
-export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) => {
+export const IntentAIRRMGraph = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const title = $t({ defaultMessage: 'Key Performance Indications' })
   const [ visible, setVisible ] = useState<boolean>(false)
   const [ key, setKey ] = useState(0)
   const band = recommendationBandMapping[details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useCRRMQuery(details, band)
+  const queryResult = useIntentAICRRMQuery(details, band)
   const showDrawer = () => setVisible(true)
   const closeDrawer = () => setVisible(false)
   useEffect(() => setKey(Math.random()), [visible]) // to reset graph zoom
@@ -120,4 +121,37 @@ export const CloudRRMGraph = ({ details }: { details: EnhancedRecommendation }) 
         }/>
     </Loader>
   </UI.Wrapper>
+}
+
+export function getGraphKPI (
+  recommendation: EnhancedRecommendation,
+  graphData: ProcessedCloudRRMGraph[]
+) {
+  // kpi for interferingLinks
+  const { before, after } = recommendation?.crrmInterferingLinks!
+  const deltaSign = '-'
+  const format = formatter('percentFormat')
+  const links = kpiDelta(before, after, deltaSign, format)
+
+  // kpi for linksPerAP
+  const kpiBefore = graphData[0]
+  const kpiAfter = graphData[1]
+  const beforeLinks = kpiBefore?.interferingLinks || 0
+  const afterLinks = kpiAfter?.interferingLinks || 0
+  const beforeAPs = kpiBefore?.affectedAPs || 0
+  const afterAPs = kpiAfter?.affectedAPs || 0
+  const averageBefore = beforeAPs ? beforeLinks / beforeAPs : 0
+  const averageAfter = afterAPs ? afterLinks / afterAPs : 0
+  const averageLinks = kpiDelta(averageBefore, averageAfter, deltaSign, format)
+
+  return {
+    interferingLinks: {
+      links: links,
+      after: after
+    },
+    linksPerAP: {
+      average: averageLinks,
+      after: averageAfter
+    }
+  }
 }
