@@ -276,7 +276,7 @@ const apOldNewFieldsMapping: Record<string, string> = {
   'apStatusData.APSystem.primaryDnsServer': 'networkStatus.primaryDnsServer',
   'apStatusData.APSystem.secondaryDnsServer': 'networkStatus.secondaryDnsServer',
   'apStatusData.APSystem.secureBootEnabled': 'supportSecureBoot',
-  'apStatusData.APSystem.managementVlan': 'managementTrafficVlan',
+  'apStatusData.APSystem.managementVlan': 'networkStatus.managementTrafficVlan',
   'apStatusData.afcInfo.powerMode': 'afcStatus.powerState', //?
   'apStatusData.afcInfo.afcStatus': 'afcStatus.afcState', //?
   'lastUpdTime': 'lastUpdatedTime'

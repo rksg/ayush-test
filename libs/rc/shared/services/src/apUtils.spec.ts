@@ -2,6 +2,7 @@
 import { cloneDeep, find } from 'lodash'
 
 import {
+  APExtended,
   APGeneralFixtures,
   APGroupFixtures,
   ApExtraParams,
@@ -169,29 +170,29 @@ describe('Test apUtils', () => {
 
       // LAN port
       target.lanPortStatuses?.forEach(lanPort => {
-        const data = find(result.apStatusData.lanPortStatus, { port: lanPort.id })
-        expect(data.phyLink).toBe(lanPort.physicalLink)
+        const data = find(result.apStatusData?.lanPortStatus, { port: lanPort.id })
+        expect(data?.phyLink).toBe(lanPort.physicalLink)
       })
 
       // AP radio
       target.radioStatuses?.forEach(radio => {
-        const data = find(result.apStatusData.APRadio, { radioId: radio.id })
-        expect(data.txPower).toBe(radio.transmitterPower)
-        expect(data.channel).toBe(radio.channel)
-        expect(data.band).toBe(radio.band)
-        expect(data.Rssi).toBe(radio.rssi)
-        expect(data.operativeChannelBandwidth).toBe(radio.channelBandwidth)
+        const data = find(result.apStatusData?.APRadio, { radioId: radio.id })
+        expect(data?.txPower).toBe(radio.transmitterPower)
+        expect(data?.channel).toBe(radio.channel)
+        expect(data?.band).toBe(radio.band)
+        expect(data?.Rssi).toBe(radio.rssi)
+        expect(data?.operativeChannelBandwidth).toBe(radio.channelBandwidth)
       })
 
       // AP system
-      expect(result.APSystem.uptime).toBe(target.uptime)
-      expect(result.APSystem.ipType).toBe(target.networkStatus.ipAddressType)
-      expect(result.APSystem.netmask).toBe(target.networkStatus.netmask)
-      expect(result.APSystem.gateway).toBe(target.networkStatus?.gateway)
-      expect(result.APSystem.primaryDnsServer).toBe(target.networkStatus?.primaryDnsServer)
-      expect(result.APSystem.secondaryDnsServer).toBe(target.networkStatus?.secondaryDnsServer)
-      expect(result.APSystem.secureBootEnabled).toBe(target.supportSecureBoot)
-      expect(result.APSystem.managementVlan).toBe(target.managementTrafficVlan)
+      expect(result.apStatusData?.APSystem?.uptime).toBe(target.uptime)
+      expect(result.apStatusData?.APSystem?.ipType).toBe(target.networkStatus?.ipAddressType)
+      expect(result.apStatusData?.APSystem?.netmask).toBe(target.networkStatus?.netmask)
+      expect(result.apStatusData?.APSystem?.gateway).toBe(target.networkStatus?.gateway)
+      expect(result.apStatusData?.APSystem?.primaryDnsServer).toBe(target.networkStatus?.primaryDnsServer)
+      expect(result.apStatusData?.APSystem?.secondaryDnsServer).toBe(target.networkStatus?.secondaryDnsServer)
+      expect(result.apStatusData?.APSystem?.secureBootEnabled).toBe(target.supportSecureBoot)
+      expect(result.apStatusData?.APSystem?.managementVlan).toBe(target?.networkStatus?.managementTrafficVlan)
     })
   })
 })
