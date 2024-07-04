@@ -63,6 +63,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
+  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -266,7 +267,8 @@ export function DonutChart ({
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
-        ...legendStyles
+        ...legendStyles,
+        ...props.labelTextStyle
       },
       itemStyle: {
         borderWidth: 0

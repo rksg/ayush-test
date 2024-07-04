@@ -42,7 +42,7 @@ export function transformData (
         break
     }
     return {
-      name: val.name,
+      name: `${val.name} (${val.mac})`,
       mac: val.mac,
       value: value,
       color: colors[index]
@@ -124,6 +124,10 @@ export const MoreDetailsPieChart = ({
                 legend='name'
                 size={'x-large'}
                 showTotal={false}
+                labelTextStyle={{
+                  overflow: 'truncate',
+                  width: 170
+                }}
                 showLegend
               />
             )}
