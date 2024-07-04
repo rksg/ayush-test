@@ -1,5 +1,6 @@
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   getPolicyDetailsLink,
   PolicyType,
@@ -13,7 +14,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import { mockedIsolationUsageByVenue } from './__tests__/fixtures'
+import { mockedClientIsolationQueryData, mockedIsolationUsageByVenue } from './__tests__/fixtures'
 
 import ClientIsolationAllowList from '.'
 
@@ -50,6 +51,37 @@ describe('ClientIsolationAllowList', () => {
     )
 
     const targetRow = await screen.findByRole('link', { name: targetPolicy.name })
+    expect(targetRow).toHaveAttribute('href', policyDetailsLink)
+  })
+
+  it('should render the table with rbac api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    mockServer.use(
+      rest.post(
+        ClientIsolationUrls.queryClientIsolation.url,
+        (req, res, ctx) => res(ctx.json(mockedClientIsolationQueryData))
+      )
+    )
+
+    const policyDetailsPath = getPolicyDetailsLink({
+      type: PolicyType.CLIENT_ISOLATION,
+      oper: PolicyOperation.DETAIL,
+      policyId: 'ebb2a23e3e9c4f1c9d4672828cc0e4bc'
+    })
+    const policyDetailsLink = `/${params.tenantId}/t/${policyDetailsPath}`
+
+    render(
+      <Provider>
+        <ClientIsolationAllowList />
+      </Provider>, {
+        route: {
+          params,
+          path: '/:tenantId/t/venues/:venueId/venue-details/services'
+        }
+      }
+    )
+
+    const targetRow = await screen.findByRole('link', { name: /clientIsolation1/ })
     expect(targetRow).toHaveAttribute('href', policyDetailsLink)
   })
 })

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps }       from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useGetClientIsolationUsageByVenueQuery
 } from '@acx-ui/rc/services'
@@ -16,12 +17,13 @@ import { TenantLink } from '@acx-ui/react-router-dom'
 
 export default function ClientIsolationAllowList () {
   const { $t } = useIntl()
-
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const settingsId = 'venue-client-isolation-allow-list-table'
   const tableQuery = useTableQuery({
     useQuery: useGetClientIsolationUsageByVenueQuery,
     defaultPayload: {},
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const columns: TableProps<ClientIsolationListUsageByVenue>['columns'] = [
@@ -63,6 +65,7 @@ export default function ClientIsolationAllowList () {
       <Table<ClientIsolationListUsageByVenue>
         settingsId={settingsId}
         columns={columns}
+        pagination={tableQuery.pagination}
         dataSource={tableQuery.data?.data}
         onChange={tableQuery.handleTableChange}
         rowKey='id'
