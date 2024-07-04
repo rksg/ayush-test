@@ -323,7 +323,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
 
     }),
     updateVenueTemplateDhcpProfile: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableTemplateRbac: enableRbac, enableService }) => {
+      query: ({ params, payload, enableRbac, enableService }) => {
         const url = !enableRbac ?
           VenueConfigTemplateUrlsInfo.updateVenueDhcpProfile :
           // eslint-disable-next-line max-len
@@ -361,7 +361,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     activateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableTemplateRbac: enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ?
           VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile
           : VenueConfigTemplateUrlsInfo.activateVenueDhcpPool
@@ -373,7 +373,7 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload, enableTemplateRbac: enableRbac }) => {
+      query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ?
           VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile
           : VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool

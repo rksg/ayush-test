@@ -71,7 +71,7 @@ describe('DHCP Detail Page', () => {
   it('should render detail page with rbac api for config template correctly', async () => {
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
     mockServer.use(
-      rest.post(VenueConfigTemplateUrlsInfo.queryDHCPProfiles.url, (_, res, ctx) =>
+      rest.post(ServicesConfigTemplateUrlsInfo.queryDhcpProfiles.url, (_, res, ctx) =>
         res(ctx.json(queryConfigTemplate))
       ),
       rest.get(ServicesConfigTemplateUrlsInfo.getDHCProfileDetail.url, (_, res, ctx) =>

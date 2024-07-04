@@ -400,12 +400,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  queryDHCPProfiles: {
-    method: 'post',
-    url: '/templates/dhcpConfigServiceProfiles/query',
-    newApi: true
-  },
-  getVenueDHCPServiceProfileRbac: {
+  getVenueDhcpServiceProfileRbac: {
     method: 'get',
     url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
     newApi: true,

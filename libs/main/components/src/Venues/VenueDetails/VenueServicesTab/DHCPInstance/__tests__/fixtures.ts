@@ -366,10 +366,10 @@ export const handlers:Array<RestHandler> = [
   rest.post(DHCPUrls.updateVenueDHCPProfile.url,(_,res,ctx) =>
     res(ctx.json(successResponse))
   ),
-  rest.get(DHCPUrls.getVenueDHCPServiceProfileRbac.url, (_, res, ctx) =>
+  rest.get(DHCPUrls.getVenueDhcpServiceProfileRbac.url, (_, res, ctx) =>
     res(ctx.json(venueDhcpProfileRbacData))
   ),
-  rest.post(DHCPUrls.queryDHCPProfiles.url, (_, res, ctx) =>
+  rest.post(DHCPUrls.queryDhcpProfiles.url, (_, res, ctx) =>
     res(ctx.json(queryDhcpProfileData))
   ),
   rest.get(DHCPUrls.getVenueLeasesRbac.url, (_, res, ctx) =>
@@ -450,10 +450,10 @@ const configTemplateWifiDhcpPoolUsages = { name: 'pool1' }
 
 
 export const configTemplateHandlers = [
-  rest.post(VenueConfigTemplateUrlsInfo.queryDHCPProfiles.url, (_, res, ctx) =>
+  rest.post(ServicesConfigTemplateUrlsInfo.queryDhcpProfiles.url, (_, res, ctx) =>
     res(ctx.json(queryConfigTemplate))
   ),
-  rest.get(VenueConfigTemplateUrlsInfo.getVenueDHCPServiceProfileRbac.url, (_, res, ctx) =>
+  rest.get(VenueConfigTemplateUrlsInfo.getVenueDhcpServiceProfileRbac.url, (_, res, ctx) =>
     res(ctx.json(configTemplateVenueDhcpProfile))
   ),
   rest.get(ServicesConfigTemplateUrlsInfo.getDHCProfileDetail.url, (_, res, ctx) =>

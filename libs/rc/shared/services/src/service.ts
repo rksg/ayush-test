@@ -131,7 +131,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfiles
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfiles
         const req = createHttpRequest(url, params)
         return {
           ...req,
@@ -163,7 +163,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfilesViewModel
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfilesViewModel
         const req = createHttpRequest(url, params)
         return {
           ...req,
@@ -195,8 +195,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload, enableRbac } :
         { params:Params, payload:DHCPSaveData, enableRbac: boolean }) => {
-        const addDHCPUrl = enableRbac ? DHCPUrls.addDHCPServiceRbac : DHCPUrls.addDHCPService
-        const updatedDHCPUrl = enableRbac ? DHCPUrls.updateDHCPServiceRbac : DHCPUrls.updateDHCPService
+        const addDHCPUrl = enableRbac ? DHCPUrls.addDhcpServiceRbac : DHCPUrls.addDHCPService
+        const updatedDHCPUrl = enableRbac ? DHCPUrls.updateDhcpServiceRbac : DHCPUrls.updateDHCPService
         const url = _.isEmpty(params.serviceId) ? addDHCPUrl : updatedDHCPUrl
         const dhcpReq = createHttpRequest(url, params)
         return {
@@ -208,7 +208,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const url = enableRbac ? DHCPUrls.deleteDHCPProfileRbac : DHCPUrls.deleteDHCPProfile
+        const url = enableRbac ? DHCPUrls.deleteDhcpProfileRbac : DHCPUrls.deleteDHCPProfile
         const req = createHttpRequest(url, params)
         return {
           ...req

@@ -7,31 +7,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
     newApi: true
   },
-  addDHCPServiceRbac: {
-    method: 'post',
-    url: '/dhcpConfigServiceProfiles',
-    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
-  },
   updateDHCPService: {
     method: 'put',
     url: '/dhcpConfigServiceProfiles/:serviceId',
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
     newApi: true
-  },
-  updateDHCPServiceRbac: {
-    method: 'put',
-    url: '/dhcpConfigServiceProfiles/:serviceId',
-    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
   },
   getDHCProfileDetail: {
     method: 'get',
@@ -39,31 +19,11 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
     newApi: true
   },
-  getDHCProfileDetailRbac: {
-    method: 'get',
-    url: '/dhcpConfigServiceProfiles/:serviceId',
-    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
-  },
   deleteDHCPProfile: {
     method: 'delete',
     url: '/dhcpConfigServiceProfiles/:serviceId',
     oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
     newApi: true
-  },
-  deleteDHCPProfileRbac: {
-    method: 'delete',
-    url: '/dhcpConfigServiceProfiles/:serviceId',
-    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
   },
   getDHCPProfiles: {
     //Get DHCP Profiles LIST
@@ -121,7 +81,47 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/venue/:venueId/dhcpConfigServiceProfile',
     newApi: true
   },
-  queryDHCPProfiles: {
+  addDhcpServiceRbac: {
+    method: 'post',
+    url: '/dhcpConfigServiceProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  updateDhcpServiceRbac: {
+    method: 'put',
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  getDhcpProfileDetailRbac: {
+    method: 'get',
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  deleteDhcpProfileRbac: {
+    method: 'delete',
+    url: '/dhcpConfigServiceProfiles/:serviceId',
+    oldUrl: '/api/tenant/:tenantId/wifi/dhcpConfigServiceProfile/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
+  queryDhcpProfiles: {
     method: 'post',
     url: '/dhcpConfigServiceProfiles/query',
     newApi: true,
@@ -140,7 +140,7 @@ export const DHCPUrls: { [key: string]: ApiInfo } = {
     url: '/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
     newApi: true
   },
-  getVenueDHCPServiceProfileRbac: {
+  getVenueDhcpServiceProfileRbac: {
     method: 'get',
     url: '/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
     newApi: true,

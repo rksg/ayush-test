@@ -31,15 +31,6 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/dhcpConfigServiceProfiles',
     newApi: true
   },
-  addDhcpRbac: {
-    method: 'post',
-    url: '/templates/dhcpConfigServiceProfiles',
-    newApi: true,
-    defaultHeaders: {
-      'Accept': 'application/vnd.ruckus.v1.1+json',
-      'Content-Type': 'application/vnd.ruckus.v1.1+json'
-    }
-  },
   getDhcpList: {
     method: 'get',
     url: '/templates/dhcpConfigServiceProfiles',
@@ -50,6 +41,25 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/dhcpConfigServiceProfiles/:serviceId',
     newApi: true
   },
+  getDHCProfileDetail: {
+    method: 'get',
+    url: '/templates/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true
+  },
+  deleteDhcp: {
+    method: 'delete',
+    url: '/templates/dhcpConfigServiceProfiles/:templateId',
+    newApi: true
+  },
+  addDhcpRbac: {
+    method: 'post',
+    url: '/templates/dhcpConfigServiceProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateDhcpRbac: {
     method: 'put',
     url: '/templates/dhcpConfigServiceProfiles/:serviceId',
@@ -59,12 +69,7 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
-  getDHCProfileDetail: {
-    method: 'get',
-    url: '/templates/dhcpConfigServiceProfiles/:serviceId',
-    newApi: true
-  },
-  getDHCProfileDetailRbac: {
+  getDhcpProfileDetailRbac: {
     method: 'get',
     url: '/templates/dhcpConfigServiceProfiles/:serviceId',
     newApi: true,
@@ -72,11 +77,6 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Accept': 'application/vnd.ruckus.v1.1+json',
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
-  },
-  deleteDhcp: {
-    method: 'delete',
-    url: '/templates/dhcpConfigServiceProfiles/:templateId',
-    newApi: true
   },
   deleteDhcpRbac: {
     method: 'delete',
@@ -87,7 +87,7 @@ export const ServicesConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1.1+json'
     }
   },
-  queryDHCPProfiles: {
+  queryDhcpProfiles: {
     method: 'post',
     url: '/templates/dhcpConfigServiceProfiles/query',
     newApi: true,

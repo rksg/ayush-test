@@ -17,9 +17,9 @@ import {
   useActivateVenueTemplateDhcpPoolMutation,
   useDeactivateVenueTemplateDhcpPoolMutation
 } from '@acx-ui/rc/services'
-import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
-import { WifiScopes }                                                                                                                               from '@acx-ui/types'
-import { hasPermission }                                                                                                                            from '@acx-ui/user'
+import { DHCPSaveData, IpUtilsService, VenueDHCPPoolInst, VenueDHCPProfile, useConfigTemplate, useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
+import { WifiScopes }                                                                                                                                                  from '@acx-ui/types'
+import { hasPermission }                                                                                                                                               from '@acx-ui/user'
 
 import { ReadonlySwitch } from './styledComponents'
 
@@ -32,8 +32,10 @@ export default function VenuePoolTable (
   { venueDHCPProfile, dhcpProfile, isFetching }: VenuePoolTableProps){
   const params = useParams()
   const { $t } = useIntl()
+  const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
   const [tableData, setTableData] = useState<VenueDHCPPoolInst[]>()
 
   // eslint-disable-next-line max-len
@@ -62,7 +64,7 @@ export default function VenuePoolTable (
         activeDhcpPoolNames: [...(venueDHCPProfile?.activeDhcpPoolNames ?? []), dhcpPoolName] } : {}
       await activateDHCPPool({
         params: { ...params, dhcppoolId, serviceId: serviceProfileId },
-        payload, enableRbac, enableTemplateRbac }).unwrap()
+        payload, enableRbac: resolvedEnableRbac }).unwrap()
     } else {
       const payload = venueDHCPProfile ? {
         ...rest,
@@ -70,7 +72,7 @@ export default function VenuePoolTable (
           name!==dhcpPoolName) } : {}
       await deactivateDHCPPool({
         params: { ...params, dhcppoolId, serviceId: serviceProfileId },
-        payload, enableRbac, enableTemplateRbac }).unwrap()
+        payload, enableRbac: resolvedEnableRbac }).unwrap()
     }
     const updateActive = tableData?.map((item)=>{
       if(item.id===dhcppoolId){

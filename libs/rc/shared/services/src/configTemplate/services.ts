@@ -121,7 +121,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     getDhcpTemplateList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const url = enableRbac ? ServicesConfigTemplateUrlsInfo.queryDHCPProfiles : ServicesConfigTemplateUrlsInfo.getDhcpList
+        const url = enableRbac ? ServicesConfigTemplateUrlsInfo.queryDhcpProfiles : ServicesConfigTemplateUrlsInfo.getDhcpList
         const req = createHttpRequest(url, params)
         return {
           ...req,

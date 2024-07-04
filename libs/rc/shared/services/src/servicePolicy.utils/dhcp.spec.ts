@@ -1,7 +1,7 @@
 import { BaseQueryApi, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
-import { DHCPUrls, GetApiVersionHeader, ApiVersionEnum } from '@acx-ui/rc/utils'
-import { createHttpRequest }                             from '@acx-ui/utils'
+import { DHCPUrls }          from '@acx-ui/rc/utils'
+import { createHttpRequest } from '@acx-ui/utils'
 
 import { getDhcpProfileFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse } from './dhcp'
 
@@ -46,10 +46,8 @@ describe('getDhcpProfile', () => {
     // eslint-disable-next-line max-len
     const result = await getDhcpProfileFn()( { params, enableRbac: true }, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.queryDHCPProfiles,
-      params, GetApiVersionHeader(ApiVersionEnum.v1))
-    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.getDHCProfileDetail,
-      params, GetApiVersionHeader(ApiVersionEnum.v1_1))
+    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.queryDhcpProfiles, params)
+    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.getDHCProfileDetail, params)
 
     const expectedData = {
       ...dhcpProfileResponse.data,
@@ -100,10 +98,10 @@ describe('getVenueDHCPProfile', () => {
     // eslint-disable-next-line max-len
     const result = await getVenueDHCPProfileFn()( { params, enableRbac: true }, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.queryDHCPProfiles,
-      params, GetApiVersionHeader(ApiVersionEnum.v1))
-    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.getVenueDHCPServiceProfileRbac,
-      { ...params, serviceId: 'service1' }, GetApiVersionHeader(ApiVersionEnum.v1))
+    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.queryDhcpProfiles,
+      params)
+    expect(createHttpRequest).toHaveBeenCalledWith(DHCPUrls.getVenueDhcpServiceProfileRbac,
+      { ...params, serviceId: 'service1' })
 
     const expectedData = {
       ...venueDhcpProfileResponse.data,

@@ -2,9 +2,9 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { Features, useIsSplitOn }                                                                                                                                          from '@acx-ui/feature-toggle'
-import { DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData, DHCPOption, DHCPPool, DHCPUsage, ServicesConfigTemplateUrlsInfo, VenueConfigTemplateUrlsInfo, ConfigTemplateContext } from '@acx-ui/rc/utils'
-import { Provider }                                                                                                                                                        from '@acx-ui/store'
+import { Features, useIsSplitOn }                                                                                                             from '@acx-ui/feature-toggle'
+import { DHCPUrls, DHCPConfigTypeEnum, DHCPSaveData, DHCPOption, DHCPPool, DHCPUsage, ServicesConfigTemplateUrlsInfo, ConfigTemplateContext } from '@acx-ui/rc/utils'
+import { Provider }                                                                                                                           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -177,7 +177,7 @@ describe('DHCPForm', () => {
         getDhcpProfile()
         return res(ctx.json(dhcpProfileRbac))
       }),
-      rest.post(DHCPUrls.queryDHCPProfiles.url,(_,res,ctx) => {
+      rest.post(DHCPUrls.queryDhcpProfiles.url,(_,res,ctx) => {
         queryProfile()
         return res(ctx.json({ data: [] }))
       })
@@ -204,7 +204,7 @@ describe('DHCPForm', () => {
         getDhcpProfile()
         return res(ctx.json(dhcpProfileRbac))
       }),
-      rest.post(VenueConfigTemplateUrlsInfo.queryDHCPProfiles.url,(_,res,ctx) => {
+      rest.post(ServicesConfigTemplateUrlsInfo.queryDhcpProfiles.url,(_,res,ctx) => {
         queryProfile()
         return res(ctx.json({ data: [] }))
       })

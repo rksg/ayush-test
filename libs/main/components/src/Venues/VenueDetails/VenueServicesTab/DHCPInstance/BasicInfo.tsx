@@ -74,7 +74,7 @@ export default function BasicInfo () {
   const getSelectedDHCP = async (dhcpServiceID:string)=> {
     if(resolvedEnableRbac) {
       const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID },
-        enableRbac: isTemplate ? enableTemplateRbac : enableRbac }).unwrap()
+        enableRbac: resolvedEnableRbac }).unwrap()
       return result
     }
     if(dhcpProfileList && dhcpServiceID){
@@ -228,7 +228,8 @@ export default function BasicInfo () {
             }
             await updateVenueDHCPProfile({
               params: { ...params, serviceId },
-              payload, enableRbac, enableTemplateRbac, enableService
+              enableRbac: resolvedEnableRbac,
+              payload, enableService
             }).unwrap()
             setVisible(false)
           }

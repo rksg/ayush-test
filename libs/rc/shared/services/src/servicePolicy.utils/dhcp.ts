@@ -19,13 +19,13 @@ export const getDhcpProfileFn = (isTemplate = false): QueryFn<DHCPSaveData | nul
   const venueApis = isTemplate ? VenueConfigTemplateUrlsInfo : DHCPUrls
 
   const fetchDhcpProfile = async (params: Params<string> | undefined, fetchWithBQ: DhcpFetchFn) => {
-    const req = createHttpRequest(dhcpApis.getDHCProfileDetailRbac, params, GetApiVersionHeader(ApiVersionEnum.v1_1))
+    const req = createHttpRequest(dhcpApis.getDhcpProfileDetailRbac, params, GetApiVersionHeader(ApiVersionEnum.v1_1))
     return await fetchWithBQ(req)
   }
 
   const fetchVenueIds = async (params: Params<string> | undefined, fetchWithBQ: DhcpFetchFn) => {
     const viewmodelReq = {
-      ...createHttpRequest(dhcpApis.queryDHCPProfiles, params),
+      ...createHttpRequest(dhcpApis.queryDhcpProfiles, params),
       body: JSON.stringify({ filters: { id: [params?.serviceId] } })
     }
     return await fetchWithBQ(viewmodelReq)
@@ -118,6 +118,7 @@ export const getDhcpProfileFn = (isTemplate = false): QueryFn<DHCPSaveData | nul
 }
 
 export const getVenueDHCPProfileFn = (isTemplate = false): QueryFn<VenueDHCPProfile> => {
+  const dhcpApis = isTemplate ? ServicesConfigTemplateUrlsInfo : DHCPUrls
   const venueApis = isTemplate ? VenueConfigTemplateUrlsInfo : DHCPUrls
   return async ({ params, enableRbac }: RequestPayload, _queryApi: BaseQueryApi, _extraOptions: RetryOptions, fetchWithBQ: (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<unknown, FetchBaseQueryError, FetchBaseQueryMeta>>) => {
     if (!enableRbac) {
@@ -128,7 +129,7 @@ export const getVenueDHCPProfileFn = (isTemplate = false): QueryFn<VenueDHCPProf
     } else {
       // query viewmodel to get serviceId
       const viewmodelReq = {
-        ...createHttpRequest(venueApis.queryDHCPProfiles, params),
+        ...createHttpRequest(dhcpApis.queryDhcpProfiles, params),
         body: JSON.stringify({ filters: { venueIds: [params?.venueId] } }) }
       const result = await fetchWithBQ(viewmodelReq)
       const viewmodelData = result.data as TableResult<DHCPSaveData>
@@ -136,7 +137,7 @@ export const getVenueDHCPProfileFn = (isTemplate = false): QueryFn<VenueDHCPProf
       if (viewmodelData && viewmodelData.data.length > 0) {
         // query venue DHCP profile by serviceId
         const serviceId = viewmodelData.data[0].id
-        const req = { ...createHttpRequest(venueApis.getVenueDHCPServiceProfileRbac, { ...params, serviceId }) }
+        const req = { ...createHttpRequest(venueApis.getVenueDhcpServiceProfileRbac, { ...params, serviceId }) }
         const res = await fetchWithBQ(req)
         const venueDhcpProfile = res.data as VenueDHCPProfile
         const data = {
