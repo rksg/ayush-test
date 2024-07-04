@@ -869,6 +869,22 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'NetworkRadiusServer', id: 'DETAIL' }]
+    }),
+    bindClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.bindClientIsolation, params)
+        return {
+          ...req
+        }
+      }
+    }),
+    unbindClientIsolation: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiUrlsInfo.unbindClientIsolation, params)
+        return {
+          ...req
+        }
+      }
     })
   })
 })
@@ -1363,7 +1379,9 @@ export const {
   useActivateRadiusServerMutation,
   useDeactivateRadiusServerMutation,
   useUpdateRadiusServerSettingsMutation,
-  useGetRadiusServerSettingsQuery
+  useGetRadiusServerSettingsQuery,
+  useBindClientIsolationMutation,
+  useUnbindClientIsolationMutation
 } = networkApi
 
 export const aggregatedNetworkCompatibilitiesData = (networkList: TableResult<Network>,

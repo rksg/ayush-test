@@ -22,7 +22,7 @@ import {
   sortProp,
   validateDuplicateAclName
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { defaultExtendedRuleList, defaultStandardRuleList } from '..'
 
@@ -323,7 +323,7 @@ function ACLSettingForm (props: ACLSettingFormProps) {
         rowKey='sequence'
         rowActions={filterByAccess(rowActions)}
         columns={columns}
-        rowSelection={hasAccess() && {
+        rowSelection={hasPermission() && {
           type: 'radio',
           selectedRowKeys: selected ? [selected.sequence] : [],
           onChange: (keys: React.Key[]) => {
