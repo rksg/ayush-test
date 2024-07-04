@@ -40,7 +40,7 @@ describe('Recommendation services', () => {
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        category: 'AI-Driven Cloud RRM',
+        category: 'Wi-Fi Experience',
         status: 'Applied'
       },
       {
@@ -50,7 +50,7 @@ describe('Recommendation services', () => {
         scope: `vsz611 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        category: 'AI-Driven Cloud RRM',
+        category: 'Wi-Fi Experience',
         status: 'Revert Scheduled'
       },
       {
@@ -60,7 +60,7 @@ describe('Recommendation services', () => {
         scope: `vsz6 (SZ Cluster)
 > EDU (Venue)`,
         type: 'Venue',
-        category: 'Wi-Fi Client Experience',
+        category: 'Wi-Fi Experience',
         status: 'Revert Failed'
       },
       {
@@ -71,7 +71,7 @@ describe('Recommendation services', () => {
 > 27-US-CA-D27-Peat-home (Domain)
 > Deeps Place (Venue)`,
         type: 'Venue',
-        category: 'Wi-Fi Client Experience',
+        category: 'Wi-Fi Experience',
         status: 'New'
       },
       {
@@ -81,7 +81,7 @@ describe('Recommendation services', () => {
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        category: 'AI-Driven Cloud RRM',
+        category: 'Wi-Fi Experience',
         status: 'New'
       },
       {
@@ -91,7 +91,7 @@ describe('Recommendation services', () => {
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        category: 'Wi-Fi Client Experience',
+        category: 'Wi-Fi Experience',
         status: 'New'
       },
       {
@@ -101,7 +101,7 @@ describe('Recommendation services', () => {
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        category: 'Wi-Fi Client Experience',
+        category: 'Wi-Fi Experience',
         status: 'New'
       },
       {
@@ -111,7 +111,7 @@ describe('Recommendation services', () => {
         scope: `vsz612 (SZ Cluster)
 > EDU-MeshZone_S12348 (Venue)`,
         type: 'Venue',
-        category: 'Wi-Fi Client Experience',
+        category: 'Wi-Fi Experience',
         status: 'New'
       }
     ]
