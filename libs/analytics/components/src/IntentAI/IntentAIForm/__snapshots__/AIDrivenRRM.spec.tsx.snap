@@ -1,13 +1,78 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AIDrivenRRM should match snapshot 1`] = `
+exports[`AIDrivenRRM form should match snapshot 1`] = `
 <DocumentFragment>
   <div
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
     class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
   >
     <div
       class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
+=======
+    class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
+  >
+    <div
+      class="ant-page-header has-breadcrumb ant-page-header-ghost"
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
     >
+      <nav
+        class="ant-breadcrumb"
+      >
+        <ol>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Assurance
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              AI Analytics
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+              <a
+                href="/undefined/t/analytics/intentAI"
+              >
+                IntentAI
+              </a>
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+          <li>
+            <span
+              class="ant-breadcrumb-link"
+            >
+               
+            </span>
+            <span
+              class="ant-breadcrumb-separator"
+            >
+              /
+            </span>
+          </li>
+        </ol>
+      </nav>
       <div
         class="ant-page-header ant-page-header-ghost"
       >
@@ -62,10 +127,19 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
           <span
             class="ant-typography ant-typography-ellipsis ant-typography-single-line"
           >
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
             Intent: Client density vs Client throughput | Zone: 21_US_Beta_Samsung
             <span
               aria-hidden="true"
               style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
+=======
+            <svg
+              class="styledComponents__AIDrivenRRMIcon-sc-ki2m8o-0 bsJMgJ"
+              data-testid="AIDrivenRRM"
+            />
+            <h1
+              class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
             >
               lg
             </span>
@@ -82,6 +156,27 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
           </span>
         </div>
       </div>
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
+=======
+      <div
+        class="ant-page-header-content"
+      >
+        <span
+          class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
+        >
+          <span>
+            Intent: Client density vs Client throughput
+            <div
+              class="ant-divider ant-divider-vertical"
+              role="separator"
+            />
+          </span>
+          <span>
+            Zone: SPS-Hospitality-BLR
+          </span>
+        </span>
+      </div>
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
     </div>
     <section
       class="styledComponents__Wrapper-sc-1ibvcih-0 fTZbEo"
@@ -148,6 +243,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                   <div
                     class="ant-steps-item-icon"
                   >
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
                     <span
                       class="ant-steps-icon"
                     >
@@ -164,6 +260,9 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                     >
                       Intent Priority
                     </div>
+=======
+                    Choose priority
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
                   </div>
                 </div>
               </div>
@@ -179,6 +278,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                   <div
                     class="ant-steps-item-icon"
                   >
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
                     <span
                       class="ant-steps-icon"
                     >
@@ -226,6 +326,9 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                     >
                       Summary
                     </div>
+=======
+                    Summary
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
                   </div>
                 </div>
               </div>
@@ -241,6 +344,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
               style="margin-left: -10px; margin-right: -10px;"
             >
               <div
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
                 class="ant-col ant-col-15"
                 style="padding-left: 10px; padding-right: 10px;"
               >
@@ -277,6 +381,95 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                     </span>
                     <span
                       class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
+=======
+                class="styledComponents__Wrapper-sc-ki2m8o-1 eYGHYS"
+              >
+                <h2
+                  class="ant-typography styledComponents__Title-sc-ki2m8o-2"
+                >
+                  Introduction
+                </h2>
+                <div
+                  class="styledComponents__Content-sc-ki2m8o-5 dFaUyX"
+                >
+                  <span
+                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
+                  >
+                    <span>
+                      Intent: 
+                      <b>
+                        Client density vs Client throughput
+                      </b>
+                    </span>
+                  </span>
+                  <span
+                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
+                  >
+                    Category: Wi-Fi Experience
+                  </span>
+                  <span
+                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
+                  >
+                    Zone: SPS-Hospitality-BLR
+                  </span>
+                  <span
+                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
+                  >
+                    Status: New
+                  </span>
+                  <span
+                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
+                  >
+                    Last update: May 20 2024 14:45
+                  </span>
+                </div>
+                <div
+                  class="styledComponents__Content-sc-ki2m8o-5 dFaUyX"
+                >
+                  <div
+                    class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-ki2m8o-4 hYNJuf fjfDlt"
+                  >
+                    Wireless network design involves balancing different priorities:
+                  </div>
+                  <p
+                    class="styledComponents__Para-sc-ki2m8o-11 dpDDym"
+                  >
+                    <b
+                      class="styledComponents__Bold-sc-ki2m8o-12 eZQgTu"
+                    >
+                      Client Density
+                    </b>
+                    : This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.
+                  </p>
+                  <p
+                    class="styledComponents__Para-sc-ki2m8o-11 dpDDym"
+                  >
+                    <b
+                      class="styledComponents__Bold-sc-ki2m8o-12 eZQgTu"
+                    >
+                      Client Throughput
+                    </b>
+                    : This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-col ant-col-7 ant-col-offset-2"
+              style="padding-left: 10px; padding-right: 10px;"
+            >
+              <div
+                class="styledComponents__Wrapper-sc-ki2m8o-1 eYGHYS"
+              >
+                <div
+                  class="styledComponents__SideNote-sc-ki2m8o-7 eYbBtL"
+                >
+                  <div
+                    class="styledComponents__SideNoteHeader-sc-ki2m8o-8 doWzrG"
+                  >
+                    <h3
+                      class="ant-typography styledComponents__SideNoteTitle-sc-ki2m8o-3"
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
                     >
                       Status: Scheduled
                     </span>
@@ -287,7 +480,16 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                     </span>
                   </div>
                   <div
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
                     class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
+=======
+                    class="styledComponents__SideNoteSubtitle-sc-ki2m8o-9 iGojjG"
+                  >
+                    Why the recommendation?
+                  </div>
+                  <span
+                    class="styledComponents__SideNoteContent-sc-ki2m8o-10 dyJqUa"
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
                   >
                     <div
                       class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-4zzubw-3 hYNJuf dkSJVk"
@@ -295,7 +497,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                       Wireless network design involves balancing different priorities:
                     </div>
                     <p
-                      class="styledComponents__Para-sc-4zzubw-10 juRNhN"
+                      class="styledComponents__Para-sc-ki2m8o-11 dpDDym"
                     >
                       <b
                         class="styledComponents__Bold-sc-4zzubw-11 JAUmv"
@@ -314,6 +516,7 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                       </b>
                       : In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.
                     </p>
+<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
                   </div>
                 </div>
               </div>
@@ -378,6 +581,40 @@ exports[`AIDrivenRRM should match snapshot 1`] = `
                       </a>
                     </span>
                   </div>
+=======
+                  </span>
+                  <div
+                    class="styledComponents__SideNoteSubtitle-sc-ki2m8o-9 iGojjG"
+                  >
+                    Resources:
+                  </div>
+                  <span
+                    class="styledComponents__SideNoteContent-sc-ki2m8o-10 dyJqUa"
+                  >
+                    <a
+                      class="styledComponents__Link-sc-ki2m8o-13 gxbcZn"
+                      href="https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi"
+                      target="_blank"
+                    >
+                      <svg
+                        class="styledComponents__LinkVideoIcon-sc-ki2m8o-14 fwgFCQ"
+                        data-testid="LinkVideo"
+                      />
+                      RUCKUS AI - AI-Driven RRM Demo
+                    </a>
+                    <a
+                      class="styledComponents__Link-sc-ki2m8o-13 gxbcZn"
+                      href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
+                      target="_blank"
+                    >
+                      <svg
+                        class="styledComponents__LinkDocumentIcon-sc-ki2m8o-15 cOxakn"
+                        data-testid="LinkDocument"
+                      />
+                      RUCKUS AI User Guide
+                    </a>
+                  </span>
+>>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
                 </div>
               </div>
             </div>

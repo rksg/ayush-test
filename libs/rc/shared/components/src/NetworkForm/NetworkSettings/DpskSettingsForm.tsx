@@ -20,7 +20,8 @@ import {
   DpskNetworkType,
   transformAdvancedDpskExpirationText,
   useConfigTemplateQueryFnSwitcher,
-  TableResult
+  TableResult,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 
 import { DpskForm }       from '../../services/DpskForm/DpskForm'
@@ -215,13 +216,13 @@ function DpskServiceSelector () {
         >
         </Select>
       </Form.Item>
-      <Button
+      { hasDpskAccess() && <Button
         type='link'
         style={{ marginBottom: '16px' }}
         onClick={() => setDpskModalVisible(true)}
       >
         { $t({ defaultMessage: 'Add DPSK Service' }) }
-      </Button>
+      </Button> }
       { selectedDpsk &&
         <>
           <Form.Item label={$t({ defaultMessage: 'Passphrase Format' })}>

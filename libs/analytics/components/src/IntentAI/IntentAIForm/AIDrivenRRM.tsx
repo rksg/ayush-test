@@ -15,7 +15,7 @@ import { Summary }                                                         from 
 import { useRecommendationCodeQuery, useConfigRecommendationDetailsQuery } from './services'
 import * as UI                                                             from './styledComponents'
 
-export function IntentAIDrivenRRM () {
+export function AIDrivenRRM () {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string
@@ -29,22 +29,31 @@ export function IntentAIDrivenRRM () {
     { skip: !Boolean(codeQuery.data?.code) }
   )
   const details = detailsQuery.data!
+  const breadcrumb = [
+    { text: $t({ defaultMessage: 'AI Assurance' }) },
+    { text: $t({ defaultMessage: 'AI Analytics' }) },
+    {
+      text: $t({ defaultMessage: 'IntentAI' }),
+      link: '/analytics/intentAI'
+    }
+  ]
 
   return (
     <Loader states={[codeQuery, detailsQuery]}>
       <PageHeader
-        title={<UI.Header>
-          <UI.AIDrivenRRMIcon />
-          <UI.HeaderTitle>
-            {$t({ defaultMessage: 'AI-Driven RRM' })}
-          </UI.HeaderTitle>
-        </UI.Header>}
-        subTitle={
-          <>
-            {/* eslint-disable-next-line max-len */}
-            {$t({ defaultMessage: 'Intent: Client density vs Client throughput' })} | {$t({ defaultMessage: 'Zone: ' })} {details?.sliceValue}
-          </>
-        }
+        breadcrumb={breadcrumb}
+        titlePrefix={<UI.AIDrivenRRMIcon />}
+        title={$t({ defaultMessage: 'AI-Driven RRM' })}
+        subTitle={[
+          {
+            label: $t({ defaultMessage: 'Intent' }),
+            value: [details?.intentType as string]
+          },
+          {
+            label: $t({ defaultMessage: 'Zone' }),
+            value: [details?.zone as unknown as string]
+          }
+        ]}
       />
       <StepsForm
         buttonLabel={{

@@ -19,6 +19,7 @@ import {
   Venue
 } from '@acx-ui/rc/utils'
 import { DHCPUsage }      from '@acx-ui/rc/utils'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { ServiceConfigTemplateLinkSwitcher } from '../../../configTemplates'
@@ -56,6 +57,7 @@ export function DHCPDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <ServiceConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={ServiceType.DHCP}
             oper={ServiceOperation.EDIT}
             serviceId={params.serviceId!}

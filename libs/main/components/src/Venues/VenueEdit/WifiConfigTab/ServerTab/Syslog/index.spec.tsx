@@ -3,8 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
 import { venueApi }                                                                  from '@acx-ui/rc/services'
-import { SyslogUrls }                                                                from '@acx-ui/rc/utils'
+import { ConfigTemplateContext, PoliciesConfigTemplateUrlsInfo, SyslogUrls }         from '@acx-ui/rc/utils'
 import { Provider, store }                                                           from '@acx-ui/store'
 import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -138,5 +139,60 @@ describe('SyslogForm', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'Add Server Profile' }))
 
     await waitFor(() => expect(mockedUsedNavigate).toHaveBeenCalled())
+  })
+
+  it('should render correctly with rbac api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    mockServer.use(
+      rest.post(SyslogUrls.querySyslog.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: syslogServerProfiles.length,
+          data: syslogServerProfiles
+        }))
+      )
+    )
+    render(
+      <Provider>
+        <Form>
+          <Syslog />
+        </Form>
+      </Provider>, {
+        route: { params, path: '/:tenantId/venues/:venueId/edit/:activeTab/:activeSubTab' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('Enable Server'))
+    expect(await screen.findByText(/Enable Server/)).toBeVisible()
+
+    expect(await screen.findByText(/SyslogProfile1/)).toBeVisible()
+  })
+
+  it('should render correctly with rbac api for config template', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    mockServer.use(
+      rest.post(PoliciesConfigTemplateUrlsInfo.querySyslog.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: syslogServerProfiles.length,
+          data: syslogServerProfiles
+        }))
+      ),
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getVenueSyslogSettings.url,
+        (_, res, ctx) => res(ctx.json(venueSyslog)))
+    )
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <Provider>
+          <Form>
+            <Syslog />
+          </Form>
+        </Provider>
+      </ConfigTemplateContext.Provider>, {
+        route: { params, path: '/:tenantId/v/configTemplates/venues/:venueId/edit/wifi/servers' }
+      })
+    await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
+    await waitFor(() => screen.findByText('Enable Server'))
+    expect(await screen.findByText(/Enable Server/)).toBeVisible()
+
+    expect(await screen.findByText(/SyslogProfile1/)).toBeVisible()
   })
 })

@@ -1443,6 +1443,13 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           body: payload
         }
       },
+      transformResponse: (res: ConfigurationProfile) => {
+        return {
+          ...res,
+          data:
+            res.applyOnboardOnly = !res.applyOnboardOnly
+        }
+      },
       providesTags: [{ type: 'SwitchProfiles', id: 'DETAIL' }]
     }),
     addSwitchConfigProfile: build.mutation<CliConfiguration, RequestPayload>({
