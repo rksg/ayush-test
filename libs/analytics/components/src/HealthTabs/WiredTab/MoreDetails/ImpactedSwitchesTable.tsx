@@ -67,7 +67,7 @@ export const ImpactedSwitchesTable = ({
       key: 'name',
       fixed: 'left',
       render: (_, row: SwitchDetails) => (
-        <TenantLink to={`/devices/switch/${row.mac}/serial/details/incidents`}>
+        <TenantLink to={`/devices/switch/${row.mac}/serial/details/reports`}>
           {row.name}
         </TenantLink>
       ),

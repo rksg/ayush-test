@@ -546,6 +546,24 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
     newApi: true,
     url: '/wifiNetworks/:networkId/certificateTemplates/:certificateTemplateId'
   },
+  bindClientIsolation: {
+    method: 'PUT',
+    newApi: true,
+    url: '/venues/:venueId/wifiNetworks/:networkId/clientIsolationProfiles/:policyId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  unbindClientIsolation: {
+    method: 'delete',
+    newApi: true,
+    url: '/venues/:venueId/wifiNetworks/:networkId/clientIsolationProfiles/:policyId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   activateVlanPool: {
     method: 'put',
     url: '/wifiNetworks/:networkId/vlanPoolProfiles/:profileId',
