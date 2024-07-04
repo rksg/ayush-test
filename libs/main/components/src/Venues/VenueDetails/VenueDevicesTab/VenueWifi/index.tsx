@@ -248,7 +248,7 @@ const useIsMeshEnabled = (venueId: string | undefined) => {
 
   const { data: venueWifiSetting } = useGetVenueSettingsQuery(
     { params: { venueId } },
-    { skip: !isWifiRbacEnabled })
+    { skip: isWifiRbacEnabled })
 
   const { data: venueMeshSettings } = useGetVenueMeshQuery({
     params: { venueId } },

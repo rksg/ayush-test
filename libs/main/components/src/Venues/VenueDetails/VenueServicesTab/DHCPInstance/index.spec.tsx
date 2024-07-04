@@ -1,8 +1,8 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }               from '@acx-ui/store'
 import { mockServer,
   render,
   screen
@@ -45,7 +45,7 @@ describe('Venue DHCP Instance', () => {
   })
 
   it('should call rbac apis and render correctly', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
     mockServer.use(
       ...handlers
     )

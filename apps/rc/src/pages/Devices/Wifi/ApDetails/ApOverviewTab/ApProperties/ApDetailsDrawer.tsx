@@ -57,6 +57,7 @@ export const ApDetailsDrawer = (props: ApDetailsDrawerProps) => {
 
   const { data: venueData } = useGetVenueQuery({ params, enableRbac: isUseRbacApi }, { skip: !params.venueId })
 
+  // TODO: wait for BE support RBAC API to get `apPassword`
   const { data: venueSettings } = useGetVenueSettingsQuery({ params, enableRbac: isUseRbacApi },
     { skip: !currentAP?.venueId })
 
