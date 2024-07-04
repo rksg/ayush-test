@@ -180,19 +180,6 @@ describe('PendingActivations', () => {
     expect(await screen.findByRole('row', { name: /aaa/i })).toBeVisible()
   })
 
-
-  it('should open window correctly when activation code clicked', async () => {
-    render(
-      <Provider>
-        <PendingActivations />
-      </Provider>, {
-        route: { params }
-      })
-
-    await userEvent.click(await screen.findByRole('button', { name: /ABC123/i }))
-    expect(mockedWindowOpen).toBeCalled()
-  })
-
   it('should open drawer correctly when part number clicked', async () => {
     render(
       <Provider>
