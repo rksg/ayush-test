@@ -29,7 +29,7 @@ jest.mock('./DownloadRRMComparison', () => ({
 
 describe('CloudRRM', () => {
   beforeEach(() => {
-    mockGraphqlQuery(recommendationUrl, 'IntentAIRRMGraph', {
+    mockGraphqlQuery(recommendationUrl, 'CloudRRMGraph', {
       data: { recommendation: mockedCRRMGraphs }
     })
   })
