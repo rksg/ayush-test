@@ -34,11 +34,26 @@ export const priorities: Record<'low' | 'medium' | 'high', IconValue> = {
   high: { order: 2, label: defineMessage({ defaultMessage: 'High' }) }
 }
 
+type IntentType = {
+  introduction: MessageDescriptor,
+  intent: MessageDescriptor,
+  category: MessageDescriptor
+}
+
+const intentType: Record<string, IntentType> = {
+  aiDrivenRRM: {
+    introduction: defineMessage({ defaultMessage: 'Choose between a network with maximum throughput, allowing some interference, or one with minimal interference, for high client density.' }),
+    intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
+    category: defineMessage({ defaultMessage: 'Wi-Fi Experience' })
+  }
+}
+
 type CodeInfo = {
   category: MessageDescriptor,
   summary: MessageDescriptor,
   partialOptimizedSummary?: MessageDescriptor,
-  priority: IconValue
+  priority: IconValue,
+  intentType: IntentType
 }
 
 type RecommendationKPIConfig = {
@@ -171,6 +186,7 @@ export type StateType = keyof typeof states
 export const codes = {
   'c-crrm-channel24g-auto': {
     category: categories['AI-Driven Cloud RRM'],
+    intentType: intentType.aiDrivenRRM,
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 2.4 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
@@ -197,6 +213,7 @@ export const codes = {
   },
   'c-crrm-channel5g-auto': {
     category: categories['AI-Driven Cloud RRM'],
+    intentType: intentType.aiDrivenRRM,
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 5 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
@@ -223,6 +240,7 @@ export const codes = {
   },
   'c-crrm-channel6g-auto': {
     category: categories['AI-Driven Cloud RRM'],
+    intentType: intentType.aiDrivenRRM,
     summary: defineMessage({ defaultMessage: 'Optimal Ch/Width and Tx Power found for 6 GHz radio' }),
     priority: priorities.high,
     valueFormatter: crrmText,
