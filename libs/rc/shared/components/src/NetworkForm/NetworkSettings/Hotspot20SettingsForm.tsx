@@ -223,6 +223,7 @@ function Hotspot20Form () {
     const handleSaveWifiOperator = (id?: string) => {
       if (id) {
         form.setFieldValue(['hotspot20Settings', 'wifiOperator'], id)
+        form.validateFields()
       }
       setShowOperatorDrawer(false)
     }
@@ -236,6 +237,7 @@ function Hotspot20Form () {
         newIdentityProviders.push(id)
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], newIdentityProviders)
         disabledAddProvider.current = providerSelectOptions.length >= IDENTITY_PROVIDER_MAX_COUNT
+        form.validateFields()
       }
       setShowProviderDrawer(false)
     }
