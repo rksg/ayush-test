@@ -1,8 +1,14 @@
-import { useIntl } from 'react-intl'
+import { Typography }                from 'antd'
+import { useIntl, FormattedMessage } from 'react-intl'
 
-import { isSwitchPath }              from '@acx-ui/analytics/utils'
-import { Loader, TableProps }        from '@acx-ui/components'
+import { isSwitchPath } from '@acx-ui/analytics/utils'
+import {
+  Loader,
+  TableProps,
+  Tooltip }        from '@acx-ui/components'
 import { get }                       from '@acx-ui/config'
+import { DateFormatEnum, formatter } from '@acx-ui/formatter'
+import { TenantLink }                from '@acx-ui/react-router-dom'
 import { noDataDisplay, PathFilter } from '@acx-ui/utils'
 
 import {
@@ -10,6 +16,30 @@ import {
   IntentAIRecommendationListItem
 } from './services'
 import * as UI from './styledComponents'
+
+
+const Link = (
+  { text, to, disabled }: { text: string, to: string, disabled: boolean }
+) => {
+  return disabled
+    ? <Tooltip
+      title={<FormattedMessage defaultMessage='Not available' />}
+      children={<Typography.Text disabled children={text} />}
+    />
+    : <TenantLink to={to} children={text} />
+}
+
+const DateLink = (
+  { value }: { value: IntentAIRecommendationListItem }
+) => {
+  const { updatedAt } = value
+  const text = formatter(DateFormatEnum.DateTimeFormat)(updatedAt)
+  return <Link
+    disabled={false}
+    text={text}
+    to={'TBD'}
+  />
+}
 
 export function IntentAIRecommendationTable (
   { pathFilters }: { pathFilters: PathFilter }
@@ -60,7 +90,10 @@ export function IntentAIRecommendationTable (
       title: $t({ defaultMessage: 'Last update' }),
       width: 130,
       dataIndex: 'updatedAt',
-      key: 'updatedAt'
+      key: 'updatedAt',
+      render: (_, value) => <DateLink
+        value={value}
+      />
     }
   ]
 
