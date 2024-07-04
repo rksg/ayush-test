@@ -673,7 +673,8 @@ describe('Wired', () => {
       action: 'edit'
     }
 
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_RBAC_API || ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
     mockServer.use(
       rest.get(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfile.url,
         (_, res, ctx) => res(ctx.json(profile))
@@ -701,13 +702,14 @@ describe('Wired', () => {
     )
   })
 
-  it('should render add Switch Configuration Profile form correctly with rbac apu', async () => {
+  it('should render add Switch Configuration Profile form correctly with rbac api', async () => {
     const params = {
       tenantId: 'tenant-id',
       action: 'add'
     }
 
-    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.SWITCH_RBAC_API)
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      ff === Features.SWITCH_RBAC_API || ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
     mockServer.use(
       rest.post(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList.url,
         (_, res, ctx) => res(ctx.json({}))

@@ -12,9 +12,10 @@ import {
   GetApiVersionHeader,
   ApiVersionEnum
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi } from '@acx-ui/store'
-import { RequestPayload }        from '@acx-ui/types'
-import { batchApi }              from '@acx-ui/utils'
+import { baseConfigTemplateApi }       from '@acx-ui/store'
+import { RequestPayload }              from '@acx-ui/types'
+import { batchApi, createHttpRequest } from '@acx-ui/utils'
+
 
 import { commonQueryFn } from '../servicePolicy.utils'
 
@@ -23,27 +24,65 @@ import { useCasesToRefreshSwitchConfigProfileTemplateList } from './constants'
 export const switchConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
   endpoints: (build) => ({
     getSwitchConfigProfileTemplate: build.query<ConfigurationProfile, RequestPayload>({
-      query: commonQueryFn(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfile),
+      query: ({ params, enableRbac = false }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfile, params, headers)
+        return {
+          ...req
+        }
+      },
       providesTags: [{ type: 'SwitchConfigProfileTemplate', id: 'DETAIL' }]
     }),
     addSwitchConfigProfileTemplate: build.mutation<CliConfiguration, RequestPayload>({
-      query: commonQueryFn(SwitchConfigTemplateUrlsInfo.addSwitchConfigProfile),
+      query: ({ params, payload ,enableRbac = false }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(SwitchConfigTemplateUrlsInfo.addSwitchConfigProfile, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
       invalidatesTags: [{ type: 'SwitchConfigProfileTemplate', id: 'LIST' }]
     }),
     updateSwitchConfigProfileTemplate: build.mutation<CliConfiguration, RequestPayload>({
-      query: commonQueryFn(SwitchConfigTemplateUrlsInfo.updateSwitchConfigProfile),
+      query: ({ params, payload ,enableRbac = false }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(SwitchConfigTemplateUrlsInfo.updateSwitchConfigProfile, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
       invalidatesTags: [
         { type: 'SwitchConfigProfileTemplate', id: 'LIST' },
         { type: 'SwitchConfigProfileTemplate', id: 'DETAIL' }
       ]
     }),
     deleteSwitchConfigProfileTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(SwitchConfigTemplateUrlsInfo.deleteSwitchConfigProfile),
+      query: ({ params, enableRbac = false }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(SwitchConfigTemplateUrlsInfo.deleteSwitchConfigProfile, params, headers)
+        return {
+          ...req
+        }
+      },
       invalidatesTags: [{ type: 'SwitchConfigProfileTemplate', id: 'LIST' }]
     }),
     // eslint-disable-next-line max-len
     getSwitchConfigProfileTemplateList: build.query<TableResult<SwitchProfileModel>, RequestPayload>({
-      query: commonQueryFn(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList),
+      query: ({ params, payload ,enableRbac = false }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
       providesTags: [{ type: 'SwitchConfigProfileTemplate', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -58,13 +97,29 @@ export const switchConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     validateUniqueSwitchProfileTemplateName: build.query<TableResult<SwitchProfile>, RequestPayload>({
-      query: commonQueryFn(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList)
+      query: ({ params, payload ,enableRbac = false }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
     }),
     getSwitchTemplateCliFamilyModels: build.query<CliFamilyModels[], RequestPayload>({
       query: commonQueryFn(SwitchConfigTemplateUrlsInfo.getCliFamilyModels)
     }),
     getSwitchConfigProfileTemplates: build.query<ConfigurationProfile[], RequestPayload>({
-      query: commonQueryFn(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList),
+      query: ({ params, payload ,enableRbac = false }) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        // eslint-disable-next-line max-len
+        const req = createHttpRequest(SwitchConfigTemplateUrlsInfo.getSwitchConfigProfileList, params, headers)
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
       transformResponse (result: { data: ConfigurationProfile[] }) {
         return result?.data
       }

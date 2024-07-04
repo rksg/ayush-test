@@ -27,7 +27,8 @@ import {
   useConfigTemplateMutationFnSwitcher,
   useConfigTemplateQueryFnSwitcher,
   Vlan, VoiceVlanConfig, VoiceVlanOption,
-  useConfigTemplateLazyQueryFnSwitcher } from '@acx-ui/rc/utils'
+  useConfigTemplateLazyQueryFnSwitcher,
+  useConfigTemplate } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
 import { usePathBasedOnConfigTemplate } from '../configTemplates'
@@ -56,6 +57,10 @@ export function ConfigurationProfileForm () {
   const [form] = Form.useForm()
 
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const { isTemplate } = useConfigTemplate()
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const rbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
+
   const [getProfiles] = useConfigTemplateLazyQueryFnSwitcher({
     useLazyQueryFn: useLazyGetProfilesQuery,
     useLazyTemplateQueryFn: useLazyGetSwitchConfigProfileTemplateListQuery
@@ -298,7 +303,7 @@ export function ConfigurationProfileForm () {
     const profileId = params.profileId || cliProfileId
     const hasAssociatedVenues = venues.length > 0
 
-    if (isSwitchRbacEnabled && hasAssociatedVenues && profileId) {
+    if (rbacEnabled && hasAssociatedVenues && profileId) {
       const requests = venues.map((key: string)=> ({
         params: { venueId: key, profileId }
       }))
@@ -313,7 +318,7 @@ export function ConfigurationProfileForm () {
     callBack?: () => void
   ) => {
     const hasDisassociatedVenues = venues.length > 0
-    if (isSwitchRbacEnabled && hasDisassociatedVenues) {
+    if (rbacEnabled && hasDisassociatedVenues) {
       const requests = venues.map((key: string)=> ({
         params: { venueId: key, profileId: params.profileId }
       }))
@@ -331,12 +336,12 @@ export function ConfigurationProfileForm () {
       await addSwitchConfigProfile({
         params,
         payload: proceedData(currentData),
-        enableRbac: isSwitchRbacEnabled
+        enableRbac: rbacEnabled
       }).unwrap()
 
-      if (isSwitchRbacEnabled && hasAssociatedVenues) {
+      if (rbacEnabled && hasAssociatedVenues) {
         const { data: profileList } = await getProfiles({
-          params, payload: profilesPayload, enableRbac: isSwitchRbacEnabled
+          params, payload: profilesPayload, enableRbac: true
         }).unwrap()
         const profileId = profileList?.filter(t =>
           t.name === currentData?.name)?.map(t => t.id)?.[0]
@@ -365,7 +370,7 @@ export function ConfigurationProfileForm () {
       await updateSwitchConfigProfile({
         params,
         payload: proceedData(formData),
-        enableRbac: isSwitchRbacEnabled
+        enableRbac: rbacEnabled
       }).unwrap()
       await associateWithCliProfile(diffAssociatedSwitch)
       setCurrentData({} as SwitchConfigurationProfile)
