@@ -5,7 +5,7 @@ import { FirmwareUrlsInfo }                      from '@acx-ui/rc/utils'
 import { EdgeFirmwareFixtures }                  from '@acx-ui/rc/utils'
 import { Provider }                              from '@acx-ui/store'
 import { render, screen, mockServer, fireEvent } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                          from '@acx-ui/user'
+import { UserRbacUrlsInfo, UserUrlsInfo }        from '@acx-ui/user'
 
 import {
   allUserSettings,
@@ -43,6 +43,10 @@ describe('cloud Message Banner', () => {
       rest.get(
         UserUrlsInfo.getCloudMessageBanner.url,
         (_, res, ctx) => res(ctx.json(cloudMessageBanner))
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json(allUserSettings))
       ),
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
