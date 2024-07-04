@@ -4,7 +4,7 @@ import { Form, Input, Select } from 'antd'
 import { useIntl }             from 'react-intl'
 import { useParams }           from 'react-router-dom'
 
-import { Drawer, PasswordInput }             from '@acx-ui/components'
+import { Drawer, PasswordInput, Tooltip }    from '@acx-ui/components'
 import {
   useLazyGetTwiliosIncomingPhoneNumbersQuery,
   useUpdateNotificationSmsProviderMutation
@@ -218,11 +218,17 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
 
       <Form.Item
         name='sendUrl'
-        label={$t({ defaultMessage: 'Send URL' })}
+        label={<>
+          {$t({ defaultMessage: 'Send URL' })}
+          <Tooltip.Question
+            // eslint-disable-next-line max-len
+            title={$t({ defaultMessage: 'The URL of this SMS provider. This should include variables for phone number, message, and API key.' })}
+            placement='right'
+          />
+        </>}
         initialValue={editData?.providerData.url ?? ''}
-        // eslint-disable-next-line max-len
-        tooltip={$t({ defaultMessage: 'The URL of this SMS provider. This should include variables for phone number, message, and API key.' })}
         rules={[
+          { required: true, message: $t({ defaultMessage: 'Please enter Send URL' }) },
           { validator: (_, value) => URLRegExp(value) }
         ]}
         children={<Input />}
