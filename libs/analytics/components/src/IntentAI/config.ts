@@ -32,10 +32,6 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'Recommendation has been scheduled for {scheduledAt}. Note that the actual configuration change will happen asynchronously within 1 hour of the scheduled time.' })
   },
-  applyscheduleinprogress: {
-    text: defineMessage({ defaultMessage: 'Apply In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'Recommendation scheduled for {scheduledAt} is in progress' })
-  },
   applied: {
     text: defineMessage({ defaultMessage: 'Applied' }),
     tooltip: defineMessage({ defaultMessage: 'Recommendation has been successfully applied on {updatedAt}. RUCKUS Analytics will monitor this configuration change for the next 7 days until {updatedAtPlus7Days}.' }),
@@ -45,25 +41,9 @@ export const states = {
     text: defineMessage({ defaultMessage: 'Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: 'An error was encountered on {updatedAt} when the recommended configuration change was applied. Note that no configuration change was made.\n\nError: {errorMessage}' })
   },
-  beforeapplyinterrupted: {
-    text: defineMessage({ defaultMessage: 'Interrupted (Recommendation not applied)' }),
-    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in {smartZone} on {updatedAt} that may interfere with this recommendation. As such, the recommendation scheduled for {scheduledAt} has been canceled. Manually check whether this recommendation is still valid.' })
-  },
-  afterapplyinterrupted: {
-    text: defineMessage({ defaultMessage: 'Interrupted (Recommendation applied)' }),
-    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a manual configuration change in {smartZone} on {updatedAt} that may interfere with this recommendation. As such, the results from the monitoring of this configuration change may not be relevant anymore. Manually check whether this recommendation is still valid.' })
-  },
-  applywarning: {
-    text: defineMessage({ defaultMessage: 'REVERT' }),
-    tooltip: defineMessage({ defaultMessage: 'RUCKUS Analytics has detected a degradation in network performance after the application of the recommended configuration on {updatedAt}. Click revert to undo the configuration change as soon as possible.' })
-  },
   revertscheduled: {
     text: defineMessage({ defaultMessage: 'Revert Scheduled' }),
     tooltip: defineMessage({ defaultMessage: 'A reversion to undo the configuration change has been scheduled for {scheduledAt}. Note that the actual reversion of configuration will happen asynchronously within 1 hour of the scheduled time.' })
-  },
-  revertscheduleinprogress: {
-    text: defineMessage({ defaultMessage: 'Revert In Progress' }),
-    tooltip: defineMessage({ defaultMessage: 'Revert scheduled for {scheduledAt} is in progress' })
   },
   revertfailed: {
     text: defineMessage({ defaultMessage: 'Revert Failed' }),
@@ -73,10 +53,6 @@ export const states = {
   reverted: {
     text: defineMessage({ defaultMessage: 'Revert Success' }),
     tooltip: defineMessage({ defaultMessage: 'Reversion has been successfully applied on {updatedAt}.' })
-  },
-  deleted: {
-    text: defineMessage({ defaultMessage: 'Deleted' }),
-    tooltip: defineMessage({ defaultMessage: 'Deleted' })
   }
   //TODO: audit API isn't ready yet for 'unqualifiedZone', 'noAps', 'insufficientLicenses', 'verificationError', 'verified', 'unknown'
   //TODO: PRD has defined new states https://jira-wiki.ruckuswireless.com/display/Team/RUCKUS+IntentAI+-+PRD#RUCKUSIntentAIPRD-Requirements
