@@ -15,8 +15,8 @@ import { DownloadOutlined } from '@acx-ui/icons'
 
 import { EnhancedRecommendation } from '../services'
 
-import { useCRRMQuery }    from './services'
-import { DownloadWrapper } from './styledComponents'
+import { useIntentAICRRMQuery } from './services'
+import { DownloadWrapper }      from './styledComponents'
 
 const { DefaultFallback: Spinner } = SuspenseBoundary
 
@@ -37,7 +37,7 @@ export function DownloadRRMComparison (props: {
   const { $t } = useIntl()
   const band = recommendationBandMapping[
     props.details.code as keyof typeof recommendationBandMapping]
-  const queryResult = useCRRMQuery(props.details, band)
+  const queryResult = useIntentAICRRMQuery(props.details, band)
   const url = useDownloadUrl(queryResult.csv, 'text/csv')
 
   const filename = sanitize([
@@ -49,7 +49,8 @@ export function DownloadRRMComparison (props: {
   return <DownloadWrapper>
     <Loader states={[queryResult]} fallback={<Spinner size='default' />}>
       <Button
-        size='small'
+        type='primary'
+        size='middle'
         icon={<DownloadOutlined/>}
         download={filename}
         href={url}

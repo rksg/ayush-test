@@ -1,7 +1,7 @@
 import { Badge }       from 'antd'
 import styled, { css } from 'styled-components'
 
-import { GridCol }                                                     from '@acx-ui/components'
+import { GridCol, TrendPill as Pill }                                  from '@acx-ui/components'
 import { AIDrivenRRM, BulbOutlined, DeleteOutlined, InformationSolid } from '@acx-ui/icons'
 
 import { Subtitle } from '../../../IncidentDetails/Insights/styledComponents'
@@ -134,7 +134,8 @@ export const BenefitsHeader = styled.div`
 `
 
 export const BenefitsBody = styled.div`
-
+  display: flex;
+  align-items: center;
 `
 
 export const BenefitsValue = styled.span`
@@ -156,4 +157,10 @@ export const BenefitsBadge = styled(Badge)`
 export const Wrapper = styled.div`
   position: relative;
   margin-top: 40px;
+`
+
+export const TrendPill = styled(Pill)`
+  width: 40px;
+  text-align: center;
+  margin-left: 6px;
 `

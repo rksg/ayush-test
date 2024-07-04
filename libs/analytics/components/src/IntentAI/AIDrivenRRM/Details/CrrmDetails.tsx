@@ -14,6 +14,7 @@ import {
 } from '../services'
 
 import { CrrmBenefits }                       from './CrrmBenefits'
+import { CrrmGraph }                          from './CrrmGraph'
 import { CrrmValuesExtra }                    from './CrrmValuesExtra'
 import { Overview }                           from './Overview'
 import { StatusTrail }                        from './StatusTrail'
@@ -67,7 +68,7 @@ export const IntentAICrrmDetails = () => {
       </GridCol>
       <GridCol col={{ span: 20 }}>
         <CrrmBenefits details={details}/>
-        {/* TODO: KPI Graph */}
+        <CrrmGraph details={details}/>
         <CrrmValuesExtra details={details}/>
         <StatusTrail details={details}/>
       </GridCol>

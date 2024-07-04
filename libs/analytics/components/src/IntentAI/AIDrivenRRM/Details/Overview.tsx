@@ -10,9 +10,8 @@ import { truthy }                            from '@acx-ui/utils'
 
 import { DescriptionSection }     from '../../../DescriptionSection'
 import { statusTrailMsgs }        from '../config'
+import { DownloadRRMComparison }  from '../Graph/DownloadRRMComparison'
 import { EnhancedRecommendation } from '../services'
-
-import { DownloadRRMComparison } from './Graph/DownloadRRMComparison'
 
 // eslint-disable-next-line max-len
 const introductionText = defineMessage({ defaultMessage: 'Choose between a network with maximum throughput, allowing some interference, or one with minimal interference, for high client density.' })
