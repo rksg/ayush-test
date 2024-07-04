@@ -1086,7 +1086,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     addClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? ClientIsolationUrls.addClientIsolationRbac : ClientIsolationUrls.addClientIsolation
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1098,7 +1098,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         if (enableRbac) {
           const requests = payload!.map(policyId => ({ params: { policyId } }))
-          await batchApi(ClientIsolationUrls.deleteClientIsolationRbac, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+          await batchApi(ClientIsolationUrls.deleteClientIsolationRbac, requests, fetchWithBQ)
           return { data: {} as CommonResult }
         } else {
           const req = createHttpRequest(ClientIsolationUrls.deleteClientIsolationList, params)
@@ -1111,7 +1111,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getClientIsolationList: build.query<ClientIsolationSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? ClientIsolationUrls.queryClientIsolation : ClientIsolationUrls.getClientIsolationList
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           ...(enableRbac ? { body: JSON.stringify({ pageSize: CLIENT_ISOLATION_LIMIT_NUMBER }) } : {})
@@ -1139,7 +1139,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getEnhancedClientIsolationList: build.query<TableResult<ClientIsolationViewModel>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? ClientIsolationUrls.queryClientIsolation : ClientIsolationUrls.getEnhancedClientIsolationList
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1172,7 +1172,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     getClientIsolation: build.query<ClientIsolationSaveData, RequestPayload>({
       query: ({ params, enableRbac }) => {
         const url = enableRbac ? ClientIsolationUrls.getClientIsolationRbac : ClientIsolationUrls.getClientIsolation
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req
         }
@@ -1772,7 +1772,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
     updateClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? ClientIsolationUrls.updateClientIsolationRbac : ClientIsolationUrls.updateClientIsolation
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(payload)
@@ -1784,7 +1784,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       query: ({ params, payload, enableRbac }) => {
         const url = enableRbac ? ClientIsolationUrls.queryClientIsolation : ClientIsolationUrls.getClientIsolationListUsageByVenue
         const data = { ...payload as TableChangePayload, ...(enableRbac ? { filters: { venueIds: [params!.venueId] } } : {}) }
-        const req = createHttpRequest(url, params, GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined))
+        const req = createHttpRequest(url, params)
         return {
           ...req,
           body: JSON.stringify(data)
@@ -1826,7 +1826,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
           const venueIds = venueData.data.map(v => v.id)
 
           // query activations
-          const req = createHttpRequest(ClientIsolationUrls.queryClientIsolation, params, GetApiVersionHeader(ApiVersionEnum.v1))
+          const req = createHttpRequest(ClientIsolationUrls.queryClientIsolation, params)
           const activationPayload = { filters: { id: [tableChangePayload.id],
             ...(tableChangePayload.searchVenueNameString && venueIds.length > 0 ? { venueIds } : {}) } }
           const res = await fetchWithBQ({ ...req, body: JSON.stringify(activationPayload) })

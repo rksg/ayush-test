@@ -549,12 +549,20 @@ export const WifiUrlsInfo: { [key: string]: ApiInfo } = {
   bindClientIsolation: {
     method: 'PUT',
     newApi: true,
-    url: '/venues/:venueId/wifiNetworks/:networkId/clientIsolationProfiles/:policyId'
+    url: '/venues/:venueId/wifiNetworks/:networkId/clientIsolationProfiles/:policyId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   unbindClientIsolation: {
     method: 'delete',
     newApi: true,
-    url: '/venues/:venueId/wifiNetworks/:networkId/clientIsolationProfiles/:policyId'
+    url: '/venues/:venueId/wifiNetworks/:networkId/clientIsolationProfiles/:policyId',
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateVlanPool: {
     method: 'put',

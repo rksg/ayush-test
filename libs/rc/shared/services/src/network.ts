@@ -872,7 +872,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     bindClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.bindClientIsolation, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const req = createHttpRequest(WifiUrlsInfo.bindClientIsolation, params)
         return {
           ...req
         }
@@ -880,7 +880,7 @@ export const networkApi = baseNetworkApi.injectEndpoints({
     }),
     unbindClientIsolation: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.unbindClientIsolation, params, GetApiVersionHeader(ApiVersionEnum.v1))
+        const req = createHttpRequest(WifiUrlsInfo.unbindClientIsolation, params)
         return {
           ...req
         }

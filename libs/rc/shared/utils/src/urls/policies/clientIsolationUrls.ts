@@ -52,26 +52,45 @@ export const ClientIsolationUrls: { [key: string]: ApiInfo } = {
   addClientIsolationRbac: {
     method: 'post',
     url: '/clientIsolationProfiles',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getClientIsolationRbac: {
     method: 'get',
     url: '/clientIsolationProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1+json'
+    }
   },
   updateClientIsolationRbac: {
     method: 'put',
     url: '/clientIsolationProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteClientIsolationRbac: {
     method: 'delete',
     url: '/clientIsolationProfiles/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   queryClientIsolation: {
     method: 'post',
     url: '/clientIsolationProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }
