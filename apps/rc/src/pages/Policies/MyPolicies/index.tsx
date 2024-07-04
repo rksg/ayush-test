@@ -123,7 +123,7 @@ function useCardData (): ServicePolicyCardData<PolicyType>[] {
       type: PolicyType.CLIENT_ISOLATION,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedClientIsolationListQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))

@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -21,24 +22,27 @@ import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui
 import { WifiScopes }                                              from '@acx-ui/types'
 import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
-const defaultPayload = {
-  fields: ['id', 'name', 'tenantId', 'clientEntries', 'venueIds', 'description'],
-  searchString: '',
-  filters: {}
-}
-
 export default function ClientIsolationTable () {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteFn ] = useDeleteClientIsolationListMutation()
 
   const settingsId = 'policies-client-isolation-table'
+  const defaultPayload = {
+    fields: ['id', 'name', 'tenantId', 'clientEntries', 'description',
+      enableRbac ? 'activations':'venueIds'],
+    searchString: '',
+    filters: {}
+  }
+
   const tableQuery = useTableQuery<ClientIsolationViewModel>({
     useQuery: useGetEnhancedClientIsolationListQuery,
     defaultPayload,
-    pagination: { settingsId }
+    pagination: { settingsId },
+    enableRbac
   })
 
   const doDelete = (selectedRows: ClientIsolationViewModel[], callback: () => void) => {
@@ -48,7 +52,8 @@ export default function ClientIsolationTable () {
       selectedRows[0].name,
       // eslint-disable-next-line max-len
       [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () => deleteFn({
+        params, payload: selectedRows.map(row => row.id), enableRbac }).then(callback)
     )
   }
 
