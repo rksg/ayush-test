@@ -14,7 +14,6 @@ export function updateNetworkVenueFn (isTemplate = false): QueryFn<CommonResult,
   const apiInfo: ApiInfo = isTemplate ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplate : WifiUrlsInfo.updateNetworkVenue
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
-      enableRbac = true
       const { newData, oldData } = payload as { oldData?: NetworkVenue, newData: NetworkVenue }
 
       const res = await fetchWithBQ({
