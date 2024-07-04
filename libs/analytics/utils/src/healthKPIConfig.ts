@@ -172,9 +172,10 @@ export const kpiConfig = {
   switchDhcp: {
     textPostFix: 'Success',
     text: defineMessage({ defaultMessage: 'DHCP' }),
+    enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchDHCPSuccessAndAttemptCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchDHCPSuccessAndAttemptCount'),
     pill: {
@@ -430,12 +431,12 @@ export const kpiConfig = {
     }
   },
   switchPoeUtilization: {
-    text: defineMessage({ defaultMessage: 'PoE Utilization' }),
+    text: defineMessage({ defaultMessage: 'PoE Utilization Compliance' }),
     enableSwitchFirmwareFilter: shouldAddFirmwareFilter,
     isBeta: false,
     timeseries: {
       apiMetric: 'switchPoeUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -456,7 +457,7 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: formatter('percentFormat'),
-      tooltip: defineMessage({ defaultMessage: 'Indication of switches where power consumption is above a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches where power consumed is within budget allocation.' })
     }
   },
   onlineAPs: {
@@ -485,30 +486,30 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchStatusCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchStatusCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are reachable.' }),
+      description: '',
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility to switches.' })
+      tooltip: defineMessage({ defaultMessage: 'Metric of accessibility of switches to controller.' })
     }
   },
   switchMemoryUtilization: {
-    text: defineMessage({ defaultMessage: 'Memory' }),
+    text: defineMessage({ defaultMessage: 'Memory Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchMemoryUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchMemoryUtilization',
-      splits: [10,25,50,60,70,80,90],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
       shortXFormat: noFormat,
@@ -523,22 +524,22 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric of switches with memory utilisation above a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with memory utilization below a threshold.' })
     }
   },
   switchCpuUtilization: {
-    text: defineMessage({ defaultMessage: 'CPU' }),
+    text: defineMessage({ defaultMessage: 'CPU Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchCpuUtilizationCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchCpuUtilization',
-      splits: [10,25,50,60,70,80,90],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'switches',
       shortXFormat: noFormat,
@@ -553,38 +554,38 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric of switches with CPU utilisation above a threshold.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches with CPU utilization below a threshold.' })
     }
   },
   switchesTemperature: {
-    text: defineMessage({ defaultMessage: 'Temperature' }),
+    text: defineMessage({ defaultMessage: 'Temperature Compliance' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchTempCountAndSwitchCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchTempCountAndSwitchCount'),
     pill: {
-      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {avgTotalCount} switches are under safe thresholds of temperature.' }),
+      description: defineMessage({ defaultMessage: '{avgSuccessCount} of {maxCount} switches are under safe thresholds of temperature.' }),
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Metric of switches with temperature above or below the operating conditions.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric of switches within safe temperature operating conditions.' })
     }
   },
   switchUplinkPortUtilization: {
-    text: defineMessage({ defaultMessage: 'Uplink Port Utilization' }),
+    text: defineMessage({ defaultMessage: 'Uplink Port Utilization Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchUplinkPortUtilCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchUplinkPortUtilization',
-      splits: [20, 40, 60, 80, 100],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -599,22 +600,22 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric that refers to amount of network traffic that is transmitted effectively through the uplink port of wired switches.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to amount of network traffic that is transmitted effectively through the uplink port of wired switches.' })
     }
   },
   switchPortUtilization: {
-    text: defineMessage({ defaultMessage: 'Port Utilization' }),
+    text: defineMessage({ defaultMessage: 'Port Utilization Compliance' }),
     isBeta: false,
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortUtilizationCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
       initialThreshold: 80,
       apiMetric: 'switchPortUtilization',
-      splits: [20, 40, 60, 80, 100],
+      splits: [10, 20, 40, 60, 80, 85, 90, 95, 99],
       xUnit: '%',
       yUnit: 'Ports',
       shortXFormat: noFormat,
@@ -629,15 +630,15 @@ export const kpiConfig = {
       ],
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: numberWithPercentSymbol,
-      tooltip: defineMessage({ defaultMessage: 'Metric that refers to traffic being transmitted effectively if its within the network capacity.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to traffic being transmitted effectively if its within the network capacity.' })
     }
   },
   switchInterfaceAnomalies: {
-    text: defineMessage({ defaultMessage: 'Interface Anomalies' }),
+    text: defineMessage({ defaultMessage: 'Interface Health Compliance' }),
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchInterfaceAnomaliesCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     barChart: createBarChartConfig('switchInterfaceAnomaliesCountAndPortCount'),
     pill: {
@@ -645,7 +646,7 @@ export const kpiConfig = {
       thresholdDesc: [],
       pillSuffix: '',
       thresholdFormatter: null,
-      tooltip: defineMessage({ defaultMessage: 'Anomalies refer to unexpected and abnormal networking behaviour can occur due to cable issues, failed negotiation, and MTU Errors, Input errors contributing to bad user minutes.' })
+      tooltip: defineMessage({ defaultMessage: 'Compliance metric that refers to unexpected and abnormal networking behaviour can occur due to cable issues, failed negotiation, and MTU Errors, Input errors contributing to bad user minutes.' })
     }
   },
   switchStormControl: {
@@ -654,7 +655,7 @@ export const kpiConfig = {
     enableSwitchFirmwareFilter: true,
     timeseries: {
       apiMetric: 'switchPortStormCountAndPortCount',
-      minGranularity: 'PT5M'
+      minGranularity: 'PT15M'
     },
     histogram: {
       highlightAbove: false,
@@ -676,6 +677,22 @@ export const kpiConfig = {
       pillSuffix: pillSuffix.meetGoal,
       thresholdFormatter: noFormat,
       tooltip: defineMessage({ defaultMessage: 'Metric of multicast traffic levels when they exceed a set threshold and can help throttle applications/clients.' })
+    }
+  },
+  switchAuthentication: {
+    text: defineMessage({ defaultMessage: 'Authentication' }),
+    enableSwitchFirmwareFilter: true,
+    timeseries: {
+      apiMetric: 'switchAuthCountAndAttemptCount',
+      minGranularity: 'PT15M'
+    },
+    barChart: createBarChartConfig('switchAuthCountAndAttemptCount'),
+    pill: {
+      description: defineMessage({ defaultMessage: '{successCount} of {totalCount} of auth succeeded' }),
+      thresholdDesc: [],
+      pillSuffix: '',
+      thresholdFormatter: null,
+      tooltip: defineMessage({ defaultMessage: 'Metric of authentication events amongst success and failed categories.' })
     }
   }
 }
@@ -724,27 +741,31 @@ export const wiredKPIsForTab = () => {
   return {
     overview: {
       kpis: [
-        'switchUplinkPortUtilization',
-        'switchReachability'
+        'switchUplinkPortUtilization'
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchReachability'
       ]
     },
     connection: {
       kpis: [
-        // 'authentication',
-        'switchDhcp'
+        'switchAuthentication'
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchDhcp'
       ]
     },
     performance: {
       kpis: [
         'switchPortUtilization',
-        'switchUplinkPortUtilization',
-        'switchInterfaceAnomalies',
-        'switchStormControl'
+        'switchUplinkPortUtilization'
+        // TODO: revisit these kpis: https://jira.ruckuswireless.com/browse/RSA-6826
+        // 'switchInterfaceAnomalies'
+        //'switchStormControl'
       ]
     },
     infrastructure: {
       kpis: [
-        'switchReachability',
+        // TODO: revisit this kpi: https://jira.ruckuswireless.com/browse/RSA-6826
+        //'switchReachability',
         'switchMemoryUtilization',
         'switchCpuUtilization',
         'switchesTemperature',

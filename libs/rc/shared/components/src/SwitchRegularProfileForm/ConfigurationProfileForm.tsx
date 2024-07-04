@@ -60,6 +60,7 @@ export function ConfigurationProfileForm () {
     useLazyQueryFn: useLazyGetProfilesQuery,
     useLazyTemplateQueryFn: useLazyGetSwitchConfigProfileTemplateListQuery
   })
+  const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
 
   const { data, isLoading } = useConfigTemplateQueryFnSwitcher<ConfigurationProfile>({
     useQueryFn: useGetSwitchConfigProfileQuery,
@@ -90,10 +91,11 @@ export function ConfigurationProfileForm () {
   })
 
   const editMode = params.action === 'edit'
-  const [ ipv4DhcpSnooping, setIpv4DhcpSnooping ] = useState(false)
-  const [ arpInspection, setArpInspection ] = useState(false)
-  const [ vlansWithTaggedPorts, setVlansWithTaggedPorts] = useState(false)
-  const [ currentData, setCurrentData ] =
+  const [vlansWithTaggedPorts, setVlansWithTaggedPorts] = useState(false)
+  const [ipv4DhcpSnooping, setIpv4DhcpSnooping] = useState(false)
+  const [arpInspection, setArpInspection] = useState(false)
+  const [trustedPorts, setTrustedPorts] = useState(false)
+  const [currentData, setCurrentData ] =
     useState<SwitchConfigurationProfile>({} as SwitchConfigurationProfile)
 
   // Config Template related states
@@ -219,9 +221,12 @@ export function ConfigurationProfileForm () {
           item.switchFamilyModels.find(model => model?.taggedPorts?.length)
           : false
       }) || []
+
     setIpv4DhcpSnooping(ipv4DhcpSnoopingValue.length > 0)
     setArpInspection(arpInspectionValue.length > 0)
     setVlansWithTaggedPorts(vlansWithTaggedPortsValue.length > 0)
+    setTrustedPorts(nextCurrentData.trustedPorts?.length > 0)
+
     const voiceVlanOptions =
       nextCurrentData.vlans && generateVoiceVlanOptions(nextCurrentData.vlans as Vlan[])
     const currentVoiceVlanConfigs = timing === 'init' ? data.voiceVlanConfigs
@@ -249,26 +254,18 @@ export function ConfigurationProfileForm () {
 
   const proceedData = (data: SwitchConfigurationProfile) => {
     if(data.trustedPorts){
-      if(ipv4DhcpSnooping || arpInspection){
-        const vlanModels = data.vlans.map(
-          item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
+      const vlanModels = data.vlans?.map(
+        item => item.switchFamilyModels?.map(obj => obj.model)) ||['']
 
-        if(vlanModels.length > 0 && vlanModels[0] !== undefined){
-          data.trustedPorts = data.trustedPorts.filter(
-            tpItem => !data.vlans.some(item =>
-              (!item.ipv4DhcpSnooping && !item.arpInspection) &&
-              (item.switchFamilyModels?.some(sfmItem => sfmItem.model === tpItem.model))
-            )).map(
-            item => { return {
-              ...item,
-              ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
-            }})
-        } else {
-          data.trustedPorts = []
-        }
-      } else {
-        data.trustedPorts = []
+      if(vlanModels.length > 0) {
+        data.trustedPorts = data.trustedPorts?.map(
+          item => { return {
+            ...item,
+            ...{ vlanDemand: vlanModels.join(',').indexOf(item.model) > -1 }
+          }})
       }
+    } else {
+      data.trustedPorts = []
     }
     if(data.vlans) {
       data.vlans.forEach((vlan:Partial<Vlan>) => {
@@ -276,12 +273,19 @@ export function ConfigurationProfileForm () {
           delete model.voicePorts
         })
       })
+    } else {
+      data.vlans = []
     }
     if(data.voiceVlanOptions) {
       delete data.voiceVlanOptions
     }
     if(data.voiceVlanConfigs && !data.voiceVlanConfigs.length) {
       delete data.voiceVlanConfigs
+    }
+    if (profileOnboardOnlyEnabled) {
+      data.applyOnboardOnly = !data.applyOnboardOnly
+    } else {
+      data.applyOnboardOnly = false
     }
     return data
   }
@@ -422,7 +426,7 @@ export function ConfigurationProfileForm () {
             <AclSetting />
           </StepsForm.StepForm>
 
-          {(ipv4DhcpSnooping || arpInspection) &&
+          {(trustedPorts || arpInspection || ipv4DhcpSnooping) &&
             <StepsForm.StepForm
               title={$t({ defaultMessage: 'Trusted Ports' })}
               onFinish={updateTrustedPortsCurrentData}

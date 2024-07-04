@@ -16,7 +16,8 @@ import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
 import { batchApi }              from '@acx-ui/utils'
 
-import { commonQueryFn }                                    from './common'
+import { commonQueryFn } from '../servicePolicy.utils'
+
 import { useCasesToRefreshSwitchConfigProfileTemplateList } from './constants'
 
 export const switchConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({

@@ -5,9 +5,8 @@ import { useIntl } from 'react-intl'
 import { PageHeader }                  from '@acx-ui/components'
 import { useConfigTemplateBreadcrumb } from '@acx-ui/rc/utils'
 
-import { ApGroupEditTabs } from './ApGroupEditTabs'
-
-import { ApGroupEditContext } from './index'
+import { ApGroupEditTabs }    from './ApGroupEditTabs'
+import { ApGroupEditContext } from './context'
 
 export function ApGroupEditPageHeader () {
   const { $t } = useIntl()

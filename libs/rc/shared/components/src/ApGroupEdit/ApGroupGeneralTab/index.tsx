@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 
 import { Col, Form, Input, Row, Select }       from 'antd'
-import { DefaultOptionType }                   from 'antd/lib/select'
 import { TransferItem }                        from 'antd/lib/transfer'
 import _                                       from 'lodash'
 import { useIntl }                             from 'react-intl'
@@ -10,7 +9,9 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Loader, StepsFormLegacy, StepsFormLegacyInstance, Transfer } from '@acx-ui/components'
 import {
   useAddApGroupMutation, useAddApGroupTemplateMutation,
-  useGetApGroupQuery, useGetApGroupTemplateQuery, useGetVenuesTemplateListQuery,
+  useGetApGroupQuery,
+  useGetApGroupTemplateQuery,
+  useGetVenuesTemplateListQuery,
   useLazyApGroupsListQuery, useLazyGetApGroupsTemplateListQuery,
   useLazyGetVenueTemplateDefaultApGroupQuery,
   useLazyVenueDefaultApGroupQuery,
@@ -32,7 +33,7 @@ import {
 } from '@acx-ui/rc/utils'
 
 import { usePathBasedOnConfigTemplate } from '../../configTemplates'
-import { ApGroupEditContext }           from '../index'
+import { ApGroupEditContext }           from '../context'
 
 const defaultVenuePayload = {
   fields: ['name', 'country', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -51,21 +52,27 @@ const apGroupsListPayload = {
 
 export function ApGroupGeneralTab () {
   const { $t } = useIntl()
-  const { tenantId, action, apGroupId } = useParams()
+  const { tenantId, apGroupId } = useParams()
   const { isTemplate } = useConfigTemplate()
   const {
-    isEditMode, isApGroupTableFlag, setEditContextData
+    isEditMode,
+    isApGroupTableFlag,
+    isWifiRbacEnabled,
+    setEditContextData,
+    venueId
   } = useContext(ApGroupEditContext)
+  const [apsOption, setApsOption] = useState([] as TransferItem[])
 
   const navigate = useNavigate()
   const location = useLocation()
-  const basePath = usePathBasedOnConfigTemplate('/devices/', '/templates')
+  const basePath = usePathBasedOnConfigTemplate('/devices/', '')
   const navigatePathName = isTemplate ? basePath.pathname : ((isApGroupTableFlag)
     ? `${basePath.pathname}/wifi/apgroups`
     : `${basePath.pathname}/wifi`)
 
   const formRef = useRef<StepsFormLegacyInstance<AddApGroup>>()
   const oldFormDataRef = useRef<AddApGroup>()
+
   const venuesList = useConfigTemplateQueryFnSwitcher<TableResult<Venue>>({
     useQueryFn: useVenuesListQuery,
     useTemplateQueryFn: useGetVenuesTemplateListQuery,
@@ -77,27 +84,29 @@ export function ApGroupGeneralTab () {
     useLazyQueryFn: useLazyVenueDefaultApGroupQuery,
     useLazyTemplateQueryFn: useLazyGetVenueTemplateDefaultApGroupQuery
   })
+
   const [apGroupsList] = useConfigTemplateLazyQueryFnSwitcher({
     useLazyQueryFn: useLazyApGroupsListQuery,
     useLazyTemplateQueryFn: useLazyGetApGroupsTemplateListQuery
   })
+
   const [addApGroup] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddApGroupMutation,
     useTemplateMutationFn: useAddApGroupTemplateMutation
   })
+
   const [updateApGroup] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateApGroupMutation,
     useTemplateMutationFn: useUpdateApGroupTemplateMutation
   })
-  const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
-  const [apsOption, setApsOption] = useState([] as TransferItem[])
 
   const { data: apGroupData, isLoading: isApGroupDataLoading } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetApGroupQuery,
     useTemplateQueryFn: useGetApGroupTemplateQuery,
-    skip: !isEditMode,
+    skip: !isEditMode || (isWifiRbacEnabled && !venueId),
     payload: null,
-    extraParams: { tenantId, apGroupId }
+    extraParams: { tenantId, venueId, apGroupId },
+    enableRbac: isWifiRbacEnabled
   })
 
   const locationState = location.state as { venueId?: string, history?: string }
@@ -105,17 +114,13 @@ export function ApGroupGeneralTab () {
   const venueIdFromNavigate = locationState?.venueId
   const historyUrl = locationState?.history
 
-  useEffect(() => {
-    if (!venuesList.isLoading) {
-      setVenueOption(venuesList?.data?.data?.map(item => ({
-        label: item.name, value: item.id
-      })) ?? [])
-    }
-  }, [venuesList])
+  const venueOptions = venuesList.data?.data
+    .map((venue: Venue) => ({ label: venue.name, value: venue.id })) ?? []
+
 
   useEffect(() => {
     if (isEditMode) {
-      if (!isApGroupDataLoading && apGroupData) {
+      if (!isApGroupDataLoading && apGroupData && venueId) {
         let extraMemberList: { name: string; key: string }[] | undefined = []
         if (Array.isArray(apGroupData.aps)) {
           extraMemberList = apGroupData.aps.map((item: ApDeep) => ({
@@ -142,7 +147,7 @@ export function ApGroupGeneralTab () {
       formRef?.current?.setFieldValue('venueId', venueIdFromNavigate)
       handleVenueChange(venueIdFromNavigate)
     }
-  }, [isEditMode, apGroupData, isApGroupDataLoading])
+  }, [isEditMode, apGroupData, isApGroupDataLoading, venueId])
 
 
   const handleVenueChange = async (value: string,
@@ -150,10 +155,30 @@ export function ApGroupGeneralTab () {
     const defaultApGroupOption: { name: string, key: string }[] = []
 
     if (value) {
-      (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
-        .data?.map(x => x.aps?.map((item: ApDeep) =>
-          defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber }))
-        )
+      // get venue default ap group and its members options
+      if (isWifiRbacEnabled) {
+        // use ap group viewmodel API
+        const payload = {
+          fields: ['id', 'members'],
+          filters: { venueId: [value] }
+        }
+        const list = (await apGroupsList({
+          payload,
+          enableRbac: isWifiRbacEnabled
+        }, true).unwrap())?.data ?? []
+
+        defaultApGroupOption.push(...(list?.flatMap(item =>
+          (item.aps ?? ([] as ApDeep[])).map((ap) => ({
+            name: ap.name,
+            key: ap.serialNumber
+          })))))
+      } else {
+        (await venueDefaultApGroup({ params: { tenantId: tenantId, venueId: value } }))
+          .data?.map(x => x.aps?.map((item: ApDeep) => {
+            defaultApGroupOption.push({ name: item.name.toString(), key: item.serialNumber })
+          })
+          )
+      }
     }
 
     if (extraMemberList && defaultApGroupOption) {
@@ -170,7 +195,7 @@ export function ApGroupGeneralTab () {
 
   const handleAddApGroup = async () => {
     const formData = formRef.current?.getFieldsValue() || {} as AddApGroup
-    const { venueId } = formData
+    const { venueId: formVenueId } = formData
     const payload: AddApGroup = {
       ...formData
     }
@@ -180,9 +205,21 @@ export function ApGroupGeneralTab () {
       }
 
       if (isEditMode) {
-        await updateApGroup({ params: { tenantId, apGroupId }, payload }).unwrap()
+        await updateApGroup({
+          params: {
+            tenantId,
+            venueId: formVenueId,
+            apGroupId
+          },
+          payload,
+          enableRbac: isWifiRbacEnabled
+        }).unwrap()
       } else {
-        await addApGroup({ params: { tenantId, venueId }, payload }).unwrap()
+        await addApGroup({
+          params: { tenantId, venueId: formVenueId },
+          payload,
+          enableRbac: isWifiRbacEnabled
+        }).unwrap()
       }
 
       setEditContextData({
@@ -203,13 +240,16 @@ export function ApGroupGeneralTab () {
     if (value.trim() === '') {
       return trailingNorLeadingSpaces(value)
     }
-    const venueId = formRef.current?.getFieldValue('venueId')
-    if (venueId) {
+    const formVenueId = formRef.current?.getFieldValue('venueId')
+    if (formVenueId) {
       const payload = {
         ...apGroupsListPayload,
-        searchString: value, filters: { venueId: [venueId] }
+        searchString: value, filters: { venueId: [formVenueId] }
       }
-      const list = (await apGroupsList({ params: { tenantId, action, apGroupId }, payload }, true)
+      const list = (await apGroupsList({
+        payload,
+        enableRbac: isWifiRbacEnabled
+      }, true)
         .unwrap()).data
         .filter(n => n.id !== apGroupId)
         .map(n => ({ name: n.name }))
@@ -262,7 +302,7 @@ export function ApGroupGeneralTab () {
     >
       <StepsFormLegacy.StepForm>
         <Loader states={[{
-          isLoading: venuesList.isLoading
+          isLoading: (isEditMode && !venueId) || venuesList.isLoading
         }]}>
           <Row gutter={20}>
             <Col span={8}>
@@ -296,7 +336,7 @@ export function ApGroupGeneralTab () {
                 }]}
                 children={<Select
                   disabled={isEditMode || !!venueIdFromNavigate}
-                  options={venueOption}
+                  options={venueOptions}
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
                 validateTrigger={'onBlur'}

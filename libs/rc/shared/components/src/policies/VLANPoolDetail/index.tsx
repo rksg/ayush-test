@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { PageHeader, Button, GridRow, Loader, GridCol }                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { useGetVLANPoolPolicyDetailQuery, useGetVlanPoolPolicyTemplateDetailQuery } from '@acx-ui/rc/services'
 import {
   VLANPoolPolicyType,
@@ -10,6 +11,7 @@ import {
   usePolicyListBreadcrumb
 }   from '@acx-ui/rc/utils'
 import { useParams }      from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
 import { PolicyConfigTemplateLinkSwitcher } from '../../configTemplates'
@@ -20,9 +22,11 @@ import VLANPoolOverview       from './VLANPoolOverview'
 export function VLANPoolDetail () {
   const { $t } = useIntl()
   const params = useParams()
+  const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const queryResults = useConfigTemplateQueryFnSwitcher<VLANPoolPolicyType>({
     useQueryFn: useGetVLANPoolPolicyDetailQuery,
-    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery
+    useTemplateQueryFn: useGetVlanPoolPolicyTemplateDetailQuery,
+    enableRbac: isPolicyRbacEnabled
   })
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.VLAN_POOL)
 
@@ -33,6 +37,7 @@ export function VLANPoolDetail () {
         breadcrumb={breadcrumb}
         extra={filterByAccess([
           <PolicyConfigTemplateLinkSwitcher
+            scopeKey={[WifiScopes.UPDATE]}
             type={PolicyType.VLAN_POOL}
             oper={PolicyOperation.EDIT}
             policyId={params.policyId!}

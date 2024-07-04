@@ -4,8 +4,9 @@ import { Button, Form, Select, Space, Switch, Typography } from 'antd'
 import { isEqual }                                         from 'lodash'
 import { useIntl }                                         from 'react-intl'
 
-import { AnchorContext, Loader, StepsFormLegacy } from '@acx-ui/components'
-import { usePathBasedOnConfigTemplate }           from '@acx-ui/rc/components'
+import { AnchorContext, Loader, StepsFormLegacy }          from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { PROFILE_MAX_COUNT, usePathBasedOnConfigTemplate } from '@acx-ui/rc/components'
 import {
   useGetSyslogPolicyTemplateListQuery,
   useGetVenueSyslogApQuery,
@@ -33,9 +34,12 @@ import {
   useNavigate,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes }    from '@acx-ui/types'
+import { hasPermission } from '@acx-ui/user'
 
 import { VenueEditContext } from '../../..'
 import * as UI              from '../../styledComponents'
+
 
 
 export interface VenueSettings {
@@ -57,14 +61,16 @@ export function Syslog () {
     setEditServerContextData
   } = useContext(VenueEditContext)
   const { setReadyToScroll } = useContext(AnchorContext)
-
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const {
     data: syslogPolicyList,
     isLoading: isSyslogPolicyListLoading
   } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
     useQueryFn: useSyslogPolicyListQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
-    payload: { page: 1, pageSize: 10000 }
+    payload: { page: 1, pageSize: PROFILE_MAX_COUNT },
+    enableRbac
   })
 
   const {
@@ -72,7 +78,8 @@ export function Syslog () {
     isLoading: isVenueSyslogSettingsLoading
   } = useConfigTemplateQueryFnSwitcher<VenueSyslogSettingType>({
     useQueryFn: useGetVenueSyslogApQuery,
-    useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery
+    useTemplateQueryFn: useGetVenueTemplateSyslogSettingsQuery,
+    enableRbac
   })
 
   const [
@@ -151,7 +158,8 @@ export function Syslog () {
       if (payload) {
         await updateVenueSyslog({
           params: { venueId },
-          payload
+          payload,
+          enableRbac, enableTemplateRbac
         }).unwrap()
       }
     } catch (error) {
@@ -199,7 +207,7 @@ export function Syslog () {
               })}
               style={{ width: '200px' }}
             />
-            <Button type='link'
+            { hasPermission({ scopes: [WifiScopes.CREATE] }) && <Button type='link'
               style={{ marginLeft: '20px' }}
               onClick={async () => {
                 await setEditContextData({
@@ -217,7 +225,7 @@ export function Syslog () {
               }}
             >
               {$t({ defaultMessage: 'Add Server Profile' })}
-            </Button>
+            </Button> }
           </Form.Item>
           {defaultSyslogValue &&
           <UI.FieldGroup>

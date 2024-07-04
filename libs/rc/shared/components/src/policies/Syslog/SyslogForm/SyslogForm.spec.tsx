@@ -4,8 +4,12 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { policyApi } from '@acx-ui/rc/services'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { policyApi }              from '@acx-ui/rc/services'
 import {
+  ConfigTemplateContext,
+  ConfigTemplateUrlsInfo,
+  PoliciesConfigTemplateUrlsInfo,
   SyslogUrls
 } from '@acx-ui/rc/utils'
 import { Provider, store }                                from '@acx-ui/store'
@@ -13,8 +17,8 @@ import { fireEvent, mockServer, render, screen, waitFor } from '@acx-ui/test-uti
 
 import SyslogContext from '../SyslogContext'
 
-import { initState, syslogPolicyTableList, syslogVenueTable, targetSyslog } from './__tests__/fixtures'
-import { SyslogForm }                                                       from './SyslogForm'
+import { initState, rbacQuerySyslogResult, rbacTargetSyslog, rbacTemplateVenueQuery, syslogPolicyTableList, syslogVenueTable, targetSyslog } from './__tests__/fixtures'
+import { SyslogForm }                                                                                                                        from './SyslogForm'
 
 const policyResponse = {
   requestId: '360cf6c7-b2c6-4973-b4c0-a6be63adaac0'
@@ -195,5 +199,153 @@ describe('SyslogForm', () => {
     await userEvent.click(applyBtn)
 
     await waitFor(() => expect(updateFn).toHaveBeenCalledTimes(1))
+  })
+
+  it('should edit SyslogForm with rbac api successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    const updateFn = jest.fn()
+    const unbindFn = jest.fn()
+    const bindFn = jest.fn()
+
+    mockServer.use(
+      rest.get(
+        SyslogUrls.getSyslogPolicy.url,
+        (_, res, ctx) => res(ctx.json(rbacTargetSyslog))
+      ),
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (_, res, ctx) => res(ctx.json(rbacQuerySyslogResult))
+      ),
+      rest.put(
+        SyslogUrls.updateSyslogPolicy.url,
+        (_, res, ctx) => {
+          updateFn()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      ),
+      rest.put(
+        SyslogUrls.bindVenueSyslog.url,
+        (_, res, ctx) => {
+          bindFn()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      ),
+      rest.delete(
+        SyslogUrls.unbindVenueSyslog.url,
+        (_, res, ctx) => {
+          unbindFn()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      )
+    )
+
+    render(
+      <SyslogContext.Provider value={{
+        state: initState,
+        dispatch: setSyslogAPConfigure
+      }}>
+        <SyslogForm edit={true}/>
+      </SyslogContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    await userEvent.type(await screen.findByTestId('name'), 'modify name')
+
+    await userEvent.click(await screen.findByText('Scope'))
+    await screen.findByRole('heading', { level: 3, name: 'Scope' })
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    const switches = await screen.findAllByTestId(/switchBtn/s)
+    expect(switches).toHaveLength(2)
+    await userEvent.click(switches[0])
+    await userEvent.click(switches[1])
+
+    await userEvent.click(applyBtn)
+    expect(updateFn).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(unbindFn).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(bindFn).toHaveBeenCalledTimes(1))
+  })
+
+  it('should edit SyslogForm with rbac api for config template successfully', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    const updateFn = jest.fn()
+    const unbindFn = jest.fn()
+    const bindFn = jest.fn()
+
+    mockServer.use(
+      rest.get(
+        PoliciesConfigTemplateUrlsInfo.getSyslogPolicy.url,
+        (_, res, ctx) => res(ctx.json(rbacTargetSyslog))
+      ),
+      rest.post(
+        PoliciesConfigTemplateUrlsInfo.querySyslog.url,
+        (_, res, ctx) => res(ctx.json(rbacQuerySyslogResult))
+      ),
+      rest.post(
+        ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+        (_, res, ctx) => res(ctx.json(rbacTemplateVenueQuery))
+      ),
+      rest.put(
+        PoliciesConfigTemplateUrlsInfo.updateSyslogPolicy.url,
+        (_, res, ctx) => {
+          updateFn()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      ),
+      rest.put(
+        PoliciesConfigTemplateUrlsInfo.bindVenueSyslog.url,
+        (_, res, ctx) => {
+          bindFn()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      ),
+      rest.delete(
+        PoliciesConfigTemplateUrlsInfo.unbindVenueSyslog.url,
+        (_, res, ctx) => {
+          unbindFn()
+          return res(ctx.json({ requestId: '123' }))
+        }
+      )
+    )
+
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <SyslogContext.Provider value={{
+          state: initState,
+          dispatch: setSyslogAPConfigure
+        }}>
+          <SyslogForm edit={true}/>
+        </SyslogContext.Provider>
+      </ConfigTemplateContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await screen.findByRole('heading', { name: 'Settings', level: 3 })
+
+    await userEvent.type(await screen.findByTestId('name'), 'modify name')
+
+    await userEvent.click(await screen.findByText('Scope'))
+    await screen.findByRole('heading', { level: 3, name: 'Scope' })
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
+    const switches = await screen.findAllByTestId(/switchBtn/s)
+    expect(switches).toHaveLength(2)
+    await userEvent.click(switches[0])
+    await userEvent.click(switches[1])
+
+    await userEvent.click(applyBtn)
+    expect(updateFn).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(unbindFn).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(bindFn).toHaveBeenCalledTimes(1))
   })
 })

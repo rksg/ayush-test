@@ -66,30 +66,19 @@ export const ConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     url: '/templates/radiusServerProfiles/query',
     newApi: true
   },
-  addVenueTemplate: {
-    method: 'post',
-    url: '/templates/venues',
-    newApi: true
-  },
-  deleteVenueTemplate: {
-    method: 'delete',
-    url: '/templates/venues/:templateId',
-    newApi: true
-  },
-  updateVenueTemplate: {
-    method: 'put',
-    url: '/templates/venues/:venueId',
-    newApi: true
-  },
-  getVenueTemplate: {
-    method: 'get',
-    url: '/templates/venues/:venueId',
-    newApi: true
-  },
   getVenuesTemplateList: {
     method: 'post',
     url: '/templates/venues/query',
     newApi: true
+  },
+  getVenuesTemplateListRbac: {
+    method: 'post',
+    url: '/templates/venues/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addNetworkVenueTemplate: {
     method: 'post',

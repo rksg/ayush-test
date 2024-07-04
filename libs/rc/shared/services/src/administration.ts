@@ -28,11 +28,19 @@ import {
   AdminGroupLastLogins,
   CustomRole,
   PrivilegeGroup,
-  EntitlementPendingActivations
+  EntitlementPendingActivations,
+  AdminRbacUrlsInfo,
+  NotificationSmsUsage,
+  NotificationSmsConfig,
+  TwiliosIncommingPhoneNumbers
 } from '@acx-ui/rc/utils'
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+const getAdminUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? AdminRbacUrlsInfo : AdministrationUrlsInfo
+}
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -44,6 +52,16 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
         }
       },
       providesTags: [{ type: 'Administration', id: 'DETAIL' }]
+    }),
+    updateTenantSelf: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateTenantSelf, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'DETAIL' }]
     }),
     getAccountDetails: build.query<AccountDetails, RequestPayload>({
       query: ({ params }) => {
@@ -173,8 +191,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       }
     }),
     enableAccessSupport: build.mutation<TenantDelegationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.enableAccessSupport, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.enableAccessSupport, params)
         return {
           ...req,
           body: payload
@@ -190,8 +209,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       invalidatesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }]
     }),
     disableAccessSupport: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.disableAccessSupport, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.disableAccessSupport, params)
         return {
           ...req,
           body: payload
@@ -498,7 +518,18 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Activate Entitlement'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'ACTIVATIONS' }
+            ]))
+          })
+        })
+      }
     }),
     patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -794,6 +825,62 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       }
+    }),
+    getNotificationSms: build.query<NotificationSmsUsage, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSms, params)
+        return{
+          ...req
+        }
+      },
+      providesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    updateNotificationSms: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateNotificationSms, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    getNotificationSmsProvider: build.query<NotificationSmsConfig, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getNotificationSmsProvider, params)
+        return{
+          ...req
+        }
+      }
+    }),
+    updateNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.updateNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    deleteNotificationSmsProvider: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.deleteNotificationSmsProvider, params)
+        return {
+          ...req,
+          body: payload
+        }
+      },
+      invalidatesTags: [{ type: 'Administration', id: 'SMS_PROVIDER' }]
+    }),
+    getTwiliosIncomingPhoneNumbers: build.query<TwiliosIncommingPhoneNumbers, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(AdministrationUrlsInfo.getTwiliosIncomingPhoneNumbers, params)
+        return {
+          ...req,
+          body: payload
+        }
+      }
     })
 
   })
@@ -811,6 +898,7 @@ const transformAdministratorList = (data: Administrator[]) => {
 
 export const {
   useGetTenantDetailsQuery,
+  useUpdateTenantSelfMutation,
   useLazyGetTenantDetailsQuery,
   useGetAccountDetailsQuery,
   useGetRecoveryPassphraseQuery,
@@ -868,5 +956,12 @@ export const {
   useGetPrivilegeGroupsQuery,
   useAddPrivilegeGroupMutation,
   useUpdatePrivilegeGroupMutation,
-  useDeletePrivilegeGroupMutation
+  useDeletePrivilegeGroupMutation,
+  useGetNotificationSmsQuery,
+  useUpdateNotificationSmsMutation,
+  useGetNotificationSmsProviderQuery,
+  useUpdateNotificationSmsProviderMutation,
+  useDeleteNotificationSmsProviderMutation,
+  useGetTwiliosIncomingPhoneNumbersQuery,
+  useLazyGetTwiliosIncomingPhoneNumbersQuery
 } = administrationApi

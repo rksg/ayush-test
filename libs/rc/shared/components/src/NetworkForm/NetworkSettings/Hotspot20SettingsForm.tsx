@@ -12,8 +12,7 @@ import {
   GridCol,
   GridRow,
   Select,
-  StepsFormLegacy,
-  Tooltip
+  StepsFormLegacy
 } from '@acx-ui/components'
 import { InformationSolid }     from '@acx-ui/icons'
 import {
@@ -259,11 +258,10 @@ function Hotspot20Form () {
           <Button type='link'
             disabled={operatorSelectOptions.length >= WIFI_OPERATOR_MAX_COUNT}
             onClick={handleAddOperator}
-            children={$t({ defaultMessage: 'Add' })}
-            style={{ paddingTop: '10px' }} />
+            children={$t({ defaultMessage: 'Add' })} />
         </Space>
 
-        <Space>
+        <Space align='start'>
           <Form.Item
             label='Identity Provider'
             name={['hotspot20Settings', 'identityProviders']}
@@ -284,15 +282,11 @@ function Hotspot20Form () {
               }}
             />
           </Form.Item>
-          <Tooltip placement='bottom'
-            title={disabledAddProvider.current ? $t({ defaultMessage: 'Maximum is 16' }) : ''}>
-            <span><Button type='link'
-              disabled={disabledAddProvider.current}
-              onClick={handleAddProvider}
-              style={{ paddingTop: '10px' }}>
-              {$t({ defaultMessage: 'Add' })}
-            </Button></span>
-          </Tooltip>
+          <Button type='link'
+            disabled={disabledAddProvider.current}
+            onClick={handleAddProvider}
+            children={$t({ defaultMessage: 'Add' })}
+            style={{ paddingTop: '36px' }} />
         </Space>
 
         {editMode &&

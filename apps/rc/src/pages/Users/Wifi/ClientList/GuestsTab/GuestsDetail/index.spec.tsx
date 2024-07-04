@@ -72,6 +72,7 @@ describe('Guest Generate New Password Modal', () => {
     tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
     networkId: 'tenant-id'
   }
+  const userProfile = getUserProfile()
   global.URL.createObjectURL = jest.fn()
   HTMLAnchorElement.prototype.click = jest.fn()
 
@@ -89,6 +90,19 @@ describe('Guest Generate New Password Modal', () => {
     act(() => {
       store.dispatch(clientApi.util.resetApiState())
       store.dispatch(networkApi.util.resetApiState())
+    })
+
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: false,
+      isCustomRole: false,
+      allowedOperations: [
+        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'POST:/wifiNetworks',
+        'POST:/guestUsers'
+      ]
     })
 
     mockServer.use(
@@ -195,6 +209,38 @@ describe('Guest Generate New Password Modal', () => {
     await waitFor(() => expect(mockedPatchReq).toBeCalledTimes(1))
   })
 
+  it('should click "generate new password" and show password input and validate', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
+    render(
+      <Provider>
+        <GuestTabContext.Provider value={{ setGuestCount }}>
+          <GuestsTable />
+        </GuestTabContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/t/users/wifi/guests' }
+      })
+
+    await openGuestDetailsAndClickAction('test4')
+    await userEvent.click(await screen.findByRole('menuitem', { name: /generate new password/i }))
+
+    const autoRadio = await screen.findByTestId('auto-radio')
+    expect(autoRadio).toBeInTheDocument()
+
+    const manualRadio = await screen.findByTestId('manual-radio')
+    expect(manualRadio).toBeInTheDocument()
+
+    await userEvent.click(manualRadio)
+    expect(manualRadio).toBeChecked()
+
+    const manualPasswordInput = await screen.findByTestId('manual-password-input')
+    expect(manualPasswordInput).toBeInTheDocument()
+
+    await userEvent.type(manualPasswordInput, '456789')
+    // eslint-disable-next-line
+    expect(await screen.queryByText('Passwords on the same network should be unique.')).not.toBeInTheDocument()
+  })
+
   it('should handle error for generate password', async () => {
     const spyLog = jest.spyOn(console, 'log')
     mockServer.use(
@@ -237,7 +283,7 @@ describe('Guest Generate New Password Modal', () => {
         profile: {
           ...getUserProfile().profile
         },
-        allowedOperations: [],
+        allowedOperations: ['POST:/wifiNetworks/{wifiNetworkId}/guestUsers'],
         abacEnabled: true,
         isCustomRole: true,
         scopes: [WifiScopes.CREATE]

@@ -8,7 +8,8 @@ import {
   ConfigurationSolid as UIConfigurationSolid,
   SMSToken as UISMSToken, Google as UIGoogle,
   Facebook as UIFacebook, Twitter as UITwitter,
-  LinkedIn as UILinkedIn, InformationSolid
+  LinkedIn as UILinkedIn, InformationSolid,
+  EnvelopClosedSolid as UIEmailOTP
 } from '@acx-ui/icons'
 export const Diagram = styled.div`
   width: 358px;
@@ -61,9 +62,28 @@ const socialIconStyle=css`
     fill:var(--acx-neutrals-60);
   }
 `
+
+const emailOTPIconStyle=css`
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+  path:first-of-type {
+    fill:var(--acx-neutrals-60);
+  }
+  path {
+    stroke:var(--acx-neutrals-60);
+  }
+`
+
 export const SMSToken = styled(UISMSToken)`
   ${socialIconStyle}
 `
+
+export const EMailOTP = styled(UIEmailOTP)`
+  ${emailOTPIconStyle}
+`
+
 export const Google = styled(UIGoogle)`
 width: 16px;
 height: 16px;

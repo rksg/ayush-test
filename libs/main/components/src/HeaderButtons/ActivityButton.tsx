@@ -6,6 +6,7 @@ import _                          from 'lodash'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { LayoutUI, Loader, StatusIcon }                                                                                                        from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                                                              from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                                                                           from '@acx-ui/formatter'
 import { ClockSolid }                                                                                                                          from '@acx-ui/icons'
 import { TimelineDrawer }                                                                                                                      from '@acx-ui/rc/components'
@@ -57,6 +58,7 @@ export default function ActivityButton () {
   const [detailModal, setDetailModalOpen] = useState<boolean>(false)
   const [activityModal, setActivityModalOpen] = useState<boolean>(false)
   const activitySocketRef = useRef<SocketIOClient.Socket>()
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const tableQuery = useTableQuery<Activity>({
     useQuery: useActivitiesQuery,
@@ -99,7 +101,8 @@ export default function ActivityButton () {
 
   useEffect(() => {
     const fetchUserSettings = async () => {
-      const userSettings = await getUserSettings({ params }).unwrap()
+      const userSettings = await getUserSettings({ params,
+        enableRbac: isPtenantRbacApiEnabled }).unwrap()
       // eslint-disable-next-line max-len
       const activity = getUserSettingsByPath(userSettings, ACTIVITY_USER_SETTING) as unknown as activityData
       if(activity){
@@ -123,7 +126,8 @@ export default function ActivityButton () {
         tenantId: params.tenantId,
         productKey
       },
-      payload: newSettings[productKey]
+      payload: newSettings[productKey],
+      enableRbac: isPtenantRbacApiEnabled
     }).unwrap()
   }
 
@@ -138,7 +142,8 @@ export default function ActivityButton () {
         size='small'
         onChange={(val)=>{
           setStatus(val)
-        }}>
+        }}
+        dropdownMatchSelectWidth={false}>
         <Select.Option value={'all'}>
           { $t({ defaultMessage: 'All Statuses' }) }
         </Select.Option>

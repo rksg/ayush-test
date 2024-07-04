@@ -714,6 +714,7 @@ export interface PortStatus{
   portNumber: number
   portTagged: string
   unitNumber?: number
+  portIdentifier?: string
 }
 
 export interface SwitchSlot2 { //TODO
@@ -765,6 +766,7 @@ export interface SwitchConfigurationProfile {
   trustedPorts: TrustedPort[]
   voiceVlanOptions?: VoiceVlanOption[]
   voiceVlanConfigs?: VoiceVlanConfig[]
+  applyOnboardOnly: boolean
 }
 
 export interface AclStandardRule {
@@ -900,4 +902,8 @@ export interface CliProfileFamily {
   model: CliProfileModel[]
 }
 
+export enum VlanModalType {
+  UNTAGGED = 'untaggedVlan',
+  TAGGED = 'taggedVlans'
+}
 

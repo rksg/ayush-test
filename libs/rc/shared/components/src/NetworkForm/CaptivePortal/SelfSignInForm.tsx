@@ -7,7 +7,8 @@ import {
   Form,
   Select,
   Space,
-  Input
+  Input,
+  Button
 } from 'antd'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -17,11 +18,13 @@ import { Features, useIsSplitOn }                     from '@acx-ui/feature-togg
 import {
   QuestionMarkCircleOutlined
 } from '@acx-ui/icons'
+import { useGetNotificationSmsQuery }                      from '@acx-ui/rc/services'
 import {
   domainsNameRegExp, NetworkSaveData,
-  GuestNetworkTypeEnum, NetworkTypeEnum
+  GuestNetworkTypeEnum, NetworkTypeEnum, SmsProviderType
 } from '@acx-ui/rc/utils'
-import { validationMessages } from '@acx-ui/utils'
+import { useParams, TenantLink } from '@acx-ui/react-router-dom'
+import { validationMessages }    from '@acx-ui/utils'
 
 import { NetworkDiagram }          from '../NetworkDiagram/NetworkDiagram'
 import { MLOContext }              from '../NetworkForm'
@@ -54,6 +57,7 @@ export function SelfSignInForm () {
     allowedDomainsCheckbox,
     socialDomains,
     enableSmsLogin,
+    enableEmailLogin,
     facebook,
     google,
     twitter,
@@ -62,6 +66,7 @@ export function SelfSignInForm () {
     useWatch('allowedDomainsCheckbox'),
     useWatch(['guestPortal', 'socialDomains']),
     useWatch(['guestPortal', 'enableSmsLogin']),
+    useWatch(['guestPortal', 'enableEmailLogin']),
     useWatch(['guestPortal', 'socialIdentities', 'facebook']),
     useWatch(['guestPortal', 'socialIdentities', 'google']),
     useWatch(['guestPortal', 'socialIdentities', 'twitter']),
@@ -90,6 +95,16 @@ export function SelfSignInForm () {
       ' to ensure that your service is not interrupted.'
   })
   const isEnabledLinkedInOIDC = useIsSplitOn(Features.LINKEDIN_OIDC_TOGGLE)
+  const isEnabledEmailOTP = useIsSplitOn(Features.GUEST_EMAIL_OTP_SELF_SIGN_TOGGLE)
+  const isSmsProviderEnabled = useIsSplitOn(Features.NUVO_SMS_PROVIDER_TOGGLE)
+  const params = useParams()
+  const smsUsage = useGetNotificationSmsQuery({ params }, { skip: !isSmsProviderEnabled })
+  const isSMSTokenAvailable = isSmsProviderEnabled ?
+    !(smsUsage?.data?.provider === SmsProviderType.RUCKUS_ONE &&
+     (smsUsage?.data?.ruckusOneUsed ?? 0) >= 100)
+    : true
+  const isRestEnableSmsLogin = cloneMode && !isSMSTokenAvailable
+
   const updateAllowSign = (checked: boolean, name: Array<string>) => {
     form.setFieldValue(name, checked)
     if (!checked) {
@@ -114,6 +129,73 @@ export function SelfSignInForm () {
     }
     form.setFieldValue('allowSign', allowedSignValueTemp)
     setAllowedSignValue(allowedSignValueTemp)
+  }
+
+  const displaySMSTokenToolTips = () => {
+    const provider = smsUsage?.data?.provider
+    const usedPools = smsUsage?.data?.ruckusOneUsed ?? 0
+    // eslint-disable-next-line max-len
+    const defaultMessage = $t({ defaultMessage: 'Captive Portal Self-sign-in via SMS One-time Passcode.' })
+
+    // when FF is off
+    if (!isSmsProviderEnabled) {
+      // eslint-disable-next-line max-len
+      return $t({ defaultMessage: 'Self-service signup using one time token sent to a mobile number' })
+    }
+
+    // when provider is not ruckus one, no needs to consider used pools at this condition
+    if (provider !== SmsProviderType.RUCKUS_ONE) {
+      return defaultMessage
+    }
+    // when provider is ruckus one but there's pool still remains
+    if(usedPools < 100) {
+      return (
+        <FormattedMessage
+          defaultMessage={
+            `{defaultMessage}<br></br>
+              You have {poolCount} messages remaining in the RUCKUS-provided pool. 
+              To ensure uninterrupted service, kindly set up an SMS provider on the 
+              <SMSLink></SMSLink> page.`}
+          values={{
+            defaultMessage: defaultMessage,
+            poolCount: 100 - usedPools,
+            br: () => <br/>,
+            SMSLink: () => {
+              return (<TenantLink to='/administration/accountSettings'>
+                <Button
+                  data-testid='button-has-pool'
+                  type='link'
+                  style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
+                  { $t({ defaultMessage: 'Administration > Settings' }) }
+                </Button>
+              </TenantLink>)}
+          }}
+        />
+      )
+    } else {
+      // when provider is ruckus one, no pool remains
+      return (
+        <FormattedMessage
+          defaultMessage={
+            `{defaultMessage}<br></br>
+              To activate the SMS option, configure an SMS provider 
+              on the <SMSLink></SMSLink> page.`}
+          values={{
+            defaultMessage,
+            br: () => <br/>,
+            SMSLink: () => {
+              return (<TenantLink to='/administration/accountSettings'>
+                <Button
+                  data-testid='button-no-pool'
+                  type='link'
+                  style={{ fontSize: 'var(--acx-body-4-font-size)' }}>
+                  { $t({ defaultMessage: 'Administration > Settings' }) }
+                </Button>
+              </TenantLink>)}
+          }}
+        />
+      )
+    }
   }
   const checkSocial = (value: string | string[]) => {
     if (!value || value.length < 1) {
@@ -147,8 +229,11 @@ export function SelfSignInForm () {
         form.setFieldValue('redirectCheckbox', true)
       }
       const allowedSignValueTemp = []
-      if (data.guestPortal?.enableSmsLogin) {
+      if (data.guestPortal?.enableSmsLogin && !isRestEnableSmsLogin) {
         allowedSignValueTemp.push('enableSmsLogin')
+      }
+      if (data.guestPortal?.enableEmailLogin) {
+        allowedSignValueTemp.push('enableEmailLogin')
       }
       if (data.guestPortal?.socialIdentities?.facebook) {
         allowedSignValueTemp.push('facebook')
@@ -168,6 +253,8 @@ export function SelfSignInForm () {
     if(!editMode) {
       disableMLO(true)
       form.setFieldValue(['wlan', 'advancedCustomization', 'multiLinkOperationEnabled'], false)
+      if (isRestEnableSmsLogin)
+        form.setFieldValue(['guestPortal', 'enableSmsLogin'], false)
     }
   }, [data])
   const globalValues= get('CAPTIVE_PORTAL_DOMAIN_NAME')
@@ -197,19 +284,40 @@ export function SelfSignInForm () {
               <>
                 <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
                   ['guestPortal', 'enableSmsLogin'])}
-                checked={enableSmsLogin}>
+                checked={enableSmsLogin}
+                disabled={!editMode && !isSMSTokenAvailable}
+                >
                   <UI.SMSToken />
                   {$t({ defaultMessage: 'SMS Token' })}
                 </UI.Checkbox>
+                <Tooltip
+                  title={displaySMSTokenToolTips()}
+                  placement='bottom'>
+                  <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
+                </Tooltip>
+              </>
+            </Form.Item>
+            { isEnabledEmailOTP && <Form.Item name={['guestPortal', 'enableEmailLogin']}
+              initialValue={false}
+              style={SelfSignInAppStyle}>
+              <>
+                <UI.Checkbox onChange={(e) => updateAllowSign(e.target.checked,
+                  ['guestPortal', 'enableEmailLogin'])}
+                checked={enableEmailLogin}>
+                  <UI.EMailOTP />
+                  {$t({ defaultMessage: 'Email' })}
+                </UI.Checkbox>
                 <Tooltip title={$t({
-                  defaultMessage: 'Self-service signup using one ' +
-                    'time token sent to a mobile number'
+                  defaultMessage: 'Self-service signup ' +
+                  'using one time token sent to an email address'
                 })}
                 placement='bottom'>
                   <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
                 </Tooltip>
               </>
             </Form.Item>
+
+            }
             <Form.Item name={['guestPortal', 'socialIdentities', 'facebook']}
               initialValue={false}
               style={SelfSignInAppStyle}>
@@ -296,7 +404,7 @@ export function SelfSignInForm () {
             valuePropName='checked'
             initialValue={false}
             children={
-              <Checkbox disabled={!isSocial}
+              <Checkbox disabled={!(isSocial || enableEmailLogin)}
                 onChange={(e) => {
                   if (e.target.checked) {
                     form.setFieldValue(['guestPortal', 'socialDomains'], allowedDomainsValue)
@@ -345,7 +453,7 @@ export function SelfSignInForm () {
             name={['guestPortal', 'socialEmails']}
             valuePropName='checked'
             initialValue={false}>
-            <Checkbox disabled={!isSocial}>
+            <Checkbox disabled={!(isSocial || enableEmailLogin)}>
               {!isSocial && <Tooltip title={$t({
                 defaultMessage: 'This option applies only when signing ' +
                   'in with social media platforms is supported'
@@ -364,7 +472,8 @@ export function SelfSignInForm () {
             <QuestionMarkCircleOutlined style={{ marginLeft: -5, marginBottom: -3 }} />
           </Tooltip></>
         </Form.Item>
-        {enableSmsLogin && <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
+        {(enableSmsLogin || enableEmailLogin) &&
+        <Form.Item label={$t({ defaultMessage: 'Password expires after' })}>
           <Space align='start'>
             <Form.Item
               noStyle

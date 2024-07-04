@@ -12,7 +12,8 @@ import {
   SchedulerTypeEnum,
   Hotspot20AccessNetworkTypeEnum,
   Hotspot20Ipv4AddressTypeEnum,
-  NetworkHotspot20Settings
+  NetworkHotspot20Settings,
+  SmsProviderType
 } from '@acx-ui/rc/utils'
 
 export const networksResponse = {
@@ -2145,4 +2146,53 @@ export const mockWifiCallingDetail = {
       domain: 'def.com'
     }
   ]
+}
+
+export const macRegistrationList = {
+  content: [
+    {
+      id: 'efce7414-1c78-4312-ad5b-ae03f28dbc68',
+      name: 'Registration pool',
+      description: '',
+      autoCleanup: true,
+      enabled: true,
+      expirationEnabled: false,
+      registrationCount: 5
+    }
+  ],
+  pageable: {
+    sort: { unsorted: true, sorted: false, empty: true },
+    pageNumber: 0,
+    pageSize: 10,
+    offset: 0,
+    paged: true,
+    unpaged: false
+  },
+  totalPages: 1,
+  totalElements: 1,
+  last: true,
+  sort: { unsorted: true, sorted: false, empty: true },
+  numberOfElements: 1,
+  first: true,
+  size: 10,
+  number: 0,
+  empty: false
+}
+
+export const mockNotificationSmsResponse = {
+  threshold: 80,
+  provider: SmsProviderType.RUCKUS_ONE,
+  ruckusOneUsed: 100
+}
+
+export const mockNotificationSmsHasPoolResponse = {
+  threshold: 80,
+  provider: SmsProviderType.RUCKUS_ONE,
+  ruckusOneUsed: 80
+}
+
+export const mockNotificationSmsProviderNotR1Response = {
+  threshold: 80,
+  provider: SmsProviderType.TWILIO,
+  ruckusOneUsed: 80
 }

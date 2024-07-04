@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button, useLayoutContext }                        from '@acx-ui/components'
-import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
   useLazyGetSwitchVenueVersionListQuery,
   useLazyGetVenueEdgeFirmwareListQuery,
@@ -23,13 +23,16 @@ import {
   hasRoles
 } from '@acx-ui/user'
 
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
+
 export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeEnabled = useIsTierAllowed(TierFeatures.SMART_EDGES)
-  const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isEdgeScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
   const layout = useLayoutContext()
 
   const linkToAdministration = useTenantLink('/administration/')
@@ -42,7 +45,8 @@ export function CloudMessageBanner () {
   const [upgradeMessageTitle, setUpgradeMessageTitle] = useState('')
 
   const { data } = useGetPlmMessageBannerQuery({ params })
-  const { data: userSettings } = useGetAllUserSettingsQuery({ params })
+  const { data: userSettings } = useGetAllUserSettingsQuery({ params,
+    enableRbac: isPtenantRbacApiEnabled })
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
   const [getCloudScheduleVersion] = useLazyGetScheduledFirmwareQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
@@ -59,7 +63,7 @@ export function CloudMessageBanner () {
       if(!isSpecialRole) {
         checkWifiScheduleExists()
         checkSwitchScheduleExists()
-        if(isEdgeEnabled && isScheduleUpdateReady) {
+        if(isEdgeScheduleUpdateReady) {
           checkEdgeScheduleExists()
         }
       }
@@ -67,7 +71,7 @@ export function CloudMessageBanner () {
   }, [cloudVersion, userSettings])
 
   const checkWifiScheduleExists = async () => {
-    return await getCloudScheduleVersion({ params }).unwrap()
+    return await getCloudScheduleVersion({ params, enableRbac: isUpgradeByModelEnabled }).unwrap()
       .then(cloudScheduleVersion => {
         if (cloudScheduleVersion) {
           const updateVersion = {

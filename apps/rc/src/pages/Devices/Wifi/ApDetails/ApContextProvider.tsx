@@ -11,8 +11,11 @@ import { ApContext }                                 from '@acx-ui/rc/utils'
 export function ApContextProvider (props: { children: ReactNode }) {
   const params = useParams()
   const { $t } = useIntl()
-  const fields = ['serialNumber', 'venueName', 'apMac', 'venueId',
-    'apStatusData']
+  const fields = [
+    'serialNumber', 'venueName',
+    'apMac', 'venueId',
+    'apStatusData', 'model']
+
   const results = useApListQuery({
     params: { tenantId: params.tenantId },
     payload: {
@@ -28,10 +31,12 @@ export function ApContextProvider (props: { children: ReactNode }) {
   })
   const { data } = results
   const apData = pick(data?.[0], fields)
+
   //eslint-disable-next-line
-  const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId: params.tenantId, serialNumber: params.apId } })
+  const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId: params.tenantId, serialNumber: apData.serialNumber } })
   //eslint-disable-next-line
   const values: Params<string> = { ...params, ...apData as Params<string>, ...apValidChannels as unknown as Params<string> }
+
   return <ApContext.Provider value={values}>
     <Loader states={[results]}>{
       data && data.length

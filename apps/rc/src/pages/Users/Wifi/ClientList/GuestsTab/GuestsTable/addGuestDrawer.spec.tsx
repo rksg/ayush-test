@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { Modal } from 'antd'
 import { rest }  from 'msw'
 
+import { useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { clientApi, networkApi }                                        from '@acx-ui/rc/services'
 import { CommonUrlsInfo, ClientUrlsInfo, getGuestDictionaryByLangCode } from '@acx-ui/rc/utils'
 import { store, Provider }                                              from '@acx-ui/store'
@@ -14,7 +15,8 @@ import {
   waitFor,
   within
 } from '@acx-ui/test-utils'
-import { UserUrlsInfo } from '@acx-ui/user'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { UserUrlsInfo }                   from '@acx-ui/user'
 
 import {
   GuestList,
@@ -25,7 +27,8 @@ import {
   AddGuestPassResponse,
   AddGuestPassErrorResponse,
   AllowedNetworkSingleList,
-  AddGuestPassWihtoutExpirationResponse
+  AddGuestPassWihtoutExpirationResponse,
+  validationFailed
 } from '../../../__tests__/fixtures'
 
 import {
@@ -58,11 +61,26 @@ const mockedAddGuestReq = jest.fn()
 
 describe('Add Guest Drawer', () => {
   let params: { tenantId: string, networkId: string }
+  const userProfile = getUserProfile()
 
   beforeEach(() => {
     mockedAddGuestReq.mockClear()
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(networkApi.util.resetApiState())
+
+    setUserProfile({
+      ...userProfile,
+      abacEnabled: false,
+      isCustomRole: false,
+      allowedOperations: [
+        'POST:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'PATCH:/wifiNetworks/{wifiNetworkId}/guestUsers',
+        'DELETE:/wifiNetworks/{wifiNetworkId}/guestUsers/{guestUserId}',
+        'POST:/wifiNetworks',
+        'POST:/guestUsers'
+      ]
+    })
 
     mockServer.use(
       rest.post(CommonUrlsInfo.getGuestsList.url, (_, res, ctx) =>
@@ -83,6 +101,12 @@ describe('Add Guest Drawer', () => {
       }),
       rest.get(UserUrlsInfo.getUserProfile.url, (_, res, ctx) =>
         res(ctx.json(UserProfile))
+      ),
+      rest.patch(ClientUrlsInfo.validateGuestPassword.url, (_, res, ctx) =>
+        res(
+          ctx.status(422),
+          ctx.json(validationFailed)
+        )
       )
     )
     params = {
@@ -353,5 +377,32 @@ describe('Add Guest Drawer', () => {
 
     await userEvent.click(await screen.findByTestId('cancelBtn'))
     expect(setVisible).toBeCalledTimes(1)
+  })
+  it('should show manual password and do validation', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const setVisible = jest.fn()
+    render(
+      <Provider>
+        <AddGuestDrawer visible={true} setVisible={setVisible} />
+      </Provider>, { route: { params: { ...params, networkId: '123456' } } }
+    )
+    mockServer.printHandlers()
+
+    await selectAllowedNetwork('guest pass wlan1')
+
+    const autoRadio = await screen.findByTestId('auto-radio')
+    expect(autoRadio).toBeInTheDocument()
+
+    const manualRadio = await screen.findByTestId('manual-radio')
+    expect(manualRadio).toBeInTheDocument()
+
+    await userEvent.click(manualRadio)
+    expect(manualRadio).toBeChecked()
+
+    const manualPasswordInput = await screen.findByTestId('manual-password-input')
+    expect(manualPasswordInput).toBeInTheDocument()
+
+    await userEvent.type(manualPasswordInput, '123456')
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
 })

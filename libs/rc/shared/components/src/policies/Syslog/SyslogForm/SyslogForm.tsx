@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
 import {
   useAddSyslogPolicyMutation, useAddSyslogPolicyTemplateMutation,
   useUpdateSyslogPolicyMutation, useUpdateSyslogPolicyTemplateMutation
@@ -22,7 +23,8 @@ import {
   usePolicyListBreadcrumb,
   usePolicyPageHeaderTitle,
   usePolicyPreviousPath,
-  useConfigTemplateMutationFnSwitcher
+  useConfigTemplateMutationFnSwitcher,
+  useConfigTemplate
 } from '@acx-ui/rc/utils'
 import { useNavigate, useParams } from '@acx-ui/react-router-dom'
 
@@ -59,7 +61,11 @@ export const SyslogForm = (props: SyslogFormProps) => {
   const pageTitle = usePolicyPageHeaderTitle(edit, PolicyType.SYSLOG)
   const linkToInstanceList = usePolicyPreviousPath(PolicyType.SYSLOG, PolicyOperation.LIST)
   const form = Form.useFormInstance()
+  const { isTemplate } = useConfigTemplate()
   const [state, dispatch] = useReducer(mainReducer, initialValues)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
 
   const [ createSyslog ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useAddSyslogPolicyMutation,
@@ -82,7 +88,8 @@ export const SyslogForm = (props: SyslogFormProps) => {
         },
         facility: state.facility,
         flowLevel: state.flowLevel,
-        venues: state.venues
+        venues: state.venues,
+        oldVenues: state.oldVenues
       }
     }
 
@@ -101,7 +108,8 @@ export const SyslogForm = (props: SyslogFormProps) => {
       },
       facility: state.facility,
       flowLevel: state.flowLevel,
-      venues: state.venues
+      venues: state.venues,
+      oldVenues: state.oldVenues
     }
   }
 
@@ -110,12 +118,14 @@ export const SyslogForm = (props: SyslogFormProps) => {
       if (!edit) {
         await createSyslog({
           params,
-          payload: transformPayload(state, false)
+          payload: transformPayload(state, false),
+          enableRbac: resolvedEnableRbac
         }).unwrap()
       } else {
         await updateSyslog({
           params,
-          payload: transformPayload(state, true)
+          payload: transformPayload(state, true),
+          enableRbac: resolvedEnableRbac
         }).unwrap()
       }
       navigate(linkToInstanceList, { replace: true })

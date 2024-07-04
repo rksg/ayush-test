@@ -2,13 +2,13 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { StepsFormLegacy }                       from '@acx-ui/components'
-import { useIsSplitOn }                          from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                           from '@acx-ui/msp/utils'
-import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { mockServer, render, screen, fireEvent } from '@acx-ui/test-utils'
-import { UserUrlsInfo }                          from '@acx-ui/user'
+import { StepsFormLegacy }                                           from '@acx-ui/components'
+import { useIsSplitOn }                                              from '@acx-ui/feature-toggle'
+import { MspUrlsInfo }                                               from '@acx-ui/msp/utils'
+import { AaaUrls, CommonUrlsInfo, CommonRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                                  from '@acx-ui/store'
+import { mockServer, render, screen, fireEvent }                     from '@acx-ui/test-utils'
+import { UserUrlsInfo }                                              from '@acx-ui/user'
 
 import {
   venuesResponse,
@@ -73,7 +73,12 @@ describe('CaptiveNetworkForm-WISPr', () => {
       rest.post(AaaUrls.getAAAPolicyViewModelList.url,
         (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
       rest.post(CommonUrlsInfo.getNetworkDeepList.url,
-        (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
+        (_, res, ctx) => res(ctx.json({ response: [wisprRes] }))),
+      // RBAC API
+      rest.get(CommonRbacUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json( externalProviders ))),
+      rest.post(AaaUrls.queryAAAPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse)))
     )
   })
 

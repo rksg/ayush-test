@@ -4,8 +4,9 @@ import React from 'react'
 import  userEvent from '@testing-library/user-event'
 import { rest }   from 'msw'
 
+import { administrationApi }                  from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, TenantType } from '@acx-ui/rc/utils'
-import { Provider }                           from '@acx-ui/store'
+import { Provider, store, userApi }           from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -14,7 +15,7 @@ import {
   waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
-import { DetailLevel, setUserProfile, UserProfile, UserProfileContext, UserProfileContextProps, UserUrlsInfo } from '@acx-ui/user'
+import { DetailLevel, setUserProfile, UserProfile, UserProfileContext, UserProfileContextProps, UserRbacUrlsInfo, UserUrlsInfo } from '@acx-ui/user'
 
 import { ConvertNonVARMSPButton } from './ConvertNonVARMSPButton'
 
@@ -111,6 +112,9 @@ const services = require('@acx-ui/msp/services')
 
 describe('Convert NonVAR MSP Button', () => {
   beforeEach(() => {
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(userApi.util.resetApiState())
+
     mockedTenantFn.mockClear()
     mockedMSPEcProfileFn.mockClear()
     mockedSaveFn.mockClear()
@@ -142,8 +146,22 @@ describe('Convert NonVAR MSP Button', () => {
         UserUrlsInfo.getAllUserSettings.url,
         (_req, res, ctx) => res(ctx.json({}))
       ),
+      rest.get(
+        UserRbacUrlsInfo.getAllUserSettings.url,
+        (_req, res, ctx) => res(ctx.json({}))
+      ),
       rest.put(
         UserUrlsInfo.saveUserSettings.url,
+        (req, res, ctx) => {
+          mockedSaveFn({
+            params: req.url.pathname,
+            body: req.body
+          })
+          return res(ctx.status(202))
+        }
+      ),
+      rest.patch(
+        UserRbacUrlsInfo.saveUserSettings.url,
         (req, res, ctx) => {
           mockedSaveFn({
             params: req.url.pathname,
@@ -198,6 +216,13 @@ describe('Convert NonVAR MSP Button', () => {
     mockServer.use(
       rest.get(
         UserUrlsInfo.getAllUserSettings.url,
+        (_req, res, ctx) => res(ctx.json({ COMMON: JSON.stringify({
+          other: true,
+          MSP: { mspEcNameChanged: false }
+        }) }))
+      ),
+      rest.get(
+        UserRbacUrlsInfo.getAllUserSettings.url,
         (_req, res, ctx) => res(ctx.json({ COMMON: JSON.stringify({
           other: true,
           MSP: { mspEcNameChanged: false }

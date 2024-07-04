@@ -212,16 +212,16 @@ describe('Wired', () => {
       await within(vlanSettingModal).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton)
 
-    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module1_0'))
-    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module2_0'))
-    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module3_0'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module1_1_1'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module1_2_1'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('untagged_module1_3_1'))
     const nextTrustPortButton1 =
       await within(vlanSettingModal).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton1)
 
-    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module1_1'))
-    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module2_1'))
-    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module3_1'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module1_1_2'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module1_2_2'))
+    await userEvent.click(await within(vlanSettingModal).findByTestId('tagged_module1_3_2'))
     const saveTrustPortButton =
       await within(vlanSettingModal).findAllByRole('button', { name: 'Add' })
     await userEvent.click(saveTrustPortButton[0])
@@ -317,8 +317,8 @@ describe('Wired', () => {
     const nextTrustPortButton = await within(dialog).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton)
 
-    const dst = await screen.findAllByTestId('untagged_module1_0')
-    const src = await screen.findAllByTestId('untagged_module1_10')
+    const dst = await screen.findAllByTestId('untagged_module1_1_1')
+    const src = await screen.findAllByTestId('untagged_module1_1_11')
     fireEvent.mouseDown(src[0])
     fireEvent.mouseMove(dst[0])
     debounce(() => {
@@ -327,7 +327,7 @@ describe('Wired', () => {
     const nextTrustPortButton1 = await within(dialog).findByRole('button', { name: 'Next' })
     await userEvent.click(nextTrustPortButton1)
 
-    await userEvent.click(await within(dialog).findByTestId('tagged_module1_20'))
+    await userEvent.click(await within(dialog).findByTestId('tagged_module1_1_21'))
     const saveTrustPortButton = await within(dialog).findAllByRole('button', { name: 'Add' })
     await userEvent.click(saveTrustPortButton[0])
 
@@ -426,11 +426,11 @@ describe('Wired', () => {
       await within(vlansPortModal).findByRole('button', { name: 'Next' })
     await userEvent.click(nextVlansPortButton1)
 
-    await userEvent.click(await within(vlansPortModal).findByTestId('untagged_module1_0'))
+    await userEvent.click(await within(vlansPortModal).findByTestId('untagged_module1_1_1'))
     const nextVlansPortButton2 =
       await within(vlansPortModal).findByRole('button', { name: 'Next' })
     await userEvent.click(nextVlansPortButton2)
-    await userEvent.click(await within(vlansPortModal).findByTestId('tagged_module1_1'))
+    await userEvent.click(await within(vlansPortModal).findByTestId('tagged_module1_1_2'))
     const nextVlansPortButton3 =
       await within(vlansPortModal).findByRole('button', { name: 'Add' })
     await userEvent.click(nextVlansPortButton3)

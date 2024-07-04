@@ -12,6 +12,7 @@ import {
 import { useIntl } from 'react-intl'
 
 import { StepsForm }                                          from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import {
   useGetSyslogPolicyQuery, useGetSyslogPolicyTemplateListQuery,
   useGetSyslogPolicyTemplateQuery, useSyslogPolicyListQuery
@@ -36,7 +37,8 @@ import {
   SyslogPolicyListType
 } from '@acx-ui/rc/utils'
 
-import SyslogContext from '../SyslogContext'
+import { PROFILE_MAX_COUNT } from '../constants'
+import SyslogContext         from '../SyslogContext'
 
 const { Option } = Select
 
@@ -52,15 +54,18 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
   } = useContext(SyslogContext)
 
   const form = Form.useFormInstance()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const { data: policyData } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
     useQueryFn: useGetSyslogPolicyQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
-    skip: !edit
+    skip: !edit,
+    enableRbac
   })
   const { data: policyList } = useConfigTemplateQueryFnSwitcher<TableResult<SyslogPolicyListType>>({
     useQueryFn: useSyslogPolicyListQuery,
     useTemplateQueryFn: useGetSyslogPolicyTemplateListQuery,
-    payload: { page: 1, pageSize: 10000 }
+    payload: { page: 1, pageSize: PROFILE_MAX_COUNT },
+    enableRbac
   })
 
   useEffect(() => {
@@ -81,7 +86,8 @@ const SyslogSettingForm = (props: SyslogSettingFormProps) => {
           facility: policyData.facility ?? FacilityEnum.KEEP_ORIGINAL,
           priority: policyData.priority ?? PriorityEnum.INFO,
           flowLevel: policyData.flowLevel ?? FlowLevelEnum.CLIENT_FLOW,
-          venues: policyData.venues ?? []
+          venues: policyData.venues ?? [],
+          oldVenues: policyData.venues ?? []
         }
       }
     })

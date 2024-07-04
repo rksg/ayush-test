@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsTierAllowed, useIsSplitOn } from '@acx-ui/feature-toggle'
-import { venueApi }                       from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }   from '@acx-ui/rc/utils'
-import { Provider, store }                from '@acx-ui/store'
+import { useIsSplitOn, Features }       from '@acx-ui/feature-toggle'
+import { venueApi }                     from '@acx-ui/rc/services'
+import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }              from '@acx-ui/store'
 import {
   act,
   mockServer,
@@ -123,7 +123,7 @@ describe('Venues Table', () => {
   })
 
   it('should have edge column when feature flag on', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
 
     render(
       <Provider>
@@ -138,7 +138,7 @@ describe('Venues Table', () => {
   })
 
   it('should not have edge column when feature flag off', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
 
     render(
       <Provider>
@@ -153,7 +153,7 @@ describe('Venues Table', () => {
   })
 
   it('should have correct edge device quantity', async () => {
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGES_TOGGLE)
 
     render(
       <Provider>
@@ -183,7 +183,7 @@ describe('Venues Table', () => {
   })
 
   it('should have ap compatibilies correct', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
 
     render(
       <Provider>

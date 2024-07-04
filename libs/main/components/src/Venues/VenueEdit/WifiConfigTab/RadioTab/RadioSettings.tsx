@@ -127,7 +127,10 @@ export function RadioSettings () {
   const isWifiSwitchableRfEnabled = useIsSplitOn(Features.WIFI_SWITCHABLE_RF_TOGGLE)
 
   const { isTemplate } = useConfigTemplate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const is6gChannelSeparation = useIsSplitOn(Features.WIFI_6G_INDOOR_OUTDOOR_SEPARATION)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const {
     editContextData,
@@ -165,7 +168,10 @@ export function RadioSettings () {
     useVenueConfigTemplateQueryFnSwitcher<VenueDefaultRegulatoryChannels>({
       useQueryFn: useVenueDefaultRegulatoryChannelsQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRegulatoryChannelsQuery,
-      enableRbac: isUseRbacApi
+      enableRbac: isUseRbacApi,
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   // default radio data
@@ -173,7 +179,10 @@ export function RadioSettings () {
     useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
       useQueryFn: useGetDefaultRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateDefaultRadioCustomizationQuery,
-      enableRbac: isUseRbacApi
+      enableRbac: isUseRbacApi,
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   // Custom radio data
@@ -181,7 +190,10 @@ export function RadioSettings () {
     useVenueConfigTemplateQueryFnSwitcher<VenueRadioCustomization>({
       useQueryFn: useGetVenueRadioCustomizationQuery,
       useTemplateQueryFn: useGetVenueTemplateRadioCustomizationQuery,
-      enableRbac: isUseRbacApi
+      enableRbac: isUseRbacApi,
+      extraQueryArgs: {
+        enableSeparation: is6gChannelSeparation
+      }
     })
 
   const [ updateVenueRadioCustomization, { isLoading: isUpdatingVenueRadio } ] = useVenueConfigTemplateMutationFnSwitcher(
@@ -224,7 +236,9 @@ export function RadioSettings () {
     const bandwidthRadioOptions = {
       [ApRadioTypeEnum.Radio24G]: GetSupportBandwidth(channelBandwidth24GOptions, supportCh24g),
       [ApRadioTypeEnum.Radio5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportCh5g),
-      [ApRadioTypeEnum.Radio6G]: GetSupportBandwidth(radio6GBandwidth, supportCh6g),
+      [ApRadioTypeEnum.Radio6G]: is6gChannelSeparation ?
+        GetSupportIndoorOutdoorBandwidth(radio6GBandwidth, supportCh6g) :
+        GetSupportBandwidth(radio6GBandwidth, supportCh6g),
       [ApRadioTypeEnum.RadioLower5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChLower5g),
       [ApRadioTypeEnum.RadioUpper5G]: GetSupportIndoorOutdoorBandwidth(channelBandwidth5GOptions, supportChUpper5g)
     }
@@ -414,12 +428,14 @@ export function RadioSettings () {
     if (!isWifiSwitchableRfEnabled) {
       return
     }
+
     const isTriBandRadio = currentVenueBandModeData.map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.TRIPLE)
     setIsTriBandRadio(isTriBandRadio)
     isTriBandRadioRef.current = isTriBandRadio
     if (!isTriBandRadio && currentTab === 'Normal6GHz') {
       onTabChange('Normal5GHz')
     }
+
     if (dual5gApModels.length > 0) {
       const isDual5GEnabled = currentVenueBandModeData.filter(data => dual5gApModels.includes(data.model))
         .map(data => data.bandMode).some(bandMode => bandMode === BandModeEnum.DUAL)
@@ -511,7 +527,14 @@ export function RadioSettings () {
     }
 
     if (isSupport6GCountry) {
-      radioParams6G.allowedChannels = curForm?.getFieldValue(['radioParams6G', 'allowedChannels'])
+      if (is6gChannelSeparation) {
+        radioParams6G.allowedIndoorChannels =
+          curForm?.getFieldValue(['radioParams6G', 'allowedIndoorChannels'])
+        radioParams6G.allowedOutdoorChannels =
+          curForm?.getFieldValue(['radioParams6G', 'allowedOutdoorChannels'])
+      } else {
+        radioParams6G.allowedChannels = curForm?.getFieldValue(['radioParams6G', 'allowedChannels'])
+      }
     } else {
       delete formData.radioParams6G
     }
@@ -578,18 +601,26 @@ export function RadioSettings () {
     const { radioParamsLower5G, radioParamsUpper5G,
       inheritParamsLower5G, inheritParamsUpper5G } = radioParamsDual5G || {}
 
+    const supportLowerCh5G = supportRadioChannels[ApRadioTypeEnum.RadioLower5G] as VenueDefaultRegulatoryChannels['5GLowerChannels']
+    const isSupportIndoorLower5G = Object.keys(supportLowerCh5G.indoor).length > 0
+    const isSupportOutdoorLower5G = Object.keys(supportLowerCh5G.outdoor).length > 0
+
+    const supportUpperCh5g = supportRadioChannels[ApRadioTypeEnum.RadioUpper5G] as VenueDefaultRegulatoryChannels['5GUpperChannels']
+    const isSupportIndoorUpper5G = Object.keys(supportUpperCh5g.indoor).length > 0
+    const isSupportOutdoorUpper5G = Object.keys(supportUpperCh5g.outdoor).length > 0
+
     let indoorLower5GChs, indoorUpper5GChs
     if (indoorChannel5) {
       const { lower5GChannels, upper5GChannels } = split5GChannels(indoorChannel5 as string[])
-      indoorLower5GChs = lower5GChannels
-      indoorUpper5GChs = upper5GChannels
+      indoorLower5GChs = isSupportIndoorLower5G? lower5GChannels : undefined
+      indoorUpper5GChs = isSupportIndoorUpper5G? upper5GChannels : undefined
     }
 
     let outdoorLower5GChs, outdoorUpper5GChs
     if (outdoorChannel5) {
       const { lower5GChannels, upper5GChannels } = split5GChannels(outdoorChannel5 as string[])
-      outdoorLower5GChs = lower5GChannels
-      outdoorUpper5GChs = upper5GChannels
+      outdoorLower5GChs = isSupportOutdoorLower5G? lower5GChannels : undefined
+      outdoorUpper5GChs = isSupportOutdoorUpper5G? upper5GChannels : undefined
     }
 
     const lower5GName = inheritParamsLower5G ? 'Lower 5 GHz' : undefined
@@ -692,11 +723,13 @@ export function RadioSettings () {
           payload: currentVenueBandModeData.filter(data => !dual5gApModels.includes(data.model))
         }).unwrap()
 
+        /*
         await updateVenueTripleBandRadioSettings({
           params: { tenantId, venueId },
           payload: { enabled: currentVenueBandModeData.map(data => data.model)
             .some(model => dual5gApModels.includes(model)) }
         }).unwrap()
+        */
       }
 
       if (!isWifiSwitchableRfEnabled) {
@@ -709,7 +742,8 @@ export function RadioSettings () {
       await updateVenueRadioCustomization({
         params: { tenantId, venueId },
         payload: data,
-        enableRabc: isUseRbacApi
+        enableRbac: resolvedRbacEnabled,
+        enableSeparation: is6gChannelSeparation
       }).unwrap()
     } catch (error) {
       console.log(error) // eslint-disable-line no-console

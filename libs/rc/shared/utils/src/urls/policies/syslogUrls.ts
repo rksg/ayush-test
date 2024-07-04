@@ -7,6 +7,15 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/syslogServerProfiles/:policyId',
     newApi: true
   },
+  deleteSyslogPolicyRbac: {
+    method: 'delete',
+    url: '/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   deleteSyslogPolicies: {
     method: 'delete',
     url: '/syslogServerProfiles',
@@ -19,17 +28,43 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/syslogServerProfiles',
     newApi: true
   },
+  addSyslogPolicyRbac: {
+    method: 'post',
+    url: '/syslogServerProfiles',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   getSyslogPolicy: {
     method: 'get',
     url: '/syslogServerProfiles/:policyId',
     oldUrl: '/api/syslogServerProfiles/:policyId',
     newApi: true
   },
+  getSyslogPolicyRbac: {
+    method: 'get',
+    url: '/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      Accept: 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateSyslogPolicy: {
     method: 'put',
     url: '/syslogServerProfiles/:policyId',
     oldUrl: '/api/syslogServerProfiles/:policyId',
     newApi: true
+  },
+  updateSyslogPolicyRbac: {
+    method: 'put',
+    url: '/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getSyslogPolicyList: {
     method: 'get',
@@ -55,10 +90,46 @@ export const SyslogUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/viewmodel/tenant/:tenantId/venue',
     newApi: true
   },
+  getVenueSyslogListRbac: {
+    method: 'post',
+    url: '/venues/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
   syslogPolicyList: {
     method: 'post',
     url: '/enhancedSyslogServerProfiles/query',
     oldUrl: '/api/viewmodel/tenant/:tenantId/enhancedSyslogServerProfiles/query',
     newApi: true
+  },
+  querySyslog: {
+    method: 'post',
+    url: '/syslogServerProfiles/query',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindVenueSyslog: {
+    method: 'PUT',
+    url: '/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  unbindVenueSyslog: {
+    method: 'delete',
+    url: '/venues/:venueId/syslogServerProfiles/:policyId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

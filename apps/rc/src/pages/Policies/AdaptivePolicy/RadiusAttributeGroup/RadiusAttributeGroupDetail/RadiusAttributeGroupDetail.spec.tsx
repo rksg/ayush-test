@@ -30,16 +30,16 @@ describe('RadiusAttributeGroupDetail', () => {
         RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policyList))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getPrioritizedPolicies.url,
         (req, res, ctx) => res(ctx.json(prioritizedPolicies))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicyTemplateListByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       )
     )

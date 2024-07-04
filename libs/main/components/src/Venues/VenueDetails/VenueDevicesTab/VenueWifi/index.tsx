@@ -25,9 +25,10 @@ import {
   ApGroupTable,
   ApTable,
   ApCompatibilityDrawer,
-  retrievedCompatibilitiesOptions
+  retrievedCompatibilitiesOptions,
+  useApGroupsFilterOpts
 } from '@acx-ui/rc/components'
-import { useApGroupsListQuery, useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
+import { useGetVenueSettingsQuery, useMeshApsQuery, useGetApCompatibilitiesVenueQuery } from '@acx-ui/rc/services'
 import {
   useTableQuery,
   APMesh,
@@ -263,19 +264,7 @@ export function VenueWifi () {
       selectFromResult: ({ data }) => retrievedCompatibilitiesOptions(data)
     })
 
-  const { apgroupFilterOptions } = useApGroupsListQuery({
-    params: { tenantId: params.tenantId }, payload: {
-      fields: ['name', 'venueId', 'clients', 'networks', 'venueName', 'id'],
-      pageSize: 10000,
-      sortField: 'name',
-      sortOrder: 'ASC',
-      filters: { isDefault: [false], venueId: [params.venueId] }
-    }
-  }, {
-    selectFromResult: ({ data }) => ({
-      apgroupFilterOptions: data?.data.map(v => ({ key: v.id, value: v.name })) || true
-    })
-  })
+  const apgroupFilterOptions = useApGroupsFilterOpts({ isDefault: [false], venueId: [params.venueId] })
 
   useEffect(() => {
     if (venueWifiSetting) {

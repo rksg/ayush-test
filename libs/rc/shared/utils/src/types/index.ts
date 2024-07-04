@@ -146,7 +146,12 @@ export interface RWG {
   apiKey: string
   rwgId: string
   clusterNodes?: RWGClusterNode[]
-  isCluster: boolean
+  isCluster: boolean,
+  floorplanId?: string,
+  xPercent?: number,
+  yPercent?: number,
+  x?: number,
+  y?: number
 }
 
 export interface RWGClusterNode{
@@ -165,7 +170,18 @@ export interface RWGRow extends RWG {
 }
 
 export interface GatewayAlarms {
-  total: number
+  data: GatewayAlarm[],
+  totalCount: number,
+  page: number
+}
+export interface GatewayAlarm {
+  createdAt: string,
+  curedAt: string,
+  curedShortMessage: string,
+  name: string,
+  severity: string,
+  shortMessage: string,
+  updatedAt: string
 }
 export interface MinMaxValue {
   max: number,

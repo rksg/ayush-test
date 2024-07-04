@@ -94,11 +94,14 @@ export const AuthApp = styled((props: AuthAppProps) => {
                 <Typography.Text>
                   { $t({ defaultMessage: 'Scan the QR code below:' }) }
                 </Typography.Text>
-
                 <UI.QRCodeImgWrapper direction='vertical' size='large'>
-                  <img
-                    src={data?.url ?? ''}
-                    alt={data?.url ?? ''}
+                  <QRCodeSVG
+                    value={data?.key?`otpauth://totp/RuckusCloud?secret=${data?.key}`:''}
+                    size={128}
+                    bgColor={'#ffffff'}
+                    fgColor={'#000000'}
+                    level={'L'}
+                    includeMargin={false}
                   />
                   <Row>
                     <Typography.Text>
@@ -117,8 +120,7 @@ export const AuthApp = styled((props: AuthAppProps) => {
                 <div><Typography.Text strong>
                   { data?.key ?? '' }
                 </Typography.Text></div>
-              </li>
-              <li>
+              </li>              <li>
                 <Typography.Text>
                   {
                     $t({ defaultMessage: 'Enter the verification code generated '+

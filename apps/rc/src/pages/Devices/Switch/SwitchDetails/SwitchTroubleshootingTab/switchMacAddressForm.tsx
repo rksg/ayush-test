@@ -160,7 +160,7 @@ export function SwitchMacAddressForm () {
       }
     }
 
-  }, [getTroubleshooting.data])
+  }, [getTroubleshooting])
 
   const onSubmit = async () => {
     setIsLoading(true)
@@ -309,8 +309,10 @@ export function SwitchMacAddressForm () {
                   {
                     validator: (_, value) => {
                       // eslint-disable-next-line max-len
-                      const re = new RegExp(/^(([0-9a-f]{2}\:){5}[0-9a-f]{2})$/)
-                      if (value && !re.test(value)) {
+                      const reMacColon = new RegExp(/^(([0-9a-f]{2}\:){5}[0-9a-f]{2})$/)
+                      // eslint-disable-next-line max-len
+                      const reMacDot = new RegExp(/^([0-9a-f]{4}\.[0-9a-f]{4}\.[0-9a-f]{0,4}||[0-9a-f]{4}\.[0-9a-f]{0,4}||[0-9a-f]{4})$/)
+                      if (value && !(reMacColon.test(value) || reMacDot.test(value))) {
                         return Promise.reject(
                           $t({ defaultMessage: 'Please enter valid MAC address' }))
                       }

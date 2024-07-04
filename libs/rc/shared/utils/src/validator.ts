@@ -94,9 +94,10 @@ export function URLRegExp (value: string) {
 }
 export function URLProtocolRegExp (value: string) {
   const { $t } = getIntl()
-  // eslint-disable-next-line max-len
-  const re = new RegExp('^https?:\\/\\/([A-Za-z0-9]+([\\-\\.]{1}[A-Za-z0-9]+)*\\.[A-Za-z]{2,}|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])|localhost)(:([1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?(\\/.*)?([?#].*)?$')
-  if (value!=='' && !re.test(value)) {
+  let ok = true
+  try { new URL(value) }
+  catch { ok = false }
+  if (value !== '' && !ok) {
     return Promise.reject($t(validationMessages.validateURL))
   }
   return Promise.resolve()
@@ -1160,5 +1161,16 @@ export function systemDefinedNameValidator (value: string) {
     )
   }
   return Promise.resolve()
+}
+
+export function guestPasswordValidator (value: string) {
+  const { $t } = getIntl()
+  const regex = /^[a-zA-Z0-9!@#$%^&*()\[\]{}_\-+=~`|:;"'<>,./?]{6,16}$/
+
+  if (value && !regex.test(value)) {
+    return Promise.reject($t(validationMessages.guestPasswordInvalid))
+  }
+  return Promise.resolve()
+
 }
 

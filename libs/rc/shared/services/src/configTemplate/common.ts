@@ -2,6 +2,7 @@
 import {
   AAAPolicyType,
   AAAViewModalType,
+  ApplyConfigTemplatePaylod,
   CommonResult,
   ConfigTemplate,
   ConfigTemplateUrlsInfo,
@@ -12,11 +13,11 @@ import {
   onSocketActivityChanged,
   transformNetwork
 } from '@acx-ui/rc/utils'
-import { baseConfigTemplateApi }      from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseConfigTemplateApi } from '@acx-ui/store'
+import { RequestPayload }        from '@acx-ui/types'
 
-import { networkApi } from '../network'
+import { networkApi }    from '../network'
+import { commonQueryFn } from '../servicePolicy.utils'
 
 import {
   useCasesToRefreshRadiusServerTemplateList, useCasesToRefreshTemplateList,
@@ -38,7 +39,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    applyConfigTemplate: build.mutation<CommonResult, RequestPayload>({
+    applyConfigTemplate: build.mutation<CommonResult, RequestPayload<ApplyConfigTemplatePaylod>>({
       query: commonQueryFn(ConfigTemplateUrlsInfo.applyConfigTemplate),
       invalidatesTags: [{ type: 'ConfigTemplate', id: 'LIST' }]
     }),
@@ -153,7 +154,7 @@ export const configTemplateApi = baseConfigTemplateApi.injectEndpoints({
       invalidatesTags: [{ type: 'VenueTemplate', id: 'DETAIL' }]
     }),
     deleteNetworkVenuesTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenuesTemplate, true),
+      query: commonQueryFn(ConfigTemplateUrlsInfo.deleteNetworkVenuesTemplate),
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
@@ -234,16 +235,3 @@ export const {
   useUpdateNetworkVenueTemplateMutation,
   useAddNetworkVenueTemplatesMutation
 } = configTemplateApi
-
-const requestMethodWithPayload = ['post', 'put', 'PATCH']
-
-export function commonQueryFn (apiInfo: ApiInfo, withPayload?: boolean) {
-  return ({ params, payload }: RequestPayload) => {
-    const req = createHttpRequest(apiInfo, params)
-    const needPayload = withPayload ?? requestMethodWithPayload.includes(apiInfo.method)
-    return {
-      ...req,
-      ...(needPayload ? { body: payload } : {})
-    }
-  }
-}
