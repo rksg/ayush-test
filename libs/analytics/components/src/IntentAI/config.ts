@@ -42,7 +42,7 @@ export const states = {
     tooltipCCR: defineMessage({ defaultMessage: 'Recommendation has been successfully applied on {updatedAt}.' })
   },
   applyfailed: {
-    text: defineMessage({ defaultMessage: 'Failed' }),
+    text: defineMessage({ defaultMessage: 'Applied Failed' }),
     tooltip: defineMessage({ defaultMessage: 'An error was encountered on {updatedAt} when the recommended configuration change was applied. Note that no configuration change was made.\n\nError: {errorMessage}' })
   },
   beforeapplyinterrupted: {
@@ -71,7 +71,7 @@ export const states = {
     tooltipPartial: defineMessage({ defaultMessage: 'Error(s) were encountered on {updatedAt} when the reversion was applied. \n\nErrors: \n{errorMessage}' })
   },
   reverted: {
-    text: defineMessage({ defaultMessage: 'Reverted' }),
+    text: defineMessage({ defaultMessage: 'Revert Success' }),
     tooltip: defineMessage({ defaultMessage: 'Reversion has been successfully applied on {updatedAt}.' })
   },
   deleted: {
