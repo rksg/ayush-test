@@ -266,7 +266,8 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueCityList: {
     method: 'post',
-    url: '/venues/citylist/query'
+    url: '/venues/citylist/query',
+    newApi: true
   },
   GetApPosition: {
     method: 'get',
@@ -391,15 +392,21 @@ export const CommonRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getVenueRogueAp: {
     method: 'get',
-    //url: '/venues/:venueId/rogueApSettings',
     url: '/venues/:venueId/roguePolicySettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateVenueRogueAp: {
     method: 'put',
-    //url: '/venues/:venueId/rogueApSettings',
     url: '/venues/:venueId/roguePolicySettings',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   /*
   getRogueApLocation: {

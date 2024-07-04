@@ -123,6 +123,8 @@ export const AAASettings = (props: {
   const { setReadyToScroll } = useContext(AnchorContext)
   const { isTemplate } = useConfigTemplate()
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isSwitchRbacEnabled
 
   const serverLevelItem = [{
     value: 'PORT_CONFIG',
@@ -154,7 +156,7 @@ export const AAASettings = (props: {
     pagination: {
       pageSize: 5
     },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: resolvedRbacEnabled
   })
 
   const tacasTableQuery = useTableQuery({
@@ -163,7 +165,7 @@ export const AAASettings = (props: {
     pagination: {
       pageSize: 5
     },
-    enableRbac: isSwitchRbacEnabled
+    enableRbac: resolvedRbacEnabled
   })
 
   // const { data: aaaSetting, isFetching, isLoading } = useGetAaaSettingQuery({ params: { tenantId, venueId } })
