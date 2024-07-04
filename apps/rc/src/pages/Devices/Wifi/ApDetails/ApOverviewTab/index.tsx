@@ -25,7 +25,7 @@ const apViewModelRbacPayloadFields = [
   'serialNumber', 'macAddress', 'networkStatus', 'model', 'firmwareVersion',
   'meshRole', 'hops', 'apUpRssi', 'status', 'statusSeverity',
   'meshEnabled', 'lastUpdatedTime', 'deviceModelType',
-  'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus']
+  'uplink', 'uptime', 'tags', 'radioStatuses', 'lanPortStatuses', 'afcStatus', 'cellularStatus']
 
 const apViewModelPayloadFields = [
   'name', 'venueName', 'deviceGroupName', 'description', 'lastSeenTime',

@@ -150,7 +150,7 @@ describe('Test apUtils', () => {
       expect(result.fields).toContain('networkStatus.ipAddress')
       expect(result.fields).toContain('uptime')
       expect(result.fields).toContain('supportSecureBoot')
-      expect(result.fields).toContain('managementTrafficVlan')
+      expect(result.fields).toContain('networkStatus.managementTrafficVlan')
       expect(result.fields).not.toContain('networkStatus.uptime')
       expect(result.fields).not.toContain('networkStatus')
       expect(result.fields).not.toContain('afcStatus')
