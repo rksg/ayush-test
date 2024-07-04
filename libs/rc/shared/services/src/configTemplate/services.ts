@@ -12,7 +12,13 @@ import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
 import { createDpskHttpRequest, transformDhcpResponse } from '../service'
-import { commonQueryFn }                                from '../servicePolicy.utils'
+import {
+  createWifiCallingFn,
+  commonQueryFn,
+  updateWifiCallingFn,
+  getWifiCallingFn,
+  queryWifiCalling
+} from '../servicePolicy.utils'
 
 import {
   useCasesToRefreshDhcpTemplateList,
@@ -249,37 +255,22 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
         }
       }
     }),
-    createWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.addWifiCalling),
+    // eslint-disable-next-line max-len
+    createWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: createWifiCallingFn(true),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
     }),
     getWifiCallingServiceTemplate: build.query<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCalling),
+      queryFn: getWifiCallingFn(true),
       providesTags: [
         { type: 'ConfigTemplate', id: 'DETAIL' }, { type: 'WifiCallingTemplate', id: 'DETAIL' }
       ]
     }),
-    getWifiCallingServiceTemplateList: build.query<WifiCallingSetting[], RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getWifiCallingList),
-      providesTags: [
-        { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
-      ],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, useCasesToRefreshWifiCallingTemplateList, () => {
-            api.dispatch(servicesConfigTemplateApi.util.invalidateTags([
-              { type: 'ConfigTemplate', id: 'LIST' },
-              { type: 'WifiCallingTemplate', id: 'LIST' }
-            ]))
-          })
-        })
-      }
-    }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceTemplateList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.getEnhancedWifiCallingList),
+      queryFn: queryWifiCalling(true),
       providesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ],
@@ -295,14 +286,18 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    updateWifiCallingServiceTemplate: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.updateWifiCalling),
+    // eslint-disable-next-line max-len
+    updateWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: updateWifiCallingFn(true),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
     }),
     deleteWifiCallingServiceTemplate: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(ServicesConfigTemplateUrlsInfo.deleteWifiCalling),
+      query: commonQueryFn(
+        ServicesConfigTemplateUrlsInfo.deleteWifiCalling,
+        ServicesConfigTemplateUrlsInfo.deleteWifiCallingRbac
+      ),
       invalidatesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ]
@@ -335,7 +330,6 @@ export const {
   useUploadPoweredImgTemplateMutation,
   useCreateWifiCallingServiceTemplateMutation,
   useGetWifiCallingServiceTemplateQuery,
-  useGetWifiCallingServiceTemplateListQuery,
   useGetEnhancedWifiCallingServiceTemplateListQuery,
   useUpdateWifiCallingServiceTemplateMutation,
   useDeleteWifiCallingServiceTemplateMutation
