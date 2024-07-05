@@ -212,10 +212,9 @@ function SwitchPageHeader () {
     }, 3000)
   }
 
-  const hasCreatePermission = hasPermission({ scopes: [SwitchScopes.CREATE] })
   const hasUpdatePermission = hasPermission({ scopes: [SwitchScopes.UPDATE] })
   const hasDeletaPermission = hasPermission({ scopes: [SwitchScopes.DELETE] })
-  const showAddMember = isStack && (maxMembers > 0) && hasCreatePermission
+  const showAddMember = isStack && (maxMembers > 0) && hasUpdatePermission
 
   const menu = (
     <Menu
