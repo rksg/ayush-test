@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import { QueryReturnValue }                                      from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import { MaybePromise }                                          from '@reduxjs/toolkit/dist/query/tsHelpers'
-import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta }    from '@reduxjs/toolkit/query'
-import { cloneDeep, find, forIn, invert, isNil, set, uniq, get } from 'lodash'
+import { QueryReturnValue }                                                from '@reduxjs/toolkit/dist/query/baseQueryTypes'
+import { MaybePromise }                                                    from '@reduxjs/toolkit/dist/query/tsHelpers'
+import { FetchArgs, FetchBaseQueryError, FetchBaseQueryMeta }              from '@reduxjs/toolkit/query'
+import { cloneDeep, find, forIn, invert, isNil, set, uniq, get, uniqueId } from 'lodash'
 
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 import {
@@ -28,7 +28,8 @@ import {
   RadioProperties,
   ApStatus,
   FloorPlanMeshAP,
-  ApPosition
+  ApPosition,
+  APExtendedGrouped
 } from '@acx-ui/rc/utils'
 import { RequestPayload }    from '@acx-ui/types'
 import { createHttpRequest } from '@acx-ui/utils'
@@ -120,6 +121,34 @@ const transformApList = (result: TableResult<APExtended, ApExtraParams>) => {
     }
 
     return item
+  })
+  result.extra = channelColumnStatus
+  return result
+}
+
+const transformGroupByList = (result: TableResult<APExtendedGrouped, ApExtraParams>) => {
+  let channelColumnStatus = {
+    channel24: false,
+    channel50: false,
+    channelL50: false,
+    channelU50: false,
+    channel60: false
+  }
+  result.data = result.data.map(item => {
+    let newItem = { ...item, children: [] as APExtended[], serialNumber: uniqueId() }
+    const aps = (item as unknown as { aps: APExtended[] }).aps?.map(ap => {
+      const { APRadio, lanPortStatus } = ap.apStatusData || {}
+
+      if (APRadio) {
+        setAPRadioInfo(ap as unknown as NewAPModelExtended, APRadio, channelColumnStatus)
+      }
+      if (lanPortStatus) {
+        setPoEPortStatus(ap as unknown as NewAPModelExtended, lanPortStatus)
+      }
+      return ap
+    })
+    newItem.children = aps as unknown as APExtended[]
+    return newItem
   })
   result.extra = channelColumnStatus
   return result
@@ -495,14 +524,14 @@ export const transformRbacApList = (rbacApList: TableResult<NewAPModel>): TableR
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type fetchWithBQType<ResultType> = (arg: string | FetchArgs) => MaybePromise<QueryReturnValue<ResultType, FetchBaseQueryError, FetchBaseQueryMeta>>
 
-const fetchApList = async ({ payload, enableRbac }: RequestPayload, fetchWithBQ: fetchWithBQType<unknown>) => {
-  const urlsInfo = enableRbac ? CommonRbacUrlsInfo : CommonUrlsInfo
-  const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-  const apsReq = createHttpRequest(urlsInfo.getApsList, undefined, customHeaders)
-
+const fetchApList = async ({ params, payload, enableRbac }: RequestPayload, fetchWithBQ: fetchWithBQType<unknown>) => {
   try {
+    const typedPayload = payload as Record<string, unknown>
     if (enableRbac) {
-      const newPayload = getNewApViewmodelPayloadFromOld(payload! as Record<string, unknown>)
+      const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+      const apsReq = createHttpRequest(CommonRbacUrlsInfo.getApsList, undefined, customHeaders)
+
+      const newPayload = getNewApViewmodelPayloadFromOld(typedPayload)
       const apListQuery = await fetchWithBQ({ ...apsReq, body: JSON.stringify(newPayload) })
       const apListData = apListQuery.data as TableResult<NewAPModel>
 
@@ -548,8 +577,14 @@ const fetchApList = async ({ payload, enableRbac }: RequestPayload, fetchWithBQ:
       const rbacApList = transformRbacApList(transformApListFromNewModel(apListData as TableResult<NewAPModelExtended, ApExtraParams>))
       return { data: rbacApList as TableResult<APExtended, ApExtraParams> }
     } else {
-      const apListQuery = await fetchWithBQ({ ...apsReq, body: payload })
-      return { data: apListQuery.data as TableResult<APExtended, ApExtraParams> }
+      const hasGroupBy = typedPayload?.groupBy
+      const fields = hasGroupBy ? typedPayload.groupByFields : typedPayload.fields
+      const apsReq = hasGroupBy
+        ? createHttpRequest(CommonUrlsInfo.getApGroupsListByGroup, params)
+        : createHttpRequest(CommonUrlsInfo.getApsList, params)
+
+      const apListQuery = await fetchWithBQ({ ...apsReq, body: { ...typedPayload, fields } })
+      return { data: apListQuery.data as TableResult<APExtended | APExtendedGrouped, ApExtraParams> }
     }
   } catch (error) {
     return { error: error as FetchBaseQueryError }
@@ -561,7 +596,11 @@ export const getApListFn = async (args: RequestPayload, fetchWithBQ: fetchWithBQ
   if (result.error) {
     return result
   } else {
-    result.data = transformApList(result.data)
+    if((args?.payload as Record<string, unknown>)?.groupBy) {
+      result.data = transformGroupByList(result.data as TableResult<APExtendedGrouped, ApExtraParams>)
+    } else {
+      result.data = transformApList(result.data)
+    }
     return result
   }
 }
