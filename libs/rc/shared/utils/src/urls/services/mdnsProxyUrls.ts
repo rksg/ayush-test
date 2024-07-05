@@ -65,7 +65,11 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
   queryMdnsProxy: {
     method: 'post',
     url: '/multicastDnsProxyProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getMdnsProxyRbac: {
     method: 'get',
@@ -75,31 +79,46 @@ export const MdnsProxyUrls: { [key: string]: ApiInfo } = {
   addMdnsProxyRbac: {
     method: 'post',
     url: '/multicastDnsProxyProfiles',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateMdnsProxyRbac: {
     method: 'put',
     url: '/multicastDnsProxyProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteMdnsProxyRbac: {
     method: 'delete',
     url: '/multicastDnsProxyProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   addMdnsProxyApsRbac: {
     method: 'put',
     url: '/venues/:venueId/aps/:apSerialNumber/multicastDnsProxyProfiles/:serviceId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deleteMdnsProxyApsRbac: {
     method: 'delete',
     url: '/venues/:venueId/aps/:apSerialNumber/multicastDnsProxyProfiles/:serviceId',
-    newApi: true
-  },
-  getMdnsProxyListRbac: {
-    method: 'post',
-    url: '/multicastDnsProxyProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

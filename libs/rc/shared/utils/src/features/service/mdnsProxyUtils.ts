@@ -43,21 +43,20 @@ export function convertApiPayloadToMdnsProxyFormData (response: MdnsProxyGetApiR
 
 // eslint-disable-next-line max-len
 export function convertMdnsProxyViewModelToMdnsProxyFormData (data: MdnsProxyViewModel): MdnsProxyFormData {
-
   return {
     id: data.id,
     name: data.name,
     rules: data.rules,
     scope: extractScopeFromViewModel(data.activations)
   } as MdnsProxyFormData
+}
 
-
-  function extractScopeFromViewModel (activations: MdnsActivation[] = []): MdnsProxyScopeData[] {
-    return activations.map(activation => ({
-      venueId: activation.venueId,
-      aps: activation.apSerialNumbers.map(serialNumber => ({ serialNumber }))
-    }))
-  }}
+function extractScopeFromViewModel (activations: MdnsActivation[] = []): MdnsProxyScopeData[] {
+  return activations.map(activation => ({
+    venueId: activation.venueId,
+    aps: activation.apSerialNumbers.map(serialNumber => ({ serialNumber }))
+  }))
+}
 
 function extractApSerialNumberFromScope (scope: MdnsProxyScopeData[] = []): string[] {
   return scope.flatMap(s => s.aps.map(ap => ap.serialNumber))

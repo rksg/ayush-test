@@ -61,7 +61,7 @@ import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { getDhcpProfileFn } from './servicePolicy.utils'
+import { commonQueryFn, getDhcpProfileFn } from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -223,8 +223,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getMdnsProxy: build.query<MdnsProxyFormData, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxy
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(apiInfo, params, headers)
+        const req = createHttpRequest(apiInfo, params)
 
         if (enableRbac) {
           const payload = {
@@ -234,7 +233,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             filters: { id: [params?.serviceId] }
           }
 
-          const res = await fetchWithBQ({ ...req,body: JSON.stringify(payload) })
+          const res = await fetchWithBQ({ ...req, body: JSON.stringify(payload) })
 
           if (res.error) {
             return { error: res.error as FetchBaseQueryError }
@@ -256,8 +255,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getMdnsProxyList: build.query<MdnsProxyFormData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
         const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxyList
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(apiInfo, params, headers)
+        const req = createHttpRequest(apiInfo, params)
         const queryPayload = {
           fields: [ 'id','name', 'rules', 'activations'],
           page: 1,
@@ -290,16 +288,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getEnhancedMdnsProxyList: build.query<TableResult<MdnsProxyViewModel>, RequestPayload>({
-      query: ({ params, payload, enableRbac }) => {
-        const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getEnhancedMdnsProxyList
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(apiInfo, params, headers)
-
-        return {
-          ...req,
-          body: JSON.stringify(payload)
-        }
-      },
+      query: commonQueryFn(MdnsProxyUrls.getEnhancedMdnsProxyList, MdnsProxyUrls.queryMdnsProxy),
       transformResponse: (result: TableResult<MdnsProxyViewModel>, _meta, arg) => {
         return arg.enableRbac
           ? {
@@ -326,8 +315,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     updateMdnsProxy: build.mutation<CommonResult, RequestPayload<MdnsProxyFormData>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const apiInfo = enableRbac ? MdnsProxyUrls.updateMdnsProxyRbac : MdnsProxyUrls.updateMdnsProxy
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(apiInfo, params, headers)
+        const req = createHttpRequest(apiInfo, params)
         const res = await fetchWithBQ({
           ...req,
           body: JSON.stringify(convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData))
@@ -340,7 +328,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         if (enableRbac) {
           const activateApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
           const deactivateApiInfo = MdnsProxyUrls.deleteMdnsProxyApsRbac
-          const headers = GetApiVersionHeader(ApiVersionEnum.v1)
 
           const oldScope = payload?.oldScope?.flatMap(s =>
             s.aps.map(ap => (s.venueId + '/' + ap.serialNumber))
@@ -363,8 +350,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             })
 
           await Promise.all([
-            batchApi(activateApiInfo, activateRequests, fetchWithBQ, headers),
-            batchApi(deactivateApiInfo, deactivateRequests, fetchWithBQ, headers)
+            batchApi(activateApiInfo, activateRequests, fetchWithBQ),
+            batchApi(deactivateApiInfo, deactivateRequests, fetchWithBQ)
           ])
         }
 
@@ -373,14 +360,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxy: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const apiInfo = enableRbac ? MdnsProxyUrls.deleteMdnsProxyRbac : MdnsProxyUrls.deleteMdnsProxy
-        const customHeaders = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(apiInfo, params, customHeaders)
-        return {
-          ...req
-        }
-      },
+      query: commonQueryFn(MdnsProxyUrls.deleteMdnsProxy, MdnsProxyUrls.deleteMdnsProxyRbac),
       invalidatesTags: [{ type: 'MdnsProxy', id: 'LIST' }]
     }),
     deleteMdnsProxyList: build.mutation<CommonResult, RequestPayload>({
@@ -394,9 +374,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     addMdnsProxy: build.mutation<CommonResult, RequestPayload<MdnsProxyFormData>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
         const apiInfo = enableRbac ? MdnsProxyUrls.addMdnsProxyRbac : MdnsProxyUrls.addMdnsProxy
-        const req = createHttpRequest(apiInfo, params, headers)
+        const req = createHttpRequest(apiInfo, params)
         const res = await fetchWithBQ({
           ...req,
           body: JSON.stringify(convertMdnsProxyFormDataToApiPayload(payload as MdnsProxyFormData))
@@ -409,7 +388,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         if (enableRbac) {
           const { response } = res.data as CommonResult
           const activateApiInfo = MdnsProxyUrls.addMdnsProxyApsRbac
-          const headers = GetApiVersionHeader(ApiVersionEnum.v1)
           const serviceId = response?.id
 
           if (serviceId) {
@@ -424,7 +402,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
               })
             })
 
-            await batchApi(activateApiInfo, requests, fetchWithBQ, headers)
+            await batchApi(activateApiInfo, requests, fetchWithBQ)
           }
         }
 
@@ -437,9 +415,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const apiInfo = enableRbac ? MdnsProxyUrls.addMdnsProxyApsRbac : MdnsProxyUrls.addMdnsProxyAps
 
         if (enableRbac) {
-          const headers = GetApiVersionHeader(ApiVersionEnum.v1)
           const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
-          await batchApi(apiInfo, requests, fetchWithBQ, headers)
+          await batchApi(apiInfo, requests, fetchWithBQ)
 
           return { data: {} as CommonResult }
         } else {
@@ -460,9 +437,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const apiInfo = enableRbac ? MdnsProxyUrls.deleteMdnsProxyApsRbac : MdnsProxyUrls.deleteMdnsProxyAps
 
         if (enableRbac) {
-          const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
           const requests = payload?.map(apSerialNumber => ({ params: { ...params, apSerialNumber } })) ?? []
-          await batchApi(apiInfo, requests, fetchWithBQ, headers)
+          await batchApi(apiInfo, requests, fetchWithBQ)
 
           return { data: {} as CommonResult }
         } else {
@@ -481,8 +457,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getMdnsProxyAps: build.query<TableResult<MdnsProxyAp>, RequestPayload>({
       queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const apiInfo = enableRbac ? MdnsProxyUrls.queryMdnsProxy : MdnsProxyUrls.getMdnsProxyApsByVenue
-        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(apiInfo, params, headers)
+        const req = createHttpRequest(apiInfo, params)
         const queryPayload = {
           fields: ['id', 'name', 'rules', 'activations'],
           page: 1,
@@ -491,10 +466,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
         const res = await fetchWithBQ({ ...req, body: enableRbac ? JSON.stringify(queryPayload) : undefined })
 
+        if (res.error) {
+          return { error: res.error as FetchBaseQueryError }
+        }
+
         if (enableRbac) {
-          if (res.error) {
-            return { error: res.error as FetchBaseQueryError }
-          }
           const queryApPayload = {
             fields: ['serialNumber', 'name', 'venueName'],
             page: 1,
@@ -538,12 +514,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             }
           }
         } else {
-          const res = (await fetchWithBQ({ ...req }))
-
-          if (res.error) {
-            return { error: res.error }
-          }
-
           const result = (res.data ?? []) as MdnsProxyAp[]
           return {
             data: {
