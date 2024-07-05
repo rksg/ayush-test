@@ -370,7 +370,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         const req = createHttpRequest(switchUrls.getSwitchFirmwareList, params, headers)
         return {
           ...req,
-          body: JSON.stringify({ payload })
+          body: JSON.stringify( payload )
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
