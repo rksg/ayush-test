@@ -4,12 +4,12 @@ import { useIntl } from 'react-intl'
 
 import { showActionModal, Table, TableProps }    from '@acx-ui/components'
 import {
+  CLIENT_ISOLATION_LIMIT_NUMBER,
   ClientIsolationClient, defaultSort, sortProp
 } from '@acx-ui/rc/utils'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
 import { AddNewClientDrawer }                               from './AddNewClientDrawer'
-import { ALLOW_LIST_MAX_COUNT }                             from './ClientIsolationSettingsForm'
 import { SelectConnectedClientsDrawer, SimpleClientRecord } from './SelectConnectedClientsDrawer'
 
 interface ClientIsolationAllowListTableProps {
@@ -183,12 +183,12 @@ export function ClientIsolationAllowListTable (props: ClientIsolationAllowListTa
           {
             label: $t({ defaultMessage: 'Select from Connected Clients' }),
             onClick: () => handleSelectConnectedClientAction(),
-            disabled: allowList.length === ALLOW_LIST_MAX_COUNT
+            disabled: allowList.length === CLIENT_ISOLATION_LIMIT_NUMBER
           },
           {
             label: $t({ defaultMessage: 'Add New Client' }),
             onClick: () => handleAddNewClientAction(),
-            disabled: allowList.length === ALLOW_LIST_MAX_COUNT
+            disabled: allowList.length === CLIENT_ISOLATION_LIMIT_NUMBER
           }
         ])}
         rowActions={filterByAccess(rowActions)}

@@ -10,8 +10,8 @@ import {
   sortProp,
   transformTitleCase
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl }                       from '@acx-ui/utils'
 
 import { ConfigurationProfileFormContext } from '../ConfigurationProfileFormContext'
 
@@ -140,7 +140,7 @@ export function AclSetting () {
                 setDrawerVisible(true)
               }
             }])}
-            rowSelection={hasAccess() && {
+            rowSelection={hasPermission() && {
               type: 'radio',
               selectedRowKeys: selectedRows,
               onChange: () => {

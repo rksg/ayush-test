@@ -12,7 +12,7 @@ import { usePersonaAsyncHeaders } from '../usePersonaAsyncHeaders'
 
 
 export function usePersonaGroupAction () {
-  const { customHeaders } = usePersonaAsyncHeaders()
+  const { isAsync, customHeaders } = usePersonaAsyncHeaders()
 
   const [addPersonaGroup] = useAddPersonaGroupMutation()
   const [updatePersonaGroup] = useUpdatePersonaGroupMutation()
@@ -38,10 +38,10 @@ export function usePersonaGroupAction () {
     }
 
     return await addPersonaGroup({
-      payload: groupData,
+      payload: { ...(isAsync ? groupData : submittedData) },
       customHeaders,
       callback: (response: AsyncCommonResponse) => {
-        if (response.id) {
+        if (response.id && isAsync) {
           associateDpskCallback(response.id)
           associateMacRegistrationCallback(response.id)
         }
@@ -56,29 +56,31 @@ export function usePersonaGroupAction () {
     const { dpskPoolId, macRegistrationPoolId, ...groupData } = patchData
     const associationPromises = []
 
-    if (macRegistrationPoolId) {
-      associationPromises.push(associateMacReg({
-        params: {
-          groupId,
-          poolId: macRegistrationPoolId
-        }
-      }))
-    }
+    if (isAsync) {
+      if (macRegistrationPoolId) {
+        associationPromises.push(associateMacReg({
+          params: {
+            groupId,
+            poolId: macRegistrationPoolId
+          }
+        }))
+      }
 
-    if (dpskPoolId) {
-      associationPromises.push(associateDpsk({
-        params: {
-          groupId,
-          poolId: dpskPoolId
-        }
-      }))
+      if (dpskPoolId) {
+        associationPromises.push(associateDpsk({
+          params: {
+            groupId,
+            poolId: dpskPoolId
+          }
+        }))
+      }
     }
 
     let updatePersonaGroupPromise
-    if (Object.keys(groupData).length !== 0) {
+    if (Object.keys(isAsync ? groupData : patchData).length !== 0) {
       updatePersonaGroupPromise = updatePersonaGroup({
         params: { groupId },
-        payload: groupData,
+        payload: isAsync ? groupData : patchData,
         customHeaders
       })
       associationPromises.push(updatePersonaGroupPromise)

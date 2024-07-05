@@ -81,17 +81,19 @@ export const ImpactedClientsTable = ({
       dataIndex: 'switchName',
       key: '1',
       render: (_, row: ImpactedClients) => (
-        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/incidents`}>
+        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/reports`}>
           {row.switchName}
         </TenantLink>
       ),
       disable: true,
+      fixed: 'left',
       sorter: { compare: sortProp('switchName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Local Port' }),
       dataIndex: 'localPortName',
       key: '2',
+      fixed: 'left',
       disable: true,
       sorter: { compare: sortProp('localPortName', defaultSort) }
     },
@@ -118,12 +120,14 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Device Port MAC' }),
       dataIndex: 'devicePortMac',
       key: '6',
+      width: 150,
       show: false,
       sorter: { compare: sortProp('devicePortMac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Port Type' }),
       dataIndex: 'devicePortType',
+      width: 150,
       key: '7',
       sorter: { compare: sortProp('devicePortType', defaultSort) }
     }
@@ -135,8 +139,8 @@ export const ImpactedClientsTable = ({
       <ChartTitle>
         <FormattedMessage
           defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-            one {Device}
-            other {Devices}
+            one {Uplink Port}
+            other {Uplink Ports}
           }`}
           values={{
             count: showTopResult($t, totalCount, topImpactedSwitchesLimit),

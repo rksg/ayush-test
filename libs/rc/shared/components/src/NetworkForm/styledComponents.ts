@@ -62,12 +62,26 @@ const socialIconStyle=css`
     fill:var(--acx-neutrals-60);
   }
 `
+
+const emailOTPIconStyle=css`
+  width: 16px;
+  height: 16px;
+  margin-bottom: -4px;
+  margin-right: 3px;
+  path:first-of-type {
+    fill:var(--acx-neutrals-60);
+  }
+  path {
+    stroke:var(--acx-neutrals-60);
+  }
+`
+
 export const SMSToken = styled(UISMSToken)`
   ${socialIconStyle}
 `
 
 export const EMailOTP = styled(UIEmailOTP)`
-  ${socialIconStyle}
+  ${emailOTPIconStyle}
 `
 
 export const Google = styled(UIGoogle)`

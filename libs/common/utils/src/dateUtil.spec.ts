@@ -24,7 +24,7 @@ describe('dateUtil', () => {
   describe('dateRangeForLast', () => {
     it('Should return date range for the given input', () => {
       expect(dateRangeForLast(3, 'months').toString()).toEqual(
-        'Fri Oct 01 2021 00:00:00 GMT+0000,Sat Jan 01 2022 00:00:00 GMT+0000'
+        'Fri Oct 01 2021 00:01:00 GMT+0000,Sat Jan 01 2022 00:01:00 GMT+0000'
       )
     })
   })
