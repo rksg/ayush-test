@@ -10,8 +10,8 @@ import { VenueLed,
   VenueRadioCustomization,
   VeuneApAntennaTypeSettings } from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { SwitchScopes, WifiScopes }              from '@acx-ui/types'
-import { goToNotFound, hasPermission }           from '@acx-ui/user'
+import { RolesEnum, SwitchScopes, WifiScopes }   from '@acx-ui/types'
+import { goToNotFound, hasPermission, hasRoles } from '@acx-ui/user'
 import { getIntl }                               from '@acx-ui/utils'
 
 import { PropertyManagementTab }    from './PropertyManagementTab'
@@ -121,6 +121,7 @@ export function VenueEdit () {
     const hasNoPermissions
     = (!hasPermission({ scopes: [WifiScopes.UPDATE] }) && activeTab === 'wifi')
     || (!hasPermission({ scopes: [SwitchScopes.UPDATE] }) && activeTab === 'switch')
+    || (!hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR]) && activeTab === 'details')
 
     if (hasNoPermissions) {
       navigate({

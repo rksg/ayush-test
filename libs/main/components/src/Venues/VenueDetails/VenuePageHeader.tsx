@@ -18,6 +18,8 @@ import { WifiScopes, EdgeScopes, SwitchScopes }       from '@acx-ui/types'
 import { filterByAccess, getShowWithoutRbacCheckKey } from '@acx-ui/user'
 import { useDateFilter }                              from '@acx-ui/utils'
 
+import { usePropertyManagementEnabled, getVenueEditPath } from '../VenueEdit/VenueEditTabs'
+
 import VenueTabs from './VenueTabs'
 
 
@@ -46,7 +48,10 @@ function VenuePageHeader () {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const detailsPath = usePathBasedOnConfigTemplate(`/venues/${venueId}/edit/details`)
+  const enablePropertyManagement = usePropertyManagementEnabled()
+  const path = `/venues/${venueId}/edit/`
+  const venueEditPath = getVenueEditPath(path, enablePropertyManagement)
+  const detailsPath = usePathBasedOnConfigTemplate(venueEditPath)
 
   const breadcrumb = useConfigTemplateBreadcrumb([
     { text: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }), link: '/venues' }
