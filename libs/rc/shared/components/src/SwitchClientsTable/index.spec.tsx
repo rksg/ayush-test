@@ -9,6 +9,8 @@ import {
   mockServer,
   render,
   screen,
+  within,
+  waitFor,
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
@@ -150,6 +152,7 @@ const apList = {
 }
 
 const mockExportCsv = jest.fn()
+const mockGetSwitchList = jest.fn()
 jest.mock('@acx-ui/rc/utils', () => ({
   ...jest.requireActual('@acx-ui/rc/utils'),
   exportCSV: jest.fn().mockImplementation(() => mockExportCsv())
@@ -163,6 +166,7 @@ jest.mock('../SwitchPortTable/editPortDrawer', () => ({
 describe('SwitchClientsTable - Port link', () => {
   beforeEach(() => {
     mockExportCsv.mockClear()
+    mockGetSwitchList.mockClear()
     jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.SWITCH_RBAC_API)
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
@@ -176,11 +180,12 @@ describe('SwitchClientsTable - Port link', () => {
         SwitchUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portData))
       ),
-      rest.post(SwitchUrlsInfo.getSwitchList.url, (_, res, ctx) =>
-        res(ctx.json({
+      rest.post(SwitchUrlsInfo.getSwitchList.url, (_, res, ctx) => {
+        mockGetSwitchList()
+        return res(ctx.json({
           data: [{ id: '58:fb:96:0e:c0:c4', name: 'ICX7150-C12 Router' }]
         }))
-      )
+      })
     )
   })
 
@@ -202,6 +207,9 @@ describe('SwitchClientsTable - Port link', () => {
         }
       }
     )
+    await waitFor(() => {
+      expect(mockGetSwitchList).toBeCalledTimes(2)
+    })
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
     expect(await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
   })
@@ -224,6 +232,9 @@ describe('SwitchClientsTable - Port link', () => {
         }
       }
     )
+    await waitFor(() => {
+      expect(mockGetSwitchList).toBeCalledTimes(2)
+    })
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
     expect( await screen.findByRole('cell', { name: /1\/1\/7/i })).toBeVisible()
 
@@ -236,6 +247,7 @@ describe('SwitchClientsTable - Port link', () => {
 describe('SwitchClientsTable', () => {
   beforeEach(() => {
     mockExportCsv.mockClear()
+    mockGetSwitchList.mockClear()
     store.dispatch(clientApi.util.resetApiState())
     store.dispatch(switchApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
@@ -248,11 +260,12 @@ describe('SwitchClientsTable', () => {
         SwitchUrlsInfo.getSwitchPortlist.url,
         (req, res, ctx) => res(ctx.json(portData))
       ),
-      rest.post(SwitchUrlsInfo.getSwitchList.url, (_, res, ctx) =>
-        res(ctx.json({
+      rest.post(SwitchUrlsInfo.getSwitchList.url, (_, res, ctx) => {
+        mockGetSwitchList()
+        return res(ctx.json({
           data: [{ id: '58:fb:96:0e:c0:c4', name: 'ICX7150-C12 Router' }]
         }))
-      ),
+      }),
       rest.post(CommonUrlsInfo.getApsList.url, (_, res, ctx) =>
         res(ctx.json(apList))
       ),
@@ -280,7 +293,14 @@ describe('SwitchClientsTable', () => {
         }
       }
     )
+
+    await waitFor(() => {
+      expect(mockGetSwitchList).toBeCalledTimes(2)
+    })
+    const table = await screen.findByRole('table')
+    expect(await within(table).findAllByRole('row')).toHaveLength(2)
     expect(await screen.findByText('34:20:E3:2C:B5:B0')).toBeVisible()
+
   })
 
   it.skip('should trigger search client correctly', async () => {
