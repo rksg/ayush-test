@@ -204,9 +204,10 @@ export function useSwitchActions () {
 
   const doRetryFirmwareUpdate = async (
     params: {
-      switchId: string, tenantId?: string, venueId?: string
-    },
-    callBack?: () => void) => {
+      switchId: string,
+      tenantId?: string,
+      venueId?: string
+    }, callBack?: () => void) => {
     try {
       await retryFirmwareUpdate({
         params,

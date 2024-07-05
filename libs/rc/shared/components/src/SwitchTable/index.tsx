@@ -478,7 +478,9 @@ export const SwitchTable = forwardRef((props : SwitchTableProps, ref?: Ref<Switc
         })
       }
       switchAction.doRetryFirmwareUpdate({
-        switchId, tenantId: params.tenantId, venueId: rows[0].venueId
+        switchId,
+        tenantId: params.tenantId,
+        venueId: rows[0].venueId
       }, callback)
     }
   },
