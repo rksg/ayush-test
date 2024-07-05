@@ -46,7 +46,8 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      params: { venueId: props.data.venueId }
+      params: { venueId: props.data.venueId },
+      payload: { venueIdList: [props.data.venueId] }
     }, false)).data?.data
     if (switchList) {
       const filterSwitchList = switchList.filter(row => row.isSwitchLevelSchedule)

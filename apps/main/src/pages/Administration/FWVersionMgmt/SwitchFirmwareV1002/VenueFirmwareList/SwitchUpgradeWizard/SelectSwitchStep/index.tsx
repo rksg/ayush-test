@@ -206,7 +206,8 @@ export const SelectSwitchStep = (
       setIsLoading(true)
       const switchList = record.venueId
         ? (await getSwitchFirmwareList({
-          params: { venueId: record.venueId }
+          params: { venueId: record.venueId },
+          payload: { venueIdList: [record.venueId] }
         }, false)).data?.data
         : []
 

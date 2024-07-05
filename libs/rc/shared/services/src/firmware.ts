@@ -506,7 +506,7 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
         return {
-          data: result
+          data: result.upgradeSwitchViewList || result
         } as unknown as TableResult<SwitchFirmwareV1002>
       }
     }),
