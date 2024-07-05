@@ -68,6 +68,8 @@ function SwitchPageHeader () {
   const jwtToken = useGetJwtTokenQuery({
     params: { tenantId, serialNumber, venueId: switchDetailHeader?.venueId },
     enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !switchDetailHeader?.venueId
   })
 
   const [isSyncing, setIsSyncing] = useState(false)
