@@ -5,13 +5,13 @@ import {
   ApGroup,
   ApGroupViewModel,
   CountAndNames,
+  FILTER,
   NewAPModel,
   NewApGroupViewModelResponseType,
   NewGetApGroupResponseType,
   TableResult,
   Venue,
-  WifiNetwork,
-  FILTER
+  WifiNetwork
 } from '@acx-ui/rc/utils'
 
 const apGroupOldNewFieldsMapping: Record<string, string> = {
@@ -41,7 +41,7 @@ export const getNewApGroupViewmodelPayloadFromOld = (payload: Record<string, unk
 
   if (payload.filters) {
     const filters = {} as FILTER
-    forIn(payload.filters, (val, key) => {
+    forIn((payload.filters as FILTER), (val, key) => {
       filters[getApGroupNewFieldFromOld(key)] = val
     })
     newPayload.filters = filters

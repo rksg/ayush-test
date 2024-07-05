@@ -36,7 +36,7 @@ export function ApContextProvider (props: { children: ReactNode }) {
   const apData = pick(data?.[0], fields)
 
   //eslint-disable-next-line
-  const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId: params.tenantId, serialNumber: params.apId } })
+  const { data: apValidChannels } = useGetApValidChannelQuery({ params: { tenantId: params.tenantId, serialNumber: apData.serialNumber } })
   //eslint-disable-next-line
   const values: Params<string> = { ...params, ...apData as Params<string>, ...apValidChannels as unknown as Params<string> }
 
