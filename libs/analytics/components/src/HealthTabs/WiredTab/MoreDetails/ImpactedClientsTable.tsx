@@ -133,11 +133,12 @@ export const ImpactedClientsTable = ({
     }
   ]
 
-  const getRowKey = (record: ImpactedClients): string => {
-    return `${record.deviceMac}-${record.devicePortMac}`
-  }
-
   const totalCount = impactedClients?.data?.length
+  const data = impactedClients?.data?.map((item: ImpactedClients, i) => ({
+    ...item,
+    rowId: i+1 // added to make rowKey unique
+  }))
+
   return (
     <Loader states={[impactedClients, impactedSwitches]}>
       <ChartTitle>
@@ -156,12 +157,12 @@ export const ImpactedClientsTable = ({
       <Table
         settingsId='switch-health-impacted-devices-table'
         columns={columns}
-        dataSource={impactedClients.data}
+        dataSource={data}
         pagination={{
           pageSize: 10,
           total: totalCount
         }}
-        rowKey={getRowKey}
+        rowKey='rowId'
         type='tall'
       />
     </Loader>
