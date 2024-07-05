@@ -9,7 +9,7 @@ import {
   screen, waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import handlers       from './__tests__/fixtures'
+import { handlers }   from './__tests__/fixtures'
 import VenuePoolTable from './PoolTable'
 
 jest.mock('@acx-ui/components', () => ({

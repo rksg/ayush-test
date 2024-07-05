@@ -61,6 +61,8 @@ import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
+import { getDhcpProfileFn } from './servicePolicy.utils'
+
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
   sortOrder: 'ASC',
@@ -133,17 +135,15 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfiles
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfiles
         const req = createHttpRequest(url, params)
         return {
           ...req,
-          ...(enableRbac ? { body: { pageSize: DHCP_LIMIT_NUMBER } } : {})
+          ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
         }
       },
-      // eslint-disable-next-line max-len
       transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {
         if(arg.enableRbac) {
-          // eslint-disable-next-line max-len
           return (response as TableResult<DHCPSaveData>).data.map((item) => ({ ...item, serviceName: item.name || '' }))
         }
         return response as DHCPSaveData[]
@@ -167,11 +167,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfilesViewModel
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfilesViewModel
         const req = createHttpRequest(url, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
@@ -193,23 +193,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        const dhcpDetailReq = createHttpRequest(DHCPUrls.getDHCProfileDetail, params, headers)
-        return {
-          ...dhcpDetailReq
-        }
-      },
-      transformResponse: transformDhcpResponse,
+      queryFn: getDhcpProfileFn(),
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload, enableRbac } :
         { params:Params, payload:DHCPSaveData, enableRbac: boolean }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        // eslint-disable-next-line max-len
-        const url = _.isEmpty(params.serviceId) ? DHCPUrls.addDHCPService : DHCPUrls.updateDHCPService
-        const dhcpReq = createHttpRequest(url, params, headers)
+        const addDHCPUrl = enableRbac ? DHCPUrls.addDhcpServiceRbac : DHCPUrls.addDHCPService
+        const updatedDHCPUrl = enableRbac ? DHCPUrls.updateDhcpServiceRbac : DHCPUrls.updateDHCPService
+        const url = _.isEmpty(params.serviceId) ? addDHCPUrl : updatedDHCPUrl
+        const dhcpReq = createHttpRequest(url, params)
         return {
           ...dhcpReq,
           body: JSON.stringify(payload)
@@ -219,8 +212,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params, headers)
+        const url = enableRbac ? DHCPUrls.deleteDhcpProfileRbac : DHCPUrls.deleteDHCPProfile
+        const req = createHttpRequest(url, params)
         return {
           ...req
         }

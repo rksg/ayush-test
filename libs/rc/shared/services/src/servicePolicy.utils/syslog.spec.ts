@@ -1,9 +1,9 @@
 /* eslint-disable max-len */
 import { BaseQueryApi, FetchBaseQueryMeta } from '@reduxjs/toolkit/query'
 
-import { ApiVersionEnum, FacilityEnum, FlowLevelEnum, GetApiVersionHeader, PoliciesConfigTemplateUrlsInfo, SyslogPolicyDetailType, SyslogPolicyListType, SyslogUrls, TableResult, VenueSyslogSettingType } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                                                                                                                  from '@acx-ui/types'
-import { batchApi, createHttpRequest }                                                                                                                                                                     from '@acx-ui/utils'
+import { FacilityEnum, FlowLevelEnum, PoliciesConfigTemplateUrlsInfo, SyslogPolicyDetailType, SyslogPolicyListType, SyslogUrls, TableResult, VenueSyslogSettingType } from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                                                                             from '@acx-ui/types'
+import { batchApi, createHttpRequest }                                                                                                                                from '@acx-ui/utils'
 
 import { addSyslogPolicyFn, getSyslogPolicyFn, transformGetVenueSyslog, updateSyslogPolicyFn } from './syslog'
 
@@ -32,7 +32,7 @@ describe('addSyslogPolicy', () => {
     fetchWithBQ.mockResolvedValue(mockResponse)
     await addSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.addSyslogPolicy, args.params, undefined)
+    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.addSyslogPolicy, args.params)
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
       body: JSON.stringify(args.payload)
     }))
@@ -49,7 +49,7 @@ describe('addSyslogPolicy', () => {
 
     await addSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.addSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
+    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.addSyslogPolicyRbac, args.params)
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
       body: JSON.stringify({
         name: mockPolicyPayload.name,
@@ -57,7 +57,7 @@ describe('addSyslogPolicy', () => {
         secondary: mockPolicyPayload.secondary
       })
     }))
-    expect(batchApi).toHaveBeenCalledWith(SyslogUrls.bindVenueSyslog, [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }], fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+    expect(batchApi).toHaveBeenCalledWith(SyslogUrls.bindVenueSyslog, [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }], fetchWithBQ)
   })
 
   it('should use template URLs when isTemplate is true', async () => {
@@ -71,8 +71,8 @@ describe('addSyslogPolicy', () => {
 
     await addSyslogPolicyFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.addSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
-    expect(batchApi).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.bindVenueSyslog, [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }], fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+    expect(createHttpRequest).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.addSyslogPolicyRbac, args.params)
+    expect(batchApi).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.bindVenueSyslog, [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }], fetchWithBQ)
   })
 })
 
@@ -103,7 +103,7 @@ describe('updateSyslogPolicy', () => {
     fetchWithBQ.mockResolvedValue(mockResponse)
     await updateSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.updateSyslogPolicy, args.params, undefined)
+    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.updateSyslogPolicy, args.params)
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
       body: JSON.stringify(mockPolicyPayload)
     }))
@@ -119,7 +119,7 @@ describe('updateSyslogPolicy', () => {
     fetchWithBQ.mockResolvedValue(mockResponse)
     await updateSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.updateSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
+    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.updateSyslogPolicyRbac, args.params)
     expect(fetchWithBQ).toHaveBeenCalledWith(expect.objectContaining({
       body: JSON.stringify({
         id: mockPolicyPayload.id,
@@ -129,7 +129,7 @@ describe('updateSyslogPolicy', () => {
       })
     }))
     const expectedBindVenueIds = [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }, { params: { venueId: 'venueId2', policyId: 'policy-id' } }]
-    expect(batchApi).toHaveBeenCalledWith(SyslogUrls.bindVenueSyslog, expectedBindVenueIds, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+    expect(batchApi).toHaveBeenCalledWith(SyslogUrls.bindVenueSyslog, expectedBindVenueIds, fetchWithBQ)
   })
 
   it('should use template URLs when isTemplate is true', async () => {
@@ -143,9 +143,9 @@ describe('updateSyslogPolicy', () => {
 
     await updateSyslogPolicyFn(true)(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.updateSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
+    expect(createHttpRequest).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.updateSyslogPolicyRbac, args.params)
     const expectedBindVenueIds = [{ params: { venueId: 'venueId1', policyId: 'policy-id' } }, { params: { venueId: 'venueId2', policyId: 'policy-id' } }]
-    expect(batchApi).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.bindVenueSyslog, expectedBindVenueIds, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+    expect(batchApi).toHaveBeenCalledWith(PoliciesConfigTemplateUrlsInfo.bindVenueSyslog, expectedBindVenueIds, fetchWithBQ)
   })
 })
 
@@ -184,8 +184,8 @@ describe('getSyslogPolicy', () => {
 
     const result = await getSyslogPolicyFn()(args, {} as BaseQueryApi, {}, fetchWithBQ)
 
-    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.getSyslogPolicy, args.params, GetApiVersionHeader(ApiVersionEnum.v1_1))
-    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.querySyslog, args.params, GetApiVersionHeader(ApiVersionEnum.v1))
+    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.getSyslogPolicyRbac, args.params)
+    expect(createHttpRequest).toHaveBeenCalledWith(SyslogUrls.querySyslog, args.params)
     expect(fetchWithBQ).toHaveBeenCalledTimes(2)
     expect(result).toEqual({
       data: {
