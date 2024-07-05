@@ -71,7 +71,7 @@ const SmsProviderItem = () => {
   const [isInGracePeriod, setIsInGracePeriod] = useState(false)
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
   const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
-  const isGracePeriodEnded = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
+  const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
 
   const FREE_SMS_POOL = 100
 
@@ -114,7 +114,7 @@ const SmsProviderItem = () => {
       setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
       setSmsProviderConfigured((smsUsage.data?.provider &&
         smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
-      setIsInGracePeriod(usedSms > FREE_SMS_POOL && !isGracePeriodEnded)
+      setIsInGracePeriod(usedSms >= FREE_SMS_POOL && isGracePeriodToggleOn)
     }
     if(smsProvider && smsProvider.data) {
       setSmsProviderData({
@@ -125,7 +125,7 @@ const SmsProviderItem = () => {
 
   }, [smsUsage, smsProvider, smsProviderConfigured])
 
-  const data = ruckusOneUsed > FREE_SMS_POOL
+  const data = ruckusOneUsed >= FREE_SMS_POOL
     ? [
       { value: 100, name: 'usage', color: cssStr('--acx-accents-blue-50') }
     ]
@@ -304,10 +304,45 @@ const SmsProviderItem = () => {
     </Col>
   }
 
+  const ProviderOthers = () => {
+    return <Col style={{ width: '381px', paddingLeft: 0 }}>
+      <Card type='solid-bg' >
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Provider' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {'Other'}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'API Token' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <PasswordInput
+            bordered={false}
+            value={smsProvider.data?.apiKey}
+            style={{ padding: '0px' }}
+          />
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Send URL' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <h3>{smsProvider.data?.url}</h3>
+        </div>
+      </Card>
+    </Col>
+  }
+
   const DisplaySmsProvider = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       {smsProviderType === SmsProviderType.TWILIO && <ProviderTwillo/>}
       {smsProviderType === SmsProviderType.ESENDEX && <ProviderEsendex/>}
+      {smsProviderType === SmsProviderType.OTHERS && <ProviderOthers/>}
     </Col>
   }
 
@@ -499,7 +534,7 @@ const SmsProviderItem = () => {
           </Col>
           }
 
-          {isGracePeriodEnded && <List
+          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL) && <List
             style={{ marginTop: '15px', marginBottom: 0 }}
             split={false}
             dataSource={[
@@ -516,7 +551,8 @@ const SmsProviderItem = () => {
             )}
           />}
 
-          {!smsProviderConfigured && !isGracePeriodEnded && <FreeSmsPool/>}
+          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod)
+          && <FreeSmsPool/>}
         </Form>
       </Col>
     </Row>

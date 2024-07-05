@@ -125,7 +125,7 @@ describe('SMS Provider Form Item', () => {
     })
   })
   it('should render layout correctly when in grace period', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
     services.useGetNotificationSmsQuery = jest.fn().mockImplementation(() => {
       return { data: { ...fakeSmsNoProvider, ruckusOneUsed: 110 } }
     })
