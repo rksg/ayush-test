@@ -751,15 +751,7 @@ export const policyApi = basePolicyApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     aaaPolicy: build.query<AAAPolicyType, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        return {
-          ...createHttpRequest(
-            AaaUrls.getAAAPolicy,
-            params,
-            GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : undefined)
-          )
-        }
-      },
+      query: commonQueryFn(AaaUrls.getAAAPolicy, AaaUrls.getAAAPolicyRbac),
       providesTags: [{ type: 'AAA', id: 'DETAIL' }]
     }),
     updateAAAPolicy: build.mutation<CommonResult, RequestPayload>({
