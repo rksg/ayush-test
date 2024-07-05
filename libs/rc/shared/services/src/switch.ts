@@ -1326,7 +1326,7 @@ export const switchApi = baseSwitchApi.injectEndpoints({
           let ret = await fetchWithBQ(getDhcpLeasesInfo)
           let result = ret.data as TroubleshootingResult
 
-          while (result?.response?.syncing || _.get(result, 'syncing')) { //It is necessary to remove result?.response?.syncing after RBAC launch
+          while (result?.response?.syncing || _.get(result, 'syncing')) { //TODO: It is necessary to remove result?.response?.syncing after RBAC launch
             await wait(2000)
             ret = await fetchWithBQ(getDhcpLeasesInfo)
             result = ret.data as TroubleshootingResult
