@@ -122,7 +122,6 @@ export function ConfigTemplateList () {
             const deleteFn = deleteMutationMap[selectedRow.type]
 
             if (!deleteFn) return
-
             deleteFn({ params: { templateId: selectedRow.id! }, enableRbac }).then(clearSelection)
           }
         })

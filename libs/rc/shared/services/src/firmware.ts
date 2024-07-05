@@ -218,7 +218,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.skipSwitchUpgradeSchedules, requests, fetchWithBQ, v1Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     updateSwitchVenueSchedules: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
@@ -235,7 +236,8 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
         return batchApi(
           FirmwareRbacUrlsInfo.updateSwitchVenueSchedules, requests, fetchWithBQ, v1Header
         )
-      }
+      },
+      invalidatesTags: [{ type: 'SwitchFirmware', id: 'LIST' }]
     }),
     getSwitchLatestFirmwareList: build.query<FirmwareVersion[], RequestPayload>({
       query: ({ params, enableRbac }) => {
@@ -357,22 +359,24 @@ export const firmwareApi = baseFirmwareApi.injectEndpoints({
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       transformResponse (result: { upgradeStatusDetailsViewList: SwitchFirmwareStatus[] }) {
         return {
-          data: result.upgradeStatusDetailsViewList
+          data: result.upgradeStatusDetailsViewList || result
         } as unknown as TableResult<SwitchFirmwareStatus>
       }
     }),
     getSwitchFirmwareList: build.query<TableResult<SwitchFirmware>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(FirmwareUrlsInfo.getSwitchFirmwareList, params)
+      query: ({ params, payload, enableRbac }) => {
+        const headers = enableRbac ? v1Header : {}
+        const switchUrls = FirmwareUrlsInfo//TODO: enableRbac ? FirmwareRbacUrlsInfo : FirmwareUrlsInfo
+        const req = createHttpRequest(switchUrls.getSwitchFirmwareList, params, headers)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify({ payload })
         }
       },
       providesTags: [{ type: 'SwitchFirmware', id: 'LIST' }],
       transformResponse (result: { upgradeSwitchViewList: FirmwareSwitchVenue[] }) {
         return {
-          data: result.upgradeSwitchViewList
+          data: result.upgradeSwitchViewList || result
         } as unknown as TableResult<SwitchFirmware>
       }
     }),
