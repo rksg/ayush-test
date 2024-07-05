@@ -139,8 +139,8 @@ export const ImpactedClientsTable = ({
       <ChartTitle>
         <FormattedMessage
           defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-            one {Device}
-            other {Devices}
+            one {Uplink Port}
+            other {Uplink Ports}
           }`}
           values={{
             count: showTopResult($t, totalCount, topImpactedSwitchesLimit),
