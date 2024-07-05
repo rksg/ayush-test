@@ -40,8 +40,9 @@ import {
   SwitchViewModel,
   VeViewModel
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { VlanDetail } from './vlanDetail'
 
@@ -287,6 +288,7 @@ export function SwitchOverviewVLANs (props: {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         const selectedRow = selectedRows?.[0]
         const isSelectDefaultVlan = selectedRow?.vlanName === SWITCH_DEFAULT_VLAN_NAME
@@ -310,6 +312,7 @@ export function SwitchOverviewVLANs (props: {
     {
       visible: (selectedRows) => selectedRows?.[0]?.isDeletable ?? true,
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
       onClick: (rows, clearSelection) => {
         const vlanId = rows[0]?.vlanId?.toString()
         showActionModal({
@@ -336,6 +339,7 @@ export function SwitchOverviewVLANs (props: {
     label: $t({ defaultMessage: 'Add VLAN' }),
     disabled: cliApplied || !isSwitchOperational,
     tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
+    scopeKey: [SwitchScopes.CREATE],
     onClick: () => {
       setEditMode(false)
       setEditVlan({} as Vlan)
@@ -345,10 +349,15 @@ export function SwitchOverviewVLANs (props: {
     label: $t({ defaultMessage: 'Default VLAN settings' }),
     disabled: cliApplied || !isSwitchOperational,
     tooltip: cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
+    scopeKey: [SwitchScopes.UPDATE],
     onClick: () => {
       setDefaultVlanDrawerVisible(true)
     }
   }]
+
+  const isSelectionVisible
+    = hasPermission({ scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE] })
+  && isSwitchLevelVlanEnabled && !cliApplied && isSwitchOperational
 
   const getUsedPorts = (vlanList: Vlan[], checkPostsField: 'untaggedPorts' | 'taggedPorts') => {
     return vlanList?.filter(
@@ -451,10 +460,7 @@ export function SwitchOverviewVLANs (props: {
         dataSource={vlanTableData}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={
-          hasAccess() && isSwitchLevelVlanEnabled && !cliApplied && isSwitchOperational && {
-            type: 'radio'
-          }}
+        rowSelection={isSelectionVisible && { type: 'radio' }}
         actions={isSwitchLevelVlanEnabled ? filterByAccess(tableActions) : []}
       />
 

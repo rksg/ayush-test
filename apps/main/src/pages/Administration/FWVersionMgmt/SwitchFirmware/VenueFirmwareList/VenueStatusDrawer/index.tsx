@@ -48,11 +48,13 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
 
   const setSwitchList = async () => {
     const switchList = (await getSwitchFirmwareStatusList({
-      payload: { venueId: props.data.id },
+      ...isSwitchRbacEnabled ? undefined : { payload: { venueId: props.data.id } },
       params: { venueId: props.data.id },
       enableRbac: isSwitchRbacEnabled
     }, false)).data?.data
-    setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
+    if (switchList) {
+      setSwitchFirmwareStatusList(switchList as unknown as SwitchFirmwareStatus[])
+    }
   }
 
   const onClose = () => {
@@ -127,7 +129,11 @@ export function VenueStatusDrawer (props: VenueStatusDrawerProps) {
                       content: $t({ defaultMessage: 'Start firmware upgrade retry' })
                     })
                   }
-                  switchAction.doRetryFirmwareUpdate(switchId, params.tenantId, callback)
+                  switchAction.doRetryFirmwareUpdate({
+                    switchId,
+                    tenantId: params.tenantId,
+                    venueId: props.data.id || props.data.venueId
+                  }, callback)
                 }}>
                 {$t({ defaultMessage: 'Retry' })}
               </UI.TextButton></div>
