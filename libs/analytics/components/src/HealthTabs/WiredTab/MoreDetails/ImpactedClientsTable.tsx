@@ -81,7 +81,7 @@ export const ImpactedClientsTable = ({
       dataIndex: 'switchName',
       key: '1',
       render: (_, row: ImpactedClients) => (
-        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/incidents`}>
+        <TenantLink to={`/devices/switch/${row.switchId}/serial/details/reports`}>
           {row.switchName}
         </TenantLink>
       ),
@@ -139,8 +139,8 @@ export const ImpactedClientsTable = ({
       <ChartTitle>
         <FormattedMessage
           defaultMessage={`<b>{count}</b> Impacted {totalCount, plural,
-            one {Device}
-            other {Devices}
+            one {Uplink Port}
+            other {Uplink Ports}
           }`}
           values={{
             count: showTopResult($t, totalCount, topImpactedSwitchesLimit),

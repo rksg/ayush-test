@@ -348,7 +348,7 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
       'Content-Type': 'application/vnd.ruckus.v1+json'
     }
   },
-  getVenueDhcpProfile: {
+  getVenueDHCPServiceProfile: {
     method: 'get',
     url: '/templates/venues/:venueId/dhcpConfigServiceProfileSettings',
     newApi: true
@@ -372,6 +372,42 @@ export const VenueConfigTemplateUrlsInfo: { [key: string]: ApiInfo } = {
     method: 'delete',
     url: '/templates/venues/:venueId/dhcpPools/:dhcppoolId',
     newApi: true
+  },
+  getDhcpUsagesRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/wifiDhcpPoolUsages',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  bindVenueDhcpProfile: {
+    method: 'put',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  unbindVenueDhcpProfile: {
+    method: 'delete',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
+  },
+  getVenueDhcpServiceProfileRbac: {
+    method: 'get',
+    url: '/templates/venues/:venueId/dhcpConfigServiceProfiles/:serviceId',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getVenueCityList: {
     method: 'post',

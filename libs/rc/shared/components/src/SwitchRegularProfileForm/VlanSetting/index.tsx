@@ -11,8 +11,8 @@ import {
   sortProp,
   defaultSort
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl }                       from '@acx-ui/utils'
 
 import { DefaultVlanDrawer }               from '../../DefaultVlanDrawer'
 import { VlanSettingDrawer }               from '../../VlanSettingDrawer'
@@ -202,7 +202,7 @@ export function VlanSetting () {
             columns={vlansColumns}
             rowActions={filterByAccess(rowActions)}
             dataSource={vlanTable.map((item, index) => ({ ...item, key: index }))}
-            rowSelection={hasAccess() && {
+            rowSelection={hasPermission() && {
               type: 'radio',
               selectedRowKeys: selectedRows
             }}

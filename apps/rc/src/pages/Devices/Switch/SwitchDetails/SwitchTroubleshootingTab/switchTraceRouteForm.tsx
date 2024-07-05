@@ -83,7 +83,7 @@ export function SwitchTraceRouteForm () {
       }
     }
 
-  }, [getTroubleshooting.data])
+  }, [getTroubleshooting])
 
   const onSubmit = async () => {
     setIsLoading(true)

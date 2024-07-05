@@ -31,8 +31,9 @@ import {
 } from '@acx-ui/rc/utils'
 import { baseConfigTemplateApi } from '@acx-ui/store'
 import { RequestPayload }        from '@acx-ui/types'
+import { createHttpRequest }     from '@acx-ui/utils'
 
-import { commonQueryFn }                                                                 from '../servicePolicy.utils'
+import { commonQueryFn, getVenueDHCPProfileFn, transformGetVenueDHCPPoolsResponse }      from '../servicePolicy.utils'
 import { handleCallbackWhenActivitySuccess }                                             from '../utils'
 import {
   createVenueDefaultRadioCustomizationFetchArgs, createVenueDefaultRegulatoryChannelsFetchArgs,
@@ -304,31 +305,53 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       )
     }),
     getVenueTemplateDhcpProfile: build.query<VenueDHCPProfile, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDhcpProfile),
+      queryFn: getVenueDHCPProfileFn(true),
       providesTags: [{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           // eslint-disable-next-line max-len
-          onActivityMessageReceived(msg, ['UpdateVenueTemplateDhcpConfigServiceProfileSetting'], () => {
+          onActivityMessageReceived(msg,
+            ['UpdateVenueTemplateDhcpConfigServiceProfileSetting',
+              'ActivateDhcpConfigServiceProfileTemplateAndUpdateSettings',
+              'DeactivateDhcpConfigServiceProfileTemplate'
+            ], () => {
             // eslint-disable-next-line max-len
-            api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }]))
-          })
+              api.dispatch(venueConfigTemplateApi.util.invalidateTags([{ type: 'VenueTemplate', id: 'DHCP_PROFILE' }]))
+            })
         })
       }
 
     }),
     updateVenueTemplateDhcpProfile: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.updateVenueDhcpProfile)
+      query: ({ params, payload, enableRbac, enableService }) => {
+        const url = !enableRbac ?
+          VenueConfigTemplateUrlsInfo.updateVenueDhcpProfile :
+          // eslint-disable-next-line max-len
+          (enableService ? VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile : VenueConfigTemplateUrlsInfo.unbindVenueDhcpProfile)
+        const req = createHttpRequest(url, params)
+        return {
+          ...req,
+          ...(enableRbac && !enableService ? {} : { body: JSON.stringify(payload) })
+        }
+      }
     }),
     getVenueTemplateDhcpPools: build.query<VenueDHCPPoolInst[], RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.getVenueDhcpActivePools),
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac
+          ? VenueConfigTemplateUrlsInfo.getDhcpUsagesRbac
+          : VenueConfigTemplateUrlsInfo.getVenueDhcpActivePools
+        const req = createHttpRequest(url, params)
+        return {
+          ...req
+        }
+      },
+      transformResponse: transformGetVenueDHCPPoolsResponse,
       providesTags: [{ type: 'VenueTemplate', id: 'DHCP_POOL_LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           const activities = [
             'DeactivateVenueTemplateDhcpPool',
-            'ActivateVenueTemplateDhcpPool',
-            'UpdateVenueTemplateDhcpConfigServiceProfileSetting'
+            'ActivateVenueTemplateDhcpPool'
           ]
           onActivityMessageReceived(msg, activities, () => {
             // eslint-disable-next-line max-len
@@ -338,10 +361,28 @@ export const venueConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
       }
     }),
     activateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.activateVenueDhcpPool)
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ?
+          VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile
+          : VenueConfigTemplateUrlsInfo.activateVenueDhcpPool
+        const req = createHttpRequest(url, params)
+        return {
+          ...req,
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
+        }
+      }
     }),
     deactivateVenueTemplateDhcpPool: build.mutation<CommonResult, RequestPayload>({
-      query: commonQueryFn(VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool)
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ?
+          VenueConfigTemplateUrlsInfo.bindVenueDhcpProfile
+          : VenueConfigTemplateUrlsInfo.deactivateVenueDhcpPool
+        const req = createHttpRequest(url, params)
+        return {
+          ...req,
+          ...(enableRbac ? { body: JSON.stringify(payload) } : {})
+        }
+      }
     }),
     getVenueTemplateCityList: build.query<{ name: string }[], RequestPayload>({
       query: commonQueryFn(

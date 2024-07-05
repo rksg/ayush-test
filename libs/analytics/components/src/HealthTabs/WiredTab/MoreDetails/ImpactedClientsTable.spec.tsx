@@ -71,6 +71,6 @@ describe('ImpactedClientsTable', () => {
         </Provider>
       </Router>
     )
-    expect(await screen.findByText(/Impacted Device/)).toBeVisible()
+    expect(await screen.findByText(/Impacted Uplink Port/)).toBeVisible()
   })
 })
