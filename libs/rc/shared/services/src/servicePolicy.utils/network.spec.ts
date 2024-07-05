@@ -1,7 +1,7 @@
 import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/react'
 
-import { ConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { createHttpRequest }                    from '@acx-ui/utils'
+import { ConfigTemplateUrlsInfo, NetworkVenue, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { createHttpRequest }                                  from '@acx-ui/utils'
 
 import { updateNetworkVenueFn } from './network'
 
@@ -14,8 +14,8 @@ describe('updateNetworkVenue', () => {
   })
 
   const mockPayload = {
-    newData: {},
-    oldData: {}
+    newData: {} as NetworkVenue,
+    oldData: {} as NetworkVenue
   }
 
   it('should successfully update without RBAC', async () => {

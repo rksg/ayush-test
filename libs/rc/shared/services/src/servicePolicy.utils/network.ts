@@ -3,18 +3,18 @@ import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/dist/q
 import { MaybePromise }                            from '@reduxjs/toolkit/dist/query/tsHelpers'
 
 import { CommonResult, ConfigTemplateUrlsInfo, NetworkVenue, PoliciesConfigTemplateUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
-import { RequestPayload }                                                                                   from '@acx-ui/types'
 import { ApiInfo, createHttpRequest }                                                                       from '@acx-ui/utils'
 
 import { QueryFn } from './common'
 
 
-export function updateNetworkVenueFn (isTemplate = false): QueryFn<CommonResult, RequestPayload> {
+// eslint-disable-next-line max-len
+export function updateNetworkVenueFn (isTemplate = false): QueryFn<CommonResult, { oldData?: NetworkVenue, newData: NetworkVenue }> {
   // eslint-disable-next-line max-len
   const apiInfo: ApiInfo = isTemplate ? ConfigTemplateUrlsInfo.updateNetworkVenueTemplate : WifiUrlsInfo.updateNetworkVenue
   return async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
     try {
-      const { newData, oldData } = payload as { oldData?: NetworkVenue, newData: NetworkVenue }
+      const { newData, oldData } = payload!!
 
       const res = await fetchWithBQ({
         ...createHttpRequest(apiInfo, params, {
