@@ -1,12 +1,21 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Form, Col, List, Row, Space, Typography, Input } from 'antd'
+import { EChartsOption }                                  from 'echarts'
+import ReactECharts                                       from 'echarts-for-react'
 import { useIntl }                                        from 'react-intl'
 import { useParams }                                      from 'react-router-dom'
 
-
-import { Button, Card, cssStr, DonutChart, PasswordInput, showActionModal, Tooltip } from '@acx-ui/components'
-import { Features, useIsSplitOn }                                                    from '@acx-ui/feature-toggle'
+import {
+  Button,
+  Card,
+  cssNumber,
+  cssStr,
+  PasswordInput,
+  showActionModal,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, useIsSplitOn }    from '@acx-ui/feature-toggle'
 import {
   administrationApi,
   useGetNotificationSmsProviderQuery,
@@ -61,7 +70,8 @@ const SmsProviderItem = () => {
   const [smsProviderConfigured, setSmsProviderConfigured] = useState(false)
   const [isInGracePeriod, setIsInGracePeriod] = useState(false)
   const [isChangeThreshold, setIsChangeThreshold] = useState(false)
-  const isGracePeriodEnded = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
+  const [submittableThreshold, setSubmittableThreshold] = useState<boolean>(true)
+  const isGracePeriodToggleOn = useIsSplitOn(Features.NUVO_SMS_GRACE_PERIOD_TOGGLE)
 
   const FREE_SMS_POOL = 100
 
@@ -72,7 +82,7 @@ const SmsProviderItem = () => {
     setDrawerVisible(true)
   }
 
-  const onSaveUtilization = () => {
+  const onSaveUtilization = async () => {
     const payload: NotificationSmsUsage = {
       threshold: form.getFieldValue('threshold'),
       provider: SmsProviderType.RUCKUS_ONE
@@ -104,7 +114,7 @@ const SmsProviderItem = () => {
       setSmsProviderType(smsUsage.data?.provider ?? SmsProviderType.RUCKUS_ONE)
       setSmsProviderConfigured((smsUsage.data?.provider &&
         smsUsage.data?.provider !== SmsProviderType.RUCKUS_ONE)? true : false)
-      setIsInGracePeriod(usedSms > FREE_SMS_POOL && !isGracePeriodEnded)
+      setIsInGracePeriod(usedSms >= FREE_SMS_POOL && isGracePeriodToggleOn)
     }
     if(smsProvider && smsProvider.data) {
       setSmsProviderData({
@@ -115,7 +125,7 @@ const SmsProviderItem = () => {
 
   }, [smsUsage, smsProvider, smsProviderConfigured])
 
-  const data = ruckusOneUsed > FREE_SMS_POOL
+  const data = ruckusOneUsed >= FREE_SMS_POOL
     ? [
       { value: 100, name: 'usage', color: cssStr('--acx-accents-blue-50') }
     ]
@@ -124,19 +134,80 @@ const SmsProviderItem = () => {
         { value: ruckusOneUsed, name: 'usage', color: cssStr('--acx-accents-blue-50') },
         { value: smsThreshold - ruckusOneUsed,
           name: 'remaining1', color: cssStr('--acx-neutrals-50') },
-        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: 1, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
         { value: FREE_SMS_POOL - smsThreshold,
           name: 'remaining2', color: cssStr('--acx-neutrals-50') }
       ]
       : [
-        { value: smsThreshold, name: 'usage', color: cssStr('--acx-accents-blue-50') },
-        { value: 2, name: 'threshold', color: cssStr('--acx-semantics-red-70') },
+        { value: smsThreshold, name: 'usage', color: cssStr('--acx-semantics-red-70') },
+        { value: 1, name: 'threshold', color: cssStr('--acx-neutrals-50') },
         { value: ruckusOneUsed - smsThreshold,
-          name: 'remaining1', color: cssStr('--acx-accents-blue-50') },
+          name: 'remaining1', color: cssStr('--acx-semantics-red-70') },
         { value: FREE_SMS_POOL - ruckusOneUsed,
           name: 'remaining2', color: cssStr('--acx-neutrals-50') }
       ]
     )
+
+  const getOption = (text: string, showTotal: boolean, subtext?: string) => {
+    const option: EChartsOption = {
+      tooltip: { show: false },
+      title: [
+        {
+          show: true,
+          text: text,
+          left: showTotal ? 24 : 'center',
+          top: 'center',
+          textVerticalAlign: 'middle',
+          textStyle: {
+            color: cssStr('--acx-primary-black'),
+            fontFamily: cssStr('--acx-neutral-brand-font'),
+            fontSize: cssNumber('--acx-body-2-font-size') }
+        },
+        {
+          show: showTotal,
+          text: '/100',
+          right: 22,
+          top: 'center',
+          textVerticalAlign: 'middle',
+          textStyle: {
+            color: cssStr('--acx-primary-black'),
+            fontFamily: cssStr('--acx-neutral-brand-font'),
+            fontSize: cssNumber('--acx-body-4-font-size'),
+            fontWeight: cssNumber('--acx-body-font-weight') }
+        },
+        {
+          show: true,
+          subtext: subtext,
+          left: 'center',
+          top: 'center',
+          itemGap: 8,
+          subtextStyle: {
+            color: cssStr('--acx-primary-black'),
+            fontFamily: cssStr('--acx-neutral-brand-font'),
+            fontSize: cssNumber('--acx-body-5-font-size'),
+            fontWeight: cssNumber('--acx-body-font-weight'),
+            width: 50 }
+        }],
+      color: data.map(series => series.color),
+      series: [
+        {
+          animation: false,
+          data,
+          type: 'pie',
+          cursor: 'auto',
+          center: ['50%', '50%'],
+          radius: ['58%', '82%'],
+          avoidLabelOverlap: true,
+          label: { show: false },
+          emphasis: {
+            disabled: true
+          },
+          labelLine: { show: false }
+        }
+      ]
+    }
+    return option
+  }
 
 
   const SmsProviderDualButtons = () => {
@@ -233,10 +304,45 @@ const SmsProviderItem = () => {
     </Col>
   }
 
+  const ProviderOthers = () => {
+    return <Col style={{ width: '381px', paddingLeft: 0 }}>
+      <Card type='solid-bg' >
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Provider' })} />
+          <h3 style={{ marginTop: '-18px' }}>
+            {'Other'}</h3>
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'API Token' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <PasswordInput
+            bordered={false}
+            value={smsProvider.data?.apiKey}
+            style={{ padding: '0px' }}
+          />
+        </div>
+        <div>
+          <Form.Item
+            colon={false}
+            label={$t({ defaultMessage: 'Send URL' })}
+            style={{ marginBottom: '-2px' }}
+          />
+          <h3>{smsProvider.data?.url}</h3>
+        </div>
+      </Card>
+    </Col>
+  }
+
   const DisplaySmsProvider = () => {
     return <Col style={{ width: '381px', paddingLeft: 0 }}>
       {smsProviderType === SmsProviderType.TWILIO && <ProviderTwillo/>}
       {smsProviderType === SmsProviderType.ESENDEX && <ProviderEsendex/>}
+      {smsProviderType === SmsProviderType.OTHERS && <ProviderOthers/>}
     </Col>
   }
 
@@ -252,15 +358,16 @@ const SmsProviderItem = () => {
           <Card type='solid-bg' >
             <div>
               <div style={{ float: 'left' }}>
-                <DonutChart
-                  showLegend={false}
-                  showTotal={false}
-                  style={{ width: 100, height: 100 }}
-                  title={ruckusOneUsed + '/100'}
-                  value={undefined}
-                  size='x-large'
-                  data={data}
-                />
+                <Space direction='vertical' size={0}>
+                  <ReactECharts
+                    {...{
+                      style: { width: 100, height: 100 }
+                    }}
+                    opts={{ renderer: 'svg' }}
+                    option={
+                      getOption(ruckusOneUsed.toString(),ruckusOneUsed < FREE_SMS_POOL,'SMS Sent')
+                    } />
+                </Space>
               </div>
               <div style={{ float: 'right', marginTop: '15px' }}>
                 <List
@@ -292,15 +399,14 @@ const SmsProviderItem = () => {
       <Card type='solid-bg' >
         <div>
           <div style={{ float: 'left' }}>
-            <DonutChart
-              showLegend={false}
-              showTotal={false}
-              style={{ width: 100, height: 100 }}
-              title={ruckusOneUsed.toString()}
-              value={undefined}
-              size='x-large'
-              data={data}
-            />
+            <Space direction='vertical' size={0}>
+              <ReactECharts
+                {...{
+                  style: { width: 100, height: 100 }
+                }}
+                opts={{ renderer: 'svg' }}
+                option={getOption(ruckusOneUsed.toString(), false, 'SMS Sent')} />
+            </Space>
           </div>
           <div style={{ float: 'right', marginTop: '15px' }}>
             <List
@@ -328,7 +434,7 @@ const SmsProviderItem = () => {
   const UtilizationAlertThreshold = () => {
     return <>
       <Form.Item
-        style={{ marginTop: '10px', marginBottom: 0 }}
+        style={{ marginTop: '8px', marginBottom: 0, fontWeight: 600 }}
         colon={false}
         label={$t({ defaultMessage: 'Utilization Alert Threshold' })}
       />
@@ -345,6 +451,18 @@ const SmsProviderItem = () => {
           name='threshold'
           noStyle
           initialValue={smsThreshold}
+          validateFirst
+          rules={[
+            { validator: (_, val) => {
+              if (val >= 50 && val <= 100) {
+                setSubmittableThreshold(true)
+                return Promise.resolve()
+              } else {
+                setSubmittableThreshold(false)
+                return Promise.reject()
+              }}
+            }
+          ]}
           children={
             <Input
               type='number'
@@ -358,13 +476,23 @@ const SmsProviderItem = () => {
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
           size='small'
+          disabled={submittableThreshold !== true}
           onClick={() => { onSaveUtilization() }}>{$t({ defaultMessage: 'Save' })}</Button>
         <Button
           style={{ paddingBottom: 10, marginLeft: '20px' }}
           type='link'
           size='small'
-          onClick={() => { setIsChangeThreshold(false) }}>{$t({ defaultMessage: 'Cancel' })}
+          onClick={() => {
+            setSubmittableThreshold(true)
+            form.setFieldValue('threshold', smsThreshold)
+            setIsChangeThreshold(false)
+          }}>{$t({ defaultMessage: 'Cancel' })}
         </Button>
+        {(submittableThreshold !== true) &&
+          <div style={{ marginTop: '4px', color: 'var(--acx-semantics-red-60)' }}>
+            {$t({ defaultMessage: 'Threshold must be between 50 and 100' })}
+          </div>
+        }
       </div>}
     </>
   }
@@ -386,7 +514,6 @@ const SmsProviderItem = () => {
                   <div>{$t({ defaultMessage: '- Captive Portal Self Sign-In' })}</div>
                   <div>{$t({ defaultMessage: '- Generating a New Guest User Password' })}</div>
                   <div>{$t({ defaultMessage: '- Recipient of System Notifications' })}</div>
-                  <div>{$t({ defaultMessage: '- AI Notifications  ' })}</div>
                 </>}
                 placement='right'
               />
@@ -407,7 +534,7 @@ const SmsProviderItem = () => {
           </Col>
           }
 
-          {isGracePeriodEnded && <List
+          {!isGracePeriodToggleOn && (ruckusOneUsed >= FREE_SMS_POOL) && <List
             style={{ marginTop: '15px', marginBottom: 0 }}
             split={false}
             dataSource={[
@@ -424,7 +551,8 @@ const SmsProviderItem = () => {
             )}
           />}
 
-          {!smsProviderConfigured && !isGracePeriodEnded && <FreeSmsPool/>}
+          {!smsProviderConfigured && (ruckusOneUsed < FREE_SMS_POOL || isInGracePeriod)
+          && <FreeSmsPool/>}
         </Form>
       </Col>
     </Row>

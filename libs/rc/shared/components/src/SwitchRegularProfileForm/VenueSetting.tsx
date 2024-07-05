@@ -24,7 +24,7 @@ import {
   useTableQuery,
   Venue
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
 import { ConfigurationProfileFormContext } from './ConfigurationProfileFormContext'
 import * as UI                             from './styledComponents'
@@ -43,6 +43,7 @@ const defaultArray: Venue[] = []
 
 export function VenueSetting () {
   const profileOnboardOnlyEnabled = useIsSplitOn(Features.SWITCH_PROFILE_ONBOARD_ONLY)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
 
   const { $t } = useIntl()
   const form = Form.useFormInstance()
@@ -55,7 +56,8 @@ export function VenueSetting () {
 
   const { data: venueAppliedToCli } = useConfigTemplateQueryFnSwitcher<CliFamilyModels[]>({
     useQueryFn: useGetCliFamilyModelsQuery,
-    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery
+    useTemplateQueryFn: useGetSwitchTemplateCliFamilyModelsQuery,
+    enableRbac: isSwitchRbacEnabled
   })
   const [tableData, setTableData] = useState(defaultArray)
   const [venueList, setVenueList] = useState<string[]>([])
@@ -212,7 +214,7 @@ export function VenueSetting () {
           <Table
             rowKey='id'
             rowActions={filterByAccess(rowActions)}
-            rowSelection={hasAccess() && {
+            rowSelection={hasPermission() && {
               type: 'checkbox',
               ...rowSelection
             }}

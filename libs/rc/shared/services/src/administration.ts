@@ -29,6 +29,7 @@ import {
   CustomRole,
   PrivilegeGroup,
   EntitlementPendingActivations,
+  AdminRbacUrlsInfo,
   NotificationSmsUsage,
   NotificationSmsConfig,
   TwiliosIncommingPhoneNumbers
@@ -36,6 +37,10 @@ import {
 import { baseAdministrationApi }                        from '@acx-ui/store'
 import { RequestPayload }                               from '@acx-ui/types'
 import { ApiInfo, createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
+
+const getAdminUrls = (enableRbac?: boolean | unknown) => {
+  return enableRbac ? AdminRbacUrlsInfo : AdministrationUrlsInfo
+}
 
 export const administrationApi = baseAdministrationApi.injectEndpoints({
   endpoints: (build) => ({
@@ -186,8 +191,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       }
     }),
     enableAccessSupport: build.mutation<TenantDelegationResponse, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.enableAccessSupport, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.enableAccessSupport, params)
         return {
           ...req,
           body: payload
@@ -203,8 +209,9 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
       invalidatesTags: [{ type: 'Administration', id: 'ACCESS_SUPPORT' }]
     }),
     disableAccessSupport: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(AdministrationUrlsInfo.disableAccessSupport, params)
+      query: ({ params, payload, enableRbac }) => {
+        const adminUrls = getAdminUrls(enableRbac)
+        const req = createHttpRequest(adminUrls.disableAccessSupport, params)
         return {
           ...req,
           body: payload
@@ -511,7 +518,18 @@ export const administrationApi = baseAdministrationApi.injectEndpoints({
           body: payload
         }
       },
-      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }]
+      providesTags: [{ type: 'License', id: 'ACTIVATIONS' }],
+      async onCacheEntryAdded (requestArgs, api) {
+        await onSocketActivityChanged(requestArgs, api, (msg) => {
+          onActivityMessageReceived(msg, [
+            'Activate Entitlement'
+          ], () => {
+            api.dispatch(administrationApi.util.invalidateTags([
+              { type: 'License', id: 'ACTIVATIONS' }
+            ]))
+          })
+        })
+      }
     }),
     patchEntitlementsActivations: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {

@@ -25,7 +25,9 @@ export function DirectedMulticast () {
   const { $t } = useIntl()
   const { venueId } = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API) && !isTemplate
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isConfigTemplateRbacEnabled = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedRbacEnabled = isTemplate ? isConfigTemplateRbacEnabled : isUseRbacApi
 
   const {
     editContextData,
@@ -124,7 +126,7 @@ export function DirectedMulticast () {
       await updateVenueDirectedMulticast({
         params: { venueId },
         payload,
-        enableRbac: isUseRbacApi
+        enableRbac: resolvedRbacEnabled
       }).unwrap()
 
     } catch (error) {
