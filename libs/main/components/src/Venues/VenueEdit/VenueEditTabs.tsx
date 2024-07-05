@@ -120,16 +120,3 @@ export function usePropertyManagementEnabled () {
 
   return enablePropertyManagement && !isTemplate
 }
-
-export function getVenueEditPath (path: string, enablePropertyManagement: boolean) {
-  if(hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])) {
-    return path + 'details'
-  } else if(hasPermission({ scopes: [WifiScopes.UPDATE] })) {
-    return path + 'wifi'
-  } else if(hasPermission({ scopes: [SwitchScopes.UPDATE] })) {
-    return path + 'switch'
-  } else if(enablePropertyManagement) {
-    return path + 'property'
-  }
-  return path
-}

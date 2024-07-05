@@ -33,8 +33,6 @@ import { EdgeScopes, RequestPayload, SwitchScopes, WifiScopes, RolesEnum } from 
 import { filterByAccess, hasPermission, hasRoles }                         from '@acx-ui/user'
 import { transformToCityListOptions }                                      from '@acx-ui/utils'
 
-import { getVenueEditPath, usePropertyManagementEnabled } from '../VenueEdit/VenueEditTabs'
-
 function useColumns (
   searchable?: boolean,
   filterables?: { [key: string]: ColumnType['filterable'] }
@@ -248,7 +246,6 @@ export const VenueTable = ({ settingsId = 'venues-table',
   const { $t } = useIntl()
   const navigate = useNavigate()
   const { tenantId } = useParams()
-  const enablePropertyManagement = usePropertyManagementEnabled()
   const columns = useColumns(searchable, filterables)
   const [
     deleteVenue,
@@ -260,9 +257,7 @@ export const VenueTable = ({ settingsId = 'venues-table',
     label: $t({ defaultMessage: 'Edit' }),
     scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE, SwitchScopes.UPDATE],
     onClick: (selectedRows) => {
-      let path = `${selectedRows[0].id}/edit/`
-      const venueEditPath = getVenueEditPath(path, enablePropertyManagement)
-      navigate(venueEditPath, { replace: false })
+      navigate(`${selectedRows[0].id}/edit/`, { replace: false })
     }
   },
   {
