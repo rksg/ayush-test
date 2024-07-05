@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -82,6 +82,7 @@ function useAaaInstanceTableQuery () {
   const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
     customPayload: { filters: { id: [ params?.policyId ] } }
   })
+  const [ aaaPolicyDataReady, setAaaPolicyDataReady ] = useState(false)
 
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
   const tableQuery = useTableQuery<Network>({
@@ -102,7 +103,7 @@ function useAaaInstanceTableQuery () {
     },
     enableRbac,
     option: {
-      skip: !aaaPolicyViewModel
+      skip: !aaaPolicyDataReady
     }
   })
 
@@ -115,6 +116,8 @@ function useAaaInstanceTableQuery () {
       ...tableQuery.payload,
       filters: { id: networkIds.length > 0 ? networkIds : ['NO_NETWORK'] }
     })
+
+    setAaaPolicyDataReady(true)
   }, [aaaPolicyViewModel])
 
   return tableQuery
