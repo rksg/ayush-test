@@ -21,8 +21,8 @@ export const useEcFilters = () => {
 
   const ecFilters = useMemo(() => {
     return isPrimeAdmin || isSupportToMspDashboardAllowed
-      ? { tenantType: [AccountType.MSP_EC] }
-      : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC] }
+      ? { tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] }
+      : { mspAdmins: [userProfile?.adminId], tenantType: [AccountType.MSP_EC, AccountType.MSP_REC] }
   }, [isPrimeAdmin, isSupportToMspDashboardAllowed])
 
   return ecFilters

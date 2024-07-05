@@ -46,3 +46,94 @@ export const mockedVenueUsage = {
   totalPages: 1,
   page: 1
 }
+
+export const mockedVenueData = {
+  fields: [
+    'name',
+    'id',
+    'addressLine'
+  ],
+  totalCount: 3,
+  page: 1,
+  data: [
+    {
+      id: '7bf824f4b7f949f2b64e18fb6d05b0f4',
+      name: 'My-Venue',
+      addressLine: '85 Main St,New York,United States'
+    },
+    {
+      id: '770c3794b4fd4bf6bf9e64e8f14db293',
+      name: 'venue1',
+      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
+    },
+    {
+      id: 'ea982f159b334c489a3e424767e96c1e',
+      name: 'venue2',
+      addressLine: '350 W Java Dr, Sunnyvale, CA 94089, USA'
+    }
+  ]
+}
+
+export const mockedClientIsolationQueryData = {
+  fields: null,
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'ebb2a23e3e9c4f1c9d4672828cc0e4bc',
+      name: 'clientIsolation1',
+      description: '',
+      clientEntries: [
+        'aa:21:92:3e:33:e0',
+        'e6:e2:fd:af:54:49'
+      ],
+      activations: [
+        {
+          venueId: '770c3794b4fd4bf6bf9e64e8f14db293',
+          wifiNetworkId: 'bd789b85931b40fe94d15028dffc6214'
+        },
+        {
+          venueId: '7bf824f4b7f949f2b64e18fb6d05b0f4',
+          wifiNetworkId: '936ad54680ba4e5bae59ae1eb817ca24'
+        }
+      ]
+    }
+  ]
+}
+
+export const mockedClientIsolationQueryWithoutActivationData = {
+  fields: null,
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'ebb2a23e3e9c4f1c9d4672828cc0e4bc',
+      name: 'clientIsolation1',
+      description: '',
+      clientEntries: [
+        'aa:21:92:3e:33:e0',
+        'e6:e2:fd:af:54:49'
+      ],
+      activations: []
+    }
+  ]
+}
+
+export const mockedNetworkQueryData = {
+  fields: [
+    'name',
+    'id'
+  ],
+  totalCount: 2,
+  page: 1,
+  data: [
+    {
+      name: 'james-psk',
+      id: '936ad54680ba4e5bae59ae1eb817ca24'
+    },
+    {
+      name: 'sdafsdf',
+      id: 'bd789b85931b40fe94d15028dffc6214'
+    }
+  ]
+}
