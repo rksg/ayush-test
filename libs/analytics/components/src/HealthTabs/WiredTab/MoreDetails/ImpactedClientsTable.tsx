@@ -50,7 +50,7 @@ export const ImpactedClientsTable = ({
   const impactedSwitches = usePieChartDataQuery({
     ...payload,
     type: queryType,
-    n: topImpactedSwitchesLimit
+    n: 5
   }, {
     selectFromResult: (result) => {
       const { data, ...rest } = result
@@ -79,7 +79,7 @@ export const ImpactedClientsTable = ({
     {
       title: $t({ defaultMessage: 'Switch Name' }),
       dataIndex: 'switchName',
-      key: '1',
+      key: 'switchName',
       render: (_, row: ImpactedClients) => (
         <TenantLink to={`/devices/switch/${row.switchId}/serial/details/reports`}>
           {row.switchName}
@@ -92,7 +92,7 @@ export const ImpactedClientsTable = ({
     {
       title: $t({ defaultMessage: 'Local Port' }),
       dataIndex: 'localPortName',
-      key: '2',
+      key: 'localPortName',
       fixed: 'left',
       disable: true,
       sorter: { compare: sortProp('localPortName', defaultSort) }
@@ -100,26 +100,26 @@ export const ImpactedClientsTable = ({
     {
       title: $t({ defaultMessage: 'Device Name' }),
       dataIndex: 'deviceName',
-      key: '3',
+      key: 'deviceName',
       sorter: { compare: sortProp('deviceName', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device MAC' }),
       dataIndex: 'deviceMac',
-      key: '4',
+      key: 'deviceMac',
       sorter: { compare: sortProp('deviceMac', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Port' }),
       dataIndex: 'devicePort',
-      key: '5',
+      key: 'devicePort',
       show: false,
       sorter: { compare: sortProp('devicePort', defaultSort) }
     },
     {
       title: $t({ defaultMessage: 'Device Port MAC' }),
       dataIndex: 'devicePortMac',
-      key: '6',
+      key: 'devicePortMac',
       width: 150,
       show: false,
       sorter: { compare: sortProp('devicePortMac', defaultSort) }
@@ -128,10 +128,14 @@ export const ImpactedClientsTable = ({
       title: $t({ defaultMessage: 'Device Port Type' }),
       dataIndex: 'devicePortType',
       width: 150,
-      key: '7',
+      key: 'devicePortType',
       sorter: { compare: sortProp('devicePortType', defaultSort) }
     }
   ]
+
+  const getRowKey = (record: ImpactedClients): string => {
+    return `${record.deviceMac}-${record.devicePortMac}`
+  }
 
   const totalCount = impactedClients?.data?.length
   return (
@@ -153,7 +157,11 @@ export const ImpactedClientsTable = ({
         settingsId='switch-health-impacted-devices-table'
         columns={columns}
         dataSource={impactedClients.data}
-        rowKey='deviceMac'
+        pagination={{
+          pageSize: 10,
+          total: totalCount
+        }}
+        rowKey={getRowKey}
         type='tall'
       />
     </Loader>
