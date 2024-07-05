@@ -245,12 +245,11 @@ export function NetworkForm (props:{
         }
       }
     )
-    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldValue('wlan.advancedCustomization.wifiCallingIds', wifiCallingIds)
     form.setFieldValue('wlan.advancedCustomization.wifiCallingEnabled', true)
 
-    updateSaveData(resolvedNetworkSaveData)
+    updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds])
 
   useEffect(() => {
