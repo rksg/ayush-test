@@ -1392,7 +1392,7 @@ export const venueApi = baseVenueApi.injectEndpoints({
         }
       },
       transformResponse: (result: { data: ApMeshTopologyData[] }) => {
-        return result?.data[0] as ApMeshTopologyData
+        return result?.data?.[0] as ApMeshTopologyData
       }
     }),
     getVenueMdnsFencing: build.query<VenueMdnsFencingPolicy, RequestPayload>({
