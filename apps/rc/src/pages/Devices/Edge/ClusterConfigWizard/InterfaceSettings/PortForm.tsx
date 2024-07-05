@@ -13,7 +13,6 @@ import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from '
 
 export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
   const header = <Space direction='vertical' size={5}>
     <Typography.Title level={2}>
@@ -21,8 +20,7 @@ export const PortForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
     </Typography.Title>
     <Typography.Text>
       {$t({ defaultMessage: `Configure the port general settings for 
-      all SmartEdges in this cluster ({clusterName}):` },
-      { clusterName: clusterInfo?.name })}
+      all SmartEdges in this cluster:` })}
     </Typography.Text>
   </Space>
 
