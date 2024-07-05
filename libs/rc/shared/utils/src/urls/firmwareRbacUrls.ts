@@ -49,7 +49,7 @@ export const FirmwareRbacUrlsInfo: { [key: string]: ApiInfo } = {
   },
   getSwitchFirmwareList: {
     method: 'post',
-    url: '/venues/switchFirmwares/switches/schedules/query',
+    url: '/switchFirmwares/schedules/switches/query',
     newApi: true
   },
   getSwitchFirmwareStatusList: {
