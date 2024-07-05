@@ -209,6 +209,7 @@ function Hotspot20Form () {
       if ( (editMode || cloneMode) && !form.isFieldsTouched() && selectedProviderIds &&
         !data?.hotspot20Settings?.identityProviders && isInitProviders.current) {
         form.setFieldValue(['hotspot20Settings', 'identityProviders'], selectedProviderIds)
+        setDisabledSelectProvider(selectedProviderIds.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
       }
     }, [cloneMode, editMode, selectedProviderIds])
 
@@ -240,6 +241,8 @@ function Hotspot20Form () {
         form.validateFields()
       }
       setShowProviderDrawer(false)
+      setDisabledSelectProvider(
+        identityProviders.length >= NETWORK_IDENTITY_PROVIDER_MAX_COUNT)
     }
 
     return (
