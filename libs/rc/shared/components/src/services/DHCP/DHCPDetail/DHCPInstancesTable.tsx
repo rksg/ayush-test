@@ -4,10 +4,10 @@ import { useEffect } from 'react'
 import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Card, Loader }                                                                                        from '@acx-ui/components'
+import { Table, TableProps, Card }                                                                                                from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                                                                 from '@acx-ui/feature-toggle'
 import { useVenuesListQuery, useGetDHCPProfileQuery, useGetDhcpTemplateQuery, useGetVenuesTemplateListQuery }                     from '@acx-ui/rc/services'
-import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplateQueryFnSwitcher, useConfigTemplate, ConfigTemplateType } from '@acx-ui/rc/utils'
+import { Venue, useTableQuery, DHCPUsage, DHCPSaveData, useConfigTemplate, ConfigTemplateType, useConfigTemplateQueryFnSwitcher } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                                             from '@acx-ui/react-router-dom'
 
 import { renderConfigTemplateDetailsComponent } from '../../../configTemplates'
@@ -17,10 +17,12 @@ export default function DHCPInstancesTable (){
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
 
+  // eslint-disable-next-line max-len
   const { data: dhcpProfile } = useConfigTemplateQueryFnSwitcher<DHCPSaveData | null>({
     useQueryFn: useGetDHCPProfileQuery,
     useTemplateQueryFn: useGetDhcpTemplateQuery,
-    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+    enableRbac: useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE),
+    payload: { needUsage: true }
   })
 
   const tableQuery = useTableQuery({
@@ -110,18 +112,16 @@ export default function DHCPInstancesTable (){
   ]
 
   return (
-    <Loader states={[tableQuery]}>
-      <Card title={$t({ defaultMessage: 'Instances ({count})' },
-        { count: tableQuery.data?.totalCount||0 })}>
-        <Table
-          columns={columns}
-          pagination={tableQuery.pagination}
-          onChange={tableQuery.handleTableChange}
-          dataSource={tableQuery.data?.data}
-          rowKey='id'
-        />
-      </Card>
-    </Loader>
+    <Card title={$t({ defaultMessage: 'Instances ({count})' },
+      { count: tableQuery.data?.totalCount||0 })}>
+      <Table
+        columns={columns}
+        pagination={tableQuery.pagination}
+        onChange={tableQuery.handleTableChange}
+        dataSource={tableQuery.data?.data}
+        rowKey='id'
+      />
+    </Card>
   )
 }
 
