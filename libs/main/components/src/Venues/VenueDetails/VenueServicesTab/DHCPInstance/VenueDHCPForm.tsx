@@ -51,6 +51,7 @@ const VenueDHCPForm = (props: {
   const dhcpInfo = useDHCPInfo()
   const { isTemplate } = useConfigTemplate()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const addDhcpPath = usePathBasedOnConfigTemplate(
     getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })
   )
@@ -91,6 +92,9 @@ const VenueDHCPForm = (props: {
         // eslint-disable-next-line max-len
         const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID }, enableRbac }).unwrap()
         return result?.dhcpMode
+      }
+      if (enableTemplateRbac && isTemplate) {
+        return DHCPConfigTypeEnum.SIMPLE
       }
       return dhcpProfileList[_.findIndex(dhcpProfileList,
         { id: dhcpServiceID })].dhcpMode
