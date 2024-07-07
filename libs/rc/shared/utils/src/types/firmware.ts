@@ -137,6 +137,12 @@ export const SwitchModelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: s
   [SwitchFirmwareModelGroup.ICX82]: '(8200)'
 }
 
+export const SwitchModelGroupDisplayTextValue: { [key in SwitchFirmwareModelGroup]: string } = {
+  [SwitchFirmwareModelGroup.ICX71]: 'ICX 7150' ,
+  [SwitchFirmwareModelGroup.ICX7X]: 'ICX 7550-7850',
+  [SwitchFirmwareModelGroup.ICX82]: 'ICX 8200'
+}
+
 export interface SwitchVersion1002 {
   id: string;
   name: string;

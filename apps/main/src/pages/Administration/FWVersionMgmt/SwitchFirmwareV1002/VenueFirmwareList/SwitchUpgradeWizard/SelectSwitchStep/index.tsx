@@ -59,7 +59,11 @@ function useColumns () {
       render: function (_, row) {
         const venueName = row.venueName
         const customDisplayValue =
-          <div style={{ fontWeight: cssStr('--acx-subtitle-4-font-weight') }} >
+          <div style={{
+            fontWeight: cssStr('--acx-subtitle-4-font-weight'),
+            overflow: 'auto',
+            textOverflow: 'ellipsis'
+          }} >
             {venueName}
           </div >
         return getTooltipText(venueName, customDisplayValue)
@@ -68,15 +72,21 @@ function useColumns () {
     }, {
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'Model',
-      width: 100,
+      width: 60,
       dataIndex: 'Model'
     }, {
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'version',
       dataIndex: 'version',
-      width: 250,
+      width: 180,
       render: function (_, row) {
-        return getCurrentFirmwareDisplay(intl, row)
+        return {
+          props: {
+            style: { padding: '5px',
+              overflow: 'auto' }
+          },
+          children: getCurrentFirmwareDisplay(intl, row)
+        }
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -84,16 +94,23 @@ function useColumns () {
       dataIndex: 'nextSchedule',
       width: 100,
       render: function (_, row) {
-        return <Tooltip
-          title={getSwitchNextScheduleTplTooltipV1002(intl, row) ||
-            intl.$t({ defaultMessage: 'Not scheduled' })}
-          placement='bottom' >
-          <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>
-        </Tooltip >
+        return {
+          props: {
+            style: {
+              overflow: 'unset',
+              zIndex: 300
+            }
+          },
+          children: <Tooltip
+            title={getSwitchNextScheduleTplTooltipV1002(intl, row) ||
+              intl.$t({ defaultMessage: 'Not scheduled' })}
+            placement='bottom' >
+            <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>
+          </Tooltip >
+        }
       }
     }
   ]
-
   return columns
 }
 
@@ -169,7 +186,7 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Model' }),
       key: 'model',
       dataIndex: 'model',
-      width: 100,
+      width: 60,
       render: function (_, row) {
         return getHightlightSearch(row.model, searchText)
       }
@@ -177,12 +194,17 @@ export const SelectSwitchStep = (
       title: intl.$t({ defaultMessage: 'Current Firmware' }),
       key: 'currentFirmware',
       dataIndex: 'currentFirmware',
-      width: 250,
+      width: 180,
       filterMultiple: false,
       render: function (_, row) {
         const version = row.currentFirmware ?
           parseSwitchVersion(row.currentFirmware) : noDataDisplay
-        return getTooltipText(version)
+        return {
+          props: {
+            style: { paddingLeft: '5px' }
+          },
+          children: getTooltipText(version)
+        }
       }
     }, {
       title: intl.$t({ defaultMessage: 'Scheduling' }),
@@ -193,7 +215,15 @@ export const SelectSwitchStep = (
         const tooltip = getSwitchScheduleTplV1002(row) ||
           intl.$t({ defaultMessage: 'Not scheduled' })
         const customDisplayValue = getSwitchNextScheduleTpl(intl, row)
-        return getTooltipText(tooltip, customDisplayValue)
+        return {
+          props: {
+            style: {
+              overflow: 'unset',
+              zIndex: 300
+            }
+          },
+          children: getTooltipText(tooltip, customDisplayValue)
+        }
       }
     }
   ]

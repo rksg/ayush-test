@@ -1,7 +1,7 @@
-import { Fragment, ReactElement } from 'react'
+import { ReactElement } from 'react'
 
-import { Tooltip }   from 'antd'
-import { IntlShape } from 'react-intl'
+import { Tag, Tooltip } from 'antd'
+import { IntlShape }    from 'react-intl'
 
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
@@ -20,10 +20,12 @@ import {
   FirmwareCategory,
   FirmwareSwitchV1002,
   SwitchFirmwareModelGroup,
-  SwitchModelGroupDisplayText,
-  SwitchFirmwareV1002
+  SwitchFirmwareV1002,
+  SwitchModelGroupDisplayTextValue
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
+
+import { Statistic } from './styledComponents'
 
 export function useSwitchFirmwareUtils () {
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
@@ -313,15 +315,21 @@ export function useSwitchFirmwareUtils () {
         (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
 
       if (versionGroup) {
-        const modelGroupText = SwitchModelGroupDisplayText[modelGroupValue]
+        const modelGroupText = SwitchModelGroupDisplayTextValue[modelGroupValue]
         const switchVersion = parseSwitchVersion(versionGroup.version)
         const tooltipMargin = index === 0 ||
           index === tooltipArray.length - 1 ? '5px 0px' : '10px 0px'
 
         currentVersionDisplay.push(
-          <Fragment key={modelGroupValue}>
-            {modelGroupText} <b>{switchVersion}</b>;
-          </Fragment>
+          <Statistic
+            title={<Tag style={{
+              fontSize: '10px',
+              borderRadius: '8px',
+              lineHeight: 'initial',
+              height: '16px'
+            }}>{modelGroupText}</Tag>}
+            value={switchVersion}
+            valueStyle={{ fontSize: '12px', overflow: 'auto', textOverflow: 'ellipsis' }} />
         )
 
         tooltipArray.push(
@@ -340,7 +348,7 @@ export function useSwitchFirmwareUtils () {
 
     return currentVersionDisplay.length > 0 ?
       <Tooltip title={<div>{tooltipArray}</div>} placement='bottom' >
-        <div>{currentVersionDisplay}</div>
+        <div style={{ display: 'flex' }}>{currentVersionDisplay}</div>
       </Tooltip> : noDataDisplay
   }
 

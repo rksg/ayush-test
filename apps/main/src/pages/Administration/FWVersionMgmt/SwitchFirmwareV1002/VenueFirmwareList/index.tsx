@@ -144,6 +144,7 @@ export function VenueFirmwareList () {
       dataIndex: 'venueName',
       sorter: { compare: sortProp('venueName', defaultSort) },
       searchable: true,
+      width: 120,
       defaultSortOrder: 'ascend',
       render: function (_, row) {
 
@@ -164,11 +165,19 @@ export function VenueFirmwareList () {
           return compareSwitchVersion(recommendedVersion, currentVersion)
         })
 
-        const tooltip = hasOutdatedVersion ?
-          <Tooltip children={<InformationOutlined style={{ marginBottom: '-4px' }} />}
-            // eslint-disable-next-line max-len
-            title={$t({ defaultMessage: 'Switches in this <VenueSingular></VenueSingular> are running an older version. We recommend that you update the <VenueSingular></VenueSingular> to the recommended firmware version.' })} /> : <></>
-        return <div>{row.venueName} {tooltip}</div>
+        const outdatedVersionSign = hasOutdatedVersion ?
+          <Tooltip children={<InformationOutlined style={{
+            marginBottom: '-4px',
+            overflow: 'visible'
+          }} />}
+          // eslint-disable-next-line max-len
+          title={$t({ defaultMessage: 'Switches in this <VenueSingular></VenueSingular> are running an older version. We recommend that you update the <VenueSingular></VenueSingular> to the recommended firmware version.' })} /> : <></>
+        return <div style={{ display: 'flex' }}><Tooltip
+          children={<div style={{
+            overflow: 'auto',
+            textOverflow: 'ellipsis'
+          }}>{row.venueName} </div>}
+          title={row.venueName}></Tooltip>{outdatedVersionSign}</div>
       }
     },
     {
@@ -182,7 +191,13 @@ export function VenueFirmwareList () {
       filterMultiple: false,
       filterKey: 'filterModelVersion',
       render: function (_, row) {
-        return getCurrentFirmwareDisplay(intl, row)
+        return {
+          props: {
+            style: { padding: '5px',
+              overflow: 'auto' }
+          },
+          children: getCurrentFirmwareDisplay(intl, row)
+        }
       }
     },
     {
