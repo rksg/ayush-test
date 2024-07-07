@@ -6,16 +6,18 @@ import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { isStepsFormBackStepClicked, showActionModal, StepsForm, StepsFormProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
 import { CompatibilityStatusBar, CompatibilityStatusEnum }                        from '@acx-ui/rc/components'
 import {
   usePatchEdgeClusterNetworkSettingsMutation
 } from '@acx-ui/rc/services'
-import { convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
-import { useTenantLink }                                                                                    from '@acx-ui/react-router-dom'
+import { ClusterHighAvailabilityModeEnum, convertEdgePortsConfigToApiPayload, EdgeIpModeEnum, EdgePort, EdgePortTypeEnum, EdgeSerialNumber } from '@acx-ui/rc/utils'
+import { useTenantLink }                                                                                                                     from '@acx-ui/react-router-dom'
 
 import { VirtualIpFormType }          from '../../EditEdgeCluster/VirtualIp'
 import { ClusterConfigWizardContext } from '../ClusterConfigWizardDataProvider'
 
+import { HaSettingForm }      from './HaSettingForm'
 import { LagForm }            from './LagForm'
 import { PortForm }           from './PortForm'
 import { Summary }            from './Summary'
@@ -40,11 +42,13 @@ const portCompatibleErrorFields = getPortFormCompatibilityFields()
 const enum InterfaceSettingsTypeEnum {
   LAGS = 'lagSettings',
   PORTS = 'portSettings',
-  VIRTUAL_IP = 'virtualIpSettings'
+  VIRTUAL_IP = 'virtualIpSettings',
+  HA_SETTING = 'haSettings'
 }
 
 export const InterfaceSettings = () => {
   const { clusterId } = useParams()
+  const isEdgeHaAaOn = useIsSplitOn(Features.EDGE_HA_AA_TOGGLE)
   const { $t } = useIntl()
   const navigate = useNavigate()
   const clusterListPage = useTenantLink('/devices/edge')
@@ -224,11 +228,20 @@ export const InterfaceSettings = () => {
         return !checkResult.isError
       }
     },
-    {
-      title: $t({ defaultMessage: 'Cluster Virtual IP' }),
-      id: InterfaceSettingsTypeEnum.VIRTUAL_IP,
-      content: <VirtualIpForm />
-    },
+    ...(
+      isEdgeHaAaOn &&
+      clusterInfo?.highAvailabilityMode === ClusterHighAvailabilityModeEnum.ACTIVE_ACTIVE ?
+        [{
+          title: $t({ defaultMessage: 'HA Settings' }),
+          id: InterfaceSettingsTypeEnum.HA_SETTING,
+          content: <HaSettingForm />
+        }]:
+        [{
+          title: $t({ defaultMessage: 'Cluster Virtual IP' }),
+          id: InterfaceSettingsTypeEnum.VIRTUAL_IP,
+          content: <VirtualIpForm />
+        }]
+    ),
     {
       title: $t({ defaultMessage: 'Summary' }),
       id: 'summary',
