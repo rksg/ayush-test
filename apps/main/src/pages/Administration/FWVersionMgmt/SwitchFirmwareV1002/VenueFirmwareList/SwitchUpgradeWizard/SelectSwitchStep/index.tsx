@@ -317,7 +317,7 @@ export const SelectSwitchStep = (
     let selectedKey = [] as Key[]
     const switchListPayload = {
       venueIdList: data.map(d => d.venueId),
-      search: searchText
+      searchFilter: searchText
     }
     const searchSwitchList = (await getSwitchFirmwareList({
       params: { tenantId: tenantId },
