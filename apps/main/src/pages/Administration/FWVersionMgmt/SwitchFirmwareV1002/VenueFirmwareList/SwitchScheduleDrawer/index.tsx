@@ -33,7 +33,7 @@ export interface SwitchScheduleDrawerProps {
 export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const intl = useIntl()
   const {
-    getSwitchNextScheduleTplTooltipV1002,
+    getSwitchDrawerNextScheduleTpl,
     getSwitchScheduleTplV1002
   } = useSwitchFirmwareUtils()
 
@@ -128,26 +128,30 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
     onClose={onClose}
     width={580}
     children={<>
-      <Row style={{ lineHeight: '24px' }}>
-        <Typography.Text>
-          <b> {intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}</b>{
-            props.data.venueName}
-        </Typography.Text>
-      </Row>
-      <Row style={{ lineHeight: '24px' }}>
-        <Typography.Text>
-          <b>  {intl.$t({ defaultMessage: 'Scheduled for:' })}</b> {
-            getNextScheduleTplV1002(intl, props.data)}
-        </Typography.Text>
-      </Row>
-      <Row style={{ lineHeight: '24px' }}>
-        <Typography.Text>
-          <b>{intl.$t({ defaultMessage: 'Target Firmware:' })}</b> {
-            getSwitchNextScheduleTplTooltipV1002(intl, props.data) ||
-            intl.$t({ defaultMessage: 'Not been set up yet' })}
-        </Typography.Text>
-      </Row>
-
+      <div style={{ background: '#f7f7f7', padding: '5px 10px' }}>
+        <Row style={{ lineHeight: '24px' }}>
+          <Typography.Text>
+            <b style={{ paddingRight: '5px' }}>
+              {intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>:' })}  </b>
+            {props.data.venueName}
+          </Typography.Text>
+        </Row>
+        <Row style={{ lineHeight: '24px' }}>
+          <Typography.Text>
+            <b style={{ paddingRight: '5px' }}>
+              {intl.$t({ defaultMessage: 'Scheduled for:' })}  </b>
+            {getNextScheduleTplV1002(intl, props.data)}
+          </Typography.Text>
+        </Row>
+        <Row style={{ lineHeight: '24px' }}>
+          <Typography.Text>
+            <b style={{ paddingRight: '5px' }}>
+              {intl.$t({ defaultMessage: 'Target Firmware:' })}</b>
+            {getSwitchDrawerNextScheduleTpl(intl, props.data) ||
+              intl.$t({ defaultMessage: 'Not been set up yet' })}
+          </Typography.Text>
+        </Row>
+      </div>
       <Table
         columns={columns}
         type={'tall'}

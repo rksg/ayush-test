@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
 
-import { Tag, Tooltip } from 'antd'
-import { IntlShape }    from 'react-intl'
+import { Tag, Tooltip, Typography } from 'antd'
+import { IntlShape }                from 'react-intl'
 
 import { Features, useIsSplitOn }   from '@acx-ui/feature-toggle'
 import {
@@ -136,6 +136,46 @@ export function useSwitchFirmwareUtils () {
        }
 
        return <div>{tooltipText}</div>
+     }
+     return ''
+   }
+
+  const getSwitchDrawerNextScheduleTpl =
+   (intl: IntlShape, venue: FirmwareSwitchVenueV1002) => {
+     if (venue.nextSchedule?.supportModelGroupVersions) {
+       const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
+       let tooltipText: ReactElement[] = []
+       const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+         [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
+         [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
+         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
+       }
+
+       for (const key in SwitchFirmwareModelGroup) {
+         const modelGroupVersions = supportModelGroupVersions?.filter(
+           (v => v.modelGroup === key))
+         if (modelGroupVersions.length > 0) {
+           const { modelGroup, version } = modelGroupVersions[0]
+           const modelGroupText = modelGroupDisplayText[modelGroup]
+           const switchVersion = parseSwitchVersion(version)
+
+           tooltipText.push(
+             <li style={{ listStyle: 'disc' }}>
+               <div key={modelGroup}
+                 style={{
+                 }}>
+                 <Typography.Text>
+                   <b style={{ paddingRight: '5px' }}>
+                     {modelGroupText}:</b>
+                   {switchVersion}
+                 </Typography.Text>
+               </div>
+             </li>
+           )
+         }
+       }
+
+       return <div><ul>{tooltipText}</ul></div>
      }
      return ''
    }
@@ -358,6 +398,7 @@ export function useSwitchFirmwareUtils () {
     getSwitchVersionLabelV1002,
     getSwitchNextScheduleTplTooltip,
     getSwitchNextScheduleTplTooltipV1002,
+    getSwitchDrawerNextScheduleTpl,
     getSwitchScheduleTpl,
     getSwitchScheduleTplV1002,
     getSwitchFirmwareList,
