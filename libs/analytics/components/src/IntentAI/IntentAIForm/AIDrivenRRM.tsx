@@ -1,7 +1,8 @@
-import { Row, Col, Typography }   from 'antd'
-import { useIntl, defineMessage } from 'react-intl'
+import { Row, Col, Typography, Space } from 'antd'
+import { useIntl, defineMessage }      from 'react-intl'
 
 import { PageHeader, StepsForm, Descriptions } from '@acx-ui/components'
+import { LinkDocumentIcon, LinkVideoIcon }     from '@acx-ui/icons'
 
 import { mapping, demoLink, guideLink } from './mapping'
 import * as UI                          from './styledComponents'
@@ -96,12 +97,16 @@ export function AIDrivenRRM () {
                 <StepsForm.TextContent>
                   <Typography.Paragraph>
                     <a href={demoLink} target='_blank' rel='noreferrer'>
-                      <UI.LinkVideoIcon />
-                      {$t(defineMessage({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }))}
+                      <Space>
+                        <LinkVideoIcon />
+                        {$t(defineMessage({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }))}
+                      </Space>
                     </a>
                     <a href={guideLink} target='_blank' rel='noreferrer'>
-                      <UI.LinkDocumentIcon />
-                      {$t(defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }))}
+                      <Space>
+                        <LinkDocumentIcon />
+                        {$t(defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }))}
+                      </Space>
                     </a>
                   </Typography.Paragraph>
                 </StepsForm.TextContent>
