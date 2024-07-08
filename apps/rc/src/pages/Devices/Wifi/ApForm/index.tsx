@@ -65,7 +65,7 @@ import {
 } from '@acx-ui/react-router-dom'
 import { validationMessages } from '@acx-ui/utils'
 
-import { ApEditContext } from '../ApEdit/index'
+import { ApDataContext, ApEditContext } from '../ApEdit/index'
 
 import * as UI                      from './styledComponents'
 import { VenueFirmwareInformation } from './VenueFirmwareInformation'
@@ -97,13 +97,22 @@ export function ApForm () {
   const {
     editContextData, setEditContextData, previousPath, isOnlyOneTab
   } = useContext(ApEditContext)
+  const { venueData } = useContext(ApDataContext)
 
   const { data: apList } = useApListQuery({ params: { tenantId }, payload: defaultApPayload })
   const { data: venuesList, isLoading: isVenuesListLoading }
     = useVenuesListQuery({ params: { tenantId }, payload: defaultPayload })
-  const { data: apDetails, isLoading: isApDetailsLoading }
-    // eslint-disable-next-line max-len
-    = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
+  const {
+    data: apDetails,
+    isLoading: isApDetailsLoading
+  } = useGetApOperationalQuery({
+    params: {
+      tenantId,
+      serialNumber: serialNumber ? serialNumber : '',
+      venueId: venueData ? venueData.id : ''
+    },
+    enableRbac: isUseWifiRbacApi
+  })
   const wifiCapabilities = useWifiCapabilitiesQuery({
     params: { tenantId },
     enableRbac: isUseWifiRbacApi
@@ -165,14 +174,17 @@ export function ApForm () {
           venuesList?.data as unknown as VenueExtended[], venueId)
         const venueLatLng = pick(selectVenue, ['latitude', 'longitude'])
         const options = await getApGroupOptions(venueId)
-        const dhcpApResponse = await getDhcpAp({
-          params: { tenantId },
-          payload: isUseWifiRbacApi ?
-            [{ venueId: apDetails.venueId, serialNumber }] :
-            [serialNumber],
-          enableRbac: isUseWifiRbacApi
-        }, true).unwrap()
-        const dhcpAp = retrieveDhcpAp(dhcpApResponse)
+        let dhcpAp
+        if((venueId && serialNumber) || !isUseWifiRbacApi) {
+          const dhcpApResponse = await getDhcpAp({
+            params: { tenantId },
+            payload: isUseWifiRbacApi ?
+              [{ venueId, serialNumber }] :
+              [serialNumber],
+            enableRbac: isUseWifiRbacApi
+          }, true).unwrap()
+          dhcpAp = retrieveDhcpAp(dhcpApResponse)
+        }
 
         setSelectedVenue(selectVenue as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])
@@ -326,7 +338,11 @@ export function ApForm () {
         payload,
         enableRbac: isUseWifiRbacApi
       }).unwrap()
-      if(isUseWifiRbacApi) {
+      if(
+        isUseWifiRbacApi &&
+        (values.venueId !==apDetails?.venueId ||
+        values.apGroupId !== apDetails?.apGroupId)
+      ) {
         await moveApToTargetApGroup({
           params: {
             venueId: values.venueId,
@@ -403,7 +419,7 @@ export function ApForm () {
 
         return !item.isDefault
       }).map((v) => ({ label: v.name, value: v.id })) || [])
-
+      result[0].value = apGroupOptions?.find(item => item.isDefault)?.id ?? null
     } else {
       const list = venueId ? (await apGroupList({ params: { tenantId, venueId } })).data : []
       if (venueId && list?.length) {

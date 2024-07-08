@@ -523,18 +523,22 @@ export const apApi = baseApApi.injectEndpoints({
         const getApReq = createHttpRequest(WifiRbacUrlsInfo.getAp, params, apiCustomHeader)
         const getApRes = await fetchWithBQ({ ...getApReq })
         const apData = getApRes.data as ApDeep
-        const mDnsProxyPayload = {
-          fields: ['id', 'apSerialNumbers'],
-          filters: {
-            apSerialNumbers: [params?.serialNumber]
+        if(apData) {
+          apData.serialNumber = params?.serialNumber ?? ''
+          apData.venueId = params?.venueId ?? ''
+          const mDnsProxyPayload = {
+            fields: ['id', 'apSerialNumbers'],
+            filters: {
+              apSerialNumbers: [params?.serialNumber]
+            }
           }
-        }
-        const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.getMdnsProxyListRbac, undefined, apiCustomHeader)
-        const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
-        const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
-        const targetMdnsData = mDnsProxyList?.[0]
-        if(targetMdnsData) {
-          apData.multicastDnsProxyServiceProfileId = targetMdnsData.id
+          const mDnsProxyListReq = createHttpRequest(MdnsProxyUrls.getMdnsProxyListRbac, undefined, apiCustomHeader)
+          const mDnsProxyListRes = await fetchWithBQ({ ...mDnsProxyListReq, body: JSON.stringify(mDnsProxyPayload) })
+          const mDnsProxyList = (mDnsProxyListRes.data as TableResult<NewMdnsProxyData>).data
+          const targetMdnsData = mDnsProxyList?.[0]
+          if(targetMdnsData) {
+            apData.multicastDnsProxyServiceProfileId = targetMdnsData.id
+          }
         }
         return { data: apData }
       },
@@ -553,13 +557,33 @@ export const apApi = baseApApi.injectEndpoints({
       }
     }),
     getApOperational: build.query<ApDeep, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const urlsInfo = enableRbac ? WifiRbacUrlsInfo : WifiUrlsInfo
-        const apiCustomHeader = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
-        const req = createHttpRequest(urlsInfo.getApOperational, params, apiCustomHeader)
-        return {
-          ...req
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if(!enableRbac) {
+          const req = createHttpRequest(WifiUrlsInfo.getApOperational, params)
+          const res = await fetchWithBQ({ ...req })
+          return { data: res.data as ApDeep }
         }
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        const apReq = createHttpRequest(WifiRbacUrlsInfo.getApOperational, params, apiCustomHeader)
+        const apRes = await fetchWithBQ({ ...apReq })
+        const ap = apRes.data as ApDeep
+        if(ap) {
+          ap.serialNumber = params?.serialNumber ?? ''
+          ap.venueId = params?.venueId ?? ''
+          const apGroupPayload = {
+            fields: ['id'],
+            pageSize: 1,
+            filters: { apSerialNumbers: [ap.serialNumber] }
+          }
+          const apGroupListReq = createHttpRequest(WifiRbacUrlsInfo.getApGroupsList, params, apiCustomHeader)
+          const apGroupListRes = await fetchWithBQ({ ...apGroupListReq, body: JSON.stringify(apGroupPayload) })
+          const apGroupList = apGroupListRes.data as TableResult<ApGroup>
+          const targetApGroup = apGroupList.data[0]
+          if(targetApGroup) {
+            ap.apGroupId = targetApGroup.id
+          }
+        }
+        return { data: ap }
       },
       providesTags: [{ type: 'Ap', id: 'Details' }],
       async onCacheEntryAdded (requestArgs, api) {
