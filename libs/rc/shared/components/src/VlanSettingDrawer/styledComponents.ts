@@ -1,8 +1,6 @@
 import { Form, Collapse } from 'antd'
 import styled             from 'styled-components/macro'
 
-import { Subtitle } from '@acx-ui/components'
-
 export const FieldLabel = styled.div<{ width: string }>`
   font-size: var(--acx-body-4-font-size);
   display: grid;
