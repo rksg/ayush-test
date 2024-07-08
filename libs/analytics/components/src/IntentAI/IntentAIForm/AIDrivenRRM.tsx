@@ -1,11 +1,11 @@
 import { Row, Col, Typography, Space } from 'antd'
-import { useIntl, defineMessage }      from 'react-intl'
+import { useIntl }                     from 'react-intl'
 
 import { useLayoutContext, PageHeader, StepsForm, Descriptions } from '@acx-ui/components'
 import { LinkDocumentIcon, LinkVideoIcon }                       from '@acx-ui/icons'
 
-import { mapping, demoLink, guideLink } from './mapping'
-import * as UI                          from './styledComponents'
+import { mapping } from './mapping'
+import * as UI     from './styledComponents'
 
 export function AIDrivenRRM () {
   const { $t } = useIntl()
@@ -17,6 +17,34 @@ export function AIDrivenRRM () {
       link: '/analytics/intentAI'
     }
   ]
+
+  /* eslint-disable max-len */
+  const descriptions = [
+    {
+      title: $t({ defaultMessage: 'High number of clients in a dense network' }),
+      text: $t({ defaultMessage: 'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })
+    },
+    {
+      title: $t({ defaultMessage: 'High client throughput in sparse network' }),
+      text: $t({ defaultMessage: 'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' })
+    }
+  ]
+  const benefits = $t({ defaultMessage: 'Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })
+  const resources = [
+    {
+      icon: <LinkVideoIcon />,
+      label: $t({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }),
+      link: 'https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi'
+    },
+    {
+      icon: <LinkDocumentIcon />,
+      label: $t({ defaultMessage: 'RUCKUS AI User Guide' }),
+      link: 'https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html'
+    }
+  ]
+  const tradeoff = $t({ defaultMessage: 'In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.' })
+  /* eslint-enable max-len */
+
   const { pageHeaderY } = useLayoutContext()
 
   return (
@@ -68,15 +96,13 @@ export function AIDrivenRRM () {
                 {$t({ defaultMessage:
                   'Network Intent plays a crucial role in wireless network design' })}
               </StepsForm.Subtitle>
-              <StepsForm.TextContent>
-                <Typography.Paragraph>
-                  <b>{$t({ defaultMessage: 'High number of clients in a dense network:' })}</b> <span>{$t({ defaultMessage:
-                    'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })}</span>
-                </Typography.Paragraph>
-                <Typography.Paragraph>
-                  <b>{$t({ defaultMessage: 'High client throughput in sparse network:' })}</b> <span>{$t({ defaultMessage:
-                    'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' })}</span>
-                </Typography.Paragraph>
+              <StepsForm.TextContent>{
+                descriptions.map((item, index) => (
+                  <Typography.Paragraph key={`description-${index}`}>
+                    <b>{item.title}:</b> <span>{item.text}</span>
+                  </Typography.Paragraph>
+                ))
+              }
               </StepsForm.TextContent>
             </Col>
             <Col span={7} offset={2}>
@@ -89,27 +115,21 @@ export function AIDrivenRRM () {
                 </StepsForm.Subtitle>
                 <StepsForm.TextContent>
                   <Typography.Paragraph>
-                    {$t({ defaultMessage: 'Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })}
+                    {benefits}
                   </Typography.Paragraph>
                 </StepsForm.TextContent>
                 <StepsForm.Subtitle>
                   {$t({ defaultMessage: 'Resources:' })}
                 </StepsForm.Subtitle>
                 <StepsForm.TextContent>
-                  <Typography.Paragraph>
-                    <a href={demoLink} target='_blank' rel='noreferrer'>
-                      <Space>
-                        <LinkVideoIcon />
-                        {$t(defineMessage({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }))}
-                      </Space>
-                    </a>
-                    <a href={guideLink} target='_blank' rel='noreferrer'>
-                      <Space>
-                        <LinkDocumentIcon />
-                        {$t(defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }))}
-                      </Space>
-                    </a>
-                  </Typography.Paragraph>
+                  <Typography.Paragraph>{
+                    resources.map((item, index) => (<a
+                      href={item.link}
+                      target='_blank'
+                      rel='noreferrer'
+                      key={`resources-${index}`}
+                    ><Space>{item.icon}{item.label}</Space></a>))
+                  }</Typography.Paragraph>
                 </StepsForm.TextContent>
               </UI.SideNotes>
             </Col>
@@ -137,7 +157,7 @@ export function AIDrivenRRM () {
                 </StepsForm.Subtitle>
                 <StepsForm.TextContent>
                   <Typography.Paragraph>
-                    {$t({ defaultMessage: 'In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.' })}
+                    {tradeoff}
                   </Typography.Paragraph>
                 </StepsForm.TextContent>
               </UI.SideNotes>
@@ -156,11 +176,11 @@ export function AIDrivenRRM () {
                   {$t({ defaultMessage: 'Side Notes' })}
                 </Typography.Title>
                 <StepsForm.Subtitle>
-                  {$t({ defaultMessage: 'High number of clients in a dense network' })}
+                  {descriptions[0].title}
                 </StepsForm.Subtitle>
                 <StepsForm.TextContent>
                   <Typography.Paragraph>
-                    {$t({ defaultMessage: 'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })}
+                    {descriptions[0].text}
                   </Typography.Paragraph>
                 </StepsForm.TextContent>
               </UI.SideNotes>
