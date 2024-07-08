@@ -12,7 +12,6 @@ import {
   defaultSort,
   sortProp,
   isOweTransitionNetwork,
-  // isDsaeOnboardingNetwork,
   NetworkTypeEnum,
   useTableQuery,
   Network,
