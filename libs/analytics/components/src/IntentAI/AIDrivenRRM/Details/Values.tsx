@@ -1,26 +1,13 @@
-import { Fragment } from 'react'
-
 import { chain, snakeCase } from 'lodash'
-import { useIntl }          from 'react-intl'
 
 import { impactedArea, nodeTypes, productNames } from '@acx-ui/analytics/utils'
-import { Card, GridCol, GridRow, Tooltip }       from '@acx-ui/components'
 import { get }                                   from '@acx-ui/config'
 import { DateFormatEnum, formatter }             from '@acx-ui/formatter'
-import { NodeType, getIntl, noDataDisplay }      from '@acx-ui/utils'
+import { NodeType, getIntl }                     from '@acx-ui/utils'
 
 import { codes }                                      from '../config'
 import { EnhancedRecommendation, extractBeforeAfter } from '../services'
 import { isDataRetained }                             from '../utils'
-
-import {
-  DetailsHeader,
-  ValueDetails,
-  DetailsWrapper,
-  Title,
-  InfoIcon,
-  ValueDetailsWithIcon
-} from './styledComponents'
 
 
 export const getValues = (details: EnhancedRecommendation) => {
@@ -161,64 +148,4 @@ export const getRecommendationsText = (
       ? $t(tradeoffText, parameters)
       : $t(partialOptimizedTradeoffText!, parameters)
   }
-}
-
-export const Values = ({ details }: { details: EnhancedRecommendation }) => {
-  const { $t } = useIntl()
-  const {
-    heading, appliedOnce, status, original, current, recommended, tooltipContent
-  } = getValues(details)
-  const applied = appliedOnce && status !== 'reverted'
-  const secondValue = applied ? current : recommended
-  const recommendationText = getRecommendationsText(details)
-  const tooltipText = typeof tooltipContent === 'string'
-    ? tooltipContent
-    : typeof tooltipContent === 'undefined'
-      ? null
-      : $t(tooltipContent)
-
-  const fields = [
-    {
-      label: applied
-        ? $t({ defaultMessage: 'Original Configuration' })
-        : $t({ defaultMessage: 'Current Configuration' }),
-      value: applied ? original : current
-    },
-    {
-      label: applied
-        ? $t({ defaultMessage: 'Current Configuration' })
-        : $t({ defaultMessage: 'Recommended Configuration' }),
-      value: tooltipText
-        ? <ValueDetailsWithIcon>
-          {secondValue}
-          {tooltipText && <Tooltip title={tooltipText}>
-            <InfoIcon />
-          </Tooltip>}
-        </ValueDetailsWithIcon>
-        : secondValue
-    }
-  ]
-
-  return <>
-    <DetailsHeader>{$t({ defaultMessage: 'Recommendation Details' })}</DetailsHeader>
-    <DetailsWrapper>
-      <Card type='solid-bg' title={$t(heading)}>
-        <GridRow>
-          {fields
-            .filter(({ value }) => [null, noDataDisplay as string]
-              .includes(value as unknown as string | null) === false)
-            .map(({ label, value }, ind) => <Fragment key={ind}>
-              <GridCol col={{ span: 8 }}>{label}</GridCol>
-              <GridCol col={{ span: 16 }}><ValueDetails>{value}</ValueDetails></GridCol>
-            </Fragment>)}
-        </GridRow>
-      </Card>
-    </DetailsWrapper>
-    <Title>{$t({ defaultMessage: 'What is the recommendation?' })}</Title>
-    {recommendationText.actionText}
-    <Title>{$t({ defaultMessage: 'Why this recommendation?' })}</Title>
-    {recommendationText.reasonText}
-    <Title>{$t({ defaultMessage: 'What is the potential trade-off?' })}</Title>
-    {recommendationText.tradeoffText}
-  </>
 }

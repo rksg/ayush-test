@@ -19,7 +19,7 @@ import { Overview }                           from './Overview'
 import { StatusTrail }                        from './StatusTrail'
 import { AIDrivenRRMHeader, AIDrivenRRMIcon } from './styledComponents'
 
-export const IntentAICrrmDetails = () => {
+export const CrrmDetails = () => {
   const { $t } = useIntl()
   const params = useParams()
   const id = get(params, 'id', undefined) as string

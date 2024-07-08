@@ -1,3 +1,3 @@
-import { IntentAICrrmDetails } from './CrrmDetails'
+import { CrrmDetails } from './CrrmDetails'
 
-export { IntentAICrrmDetails }
+export { CrrmDetails as IntentAICrrmDetails }
