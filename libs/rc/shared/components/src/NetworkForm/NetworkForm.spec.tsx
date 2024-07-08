@@ -10,7 +10,9 @@ import {
   IdentityProviderUrls,
   MacRegListUrlsInfo,
   PortalUrlsInfo,
+  WifiCallingUrls,
   WifiOperatorUrls,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -34,7 +36,8 @@ import {
   portalList,
   mockHotpost20IdentityProviderList,
   mockHotspot20OperatorList,
-  macRegistrationList
+  macRegistrationList,
+  mockWifiCallingTableResult
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -59,6 +62,8 @@ describe('NetworkForm', () => {
 
     networkDeepResponse.name = 'open network test'
     mockServer.use(
+      rest.post(WifiCallingUrls.getEnhancedWifiCallingList.url,
+        (_, res, ctx) => res(ctx.json(mockWifiCallingTableResult))),
       rest.get(UserUrlsInfo.getAllUserSettings.url,
         (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
@@ -98,7 +103,9 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))
       ),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] })))
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))),
+      rest.put(WifiRbacUrlsInfo.updateRadiusServerSettings.url,
+        (_, res, ctx) => res(ctx.json(successResponse)))
     )
   })
 

@@ -8,7 +8,7 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-import handlers        from './__tests__/fixtures'
+import { handlers }    from './__tests__/fixtures'
 import VenueLeaseTable from './LeaseTable'
 
 

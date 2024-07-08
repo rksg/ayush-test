@@ -55,9 +55,11 @@ import {
   ApiVersionEnum,
   GetApiVersionHeader
 } from '@acx-ui/rc/utils'
-import { baseServiceApi }             from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseServiceApi }                       from '@acx-ui/store'
+import { RequestPayload }                       from '@acx-ui/types'
+import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
+
+import { getDhcpProfileFn } from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -108,38 +110,17 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
-    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params)
-        return {
-          ...req,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
     getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfiles
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfiles
         const req = createHttpRequest(url, params)
         return {
           ...req,
-          ...(enableRbac ? { body: { pageSize: DHCP_LIMIT_NUMBER } } : {})
+          ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
         }
       },
-      // eslint-disable-next-line max-len
       transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {
         if(arg.enableRbac) {
-          // eslint-disable-next-line max-len
           return (response as TableResult<DHCPSaveData>).data.map((item) => ({ ...item, serviceName: item.name || '' }))
         }
         return response as DHCPSaveData[]
@@ -163,11 +144,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
       query: ({ params, payload, enableRbac }) => {
-        const url = enableRbac ? DHCPUrls.queryDHCPProfiles : DHCPUrls.getDHCPProfilesViewModel
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfilesViewModel
         const req = createHttpRequest(url, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
@@ -189,23 +170,16 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
-      query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        const dhcpDetailReq = createHttpRequest(DHCPUrls.getDHCProfileDetail, params, headers)
-        return {
-          ...dhcpDetailReq
-        }
-      },
-      transformResponse: transformDhcpResponse,
+      queryFn: getDhcpProfileFn(),
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
       query: ({ params, payload, enableRbac } :
         { params:Params, payload:DHCPSaveData, enableRbac: boolean }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        // eslint-disable-next-line max-len
-        const url = _.isEmpty(params.serviceId) ? DHCPUrls.addDHCPService : DHCPUrls.updateDHCPService
-        const dhcpReq = createHttpRequest(url, params, headers)
+        const addDHCPUrl = enableRbac ? DHCPUrls.addDhcpServiceRbac : DHCPUrls.addDHCPService
+        const updatedDHCPUrl = enableRbac ? DHCPUrls.updateDhcpServiceRbac : DHCPUrls.updateDHCPService
+        const url = _.isEmpty(params.serviceId) ? addDHCPUrl : updatedDHCPUrl
+        const dhcpReq = createHttpRequest(url, params)
         return {
           ...dhcpReq,
           body: JSON.stringify(payload)
@@ -215,8 +189,8 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, enableRbac }) => {
-        const headers = enableRbac ? GetApiVersionHeader(ApiVersionEnum.v1_1) : {}
-        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params, headers)
+        const url = enableRbac ? DHCPUrls.deleteDhcpProfileRbac : DHCPUrls.deleteDHCPProfile
+        const req = createHttpRequest(url, params)
         return {
           ...req
         }
@@ -356,55 +330,90 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const reqParams = { ...params }
-        const wifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.getWifiCalling, reqParams
-        )
+
+    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         return {
-          ...wifiCallingServiceReq,
-          body: payload
+          ...req
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
+    }),
+    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const requests = (payload as string[]).map(serviceId => ({ params: { serviceId } }))
+          await batchApi(WifiCallingUrls.deleteWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
+
+          return { data: {} as CommonResult }
+        } else {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params),
+            body: payload
+          })
+
+          return { data: res.data as CommonResult }
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
+    }),
+    getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        const req = createHttpRequest( WifiCallingUrls.getWifiCalling, params, headers)
+        const resPromise = fetchWithBQ(req)
+
+        if (enableRbac) {
+          const payload = { filters: { id: [params?.serviceId] } }
+          const viewmodelHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const viewmodelReq = createHttpRequest(WifiCallingUrls.queryWifiCalling, params, viewmodelHeaders)
+
+          const [res, viewmodelRes] = await Promise.all([
+            resPromise,
+            fetchWithBQ({ ...viewmodelReq, body: JSON.stringify(payload) })
+          ])
+
+
+          if (res.error || viewmodelRes.error) {
+            return { error: res.error || viewmodelRes.error as FetchBaseQueryError }
+          }
+
+          const wifiNetworkIds = (viewmodelRes.data as TableResult<WifiCallingFormContextType>)?.data?.[0].wifiNetworkIds
+          return { data: {
+            ...res.data as WifiCallingFormContextType,
+            networkIds: wifiNetworkIds ?? []
+          } as WifiCallingFormContextType }
+        } else {
+          const res = await resPromise
+
+          return res.data
+            ? { data: res.data as WifiCallingFormContextType }
+            : { error: res.error as FetchBaseQueryError }
         }
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
-    getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
-      query: ({ params }) => {
-        const wifiCallingServiceListReq = createHttpRequest(
-          WifiCallingUrls.getWifiCallingList, params
-        )
-        return {
-          ...wifiCallingServiceListReq
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddWifiCallingServiceProfile',
-            'UpdateWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfiles'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([
-              { type: 'Service', id: 'LIST' },
-              { type: 'WifiCalling', id: 'LIST' }
-            ]))
-          })
-        })
-      }
-    }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const wifiCallingServiceListReq = createHttpRequest(
-          WifiCallingUrls.getEnhancedWifiCallingList, params
-        )
+      query: ({ params, payload, enableRbac }) => {
+        const apiInfo = enableRbac ? WifiCallingUrls.queryWifiCalling : WifiCallingUrls.getEnhancedWifiCallingList
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+
+        const wifiCallingServiceListReq = createHttpRequest(apiInfo, params, headers)
+
         return {
           ...wifiCallingServiceListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
+      },
+      transformResponse: (result: TableResult<WifiCallingSetting>, _meta, arg) => {
+        return arg.enableRbac
+          ? {
+            ...result,
+            data: result.data?.map(profile => ({ ...profile, networkIds: profile.wifiNetworkIds }))
+          }
+          : result
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -413,7 +422,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'AddWifiCallingServiceProfile',
             'UpdateWifiCallingServiceProfile',
             'DeleteWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfiles'
+            'DeleteWifiCallingServiceProfiles',
+            'ActivateWifiCallingServiceProfileOnWifiNetwork',
+            'DeactivateWifiCallingServiceProfileOnWifiNetwork'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
@@ -424,30 +435,76 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: ({ params, payload }) => {
+    createWifiCallingService: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const createWifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.addWifiCalling, params
+          WifiCallingUrls.addWifiCalling,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
         )
-        return {
+
+        const res = await fetchWithBQ({
           ...createWifiCallingServiceReq,
-          body: payload
+          body: JSON.stringify(payload)
+        })
+
+        if (enableRbac && payload?.networkIds && payload?.networkIds.length > 0) {
+          const { response } = res.data as CommonResult
+          if (response?.id) {
+            const requests = payload.networkIds.map(networkId => ({
+              params: { serviceId: response?.id, networkId }
+            }))
+            await batchApi(WifiCallingUrls.activateWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+          }
         }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
-    updateWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          WifiCallingUrls.updateWifiCalling, params
-        )
-        return {
-          ...req,
-          body: payload
+    updateWifiCallingService: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { networkIds, oldNetworkIds, ...restPayload } = payload ?? {}
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+
+        const res = await fetchWithBQ({
+          ...createHttpRequest(WifiCallingUrls.updateWifiCalling, params, headers),
+          body: JSON.stringify({
+            ...restPayload,
+            networkIds: enableRbac ? undefined : networkIds
+          })
+        })
+
+        if (enableRbac) {
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const activateRequests = (networkIds || [])
+            .filter(networkId => !oldNetworkIds?.includes(networkId))
+            .map(networkId => ({ params: { networkId, serviceId: params?.serviceId } }))
+          const deactivateRequests = (oldNetworkIds || [])
+            .filter(networkId => !networkIds?.includes(networkId))
+            .map(networkId => ({ params: { networkId, serviceId: params?.serviceId } }))
+
+          await Promise.all([
+            batchApi(WifiCallingUrls.activateWifiCalling, activateRequests, fetchWithBQ, customHeaders),
+            batchApi(WifiCallingUrls.deactivateWifiCalling, deactivateRequests, fetchWithBQ, customHeaders)
+          ])
         }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
+    activateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiCallingUrls.activateWifiCalling, params, GetApiVersionHeader(ApiVersionEnum.v1))
+      }
+    }),
+    deactivateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiCallingUrls.deactivateWifiCalling, params, GetApiVersionHeader(ApiVersionEnum.v1))
+      }
+    }),
+
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         try {
@@ -996,10 +1053,11 @@ export const {
   useDeleteWifiCallingServicesMutation,
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
-  useGetWifiCallingServiceListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
   useUpdateWifiCallingServiceMutation,
+  useActivateWifiCallingServiceMutation,
+  useDeactivateWifiCallingServiceMutation,
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
