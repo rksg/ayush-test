@@ -127,7 +127,7 @@ export function SwitchInfoWidget (props:{
     return (
       <UI.DonutChartWidget
         title={$t({ defaultMessage: 'Ports' })}
-        style={{ width: 100, height: 100 }}
+        style={{ width: 200, height: 100 }}
         data={isDisconnected ? [] : data}
         value={isDisconnected
           ? $t({ defaultMessage: 'Switch {br} disconnected' }, { br: '\n' }) : ''}
