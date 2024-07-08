@@ -101,6 +101,7 @@ const SmsProviderItem = () => {
       provider: selectedType
     }
     updateNotificationSms({ params , payload: payload }).then()
+    setSmsProviderConfigured(false)
     reloadSmsNotification(2)
   }
 
