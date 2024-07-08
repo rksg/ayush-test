@@ -43,6 +43,13 @@ type AdditionalColumnType <RecordType, ValueType> = {
    */
   width?: number
   /**
+   * Minimum width for the resizable column.
+   *
+   * If `minWidth` is set, column width cannot be resized to be less than `minWidth`.
+   * @default undefined
+   */
+  minWidth?: number
+  /**
    * Set the column to be searchable
    * If one column has this to true the table will start showing search input
    * @default false

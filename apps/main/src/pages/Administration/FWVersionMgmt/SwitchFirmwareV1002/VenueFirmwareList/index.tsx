@@ -168,13 +168,14 @@ export function VenueFirmwareList () {
         const outdatedVersionSign = hasOutdatedVersion ?
           <Tooltip children={<InformationOutlined style={{
             marginBottom: '-4px',
-            overflow: 'visible'
+            overflow: 'visible',
+            marginLeft: '2px'
           }} />}
           // eslint-disable-next-line max-len
           title={$t({ defaultMessage: 'Switches in this <VenueSingular></VenueSingular> are running an older version. We recommend that you update the <VenueSingular></VenueSingular> to the recommended firmware version.' })} /> : <></>
         return <div style={{ display: 'flex' }}><Tooltip
           children={<div style={{
-            overflow: 'auto',
+            overflow: 'hidden',
             textOverflow: 'ellipsis'
           }}>{row.venueName} </div>}
           title={row.venueName}></Tooltip>{outdatedVersionSign}</div>
@@ -185,6 +186,7 @@ export function VenueFirmwareList () {
       key: 'version',
       dataIndex: 'version',
       width: 250,
+      minWidth: 300,
       sorter: { compare: sortProp('switchFirmwareVersion.id', defaultSort) },
       filterable: true,
       fitlerCustomOptions: versionFilterOptions || [],
@@ -193,8 +195,10 @@ export function VenueFirmwareList () {
       render: function (_, row) {
         return {
           props: {
-            style: { padding: '5px',
-              overflow: 'auto' }
+            style: {
+              padding: '5px',
+              overflow: 'hidden'
+            }
           },
           children: getCurrentFirmwareDisplay(intl, row)
         }
