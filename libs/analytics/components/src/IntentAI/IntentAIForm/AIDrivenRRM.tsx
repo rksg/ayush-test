@@ -158,7 +158,7 @@ export function AIDrivenRRM () {
                   </Typography.Paragraph>
                 </StepsForm.TextContent>
                 <StepsForm.Subtitle>
-                  {$t({ defaultMessage: 'Resources:' })}
+                  {$t({ defaultMessage: 'Resources' })}
                 </StepsForm.Subtitle>
                 <StepsForm.TextContent>
                   <Typography.Paragraph>{
