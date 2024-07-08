@@ -24,7 +24,8 @@ import {
   wifiCallingQosPriorityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
   searchString: '',
@@ -106,12 +107,14 @@ export default function WifiCallingTable () {
 
   const rowActions: TableProps<WifiCallingSetting>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -143,8 +146,11 @@ export default function WifiCallingTable () {
           { text: $t({ defaultMessage: 'My Services' }), link: getServiceListRoutePath(true) }
         ]}
         extra={filterByAccess([
-          // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}>
+          <TenantLink
+            // eslint-disable-next-line max-len
+            to={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
+            scopeKey={[WifiScopes.CREATE]}
+          >
             <Button
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= WIFICALLING_LIMIT_NUMBER
@@ -165,7 +171,10 @@ export default function WifiCallingTable () {
           onFilterChange={tableQuery.handleFilterChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={
+            // eslint-disable-next-line max-len
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+          }
         />
       </Loader>
     </>

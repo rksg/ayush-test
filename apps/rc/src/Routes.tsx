@@ -584,20 +584,36 @@ function ServiceRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.CREATE })}
-        element={<WifiCallingForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <WifiCallingForm />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.EDIT })}
-        element={<WifiCallingConfigureForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <WifiCallingConfigureForm />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.DETAIL })}
-        element={<WifiCallingDetailView />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <WifiCallingDetailView />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.WIFI_CALLING, oper: ServiceOperation.LIST })}
-        element={<WifiCallingTable/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <WifiCallingTable/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
