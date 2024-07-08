@@ -292,7 +292,7 @@ function SwitchPageHeader () {
           />,
           ...filterByAccess([
             <Dropdown overlay={menu}
-              scopeKey={[SwitchScopes.CREATE, SwitchScopes.DELETE, SwitchScopes.UPDATE]}>{() =>
+              scopeKey={[SwitchScopes.DELETE, SwitchScopes.UPDATE]}>{() =>
                 <Button>
                   <Space>
                     {$t({ defaultMessage: 'More Actions' })}
