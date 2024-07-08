@@ -102,11 +102,6 @@ export enum AaaServerOrderEnum {
   SECONDARY = 'secondary',
 }
 
-export enum CloudpathDeploymentTypeEnum {
-  OnPremise = 'OnPremise',
-  Cloud = 'Cloud',
-}
-
 export enum QosPriorityEnum {
   WIFICALLING_PRI_VOICE = 'WIFICALLING_PRI_VOICE',
   WIFICALLING_PRI_VIDEO = 'WIFICALLING_PRI_VIDEO',

@@ -49,7 +49,6 @@ import {
   DpskDownloadPassphrasesPayload,
   DpskPassphrasesClientPayload,
   DpskNewFlowPassphraseClient,
-  CloudpathServer,
   ApplicationPolicy,
   DHCP_LIMIT_NUMBER,
   ApiVersionEnum,
@@ -88,17 +87,6 @@ const defaultDpskVersioningHeaders = {
 
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({
-    cloudpathList: build.query<CloudpathServer[], RequestPayload>({
-      query: ({ params }) => {
-        const cloudpathListReq = createHttpRequest(
-          CommonUrlsInfo.getCloudpathList,
-          params
-        )
-        return {
-          ...cloudpathListReq
-        }
-      }
-    }),
     applicationPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
       query: ({ params }) => {
         const applicationPolicyListReq = createHttpRequest(
@@ -1031,7 +1019,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 })
 
 export const {
-  useCloudpathListQuery,
   useApplicationPolicyListQuery,
   useGetDHCPProfileQuery,
   useLazyGetDHCPProfileQuery,
