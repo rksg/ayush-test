@@ -1,10 +1,8 @@
 import { useState } from 'react'
 
-import { Row, Col, Typography, Space, Form } from 'antd'
-import moment                                from 'moment'
-import { useIntl, defineMessage }            from 'react-intl'
+import { Row, Col, Typography, Space } from 'antd'
+import { useIntl, defineMessage }      from 'react-intl'
 
-import { TradeOff } from '@acx-ui/analytics/components'
 import {
   useLayoutContext,
   PageHeader,
@@ -13,6 +11,8 @@ import {
 } from '@acx-ui/components'
 import { get }                             from '@acx-ui/config'
 import { LinkDocumentIcon, LinkVideoIcon } from '@acx-ui/icons'
+
+import { TradeOff } from '../../TradeOff'
 
 import { mapping } from './mapping'
 import * as UI     from './styledComponents'

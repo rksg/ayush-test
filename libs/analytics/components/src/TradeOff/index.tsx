@@ -1,5 +1,5 @@
-import { Form, Radio, Col, Row, RadioProps } from 'antd'
-import { NamePath }                          from 'antd/es/form/interface'
+import { Form, Radio, Col, RadioProps } from 'antd'
+import { NamePath }                     from 'antd/es/form/interface'
 
 import { TradeOffWrapper, HeaderWrapper, RowWrapper, DividerWrapper } from './styledComponents'
 declare type RawValue = string | number
