@@ -201,7 +201,7 @@ export const SelectSwitchStep = (
           parseSwitchVersion(row.currentFirmware) : noDataDisplay
         return {
           props: {
-            style: { padding: '10px 0 5px 0' }
+            style: { padding: '10px 0 5px 5px' }
           },
           children: getTooltipText(version)
         }
