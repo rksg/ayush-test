@@ -724,22 +724,38 @@ function PolicyRoutes () {
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.CREATE })}
-        element={<RogueAPDetectionForm edit={false}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <RogueAPDetectionForm edit={false}/>
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.EDIT })}
-        element={<RogueAPDetectionForm edit={true}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <RogueAPDetectionForm edit={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.DETAIL })}
-        element={<RogueAPDetectionDetailView />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <RogueAPDetectionDetailView />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST })}
-        element={<RogueAPDetectionTable />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <RogueAPDetectionTable />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.CREATE })}
