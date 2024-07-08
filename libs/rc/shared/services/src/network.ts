@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import { QueryReturnValue }                        from '@reduxjs/toolkit/dist/query/baseQueryTypes'
 import { FetchBaseQueryError, FetchBaseQueryMeta } from '@reduxjs/toolkit/query/react'
-import _                                           from 'lodash'
+import _, { find }                                 from 'lodash'
 
 import {
   ApCompatibility,
@@ -30,12 +30,14 @@ import {
   onActivityMessageReceived,
   onSocketActivityChanged,
   transformNetwork,
-  RadioTypeEnum
+  RadioTypeEnum,
+  BaseNetwork,
+  VlanPoolRbacUrls,
+  VLANPoolViewModelRbacType
 } from '@acx-ui/rc/utils'
 import { baseNetworkApi }                      from '@acx-ui/store'
 import { RequestPayload }                      from '@acx-ui/types'
 import { createHttpRequest, ignoreErrorModal } from '@acx-ui/utils'
-
 
 const RKS_NEW_UI = {
   'x-rks-new-ui': true
@@ -723,15 +725,35 @@ export const networkApi = baseNetworkApi.injectEndpoints({
         const networkActivationsQuery = await fetchWithBQ(networkActivations)
         const networkVenueList = networkActivationsQuery.data as TableResult<NetworkVenue>
 
-        let networksList = { data: [] } as { data: Network[] }
-
+        const apiCustomHeader = GetApiVersionHeader(ApiVersionEnum.v1)
+        let networksList = { data: [] } as { data: WifiNetwork[] }
+        const networkIds = networkVenueList?.data.map(item => item.networkId!) || []
         if (networkVenueList && networkVenueList.data && networkVenueList.data.length > 0) {
-          const networkIds = networkVenueList.data.map(item => item.networkId!) || []
-          const networkListReq = createHttpRequest(CommonUrlsInfo.getVenueNetworkList, arg.params)
-          const networkListQuery = await fetchWithBQ({ ...networkListReq, body: {
-            filters: { id: networkIds }
-          } })
-          networksList = networkListQuery.data as TableResult<Network>
+          const networkListQuery = await fetchWithBQ({
+            ...createHttpRequest(CommonRbacUrlsInfo.getWifiNetworksList, apiCustomHeader),
+            body: JSON.stringify({
+              filters: { id: networkIds }
+            }) })
+
+          networksList = networkListQuery.data as TableResult<WifiNetwork>
+        }
+
+        // fetch vlan pool info
+        const typedPayload = arg.payload as Record<string, unknown>
+        if (networkIds.length && (typedPayload?.fields as string[])?.includes('vlanPool')) {
+          const vlanPoolListQuery = await fetchWithBQ({
+            ...createHttpRequest( VlanPoolRbacUrls.getVLANPoolPolicyList, apiCustomHeader),
+            body: JSON.stringify({
+              fields: ['id', 'name', 'wifiNetworkIds'],
+              filters: { wifiNetworkIds: networkIds }
+            }) })
+          const vlanPoolList = vlanPoolListQuery.data as TableResult<VLANPoolViewModelRbacType>
+
+          networksList.data.forEach(network => {
+            network.vlanPool = find(vlanPoolList.data, (item) => {
+              return item.wifiNetworkIds?.includes(network.id)
+            }) as BaseNetwork['vlanPool']
+          })
         }
 
         return networkVenueList

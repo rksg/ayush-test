@@ -8,10 +8,10 @@ import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 import { rest }  from 'msw'
 
-import { StepsForm, StepsFormProps }                                                    from '@acx-ui/components'
-import { networkApi, tunnelProfileApi }                                                 from '@acx-ui/rc/services'
-import { CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls, TunnelTypeEnum } from '@acx-ui/rc/utils'
-import { Provider, store }                                                              from '@acx-ui/store'
+import { StepsForm, StepsFormProps }                                                                                          from '@acx-ui/components'
+import { networkApi, tunnelProfileApi }                                                                                       from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, EdgeTunnelProfileFixtures, TunnelProfileUrls, TunnelTypeEnum, VlanPoolRbacUrls } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                                    from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -110,13 +110,22 @@ describe('Tunnel Scope Form', () => {
         (_req, res, ctx) => res(ctx.json(mockNetworkSaveData))
       ),
       rest.post(
-        CommonUrlsInfo.getVenueNetworkList.url,
+        CommonRbacUrlsInfo.getWifiNetworksList.url,
+        (_req, res, ctx) => res(ctx.json({
+          data: mockNetworkViewmodelList,
+          page: 0,
+          totalCount: mockNetworkViewmodelList.length
+        }))
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
         (_req, res, ctx) => {
           mockedGetNetworkViewmodelList()
           return res(ctx.json({
-            data: mockNetworkViewmodelList,
-            page: 0,
-            totalCount: mockNetworkViewmodelList.length
+            fields: [],
+            totalCount: 0,
+            page: 1,
+            data: []
           }))
         }
       ),
@@ -212,7 +221,6 @@ describe('Tunnel Scope Form', () => {
 
     expect(await screen.findByText('Tunnel & Network Settings')).toBeVisible()
     await waitFor(() => expect(mockedGetNetworkViewmodelList).toBeCalled())
-    //await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const rows = await screen.findAllByRole('row', { name: /MockedNetwork/i })
     expect(stepFormRef.current.getFieldValue('activatedNetworks')).toStrictEqual(undefined)
     expect(within(rows[1]).getByRole('cell', { name: /MockedNetwork 2/i })).toBeVisible()
