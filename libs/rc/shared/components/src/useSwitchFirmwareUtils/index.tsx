@@ -21,6 +21,7 @@ import {
   FirmwareSwitchV1002,
   SwitchFirmwareModelGroup,
   SwitchFirmwareV1002,
+  SwitchModelGroupDisplayText,
   SwitchModelGroupDisplayTextValue
 } from '@acx-ui/rc/utils'
 import { noDataDisplay } from '@acx-ui/utils'
@@ -99,46 +100,45 @@ export function useSwitchFirmwareUtils () {
      return ''
    }
 
-  const getSwitchNextScheduleTplTooltipV1002 =
-   (intl: IntlShape, venue: FirmwareSwitchVenueV1002) => {
-     if (venue.nextSchedule?.supportModelGroupVersions) {
-       const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
-       let tooltipText: ReactElement[] = []
-       const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
-         [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
-         [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
-         [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
-       }
+  const getSwitchNextScheduleTplTooltipV1002 = (intl: IntlShape,
+    venue: FirmwareSwitchVenueV1002,
+    currentSchedule: string
+  ) => {
+    if (venue.nextSchedule?.supportModelGroupVersions) {
+      const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
+      let tooltipText: ReactElement[] = []
+      const modelGroupDisplayText: { [key in SwitchFirmwareModelGroup]: string } = {
+        [SwitchFirmwareModelGroup.ICX71]: intl.$t({ defaultMessage: 'ICX Models (7150)' }),
+        [SwitchFirmwareModelGroup.ICX7X]: intl.$t({ defaultMessage: 'ICX Models (7550-7850)' }),
+        [SwitchFirmwareModelGroup.ICX82]: intl.$t({ defaultMessage: 'ICX Models (8200)' })
+      }
 
-       for (const key in SwitchFirmwareModelGroup) {
-         const index = Object.keys(SwitchFirmwareModelGroup).indexOf(key)
-         const modelGroupVersions = supportModelGroupVersions?.filter(
-           (v => v.modelGroup === key))
-         if (modelGroupVersions.length > 0) {
-           const { modelGroup, version } = modelGroupVersions[0]
-           const tooltipMargin = index === 0 ||
-             index === tooltipText.length - 1 ? '5px 0px' : '10px 0px'
-           const modelGroupText = modelGroupDisplayText[modelGroup]
-           const switchVersion = parseSwitchVersion(version)
+      for (const key in SwitchFirmwareModelGroup) {
+        const modelGroupVersions = supportModelGroupVersions?.filter(
+          (v => v.modelGroup === key))
+        if (modelGroupVersions.length > 0) {
+          const { modelGroup, version } = modelGroupVersions[0]
+          const modelGroupText = modelGroupDisplayText[modelGroup]
+          const switchVersion = parseSwitchVersion(version)
 
-           tooltipText.push(
-             <div key={modelGroup}
-               style={{
-                 margin: tooltipMargin
-               }}>
-               <div style={{ color: '#c4c4c4' }}>
-                 {`${modelGroupText}`}
-               </div>
-               <div> {switchVersion} </div>
-             </div>
-           )
-         }
-       }
+          tooltipText.push(
+            <li style={{ listStyle: 'disc', marginTop: '5px' }}
+              key={modelGroup} >
+              <div>
+                {`${modelGroupText}`}
+              </div>
+              <div style={{ color: '#c4c4c4' }}> {switchVersion} </div>
+            </li>
+          )
+        }
+      }
 
-       return <div>{tooltipText}</div>
-     }
-     return ''
-   }
+      return <div>
+        <div style={{ color: '#c4c4c4', marginBottom: '5px' }}> {currentSchedule} </div>
+        <ul>{tooltipText}</ul></div>
+    }
+    return ''
+  }
 
   const getSwitchDrawerNextScheduleTpl =
    (intl: IntlShape, venue: FirmwareSwitchVenueV1002) => {
@@ -160,7 +160,8 @@ export function useSwitchFirmwareUtils () {
            const switchVersion = parseSwitchVersion(version)
 
            tooltipText.push(
-             <li style={{ listStyle: 'disc' }}>
+             <li style={{ listStyle: 'disc' }}
+               key={modelGroup}>
                <div key={modelGroup}
                  style={{
                  }}>
@@ -179,6 +180,30 @@ export function useSwitchFirmwareUtils () {
      }
      return ''
    }
+
+  const getSwitchDrawerVenueScheduleArray =
+    (venue: FirmwareSwitchVenueV1002) => {
+      if (venue.nextSchedule?.supportModelGroupVersions) {
+        const supportModelGroupVersions = venue.nextSchedule?.supportModelGroupVersions
+        let tooltipText: string[] = []
+
+        for (const key in SwitchFirmwareModelGroup) {
+          const modelGroupVersions = supportModelGroupVersions?.filter(
+            (v => v.modelGroup === key))
+          if (modelGroupVersions.length > 0) {
+            const { version } = modelGroupVersions[0]
+            const switchVersion = parseSwitchVersion(version)
+
+            tooltipText.push(
+              switchVersion
+            )
+          }
+        }
+
+        return tooltipText
+      }
+      return []
+    }
 
   const getSwitchScheduleTpl = (s: SwitchFirmware): string | undefined => {
     if (s.switchNextSchedule) {
@@ -355,6 +380,7 @@ export function useSwitchFirmwareUtils () {
         (v: { modelGroup: SwitchFirmwareModelGroup }) => v.modelGroup === modelGroupValue)[0]
 
       if (versionGroup) {
+        const modelGroupTooltipText = SwitchModelGroupDisplayText[modelGroupValue]
         const modelGroupText = SwitchModelGroupDisplayTextValue[modelGroupValue]
         const switchVersion = parseSwitchVersion(versionGroup.version)
         const tooltipMargin = index === 0 ||
@@ -362,7 +388,7 @@ export function useSwitchFirmwareUtils () {
 
         currentVersionDisplay.push(
           <Statistic
-            width={modelGroupValue === SwitchFirmwareModelGroup.ICX7X ? '110px' : '100px'}
+            width={modelGroupValue === SwitchFirmwareModelGroup.ICX7X ? 110 : 100}
             title={<Tag style={{
               fontSize: '10px',
               borderRadius: '8px',
@@ -379,7 +405,7 @@ export function useSwitchFirmwareUtils () {
               margin: tooltipMargin
             }}>
             <div style={{ color: '#c4c4c4' }}>
-              {`${intl.$t({ defaultMessage: 'ICX Models' })} ${modelGroupText}`}
+              {`${intl.$t({ defaultMessage: 'ICX Models' })} ${modelGroupTooltipText}`}
             </div>
             <div> {switchVersion} </div>
           </div>
@@ -409,6 +435,7 @@ export function useSwitchFirmwareUtils () {
     checkCurrentVersionsV1002,
     isDowngradeVersion,
     getCurrentFirmwareDisplay,
-    checkSwitchModelGroup
+    checkSwitchModelGroup,
+    getSwitchDrawerVenueScheduleArray
   }
 }

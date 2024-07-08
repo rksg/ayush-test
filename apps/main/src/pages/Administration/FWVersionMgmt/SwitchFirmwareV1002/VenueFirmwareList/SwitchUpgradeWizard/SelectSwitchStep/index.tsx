@@ -102,7 +102,8 @@ function useColumns () {
             }
           },
           children: <Tooltip
-            title={getSwitchNextScheduleTplTooltipV1002(intl, row) ||
+            title={getSwitchNextScheduleTplTooltipV1002(intl,
+              row, getNextScheduleTplV1002(intl, row)) ||
               intl.$t({ defaultMessage: 'Not scheduled' })}
             placement='bottom' >
             <UI.WithTooltip>{getNextScheduleTplV1002(intl, row)}</UI.WithTooltip>

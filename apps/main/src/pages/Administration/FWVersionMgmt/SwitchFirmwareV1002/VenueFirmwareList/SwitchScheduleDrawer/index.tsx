@@ -1,7 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { Row, Tooltip, Typography } from 'antd'
-import { useIntl }                  from 'react-intl'
+import {
+  Button,
+  Row,
+  Tooltip,
+  Typography
+} from 'antd'
+import _           from 'lodash'
+import { useIntl } from 'react-intl'
 
 import {
   Table,
@@ -34,10 +40,11 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
   const intl = useIntl()
   const {
     getSwitchDrawerNextScheduleTpl,
-    getSwitchScheduleTplV1002
+    getSwitchScheduleTplV1002,
+    getSwitchDrawerVenueScheduleArray
   } = useSwitchFirmwareUtils()
 
-
+  const [showMoreVenueSchedule, setShowMoreVenueSchedule] = useState<boolean>(false)
   const [ getSwitchFirmwareStatusList ] = useLazyGetSwitchFirmwareListV1002Query({
     pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL
   })
@@ -63,6 +70,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
 
   const onClose = () => {
     props.setVisible(false)
+    setShowMoreVenueSchedule(false)
   }
 
   const columns: TableProps<SwitchFirmwareV1002>['columns'] = [
@@ -122,6 +130,36 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
       }
     }
   ]
+
+  const getVenueTargetFirmware = () => {
+    const venueScheduleArray = getSwitchDrawerVenueScheduleArray(props.data)
+    if (venueScheduleArray.length === 0) return
+
+    const allVersionsAreSame = _.uniq(venueScheduleArray).length === 1
+    const buttonText = showMoreVenueSchedule
+      ? intl.$t({ defaultMessage: 'Show Less' })
+      : intl.$t({ defaultMessage: 'Show More' })
+    const scheduleText = allVersionsAreSame
+      ? venueScheduleArray[0]
+      : intl.$t({ defaultMessage: 'Multiple' })
+
+    return (
+      <>
+        {scheduleText}
+        {' ('}
+        <Button
+          type='link'
+          size='small'
+          onClick={() => setShowMoreVenueSchedule(!showMoreVenueSchedule)}
+        >
+          {buttonText}
+        </Button>
+        {')'}
+        {showMoreVenueSchedule && getSwitchDrawerNextScheduleTpl(intl, props.data)}
+      </>
+    )
+  }
+
   return (<Drawer
     title={intl.$t({ defaultMessage: 'Scheduled update' })}
     visible={props.visible}
@@ -147,7 +185,7 @@ export function SwitchScheduleDrawer (props: SwitchScheduleDrawerProps) {
           <Typography.Text>
             <b style={{ paddingRight: '5px' }}>
               {intl.$t({ defaultMessage: 'Target Firmware:' })}</b>
-            {getSwitchDrawerNextScheduleTpl(intl, props.data) ||
+            {getVenueTargetFirmware() ||
               intl.$t({ defaultMessage: 'Not been set up yet' })}
           </Typography.Text>
         </Row>
