@@ -94,7 +94,6 @@ export interface TypeWiseNetworkDevices {
 	switches: NetworkDevice[];
 	LTEAP: NetworkDevice[];
 	RogueAP: NetworkDevice[];
-	cloudpath: NetworkDevice[];
 	DP: NetworkDevice[];
 	rwg: NetworkDevice[];
 }
@@ -129,7 +128,6 @@ export enum NetworkDeviceType {
 	switch = 'switches',
 	lte_ap = 'LTEAP',
 	rogue_ap = 'RogueAP',
-	cloudpath = 'cloudpath',
 	dp = 'DP',
 	rwg = 'rwg'
 }

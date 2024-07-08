@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { defaultNetworkPayload, SimpleListTooltip }      from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -43,6 +44,7 @@ export default function WifiCallingTable () {
   const navigate = useNavigate()
   const params = useParams()
   const tenantBasePath: Path = useTenantLink('')
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const [ deleteFn ] = useDeleteWifiCallingServicesMutation()
   const WIFICALLING_LIMIT_NUMBER = 5
 
@@ -51,7 +53,8 @@ export default function WifiCallingTable () {
 
   const tableQuery = useTableQuery({
     useQuery: useGetEnhancedWifiCallingServiceListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac
   })
 
   const networkTableQuery = useTableQuery<Network>({
@@ -70,7 +73,11 @@ export default function WifiCallingTable () {
       $t({ defaultMessage: 'Service' }),
       selectedRows[0].name,
       [{ fieldName: 'networkIds', fieldText: $t({ defaultMessage: 'Network' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      async () => deleteFn({
+        params,
+        payload: selectedRows.map(row => row.id),
+        enableRbac
+      }).then(callback)
     )
   }
 

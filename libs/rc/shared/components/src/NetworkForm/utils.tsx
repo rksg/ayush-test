@@ -1,19 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import _ from 'lodash'
+import { FormInstance } from 'antd'
+import _                from 'lodash'
 
 import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   covertAAAViewModalTypeToRadius,
   useActivateRadiusServerMutation,
   useActivateVlanPoolMutation,
+  useBindClientIsolationMutation,
+  useActivateWifiCallingServiceMutation,
   useDeactivateRadiusServerMutation,
   useDeactivateVlanPoolMutation,
+  useDeactivateWifiCallingServiceMutation,
   useGetAAAPolicyViewModelListQuery,
+  useGetEnhancedClientIsolationListQuery,
+  useGetEnhancedWifiCallingServiceListQuery,
   useGetRadiusServerSettingsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetVLANPoolPolicyViewModelListQuery,
+  useUnbindClientIsolationMutation,
   useUpdateRadiusServerSettingsMutation
 } from '@acx-ui/rc/services'
 import {
@@ -29,6 +36,7 @@ import {
   configTemplatePolicyTypeMap,
   configTemplateServiceTypeMap,
   CommonResult,
+  NetworkVenue,
   VlanPool
 } from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
@@ -272,6 +280,69 @@ export function useRadiusServer () {
   }
 }
 
+export function useClientIsolationActivations (shouldSkipMode: boolean,
+  saveState: NetworkSaveData, updateSaveData: Function, form: FormInstance) {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { networkId } = useParams()
+  const [ bindClientIsolation ] = useBindClientIsolationMutation()
+  const [ unbindClientIsolation ] = useUnbindClientIsolationMutation()
+
+  const { data: clientIsolationBindingData } = useGetEnhancedClientIsolationListQuery(
+    { payload: { pageSize: 10000, page: 1, filters: { 'activations.wifiNetworkId': [networkId] } },
+      enableRbac },
+    { skip: shouldSkipMode || saveState.venues?.length === 0 || !enableRbac })
+
+  useEffect(() => {
+    if (!clientIsolationBindingData || !saveState) return
+
+    const venueClientIsolationMap = new Map<string, string>()
+    _.forEach(clientIsolationBindingData?.data, item => {
+      const activation = _.find(item.activations, { wifiNetworkId: networkId })
+      if (activation) {
+        venueClientIsolationMap.set(activation.venueId, item.id)
+      }
+    })
+    const venueData = saveState?.venues?.map(v => ({ ...v,
+      clientIsolationAllowlistId: venueClientIsolationMap.get(v.venueId!) }))
+    const fullNetworkSaveData = { ...saveState, venues: venueData }
+    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
+
+    form.setFieldsValue({
+      ...resolvedNetworkSaveData
+    })
+    updateSaveData(resolvedNetworkSaveData)
+  }, [clientIsolationBindingData])
+
+  // eslint-disable-next-line max-len
+  const updateClientIsolationActivations = async (saveData: NetworkSaveData, oldSaveData?: NetworkSaveData | null, networkId?: string) => {
+    if (!enableRbac || !networkId) return Promise.resolve()
+    const createMutationPromises = (data: NetworkVenue[], action: Function) =>
+      _.map(data, item => action({
+        params: {
+          venueId: item.venueId, networkId: networkId, policyId: item.clientIsolationAllowlistId }
+      }).unwrap())
+
+    const bindData = _.filter(saveData?.venues, v =>
+      v.clientIsolationAllowlistId != null &&
+        (!_.some(oldSaveData?.venues, { id: v.id }) ||
+          _.some(oldSaveData?.venues, ov => ov.id === v.id
+            && ov.clientIsolationAllowlistId !== v.clientIsolationAllowlistId)
+        )
+    )
+
+    const unbindData = _.filter(oldSaveData?.venues, ov =>
+      ov.clientIsolationAllowlistId != null &&
+        _.some(saveData?.venues, v => v.id === ov.id && !v.clientIsolationAllowlistId)
+    )
+
+    const bindMutations = createMutationPromises(bindData, bindClientIsolation)
+    const unbindMutations = createMutationPromises(unbindData, unbindClientIsolation)
+
+    await Promise.all([...bindMutations, ...unbindMutations])
+  }
+
+  return { updateClientIsolationActivations }
+}
 
 export function useVlanPool () {
   const isPolicyRbacEnabled = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
@@ -321,5 +392,64 @@ export function useVlanPool () {
   return {
     vlanPoolId,
     updateVlanPoolActivation
+  }
+}
+
+export function useWifiCalling (notReady: boolean) {
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { networkId } = useParams()
+  const { data: wifiCallingData } = useGetEnhancedWifiCallingServiceListQuery(
+    { payload: { page: 1, pageSize: 1000, filters: { networkIds: [networkId] } }, enableRbac },
+    { skip: !enableRbac || !networkId || notReady }
+  )
+  const wifiCallingIds = useMemo(() =>
+    wifiCallingData?.data.map(p => p.id) || []
+  , [wifiCallingData])
+
+  const [ activate ] = useActivateWifiCallingServiceMutation()
+  const [ deactivate ] = useDeactivateWifiCallingServiceMutation()
+
+  const activateAll = async (networkId: string, ids: string[]) => {
+    if (ids.length === 0) return
+
+    return Promise.all(ids.map(serviceId => activate({ params: { networkId, serviceId } })))
+  }
+
+  const deactivateAll = async (networkId: string, ids: string[]) => {
+    if (ids.length === 0) return
+
+    return Promise.all(ids.map(serviceId => deactivate({ params: { networkId, serviceId } })))
+  }
+
+  const updateWifiCallingActivation = async (networkId?: string, newData?: NetworkSaveData) => {
+    if (!enableRbac || !networkId) return
+
+    const { wifiCallingEnabled = false, wifiCallingIds: newIds = [] }
+      = newData?.wlan?.advancedCustomization ?? {}
+    const { wifiCallingEnabled: originalEnabled = false, wifiCallingIds: originalIds = [] }
+      = { wifiCallingEnabled: wifiCallingIds.length !== 0, wifiCallingIds }
+
+    if (wifiCallingEnabled) {
+      if (originalEnabled) {
+        const activateIds = newIds.filter(id => !originalIds.includes(id))
+        const deactivateIds = originalIds.filter(id => !newIds.includes(id))
+
+        return Promise.all([
+          activateAll(networkId, activateIds),
+          deactivateAll(networkId, deactivateIds)
+        ])
+      } else {
+        return activateAll(networkId, newIds)
+      }
+    } else if (originalEnabled) {
+      return deactivateAll(networkId, originalIds)
+    }
+
+    return
+  }
+
+  return {
+    wifiCallingIds,
+    updateWifiCallingActivation
   }
 }

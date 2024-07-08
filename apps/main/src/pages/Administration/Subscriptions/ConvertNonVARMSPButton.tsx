@@ -54,6 +54,7 @@ export const ConvertNonVARMSPButton = () => {
   const [convertNonVarToMsp] = useConvertNonVARToMSPMutation()
   const [saveUserSettings] = useSaveUserSettingsMutation()
   const removeNonVarConversionButton = useIsSplitOn(Features.REC_TO_MSP_CONVERSION_TOGGLE)
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const checkMspLicenses = async () => {
     const { destroy } = showActionModal({
@@ -86,7 +87,8 @@ export const ConvertNonVARMSPButton = () => {
         okText: $t({ defaultMessage: 'Take me to the MSP dashboard' }),
         onOk: async () => {
           try {
-            const userSettings = await getUserSettings({ params }).unwrap()
+            const userSettings = await getUserSettings({ params,
+              enableRbac: isPtenantRbacApiEnabled }).unwrap()
             let mspSetting
             // eslint-disable-next-line max-len
             = getUserSettingsByPath(userSettings, MSP_USER_SETTING) as (MspUserSettingType | undefined)

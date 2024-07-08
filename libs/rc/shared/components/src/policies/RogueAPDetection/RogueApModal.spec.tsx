@@ -1,6 +1,8 @@
 import userEvent from '@testing-library/user-event'
 
-import { render, screen } from '@acx-ui/test-utils'
+import { render, screen }                 from '@acx-ui/test-utils'
+import { WifiScopes }                     from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
 import { RogueApModal } from './RogueApModal'
 
@@ -17,5 +19,21 @@ describe('RogueApModal', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: /Cancel/i }))
     expect(modalContent).not.toBeVisible()
+  })
+
+  it('should render null if no permission', async () => {
+    setUserProfile({
+      profile: {
+        ...getUserProfile().profile
+      },
+      allowedOperations: [],
+      abacEnabled: true,
+      isCustomRole: true,
+      scopes: [WifiScopes.READ, WifiScopes.UPDATE]
+    })
+
+    const { container } = render(<RogueApModal setPolicyId={jest.fn()}/>)
+
+    expect(container).toBeEmptyDOMElement()
   })
 })

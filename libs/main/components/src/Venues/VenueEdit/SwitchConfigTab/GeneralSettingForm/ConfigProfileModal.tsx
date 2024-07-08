@@ -11,9 +11,9 @@ import { Button,
 import { usePathBasedOnConfigTemplate }     from '@acx-ui/rc/components'
 import { ConfigurationProfile, ProfileTypeEnum,
   VenueMessages, VenueSwitchConfiguration } from '@acx-ui/rc/utils'
-import { useNavigate }               from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { getIntl }                   from '@acx-ui/utils'
+import { useNavigate }                   from '@acx-ui/react-router-dom'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { getIntl }                       from '@acx-ui/utils'
 
 import { Picker, Notification  } from './styledComponents'
 
@@ -159,7 +159,7 @@ export function ConfigProfileModal (props: {
             columns={columns}
             dataSource={cliProfiles}
             rowKey='id'
-            rowSelection={hasAccess() && {
+            rowSelection={hasPermission() && {
               type: 'checkbox',
               alwaysShowAlert: true,
               defaultSelectedRowKeys: selectedCLIKeys,

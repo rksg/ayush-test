@@ -32,6 +32,7 @@ export function CloudMessageBanner () {
   const isEdgeScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
   const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
   const layout = useLayoutContext()
 
   const linkToAdministration = useTenantLink('/administration/')
@@ -44,7 +45,8 @@ export function CloudMessageBanner () {
   const [upgradeMessageTitle, setUpgradeMessageTitle] = useState('')
 
   const { data } = useGetPlmMessageBannerQuery({ params })
-  const { data: userSettings } = useGetAllUserSettingsQuery({ params })
+  const { data: userSettings } = useGetAllUserSettingsQuery({ params,
+    enableRbac: isPtenantRbacApiEnabled })
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
   const [getCloudScheduleVersion] = useLazyGetScheduledFirmwareQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()

@@ -7,6 +7,7 @@ import {
   PageHeader,
   StepsForm
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
 import { useUpdateWifiCallingServiceMutation, useUpdateWifiCallingServiceTemplateMutation } from '@acx-ui/rc/services'
 import {
   CreateNetworkFormFields,
@@ -29,6 +30,7 @@ export const WifiCallingConfigureForm = () => {
   // eslint-disable-next-line max-len
   const { pathname: previousPath } = useServicePreviousPath(ServiceType.WIFI_CALLING, ServiceOperation.LIST)
   const params = useParams()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const [ updateWifiCallingService ] = useConfigTemplateMutationFnSwitcher({
     useMutationFn: useUpdateWifiCallingServiceMutation,
@@ -46,6 +48,7 @@ export const WifiCallingConfigureForm = () => {
   const networkIds:string[] = []
   const networksName:string[] = []
   const epdgs:EPDG[] = []
+  const oldNetworkIds: string[] = []
 
   const form = Form.useFormInstance()
   const [state, dispatch] = useReducer(mainReducer, {
@@ -56,7 +59,8 @@ export const WifiCallingConfigureForm = () => {
     description,
     networkIds,
     networksName,
-    epdgs
+    epdgs,
+    oldNetworkIds
   })
 
   const breadcrumb = useServiceListBreadcrumb(ServiceType.WIFI_CALLING)
@@ -66,7 +70,8 @@ export const WifiCallingConfigureForm = () => {
     try {
       await updateWifiCallingService({
         params,
-        payload: WifiCallingFormValidate(state)
+        payload: WifiCallingFormValidate(state),
+        enableRbac
       }).unwrap()
       navigate(previousPath, { replace: true })
     } catch (error) {

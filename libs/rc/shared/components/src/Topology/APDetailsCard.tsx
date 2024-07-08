@@ -2,7 +2,7 @@ import { Badge, Button, Divider, Space } from 'antd'
 import { useIntl }                       from 'react-intl'
 
 import { IncidentsBySeverityData, useIncidentToggles, useIncidentsBySeverityQuery } from '@acx-ui/analytics/components'
-import { Card, Descriptions, Loader, Subtitle }                                     from '@acx-ui/components'
+import { Card, Descriptions, Loader, Subtitle, Tooltip }                            from '@acx-ui/components'
 import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }                                                from '@acx-ui/formatter'
 import { CloseSymbol, LeafSolidIcon }                                               from '@acx-ui/icons'
@@ -72,7 +72,15 @@ export function APDetailsCard (props: {
         {isSupportPowerSavingMode && getPowerSavingStatusEnabledApStatus(
           apDetail?.deviceStatus as ApDeviceStatusEnum,
           apDetail?.powerSavingStatus as PowerSavingStatusEnum) &&
-          <LeafSolidIcon width={12} height={12} style={{ marginLeft: '4px' }} />
+          <Tooltip zIndex={9999}
+            title={$t(
+              { defaultMessage: 'Device is controlled by EcoFlexAI. '
+                + 'Radio may not be broadcasting.' }
+            )}
+            placement='top'
+          >
+            <LeafSolidIcon width={12} height={12} style={{ marginLeft: '4px' }} />
+          </Tooltip>
         }
       </UI.NodeTitle>
       <Button
