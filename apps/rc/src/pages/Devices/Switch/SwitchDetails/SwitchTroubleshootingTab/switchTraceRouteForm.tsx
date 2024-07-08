@@ -49,6 +49,8 @@ export function SwitchTraceRouteForm () {
     useGetTroubleshootingQuery({
       params: troubleshootingParams,
       enableRbac: isSwitchRbacEnabled
+    }, {
+      skip: !switchDetailsContextData.switchDetailHeader?.venueId
     })
 
   const refetchResult = function () {
