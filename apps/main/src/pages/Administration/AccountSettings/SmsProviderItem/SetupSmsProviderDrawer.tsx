@@ -73,6 +73,7 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       const myNumber = phoneList.data?.incommingPhoneNumbers ?? []
       setPhoneNumbers(myNumber)
       setIsValidTwiliosNumber(myNumber.length > 0)
+      form.setFieldValue('phoneNumber', myNumber.length > 0 ? myNumber[0] : '')
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
     }
@@ -181,9 +182,11 @@ export const SetupSmsProviderDrawer = (props: SetupSmsProviderDrawerProps) => {
       <Form.Item
         name='phoneNumber'
         label={$t({ defaultMessage: 'Phone Number' })}
+        initialValue={editData?.providerData.fromNumber ?? ''}
         rules={[
           { validator: () => {
-            return !isValidTwiliosNumber ? Promise.reject(
+            const hasNumber = form.getFieldValue('phoneNumber')
+            return !isValidTwiliosNumber && hasNumber === '' ? Promise.reject(
               `${$t(MessageMapping.received_invalid_twilios_number)}`
             ) : Promise.resolve()}
           }
