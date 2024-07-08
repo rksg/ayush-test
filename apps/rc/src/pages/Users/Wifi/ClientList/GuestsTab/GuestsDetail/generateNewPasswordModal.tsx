@@ -69,7 +69,7 @@ export function GenerateNewPasswordModal (props: {
       }
 
       const password = form.getFieldValue('password')
-      if(password && password.length > 6 && password.length < 16){
+      if(password && password.length >= 6 && password.length <= 16){
         payload = Object.assign({}, payload, { password: password })
       } else {
         payload = Object.assign({}, payload, { action: 'regeneratePassword' })
