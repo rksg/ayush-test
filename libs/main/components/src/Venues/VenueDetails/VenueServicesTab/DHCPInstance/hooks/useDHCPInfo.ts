@@ -15,6 +15,8 @@ export default function useDHCPInfo () {
   const { isTemplate } = useConfigTemplate()
 
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isWifiRbacEnabled = useIsSplitOn(Features.WIFI_RBAC_API)
+
   const { data: venueDHCPProfile } = useConfigTemplateQueryFnSwitcher<VenueDHCPProfile>({
     useQueryFn: useVenueDHCPProfileQuery,
     useTemplateQueryFn: useGetVenueTemplateDhcpProfileQuery,
@@ -22,8 +24,11 @@ export default function useDHCPInfo () {
     enableRbac
   })
 
-  // eslint-disable-next-line max-len
-  const { data: apList } = useApListQuery({ params, payload: defaultApPayload }, { skip: isTemplate })
+  const { data: apList } = useApListQuery({
+    params,
+    payload: defaultApPayload,
+    enableRbac: isWifiRbacEnabled
+  }, { skip: isTemplate })
 
   const apListGroupSN = _.keyBy(apList?.data, 'serialNumber')
 
