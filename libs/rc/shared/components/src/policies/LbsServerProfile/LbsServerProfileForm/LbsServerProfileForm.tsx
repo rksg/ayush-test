@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-import { useIntl }                from 'react-intl'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import {
@@ -35,7 +34,6 @@ type LbsServerProfileFormProps = {
 }
 
 export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
-  const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
   const tablePath = getPolicyRoutePath({
@@ -44,12 +42,12 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
   })
   const linkToPolicies = useTenantLink(tablePath)
 
-  const { editMode=false, modalMode=false, modalCallBack } = props
+  const { editMode = false, modalMode = false, modalCallBack } = props
 
   const formRef = useRef<StepsFormLegacyInstance<LbsServerProfileContext>>()
   const { data } = useGetLbsServerProfileQuery({ params }, { skip: !editMode })
-  const [ createLbsServerProfile ] = useAddLbsServerProfileMutation()
-  const [ updateLbsServerProfile ] = useUpdateLbsServerProfileMutation()
+  const [createLbsServerProfile] = useAddLbsServerProfileMutation()
+  const [updateLbsServerProfile] = useUpdateLbsServerProfileMutation()
 
   const breadcrumb = usePolicyListBreadcrumb(PolicyType.LBS_SERVER_PROFILE)
   const pageTitle = usePolicyPageHeaderTitle(editMode, PolicyType.LBS_SERVER_PROFILE)
@@ -85,7 +83,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
           params,
           payload
         }).unwrap()
-        modalMode? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
+        modalMode ? modalCallBack?.() : navigate(linkToPolicies, { replace: true })
       }
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -109,7 +107,7 @@ export const LbsServerProfileForm = (props: LbsServerProfileFormProps) => {
     >
       <StepsFormLegacy.StepForm>
         <GridRow>
-          <GridCol col={{ span: modalMode? 24: 10 }}>
+          <GridCol col={{ span: modalMode ? 24 : 10 }}>
             <LbsServerProfileSettingForm />
           </GridCol>
         </GridRow>

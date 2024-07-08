@@ -1,9 +1,15 @@
 import { Form, Input, InputNumber } from 'antd'
-import { useIntl } from 'react-intl'
+import { useIntl }                  from 'react-intl'
 
-import { PasswordInput } from '@acx-ui/components'
+import { PasswordInput }                   from '@acx-ui/components'
 import { useGetLbsServerProfileListQuery } from '@acx-ui/rc/services'
-import { checkObjectNotExists, lbsVenueNameRegExp, servicePolicyNameRegExp, networkWifiSecretRegExp, domainNameRegExp } from '@acx-ui/rc/utils'
+import {
+  checkObjectNotExists,
+  lbsVenueNameRegExp,
+  servicePolicyNameRegExp,
+  networkWifiSecretRegExp,
+  domainNameRegExp
+} from '@acx-ui/rc/utils'
 import { useParams } from '@acx-ui/react-router-dom'
 
 
@@ -25,6 +31,7 @@ const LbsServerProfileSettingForm = () => {
         .filter(n => n.id !== params.policyId)
         .map(n => n.name)
 
+      // eslint-disable-next-line max-len
       return checkObjectNotExists(list, value, $t({ defaultMessage: 'Location Based Service Server' }))
     }
     return Promise.resolve()
