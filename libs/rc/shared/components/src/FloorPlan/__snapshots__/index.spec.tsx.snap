@@ -277,7 +277,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                          
                         <div>
                           <div
-                            class="sc-ftvSup lbJblj device-container context-Album"
+                            class="sc-ftvSup iaMBxI device-container context-Album"
                             draggable="true"
                             style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                           >
@@ -291,7 +291,7 @@ exports[`Floor Plans Floor Plans should render correctly 1`] = `
                         </div>
                         <div>
                           <div
-                            class="sc-ftvSup lbJblj device-container context-Album"
+                            class="sc-ftvSup iaMBxI device-container context-Album"
                             draggable="true"
                             style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                           >
@@ -502,7 +502,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                        
                       <div>
                         <div
-                          class="sc-ftvSup lbJblj device-container gallery"
+                          class="sc-ftvSup iaMBxI device-container gallery"
                           draggable="true"
                           style="top: calc(9.839357%); left: calc(65.20548%); opacity: 1;"
                         >
@@ -519,7 +519,7 @@ exports[`Floor Plans Floor Plans should render gallery correctly 1`] = `
                       </div>
                       <div>
                         <div
-                          class="sc-ftvSup lbJblj device-container gallery"
+                          class="sc-ftvSup iaMBxI device-container gallery"
                           draggable="true"
                           style="top: calc(7.056452%); left: calc(52.739727%); opacity: 1;"
                         >

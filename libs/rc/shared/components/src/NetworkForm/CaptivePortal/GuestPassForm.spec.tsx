@@ -18,7 +18,6 @@ import {
   networksResponse,
   successResponse,
   networkDeepResponse,
-  cloudpathResponse,
   externalProviders,
   portalList
 } from '../__tests__/fixtures'
@@ -62,8 +61,6 @@ describe('CaptiveNetworkForm-GuestPass', () => {
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
         (_, res, ctx) => res(ctx.json(guestPassData))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.get(CommonUrlsInfo.getExternalProviders.url,
         (_, res, ctx) => res(ctx.json( externalProviders ))),
       rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
