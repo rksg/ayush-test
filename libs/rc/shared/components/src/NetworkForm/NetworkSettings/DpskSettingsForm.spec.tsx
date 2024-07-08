@@ -9,7 +9,6 @@ import { Provider }                                        from '@acx-ui/store'
 import { mockServer, render, screen }                      from '@acx-ui/test-utils'
 
 import {
-  cloudpathResponse,
   networkDeepResponse,
   venueListResponse,
   dpskListResponse,
@@ -35,8 +34,6 @@ describe('DpskSettingsForm', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,

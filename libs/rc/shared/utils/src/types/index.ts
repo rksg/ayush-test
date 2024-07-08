@@ -435,22 +435,6 @@ interface RadiusService {
   sharedSecret: string
 }
 
-export interface CloudpathServer {
-  id: string
-  name: string
-  deploymentType: 'Cloud' | 'OnPremise'
-  deployedInVenueId?: string
-  deployedInVenueName?: string
-  authRadius: {
-    id: string
-    primary: RadiusService
-  }
-  accountingRadius?: {
-    id: string
-    primary: RadiusService
-  }
-}
-
 export interface Service {
   id: string
   name: string
