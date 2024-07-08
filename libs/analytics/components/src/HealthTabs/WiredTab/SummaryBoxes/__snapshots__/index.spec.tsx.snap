@@ -29,7 +29,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  DHCP
+                  DHCP Success
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -70,7 +70,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  Uplink Usage
+                  Congested Uplink Ports
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -78,7 +78,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    0.63%
+                    2.58%
                   </span>
                 </div>
               </div>
@@ -207,7 +207,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  DHCP
+                  DHCP Success
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -248,7 +248,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  Uplink Usage
+                  Congested Uplink Ports
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -256,7 +256,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    0.63%
+                    2.58%
                   </span>
                 </div>
               </div>
@@ -385,7 +385,7 @@ exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  DHCP
+                  DHCP Success
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -426,7 +426,7 @@ exports[`Wired SummaryBoxes should show no data when no switches 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  Uplink Usage
+                  Congested Uplink Ports
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -563,7 +563,7 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  DHCP
+                  DHCP Success
                 </div>
                 <div
                   class="ant-statistic-content"
@@ -604,7 +604,7 @@ exports[`Wired SummaryBoxes should show when no data 1`] = `
                 <div
                   class="ant-statistic-title"
                 >
-                  Uplink Usage
+                  Congested Uplink Ports
                 </div>
                 <div
                   class="ant-statistic-content"

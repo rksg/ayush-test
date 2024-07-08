@@ -137,7 +137,7 @@ describe('ApEdit', () => {
         (_req, res, ctx) => res(ctx.json([]))
       ),
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       // rbac API

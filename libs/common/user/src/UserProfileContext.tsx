@@ -39,19 +39,26 @@ export function UserProfileProvider (props: React.PropsWithChildren) {
     data: profile,
     isFetching: isUserProfileFetching
   } = useGetUserProfileQuery({ params: { tenantId } })
-  const { data: beta } = useGetBetaStatusQuery({ params: { tenantId } },
-    { skip: !Boolean(profile) })
-  const betaEnabled = (beta?.enabled === 'true')? true : false
-  const { data: accTierResponse } = useGetAccountTierQuery({ params: { tenantId } },
-    { skip: !Boolean(profile) })
-  const accountTier = accTierResponse?.acx_account_tier
 
   let abacEnabled = false, isCustomRole = false
   const abacFF = 'abac-policies-toggle'
+  const ptenantRbacFF = 'acx-ui-rbac-api-ptenant-toggle'
+
   const { data: featureFlagStates, isLoading: isFeatureFlagStatesLoading }
     = useFeatureFlagStatesQuery(
-      { params: { tenantId }, payload: [abacFF] }, { skip: !Boolean(profile) }
+      { params: { tenantId }, payload: [abacFF, ptenantRbacFF] },
+      { skip: !Boolean(profile) }
     )
+  const ptenantRbacEnable = featureFlagStates?.[ptenantRbacFF] ?? false
+
+  const { data: beta } = useGetBetaStatusQuery(
+    { params: { tenantId }, enableRbac: ptenantRbacEnable },
+    { skip: !Boolean(profile) })
+  const betaEnabled = beta?.enabled === 'true'
+  const { data: accTierResponse } = useGetAccountTierQuery(
+    { params: { tenantId }, enableRbac: ptenantRbacEnable },
+    { skip: !Boolean(profile) })
+  const accountTier = accTierResponse?.acx_account_tier
 
   const { data: rcgAllowedOperations } = useRcgAllowedOperationsQuery(tenantId!,
     { skip: !Boolean(profile) })
