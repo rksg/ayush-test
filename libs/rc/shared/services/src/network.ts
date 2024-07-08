@@ -49,6 +49,17 @@ const RKS_NEW_UI = {
   'x-rks-new-ui': true
 }
 
+const NetworkUseCases = [
+  // non-RBAC API
+  'AddNetwork',
+  'UpdateNetwork',
+  'DeleteNetwork',
+  // RBAC API
+  'AddWifiNetwork',
+  'UpdateWifiNetwork',
+  'DeleteWifiNetwork'
+]
+
 export const networkApi = baseNetworkApi.injectEndpoints({
   endpoints: (build) => ({
     networkList: build.query<TableResult<Network>, RequestPayload>({
@@ -69,10 +80,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg,
-            ['AddNetwork', 'UpdateNetwork', 'DeleteNetwork'], () => {
-              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
-            })
+          onActivityMessageReceived(msg, NetworkUseCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          })
         })
       },
       extraOptions: { maxRetries: 5 }
@@ -113,10 +123,9 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg,
-            ['AddNetwork', 'UpdateNetwork', 'DeleteNetwork'], () => {
-              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
-            })
+          onActivityMessageReceived(msg, NetworkUseCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          })
         })
       },
       extraOptions: { maxRetries: 5 }
@@ -139,20 +148,25 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       providesTags: [{ type: 'Network', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg,
-            ['AddNetwork', 'UpdateNetwork', 'DeleteNetwork'], () => {
-              api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
-            })
+          onActivityMessageReceived(msg, NetworkUseCases, () => {
+            api.dispatch(networkApi.util.invalidateTags([{ type: 'Network', id: 'LIST' }]))
+          })
         })
       },
       extraOptions: { maxRetries: 5 }
     }),
     addNetwork: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const createNetworkReq = createHttpRequest(WifiUrlsInfo.addNetworkDeep, params, RKS_NEW_UI)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...RKS_NEW_UI
+        } : RKS_NEW_UI
+
+        const createNetworkReq = createHttpRequest(urlsInfo.addNetworkDeep, params, apiCustomHeader)
         return {
           ...createNetworkReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }],
@@ -169,18 +183,26 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       }
     }),
     updateNetwork: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiUrlsInfo.updateNetworkDeep, params, RKS_NEW_UI)
+      query: ({ params, payload, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...RKS_NEW_UI
+        } : RKS_NEW_UI
+
+        const req = createHttpRequest(urlsInfo.updateNetworkDeep, params, apiCustomHeader)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Network', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     deleteNetwork: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiUrlsInfo.deleteNetwork, params)
+      query: ({ params, enableRbac }) => {
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = GetApiVersionHeader(enableRbac? ApiVersionEnum.v1 : undefined)
+        const req = createHttpRequest(urlsInfo.deleteNetwork, params, apiCustomHeader)
         return {
           ...req
         }
@@ -309,14 +331,21 @@ export const networkApi = baseNetworkApi.injectEndpoints({
       invalidatesTags: [{ type: 'Venue', id: 'LIST' }, { type: 'Network', id: 'DETAIL' }]
     }),
     getNetwork: build.query<NetworkSaveData | null, RequestPayload>({
-      async queryFn ({ params }, _queryApi, _extraOptions, fetchWithBQ) {
+      async queryFn ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) {
         if (!params?.networkId) return Promise.resolve({ data: null } as QueryReturnValue<
           null,
           FetchBaseQueryError,
           FetchBaseQueryMeta
         >)
+
+        const urlsInfo = enableRbac? WifiRbacUrlsInfo : WifiUrlsInfo
+        const apiCustomHeader = enableRbac? {
+          ...GetApiVersionHeader(ApiVersionEnum.v1),
+          ...RKS_NEW_UI
+        } : RKS_NEW_UI
+
         const networkQuery = await fetchWithBQ(
-          createHttpRequest(WifiUrlsInfo.getNetwork, params, RKS_NEW_UI)
+          createHttpRequest(urlsInfo.getNetwork, params, apiCustomHeader)
         )
         return networkQuery as QueryReturnValue<NetworkSaveData,
         FetchBaseQueryError,

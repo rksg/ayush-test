@@ -6,11 +6,13 @@ import { rest }  from 'msw'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { networkApi, venueApi }                     from '@acx-ui/rc/services'
 import {
+  AccessControlUrls,
   CommonUrlsInfo,
   IdentityProviderUrls,
   MacRegListUrlsInfo,
   PortalUrlsInfo,
   WifiOperatorUrls,
+  WifiRbacUrlsInfo,
   WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store } from '@acx-ui/store'
 import {
@@ -98,7 +100,15 @@ describe('NetworkForm', () => {
         (_, res, ctx) => res(ctx.json(mockHotpost20IdentityProviderList))
       ),
       rest.post(WifiUrlsInfo.getVlanPoolViewModelList.url,
-        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] })))
+        (_, res, ctx) => res(ctx.json({ totalCount: 0, page: 1, data: [] }))
+      ),
+      rest.get(AccessControlUrls.getAccessControlProfileList.url,
+        (_, res, ctx) => res(ctx.json([]))
+      ),
+      // RBAC API
+      rest.get(WifiRbacUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(networkDeepResponse))
+      )
     )
   })
 
