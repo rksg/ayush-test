@@ -8,7 +8,7 @@ import { useIntl }           from 'react-intl'
 
 import { Button, Drawer, Table, TableProps }                                from '@acx-ui/components'
 import { VoiceVlanOption, VoiceVlanPort, TaggedVlanPorts, VoiceVlanConfig } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess }                                        from '@acx-ui/user'
+import { filterByAccess, hasPermission }                                    from '@acx-ui/user'
 import { noDataDisplay, TABLE_DEFAULT_PAGE_SIZE }                           from '@acx-ui/utils'
 
 import { VoiceVlanModal } from './VoiceVlanModal'
@@ -265,7 +265,7 @@ const PortTable = (props: { onEdit: (selectedRows: VoiceVlanPort[]) => void, tab
     pagination={{
       pageSize: TABLE_DEFAULT_PAGE_SIZE // fix: the initial page size is 20 here
     }}
-    rowSelection={hasAccess() && {
+    rowSelection={hasPermission() && {
       type: 'checkbox'
     }}
   />

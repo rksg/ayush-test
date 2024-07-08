@@ -16,6 +16,10 @@ export interface ApiInfo {
   newApi?: boolean;
   oldUrl?: string;
   oldMethod?: string;
+  defaultHeaders?: {
+    'Content-Type'?: string;
+    'Accept'?: string
+  };
 }
 
 export const isDelegationMode = () => {
@@ -80,6 +84,7 @@ export const createHttpRequest = (
   const headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    ...(apiInfo.defaultHeaders),
     ...customHeaders,
     ...getJwtHeaders({ ignoreDelegation })
   }

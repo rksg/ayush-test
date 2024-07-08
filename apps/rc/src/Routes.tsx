@@ -47,7 +47,8 @@ import {
   getServiceCatalogRoutePath,
   getServiceListRoutePath,
   getServiceRoutePath,
-  CertificateCategoryType
+  CertificateCategoryType,
+  hasDpskAccess
 } from '@acx-ui/rc/utils'
 import { Navigate, Route, TenantNavigate, rootRoutes } from '@acx-ui/react-router-dom'
 import { Provider }                                    from '@acx-ui/store'
@@ -94,6 +95,8 @@ import ConnectionMeteringPageForm           from './pages/Policies/ConnectionMet
 import ConnectionMeteringTable              from './pages/Policies/ConnectionMetering/ConnectionMeteringTable'
 import IdentityProviderDetail               from './pages/Policies/IdentityProvider/IdentityProviderDetail/IdentityProviderDetail'
 import IdentityProviderTable                from './pages/Policies/IdentityProvider/IdentityProviderTable/IdentityProviderTable'
+import LbsServerProfileDetail               from './pages/Policies/LbsServerProfile/LbsServerProfileDetail/LbsServerProfileDetail'
+import LbsServerProfileTable                from './pages/Policies/LbsServerProfile/LbsServerProfileTable/LbsServerProfileTable'
 import MacRegistrationListDetails           from './pages/Policies/MacRegistrationList/MacRegistrarionListDetails/MacRegistrarionListDetails'
 import MacRegistrationListsTable            from './pages/Policies/MacRegistrationList/MacRegistrarionListTable'
 import MyPolicies                           from './pages/Policies/MyPolicies'
@@ -556,11 +559,19 @@ function ServiceRoutes () {
       <Route path={getServiceCatalogRoutePath()} element={<ServiceCatalog />} />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}
-        element={<MdnsProxyForm />}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <MdnsProxyForm />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.EDIT })}
-        element={<MdnsProxyForm editMode={true} />}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <MdnsProxyForm editMode={true} />
+          </AuthRoute>
+        }
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.DETAIL })}
@@ -590,32 +601,36 @@ function ServiceRoutes () {
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}
-        element={<DHCPForm/>}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}><DHCPForm/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.EDIT })}
-        element={<DHCPForm editMode={true}/>}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE]}><DHCPForm editMode={true}/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.DETAIL })}
-        element={<DHCPDetail/>}
+        element={<AuthRoute scopes={[WifiScopes.READ]}><DHCPDetail/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.LIST })}
-        element={<DHCPTable/>}
+        element={<AuthRoute scopes={[WifiScopes.READ]}><DHCPTable/></AuthRoute>}
       />
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })}
         element={<DpskTable />}
       />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
-        element={<DpskForm />}
-      />
-      <Route
-        path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
-        element={<DpskForm editMode={true} />}
-      />
+      {hasDpskAccess() &&
+        <>
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.CREATE })}
+            element={<DpskForm />}
+          />
+          <Route
+            path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.EDIT })}
+            element={<DpskForm editMode={true} />}
+          />
+        </>
+      }
       <Route
         path={getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.DETAIL })}
         element={<DpskDetails />}
@@ -760,18 +775,18 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}
-        element={<SyslogForm edit={false}/>}
+        element={<AuthRoute scopes={[WifiScopes.CREATE]}><SyslogForm edit={false}/></AuthRoute>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.EDIT })}
-        element={<SyslogForm edit={true}/>}
+        element={<AuthRoute scopes={[WifiScopes.UPDATE]}><SyslogForm edit={true}/></AuthRoute>}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST })}
-        element={<SyslogTable />} />
+        element={<AuthRoute scopes={[WifiScopes.READ]}><SyslogTable /></AuthRoute>} />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.DETAIL })}
-        element={<SyslogDetailView />}
+        element={<AuthRoute scopes={[WifiScopes.READ]}><SyslogDetailView /></AuthRoute>}
       />
       {isCloudpathBetaEnabled ? <>
         <Route
@@ -941,6 +956,16 @@ function PolicyRoutes () {
         // eslint-disable-next-line max-len
         path={getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.DETAIL })}
         element={<IdentityProviderDetail />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })}
+        element={<LbsServerProfileTable />}
+      />
+      <Route
+        // eslint-disable-next-line max-len
+        path={getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.DETAIL })}
+        element={<LbsServerProfileDetail />}
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.CREATE })}

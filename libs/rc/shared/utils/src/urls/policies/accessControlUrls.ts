@@ -5,19 +5,31 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/l2AclPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getL2AclPolicy: {
     method: 'get',
     url: '/l2AclPolicies/:l2AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateL2AclPolicy: {
     method: 'put',
     url: '/l2AclPolicies/:l2AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l2-acl-policy/:l2AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   delL2AclPolicy: {
     method: 'delete',
@@ -35,19 +47,31 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/l3AclPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getL3AclPolicy: {
     method: 'get',
     url: '/l3AclPolicies/:l3AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateL3AclPolicy: {
     method: 'put',
     url: '/l3AclPolicies/:l3AclPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/l3-acl-policy/:l3AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   delL3AclPolicy: {
     method: 'delete',
@@ -65,19 +89,31 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/applicationPolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getAppPolicy: {
     method: 'get',
     url: '/applicationPolicies/:applicationPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   updateAppAclPolicy: {
     method: 'put',
     url: '/applicationPolicies/:applicationPolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/application-policy/:applicationPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   delAppAclPolicy: {
     method: 'delete',
@@ -100,7 +136,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getL2AclPolicyListQuery: {
     method: 'post',
     url: '/l2AclPolicies/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getEnhancedL2AclPolicies: {
     method: 'post',
@@ -117,7 +157,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getL3AclPolicyListQuery: {
     method: 'post',
     url: '/l3AclPolicies/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getEnhancedL3AclPolicies: {
     method: 'post',
@@ -181,7 +225,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getAccessControlProfileQueryList: {
     method: 'post',
     url: '/accessControlProfiles/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getEnhancedAccessControlProfiles: {
     method: 'post',
@@ -195,11 +243,25 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile',
     newApi: true
   },
+  addAccessControlProfileRbac: {
+    method: 'post',
+    url: '/accessControlProfiles',
+    oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile',
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
+  },
   updateAccessControlProfile: {
     method: 'put',
     url: '/accessControlProfiles/:policyId',
     oldUrl: '/api/tenant/:tenantId/wifi/access-control-profile/:policyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   deleteAccessControlProfile: {
     method: 'delete',
@@ -217,13 +279,21 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'post',
     url: '/devicePolicies',
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getDevicePolicy: {
     method: 'get',
     url: '/devicePolicies/:devicePolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   delDevicePolicy: {
     method: 'delete',
@@ -241,7 +311,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
     method: 'put',
     url: '/devicePolicies/:devicePolicyId',
     oldUrl: '/api/tenant/:tenantId/wifi/device-policy/:devicePolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1.1+json',
+      'Content-Type': 'application/vnd.ruckus.v1.1+json'
+    }
   },
   getDevicePolicyList: {
     method: 'get',
@@ -252,7 +326,11 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   getDevicePolicyListQuery: {
     method: 'post',
     url: '/devicePolicies/query',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   getEnhancedDevicePolicies: {
     method: 'post',
@@ -263,82 +341,146 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   activateL2AclOnAccessControlProfile: {
     method: 'put',
     url: '/accessControlProfiles/:policyId/l2AclPolicies/:l2AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateL2AclOnAccessControlProfile: {
     method: 'delete',
     url: '/accessControlProfiles/:policyId/l2AclPolicies/:l2AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateL2AclOnWifiNetwork: {
     method: 'put',
     url: '/wifiNetworks/:networkId/l2AclPolicies/:l2AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateL2AclOnWifiNetwork: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/l2AclPolicies/:l2AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateL3AclOnAccessControlProfile: {
     method: 'put',
     url: '/accessControlProfiles/:policyId/l3AclPolicies/:l3AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateL3AclOnAccessControlProfile: {
     method: 'delete',
     url: '/accessControlProfiles/:policyId/l3AclPolicies/:l3AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateL3AclOnWifiNetwork: {
     method: 'put',
     url: '/wifiNetworks/:networkId/l3AclPolicies/:l3AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateL3AclOnWifiNetwork: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/l3AclPolicies/:l3AclPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateDevicePolicyOnAccessControlProfile: {
     method: 'put',
     url: '/accessControlProfiles/:policyId/devicePolicies/:devicePolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateDevicePolicyOnAccessControlProfile: {
     method: 'delete',
     url: '/accessControlProfiles/:policyId/devicePolicies/:devicePolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateDevicePolicyOnWifiNetwork: {
     method: 'put',
     url: '/wifiNetworks/:networkId/devicePolicies/:devicePolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateDevicePolicyOnWifiNetwork: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/devicePolicies/:devicePolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateApplicationPolicyOnAccessControlProfile: {
     method: 'put',
     url: '/accessControlProfiles/:policyId/applicationPolicies/:applicationPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateApplicationPolicyOnAccessControlProfile: {
     method: 'delete',
     url: '/accessControlProfiles/:policyId/applicationPolicies/:applicationPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   activateApplicationPolicyOnWifiNetwork: {
     method: 'put',
     url: '/wifiNetworks/:networkId/applicationPolicies/:applicationPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateApplicationPolicyOnWifiNetwork: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/applicationPolicies/:applicationPolicyId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   applicationLibrarySettings: {
     method: 'get',
@@ -358,11 +500,19 @@ export const AccessControlUrls: { [key: string]: ApiInfo } = {
   activateAccessControlProfileOnWifiNetwork: {
     method: 'put',
     url: '/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   },
   deactivateAccessControlProfileOnWifiNetwork: {
     method: 'delete',
     url: '/wifiNetworks/:networkId/accessControlProfiles/:accessControlProfileId',
-    newApi: true
+    newApi: true,
+    defaultHeaders: {
+      'Accept': 'application/vnd.ruckus.v1+json',
+      'Content-Type': 'application/vnd.ruckus.v1+json'
+    }
   }
 }

@@ -410,7 +410,7 @@ export const Layer2Drawer = (props: Layer2DrawerProps) => {
       name: policyName,
       access: accessStatus,
       macAddresses: macAddressList.map((item: { macAddress: string }) =>
-        item.macAddress
+        item.macAddress.trim()
       ),
       description: description
     }

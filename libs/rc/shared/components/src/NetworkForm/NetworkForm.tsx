@@ -73,6 +73,8 @@ import {
   useNetworkVxLanTunnelProfileInfo,
   deriveFieldsFromServerData,
   useRadiusServer,
+  useVlanPool,
+  useClientIsolationActivations,
   useAccessControlActivation
 } from './utils'
 import { Venues } from './Venues/Venues'
@@ -129,7 +131,6 @@ export function NetworkForm (props:{
   const params = useParams()
   const editMode = params.action === 'edit'
   const cloneMode = params.action === 'clone'
-
   const addNetworkInstance = useAddInstance()
   const updateNetworkInstance = useUpdateInstance()
   const [addNetworkVenues] = useConfigTemplateMutationFnSwitcher({
@@ -148,6 +149,7 @@ export function NetworkForm (props:{
   const addHotspot20NetworkActivations = useAddHotspot20Activation()
   const updateHotspot20NetworkActivations = useUpdateHotspot20Activation()
   const { updateRadiusServer, radiusServerConfigurations } = useRadiusServer()
+  const { vlanPoolId, updateVlanPoolActivation } = useVlanPool()
   const { updateAccessControl } = useAccessControlActivation()
   const formRef = useRef<StepsFormLegacyInstance<NetworkSaveData>>()
   const [form] = Form.useForm()
@@ -164,6 +166,8 @@ export function NetworkForm (props:{
   const [portalDemo, setPortalDemo]=useState<Demo>()
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
+  const { updateClientIsolationActivations }
+    = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
@@ -502,6 +506,7 @@ export function NetworkForm (props:{
       const networkResponse = await addNetworkInstance({ params, payload }).unwrap()
       const networkId = networkResponse?.response?.id
       await addHotspot20NetworkActivations(saveState, networkId)
+      await updateVlanPoolActivation(networkId, saveState.wlan?.advancedCustomization?.vlanPool)
       await updateRadiusServer(saveState, data, networkId)
       await updateAccessControl(saveState, data)
       // eslint-disable-next-line max-len
@@ -512,7 +517,7 @@ export function NetworkForm (props:{
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
       }
-
+      await updateClientIsolationActivations(payload, null, networkId)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -588,11 +593,13 @@ export function NetworkForm (props:{
       await activateCertificateTemplate(formData.certificateTemplateId, payload.id)
       await updateHotspot20NetworkActivations(formData)
       await updateRadiusServer(formData, data, payload.id)
+      // eslint-disable-next-line max-len
+      await updateVlanPoolActivation(payload.id, formData.wlan?.advancedCustomization?.vlanPool, vlanPoolId)
       await updateAccessControl(formData, data)
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
-
+      await updateClientIsolationActivations(payload, data, payload.id)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
