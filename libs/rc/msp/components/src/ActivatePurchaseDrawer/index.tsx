@@ -160,6 +160,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
     <Form.Item
       name='region'
       label={$t({ defaultMessage: 'Select the region for your RUCKUS One hosted cloud servicese' })}
+      initialValue={currentRegion}
       rules={[
         {
           required: true,
@@ -172,7 +173,7 @@ export const ActivatePurchaseDrawer = (props: ActivatePurchaseDrawerProps) => {
           {regionList.map((item) => {
             return (
               <React.Fragment key={item.value}>
-                <Radio value={item.value}>
+                <Radio disabled={item.value !== currentRegion} value={item.value}>
                   {item.label}
                 </Radio>
               </React.Fragment>

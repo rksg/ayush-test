@@ -16,7 +16,6 @@ import { InterfaceSettingFormStepCommonProps, InterfaceSettingsFormType } from '
 
 export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
   const { $t } = useIntl()
-  const { clusterInfo } = useContext(ClusterConfigWizardContext)
 
   const header = <Space direction='vertical' size={5}>
     <Typography.Title level={2}>
@@ -24,8 +23,7 @@ export const LagForm = ({ onInit }: InterfaceSettingFormStepCommonProps) => {
     </Typography.Title>
     <Typography.Text>
       {$t({ defaultMessage: `Create and configure the LAG for all SmartEdges in this cluster 
-      ({clusterName}) if needed, or click 'Next' to skip:` },
-      { clusterName: clusterInfo?.name })}
+      if needed, or click 'Next' to skip:` })}
     </Typography.Text>
   </Space>
 

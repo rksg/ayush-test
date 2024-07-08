@@ -15,6 +15,7 @@ import {
   Drawer
 } from '@acx-ui/components'
 import { useGetGatewayAlarmsQuery, useGetGatewayDashboardQuery } from '@acx-ui/rc/services'
+import { TABLE_QUERY_POLLING_INTERVAL }                          from '@acx-ui/utils'
 
 import * as UI from '../styledComponents'
 
@@ -31,11 +32,11 @@ export function DashboardStatistics () {
     useGetGatewayAlarmsQuery({ params: { tenantId, gatewayId, venueId }, payload: {
       ...(clusterNodeId ? {
         filterBy: [{ key: 'CLUSTER_NODE_ID_IS', value: clusterNodeId }] } : {})
-    } }, { skip: !gatewayId })
+    } }, { skip: !gatewayId, pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
   const { data: dashboardData, isLoading: isDashboardLoading, isFetching: isDashboardFetching } =
     useGetGatewayDashboardQuery({ params: { tenantId, gatewayId, venueId, clusterNodeId } },
-      { skip: !gatewayId })
+      { skip: !gatewayId, pollingInterval: TABLE_QUERY_POLLING_INTERVAL })
 
 
 

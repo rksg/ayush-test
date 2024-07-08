@@ -29,6 +29,7 @@ export function SwitchMacAddressForm () {
   const { $t } = useIntl()
   const { tenantId, switchId } = useParams()
   const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader: switchDetail } = switchDetailsContextData
   const [form] = Form.useForm()
 
   const [isValid, setIsValid] = useState(true)
@@ -54,8 +55,11 @@ export function SwitchMacAddressForm () {
     pageSize: 10000
   }
   const vlanList = useGetVlanListBySwitchLevelQuery({
-    params: { tenantId, switchId },
-    payload: vlanPayload
+    params: { tenantId, switchId, venueId: switchDetail?.venueId },
+    payload: vlanPayload,
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    skip: !switchDetail?.venueId
   })
   const portList = useSwitchPortlistQuery({
     params: { tenantId },
@@ -160,7 +164,7 @@ export function SwitchMacAddressForm () {
       }
     }
 
-  }, [getTroubleshooting.data])
+  }, [getTroubleshooting])
 
   const onSubmit = async () => {
     setIsLoading(true)
