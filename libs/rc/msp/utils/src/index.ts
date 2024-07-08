@@ -2,7 +2,7 @@ import moment from 'moment'
 
 import { DateFormatEnum, formatter }    from '@acx-ui/formatter'
 import { EntitlementNetworkDeviceType } from '@acx-ui/rc/utils'
-import { AccountType }                  from '@acx-ui/utils'
+import { AccountType, getJwtHeaders }   from '@acx-ui/utils'
 
 import {
   DelegationEntitlementRecord,
@@ -202,6 +202,19 @@ export const MSPUtils = () => {
         ? 'Integrator Admin Count' : 'MSP Admin Count')
   }
 
+  async function loadMspImageWithJWT (imageId: string): Promise<string> {
+    const headers = { 'mode': 'no-cors', 'Content-Type': 'application/json',
+      'Accept': 'application/json', ...getJwtHeaders() }
+    const url = `/tenants/${imageId}/urls`
+    const response = await fetch(url, { headers })
+    if (!response.ok) {
+      throw new Error(`Error! status: ${response.status}`)
+    } else {
+      const result = await response.json()
+      return result.signedUrl
+    }
+  }
+
   return {
     isMspEc,
     isOnboardedMsp,
@@ -221,6 +234,7 @@ export const MSPUtils = () => {
     transformTechPartner,
     transformTechPartnerCount,
     transformAdminCount,
-    transformAdminCountHeader
+    transformAdminCountHeader,
+    loadMspImageWithJWT
   }
 }
