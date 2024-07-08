@@ -58,9 +58,6 @@ describe('CaptiveNetworkForm-ClickThrough', () => {
       rest.post(PortalUrlsInfo.getEnhancedPortalProfileList.url,
         (_, res, ctx) => res(ctx.json({ content: portalList }))
       ),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
-        res(ctx.json([]))
-      ),
       rest.post(PortalUrlsInfo.createPortal.url,
         (_, res, ctx) => res(ctx.json({
           requestId: 'request-id', id: 'test', serviceName: 'test' }))

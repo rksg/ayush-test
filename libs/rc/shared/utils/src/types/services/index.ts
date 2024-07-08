@@ -120,21 +120,6 @@ export interface AccessControlFormFields {
   policyName: string
 }
 
-export interface CloudpathServer {
-  id: string
-  name: string
-  deploymentType: 'Cloud' | 'OnPremise'
-  deployedInVenueId?: string
-  deployedInVenueName?: string
-  authRadius: {
-    id: string
-    primary: RadiusService
-  }
-  accountingRadiu?: {
-    id: string
-    primary: RadiusService
-  }
-}
 export interface RadiusService {
   ip: string
   port: number
@@ -145,7 +130,3 @@ export enum VlanType {
   VLAN = 'vlanId',
   Pool = 'vlanPool'
 }
-
-
-
-
