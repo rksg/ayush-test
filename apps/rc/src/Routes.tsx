@@ -888,19 +888,35 @@ function PolicyRoutes () {
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.CREATE })}
-        element={<AccessControlForm editMode={false}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.CREATE]}>
+            <AccessControlForm editMode={false}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.EDIT })}
-        element={<AccessControlForm editMode={true}/>}
+        element={
+          <AuthRoute scopes={[WifiScopes.UPDATE]}>
+            <AccessControlForm editMode={true}/>
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.DETAIL })}
-        element={<AccessControlDetail />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AccessControlDetail />
+          </AuthRoute>
+        }
       />
       <Route
         path={getPolicyRoutePath({ type: PolicyType.ACCESS_CONTROL, oper: PolicyOperation.LIST })}
-        element={<AccessControlTable />}
+        element={
+          <AuthRoute scopes={[WifiScopes.READ]}>
+            <AccessControlTable />
+          </AuthRoute>
+        }
       />
       <Route
         // eslint-disable-next-line max-len
