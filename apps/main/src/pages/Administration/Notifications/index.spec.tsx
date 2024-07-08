@@ -208,7 +208,7 @@ describe('Notification List', () => {
     await waitFor(() => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
-    await userEvent.click(screen.getByRole('button', { name: 'AI Notifications' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Notifications Preferences' }))
     expect(await screen.findByTestId('AIDrawer')).toBeVisible()
   })
 })

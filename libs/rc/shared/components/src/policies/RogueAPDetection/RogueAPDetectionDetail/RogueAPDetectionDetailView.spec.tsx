@@ -2,11 +2,16 @@ import React from 'react'
 
 import { rest } from 'msw'
 
-import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
-import { policyApi }                       from '@acx-ui/rc/services'
-import { RogueApUrls }                     from '@acx-ui/rc/utils'
-import { Provider, store }                 from '@acx-ui/store'
-import { act, mockServer, render, screen } from '@acx-ui/test-utils'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { policyApi }              from '@acx-ui/rc/services'
+import {
+  ConfigTemplateContext,
+  ConfigTemplateUrlsInfo,
+  PoliciesConfigTemplateUrlsInfo,
+  RogueApUrls
+} from '@acx-ui/rc/utils'
+import { Provider, store }                          from '@acx-ui/store'
+import { act, mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { detailContent } from '../__tests__/fixtures'
 
@@ -186,6 +191,54 @@ describe('RogueAPDetectionDetailView', () => {
         }
       }
     )
+
+    await screen.findByText(/classification rules/i)
+
+    screen.getByText(detailContent.rules.length)
+
+    await screen.findByText(/venue name/i)
+
+    await screen.findByText(/instance \(3\)/i)
+
+    expect(await screen.findByRole('cell', {
+      name: 'test-venue2'
+    })).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should render RogueAPDetectionDetailView correctly when RBAC_CONFIG_TEMPLATE_TOGGLE is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+    const mockGetRoguePolicy = jest.fn()
+    const mockGetVenueList = jest.fn()
+
+    mockServer.use(rest.get(
+      PoliciesConfigTemplateUrlsInfo.getRoguePolicyRbac.url,
+      (_, res, ctx) => res(
+        mockGetRoguePolicy(),
+        ctx.json(detailContent)
+      )
+    ), rest.post(
+      ConfigTemplateUrlsInfo.getVenuesTemplateList.url,
+      (_, res, ctx) => res(
+        mockGetVenueList(),
+        ctx.json(venueDetailContent)
+      )
+    ))
+
+    render(
+      <ConfigTemplateContext.Provider value={{ isTemplate: true }}>
+        <RogueAPDetectionDetailView />
+      </ConfigTemplateContext.Provider>
+      , {
+        wrapper: wrapper,
+        route: {
+          params: { policyId: 'policyId1', tenantId: 'tenantId1' }
+        }
+      }
+    )
+
+    await waitFor(() => expect(mockGetRoguePolicy).toBeCalled())
+    await waitFor(() => expect(mockGetVenueList).toBeCalled())
 
     await screen.findByText(/classification rules/i)
 

@@ -212,7 +212,7 @@ describe('Aps', () => {
 
     mockServer.use(
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(

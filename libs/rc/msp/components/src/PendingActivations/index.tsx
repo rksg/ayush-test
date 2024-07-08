@@ -9,7 +9,6 @@ import {
   Table,
   TableProps
 } from '@acx-ui/components'
-import { get }                        from '@acx-ui/config'
 import { Features, useIsSplitOn }     from '@acx-ui/feature-toggle'
 import { DateFormatEnum, formatter }  from '@acx-ui/formatter'
 import { SpaceWrapper }               from '@acx-ui/rc/components'
@@ -46,6 +45,7 @@ const PendingActivationsTable = () => {
       title: $t({ defaultMessage: 'Order Date' }),
       dataIndex: 'orderCreateDate',
       key: 'orderCreateDate',
+      width: 120,
       render: function (_, row) {
         return row.isChild ? '' : formatter(DateFormatEnum.DateFormat)(row.orderCreateDate)
       }
@@ -53,24 +53,17 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'SPA Activation Code' }),
       dataIndex: 'orderAcxRegistrationCode',
+      width: 220,
       key: 'orderAcxRegistrationCode',
       render: function (_, row) {
-        return row.isChild ? '' : <Button
-          type='link'
-          onClick={() => {
-            const licenseUrl = get('MANAGE_LICENSES')
-            const support = new URL(licenseUrl).hostname
-            const urlSupportActivation =
-                  `http://${support}/register_code/${row.orderAcxRegistrationCode}`
-            window.open(urlSupportActivation, '_blank')
-          }}
-        >{row.orderAcxRegistrationCode}</Button>
+        return row.isChild ? '' : row.orderAcxRegistrationCode
       }
     },
     {
       title: $t({ defaultMessage: 'Part Number' }),
       dataIndex: 'productCode',
       key: 'productCode',
+      width: 220,
       render: function (_, row) {
         return showActivateLink ? <Button
           type='link'
@@ -84,18 +77,21 @@ const PendingActivationsTable = () => {
     {
       title: $t({ defaultMessage: 'Part Number Description' }),
       dataIndex: 'productName',
+      width: 220,
       key: 'productName'
     },
     {
       title: $t({ defaultMessage: 'Quantity' }),
       dataIndex: 'quantity',
       key: 'quantity',
+      width: 90,
       align: 'center'
     },
     {
       title: $t({ defaultMessage: 'Subscription Term' }),
       dataIndex: 'subscriptionTerm',
       key: 'subscriptionTerm',
+      width: 160,
       render: function (_, row) {
         const terms =
           moment.duration(moment(row.spaEndDate).diff(moment(row.spaStartDate))).asDays()/30
@@ -106,6 +102,7 @@ const PendingActivationsTable = () => {
       title: $t({ defaultMessage: 'Last Day of Grace Activation Period' }),
       dataIndex: 'spaStartDate',
       key: 'spaStartDate',
+      width: 260,
       render: function (_, row) {
         return row.productClass === 'ACX-TRIAL-NEW' || row.trial
           ? noDataDisplay
@@ -135,8 +132,10 @@ const PendingActivationsTable = () => {
     <Loader states={[pendingActivationResults
     ]}>
       <Table
+        settingsId='pending-activation-table'
         columns={columns}
         dataSource={subscriptionData}
+        stickyHeaders={false}
         rowKey='orderId'
       />
       {drawerActivateVisible && <ActivatePurchaseDrawer

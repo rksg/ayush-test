@@ -114,6 +114,11 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
   })
+  it('should render Inten AI correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/intentAI' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
+  })
 
   it('should render incident details correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/incidents/id' }, wrapper: Provider })

@@ -4,6 +4,7 @@ import { useIntl }      from 'react-intl'
 import { useParams }    from 'react-router-dom'
 
 import { Table, TableProps, Tooltip }                         from '@acx-ui/components'
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
 import { useGetClientIsolationListQuery, useVenuesListQuery } from '@acx-ui/rc/services'
 import { ClientIsolationVenue, NetworkVenue }                 from '@acx-ui/rc/utils'
 
@@ -28,6 +29,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
   const params = useParams()
   const { networkVenues } = props
   const form = Form.useFormInstance()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const clientIsolationVenues = useWatch<ClientIsolationVenue[]>(clientIsolationVenuesFieldName)
   const clientIsolationVenuesInitValue = networkVenues
@@ -71,7 +73,7 @@ export default function ClientIsolationAllowListEditor (props: ClientIsolationAl
     }
   })
 
-  const { policyOptions } = useGetClientIsolationListQuery({ params },{
+  const { policyOptions } = useGetClientIsolationListQuery({ params, enableRbac },{
     selectFromResult ({ data }) {
       return {
         policyOptions: data?.map(item => ({ label: item.name, value: item.id })) ?? []
