@@ -1,8 +1,9 @@
 /* eslint-disable max-len */
 
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
-import { useIntl } from 'react-intl'
+import { AlignType } from 'rc-table/lib/interface'
+import { useIntl }   from 'react-intl'
 
 import { Table, TableProps, Card, Loader } from '@acx-ui/components'
 import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
@@ -10,9 +11,13 @@ import {
   useGetEnhancedPortalProfileListQuery,
   useGetEnhancedPortalTemplateListQuery,
   useGetNetworkTemplateListQuery,
-  useNetworkListQuery } from '@acx-ui/rc/services'
+  useNetworkListQuery,
+  useWifiNetworkListQuery,
+  useLazyGetClientsQuery
+} from '@acx-ui/rc/services'
 import {
   Network,
+  WifiNetwork,
   NetworkType,
   NetworkTypeEnum,
   useConfigTemplate,
@@ -26,15 +31,19 @@ import { TenantLink, useParams } from '@acx-ui/react-router-dom'
 
 import { renderConfigTemplateDetailsComponent } from '../../configTemplates'
 
+
 export function PortalInstancesTable (){
 
   const { $t } = useIntl()
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
-  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEnabledWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const isEnabledTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const [ tableData, setTableData ] = useState<(Network|WifiNetwork)[]>([])
+  const [ getClients ] = useLazyGetClientsQuery()
   const isNewDefined = isTemplate || isEnabledRbacService
+  const isEnabledNonTemplateWifiRbac = !isTemplate && isEnabledWifiRbac
   const defaultPayload = {
     fields: ['id', 'name', 'wifiNetworkIds', 'displayLangCode'],
     filters: {
@@ -49,12 +58,23 @@ export function PortalInstancesTable (){
     payload: { ...defaultPayload },
     enableRbac: isEnabledRbacService
   })
-  const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
 
-  const tableQuery = useTableQuery<Network>({
+  const useQuery = useMemo(() => {
+    const useNetworkQuery = isEnabledWifiRbac ? useWifiNetworkListQuery : useNetworkListQuery
+    return isTemplate ? useGetNetworkTemplateListQuery : useNetworkQuery
+  }, [isTemplate, isEnabledWifiRbac])
+
+  const networkQueryFields = useMemo(() => {
+    const isEnabledNetworkRbac = isTemplate ? isEnabledTemplateRbac : isEnabledNonTemplateWifiRbac
+    return isEnabledNetworkRbac ?
+      ['name', 'id', 'captiveType', 'nwSubType', 'venueApGroups.venueId'] :
+      ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients']
+  }, [isTemplate,isEnabledTemplateRbac, isEnabledNonTemplateWifiRbac])
+
+  const tableQuery = useTableQuery<WifiNetwork|Network>({
     useQuery,
     defaultPayload: {
-      fields: ['name', 'id', 'captiveType', 'nwSubType', 'venues', 'clients'],
+      fields: networkQueryFields,
       filters: {
         id: isNewDefined ? data?.data?.[0]?.wifiNetworkIds?.length? data.data[0]?.wifiNetworkIds: ['none'] :
           (data?.data?.[0]?.networkIds?.length? data.data[0]?.networkIds: ['none'])
@@ -64,7 +84,7 @@ export function PortalInstancesTable (){
       searchTargetFields: ['name'],
       searchString: ''
     },
-    enableRbac: isTemplate ? isEnabledTemplateRbac : isEnabledWifiRbac
+    enableRbac: isTemplate ? isEnabledTemplateRbac : isEnabledNonTemplateWifiRbac
   })
 
   useEffect(()=>{
@@ -76,10 +96,57 @@ export function PortalInstancesTable (){
             (data?.data?.[0]?.networkIds?.length? data.data[0]?.networkIds: ['none'])
         }
       })
+
     }
   },[data])
 
-  const columns: TableProps<Network>['columns'] = [
+  useEffect(() => {
+    const fetchClients = async (networkIds: string[]) => {
+      const clientsResult = await getClients({
+        payload: {
+          fields: ['networkInformation','macAddress'],
+          page: 1,
+          pageSize: 256,
+          filters: {
+            'networkInformation.id': networkIds
+          }
+        }
+      }).unwrap()
+      const networkCounts: { [networkId: string]: number } = {}
+      if (tableQuery.data?.data && clientsResult.data) {
+        const clients = clientsResult.data
+        clients.forEach(({ networkInformation }) => {
+          if (networkInformation && networkInformation.id) {
+            const networkId = networkInformation.id
+            if (networkCounts[networkId]) {
+              networkCounts[networkId] += 1
+            } else {
+              networkCounts[networkId] = 1
+            }
+
+          }
+        })
+        const newTableData = tableQuery.data.data.map((network) => {
+          return {
+            ...network,
+            clients: networkCounts[network.id] ?? 0
+          } as WifiNetwork
+        })
+        setTableData(newTableData)
+      }
+    }
+    if (tableQuery.data) {
+      if (isEnabledNonTemplateWifiRbac &&
+        tableQuery.data?.data && tableQuery.data?.data.length > 0) {
+        const networkIds = tableQuery.data.data.map(({ id }) => id)
+        fetchClients(networkIds)
+      }
+      setTableData(tableQuery.data?.data)
+    }
+
+  }, [tableQuery.data])
+
+  const columns: TableProps<WifiNetwork|Network>['columns'] = [
     {
       key: 'NetworkName',
       title: $t({ defaultMessage: 'Network Name' }),
@@ -103,18 +170,19 @@ export function PortalInstancesTable (){
       dataIndex: 'nwSubType',
       sorter: true,
       render: (_, row) => <NetworkType
-        networkType={row.nwSubType as NetworkTypeEnum}
+        networkType={NetworkTypeEnum.CAPTIVEPORTAL}
         row={row}
       />
     },
     {
       key: 'Venues',
       title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
-      dataIndex: ['venues', 'count'],
+      dataIndex: isEnabledNonTemplateWifiRbac ? ['venueApGroups', 'venueId'] : ['venues', 'count'],
       align: 'center',
       sorter: true,
       render: function (_, row) {
-        const value = row.venues?.count ?? 0
+        const value = (isEnabledNonTemplateWifiRbac ?
+          (row as WifiNetwork).venueApGroups?.length : row.venues?.count) ?? 0
         return isTemplate ?
           renderConfigTemplateDetailsComponent(ConfigTemplateType.NETWORK, row.id, value, 'venues') :
           <TenantLink
@@ -123,13 +191,13 @@ export function PortalInstancesTable (){
           />
       }
     },
-    {
+    ...(isTemplate ? []: [{
       key: 'clients',
       title: $t({ defaultMessage: 'Number of Clients' }),
-      align: 'center',
+      align: 'center' as AlignType,
       dataIndex: 'clients',
       sorter: true
-    }
+    }])
   ]
   return (
     <Loader states={[tableQuery]}>
@@ -139,7 +207,7 @@ export function PortalInstancesTable (){
           columns={columns}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          dataSource={tableQuery.data?.data}
+          dataSource={isEnabledNonTemplateWifiRbac ? tableData : tableQuery.data?.data}
           rowKey='id'
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
