@@ -95,7 +95,11 @@ const DHCPInstance = () => {
       </GridCol>
       {
         venueDHCPProfile?.enabled && (
-          isTemplate ? <PoolTable /> : <ContentSwitcher tabDetails={tabDetails} size='large' />
+          isTemplate ?
+            venueDHCPProfile && dhcpProfile && <PoolTable venueDHCPProfile={venueDHCPProfile}
+              dhcpProfile={dhcpProfile}
+              isFetching={isVenueDhcpFetching || isProfileFetching} />
+            : <ContentSwitcher tabDetails={tabDetails} size='large' />
         )
       }
     </GridRow>

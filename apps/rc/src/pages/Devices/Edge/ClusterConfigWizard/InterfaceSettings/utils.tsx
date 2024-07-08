@@ -1,8 +1,12 @@
 import { Space, Typography } from 'antd'
-import _                     from 'lodash'
+import _, { cloneDeep }      from 'lodash'
+import moment                from 'moment-timezone'
+import { defineMessage }     from 'react-intl'
 
 import type { CompatibilityNodeError, SingleNodeDetailsField, VipConfigType } from '@acx-ui/rc/components'
 import {
+  ClusterHaFallbackScheduleTypeEnum,
+  ClusterHaLoadDistributionEnum,
   ClusterNetworkSettings,
   EdgeClusterStatus,
   EdgePortInfo,
@@ -41,11 +45,20 @@ export const transformFromApiToFormData =
 
    if(vipConfig.length === 0) vipConfig.push({} as VipConfigType)
 
+   // eslint-disable-next-line max-len
+   const fallbackSettings = cloneDeep(apiData?.highAvailabilitySettings?.fallbackSettings) as InterfaceSettingsFormType['fallbackSettings']
+   const time = fallbackSettings?.schedule.time
+   if(time) {
+     fallbackSettings.schedule.time = moment(time, 'HH:mm:ss')
+   }
+
    return {
      portSettings,
      lagSettings: apiData?.lagSettings,
      timeout,
-     vipConfig
+     vipConfig,
+     fallbackSettings: fallbackSettings,
+     loadDistribution: apiData?.highAvailabilitySettings?.loadDistribution
    } as InterfaceSettingsFormType
  }
 
@@ -332,9 +345,62 @@ export const transformFromFormToApiData =
       ports: item.interfaces
     }
   }).filter(item => Boolean(item)) as VirtualIpSetting[]
+  const fallbackSettingsFormData = data.fallbackSettings
+  const fallbackSettings = data.fallbackSettings && {
+    ...fallbackSettingsFormData,
+    schedule: {}
+  } as Exclude<ClusterNetworkSettings['highAvailabilitySettings'], undefined>['fallbackSettings']
+  if(fallbackSettingsFormData) {
+    const { type, time, weekday, intervalHours } = fallbackSettingsFormData.schedule
+    switch(type) {
+      case ClusterHaFallbackScheduleTypeEnum.DAILY:
+        fallbackSettings.schedule = {
+          type,
+          time: moment(time).format('HH:mm')
+        }
+        break
+      case ClusterHaFallbackScheduleTypeEnum.WEEKLY:
+        fallbackSettings.schedule = {
+          type,
+          weekday,
+          time: moment(time).format('HH:mm')
+        }
+        break
+      case ClusterHaFallbackScheduleTypeEnum.INTERVAL:
+        fallbackSettings.schedule = {
+          type,
+          intervalHours
+        }
+        break
+    }
+  }
   return {
     lagSettings: data.lagSettings,
     portSettings,
-    virtualIpSettings
+    ...(virtualIpSettings.length > 0 ? {
+      virtualIpSettings
+    } : {}),
+    ...(fallbackSettings ? {
+      highAvailabilitySettings: {
+        fallbackSettings,
+        loadDistribution: data.loadDistribution
+      }
+    } : {})
   }
+}
+
+export const dayOfWeek = {
+  SUN: defineMessage({ defaultMessage: 'Sunday' }),
+  MON: defineMessage({ defaultMessage: 'Monday' }),
+  TUE: defineMessage({ defaultMessage: 'Tuesday' }),
+  WED: defineMessage({ defaultMessage: 'Wednesday' }),
+  THU: defineMessage({ defaultMessage: 'Thursday' }),
+  FRI: defineMessage({ defaultMessage: 'Friday' }),
+  SAT: defineMessage({ defaultMessage: 'Saturday' })
+}
+
+export const loadDistributions = {
+  [ClusterHaLoadDistributionEnum.RANDOM]: defineMessage({ defaultMessage: 'Random distribution' }),
+  // eslint-disable-next-line max-len
+  [ClusterHaLoadDistributionEnum.AP_GROUP]: defineMessage({ defaultMessage: 'Per AP group distribution' })
 }

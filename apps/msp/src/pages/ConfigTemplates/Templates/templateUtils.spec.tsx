@@ -78,7 +78,7 @@ describe('TemplateUtils', () => {
     const { result } = renderHook(() => useEcFilters())
 
     expect(result.current).toEqual({
-      tenantType: ['MSP_EC']
+      tenantType: ['MSP_EC', 'MSP_REC']
     })
   })
 
@@ -92,7 +92,7 @@ describe('TemplateUtils', () => {
 
     expect(result.current).toEqual({
       mspAdmins: [userProfileContextMockValues.adminId],
-      tenantType: ['MSP_EC']
+      tenantType: ['MSP_EC', 'MSP_REC']
     })
   })
 

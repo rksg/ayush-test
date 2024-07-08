@@ -74,6 +74,7 @@ import {
   deriveFieldsFromServerData,
   useRadiusServer,
   useVlanPool,
+  useClientIsolationActivations,
   useWifiCalling
 } from './utils'
 import { Venues } from './Venues/Venues'
@@ -165,6 +166,8 @@ export function NetworkForm (props:{
   const [previousPath, setPreviousPath] = useState('')
   const [MLOButtonDisable, setMLOButtonDisable] = useState(true)
   const { wifiCallingIds, updateWifiCallingActivation } = useWifiCalling(saveState.name === '')
+  const { updateClientIsolationActivations }
+    = useClientIsolationActivations(!(editMode || cloneMode), saveState, updateSaveState, form)
 
   const updateSaveData = (saveData: Partial<NetworkSaveData>) => {
     if(!editMode&&!saveState.enableAccountingService){
@@ -242,12 +245,11 @@ export function NetworkForm (props:{
         }
       }
     )
-    const resolvedNetworkSaveData = deriveFieldsFromServerData(fullNetworkSaveData)
 
     form.setFieldValue('wlan.advancedCustomization.wifiCallingIds', wifiCallingIds)
     form.setFieldValue('wlan.advancedCustomization.wifiCallingEnabled', true)
 
-    updateSaveData(resolvedNetworkSaveData)
+    updateSaveData(fullNetworkSaveData)
   }, [wifiCallingIds])
 
   useEffect(() => {
@@ -538,6 +540,7 @@ export function NetworkForm (props:{
         const network: Network = networkResponse.response
         await handleNetworkVenues(network.id, payload.venues)
       }
+      await updateClientIsolationActivations(payload, null, networkId)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
@@ -620,9 +623,7 @@ export function NetworkForm (props:{
       if (payload.id && (payload.venues || data?.venues)) {
         await handleNetworkVenues(payload.id, payload.venues, data?.venues)
       }
-
-
-
+      await updateClientIsolationActivations(payload, data, payload.id)
       modalMode ? modalCallBack?.() : redirectPreviousPage(navigate, previousPath, linkToNetworks)
     } catch (error) {
       console.log(error) // eslint-disable-line no-console
