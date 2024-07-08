@@ -98,7 +98,6 @@ const networkDevices: {
     }],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
     DP: [],
     rwg: []
   }
@@ -541,4 +540,3 @@ describe('Floor Plan Plain View', () => {
     })
   })
 })
-

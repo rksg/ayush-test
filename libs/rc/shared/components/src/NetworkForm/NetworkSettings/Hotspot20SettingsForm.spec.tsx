@@ -22,7 +22,6 @@ import {
   venueListResponse,
   networksResponse,
   successResponse,
-  cloudpathResponse,
   networkDeepResponse,
   mockHotspot20OperatorList,
   mockHotpost20IdentityProviderList
@@ -47,8 +46,6 @@ describe('Hotspot20SettingsForm', () => {
         (_, res, ctx) => res(ctx.json(networksResponse))),
       rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
         (_, res, ctx) => res(ctx.json(successResponse))),
-      rest.get(CommonUrlsInfo.getCloudpathList.url,
-        (_, res, ctx) => res(ctx.json(cloudpathResponse))),
       rest.post(CommonUrlsInfo.getVenuesList.url,
         (_, res, ctx) => res(ctx.json(venueListResponse))),
       rest.get(WifiUrlsInfo.getNetwork.url,
@@ -84,4 +81,3 @@ describe('Hotspot20SettingsForm', () => {
     expect(await screen.findByText(/Identity Provider/i)).toBeInTheDocument()
   })
 })
-

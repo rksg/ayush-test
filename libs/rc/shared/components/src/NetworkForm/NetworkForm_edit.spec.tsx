@@ -174,9 +174,6 @@ describe('NetworkForm', () => {
         WifiUrlsInfo.updateNetworkDeep.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(successResponse))
       ),
-      rest.get(CommonUrlsInfo.getCloudpathList.url, (_, res, ctx) =>
-        res(ctx.json([]))
-      ),
       rest.post(CommonUrlsInfo.getVenuesList.url, (_, res, ctx) =>
         res(ctx.json(venueListResponse))
       ),
