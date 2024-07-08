@@ -7,9 +7,9 @@ import { useStepFormContext }        from '@acx-ui/components'
 import { DateFormatEnum, formatter } from '@acx-ui/formatter'
 
 import * as config                from '../config'
+import { states }                 from '../config'
 import { EnhancedRecommendation } from '../services'
 import * as UI                    from '../styledComponents'
-
 
 export function Introduction () {
   const { $t } = useIntl()
@@ -40,7 +40,8 @@ export function Introduction () {
             {$t({ defaultMessage: 'Zone:' })} {initialValues?.sliceValue}
           </UI.ContentText>
           <UI.ContentText>
-            {$t({ defaultMessage: 'Status:' })} {$t(config.statusTrailMsgs[status])}
+            {$t({ defaultMessage: 'Status:' })}
+            {$t(config.statusTrailMsgs[status as keyof typeof states ])}
           </UI.ContentText>
           <UI.ContentText>
             {$t({ defaultMessage: 'Last update:' })}&nbsp;

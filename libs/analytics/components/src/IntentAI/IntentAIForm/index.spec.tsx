@@ -6,12 +6,12 @@ import { mockGraphqlQuery, render, screen, waitForElementToBeRemoved, within } f
 
 import { mockedRecommendationCRRM } from './__tests__/fixtures'
 
-import { IntentAIDrivenRRM } from '.'
+import { IntentAIForm } from '.'
 
 jest.mock('@acx-ui/react-router-dom', () => ({
   ...jest.requireActual('@acx-ui/react-router-dom'), // use actual for all non-hook parts
   useParams: () => ({
-    id: 'b17acc0d-7c49-4989-adad-054c7f1fc5b6'
+    id: 'aiDrivenRRM-b17acc0d-7c49-4989-adad-054c7f1fc5b6'
   })
 }))
 
@@ -28,8 +28,8 @@ describe('AIDrivenRRM', () => {
       .mockImplementation(() => true)
   })
   it('should match snapshot', async () => {
-    const { asFragment } = render(<IntentAIDrivenRRM />, {
-      route: { path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
+    const { asFragment } = render(<IntentAIForm />, {
+      route: { path: '/ai/intentAI/aiDrivenRRM-b17acc0d-7c49-4989-adad-054c7f1fc5b6/edit' },
       wrapper: Provider
     })
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
@@ -37,8 +37,8 @@ describe('AIDrivenRRM', () => {
   })
 
   it('should render correctly', async () => {
-    render(<IntentAIDrivenRRM />, {
-      route: { path: '/ai/recommendations/crrm/b17acc0d-7c49-4989-adad-054c7f1fc5b6' },
+    render(<IntentAIForm />, {
+      route: { path: '/ai/intentAI/aiDrivenRRM-b17acc0d-7c49-4989-adad-054c7f1fc5b6/edit' },
       wrapper: Provider
     })
 
