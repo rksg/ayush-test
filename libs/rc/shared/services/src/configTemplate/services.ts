@@ -13,14 +13,14 @@ import { baseConfigTemplateApi }      from '@acx-ui/store'
 import { RequestPayload }             from '@acx-ui/types'
 import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
 
-import { createDpskHttpRequest, transformDhcpResponse } from '../service'
+import { createDpskHttpRequest } from '../service'
 import {
   createWifiCallingFn,
   commonQueryFn,
   getDhcpProfileFn,
   updateWifiCallingFn,
   getWifiCallingFn,
-  queryWifiCalling
+  queryWifiCallingFn
 } from '../servicePolicy.utils'
 
 import {
@@ -283,7 +283,7 @@ export const servicesConfigTemplateApi = baseConfigTemplateApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceTemplateList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      queryFn: queryWifiCalling(true),
+      queryFn: queryWifiCallingFn(true),
       providesTags: [
         { type: 'ConfigTemplate', id: 'LIST' }, { type: 'WifiCallingTemplate', id: 'LIST' }
       ],

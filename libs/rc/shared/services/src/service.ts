@@ -59,7 +59,7 @@ import { baseServiceApi }                       from '@acx-ui/store'
 import { RequestPayload }                       from '@acx-ui/types'
 import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
 
-import { getDhcpProfileFn, createWifiCallingFn, getWifiCallingFn, queryWifiCalling, updateWifiCallingFn } from './servicePolicy.utils'
+import { getDhcpProfileFn, createWifiCallingFn, getWifiCallingFn, queryWifiCallingFn, updateWifiCallingFn } from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -330,16 +330,6 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-
-    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
     deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload<string[]>>({
       queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         if (enableRbac) {
@@ -364,7 +354,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      queryFn: queryWifiCalling(),
+      queryFn: queryWifiCallingFn(),
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
         await onSocketActivityChanged(requestArgs, api, (msg) => {
@@ -950,7 +940,6 @@ export const {
   useDeleteMdnsProxyApsMutation,
   useGetMdnsProxyApsQuery,
   useDeleteWifiCallingServicesMutation,
-  useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,

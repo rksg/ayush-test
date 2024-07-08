@@ -126,7 +126,7 @@ export function getWifiCallingFn (isTemplate = false)
   }
 }
 
-export function queryWifiCalling (isTemplate = false)
+export function queryWifiCallingFn (isTemplate = false)
   : QueryFn<TableResult<WifiCallingSetting>> {
   const wifiCallingApi = isTemplate ? ServicesConfigTemplateUrlsInfo : WifiCallingUrls
 
