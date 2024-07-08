@@ -98,8 +98,8 @@ function EnableR1Beta (props: EnableR1BetaProps) {
           </SpaceWrapper>
         </Form.Item>
 
-        <SpaceWrapper full className='descriptionsWrapper' justifycontent='flex-start'>
-          <Typography.Paragraph className='description greyText'>
+        <SpaceWrapper full className='indent' justifycontent='flex-start'>
+          <Typography.Paragraph className='greyText'>
             {$t(MessageMapping.enable_r1_beta_access_description, { br: <br/> })}
           </Typography.Paragraph>
         </SpaceWrapper>

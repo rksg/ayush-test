@@ -51,9 +51,3 @@ export const RateLimitBlock = styled.div`
       width: 50px;
     }
 `
-
-const CustomSubtitle = styled(Subtitle).attrs({ level: 4 })`
-  margin-block-end: 12px;
-`
-
-export { CustomSubtitle as Subtitle }

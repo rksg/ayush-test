@@ -1,7 +1,7 @@
-import { Row, Col }                                 from 'antd'
-import { useIntl, FormattedMessage, defineMessage } from 'react-intl'
+import { Row, Col, Typography }   from 'antd'
+import { useIntl, defineMessage } from 'react-intl'
 
-import { PageHeader, StepsForm } from '@acx-ui/components'
+import { PageHeader, StepsForm, Descriptions } from '@acx-ui/components'
 
 import { mapping, demoLink, guideLink } from './mapping'
 import * as UI                          from './styledComponents'
@@ -16,11 +16,6 @@ export function AIDrivenRRM () {
       link: '/analytics/intentAI'
     }
   ]
-  const values = {
-    p: (text: string) => <UI.Para>{text}</UI.Para>,
-    b: (text: string) => <UI.Bold>{text}</UI.Bold>,
-    br: () => <br />
-  }
 
   return (
     <>
@@ -39,83 +34,78 @@ export function AIDrivenRRM () {
           }
         ]}
       />
-      <StepsForm
-        buttonLabel={{
-          submit: 'Apply'
-        }}
-      >
-        <StepsForm.StepForm title='Introduction'>
+      <StepsForm buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}>
+
+        <StepsForm.StepForm title={$t({ defaultMessage: 'Introduction' })}>
           <Row gutter={20}>
             <Col span={15}>
-              <UI.Wrapper>
-                <UI.Title>{$t({ defaultMessage: 'Introduction' })}</UI.Title>
-                <UI.Content>
-                  <UI.ContentText>
-                    <span>
-                      {$t({ defaultMessage: 'Intent:' })} <b>{mapping.intent}</b>
-                    </span>
-                  </UI.ContentText>
-                  <UI.ContentText>
-                    {$t({ defaultMessage: 'Category:' })} {mapping.category}
-                  </UI.ContentText>
-                  <UI.ContentText>
-                    {$t({ defaultMessage: 'Zone:' })} {mapping.zone}
-                  </UI.ContentText>
-                  <UI.ContentText>
-                    {$t({ defaultMessage: 'Status:' })} {mapping.status}
-                  </UI.ContentText>
-                  <UI.ContentText>
-                    {$t({ defaultMessage: 'Last update:' })} {mapping.lastUpdate}
-                  </UI.ContentText>
-                </UI.Content>
-                <UI.Content>
-                  <UI.Subtitle>
-                    {$t({ defaultMessage:
-                      'Wireless network design involves balancing different priorities:' })}
-                  </UI.Subtitle>
-                  <FormattedMessage
-                    {...mapping.clientDensity.combined}
-                    values={{ ...values }}
-                  />
-                  <FormattedMessage
-                    {...mapping.clientThroughput.combined}
-                    values={{ ...values }}
-                  />
-                </UI.Content>
-              </UI.Wrapper>
+              <StepsForm.Title children={$t({ defaultMessage: 'Introduction' })} />
+              <Descriptions noSpace>
+                <Descriptions.Item
+                  label={$t({ defaultMessage: 'Intent' })}
+                  children={<b>{mapping.intent}</b>}
+                />
+                <Descriptions.Item
+                  label={$t({ defaultMessage: 'Category' })}
+                  children={mapping.category}
+                />
+                <Descriptions.Item
+                  label={$t({ defaultMessage: 'Zone' })}
+                  children={mapping.zone}
+                />
+                <Descriptions.Item
+                  label={$t({ defaultMessage: 'Status' })}
+                  children={mapping.status}
+                />
+                <Descriptions.Item
+                  label={$t({ defaultMessage: 'Last update' })}
+                  children={mapping.lastUpdate}
+                />
+              </Descriptions>
+              <StepsForm.Subtitle>
+                {$t({ defaultMessage:
+                  'Network Intent plays a crucial role in wireless network design' })}
+              </StepsForm.Subtitle>
+              <StepsForm.TextContent>
+                <Typography.Paragraph>
+                  <b>{$t({ defaultMessage: 'High number of clients in a dense network:' })}</b> <span>{$t({ defaultMessage:
+                    'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })}</span>
+                </Typography.Paragraph>
+                <Typography.Paragraph>
+                  <b>{$t({ defaultMessage: 'High client throughput in sparse network:' })}</b> <span>{$t({ defaultMessage:
+                    'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' })}</span>
+                </Typography.Paragraph>
+              </StepsForm.TextContent>
             </Col>
             <Col span={7} offset={2}>
-              <UI.Wrapper>
-                <UI.SideNote>
-                  <UI.SideNoteHeader>
-                    <UI.SideNoteTitle>
-                      {$t({ defaultMessage: 'Side Notes' })}
-                    </UI.SideNoteTitle>
-                  </UI.SideNoteHeader>
-                  <UI.SideNoteSubtitle>
-                    {$t({ defaultMessage: 'Why the recommendation?' })}
-                  </UI.SideNoteSubtitle>
-                  <UI.SideNoteContent>
-                    <FormattedMessage
-                      {...mapping.sideNotes.introduction}
-                      values={{ ...values }}
-                    />
-                  </UI.SideNoteContent>
-                  <UI.SideNoteSubtitle>
-                    {$t({ defaultMessage: 'Resources:' })}
-                  </UI.SideNoteSubtitle>
-                  <UI.SideNoteContent>
-                    <UI.Link href={demoLink} target='_blank'>
+              <UI.SideNotes>
+                <Typography.Title level={4}>
+                  {$t({ defaultMessage: 'Side Notes' })}
+                </Typography.Title>
+                <StepsForm.Subtitle>
+                  {$t({ defaultMessage: 'Benefits' })}
+                </StepsForm.Subtitle>
+                <StepsForm.TextContent>
+                  <Typography.Paragraph>
+                    {$t({ defaultMessage: 'Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })}
+                  </Typography.Paragraph>
+                </StepsForm.TextContent>
+                <StepsForm.Subtitle>
+                  {$t({ defaultMessage: 'Resources:' })}
+                </StepsForm.Subtitle>
+                <StepsForm.TextContent>
+                  <Typography.Paragraph>
+                    <a href={demoLink} target='_blank' rel='noreferrer'>
                       <UI.LinkVideoIcon />
                       {$t(defineMessage({ defaultMessage: 'RUCKUS AI - AI-Driven RRM Demo' }))}
-                    </UI.Link>
-                    <UI.Link href={guideLink} target='_blank'>
+                    </a>
+                    <a href={guideLink} target='_blank' rel='noreferrer'>
                       <UI.LinkDocumentIcon />
                       {$t(defineMessage({ defaultMessage: 'RUCKUS AI User Guide' }))}
-                    </UI.Link>
-                  </UI.SideNoteContent>
-                </UI.SideNote>
-              </UI.Wrapper>
+                    </a>
+                  </Typography.Paragraph>
+                </StepsForm.TextContent>
+              </UI.SideNotes>
             </Col>
           </Row>
         </StepsForm.StepForm>
@@ -123,34 +113,28 @@ export function AIDrivenRRM () {
         <StepsForm.StepForm title='Choose priority'>
           <Row gutter={20}>
             <Col span={15}>
-              <UI.Wrapper>
-                <UI.Title>{$t({ defaultMessage: 'Choose priority' })}</UI.Title>
-                <UI.Content>
-                  <UI.Subtitle>
-                    {$t({ defaultMessage: 'What\'s more important to you for this network?' })}
-                  </UI.Subtitle>
-                </UI.Content>
-              </UI.Wrapper>
+              <StepsForm.Title children={$t({ defaultMessage: 'Choose priority' })} />
+              <StepsForm.Subtitle>
+                {$t(
+                  { defaultMessage: 'What is your primary network intent for Zone {zone}' },
+                  { zone: mapping.zone }
+                )}
+              </StepsForm.Subtitle>
             </Col>
             <Col span={7} offset={2}>
-              <UI.Wrapper>
-                <UI.SideNote>
-                  <UI.SideNoteHeader>
-                    <UI.SideNoteTitle>
-                      {$t({ defaultMessage: 'Side Notes' })}
-                    </UI.SideNoteTitle>
-                  </UI.SideNoteHeader>
-                  <UI.SideNoteSubtitle>
-                    {$t({ defaultMessage: 'Potential trade-off?' })}
-                  </UI.SideNoteSubtitle>
-                  <UI.SideNoteContent>
-                    <FormattedMessage
-                      {...mapping.sideNotes.tradeOff}
-                      values={{ ...values }}
-                    />
-                  </UI.SideNoteContent>
-                </UI.SideNote>
-              </UI.Wrapper>
+              <UI.SideNotes>
+                <Typography.Title level={4}>
+                  {$t({ defaultMessage: 'Side Notes' })}
+                </Typography.Title>
+                <StepsForm.Subtitle>
+                  {$t({ defaultMessage: 'Potential trade-off?' })}
+                </StepsForm.Subtitle>
+                <StepsForm.TextContent>
+                  <Typography.Paragraph>
+                    {$t({ defaultMessage: 'In the quest for minimizing interference between access points (APs), AI algorithms may opt to narrow channel widths. While this can enhance spectral efficiency and alleviate congestion, it also heightens vulnerability to noise, potentially reducing throughput. Narrow channels limit data capacity, which could lower overall throughput.' })}
+                  </Typography.Paragraph>
+                </StepsForm.TextContent>
+              </UI.SideNotes>
             </Col>
           </Row>
         </StepsForm.StepForm>
@@ -158,34 +142,22 @@ export function AIDrivenRRM () {
         <StepsForm.StepForm title='Summary'>
           <Row gutter={20}>
             <Col span={15}>
-              <UI.Wrapper>
-                <UI.Title>{$t({ defaultMessage: 'Summary' })}</UI.Title>
-                <UI.Content>
-                </UI.Content>
-              </UI.Wrapper>
+              <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
             </Col>
             <Col span={7} offset={2}>
-              <UI.Wrapper>
-                <UI.SideNote>
-                  <UI.SideNoteHeader>
-                    <UI.SideNoteTitle>
-                      {$t({ defaultMessage: 'Side Notes' })}
-                    </UI.SideNoteTitle>
-                  </UI.SideNoteHeader>
-                  <UI.SideNoteSubtitle>
-                    <FormattedMessage
-                      {...mapping.clientDensity.title}
-                      values={{ ...values }}
-                    />
-                  </UI.SideNoteSubtitle>
-                  <UI.SideNoteContent>
-                    <FormattedMessage
-                      {...mapping.clientDensity.content}
-                      values={{ ...values }}
-                    />
-                  </UI.SideNoteContent>
-                </UI.SideNote>
-              </UI.Wrapper>
+              <UI.SideNotes>
+                <Typography.Title level={4}>
+                  {$t({ defaultMessage: 'Side Notes' })}
+                </Typography.Title>
+                <StepsForm.Subtitle>
+                  {$t({ defaultMessage: 'High number of clients in a dense network' })}
+                </StepsForm.Subtitle>
+                <StepsForm.TextContent>
+                  <Typography.Paragraph>
+                    {$t({ defaultMessage: 'High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.' })}
+                  </Typography.Paragraph>
+                </StepsForm.TextContent>
+              </UI.SideNotes>
             </Col>
           </Row>
         </StepsForm.StepForm>
