@@ -196,7 +196,7 @@ export function VenueFirmwareList () {
         return {
           props: {
             style: {
-              padding: '5px',
+              padding: '10px 0 5px 0',
               overflow: 'hidden'
             }
           },

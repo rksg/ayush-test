@@ -362,6 +362,7 @@ export function useSwitchFirmwareUtils () {
 
         currentVersionDisplay.push(
           <Statistic
+            width={modelGroupValue === SwitchFirmwareModelGroup.ICX7X ? '110px' : '100px'}
             title={<Tag style={{
               fontSize: '10px',
               borderRadius: '8px',
@@ -369,7 +370,7 @@ export function useSwitchFirmwareUtils () {
               height: '16px'
             }}>{modelGroupText}</Tag>}
             value={switchVersion}
-            valueStyle={{ fontSize: '12px', overflow: 'auto', textOverflow: 'ellipsis' }} />
+            valueStyle={{ fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis' }} />
         )
 
         tooltipArray.push(

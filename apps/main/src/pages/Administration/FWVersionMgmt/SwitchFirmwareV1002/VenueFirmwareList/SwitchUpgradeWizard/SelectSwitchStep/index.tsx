@@ -61,7 +61,7 @@ function useColumns () {
         const customDisplayValue =
           <div style={{
             fontWeight: cssStr('--acx-subtitle-4-font-weight'),
-            overflow: 'auto',
+            overflow: 'hidden',
             textOverflow: 'ellipsis'
           }} >
             {venueName}
@@ -83,7 +83,7 @@ function useColumns () {
         return {
           props: {
             style: { padding: '5px',
-              overflow: 'auto' }
+              overflow: 'hidden' }
           },
           children: getCurrentFirmwareDisplay(intl, row)
         }
@@ -97,8 +97,8 @@ function useColumns () {
         return {
           props: {
             style: {
-              overflow: 'unset',
-              zIndex: 300
+              zIndex: 3,
+              overflow: 'visible'
             }
           },
           children: <Tooltip
@@ -201,7 +201,7 @@ export const SelectSwitchStep = (
           parseSwitchVersion(row.currentFirmware) : noDataDisplay
         return {
           props: {
-            style: { paddingLeft: '5px' }
+            style: { padding: '10px 0 5px 0' }
           },
           children: getTooltipText(version)
         }
@@ -218,8 +218,8 @@ export const SelectSwitchStep = (
         return {
           props: {
             style: {
-              overflow: 'unset',
-              zIndex: 300
+              overflow: 'visible',
+              zIndex: 3
             }
           },
           children: getTooltipText(tooltip, customDisplayValue)
