@@ -11,8 +11,6 @@ export type TradeOffRadio = RadioProps & {
 
 export type TradeOffProps = {
     key: string,
-    title: React.ReactNode
-    label: React.ReactNode
     name: NamePath
     headers: React.ReactNode[]
     radios: TradeOffRadio[],
@@ -21,7 +19,7 @@ export type TradeOffProps = {
 }
 
 export function TradeOff (props: TradeOffProps) {
-  const { key: tradeOffKey, title, label, name,
+  const { key: tradeOffKey, name,
     headers=[], radios = [], currentValue, onChange } = props
   const fieldName = name as unknown as NamePath
   const selectIndex = radios?.map(radios => radios.value).indexOf(currentValue)
@@ -42,12 +40,8 @@ export function TradeOff (props: TradeOffProps) {
 
   return (
     <TradeOffWrapper key={tradeOffKey}>
-      <Row>
-        <Col span={24}><h2>{title}</h2></Col>
-      </Row>
       <Form.Item
         name={fieldName}
-        label={label}
         initialValue={currentValue}
       >
         <Radio.Group onChange={e => onChange(e.target.value)}>

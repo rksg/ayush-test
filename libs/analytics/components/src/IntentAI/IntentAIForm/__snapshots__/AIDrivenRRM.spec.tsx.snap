@@ -94,14 +94,14 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
           class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
         >
           <span>
-            Intent: Client density vs Client throughput
+            Intent: Client Density vs Client Throughput
             <div
               class="ant-divider ant-divider-vertical"
               role="separator"
             />
           </span>
           <span>
-            Zone: SPS-Hospitality-BLR
+            Venue: SPS-Hospitality-BLR
           </span>
         </span>
       </div>
@@ -186,7 +186,38 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                   <div
                     class="ant-steps-item-title"
                   >
-                    Choose priority
+                    Intent Priority
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
+            >
+              <div
+                class="ant-steps-item-container"
+              >
+                <div
+                  class="ant-steps-item-tail"
+                />
+                <div
+                  class="ant-steps-item-icon"
+                >
+                  <span
+                    class="ant-steps-icon"
+                  >
+                    <span
+                      class="ant-steps-icon-dot"
+                    />
+                  </span>
+                </div>
+                <div
+                  class="ant-steps-item-content"
+                >
+                  <div
+                    class="ant-steps-item-title"
+                  >
+                    Settings
                   </div>
                 </div>
               </div>
@@ -269,7 +300,7 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                               class="ant-descriptions-item-content"
                             >
                               <b>
-                                Client density vs Client throughput
+                                Client Density vs Client Throughput
                               </b>
                             </span>
                           </div>
@@ -311,7 +342,7 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                             <span
                               class="ant-descriptions-item-label"
                             >
-                              Zone
+                              Venue
                             </span>
                             <span
                               class="ant-descriptions-item-content"
@@ -408,7 +439,7 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
               style="padding-left: 10px; padding-right: 10px;"
             >
               <div
-                class="styledComponents__SideNotes-sc-ki2m8o-1 bYBsEJ"
+                class="styledComponents__SideNotes-sc-ki2m8o-1 esivym"
               >
                 <h4
                   class="ant-typography"
