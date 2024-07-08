@@ -5,6 +5,7 @@ export const wiredSummaryNoDataFixture = {
       switchCpuUtilizationPct: 0,
       stormPortCount: 0,
       portCount: 0,
+      uplinkPortCount: 0,
       congestedPortCount: 0
 
     }
@@ -18,6 +19,7 @@ export const wiredSummaryDataFixture = {
       switchCpuUtilizationPct: 0.12345,
       stormPortCount: 5,
       portCount: 637,
+      uplinkPortCount: 155,
       congestedPortCount: 4
     }
   }

@@ -48,6 +48,10 @@ describe('TemplateSelector', () => {
       rest.get(
         MsgTemplateUrls.getRegistrationById.url,
         (req, res, ctx) => res(ctx.status(404))
+      ),
+      rest.get(
+        MsgTemplateUrls.getTemplate.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
@@ -106,6 +110,10 @@ describe('TemplateSelector', () => {
       rest.get(
         MsgTemplateUrls.getRegistrationById.url,
         (req, res, ctx) => res(ctx.json({ ...mockedRegistration }))
+      ),
+      rest.get(
+        MsgTemplateUrls.getTemplate.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
@@ -162,6 +170,10 @@ describe('TemplateSelector', () => {
       rest.get(
         MsgTemplateUrls.getRegistrationById.url,
         (req, res, ctx) => res(ctx.status(404))
+      ),
+      rest.get(
+        MsgTemplateUrls.getTemplate.url,
+        (req, res, ctx) => res(ctx.json({}))
       )
     )
 
