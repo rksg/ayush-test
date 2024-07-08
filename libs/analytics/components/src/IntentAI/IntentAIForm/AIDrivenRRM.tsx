@@ -1,8 +1,8 @@
 import { Row, Col, Typography, Space } from 'antd'
 import { useIntl, defineMessage }      from 'react-intl'
 
-import { PageHeader, StepsForm, Descriptions } from '@acx-ui/components'
-import { LinkDocumentIcon, LinkVideoIcon }     from '@acx-ui/icons'
+import { useLayoutContext, PageHeader, StepsForm, Descriptions } from '@acx-ui/components'
+import { LinkDocumentIcon, LinkVideoIcon }                       from '@acx-ui/icons'
 
 import { mapping, demoLink, guideLink } from './mapping'
 import * as UI                          from './styledComponents'
@@ -17,6 +17,7 @@ export function AIDrivenRRM () {
       link: '/analytics/intentAI'
     }
   ]
+  const { pageHeaderY } = useLayoutContext()
 
   return (
     <>
@@ -79,7 +80,7 @@ export function AIDrivenRRM () {
               </StepsForm.TextContent>
             </Col>
             <Col span={7} offset={2}>
-              <UI.SideNotes>
+              <UI.SideNotes $pageHeaderY={pageHeaderY}>
                 <Typography.Title level={4}>
                   {$t({ defaultMessage: 'Side Notes' })}
                 </Typography.Title>
@@ -127,7 +128,7 @@ export function AIDrivenRRM () {
               </StepsForm.Subtitle>
             </Col>
             <Col span={7} offset={2}>
-              <UI.SideNotes>
+              <UI.SideNotes $pageHeaderY={pageHeaderY}>
                 <Typography.Title level={4}>
                   {$t({ defaultMessage: 'Side Notes' })}
                 </Typography.Title>
@@ -150,7 +151,7 @@ export function AIDrivenRRM () {
               <StepsForm.Title children={$t({ defaultMessage: 'Summary' })} />
             </Col>
             <Col span={7} offset={2}>
-              <UI.SideNotes>
+              <UI.SideNotes $pageHeaderY={pageHeaderY}>
                 <Typography.Title level={4}>
                   {$t({ defaultMessage: 'Side Notes' })}
                 </Typography.Title>

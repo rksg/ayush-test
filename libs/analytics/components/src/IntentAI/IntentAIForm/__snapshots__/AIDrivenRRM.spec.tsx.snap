@@ -408,7 +408,7 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
               style="padding-left: 10px; padding-right: 10px;"
             >
               <div
-                class="styledComponents__SideNotes-sc-ki2m8o-1 jmDqWF"
+                class="styledComponents__SideNotes-sc-ki2m8o-1 bYBsEJ"
               >
                 <h4
                   class="ant-typography"
@@ -445,22 +445,46 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                       rel="noreferrer"
                       target="_blank"
                     >
-                      <svg
-                        class="styledComponents__LinkVideoIcon-sc-ki2m8o-2 hLZAcv"
-                        data-testid="LinkVideo"
-                      />
-                      RUCKUS AI - AI-Driven RRM Demo
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-right: 8px;"
+                        >
+                          <svg
+                            data-testid="LinkVideoIcon"
+                          />
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          RUCKUS AI - AI-Driven RRM Demo
+                        </div>
+                      </div>
                     </a>
                     <a
                       href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
                       rel="noreferrer"
                       target="_blank"
                     >
-                      <svg
-                        class="styledComponents__LinkDocumentIcon-sc-ki2m8o-3 fQvgic"
-                        data-testid="LinkDocument"
-                      />
-                      RUCKUS AI User Guide
+                      <div
+                        class="ant-space ant-space-horizontal ant-space-align-center"
+                      >
+                        <div
+                          class="ant-space-item"
+                          style="margin-right: 8px;"
+                        >
+                          <svg
+                            data-testid="LinkDocumentIcon"
+                          />
+                        </div>
+                        <div
+                          class="ant-space-item"
+                        >
+                          RUCKUS AI User Guide
+                        </div>
+                      </div>
                     </a>
                   </div>
                 </div>
