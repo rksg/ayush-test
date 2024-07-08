@@ -1,12 +1,10 @@
 import React from 'react'
 
-import { Row, Col, Typography, Space } from 'antd'
-import { useIntl, defineMessage }      from 'react-intl'
+import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm, Descriptions, Loader } from '@acx-ui/components'
-import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
-import { LinkDocumentIcon, LinkVideoIcon }             from '@acx-ui/icons'
-import { useParams }                                   from '@acx-ui/react-router-dom'
+import { PageHeader, StepsForm, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }        from '@acx-ui/feature-toggle'
+import { useParams }                     from '@acx-ui/react-router-dom'
 
 import * as config                                                         from './config'
 import { Introduction }                                                    from './Form/introduction'
@@ -85,7 +83,8 @@ export function AIDrivenRRM () {
           title={$t(config.steps.title.summary)}
           children={<Summary />}
         />
-        <StepsForm.StepForm title={$t({ defaultMessage: 'Introduction' })}>
+
+        {/* <StepsForm.StepForm title={$t({ defaultMessage: 'Introduction' })}>
           <Row gutter={20}>
             <Col span={15}>
               <StepsForm.Title children={$t({ defaultMessage: 'Introduction' })} />
@@ -213,7 +212,7 @@ export function AIDrivenRRM () {
               </UI.SideNotes>
             </Col>
           </Row>
-        </StepsForm.StepForm>
+        </StepsForm.StepForm> */}
       </StepsForm>
     </Loader>
   )

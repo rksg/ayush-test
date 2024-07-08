@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Row, Col } from 'antd'
-import { useIntl }  from 'react-intl'
+import { Row, Col, Typography } from 'antd'
+import { useIntl }              from 'react-intl'
 
-import { useStepFormContext } from '@acx-ui/components'
+import { StepsForm, useStepFormContext } from '@acx-ui/components'
 
 import * as config                from '../config'
 import { EnhancedRecommendation } from '../services'
@@ -13,35 +13,27 @@ import { IntentType, Priority } from './priority'
 
 export function Summary () {
   const { $t } = useIntl()
-  const title = $t(config.steps.title.summary)
   const { form } = useStepFormContext<EnhancedRecommendation>()
   const intentType = form.getFieldValue(Priority.fieldName)
 
   return <Row gutter={20}>
     <Col span={15}>
-      <UI.Wrapper>
-        <UI.Title>{title}</UI.Title>
-        <UI.Content>
-        </UI.Content>
-      </UI.Wrapper>
+      <StepsForm.Title children={$t(config.steps.title.summary)} />
     </Col>
-
     <Col span={7} offset={2}>
-      <UI.Wrapper>
-        <UI.SideNote>
-          <UI.SideNoteHeader>
-            <UI.SideNoteTitle>
-              {$t(config.steps.sideNotes.title)}
-            </UI.SideNoteTitle>
-          </UI.SideNoteHeader>
-          <UI.SideNoteSubtitle>
-            {$t(config.steps[intentType as IntentType]?.title)}
-          </UI.SideNoteSubtitle>
-          <UI.SideNoteContent>
+      <UI.SideNotes>
+        <Typography.Title level={4}>
+          {$t(config.steps.sideNotes.title)}
+        </Typography.Title>
+        <StepsForm.Subtitle>
+          {$t(config.steps[intentType as IntentType]?.title)}
+        </StepsForm.Subtitle>
+        <StepsForm.TextContent>
+          <Typography.Paragraph>
             {$t(config.steps[intentType as IntentType]?.content)}
-          </UI.SideNoteContent>
-        </UI.SideNote>
-      </UI.Wrapper>
+          </Typography.Paragraph>
+        </StepsForm.TextContent>
+      </UI.SideNotes>
     </Col>
   </Row>
 }

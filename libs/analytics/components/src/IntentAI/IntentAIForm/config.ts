@@ -236,7 +236,9 @@ export const steps = {
     value: defineMessage({ defaultMessage: 'Client Throughput' }),
     title: defineMessage({ defaultMessage: 'High client throughput in sparse network' }),
     content: defineMessage({ defaultMessage: 'In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.' }),
-    introduction: defineMessage({ defaultMessage: '<p><b>High client throughput in sparse network</b>: In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.</p>' })
+    introduction: defineMessage({ defaultMessage: '<p><b>High client throughput in sparse network</b>: In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.</p>' }),
+    intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
+    category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' })
   },
   clientDensity: {
     value: defineMessage({ defaultMessage: 'Client Density' }),
@@ -248,6 +250,10 @@ export const steps = {
 }
 
 export const intentTypeMap = {
-  clientDensity: defineMessage({ defaultMessage: 'Client Density' }),
-  clientThroughput: defineMessage({ defaultMessage: 'Client Throughput' })
+  aiDrivenRRM: {
+    intent: defineMessage({ defaultMessage: 'Client density vs Client throughput' }),
+    category: defineMessage({ defaultMessage: 'Wi-Fi Client Experience' }),
+    clientDensity: defineMessage({ defaultMessage: 'Client Density' }),
+    clientThroughput: defineMessage({ defaultMessage: 'Client Throughput' })
+  }
 }
