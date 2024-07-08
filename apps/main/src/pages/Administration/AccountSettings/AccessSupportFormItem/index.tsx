@@ -165,8 +165,8 @@ const AccessSupportFormItem = styled((props: AccessSupportFormItemProps) => {
           </SpaceWrapper>
         </Form.Item>
 
-        <SpaceWrapper full className='descriptionsWrapper' justifycontent='flex-start'>
-          <Typography.Paragraph className='description greyText'>
+        <SpaceWrapper full className='indent' justifycontent='flex-start'>
+          <Typography.Paragraph className='greyText'>
             {$t(MessageMapping.enable_access_support_description, { br: <br/> })}
           </Typography.Paragraph>
         </SpaceWrapper>

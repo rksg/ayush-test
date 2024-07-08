@@ -3,17 +3,10 @@
 exports[`AIDrivenRRM form should match snapshot 1`] = `
 <DocumentFragment>
   <div
-<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
-    class="styledComponents__Wrapper-sc-1352uh8-0 kLLEPp"
-  >
-    <div
-      class="styledComponents__Wrapper-sc-xov27h-0 fwrBPH"
-=======
     class="styledComponents__Wrapper-sc-xov27h-0 beSabE"
   >
     <div
       class="ant-page-header has-breadcrumb ant-page-header-ghost"
->>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
     >
       <nav
         class="ant-breadcrumb"
@@ -127,19 +120,12 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
           <span
             class="ant-typography ant-typography-ellipsis ant-typography-single-line"
           >
-<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
-            Intent: Client density vs Client throughput | Zone: 21_US_Beta_Samsung
-            <span
-              aria-hidden="true"
-              style="position: fixed; display: block; left: 0px; top: 0px; z-index: -9999; visibility: hidden; pointer-events: none; word-break: keep-all; white-space: nowrap;"
-=======
             <svg
               class="styledComponents__AIDrivenRRMIcon-sc-ki2m8o-0 bsJMgJ"
               data-testid="AIDrivenRRM"
             />
             <h1
               class="ant-typography ant-typography-ellipsis ant-typography-single-line ant-typography-ellipsis-single-line"
->>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
             >
               lg
             </span>
@@ -156,8 +142,6 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
           </span>
         </div>
       </div>
-<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
-=======
       <div
         class="ant-page-header-content"
       >
@@ -176,7 +160,6 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
           </span>
         </span>
       </div>
->>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
     </div>
     <section
       class="styledComponents__Wrapper-sc-1ibvcih-0 fTZbEo"
@@ -243,26 +226,7 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                   <div
                     class="ant-steps-item-icon"
                   >
-<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
-                    <span
-                      class="ant-steps-icon"
-                    >
-                      <span
-                        class="ant-steps-icon-dot"
-                      />
-                    </span>
-                  </div>
-                  <div
-                    class="ant-steps-item-content"
-                  >
-                    <div
-                      class="ant-steps-item-title"
-                    >
-                      Intent Priority
-                    </div>
-=======
                     Choose priority
->>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
                   </div>
                 </div>
               </div>
@@ -278,57 +242,7 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                   <div
                     class="ant-steps-item-icon"
                   >
-<<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
-                    <span
-                      class="ant-steps-icon"
-                    >
-                      <span
-                        class="ant-steps-icon-dot"
-                      />
-                    </span>
-                  </div>
-                  <div
-                    class="ant-steps-item-content"
-                  >
-                    <div
-                      class="ant-steps-item-title"
-                    >
-                      Settings
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="ant-steps-item ant-steps-item-wait ant-steps-item-disabled"
-              >
-                <div
-                  class="ant-steps-item-container"
-                >
-                  <div
-                    class="ant-steps-item-tail"
-                  />
-                  <div
-                    class="ant-steps-item-icon"
-                  >
-                    <span
-                      class="ant-steps-icon"
-                    >
-                      <span
-                        class="ant-steps-icon-dot"
-                      />
-                    </span>
-                  </div>
-                  <div
-                    class="ant-steps-item-content"
-                  >
-                    <div
-                      class="ant-steps-item-title"
-                    >
-                      Summary
-                    </div>
-=======
                     Summary
->>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
                   </div>
                 </div>
               </div>
@@ -343,6 +257,7 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
               class="ant-row"
               style="margin-left: -10px; margin-right: -10px;"
             >
+<<<<<<< HEAD
               <div
 <<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
                 class="ant-col ant-col-15"
@@ -383,74 +298,171 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                       class="styledComponents__ContentText-sc-4zzubw-5 fUraKE"
 =======
                 class="styledComponents__Wrapper-sc-ki2m8o-1 eYGHYS"
+=======
+              <h3
+                class="ant-typography styledComponents__Title-sc-1ibvcih-4 QAroY"
               >
-                <h2
-                  class="ant-typography styledComponents__Title-sc-ki2m8o-2"
-                >
-                  Introduction
-                </h2>
+                Introduction
+              </h3>
+              <div
+                class="ant-descriptions styledComponents__Descriptions-sc-xapams-0 gLqMJl"
+>>>>>>> feature/MLSA-7904
+              >
                 <div
-                  class="styledComponents__Content-sc-ki2m8o-5 dFaUyX"
+                  class="ant-descriptions-view"
                 >
-                  <span
-                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
-                  >
-                    <span>
-                      Intent: 
-                      <b>
-                        Client density vs Client throughput
-                      </b>
-                    </span>
-                  </span>
-                  <span
-                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
-                  >
-                    Category: Wi-Fi Experience
-                  </span>
-                  <span
-                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
-                  >
-                    Zone: SPS-Hospitality-BLR
-                  </span>
-                  <span
-                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
-                  >
-                    Status: New
-                  </span>
-                  <span
-                    class="styledComponents__ContentText-sc-ki2m8o-6 cXwVnF"
-                  >
-                    Last update: May 20 2024 14:45
+                  <table>
+                    <tbody>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Intent
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              <b>
+                                Client density vs Client throughput
+                              </b>
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Category
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              Wi-Fi Experience
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Zone
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              SPS-Hospitality-BLR
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Status
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              New
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr
+                        class="ant-descriptions-row"
+                      >
+                        <td
+                          class="ant-descriptions-item"
+                          colspan="1"
+                        >
+                          <div
+                            class="ant-descriptions-item-container"
+                          >
+                            <span
+                              class="ant-descriptions-item-label"
+                            >
+                              Last update
+                            </span>
+                            <span
+                              class="ant-descriptions-item-content"
+                            >
+                              May 20 2024 14:45
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <h4
+                class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__Subtitle-sc-1ibvcih-5 fPbHyn dnpHFP"
+              >
+                Network Intent plays a crucial role in wireless network design
+              </h4>
+              <div
+                class="styledComponents__TextContent-sc-1ibvcih-10 gqfdQa"
+              >
+                <div
+                  class="ant-typography"
+                >
+                  <b>
+                    High number of clients in a dense network:
+                  </b>
+                   
+                  <span>
+                    High client density network requires low interfering channels which fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
                   </span>
                 </div>
                 <div
-                  class="styledComponents__Content-sc-ki2m8o-5 dFaUyX"
+                  class="ant-typography"
                 >
-                  <div
-                    class="styledComponents__Title-sc-13w5wfx-5 styledComponents__Subtitle-sc-ki2m8o-4 hYNJuf fjfDlt"
-                  >
-                    Wireless network design involves balancing different priorities:
-                  </div>
-                  <p
-                    class="styledComponents__Para-sc-ki2m8o-11 dpDDym"
-                  >
-                    <b
-                      class="styledComponents__Bold-sc-ki2m8o-12 eZQgTu"
-                    >
-                      Client Density
-                    </b>
-                    : This approach minimizes interference, accommodating a larger number of simultaneous client connections. It is ideal for environments with high client density.
-                  </p>
-                  <p
-                    class="styledComponents__Para-sc-ki2m8o-11 dpDDym"
-                  >
-                    <b
-                      class="styledComponents__Bold-sc-ki2m8o-12 eZQgTu"
-                    >
-                      Client Throughput
-                    </b>
-                    : This approach involves accepting some interference, which will limit the number of simultaneously connected clients. It prioritizes achieving the highest possible data transfer rates.
-                  </p>
+                  <b>
+                    High client throughput in sparse network:
+                  </b>
+                   
+                  <span>
+                    In sparse networks with high client throughput, moderate interference is manageable due to optimized resource allocation, minimal competition for bandwidth, and strong signal strength. This allows for stable connections and satisfactory performance, outweighing drawbacks of interference.
+                  </span>
                 </div>
               </div>
             </div>
@@ -459,14 +471,25 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
               style="padding-left: 10px; padding-right: 10px;"
             >
               <div
-                class="styledComponents__Wrapper-sc-ki2m8o-1 eYGHYS"
+                class="styledComponents__SideNotes-sc-ki2m8o-1 jmDqWF"
               >
+                <h4
+                  class="ant-typography"
+                >
+                  Side Notes
+                </h4>
+                <h4
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__Subtitle-sc-1ibvcih-5 fPbHyn dnpHFP"
+                >
+                  Benefits
+                </h4>
                 <div
-                  class="styledComponents__SideNote-sc-ki2m8o-7 eYbBtL"
+                  class="styledComponents__TextContent-sc-1ibvcih-10 gqfdQa"
                 >
                   <div
-                    class="styledComponents__SideNoteHeader-sc-ki2m8o-8 doWzrG"
+                    class="ant-typography"
                   >
+<<<<<<< HEAD
                     <h3
                       class="ant-typography styledComponents__SideNoteTitle-sc-ki2m8o-3"
 >>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
@@ -478,8 +501,21 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                     >
                       Last update: 06/26/2023 06:04
                     </span>
+=======
+                    Low interference fosters improved throughput, lower latency, better signal quality, stable connections, enhanced user experience, longer battery life, efficient spectrum utilization, optimized channel usage, and reduced congestion, leading to higher data rates, higher SNR, consistent performance, and balanced network load.
+>>>>>>> feature/MLSA-7904
                   </div>
+                </div>
+                <h4
+                  class="ant-typography styledComponents__Subtitle-sc-tz062a-0 styledComponents__Subtitle-sc-1ibvcih-5 fPbHyn dnpHFP"
+                >
+                  Resources:
+                </h4>
+                <div
+                  class="styledComponents__TextContent-sc-1ibvcih-10 gqfdQa"
+                >
                   <div
+<<<<<<< HEAD
 <<<<<<< HEAD:libs/analytics/components/src/IntentAI/AIDrivenRRM/__snapshots__/index.spec.tsx.snap
                     class="styledComponents__Content-sc-4zzubw-4 jjrIJs"
 =======
@@ -590,31 +626,38 @@ exports[`AIDrivenRRM form should match snapshot 1`] = `
                   </div>
                   <span
                     class="styledComponents__SideNoteContent-sc-ki2m8o-10 dyJqUa"
+=======
+                    class="ant-typography"
+>>>>>>> feature/MLSA-7904
                   >
                     <a
-                      class="styledComponents__Link-sc-ki2m8o-13 gxbcZn"
                       href="https://www.youtube.com/playlist?list=PLySwoo7u9-KJeAI4VY_2ha4r9tjnqE3Zi"
+                      rel="noreferrer"
                       target="_blank"
                     >
                       <svg
-                        class="styledComponents__LinkVideoIcon-sc-ki2m8o-14 fwgFCQ"
+                        class="styledComponents__LinkVideoIcon-sc-ki2m8o-2 hLZAcv"
                         data-testid="LinkVideo"
                       />
                       RUCKUS AI - AI-Driven RRM Demo
                     </a>
                     <a
-                      class="styledComponents__Link-sc-ki2m8o-13 gxbcZn"
                       href="https://docs.commscope.com/bundle/ruckusai-userguide/page/GUID-5D18D735-6D9A-4847-9C6F-8F5091F9B171.html"
+                      rel="noreferrer"
                       target="_blank"
                     >
                       <svg
-                        class="styledComponents__LinkDocumentIcon-sc-ki2m8o-15 cOxakn"
+                        class="styledComponents__LinkDocumentIcon-sc-ki2m8o-3 fQvgic"
                         data-testid="LinkDocument"
                       />
                       RUCKUS AI User Guide
                     </a>
+<<<<<<< HEAD
                   </span>
 >>>>>>> feature/MLSA-7904:libs/analytics/components/src/IntentAI/IntentAIForm/__snapshots__/AIDrivenRRM.spec.tsx.snap
+=======
+                  </div>
+>>>>>>> feature/MLSA-7904
                 </div>
               </div>
             </div>
