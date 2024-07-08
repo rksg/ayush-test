@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Loader, Table, TableProps, Card }                                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                                      from '@acx-ui/feature-toggle'
 import { useGetNetworkTemplateListQuery, useNetworkListQuery }                                         from '@acx-ui/rc/services'
 import { ConfigTemplateType, Network, NetworkType, NetworkTypeEnum, useConfigTemplate, useTableQuery } from '@acx-ui/rc/utils'
 import { TenantLink }                                                                                  from '@acx-ui/react-router-dom'
@@ -13,6 +14,8 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
   const { $t } = useIntl()
   const { networkIds } = props
   const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const useQuery = isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery
   const tableQuery = useTableQuery<Network>({
     useQuery,
@@ -20,7 +23,7 @@ export default function DpskInstancesTable (props: { networkIds?: string[] }) {
       fields: ['check-all', 'name', 'description', 'nwSubType', 'venues', 'id'],
       filters: { id: networkIds && networkIds?.length > 0 ? networkIds : [''] }
     },
-    enableRbac: true
+    enableRbac: isTemplate ? enableTemplateRbac : enableRbac
   })
 
   useEffect(() => {

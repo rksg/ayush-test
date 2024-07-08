@@ -4,7 +4,8 @@ import { Switch }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Table, TableProps } from '@acx-ui/components'
+import { Table, TableProps }      from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetNetworkTemplateListQuery,
   useGetWifiCallingServiceQuery,
@@ -34,6 +35,8 @@ const defaultPayload = {
 const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
 
@@ -89,7 +92,8 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
 
   const tableQuery = useTableQuery({
     useQuery: isTemplate ? useGetNetworkTemplateListQuery : useNetworkListQuery,
-    defaultPayload
+    defaultPayload,
+    enableRbac: isTemplate ? enableTemplateRbac : enableRbac
   })
 
   useEffect(() => {

@@ -32,6 +32,8 @@ export function PortalInstancesTable (){
   const params = useParams()
   const { isTemplate } = useConfigTemplate()
   const isEnabledRbacService = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const isEnabledWifiRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const isEnabledTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const isNewDefined = isTemplate || isEnabledRbacService
   const defaultPayload = {
     fields: ['id', 'name', 'wifiNetworkIds', 'displayLangCode'],
@@ -61,7 +63,8 @@ export function PortalInstancesTable (){
     search: {
       searchTargetFields: ['name'],
       searchString: ''
-    }
+    },
+    enableRbac: isTemplate ? isEnabledTemplateRbac : isEnabledWifiRbac
   })
 
   useEffect(()=>{

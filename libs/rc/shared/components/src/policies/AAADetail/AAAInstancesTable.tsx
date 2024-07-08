@@ -77,7 +77,8 @@ export default function AAAInstancesTable () {
 
 function useAaaInstanceTableQuery () {
   const { isTemplate } = useConfigTemplate()
-  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const params = useParams()
   const { data: aaaPolicyViewModel } = useGetAAAPolicyInstanceList({
     customPayload: { filters: { id: [ params?.policyId ] } }
@@ -101,7 +102,7 @@ function useAaaInstanceTableQuery () {
       searchTargetFields: ['name'],
       searchString: ''
     },
-    enableRbac,
+    enableRbac: isTemplate ? enableTemplateRbac : enableRbac,
     option: {
       skip: !aaaPolicyDataReady
     }

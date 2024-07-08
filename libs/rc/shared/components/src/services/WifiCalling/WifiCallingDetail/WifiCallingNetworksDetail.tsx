@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { useIntl } from 'react-intl'
 
 import { Card, Table, TableProps }                                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                   from '@acx-ui/feature-toggle'
 import { useGetNetworkTemplateListQuery, useNetworkListQuery }                      from '@acx-ui/rc/services'
 import { Network, NetworkTypeEnum, networkTypes, useConfigTemplate, useTableQuery } from '@acx-ui/rc/utils'
 
@@ -22,6 +23,8 @@ const defaultPayload = {
 const WifiCallingNetworksDetail = () => {
   const { $t } = useIntl()
   const { isTemplate } = useConfigTemplate()
+  const enableRbac = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
   const basicColumns: TableProps<Network>['columns'] = [
     {
       title: $t({ defaultMessage: 'Network Name' }),
@@ -69,7 +72,8 @@ const WifiCallingNetworksDetail = () => {
       filters: {
         id: networkIds?.length ? networkIds : ['none']
       }
-    }
+    },
+    enableRbac: isTemplate ? enableTemplateRbac : enableRbac
   })
 
   return (
