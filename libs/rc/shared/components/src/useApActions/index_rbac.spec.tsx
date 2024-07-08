@@ -78,7 +78,7 @@ describe('Test useApActions', () => {
   it('showDeleteAp', async () => {
     mockServer.use(
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json({}))
       ),
       rest.get(
@@ -170,7 +170,7 @@ describe('Test useApActions', () => {
   it('should show warning when there is an active dhcp ap', async () => {
     mockServer.use(
       rest.post(
-        DHCPUrls.queryDHCPProfiles.url,
+        DHCPUrls.queryDhcpProfiles.url,
         (req, res, ctx) => res(ctx.json(dhcpList))
       ),
       rest.get(

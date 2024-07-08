@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 
-import { Button, Form }           from 'antd'
-import _                          from 'lodash'
-import { useIntl }                from 'react-intl'
-import { useLocation, useParams } from 'react-router-dom'
+import { Button, Form }                from 'antd'
+import { filter, find, isEmpty, take } from 'lodash'
+import { useIntl }                     from 'react-intl'
+import { useLocation, useParams }      from 'react-router-dom'
 
 import { Modal, SummaryCard }                from '@acx-ui/components'
 import { Features, useIsSplitOn }            from '@acx-ui/feature-toggle'
@@ -14,6 +14,7 @@ import {
   useGetVenueSettingsQuery,
   useGetVenueTemplateSettingsQuery,
   useLazyGetDHCPProfileQuery,
+  useLazyGetDhcpTemplateQuery,
   useUpdateVenueDHCPProfileMutation,
   useUpdateVenueTemplateDhcpProfileMutation,
   useGetVenueMeshQuery
@@ -21,6 +22,7 @@ import {
 import {
   DHCPConfigTypeEnum, DHCPSaveData, LocationExtended, ServiceOperation, ServiceType, VenueSettings,
   useConfigTemplate,
+  useConfigTemplateLazyQueryFnSwitcher,
   useConfigTemplateMutationFnSwitcher, useConfigTemplateQueryFnSwitcher
 } from '@acx-ui/rc/utils'
 import { WifiScopes }    from '@acx-ui/types'
@@ -65,29 +67,35 @@ export default function BasicInfo () {
   const { $t } = useIntl()
   const DISPLAY_GATEWAY_MAX_NUM = 2
   const dhcpInfo = useDHCPInfo()
-  const natGateway = _.take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
+  const natGateway = take(dhcpInfo.gateway, DISPLAY_GATEWAY_MAX_NUM)
   const dhcpForm = useRef<DHCPFormRefType>()
   const [form] = Form.useForm()
   const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const meshEnable = useIsMeshEnabled(params.venueId)
 
+  const enableTemplateRbac = useIsSplitOn(Features.RBAC_CONFIG_TEMPLATE_TOGGLE)
+  const resolvedEnableRbac = isTemplate ? enableTemplateRbac : enableRbac
+
   const { data: dhcpProfileList } = useConfigTemplateQueryFnSwitcher<DHCPSaveData[]>({
     useQueryFn: useGetDHCPProfileListQuery,
     useTemplateQueryFn: useGetDhcpTemplateListQuery,
-    skip: enableRbac,
+    skip: resolvedEnableRbac,
     enableRbac
   })
 
-  const [getDhcpProfile] = useLazyGetDHCPProfileQuery()
+  const [getDhcpProfile] = useConfigTemplateLazyQueryFnSwitcher<DHCPSaveData | null>({
+    useLazyQueryFn: useLazyGetDHCPProfileQuery,
+    useLazyTemplateQueryFn: useLazyGetDhcpTemplateQuery
+  })
 
   const getSelectedDHCP = async (dhcpServiceID:string)=> {
-    if(enableRbac && !isTemplate) {
-      // eslint-disable-next-line max-len
-      const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID }, enableRbac }).unwrap()
+    if(resolvedEnableRbac) {
+      const result = await getDhcpProfile({ params: { serviceId: dhcpServiceID },
+        enableRbac: resolvedEnableRbac }).unwrap()
       return result
     }
     if(dhcpProfileList && dhcpServiceID){
-      return _.find(dhcpProfileList, { id: dhcpServiceID })
+      return find(dhcpProfileList, { id: dhcpServiceID })
     }else{
       return { dhcpMode: DHCPConfigTypeEnum.SIMPLE, dhcpPools: [] }
     }
@@ -136,8 +144,8 @@ export default function BasicInfo () {
         }
         return {}
       })
-      gateways = _.filter(gateways, o => !_.isEmpty(o.serialNumber) )
-      if(!_.isEmpty(gateways) && payload.dhcpServiceAps){
+      gateways = filter(gateways, o => !isEmpty(o.serialNumber) )
+      if(!isEmpty(gateways) && payload.dhcpServiceAps){
         payload.dhcpServiceAps = payload.dhcpServiceAps.concat(gateways)
       }
     }
@@ -228,14 +236,16 @@ export default function BasicInfo () {
                 delete payload.serviceProfileId
               }
             }
-            if (enableRbac && !isTemplate) {
+            if (resolvedEnableRbac) {
               payload.activeDhcpPoolNames = selectedDhcp?.dhcpPools.map(pool => pool.name) || []
               delete payload.serviceProfileId
               delete payload.enabled
               delete payload.id
             }
             await updateVenueDHCPProfile({
-              params: { ...params, serviceId }, payload, enableRbac, enableService
+              params: { ...params, serviceId },
+              enableRbac: resolvedEnableRbac,
+              payload, enableService
             }).unwrap()
             setVisible(false)
           }

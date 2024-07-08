@@ -78,7 +78,7 @@ exports[`Wired SummaryBoxes should open the drawer on more info click 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    0.63%
+                    2.58%
                   </span>
                 </div>
               </div>
@@ -256,7 +256,7 @@ exports[`Wired SummaryBoxes should render correctly 1`] = `
                   <span
                     class="ant-statistic-content-value"
                   >
-                    0.63%
+                    2.58%
                   </span>
                 </div>
               </div>
