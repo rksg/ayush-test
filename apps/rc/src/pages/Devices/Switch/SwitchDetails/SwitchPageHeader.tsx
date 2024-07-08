@@ -217,6 +217,8 @@ function SwitchPageHeader () {
   const hasUpdatePermission = hasPermission({ scopes: [SwitchScopes.UPDATE] })
   const hasDeletaPermission = hasPermission({ scopes: [SwitchScopes.DELETE] })
   const showAddMember = isStack && (maxMembers > 0) && hasUpdatePermission
+  const showDivider = (hasUpdatePermission && (isSyncedSwitchConfig || isOperational))
+    && (showAddMember || hasDeletaPermission)
 
   const menu = (
     <Menu
@@ -242,7 +244,7 @@ function SwitchPageHeader () {
           label: $t({ defaultMessage: 'CLI Session' })
         }] : []),
 
-        ...(hasUpdatePermission && (showAddMember || hasDeletaPermission) ? [{
+        ...(showDivider ? [{
           type: 'divider'
         }] : [] ),
 
