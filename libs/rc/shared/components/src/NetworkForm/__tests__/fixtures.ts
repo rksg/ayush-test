@@ -617,7 +617,12 @@ export const venueListResponse = {
   ]
 }
 
-export const successResponse = { requestId: 'request-id' }
+export const successResponse = {
+  requestId: 'request-id',
+  response: {
+    id: 'new-network-id'
+  }
+}
 
 export const cloudpathResponse = [
   {
@@ -2144,6 +2149,26 @@ export const mockWifiCallingDetail = {
     },
     {
       domain: 'def.com'
+    }
+  ]
+}
+
+export const mockWifiCallingTableResult = {
+  fields: ['ePDGs', 'epdg', 'qosPriority', 'networkIds', 'epdgs', 'name', 'tenantId', 'id'],
+  totalCount: 1,
+  page: 1,
+  data: [
+    {
+      id: 'b6ebccae545c44c1935ddaf746f5b048',
+      name: 'wifi-1',
+      qosPriority: 'WIFICALLING_PRI_VOICE',
+      networkIds: [],
+      tenantId: '1977de24c7824b0b975c4d02806e081f',
+      epdgs: [
+        {
+          domain: 'a.b.comd'
+        }
+      ]
     }
   ]
 }
