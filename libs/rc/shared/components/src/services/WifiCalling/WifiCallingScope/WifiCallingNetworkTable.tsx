@@ -4,7 +4,8 @@ import { Switch }    from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Table, TableProps } from '@acx-ui/components'
+import { Table, TableProps }      from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useGetNetworkTemplateListQuery,
   useGetWifiCallingServiceQuery,
@@ -36,11 +37,13 @@ const WifiCallingNetworkTable = (props: { edit?: boolean }) => {
   const { isTemplate } = useConfigTemplate()
   const { edit } = props
   const { state, dispatch } = useContext(WifiCallingFormContext)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   const { data } = useConfigTemplateQueryFnSwitcher({
     useQueryFn: useGetWifiCallingServiceQuery,
     useTemplateQueryFn: useGetWifiCallingServiceTemplateQuery,
-    skip: !useParams().hasOwnProperty('serviceId')
+    skip: !useParams().hasOwnProperty('serviceId'),
+    enableRbac
   })
 
   const basicColumns: TableProps<Network>['columns'] = [
