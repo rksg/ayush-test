@@ -174,6 +174,33 @@ describe('Layout', () => {
     await waitFor(() => screen.findByText('Left header'))
     expect(asFragment()).toMatchSnapshot()
   })
+  it('should render correctly when label is ReactNode', async () => {
+    get.mockReturnValue('true')
+    const config = [
+      {
+        uri: '/analytics/dashboard',
+        label: <>Dashboard<sup>beta</sup></>,
+        inactiveIcon: SpeedIndicatorOutlined,
+        activeIcon: SpeedIndicatorSolid,
+        openNewTab: false
+      }
+    ]
+    const { asFragment } = render(<Layout
+      logo={<div />}
+      menuConfig={config}
+      leftHeaderContent={<div>Left header</div>}
+      rightHeaderContent={<div>Right header</div>}
+      content={<div>content</div>}
+    />, {
+      route: {
+        path: '/ai/dashboard',
+        params: { page: 'dashboard' },
+        wrapRoutes: false
+      }
+    })
+    await waitFor(() => screen.findByText('Left header'))
+    expect(asFragment()).toMatchSnapshot()
+  })
   it('should render IframeContent when location pathname has "dataStudio"', async () => {
     render(<Layout
       logo={<div />}

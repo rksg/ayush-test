@@ -43,7 +43,8 @@ type SideNavProps = {
 }
 
 type MenuItemType = Omit<RcMenuItemType, 'key' | 'label'> & SideNavProps & {
-  label: string
+  label: React.ReactNode,
+  key?: string
 }
 type SubMenuType = Omit<RcSubMenuType, 'children' | 'key' | 'label'> & SideNavProps & {
   label: string
@@ -111,7 +112,11 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
   const getMenuItem = (item: LayoutProps['menuConfig'][number], key: string): AntItemType => {
     if (item === null) return item
 
-    key = `${key}-${snakeCase(item.label)}`
+    if (typeof item.label === 'string') {
+      key = `${key}-${snakeCase(item.label)}`
+    } else if (!isMenuItemGroupType(item) && !isSubMenuType(item) && item.key) {
+      key = `${key}-${snakeCase(item.key)}`
+    }
 
     if (isMenuItemGroupType(item)) {
       return {

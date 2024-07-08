@@ -229,8 +229,7 @@ export const Wrapper = styled.div<{ showScreen: boolean }>`
                   font-weight: var(--acx-headline-4-font-weight);
                   color: var(--acx-neutrals-20);
                   // https://css-tricks.com/bold-on-hover-without-the-layout-shift/
-                  display: inline-flex;
-                  flex-direction: column;
+                  display: inline-block;
                   &:after {
                     content: attr(data-label);
                     height: 0;

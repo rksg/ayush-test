@@ -61,6 +61,13 @@ export function useMenuConfig () {
   ].some(Boolean)
   const isIntentAIEnabled = useIsSplitOn(Features.INTENT_AI_TOGGLE)
 
+  type aiMenuItem = {
+    permission: string,
+    uri: string,
+    label: React.ReactNode,
+    key?: string
+  }
+
   const aiAnalyticsMenu = [{
     permission: 'READ_INCIDENTS',
     uri: '/analytics/incidents',
@@ -73,12 +80,13 @@ export function useMenuConfig () {
     permission: 'READ_AI_OPERATIONS',
     uri: '/analytics/recommendations/aiOps',
     label: $t({ defaultMessage: 'AI Operations' })
-  }]
+  }] as aiMenuItem[]
   if (isIntentAIEnabled) {
     aiAnalyticsMenu.push({
       permission: 'READ_INTENT_AI',
       uri: '/analytics/intentAI',
-      label: $t({ defaultMessage: 'Intent AI' })
+      label: $t({ defaultMessage: 'Intent AI {suffix}' }, { suffix: <sup>beta</sup> }),
+      key: 'intentAI'
     })
   }
   const config: LayoutProps['menuConfig'] = [
