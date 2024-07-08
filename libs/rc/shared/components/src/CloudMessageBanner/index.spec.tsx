@@ -67,6 +67,10 @@ describe('cloud Message Banner', () => {
       rest.post(
         FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
         (_, res, ctx) => res(ctx.json(mockedVenueFirmwareList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getAllApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json([]))
       )
     )
   })
