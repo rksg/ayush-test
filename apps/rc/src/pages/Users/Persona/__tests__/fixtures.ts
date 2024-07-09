@@ -79,7 +79,7 @@ export const mockPersonaGroup: PersonaGroup = {
   description: '',
   macRegistrationPoolId: 'mac-id-1',
   dpskPoolId: 'dpsk-pool-2',
-  nsgId: 'nsgId-700',
+  personalIdentityNetworkId: 'nsgId-700',
   propertyId: 'propertyId-100'
 }
 
@@ -142,7 +142,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     description: '',
     macRegistrationPoolId: 'mac-id-1',
     dpskPoolId: 'dpsk-pool-2',
-    nsgId: 'nsgId-700',
+    personalIdentityNetworkId: 'nsgId-700',
     propertyId: 'propertyId-100'
   },
   {
@@ -151,7 +151,7 @@ export const mockPersonaGroupTableResult: NewTableResult<PersonaGroup> = {
     description: '',
     macRegistrationPoolId: 'mac-id-1',
     dpskPoolId: 'dpsk-pool-1',
-    nsgId: 'nsgId-300',
+    personalIdentityNetworkId: 'nsgId-300',
     propertyId: 'propertyId-400'
   },
   {
@@ -205,7 +205,7 @@ export const mockDpskPool: DpskSaveData = {
 }
 
 export const mockDpskList = {
-  content: [
+  data: [
     {
       id: 'dpsk-pool-1',
       name: 'DPSK Service 1',
@@ -230,13 +230,9 @@ export const mockDpskList = {
       expirationOffset: 2
     }
   ],
-  totalElements: 3,
-  totalPages: 1,
-  pageable: {
-    pageNumber: 0,
-    pageSize: 10
-  },
-  sort: []
+  page: 1,
+  totalCount: 3,
+  totalPages: 1
 }
 
 export const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
@@ -245,7 +241,9 @@ export const mockedDpskPassphraseDevices: DPSKDeviceInfo[] = [
     online: true,
     lastConnected: '06/15/2023 03:24 AM',
     lastConnectedNetwork: 'test',
-    devicePassphrase: 'a%sdfa@gw342r3f'
+    devicePassphrase: 'a%sdfa@gw342r3f',
+    deviceConnectivity: 'CONNECTED',
+    lastConnectedTime: '2023-10-17T08:39:42.73776Z'
   }
 ]
 

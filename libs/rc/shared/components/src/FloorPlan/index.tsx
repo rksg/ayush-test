@@ -7,14 +7,17 @@ import { HTML5Backend }                     from 'react-dnd-html5-backend'
 import { useIntl }                          from 'react-intl'
 import { Location, useLocation, useParams } from 'react-router-dom'
 
-import { Button, Loader, showActionModal }                      from '@acx-ui/components'
-import { Features, useIsSplitOn }                               from '@acx-ui/feature-toggle'
-import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined }      from '@acx-ui/icons'
+import { Button, Loader, showActionModal }                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
+import { BulbOutlined, EyeOpenOutlined, EyeSlashOutlined } from '@acx-ui/icons'
 import {
   useAddFloorPlanMutation, useApListQuery, useDeleteFloorPlanMutation,
   useFloorPlanListQuery, useGetAllDevicesQuery, useGetVenueRogueApQuery,
-  useUpdateApPositionMutation, useUpdateCloudpathServerPositionMutation,
-  useUpdateFloorPlanMutation, useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
+  useRemoveApPositionMutation,
+  useUpdateApPositionMutation,
+  useUpdateFloorPlanMutation,
+  useUpdateRwgPositionMutation,
+  useUpdateSwitchPositionMutation } from '@acx-ui/rc/services'
 import {
   APMeshRole,
   FloorPlanDto, FloorPlanFormDto, NetworkDevice, NetworkDevicePayload,
@@ -66,14 +69,15 @@ export function FloorPlan () {
   const [showRogueAp, setShowRogueAp] = useState<boolean>(false)
   const [deviceList, setDeviceList] = useState<TypeWiseNetworkDevices>({} as TypeWiseNetworkDevices)
   const isApMeshTopologyFFOn = useIsSplitOn(Features.AP_MESH_TOPOLOGY)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const defaultDevices = {
     ap: [],
     switches: [],
     LTEAP: [],
     RogueAP: [],
-    cloudpath: [],
-    DP: []
+    DP: [],
+    rwg: []
   } as TypeWiseNetworkDevices
 
   const clearDevicePositionValues: NetworkDevicePosition = {
@@ -91,8 +95,11 @@ export function FloorPlan () {
   }
 
   const [networkDevicesVisibility, setNetworkDevicesVisibility] = useState<NetworkDeviceType[]>([])
-
-  const getNetworkDevices = useGetAllDevicesQuery({ params, payload: networkDevicePayload })
+  const showRwgDevice = useIsSplitOn(Features.RUCKUS_WAN_GATEWAY_UI_SHOW)
+  const getNetworkDevices = useGetAllDevicesQuery({ params: { ...params,
+    showRwgDevice: '' + showRwgDevice
+  },
+  payload: networkDevicePayload })
 
   const { data: apsList } = useApListQuery({
     params, payload: {
@@ -183,9 +190,14 @@ export function FloorPlan () {
   ] = useUpdateApPositionMutation()
 
   const [
-    updateCloudpathServerPosition,
-    { isLoading: isUpdateCloudpathServerPosition }
-  ] = useUpdateCloudpathServerPositionMutation()
+    removeApPosition,
+    { isLoading: isRemoveApPosition }
+  ] = useRemoveApPositionMutation()
+
+  const [
+    updateRwgPosition,
+    { isLoading: isUpdateRwgPosition }
+  ] = useUpdateRwgPositionMutation()
 
   const { data: venueRogueApData } = useGetVenueRogueApQuery({ params })
 
@@ -244,8 +256,8 @@ export function FloorPlan () {
     const apsCount = get(unplacedDevices, 'ap.length', 0)
     const switchesCount = get(unplacedDevices, 'switches.length', 0)
     const lteApsCount = get(unplacedDevices, 'LTEAP.length', 0)
-    const coudpathsCount = get(unplacedDevices, 'cloudpath.length', 0)
-    return apsCount + switchesCount + lteApsCount + coudpathsCount
+    const rwgCount = get(unplacedDevices, 'rwg.length', 0)
+    return apsCount + switchesCount + lteApsCount + rwgCount
   }
 
   const extractPlacedDevices = (deviceType: NetworkDeviceType,
@@ -331,21 +343,34 @@ export function FloorPlan () {
   function publishDevicePositionUpdate (device: NetworkDevice, clear: boolean) {
     switch (device.networkDeviceType) {
       case NetworkDeviceType.ap:
-        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
-          payload: (clear ? clearDevicePositionValues : device.position) })
-        break
       case NetworkDeviceType.lte_ap:
-        updateApPosition({ params: { ...params, serialNumber: device.serialNumber },
-          payload: (clear ? clearDevicePositionValues : device.position) })
+        if(clear && isUseWifiRbacApi) {
+          removeApPosition({
+            params: {
+              ...params,
+              floorplanId: device.floorplanId,
+              serialNumber: device.serialNumber
+            }
+          })
+        } else {
+          updateApPosition({
+            params: {
+              ...params,
+              floorplanId: device.position?.floorplanId,
+              serialNumber: device.serialNumber
+            },
+            payload: (clear ? clearDevicePositionValues : device.position),
+            enableRbac: isUseWifiRbacApi
+          })
+        }
         break
       case NetworkDeviceType.switch:
         updateSwitchPosition({ params: { ...params, serialNumber: device.serialNumber },
           payload: clear ? clearDevicePositionValues : device.position })
         break
-      case NetworkDeviceType.cloudpath:
-        updateCloudpathServerPosition({ params: { ...params, cloudpathServerId: device.id },
+      case NetworkDeviceType.rwg:
+        updateRwgPosition({ params: { ...params, gatewayId: device.id },
           payload: clear ? clearDevicePositionValues : device.position })
-        break
     }
   }
 
@@ -375,15 +400,16 @@ export function FloorPlan () {
       { isLoading: false, isFetching: isAddFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateFloorPlanUpdating },
       { isLoading: false, isFetching: isUpdateSwitchPosition },
-      { isLoading: false, isFetching: isUpdateApPosition },
-      { isLoading: false, isFetching: isUpdateCloudpathServerPosition }
+      { isLoading: false, isFetching: isUpdateApPosition || isRemoveApPosition },
+      { isLoading: false, isFetching: isUpdateRwgPosition }
     ]}>
       {floorPlans?.length ?
         <NetworkDeviceContext.Provider value={clearDevice}>
           { !(deviceList?.ap?.length + deviceList?.switches?.length)
           && <Space direction='vertical'>
             <Alert
-              message={$t({ defaultMessage: 'This venue contains no networking device' })}
+              // eslint-disable-next-line max-len
+              message={$t({ defaultMessage: 'This <venueSingular></venueSingular> contains no networking device' })}
               type='info'
               icon={<UI.BulbOutlinedIcon />}
               showIcon

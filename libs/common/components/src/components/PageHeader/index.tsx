@@ -35,7 +35,17 @@ function PageHeader (props: PageHeaderProps) {
 
   useLayoutEffect(() => {
     const top = parseInt(getComputedStyle(ref.current!).top, 10)
-    const height = ref.current!.getBoundingClientRect().height
+    let height = ref.current!.getBoundingClientRect().height
+    const hasStickyTop = (dom?: Element | null) => (
+      dom?.classList?.contains('sticky-top') ||
+      dom?.querySelector('.sticky-top')
+    )
+    let tab = ref.current!.nextElementSibling
+    while (tab && !hasStickyTop(tab)) tab = tab.nextElementSibling
+
+    if (hasStickyTop(tab)) {
+      height += 57 // second-tab height
+    }
     layout.setPageHeaderY(top + height)
   })
 

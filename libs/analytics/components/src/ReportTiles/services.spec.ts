@@ -1,15 +1,22 @@
-import { Provider, dataApiURL }                  from '@acx-ui/store'
-import { mockGraphqlQuery, renderHook, waitFor } from '@acx-ui/test-utils'
-import { NodeType, PathNode }                    from '@acx-ui/utils'
+import { defaultNetworkPath }                                     from '@acx-ui/analytics/utils'
+import { Provider, dataApiURL }                                   from '@acx-ui/store'
+import { mockGraphqlQuery, renderHook, waitFor }                  from '@acx-ui/test-utils'
+import { PathFilter, DateRange, NetworkPath, NodeType, PathNode } from '@acx-ui/utils'
 
-import { networkSummaryInfo } from './__tests__/fixtures'
+import { networkSummaryInfo }  from './__tests__/fixtures'
 import {
   getAttributes,
   getSummaryAttributes,
   genNetworkSummaryInfoQuery,
-  useNetworkSummaryInfoQuery,
-  NetworkSummaryInfoProps
+  useNetworkSummaryInfoQuery
 } from './services'
+
+const pathFilters: PathFilter = {
+  startDate: '2018-11-15T17:46:25+08:00',
+  endDate: '2018-11-22T17:46:25+08:00',
+  range: DateRange.last24Hours,
+  path: defaultNetworkPath
+}
 
 describe('getAttributes', () => {
   it('should return correct attributes for network', () => {
@@ -111,59 +118,68 @@ describe('getSummaryAttributes', () => {
 })
 
 describe('genNetworkSummaryInfoQuery', () => {
-  const startDate = '2018-11-15T17:46:25+08:00'
-  const endDate = '2018-11-22T17:46:25+08:00'
   it('should return correct data', () => {
-    const path: PathNode[] = [{ type: 'network', name: 'Network' }]
-    expect(genNetworkSummaryInfoQuery({ path, startDate, endDate })).toMatchSnapshot()
+    expect(genNetworkSummaryInfoQuery(pathFilters)).toMatchSnapshot()
   })
   it('shouuld return switch group data', () => {
-    const path: PathNode[] = [
-      { type: 'network', name: 'Network' },
-      { type: 'system', name: 's1' },
-      { type: 'domain', name: 'd1' },
-      { type: 'switchGroup', name: 'sg1' }
-    ]
-    expect(genNetworkSummaryInfoQuery({ path, startDate, endDate })).toMatchSnapshot()
+    const drilldownFilter = {
+      ...pathFilters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 's1' },
+        { type: 'domain', name: 'd1' },
+        { type: 'switchGroup', name: 'sg1' }
+      ] as NetworkPath
+    }
+    expect(genNetworkSummaryInfoQuery(drilldownFilter)).toMatchSnapshot()
   })
   it('should return switch data', () => {
-    const path: PathNode[] = [
-      { type: 'network', name: 'Network' },
-      { type: 'system', name: 's1' },
-      { type: 'domain', name: 'd1' },
-      { type: 'switchGroup', name: 'sg1' },
-      { type: 'switch', name: 's1' }
-    ]
-    expect(genNetworkSummaryInfoQuery({ path, startDate, endDate })).toMatchSnapshot()
+    const drilldownFilter = {
+      ...pathFilters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 's1' },
+        { type: 'domain', name: 'd1' },
+        { type: 'switchGroup', name: 'sg1' },
+        { type: 'switch', name: 's1' }
+      ] as NetworkPath
+    }
+    expect(genNetworkSummaryInfoQuery(drilldownFilter)).toMatchSnapshot()
   })
   it('should return correct data when query ap', () => {
-    const path: PathNode[] = [
-      { type: 'network', name: 'Network' },
-      { type: 'system', name: 'VectorFi' },
-      { type: 'domain', name: 'Grace Christian University' },
-      { type: 'zone', name: 'Grace Christian University' },
-      { type: 'apGroup', name: 'default' },
-      { type: 'AP', name: '58:B6:33:14:E6:80' }
-    ]
-    expect(genNetworkSummaryInfoQuery({ path, startDate, endDate })).toMatchSnapshot()
+    const drilldownFilter = {
+      ...pathFilters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 'VectorFi' },
+        { type: 'domain', name: 'Grace Christian University' },
+        { type: 'zone', name: 'Grace Christian University' },
+        { type: 'apGroup', name: 'default' },
+        { type: 'AP', name: '58:B6:33:14:E6:80' }
+      ] as NetworkPath
+    }
+    expect(genNetworkSummaryInfoQuery(drilldownFilter)).toMatchSnapshot()
   })
   it('should return default for for incorrect type', () => {
-    const path: PathNode[] = [
-      { type: 'network', name: 'Network' },
-      { type: 'system', name: 'VectorFi' },
-      { type: 'domain', name: 'Grace Christian University' },
-      { type: 'zone', name: 'Grace Christian University' },
-      { type: 'apGroup', name: 'default' },
-      { type: 'incorrect' as PathNode['type'], name: '58:B6:33:14:E6:80' }
-    ]
-    expect(genNetworkSummaryInfoQuery({ path, startDate, endDate })).toMatchSnapshot()
+    const drilldownFilter = {
+      ...pathFilters,
+      path: [
+        { type: 'network', name: 'Network' },
+        { type: 'system', name: 'VectorFi' },
+        { type: 'domain', name: 'Grace Christian University' },
+        { type: 'zone', name: 'Grace Christian University' },
+        { type: 'apGroup', name: 'default' },
+        { type: 'incorrect' as PathNode['type'], name: '58:B6:33:14:E6:80' }
+      ] as NetworkPath
+    }
+    expect(genNetworkSummaryInfoQuery(drilldownFilter)).toMatchSnapshot()
   })
 })
 
 describe('useNetworkSummaryInfoQuery', () => {
   it('should return correct data', async () => {
-    const param: NetworkSummaryInfoProps = {
-      path: [{ type: 'network', name: 'Network' }],
+    const param = {
+      ...pathFilters,
       startDate: '2018-11-15T17:46:25+08:00',
       endDate: '2018-11-22T17:46:25+08:00'
     }
@@ -174,8 +190,8 @@ describe('useNetworkSummaryInfoQuery', () => {
     expect(result.current.data).toMatchSnapshot()
   })
   it('should return empty data', async () => {
-    const param: NetworkSummaryInfoProps = {
-      path: [{ type: 'network', name: 'Network' }],
+    const param = {
+      ...pathFilters,
       startDate: '2018-12-15T17:46:25+08:00',
       endDate: '2018-12-22T17:46:25+08:00'
     }

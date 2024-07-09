@@ -12,14 +12,26 @@ import { DateRange, useDateFilter } from '@acx-ui/utils'
 
 import { ClientTroubleshootingTab } from './index'
 
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  overlapsRollup: jest.fn().mockReturnValue(false)
+}))
+
 describe('ClientTroubleshootingTab', () => {
   beforeEach(() => {
+    Date.now = jest.fn(() => new Date('2023-02-21T00:00:00.000Z').getTime())
     mockGraphqlQuery(dataApiURL, 'ClientInfo', {
       data: {
         client: {
           connectionDetailsByAp: [],
           connectionEvents: [],
-          connectionQualities: [],
+          connectionQualities: []
+        }
+      }
+    })
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
+      data: {
+        client: {
           incidents: []
         }
       }
@@ -37,10 +49,17 @@ describe('ClientTroubleshootingTab', () => {
       client: {
         connectionDetailsByAp: [],
         connectionEvents: [],
-        connectionQualities: [],
-        incidents: []
+        connectionQualities: []
       }
     } })
+
+    mockGraphqlQuery(dataApiURL, 'ClientIncidentsInfo', {
+      data: {
+        client: {
+          incidents: []
+        }
+      }
+    })
 
     const TestWrapper = () => {
       const { setDateFilter } = useDateFilter()

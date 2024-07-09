@@ -15,6 +15,8 @@ import {
 } from '@acx-ui/components'
 import { TimeStamp, TimeStampRange } from '@acx-ui/types'
 
+import { useIncidentToggles } from '../useIncidentToggles'
+
 import { NetworkHistoryData, useNetworkHistoryQuery } from './services'
 
 
@@ -27,7 +29,6 @@ interface NetworkHistoryWidgetComponentProps {
   filters: IncidentFilter
   hideIncidents?: boolean
   brush?: { timeWindow: TimeStampRange, setTimeWindow: (range: TimeStampRange) => void }
-  apCount?: number
   historicalIcon?: boolean
 }
 
@@ -42,10 +43,10 @@ export const NetworkHistory = forwardRef<
     filters,
     hideIncidents = false,
     brush,
-    apCount,
     historicalIcon = true
   } = props
   const { $t } = useIntl()
+  const toggles = useIncidentToggles()
   let seriesMapping = [
     {
       key: 'newClientCount',
@@ -62,7 +63,7 @@ export const NetworkHistory = forwardRef<
       name: $t({ defaultMessage: 'Impacted Clients' })
     })
   }
-  const queryResults = useNetworkHistoryQuery({ ...filters, hideIncidents, apCount }, {
+  const queryResults = useNetworkHistoryQuery({ ...filters, toggles, hideIncidents }, {
     selectFromResult: ({ data, ...rest }) => ({
       data: getSeriesData(data!, seriesMapping),
       ...rest

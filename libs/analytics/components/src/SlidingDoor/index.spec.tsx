@@ -1,5 +1,6 @@
-import { render, fireEvent, screen } from '@testing-library/react'
-import { IntlProvider }              from 'react-intl'
+import { IntlProvider } from 'react-intl'
+
+import { render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import * as helpers from './helpers'
 
@@ -100,8 +101,8 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByText('Ap (Access Point)'))
     fireEvent.click(await screen.findByText('Apply'))
     expect(setNetwork).toBeCalledWith(
-      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }],
-      [{ name: 'network', type: 'network' }, { name: 'ap', type: 'ap', list: ['1'] }]
+      [{ name: 'network', type: 'network' }, { name: '1', type: 'AP' }],
+      [{ name: 'network', type: 'network' }, { name: '1', type: 'AP' }]
     )
   })
   it('should call onApply correctly for switch', async () => {
@@ -123,8 +124,8 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByText('Switch (Switch)'))
     fireEvent.click(await screen.findByText('Apply'))
     expect(setNetwork).toBeCalledWith(
-      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }],
-      [{ name: 'network', type: 'network' }, { name: 'switch', type: 'switch', list: ['2'] }]
+      [{ name: 'network', type: 'network' }, { name: '2', type: 'switch' }],
+      [{ name: 'network', type: 'network' }, { name: '2', type: 'switch' }]
     )
   })
   it('should search nodes correctly', async () => {
@@ -145,10 +146,9 @@ describe('SlidingDoor', () => {
         <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
-    fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     const input = screen.getByPlaceholderText('Entire Organization')
+    fireEvent.change(input, { target: { value: 'not in' } })
     fireEvent.click(input)
-    fireEvent.change(input, { target: { value: 'Child6' } })
     expect(await screen.findByText('No Data')).toBeInTheDocument()
   })
 
@@ -190,15 +190,22 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByTestId('ArrowChevronLeft'))
     expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
   })
-  it('should handle onClear correctly', async () => {
+  it('should handle onClose correctly', async () => {
     render(
       <IntlProvider locale='en'>
         <SlidingDoor data={mockData} setNetworkPath={setNetwork} defaultSelectedNode={selected} />
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    fireEvent.click(await screen.findByTestId('CloseSymbol'))
-    expect(screen.getByPlaceholderText('Entire Organization')).toBeVisible()
+    fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
+    fireEvent.click(await screen.findByText('Apply'))
+    fireEvent.mouseEnter(await screen.findByPlaceholderText('child1'))
+    await screen.findByTestId('Close')
+    fireEvent.mouseLeave(await screen.findByPlaceholderText('child1'))
+    await screen.findByTestId('CaretDownSolid')
+    fireEvent.mouseEnter(await screen.findByPlaceholderText('child1'))
+    fireEvent.click(await screen.findByTestId('Close'))
+    expect(await screen.findByPlaceholderText('Entire Organization')).toBeVisible()
   })
   it('should show no data', async () => {
     render(
@@ -210,7 +217,7 @@ describe('SlidingDoor', () => {
       </IntlProvider>
     )
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
-    expect(screen.getByText('No Data')).toBeInTheDocument()
+    expect(await screen.findByText('No Data')).toBeInTheDocument()
   })
   it('should close the filter on clicking outside the filter', async () => {
     render(
@@ -221,7 +228,7 @@ describe('SlidingDoor', () => {
     fireEvent.click(await screen.findByPlaceholderText('Entire Organization'))
     fireEvent.click(await screen.findByText('Child1 (SZ Cluster)'))
     fireEvent.mouseDown(document.body)
-    expect(screen.getByText('Child1 (SZ Cluster)')).toBeVisible()
+    expect(screen.queryByText('Child1 (SZ Cluster)')).toBeNull()
   })
   it('should not close the filter on clicking inside the filter', async () => {
     render(

@@ -10,6 +10,7 @@ import { DhcpPoolStats, TableQuery, useTableQuery } from '@acx-ui/rc/utils'
 import { RequestPayload }                           from '@acx-ui/types'
 
 interface EdgeDhcpPoolTableProps {
+  settingsId?: string
   edgeId?: string
   tableQuery?: TableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>
 }
@@ -17,16 +18,18 @@ interface EdgeDhcpPoolTableProps {
 export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
 
   const { $t } = useIntl()
+  const { settingsId = 'edge-dhcp-pools-table' } = props
 
   const getDhcpPoolStatsPayload = {
-    filters: { edgeIds: [props.edgeId] },
+    filters: { edgeId: [props.edgeId] },
     sortField: 'name',
     sortOrder: 'ASC'
   }
   const localQuery = useTableQuery<DhcpPoolStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpPoolStatsQuery,
     defaultPayload: getDhcpPoolStatsPayload,
-    option: { skip: !!!props.edgeId }
+    option: { skip: !!!props.edgeId },
+    pagination: { settingsId }
   })
   const tableQuery = props.tableQuery || localQuery
 
@@ -34,7 +37,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
     if(props.edgeId) {
       localQuery.setPayload({
         ...localQuery.payload,
-        filters: { edgeIds: [props.edgeId] }
+        filters: { edgeId: [props.edgeId] }
       })
     }
   }, [props.edgeId])
@@ -67,12 +70,12 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
       title: $t({ defaultMessage: 'Utilization' }),
       key: 'utilization',
       dataIndex: 'utilization',
-      render () {
+      render (data, row) {
         return <Progress
           style={{ width: 100 }}
           strokeLinecap='butt'
           strokeColor='var(--acx-semantics-green-50)'
-          percent={0}
+          percent={row.utilization}
           showInfo={false}
           strokeWidth={20}
         />
@@ -92,7 +95,7 @@ export const EdgeDhcpPoolTable = (props: EdgeDhcpPoolTableProps) => {
   return (
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='edge-dhcp-pools-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}

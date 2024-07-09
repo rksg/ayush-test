@@ -3,11 +3,9 @@ import { EdgeResourceUtilizationEnum } from '@acx-ui/rc/utils'
 import { Provider  }                   from '@acx-ui/store'
 import { render, screen }              from '@acx-ui/test-utils'
 
-
 import { tenantID, currentEdge } from '../__tests__/fixtures'
 
 import { EdgeSysResourceBox } from './'
-
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({

@@ -1,30 +1,32 @@
 /* eslint-disable max-len */
-import { renderHook, within } from '@testing-library/react'
-import userEvent              from '@testing-library/user-event'
-import { Form }               from 'antd'
-import { rest }               from 'msw'
+import userEvent from '@testing-library/user-event'
+import { Form }  from 'antd'
+import { rest }  from 'msw'
 
-import { StepsForm }                    from '@acx-ui/components'
-import { CommonUrlsInfo, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { StepsForm }                                         from '@acx-ui/components'
+import { edgeApi, venueApi }                                 from '@acx-ui/rc/services'
+import { CommonUrlsInfo, EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                   from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  renderHook,
+  screen,
+  waitFor,
+  within
 } from '@acx-ui/test-utils'
-
-import { mockEdgeList } from '../../__tests__/fixtures'
 
 import { ScopeForm } from '.'
 
-
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedSetFieldValue = jest.fn()
 const { click } = userEvent
 
 describe('Scope Form', () => {
   beforeEach(() => {
     mockedSetFieldValue.mockReset()
-
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeUrlsInfo.getEdgeList.url,
@@ -65,19 +67,27 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('checkbox'))
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('checkbox'))
+    expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/ })).toBeVisible()
+    await click(within(rows[0]).getByRole('checkbox')) //Smart Edge 1
+    expect(within(rows[2]).getByRole('cell', { name: /Smart Edge 3/ })).toBeVisible()
+    await click(within(rows[2]).getByRole('checkbox')) //Smart Edge 3
     await click(await screen.findByRole('button', { name: 'Activate' }))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
       { name: 'Smart Edge 1', serialNumber: '0000000001' },
       { name: 'Smart Edge 3', serialNumber: '0000000003' }
     ])
+
+    await waitFor(() => {
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
+      )
+    })
   })
 
   it('should correctly activate by switcher', async () => {
@@ -97,11 +107,13 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 2/i })).getByRole('switch'))
+    expect(within(rows[1]).getByRole('cell', { name: /Smart Edge 2/i })).toBeVisible()
+    await click(within(rows[1]).getByRole('switch'))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
       { name: 'Smart Edge 2', serialNumber: '0000000002' }
@@ -130,18 +142,27 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
-    expect(within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('switch')).toBeChecked()
-    expect(within(await screen.findByRole('row', { name: /Smart Edge 3/i })).getByRole('switch')).toBeChecked()
-    await click(
-      within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('checkbox'))
+    expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/i })).toBeVisible()
+    expect(within(rows[0]).getByRole('switch')).toBeChecked()
+    expect(within(rows[2]).getByRole('cell', { name: /Smart Edge 3/i })).toBeVisible()
+    expect(within(rows[2]).getByRole('switch')).toBeChecked()
+    await click(within(rows[0]).getByRole('checkbox'))
     await click(await screen.findByRole('button', { name: 'Deactivate' }))
 
     expect(mockedSetFieldValue).toBeCalledWith('selectedEdges', [
       { name: 'Smart Edge 3', serialNumber: '0000000003' }
     ])
+
+    await waitFor(() => {
+      rows.forEach(row =>
+        expect(within(row).getByRole('checkbox')).not.toBeChecked()
+      )
+    })
   })
 
   it('should correctly deactivate by switch', async () => {
@@ -166,10 +187,13 @@ describe('Scope Form', () => {
       </Provider>, { route: { params: { tenantId: 't-id' } } })
 
     expect(await screen.findByText('Scope')).toBeVisible()
-    const rows = await screen.findAllByRole('row', { name: /Smart Edge/i })
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    const rows = await within(tbody).findAllByRole('row')
     expect(rows.length).toBe(5)
 
-    const switchBtn = within(await screen.findByRole('row', { name: /Smart Edge 1/i })).getByRole('switch')
+    expect(within(rows[0]).getByRole('cell', { name: /Smart Edge 1/i })).toBeVisible()
+    const switchBtn = within(rows[0]).getByRole('switch')
     expect(switchBtn).toBeChecked()
     await click(switchBtn)
 

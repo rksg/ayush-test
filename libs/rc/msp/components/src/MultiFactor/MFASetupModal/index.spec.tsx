@@ -25,6 +25,14 @@ const params: { tenantId: string } = { tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fc
 const mockOnFinishFn = jest.fn()
 describe('MFA Setup Dialog', () => {
   it('should be able to login when MFA config is well setup', async () => {
+    const location = {
+      ...window.location
+    }
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: location
+    })
+
     mockServer.use(
       rest.get(
         UserUrlsInfo.getMfaTenantDetails.url,
@@ -45,12 +53,13 @@ describe('MFA Setup Dialog', () => {
         route: { params }
       })
 
-    await screen.findByRole('dialog', { name: /Multi-Factors Authentication Setup/i })
+    await screen.findByRole('dialog', { name: /Multi-Factor Authentication Setup/i })
     await screen.findByText('test@email.com')
     await screen.findByRole('switch', { name: 'otp' })
     expect(await screen.findByRole('switch', { name: 'otp' })).toBeChecked()
     expect(await screen.findByRole('button', { name: 'Log in' })).not.toBeDisabled()
     await userEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+    expect(window.location.href).toBe('/logout')
   })
 
   it('should be able to login button when MFA is not enabled', async () => {

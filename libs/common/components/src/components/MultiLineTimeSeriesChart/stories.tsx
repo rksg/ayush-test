@@ -27,7 +27,8 @@ export const getData = () => {
 }
 const seriesNames = [
   ['New Client Associations', 'Impacted Clients', 'Connected Clients'],
-  ['Total Failures', 'EAP Failures', 'EAP Attempts']
+  ['Total Failures', 'EAP Failures', 'EAP Attempts'],
+  ['Connected Clients', 'Wireless Clients', 'Wired Clients']
 ]
 export const getSeriesData = (index = 0) => {
   const series = []
@@ -120,6 +121,35 @@ storiesOf('MultiLineTimeSeriesChart', module)
       count: formatter('countFormat'),
       duration: formatter('durationFormat')
     }}
+  />)
+
+  .add('with Dual Y-Axis', () => <MultiLineTimeSeriesChart
+    style={{ width: 904, height: 300 }}
+    data={getSeriesData(2)}
+    lineColors={[
+      cssStr('--acx-neutrals-30'),
+      cssStr('--acx-viz-qualitative-1'),
+      cssStr('--acx-viz-qualitative-2')
+    ]}
+    grid={{
+      left: 40,
+      right: 40
+    }}
+    yAxisConfig={[{
+      axisName: 'Wireless Clients Count',
+      nameRotate: 90,
+      showLabel: true,
+      color: cssStr('--acx-viz-qualitative-1')
+    }, {
+      axisName: 'Wired Clients Count',
+      nameRotate: 270,
+      showLabel: true,
+      color: cssStr('--acx-viz-qualitative-2')
+    }]}
+    seriesYAxisIndexes={[0, 0, 1]}
+    seriesChartTypes={['area', 'line', 'line']}
+    // eslint-disable-next-line no-console
+    onDataZoom={(range) => { console.log(range.map(r => new Date(r).toISOString())) }}
   />)
 
   .add('With Mark Areas', () => <MultiLineTimeSeriesChart

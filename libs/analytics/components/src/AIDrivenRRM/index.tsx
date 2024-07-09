@@ -1,52 +1,134 @@
+import { List }    from 'antd'
 import { useIntl } from 'react-intl'
+import AutoSizer   from 'react-virtualized-auto-sizer'
 
-import { Loader, Card, NoData }          from '@acx-ui/components'
-import { TenantLink, useNavigateToPath } from '@acx-ui/react-router-dom'
-import type { AnalyticsFilter }          from '@acx-ui/utils'
+import { isSwitchPath }                                   from '@acx-ui/analytics/utils'
+import { Loader, Card, Tooltip, ColorPill }               from '@acx-ui/components'
+import { formatter, intlFormats }                         from '@acx-ui/formatter'
+import { TenantLink, useNavigateToPath, useSearchParams } from '@acx-ui/react-router-dom'
+import type { PathFilter }                                from '@acx-ui/utils'
 
-import { CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
-import { OptimizedIcon }                  from '../Recommendations/styledComponents'
+import { states }                                   from '../Recommendations/config'
+import { CrrmList, CrrmListItem, useCrrmListQuery } from '../Recommendations/services'
+import { OptimizedIcon }                            from '../Recommendations/styledComponents'
 
+import {
+  NoRRMLicense,
+  NoZones,
+  getParamString
+} from './extra'
+import CrrmKpi from './kpi'
 import * as UI from './styledComponents'
 
-export { AIDrivenRRMWidget as AIDrivenRRM }
+const { countFormat } = intlFormats
 
 type AIDrivenRRMProps = {
-  filters: AnalyticsFilter
+  pathFilters: PathFilter
 }
 
 function AIDrivenRRMWidget ({
-  filters
+  pathFilters
 }: AIDrivenRRMProps) {
   const { $t } = useIntl()
+  // pass selectedTenants to query to prevent error on account switch
+  const [search] = useSearchParams()
+  const selectedTenants = search.get('selectedTenants')
+  const switchPath = isSwitchPath(pathFilters.path)
   const onArrowClick = useNavigateToPath('/analytics/recommendations/crrm')
-  const queryResults = useCrrmListQuery({ ...filters, n: 5 })
-  const data = queryResults?.data
-  const title = $t({ defaultMessage: 'AI-Driven RRM' })
-  const noData = data?.length === 0
+  const queryResults = useCrrmListQuery(
+    { ...pathFilters, n: 12, selectedTenants },
+    { skip: switchPath })
+  const data = switchPath
+    ? {
+      crrmCount: 0,
+      zoneCount: 0,
+      optimizedZoneCount: 0,
+      crrmScenarios: 0,
+      recommendations: []
+    } as CrrmList
+    : queryResults?.data
+  const noZones = data?.recommendations.length === 0
+  const crrmCount = data?.crrmCount
+  const zoneCount = data?.zoneCount
+  const optimizedZoneCount = data?.optimizedZoneCount
+  const crrmScenarios = formatter('countFormat')(data?.crrmScenarios)
+  const title = {
+    title: $t({ defaultMessage: 'AI-Driven RRM' }),
+    icon: <ColorPill
+      color='var(--acx-accents-orange-50)'
+      value={$t(countFormat, { value: crrmCount })}
+    />
+  }
+
+  const noLicense = data?.recommendations.length !== 0 ? data?.recommendations.every(
+    recommendation => recommendation.status === 'insufficientLicenses'
+  ) : false
+
+  const subtitle = $t(
+    {
+      defaultMessage: `There
+        {crrmCount, plural, one {is} other {are}}
+        {crrmCount}
+        {crrmCount, plural, one {recommendation} other {recommendations}}
+        for
+        {zoneCount}
+        {zoneCount, plural, one {zone} other {zones}}
+        covering {crrmScenarios} possible RRM combinations. Currently,
+        {optimizedZoneCount}
+        {optimizedZoneCount, plural, one {zone} other {zones}}
+        {optimizedZoneCount, plural, one {is} other {are}}
+        optimized.`,
+      description: 'Translation strings - is, are, recommendation, recommendations, zone, zones'
+    },
+    { crrmCount, zoneCount, optimizedZoneCount, crrmScenarios }
+  )
 
   return <Loader states={[queryResults]}>
-    <Card title={title} onArrowClick={onArrowClick}>{
-      noData
-        ? <NoData text={$t({ defaultMessage: 'No recommendations' })} />
-        : <UI.List
-          dataSource={data}
-          renderItem={item => {
-            const recommendation = item as CrrmListItem
-            const { sliceValue, id, crrmOptimizedState, crrmInterferingLinksText } = recommendation
-            return <UI.List.Item key={id}>
-              <TenantLink to={`/recommendations/crrm/${id}`}>
-                <UI.List.Item.Meta
-                  avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
-                  title={sliceValue}
-                  description={crrmInterferingLinksText}
-                />
-              </TenantLink>
-            </UI.List.Item>
-          }}
-        />
-    }</Card>
+    <Card
+      title={title}
+      onArrowClick={onArrowClick}
+      subTitle={noLicense || noZones ? '' : subtitle}
+    >{noZones
+        ? <NoZones />
+        : noLicense
+          ? <NoRRMLicense />
+          : <AutoSizer>{(style) => <List<CrrmListItem>
+            style={style}
+            dataSource={data?.recommendations.slice(0, style.height / 50 | 0)}
+            renderItem={recommendation => {
+              const {
+                sliceValue,
+                id,
+                code,
+                crrmOptimizedState,
+                summary,
+                status,
+                updatedAt,
+                metadata
+              } = recommendation
+              const paramString = getParamString(metadata, status, updatedAt, sliceValue)
+              const unknownPath = `unknown?${paramString}`
+              return <UI.ListItem key={`${id}${sliceValue}`}>
+                <TenantLink to={`/recommendations/crrm/${code === 'unknown' ? unknownPath : id}`}>
+                  <Tooltip
+                    placement='top'
+                    title={code === 'unknown' ? '' : summary}
+                  >
+                    <UI.ListItem.Meta
+                      avatar={<OptimizedIcon value={crrmOptimizedState!.order} />}
+                      title={sliceValue}
+                      description={code === 'unknown'
+                        ? $t(states[status].text)
+                        : <CrrmKpi id={id} code={code} />}
+                    />
+                  </Tooltip>
+                </TenantLink>
+              </UI.ListItem>
+            }}
+          />}</AutoSizer>
+      }
+    </Card>
   </Loader>
 }
 
-export default AIDrivenRRMWidget
+export { AIDrivenRRMWidget as AIDrivenRRM }

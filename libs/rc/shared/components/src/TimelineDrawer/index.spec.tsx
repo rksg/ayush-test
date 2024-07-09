@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom'
 
-import { render, screen, fireEvent }   from '@testing-library/react'
 import { IntlProvider, defineMessage } from 'react-intl'
 
-import { Activity } from '@acx-ui/rc/utils'
+import { Activity }                  from '@acx-ui/rc/utils'
+import { render, screen, fireEvent } from '@acx-ui/test-utils'
 
 import { TimelineDrawer } from '.'
 

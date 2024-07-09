@@ -1,10 +1,13 @@
+import { useState } from 'react'
+
 import { Form, Input, InputNumber, Select, Space, Switch } from 'antd'
 import { FormattedMessage, useIntl }                       from 'react-intl'
+import { useParams }                                       from 'react-router-dom'
 
-import { cssStr, Tooltip } from '@acx-ui/components'
+import { cssStr, Tooltip }        from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   ApLanPortTypeEnum,
-  ApModel,
   CapabilitiesApModel,
   CapabilitiesLanPort,
   checkVlanMember,
@@ -13,6 +16,8 @@ import {
   WifiApSetting,
   WifiNetworkMessages
 } from '@acx-ui/rc/utils'
+
+import { ApCompatibilityDrawer, ApCompatibilityToolTip, ApCompatibilityType, InCompatibilityFeatures } from '../ApCompatibility'
 
 
 export const ConvertPoeOutToFormData = (
@@ -41,7 +46,7 @@ export function LanPortSettings (props: {
   selectedPortCaps: LanPort,
   setSelectedPortCaps: (data: LanPort) => void,
   selectedModel: VenueLanPorts | WifiApSetting,
-  selectedModelCaps: ApModel | CapabilitiesApModel,
+  selectedModelCaps: CapabilitiesApModel,
   onGUIChanged?: (fieldName: string) => void,
   isDhcpEnabled?: boolean,
   isTrunkPortUntaggedVlanEnabled?: boolean,
@@ -62,6 +67,9 @@ export function LanPortSettings (props: {
     useVenueSettings
   } = props
 
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const [ drawerVisible, setDrawerVisible ] = useState(false)
+  const { venueId } = useParams()
   const form = Form.useFormInstance()
   const lan = form?.getFieldValue('lan')?.[index]
   const handlePortTypeChange = (value: string, index:number) => {
@@ -102,7 +110,7 @@ export function LanPortSettings (props: {
       defaultMessage={`<section>
         <p>* The following LAN Port settings can’t work because DHCP is enabled.</p>
         <p>You cannot edit LAN Port setting on this device because it has assigned
-          to the venue which already has enabled DHCP service.</p>
+          to the <venueSingular></venueSingular> which already has enabled DHCP service.</p>
       </section>`}
       values={{
         section: (contents) => <Space
@@ -157,10 +165,28 @@ export function LanPortSettings (props: {
       name={['lan', index, 'untagId']}
       label={<>
         {$t({ defaultMessage: 'VLAN untag ID' })}
-        <Tooltip.Question
-          title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_UNTAG_TOOLTIP)}
-          placement='bottom'
-        />
+        { lan?.type === ApLanPortTypeEnum.TRUNK && isTrunkPortUntaggedVlanEnabled ?
+          <ApCompatibilityToolTip
+            title={$t(WifiNetworkMessages.LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP)}
+            visible={supportApCompatibleCheck}
+            placement='bottom'
+            onClick={() => setDrawerVisible(true)}
+          />
+          :
+          <Tooltip.Question
+            title={$t(WifiNetworkMessages.LAN_PORTS_VLAN_UNTAG_TOOLTIP)}
+            placement='bottom'
+          />
+        }
+        {supportApCompatibleCheck &&
+            <ApCompatibilityDrawer
+              visible={drawerVisible}
+              type={venueId ? ApCompatibilityType.VENUE : ApCompatibilityType.ALONE}
+              venueId={venueId}
+              featureName={InCompatibilityFeatures.TRUNK_PORT_VLAN_UNTAG_ID}
+              onClose={() => setDrawerVisible(false)}
+            />
+        }
       </>}
       rules={[{
         required: true,

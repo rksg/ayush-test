@@ -105,6 +105,13 @@ export function SelectModelStep (props: { editMode: boolean }) {
       setModule2SelectionEnable(false)
     }
 
+    if (family === 'ICX8200') {
+      setModuleSelectionEnable(false)
+      form.setFieldValue('enableSlot2', true)
+      form.setFieldValue('selectedOptionOfSlot2', optionListForSlot2[0]?.value)
+      setModule2SelectionEnable(false)
+    }
+
     if (family === 'ICX7150' || family === 'ICX7850') {
       switch (model) {
         case '24':
@@ -337,7 +344,7 @@ export function SelectModelStep (props: { editMode: boolean }) {
         function (a: { slotNumber: number }, b: { slotNumber: number }) {
           return a.slotNumber > b.slotNumber ? 1 : -1
         })
-      tmpModelPortData.model = family + '-' + selectedModel
+      tmpModelPortData.model = selectedFamily + '-' + selectedModel
       setSwitchFamilyModels(tmpModelPortData)
 
       form.setFieldValue('switchFamilyModels', tmpModelPortData)

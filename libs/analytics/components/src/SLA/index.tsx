@@ -1,11 +1,11 @@
 import { pick }    from 'lodash'
 import { useIntl } from 'react-intl'
 
-import { KpiThresholdType, useApCountForNodeQuery } from '@acx-ui/analytics/services'
-import { kpiConfig, useAnalyticsFilter }            from '@acx-ui/analytics/utils'
-import { Card, Loader, ProgressBarV2 }              from '@acx-ui/components'
-import { formatter }                                from '@acx-ui/formatter'
-import type { AnalyticsFilter }                     from '@acx-ui/utils'
+import { KpiThresholdType }                      from '@acx-ui/analytics/services'
+import { kpiConfig, pathToFilter, isSwitchPath } from '@acx-ui/analytics/utils'
+import { Card, Loader, ProgressBarV2, NoData }   from '@acx-ui/components'
+import { formatter }                             from '@acx-ui/formatter'
+import type { PathFilter, AnalyticsFilter }      from '@acx-ui/utils'
 
 import { useKpiThresholdsQuery } from '../Health/Kpi'
 import { usePillQuery }          from '../Health/Kpi/Pill'
@@ -21,14 +21,12 @@ const SLAComponent = ({ kpi, threshold, filters } : SLABarChartProps) => {
   const { $t } = useIntl()
   const { text } = Object(kpiConfig[kpi as keyof typeof kpiConfig])
 
-  const apCountResult = useApCountForNodeQuery(filters)
-  const apCount = apCountResult.data?.network.node.apCount
 
   const { queryResults, percent } = usePillQuery({
-    kpi, filters, timeWindow: pick(filters, ['startDate', 'endDate' ]), threshold, apCount
+    kpi, filters, timeWindow: pick(filters, ['startDate', 'endDate' ]), threshold
   })
 
-  return <Loader states={[apCountResult, queryResults]}>
+  return <Loader states={[queryResults]}>
     <UI.Wrapper>
       {$t(text)}
       <UI.Text>{$t(
@@ -40,22 +38,29 @@ const SLAComponent = ({ kpi, threshold, filters } : SLABarChartProps) => {
   </Loader>
 }
 
-export const SLA = (props: { filters: AnalyticsFilter }) => {
+export const SLA = (props: { pathFilters: PathFilter }) => {
   const { $t } = useIntl()
+  const { path, ...otherFilters } = props.pathFilters
+  const filters = {
+    ...otherFilters,
+    filter: pathToFilter(path)
+  }
+  const switchPath = isSwitchPath(path)
 
   const kpis= [ 'connectionSuccess', 'timeToConnect', 'clientThroughput']
-  const { filters } = useAnalyticsFilter()
-  const { thresholds, kpiThresholdsQueryResults } = useKpiThresholdsQuery({ filters })
+  const { thresholds, kpiThresholdsQueryResults } =
+    useKpiThresholdsQuery({ filters }, { skip: switchPath })
 
   return <Loader states={[kpiThresholdsQueryResults]}>
-    <Card title={$t({ defaultMessage: 'SLA' })} >
-      {kpis.map((kpi, index)=>
+    <Card title={$t({ defaultMessage: 'SLA' })}>{switchPath
+      ? <NoData/>
+      : kpis.map((kpi, index) =>
         <SLAComponent
           key={`SLA${index}`}
           kpi={kpi}
           threshold={thresholds[kpi as keyof KpiThresholdType]}
-          filters={props.filters}
-        />)}
-    </Card>
+          filters={filters}
+        />)
+    }</Card>
   </Loader>
 }

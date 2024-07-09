@@ -188,7 +188,7 @@ export function ConnectionMeteringInstanceTable (props: { data: Persona[] }) {
           .reduce((prev, curr) => [prev, ', ', curr])
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueId',
       key: 'venueId',
       render: (_, { groupId }) => {

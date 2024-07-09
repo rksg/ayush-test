@@ -1,10 +1,3 @@
-import {
-  screen,
-  fireEvent,
-  act,
-  within,
-  waitFor
-} from '@testing-library/react'
 import { message } from 'antd'
 import { rest }    from 'msw'
 import '@testing-library/jest-dom'
@@ -13,13 +6,22 @@ import {
   CommonUrlsInfo,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
-import { mockServer, renderHook } from '@acx-ui/test-utils'
+import { Provider } from '@acx-ui/store'
+import {
+  screen,
+  fireEvent,
+  act,
+  within,
+  waitFor,
+  mockServer,
+  renderHook
+} from '@acx-ui/test-utils'
 
 import { useApActions } from '.'
 
 const serialNumber = ':serialNumber'
 const tenantId = ':tenantId'
+const venueId = ':venueId'
 
 const apList = {
   totalCount: 1,
@@ -73,9 +75,9 @@ describe('Test useApActions', () => {
       ),
       rest.post(
         WifiUrlsInfo.getDhcpAp.url,
-        (req, res, ctx) => res(ctx.json({ requestId: '456', response: [{
+        (req, res, ctx) => res(ctx.json([{
           venueDhcpEnabled: true
-        }] }))
+        }] ))
       ),
       rest.delete(
         WifiUrlsInfo.deleteAp.url,
@@ -134,7 +136,7 @@ describe('Test useApActions', () => {
     const callback = jest.fn()
 
     act(() => {
-      showRebootAp(serialNumber, tenantId, callback)
+      showRebootAp(serialNumber, tenantId, venueId, callback)
     })
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveTextContent('Rebooting the AP will disconnect all connected clients')
@@ -142,6 +144,7 @@ describe('Test useApActions', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Reboot' }))
 
     expect(callback).toBeCalled()
+    await waitFor(async () => expect(dialog).not.toBeVisible())
   })
 
   it('showDownloadApLog', async () => {
@@ -153,7 +156,7 @@ describe('Test useApActions', () => {
     const callback = jest.fn()
 
     act(() => {
-      showDownloadApLog(serialNumber, tenantId, callback)
+      showDownloadApLog(serialNumber, tenantId, venueId, callback)
     })
 
     expect(await screen.findByTestId('toast-content')).toHaveTextContent('Preparing log')

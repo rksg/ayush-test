@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   CommonUrlsInfo,
   DHCPUrls,
@@ -16,6 +17,7 @@ import {
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -71,6 +73,10 @@ describe('DHCPTable', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
+        DHCPUrls.queryDhcpProfiles.url,
+        (req, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueData))
       )
@@ -85,6 +91,7 @@ describe('DHCPTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetServiceName = mockTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add DHCP Service/i })).toBeVisible()
@@ -99,6 +106,7 @@ describe('DHCPTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -125,7 +133,7 @@ describe('DHCPTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('radio'))
@@ -145,6 +153,47 @@ describe('DHCPTable', () => {
     })
   })
 
+  it('should call rbac api and render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        DHCPUrls.deleteDHCPProfile.url,
+        (req, res, ctx) => {
+          if (req.headers.get('content-type')==='application/vnd.ruckus.v1.1+json'
+          && req.headers.get('accept') === 'application/vnd.ruckus.v1.1+json') {
+            deleteFn(req.body)
+            return res(ctx.json({ requestId: '12345' }))
+          }
+        }
+      )
+    )
+
+    render(
+      <Provider>
+        <DHCPTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const target = mockTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Service/i }))
+
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog')).toBeNull()
+    })
+  })
+
+
   it('should navigate to the Edit view', async () => {
     render(
       <Provider>
@@ -153,6 +202,7 @@ describe('DHCPTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })

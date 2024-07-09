@@ -23,7 +23,7 @@ describe('Edge firmware update now dialog', () => {
     )
 
     expect(await screen.findByRole('radio',
-      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023 09:16 AM' }
+      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023' }
     )).toBeVisible()
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeVisible()
     expect(screen.getByRole('button', { name: 'Run Update' })).toBeVisible()
@@ -53,7 +53,7 @@ describe('Edge firmware update now dialog', () => {
     )
 
     await userEvent.click(await screen.findByRole('radio',
-      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023 09:16 AM' }
+      { name: '1.0.0.1710 (Release - Recommended) - 02/23/2023' }
     ))
     await userEvent.click(screen.getByRole('button', { name: 'Run Update' }))
     await waitFor(() => expect(mockedSubmitFn).toBeCalledTimes(1))

@@ -6,7 +6,7 @@ import { mockGraphqlMutation, mockGraphqlQuery } from '@acx-ui/test-utils'
 import { DateRange, NetworkPath }                from '@acx-ui/utils'
 import type { AnalyticsFilter }                  from '@acx-ui/utils'
 
-import { healthApi } from '.'
+import { healthApi, getHealthFilter, constructTimeSeriesQuery, getHistogramQuery, KpiPayload } from '.'
 
 describe('Services for health kpis', () => {
   const store = configureStore({
@@ -203,7 +203,7 @@ describe('Services for health kpis', () => {
       })
       const { status, data, error } = await store.dispatch(
         healthApi.endpoints.getKpiThresholds.initiate({ ...props, filter: {
-          networkNodes: [[{ type: 'zoneName', name: 'z1' }]]
+          networkNodes: [[{ type: 'zone', name: 'z1' }]]
         } })
       )
       expect(status).toBe('fulfilled')
@@ -242,25 +242,90 @@ describe('Services for health kpis', () => {
       expect(error).not.toBe(undefined)
     })
   })
-  describe('apCountForNode', () => {
-    afterEach(() => {
-      store.dispatch(healthApi.util.resetApiState())
-    })
-    const expectedResult = {
-      node: {
-        apCount: 100
-      }
-    }
-    it('should return correct data', async () => {
-      mockGraphqlQuery(dataApiURL, 'APCountForNode', {
-        data: expectedResult
+  describe('getHealthFilter', () => {
+    it('should return health filter for firmware filter as boolean', () => {
+      const filter=getHealthFilter({ ...props, kpi: 'someKpi', enableSwitchFirmwareFilter: true })
+      expect(filter).toEqual({
+        filter: {},
+        enableSwitchFirmwareFilter: true
       })
-      const { status, data, error } = await store.dispatch(
-        healthApi.endpoints.apCountForNode.initiate(props)
-      )
-      expect(status).toBe('fulfilled')
-      expect(data).toStrictEqual(expectedResult)
-      expect(error).toBe(undefined)
+    })
+    it('should return health filter for firmware filter as function', () => {
+      const filter=getHealthFilter({ ...props, kpi: 'someKpi',
+        enableSwitchFirmwareFilter: () => true })
+      expect(filter).toEqual({
+        filter: {},
+        enableSwitchFirmwareFilter: true
+      })
+    })
+    it('should return health filter if firmware filter is not passed', () => {
+      const filter=getHealthFilter({ ...props, kpi: 'someKpi' })
+      expect(filter).toEqual({
+        filter: {}
+      })
+    })
+  })
+  describe('constructTimeSeriesQuery', () => {
+    it('should return time series query', () => {
+      const query = constructTimeSeriesQuery({
+        filter: {},
+        kpi: 'connectionSuccess',
+        startDate: '',
+        endDate: ''
+      })
+      expect(query).toMatchSnapshot()
+    })
+    it('should return time series query with additional args', () => {
+      const query = constructTimeSeriesQuery({
+        filter: {},
+        kpi: 'connectionSuccess',
+        startDate: '',
+        endDate: '',
+        enableSwitchFirmwareFilter: true
+      })
+      expect(query).toMatchSnapshot()
+    })
+    it('should return time series query with additional fields', () => {
+      const query = constructTimeSeriesQuery({
+        filter: {},
+        kpi: 'connectionSuccess',
+        startDate: '',
+        endDate: '',
+        enableSwitchFirmwareFilter: () => true
+      })
+      expect(query).toMatchSnapshot()
+    })
+  })
+  describe('getHistogramQuery', () => {
+    it('should return histogram query', () => {
+      const query = getHistogramQuery({
+        kpi: 'rss',
+        startDate: '2021-01-01',
+        endDate: '2021-12-31',
+        filter: {}
+      } as KpiPayload)
+      expect(query).toMatchSnapshot()
+    })
+    it('should return histogram query with additional args', () => {
+      const query = getHistogramQuery({
+        filter: {},
+        kpi: 'rss',
+        startDate: '',
+        endDate: '',
+        enableSwitchFirmwareFilter: true
+      } as KpiPayload)
+      expect(query).toMatchSnapshot()
+    })
+    it('should return histogram query with additional fields', () => {
+      const query = getHistogramQuery({
+        filter: {},
+        kpi: 'rss',
+        startDate: '',
+        endDate: '',
+        range: DateRange.last24Hours, // Add the appropriate DateRange value
+        enableSwitchFirmwareFilter: () => true
+      } as KpiPayload)
+      expect(query).toMatchSnapshot()
     })
   })
 })

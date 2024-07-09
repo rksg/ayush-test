@@ -14,6 +14,7 @@ export type UseQuery <ResultType, Payload = any> = (
 
 export type UseQueryOptions = {
   pollingInterval?: number
+  apiParams?: { [index:string]:string }
   refetchOnReconnect?: boolean
   refetchOnFocus?: boolean
   skip?: boolean

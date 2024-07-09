@@ -1,24 +1,38 @@
 import { Form, Radio } from 'antd'
 import { useIntl }     from 'react-intl'
 
-import { GridCol, GridRow, PageHeader, RadioCard, StepsFormLegacy, RadioCardCategory } from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                                    from '@acx-ui/feature-toggle'
-import { useGetApSnmpViewModelQuery }                                                  from '@acx-ui/rc/services'
+import {
+  GridCol,
+  GridRow,
+  PageHeader,
+  RadioCard,
+  StepsFormLegacy,
+  RadioCardCategory
+} from '@acx-ui/components'
+import {
+  Features,
+  useIsSplitOn,
+  useIsTierAllowed
+} from '@acx-ui/feature-toggle'
+import { IDENTITY_PROVIDER_MAX_COUNT, WIFI_OPERATOR_MAX_COUNT, useIsEdgeReady } from '@acx-ui/rc/components'
+import {
+  useGetApSnmpViewModelQuery,
+  useGetIdentityProviderListQuery,
+  useGetWifiOperatorListQuery
+} from '@acx-ui/rc/services'
 import {
   PolicyType,
   getPolicyListRoutePath,
   getPolicyRoutePath,
-  PolicyOperation
+  PolicyOperation,
+  policyTypeLabelMapping, policyTypeDescMapping,
+  ServicePolicyCardData,
+  isServicePolicyCardEnabled
 } from '@acx-ui/rc/utils'
 import { Path, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { WifiScopes }                                  from '@acx-ui/types'
+import { hasPermission }                               from '@acx-ui/user'
 
-import { policyTypeDescMapping, policyTypeLabelMapping } from '../contentsMap'
-
-interface policyOption {
-  type: PolicyType,
-  categories: RadioCardCategory[],
-  disabled?: boolean
-}
 
 export default function SelectPolicyForm () {
   const { $t } = useIntl()
@@ -26,17 +40,31 @@ export default function SelectPolicyForm () {
   const navigate = useNavigate()
   const policiesTablePath: Path = useTenantLink(getPolicyListRoutePath(true))
   const tenantBasePath: Path = useTenantLink('')
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
   const macRegistrationEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const ApSnmpPolicyTotalCount = useGetApSnmpViewModelQuery({
     params,
+    enableRbac: isUseRbacApi,
     payload: {
       fields: ['id']
     }
   }).data?.totalCount || 0
+  const WifiOperatorTotalCount = useGetWifiOperatorListQuery({
+    params,
+    payload: {
+      fields: ['id']
+    }
+  }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
+  const IdentityProviderTotalCount = useGetIdentityProviderListQuery({
+    params,
+    payload: {
+      fields: ['id']
+    }
+  }, { skip: !supportHotspot20R1 }).data?.totalCount || 0
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
 
   const navigateToCreatePolicy = async function (data: { policyType: PolicyType }) {
     const policyCreatePath = getPolicyRoutePath({
@@ -50,24 +78,34 @@ export default function SelectPolicyForm () {
     })
   }
 
-  const sets : policyOption[] = [
+  const sets : ServicePolicyCardData<PolicyType>[] = [
     { type: PolicyType.ACCESS_CONTROL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.VLAN_POOL, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.ROGUE_AP_DETECTION, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.AAA, categories: [RadioCardCategory.WIFI] },
     { type: PolicyType.SYSLOG, categories: [RadioCardCategory.WIFI] },
-    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] }
-  ]
-
-  if (supportApSnmp) {
-    // AP SNMP Policy is limited to 64, so disable the radio card if the total count is 64
-    sets.push({
+    { type: PolicyType.CLIENT_ISOLATION, categories: [RadioCardCategory.WIFI] },
+    {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       disabled: (ApSnmpPolicyTotalCount >= 64)
+    }
+  ]
+
+  if (supportHotspot20R1) {
+    sets.push({
+      type: PolicyType.WIFI_OPERATOR,
+      categories: [RadioCardCategory.WIFI],
+      disabled: (WifiOperatorTotalCount >= WIFI_OPERATOR_MAX_COUNT)
+    })
+    sets.push({
+      type: PolicyType.IDENTITY_PROVIDER,
+      categories: [RadioCardCategory.WIFI],
+      disabled: (IdentityProviderTotalCount >= IDENTITY_PROVIDER_MAX_COUNT)
     })
   }
-  if (isEdgeEnabled && isEdgeReady) {
+
+  if (isEdgeEnabled) {
     sets.push({
       type: PolicyType.TUNNEL_PROFILE, categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE]
     })
@@ -80,6 +118,10 @@ export default function SelectPolicyForm () {
 
   if(cloudpathBetaEnabled) {
     sets.push({ type: PolicyType.ADAPTIVE_POLICY, categories: [RadioCardCategory.WIFI] })
+  }
+
+  if (isCertificateTemplateEnabled && hasPermission({ scopes: [WifiScopes.CREATE] })) {
+    sets.push({ type: PolicyType.CERTIFICATE_TEMPLATE, categories: [RadioCardCategory.WIFI] })
   }
 
   return (
@@ -108,16 +150,18 @@ export default function SelectPolicyForm () {
           >
             <Radio.Group style={{ width: '100%' }}>
               <GridRow>
-                {sets.map(set => <GridCol col={{ span: 6 }} key={set.type}>
-                  <RadioCard
-                    type={set.disabled ? 'disabled' : 'radio'}
-                    key={set.type}
-                    value={set.type}
-                    title={$t(policyTypeLabelMapping[set.type])}
-                    description={$t(policyTypeDescMapping[set.type])}
-                    categories={set.categories}
-                  />
-                </GridCol>)}
+                {sets.filter(set => isServicePolicyCardEnabled(set, 'create')).map(set => {
+                  return <GridCol col={{ span: 6 }} key={set.type}>
+                    <RadioCard
+                      type={'radio'}
+                      key={set.type}
+                      value={set.type}
+                      title={$t(policyTypeLabelMapping[set.type])}
+                      description={$t(policyTypeDescMapping[set.type])}
+                      categories={set.categories}
+                    />
+                  </GridCol>
+                })}
               </GridRow>
             </Radio.Group>
           </Form.Item>

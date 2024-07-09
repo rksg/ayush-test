@@ -1,34 +1,46 @@
-import { useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Form, Input, Select } from 'antd'
+import { cloneDeep }           from 'lodash'
 import { useIntl }             from 'react-intl'
 
-import { Drawer, Tooltip, PasswordInput }                             from '@acx-ui/components'
-import { SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
+import { Drawer, Tooltip, PasswordInput }                                               from '@acx-ui/components'
+import { ApSnmpActionType, SnmpAuthProtocolEnum, SnmpPrivacyProtocolEnum, SnmpV3Agent } from '@acx-ui/rc/utils'
 
 import PrivilegeForm, { HasReadPrivilegeEnabled, HasTrapPrivilegeEnabled } from './PrivilegeForm'
+import SnmpAgentFormContext                                                from './SnmpAgentFormContext'
 
 const { useWatch } = Form
 
+const initSnmpV3Agent = {
+  userName: '',
+  authProtocol: SnmpAuthProtocolEnum.SHA,
+  authPassword: '',
+  privacyProtocol: SnmpPrivacyProtocolEnum.None,
+  readPrivilege: false,
+  trapPrivilege: false
+}
+
 type SnmpV3AgentDrawerProps = {
-  visible: boolean,
-  isEditMode: boolean,
-  curData: SnmpV3Agent,
-  othersData: SnmpV3Agent[],
-  onDataChanged: (d: SnmpV3Agent) => void,
-  onCancel: () => void
+  visible: boolean
+  setVisible: (visible: boolean) => void
+  editIndex: number
 }
 
 const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
   const { $t } = useIntl()
-  const [form] = Form.useForm()
+  const { state, dispatch } = useContext(SnmpAgentFormContext)
 
-  const privacyProtocol = useWatch<string>('privacyProtocol', form)
-
-  const { visible, isEditMode, curData, othersData=[], onDataChanged } = props
-  const usedUserName = othersData.map(d => d.userName)
+  const [ othersData, setOthersData ] = useState<SnmpV3Agent[]>([])
+  const usedUserName = othersData.map(d => d.userName) ?? []
   const hasOtherReadPrivilegeEnabled = HasReadPrivilegeEnabled(othersData)
   const hasOtherTrapPrivilegeEnabled = HasTrapPrivilegeEnabled(othersData)
+
+  const [form] = Form.useForm()
+  const privacyProtocol = useWatch<string>('privacyProtocol', form)
+
+  const { visible, setVisible, editIndex } = props
+  const isEditMode = (editIndex !== -1)
 
   const title = isEditMode
     ? $t({ defaultMessage: 'Edit SNMPv3 Agent' })
@@ -39,96 +51,95 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
     : $t({ defaultMessage: 'Add' })
 
   useEffect(() => {
-    if (curData) {
-      form.setFieldsValue(curData)
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curData])
+    if (visible && form) {
+      const { snmpV3Agents } = state
+      const snmpV3Agent = cloneDeep(isEditMode? snmpV3Agents?.[editIndex] : initSnmpV3Agent)
 
-  const content = <Form layout='vertical'
-    form={form}
-  >
-    <Form.Item
-      name='userName'
-      label={
-        <>
+      setOthersData(snmpV3Agents?.filter((s, index) => ( index !== editIndex)) ?? [])
+
+      form.setFieldsValue(snmpV3Agent)
+    }
+  }, [editIndex, visible, form, isEditMode, state])
+
+  const userNameValidator = async (value: string) => {
+    const re = new RegExp('^[^\'#" ]*$')
+
+    return (value && !re.test(value))
+      // eslint-disable-next-line max-len
+      ? Promise.reject($t({ defaultMessage: 'The User name cannot contain spaces, single quotes(\'), double quotes("), or pound signs(#).' }))
+      : Promise.resolve()
+  }
+
+  const userNameDuplicationValidator = async (value: string) => {
+    return (usedUserName.includes(value))
+      ? Promise.reject($t({ defaultMessage: 'The User name already exists' }))
+      : Promise.resolve()
+  }
+
+
+  const content = (
+    <Form layout='vertical' form={form} >
+      <Form.Item
+        name='userName'
+        label={<>
           {$t({ defaultMessage: 'User Name' })}
           <Tooltip.Question
             placement='bottom'
             title={$t({ defaultMessage: 'Length is limited to 3-32 characters.' })}
           />
-        </>
-      }
-      style={{ width: '350px' }}
-      rules={[
-        { required: true,
-          message: $t({ defaultMessage: 'Please enter User Name' }) },
-        { min: 3 },
-        { max: 32 },
-        { validator: (_, value) => {
-          const userNameRegExp = (value: string) => {
-            const re = new RegExp('^[^\'#" ]*$')
-            if (value && !re.test(value)) {
-              return Promise.reject($t(
-                { defaultMessage:
-                  // eslint-disable-next-line max-len
-                  'The User name cannot contain spaces, single quotes(\'), double quotes("), or pound signs(#).'
-                }))
-            }
-            return Promise.resolve()
-          }
-
-          if (usedUserName && usedUserName.includes(value)) {
-            return Promise.reject($t({ defaultMessage: 'The User name already exists' }))
-          }
-
-          return userNameRegExp(value)
-        } }
-      ]}
-      children={<Input />}
-    />
-    <Form.Item
-      name='authProtocol'
-      label={$t({ defaultMessage: 'Authentication Mode' })}
-      style={{ width: '350px' }}
-      initialValue={SnmpAuthProtocolEnum.SHA}
-      children={
-        <Select
-          options={Object.keys(SnmpAuthProtocolEnum).map((key) => {
-            return (
-              { value: key, label: key }
-            )
-          })}
-        />
-      }
-    />
-    <Form.Item
-      name='authPassword'
-      label={$t({ defaultMessage: 'Authentication Password' })}
-      style={{ width: '350px' }}
-      rules={[
-        { required: true },
-        { min: 8 },
-        { max: 32 }
-      ]}
-      children={<PasswordInput />}
-    />
-    <Form.Item
-      name='privacyProtocol'
-      label={$t({ defaultMessage: 'Privacy' })}
-      style={{ width: '350px' }}
-      initialValue={SnmpPrivacyProtocolEnum.None}
-      children={
-        <Select
-          options={Object.keys(SnmpPrivacyProtocolEnum).map((key) => {
-            return (
-              { value: key, label: key }
-            )
-          })}
-        />
-      }
-    />
-    {privacyProtocol && (privacyProtocol !== SnmpPrivacyProtocolEnum.None) &&
+        </>}
+        style={{ width: '350px' }}
+        rules={[
+          { required: true, message: $t({ defaultMessage: 'Please enter User Name' }) },
+          { min: 3 },
+          { max: 32 },
+          { validator: (_, value) => userNameValidator(value) },
+          { validator: (_, value) => userNameDuplicationValidator(value) }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='authProtocol'
+        label={$t({ defaultMessage: 'Authentication Mode' })}
+        style={{ width: '350px' }}
+        initialValue={SnmpAuthProtocolEnum.SHA}
+        children={
+          <Select
+            options={Object.keys(SnmpAuthProtocolEnum).map((key) => {
+              return (
+                { value: key, label: key }
+              )
+            })}
+          />
+        }
+      />
+      <Form.Item
+        name='authPassword'
+        label={$t({ defaultMessage: 'Authentication Password' })}
+        style={{ width: '350px' }}
+        rules={[
+          { required: true },
+          { min: 8 },
+          { max: 32 }
+        ]}
+        children={<PasswordInput />}
+      />
+      <Form.Item
+        name='privacyProtocol'
+        label={$t({ defaultMessage: 'Privacy' })}
+        style={{ width: '350px' }}
+        initialValue={SnmpPrivacyProtocolEnum.None}
+        children={
+          <Select
+            options={Object.keys(SnmpPrivacyProtocolEnum).map((key) => {
+              return (
+                { value: key, label: key }
+              )
+            })}
+          />
+        }
+      />
+      {privacyProtocol && (privacyProtocol !== SnmpPrivacyProtocolEnum.None) &&
       <Form.Item
         name='privacyPassword'
         label={$t({ defaultMessage: 'Privacy Phrase' })}
@@ -140,16 +151,47 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
         ]}
         children={<PasswordInput />}
       />
-    }
-    <PrivilegeForm
-      hasOtherReadPrivilegeEnabled={hasOtherReadPrivilegeEnabled}
-      hasOtherTrapPrivilegeEnabled={hasOtherTrapPrivilegeEnabled} />
-  </Form>
+      }
+      <PrivilegeForm
+        hasOtherReadPrivilegeEnabled={hasOtherReadPrivilegeEnabled}
+        hasOtherTrapPrivilegeEnabled={hasOtherTrapPrivilegeEnabled} />
+    </Form>)
 
-  // reset form fields when drawer is closed
-  const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      form.resetFields()
+  const resetData = () => {
+    form.resetFields()
+  }
+
+  const onClose = () => {
+    resetData()
+    setVisible(false)
+  }
+
+  const onSave = async (addAnotherRuleChecked: boolean) => {
+    try {
+      const valid = await form.validateFields()
+      if (valid) {
+        const formData = form.getFieldsValue()
+        const { readPrivilege, trapPrivilege } = formData
+
+        if (readPrivilege || trapPrivilege) {
+          const type = isEditMode? ApSnmpActionType.UPDATE_SNMP_V3 : ApSnmpActionType.ADD_SNMP_V3
+          const payload = isEditMode? { ...formData, editIndex } : { ...formData }
+          dispatch({ type, payload })
+
+          form.submit()
+
+          const allPrivilegeEnabled = (readPrivilege || hasOtherReadPrivilegeEnabled)
+          && (trapPrivilege || hasOtherTrapPrivilegeEnabled)
+
+          if (!addAnotherRuleChecked || allPrivilegeEnabled ) {
+            onClose()
+          } else {
+            resetData()
+          }
+        }
+      }
+    } catch (error) {
+      if (error instanceof Error) throw error
     }
   }
 
@@ -157,11 +199,10 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
     <Drawer
       title={title}
       visible={visible}
-      onClose={props.onCancel}
-      children={content}
+      onClose={onClose}
       destroyOnClose={true}
+      children={content}
       width={'500px'}
-      afterVisibleChange={handleOpenChange}
       footer={
         <Drawer.FormFooter
           showAddAnother={!isEditMode}
@@ -169,34 +210,10 @@ const SnmpV3AgentDrawer = (props: SnmpV3AgentDrawerProps) => {
             addAnother: $t({ defaultMessage: 'Add another SNMPv3 agent' }),
             save: saveButtonText
           })}
-          onCancel={props.onCancel}
-          onSave={async (addAnotherRuleChecked: boolean) => {
-            try {
-              const valid = await form.validateFields()
-              if (valid) {
-                const newData = form.getFieldsValue()
-                const { readPrivilege, trapPrivilege } = newData
-
-                if (readPrivilege || trapPrivilege) {
-                  onDataChanged(newData)
-                  //form.submit()
-                  const allPrivilegeEnabled = (readPrivilege || hasOtherReadPrivilegeEnabled)
-                    && (trapPrivilege || hasOtherTrapPrivilegeEnabled)
-
-                  if (!addAnotherRuleChecked || allPrivilegeEnabled) {
-                    props.onCancel()
-                  } else {
-                    form.resetFields()
-                  }
-                }
-              }
-            } catch (error) {
-              if (error instanceof Error) throw error
-            }
-          }}
+          onCancel={onClose}
+          onSave={onSave}
         />
       }
-
     />
   )
 }

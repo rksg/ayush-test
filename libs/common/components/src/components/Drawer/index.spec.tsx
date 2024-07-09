@@ -55,8 +55,8 @@ describe('Drawer', () => {
 
   it('should render custom drawer correctly', async () => {
     const footer = [
-      <button onClick={onClose} >Save</button>,
-      <button onClick={resetFields}>Reset</button>
+      <button key='saveBtn' onClick={onClose} >Save</button>,
+      <button key='resetBtn' onClick={resetFields}>Reset</button>
     ]
     const handleBackClick = jest.fn()
     render(<Drawer
@@ -171,6 +171,20 @@ describe('Drawer', () => {
 
       fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
       expect(mockOnCancel).toBeCalled()
+    })
+
+    it('should render form footer with extra', async () => {
+      const mockOnCancel = jest.fn()
+      const mockOnSave = jest.fn()
+
+      render(
+        <Drawer.FormFooter
+          onCancel={mockOnCancel}
+          onSave={mockOnSave}
+          extra={<div>extra</div>}
+        />
+      )
+      expect(await screen.findByText('extra')).toBeVisible()
     })
 
     it('should handle add another checkbox events', async () => {

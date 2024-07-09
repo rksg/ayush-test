@@ -100,7 +100,7 @@ describe('AddEdgeDhcp', () => {
 
     const serviceNameInput = screen.getByRole('textbox', { name: /service name/i })
     fireEvent.change(serviceNameInput, { target: { value: 'myTest' } })
-    await userEvent.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add DHCP Pool' }))
     let drawer = await screen.findByRole('dialog')
     await userEvent.type(await screen.findByRole('textbox', { name: 'Pool Name' }), 'Pool1')
     await userEvent.type(screen.getByRole('textbox', { name: 'Subnet Mask' }), '255.255.255.0')
@@ -114,12 +114,12 @@ describe('AddEdgeDhcp', () => {
     await waitFor(() => expect(drawer).not.toBeVisible())
     await userEvent.click(screen.getByRole('radio', { name: 'Infinite' }))
 
-    await userEvent.click(await screen.findByRole('button', { name: 'Add Host' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add Host' }))
     drawer = await screen.findByRole('dialog')
     await userEvent.type(await screen.findByRole('textbox', { name: 'Host Name' }), 'Host1')
-    await userEvent.type(await screen.findByRole('textbox', { name: 'MAC Address' }),
+    await userEvent.type(screen.getByRole('textbox', { name: 'MAC Address' }),
       '00:0c:29:26:dd:fc')
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Fixed Address' }),
+    await userEvent.type(screen.getByRole('textbox', { name: 'Fixed Address' }),
       '1.1.1.1')
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(drawer).not.toBeVisible())
@@ -157,8 +157,8 @@ describe('AddEdgeDhcp', () => {
         route: { params, path: '/:tenantId/t/services/dhcp/create' }
       })
 
-    await userEvent.type(await screen.findByRole('textbox', { name: /service name/i }), 'myTest')
-    await userEvent.click(await screen.findByRole('button', { name: 'Add DHCP Pool' }))
+    await userEvent.type(screen.getByRole('textbox', { name: /service name/i }), 'myTest')
+    await userEvent.click(screen.getByRole('button', { name: 'Add DHCP Pool' }))
     let drawer = await screen.findByRole('dialog')
     await userEvent.type(
       screen.getByRole('textbox', { name: 'Pool Name' }), 'Pool1')
@@ -173,13 +173,13 @@ describe('AddEdgeDhcp', () => {
       screen.getByRole('textbox', { name: 'Gateway' }), '1.2.3.4')
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(drawer).not.toBeVisible())
-    await userEvent.click(await screen.findByRole('button', { name: 'Add Option' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Add Option' }))
     drawer = await screen.findByRole('dialog')
 
     await userEvent.selectOptions(
       await screen.findByRole('combobox', { name: 'Option Name' }),
       await screen.findByRole('option', { name: 'Domain name' }))
-    await userEvent.type(await screen.findByRole('textbox', { name: 'Option Value' }),
+    await userEvent.type(screen.getByRole('textbox', { name: 'Option Value' }),
       'testOpt')
     await userEvent.click(within(drawer).getByRole('button', { name: 'Add' }))
     await waitFor(() => expect(drawer).not.toBeVisible())

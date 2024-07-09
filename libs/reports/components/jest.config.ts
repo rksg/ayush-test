@@ -2,16 +2,17 @@ module.exports = {
   displayName: 'reports-components',
   preset: '../../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../coverage/libs/reports/components',
   coverageThreshold: {
     global: {
-      statements: 64.7,
-      branches: 43.7,
-      functions: 55.5,
-      lines: 65.6
+      statements: 97,
+      branches: 75,
+      functions: 94,
+      lines: 97
     }
   }
 }

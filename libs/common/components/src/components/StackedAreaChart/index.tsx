@@ -51,6 +51,9 @@ export interface StackedAreaChartProps
     seriesFormatters?: Record<string, ChartFormatterFn>
     tooltipTotalTitle?: string
     disableLegend?: boolean
+    disableAxis?: boolean
+    disableGrid?: boolean
+    totalMean?: boolean
     chartRef?: RefCallback<ReactECharts>
     zoom?: TimeStampRange
     onDataZoom?: (range: TimeStampRange) => void
@@ -58,18 +61,28 @@ export interface StackedAreaChartProps
 
 export function getSeriesTotal <DataType extends TimeSeriesChartData> (
   series: DataType[],
-  tooltipTotalTitle: string
+  tooltipTotalTitle: string,
+  mean?: boolean
 ) {
   return {
     key: 'total',
     name: tooltipTotalTitle,
     show: false,
     data: series[0].data.map((point, index)=>{
+      let length = 0
       const total = sumBy(series, (datum) => {
         const value = datum.data[index][1]
-        return typeof value === 'number' ? value : 0
+        if (typeof value === 'number') {
+          length++
+          return value
+        } else {
+          return 0
+        }
       })
-      return [ point[0], total ]
+      return [ point[0], mean
+        ? (length ? total / length : 0)
+        : total
+      ]
     })
   } as DataType
 }
@@ -86,6 +99,9 @@ export function StackedAreaChart <
   seriesFormatters,
   tooltipTotalTitle,
   disableLegend,
+  disableAxis,
+  disableGrid,
+  totalMean,
   ...props
 }: StackedAreaChartProps<TChartData>) {
   const eChartsRef = useRef<ReactECharts>(null)
@@ -100,14 +116,22 @@ export function StackedAreaChart <
 
   const data = useMemo(() => {
     return tooltipTotalTitle && !isEmpty(initialData)
-      ? initialData.concat(getSeriesTotal<TChartData>(initialData, tooltipTotalTitle))
+      ? initialData.concat(getSeriesTotal<TChartData>(initialData, tooltipTotalTitle, totalMean))
       : initialData
   }, [tooltipTotalTitle, initialData])
 
   const option: EChartsOption = {
     animation: false,
     color: props.stackColors || qualitativeColorSet(),
-    grid: { ...gridOptions({ disableLegend, rightGridOffset: 5 }) },
+    grid: {
+      ...gridOptions({ disableLegend, rightGridOffset: 5 }),
+      ...(disableGrid
+        ? {
+          left: 0,
+          right: 0
+        }
+        : {})
+    },
     ...(disableLegend ? {} : {
       legend: {
         ...legendOptions(),
@@ -130,7 +154,8 @@ export function StackedAreaChart <
       axisLabel: {
         ...axisLabelOptions(),
         formatter: dateAxisFormatter()
-      }
+      },
+      show: !disableAxis
     },
     yAxis: {
       ...yAxisOptions(),
@@ -141,7 +166,8 @@ export function StackedAreaChart <
         formatter: function (value: number) {
           return dataFormatter(value)
         }
-      }
+      },
+      show: !disableAxis
     },
     series: initialData.map(datum => ({
       name: datum[legendProp] as unknown as string,

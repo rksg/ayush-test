@@ -1,0 +1,66 @@
+import { useContext, useEffect } from 'react'
+
+import { useIntl } from 'react-intl'
+
+import { Loader, SummaryCard }                                      from '@acx-ui/components'
+import { Features, useIsSplitOn }                                   from '@acx-ui/feature-toggle'
+import { useGetSyslogPolicyQuery, useGetSyslogPolicyTemplateQuery } from '@acx-ui/rc/services'
+import {
+  FacilityEnum, facilityLabelMapping,
+  FlowLevelEnum, flowLevelLabelMapping,
+  SyslogPolicyDetailType,
+  useConfigTemplateQueryFnSwitcher
+} from '@acx-ui/rc/utils'
+
+import { SyslogDetailContext } from './SyslogDetailView'
+
+const SyslogDetailContent = () => {
+  const { $t } = useIntl()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data, isLoading } = useConfigTemplateQueryFnSwitcher<SyslogPolicyDetailType>({
+    useQueryFn: useGetSyslogPolicyQuery,
+    useTemplateQueryFn: useGetSyslogPolicyTemplateQuery,
+    enableRbac
+  })
+
+  const { setFiltersId, setPolicyName } = useContext(SyslogDetailContext)
+
+  useEffect(() => {
+    if (data) {
+      const venueIdList = data.venues?.map(venue => venue.id) ?? ['UNDEFINED']
+      setFiltersId(venueIdList)
+      setPolicyName(data.name ?? '')
+    }
+  }, [data])
+
+  const syslogInfo = [
+    {
+      title: $t({ defaultMessage: 'Primary Server' }),
+      content: `${data?.primary.server}
+      :${data?.primary.port} ${data?.primary.protocol}`,
+      visible: Boolean(data)
+    },
+    {
+      title: $t({ defaultMessage: 'Secondary Server' }),
+      content: data?.secondary?.server ? `${data?.secondary?.server}
+      :${data?.secondary?.port} ${data?.secondary?.protocol}` : '',
+      visible: Boolean(data)
+    },
+    {
+      title: $t({ defaultMessage: 'Event Facility' }),
+      content: data?.facility ? $t(facilityLabelMapping[data?.facility as FacilityEnum]) : '',
+      visible: Boolean(data)
+    },
+    {
+      title: $t({ defaultMessage: 'Send Logs' }),
+      content: data?.flowLevel ? $t(flowLevelLabelMapping[data?.flowLevel as FlowLevelEnum]) : '',
+      visible: Boolean(data)
+    }
+  ]
+
+  return <Loader states={[{ isLoading }]}>
+    <SummaryCard data={syslogInfo} colPerRow={6} />
+  </Loader>
+}
+
+export default SyslogDetailContent

@@ -9,6 +9,8 @@ import { cssStr } from '../../theme/helper'
 
 import * as UI from './styledComponents'
 
+export { Pill } from './styledComponents'
+
 export type { IncidentSeverities }
 
 interface TrendPillProps {

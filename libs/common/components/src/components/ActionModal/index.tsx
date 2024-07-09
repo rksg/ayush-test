@@ -42,9 +42,18 @@ type CustomButtonsContent = {
   buttons: CustomButtonProps[]
 }
 
-export interface ModalProps extends ModalFuncProps {
+type CodeContent = {
+  action: 'CODE',
+  details: {
+    expanded?: boolean
+    label: string
+    code: string
+  }
+}
+
+export interface ActionModalProps extends ModalFuncProps {
   type: ActionModalType,
-  customContent?: DeleteContent | ErrorContent | CustomButtonsContent
+  customContent?: DeleteContent | ErrorContent | CustomButtonsContent | CodeContent
 }
 
 export interface ModalRef {
@@ -78,7 +87,7 @@ export const convertToJSON = (content: ErrorDetailsProps) => {
   return JSON.stringify(content, undefined, 2)
 }
 
-export const showActionModal = (props: ModalProps) => {
+export const showActionModal = (props: ActionModalProps) => {
   const modal = Modal[props.type]({})
   const config = transformProps(props, modal)
   modal.update({
@@ -89,8 +98,10 @@ export const showActionModal = (props: ModalProps) => {
   return pick(modal, 'destroy')
 }
 
-const transformProps = (props: ModalProps, modal: ModalRef) => {
+const transformProps = (props: ActionModalProps, modal: ModalRef) => {
   const { $t } = getIntl()
+  const okText = $t({ defaultMessage: 'OK' })
+  const cancelText = $t({ defaultMessage: 'Cancel' })
   switch (props.customContent?.action) {
     case 'DELETE':
       const {
@@ -147,25 +158,63 @@ const transformProps = (props: ModalProps, modal: ModalRef) => {
         className: 'modal-custom'
       }
       break
+    case 'CODE':
+      props = {
+        ...props,
+        content: <CodeTemplate
+          content={props.content}
+          code={{
+            expanded: props.customContent.details.expanded,
+            label: props.customContent.details.label,
+            content: props.customContent.details.code
+          }}
+          modal={modal}
+          onOk={props.onOk}
+        />,
+        okText: ' ',
+        className: 'modal-custom'
+      }
+      break
   }
+  props.okText = props.okText?? okText
+  props.cancelText = props.cancelText?? cancelText
   return props
 }
 
-function ErrorTemplate (props: {
+function ErrorTemplate ({ errors, ...props }: {
   content: React.ReactNode,
   errors?: ErrorDetailsProps,
   onOk?: () => void,
   modal: ModalRef
 }) {
   const { $t } = getIntl()
+  const code = errors && {
+    label: $t({ defaultMessage: 'Technical details' }),
+    content: convertToJSON(errors)
+  }
+  return <CodeTemplate {...props} code={code} />
+}
+
+function CodeTemplate (props: {
+  content?: React.ReactNode
+  onOk?: () => void
+  modal: ModalRef
+  code?: {
+    expanded?: boolean,
+    label: string,
+    content: string
+  }
+}) {
+  const { $t } = getIntl()
   const okText = $t({ defaultMessage: 'OK' })
   return (
     <>
-      <UI.Content>{props.content}</UI.Content>
+      {props.content && <UI.Content children={props.content} />}
       <UI.Footer>
-        {props.errors && <CollapsePanel
-          header={$t({ defaultMessage: 'Technical details' })}
-          content={props.errors}
+        {props.code && <CollapsePanel
+          expanded={props.code.expanded}
+          header={props.code.label}
+          content={props.code.content}
         />}
         <UI.FooterButtons>
           <Button type='primary'
@@ -227,13 +276,14 @@ function CustomButtonsTemplate (props: {
 }
 
 function CollapsePanel (props: {
-  header: string,
-  content: ErrorDetailsProps
+  header: string
+  content: string
+  expanded?: boolean
 }) {
   const { $t } = getIntl()
   const inputEl = useRef<TextAreaRef>(null)
   const copyText = () => {
-    navigator.clipboard.writeText(convertToJSON(props.content))
+    navigator.clipboard.writeText(props.content)
     inputEl.current?.resizableTextArea?.textArea.select()
   }
   return (
@@ -241,9 +291,10 @@ function CollapsePanel (props: {
       ghost
       expandIconPosition='end'
       expandIcon={({ isActive }) => isActive ? <ExpandSquareUp /> : <ExpandSquareDown />}
+      defaultActiveKey={props.expanded ? [props.header] : undefined}
     >
       <Panel header={props.header} key={props.header}>
-        <TextArea ref={inputEl} rows={20} readOnly={true} value={convertToJSON(props.content)} />
+        <TextArea ref={inputEl} rows={20} readOnly={true} value={props.content} />
         <UI.CopyButton
           type='link'
           onClick={copyText}

@@ -7,7 +7,8 @@ import { SwitchUrlsInfo }                              from '@acx-ui/rc/utils'
 import { Provider, store }                             from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import { poolData, switchDetailData } from '../__tests__/fixtures'
+import { SwitchDetailsContext }                                 from '../'
+import { poolData, switchDetailData, switchDetailsContextData } from '../__tests__/fixtures'
 
 import { SwitchDhcpPoolTable } from './SwitchDhcpPoolTable'
 
@@ -63,7 +64,14 @@ describe('SwitchDhcpPoolTable', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><SwitchDhcpPoolTable /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchDhcpPoolTable />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: { params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
@@ -83,7 +91,14 @@ describe('SwitchDhcpPoolTable', () => {
   })
 
   it('should do deleting by action bar', async () => {
-    render(<Provider><SwitchDhcpPoolTable /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchDhcpPoolTable />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: { params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }
@@ -100,7 +115,14 @@ describe('SwitchDhcpPoolTable', () => {
   })
 
   it('should do adding by Add button', async () => {
-    render(<Provider><SwitchDhcpPoolTable /></Provider>, {
+    render(<Provider>
+      <SwitchDetailsContext.Provider value={{
+        switchDetailsContextData,
+        setSwitchDetailsContextData: jest.fn()
+      }}>
+        <SwitchDhcpPoolTable />
+      </SwitchDetailsContext.Provider>
+    </Provider>, {
       route: { params,
         path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab'
       }

@@ -17,7 +17,7 @@ export interface ConnectionMetering {
     billingCycleDays: number | null
     unitCount?: number
     venueCount?: number
-    personas?: Persona[]
+    identities?: Persona[]
 }
 
 export interface QosStats {

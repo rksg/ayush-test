@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { createContext } from 'react'
+
 import { isEmpty }       from 'lodash'
 import { defineMessage } from 'react-intl'
+
+import { VenueExtended, VenueRadioCustomization } from '@acx-ui/rc/utils'
+
 
 export interface SelectItemOption {
 	value: string,
@@ -15,6 +21,13 @@ export interface ChannelBars {
   dfsChannels: string[],
   lower5GChannels: string[],
   upper5GChannels: string[]
+}
+
+export interface LPIButtonText {
+  buttonText: JSX.Element,
+  LPIModeOnChange: Function,
+  LPIModeState: boolean,
+  isAPOutdoor?: boolean
 }
 
 export const channelSelectionMethodsOptions = [
@@ -132,3 +145,38 @@ export function split5GChannels (radio5GChannels: string[]) {
 
   return { lower5GChannels, upper5GChannels }
 }
+
+export const VenueRadioContext = createContext({} as {
+  venue?: VenueExtended,
+  venueRadio?: VenueRadioCustomization
+})
+
+export type BandwidthRadioOptions = {
+  [ApRadioTypeEnum.Radio24G]: SelectItemOption[],
+  [ApRadioTypeEnum.Radio5G]: SelectItemOption[],
+  [ApRadioTypeEnum.Radio6G]: SelectItemOption[],
+  [ApRadioTypeEnum.RadioLower5G]: SelectItemOption[],
+  [ApRadioTypeEnum.RadioUpper5G]: SelectItemOption[]
+}
+
+export type SupportRadioChannels = {
+  [ApRadioTypeEnum.Radio24G]: any,
+  [ApRadioTypeEnum.Radio5G]: any,
+  [ApRadioTypeEnum.Radio6G]: any,
+  [ApRadioTypeEnum.RadioLower5G]: any,
+  [ApRadioTypeEnum.RadioUpper5G]: any
+}
+
+export type SupportRadioDfsChannels = {
+  [ApRadioTypeEnum.Radio24G]: undefined,
+  [ApRadioTypeEnum.Radio5G]: any,
+  [ApRadioTypeEnum.Radio6G]: undefined,
+  [ApRadioTypeEnum.RadioLower5G]: any,
+  [ApRadioTypeEnum.RadioUpper5G]: any
+}
+
+export const SupportRadioChannelsContext = createContext({} as {
+  bandwidthRadioOptions: BandwidthRadioOptions,
+  supportRadioChannels: SupportRadioChannels,
+  supportRadioDfsChannels?: SupportRadioDfsChannels
+})

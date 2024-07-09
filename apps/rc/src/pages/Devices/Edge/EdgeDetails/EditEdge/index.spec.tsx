@@ -1,17 +1,18 @@
+import { ReactNode } from 'react'
+
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }     from '@acx-ui/store'
+import { EdgeGeneralFixtures, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                          from '@acx-ui/store'
 import {
   mockServer, render,
   screen
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData, mockEdgeList } from '../../__tests__/fixtures'
-
 import EditEdge from './index'
 
+const { mockEdgeData, mockEdgeList } = EdgeGeneralFixtures
 jest.mock('@acx-ui/utils', () => {
   const reactIntl = jest.requireActual('react-intl')
   const intl = reactIntl.createIntl({
@@ -32,7 +33,15 @@ jest.mock('react-router-dom', () => ({
 jest.mock('./DnsServer', () => (() => <div data-testid='DnsServer' />))
 jest.mock('./GeneralSettings', () => (() => <div data-testid='GeneralSettings' />))
 jest.mock('./Ports', () => (() => <div data-testid='Ports' />))
+jest.mock('./Lags', () => (() => <div data-testid='Lags' />))
+jest.mock('./SubInterfaces', () => (() => <div data-testid='SubInterfaces' />))
 jest.mock('./StaticRoutes', () => (() => <div data-testid='StaticRoutes' />))
+jest.mock('./EditEdgeDataProvider', () => ({
+  ...jest.requireActual('./EditEdgeDataProvider'),
+  EditEdgeDataProvider: (
+    { children }: { children: ReactNode }
+  ) => <div data-testid='data-provider' children={children} />
+}))
 
 describe('EditEdge', () => {
 
@@ -121,7 +130,7 @@ describe('EditEdge', () => {
     await user.click(screen.getByRole('tab', { name: 'Ports' }))
     expect(mockedUsedNavigate).toHaveBeenCalledWith({
       // eslint-disable-next-line max-len
-      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports/ports-general`,
+      pathname: `/${params.tenantId}/t/devices/edge/${params.serialNumber}/edit/ports`,
       hash: '',
       search: ''
     })

@@ -1,28 +1,37 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { Features, useIsSplitOn }                             from '@acx-ui/feature-toggle'
+import { firmwareApi }                                        from '@acx-ui/rc/services'
 import {
-  FirmwareUrlsInfo
+  EdgeFirmwareFixtures,
+  FirmwareUrlsInfo, SigPackUrlsInfo, SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
-  Provider
+  Provider, store
 } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
 import { UserProfileContext, UserProfileContextProps } from '@acx-ui/user'
+
 
 import {
   availableVersions, versionLatest,
   switchLatest, switchVenue,
-  venue, version, preference
+  venue, version, preference, mockedApModelFamilies,
+  mockedFirmwareVenuesPerApModel
 } from './__tests__/fixtures'
 
 import FWVersionMgmt from '.'
 
+const { mockedVenueFirmwareList, mockedLatestEdgeFirmwares } = EdgeFirmwareFixtures
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 const mockedUsedNavigate = jest.fn()
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
@@ -36,10 +45,41 @@ jest.mock('./ApFirmware/VenueFirmwareList', () => ({
   ...jest.requireActual('./ApFirmware/VenueFirmwareList'),
   VenueFirmwareList: () => <div data-testid='mocked-ApFirmware-table'></div>
 }))
+jest.mock('./ApFirmware/VenueFirmwareListPerApModel', () => ({
+  ...jest.requireActual('./ApFirmware/VenueFirmwareListPerApModel'),
+  VenueFirmwareListPerApModel: () => <div>VenueFirmwareListPerApModel</div>
+}))
+jest.mock('./ApFirmware/VersionBannerPerApModel', () => ({
+  ...jest.requireActual('./ApFirmware/VersionBannerPerApModel'),
+  VersionBannerPerApModel: () => <div>VersionBannerPerApModel</div>
+}))
+jest.mock('../ApplicationPolicyMgmt', () => ({
+  ...jest.requireActual('../ApplicationPolicyMgmt'),
+  default: () => {
+    return <div data-testid='mocked-application-policy-mgmt'></div>
+  }
+}))
+jest.mock('./EdgeFirmware/VenueFirmwareList', () => ({
+  ...jest.requireActual('./EdgeFirmware/VenueFirmwareList'),
+  VenueFirmwareList: () => <div data-testid='mocked-EdgeFirmware-table'></div>
+}))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
 
 describe('Firmware Version Management', () => {
-  let params: { tenantId: string, activeTab: string, activeSubTab: string }
+  const params: { tenantId: string, activeTab: string, activeSubTab: string } = {
+    tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
+    activeTab: 'fwVersionMgmt',
+    activeSubTab: 'apFirmware'
+  }
+
   beforeEach(async () => {
+    store.dispatch(firmwareApi.util.resetApiState())
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getUpgradePreferences.url,
@@ -65,23 +105,40 @@ describe('Firmware Version Management', () => {
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
         (req, res, ctx) => res(ctx.json(switchLatest))
       ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(switchLatest))
+      ),
       rest.post(
         FirmwareUrlsInfo.getSwitchVenueVersionList.url,
         (req, res, ctx) => res(ctx.json(switchVenue))
+      ),
+      rest.get(
+        SigPackUrlsInfo.getSigPack.url.replace('?changesIncluded=:changesIncluded', ''),
+        (req, res, ctx) => res(ctx.json({}))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getApModelFamilies.url,
+        (req, res, ctx) => res(ctx.json(mockedApModelFamilies))
       )
     )
-    params = {
-      tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac',
-      activeTab: 'fwVersionMgmt',
-      activeSubTab: 'apFirmware'
-    }
   })
 
   it('should render correctly', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff =>
+      (ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.SWITCH_RBAC_API))
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getLatestFirmwareList.url.replace('?status=latest', ''),
         (req, res, ctx) => res(ctx.json([]))
+      ),
+      rest.post(
+        FirmwareUrlsInfo.getVenueEdgeFirmwareList.url,
+        (_req, res, ctx) => res(ctx.json(mockedVenueFirmwareList))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getLatestEdgeFirmware.url.replace('?latest=true', ''),
+        (_req, res, ctx) => res(ctx.json(mockedLatestEdgeFirmwares))
       )
     )
     render(
@@ -95,5 +152,31 @@ describe('Firmware Version Management', () => {
     await screen.findByTestId('mocked-ApFirmware-table')
     userEvent.click(await screen.findByRole('tab', { name: /Switch Firmware/ }))
     await screen.findByTestId('mocked-SwitchFirmware-table')
+
+    const edgeFirmwareTab = screen.getByRole('tab', { name: /SmartEdge Firmware/ })
+    expect(await within(edgeFirmwareTab).findByTestId('InformationSolid')).toBeVisible()
+  })
+
+  // eslint-disable-next-line max-len
+  it('should render upgradable hint correctly when the FF "ap-fw-mgmt-upgrade-by-model" is true', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+
+    mockServer.use(
+      rest.post(
+        FirmwareUrlsInfo.getVenueApModelFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(mockedFirmwareVenuesPerApModel))
+      )
+    )
+    render(
+      <Provider>
+        <UserProfileContext.Provider value={{} as UserProfileContextProps}>
+          <FWVersionMgmt />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params, path: '/:tenantId/administration/fwVersionMgmt/apFirmware' }
+      })
+
+    const apFirmwareTab = await screen.findByRole('tab', { name: /AP Firmware/ })
+    expect(await within(apFirmwareTab).findByTestId('InformationSolid')).toBeVisible()
   })
 })

@@ -3,8 +3,9 @@ import { useMemo, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Button, Drawer, Loader, Table, TableColumn, TableProps } from '@acx-ui/components'
-import { useLazyGetApLldpNeighborsQuery }                         from '@acx-ui/rc/services'
+import { Button, Drawer, Loader, Table, TableColumn, TableProps }     from '@acx-ui/components'
+import { Features, useIsSplitOn }                                     from '@acx-ui/feature-toggle'
+import { useLazyGetApLldpNeighborsQuery, useLazyGetApNeighborsQuery } from '@acx-ui/rc/services'
 import {
   ApLldpNeighbor,
   CatchErrorResponse,
@@ -13,39 +14,54 @@ import {
   useApContext
 } from '@acx-ui/rc/utils'
 import { TenantLink }     from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 
-import { emtpyRenderer }                  from './ApRfNeighbors'
-import { defaultPagination }              from './constants'
-import { lldpNeighborsFieldLabelMapping } from './contents'
-import { handleError, useApNeighbors }    from './useApNeighbors'
+import { NewApNeighborTypes, defaultPagination } from './constants'
+import { lldpNeighborsFieldLabelMapping }        from './contents'
+import { useApNeighbors }                        from './useApNeighbors'
+
+import { apNeighborValueRender } from '.'
 
 import type { LldpNeighborsDisplayFields } from './contents'
 
 export default function ApLldpNeighbors () {
   const { $t } = useIntl()
-  const { serialNumber } = useApContext()
-  const [ getApLldpNeighbors, getApLldpNeighborsStates ] = useLazyGetApLldpNeighborsQuery()
-  const { doDetect, isDetecting } = useApNeighbors('lldp', serialNumber!, socketHandler)
+  const { serialNumber, venueId } = useApContext()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const apNeighborQuery = isUseWifiRbacApi ?
+    useLazyGetApNeighborsQuery :
+    useLazyGetApLldpNeighborsQuery
+  const [ getApNeighbors, getApNeighborsStates ] = apNeighborQuery()
+  // eslint-disable-next-line max-len
+  const { doDetect, isDetecting, handleApiError } = useApNeighbors('lldp', serialNumber!, socketHandler, venueId)
   const [ detailsDrawerVisible, setDetailsDrawerVisible ] = useState(false)
   const [ selectedApLldpNeighbor, setSelectedApLldpNeighbor ] = useState<ApLldpNeighbor>()
 
   const tableActions = [{
+    scopeKey: [WifiScopes.UPDATE],
     label: $t({ defaultMessage: 'Detect' }),
     disabled: isDetecting,
-    onClick: doDetect
+    onClick: () => doDetect()
   }]
 
-  function socketHandler () {
+  async function socketHandler () {
     try {
-      getApLldpNeighbors({ params: { serialNumber } }).unwrap()
+      await getApNeighbors({
+        params: { serialNumber, venueId },
+        payload: {
+          filters: [{ type: NewApNeighborTypes.LLDP_NEIGHBOR }],
+          page: 1,
+          pageSize: 10000
+        }
+      }).unwrap()
     } catch (error) {
-      handleError(error as CatchErrorResponse)
+      handleApiError(error as CatchErrorResponse)
     }
   }
 
   const isTableFetching = () => {
-    return getApLldpNeighborsStates.isFetching || isDetecting
+    return getApNeighborsStates.isFetching || isDetecting
   }
 
   const getRowKey = (record: ApLldpNeighbor): string => {
@@ -53,14 +69,14 @@ export default function ApLldpNeighbors () {
   }
 
   return <Loader states={[{
-    isLoading: getApLldpNeighborsStates.isLoading,
+    isLoading: getApNeighborsStates.isLoading,
     isFetching: isTableFetching()
   }]}>
     <Table
       settingsId='ap-lldp-neighbors-table'
       rowKey={getRowKey}
       columns={useColumns(setDetailsDrawerVisible, setSelectedApLldpNeighbor)}
-      dataSource={getApLldpNeighborsStates.data?.neighbors ?? []}
+      dataSource={(getApNeighborsStates.data?.neighbors as ApLldpNeighbor[]) ?? []}
       pagination={defaultPagination}
       actions={filterByAccess(tableActions)}
     />
@@ -82,7 +98,7 @@ function useColumns (
     {
       key: 'lldpInterface',
       dataIndex: 'lldpInterface',
-      render: (data, row) => {
+      render: (_, row, __, highlightFn) => {
         return <Button
           size='small'
           type='link'
@@ -90,19 +106,21 @@ function useColumns (
             setSelectedApLldpNeighbor(row)
             setDetailsDrawerVisible(true)
           }}
-          children={row.lldpInterface}
+          children={highlightFn(row.lldpInterface ?? '')}
         />
       }
     },
     {
       key: 'lldpTime',
-      dataIndex: 'lldpTime'
+      dataIndex: 'lldpTime',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpTime, highlightFn)
     },
     {
       key: 'lldpSysName',
       dataIndex: 'lldpSysName',
-      render: (data, row) => {
-        if (!row.neighborManaged) return data
+      render: (_, row, __, highlightFn) => {
+        const value = highlightFn(row.lldpSysName ?? '')
+        if (!row.neighborManaged) return value
 
         const mac: string | undefined = row.lldpChassisID?.split(' ')[1]
 
@@ -110,49 +128,60 @@ function useColumns (
           // eslint-disable-next-line max-len
           to={`/devices/switch/${mac || row.neighborSerialNumber}/${row.neighborSerialNumber}/details/overview`}
           style={{ lineHeight: '20px' }}
-          children={data}
+          children={value}
         />
       }
     },
     {
       key: 'lldpSysDesc',
-      dataIndex: 'lldpSysDesc'
+      dataIndex: 'lldpSysDesc',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpSysDesc, highlightFn)
     },
     {
       key: 'lldpChassisID',
-      dataIndex: 'lldpChassisID'
+      dataIndex: 'lldpChassisID',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpChassisID, highlightFn)
     },
     {
       key: 'lldpMgmtIP',
-      dataIndex: 'lldpMgmtIP'
+      dataIndex: 'lldpMgmtIP',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpMgmtIP, highlightFn)
     },
     {
       key: 'lldpCapability',
-      dataIndex: 'lldpCapability'
+      dataIndex: 'lldpCapability',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpCapability, highlightFn)
     },
     {
       key: 'lldpPortDesc',
-      dataIndex: 'lldpPortDesc'
+      dataIndex: 'lldpPortDesc',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpPortDesc, highlightFn)
     },
     {
       key: 'lldpPortID',
-      dataIndex: 'lldpPortID'
+      dataIndex: 'lldpPortID',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpPortID, highlightFn)
     },
     {
       key: 'lldpDeviceType',
-      dataIndex: 'lldpDeviceType'
+      dataIndex: 'lldpDeviceType',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpDeviceType, highlightFn)
     },
     {
       key: 'lldpClass',
-      dataIndex: 'lldpClass'
+      dataIndex: 'lldpClass',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpClass, highlightFn)
     },
     {
       key: 'lldpPDReqPowerVal',
-      dataIndex: 'lldpPDReqPowerVal'
+      dataIndex: 'lldpPDReqPowerVal',
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpPDReqPowerVal, highlightFn)
     },
     {
       key: 'lldpPSEAllocPowerVal',
-      dataIndex: 'lldpPSEAllocPowerVal'
+      dataIndex: 'lldpPSEAllocPowerVal',
+      // eslint-disable-next-line max-len
+      render: (_, row, __, highlightFn) => apNeighborValueRender(row.lldpPSEAllocPowerVal, highlightFn)
     }
   ]
 
@@ -162,7 +191,6 @@ function useColumns (
     column.title = $t(lldpNeighborsFieldLabelMapping[column.dataIndex as keyof LldpNeighborsDisplayFields])
     column.sorter = { compare: sortProp(column.dataIndex as string, defaultSort) }
     column.searchable = true
-    column.render = column.render ?? emtpyRenderer
   })
 
   return useMemo(() => columns, [])
@@ -221,7 +249,7 @@ function FieldDisplay (props: FieldDisplayProps) {
     <div style={{ fontWeight: 600 }}>
       {$t(lldpNeighborsFieldLabelMapping[props.fieldName])}
     </div>
-    <div>{emtpyRenderer(props.fieldValue)}</div>
+    <div>{apNeighborValueRender(props.fieldValue)}</div>
   </Space>)
 }
 

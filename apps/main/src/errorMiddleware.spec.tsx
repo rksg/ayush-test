@@ -1,9 +1,9 @@
-import { createAsyncThunk }     from '@reduxjs/toolkit'
-import { screen, act, waitFor } from '@testing-library/react'
-import userEvent                from '@testing-library/user-event'
-import { Modal }                from 'antd'
+import { createAsyncThunk } from '@reduxjs/toolkit'
+import userEvent            from '@testing-library/user-event'
+import { Modal }            from 'antd'
 
-import * as utils from '@acx-ui/utils'
+import { screen, act, waitFor, render } from '@acx-ui/test-utils'
+import * as utils                       from '@acx-ui/utils'
 
 import {
   ErrorAction,
@@ -52,11 +52,11 @@ describe('getErrorContent', () => {
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 403 } } },
       payload: {}
-    } as unknown as ErrorAction).title).toBe('Session Expired')
+    } as unknown as ErrorAction).title).toBe('Server Error')
     expect(getErrorContent({
       meta: {},
       payload: { originalStatus: 403 }
-    } as unknown as ErrorAction).title).toBe('Session Expired')
+    } as unknown as ErrorAction).title).toBe('Server Error')
   })
   it('should handle 408', () => {
     expect(getErrorContent({
@@ -145,8 +145,15 @@ describe('getErrorContent', () => {
 
     expect(getErrorContent({
       meta: { baseQueryMeta: { response: { status: 422 }, request: req } },
-      payload: { data: '[Validation Error]' }
-    } as unknown as ErrorAction).content).toBe('[Validation Error]')
+      payload: { data: '[Validation Error]' } // errors is string
+    } as unknown as ErrorAction).content).toStrictEqual(<p>[Validation Error]</p>)
+
+    render(getErrorContent({
+      meta: { baseQueryMeta: { response: { status: 422 }, request: req } },
+      payload: { data: { errors: [{ code: 'DHCP-10004', message: '[Validation Error]' }] } } // errors is CatchErrorDetails
+    } as unknown as ErrorAction).content)
+
+    expect(screen.getByText('[Validation Error]')).toBeInTheDocument()
   })
 })
 
@@ -187,7 +194,7 @@ describe('errorMiddleware', () => {
   })
   it('should show modal', async () => {
     const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
-      return rejectWithValue('rejectWithValue!')
+      return rejectWithValue({ error: 'rejectWithValue!' })
     })
     const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
     act(() => {
@@ -203,7 +210,7 @@ describe('errorMiddleware', () => {
   })
   it('should not show modal when ignore', async () => {
     const thunk = createAsyncThunk<string>('apApi/executeQuery', (_, { rejectWithValue }) => {
-      return rejectWithValue('rejectWithValue!')
+      return rejectWithValue({ error: 'rejectWithValue!' })
     })
     const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
     act(() => {
@@ -235,7 +242,7 @@ describe('errorMiddleware', () => {
       configurable: true, enumerable: true, value: location }))
     it('no token', async () => {
       const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
-        return rejectWithValue({ originalStatus: 403 })
+        return rejectWithValue({ originalStatus: 401 })
       })
       const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
       act(() => {
@@ -247,13 +254,12 @@ describe('errorMiddleware', () => {
           }
         })
       })
-      expect(window.location.href).toBe('/logout')
+      expect(await screen.findByText('Session Expired')).toBeVisible()
     })
     it('with token', async () => {
       sessionStorage.setItem('jwt', 'testToken')
-      const token = sessionStorage.getItem('jwt')
       const thunk = createAsyncThunk<string>('executeQuery', (_, { rejectWithValue }) => {
-        return rejectWithValue({ originalStatus: 403 })
+        return rejectWithValue({ originalStatus: 401 })
       })
       const rejectedWithValueAction = await thunk()(jest.fn((x) => x), jest.fn(() => ({})), {})
       act(() => {
@@ -265,7 +271,7 @@ describe('errorMiddleware', () => {
           }
         })
       })
-      expect(window.location.href).toEqual(`/logout?token=${token}`)
+      expect(await screen.findByText('Session Expired')).toBeVisible()
     })
   })
 })

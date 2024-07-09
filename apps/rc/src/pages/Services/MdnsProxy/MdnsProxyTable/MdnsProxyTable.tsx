@@ -21,7 +21,8 @@ import {
   MdnsProxyViewModel
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id', 'name', 'rules', 'venueIds'],
@@ -56,7 +57,8 @@ export default function MdnsProxyTable () {
             deleteFn({ params: { tenantId, serviceId: id } }).unwrap().then(clearSelection)
           }
         })
-      }
+      },
+      scopeKey: [WifiScopes.DELETE]
     },
     {
       label: $t({ defaultMessage: 'Edit' }),
@@ -69,7 +71,8 @@ export default function MdnsProxyTable () {
             serviceId: id!
           })
         })
-      }
+      },
+      scopeKey: [WifiScopes.UPDATE]
     }
   ]
 
@@ -86,7 +89,8 @@ export default function MdnsProxyTable () {
         extra={filterByAccess([
           // eslint-disable-next-line max-len
           <TenantLink to={getServiceRoutePath({ type: ServiceType.MDNS_PROXY, oper: ServiceOperation.CREATE })}>
-            <Button type='primary'>{$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
+            <Button scopeKey={[WifiScopes.CREATE]} type='primary'>
+              {$t({ defaultMessage: 'Add mDNS Proxy Service' })}</Button>
           </TenantLink>
         ])}
       />
@@ -98,7 +102,10 @@ export default function MdnsProxyTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          rowSelection={
+            hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) &&
+            { type: 'radio' }
+          }
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -165,6 +172,7 @@ function useColumns () {
               rules={rules}
             />}
             children={rules.length}
+            dottedUnderline={true}
           />
           : 0
         )
@@ -172,7 +180,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       align: 'center',
       filterKey: 'venueIds',

@@ -5,18 +5,20 @@ import { useIntl }      from 'react-intl'
 import styled           from 'styled-components/macro'
 
 import {
+  AnchorContext,
   GridCol,
   GridRow,
   Loader,
   StepsFormLegacy,
   StepsFormLegacyInstance
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
 import { MdnsProxySelector }                                         from '@acx-ui/rc/components'
 import { useGetApQuery }                                             from '@acx-ui/rc/services'
 import { useAddMdnsProxyApsMutation, useDeleteMdnsProxyApsMutation } from '@acx-ui/rc/services'
 import { useParams }                                                 from '@acx-ui/react-router-dom'
 
-import { ApEditContext } from '../..'
+import { ApDataContext, ApEditContext } from '../..'
 
 import * as UI from './styledComponents'
 
@@ -65,6 +67,7 @@ export function MdnsProxy () {
   const params = useParams()
   const { serialNumber } = params
   const [ isFormChangedHandled, setIsFormChangedHandled ] = useState(true)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
   const {
     editContextData,
@@ -72,6 +75,8 @@ export function MdnsProxy () {
     editNetworkControlContextData,
     setEditNetworkControlContextData
   } = useContext(ApEditContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
+  const { venueData } = useContext(ApDataContext)
 
   const {
     data: apDetail,
@@ -79,7 +84,10 @@ export function MdnsProxy () {
     isLoading,
     isSuccess,
     refetch
-  } = useGetApQuery({ params })
+  } = useGetApQuery({
+    params: { ...params, venueId: venueData?.id },
+    enableRbac: isUseWifiRbacApi
+  })
 
   const [ addMdnsProxyAps, { isLoading: isUpdating } ] = useAddMdnsProxyApsMutation()
   const [ deleteMdnsProxyAps, { isLoading: isDeleting } ] = useDeleteMdnsProxyApsMutation()
@@ -90,6 +98,12 @@ export function MdnsProxy () {
       setIsFormChangedHandled(true)
     }
   }, [isFormChangedHandled])
+
+  useEffect(() => {
+    if (apDetail && !isLoading) {
+      setReadyToScroll?.(r => [...(new Set(r.concat('mDNS-Proxy')))])
+    }
+  }, [apDetail, isLoading, setReadyToScroll])
 
   const isServiceChanged = (): boolean => {
     const formData = formRef.current!.getFieldsValue()
@@ -163,7 +177,7 @@ export function MdnsProxy () {
             layout='horizontal'
           >
             <GridRow>
-              <GridCol col={{ span: 7 }}>
+              <GridCol col={{ span: 7 }} style={{ minWidth: 400 }}>
                 <MdnsProxyFormField serviceId={apDetail.multicastDnsProxyServiceProfileId} />
               </GridCol>
             </GridRow>

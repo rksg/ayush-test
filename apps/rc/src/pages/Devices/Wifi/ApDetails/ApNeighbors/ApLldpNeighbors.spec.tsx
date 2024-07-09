@@ -49,6 +49,10 @@ describe('ApLldpNeighbors', () => {
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
@@ -92,20 +96,24 @@ describe('ApLldpNeighbors', () => {
   })
 
   it('should handle error correctly', async () => {
-    const mockedError = {
-      errors: [
-        {
-          code: 'WIFI-56789',
-          message: 'error occurs'
-        }
-      ],
-      requestId: 'REQUEST_ID'
-    }
+    const detectFn = jest.fn()
 
     mockServer.use(
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
-        (req, res, ctx) => res(ctx.status(400), ctx.json(mockedError))
+        (req, res, ctx) => {
+          detectFn()
+
+          return res(ctx.status(400), ctx.json({
+            errors: [
+              {
+                code: 'WIFI-56789',
+                message: 'error occurs'
+              }
+            ],
+            requestId: 'REQUEST_ID'
+          }))
+        }
       )
     )
 
@@ -114,11 +122,11 @@ describe('ApLldpNeighbors', () => {
       route: { params, path: tabPath }
     })
 
-    await waitFor(() => {
-      expect(mockedShowToast).toHaveBeenCalledWith(expect.objectContaining({
-        content: 'Error occurred while detecting AP',
-        type: 'error'
-      }))
-    })
+    await waitFor(() => expect(detectFn).toHaveBeenCalled())
+
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Detect' })).toBeEnabled())
+
+    await userEvent.click(screen.getByRole('button', { name: 'Detect' }))
+
   })
 })

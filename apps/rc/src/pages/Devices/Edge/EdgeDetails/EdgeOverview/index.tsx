@@ -1,18 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { Col }       from 'antd'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { GridRow, Tabs }           from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { EdgeInfoWidget }          from '@acx-ui/rc/components'
+import { GridRow, Tabs }                                         from '@acx-ui/components'
+import { Features }                                              from '@acx-ui/feature-toggle'
+import { EdgeInfoWidget, useIsEdgeFeatureReady, useIsEdgeReady } from '@acx-ui/rc/components'
 import {
-  useEdgeBySerialNumberQuery,
+  useGetEdgeClusterQuery,
+  useGetEdgeLagsStatusListQuery,
   useGetEdgePortsStatusListQuery
 } from '@acx-ui/rc/services'
-import {  EdgePortStatus } from '@acx-ui/rc/utils'
+import { isEdgeConfigurable } from '@acx-ui/rc/utils'
 
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
+
+import { LagsTab }              from './LagsTab'
 import { MonitorTab }           from './MonitorTab'
 import { PortsTab }             from './PortsTab'
 import { EdgeSubInterfacesTab } from './SubInterfacesTab'
@@ -20,45 +24,25 @@ import { EdgeSubInterfacesTab } from './SubInterfacesTab'
 enum OverviewInfoType {
     MONITOR = 'monitor',
     PORTS = 'ports',
+    LAGS = 'lags',
     SUB_INTERFACES = 'subInterfaces'
 }
 export const EdgeOverview = () => {
   const { $t } = useIntl()
   const { serialNumber, activeSubTab } = useParams()
   const [currentTab, setCurrentTab] = useState<string | undefined>(undefined)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
-
-  const edgeStatusPayload = {
-    fields: [
-      'name',
-      'venueName',
-      'type',
-      'serialNumber',
-      'ports',
-      'ip',
-      'model',
-      'firmwareVersion',
-      'deviceStatus',
-      'deviceSeverity',
-      'venueId',
-      'tags',
-      'cpuCores',
-      'cpuUsedPercentage',
-      'memoryUsedKb',
-      'memoryTotalKb',
-      'diskUsedKb',
-      'diskTotalKb',
-      'description'
-    ],
-    filters: { serialNumber: [serialNumber] } }
-
   const {
-    data: currentEdge,
-    isLoading: isLoadingEdgeStatus
-  } = useEdgeBySerialNumberQuery({
-    params: { serialNumber },
-    payload: edgeStatusPayload
-  })
+    currentEdgeStatus: currentEdge,
+    isEdgeStatusLoading: isLoadingEdgeStatus
+  } = useContext(EdgeDetailsDataContext)
+  const isEdgeReady = useIsEdgeReady()
+  const isEdgeLagEnabled = useIsEdgeFeatureReady(Features.EDGE_LAG)
+
+  const { data: currentCluster } = useGetEdgeClusterQuery({
+    params: { venueId: currentEdge?.venueId, clusterId: currentEdge?.clusterId }
+  }, { skip: !Boolean(currentEdge?.clusterId) || !Boolean(currentEdge?.venueId) })
+
+  const isConfigurable = isEdgeConfigurable(currentEdge)
 
   const edgePortStatusPayload = {
     fields: [
@@ -81,12 +65,50 @@ export const EdgeOverview = () => {
     sortOrder: 'ASC'
   }
 
+  const edgeLagStatusPayload = {
+    fields: [
+      'lagId',
+      'name',
+      'description',
+      'lagType',
+      'status',
+      'adminStatus',
+      'lagMembers',
+      'portType',
+      'mac',
+      'ip',
+      'ipMode',
+      'lacpTimeout'
+    ],
+    sortField: 'lagId',
+    sortOrder: 'ASC'
+  }
+
   const {
-    data: portStatusList,
-    isLoading: isPortListLoading
+    portStatusList,
+    isPortListLoading
   } = useGetEdgePortsStatusListQuery({
     params: { serialNumber },
     payload: edgePortStatusPayload
+  }, { selectFromResult: ({ data, isLoading }) => ({
+    portStatusList: data?.data ?? [],
+    isPortListLoading: isLoading
+  }) })
+
+  const {
+    lagStatusList = [],
+    isLagListLoading
+  } = useGetEdgeLagsStatusListQuery({
+    params: { serialNumber },
+    payload: edgeLagStatusPayload
+  }, {
+    skip: !isEdgeLagEnabled,
+    selectFromResult ({ data, isLoading }) {
+      return {
+        lagStatusList: data?.data,
+        isLagListLoading: isLoading
+      }
+    }
   })
 
   const handleTabChange = (val: string) => {
@@ -96,6 +118,10 @@ export const EdgeOverview = () => {
   const handleClickWidget = (type: string) => {
     if (type === 'port')
       handleTabChange(OverviewInfoType.PORTS)
+  }
+
+  const handleClickLagName = () => {
+    handleTabChange(OverviewInfoType.LAGS)
   }
 
   useEffect(() => {
@@ -110,13 +136,31 @@ export const EdgeOverview = () => {
   }, {
     label: $t({ defaultMessage: 'Ports' }),
     value: 'ports',
-    children: <PortsTab isLoading={isPortListLoading} data={portStatusList as EdgePortStatus[]}/>
-  }, {
+    children: <PortsTab
+      isConfigurable={isConfigurable}
+      portData={portStatusList}
+      lagData={lagStatusList}
+      isLoading={isPortListLoading || isLagListLoading}
+      handleClickLagName={handleClickLagName}
+    />
+  },
+  ...(isEdgeLagEnabled ? [{
+    label: $t({ defaultMessage: 'LAGs' }),
+    value: 'lags',
+    children: <LagsTab
+      isConfigurable={isConfigurable}
+      data={lagStatusList}
+      isLoading={isLagListLoading}
+    />
+  }] : []),
+  {
     label: $t({ defaultMessage: 'Sub-Interfaces' }),
     value: 'subInterfaces',
     children: <EdgeSubInterfacesTab
-      isLoading={isPortListLoading}
-      ports={portStatusList as EdgePortStatus[]}
+      isConfigurable={isConfigurable}
+      isLoading={isPortListLoading || isLagListLoading}
+      ports={portStatusList}
+      lags={lagStatusList}
     />
   }].filter(i => i.value !== 'monitor' || isEdgeReady)
 
@@ -125,6 +169,7 @@ export const EdgeOverview = () => {
       <Col span={24}>
         <EdgeInfoWidget
           currentEdge={currentEdge}
+          currentCluster={currentCluster}
           edgePortsSetting={portStatusList}
           isEdgeStatusLoading={isLoadingEdgeStatus}
           isPortListLoading={isPortListLoading}
@@ -132,9 +177,7 @@ export const EdgeOverview = () => {
         />
       </Col>
       <Col span={24}>
-        <Tabs
-          type='second'
-          scrollToTop={false}
+        <Tabs type='card'
           activeKey={currentTab}
           defaultActiveKey={activeSubTab || tabs[0].value}
           onChange={handleTabChange}

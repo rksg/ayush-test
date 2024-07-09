@@ -1,4 +1,5 @@
 export interface ClientList {
+  apMac: string
   hostname: string
   osType: string
   healthCheckStatus: string
@@ -17,6 +18,7 @@ export interface ClientList {
   }
   clientAnalytics?: string
   clientVlan: string
+  vni?: string
   deviceTypeStr: string
   modelName: string
   totalTraffic: string
@@ -41,6 +43,8 @@ export interface ClientList {
   switchName?: string
   healthClass: string
   sessStartTimeParssed: boolean
+  networkType: string
+  mldAddr: string
 }
 
 export interface ClientListMeta {
@@ -55,7 +59,7 @@ export interface Guest {
     id: string
     userState: string
     guestType: string
-    networkId: string
+    wifiNetworkId: string
     expiration: string
     mobilePhoneNumber: string
     emailAddress: string
@@ -71,7 +75,10 @@ export interface Guest {
     guestStatus: GuestStatusEnum,
     clients?: GuestClient[],
     langCode?: string,
-    socialLogin?: string
+    socialLogin?: string,
+    hostApprovalEmail?: string,
+    devicesMac?: string[],
+    locale?: string
 }
 
 export interface GuestClient {
@@ -112,6 +119,35 @@ export interface GuestClient {
     sessionDuration?: number
     id?: string
     connectSince?: string
+}
+
+export interface UEDetail {
+  txBytes?: number
+  mac?: string,
+  apMac?: string,
+  apName?: string,
+  osType?: string,
+  venueId?: string,
+  venueName?: string,
+  connectedSince?: string,
+  apSerialNumber?: string,
+  networkId?: string,
+  ip?: string,
+  username?: string,
+  hostname?: string,
+  ssid?: string,
+  vlan?: number
+  bssid?: string,
+  rxBytes?: number
+  rxPackets?: number
+  txPackets?: number
+  snr_dB?: number
+  receiveSignalStrength_dBm: number,
+  noiseFloor_dBm: number,
+  radioChannel?: number
+  txDropDataPacket?: number
+  healthCheckStatus?: string,
+  networkType?: string
 }
 
 export interface GuestExpiration {

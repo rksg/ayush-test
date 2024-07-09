@@ -51,7 +51,7 @@ describe('SelectIntegratorDrawer', () => {
     })
     jest.spyOn(services, 'useAssignMspEcToIntegratorMutation')
     mockServer.use(
-      rest.post(
+      rest.patch(
         MspUrlsInfo.assignMspEcToIntegrator.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
       )

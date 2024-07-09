@@ -1,4 +1,8 @@
-import type { FormProps } from 'antd'
+import { ReactNode } from 'react'
+
+import type { AlertProps, FormProps } from 'antd'
+
+export type StepsFormGotoStepFn = (n: number) => void
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type StepsFormProps <T = any> = Omit<
@@ -10,7 +14,7 @@ export type StepsFormProps <T = any> = Omit<
   editMode?: boolean
 
   onCancel?: (values: T) => void
-  onFinish?: (values: T) => Promise<boolean | void>
+  onFinish?: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
 
   initialValues?: Partial<T>
 
@@ -19,6 +23,17 @@ export type StepsFormProps <T = any> = Omit<
     submit?: string
     pre?: string
     cancel?: string
+    apply?: string
+  }
+
+  customSubmit?: {
+    label: string,
+    onCustomFinish: (values: T, gotoStep: StepsFormGotoStepFn) => Promise<boolean | void>
+  }
+
+  alert?: {
+    type: AlertProps['type']
+    message: ReactNode
   }
 }
 
@@ -42,7 +57,8 @@ export type StepFormProps <T> = Omit<
 > & {
   children: React.ReactNode
 
-  onFinish?: (values: T) => Promise<boolean | void>
+  // eslint-disable-next-line max-len
+  onFinish?: (values: T, event?: React.MouseEvent) => Promise<boolean | void>
 }
 
 export type InternalStepFormProps <T> = StepFormProps<T> & { step: number, name: string }

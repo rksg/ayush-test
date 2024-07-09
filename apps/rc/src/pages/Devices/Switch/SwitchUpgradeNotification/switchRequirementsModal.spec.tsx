@@ -1,14 +1,19 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn } from '@acx-ui/feature-toggle'
-import { Provider }     from '@acx-ui/store'
+import { useIsSplitOn }           from '@acx-ui/feature-toggle'
+import { SwitchFirmwareFixtures } from '@acx-ui/rc/utils'
+import { Provider }               from '@acx-ui/store'
 import {
   render,
   screen
 } from '@acx-ui/test-utils'
 
-import { SwitchUpgradeNotification, SWITCH_UPGRADE_NOTIFICATION_TYPE } from '.'
+import {
+  SwitchUpgradeNotification,
+  SWITCH_UPGRADE_NOTIFICATION_TYPE
+} from '.'
 
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 jest.mock('./switchRequirementsModal', () => ({
   ...jest.requireActual('./switchRequirementsModal'),
@@ -17,6 +22,14 @@ jest.mock('./switchRequirementsModal', () => ({
     return <div data-testid='mocked-SwitchRequirementsModal'>Upgrading the switch</div>
   }
 }))
+
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
+
 
 describe('Switch Requriements Modal', () => {
   it('should render correctly', async () => {

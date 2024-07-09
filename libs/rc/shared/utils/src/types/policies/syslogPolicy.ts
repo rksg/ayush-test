@@ -24,6 +24,11 @@ export const flowLevelLabelMapping: Record<FlowLevelEnum, MessageDescriptor> = {
   [FlowLevelEnum.ALL]: defineMessage({ defaultMessage: 'All Logs' })
 }
 
+export interface SyslogVenue {
+  id: string,
+  name: string
+}
+
 export interface SyslogPolicyListType {
   id: string,
   name: string,
@@ -56,11 +61,6 @@ export interface Server {
   protocol?: ProtocolEnum,
 }
 
-export interface Venue {
-  id: string,
-  name: string
-}
-
 export interface SyslogPolicyDetailType {
   policyName?: string,
   name: string,
@@ -70,7 +70,8 @@ export interface SyslogPolicyDetailType {
   facility?: FacilityEnum,
   priority?: PriorityEnum,
   flowLevel?: FlowLevelEnum,
-  venues: Venue[]
+  venues?: SyslogVenue[],
+  oldVenues?: SyslogVenue[]
 }
 
 export interface SyslogContextType {
@@ -84,13 +85,11 @@ export interface SyslogContextType {
   facility: FacilityEnum,
   priority: PriorityEnum,
   flowLevel: FlowLevelEnum,
-  venues: SyslogVenue[]
+  venues: SyslogVenue[],
+  oldVenues?: SyslogVenue[]
 }
 
-export interface SyslogVenue {
-  id: string,
-  name: string
-}
+
 
 export interface SyslogDetailContextType {
   filtersId: string[],

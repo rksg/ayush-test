@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
-import _        from 'lodash'
-import { rest } from 'msw'
+import userEvent from '@testing-library/user-event'
+import _         from 'lodash'
+import { rest }  from 'msw'
 
+import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider  }              from '@acx-ui/store'
+import { Provider, store  }       from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -24,15 +26,17 @@ jest.spyOn(Date, 'now').mockImplementation(() => {
 })
 
 const userProfileContextValues = {
-  data: fakeUserProfile
+  data: fakeUserProfile,
+  hasAccess: () => true
 } as UserProfileContextProps
 
 describe('Access Support Form Item', () => {
   const mockedDisabledReq = jest.fn()
 
   beforeEach(async () => {
-    setUserProfile({ profile: fakeUserProfile, allowedOperations: [] })
+    setUserProfile({ profile: fakeUserProfile, allowedOperations: ['POST:/api/tenant/{tenantId}/delegation/support'] })
     mockedDisabledReq.mockClear()
+    store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -50,6 +54,7 @@ describe('Access Support Form Item', () => {
 
   it('should be able to enable access support', async () => {
     const getTenantDelegationFn = jest.fn()
+    const mockedEnableAccessSupport = jest.fn()
 
     mockServer.use(
       rest.get(
@@ -61,10 +66,13 @@ describe('Access Support Form Item', () => {
       ),
       rest.post(
         AdministrationUrlsInfo.enableAccessSupport.url,
-        (req, res, ctx) => res(ctx.json({
-          requestId: 'test-request',
-          response: {}
-        }))
+        (req, res, ctx) => {
+          mockedEnableAccessSupport()
+          return res(ctx.json({
+            requestId: 'test-request',
+            response: {}
+          }))
+        }
       )
     )
 
@@ -82,6 +90,10 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
+    screen.getByRole('checkbox', {
+      name: /enable access to ruckus support/i
+    })
+
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
     await waitFor(() => {
       expect(getTenantDelegationFn).toBeCalledWith('?type=SUPPORT')
@@ -90,7 +102,9 @@ describe('Access Support Form Item', () => {
     await waitFor(() => expect(formItem).not.toBeDisabled())
 
     expect(formItem).not.toBeChecked()
-    fireEvent.click(formItem)
+    await userEvent.click(formItem)
+    expect(mockedEnableAccessSupport).toBeCalled()
+    expect(getTenantDelegationFn).toBeCalled()
   })
 
   it('should correctly display create date', async () => {
@@ -146,7 +160,7 @@ describe('Access Support Form Item', () => {
         route: { params }
       })
 
-    const infoText = await screen.findByText('- Administrator-level access was granted on 01/10/2023 - 11:26 UTC. Expires on 01/12/2023.')
+    const infoText = await screen.findByText('- Administrator-level access was granted on 01/10/2023 - 11:26 UTC. Expires on 01/30/2023.')
     expect(infoText).toBeInTheDocument()
 
     const formItem = screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
@@ -155,6 +169,7 @@ describe('Access Support Form Item', () => {
 
   it('should display not allowed message when support user', async () => {
     const supportUser = {
+      ...userProfileContextValues,
       data: { ...fakeUserProfile, support: true }
     } as UserProfileContextProps
 
@@ -162,6 +177,37 @@ describe('Access Support Form Item', () => {
       <Provider>
         <UserProfileContext.Provider
           value={supportUser}
+        >
+          <AccessSupportFormItem
+            hasMSPEcLabel={false}
+            canMSPDelegation={true}
+          />
+        </UserProfileContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })
+    fireEvent.mouseOver(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' }))
+    expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })).toBeDisabled()
+    await waitFor(async () => {
+      expect(await screen.findByRole('tooltip')).toBeInTheDocument()
+    })
+    await waitFor(() => {
+      expect(screen.getByRole('tooltip').textContent).toBe('You are not allowed to change this')
+    })
+  })
+
+  it('should be disabled when RBAC check is not allowed', async () => {
+    const notAllowedOperation = {
+      ...userProfileContextValues,
+      hasAccess: () => false
+    } as UserProfileContextProps
+
+    render(
+      <Provider>
+        <UserProfileContext.Provider
+          value={notAllowedOperation}
         >
           <AccessSupportFormItem
             hasMSPEcLabel={false}
@@ -275,10 +321,13 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
     const spyConsole = jest.spyOn(console, 'log')
 
     const MspECUser = {
+      ...userProfileContextValues,
       data: { ...fakeUserProfile, varTenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac' }
     } as UserProfileContextProps
 
     const getTenantDelegationFn = jest.fn()
+
+    store.dispatch(administrationApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -315,7 +364,7 @@ describe('Access Support Form Item - Msp Delegate EC', () => {
     })
     expect(formItem).not.toBeDisabled()
     expect(screen.getByRole('checkbox', { name: 'Enable access to Ruckus Support' })).not.toBeChecked()
-    fireEvent.click(formItem)
+    await userEvent.click(formItem)
     // FIXME: might need to fix when general error handler behavior changed.
     await waitFor(() => {
       expect(spyConsole).toBeCalled()

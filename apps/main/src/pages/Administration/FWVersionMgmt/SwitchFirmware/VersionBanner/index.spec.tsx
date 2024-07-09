@@ -2,7 +2,8 @@ import { rest } from 'msw'
 
 import {
   FirmwareCategory,
-  FirmwareUrlsInfo
+  FirmwareUrlsInfo,
+  SwitchFirmwareFixtures
 } from '@acx-ui/rc/utils'
 import {
   Provider
@@ -13,13 +14,14 @@ import {
   screen
 } from '@acx-ui/test-utils'
 
-
 import {
   switchVenue,
   switchRelease
 } from '../../__tests__/fixtures'
 
 import VersionBanner from '.'
+
+const { mockSwitchCurrentVersions } = SwitchFirmwareFixtures
 
 const lastestFirmware = [
   {
@@ -31,12 +33,23 @@ const lastestFirmware = [
     category: FirmwareCategory.RECOMMENDED, createdDate: '2023-02-07T16:31:10.245+00:00'
   }]
 
+jest.mock('@acx-ui/rc/services', () => ({
+  ...jest.requireActual('@acx-ui/rc/services'),
+  useGetSwitchCurrentVersionsQuery: () => ({
+    data: mockSwitchCurrentVersions
+  })
+}))
+
 describe('Switch Firmware Banner', () => {
   let params: { tenantId: string }
   beforeEach(async () => {
     mockServer.use(
       rest.get(
         FirmwareUrlsInfo.getSwitchLatestFirmwareList.url,
+        (req, res, ctx) => res(ctx.json(lastestFirmware))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getSwitchDefaultFirmwareList.url,
         (req, res, ctx) => res(ctx.json(lastestFirmware))
       ),
       rest.post(

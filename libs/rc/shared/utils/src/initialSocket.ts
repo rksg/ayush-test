@@ -16,8 +16,11 @@ export function getIndependentSocket (url: string): SocketIOClient.Socket {
   return io.connect(url, {
     path: websocketServerUrl,
     secure: true,
-    reconnection: true,
     transports: ['websocket'],
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
+    reconnection: true,
+    reconnectionDelay: 1500,
+    reconnectionAttempts: 5,
+    reconnectionDelayMax: 5000
   })
 }

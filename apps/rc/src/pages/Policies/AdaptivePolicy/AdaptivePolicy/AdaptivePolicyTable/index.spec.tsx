@@ -1,9 +1,15 @@
 import { rest } from 'msw'
 
-import { getPolicyRoutePath, PolicyOperation, PolicyType, RulesManagementUrlsInfo } from '@acx-ui/rc/utils'
-import { Path }                                                                     from '@acx-ui/react-router-dom'
-import { Provider }                                                                 from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitFor, within }                   from '@acx-ui/test-utils'
+import {
+  getAdaptivePolicyDetailLink,
+  getPolicyRoutePath,
+  PolicyOperation,
+  PolicyType,
+  RulesManagementUrlsInfo
+} from '@acx-ui/rc/utils'
+import { Path }                                                                              from '@acx-ui/react-router-dom'
+import { Provider }                                                                          from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitFor, waitForElementToBeRemoved, within } from '@acx-ui/test-utils'
 
 import {
   adaptivePolicyList,
@@ -40,20 +46,20 @@ describe('AdaptivePolicyTable', () => {
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
       rest.get(
         RulesManagementUrlsInfo.getConditionsInPolicy.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(assignConditions))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicyTemplateList.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicyTemplateListByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(templateList))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       ),
       rest.get(
@@ -68,9 +74,11 @@ describe('AdaptivePolicyTable', () => {
   })
 
   it('should render correctly', async () => {
-    render(<Provider><AdaptivePolicyTable /></Provider>, {
+    render(<Provider><AdaptivePolicyTable/></Provider>, {
       route: { params, path: tablePath }
     })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: /test1/ })
     expect(row).toHaveTextContent('1')
@@ -86,10 +94,11 @@ describe('AdaptivePolicyTable', () => {
           return res(ctx.json({ requestId: '12345' }))
         })
     )
-
-    render(<Provider><AdaptivePolicyTable /></Provider>, {
+    render(<Provider><AdaptivePolicyTable/></Provider>, {
       route: { params, path: tablePath }
     })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: 'test1 RADIUS 0 0' })
     fireEvent.click(within(row).getByRole('radio'))
@@ -106,24 +115,43 @@ describe('AdaptivePolicyTable', () => {
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 
   it('should edit selected row', async () => {
-    render(<Provider><AdaptivePolicyTable /></Provider>, {
+    render(<Provider><AdaptivePolicyTable/></Provider>, {
       route: { params, path: tablePath }
     })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     const row = await screen.findByRole('row', { name: 'test1 RADIUS 0 0' })
     fireEvent.click(within(row).getByRole('radio'))
 
-    const editButton = screen.getByRole('button', { name: /Edit/i })
+    const editButton = screen.getByRole('button', { name: /edit/i })
     fireEvent.click(editButton)
+
+    const editPath = getAdaptivePolicyDetailLink({
+      oper: PolicyOperation.EDIT,
+      policyId: '6dc81c95-3687-4352-b25b-aa5b583e5e2a',
+      templateId: '200'
+    })
+
+    expect(mockedUseNavigate).toHaveBeenCalledWith({
+      ...mockedTenantPath,
+      pathname: `${mockedTenantPath.pathname}/${editPath}`
+    })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
   })
 
   it('should navigate add policy', async () => {
-    render(<Provider><AdaptivePolicyTable /></Provider>, {
+    render(<Provider><AdaptivePolicyTable/></Provider>, {
       route: { params, path: tablePath }
     })
+
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
 
     fireEvent.click(await screen.findByText('Add Policy'))
 

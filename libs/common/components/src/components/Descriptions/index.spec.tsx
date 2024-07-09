@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 
-import { render } from '@testing-library/react'
+import { render } from '@acx-ui/test-utils'
 
 import { Descriptions } from '.'
 

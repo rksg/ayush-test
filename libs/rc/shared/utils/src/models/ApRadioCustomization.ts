@@ -16,9 +16,6 @@ export class ApRadioCustomization {
 
   enable6G?: boolean
 
-  // True if using Venue settings (overriding AP settings)
-
-  useVenueSettings?: boolean
 
   // True if 2.4 GHz is enabled
 
@@ -27,6 +24,8 @@ export class ApRadioCustomization {
   // True if 5 GHz is enabled
 
   enable50G?: boolean
+
+  useVenueSettings?: boolean
 
   constructor () {
     this.apRadioParams24G = new ApRadioParams24G()
@@ -38,8 +37,6 @@ export class ApRadioCustomization {
     this.apRadioParams6G = new ApRadioParams6G()
 
     this.enable6G = false
-
-    this.useVenueSettings = true
 
     this.enable24G = false
 

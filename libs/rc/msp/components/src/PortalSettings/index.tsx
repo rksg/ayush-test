@@ -26,6 +26,7 @@ import {
   GridCol,
   GridRow
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   useAddMspLabelMutation,
   useGetMspBaseURLQuery,
@@ -43,11 +44,11 @@ import {
 } from '@acx-ui/rc/services'
 import {
   emailRegExp,
-  phoneRegExp,
   Providers,
   UploadUrlResponse,
   networkWifiIpRegExp,
-  networkWifiSecretRegExp
+  networkWifiSecretRegExp,
+  generalPhoneRegExp
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
@@ -79,7 +80,9 @@ export function PortalSettings () {
   const navigate = useNavigate()
   const [form] = Form.useForm()
   const params = useParams()
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
 
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
   const linkDashboard = useTenantLink('/dashboard', 'v')
 
   const [selectedLogo, setSelectedLogo] = useState('defaultLogo')
@@ -109,9 +112,9 @@ export function PortalSettings () {
   const [addMspLabel] = useAddMspLabelMutation()
   const [updateMspLabel] = useUpdateMspLabelMutation()
 
-  const { data: provider } = useExternalProvidersQuery({ params })
-  const { data: baseUrl } = useGetMspBaseURLQuery({ params })
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
+  const { data: provider } = useExternalProvidersQuery({ params, enableRbac: isUseRbacApi })
+  const { data: baseUrl } = useGetMspBaseURLQuery({ params, enableRbac: isRbacEnabled })
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
 
   useEffect(() => {
     const fetchImages = async (mspLabel: MspPortal) => {
@@ -183,7 +186,7 @@ export function PortalSettings () {
   }, [provider, mspLabel])
 
   function mspLabelRegExp (value: string) {
-    const re = new RegExp (/^[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/)
+    const re = new RegExp (/^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9]$/)
 
     if (value && !re.test(value)) {
       return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid domain name' }))
@@ -192,7 +195,7 @@ export function PortalSettings () {
   }
   function urlRegExp (value: string) {
   // eslint-disable-next-line max-len
-    const re = new RegExp (/^(http|https):\/\/[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](\.[a-zA-Z][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])+(:[1-9][0-9]{1,4})?((\/?)|(\/([a-zA-Z0-9~_.-]|(%[0-9]{2}))*)*)((\?|#).*)?$/)
+    const re = new RegExp (/^(http|https):\/\/[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](\.[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9])+(:[1-9][0-9]{1,4})?((\/?)|(\/([a-zA-Z0-9~_.-]|(%[0-9]{2}))*)*)((\?|#).*)?$/)
 
     if (value && !re.test(value)) {
       return Promise.reject(intl.$t({ defaultMessage: 'Please enter a valid URL' }))
@@ -374,13 +377,14 @@ export function PortalSettings () {
     }
     if (preferredProvider) {
       if (isOtherProvider) {
+        const wisprProvider = values.preferredWisprProvider || mspLabel?.preferredWisprProvider
         portal.preferredWisprProvider = {
-          providerName: values.preferredWisprProvider?.providerName as string,
+          providerName: wisprProvider?.providerName || '',
           apiKey: '',
           apiSecret: '',
           customExternalProvider: true,
-          auth: values.preferredWisprProvider?.auth,
-          acct: values.preferredWisprProvider?.acct
+          auth: wisprProvider?.auth,
+          acct: wisprProvider?.acct
         }
       } else {
         portal.preferredWisprProvider = {
@@ -397,7 +401,7 @@ export function PortalSettings () {
   const handleAddMspLabel = async (values: MspPortal) => {
     try {
       const formData = await getMspPortalToSave(values)
-      await addMspLabel({ params, payload: formData }).unwrap()
+      await addMspLabel({ params, payload: formData, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
       window.location.reload()
     } catch(error) {
@@ -414,7 +418,7 @@ export function PortalSettings () {
   const handleUpdateMspLabel = async (values: MspPortal) => {
     try {
       const portal: MspPortal = await getMspPortalToSave(values)
-      await updateMspLabel({ params, payload: portal }).unwrap()
+      await updateMspLabel({ params, payload: portal, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkDashboard, { replace: true })
     } catch(error) {
       const respData = error as { status: number, data: { [key: string]: string } }
@@ -947,14 +951,14 @@ export function PortalSettings () {
                         />
                       </Form.Item>
                     }
-                    <UI.ImagePreviewLight width='355px' height='80px'>
+                    <UI.ImagePreviewDark width='355px' height='80px'>
                       {(selectedLogo === 'defaultLogo' || loginLogoUrl) &&
                         <img alt='customer login logo'
                           src={selectedLogo === 'defaultLogo' ? defaultLoginLogo : loginLogoUrl}
                           style={{ margin: 'auto', maxHeight: '80px', maxWidth: '320px' }}
                         />
                       }
-                    </UI.ImagePreviewLight>
+                    </UI.ImagePreviewDark>
                   </Space>
                 </Card>
                 <Card
@@ -1198,7 +1202,7 @@ export function PortalSettings () {
               style={{ width: '300px' }}
               initialValue={mspLabel?.msp_phone}
               rules={[
-                { validator: (_, value) => phoneRegExp(value) }
+                { validator: (_, value) => generalPhoneRegExp(value) }
               ]}
               children={
                 <PhoneInput

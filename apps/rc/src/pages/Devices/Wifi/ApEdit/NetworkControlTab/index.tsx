@@ -38,7 +38,6 @@ export function NetworkControlTab () {
   } = useContext(ApEditContext)
 
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
 
 
   const mPorxyTitle = $t({ defaultMessage: 'mDNS Proxy' })
@@ -57,7 +56,7 @@ export function NetworkControlTab () {
         </>
       )
     }] : []),
-    ...(supportApSnmp? [{
+    {
       title: apSnmpTitle,
       content: (
         <>
@@ -68,7 +67,7 @@ export function NetworkControlTab () {
         </>
       )
 
-    }] : [])
+    }
   ]
 
   const resetEditContextData = () => {
@@ -128,7 +127,7 @@ export function NetworkControlTab () {
       buttonLabel={{ submit: $t({ defaultMessage: 'Apply' }) }}
     >
       <StepsFormLegacy.StepForm>
-        <AnchorLayout items={anchorItems} />
+        <AnchorLayout items={anchorItems} offsetTop={60} waitForReady />
       </StepsFormLegacy.StepForm>
     </StepsFormLegacy>
   )

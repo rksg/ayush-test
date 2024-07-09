@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { SortOrder } from 'antd/lib/table/interface'
 import { useIntl }   from 'react-intl'
@@ -11,10 +11,12 @@ import {
   TableProps,
   Loader
 } from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   AssignEcDrawer,
   ResendInviteModal,
-  ManageAdminsDrawer
+  ManageAdminsDrawer,
+  ManageDelegateAdminDrawer
 } from '@acx-ui/msp/components'
 import {
   useDeleteMspEcMutation,
@@ -26,12 +28,14 @@ import {
   MspEc
 } from '@acx-ui/msp/utils'
 import { useTableQuery }                                                          from '@acx-ui/rc/utils'
-import { Link, TenantLink, MspTenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
+import { Link, MspTenantLink, TenantLink, useNavigate, useTenantLink, useParams } from '@acx-ui/react-router-dom'
 import { RolesEnum }                                                              from '@acx-ui/types'
 import { filterByAccess, useUserProfileContext, hasRoles, hasAccess }             from '@acx-ui/user'
 import {
-  AccountType
+  AccountType, isDelegationMode
 } from '@acx-ui/utils'
+
+import HspContext from '../../HspContext'
 
 const transformAssignedCustomerCount = (row: MspEc) => {
   return row.assignedMspEcList.length
@@ -58,14 +62,23 @@ export function Integrators () {
   const isPrimeAdmin = hasRoles([RolesEnum.PRIME_ADMIN])
   const isAdmin = hasRoles([RolesEnum.PRIME_ADMIN, RolesEnum.ADMINISTRATOR])
   const params = useParams()
+  const {
+    state
+  } = useContext(HspContext)
+  const { isHsp: isHspSupportEnabled } = state
+
+  const isSupportToMspDashboardAllowed =
+    useIsSplitOn(Features.SUPPORT_DELEGATE_MSP_DASHBOARD_TOGGLE) && isDelegationMode()
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
 
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerEcVisible, setDrawerEcVisible] = useState(false)
   const [tenantId, setTenantId] = useState('')
   const [tenantType, setTenantType] = useState('')
   const { data: userProfile } = useUserProfileContext()
-  const { data: mspLabel } = useGetMspLabelQuery({ params })
-  const { checkDelegateAdmin } = useCheckDelegateAdmin()
+  const { data: mspLabel } = useGetMspLabelQuery({ params, enableRbac: isRbacEnabled })
+  const { checkDelegateAdmin } = useCheckDelegateAdmin(isRbacEnabled)
   const onBoard = mspLabel?.msp_label
 
   const columns: TableProps<MspEc>['columns'] = [
@@ -77,12 +90,12 @@ export function Integrators () {
       searchable: true,
       defaultSortOrder: 'ascend' as SortOrder,
       onCell: (data) => {
-        return {
+        return isSupportToMspDashboardAllowed ? {} : {
           onClick: () => { checkDelegateAdmin(data.id, userProfile!.adminId) }
         }
       },
       render: function (_, { name }, __, highlightFn) {
-        return (
+        return (isSupportToMspDashboardAllowed ? name :
           <Link to=''>{highlightFn(name)}</Link>
         )
       }
@@ -159,12 +172,14 @@ export function Integrators () {
     const [selTenantId, setSelTenantId] = useState('')
     const navigate = useNavigate()
     const basePath = useTenantLink('/integrators/edit', 'v')
+    const settingsId = 'msp-integrators-table'
     const tableQuery = useTableQuery({
       useQuery: useMspCustomerListQuery,
       defaultPayload,
       search: {
         searchTargetFields: defaultPayload.searchTargetFields as string[]
-      }
+      },
+      pagination: { settingsId }
     })
     const [
       deleteMspEc,
@@ -200,7 +215,7 @@ export function Integrators () {
               entityValue: name,
               confirmationText: $t({ defaultMessage: 'Delete' })
             },
-            onOk: () => deleteMspEc({ params: { mspEcTenantId: id } })
+            onOk: () => deleteMspEc({ params: { mspEcTenantId: id }, enableRbac: isRbacEnabled })
               .then(clearSelection)
           })
         }
@@ -212,7 +227,7 @@ export function Integrators () {
         tableQuery,
         { isLoading: false, isFetching: isDeleteEcUpdating }]}>
         <Table
-          settingsId='msp-integrators-table'
+          settingsId={settingsId}
           columns={columns}
           rowActions={filterByAccess(rowActions)}
           dataSource={tableQuery.data?.data}
@@ -237,27 +252,35 @@ export function Integrators () {
         title={$t({ defaultMessage: 'Tech Partners' })}
         extra={isAdmin ?
           [
-            <TenantLink to='/dashboard'>
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
               <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-            </TenantLink>,
+            </TenantLink> : null,
             <MspTenantLink to='/integrators/create'>
               <Button
                 hidden={!onBoard}
                 type='primary'>{$t({ defaultMessage: 'Add Tech Partner' })}</Button>
             </MspTenantLink>
           ]
-          : [<TenantLink to='/dashboard'>
-            <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
-          </TenantLink>
+          : [
+            !isHspSupportEnabled ? <TenantLink to='/dashboard'>
+              <Button>{$t({ defaultMessage: 'Manage My Account' })}</Button>
+            </TenantLink> : null
           ]}
       />
       <IntegratorssTable />
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={() => {}}
-        tenantId={tenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={tenantId}
+        />
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={() => {}}
+          tenantId={tenantId}
+        />)}
       {drawerEcVisible && <AssignEcDrawer
         visible={drawerEcVisible}
         setVisible={setDrawerEcVisible}

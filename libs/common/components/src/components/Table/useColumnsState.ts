@@ -24,8 +24,10 @@ export function useColumnsState <RecordType> (options: UseColumnsStateOptions<Re
   const { columnState } = options
   const { defaultState, initialState } = useDefaultAndInitialState(options)
   const [state, setState] = useState(defaultState)
+  const initialStateToUserState = stateToUserState(initialState)
 
   useEffect(() => setState(initialState), [initialState])
+  useEffect(() => columnState?.onChange?.(initialStateToUserState))
 
   const onChange = useCallback((state: TableColumnState) => {
     const newState = Object.entries(state).every(([,col]) => !col.show)

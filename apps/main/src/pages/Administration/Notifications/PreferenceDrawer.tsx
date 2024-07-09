@@ -5,6 +5,7 @@ import { CheckboxChangeEvent }    from 'antd/es/checkbox'
 import { useIntl }                from 'react-intl'
 
 import { Drawer, Subtitle }                                             from '@acx-ui/components'
+import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { useGetMspAggregationsQuery, useUpdateMspAggregationsMutation } from '@acx-ui/msp/services'
 import { SpaceWrapper }                                                 from '@acx-ui/rc/components'
 
@@ -15,13 +16,15 @@ interface PreferenceDrawerProps {
 
 export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   const { $t } = useIntl()
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
 
   const { visible, setVisible } = props
   const [ mspAggregationChecked, setMspAggregationChecked ] = useState(false)
   const [ ecExclusionChecked, setEcExclusionChecked ] = useState(false)
   const [form] = Form.useForm()
 
-  const { data: mspAggregations } = useGetMspAggregationsQuery({ })
+  const { data: mspAggregations } = useGetMspAggregationsQuery(
+    { enableRbac: isPtenantRbacApiEnabled })
 
   const [updateMspAggregations] = useUpdateMspAggregationsMutation()
 
@@ -36,13 +39,18 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
   }
 
   const onSubmit = async () => {
-    const payload = {
-      aggregation: mspAggregationChecked,
-      ecExclusionEnabled: ecExclusionChecked
-    }
+    const payload = isPtenantRbacApiEnabled
+      ? {
+        AggregationDTO: { enable: ecExclusionChecked }
+      }
+      : {
+        aggregation: mspAggregationChecked,
+        ecExclusionEnabled: ecExclusionChecked
+      }
+
     try {
       await form.validateFields()
-      updateMspAggregations({ payload })
+      updateMspAggregations({ payload, enableRbac: isPtenantRbacApiEnabled })
         .then(() => {
           setVisible(false)
         })
@@ -58,7 +66,7 @@ export const PreferenceDrawer = (props: PreferenceDrawerProps) => {
 
   const formContent = <Form layout='vertical'form={form} >
     <h4 style={{ marginTop: '14px', marginBottom: '20px' }}>
-      {$t({ defaultMessage: 'Select the notifications you wish to receive:' })}
+      {$t({ defaultMessage: 'Select the notification you wish to receive:' })}
     </h4>
 
     <Subtitle level={5}>

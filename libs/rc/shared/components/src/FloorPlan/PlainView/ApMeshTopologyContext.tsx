@@ -42,6 +42,8 @@ export function ApMeshTopologyContextProvider (props: ApMeshTopologyContextProvi
   const apMeshListPayload = {
     fields: ['name', 'serialNumber', 'apMac', 'downlink', 'apDownRssis', 'uplink', 'apUpRssi',
       'meshRole', 'hops', 'apRssis', 'xPercent', 'yPercent', 'floorplanId'],
+    pageSize: 10000,
+    page: 1,
     filters: {
       meshRole: [APMeshRole.RAP, APMeshRole.MAP, APMeshRole.EMAP],
       venueId: [venueId]

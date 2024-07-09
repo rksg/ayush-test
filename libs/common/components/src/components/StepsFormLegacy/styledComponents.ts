@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components/macro'
 
-import modifyVars from '../../theme/modify-vars'
+import modifyVars                  from '../../theme/modify-vars'
+import { disableStickyPagination } from '../Table/styledComponents'
 
 export {
   Title,
@@ -62,6 +63,8 @@ export const Wrapper = styled.section<{
   --acx-steps-form-form-title-margin-bottom: 16px;
 
   --acx-steps-form-actions-vertical-space: 12px;
+
+  ${disableStickyPagination}
 
   .ant-pro-steps-form {
     position: relative;

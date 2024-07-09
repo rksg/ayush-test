@@ -95,6 +95,7 @@ export function EditLldpModal (props: {
   }, [editRowId])
 
   return (<Modal
+    data-testid='lldp-qos-modal'
     title={isEditMode
       ? $t({ defaultMessage: 'Edit LLDP QoS' })
       : $t({ defaultMessage: 'Add LLDP QoS' })

@@ -2,6 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
 import {
   SyslogUrls,
   getPolicyDetailsLink,
@@ -14,7 +15,7 @@ import { Provider } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen,
+  screen, waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -31,6 +32,20 @@ const mockTableResult = {
   }]
 }
 
+const mockQueryResult = {
+  totalCount: 1,
+  page: 1,
+  data: [{
+    id: 'b76d9aeb1d5e4fc8b62ed6250a6471ee',
+    name: 'Syslog 1',
+    venueIds: [],
+    primaryServer: '1.2.3.4:514 (UDP)',
+    secondaryServer: '',
+    facility: 'KEEP_ORIGINAL',
+    flowLevel: 'CLIENT_FLOW'
+  }]
+}
+const mockedDeleteFn = jest.fn()
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
@@ -72,7 +87,17 @@ describe('SyslogTable', () => {
       rest.post(
         CommonUrlsInfo.getVenuesList.url,
         (req, res, ctx) => res(ctx.json(mockVenueData))
-      )
+      ),
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (req, res, ctx) => res(ctx.json(mockQueryResult))
+      ),
+      rest.delete(
+        SyslogUrls.deleteSyslogPolicy.url,
+        (req, res, ctx) => {
+          mockedDeleteFn()
+          return res(ctx.json({}))
+        })
     )
   })
 
@@ -84,6 +109,7 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetName = mockTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add Syslog Server/i })).toBeVisible()
@@ -115,7 +141,6 @@ describe('SyslogTable', () => {
         route: { params, path: tablePath }
       }
     )
-
     const target = mockTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
     await userEvent.click(within(row).getByRole('checkbox'))
@@ -133,4 +158,23 @@ describe('SyslogTable', () => {
       pathname: `${mockedTenantPath.pathname}/${editPath}`
     })
   })
+
+  it('should render table and delete correctly with rbac api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    render(
+      <Provider>
+        <SyslogTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const row = await screen.findByRole('row', { name: new RegExp('Syslog 1') })
+    expect(row).toBeVisible()
+    await userEvent.click(row)
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete' } ))
+    await userEvent.click(await screen.findByRole('button', { name: 'Delete Policy' } ))
+    expect(mockedDeleteFn).toHaveBeenCalled()
+  })
+
 })

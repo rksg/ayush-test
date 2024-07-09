@@ -7,6 +7,8 @@ import styled              from 'styled-components/macro'
 
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { showActionModal, showToast, ToastProps, ToastType } from '@acx-ui/components'
+import { RolesEnum }                                         from '@acx-ui/types'
+import { hasRoles }                                          from '@acx-ui/user'
 import { getIntl }                                           from '@acx-ui/utils'
 
 import { rcToastTemplates } from './toastTemplate'
@@ -148,8 +150,18 @@ export const showActivityToast = (
   }
 }
 
+const getLinkText = (tx: Transaction) => {
+  if(tx.linkData){
+    const linkAlias = tx.linkData.find(i => i.name == 'linkAlias')
+    return linkAlias?.value
+  }
+  return undefined
+}
+
 export const showTxToast = (tx: Transaction) => {
   const intl = getIntl()
+  const rolesNotSupportingLinks = hasRoles([
+    RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER, RolesEnum.REPORTS_ADMIN])
   if (tx.attributes && tx.attributes.name) {
     // calculate max_name_length
     const fullLength = getToastMessage(tx).length
@@ -195,16 +207,18 @@ export const showTxToast = (tx: Transaction) => {
       ...(!!tx.error && { link: { onClick: () => showDetails(tx, intl) } })
     }
   }
-  if (msg.data?.link) {
+  if (msg.data?.link && !rolesNotSupportingLinks) {
     config = {
       ...config,
       link: {
         onClick: () => routeToPage(msg.data?.link as string, msg.data?.queryParams as QueryParams),
-        text: msg.data.isSwitchConfig ? 'Check Status' : undefined
+        text: getLinkText(tx)
       }
     }
   }
-  showToast(config)
+  if (!skipToast(tx)) {
+    showToast(config)
+  }
 }
 
 const getToastMessage = (tx: Transaction): string => {
@@ -257,4 +271,15 @@ const getTabViewParams = (tx:Transaction) => {
     _.template(rcToastTemplates[method].tabView)(tx)
 
   return (_.isEmpty(tabId))? null : { tabView: tabId }
+}
+
+const skipToast = (tx: Transaction): boolean => {
+  if (tx.useCase === 'ImportApsCsv' && tx.status === 'FAIL' &&
+  ((tx.steps?.find((step) => {
+    return step.id === 'PostProcessedImportAps'
+  })?.status !== 'IN_PROGRESS'))) {
+    return true
+  } else {
+    return false
+  }
 }

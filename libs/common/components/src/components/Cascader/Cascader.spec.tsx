@@ -3,9 +3,8 @@ import React from 'react'
 import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
-import { act }   from 'react-dom/test-utils'
 
-import { render, screen, cleanup, waitFor } from '@acx-ui/test-utils'
+import { act, render, screen, cleanup, waitFor } from '@acx-ui/test-utils'
 
 import { Cascader, CascaderProps, CascaderOption } from './index'
 

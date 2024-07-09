@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TooltipContent should render correctly for error 1`] = `
+<DocumentFragment>
+  <div>
+    Onboarding: Update tenant association
+  </div>
+  <br />
+  Errors:
+  <ul
+    class="styledComponents__Errors-sc-lzcjki-0 cgiwSf"
+  >
+    <li>
+      License API: Operation is not allowed because cluster is in read only state. (status code: 503)
+    </li>
+    <li>
+      Access control API: Invalid cluster id. (status code: 400)
+    </li>
+  </ul>
+</DocumentFragment>
+`;
+
+exports[`TooltipContent should render correctly for status 1`] = `
+<DocumentFragment>
+  <div>
+    onboarded
+  </div>
+</DocumentFragment>
+`;

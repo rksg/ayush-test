@@ -4,10 +4,10 @@ import _                    from 'lodash'
 import { useIntl }          from 'react-intl'
 import { FormattedMessage } from 'react-intl'
 
-import { Features, useIsSplitOn }           from '@acx-ui/feature-toggle'
-import { DateFormatEnum, formatter }        from '@acx-ui/formatter'
-import { useGetMspEntitlementBannersQuery } from '@acx-ui/msp/services'
-import { useEntitlementBannersQuery }       from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
+import { DateFormatEnum, formatter }                      from '@acx-ui/formatter'
+import { useGetMspEntitlementBannersQuery }               from '@acx-ui/msp/services'
+import { useEntitlementBannersQuery, useGetBannersQuery } from '@acx-ui/rc/services'
 import {
   LicenseBannerTypeEnum,
   EntitlementBanner,
@@ -88,21 +88,45 @@ export function LicenseBanner (props: BannerProps) {
   const { isMSPUser } = props
 
   const isFFEnabled = useIsSplitOn(Features.LICENSE_BANNER)
+  const isEntitlementRbacApiEnabled = useIsSplitOn(Features.ENTITLEMENT_RBAC_API)
 
   const [expireList, setExpireList] = useState<ExpireInfo[]>([])
 
   const params = useParams()
 
-  const { data: bannerData } = useEntitlementBannersQuery({ params }, { skip: isMSPUser })
-  const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params }, { skip: !isMSPUser })
+  const { data: bannerData } = useEntitlementBannersQuery({ params },
+    { skip: isMSPUser || isEntitlementRbacApiEnabled })
+  const { data: mspBannerData } = useGetMspEntitlementBannersQuery({ params },
+    { skip: !isMSPUser || isEntitlementRbacApiEnabled })
+
+  const recPayload = {
+    filters: {
+      usageType: 'SELF'
+    }
+  }
+  const mspPayload = {
+    filters: {
+      licenseType: ['APSW'],
+      usageType: 'ASSIGNED'
+    }
+  }
+
+  const { data: bannersSelf } = useGetBannersQuery({ params, payload: recPayload },
+    { skip: isMSPUser || !isEntitlementRbacApiEnabled })
+  const { data: bannersMsp } = useGetBannersQuery({ params, payload: mspPayload },
+    { skip: !isMSPUser || !isEntitlementRbacApiEnabled })
 
   useEffect(() => {
-    if(bannerData || mspBannerData){
+    if(!isEntitlementRbacApiEnabled && (bannerData || mspBannerData)){
       const list = getExpireInfo(isMSPUser ? (mspBannerData||[]) : bannerData||[])
       setExpireList(list)
     }
+    if(isEntitlementRbacApiEnabled && (bannersSelf || bannersMsp)) {
+      const list = getExpireInfo(isMSPUser ? (bannersMsp?.data||[]) : bannersSelf?.data || [])
+      setExpireList(list)
+    }
 
-  },[bannerData, isMSPUser, mspBannerData])
+  },[bannerData, isMSPUser, mspBannerData, bannersSelf, bannersMsp])
 
   const getMainTipsContent = (expireInfo:ExpireInfo)=>{
     return isMSPUser ?
@@ -128,7 +152,7 @@ export function LicenseBanner (props: BannerProps) {
       </UI.LicenseIconWrapper>
       <UI.TipsWrapper>
         <UI.MainTips expired={isExpired} children={getMainTipsContent(expireInfo)}/>
-        <UI.SubTips expired={isExpired}>
+        <UI.SubTips expired={isExpired} style={{ whiteSpace: 'pre' }}>
           <FormattedMessage {...descTips}
             values={{
               b: chunks => chunks,
@@ -164,7 +188,7 @@ export function LicenseBanner (props: BannerProps) {
       <UI.WarningBtnContainer>
         <UI.ContentWrapper>
           <UI.LicenseIconWrapper>
-            <UI.LayoutIcon children={<UI.WarnIcon isCritical={isCritical}/>} />
+            <UI.LayoutIcon children={<UI.WarnIcon $isCritical={isCritical}/>} />
           </UI.LicenseIconWrapper>
           <UI.TipsWrapper>
             <UI.MainTips>
@@ -194,7 +218,7 @@ export function LicenseBanner (props: BannerProps) {
             }
           }
           const isExpired = getIsExpired(expireInfo)
-          return <UI.LicenseGrid expired={isExpired} isWhiteBorder={isWhiteBorder}>
+          return <UI.LicenseGrid expired={isExpired} key={index} isWhiteBorder={isWhiteBorder}>
             { getCardItem(expireInfo) }
           </UI.LicenseGrid>
         })}
@@ -214,7 +238,7 @@ export function LicenseBanner (props: BannerProps) {
     return multipleRender()
   }
 
-  return <UI.LicenseWrapper>
-    {!_.isEmpty(expireList) && isFFEnabled && licenseRender()}
-  </UI.LicenseWrapper>
+  return !_.isEmpty(expireList) && isFFEnabled ? <UI.LicenseWrapper>
+    {licenseRender()}
+  </UI.LicenseWrapper> : <UI.ContentWrapper />
 }

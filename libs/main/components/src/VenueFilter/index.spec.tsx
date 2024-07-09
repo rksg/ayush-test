@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo }                        from '@acx-ui/rc/utils'
-import { Provider }                              from '@acx-ui/store'
-import { render, screen, fireEvent, mockServer } from '@acx-ui/test-utils'
-import { NetworkPath, DateRange }                from '@acx-ui/utils'
+import { CommonUrlsInfo }                                                   from '@acx-ui/rc/utils'
+import { Provider }                                                         from '@acx-ui/store'
+import { render, screen, fireEvent, mockServer, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { NetworkPath, DateRange }                                           from '@acx-ui/utils'
 
 import { VenueFilter } from '.'
 
@@ -39,9 +39,12 @@ describe('venue Filter', () => {
     jest.clearAllMocks()
     mockUseDashboardFilter = { venueIds: [], filters: filters([]), setNodeFilter }
   })
-  it('should render loader', () => {
+  it('should render loader', async () => {
     render(<Provider><VenueFilter /></Provider>, { route })
     expect(screen.getByRole('img', { name: 'loader' })).toBeVisible()
+    await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(document.querySelector('div[class="ant-select-selector"]')).not.toBeNull()
   })
   it('should render venue filter', async () => {
     const { asFragment } = render(<Provider><VenueFilter /></Provider>, { route })

@@ -16,6 +16,7 @@ import {
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 
@@ -83,7 +84,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const targetServiceName = mockedTableResult.data[0].name
     expect(await screen.findByRole('button', { name: /Add mDNS Proxy Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetServiceName) })).toBeVisible()
@@ -97,6 +98,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -123,6 +125,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })
@@ -151,6 +154,7 @@ describe('MdnsProxyTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const target = mockedTableResult.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(target.name) })

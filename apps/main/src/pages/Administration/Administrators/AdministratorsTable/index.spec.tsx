@@ -3,9 +3,11 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { mspApi }                 from '@acx-ui/msp/services'
 import { MspUrlsInfo }            from '@acx-ui/msp/utils'
+import { administrationApi }      from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }               from '@acx-ui/store'
+import { Provider, store }        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -62,6 +64,9 @@ describe('Administrators table without prime-admin itself', () => {
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
 
     mockServer.use(
       rest.get(
@@ -132,6 +137,9 @@ describe('Administrators Table', () => {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
 
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
+
     mockServer.use(
       rest.get(
         AdministrationUrlsInfo.getAdministrators.url,
@@ -182,8 +190,8 @@ describe('Administrators Table', () => {
     await waitFor(() => {
       expect(mockReqAdminsData).toBeCalled()
     })
-    await screen.findByRole('row', { name: /dog1551@email.com/i })
     const rows = await screen.findAllByRole('row', { name: /@email.com/i })
+    expect(within(rows[2]).getByRole('cell', { name: /dog1551@email.com/ })).toBeVisible()
     expect(rows.length).toBe(3)
     expect(await screen.findByRole('button', { name: 'Add Administrator' })).toBeInTheDocument()
     await userEvent.click(await screen.findByRole('button', { name: 'Add Administrator' }))
@@ -214,12 +222,13 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
-    const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
-    expect(within(row).getByRole('checkbox')).toBeChecked()
-    const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
-    expect(within(row2).getByRole('checkbox')).toBeChecked()
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: 'abc.cheng@email.com' })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //abc.cheng@email.com
+    expect(within(rows[1]).getByRole('checkbox')).toBeChecked()
+    expect(within(rows[2]).getByRole('cell', { name: 'erp.cheng@email.com' })).toBeVisible()
+    fireEvent.click(within(rows[2]).getByRole('checkbox')) //erp.cheng@email.com
+    expect(within(rows[2]).getByRole('checkbox')).toBeChecked()
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
   })
 
@@ -265,10 +274,11 @@ describe('Administrators Table', () => {
         route: { params }
       })
 
-    const row = await screen.findByRole('row', { name: /abc.cheng@email.com/i })
-    await userEvent.click(within(row).getByRole('checkbox'))
-    const row2 = await screen.findByRole('row', { name: /erp.cheng@email.com/i })
-    await userEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: 'abc.cheng@email.com' })).toBeVisible()
+    await userEvent.click(within(rows[1]).getByRole('checkbox')) //abc.cheng@email.com
+    expect(within(rows[2]).getByRole('cell', { name: 'erp.cheng@email.com' })).toBeVisible()
+    await userEvent.click(within(rows[2]).getByRole('checkbox')) //erp.cheng@email.com
     await userEvent.click(screen.getByRole('button', { name: 'Delete' }))
     await screen.findByText('Delete "2 Administrators"?')
     const submitBtn = screen.getByRole('button', { name: 'Delete Administrators' })
@@ -376,6 +386,9 @@ describe('Administrators table with MSP-EC FF enabled', () => {
     params = {
       tenantId: '8c36a0a9ab9d4806b060e112205add6f'
     }
+
+    store.dispatch(administrationApi.util.resetApiState())
+    store.dispatch(mspApi.util.resetApiState())
 
     mockServer.use(
       rest.get(

@@ -1,10 +1,8 @@
-import { QueryReturnValue } from '@reduxjs/toolkit/dist/query/baseQueryTypes'
-import {
-  FetchBaseQueryError,
-  FetchBaseQueryMeta
-} from '@reduxjs/toolkit/query/react'
-import _          from 'lodash'
-import { Params } from 'react-router-dom'
+/* eslint-disable max-len */
+import { FetchBaseQueryMeta, FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import _                                           from 'lodash'
+import { Params }                                  from 'react-router-dom'
+import { v4 as uuidv4 }                            from 'uuid'
 
 import {
   CommonUrlsInfo,
@@ -48,19 +46,19 @@ import {
   AccessControlUrls,
   DpskMutationResult,
   DpskDownloadNewFlowPassphrasesPayload,
-  convertDpskNewFlowUrl,
   DpskDownloadPassphrasesPayload,
   DpskPassphrasesClientPayload,
-  DpskNewFlowPassphraseClient
-} from '@acx-ui/rc/utils'
-import {
-  CloudpathServer,
+  DpskNewFlowPassphraseClient,
   ApplicationPolicy,
-  AccessControlProfile
+  DHCP_LIMIT_NUMBER,
+  ApiVersionEnum,
+  GetApiVersionHeader
 } from '@acx-ui/rc/utils'
-import { baseServiceApi }             from '@acx-ui/store'
-import { RequestPayload }             from '@acx-ui/types'
-import { ApiInfo, createHttpRequest } from '@acx-ui/utils'
+import { baseServiceApi }                       from '@acx-ui/store'
+import { RequestPayload }                       from '@acx-ui/types'
+import { ApiInfo, batchApi, createHttpRequest } from '@acx-ui/utils'
+
+import { getDhcpProfileFn } from './servicePolicy.utils'
 
 const defaultNewTablePaginationParams: TableChangePayload = {
   sortField: 'name',
@@ -82,49 +80,13 @@ const mDnsProxyMutationUseCases = [
   'DeactivateMulticastDnsProxyServiceProfileAps'
 ]
 
+const defaultDpskVersioningHeaders = {
+  'Content-Type': 'application/vnd.ruckus.v2+json',
+  'Accept': 'application/vnd.ruckus.v2+json'
+}
+
 export const serviceApi = baseServiceApi.injectEndpoints({
   endpoints: (build) => ({
-    serviceList: build.query<TableResult<Service>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const serviceListReq = createHttpRequest(CommonUrlsInfo.getServicesList, params)
-        return {
-          ...serviceListReq,
-          body: payload
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            ...mDnsProxyMutationUseCases,
-            'AddWifiCallingServiceProfile',
-            'DeleteWiFiCallingProfile',
-            'DeleteWiFiCallingProfiles',
-            'Update Portal Service Profile',
-            'Delete Portal Service Profile',
-            'Delete Portal Service Profiles',
-            'AddDhcpConfigServiceProfile',
-            'DeleteDhcpConfigServiceProfile',
-            'DeleteDhcpConfigServiceProfiles'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([
-              { type: 'Service', id: 'LIST' }
-            ]))
-          })
-        })
-      }
-    }),
-    cloudpathList: build.query<CloudpathServer[], RequestPayload>({
-      query: ({ params }) => {
-        const cloudpathListReq = createHttpRequest(
-          CommonUrlsInfo.getCloudpathList,
-          params
-        )
-        return {
-          ...cloudpathListReq
-        }
-      }
-    }),
     applicationPolicyList: build.query<ApplicationPolicy[], RequestPayload>({
       query: ({ params }) => {
         const applicationPolicyListReq = createHttpRequest(
@@ -136,44 +98,20 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
-    accessControlProfileList: build.query<AccessControlProfile[], RequestPayload>({
-      query: ({ params }) => {
-        const accessControlProfileListReq = createHttpRequest(
-          AccessControlUrls.getAccessControlProfileList,
-          params
-        )
-        return {
-          ...accessControlProfileListReq
-        }
-      }
-    }),
-    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
-        return {
-          ...req
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
-    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params)
+    getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfiles
+        const req = createHttpRequest(url, params)
         return {
           ...req,
-          body: payload
+          ...(enableRbac ? { body: JSON.stringify({ pageSize: DHCP_LIMIT_NUMBER }) } : {})
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
-    }),
-    getDHCPProfileList: build.query<DHCPSaveData[], RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DHCPUrls.getDHCPProfiles,
-          params)
-
-        return {
-          ...req
+      transformResponse: (response: DHCPSaveData[] | TableResult<DHCPSaveData>, _meta, arg: RequestPayload) => {
+        if(arg.enableRbac) {
+          return (response as TableResult<DHCPSaveData>).data.map((item) => ({ ...item, serviceName: item.name || '' }))
         }
+        return response as DHCPSaveData[]
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -193,12 +131,12 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       }
     }),
     getDHCPProfileListViewModel: build.query<TableResult<DHCPSaveData>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(DHCPUrls.getDHCPProfilesViewModel, params)
-
+      query: ({ params, payload, enableRbac }) => {
+        const url = enableRbac ? DHCPUrls.queryDhcpProfiles : DHCPUrls.getDHCPProfilesViewModel
+        const req = createHttpRequest(url, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }],
@@ -220,47 +158,27 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       extraOptions: { maxRetries: 5 }
     }),
     getDHCPProfile: build.query<DHCPSaveData | null, RequestPayload>({
-      query: ({ params }) => {
-        const dhcpDetailReq = createHttpRequest(DHCPUrls.getDHCProfileDetail, params)
-        return {
-          ...dhcpDetailReq
-        }
-      },
-      transformResponse (dhcpProfile: DHCPSaveData) {
-        _.each(dhcpProfile.dhcpPools, (pool)=>{
-          if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
-            pool.leaseUnit = LeaseUnit.MINUTES
-            pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
-          }else{
-            pool.leaseUnit = LeaseUnit.HOURS
-            pool.leaseTime = pool.leaseTimeHours
-          }
-
-          // eslint-disable-next-line max-len
-          pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
-        })
-        return dhcpProfile
-      },
+      queryFn: getDhcpProfileFn(),
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'DHCP', id: 'DETAIL' }]
     }),
     saveOrUpdateDHCP: build.mutation<DHCPSaveData, RequestPayload>({
-      query: ({ params, payload }:{ params:Params, payload:DHCPSaveData }) => {
-        let dhcpReq
-        if(_.isEmpty(params.serviceId)){
-          dhcpReq = createHttpRequest(DHCPUrls.addDHCPService, params)
-        }else{
-          dhcpReq = createHttpRequest(DHCPUrls.updateDHCPService, params)
-        }
+      query: ({ params, payload, enableRbac } :
+        { params:Params, payload:DHCPSaveData, enableRbac: boolean }) => {
+        const addDHCPUrl = enableRbac ? DHCPUrls.addDhcpServiceRbac : DHCPUrls.addDHCPService
+        const updatedDHCPUrl = enableRbac ? DHCPUrls.updateDhcpServiceRbac : DHCPUrls.updateDHCPService
+        const url = _.isEmpty(params.serviceId) ? addDHCPUrl : updatedDHCPUrl
+        const dhcpReq = createHttpRequest(url, params)
         return {
           ...dhcpReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'DHCP', id: 'LIST' }]
     }),
     deleteDHCPService: build.mutation<CommonResult, RequestPayload>({
-      query: ({ params }) => {
-        const req = createHttpRequest(DHCPUrls.deleteDHCPProfile, params)
+      query: ({ params, enableRbac }) => {
+        const url = enableRbac ? DHCPUrls.deleteDhcpProfileRbac : DHCPUrls.deleteDHCPProfile
+        const req = createHttpRequest(url, params)
         return {
           ...req
         }
@@ -400,100 +318,90 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       providesTags: [{ type: 'MdnsProxyAp', id: 'LIST' }],
       extraOptions: { maxRetries: 5 }
     }),
-    getPortal: build.query<Portal | null, RequestPayload>({
-      async queryFn ({ params }, _queryApi, _extraOptions, fetch) {
-        if (!params?.serviceId) return Promise.resolve({ data: null } as QueryReturnValue<
-          null,
-          FetchBaseQueryError,
-          FetchBaseQueryMeta
-        >)
-        const result = await fetch(createHttpRequest(PortalUrlsInfo.getPortal, params))
-        return result as QueryReturnValue<Portal,
-        FetchBaseQueryError,
-        FetchBaseQueryMeta>
-      },
-      providesTags: [{ type: 'Service', id: 'DETAIL' }]
-    }),
-    deletePortal: build.mutation<CommonResult, RequestPayload>({
+
+    deleteWifiCallingService: build.mutation<CommonResult, RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(PortalUrlsInfo.deletePortal, params)
+        const req = createHttpRequest(WifiCallingUrls.deleteWifiCalling, params)
         return {
           ...req
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
-    updatePortal: build.mutation<Service, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PortalUrlsInfo.updatePortal, params)
-        return {
-          ...req,
-          body: payload
+    deleteWifiCallingServices: build.mutation<CommonResult, RequestPayload>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        if (enableRbac) {
+          const requests = (payload as string[]).map(serviceId => ({ params: { serviceId } }))
+          await batchApi(WifiCallingUrls.deleteWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1_1))
+
+          return { data: {} as CommonResult }
+        } else {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(WifiCallingUrls.deleteWifiCallingList, params),
+            body: payload
+          })
+
+          return { data: res.data as CommonResult }
         }
       },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    savePortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
-      query: ({ params, payload }) => {
-        const createPortalReq = createHttpRequest(
-          PortalUrlsInfo.savePortal, params
-        )
-        return {
-          ...createPortalReq,
-          body: payload
-        }
-      },
-      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
     getWifiCallingService: build.query<WifiCallingFormContextType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const reqParams = { ...params }
-        const wifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.getWifiCalling, reqParams
-        )
-        return {
-          ...wifiCallingServiceReq,
-          body: payload
+      queryFn: async ({ params, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+        const req = createHttpRequest( WifiCallingUrls.getWifiCalling, params, headers)
+        const resPromise = fetchWithBQ(req)
+
+        if (enableRbac) {
+          const payload = { filters: { id: [params?.serviceId] } }
+          const viewmodelHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const viewmodelReq = createHttpRequest(WifiCallingUrls.queryWifiCalling, params, viewmodelHeaders)
+
+          const [res, viewmodelRes] = await Promise.all([
+            resPromise,
+            fetchWithBQ({ ...viewmodelReq, body: JSON.stringify(payload) })
+          ])
+
+
+          if (res.error || viewmodelRes.error) {
+            return { error: res.error || viewmodelRes.error as FetchBaseQueryError }
+          }
+
+          const wifiNetworkIds = (viewmodelRes.data as TableResult<WifiCallingFormContextType>)?.data?.[0].wifiNetworkIds
+          return { data: {
+            ...res.data as WifiCallingFormContextType,
+            networkIds: wifiNetworkIds ?? []
+          } as WifiCallingFormContextType }
+        } else {
+          const res = await resPromise
+
+          return res.data
+            ? { data: res.data as WifiCallingFormContextType }
+            : { error: res.error as FetchBaseQueryError }
         }
       },
       providesTags: [{ type: 'Service', id: 'DETAIL' }, { type: 'WifiCalling', id: 'DETAIL' }]
     }),
-    getWifiCallingServiceList: build.query<WifiCallingSetting[], RequestPayload>({
-      query: ({ params }) => {
-        const wifiCallingServiceListReq = createHttpRequest(
-          WifiCallingUrls.getWifiCallingList, params
-        )
-        return {
-          ...wifiCallingServiceListReq
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'AddWifiCallingServiceProfile',
-            'UpdateWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfiles'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([
-              { type: 'Service', id: 'LIST' },
-              { type: 'WifiCalling', id: 'LIST' }
-            ]))
-          })
-        })
-      }
-    }),
     // eslint-disable-next-line max-len
     getEnhancedWifiCallingServiceList: build.query<TableResult<WifiCallingSetting>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const wifiCallingServiceListReq = createHttpRequest(
-          WifiCallingUrls.getEnhancedWifiCallingList, params
-        )
+      query: ({ params, payload, enableRbac }) => {
+        const apiInfo = enableRbac ? WifiCallingUrls.queryWifiCalling : WifiCallingUrls.getEnhancedWifiCallingList
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1 : undefined)
+
+        const wifiCallingServiceListReq = createHttpRequest(apiInfo, params, headers)
+
         return {
           ...wifiCallingServiceListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
+      },
+      transformResponse: (result: TableResult<WifiCallingSetting>, _meta, arg) => {
+        return arg.enableRbac
+          ? {
+            ...result,
+            data: result.data?.map(profile => ({ ...profile, networkIds: profile.wifiNetworkIds }))
+          }
+          : result
       },
       providesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -502,7 +410,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'AddWifiCallingServiceProfile',
             'UpdateWifiCallingServiceProfile',
             'DeleteWifiCallingServiceProfile',
-            'DeleteWifiCallingServiceProfiles'
+            'DeleteWifiCallingServiceProfiles',
+            'ActivateWifiCallingServiceProfileOnWifiNetwork',
+            'DeactivateWifiCallingServiceProfileOnWifiNetwork'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'Service', id: 'LIST' },
@@ -513,46 +423,144 @@ export const serviceApi = baseServiceApi.injectEndpoints({
       },
       extraOptions: { maxRetries: 5 }
     }),
-    createWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: ({ params, payload }) => {
+    createWifiCallingService: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
         const createWifiCallingServiceReq = createHttpRequest(
-          WifiCallingUrls.addWifiCalling, params
+          WifiCallingUrls.addWifiCalling,
+          params,
+          GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
         )
-        return {
+
+        const res = await fetchWithBQ({
           ...createWifiCallingServiceReq,
-          body: payload
+          body: JSON.stringify(payload)
+        })
+
+        if (enableRbac && payload?.networkIds && payload?.networkIds.length > 0) {
+          const { response } = res.data as CommonResult
+          if (response?.id) {
+            const requests = payload.networkIds.map(networkId => ({
+              params: { serviceId: response?.id, networkId }
+            }))
+            await batchApi(WifiCallingUrls.activateWifiCalling, requests, fetchWithBQ, GetApiVersionHeader(ApiVersionEnum.v1))
+          }
         }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
-    updateWifiCallingService: build.mutation<WifiCallingFormContextType, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(
-          WifiCallingUrls.updateWifiCalling, params
-        )
-        return {
-          ...req,
-          body: payload
+    updateWifiCallingService: build.mutation<CommonResult, RequestPayload<WifiCallingFormContextType>>({
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        const { networkIds, oldNetworkIds, ...restPayload } = payload ?? {}
+        const headers = GetApiVersionHeader(enableRbac ? ApiVersionEnum.v1_1 : ApiVersionEnum.v1)
+
+        const res = await fetchWithBQ({
+          ...createHttpRequest(WifiCallingUrls.updateWifiCalling, params, headers),
+          body: JSON.stringify({
+            ...restPayload,
+            networkIds: enableRbac ? undefined : networkIds
+          })
+        })
+
+        if (enableRbac) {
+          const customHeaders = GetApiVersionHeader(ApiVersionEnum.v1)
+          const activateRequests = (networkIds || [])
+            .filter(networkId => !oldNetworkIds?.includes(networkId))
+            .map(networkId => ({ params: { networkId, serviceId: params?.serviceId } }))
+          const deactivateRequests = (oldNetworkIds || [])
+            .filter(networkId => !networkIds?.includes(networkId))
+            .map(networkId => ({ params: { networkId, serviceId: params?.serviceId } }))
+
+          await Promise.all([
+            batchApi(WifiCallingUrls.activateWifiCalling, activateRequests, fetchWithBQ, customHeaders),
+            batchApi(WifiCallingUrls.deactivateWifiCalling, deactivateRequests, fetchWithBQ, customHeaders)
+          ])
         }
+
+        return { data: res.data as CommonResult }
       },
       invalidatesTags: [{ type: 'Service', id: 'LIST' }, { type: 'WifiCalling', id: 'LIST' }]
     }),
+    activateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiCallingUrls.activateWifiCalling, params, GetApiVersionHeader(ApiVersionEnum.v1))
+      }
+    }),
+    deactivateWifiCallingService: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        return createHttpRequest(WifiCallingUrls.deactivateWifiCalling, params, GetApiVersionHeader(ApiVersionEnum.v1))
+      }
+    }),
+
     createDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        const createDpskReq = createDpskHttpRequest(DpskUrls.addDpsk, params)
-        return {
-          ...createDpskReq,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const res = await fetchWithBQ({
+            // eslint-disable-next-line max-len
+            ...createHttpRequest(DpskUrls.addDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
+            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
+          })
+          // Ensure the return type is QueryReturnValue
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+          const { id } = res.data as DpskMutationResult
+
+          if (enableRbac && payload!.policySetId) {
+            await fetchWithBQ({
+              ...createHttpRequest(DpskUrls.updateDpskPolicySet, {
+                serviceId: id,
+                policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
+            })
+          }
+
+          return { data: res.data as DpskMutationResult }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
     }),
     updateDpsk: build.mutation<DpskMutationResult, RequestPayload<DpskSaveData>>({
-      query: ({ params, payload }) => {
-        const updateDpskReq = createDpskHttpRequest(DpskUrls.updateDpsk, params)
-        return {
-          ...updateDpskReq,
-          body: payload
+      queryFn: async ({ params, payload, enableRbac }, _queryApi, _extraOptions, fetchWithBQ) => {
+        try {
+          const res = await fetchWithBQ({
+            ...createHttpRequest(DpskUrls.updateDpsk, params, GetApiVersionHeader(ApiVersionEnum.v1_1)),
+            body: JSON.stringify((enableRbac) ? _.omit(payload, 'policySetId') : payload)
+          })
+          // Ensure the return type is QueryReturnValue
+          if (res.error) {
+            return { error: res.error as FetchBaseQueryError }
+          }
+
+          if (enableRbac) {
+            // Get the current Dpsk Service data
+            const getDpskRes = await fetchWithBQ({
+              ...createHttpRequest(DpskUrls.getDpsk, params)
+            })
+
+            if (getDpskRes.error) {
+              return { error: getDpskRes.error as FetchBaseQueryError }
+            }
+
+            const currentDpsk = getDpskRes.data as DpskSaveData
+            if (payload!.policySetId !== currentDpsk.policySetId) {
+              if (payload!.policySetId) {
+                await fetchWithBQ({
+                  ...createHttpRequest(DpskUrls.updateDpskPolicySet, { ...params, policySetId: payload!.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
+                })
+              } else {
+                await fetchWithBQ({
+                  ...createHttpRequest(DpskUrls.deleteDpskPolicySet, { ...params, policySetId: currentDpsk.policySetId }, GetApiVersionHeader(ApiVersionEnum.v1))
+                })
+              }
+            }
+          }
+
+          return { data: res.data as DpskMutationResult }
+        } catch (error) {
+          return { error: error as FetchBaseQueryError }
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -560,9 +568,10 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     getDpskList: build.query<TableResult<DpskSaveData>, RequestPayload>({
       query: ({ params, payload }) => {
         const getDpskListReq = createNewTableHttpRequest({
-          apiInfo: transferDpskNewConfigApiInfo(DpskUrls.getDpskList, params),
+          apiInfo: DpskUrls.getDpskList,
           params,
-          payload: (payload as TableChangePayload) ?? defaultNewTablePaginationParams
+          payload: (payload as TableChangePayload) ?? defaultNewTablePaginationParams,
+          headers: defaultDpskVersioningHeaders
         })
 
         return {
@@ -593,7 +602,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
         return {
           ...getDpskListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Dpsk', id: 'LIST' }],
@@ -617,7 +626,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const getDpskReq = createDpskHttpRequest(DpskUrls.getDpsk, params)
         return {
           ...getDpskReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'Dpsk', id: 'DETAIL' }]
@@ -627,7 +636,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createDpskHttpRequest(DpskUrls.deleteDpsk, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'Dpsk', id: 'LIST' }]
@@ -637,7 +646,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const createDpskPassphrasesReq = createDpskHttpRequest(DpskUrls.addPassphrase, params)
         return {
           ...createDpskPassphrasesReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
@@ -647,7 +656,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const createDpskPassphrasesReq = createDpskHttpRequest(DpskUrls.updatePassphrase, params)
         return {
           ...createDpskPassphrasesReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [
@@ -661,7 +670,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 
         return {
           ...getDpskListReq,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       providesTags: [{ type: 'DpskPassphrase', id: 'LIST' }],
@@ -673,7 +682,9 @@ export const serviceApi = baseServiceApi.injectEndpoints({
             'UPDATE_DPSK_PASSPHRASE',
             'DELETE_DPSK_PASSPHRASE',
             'UPDATE_DPSK_PASSPHRASES',
-            'IMPORT_DPSK_PASSPHRASES'
+            'IMPORT_DPSK_PASSPHRASES',
+            'CREATE_PASSPHRASE_DEVICES',
+            'DELETE_PASSPHRASE_DEVICES'
           ], () => {
             api.dispatch(serviceApi.util.invalidateTags([
               { type: 'DpskPassphrase', id: 'LIST' }
@@ -698,7 +709,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createDpskHttpRequest(DpskUrls.deletePassphrase, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphrase', id: 'LIST' }]
@@ -708,7 +719,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         const req = createDpskHttpRequest(DpskUrls.revokePassphrases, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       // eslint-disable-next-line max-len
@@ -716,10 +727,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     getDpskPassphraseDevices: build.query<DPSKDeviceInfo[], RequestPayload>({
       query: ({ params }) => {
-        const req = createHttpRequest(isDpskNewFlow(params)
-          ? DpskUrls.getNewFlowPassphraseDevices
-          : DpskUrls.getPassphraseDevices
-        , params)
+        const req = createDpskHttpRequest(DpskUrls.getPassphraseDevices, params)
         return {
           ...req
         }
@@ -729,7 +737,13 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         await onSocketActivityChanged(requestArgs, api, (msg) => {
           onActivityMessageReceived(msg, [
             'CREATE_PASSPHRASE_DEVICES',
-            'DELETE_PASSPHRASE_DEVICES'
+            'DELETE_PASSPHRASE_DEVICES',
+            'CREATE_DPSK_PASSPHRASE',
+            'CREATE_DPSK_PASSPHRASES',
+            'UPDATE_DPSK_PASSPHRASE',
+            'DELETE_DPSK_PASSPHRASE',
+            'UPDATE_DPSK_PASSPHRASES',
+            'IMPORT_DPSK_PASSPHRASES'
           ], () => {
             // eslint-disable-next-line max-len
             api.dispatch(serviceApi.util.invalidateTags( [{ type: 'DpskPassphraseDevices', id: 'LIST' }]))
@@ -739,35 +753,30 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     }),
     updateDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(isDpskNewFlow(params)
-          ? DpskUrls.updateNewFlowPassphraseDevices
-          : DpskUrls.updatePassphraseDevices
-        , params)
+        const req = createDpskHttpRequest(DpskUrls.updatePassphraseDevices, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
     }),
     deleteDpskPassphraseDevices: build.mutation<CommonResult, RequestPayload>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(isDpskNewFlow(params)
-          ? DpskUrls.deleteNewFlowPassphraseDevices
-          : DpskUrls.deletePassphraseDevices
-        , params)
+        const req = createDpskHttpRequest(DpskUrls.deletePassphraseDevices, params)
         return {
           ...req,
-          body: payload
+          body: JSON.stringify(payload)
         }
       },
       invalidatesTags: [{ type: 'DpskPassphraseDevices', id: 'LIST' }]
     }),
     uploadPassphrases: build.mutation<{}, RequestFormData>({
       query: ({ params, payload }) => {
-        const req = createDpskHttpRequest(DpskUrls.uploadPassphrases, params, {
+        const req = createHttpRequest(DpskUrls.uploadPassphrases, params, {
           'Content-Type': undefined
         })
+
         return {
           ...req,
           body: payload
@@ -805,7 +814,7 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     downloadNewFlowPassphrases: build.query<Blob, RequestPayload<DpskDownloadNewFlowPassphrasesPayload>>({
       query: ({ params, payload }) => {
-        const req = createHttpRequest(
+        const req = createDpskHttpRequest(
           DpskUrls.exportNewFlowPassphrases,
           {
             ...params,
@@ -835,26 +844,21 @@ export const serviceApi = baseServiceApi.injectEndpoints({
     // eslint-disable-next-line max-len
     getPassphraseClient: build.query<DpskPassphraseClient | undefined, RequestPayload<DpskPassphrasesClientPayload>>({
       query: ({ params, payload }) => {
-        const isNewFlow = isDpskNewFlow(params)
-
-        const apiInfo = DpskUrls[isNewFlow ? 'getNewFlowPassphraseClient' : 'getPassphraseClient']
-        const apiParams = isNewFlow ? {
+        const apiInfo = DpskUrls['getPassphraseClient']
+        const apiParams = {
           ...params,
           networkId: payload!.networkId,
           mac: payload!.mac
-        } : params
+        }
 
-        const req = createHttpRequest(apiInfo, apiParams)
+        const req = createDpskHttpRequest(apiInfo, apiParams)
 
         return {
-          ...req,
-          ...(isNewFlow ? {} : { body: payload })
+          ...req
         }
       },
-      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient, meta, arg) {
-        if (!isDpskNewFlow(arg.params)) return result as DpskPassphraseClient
-
-        if (_.isEmpty(result)) return undefined
+      transformResponse (result: DpskNewFlowPassphraseClient | DpskPassphraseClient) {
+        if (_.isEmpty(result)) return {} as DpskPassphraseClient
 
         const res = result as DpskNewFlowPassphraseClient
 
@@ -863,63 +867,81 @@ export const serviceApi = baseServiceApi.injectEndpoints({
           username: res.username,
           passphrase: res.passphrase,
           numberOfDevices: res.numberOfDevices,
-          clientMac: res.devices.map(device => device.mac),
+          clientMac: res.devices?.map(device => device.mac) ?? [],
           createdDate: res.createdDate,
           expirationDate: res.expirationDate
         } as DpskPassphraseClient
       }
     }),
-    getPortalProfileDetail: build.query<Portal | undefined, RequestPayload>({
-      query: ({ params }) => {
-        const portalDetailReq = createHttpRequest(PortalUrlsInfo.getPortalProfileDetail, params)
-        return {
-          ...portalDetailReq
-        }
-      },
-      providesTags: [{ type: 'Service', id: 'LIST' }]
-    }),
-    getPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createNewTableHttpRequest({
-          apiInfo: PortalUrlsInfo.getPortalProfileList,
+    getPortal: build.query<Portal, RequestPayload>({
+      query: ({ params, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
+
+        const req = createHttpRequest(PortalUrlsInfo.getPortal,
           params,
-          payload: { ...((payload as TableChangePayload) ?? defaultNewTablePaginationParams),
-            pageStartZero: false }
-        })
-
-        return {
-          ...req
-        }
+          customHeaders)
+        return { ...req }
       },
-      providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
-      transformResponse (result: NewAPITableResult<Portal>) {
-        return transferNewResToTableResult<Portal>(result)
-      },
-      async onCacheEntryAdded (requestArgs, api) {
-        await onSocketActivityChanged(requestArgs, api, (msg) => {
-          onActivityMessageReceived(msg, [
-            'Add Portal Service Profile',
-            'Update Portal Service Profile',
-            'Delete Portal Service Profile',
-            'Delete Portal Service Profiles'
-          ], () => {
-            api.dispatch(serviceApi.util.invalidateTags([{ type: 'Portal', id: 'LIST' }]))
-          })
-        })
-      }
+      providesTags: [{ type: 'Service', id: 'DETAIL' }]
     }),
-    getEnhancedPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
-      query: ({ params, payload }) => {
-        const req = createHttpRequest(PortalUrlsInfo.getEnhancedPortalProfileList,
-          params)
-
+    deletePortal: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params }) => {
+        const req = createHttpRequest(PortalUrlsInfo.deletePortal,
+          params,
+          GetApiVersionHeader(ApiVersionEnum.v1))
+        return { ...req }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    updatePortal: build.mutation<Service, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
+        const req = createHttpRequest(PortalUrlsInfo.updatePortal,
+          params,
+          customHeaders)
         return {
           ...req,
-          body: _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total'])
+          body: JSON.stringify(payload)
         }
       },
-      transformResponse (result: NewAPITableResult<Portal>) {
-        return transferNewResToTableResult<Portal>(result)
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    createPortal: build.mutation<{ response: { [key:string]:string } }, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
+
+        const req = createHttpRequest(
+          PortalUrlsInfo.createPortal, params, customHeaders
+        )
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      },
+      invalidatesTags: [{ type: 'Service', id: 'LIST' }]
+    }),
+    getEnhancedPortalProfileList: build.query<TableResult<Portal>, RequestPayload>({
+      query: ({ params, payload, enableRbac }) => {
+        const apiVersion = enableRbac? ApiVersionEnum.v1_1 : ApiVersionEnum.v1
+        const customHeaders = GetApiVersionHeader(apiVersion)
+        const req = createHttpRequest(PortalUrlsInfo.getEnhancedPortalProfileList,
+          params, customHeaders)
+        const portalTablePayload = enableRbac ?
+          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total']) :
+          _.omit(payload as PortalTablePayload, ['defaultPageSize', 'total', 'fields'])
+        return {
+          ...req,
+          body: JSON.stringify({ ...portalTablePayload })
+        }
+      },
+      transformResponse (result: NewAPITableResult<Portal>|TableResult<Portal>) {
+        if (result && 'data' in result && result.data) {
+          return result as TableResult<Portal>
+        }
+        return transferNewResToTableResult<Portal>(result as NewAPITableResult<Portal>)
       },
       providesTags: [{ type: 'Service', id: 'LIST' },{ type: 'Portal', id: 'LIST' }],
       async onCacheEntryAdded (requestArgs, api) {
@@ -944,6 +966,46 @@ export const serviceApi = baseServiceApi.injectEndpoints({
         }
       }
     }),
+    uploadPhoto: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadPhoto,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadLogo: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadLogo,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadBgImage: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadBgImage,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
+    uploadPoweredImg: build.mutation<CommonResult, RequestPayload>({
+      query: ({ params, payload }) => {
+        const req = createHttpRequest(PortalUrlsInfo.uploadPoweredImg,
+          params, GetApiVersionHeader(ApiVersionEnum.v1))
+        return {
+          ...req,
+          body: JSON.stringify(payload)
+        }
+      }
+    }),
     uploadURL: build.mutation<UploadUrlResponse, RequestPayload>({
       query: ({ params, payload }) => {
         const createUploadReq = createHttpRequest(CommonUrlsInfo.getUploadURL, params, RKS_NEW_UI)
@@ -957,13 +1019,11 @@ export const serviceApi = baseServiceApi.injectEndpoints({
 })
 
 export const {
-  useCloudpathListQuery,
   useApplicationPolicyListQuery,
-  useServiceListQuery,
   useGetDHCPProfileQuery,
+  useLazyGetDHCPProfileQuery,
   useSaveOrUpdateDHCPMutation,
   useDeleteDHCPServiceMutation,
-  useAccessControlProfileListQuery,
   useGetDHCPProfileListQuery,
   useLazyGetDHCPProfileListQuery,
   useGetMdnsProxyQuery,
@@ -980,10 +1040,11 @@ export const {
   useDeleteWifiCallingServicesMutation,
   useDeleteWifiCallingServiceMutation,
   useGetWifiCallingServiceQuery,
-  useGetWifiCallingServiceListQuery,
   useGetEnhancedWifiCallingServiceListQuery,
   useCreateWifiCallingServiceMutation,
   useUpdateWifiCallingServiceMutation,
+  useActivateWifiCallingServiceMutation,
+  useDeactivateWifiCallingServiceMutation,
   useCreateDpskMutation,
   useUpdateDpskMutation,
   useGetDpskQuery,
@@ -1008,29 +1069,20 @@ export const {
   useLazyDownloadNewFlowPassphrasesQuery,
   useGetPassphraseClientQuery,
   useGetPortalQuery,
-  useSavePortalMutation,
-  useGetPortalProfileDetailQuery,
-  useLazyGetPortalProfileListQuery,
-  useGetPortalProfileListQuery,
+  useLazyGetPortalQuery,
+  useGetEnhancedPortalProfileListQuery,
+  useLazyGetEnhancedPortalProfileListQuery,
+  useCreatePortalMutation,
   useGetPortalLangMutation,
   useDeletePortalMutation,
   useUpdatePortalMutation,
+  useUploadBgImageMutation,
+  useUploadLogoMutation,
+  useUploadPhotoMutation,
+  useUploadPoweredImgMutation,
   useUploadURLMutation,
-  useGetDHCPProfileListViewModelQuery,
-  useGetEnhancedPortalProfileListQuery
+  useGetDHCPProfileListViewModelQuery
 } = serviceApi
-
-function isDpskNewFlow (params?: Params<string>): boolean {
-  return params?.isNewConfigFlow === 'y'
-}
-
-export type DpskNewConfigFlowParamsValue = 'y' | 'n'
-
-export function transferDpskNewConfigApiInfo (apiInfo: ApiInfo, params?: Params<string>): ApiInfo {
-  if (!isDpskNewFlow(params)) return apiInfo
-
-  return { ...apiInfo, url: convertDpskNewFlowUrl(apiInfo.url) }
-}
 
 export function createDpskHttpRequest (
   apiInfo: ApiInfo,
@@ -1038,7 +1090,35 @@ export function createDpskHttpRequest (
   customHeaders?: Record<string, unknown>,
   ignoreDelegation?: boolean
 ) {
-  const newApiInfo = transferDpskNewConfigApiInfo(apiInfo, params)
+  const defaultHeaders = {
+    'Content-Type': 'application/vnd.ruckus.v2+json',
+    'Accept': 'application/vnd.ruckus.v2+json'
+  }
 
-  return createHttpRequest(newApiInfo, params, customHeaders, ignoreDelegation)
+  return createHttpRequest(
+    apiInfo,
+    params,
+    { ...defaultHeaders, ...customHeaders },
+    ignoreDelegation
+  )
+}
+
+// eslint-disable-next-line max-len
+export function transformDhcpResponse (dhcpProfile: DHCPSaveData, _meta: FetchBaseQueryMeta, arg: RequestPayload) {
+  _.each(dhcpProfile.dhcpPools, (pool)=>{
+    if (arg.enableRbac && !pool.id) {
+      pool.id = uuidv4()
+    }
+    if(pool.leaseTimeMinutes && pool.leaseTimeMinutes > 0){
+      pool.leaseUnit = LeaseUnit.MINUTES
+      pool.leaseTime = pool.leaseTimeMinutes + (pool.leaseTimeHours||0)*60
+    }else{
+      pool.leaseUnit = LeaseUnit.HOURS
+      pool.leaseTime = pool.leaseTimeHours
+    }
+
+    // eslint-disable-next-line max-len
+    pool.numberOfHosts = IpUtilsService.countIpRangeSize(pool.startIpAddress, pool.endIpAddress)
+  })
+  return dhcpProfile
 }

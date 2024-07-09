@@ -14,7 +14,9 @@ import {
   mockGraphqlMutation,
   within
 } from '@acx-ui/test-utils'
-import { DateRange } from '@acx-ui/utils'
+import { RolesEnum }                      from '@acx-ui/types'
+import { getUserProfile, setUserProfile } from '@acx-ui/user'
+import { DateRange }                      from '@acx-ui/utils'
 
 import { api, IncidentTableRow, IncidentNodeData } from './services'
 
@@ -125,6 +127,50 @@ const incidentTests = [
     },
     clientCount: 3,
     impactedClientCount: 2,
+    isMuted: false,
+    mutedBy: null,
+    mutedAt: null
+  }
+]
+
+const airtimeTests = [
+  {
+    severity: 0.75,
+    startTime: '2022-08-04T05:45:00.000Z',
+    endTime: '2022-08-05T05:54:00.000Z',
+    code: 'p-airtime-rx-24g-high',
+    sliceType: 'zone',
+    sliceValue: 'SV-AX-APs',
+    id: 'c5917024-fd4f-4e11-b65d-610f0251242b100',
+    path: [
+      {
+        type: 'system',
+        name: 'vsz-100'
+      },
+      {
+        type: 'zone',
+        name: 'SV-AX-APs'
+      }
+    ],
+    metadata: {
+      avgAnomalousAirtime: 59.28282026409949,
+      rootCauseChecks: {
+        checks: [
+          { isHighDensityWifiDevices: true },
+          { isAclbRaised: true },
+          { isLargeMgmtFrameCount: true },
+          { isHighSsidCountPerRadio: true },
+          { isCRRMRaised: true },
+          { isChannelFlyEnabled: true },
+          { isHighLegacyWifiDevicesCount: true }
+        ],
+        params: {
+          ssidCountPerRadioSlice: 1
+        }
+      }
+    },
+    clientCount: 0,
+    impactedClientCount: 0,
     isMuted: false,
     mutedBy: null,
     mutedAt: null
@@ -360,6 +406,28 @@ describe('IncidentTable', () => {
     expect(afterReset).toHaveLength(2)
   })
 
+  it('should hide muted when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: incidentTests } } }
+    })
+
+    render(<Provider><IncidentTable filters={filters}/></Provider>, {
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false
+      }
+    })
+
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
+  })
+
   it('should render drawer when click on description', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
@@ -381,6 +449,29 @@ describe('IncidentTable', () => {
     )
     expect(await screen.findByText('Root cause:')).toBeVisible()
   })
+  it('should render drawer when click on airtime description', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
+      data: { network: { hierarchyNode: { incidents: airtimeTests } } }
+    })
+
+    render(<Provider><IncidentTable filters={filters}/></Provider>,{
+      route: {
+        path: '/tenantId/t/analytics/incidents',
+        wrapRoutes: false,
+        params: {
+          tenantId: '1'
+        }
+      }
+    })
+    fireEvent.click(
+      await screen.findByText(
+        'Airtime Rx is unusually high in 2.4 GHz in Venue: SV-AX-APs'
+      )
+    )
+    expect(await screen.findByText('Root cause:')).toBeVisible()
+    expect(await screen.findByText(
+      'High co-channel interference.')).toBeVisible()
+  })
   it('should render drawer when click on description & show impacted clients', async () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: incidentTests } } }
@@ -400,6 +491,10 @@ describe('IncidentTable', () => {
         'RADIUS failures are unusually high in Access Point: r710_!21690 (60:D0:2C:22:6B:90)'
       )
     )
+    expect(await screen.findByText(
+      // eslint-disable-next-line max-len
+      'RADIUS failures are high in Access Point: r710_!21690 (60:D0:2C:22:6B:90) impacting connectivity for 66.67% of clients.')
+    ).toBeVisible()
     expect(await screen.findByText('Root cause:')).toBeVisible()
   })
   it('should close drawer when click on drawer close button', async () => {

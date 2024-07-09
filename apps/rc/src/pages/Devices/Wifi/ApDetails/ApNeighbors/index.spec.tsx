@@ -1,7 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }                 from '@acx-ui/feature-toggle'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider }                     from '@acx-ui/store'
 import {
@@ -16,7 +15,6 @@ import { ApContextProvider } from '../ApContextProvider'
 import { mockedAp } from './__tests__/fixtures'
 
 import { ApNeighborsTab } from '.'
-
 
 jest.mock('./ApLldpNeighbors', () => () => {
   return <div data-testid='ap-lldp-neighbors' />
@@ -47,13 +45,15 @@ describe('ApNeighborsTab', () => {
       rest.patch(
         WifiUrlsInfo.detectApNeighbors.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123456789' }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getApValidChannel.url,
+        (_, res, ctx) => res(ctx.json({}))
       )
     )
   })
 
   it('should render Neighbors tab', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     render(<ApNeighborsTab />, {
       wrapper,
       route: { params, path: tabPath }
@@ -64,8 +64,6 @@ describe('ApNeighborsTab', () => {
   })
 
   it('should not render Neighbors tab when the FF is off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-
     render(<ApNeighborsTab />, {
       wrapper,
       route: { params, path: tabPath }
@@ -77,8 +75,6 @@ describe('ApNeighborsTab', () => {
   })
 
   it('should navigate to the default tab when there is no activeSubTab param', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-
     render(<ApNeighborsTab />, {
       wrapper,
       route: {
@@ -87,6 +83,6 @@ describe('ApNeighborsTab', () => {
       }
     })
 
-    expect(await screen.findByTestId('ap-lldp-neighbors')).toBeVisible()
+    expect(await screen.findByTestId('ap-rf-neighbors')).toBeVisible()
   })
 })

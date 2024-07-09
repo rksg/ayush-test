@@ -9,7 +9,6 @@ import { mockGraphqlQuery }     from '@acx-ui/test-utils'
 import type { AnalyticsFilter } from '@acx-ui/utils'
 import {
   DateRange,
-  setUpIntl,
   NodeType,
   NetworkPath
 } from '@acx-ui/utils'
@@ -175,15 +174,11 @@ describe('IncidentTable: services', () => {
     {
       ...sampleIncidentWithTableFields,
       relatedIncidents: [incidentValues],
-      children: [{ ...sampleIncidentWithTableFields, children: undefined }]
+      children: [sampleIncidentWithTableFields]
     }
   ]
 
   beforeEach(() => {
-    setUpIntl({
-      locale: 'en-US',
-      messages: {}
-    })
     store.dispatch(api.util.resetApiState())
   })
 

@@ -4,23 +4,56 @@ import { useIntl }     from 'react-intl'
 import { GridRow, GridCol }                   from '@acx-ui/components'
 import { CaretRightList, SearchResultNoData } from '@acx-ui/icons'
 import { TenantLink }                         from '@acx-ui/react-router-dom'
+import type { RaiPermission }                 from '@acx-ui/user'
+import { hasPermission }                      from '@acx-ui/user'
 
 import * as UI from './styledComponents'
 
 const useLinkData = () => {
   const { $t } = useIntl()
-  const linkData = [
-    { title: 'Dashboard', to: '/dashboard' },
-    { title: 'Incidents', to: '/incidents' },
-    { title: 'Network Assurance', to: '/health' },
-    { title: 'Reports', to: '/reports' },
-    { title: 'Data Studio', to: '/dataStudio' }
-  ]
-
-  const data = linkData.map(val => <TenantLink to={val.to}>
-    {$t({ defaultMessage: '{title}' }, { title: val.title })}
-  </TenantLink>)
-  return data
+  const links: { title: string, to: string, permission: RaiPermission }[] = [{
+    title: $t({ defaultMessage: 'Data Studio' }),
+    to: '/dataStudio',
+    permission: 'READ_DATA_STUDIO'
+  }, {
+    title: $t({ defaultMessage: 'Reports' }),
+    to: '/reports',
+    permission: 'READ_REPORTS'
+  }, {
+    title: $t({ defaultMessage: 'Dashboard' }),
+    to: '/dashboard',
+    permission: 'READ_DASHBOARD'
+  }, {
+    title: $t({ defaultMessage: 'Incidents' }),
+    to: '/incidents',
+    permission: 'READ_INCIDENTS'
+  }, {
+    title: $t({ defaultMessage: 'Clients' }),
+    to: '/users/wifi/clients',
+    permission: 'READ_WIRELESS_CLIENTS_LIST'
+  }, {
+    title: $t({ defaultMessage: 'Health' }),
+    to: '/health',
+    permission: 'READ_HEALTH'
+  }, {
+    title: $t({ defaultMessage: 'APs' }),
+    to: '/devices/wifi',
+    permission: 'READ_ACCESS_POINTS_LIST'
+  }, {
+    title: $t({ defaultMessage: 'Switches' }),
+    to: '/devices/switch',
+    permission: 'READ_SWITCH_LIST'
+  }, {
+    title: $t({ defaultMessage: 'Wi-Fi Networks' }),
+    to: '/networks/wireless',
+    permission: 'READ_WIFI_NETWORKS_LIST'
+  }]
+  return links.reduce((elements, { title, to, permission }) => {
+    if (hasPermission({ permission })) {
+      elements.push(<TenantLink to={to}>{title}</TenantLink>)
+    }
+    return elements
+  }, [] as React.ReactNode[])
 }
 
 function NoData () {

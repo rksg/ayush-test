@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
 
-import { BulbOutlined, InformationSolid } from '@acx-ui/icons'
+import { BulbOutlined, DeleteOutlined, InformationSolid } from '@acx-ui/icons'
 
 import { Subtitle } from '../../IncidentDetails/Insights/styledComponents'
 
@@ -98,4 +98,10 @@ export const BulbOutlinedIcon = styled(BulbOutlined)`
 
 export const CrrmValuesText = styled.div`
   padding-top: 20px;
+`
+
+export const DeleteOutlinedIcon = styled(DeleteOutlined)`
+  height: 24px;
+  width: 24px;
+  cursor: pointer;
 `

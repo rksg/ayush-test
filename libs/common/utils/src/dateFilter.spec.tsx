@@ -1,7 +1,7 @@
-import { renderHook, render } from '@testing-library/react'
+import moment from 'moment-timezone'
 
-import { BrowserRouter } from '@acx-ui/react-router-dom'
-
+import { BrowserRouter }      from '@acx-ui/react-router-dom'
+import { renderHook, render } from '@acx-ui/test-utils'
 
 import { useDateFilter }                                             from './dateFilter'
 import { defaultRanges, DateRange, getDateRangeFilter, resetRanges } from './dateUtil'
@@ -53,6 +53,17 @@ describe('useDateFilter', () => {
     rerender(component(false))
     expect(asFragment()).toMatchSnapshot()
   })
+  it('ignores period params when it is set beyond available start date', async () => {
+    function Component () {
+      const filters = useDateFilter(moment('2020-07-23T18:31:00+08:00'))
+      return <div>{JSON.stringify(filters)}</div>
+    }
+    const component = () => <BrowserRouter>
+      <Component />
+    </BrowserRouter>
+    const { asFragment } = render(component())
+    expect(asFragment()).toMatchSnapshot()
+  })
   it('should render correctly with default date from url', () => {
     function Component () {
       const filters = useDateFilter()
@@ -78,8 +89,6 @@ describe('useDateFilter', () => {
     expect(asFragment()).toMatchSnapshot()
   })
 })
-
-
 describe('defaultRanges', () => {
   beforeEach(() => {
     Date.now = jest.fn(() => new Date('2022-01-01T00:00:30.123Z').getTime())
@@ -98,7 +107,8 @@ describe('defaultRanges', () => {
       'All Time': ['2022-01-01T00:00:30.123Z', '2022-01-01T00:00:30.123Z'],
       'Last 24 Hours': ['2021-12-31T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
       'Last 7 Days': ['2021-12-25T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
-      'Last 30 Days': ['2021-12-02T00:01:00.000Z', '2022-01-01T00:01:00.000Z']
+      'Last 30 Days': ['2021-12-02T00:01:00.000Z', '2022-01-01T00:01:00.000Z'],
+      'Last 8 Hours': [ '2021-12-31T16:01:00.000Z','2022-01-01T00:01:00.000Z']
     })
   })
 

@@ -1,23 +1,31 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { MessageDescriptor, useIntl } from 'react-intl'
-import { v4 as uuidv4 }               from 'uuid'
+import { message }           from 'antd'
+import { MessageDescriptor } from 'react-intl'
+import { v4 as uuidv4 }      from 'uuid'
 
 import { showToast }                                                                    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                       from '@acx-ui/feature-toggle'
 import { useDetectApNeighborsMutation }                                                 from '@acx-ui/rc/services'
 import { ApErrorHandlingMessages, CatchErrorResponse, closePokeSocket, initPokeSocket } from '@acx-ui/rc/utils'
 import { getIntl }                                                                      from '@acx-ui/utils'
 
-import { ApNeighborTypes, defaultSocketTimeout } from './constants'
-import { errorTypeMapping }                      from './contents'
+import { ApNeighborStatus, ApNeighborTypes, NewApNeighborTypes, defaultSocketTimeout } from './constants'
+import { errorTypeMapping }                                                            from './contents'
 
-export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, handler: () => void) {
+export function useApNeighbors (
+  type: ApNeighborTypes,
+  serialNumber: string,
+  handler: () => void,
+  venueId?: string
+) {
   const [ isDetecting, setIsDetecting ] = useState(false)
-  const { $t } = useIntl()
   const [ detectApNeighbors ] = useDetectApNeighborsMutation()
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
   const pokeSocketRef = useRef<SocketIOClient.Socket>()
   const pokeSocketTimeoutIdRef = useRef<NodeJS.Timeout>()
   const pokeSocketSubscriptionIdRef = useRef<string>(getSocketSubscriptionId(type, serialNumber))
+  const isSystemDrivenDetectRef = useRef<boolean>()
 
   useEffect(() => {
     if (isDetecting) {
@@ -33,11 +41,12 @@ export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, han
     if (!pokeSocketRef.current) {
       pokeSocketRef.current = initPokeSocket(pokeSocketSubscriptionIdRef.current, () => {
         setIsDetecting(false)
+        clearErrorToast()
         handler()
       })
 
       pokeSocketRef.current.on('connectedSocketEvent', () => {
-        doDetect()
+        doDetect(true)
       })
     }
 
@@ -57,30 +66,56 @@ export function useApNeighbors (type: ApNeighborTypes, serialNumber: string, han
   }
 
   const onSocketTimeout = () => {
-    showError($t({ defaultMessage: 'The AP is not reachable' }))
+    handleError('timeout')
     setIsDetecting(false)
   }
 
-  const doDetect = async () => {
+  const doDetect = async (isSystemDriven = false) => {
     setIsDetecting(true)
+    isSystemDrivenDetectRef.current = isSystemDriven
+    const payload = isUseWifiRbacApi ?
+      {
+        status: ApNeighborStatus.CURRENT,
+        type: type === 'lldp' ? NewApNeighborTypes.LLDP_NEIGHBOR : NewApNeighborTypes.RF_NEIGHBOR,
+        subscriptionId: pokeSocketSubscriptionIdRef.current
+      }:
+      {
+        action: type === 'lldp' ? 'DETECT_LLDP_NEIGHBOR': 'DETECT_RF_NEIGHBOR',
+        subscriptionId: pokeSocketSubscriptionIdRef.current
+      }
 
     try {
       await detectApNeighbors({
-        params: { serialNumber },
-        payload: {
-          action: type === 'lldp' ? 'DETECT_LLDP_NEIGHBOR': 'DETECT_RF_NEIGHBOR',
-          subscriptionId: pokeSocketSubscriptionIdRef.current
-        }
+        params: { serialNumber, venueId },
+        payload,
+        enableRbac: isUseWifiRbacApi
       }).unwrap()
     } catch (error) {
-      handleError(error as CatchErrorResponse)
+      handleError('api', error as CatchErrorResponse)
       setIsDetecting(false)
+    }
+  }
+
+  const clearErrorToast = () => {
+    message.destroy()
+  }
+
+  const handleError = (type: 'api' | 'timeout', error?: CatchErrorResponse) => {
+    clearErrorToast()
+
+    if (isSystemDrivenDetectRef.current) return
+
+    if (type === 'timeout') {
+      handleApNeighborsTimeoutError()
+    } else {
+      handleApNeighborsApiError(error as CatchErrorResponse)
     }
   }
 
   return {
     isDetecting,
-    doDetect
+    doDetect,
+    handleApiError: handleError.bind(null, 'api')
   }
 }
 
@@ -88,7 +123,11 @@ function getSocketSubscriptionId (type: ApNeighborTypes, serialNumber: string): 
   return `${serialNumber}-neighbor-${type}-${uuidv4()}`
 }
 
-export const handleError = (error: CatchErrorResponse) => {
+function handleApNeighborsTimeoutError () {
+  showError(getIntl().$t({ defaultMessage: 'The AP is not reachable' }))
+}
+
+function handleApNeighborsApiError (error: CatchErrorResponse) {
   const { $t } = getIntl()
   const code = error?.data?.errors?.[0]?.code
   const isDefinedCode = code && errorTypeMapping[code]
@@ -99,7 +138,7 @@ export const handleError = (error: CatchErrorResponse) => {
   showError($t(message, { action: $t({ defaultMessage: 'detecting' }) }))
 }
 
-const showError = (errorMessage: string) => {
+function showError (errorMessage: string) {
   showToast({
     type: 'error',
     content: errorMessage

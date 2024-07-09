@@ -2,13 +2,13 @@ import { useState, SyntheticEvent, useContext } from 'react'
 
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl'
 
-import { Anchor, Tooltip } from '@acx-ui/components'
+import { Anchor, Tooltip, Table } from '@acx-ui/components'
 
 import { ConnectedClientsTable }  from '../ConnectedClientsTable'
 import { HistoricalClientsTable } from '../HistoricalClientsTable'
 
-import { ClientTabContext }                                          from './context'
-import { ClientLink, ClientSearchBar, SearchBarDiv, SearchCountDiv } from './styledComponents'
+import { ClientTabContext }                         from './context'
+import { ClientLink, SearchBarDiv, SearchCountDiv } from './styledComponents'
 
 export function ClientDualTable () {
   const { setClientCount } = useContext(ClientTabContext)
@@ -41,14 +41,18 @@ export function ClientDualTable () {
   return <>
     <div id='ClientsTable'>
       <SearchBarDiv>
-        <ClientSearchBar
-          placeHolder={
-            $t({ defaultMessage: 'Search for connected and historical clients...' })}
-          onChange={async (value)=>{
-            if(value.length === 0 || value.length >= 2){
+        <Table.SearchInput
+          onChange={(e) => {
+            const value = e.target.value
+            if (value.length === 0 || value.length >= 2) {
               setSearchValue(value)
             }
           }}
+          placeholder={
+            $t({ defaultMessage: 'Search for connected and historical clients...' })}
+          style={{ width: 373 }}
+          maxLength={64}
+          allowClear
         />
         <Tooltip.Question
           title={<FormattedMessage {...getSearchToolTipText()}

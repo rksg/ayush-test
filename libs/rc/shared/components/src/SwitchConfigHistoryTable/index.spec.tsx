@@ -5,8 +5,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { CommonUrlsInfo, SwitchUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                       from '@acx-ui/store'
+import { CommonUrlsInfo, SwitchUrlsInfo, SwitchViewModel } from '@acx-ui/rc/utils'
+import { Provider }                                        from '@acx-ui/store'
 import {
   fireEvent,
   mockServer,
@@ -18,9 +18,19 @@ import {
 
 import { SwitchConfigHistoryTable } from '.'
 
-jest.mock('../CodeMirrorWidget', () => ({
-  CodeMirrorWidget: () => <div data-testid='CodeMirrorWidget' />
-}))
+jest.mock('../CodeMirrorWidget', () => {
+  const { forwardRef } = jest.requireActual('react')
+  return {
+    ...jest.requireActual('../CodeMirrorWidget'),
+    CodeMirrorWidget: forwardRef(() => <div data-testid='CodeMirrorWidget'></div>)
+  }
+})
+
+const mockedSwitchDetail = {
+  id: 'c0:c5:20:aa:24:0f',
+  venueId: '72cf6720ccba4c37af972b3856b8ac6d',
+  name: 'FEK3224R08V-test'
+} as SwitchViewModel
 
 const list = {
   response: {
@@ -164,7 +174,7 @@ describe('SwitchConfigHistoryTable', () => {
       activeSubTab: 'history'
     }
 
-    render(<Provider><SwitchConfigHistoryTable /></Provider>, {
+    render(<Provider><SwitchConfigHistoryTable switchDetail={mockedSwitchDetail} /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 
@@ -195,7 +205,7 @@ describe('SwitchConfigHistoryTable', () => {
       activeSubTab: 'history'
     }
 
-    render(<Provider><SwitchConfigHistoryTable /></Provider>, {
+    render(<Provider><SwitchConfigHistoryTable switchDetail={mockedSwitchDetail} /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 
@@ -219,7 +229,7 @@ describe('SwitchConfigHistoryTable', () => {
       activeSubTab: 'history'
     }
 
-    render(<Provider><SwitchConfigHistoryTable /></Provider>, {
+    render(<Provider><SwitchConfigHistoryTable switchDetail={mockedSwitchDetail} /></Provider>, {
       route: { params, path: '/:tenantId/devices/switch/:switchId/:serialNumber/details/:activeTab/:activeSubTab' }
     })
 

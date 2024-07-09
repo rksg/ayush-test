@@ -1,8 +1,7 @@
 import userEvent from '@testing-library/user-event'
 
-import { useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { Provider }                       from '@acx-ui/store'
-import { render, screen }                 from '@acx-ui/test-utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '..'
 import { ApCap_T750SE, ApData_T750SE }  from '../../../__tests__/fixtures'
@@ -35,17 +34,15 @@ jest.mock('./DirectedMulticast', () => ({
 }))
 
 describe('AP Networking Tab', () => {
-  beforeEach(() => {
-    jest.mocked(useIsSplitOn).mockReturnValue(true)
-    jest.mocked(useIsTierAllowed).mockReturnValue(true)
-  })
+  const defaultT750SeApCtxData = {
+    apData: ApData_T750SE,
+    apCapabilities: ApCap_T750SE
+  }
 
   it('should render correctly',async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{
-          apData: ApData_T750SE,
-          apCapabilities: ApCap_T750SE }} >
+        <ApDataContext.Provider value={defaultT750SeApCtxData}>
           <NetworkingTab />
         </ApDataContext.Provider>
       </Provider>, {
@@ -99,9 +96,7 @@ describe('AP Networking Tab', () => {
           editNetworkingContextData: newEditNetworkingContextData,
           setEditNetworkingContextData: jest.fn()
         }} >
-          <ApDataContext.Provider value={{
-            apData: ApData_T750SE,
-            apCapabilities: ApCap_T750SE }} >
+          <ApDataContext.Provider value={defaultT750SeApCtxData}>
             <NetworkingTab />
           </ApDataContext.Provider>
         </ApEditContext.Provider>

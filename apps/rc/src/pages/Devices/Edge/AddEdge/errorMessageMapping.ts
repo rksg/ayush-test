@@ -19,7 +19,8 @@ export const getErrorModalInfo = (error: CatchErrorResponse) => {
     },
     'EDGE-10116': {
       title: $t({ defaultMessage: 'Error' }),
-      content: $t({ defaultMessage: 'The selected venue already has a SmartEdge' })
+      // eslint-disable-next-line max-len
+      content: $t({ defaultMessage: 'The selected <venueSingular></venueSingular> already has a SmartEdge' })
     }
   }
   return errorMessageMapping[error.data?.errors[0]?.code] ||

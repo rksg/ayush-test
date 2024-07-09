@@ -1,22 +1,24 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, Loader, Table, TableProps, showActionModal }        from '@acx-ui/components'
-import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
-import { DownloadOutlined }                                          from '@acx-ui/icons'
-import { EdgeServiceStatusLight, useEdgeExportCsv }                  from '@acx-ui/rc/components'
-import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery } from '@acx-ui/rc/services'
+import { Button, Loader, Table, TableProps, showActionModal }                                  from '@acx-ui/components'
+import { Features, useIsSplitOn }                                                              from '@acx-ui/feature-toggle'
+import { DownloadOutlined }                                                                    from '@acx-ui/icons'
+import { EdgeServiceStatusLight, useEdgeDhcpActions, useEdgeExportCsv, useIsEdgeFeatureReady } from '@acx-ui/rc/components'
+import { useDeleteEdgeServicesMutation, useGetEdgeServiceListQuery }                           from '@acx-ui/rc/services'
 import {
   EdgeService,
   EdgeServiceTypeEnum,
   TableQuery,
   useTableQuery
 } from '@acx-ui/rc/utils'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-import { exportMessageMapping }      from '@acx-ui/utils'
+import { EdgeScopes, RequestPayload }    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+import { exportMessageMapping }          from '@acx-ui/utils'
+
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { ServiceDetailDrawer }      from './ServiceDetailDrawer'
 import { getEdgeServiceTypeString } from './utils'
@@ -26,8 +28,14 @@ export const EdgeServices = () => {
   const params = useParams()
   const { serialNumber } = params
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
+  const isEdgeHaReady = useIsEdgeFeatureReady(Features.EDGE_HA_TOGGLE)
+  const isEdgeDhcpHaReady = useIsEdgeFeatureReady(Features.EDGE_DHCP_HA_TOGGLE)
+  const isEdgeFirewallHaReady = useIsEdgeFeatureReady(Features.EDGE_FIREWALL_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
   const [currentData, setCurrentData] = useState({} as EdgeService)
   const [drawerVisible, setDrawerVisible] = useState(false)
+  const { currentEdgeStatus } = useContext(EdgeDetailsDataContext)
+  const settingsId = 'edge-services-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeServiceListQuery,
     defaultPayload: {
@@ -36,16 +44,31 @@ export const EdgeServices = () => {
     sorter: {
       sortField: 'serviceName',
       sortOrder: 'ASC'
-    }
+    },
+    pagination: { settingsId }
   })
   const { exportCsv, disabled } = useEdgeExportCsv<EdgeService>(
     tableQuery as unknown as TableQuery<EdgeService, RequestPayload<unknown>, unknown>
   )
   const [removeServices] = useDeleteEdgeServicesMutation()
+  const { restartEdgeDhcp } = useEdgeDhcpActions()
 
   const showServiceDetailsDrawer = (data: EdgeService) => {
-    setCurrentData(data)
-    setDrawerVisible(true)
+    switch (data.serviceType) {
+      case EdgeServiceTypeEnum.DHCP:
+        setDrawerVisible(isEdgeHaReady && isEdgeDhcpHaReady)
+        break
+      case EdgeServiceTypeEnum.FIREWALL:
+        setDrawerVisible(isEdgeHaReady && isEdgeFirewallHaReady)
+        break
+      case EdgeServiceTypeEnum.NETWORK_SEGMENTATION:
+        setDrawerVisible(isEdgePinReady)
+        break
+      default:
+        setCurrentData(data)
+        setDrawerVisible(true)
+        break
+    }
   }
 
   const columns: TableProps<EdgeService>['columns'] = [
@@ -123,13 +146,22 @@ export const EdgeServices = () => {
     return isDhcpSelected ? isNsgSelected ? false : isNsgExist : false
   }
 
+  const isRestartBtnDisable = (selectedRows: EdgeService[]) => {
+    let isDhcpSelected = selectedRows
+      .filter(EdgeService => EdgeService.serviceType === EdgeServiceTypeEnum.DHCP)
+      .length > 0
+
+    return !(isDhcpSelected && selectedRows.length === 1)
+  }
+
   const rowActions: TableProps<EdgeService>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Remove' }),
+      scopeKey: [EdgeScopes.DELETE],
       disabled: isRemoveBtnDisable,
       tooltip: (selectedRows) => isRemoveBtnDisable(selectedRows)
         // eslint-disable-next-line max-len
-        ? $t({ defaultMessage: 'DHCP cannot be removed when the Network Segmentation is applied on the Edge' }
+        ? $t({ defaultMessage: 'DHCP cannot be removed when the Personal Identity Network is applied on the Edge' }
         ) : undefined,
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
@@ -173,17 +205,68 @@ export const EdgeServices = () => {
           }
         })
       }
+    },
+    {
+      label: $t({ defaultMessage: 'Restart' }),
+      scopeKey: [EdgeScopes.UPDATE],
+      disabled: (isEdgeHaReady && isEdgeDhcpHaReady) ? isRestartBtnDisable : true,
+      tooltip: (selectedRows) => isRestartBtnDisable(selectedRows)
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Only DHCP can be restarted' }
+        ) : undefined,
+      onClick: (selectedRows, clearSelection) => {
+        showActionModal({
+          type: 'confirm',
+          title: $t({
+            defaultMessage: `Restart "{count, plural,
+              one {{entityValue}}
+              other {{count} Services}
+            }"?`
+          }, { count: selectedRows.length, entityValue: selectedRows[0].serviceName }),
+          content: $t({
+            defaultMessage: `Are you sure you want to restart {count, plural,
+              one {this service}
+              other {these services}
+            }?`
+          }, { count: selectedRows.length }),
+          customContent: {
+            action: 'CUSTOM_BUTTONS',
+            buttons: [
+              {
+                text: $t({ defaultMessage: 'Cancel' }),
+                type: 'default',
+                key: 'cancel'
+              }, {
+                text: $t({ defaultMessage: 'Restart' }),
+                type: 'primary',
+                key: 'ok',
+                closeAfterAction: true,
+                handler: async () => {
+                  await restartEdgeDhcp(
+                    selectedRows[0].serviceId,
+                    currentEdgeStatus?.venueId ?? '',
+                    selectedRows[0].edgeId
+                  )
+                  clearSelection()
+                }
+              }
+            ]
+          }
+        })
+      }
     }
   ]
+
+  const isSelectionVisible = hasPermission({ scopes: [EdgeScopes.UPDATE, EdgeScopes.DELETE] })
 
   return (
     <Loader states={[
       tableQuery
     ]}>
       <Table
-        settingsId='edge-services-table'
+        settingsId={settingsId}
         rowKey='serviceId'
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         rowActions={filterByAccess(rowActions)}
         columns={columns}
         dataSource={tableQuery?.data?.data}

@@ -85,19 +85,19 @@ export function MacRegistrationPoolLink (props: {
 }
 
 export function NetworkSegmentationLink (props: {
-  nsgId?: string,
+  id?: string,
   name?: string,
   showNoData?: boolean
 }) {
-  const { nsgId, name, showNoData } = props
+  const { id, name, showNoData } = props
   return (
-    nsgId
+    id
       ? <TenantLink to={getServiceDetailsLink({
-        serviceId: nsgId,
+        serviceId: id,
         oper: ServiceOperation.DETAIL,
         type: ServiceType.NETWORK_SEGMENTATION
       })}>
-        {name ?? nsgId}
+        {name ?? id}
       </TenantLink>
       : <>{showNoData && noDataDisplay}</>
   )
@@ -126,6 +126,19 @@ export function ConnectionMeteringLink (props:{ id?: string, name?: string }) {
   return (
     <TenantLink to={getPolicyDetailsLink({ type: PolicyType.CONNECTION_METERING,
       oper: PolicyOperation.DETAIL, policyId: id ?? '' })}>
+      {name ?? id}
+    </TenantLink>
+  )
+}
+
+export const ResidentPortalLink = (props: { id?: string, name?: string }) => {
+  const { id, name } = props
+  return (
+    <TenantLink to={getServiceDetailsLink({
+      type: ServiceType.RESIDENT_PORTAL,
+      oper: ServiceOperation.DETAIL,
+      serviceId: id!
+    })}>
       {name ?? id}
     </TenantLink>
   )

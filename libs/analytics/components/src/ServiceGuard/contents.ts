@@ -3,6 +3,8 @@ import React from 'react'
 
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
+import { get } from '@acx-ui/config'
+
 import {
   ClientType,
   TestStage,
@@ -42,7 +44,20 @@ export const testTypesWithSchedule: Record<string, MessageDescriptor> = {
 }
 
 export const unsupportedAuthMethods = {
-  [ClientType.VirtualClient]: defineMessage({ defaultMessage: `
+  [ClientType.VirtualClient]: get('IS_MLISA_SA') ? defineMessage({ defaultMessage: `
+    <p>The following are not supported:</p>
+    <ul>
+      <li>802.1X with EAP-TLS and EAP-SIM</li>
+      <li>Authentication with WEP/WPA3 encryption</li>
+      <li>DPSK</li>
+      <li>Hotspot 2.0 Access/Onboarding</li>
+      <li>MAC authentication</li>
+      <li>OWE</li>
+      <li>Social Media Login</li>
+      <li>WeChat</li>
+      <li>WISPr with external service provider</li>
+    </ul>
+  ` }) : defineMessage({ defaultMessage: `
     <p>The following are not supported:</p>
     <ul>
       <li>802.1X with EAP-TLS and EAP-SIM</li>
@@ -52,15 +67,29 @@ export const unsupportedAuthMethods = {
       <li>DPSK</li>
     </ul>
   ` }),
-  [ClientType.VirtualWirelessClient]: defineMessage({ defaultMessage: `
+  [ClientType.VirtualWirelessClient]: get('IS_MLISA_SA') ? defineMessage({ defaultMessage: `
     <p>The following are not supported:</p>
     <ul>
-    <li>802.1X with WPA3, EAP-TLS and EAP-SIM</li>
-    <li>WEP encryption</li>
-    <li>WPA3/WPA2 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li>
-    <li>Captive portal</li>
-    <li>Cloudpath</li>
-    <li>DPSK</li>
+      <li>802.1X with WPA3, EAP-TLS and EAP-SIM</li>
+      <li>WEP encryption</li>
+      <li>WPA2/WPA3-Mixed and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li>
+      <li>DPSK</li>
+      <li>Hotspot 2.0 Access/Onboarding</li>
+      <li>MAC authentication</li>
+      <li>OWE</li>
+      <li>Social Media Login</li>
+      <li>WeChat</li>
+      <li>WISPr with external service provider</li>
+    </ul>
+  ` }) : defineMessage({ defaultMessage: `
+    <p>The following are not supported:</p>
+    <ul>
+      <li>802.1X with WPA3, EAP-TLS and EAP-SIM</li>
+      <li>WEP encryption</li>
+      <li>WPA2/WPA3 mixed mode and WPA3 encryption (except when station AP has 3 radios e.g. R760)</li>
+      <li>Captive portal</li>
+      <li>Cloudpath</li>
+      <li>DPSK</li>
     </ul>
   ` })
 }
@@ -96,13 +125,29 @@ export const scheduleMonthlyTooltip = defineMessage({
   `
 })
 
-export const apsSelectionTooltip = defineMessage({
-  defaultMessage: `<p>
-    802.11ac wave 1 APs and older are not supported.
-    Only supported AP models are shown in the list below.
-    For details, please refer to the release notes.
-  </p>`
-})
+export const apsSelectionTooltip: Record<ClientType, MessageDescriptor | undefined> = {
+  [ClientType.VirtualClient]: get('IS_MLISA_SA') ? defineMessage({
+    defaultMessage: `<p>
+      Service Validation (Virtual Client) is only supported in SmartZone v{requiredSZVersion} and above.
+      802.11ac wave 1 APs and older are not supported. For details, please refer to the release notes.
+      Only supported SmartZone versions and AP models are shown in the list below.
+    </p>`
+  }) : defineMessage({
+    defaultMessage: `<p>
+      802.11ac wave 1 APs and older are not supported.
+      Only supported AP models are shown in the list below.
+      For details, please refer to the release notes.
+    </p>`
+  }),
+  [ClientType.VirtualWirelessClient]: get('IS_MLISA_SA') ? defineMessage({
+    defaultMessage: `<p>
+      Service Validation (Virtual Wireless Client) is only supported in SmartZone v{requiredSZVersion} and above.
+      AP firmware v{requiredAPFirmware} and above is required.
+      For details, please refer to the release notes.
+      Only supported SmartZone versions and AP firmware/models are shown in the list below.
+    </p>`
+  }) : undefined
+}
 
 export const messageMapping = {
   RUN_TEST_NO_APS: defineMessage({ defaultMessage: 'There are no APs to run the test' }),
@@ -112,11 +157,11 @@ export const messageMapping = {
   TEST_IN_PROGRESS: defineMessage({ defaultMessage: 'Test is in progress' }),
   EDIT_NOT_ALLOWED: defineMessage({ defaultMessage: 'Only the creator of the test is allowed to edit' }),
   DUPLICATE_NAME_NOT_ALLOWED: defineMessage({ defaultMessage: 'Duplicate test name exist' }),
-  TEST_CREATED: defineMessage({ defaultMessage: 'Service Validation test created' }),
-  TEST_UPDATED: defineMessage({ defaultMessage: 'Service Validation test updated' }),
-  TEST_DELETED: defineMessage({ defaultMessage: 'Service Validation test deleted' }),
-  TEST_CLONED: defineMessage({ defaultMessage: 'Service Validation test cloned' }),
-  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Service Validation test running' })
+  TEST_CREATED: defineMessage({ defaultMessage: 'Service Validation test was created' }),
+  TEST_UPDATED: defineMessage({ defaultMessage: 'Service Validation test was updated' }),
+  TEST_DELETED: defineMessage({ defaultMessage: 'Service Validation test was deleted' }),
+  TEST_CLONED: defineMessage({ defaultMessage: 'Service Validation test was cloned' }),
+  RUN_TEST_SUCCESS: defineMessage({ defaultMessage: 'Service Validation test is running' })
 }
 
 export const stages: Record<TestStage, MessageDescriptor> = {

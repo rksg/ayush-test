@@ -76,6 +76,13 @@ const userProfileContextValues = {
 describe('Region Button Component', () => {
   jest.mocked(useIsSplitOn).mockReturnValue(true)
   beforeEach(async () => {
+    Object.defineProperty(window, 'location', {
+      writable: true,
+      value: {
+        ...window.location,
+        href: new URL('https://url/').href
+      }
+    })
     mockServer.use(
       rest.get(
         MspUrlsInfo.getMspEcProfile.url,

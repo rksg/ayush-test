@@ -2,6 +2,7 @@ module.exports = {
   displayName: 'msp-components',
   preset: '../../../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],

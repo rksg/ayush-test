@@ -2,10 +2,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { BaseUrl, MspPortal, MspUrlsInfo } from '@acx-ui/msp/utils'
-import { CommonUrlsInfo }                  from '@acx-ui/rc/utils'
-import { ExternalProviders }               from '@acx-ui/rc/utils'
-import { Provider  }                       from '@acx-ui/store'
+import { BaseUrl, MspPortal, MspUrlsInfo }    from '@acx-ui/msp/utils'
+import { CommonUrlsInfo, CommonRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { ExternalProviders }                  from '@acx-ui/rc/utils'
+import { Provider  }                          from '@acx-ui/store'
 import {
   render,
   mockServer,
@@ -112,6 +112,7 @@ jest.mock('react-router-dom', () => ({
 describe('PortalSettings', () => {
   const params = { tenantId: '3061bd56e37445a8993ac834c01e2710' }
   const fileUrl: string = '/api/file/tenant/' + params.tenantId + '/'
+  const unmockedFetch = global.fetch
 
   beforeEach(async () => {
     rcServices.useExternalProvidersQuery = jest.fn().mockImplementation(() => {
@@ -142,7 +143,9 @@ describe('PortalSettings', () => {
       rest.post(
         MspUrlsInfo.addMspLabel.url,
         (req, res, ctx) => res(ctx.json({ requestId: '456' }))
-      )
+      ),
+      rest.get(CommonRbacUrlsInfo.getExternalProviders.url,
+        (_, res, ctx) => res(ctx.json( externalProviders )))
     )
     global.URL.createObjectURL = jest.fn()
     jest.spyOn(global.URL, 'createObjectURL')
@@ -155,6 +158,7 @@ describe('PortalSettings', () => {
   })
   afterEach(() => {
     jest.clearAllMocks()
+    global.fetch = unmockedFetch
   })
   it('should render correctly for add', async () => {
     services.useGetMspLabelQuery = jest.fn().mockImplementation(() => {

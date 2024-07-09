@@ -6,20 +6,38 @@ export async function initialize () {
     React,
     { createRoot },
     { SuspenseBoundary },
-    config
+    config,
+    utils
   ] = await Promise.all([
     import('react'),
     import('react-dom/client'),
     import('@acx-ui/components'),
-    import('@acx-ui/config')
+    import('@acx-ui/config'),
+    import('@acx-ui/utils')
   ])
+
+  try {
+    await config.initialize()
+  } catch (error) {
+    if (error instanceof config.CommonConfigGetError) {
+      utils.userLogout()
+    } else {
+      throw error
+    }
+  }
+
+  const isMaintenanceModeOn = config.get('ENABLED_FEATURES')?.split('|')
+    .includes('maintenance_mode')
+
+  if (isMaintenanceModeOn) {
+    window.location.href = '/analytics/maintenance.html'
+    return
+  }
 
   const container = document.getElementById('root')
   const root = createRoot(container!)
 
   root.render(React.createElement(SuspenseBoundary.DefaultFallback, { absoluteCenter: true }))
-
-  await config.initialize()
 
   const bootstrap = await import('./bootstrap')
   await bootstrap.init(root)

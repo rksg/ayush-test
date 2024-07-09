@@ -162,7 +162,7 @@ describe('EdgeSettingForm', () => {
       { name: 'Serial Number' })
     await user.type(serialNumberInput, '96ABCDE')
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 
   it('should show error when length of v-edge sn is more then 34', async () => {
@@ -181,6 +181,6 @@ describe('EdgeSettingForm', () => {
       { name: 'Serial Number' })
     await user.type(serialNumberInput, '967107237F423711EE948762BC9B5F795AB')
     await user.click(screen.getByRole('button', { name: 'Add' }))
-    expect(await screen.findByText('Field must be exactly 34 characters')).toBeVisible()
+    expect(await screen.findByText('This field is invalid')).toBeVisible()
   })
 })

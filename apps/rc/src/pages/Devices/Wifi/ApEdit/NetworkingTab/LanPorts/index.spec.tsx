@@ -1,12 +1,16 @@
 import '@testing-library/jest-dom'
-import { waitForElementToBeRemoved } from '@testing-library/react'
-import userEvent                     from '@testing-library/user-event'
-import { rest }                      from 'msw'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
 
 import { apApi, venueApi }              from '@acx-ui/rc/services'
 import { CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }              from '@acx-ui/store'
-import { mockServer, render, screen }   from '@acx-ui/test-utils'
+import {
+  mockServer,
+  render,
+  waitForElementToBeRemoved,
+  screen
+}   from '@acx-ui/test-utils'
 
 import { ApNetworkingContext }                                                                    from '..'
 import { ApDataContext, ApEditContext }                                                           from '../..'
@@ -14,11 +18,7 @@ import { ApCap_T750SE, ApData_T750SE, ApLanPorts_T750SE, venueData, venueLanPort
 
 import { LanPorts } from '.'
 
-
 const params = { tenantId: 'tenant-id', serialNumber: 'serial-number', venueId: 'venue-id' }
-
-
-
 const mockedUsedNavigate = jest.fn()
 
 jest.mock('react-router-dom', () => ({
@@ -27,13 +27,17 @@ jest.mock('react-router-dom', () => ({
 }))
 
 describe('AP Lan port settings', () => {
+  const defaultT750SeApCtxData = {
+    apData: ApData_T750SE,
+    apCapabilities: ApCap_T750SE,
+    venueData
+  }
 
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
+
     mockServer.use(
-      rest.get(CommonUrlsInfo.getVenue.url,
-        (_, res, ctx) => res(ctx.json(venueData))),
       rest.get(CommonUrlsInfo.getVenueSettings.url,
         (_, res, ctx) => res(ctx.json(venueSetting))),
       rest.get(CommonUrlsInfo.getVenueLanPorts.url,
@@ -62,9 +66,7 @@ describe('AP Lan port settings', () => {
           editNetworkingContextData: {} as ApNetworkingContext,
           setEditNetworkingContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{
-            apData: ApData_T750SE,
-            apCapabilities: ApCap_T750SE }}>
+          <ApDataContext.Provider value={defaultT750SeApCtxData}>
             <LanPorts />
           </ApDataContext.Provider>
         </ApEditContext.Provider>

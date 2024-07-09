@@ -4694,7 +4694,7 @@
   "xsvEdn": "{count, plural, one {{apGroupName}} other {{count} AP 그룹} }",
   "xtmiaw": "예, 게스트 패스를 생성합니다.",
   "xu6eM8": "테스트",
-  "xuA+Xj": "When bypass CNA is enabled, devices that have already been authenticated, are not redirected for authentication when reconnecting the onboarding network.",
+  "xuA+Xj": "Enabling 'Bypass Captive Network Assistant' prevents the controller from using the mini-browser on mobile devices. With CNA bypass enabled, portal login is achieved by opening a standard browser to any unauthenticated http page to get redirected to the login portal.",
   "xuRIYt": "IP 주소 추가",
   "xukzKg": "네트워크",
   "xvA/HS": "선택…",

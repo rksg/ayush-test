@@ -1,9 +1,16 @@
 import { gql }                              from 'graphql-request'
+import _                                    from 'lodash'
 import { MessageDescriptor, defineMessage } from 'react-intl'
 
-import { formatter }          from '@acx-ui/formatter'
-import { dataApi }            from '@acx-ui/store'
-import { NodeType, PathNode } from '@acx-ui/utils'
+import { formatter } from '@acx-ui/formatter'
+import { dataApi }   from '@acx-ui/store'
+import {
+  NodeType,
+  PathNode,
+  AnalyticsFilter,
+  PathFilter,
+  NetworkPath
+} from '@acx-ui/utils'
 
 type TileMapType = {
   text: MessageDescriptor
@@ -11,7 +18,7 @@ type TileMapType = {
   format: ReturnType<typeof formatter>,
 }
 
-const tileMap: Record<string, TileMapType> = {
+export const tileMap: Record<string, TileMapType> = {
   apCount: {
     text: defineMessage({ defaultMessage: 'AP Count' }),
     url: '/reports/aps',
@@ -175,19 +182,13 @@ const getSwitchQuery = (attributes: string[]) => gql`
   }
 `
 
-export type NetworkSummaryInfoProps = {
-  startDate: string
-  endDate: string
-  path: PathNode[]
-}
-
 export const genNetworkSummaryInfoQuery = (
-  { startDate, endDate, path }: NetworkSummaryInfoProps
+  { startDate, endDate, path }: PathFilter
 ) => {
   const [ node ] = path.slice(-1)
   const attributes = getSummaryAttributes(node) || getAttributes(node)
 
-  let variables: Omit<NetworkSummaryInfoProps, 'path'> & { mac?: string, path?: PathNode[] } =
+  let variables: Pick<AnalyticsFilter, 'startDate' | 'endDate' | 'mac'> & { path?: NetworkPath } =
     { startDate, endDate, path }
   let queryGenerator = getQuery
   if (node.type === 'AP') {
@@ -203,16 +204,26 @@ export const genNetworkSummaryInfoQuery = (
   return { document: queryGenerator(attributes), variables }
 }
 
+type NetworkSummaryResponse = {
+  network: { node: Record<string, string|number|null> }
+}
+
+type NetworkSummaryInfo = {
+  key: string,
+  value: string|number|null
+} & Omit<TileMapType, 'format'>
+
 export const { useNetworkSummaryInfoQuery } = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    networkSummaryInfo: build.query<
-      ({ key: string, value: string|number|null } & TileMapType)[], NetworkSummaryInfoProps>({
-        query: (payload) => (genNetworkSummaryInfoQuery(payload)),
-        transformResponse: (
-          response: { network: { node: Record<string, string|number|null> } }
-        ) => Object.entries(response.network.node)
-          .filter(([key]) => tileMap[key as keyof typeof tileMap])
-          .map(([key, value]) => ({ key, value, ...tileMap[key as keyof typeof tileMap] }))
-      })
+    networkSummaryInfo: build.query<NetworkSummaryInfo[], PathFilter>({
+      query: (payload) => (genNetworkSummaryInfoQuery(payload)),
+      transformResponse: (response: NetworkSummaryResponse) => Object.entries(response.network.node)
+        .filter(([key]) => tileMap[key as keyof typeof tileMap])
+        .map(([key, value]) => ({
+          key,
+          value,
+          ...(_.omit(tileMap[key as keyof typeof tileMap], 'format'))
+        }))
+    })
   })
 })

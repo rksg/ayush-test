@@ -8,8 +8,11 @@ import {
   fireEvent,
   mockServer,
   render,
-  screen
+  screen,
+  within
 } from '@acx-ui/test-utils'
+
+import { deviceAps } from '../../__tests__/fixtures'
 
 import { apDetailData } from './__tests__/fixtures'
 import ApPageHeader     from './ApPageHeader'
@@ -37,6 +40,12 @@ describe('ApPageHeader', () => {
         (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
+      )
+    )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     fireEvent.click(await screen.findByRole('button', { name: 'Configure' }))
@@ -54,11 +63,20 @@ describe('ApPageHeader', () => {
         (_, res, ctx) => res(ctx.json(apDetailData))
       )
     )
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
+      )
+    )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })
 
     await userEvent.click(await screen.findByText('More Actions'))
-
     await userEvent.click(await screen.findByText('Reboot'))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await within(dialog).findByText(/Reboot Access Point/)).toBeVisible()
+
   })
 
   it('should render correct breadcrumb', async () => {
@@ -66,6 +84,12 @@ describe('ApPageHeader', () => {
       rest.get(
         CommonUrlsInfo.getApDetailHeader.url,
         (_, res, ctx) => res(ctx.json(apDetailData))
+      )
+    )
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(deviceAps))
       )
     )
     render(<ApPageHeader />, { route: { params }, wrapper: Provider })

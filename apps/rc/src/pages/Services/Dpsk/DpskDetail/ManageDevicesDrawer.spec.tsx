@@ -10,7 +10,8 @@ import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
-  screen
+  screen,
+  waitFor
 } from '@acx-ui/test-utils'
 
 import {
@@ -22,15 +23,25 @@ const managePassphraseInfo = {
   id: 'bed56dda739d4738b46c67cda01e5113',
   passphrase: '12345678',
   username: 'DPSK_User_356',
-  numberOfDevices: 29,
+  numberOfDevices: 6,
   createdDate: '2023-09-05T07:08:12.038034',
   expirationDate: null
 }
+
+jest.mock('@acx-ui/utils', () => ({
+  ...jest.requireActual('@acx-ui/utils'),
+  getJwtTokenPayload: () => ({ tenantId: 'tenantId' })
+}))
+
+const mockGetClientList = jest.fn()
+const mockGetClientMeta = jest.fn()
 
 describe('ManageDevicesDrawer', () => {
   beforeEach(() => {
     store.dispatch(serviceApi.util.resetApiState())
 
+    mockGetClientList.mockClear()
+    mockGetClientMeta.mockClear()
     mockServer.use(
       rest.get(
         DpskUrls.getDpsk.url,
@@ -43,7 +54,7 @@ describe('ManageDevicesDrawer', () => {
         }
       ),
       rest.get(
-        DpskUrls.getNewFlowPassphraseDevices.url,
+        DpskUrls.getPassphraseDevices.url,
         (req, res, ctx) => res(ctx.json(mockedDevices))
       ),
       rest.post(
@@ -52,7 +63,17 @@ describe('ManageDevicesDrawer', () => {
       ),
       rest.post(
         ClientUrlsInfo.getClientList.url,
-        (_, res, ctx) => res(ctx.json([]))
+        (_, res, ctx) => {
+          mockGetClientList()
+          return res(ctx.json({ data: [], page: 1, totalCount: 0 }))
+        }
+      ),
+      rest.post(
+        ClientUrlsInfo.getClientMeta.url,
+        (_, res, ctx) => {
+          mockGetClientMeta()
+          return res(ctx.json({ data: [] }))
+        }
       )
     )
   })
@@ -67,14 +88,22 @@ describe('ManageDevicesDrawer', () => {
           setPassphraseInfo={() => {}}
         />
       </Provider>, {
-        route: { params: {
-          tenantId: 'fe8d6c89c852473ea343c9a0fa66829b',
-          serviceId: '89a09af4f9264145a97bef7014c3c8e9',
-          passphraseId: 'bed56dda739d4738b46c67cda01e5113'
-        } }
+        route: {
+          params: {
+            tenantId: 'fe8d6c89c852473ea343c9a0fa66829b',
+            serviceId: '89a09af4f9264145a97bef7014c3c8e9',
+            passphraseId: 'bed56dda739d4738b46c67cda01e5113'
+          },
+          path: '/:tenantId/:serviceId/:passphraseId'
+        }
       }
     )
 
+    await waitFor(() => expect(mockGetClientList).toBeCalled())
+    await waitFor(() => expect(mockGetClientMeta).toBeCalled())
     await screen.findByText('11:22:33:44:55:66')
+
+    // mockedDevices.length == managePassphraseInfo.numberOfDevices
+    expect(screen.getByRole('button', { name: /add device/i })).toBeDisabled()
   })
 })

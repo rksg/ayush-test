@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Features, useIsSplitOn }                     from '@acx-ui/feature-toggle'
 import {
-  useSwitchDetailHeaderQuery,
   useGetDhcpPoolsQuery,
   useDeleteDhcpServersMutation,
   useUpdateDhcpServerMutation,
@@ -16,25 +16,37 @@ import {
   isOperationalSwitch,
   VenueMessages
 } from '@acx-ui/rc/utils'
-import { useParams }                 from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { SwitchScopes }                  from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
+
+import { SwitchDetailsContext } from '..'
 
 import { AddPoolDrawer } from './AddPoolDrawer'
 
 export function SwitchDhcpPoolTable () {
   const { $t } = useIntl()
   const params = useParams()
-  const { data: switchDetail } = useSwitchDetailHeaderQuery({ params })
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const [ createDhcpServer, { isLoading: isCreating } ] = useCreateDhcpServerMutation()
   const [ updateDhcpServer, { isLoading: isUpdating } ] = useUpdateDhcpServerMutation()
   const [ deleteDhcpServers ] = useDeleteDhcpServersMutation()
 
+  const { switchDetailsContextData } = useContext(SwitchDetailsContext)
+  const { switchDetailHeader: switchDetail } = switchDetailsContextData
+
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpPoolsQuery,
     defaultPayload: {},
+    apiParams: { venueId: switchDetail?.venueId },
     sorter: {
       sortField: 'poolName',
       sortOrder: 'DESC'
+    },
+    enableRbac: isSwitchRbacEnabled,
+    option: {
+      skip: !switchDetail?.venueId
     }
   })
 
@@ -44,12 +56,31 @@ export function SwitchDhcpPoolTable () {
   const isOperational = switchDetail?.deviceStatus ?
     isOperationalSwitch(switchDetail?.deviceStatus, switchDetail.syncedSwitchConfig) : false
 
+  const isSelectionVisible = !switchDetail?.cliApplied && hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
+
   const handleSavePool = async (values: SwitchDhcp) => {
     try {
       if (selected) { // Edit
-        await updateDhcpServer({ params, payload: values }).unwrap()
+        await updateDhcpServer({
+          params: {
+            ...params,
+            venueId: switchDetail?.venueId,
+            dhcpServerId: selected
+          },
+          payload: values,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       } else { // Add
-        await createDhcpServer({ params, payload: values }).unwrap()
+        await createDhcpServer({
+          params: {
+            ...params,
+            venueId: switchDetail?.venueId
+          },
+          payload: values,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       }
       setSelected(undefined)
       setDrawerVisible(false)
@@ -101,6 +132,7 @@ export function SwitchDhcpPoolTable () {
 
   const rowActions: TableProps<SwitchDhcp>['rowActions'] = [{
     label: $t({ defaultMessage: 'Edit' }),
+    scopeKey: [SwitchScopes.UPDATE],
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (selectedRows) => {
       setSelected(selectedRows[0].id)
@@ -108,6 +140,7 @@ export function SwitchDhcpPoolTable () {
     }
   }, {
     label: $t({ defaultMessage: 'Delete' }),
+    scopeKey: [SwitchScopes.DELETE],
     onClick: (selectedRows, clearSelection) => {
       showActionModal({
         type: 'confirm',
@@ -118,7 +151,14 @@ export function SwitchDhcpPoolTable () {
           numOfEntities: selectedRows.length
         },
         onOk: () => {
-          deleteDhcpServers({ params, payload: selectedRows.map(r => r.id) })
+          deleteDhcpServers({
+            params: {
+              ...params,
+              venueId: switchDetail?.venueId
+            },
+            payload: selectedRows.map(r => r.id),
+            enableRbac: isSwitchRbacEnabled
+          })
           clearSelection()
         }
       })
@@ -133,6 +173,7 @@ export function SwitchDhcpPoolTable () {
         onChange={tableQuery.handleTableChange}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add Pool' }),
+          scopeKey: [SwitchScopes.CREATE],
           disabled: !isOperational || !!switchDetail?.cliApplied,
           tooltip: !!switchDetail?.cliApplied ? $t(VenueMessages.CLI_APPLIED) : '',
           onClick: () => {
@@ -142,14 +183,16 @@ export function SwitchDhcpPoolTable () {
         }])}
         rowKey='id'
         rowActions={!!switchDetail?.cliApplied ? undefined : filterByAccess(rowActions)}
-        rowSelection={!!switchDetail?.cliApplied || !hasAccess()
-          ? undefined
-          : { type: 'checkbox' }}
+        rowSelection={isSelectionVisible
+          ? { type: 'checkbox' }
+          : undefined
+        }
       />
       <AddPoolDrawer
         visible={drawerVisible}
         isLoading={isCreating || isUpdating}
         editPoolId={selected}
+        venueId={switchDetail?.venueId}
         onSavePool={handleSavePool}
         onClose={()=>setDrawerVisible(false)}
       />

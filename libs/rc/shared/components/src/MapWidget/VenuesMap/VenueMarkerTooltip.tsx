@@ -1,9 +1,12 @@
 import { defineMessage, useIntl } from 'react-intl'
 
-import { StackedBarChart, TableProps }     from '@acx-ui/components'
-import { Table }                           from '@acx-ui/components'
-import { getDeviceConnectionStatusColors } from '@acx-ui/components'
-import { VenueMarkerOptions }              from '@acx-ui/rc/utils'
+import {
+  StackedBarChart,
+  TableProps,
+  Table,
+  getDeviceConnectionStatusColors
+}     from '@acx-ui/components'
+import { VenueMarkerOptions } from '@acx-ui/rc/utils'
 
 import * as UI from './styledComponents'
 

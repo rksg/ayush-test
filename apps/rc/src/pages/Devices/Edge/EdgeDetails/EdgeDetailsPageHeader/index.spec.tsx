@@ -2,8 +2,9 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
-import { Provider }                     from '@acx-ui/store'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
+import { EdgeGeneralFixtures, EdgeStatusEnum, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                                          from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -12,19 +13,23 @@ import {
   within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeList, mockedEdgeServiceList } from '../../__tests__/fixtures'
-
 import { EdgeDetailsPageHeader } from '.'
 
+const { mockEdgeList, mockEdgeServiceList, mockEdgeCluster } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedUsedNavigate
 }))
+jest.mock('../../HaStatusBadge', () => ({
+  HaStatusBadge: () => <div data-testid='ha-status-badge' />
+}))
 
 const mockedDeleteApi = jest.fn()
 const mockedRebootApi = jest.fn()
+const mockedShutdownApi = jest.fn()
 const mockedResetApi = jest.fn()
+jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
 
 describe('Edge Detail Page Header', () => {
   const currentEdge = mockEdgeList.data[0]
@@ -52,6 +57,13 @@ describe('Edge Detail Page Header', () => {
         }
       ),
       rest.post(
+        EdgeUrlsInfo.shutdown.url,
+        (req, res, ctx) => {
+          mockedShutdownApi()
+          return res(ctx.status(202))
+        }
+      ),
+      rest.post(
         EdgeUrlsInfo.factoryReset.url,
         (req, res, ctx) => {
           mockedResetApi()
@@ -60,7 +72,11 @@ describe('Edge Detail Page Header', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
@@ -74,7 +90,7 @@ describe('Edge Detail Page Header', () => {
       })
 
     await userEvent.click(screen.getByRole('button', { name: 'More Actions' }))
-    expect((await screen.findAllByRole('menuitem')).length).toBe(3)
+    expect((await screen.findAllByRole('menuitem')).length).toBe(4)
   })
 
   it('should redirect to edge general setting page after clicked configure', async () => {
@@ -149,6 +165,31 @@ describe('Edge Detail Page Header', () => {
     })
   })
 
+  it('should shutdown edge correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
+    await userEvent.click(dropdownBtn)
+
+    const shutdownBtn = await screen.findByRole('menuitem', { name: 'Shutdown' })
+    await userEvent.click(shutdownBtn)
+
+    const shutdwonDialog = await screen.findByRole('dialog')
+    await within(shutdwonDialog).findByText(`Shutdown "${currentEdge.name}"?`)
+    await userEvent.click(within(shutdwonDialog).getByRole('button', { name: 'Shutdown' }))
+    await waitFor(() => {
+      expect(mockedShutdownApi).toBeCalledTimes(1)
+    })
+    await waitFor(() => {
+      expect(shutdwonDialog).not.toBeVisible()
+    })
+  })
+
   it('should factory rest edge correctly', async () => {
     render(
       <Provider>
@@ -160,11 +201,11 @@ describe('Edge Detail Page Header', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    const resetBtn = await screen.findByRole('menuitem', { name: 'Reset and Recover' })
+    const resetBtn = await screen.findByRole('menuitem', { name: 'Reset & Recover' })
     await userEvent.click(resetBtn)
 
     const resetDialog = await screen.findByRole('dialog')
-    await within(resetDialog).findByText(`Reset and recover "${currentEdge.name}"?`)
+    await within(resetDialog).findByText(`Reset & Recover "${currentEdge.name}"?`)
     await userEvent.click(within(resetDialog).getByRole('button', { name: 'Reset' }))
     await waitFor(() => {
       expect(mockedResetApi).toBeCalledTimes(1)
@@ -172,6 +213,17 @@ describe('Edge Detail Page Header', () => {
     await waitFor(() => {
       expect(resetDialog).not.toBeVisible()
     })
+  })
+
+  it('should render HaStatusBadge', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsPageHeader />
+      </Provider>, {
+        route: { params }
+      })
+
+    expect(await screen.findByTestId('ha-status-badge')).toBeVisible()
   })
 })
 
@@ -209,7 +261,11 @@ describe('Edge Detail Page Header - action show up logic', () => {
       ),
       rest.post(
         EdgeUrlsInfo.getEdgeServiceList.url,
-        (req, res, ctx) => res(ctx.json(mockedEdgeServiceList))
+        (req, res, ctx) => res(ctx.json(mockEdgeServiceList))
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (req, res, ctx) => res(ctx.json(mockEdgeCluster))
       )
     )
   })
@@ -237,7 +293,7 @@ describe('Edge Detail Page Header - action show up logic', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reset & Recover' })).toBeInTheDocument()
     expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
   })
 
@@ -264,7 +320,7 @@ describe('Edge Detail Page Header - action show up logic', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reset & Recover' })).toBeInTheDocument()
     expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
   })
 
@@ -291,7 +347,7 @@ describe('Edge Detail Page Header - action show up logic', () => {
     const dropdownBtn = screen.getByRole('button', { name: 'More Actions' })
     await userEvent.click(dropdownBtn)
 
-    expect(await screen.findByRole('menuitem', { name: 'Reset and Recover' })).toBeInTheDocument()
+    expect(await screen.findByRole('menuitem', { name: 'Reset & Recover' })).toBeInTheDocument()
     expect(await screen.findByRole('menuitem', { name: 'Reboot' })).toBeInTheDocument()
   })
 })

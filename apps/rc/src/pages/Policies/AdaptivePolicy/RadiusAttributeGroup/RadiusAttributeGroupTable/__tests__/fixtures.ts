@@ -1,5 +1,5 @@
 export const groupList = {
-  content: [
+  data: [
     {
       name: 'group1',
       id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4b9',
@@ -17,33 +17,52 @@ export const groupList = {
           dataType: 'INTEGER',
           operator: 'DOES_NOT_EXIST'
         }
+      ],
+      attributeCount: 2,
+      externalAssignmentsCount: 2,
+      externalServiceAssignments: [
+        {
+          serviceName: 'policy-management',
+          externalAssignmentIdentifier: [
+            '0c641adc-2053-43e1-a684-0fddc3382e1a',
+            'd4973820-0d43-4a1a-8110-53b11761da9d'
+          ]
+        }
       ]
+    },
+    {
+      name: 'group2',
+      id: 'a954a698-d40b-ae3e-ddbd-e08210c8d4c9',
+      description: 'test',
+      attributeAssignments: [
+        {
+          attributeName: 'attributeName1',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        },
+        {
+          attributeName: 'attributeName2',
+          attributeValue: 'test',
+          dataType: 'INTEGER',
+          operator: 'DOES_NOT_EXIST'
+        }
+      ],
+      attributeCount: 2,
+      externalAssignmentsCount: 0,
+      externalServiceAssignments: []
     }
   ],
-  pageable: {
-    sort: { unsorted: true, sorted: false, empty: true },
-    pageNumber: 0,
-    pageSize: 10,
-    offset: 0,
-    paged: true,
-    unpaged: false
-  },
-  totalPages: 1,
-  totalElements: 1,
-  last: true,
-  sort: { unsorted: true, sorted: false, empty: true },
-  numberOfElements: 3,
-  first: true,
-  size: 10,
-  number: 0,
-  empty: false
+  totalCount: 24,
+  page: 1,
+  pageSize: 10
 }
 
 export const groupListByPost = {
   totalCount: 1,
   page: 1,
   pageSize: 10,
-  data: groupList.content
+  data: groupList.data
 }
 
 

@@ -23,18 +23,10 @@ export const mockedDpskList = {
       expirationType: 'HOURS_AFTER_TIME',
       expirationOffset: 2,
       networkIds: ['123', '456']
-    }
-  ],
-  page: 1,
-  totalCount: 3,
-  totalPages: 1
-}
-
-export const mockedDpskListWithPersona = {
-  data: [
+    },
     {
-      id: '123456789a',
-      name: 'DPSK Service 1',
+      id: '123456789d',
+      name: 'DPSK Service with Identity',
       passphraseLength: 18,
       passphraseFormat: 'MOST_SECURED',
       expirationType: null,
@@ -43,6 +35,6 @@ export const mockedDpskListWithPersona = {
     }
   ],
   page: 1,
-  totalCount: 1,
+  totalCount: 4,
   totalPages: 1
 }

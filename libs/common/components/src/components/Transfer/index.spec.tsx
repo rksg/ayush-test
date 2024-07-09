@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
-import { IntlProvider }   from 'react-intl'
+import { IntlProvider } from 'react-intl'
+
+import { render, screen } from '@acx-ui/test-utils'
 
 import { Transfer } from '.'
 

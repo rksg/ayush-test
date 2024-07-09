@@ -1,4 +1,3 @@
-import { Typography }         from 'antd'
 import { useIntl, IntlShape } from 'react-intl'
 
 import { healthApi }                                         from '@acx-ui/analytics/services'
@@ -79,13 +78,15 @@ export function KpiWidget ({
   filters: AnalyticsFilter;
   type?: 'no-chart-style' | 'with-chart-style'
 }){
-  const { histogram } = Object(kpiConfig[name as keyof typeof kpiConfig])
+  const { histogram,
+    enableSwitchFirmwareFilter } = Object(kpiConfig[name as keyof typeof kpiConfig])
   const sparklineChartStyle = { height: 50, width: 130, display: 'inline' }
   const { startDate , endDate } = filters
   const intl = useIntl()
   const historgramQuery = useKpiHistogramQuery({
     ...filters,
-    kpi: name
+    kpi: name,
+    enableSwitchFirmwareFilter
   }, {
     skip: !Boolean(histogram),
     selectFromResult: (response) => {
@@ -104,7 +105,8 @@ export function KpiWidget ({
     ...filters,
     kpi: name,
     threshold: (threshold ?? '') as string,
-    granularity: getSparklineGranularity(startDate,endDate)
+    granularity: getSparklineGranularity(startDate,endDate),
+    enableSwitchFirmwareFilter
   }, {
     selectFromResult: (response) => {
       const agg = response.data && transformTSResponse(response.data, { startDate, endDate })
@@ -143,10 +145,7 @@ export function KpiWidget ({
             <Tooltip title={kpiInfoText[name].tooltip}>
               <UI.Wrapper>
                 <UI.LargePercent>
-                  {intl.$t(intlFormats.scaleFormatRound, { value: percent })}
-                  <Typography.Title level={3}>
-                  %
-                  </Typography.Title>
+                  {intl.$t(intlFormats.percentFormatRound, { value: percent })}
                 </UI.LargePercent>
               </UI.Wrapper>
             </Tooltip>

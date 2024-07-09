@@ -60,7 +60,7 @@ export interface CreateDHCPFormFields {
 export interface DHCPSaveData extends CreateDHCPFormFields {
   id?: string;
   name?: string;
-  usage: DHCPUsage[];
+  usage?: DHCPUsage[];
   venueIds?: string[];
 }
 export interface DHCPUsage {
@@ -72,9 +72,10 @@ export interface DHCPUsage {
 export interface VenueDHCPProfile {
   serviceProfileId: string,
   enabled: boolean,
-  dhcpServiceAps: DHCPProfileAps[],
-  wanPortSelectionMode: string,
-  id: string
+  dhcpServiceAps?: DHCPProfileAps[],
+  wanPortSelectionMode?: string,
+  id: string,
+  activeDhcpPoolNames?: string[]
 }
 
 export interface DHCPProfileAps {
@@ -96,6 +97,10 @@ export interface DHCPLeases {
   status: DHCPLeasesStatusEnum,
   leaseExpiration: string
 }
+
+export interface WifiDHCPClientLeases {
+  wifiDhcpClientLeases: DHCPLeases[]
+}
 export interface VenueDHCPPoolInst {
   name: string,
   vlanId: number,
@@ -112,4 +117,8 @@ export interface VenueDHCPPoolInst {
   active: boolean,
   id: string,
 
+}
+
+export interface WifiDhcpPoolUsages {
+  wifiDhcpPoolUsages: VenueDHCPPoolInst[]
 }

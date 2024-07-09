@@ -27,9 +27,10 @@ import {
 import { useParams }                 from '@acx-ui/react-router-dom'
 import { filterByAccess, hasAccess } from '@acx-ui/user'
 
-import { PreferenceDrawer } from './PreferenceDrawer'
-import RecipientDialog      from './RecipientDialog'
-import * as UI              from './styledComponents'
+import { AINotificationDrawer } from './AINotificationDrawer'
+import { PreferenceDrawer }     from './PreferenceDrawer'
+import RecipientDialog          from './RecipientDialog'
+import * as UI                  from './styledComponents'
 
 const FunctionEnabledStatusLightConfig = {
   active: {
@@ -44,7 +45,10 @@ export const NotificationsTable = () => {
   const { $t } = useIntl()
   const params = useParams()
   const [showDialog, setShowDialog] = useState(false)
+  const [showDrawer, setShowDrawer] = useState(false)
   const [editMode, setEditMode] = useState(false)
+  const allowIncidentsEmail = useIsSplitOn(Features.INCIDENTS_EMAIL_NOTIFICATION_TOGGLE)
+  const notificationChannelEnabled = useIsSplitOn(Features.NOTIFICATION_CHANNEL_SELECTION_TOGGLE)
   // eslint-disable-next-line max-len
   const [editData, setEditData] = useState<NotificationRecipientUIModel>({} as NotificationRecipientUIModel)
 
@@ -59,6 +63,10 @@ export const NotificationsTable = () => {
     setEditMode(false)
     setEditData({} as NotificationRecipientUIModel)
     setShowDialog(true)
+  }
+
+  const handleEnableIncidents = () => {
+    setShowDrawer(true)
   }
 
   const isDuplicated = (type: string, value: string): boolean => {
@@ -159,10 +167,22 @@ export const NotificationsTable = () => {
     }
   ]
 
-  const tableActions = [{
-    label: $t({ defaultMessage: 'Add Recipient' }),
-    onClick: handleClickAddRecipient
-  }]
+  const titleNotification = notificationChannelEnabled
+    ? $t({ defaultMessage: 'Notifications Preferences' })
+    : $t({ defaultMessage: 'AI Notifications' })
+
+  const tableActions = [
+    {
+      label: $t({ defaultMessage: 'Add Recipient' }),
+      onClick: handleClickAddRecipient
+    },
+    ...(allowIncidentsEmail
+      ? [{
+        label: titleNotification,
+        onClick: handleEnableIncidents
+      }]
+      : [])
+  ]
 
   const isLoading = deleteOneState.isLoading || deleteMultipleState.isLoading
 
@@ -188,6 +208,11 @@ export const NotificationsTable = () => {
         editData={editData}
         isDuplicated={isDuplicated}
       />
+      {showDrawer
+      && <AINotificationDrawer
+        showDrawer={showDrawer}
+        setShowDrawer={setShowDrawer}
+      />}
     </>
   )
 }
@@ -213,7 +238,7 @@ const Notifications = () => {
             type='link'
             size='small'
             onClick={() => { setShowPreference(true) }}>
-            {$t({ defaultMessage: 'Preference' })}
+            {$t({ defaultMessage: 'Preferences' })}
           </Button>}
         </Typography>
 

@@ -1,9 +1,11 @@
 import { useIntl } from 'react-intl'
 
-import { PageHeader, Tabs }                      from '@acx-ui/components'
-import { get }                                   from '@acx-ui/config'
-import { useIsSplitOn, Features }                from '@acx-ui/feature-toggle'
-import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
+import { PageHeader, Tabs, TimeRangeDropDownProvider } from '@acx-ui/components'
+import { get }                                         from '@acx-ui/config'
+import { Features, useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { useNavigate, useParams, useTenantLink }       from '@acx-ui/react-router-dom'
+import { hasPermission }                               from '@acx-ui/user'
+import { DateRange }                                   from '@acx-ui/utils'
 
 import { useHeaderExtra }           from '../Header'
 import { IncidentTabContent }       from '../Incidents'
@@ -12,7 +14,8 @@ import { RecommendationTabContent } from '../Recommendations'
 export enum AIAnalyticsTabEnum {
   INCIDENTS = 'incidents',
   CRRM = 'recommendations/crrm',
-  AIOPS = 'recommendations/aiOps'
+  AIOPS = 'recommendations/aiOps',
+  INTENTAI = 'intentAI'
 }
 
 interface Tab {
@@ -24,30 +27,61 @@ interface Tab {
 
 const useTabs = () : Tab[] => {
   const { $t } = useIntl()
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
   const incidentsTab = {
     key: AIAnalyticsTabEnum.INCIDENTS,
     title: $t({ defaultMessage: 'Incidents' }),
     component: <IncidentTabContent/>,
     headerExtra: useHeaderExtra({ shouldQuerySwitch: true, withIncidents: true })
   }
-  const recommendationTab = [
-    {
-      key: AIAnalyticsTabEnum.CRRM,
-      title: $t({ defaultMessage: 'AI-Driven RRM' }),
-      component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
-    },
-    {
-      key: AIAnalyticsTabEnum.AIOPS,
-      title: $t({ defaultMessage: 'AI Operations' }),
-      component: <RecommendationTabContent />,
-      headerExtra: useHeaderExtra({ excludeNetworkFilter: true })
+  const crrmTab = {
+    key: AIAnalyticsTabEnum.CRRM,
+    title: $t({ defaultMessage: 'AI-Driven RRM' }),
+    component: <RecommendationTabContent />,
+    headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  }
+
+  const aiOpsTab = {
+    key: AIAnalyticsTabEnum.AIOPS,
+    title: $t({ defaultMessage: 'AI Operations' }),
+    component: <RecommendationTabContent />,
+    headerExtra: useHeaderExtra({ shouldQuerySwitch: true, datepicker: 'dropdown' })
+  }
+
+  const intenAITab = {
+    key: AIAnalyticsTabEnum.INTENTAI,
+    title: $t({ defaultMessage: 'Intent AI' }),
+    component: <div data-testid='intentAI' />,
+    headerExtra: useHeaderExtra({ datepicker: 'dropdown' })
+  }
+  let displayIntentAI = false
+  const getRecommendationTabs = () => {
+    let recommendationTabs = [] as Tab[]
+    if (get('IS_MLISA_SA')) { // RAI
+      if (hasPermission({ permission: 'READ_AI_DRIVEN_RRM' })) {
+        recommendationTabs.push(crrmTab as Tab)
+      }
+      if (hasPermission({ permission: 'READ_AI_OPERATIONS' })) {
+        recommendationTabs.push(aiOpsTab as Tab)
+      }
+      if (hasPermission({ permission: 'READ_INTENT_AI' })) {
+        displayIntentAI = true
+      }
+    } else { // R1
+      recommendationTabs.push(crrmTab as Tab)
+      recommendationTabs.push(aiOpsTab as Tab)
+      displayIntentAI = true
     }
-  ]
+    return recommendationTabs
+  }
+  const isIntentAIEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_INTENT_AI_TOGGLE),
+    useIsSplitOn(Features.INTENT_AI_TOGGLE)
+  ].some(Boolean)
+
   return [
     incidentsTab,
-    ...(get('IS_MLISA_SA') || recommendationsEnabled ? recommendationTab : [])
+    ...getRecommendationTabs(),
+    ...(isIntentAIEnabled && displayIntentAI ? [intenAITab] : [])
   ]
 }
 
@@ -68,7 +102,10 @@ export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
   }
   const tabs = useTabs()
   const TabComp = tabs.find(({ key }) => key === tab)?.component
-  return <>
+  return <TimeRangeDropDownProvider availableRanges={[
+    DateRange.last7Days,
+    DateRange.last30Days
+  ]}>
     <PageHeader
       title={$t({ defaultMessage: 'AI Analytics' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'AI Assurance' }) }]}
@@ -80,5 +117,5 @@ export function AIAnalytics ({ tab }:{ tab?: AIAnalyticsTabEnum }) {
       extra={tabs.find(({ key }) => key === tab)?.headerExtra}
     />
     {TabComp}
-  </>
+  </TimeRangeDropDownProvider>
 }

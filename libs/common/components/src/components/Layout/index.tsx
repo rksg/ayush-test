@@ -12,7 +12,8 @@ import {
 } from 'rc-menu/lib/interface'
 import { useIntl } from 'react-intl'
 
-import { get as getEnv } from '@acx-ui/config'
+import { get as getEnv }     from '@acx-ui/config'
+import { ArrowChevronRight } from '@acx-ui/icons'
 import {
   TenantType,
   useLocation,
@@ -53,7 +54,7 @@ type MenuItemGroupType = Omit<RcMenuItemGroupType, 'children' | 'label'> & {
   children?: ItemType[]
 }
 
-type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
+export type ItemType = MenuItemType | SubMenuType | MenuItemGroupType | null
 
 export function isSubMenuType (value: ItemType): value is SubMenuType {
   if (has(value, 'children') && !has(value, 'type')) return true
@@ -123,6 +124,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 
     const { uri, tenantType, activeIcon, inactiveIcon, adminItem, ...rest } = item
     delete rest.isActiveCheck
+    delete rest.openNewTab
 
     const activePatterns = getActivePatterns(item)
     const isActive = activePatterns?.some(pattern => activeUri.match(pattern))
@@ -166,6 +168,7 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
       items={props.menuConfig.map(item => getMenuItem(item, ''))}
       onOpenChange={keys => setOpenKeys(keys.slice(-1))}
       getPopupContainer={trigger => trigger.parentNode as HTMLElement}
+      expandIcon={() => <ArrowChevronRight />}
     />
   </>
 }
@@ -173,10 +176,14 @@ function SiderMenu (props: { menuConfig: LayoutProps['menuConfig'] }) {
 type LayoutContextType = {
   pageHeaderY: number
   setPageHeaderY: (y: number) => void
+  showMessageBanner?: boolean
+  setShowMessageBanner: (isShow?: boolean) => void
 }
 const LayoutContext = createContext({
   pageHeaderY: 0,
-  setPageHeaderY: () => {}
+  setPageHeaderY: () => {},
+  showMessageBanner: undefined,
+  setShowMessageBanner: () => {}
 } as LayoutContextType)
 export const useLayoutContext = () => useContext(LayoutContext)
 
@@ -191,6 +198,7 @@ export function Layout ({
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
   const [pageHeaderY, setPageHeaderY] = useState(0)
+  const [showMessageBanner, setShowMessageBanner] = useState<boolean>()
   const screenXL = parseInt(modifyVars['@screen-xl'], 10)
   const [display, setDisplay] = useState(window.innerWidth >= screenXL)
   const [subOptimalDisplay, setSubOptimalDisplay] = useState(
@@ -220,7 +228,11 @@ export function Layout ({
 
   const Content = location.pathname.includes('dataStudio') ? UI.IframeContent : UI.Content
 
-  return <UI.Wrapper showScreen={display || subOptimalDisplay} >
+  return <UI.Wrapper showScreen={display || subOptimalDisplay}
+    style={{
+      '--acx-has-cloudmessagebanner': showMessageBanner ? '1' : '0',
+      '--acx-pageheader-height': pageHeaderY + 'px'
+    } as React.CSSProperties}>
     <ProLayout
       breakpoint='xl'
       disableMobile={true}
@@ -243,7 +255,12 @@ export function Layout ({
       </>}
       className={collapsed ? 'sider-collapsed' : ''}
     >
-      <LayoutContext.Provider value={{ pageHeaderY, setPageHeaderY }}>
+      <LayoutContext.Provider value={{
+        pageHeaderY,
+        setPageHeaderY,
+        showMessageBanner,
+        setShowMessageBanner
+      }}>
         {(display || subOptimalDisplay) ? <Content>{content}</Content> :
           <UI.ResponsiveContent>
             <ResponsiveContent setShowScreen={onSubOptimalDisplay} />

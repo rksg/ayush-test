@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react'
 
+import { showExpiredSessionModal }            from '@acx-ui/analytics/components'
 import { getUserProfile }                     from '@acx-ui/analytics/utils'
 import { IFrame }                             from '@acx-ui/components'
 import { get }                                from '@acx-ui/config'
+import { useIsSplitOn, Features }             from '@acx-ui/feature-toggle'
 import { useAuthenticateMutation }            from '@acx-ui/reports/services'
+import type { DataStudioResponse }            from '@acx-ui/reports/services'
 import { getUserProfile as getUserProfileR1 } from '@acx-ui/user'
+import { useLocaleContext }                   from '@acx-ui/utils'
 
 export const getHostName = (origin: string) => {
   if (process.env['NODE_ENV'] === 'development') {
     return get('IS_MLISA_SA')
       ? 'https://staging.mlisa.io'
+      // ? 'https://local.mlisa.io'
       : 'https://dev.ruckus.cloud'
+      // : 'https://alto.local.mlisa.io'
   }
   return origin
 }
@@ -18,6 +24,26 @@ export const getHostName = (origin: string) => {
 export function DataStudio () {
   const [url, setUrl] = useState<string>()
   const [authenticate] = useAuthenticateMutation()
+
+  const defaultLocale = 'en'
+  const i18nDataStudioEnabled = useIsSplitOn(Features.I18N_DATA_STUDIO_TOGGLE)
+  const localeContext = useLocaleContext()
+  const locale = i18nDataStudioEnabled
+    ? localeContext.messages?.locale ?? defaultLocale
+    : defaultLocale
+
+  /**
+   * Show expired session modal if session is expired, triggered from sueprset
+   */
+  useEffect(() => {
+    const eventHandler = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'unauthorized') {
+        showExpiredSessionModal()
+      }
+    }
+    window.addEventListener('message', eventHandler)
+    return () => window.removeEventListener('message', eventHandler)
+  }, [])
 
   useEffect(() => {
     const { firstName, lastName, email } = get('IS_MLISA_SA')
@@ -31,13 +57,35 @@ export function DataStudio () {
           lastName,
           email
         }
+      },
+      params: {
+        locale
       }
     })
       .unwrap()
-      .then(url => {
-        setUrl(url)
+      .then((resp: DataStudioResponse) => {
+        const { redirect_url, user_info } = resp
+        if (!user_info) { // TODO - Added for backward compatibility. Need to remove it
+          setUrl(redirect_url)
+        } else {
+          // store user info
+          sessionStorage.setItem('user_info', JSON.stringify(user_info))
+
+          const searchParams = new URLSearchParams()
+          const { cache_key } = user_info
+          /* istanbul ignore else */
+          if (cache_key) {
+            searchParams.append('cache_key', cache_key)
+          } else { // TODO - Added for backward compatibility. Need to remove it
+            const { tenant_id, is_franchisor, tenant_ids } = user_info
+            searchParams.append('mlisa_own_tenant_id', tenant_id)
+            searchParams.append('mlisa_tenant_ids', tenant_ids.join(','))
+            searchParams.append('is_franchisor', is_franchisor)
+          }
+          setUrl(`${resp.redirect_url}?${searchParams.toString()}`)
+        }
       })
-  }, [authenticate])
+  }, [authenticate, locale])
 
   return (
     <div data-testid='data-studio'

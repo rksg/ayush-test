@@ -59,10 +59,15 @@ export const mockApInfoList = [{
   model: 'T750SE',
   apMac: 'E0:10:7F:23:DA:B0'
 }, {
+  serialNumber: '922102004888',
+  name: 'T750SE_test'
+}, {
   serialNumber: '302002030377',
   name: 'R550_tttt',
   model: 'R550',
-  apMac: '34:20:E3:1D:0C:77'
+  apMac: '34:20:E3:1D:0C:77',
+  ssid: 'joe-test',
+  radio: 'Radio 5G'
 }]
 
 export const mockCcdDataSuccess = {

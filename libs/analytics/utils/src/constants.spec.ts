@@ -1,3 +1,5 @@
+import { IncidentToggle } from './constants'
+
 describe('constants', () => {
   describe('productNames', () => {
     const mockGet = jest.fn()
@@ -11,7 +13,105 @@ describe('constants', () => {
     })
     it('returns values for RA', () => {
       mockGet.mockReturnValue('true')
-      expect(require('.').productNames).toEqual({ smartZone: 'Smart Zone' })
+      expect(require('.').productNames).toEqual({ smartZone: 'SmartZone' })
+    })
+  })
+
+  describe('incidentsToggle', () => {
+    it('handle no toggles on', () => {
+      const { incidentsToggle, incidentCodes } = require('.')
+      expect(incidentsToggle({})).toEqual(incidentCodes)
+    })
+    it('handle toggles off', () => {
+      const { incidentsToggle, incidentCodes } = require('.')
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: false
+      }
+      expect(incidentsToggle({ toggles })).toEqual(incidentCodes)
+    })
+    it('handle airtime incidents', () => {
+      const { incidentsToggle, incidentCodes } = require('.')
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: true
+      }
+      expect(incidentsToggle({ toggles })).toEqual([
+        ...incidentCodes,
+        'p-airtime-b-24g-high',
+        'p-airtime-b-5g-high',
+        'p-airtime-b-6(5)g-high',
+        'p-airtime-rx-24g-high',
+        'p-airtime-rx-5g-high',
+        'p-airtime-rx-6(5)g-high',
+        'p-airtime-tx-24g-high',
+        'p-airtime-tx-5g-high',
+        'p-airtime-tx-6(5)g-high'
+      ])
+    })
+    it('handle category specific toggles', () => {
+      const { incidentsToggle, categoryCodeMap } = require('.')
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: true
+      }
+      expect(incidentsToggle({ toggles }, 'performance')).toEqual([
+        ...categoryCodeMap.performance.codes,
+        'p-airtime-b-24g-high',
+        'p-airtime-b-5g-high',
+        'p-airtime-b-6(5)g-high',
+        'p-airtime-rx-24g-high',
+        'p-airtime-rx-5g-high',
+        'p-airtime-rx-6(5)g-high',
+        'p-airtime-tx-24g-high',
+        'p-airtime-tx-5g-high',
+        'p-airtime-tx-6(5)g-high'
+      ])
+    })
+    it('handle payload.code', () => {
+      const { incidentsToggle, incidentCodes: code } = require('.')
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: true
+      }
+      expect(incidentsToggle({ code, toggles }, 'performance')).toEqual([
+        ...code,
+        'p-airtime-b-24g-high',
+        'p-airtime-b-5g-high',
+        'p-airtime-b-6(5)g-high',
+        'p-airtime-rx-24g-high',
+        'p-airtime-rx-5g-high',
+        'p-airtime-rx-6(5)g-high',
+        'p-airtime-tx-24g-high',
+        'p-airtime-tx-5g-high',
+        'p-airtime-tx-6(5)g-high'
+      ])
+    })
+    it('handle incorrect category', () => {
+      const { incidentsToggle, categoryCodeMap } = require('.')
+      const toggles = {
+        [IncidentToggle.AirtimeIncidents]: true
+      }
+      const code = categoryCodeMap.performance.codes
+      expect(incidentsToggle({ code, toggles }, 'infrastructure')).toEqual(code)
+    })
+  })
+  describe('useRoles', () => {
+    const useIsSplitOn = jest.fn()
+    beforeEach(() => {
+      jest.resetModules()
+      jest.doMock('@acx-ui/feature-toggle', () => ({
+        ...jest.requireActual('@acx-ui/feature-toggle'),
+        useIsSplitOn
+      }))
+    })
+    it('returns old roles', () => {
+      useIsSplitOn.mockReturnValue(false)
+      expect(Object.values(require('.').useRoles(false)).length).toEqual(3)
+    })
+    it('returns new roles', () => {
+      useIsSplitOn.mockReturnValue(true)
+      expect(Object.values(require('.').useRoles(false)).length).toEqual(7)
+    })
+    it('always returns new roles for places where splitio may not be initialized', () => {
+      useIsSplitOn.mockReturnValue(false)
+      expect(Object.values(require('.').useRoles()).length).toEqual(7)
     })
   })
 })

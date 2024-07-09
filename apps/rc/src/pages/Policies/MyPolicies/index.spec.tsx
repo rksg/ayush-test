@@ -1,15 +1,14 @@
-import _        from 'lodash'
 import { rest } from 'msw'
 
+import { Features, useIsSplitOn }         from '@acx-ui/feature-toggle'
 import {
   AaaUrls,
   AccessControlUrls,
   ApSnmpUrls,
   ClientIsolationUrls,
-  CommonUrlsInfo,
   ConnectionMeteringUrls,
   getSelectPolicyRoutePath,
-  PolicyType, RogueApUrls, SyslogUrls, WifiUrlsInfo
+  RogueApUrls, SyslogUrls, WifiUrlsInfo
 } from '@acx-ui/rc/utils'
 import { Provider } from '@acx-ui/store'
 import {
@@ -19,8 +18,7 @@ import {
 } from '@acx-ui/test-utils'
 
 import {
-  mockedRogueApPoliciesList,
-  emptyPoliciesList
+  mockedRogueApPoliciesList
 } from './__tests__/fixtures'
 
 import MyPolicies from '.'
@@ -44,6 +42,10 @@ describe('MyPolicies', () => {
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json(mockTableResult))
+      ),
+      rest.post(
         AccessControlUrls.getEnhancedAccessControlProfiles.url,
         (req, res, ctx) => res(ctx.json(mockTableResult))
       ),
@@ -63,24 +65,24 @@ describe('MyPolicies', () => {
         ApSnmpUrls.getApSnmpFromViewModel.url,
         (_, res, ctx) => res(ctx.json(mockTableResult))
       ),
+      rest.post(
+        AaaUrls.queryAAAPolicyList.url,
+        (_, res, ctx) => res(ctx.json(mockTableResult))
+      ),
       rest.get(
         ConnectionMeteringUrls.getConnectionMeteringList.url.split('?')[0],
         (_, res, ctx) => res(ctx.json(mockTableResult))
       ),
       rest.post(
-        CommonUrlsInfo.getPoliciesList.url,
-        (req, res, ctx) => {
-          const type = _.get(req, 'body.filters.type') as string[]
-
-          if (type.includes(PolicyType.ROGUE_AP_DETECTION)) {
-            return res(ctx.json({ ...mockedRogueApPoliciesList }))
-          }
-          return res(ctx.json({ ...emptyPoliciesList }))
-        }
-      ),
-      rest.post(
         RogueApUrls.getEnhancedRoguePolicyList.url,
         (req, res, ctx) => res(ctx.json(mockedRogueApPoliciesList))
+      ),
+      rest.post(
+        RogueApUrls.getRoguePolicyListRbac.url,
+        (req, res, ctx) => res(ctx.json({
+          totalCount: 99,
+          data: []
+        }))
       )
     )
   })
@@ -115,5 +117,40 @@ describe('MyPolicies', () => {
       }
     )
     expect(await screen.findByText('Network Control')).toBeVisible()
+  })
+
+  it('should render Rogue AP with RBAC on', async () => {
+    const mockQueryResult = {
+      totalCount: 1,
+      page: 1,
+      data: [{
+        id: 'b76d9aeb1d5e4fc8b62ed6250a6471ee',
+        name: 'Syslog 1',
+        venueIds: [],
+        primaryServer: '1.2.3.4:514 (UDP)',
+        secondaryServer: '',
+        facility: 'KEEP_ORIGINAL',
+        flowLevel: 'CLIENT_FLOW'
+      }]
+    }
+
+    mockServer.use(
+      rest.post(
+        SyslogUrls.querySyslog.url,
+        (_req, res, ctx) => res(ctx.json(mockQueryResult))
+      ))
+
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+
+    render(
+      <Provider>
+        <MyPolicies />
+      </Provider>, {
+        route: { params, path }
+      }
+    )
+
+    const rogueApTitle = 'Rogue AP Detection (99)'
+    expect(await screen.findByText(rogueApTitle)).toBeVisible()
   })
 })

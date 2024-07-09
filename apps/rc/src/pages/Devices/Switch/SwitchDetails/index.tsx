@@ -1,11 +1,15 @@
 /* eslint-disable max-len */
 import { createContext, useEffect, useState } from 'react'
 
+import _             from 'lodash'
 import { useParams } from 'react-router-dom'
 
-import { useSwitchDetailHeaderQuery }                                   from '@acx-ui/rc/services'
-import { isStrictOperationalSwitch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
-import { hasAccess }                                                    from '@acx-ui/user'
+import { Features, useIsSplitOn }                                               from '@acx-ui/feature-toggle'
+import { useSwitchDetailHeaderQuery, useGetSwitchQuery, useGetSwitchListQuery } from '@acx-ui/rc/services'
+import { isStrictOperationalSwitch, Switch, SwitchStatusEnum, SwitchViewModel } from '@acx-ui/rc/utils'
+import { UseQueryResult }                                                       from '@acx-ui/types'
+import { goToNotFound, hasPermission }                                          from '@acx-ui/user'
+import { TABLE_QUERY_LONG_POLLING_INTERVAL }                                    from '@acx-ui/utils'
 
 import { SwitchClientsTab }         from './SwitchClientsTab'
 import { SwitchConfigurationTab }   from './SwitchConfigurationTab'
@@ -18,7 +22,7 @@ import { SwitchTroubleshootingTab } from './SwitchTroubleshootingTab'
 
 const tabs = {
   overview: SwitchOverviewTab,
-  incidents: () => hasAccess() ? <SwitchIncidentsTab/> : null,
+  incidents: () => hasPermission() ? <SwitchIncidentsTab/> : null,
   troubleshooting: SwitchTroubleshootingTab,
   clients: SwitchClientsTab,
   configuration: SwitchConfigurationTab,
@@ -27,7 +31,10 @@ const tabs = {
 }
 
 export interface SwitchDetails {
+  switchData?: Switch
+  switchQuery: UseQueryResult<Switch>
   switchDetailHeader: SwitchViewModel
+  switchDetailViewModelQuery: UseQueryResult<SwitchViewModel>
   currentSwitchOperational: boolean
   switchName: string
 }
@@ -39,20 +46,56 @@ export const SwitchDetailsContext = createContext({} as {
 
 export default function SwitchDetails () {
   const { tenantId, switchId, serialNumber, activeTab } = useParams()
-  const [ switchDetailsContextData, setSwitchDetailsContextData ] = useState({} as SwitchDetails)
-  const { data: switchDetailHeader } = useSwitchDetailHeaderQuery({ params: { tenantId, switchId, serialNumber } })
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const [switchDetailsContextData, setSwitchDetailsContextData] = useState({} as SwitchDetails)
+  const [venueId, setVenueId] = useState('')
+
+  const getSwitchList =
+  useGetSwitchListQuery({ params: { tenantId },
+    payload: { filters: { id: [switchId || serialNumber] } }, enableRbac: isSwitchRbacEnabled }, {
+    skip: !isSwitchRbacEnabled
+  })
+
+  const switchDetailHeaderQuery = useSwitchDetailHeaderQuery({
+    params: { tenantId, switchId, serialNumber, venueId },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL,
+    skip: isSwitchRbacEnabled && _.isEmpty(venueId)
+  })
+  const switchQuery = useGetSwitchQuery({
+    params: { tenantId, switchId, venueId },
+    enableRbac: isSwitchRbacEnabled
+  }, {
+    pollingInterval: TABLE_QUERY_LONG_POLLING_INTERVAL,
+    skip: isSwitchRbacEnabled && _.isEmpty(venueId)
+  })
+
+  const { data: switchDetailHeader } = switchDetailHeaderQuery
+  const { data: switchData } = switchQuery
+
+
+  useEffect(() => {
+    if(getSwitchList.data) {
+      setVenueId(getSwitchList.data.data[0].venueId)
+    }
+  }, [getSwitchList])
 
   useEffect(() => {
     setSwitchDetailsContextData({
+      switchData: switchData as Switch,
+      switchQuery: switchQuery,
       switchDetailHeader: switchDetailHeader as SwitchViewModel,
+      switchDetailViewModelQuery: switchDetailHeaderQuery,
       switchName: switchDetailHeader?.name || switchDetailHeader?.switchName || switchDetailHeader?.serialNumber || '',
       currentSwitchOperational: isStrictOperationalSwitch(
         switchDetailHeader?.deviceStatus as SwitchStatusEnum, !!switchDetailHeader?.configReady
         , !!switchDetailHeader?.syncedSwitchConfig) && !switchDetailHeader?.suspendingDeployTime
     })
-  }, [switchDetailHeader])
+  }, [switchDetailHeader, switchData])
 
-  const Tab = tabs[activeTab as keyof typeof tabs]
+  const Tab = tabs[activeTab as keyof typeof tabs] || goToNotFound
 
   return <SwitchDetailsContext.Provider value={{
     switchDetailsContextData,

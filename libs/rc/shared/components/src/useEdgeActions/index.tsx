@@ -1,11 +1,13 @@
 import { Form, Input, Modal }       from 'antd'
 import { RawIntlProvider, useIntl } from 'react-intl'
 
-import { showActionModal } from '@acx-ui/components'
+import { showActionModal }        from '@acx-ui/components'
+import { useIsSplitOn, Features } from '@acx-ui/feature-toggle'
 import {
   useDeleteEdgeMutation,
   useFactoryResetEdgeMutation,
   useRebootEdgeMutation,
+  useShutdownEdgeMutation,
   useSendOtpMutation
 } from '@acx-ui/rc/services'
 import { EdgeStatus, EdgeStatusEnum } from '@acx-ui/rc/utils'
@@ -13,11 +15,22 @@ import { getIntl }                    from '@acx-ui/utils'
 
 import * as UI from './styledComponents'
 
+export const useIsEdgeReady = () => {
+  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  return isEdgeReady
+}
+
+export const useIsEdgeFeatureReady = (featureFlagKey: Features) => {
+  const isEdgeEnabled = useIsEdgeReady()
+  const isEdgeFeatureReady = useIsSplitOn(featureFlagKey)
+  return isEdgeEnabled && isEdgeFeatureReady
+}
 
 export const useEdgeActions = () => {
   const { $t } = useIntl()
   const [ invokeDeleteEdge ] = useDeleteEdgeMutation()
   const [ invokeRebootEdge ] = useRebootEdgeMutation()
+  const [ invokeShutdownEdge ] = useShutdownEdgeMutation()
   const [ invokeFactoryResetEdge ] = useFactoryResetEdgeMutation()
   const [ invokeSendOtp ] = useSendOtpMutation()
 
@@ -44,24 +57,81 @@ export const useEdgeActions = () => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            invokeRebootEdge({ params: { serialNumber: data.serialNumber } })
-              .then(() => callback?.())
+            invokeRebootEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
           }
         }]
       }
     })
   }
 
-  const factoryReset = (data: EdgeStatus) => {
+  const shutdown = (data: EdgeStatus, callback?: () => void) => {
     showActionModal({
       type: 'confirm',
       title: $t(
-        { defaultMessage: 'Reset and recover "{edgeName}"?' },
+        { defaultMessage: 'Shutdown "{edgeName}"?' },
         { edgeName: data.name }
       ),
       content: $t({
-        defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
+        defaultMessage: `Shutdown will safely end all operations on SmartEdge. You will need to 
+        manually restart the device. Are you sure you want to shut down this SmartEdge?`
       }),
+      customContent: {
+        action: 'CUSTOM_BUTTONS',
+        buttons: [{
+          text: $t({ defaultMessage: 'Cancel' }),
+          type: 'default',
+          key: 'cancel'
+        }, {
+          text: $t({ defaultMessage: 'Shutdown' }),
+          type: 'primary',
+          key: 'ok',
+          closeAfterAction: true,
+          handler: () => {
+            invokeShutdownEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
+          }
+        }]
+      }
+    })
+  }
+
+  const factoryReset = (data: EdgeStatus, callback?: () => void) => {
+    showActionModal({
+      type: 'confirm',
+      title: $t(
+        { defaultMessage: 'Reset & Recover "{edgeName}"?' },
+        { edgeName: data.name }
+      ),
+      content: (
+        <UI.Content>
+          <div className='mb-16'>
+            {
+              $t({
+                defaultMessage: 'Are you sure you want to reset and recover this SmartEdge?'
+              })
+            }
+          </div>
+          <span className='warning-text'>
+            {$t({
+              defaultMessage: `Note: Reset & Recover can address anomalies,
+              but may not resolve all issues, especially for complex,
+              misconfigured, or hardware-related problems.`
+            })}
+          </span>
+        </UI.Content>
+      )
+      ,
       customContent: {
         action: 'CUSTOM_BUTTONS',
         buttons: [{
@@ -74,7 +144,13 @@ export const useEdgeActions = () => {
           key: 'ok',
           closeAfterAction: true,
           handler: () => {
-            invokeFactoryResetEdge({ params: { serialNumber: data.serialNumber } })
+            invokeFactoryResetEdge({
+              params: {
+                venueId: data.venueId,
+                edgeClusterId: data.clusterId,
+                serialNumber: data.serialNumber
+              }
+            }).then(() => callback?.())
           }
         }]
       }
@@ -82,11 +158,21 @@ export const useEdgeActions = () => {
   }
 
   const deleteEdges = (data: EdgeStatus[], callback?: () => void) => {
-    const handleOk = () => (data.length ===1 ?
-      invokeDeleteEdge({ params: { serialNumber: data[0].serialNumber } })
-        .then(() => callback?.()) :
-      invokeDeleteEdge({ payload: data.map(item => item.serialNumber) })
-        .then(() => callback?.()))
+    const handleOk = () => {
+      const requests = []
+      if(data.length > 0) {
+        for(let item of data) {
+          requests.push(invokeDeleteEdge({
+            params: {
+              venueId: item.venueId,
+              edgeClusterId: item.clusterId,
+              serialNumber: item.serialNumber
+            }
+          }))
+        }
+      }
+      Promise.all(requests).then(() => callback?.())
+    }
     showDeleteModal(data, handleOk)
   }
 
@@ -96,8 +182,13 @@ export const useEdgeActions = () => {
       title: $t({ defaultMessage: 'Send OTP' }),
       content: $t({ defaultMessage: 'Are you sure you want to send OTP?' }),
       onOk: () => {
-        invokeSendOtp({ params: { serialNumber: data.serialNumber } })
-          .then(() => callback?.())
+        invokeSendOtp({
+          params: {
+            venueId: data.venueId,
+            edgeClusterId: data.clusterId,
+            serialNumber: data.serialNumber
+          }
+        }).then(() => callback?.())
       }
     })
   }
@@ -106,13 +197,14 @@ export const useEdgeActions = () => {
 
   return {
     reboot,
+    shutdown,
     factoryReset,
     deleteEdges,
     sendOtp
   }
 }
 
-const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
+export const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
   const intl = getIntl()
   const { $t } = intl
   const modal = Modal.confirm({})
@@ -186,4 +278,3 @@ const showDeleteModal = (data: EdgeStatus[], handleOk?: () => void) => {
     content: <RawIntlProvider value={intl} children={config.content} />
   })
 }
-

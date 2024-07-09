@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 
 import userEvent from '@testing-library/user-event'
 
+import { get }                          from '@acx-ui/config'
 import { serviceGuardApiURL, Provider } from '@acx-ui/store'
 import {
   mockGraphqlQuery,
@@ -9,13 +10,18 @@ import {
   screen,
   mockGraphqlMutation,
   within,
-  findTBody
-}                              from '@acx-ui/test-utils'
+  findTBody,
+  waitForElementToBeRemoved
+} from '@acx-ui/test-utils'
+import { RolesEnum }                                                         from '@acx-ui/types'
+import { getUserProfile, RaiPermissions, setRaiPermissions, setUserProfile } from '@acx-ui/user'
 
 import * as fixtures            from '../__tests__/fixtures'
 import { ServiceGuardTableRow } from '../services'
 
 import { ServiceGuardTable, lastResultSort } from '.'
+
+jest.mock('@acx-ui/config', () => ({ get: jest.fn() }))
 
 const mockedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -26,6 +32,11 @@ jest.mock('@acx-ui/user', () => ({
   ...jest.requireActual('@acx-ui/user'),
   useUserProfileContext: () => ({ data: { externalId: 'user-id' } })
 }))
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: () => ({ userId: 'user-id' })
+}))
+
 
 describe('Service Validation Table', () => {
   it('should render table with valid input', async () => {
@@ -52,7 +63,7 @@ describe('Service Validation Table', () => {
     const radio = await screen.findAllByRole('radio')
     await userEvent.click(radio[1])
     await userEvent.click(await screen.findByRole('button', { name: /run now/i }))
-    expect(await screen.findByText('Service Validation test running')).toBeVisible()
+    expect(await screen.findByText('Service Validation test is running')).toBeVisible()
   })
 
   it('should not run test when apsPendingCount is more than 0', async () => {
@@ -116,6 +127,7 @@ describe('Service Validation Table', () => {
   it('should only allow edit for same user', async () => {
     mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
       { data: fixtures.fetchAllServiceGuardSpecs })
+    setRaiPermissions({ WRITE_SERVICE_VALIDATION: true } as RaiPermissions)
     render(<ServiceGuardTable/>, {
       wrapper: Provider,
       route: { params: { tenantId: 'tenant-id' } }
@@ -124,8 +136,11 @@ describe('Service Validation Table', () => {
 
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
-    expect(mockedNavigate)
-      .toBeCalledWith('/tenant-id/t/analytics/serviceValidation/spec-id/edit')
+    expect(mockedNavigate).toBeCalledWith({
+      hash: '',
+      pathname: '/tenant-id/t/analytics/serviceValidation/spec-id/edit',
+      search: ''
+    })
 
     await userEvent.click(radio[1])
     expect(await screen.findByRole('button', { name: 'Edit' })).toBeDisabled()
@@ -141,7 +156,7 @@ describe('Service Validation Table', () => {
     await userEvent.click(radio[0])
     await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
     await userEvent.click(await screen.findByText(/delete test/i))
-    expect(await screen.findByText('Service Validation test deleted')).toBeVisible()
+    expect(await screen.findByText('Service Validation test was deleted')).toBeVisible()
   })
 
   it('should clone test properly',async () => {
@@ -159,7 +174,19 @@ describe('Service Validation Table', () => {
     expect(await screen.findByText('Clone test')).toBeVisible()
     await userEvent.type(await screen.findByRole('textbox'), 'test-name')
     await userEvent.click(await screen.findByText('Save'))
-    expect(await screen.findByText('Service Validation test cloned')).toBeVisible()
+    expect(await screen.findByText('Service Validation test was cloned')).toBeVisible()
+  })
+
+  it('should not allow row selection when role = READ_ONLY', async () => {
+    const profile = getUserProfile()
+    setUserProfile({ ...profile, profile: {
+      ...profile.profile, roles: [RolesEnum.READ_ONLY]
+    } })
+    mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
+      { data: fixtures.fetchAllServiceGuardSpecs })
+    render(<ServiceGuardTable/>, { wrapper: Provider, route: {} })
+    await waitForElementToBeRemoved(screen.queryByRole('img', { name: 'loader' }))
+    expect(screen.queryByRole('radio')).not.toBeInTheDocument()
   })
 
   describe('lastResultSort', () => {
@@ -196,6 +223,23 @@ describe('Service Validation Table', () => {
     })
     it('should return 0 when comparing undefined', () => {
       expect(lastResultSort(row3, row3)).toEqual(0)
+    })
+  })
+
+  describe('RA', () => {
+    beforeEach(() => jest.mocked(get).mockReturnValue('true'))
+
+    it('should only allow edit for same user', async () => {
+      mockGraphqlQuery(serviceGuardApiURL, 'FetchAllServiceGuardSpecs',
+        { data: fixtures.fetchAllServiceGuardSpecs })
+      render(<ServiceGuardTable/>, {
+        wrapper: Provider,
+        route: { params: { tenantId: 'tenant-id' } }
+      })
+      const radio = await screen.findAllByRole('radio')
+
+      await userEvent.click(radio[0])
+      expect(await screen.findByRole('button', { name: 'Edit' })).toBeEnabled()
     })
   })
 })

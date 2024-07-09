@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom'
-import { render, screen }      from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import { Router, Route }       from 'react-router-dom'
+
+import { render, screen } from '@acx-ui/test-utils'
 
 import { rootRoutes } from './RootRoutes'
 

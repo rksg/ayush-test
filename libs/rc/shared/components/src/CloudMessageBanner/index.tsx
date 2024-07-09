@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react'
 import { Space }   from 'antd'
 import { useIntl } from 'react-intl'
 
-import { Alert, Button }                                                        from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed }                             from '@acx-ui/feature-toggle'
+import { Alert, Button, useLayoutContext } from '@acx-ui/components'
+import { Features, useIsSplitOn }          from '@acx-ui/feature-toggle'
 import {
-  useLazyGetSwitchVenueVersionListQuery, useLazyGetVenueEdgeFirmwareListQuery
+  useLazyGetSwitchVenueVersionListQuery,
+  useLazyGetVenueEdgeFirmwareListQuery,
+  useLazyGetScheduledFirmwareQuery
 } from '@acx-ui/rc/services'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 import { RolesEnum }                             from '@acx-ui/types'
@@ -17,17 +19,22 @@ import {
   useGetPlmMessageBannerQuery,
   useGetAllUserSettingsQuery,
   useGetCloudVersionQuery,
-  useLazyGetCloudScheduleVersionQuery,
   UserSettingsUIModel,
   hasRoles
 } from '@acx-ui/user'
+
+import { useIsEdgeFeatureReady } from '../useEdgeActions'
 
 export function CloudMessageBanner () {
   const { $t } = useIntl()
   const params = useParams()
   const navigate = useNavigate()
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const isScheduleUpdateReady = useIsSplitOn(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isEdgeScheduleUpdateReady = useIsEdgeFeatureReady(Features.EDGES_SCHEDULE_UPGRADE_TOGGLE)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+  const isPtenantRbacApiEnabled = useIsSplitOn(Features.PTENANT_RBAC_API)
+  const layout = useLayoutContext()
+
   const linkToAdministration = useTenantLink('/administration/')
   const dismissUpgradeSchedule = 'COMMON$dismiss-upgrade-schedule'
 
@@ -35,28 +42,36 @@ export function CloudMessageBanner () {
   const [newWifiScheduleExists, setNewWifiScheduleExists] = useState(false)
   const [newSwitchScheduleExists, setNewSwitchScheduleExists] = useState(false)
   const [newEdgeScheduleExists, setNewEdgeScheduleExists] = useState(false)
+  const [upgradeMessageTitle, setUpgradeMessageTitle] = useState('')
 
   const { data } = useGetPlmMessageBannerQuery({ params })
-  const { data: userSettings } = useGetAllUserSettingsQuery({ params })
+  const { data: userSettings } = useGetAllUserSettingsQuery({ params,
+    enableRbac: isPtenantRbacApiEnabled })
   const { data: cloudVersion } = useGetCloudVersionQuery({ params })
-  const [getCloudScheduleVersion] = useLazyGetCloudScheduleVersionQuery()
+  const [getCloudScheduleVersion] = useLazyGetScheduledFirmwareQuery()
   const [getSwitchVenueVersionList] = useLazyGetSwitchVenueVersionListQuery()
   const [getVenueEdgeFirmwareList] = useLazyGetVenueEdgeFirmwareListQuery()
-  const showMessageBanner = !!(data && data.description)
+
+  const hidePlmMessage = !!sessionStorage.getItem('hidePlmMessage')
+  const plmMessageExists = !!(data && data.description) && !hidePlmMessage
+  const isSpecialRole = hasRoles([
+    RolesEnum.DPSK_ADMIN, RolesEnum.GUEST_MANAGER, RolesEnum.REPORTS_ADMIN])
 
   useEffect(() => {
-    if (cloudVersion && userSettings) {
+    if(cloudVersion && userSettings) {
       setVersion(version)
-      checkWifiScheduleExists()
-      if (!hasRoles(RolesEnum.DPSK_ADMIN))
+      if(!isSpecialRole) {
+        checkWifiScheduleExists()
         checkSwitchScheduleExists()
-      if(isEdgeEnabled && isScheduleUpdateReady)
-        checkEdgeScheduleExists()
+        if(isEdgeScheduleUpdateReady) {
+          checkEdgeScheduleExists()
+        }
+      }
     }
   }, [cloudVersion, userSettings])
 
   const checkWifiScheduleExists = async () => {
-    return await getCloudScheduleVersion({ params }).unwrap()
+    return await getCloudScheduleVersion({ params, enableRbac: isUpgradeByModelEnabled }).unwrap()
       .then(cloudScheduleVersion => {
         if (cloudScheduleVersion) {
           const updateVersion = {
@@ -66,9 +81,10 @@ export function CloudMessageBanner () {
           setVersion(updateVersion)
           setNewWifiScheduleExists(
             isThereNewSchedule(
-          updateVersion as CloudVersion,
-          userSettings as UserSettingsUIModel,
-          dismissUpgradeSchedule)
+              updateVersion as CloudVersion,
+              userSettings as UserSettingsUIModel,
+              dismissUpgradeSchedule
+            )
           )
         }
       }).catch((error) => {
@@ -77,7 +93,7 @@ export function CloudMessageBanner () {
   }
 
   const checkSwitchScheduleExists = async () => {
-    return await getSwitchVenueVersionList({ params })
+    return await getSwitchVenueVersionList({ params, enableRbac: isSwitchRbacEnabled })
       .unwrap()
       .then(result => {
         const upgradeVenueViewList = result?.data ?? []
@@ -101,64 +117,52 @@ export function CloudMessageBanner () {
       })
   }
 
-  const setGlobalCSSProperty = (isShow: boolean) => {
-    document.documentElement.style.setProperty(
-      '--acx-has-cloudmessagebanner', isShow ? '1' : '0'
+  useEffect(() => {
+    const showUpgradeSchedule = (
+      newWifiScheduleExists ||
+      newSwitchScheduleExists ||
+      newEdgeScheduleExists
     )
-  }
+    setUpgradeMessageTitle(showUpgradeSchedule
+      ? $t({ defaultMessage: 'An upgrade schedule for the new firmware version is available.' })
+      : '')
 
-  /* eslint-disable max-len */
-  const MessageBanner = () => {
-    if (showMessageBanner) {
-      setGlobalCSSProperty(true)
-      return <Alert message={data?.description}
-        type='info'
-        showIcon
-        closable
-        onClose={()=>{
-          setGlobalCSSProperty(false)
-        }}/>
+    if (plmMessageExists) {
+      layout.setShowMessageBanner(true)
+    } else if (showUpgradeSchedule) {
+      layout.setShowMessageBanner(true)
     } else {
-      const showUpgradeSchedule = (
-        newWifiScheduleExists ||
-        newSwitchScheduleExists ||
-        newEdgeScheduleExists
-      ) && !showMessageBanner
-      const upgradeMessageTitle = showUpgradeSchedule
-        ? $t({ defaultMessage: 'An upgrade schedule for the new firmware version is available.' })
-        : ''
-
-      const showVScheduleInfo = () => {
-        if (newWifiScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/apFirmware`)
-        } else if (newSwitchScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/switchFirmware`)
-        } else if(newEdgeScheduleExists) {
-          navigate(`${linkToAdministration.pathname}/fwVersionMgmt/edgeFirmware`)
-        }
-      }
-
-      if (upgradeMessageTitle) {
-        setGlobalCSSProperty(true)
-        return <Alert
-          message={<Space>{upgradeMessageTitle}
-            <Button type='link'
-              size='small'
-              onClick={showVScheduleInfo}>
-              { $t({ defaultMessage: 'More details' }) }
-            </Button>
-          </Space>}
-          type='info'
-          showIcon
-        />
-      }
+      layout.setShowMessageBanner(false)
     }
-    setGlobalCSSProperty(false)
-    return null
-  }
-  /* eslint-enable max-len */
+  // eslint-disable-next-line max-len
+  }, [$t, newWifiScheduleExists, newSwitchScheduleExists, newEdgeScheduleExists, layout, plmMessageExists])
 
-  return <MessageBanner />
+  const showVScheduleInfo = () => {
+    if (newWifiScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/apFirmware`)
+    } else if (newSwitchScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/switchFirmware`)
+    } else if(newEdgeScheduleExists) {
+      navigate(`${linkToAdministration.pathname}/fwVersionMgmt/edgeFirmware`)
+    }
+  }
+
+  return layout.showMessageBanner ? <Alert type='info'
+    showIcon
+    closable={!!plmMessageExists}
+    onClose={()=>{
+      layout.setShowMessageBanner(false)
+      sessionStorage.setItem('hidePlmMessage', 'true')
+    }}
+    message={plmMessageExists ? data?.description :
+      upgradeMessageTitle ? <Space>{upgradeMessageTitle}
+        <Button type='link'
+          size='small'
+          onClick={showVScheduleInfo}>
+          { $t({ defaultMessage: 'More details' }) }
+        </Button>
+      </Space> : ''}
+  /> : null
 }
 
 const isThereNewSchedule = (

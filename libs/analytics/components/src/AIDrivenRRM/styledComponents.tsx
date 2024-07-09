@@ -1,10 +1,13 @@
+import { forwardRef } from 'react'
+
 import { List as AntList } from 'antd'
 import styled              from 'styled-components'
 
-export const List = styled(AntList)``
+import type { ListItemMetaProps } from 'antd/lib/list'
 
-List.Item = styled(AntList.Item)`
-  border-bottom-color: var(--acx-neutrals-25);
+export const ListItem = styled(AntList.Item)`
+  &:first-of-type { padding-top: 5px; }
+  border-bottom-color: var(--acx-neutrals-25) !important;
   padding: 10px 0;
   a {
     display: block;
@@ -13,7 +16,7 @@ List.Item = styled(AntList.Item)`
   }
 `
 
-List.Item.Meta = styled(AntList.Item.Meta)`
+const MetaNoRef = styled(AntList.Item.Meta)`
   align-items: center;
 
   .ant-list-item-meta-avatar {
@@ -33,5 +36,29 @@ List.Item.Meta = styled(AntList.Item.Meta)`
     font-size: var(--acx-body-6-font-size);
     line-height: var(--acx-body-6-line-height);
     color: var(--acx-neutrals-50);
+  }
+`
+ListItem.Meta = forwardRef<HTMLDivElement,ListItemMetaProps>((props, ref) =>
+  <div ref={ref}><MetaNoRef {...props} /></div>)
+
+export const LicenseWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 3px;
+`
+
+export const ContentWrapper = styled.div`
+  flex: 1;
+  p {
+    font-family: var(--acx-neutral-brand-font);
+    font-weight: var(--acx-body-4-font-weight);
+    font-size: var(--acx-body-4-font-size);
+    line-height: var(--acx-body-4-line-height);
+    color: var(--acx-primary-black);
+    margin-bottom: 20px;
+  }
+  .ant-empty-normal {
+    margin-bottom: 17px;
   }
 `

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 
+import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Loader, showToast, Table, TableProps }            from '@acx-ui/components'
+import { Features, useIsSplitOn }                          from '@acx-ui/feature-toggle'
 import { CsvSize, ImportFileDrawer, ImportFileDrawerType } from '@acx-ui/rc/components'
 import {
   doProfileDelete,
@@ -11,12 +13,20 @@ import {
   useUpdateMacRegistrationMutation,
   useUploadMacRegistrationMutation
 } from '@acx-ui/rc/services'
-import { FILTER, MacRegistration, MacRegistrationPool, SEARCH, useTableQuery } from '@acx-ui/rc/utils'
-import { useParams }                                                           from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                           from '@acx-ui/user'
+import {
+  FILTER,
+  MacRegistration,
+  MacRegistrationPool,
+  returnExpirationString,
+  SEARCH,
+  toDateTimeString,
+  useTableQuery
+} from '@acx-ui/rc/utils'
+import { useParams }                     from '@acx-ui/react-router-dom'
+import { WifiScopes }                    from '@acx-ui/types'
+import { filterByAccess, hasPermission } from '@acx-ui/user'
 
-import { MacAddressDrawer }                         from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
-import { returnExpirationString, toDateTimeString } from '../../MacRegistrationListUtils'
+import { MacAddressDrawer } from '../../MacRegistrationListForm/MacRegistrationListMacAddresses/MacAddressDrawer'
 
 export function MacRegistrationsTab () {
   const { $t } = useIntl()
@@ -28,6 +38,8 @@ export function MacRegistrationsTab () {
   const [ uploadCsv, uploadCsvResult ] = useUploadMacRegistrationMutation()
 
   const macRegistrationListQuery = useGetMacRegListQuery({ params: { policyId } })
+  const isAsync = useIsSplitOn(Features.CLOUDPATH_ASYNC_API_TOGGLE)
+  const customHeaders = (isAsync) ? { Accept: 'application/vnd.ruckus.v2+json' } : undefined
 
   const sorter = {
     sortField: 'macAddress',
@@ -40,6 +52,7 @@ export function MacRegistrationsTab () {
     value: ''
   }
 
+  const settingsId = 'mac-regs-table'
   const tableQuery = useTableQuery({
     useQuery: useSearchMacRegistrationsQuery,
     sorter,
@@ -49,7 +62,8 @@ export function MacRegistrationsTab () {
       searchCriteriaList: [
         { ...filter }
       ]
-    }
+    },
+    pagination: { settingsId }
   })
 
   useEffect(()=>{
@@ -73,7 +87,8 @@ export function MacRegistrationsTab () {
       setVisible(true)
       setIsEditMode(true)
       clearSelection()
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   },
   {
     label: $t({ defaultMessage: 'Delete' }),
@@ -86,54 +101,71 @@ export function MacRegistrationsTab () {
           { fieldName: 'identityId', fieldText: $t({ defaultMessage: 'Identity' }) }
         ],
         // eslint-disable-next-line max-len
-        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id) })
+        async () => deleteMacRegistrations({ params: { policyId, registrationId: selectedRows[0].id }, payload: selectedRows.map(p => p.id), customHeaders })
           .then(() => {
             const macAddress = selectedRows.map(row => row.macAddress).join(', ')
-            if(selectedRows.length > 1) {
-              showToast({
-                type: 'success',
-                content: $t(
-                  { defaultMessage: 'MAC Address {macAddress} were deleted' },
-                  { macAddress }
-                )
-              })
-            } else {
-              showToast({
-                type: 'success',
-                content: $t(
-                  { defaultMessage: 'MAC Address {macAddress} was deleted' },
-                  { macAddress }
-                )
-              })
+            if (!isAsync) {
+              if(selectedRows.length > 1) {
+                showToast({
+                  type: 'success',
+                  content: $t(
+                    { defaultMessage: 'MAC Address {macAddress} were deleted' },
+                    { macAddress }
+                  )
+                })
+              } else {
+                showToast({
+                  type: 'success',
+                  content: $t(
+                    { defaultMessage: 'MAC Address {macAddress} was deleted' },
+                    { macAddress }
+                  )
+                })
+              }
             }
             clearSelection()
           }).catch((error) => {
             console.log(error) // eslint-disable-line no-console
           })
       )
-    }
+    },
+    scopeKey: [WifiScopes.DELETE]
   },
   {
     label: $t({ defaultMessage: 'Revoke' }),
+    disabled: ([selectedRow]) => {
+      if(selectedRow.revoked) {
+        return true
+      }
+      else if(selectedRow.expirationDate) {
+        return moment(selectedRow.expirationDate).isSameOrBefore(new Date())
+      }
+      return false
+    },
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (rows, clearSelection) => {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: true }
+          payload: { revoked: true },
+          customHeaders
         }).then(clearSelection)
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   },
   {
     label: $t({ defaultMessage: 'Unrevoke' }),
+    disabled: ([selectedRow]) => !selectedRow.revoked,
     visible: (selectedRows) => selectedRows.length === 1,
     onClick: (rows, clearSelection) => {
       editMacRegistration(
         {
           params: { policyId, registrationId: rows[0].id },
-          payload: { revoked: false }
+          payload: { revoked: false },
+          customHeaders
         }).then(clearSelection)
-    }
+    },
+    scopeKey: [WifiScopes.UPDATE]
   }]
 
   const columns: TableProps<MacRegistration>['columns'] = [
@@ -229,7 +261,8 @@ export function MacRegistrationsTab () {
         isLoading={uploadCsvResult.isLoading}
         importRequest={async (formData) => {
           try {
-            await uploadCsv({ params: { policyId }, payload: formData }).unwrap()
+            // eslint-disable-next-line max-len
+            await uploadCsv({ params: { policyId }, payload: formData, customHeaders: { ...customHeaders, 'Content-Type': undefined } }).unwrap()
             setUploadCsvDrawerVisible(false)
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
           } catch (error) {
@@ -239,7 +272,7 @@ export function MacRegistrationsTab () {
         onClose={() => setUploadCsvDrawerVisible(false)} />
       <Table
         enableApiFilter
-        settingsId='mac-regs-table'
+        settingsId={settingsId}
         columns={columns}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
@@ -247,18 +280,22 @@ export function MacRegistrationsTab () {
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
         onFilterChange={handleFilterChange}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={
+          hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }
+        }
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add MAC Address' }),
           onClick: () => {
             setIsEditMode(false)
             setVisible(true)
             setEditData({} as MacRegistration)
-          }
+          },
+          scopeKey: [WifiScopes.CREATE]
         },
         {
           label: $t({ defaultMessage: 'Import From File' }),
-          onClick: () => setUploadCsvDrawerVisible(true)
+          onClick: () => setUploadCsvDrawerVisible(true),
+          scopeKey: [WifiScopes.CREATE]
         }])}
       />
     </Loader>

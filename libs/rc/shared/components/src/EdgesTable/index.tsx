@@ -23,10 +23,12 @@ import {
   EdgeStatusEnum,
   TABLE_QUERY,
   TableQuery,
+  allowRebootShutdownForStatus,
+  allowResetForStatus,
   usePollingTableQuery
 } from '@acx-ui/rc/utils'
 import { TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }                         from '@acx-ui/types'
+import { EdgeScopes, RequestPayload }             from '@acx-ui/types'
 import { filterByAccess }                         from '@acx-ui/user'
 import { exportMessageMapping }                   from '@acx-ui/utils'
 
@@ -75,6 +77,7 @@ const venueOptionsDefaultPayload = {
 
 export const EdgesTable = (props: EdgesTableProps) => {
   const {
+    settingsId = 'edges-table',
     tableQuery: customTableQuery,
     columns,
     filterColumns,
@@ -83,7 +86,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath = useTenantLink('')
-
+  const isGracefulShutdownReady = useIsSplitOn(Features.EDGE_GRACEFUL_SHUTDOWN_TOGGLE)
   const tableQuery = usePollingTableQuery({
     useQuery: useGetEdgeListQuery,
     defaultPayload: defaultEdgeTablePayload,
@@ -94,6 +97,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
     search: {
       searchTargetFields: ['name', 'serialNumber', 'ip']
     },
+    pagination: { settingsId },
     ...customTableQuery
   })
   const statusFilterOptions = seriesMappingAP().map(({ key, name, color }) => ({
@@ -108,7 +112,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     })
 
-  const { deleteEdges, reboot, sendOtp } = useEdgeActions()
+  const { deleteEdges, factoryReset, reboot, shutdown, sendOtp } = useEdgeActions()
   // eslint-disable-next-line max-len
   const { exportCsv, disabled } = useExportCsv<EdgeStatus>(tableQuery as TableQuery<EdgeStatus, RequestPayload<unknown>, unknown>)
   const exportDevice = useIsSplitOn(Features.EXPORT_DEVICE)
@@ -174,10 +178,11 @@ export const EdgesTable = (props: EdgesTableProps) => {
       title: $t({ defaultMessage: 'Ports' }),
       key: 'ports',
       dataIndex: 'ports',
-      sorter: true
+      sorter: true,
+      align: 'center'
     },
     {
-      title: $t({ defaultMessage: 'Venue' }),
+      title: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       key: 'venue',
       dataIndex: ['venueName'],
       sorter: true,
@@ -217,6 +222,7 @@ export const EdgesTable = (props: EdgesTableProps) => {
 
   const rowActions: TableProps<EdgeStatus>['rowActions'] = [
     {
+      scopeKey: [EdgeScopes.UPDATE],
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
@@ -228,32 +234,54 @@ export const EdgesTable = (props: EdgesTableProps) => {
       }
     },
     {
+      scopeKey: [EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         deleteEdges(rows, clearSelection)
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
-        EdgeStatusEnum.OPERATIONAL === selectedRows[0]?.deviceStatus),
+        allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
       label: $t({ defaultMessage: 'Reboot' }),
       onClick: (rows, clearSelection) => {
         reboot(rows[0], clearSelection)
       }
     },
     {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      visible: (selectedRows) => (isGracefulShutdownReady && selectedRows.length === 1 &&
+        allowRebootShutdownForStatus(selectedRows[0]?.deviceStatus)),
+      label: $t({ defaultMessage: 'Shutdown' }),
+      onClick: (rows, clearSelection) => {
+        shutdown(rows[0], clearSelection)
+      }
+    },
+    {
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
       visible: (selectedRows) => (selectedRows.length === 1 &&
         EdgeStatusEnum.NEVER_CONTACTED_CLOUD === selectedRows[0]?.deviceStatus),
       label: $t({ defaultMessage: 'Send OTP' }),
       onClick: (rows, clearSelection) => {
         sendOtp(rows[0], clearSelection)
       }
+    },{
+      scopeKey: [EdgeScopes.CREATE, EdgeScopes.UPDATE],
+      visible: (selectedRows) => (
+        selectedRows.length === 1 &&
+        allowResetForStatus(selectedRows[0]?.deviceStatus)
+      ),
+      label: $t({ defaultMessage: 'Reset & Recover' }),
+      onClick: (rows, clearSelection) => {
+        factoryReset(rows[0], clearSelection)
+      }
     }
   ]
   return (
     <Loader states={[tableQuery]}>
       <Table
-        settingsId='edges-table'
+        settingsId={settingsId}
         rowKey='serialNumber'
         rowActions={filterByAccess(rowActions)}
         columns={columns ?? defaultColumns}

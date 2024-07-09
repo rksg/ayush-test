@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 
-import { render, RenderOptions, RenderHookOptions, renderHook, screen } from '@testing-library/react'
+import { render, RenderOptions, RenderHookOptions, renderHook, within } from '@testing-library/react'
 import { ConfigProvider }                                               from 'antd'
 import enUS                                                             from 'antd/lib/locale/en_US'
 import { IntlProvider }                                                 from 'react-intl'
@@ -84,15 +84,22 @@ function wrapper (options?: CustomOptions & { wrapper?: RenderOptions['wrapper']
 
       wrappedUI = <MemoryRouter initialEntries={[entry]} children={wrappedUI} />
     }
-    wrappedUI = <IntlProvider locale={enUS.locale} children={wrappedUI} />
+    wrappedUI = <IntlProvider locale={enUS.locale}
+      children={wrappedUI}
+      defaultRichTextElements={{
+        venueSingular: () => 'venue',
+        venuePlural: () => 'venues',
+        VenueSingular: () => 'Venue',
+        VenuePlural: () => 'Venues'
+      }}/>
     wrappedUI = <ConfigProvider locale={enUS} children={wrappedUI} />
 
     return wrappedUI
   }
 }
 
-export async function findTBody () {
-  return screen.findByRole('rowgroup', {
+export async function findTBody (element: HTMLElement = document.body) {
+  return within(element).findByRole('rowgroup', {
     name: (name, element) => element.classList.contains('ant-table-tbody')
   })
 }

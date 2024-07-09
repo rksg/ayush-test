@@ -7,13 +7,20 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import { Dropdown, CaretDownSolidIcon, Button, PageHeader, RangePicker } from '@acx-ui/components'
-import { APStatus }                                                      from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                        from '@acx-ui/feature-toggle'
+import { APStatus, LowPowerBannerAndModal }                              from '@acx-ui/rc/components'
 import { useApActions }                                                  from '@acx-ui/rc/components'
-import { useApDetailHeaderQuery }                                        from '@acx-ui/rc/services'
+import {
+  useApDetailHeaderQuery,
+  isAPLowPower,
+  useApViewModelQuery
+}                          from '@acx-ui/rc/services'
 import {
   ApDetailHeader,
   ApDeviceStatusEnum,
-  useApContext
+  useApContext,
+  ApStatus,
+  PowerSavingStatusEnum
 } from '@acx-ui/rc/utils'
 import {
   useLocation,
@@ -21,18 +28,41 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
+import { WifiScopes }     from '@acx-ui/types'
 import { filterByAccess } from '@acx-ui/user'
 import { useDateFilter }  from '@acx-ui/utils'
+
+import { useGetApCapabilities } from '../hooks'
 
 import ApTabs from './ApTabs'
 
 function ApPageHeader () {
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const AFC_Featureflag = useIsSplitOn(Features.AP_AFC_TOGGLE)
+
   const { $t } = useIntl()
   const { startDate, endDate, setDateFilter, range } = useDateFilter()
-  const { tenantId, serialNumber } = useApContext()
-  const { data } = useApDetailHeaderQuery({ params: { tenantId, serialNumber } })
+  const { tenantId, serialNumber, apStatusData, afcEnabled, venueId, model } = useApContext()
+  const params = { venueId, serialNumber }
+  const { data } = useApDetailHeaderQuery({ params })
+
+  const { data: apCapabilities } = useGetApCapabilities({
+    params,
+    modelName: model,
+    enableRbac: isUseRbacApi
+  })
+
+  const isOutdoorAp = apCapabilities?.isOutdoor
+
   const apAction = useApActions()
   const { activeTab } = useParams()
+  const apViewModelPayload = {
+    entityType: 'aps',
+    fields: ['powerSavingStatus'],
+    filters: { serialNumber: [serialNumber] }
+  }
+  const apViewModelQuery = useApViewModelQuery({ serialNumber, payload: apViewModelPayload })
+  const powerSavingStatus = apViewModelQuery.data?.powerSavingStatus as PowerSavingStatusEnum
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -41,7 +71,7 @@ function ApPageHeader () {
 
   const status = data?.headers.overview as ApDeviceStatusEnum
   const currentApOperational = status === ApDeviceStatusEnum.OPERATIONAL
-
+  const ApStatusData = apStatusData as ApStatus
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     if (!serialNumber) return
 
@@ -55,7 +85,8 @@ function ApPageHeader () {
     if (e.key === 'delete') {
       actionMap['delete'](serialNumber, tenantId, () => navigate(linkToWifi))
     } else {
-      actionMap[e.key as keyof typeof actionMap](serialNumber, tenantId)
+      // eslint-disable-next-line max-len
+      (actionMap[e.key as keyof typeof actionMap] as typeof actionMap['reboot'])(serialNumber, tenantId, venueId)
     }
   }
 
@@ -77,7 +108,9 @@ function ApPageHeader () {
       }, {
         label: $t({ defaultMessage: 'Delete AP' }),
         key: 'delete'
-      }].filter(item => currentApOperational || item.key === 'delete')}
+      }].filter(item => (currentApOperational || item.key === 'delete' ||
+        (item.key === 'downloadLog' && status === ApDeviceStatusEnum.CONFIGURATION_UPDATE_FAILED)
+      ))}
     />
   )
 
@@ -87,7 +120,13 @@ function ApPageHeader () {
   return (
     <PageHeader
       title={data?.title || ''}
-      titleExtra={<APStatus status={status} showText={!currentApOperational} />}
+      titleExtra={
+        <APStatus
+          status={status}
+          showText={!currentApOperational}
+          powerSavingStatus={powerSavingStatus}
+        />
+      }
       breadcrumb={[
         { text: $t({ defaultMessage: 'Wi-Fi' }) },
         { text: $t({ defaultMessage: 'Access Points' }) },
@@ -103,16 +142,19 @@ function ApPageHeader () {
           />
           : <></>,
         ...filterByAccess([
-          <Dropdown overlay={menu}>{()=>
-            <Button>
-              <Space>
-                {$t({ defaultMessage: 'More Actions' })}
-                <CaretDownSolidIcon />
-              </Space>
-            </Button>
-          }</Dropdown>,
+          <Dropdown
+            scopeKey={[WifiScopes.DELETE, WifiScopes.UPDATE]}
+            overlay={menu}>{()=>
+              <Button>
+                <Space>
+                  {$t({ defaultMessage: 'More Actions' })}
+                  <CaretDownSolidIcon />
+                </Space>
+              </Button>}
+          </Dropdown>,
           <Button
             type='primary'
+            scopeKey={[WifiScopes.UPDATE]}
             onClick={() => {
               navigate({
                 ...basePath,
@@ -126,7 +168,18 @@ function ApPageHeader () {
           >{$t({ defaultMessage: 'Configure' })}</Button>
         ])
       ]}
-      footer={<ApTabs apDetail={data as ApDetailHeader} />}
+      footer={<>
+        {
+          AFC_Featureflag && afcEnabled &&
+          isAPLowPower(ApStatusData?.afcInfo) &&
+          <LowPowerBannerAndModal
+            afcInfo={ApStatusData.afcInfo}
+            from={'ap'}
+            isOutdoor={isOutdoorAp}
+          />
+        }
+        <ApTabs apDetail={data as ApDetailHeader} />
+      </>}
     />
   )
 }

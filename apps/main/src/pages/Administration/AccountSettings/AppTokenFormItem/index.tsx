@@ -52,11 +52,13 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
 
   const onAddAppToken = () => {
     setEditMode(false)
+    setAuthenticationsData(undefined)
     setDrawerVisible(true)
   }
 
   const appTokenData = tenantAuthenticationData?.filter(n =>
-    n.authenticationType !== TenantAuthenticationType.saml)
+    n.authenticationType !== TenantAuthenticationType.saml &&
+    n.authenticationType !== TenantAuthenticationType.google_workspace)
   useEffect(() => {
     const hasTokenData = (Array.isArray(appTokenData) && appTokenData.length > 0)
     setAppToken(hasTokenData)
@@ -151,7 +153,7 @@ const AppTokenFormItem = (props: AppTokenFormItemProps) => {
         key: 'scopes',
         render: function (_, row) {
           return roleDisplayText[row.scopes as RolesEnum]
-            ? $t(roleDisplayText[row.scopes as RolesEnum]) : ''
+            ? $t(roleDisplayText[row.scopes as RolesEnum]) : row.scopes
         }
       }
     ]

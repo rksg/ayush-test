@@ -26,6 +26,8 @@ export class ApRadioParams24G {
 
   txPower: TxPowerEnum
 
+  useVenueSettings?: boolean
+
   constructor () {
     this.allowedChannels = []
 
@@ -36,5 +38,7 @@ export class ApRadioParams24G {
     this.changeInterval = 33
 
     this.txPower = TxPowerEnum.MAX
+
+    this.useVenueSettings = true
   }
 }

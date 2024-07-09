@@ -4,8 +4,9 @@ import {
   AIAnalytics,
   AIAnalyticsTabEnum,
   HealthPage,
+  HealthPageWithTabs,
+  HealthTabEnum,
   IncidentDetails,
-  IncidentListPage,
   NetworkAssurance,
   NetworkAssuranceTabEnum,
   RecommendationDetails,
@@ -15,48 +16,65 @@ import {
   ServiceGuardTestGuard,
   VideoCallQoeForm,
   VideoCallQoeDetails,
-  CrrmDetails
+  CrrmDetails,
+  UnknownDetails
 }                                                   from '@acx-ui/analytics/components'
 import { PageNotFound }                             from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
 import { rootRoutes, Route, TenantNavigate }        from '@acx-ui/react-router-dom'
 import { Provider }                                 from '@acx-ui/store'
-import { hasAccess }                                from '@acx-ui/user'
+import { RolesEnum }                                from '@acx-ui/types'
+import { hasRoles }                                 from '@acx-ui/user'
 
 export default function AnalyticsRoutes () {
   const canUseAnltAdv = useIsTierAllowed('ANLT-ADV')
-  const isVideoCallQoeEnabled = useIsSplitOn(Features.VIDEO_CALL_QOE)
   const isConfigChangeEnabled = useIsSplitOn(Features.CONFIG_CHANGE)
-  const recommendationsEnabled = useIsSplitOn(Features.AI_RECOMMENDATIONS)
+  const isSwitchHealthEnabled = [
+    useIsSplitOn(Features.RUCKUS_AI_SWITCH_HEALTH_TOGGLE),
+    useIsSplitOn(Features.SWITCH_HEALTH_TOGGLE)
+  ].some(Boolean)
+
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  if (!hasAccess()) return <React.Fragment />
+  if (hasRoles([RolesEnum.GUEST_MANAGER, RolesEnum.DPSK_ADMIN]) ) return <React.Fragment />
+
+  const HealthComponent = !canUseAnltAdv
+    ? <HealthPage/>
+    : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />
 
   const routes = rootRoutes(
     <Route path=':tenantId/t'>
       <Route path='*' element={<PageNotFound />} />
       <Route path='analytics' element={<TenantNavigate replace to='/analytics/incidents' />} />
       <Route path='analytics/incidents'
-        element={(!canUseAnltAdv
-          ? <IncidentListPage />
-          : <AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />)}
+        element={<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS} />}
       />
       <Route path='analytics/incidents/:incidentId' element={<IncidentDetails />} />
-      <Route path='analytics/health'
-        element={(!canUseAnltAdv
-          ? <HealthPage/>
-          : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)}
-      />
-      <Route path='analytics/health/tab/:categoryTab'
-        element={(!canUseAnltAdv
-          ? <HealthPage/>
-          : <NetworkAssurance tab={NetworkAssuranceTabEnum.HEALTH} />)
-        } />
-      {recommendationsEnabled &&
+      <Route path='analytics/intentAI'>
+        <Route index={true} element={<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI} />} />
+        <Route index={false} path=':intentId' element={<></>} />
+      </Route>
+      <Route path='analytics/health' element={HealthComponent} />
+      <Route path='analytics/health/:activeSubTab' element={HealthComponent}>
+        <Route path='tab/:categoryTab' element={HealthComponent} />
+      </Route>
+      {
+        // Below routes are used for Health page loaded as top level tabs
+        isSwitchHealthEnabled && !canUseAnltAdv &&
+        <Route path='analytics/health/'>
+          {Object.values(HealthTabEnum).map(tab => (
+            <Route key={tab} path={tab} element={<HealthPageWithTabs tab={tab}/>}>
+              <Route path='tab/:categoryTab' element={<HealthPageWithTabs tab={tab}/>} />
+            </Route>
+          ))}
+        </Route>
+      }
+
       <Route path='analytics/recommendations/'>
         <Route path=':activeTab' element={<AIAnalytics />} />
         <Route path='aiOps/:id' element={<RecommendationDetails />} />
-        <Route path='crrm/:id' element={<CrrmDetails />} />
-      </Route>}
+        {<Route path='crrm/:id' element={<CrrmDetails />} />}
+        {<Route path='crrm/unknown/*' element={<UnknownDetails />} />}
+      </Route>
       {canUseAnltAdv && isConfigChangeEnabled &&
         <Route path='analytics/configChange'
           element={<NetworkAssurance tab={NetworkAssuranceTabEnum.CONFIG_CHANGE} />} />}
@@ -82,12 +100,12 @@ export default function AnalyticsRoutes () {
             </Route>
           </Route>
         </Route>
-        {isVideoCallQoeEnabled && <Route path='analytics/videoCallQoe/*' >
+        <Route path='analytics/videoCallQoe/*' >
           <Route index
             element={<NetworkAssurance tab={NetworkAssuranceTabEnum.VIDEO_CALL_QOE} />} />
           <Route path=':testId' element={<VideoCallQoeDetails/>} />
           <Route path='add' element={<VideoCallQoeForm />} />
-        </Route>}
+        </Route>
       </Route>}
     </Route>
   )

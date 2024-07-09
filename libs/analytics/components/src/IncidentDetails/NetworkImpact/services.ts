@@ -1,34 +1,49 @@
 import { gql } from 'graphql-request'
+import _       from 'lodash'
 
-import { Incident } from '@acx-ui/analytics/utils'
-import { dataApi }  from '@acx-ui/store'
+import { Incident, IncidentsToggleFilter, IncidentToggle } from '@acx-ui/analytics/utils'
+import { dataApi }                                         from '@acx-ui/store'
 
 import {
   NetworkImpactChartConfig,
-  NetworkImpactChartTypes
+  NetworkImpactChartTypes,
+  NetworkImpactQueryTypes
 } from './config'
 
-export interface RequestPayload {
+export interface RequestPayload extends IncidentsToggleFilter {
   incident: Incident,
   charts: NetworkImpactChartConfig[]
 }
 
 export interface NetworkImpactChartData {
-  count: number
+  total?: number
+  peak?: number
+  summary?: number
+  count?: number
   data: { key: string, name: string, value: number }[]
 }
 export interface Response {
-  incident: Record<string, Omit<NetworkImpactChartData, 'key'>>
+  incident: Record<string, NetworkImpactChartData | number>
 }
 
 type ResultType = Partial<Record<NetworkImpactChartTypes, NetworkImpactChartData>>
 
+const defaultData = { total: 0, count: 0, data: [] }
+
 const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayload) => {
-  return payload.charts.reduce((agg: ResultType, { chart }) => {
-    const result = incident[chart]
-    agg[chart] = {
-      ...result,
-      data: result.data.map(item => ({ ...item, name: item.key }))
+  return payload.charts.reduce((agg: ResultType, config) => {
+    const result = incident[config.chart] as NetworkImpactChartData
+    if (config.query === NetworkImpactQueryTypes.Distribution) {
+      agg[config.chart] = {
+        ...result,
+        peak: incident[`${config.chart}Peak`] as number,
+        data: result.data.map(item => ({ ...item, name: item.key }))
+      }
+    } else {
+      agg[config.chart] = config.disabled ? defaultData : {
+        ...result,
+        data: result.data.map(item => ({ ...item, name: item.key }))
+      }
     }
     return agg
   }, {})
@@ -37,19 +52,44 @@ const transformResponse = ({ incident }: Response, _: {}, payload: RequestPayloa
 export const networkImpactChartsApi = dataApi.injectEndpoints({
   endpoints: (build) => ({
     networkImpactCharts: build.query<ResultType, RequestPayload>({
-      query: (payload) => {
-        const queries = payload.charts.map(({ chart, type, dimension }) => {
-          return gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
-            count data { key value }
-          }`
-        })
+      query: ({ charts, incident, toggles }) => {
+        const useTotal = _.get(toggles, IncidentToggle.AirtimeIncidents, false)
+        const queries = charts.filter(c => !c.disabled).map((
+          { chart, query, type, dimension, showTotal }) => {
+          switch(query){
+            case NetworkImpactQueryTypes.Distribution:
+              return [
+                gql`${chart}: distribution(by: "${dimension}", type: "${type}") {
+                  summary data { key value }
+                }`,
+                gql`${chart}Peak: peak(by: "${dimension}", type: "${type}")`
+              ]
+            case  NetworkImpactQueryTypes.TopN:
+            default:
+              return [
+                gql`${chart}: topN(n: 10, by: "${dimension}", type: "${type}") {
+                  count ${showTotal && useTotal ? 'total' : ''} data { key value }
+                }`
+              ]
+          }
+        }).flat()
         return {
           document: gql`
-            query NetworkImpactCharts($id: String) {
-              incident(id: $id) { ${queries.join('\n')} }
+            query NetworkImpactCharts(
+              $id: String,
+              $impactedStart: DateTime,
+              $impactedEnd: DateTime
+            ) {
+              incident(id: $id, impactedStart: $impactedStart, impactedEnd: $impactedEnd) {
+                ${queries.join('\n')}
+              }
             }
           `,
-          variables: { id: payload.incident.id }
+          variables: {
+            id: incident.id,
+            impactedStart: incident.impactedStart,
+            impactedEnd: incident.impactedEnd
+          }
         }},
       transformResponse
     })

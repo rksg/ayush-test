@@ -1,23 +1,39 @@
 import { useIntl } from 'react-intl'
 
-import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { Button, Loader, PageHeader, showActionModal, Table, TableColumn, TableProps } from '@acx-ui/components'
+import { Features }                                                                    from '@acx-ui/feature-toggle'
+import { useIsEdgeFeatureReady }                                                       from '@acx-ui/rc/components'
 import {
   useDeleteTunnelProfileMutation,
+  useGetEdgeSdLanViewDataListQuery,
   useGetNetworkSegmentationViewDataListQuery,
   useGetTunnelProfileViewDataListQuery,
   useNetworkListQuery
 }                                    from '@acx-ui/rc/services'
-import { getPolicyDetailsLink, getPolicyListRoutePath, getPolicyRoutePath, MtuTypeEnum, PolicyOperation, PolicyType, TunnelProfileViewData, useTableQuery } from '@acx-ui/rc/utils'
-import { Path, TenantLink, useNavigate, useTenantLink, useParams }                                                                                          from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                                                                                                                        from '@acx-ui/user'
+import { getPolicyDetailsLink,
+  getPolicyListRoutePath,
+  getPolicyRoutePath,
+  isDefaultTunnelProfile,
+  MtuTypeEnum,
+  PolicyOperation,
+  PolicyType,
+  TunnelProfileViewData,
+  useTableQuery,
+  getTunnelTypeString,
+  TunnelTypeEnum } from '@acx-ui/rc/utils'
+import { Path, TenantLink, useNavigate, useTenantLink } from '@acx-ui/react-router-dom'
+import { EdgeScopes, WifiScopes }                       from '@acx-ui/types'
+import { filterByAccess, hasPermission }                from '@acx-ui/user'
 const defaultTunnelProfileTablePayload = {}
 
 const TunnelProfileTable = () => {
-
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
-  const params = useParams()
+  const isEdgeSdLanReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_TOGGLE)
+  const isEdgeSdLanHaReady = useIsEdgeFeatureReady(Features.EDGES_SD_LAN_HA_TOGGLE)
+  const isEdgePinReady = useIsEdgeFeatureReady(Features.EDGE_PIN_HA_TOGGLE)
+  const isEdgeVxLanKaReady = useIsEdgeFeatureReady(Features.EDGE_VXLAN_TUNNEL_KA_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetTunnelProfileViewDataListQuery,
     defaultPayload: defaultTunnelProfileTablePayload,
@@ -37,6 +53,7 @@ const TunnelProfileTable = () => {
       pageSize: 10000
     }
   }, {
+    skip: !isEdgePinReady,
     selectFromResult: ({ data }) => ({
       nsgOptions: data?.data
         ? data.data.map(item => ({ key: item.id, value: item.name }))
@@ -57,6 +74,23 @@ const TunnelProfileTable = () => {
         : []
     })
   })
+
+  const { sdLanOptions } = useGetEdgeSdLanViewDataListQuery({
+    payload: {
+      fields: ['name', 'id'],
+      sortField: 'name',
+      sortOrder: 'ASC',
+      pageSize: 10000
+    }
+  }, {
+    skip: !(isEdgeSdLanReady || isEdgeSdLanHaReady),
+    selectFromResult: ({ data }) => ({
+      sdLanOptions: data?.data
+        ? data.data.map(item => ({ key: item.id, value: item.name }))
+        : []
+    })
+  })
+
   const [deleteTunnelProfile] = useDeleteTunnelProfileMutation()
 
   const columns: TableProps<TunnelProfileViewData>['columns'] = [
@@ -79,6 +113,17 @@ const TunnelProfileTable = () => {
         )
       }
     },
+    ...((isEdgeVxLanKaReady)
+      ? [{
+        title: $t({ defaultMessage: 'Network Segment Type' }),
+        key: 'type',
+        dataIndex: 'type',
+        sorter: true,
+        render: (_, row) => getTunnelTypeString($t, row.type || TunnelTypeEnum.VXLAN,
+          isEdgeVxLanKaReady)
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      : []
+    ),
     {
       title: $t({ defaultMessage: 'Gateway Path MTU Mode' }),
       key: 'mtuType',
@@ -102,14 +147,27 @@ const TunnelProfileTable = () => {
       }
     },
     {
-      title: $t({ defaultMessage: 'Network Segmentation' }),
-      key: 'networkSegmentationIds',
-      dataIndex: 'networkSegmentationIds',
+      title: $t({ defaultMessage: 'Personal Identity Network' }),
+      key: 'personalIdentityNetworkIds',
+      dataIndex: 'personalIdentityNetworkIds',
       align: 'center',
-      filterable: nsgOptions,
+      show: isEdgePinReady,
+      filterable: isEdgePinReady? nsgOptions : false,
       sorter: true,
-      render: (_, row) => row.networkSegmentationIds?.length || 0
+      render: (_, row) => row.personalIdentityNetworkIds?.length || 0
     },
+    ...((isEdgeSdLanReady || isEdgeSdLanHaReady)
+      ? [{
+        title: $t({ defaultMessage: 'SD-LAN' }),
+        key: 'sdLanIds',
+        dataIndex: 'sdLanIds',
+        align: 'center',
+        filterable: sdLanOptions,
+        sorter: true,
+        render: (_, row) => row.sdLanIds?.length || 0
+      }] as TableColumn<TunnelProfileViewData, 'text'>[]
+      : []
+    ),
     {
       title: $t({ defaultMessage: 'Networks' }),
       key: 'networkIds',
@@ -132,8 +190,10 @@ const TunnelProfileTable = () => {
 
   const rowActions: TableProps<TunnelProfileViewData>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.UPDATE, EdgeScopes.UPDATE],
+      // Default Tunnel profile cannot Edit
       visible: (selectedRows) => selectedRows.length === 1
-        && selectedRows[0].id !== params.tenantId, // Default Tunnel profile cannot Edit
+            && !isDefaultTunnelProfile(selectedRows[0]),
       label: $t({ defaultMessage: 'Edit' }),
       onClick: (selectedRows) => {
         navigate({
@@ -147,6 +207,7 @@ const TunnelProfileTable = () => {
       }
     },
     {
+      scopeKey: [WifiScopes.DELETE, EdgeScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         showActionModal({
@@ -158,16 +219,17 @@ const TunnelProfileTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            rows.length === 1 ?
-              deleteTunnelProfile({ params: { id: rows[0].id } })
-                .then(clearSelection) :
-              deleteTunnelProfile({ payload: rows.map(item => item.id) })
-                .then(clearSelection)
+            Promise.all(rows.map(row => deleteTunnelProfile({ params: { id: row.id } })))
+              .then(clearSelection)
           }
         })
       }
     }
   ]
+
+  const isSelectionVisible = hasPermission({
+    scopes: [WifiScopes.UPDATE, WifiScopes.DELETE, EdgeScopes.UPDATE, EdgeScopes.DELETE]
+  })
 
   return (
     <>
@@ -186,8 +248,10 @@ const TunnelProfileTable = () => {
           }
         ]}
         extra={filterByAccess([
+          <TenantLink scopeKey={[WifiScopes.CREATE, EdgeScopes.CREATE]}
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}>
+            to={getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.CREATE })}
+          >
             <Button type='primary'>{$t({ defaultMessage: 'Add Tunnel Profile' })}</Button>
           </TenantLink>
         ])}
@@ -197,7 +261,7 @@ const TunnelProfileTable = () => {
           rowKey='id'
           columns={columns}
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          rowSelection={isSelectionVisible && { type: 'checkbox' }}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}

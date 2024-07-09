@@ -1,9 +1,10 @@
 import userEvent from '@testing-library/user-event'
 
-import { get }                     from '@acx-ui/config'
-import { useIsSplitOn }            from '@acx-ui/feature-toggle'
-import { Provider }                from '@acx-ui/store'
-import { render, screen, waitFor } from '@acx-ui/test-utils'
+import { get }                               from '@acx-ui/config'
+import { useIsSplitOn }                      from '@acx-ui/feature-toggle'
+import { Provider }                          from '@acx-ui/store'
+import { render, screen, waitFor }           from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions } from '@acx-ui/user'
 
 import { AIAnalytics, AIAnalyticsTabEnum } from '.'
 
@@ -33,7 +34,19 @@ jest.mock('../Recommendations', () => ({
   RecommendationTabContent: () => <div data-testid='Recommendations' />
 }))
 
+
 describe('NetworkAssurance', () => {
+  beforeEach(() => {
+    setRaiPermissions({
+      READ_INCIDENTS: true,
+      READ_AI_OPERATIONS: true,
+      READ_AI_DRIVEN_RRM: true,
+      READ_INTENT_AI: true
+    } as RaiPermissions)
+  })
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
   it('should render incidents', async () => {
     render(<AIAnalytics tab={AIAnalyticsTabEnum.INCIDENTS}/>,
       { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
@@ -41,6 +54,22 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(await screen.findByTestId('Incidents')).toBeVisible()
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
+  })
+  it('should render intent AI tab', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+    mockGet.mockReturnValue(true)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('AI Analytics')).toBeVisible()
+    expect(await screen.findByTestId('intentAI')).toBeVisible()
+  })
+  it('should not render intent AI tab when FF or permission not enabled', async () => {
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.INTENTAI}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(await screen.findByText('AI Analytics')).toBeVisible()
+    expect(screen.queryByTestId('intentAI')).not.toBeInTheDocument()
   })
   it('should handle recommendation tab click in RA SA', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
@@ -61,7 +90,20 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByTestId('Recommendations')).toBeVisible()
     expect(await screen.findByTestId('HeaderExtra')).toBeVisible()
   })
-  it('should render config recommendation tab for R1 when feature flag is ON', async () => {
+  it('should not render config recommendation tabs for RA SA when not admin', async () => {
+    jest.mocked(mockGet).mockReturnValue(true)
+    setRaiPermissions({
+      READ_AI_OPERATIONS: false,
+      READ_AI_DRIVEN_RRM: false
+    } as RaiPermissions)
+    render(<AIAnalytics tab={AIAnalyticsTabEnum.CRRM}/>,
+      { wrapper: Provider, route: { params: { tenantId: 'tenant-id' } } })
+    expect(await screen.findByText('AI Assurance')).toBeVisible()
+    expect(screen.getByText('AI Analytics')).toBeVisible()
+    expect(screen.queryByTestId('HeaderExtra')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('Recommendations')).not.toBeInTheDocument()
+  })
+  it('should render config recommendation tab for R1', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(true)
     jest.mocked(mockGet).mockReturnValue(false)
     render(<AIAnalytics />, {
@@ -74,19 +116,5 @@ describe('NetworkAssurance', () => {
     expect(await screen.findByText('AI Assurance')).toBeVisible()
     expect(await screen.findByText('AI Analytics')).toBeVisible()
     expect(screen.queryByText('AI-Driven RRM')).toBeVisible()
-  })
-  it('should not render config recommendation tab for R1 when feature flag is OFF', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    jest.mocked(mockGet).mockReturnValue(false)
-    render(<AIAnalytics />, {
-      wrapper: Provider,
-      route: {
-        path: '/:tenantId/t/analytics/recommendations/:activeTab',
-        params: { tenantId: 'tenant-id', activeTab: 'crrm' }
-      }
-    })
-    expect(await screen.findByText('AI Assurance')).toBeVisible()
-    expect(await screen.findByText('AI Analytics')).toBeVisible()
-    expect(screen.queryByText('AI-Driven RRM')).toBeNull()
   })
 })

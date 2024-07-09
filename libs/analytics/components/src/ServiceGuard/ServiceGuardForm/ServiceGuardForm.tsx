@@ -3,8 +3,8 @@ import { useCallback } from 'react'
 import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
-import { PageHeader, StepsForm, showToast } from '@acx-ui/components'
-import { useNavigateToPath }                from '@acx-ui/react-router-dom'
+import { Loader, PageHeader, StepsForm, showToast } from '@acx-ui/components'
+import { useNavigateToPath }                        from '@acx-ui/react-router-dom'
 
 import * as contents          from '../contents'
 import {
@@ -51,7 +51,7 @@ export function ServiceGuardForm () {
     }
   ]
 
-  const { editMode, spec, submit, response } = useServiceGuardSpecMutation()
+  const { editMode, spec, submit, response, systems } = useServiceGuardSpecMutation()
 
   const title = editMode
     ? $t({ defaultMessage: 'Edit Test' })
@@ -69,27 +69,32 @@ export function ServiceGuardForm () {
 
   return <>
     <PageHeader title={title} breadcrumb={breadcrumb} />
-    <StepsForm
-      editMode={editMode}
-      initialValues={specToDto(spec.data) ?? initialValues}
-      onFinish={async (values) => { await submit(values).unwrap() }}
-      onCancel={navigateToList}
-      buttonLabel={({
-        submit: $t({ defaultMessage: 'Create' })
-      })}
-    >
-      <StepsForm.StepForm
-        title={$t(contents.steps.settings)}
-        children={<ServiceGuardFormSettings />}
-      />
-      <StepsForm.StepForm
-        title={$t(contents.steps.apsSelection)}
-        children={<ServiceGuardFormAPsSelection />}
-      />
-      {!editMode ? <StepsForm.StepForm
-        title={$t(contents.steps.summary)}
-        children={<ServiceGuardFormSummary />}
-      /> : null}
-    </StepsForm>
+    <Loader states={[{
+      isFetching: false,
+      isLoading: response.isLoading || systems.isLoading
+    }]}>
+      <StepsForm
+        editMode={editMode}
+        initialValues={specToDto(spec.data) ?? initialValues}
+        onFinish={async (values) => { await submit(values).unwrap() }}
+        onCancel={navigateToList}
+        buttonLabel={({
+          submit: $t({ defaultMessage: 'Create' })
+        })}
+      >
+        <StepsForm.StepForm
+          title={$t(contents.steps.settings)}
+          children={<ServiceGuardFormSettings />}
+        />
+        <StepsForm.StepForm
+          title={$t(contents.steps.apsSelection)}
+          children={<ServiceGuardFormAPsSelection />}
+        />
+        {!editMode ? <StepsForm.StepForm
+          title={$t(contents.steps.summary)}
+          children={<ServiceGuardFormSummary />}
+        /> : null}
+      </StepsForm>
+    </Loader>
   </>
 }

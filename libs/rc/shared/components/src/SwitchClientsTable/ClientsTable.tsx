@@ -1,21 +1,35 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Table, TableProps, Tooltip, Loader, ColumnType } from '@acx-ui/components'
-import { Features, useIsSplitOn }                         from '@acx-ui/feature-toggle'
-import { useGetSwitchClientListQuery }                    from '@acx-ui/rc/services'
+import { Table, TableProps, Tooltip, Loader, ColumnType, Button } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { useGetSwitchClientListQuery, useLazyGetLagListQuery }    from '@acx-ui/rc/services'
 import {
+  FILTER,
   getOsTypeIcon,
   getDeviceTypeIcon,
   getClientIpAddr,
+  SEARCH,
   SwitchClient,
   usePollingTableQuery,
   SWITCH_CLIENT_TYPE,
-  TableQuery
+  TableQuery,
+  Lag,
+  SwitchPortStatus
 } from '@acx-ui/rc/utils'
-import { useParams, TenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }        from '@acx-ui/types'
+import { useParams, TenantLink }        from '@acx-ui/react-router-dom'
+import { RequestPayload, SwitchScopes } from '@acx-ui/types'
+import { hasPermission }                from '@acx-ui/user'
+
+import { SwitchLagModal, SwitchLagParams } from '../SwitchLagDrawer/SwitchLagModal'
+import {
+  getInactiveTooltip,
+  isLAGMemberPort,
+  isOperationalSwitchPort,
+  isStackPort
+} from '../SwitchPortTable'
+import { EditPortDrawer } from '../SwitchPortTable/editPortDrawer'
 
 import { SwitchClientContext } from './context'
 import * as UI                 from './styledComponents'
@@ -23,27 +37,42 @@ import * as UI                 from './styledComponents'
 export const defaultSwitchClientPayload = {
   searchString: '',
   searchTargetFields: ['clientName', 'clientMac', 'clientDesc', 'clientType', 'vni',
-    'venueName', 'switchName', 'clientVlan', 'switchPort'],
-  fields: ['switchId','clientVlan','venueId','switchSerialNumber','clientMac',
-    'clientName','clientDesc','clientType','deviceType','switchPort','vlanName', 'vni',
-    'switchName', 'venueName' ,'cog','id','switchPortFormatted', 'clientIpv4Addr', 'clientIpv6Addr',
-    'dhcpClientOsVendorName', 'dhcpClientHostName',
-    'dhcpClientDeviceTypeName', 'dhcpClientModelName'],
+    'venueName', 'switchName', 'clientVlan', 'switchPort', 'clientIpv4Addr', 'clientIpv6Addr'],
+  fields: [
+    'clientDesc', 'clientIpv4Addr', 'clientIpv6Addr', 'clientMac',
+    'clientName', 'clientType', 'clientVlan', 'cog',
+    'deviceType', 'dhcpClientDeviceTypeName', 'dhcpClientHostName',
+    'dhcpClientModelName', 'dhcpClientOsVendorName', 'id',
+    'switchId', 'switchName', 'switchPort', 'switchPortFormatted',
+    'switchPortId', 'switchSerialNumber', 'venueId', 'venueName',
+    'vlanName', 'vni'
+  ],
   sortField: 'clientMac',
   sortOrder: 'DESC',
   filters: {}
 }
 
 export function ClientsTable (props: {
+  settingsId?: string
   tableQuery?: TableQuery<SwitchClient, RequestPayload<unknown>, unknown>
   searchable?: boolean
   filterableKeys?: { [key: string]: ColumnType['filterable'] }
 }) {
   const params = useParams()
-  const { searchable, filterableKeys } = props
-  const { setSwitchCount } = useContext(SwitchClientContext)
+  const { searchable, filterableKeys, settingsId = 'switch-clients-table' } = props
+  const { setSwitchCount, setTableQueryFilters } = useContext(SwitchClientContext)
   const isDhcpClientsEnabled = true //useIsSplitOn(Features.SWITCH_DHCP_CLIENTS)
   const networkSegmentationSwitchEnabled = useIsSplitOn(Features.NETWORK_SEGMENTATION_SWITCH)
+  const portLinkEnabled = useIsSplitOn(Features.SWITCH_PORT_HYPERLINK)
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const [editLagModalVisible, setEditLagModalVisible] = useState(false)
+  const [editLag, setEditLag] = useState([] as Lag[])
+  const [editPortDrawerVisible, setEditPortDrawerVisible] = useState(false)
+  const [selectedPorts, setSelectedPorts] = useState([] as SwitchPortStatus[])
+  const [lagDrawerParams, setLagDrawerParams] = useState({} as SwitchLagParams)
+  const [ getLagList ] = useLazyGetLagListQuery()
+
 
   defaultSwitchClientPayload.filters =
     params.switchId ? { switchId: [params.switchId] } :
@@ -58,15 +87,23 @@ export function ClientsTable (props: {
     search: {
       searchTargetFields: defaultSwitchClientPayload.searchTargetFields
     },
-    option: { skip: !!props.tableQuery }
+    option: { skip: !!props.tableQuery },
+    pagination: { settingsId },
+    enableRbac: isSwitchRbacEnabled
   })
   const tableQuery = props.tableQuery || inlineTableQuery
   useEffect(() => {
     setSwitchCount?.(tableQuery.data?.totalCount || 0)
   }, [tableQuery.data])
 
+  const handleFilterChange = (filters: FILTER, search: SEARCH, groupBy: string | undefined) => {
+    setTableQueryFilters?.(filters)
+    tableQuery.handleFilterChange(filters, search, groupBy)
+  }
+
   function getCols (intl: ReturnType<typeof useIntl>) {
     const dhcpClientsColumns = ['dhcpClientOsVendorName', 'clientIpv4Addr', 'dhcpClientModelName']
+
     const columns: TableProps<SwitchClient>['columns'] = [{
       key: 'clientName',
       title: intl.$t({ defaultMessage: 'Hostname' }),
@@ -107,6 +144,7 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'IP Address' }),
       dataIndex: 'clientIpv4Addr',
       sorter: true,
+      searchable: searchable,
       render: (_, row) => getClientIpAddr(row)
     }, {
       key: 'clientDesc',
@@ -120,12 +158,15 @@ export function ClientsTable (props: {
     },
     ...(params.switchId || params.venueId ? [] : [{
       key: 'venueName',
-      title: intl.$t({ defaultMessage: 'Venue' }),
+      title: intl.$t({ defaultMessage: '<VenueSingular></VenueSingular>' }),
       dataIndex: 'venueName',
       sorter: true,
       searchable: searchable,
       filterKey: 'venueId',
+      filterMultiple: false,
+      filterSearchable: true,
       filterable: filterableKeys ? filterableKeys['venueId'] : false,
+      coordinatedKeys: ['switchId'],
       render: (_: React.ReactNode, row: SwitchClient) => {
         const name = row.venueName ? row.venueName : '--'
         // eslint-disable-next-line max-len
@@ -139,6 +180,8 @@ export function ClientsTable (props: {
       sorter: true,
       searchable: searchable,
       filterKey: 'switchId',
+      filterMultiple: false,
+      filterSearchable: true,
       filterable: filterableKeys ? filterableKeys['switchId'] : false,
       render: (_: React.ReactNode, row: SwitchClient) => {
         const name = row.switchName ? row.switchName : '--'
@@ -153,7 +196,58 @@ export function ClientsTable (props: {
       title: intl.$t({ defaultMessage: 'Port' }),
       dataIndex: 'switchPortFormatted',
       sorter: true,
-      render: (_, row) => row['switchPort']
+      render: (_, row) => {
+        if (!portLinkEnabled || !hasPermission({ scopes: [SwitchScopes.UPDATE] })) { // FF
+          return row['switchPort']
+        }
+
+        const { switchPortStatus } = row || {}
+        const port = row['switchPort']
+        const disablePortEdit = !switchPortStatus ||
+        !isOperationalSwitchPort(switchPortStatus) || isStackPort(switchPortStatus)
+
+        if (disablePortEdit) {
+          const tooltip = switchPortStatus ? getInactiveTooltip(switchPortStatus) :
+            intl.$t({
+              defaultMessage:
+                'The port cannot be edited since it is on a switch that is not operational'
+            })
+
+          return (<Tooltip title={tooltip}> {port} </Tooltip>)
+        }
+
+        const onEditLag = async () => {
+          const { data: lagList } = await getLagList({
+            params: {
+              ...params,
+              switchId: switchPortStatus.switchMac,
+              venueId: switchPortStatus.venueId
+            },
+            enableRbac: isSwitchRbacEnabled
+          })
+          const lagData = lagList?.find((item: Lag) =>
+            item.lagId?.toString() === switchPortStatus.lagId) as Lag
+
+          setLagDrawerParams({
+            switchMac: switchPortStatus.switchMac,
+            serialNumber: switchPortStatus.switchSerial
+          })
+          setEditLag([lagData])
+          setEditPortDrawerVisible(false)
+          setEditLagModalVisible(true)
+        }
+
+        const onEditPort = () => {
+          setSelectedPorts([switchPortStatus])
+          setEditLagModalVisible(false)
+          setEditPortDrawerVisible(true)
+        }
+
+        const onClickHandler = isLAGMemberPort(switchPortStatus) ? onEditLag : onEditPort
+
+        return <Button type='link' onClick={onClickHandler}> {port} </Button>
+      }
+
     }, {
       key: 'vlanName',
       title: intl.$t({ defaultMessage: 'VLAN' }),
@@ -259,7 +353,7 @@ export function ClientsTable (props: {
         tableQuery
       ]}>
         <Table
-          settingsId='switch-clients-table'
+          settingsId={settingsId}
           columns={getCols(useIntl())}
           dataSource={tableQuery.data?.data.map((item, index) => ({
             ...item,
@@ -267,10 +361,28 @@ export function ClientsTable (props: {
           }))}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
-          onFilterChange={tableQuery.handleFilterChange}
+          onFilterChange={handleFilterChange}
           enableApiFilter={true}
           rowKey='id'
         />
+        {editLagModalVisible && <SwitchLagModal
+          isEditMode={true}
+          editData={editLag}
+          visible={editLagModalVisible}
+          setVisible={setEditLagModalVisible}
+          params={lagDrawerParams}
+          type='drawer'
+        />}
+        {editPortDrawerVisible && <EditPortDrawer
+          key='edit-port'
+          visible={editPortDrawerVisible}
+          setDrawerVisible={setEditPortDrawerVisible}
+          isCloudPort={selectedPorts.map(item => item.cloudPort).includes(true)}
+          isMultipleEdit={selectedPorts?.length > 1}
+          isVenueLevel={false}
+          selectedPorts={selectedPorts}
+        />
+        }
       </Loader>
     </div>
   )

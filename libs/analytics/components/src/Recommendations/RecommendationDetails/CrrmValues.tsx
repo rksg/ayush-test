@@ -1,8 +1,11 @@
 import { Fragment } from 'react'
 
+import _           from 'lodash'
 import { useIntl } from 'react-intl'
 
 import { Card, GridCol, GridRow } from '@acx-ui/components'
+
+import { isDataRetained } from '../utils'
 
 import { EnhancedRecommendation } from './services'
 import {
@@ -16,23 +19,28 @@ import { getRecommendationsText, getValues } from './Values'
 export const CrrmValues = ({ details }: { details: EnhancedRecommendation }) => {
   const { $t } = useIntl()
   const {
-    appliedOnce, status, original, current, recommended
+    appliedOnce, firstAppliedAt, status, original, current, recommended
   } = getValues(details)
   const applied = appliedOnce && status !== 'reverted'
-  const recommendationText = getRecommendationsText(details)
+  const isFullOptimization = !!_.get(details, 'metadata.algorithmData.isCrrmFullOptimization', true)
+  const recommendationText = getRecommendationsText(details, isFullOptimization)
 
   const fields = [
     {
       label: applied
         ? $t({ defaultMessage: 'Original Configuration' })
         : $t({ defaultMessage: 'Current Configuration' }),
-      value: applied ? original : current
+      value: isDataRetained(firstAppliedAt)
+        ? (applied ? original : current)
+        : $t({ defaultMessage: 'Beyond data retention period' })
     },
     {
       label: applied
         ? $t({ defaultMessage: 'Current Configuration' })
         : $t({ defaultMessage: 'Recommended Configuration' }),
-      value: applied ? current : recommended
+      value: isFullOptimization
+        ? (applied ? current : recommended)
+        : $t({ defaultMessage: 'AI-Driven RRM for channel plan' })
     }
   ]
 

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import {
   FileTextOutlined,
@@ -6,7 +6,10 @@ import {
 } from '@ant-design/icons'
 import {
   Form,
+  FormInstance,
+  Input,
   Space,
+  Switch,
   Typography,
   Upload,
   UploadFile
@@ -15,8 +18,9 @@ import TextArea      from 'antd/lib/input/TextArea'
 import { useIntl }   from 'react-intl'
 import { useParams } from 'react-router-dom'
 
-import { Button, DrawerProps }             from '@acx-ui/components'
-import { formatter }                       from '@acx-ui/formatter'
+import { Button, DrawerProps, PasswordInput } from '@acx-ui/components'
+import { Features, useIsSplitOn }             from '@acx-ui/feature-toggle'
+import { formatter }                          from '@acx-ui/formatter'
 import {
   useAddTenantAuthenticationsMutation,
   useGetUploadURLMutation,
@@ -26,12 +30,15 @@ import {
   TenantAuthentications,
   TenantAuthenticationType,
   SamlFileType,
-  UploadUrlResponse
+  UploadUrlResponse,
+  excludeSpaceRegExp,
+  notAllDigitsRegExp
 } from '@acx-ui/rc/utils'
 
 import { reloadAuthTable } from '../AppTokenFormItem'
 
-import * as UI from './styledComponents'
+import AuthTypeSelector from './authTypeSelector'
+import * as UI          from './styledComponents'
 
 type AcceptableType = 'xml'
 
@@ -48,6 +55,8 @@ interface ImportFileDrawerProps extends DrawerProps {
   isEditMode: boolean
   setEditMode: (editMode: boolean) => void
   editData?: TenantAuthentications
+  isGroupBasedLoginEnabled?: boolean
+  isGoogleWorkspaceEnabled?: boolean
 }
 
 const fileTypeMap: Record<AcceptableType, string[]>= {
@@ -74,19 +83,35 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
   const params = useParams()
 
   const { maxSize, isLoading, acceptType,
-    formDataName = 'file', setVisible, setEditMode, isEditMode, editData } = props
+    formDataName = 'file', setVisible, setEditMode,
+    isEditMode, editData, isGroupBasedLoginEnabled, isGoogleWorkspaceEnabled } = props
 
   const [fileDescription, setFileDescription] = useState<ReactNode>('')
   const [formData, setFormData] = useState<FormData>()
   const [file, setFile] = useState<UploadFile>()
   const [metadata, setMetadata] = useState<string>()
+  const [metadataChanged, setMetadataChanged] = useState(false)
+  const [cursor, setCursor] = useState<number>()
+  const [fileSelected, setFileSelected] = useState(false)
 
   const [uploadFile, setUploadFile] = useState(false)
+  const [selectedAuth, setSelectedAuth] = useState('')
+  const [ssoSignature, setSsoSignature] = useState(false)
+  const loginSsoSignatureEnabled = useIsSplitOn(Features.LOGIN_SSO_SIGNATURE_TOGGLE)
 
   const bytesFormatter = formatter('bytesFormat')
   const [addSso] = useAddTenantAuthenticationsMutation()
   const [updateSso] = useUpdateTenantAuthenticationsMutation()
   const [getUploadURL] = useGetUploadURLMutation()
+
+  const onClose = () => {
+    setVisible(false)
+    form.resetFields()
+  }
+
+  const onChangeSsoSignature = (checked: boolean) => {
+    setSsoSignature(checked)
+  }
 
   useEffect(()=>{
     form.resetFields()
@@ -103,7 +128,10 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
       setFileDescription(<Typography.Text><FileTextOutlined /> {editData?.name} </Typography.Text>)
       // TODO: setMetadata() to contents of file only if we want to see file contents in metadata in editmode
       // fetchMetaData()
+      form.setFieldValue('domains', editData?.domains?.toString())
+      setSsoSignature(editData?.samlSignatureEnabled ?? false)
     }
+    setSelectedAuth(editData?.authenticationType || TenantAuthenticationType.saml)
   }, [form, props.visible])
 
   const beforeUpload = (file: File) => {
@@ -136,19 +164,21 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     const newFile = file as unknown as UploadFile
     newFile.url = URL.createObjectURL(file)
     setFile(newFile)
-    // setFileName(file.name)
+    setFileSelected(true)
     setFormData(newFormData)
     setFileDescription(<Typography.Text><FileTextOutlined /> {file.name} </Typography.Text>)
 
     return false
   }
 
-  const onMetadataChange = (value: string) => {
-    setMetadata(value)
+  const onMetadataChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMetadataChanged(true)
+    setMetadata(e.target.value)
     const newFormData = new FormData()
     // TODO: validate xml format
-    newFormData.append('metadata', value)
+    newFormData.append('metadata', e.target.value)
     setFormData(newFormData)
+    setCursor(e.target.selectionStart)
   }
 
   const getFileUploadURL = async function (file: UploadFile) {
@@ -185,20 +215,25 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
         directUrlPath = metadata
         fileType = SamlFileType.direct_url
       } else {
-        fileURL = uploadFile && file ? await getFileUploadURL(file)
-          : !uploadFile ? await getFileUploadURL(metadataFile)
-            : undefined
+        fileURL = uploadFile && fileSelected && file ? await getFileUploadURL(file)
+          : await getFileUploadURL(metadataFile)
         if (!fileURL) {
           throw 'Error uploading file'
         }
       }
 
+      const allowedDomains =
+        isGroupBasedLoginEnabled ? form.getFieldValue('domains')?.split(',') : undefined
       if(isEditMode) {
+        const needAuthUpdate = (uploadFile && fileSelected) || (!uploadFile && metadataChanged)
         const ssoEditData: TenantAuthentications = {
           name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
-          samlFileType: fileType,
-          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
+          samlFileType: needAuthUpdate ? fileType : undefined,
+          samlFileURL: needAuthUpdate
+            ? (fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath) : undefined,
+          domains: allowedDomains,
+          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined
         }
         await updateSso({ params: { authenticationId: editData?.id },
           payload: ssoEditData }).unwrap()
@@ -208,7 +243,9 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
           name: metadataFile.name,
           authenticationType: TenantAuthenticationType.saml,
           samlFileType: fileType,
-          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath
+          samlFileURL: fileType === SamlFileType.file ? fileURL?.data.fileId : directUrlPath,
+          domains: allowedDomains,
+          samlSignatureEnabled: loginSsoSignatureEnabled ? ssoSignature : undefined
         }
         await addSso({ payload: ssoData }).unwrap()
         reloadAuthTable(2)
@@ -221,25 +258,103 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     }
   }
 
-  return (<UI.ImportFileDrawer {...props}
-    keyboard={false}
-    closable={true}
-    width={550}
-    footer={<div>
+  const okHandlerGoogle = async () => {
+    try {
+      const allowedDomains =
+        isGroupBasedLoginEnabled ? form.getFieldValue('domains')?.split(',') : undefined
+      const clientId = form.getFieldValue('clientId')
+      const secret = form.getFieldValue('secret')
+
+      if(isEditMode) {
+        const ssoEditData: TenantAuthentications = {
+          name: 'googleWorkspace',
+          authenticationType: TenantAuthenticationType.google_workspace,
+          clientSecret: secret,
+          domains: allowedDomains
+        }
+        await updateSso({ params: { authenticationId: editData?.id },
+          payload: ssoEditData }).unwrap()
+        reloadAuthTable(2)
+      } else {
+        const ssoData: TenantAuthentications = {
+          name: 'googleWorkspace',
+          authenticationType: TenantAuthenticationType.google_workspace,
+          clientID: clientId,
+          clientSecret: secret,
+          domains: allowedDomains
+        }
+        await addSso({ payload: ssoData }).unwrap()
+        reloadAuthTable(2)
+      }
+      setVisible(false)
+      setEditMode(true)
+    } catch (error) {
+      console.log(error) // eslint-disable-line no-console
+      setVisible(false)
+    }
+  }
+
+  const domainsValidator = async (value: string) => {
+    // eslint-disable-next-line max-len
+    const re = new RegExp(/(^((22[0-3]|2[0-1][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9]?)\.)((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))$)|(^(\b((?=[A-Za-z0-9-]{1,63}\.)(xn--)?[A-Za-z0-9]+(-[A-Za-z0-9]+)*\.)+[A-Za-z]{2,63}\b)$)/)
+    const domains = value?.split(',')
+    const isValid = domains?.every((domain) => {
+      return re.test(domain.trim())
+    })
+
+    return isValid ? Promise.resolve() : Promise.reject(
+      `${$t({ defaultMessage: 'Please enter domains separated by comma' })} `
+    )
+  }
+
+  const ApplyButton = ({ form }: { form: FormInstance }) => {
+    const [submittable, setSubmittable] = useState(false)
+
+    const values = Form.useWatch([], form)
+
+    useEffect(() => {
+      form.validateFields().then(
+        () => setSubmittable(true),
+        () => setSubmittable(false)
+      )
+    }, [values])
+
+    return (
       <Button
-        disabled={!formData}
+        disabled={!formData && !submittable}
         loading={isLoading}
-        onClick={() => okHandler()}
+        onClick={() =>
+          selectedAuth === TenantAuthenticationType.saml ? okHandler() : okHandlerGoogle()}
         type={'primary'}
       >
         {$t({ defaultMessage: 'Apply' })}
       </Button>
-      <Button onClick={() => {
-        setVisible(false)
-      }}>
-        {$t({ defaultMessage: 'Cancel' })}
-      </Button>
-    </div>} >
+    )
+  }
+
+  const SamlContent = () => {
+    const metadataReference = useRef<HTMLInputElement>(null)
+
+    useEffect(() => {
+      metadataReference.current?.focus()
+    }, [metadata])
+
+    return <> <Form style={{ marginTop: 10 }} layout='vertical' form={form}>
+      {isGroupBasedLoginEnabled && <Form.Item
+        name='domains'
+        label={$t({ defaultMessage: 'Allowed Domains' })}
+        rules={[
+          { type: 'string', required: true },
+          { validator: (_, value) => domainsValidator(value) }
+        ]}
+        children={
+          <Input
+            placeholder={$t({ defaultMessage: 'Enter domains separated by comma' })}
+          />
+        }
+      />}
+    </Form>
+
     <label>
       { $t({ defaultMessage: 'IdP Metadata' }) }
     </label>
@@ -252,8 +367,14 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     </Button>}
     {!uploadFile && <Form.Item>
       <TextArea
+        ref={metadataReference}
         value={metadata}
-        onChange={e => onMetadataChange(e.target.value)}
+        onChange={onMetadataChange}
+        onFocus={(e) => {
+          if(cursor) {
+            e.currentTarget.setSelectionRange(cursor, cursor)
+          }}
+        }
         placeholder='Paste the IDP metadata code or link here...'
         style={{
           fontSize: '12px',
@@ -292,6 +413,120 @@ export function SetupAzureDrawer (props: ImportFileDrawerProps) {
     <Form layout='vertical' form={form} >
       {props.children}
     </Form>
+
+    {loginSsoSignatureEnabled && <Form.Item style={{ marginTop: '20px' }}
+      colon={false}
+      label={$t({ defaultMessage: 'Require SAML requests to be signed' })}
+      tooltip={$t({ defaultMessage:
+        'If this option is enabled, a public certificate needs to be configured' })}
+      name='samlRequestSigned'
+    >
+      <Switch style={{ marginLeft: '70px' }}
+        checkedChildren={$t({ defaultMessage: 'Yes' })}
+        unCheckedChildren={$t({ defaultMessage: 'No' })}
+        defaultChecked={ssoSignature}
+        onChange={onChangeSsoSignature}
+      />
+    </Form.Item>}
+    </>
+  }
+
+  const GoogleContent = () => {
+    return <Form style={{ marginTop: 10 }} layout='vertical' form={form} >
+      <Form.Item
+        name='domains'
+        label={$t({ defaultMessage: 'Allowed Domains' })}
+        rules={[
+          { type: 'string', required: true },
+          { validator: (_, value) => domainsValidator(value) }
+        ]}
+        children={
+          <Input
+            placeholder={$t({ defaultMessage: 'Enter domains separated by comma' })}
+          />
+        }
+      />
+      <Form.Item
+        name='clientId'
+        label={$t({ defaultMessage: 'Client ID' })}
+        initialValue={editData?.clientID || ''}
+        rules={[
+          { required: true },
+          { min: 2 },
+          { max: 64 }
+        ]}
+        children={<Input />}
+      />
+      <Form.Item
+        name='secret'
+        label={$t({ defaultMessage: 'Client secret' })}
+        initialValue={editData?.clientSecret || ''}
+        rules={[
+          { required: true },
+          { validator: (_, value) =>
+          {
+            if(value.length !== 32) {
+              return Promise.reject(
+                `${$t({ defaultMessage: 'Secret must be 32 characters long' })} `
+              )
+            }
+            return Promise.resolve()
+          }
+          },
+          { validator: (_, value) => excludeSpaceRegExp(value) },
+          { validator: (_, value) => notAllDigitsRegExp(value),
+            message: $t({ defaultMessage:
+            'Secret must include letters or special characters; numbers alone are not accepted.' })
+          }
+        ]}
+        children={<PasswordInput />}
+      />
+    </Form>
+  }
+
+  return (<UI.ImportFileDrawer {...props}
+    keyboard={false}
+    closable={true}
+    width={550}
+    onClose={onClose}
+    footer={<div>
+      {isGroupBasedLoginEnabled ? <ApplyButton form={form}></ApplyButton>
+        : <Button
+          disabled={!formData}
+          loading={isLoading}
+          onClick={() => okHandler()}
+          type={'primary'}
+        >
+          {$t({ defaultMessage: 'Apply' })}
+        </Button>}
+      <Button onClick={() => {
+        setVisible(false)
+      }}>
+        {$t({ defaultMessage: 'Cancel' })}
+      </Button>
+    </div>} >
+
+    {isEditMode && <Form layout='vertical'>
+      <Form.Item
+        name='authType'
+        label={$t({ defaultMessage: 'Auth Type' })}
+        children={
+          <label>
+            {editData?.authenticationType === TenantAuthenticationType.saml
+              ? $t({ defaultMessage: 'SAML' })
+              : $t({ defaultMessage: 'Google Workspace' })}
+          </label>
+        }
+      /></Form>}
+
+    {isGroupBasedLoginEnabled && isGoogleWorkspaceEnabled && !isEditMode &&
+    <AuthTypeSelector
+      ssoConfigured={true}
+      setSelected={setSelectedAuth}
+    />}
+
+    {selectedAuth === TenantAuthenticationType.google_workspace
+      ? <GoogleContent /> : <SamlContent />}
 
   </UI.ImportFileDrawer>)
 }

@@ -156,7 +156,7 @@ export const DatePickerFooter = ({
 interface DateTimePickerFooterProps {
   onApply: (value: Moment) => void;
   onCancel: () => void;
-  applyFooterMsg?: string;
+  extraFooter?: React.ReactNode;
   value: Moment;
   setValue: (value: Moment) => void;
   disabledHours?: (value: Moment) => number[];
@@ -164,7 +164,7 @@ interface DateTimePickerFooterProps {
 }
 
 export const DateTimePickerFooter = ({
-  applyFooterMsg,
+  extraFooter,
   onApply,
   onCancel,
   value,
@@ -224,13 +224,8 @@ export const DateTimePickerFooter = ({
         }}
       />
     </UI.TimePickerRow>
-    {applyFooterMsg
-      ? <>
-        <Divider />
-        <UI.ApplyMsgWrapper>{applyFooterMsg}</UI.ApplyMsgWrapper>
-        <Divider />
-      </>
-      : <Divider />}
+    {extraFooter}
+    <Divider />
     <Button type='primary' size='small' onClick={() => onApply(value)} >Apply</Button>
     <Button type='default' size='small' onClick={() => onCancel()}>Cancel</Button>
   </UI.FooterWrapper>

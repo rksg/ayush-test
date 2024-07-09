@@ -1,13 +1,24 @@
 import '@testing-library/jest-dom'
+import userEvent  from '@testing-library/user-event'
 import { Upload } from 'antd'
 import { rest }   from 'msw'
 
-import { apApi }                                                            from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { Provider, store  }                                                 from '@acx-ui/store'
-import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi }                                                              from '@acx-ui/rc/services'
+import { CommonRbacUrlsInfo, CommonUrlsInfo, WifiRbacUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                                                   from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved }   from '@acx-ui/test-utils'
 
-import { apDetails, apRadio, apViewModel, apPhoto, apNoPhoto, apSampleImage, wifiCapabilities } from '../../__tests__/fixtures'
+import {
+  apDetails,
+  apRadio,
+  apViewModel,
+  apPhoto,
+  apNoPhoto,
+  apSampleImage,
+  ApCapabilitiesR650,
+  apPhotoFromRbacApi,
+  apNoPhotoFromRbacApi
+} from '../../__tests__/fixtures'
 
 import * as CropImage from './cropImage'
 
@@ -18,7 +29,8 @@ jest.mock('@acx-ui/rc/utils', () => ({
   useApContext: () => ({
     venueId: 'venue-id',
     tenantId: 'tenant-id',
-    serialNumber: 'serial-number'
+    serialNumber: 'serial-number',
+    model: 'R650'
   })
 }))
 
@@ -30,6 +42,7 @@ module.exports = {
 }
 
 describe('ApPhoto', () => {
+
   beforeEach(() => {
     store.dispatch(apApi.util.resetApiState())
     global.URL.createObjectURL = jest.fn()
@@ -60,7 +73,7 @@ describe('ApPhoto', () => {
       ),
       rest.get(
         WifiUrlsInfo.getApCapabilities.url,
-        (_, res, ctx) => res(ctx.json(wifiCapabilities))
+        (_, res, ctx) => res(ctx.json(ApCapabilitiesR650))
       ),
       rest.get(
         '*/app/sample.png',
@@ -77,39 +90,64 @@ describe('ApPhoto', () => {
       rest.get(
         'http://localhost/*',
         (_, res, ctx) => res(ctx.body(apSampleImage))
+      ),
+
+      // Rbac API
+      rest.post(
+        CommonRbacUrlsInfo.getApsList.url,
+        (_, res, ctx) => res(ctx.json(apViewModel))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getAp.url.replace('?operational=false', ''),
+        (_, res, ctx) => res(ctx.json(apDetails))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApRadioCustomization.url,
+        (_, res, ctx) => res(ctx.json(apRadio))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApPhoto.url,
+        (_, res, ctx) => res(ctx.json(apPhotoFromRbacApi))
+      ),
+      rest.delete(
+        WifiRbacUrlsInfo.deleteApPhoto.url,
+        (_, res, ctx) => res(ctx.json({}))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApCapabilities.url,
+        (_, res, ctx) => res(ctx.json(ApCapabilitiesR650))
       )
     )
   })
   it('should render correctly', async () => {
-
     apViewModel.data[0].model = ''
     render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const dot1 = await screen.findByTestId('dot1')
-    fireEvent.click(dot1)
+    await userEvent.click(dot1)
     const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
     const zoomIn = await screen.findByTestId('image-zoom-in')
-    fireEvent.click(zoomIn)
+    await userEvent.click(zoomIn)
     const zoomOut = await screen.findByTestId('image-zoom-out')
-    fireEvent.click(zoomOut)
+    await userEvent.click(zoomOut)
     const zoomSlider = await screen.findByRole('slider')
     zoomSlider.focus()
     fireEvent.keyPress(zoomSlider, { key: 'Right', code: 39, charCode: 39 })
     const applyButton = await screen.findByRole('button', { name: 'Apply' })
     expect(applyButton).toBeVisible()
-    fireEvent.click(applyButton)
+    await userEvent.click(applyButton)
   })
   it('should delete image correctly', async () => {
     apViewModel.data[0].model = ''
     render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const dot1 = await screen.findByTestId('dot1')
-    fireEvent.click(dot1)
+    await userEvent.click(dot1)
     const image1 = await screen.findByTestId('image1')
     fireEvent.doubleClick(image1)
     const deleteBtn = await screen.findByTestId('delete')
-    fireEvent.click(deleteBtn)
+    await userEvent.click(deleteBtn)
   })
   it('should render default image correctly', async () => {
     apViewModel.data[0].model = 'R650'
@@ -117,14 +155,18 @@ describe('ApPhoto', () => {
       rest.get(
         WifiUrlsInfo.getApPhoto.url,
         (_, res, ctx) => res(ctx.json(apNoPhoto))
+      ),
+      rest.get(
+        WifiRbacUrlsInfo.getApPhoto.url,
+        (_, res, ctx) => res(ctx.json(apNoPhotoFromRbacApi))
       )
     )
     render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const gallery = await screen.findByTestId('gallery')
-    fireEvent.click(gallery)
+    await userEvent.click(gallery)
   })
-  it('should upload photo correctly', async () => {
+  it('should reset upload photo correctly', async () => {
     const { asFragment } = render(<Provider><ApPhoto /></Provider>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     const file = new File(['(⌐□_□)'], 'chucknorris.png', { type: 'image/png' })
@@ -141,15 +183,20 @@ describe('ApPhoto', () => {
         height: '180px'
       }}
     />)
+
+    // no file type (Invalid Image type)
     // eslint-disable-next-line testing-library/no-node-access
     fireEvent.change(document.querySelector('input')!, {
       target: { files: [{ file: apSampleImage }] }
     })
+
+    // File size is too large (Image file size cannot exceed 10 MB)
     Object.setPrototypeOf(file.size, { value: 100000000 })
     // eslint-disable-next-line testing-library/no-node-access
     fireEvent.change(document.querySelector('input')!, {
       target: { files: [{ file: apSampleImage, type: 'image/jpg' }] }
     })
+
     expect(asFragment()).toMatchSnapshot()
   })
 })

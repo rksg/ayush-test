@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StatusIcon render FAIL StatusIcon 1`] = `
+<DocumentFragment>
+  <svg
+    class="styledComponents__FailIcon-sc-1px55aj-1 cirwSw"
+    data-testid="CancelCircleSolid"
+  />
+</DocumentFragment>
+`;
+
+exports[`StatusIcon render INPROGRESS StatusIcon 1`] = `
+<DocumentFragment>
+  <svg
+    class="styledComponents__InProgressIcon-sc-1px55aj-3 ivufmM"
+    data-testid="InProgress"
+  />
+</DocumentFragment>
+`;
+
+exports[`StatusIcon render PENDING StatusIcon 1`] = `
+<DocumentFragment>
+  <svg
+    class="styledComponents__PendingsIcon-sc-1px55aj-2 jYPowK"
+    data-testid="Pending"
+  />
+</DocumentFragment>
+`;
+
+exports[`StatusIcon render SUCCESS StatusIcon 1`] = `
+<DocumentFragment>
+  <svg
+    class="styledComponents__SuccessIcon-sc-1px55aj-0 gPcOex"
+    data-testid="CheckMarkCircleSolid"
+  />
+</DocumentFragment>
+`;

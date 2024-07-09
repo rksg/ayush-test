@@ -8,7 +8,7 @@ import {
 } from '@acx-ui/rc/utils'
 import { getIntl } from '@acx-ui/utils'
 
-import { compareVersions, compareSwitchVersion, getApVersion, getVersionLabel } from './FirmwareUtils'
+import { compareABFSequence, compareVersions, getApVersion, getVersionLabel } from './FirmwareUtils'
 
 
 describe('FirmwareUtils parser', () => {
@@ -17,12 +17,6 @@ describe('FirmwareUtils parser', () => {
     const mockedAVersion = '6.2.0.103.514'
     const mockedBVersion = '6.2.0.103.544'
     expect(compareVersions(mockedBVersion, mockedAVersion) > 0).toBe(true)
-  })
-
-  it('should compare switch versions', () => {
-    expect(compareSwitchVersion('09010e', '09010f_b5') < 0).toBe(true)
-    expect(compareSwitchVersion('09010e_b5', '09010e_b392') < 0).toBe(true)
-    expect(compareSwitchVersion('', '') === 0).toBe(true)
   })
 
   it('should get AP version', () => {
@@ -62,5 +56,14 @@ describe('FirmwareUtils parser', () => {
     }
     expect(getVersionLabel(getIntl(), mockedFirmwareVersion)).toBe('test (Release - Recommended) ')
     expect(getVersionLabel(getIntl(), mockedFirmwareVersion, false)).toBe('test ')
+  })
+
+  it('should compare the ABF sequence', () => {
+    expect(compareABFSequence(3, 2)).toBeGreaterThan(0)
+    expect(compareABFSequence(5)).toBeGreaterThan(0)
+    expect(compareABFSequence(undefined, 5)).toBeLessThan(0)
+    expect(compareABFSequence(2, 3)).toBeLessThan(0)
+    expect(compareABFSequence(2, 2)).toBe(0)
+    expect(compareABFSequence(undefined, undefined)).toBe(0)
   })
 })

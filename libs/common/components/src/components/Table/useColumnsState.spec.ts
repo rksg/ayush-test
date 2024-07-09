@@ -1,5 +1,5 @@
 
-import { act, renderHook } from '@testing-library/react'
+import { act, renderHook } from '@acx-ui/test-utils'
 
 import { TableColumn }                             from './types'
 import { useColumnsState, UseColumnsStateOptions } from './useColumnsState'

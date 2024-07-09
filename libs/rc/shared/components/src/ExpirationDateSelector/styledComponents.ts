@@ -4,5 +4,7 @@ export const FieldSpace = styled.div<{ columns: string }>`
   display: grid;
   grid-template-columns: ${props => props.columns};
   grid-column-gap: 20px;
-  height: 45px;
+  height: auto;
+  min-height: 45px;
+  align-content: start;
 `

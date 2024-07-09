@@ -5,7 +5,8 @@ import {
   getFilterPayload,
   IncidentFilter,
   incidentSeverities,
-  incidentCodes
+  IncidentsToggleFilter,
+  incidentsToggle
 } from '@acx-ui/analytics/utils'
 import { dataApi } from '@acx-ui/store'
 
@@ -64,13 +65,13 @@ const queries = gql`
 
 export const api = dataApi.injectEndpoints({
   endpoints: (build) => ({
-    incidentsCountBySeverities: build.query<QueryResult, IncidentFilter>({
-      query: (payload) => ({
+    incidentsCountBySeverities: build.query<QueryResult, IncidentFilter & IncidentsToggleFilter>({
+      query: ({ toggles, ...payload }) => ({
         document: queries,
         variables: {
           ...payload,
           ...getFilterPayload(payload),
-          incidentCodes,
+          incidentCodes: incidentsToggle({ toggles }),
           granularity: 'all'
         }
       }),

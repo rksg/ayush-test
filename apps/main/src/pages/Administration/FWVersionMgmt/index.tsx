@@ -2,18 +2,21 @@ import { useEffect, useState } from 'react'
 
 import { useIntl } from 'react-intl'
 
-import { Tabs, Tooltip }                            from '@acx-ui/components'
-import { Features, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
-import { InformationSolid }                         from '@acx-ui/icons'
+import { Tabs, Tooltip }          from '@acx-ui/components'
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { InformationSolid }       from '@acx-ui/icons'
+import { useIsEdgeReady }         from '@acx-ui/rc/components'
 import {
   useGetLatestEdgeFirmwareQuery,
   useGetLatestFirmwareListQuery,
   useGetSigPackQuery,
   useGetSwitchLatestFirmwareListQuery,
   useGetSwitchVenueVersionListQuery,
+  useGetVenueApModelFirmwareListQuery,
   useGetVenueEdgeFirmwareListQuery,
   useGetVenueVersionListQuery
 } from '@acx-ui/rc/services'
+import { compareSwitchVersion }                  from '@acx-ui/rc/utils'
 import { useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
 
 import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
@@ -21,7 +24,6 @@ import ApplicationPolicyMgmt from '../ApplicationPolicyMgmt'
 import ApFirmware      from './ApFirmware'
 import EdgeFirmware    from './EdgeFirmware'
 import {
-  compareSwitchVersion,
   compareVersions,
   getApVersion,
   getReleaseFirmware
@@ -34,12 +36,13 @@ const FWVersionMgmt = () => {
   const params = useParams()
   const navigate = useNavigate()
   const basePath = useTenantLink('/administration/fwVersionMgmt')
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
-  const enableSigPackUpgrade = useIsSplitOn(Features.SIGPACK_UPGRADE)
-  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params })
-  const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
-  const { data: latestSwitchReleaseVersions } = useGetSwitchLatestFirmwareListQuery({ params })
-  const { data: switchVenueVersionList } = useGetSwitchVenueVersionListQuery({ params })
+  const isEdgeEnabled = useIsEdgeReady()
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
+  const { data: latestSwitchReleaseVersions } =
+    useGetSwitchLatestFirmwareListQuery({ params, enableRbac: isSwitchRbacEnabled })
+  const { data: switchVenueVersionList } =
+    useGetSwitchVenueVersionListQuery({ params, enableRbac: isSwitchRbacEnabled })
   const { data: edgeVenueVersionList } = useGetVenueEdgeFirmwareListQuery({}, {
     skip: !isEdgeEnabled
   })
@@ -49,9 +52,8 @@ const FWVersionMgmt = () => {
       latestEdgeReleaseVersion: data?.[0]
     })
   })
-  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } },
-    { skip: !enableSigPackUpgrade })
-  const [isApFirmwareAvailable, setIsApFirmwareAvailable] = useState(false)
+  const { data: sigPackUpdate } = useGetSigPackQuery({ params: { changesIncluded: 'false' } })
+  const isApFirmwareAvailable = useIsApFirmwareAvailable()
   const [isSwitchFirmwareAvailable, setIsSwitchFirmwareAvailable] = useState(false)
   const [isEdgeFirmwareAvailable, setIsEdgeFirmwareAvailable] = useState(false)
   const [isAPPLibraryAvailable, setIsAPPLibraryAvailable] = useState(false)
@@ -63,16 +65,6 @@ const FWVersionMgmt = () => {
       setIsAPPLibraryAvailable(false)
     }
   }, [sigPackUpdate])
-  useEffect(()=>{
-    if (latestReleaseVersions && venueVersionList) {
-      // As long as one of the venues' version smaller than the latest release version, it would be the available
-      const latest = [...latestReleaseVersions].sort((a,b)=>
-        compareVersions(a.id, b.id)).pop()
-      const hasOutdated = venueVersionList.data.some(fv=>
-        compareVersions(getApVersion(fv), latest?.id) < 0)
-      setIsApFirmwareAvailable(hasOutdated)
-    }
-  }, [latestReleaseVersions, venueVersionList])
 
   useEffect(()=>{
     if (latestSwitchReleaseVersions && switchVenueVersionList) {
@@ -124,7 +116,7 @@ const FWVersionMgmt = () => {
           title={$t({ defaultMessage: 'There are new Application update available' })} />}
       </UI.TabWithHint>,
       content: <ApplicationPolicyMgmt />,
-      visible: enableSigPackUpgrade
+      visible: true
     }
   }
 
@@ -138,7 +130,7 @@ const FWVersionMgmt = () => {
   return (
     <Tabs
       defaultActiveKey='apFirmware'
-      type='second'
+      type='card'
       onChange={onTabChange}
       activeKey={params.activeSubTab}
     >
@@ -156,3 +148,36 @@ const FWVersionMgmt = () => {
 }
 
 export default FWVersionMgmt
+
+
+function useIsApFirmwareAvailable () {
+  const params = useParams()
+  const isUpgradeByModelEnabled = useIsSplitOn(Features.AP_FW_MGMT_UPGRADE_BY_MODEL)
+  const [ isApFirmwareAvailable, setIsApFirmwareAvailable ] = useState(false)
+  // eslint-disable-next-line max-len
+  const { data: venueApModelFirmwareList } = useGetVenueApModelFirmwareListQuery({ params }, { skip: !isUpgradeByModelEnabled })
+  // eslint-disable-next-line max-len
+  const { data: latestReleaseVersions } = useGetLatestFirmwareListQuery({ params }, { skip: isUpgradeByModelEnabled })
+  // eslint-disable-next-line max-len
+  const { data: venueVersionList } = useGetVenueVersionListQuery({ params }, { skip: isUpgradeByModelEnabled })
+
+  useEffect(() => {
+    if (!latestReleaseVersions || !venueVersionList) return
+
+    // As long as one of the venues' version smaller than the latest release version, it would be the available
+    const latest = [...latestReleaseVersions].sort((a, b) => compareVersions(a.id, b.id)).pop()
+    // eslint-disable-next-line max-len
+    const hasOutdated = venueVersionList.data.some(fv => compareVersions(getApVersion(fv), latest?.id) < 0)
+    setIsApFirmwareAvailable(hasOutdated)
+  }, [latestReleaseVersions, venueVersionList])
+
+  useEffect(() => {
+    if (!venueApModelFirmwareList?.data) return
+
+    // eslint-disable-next-line max-len
+    setIsApFirmwareAvailable(venueApModelFirmwareList.data.some(venueApModelFiwmrare => !venueApModelFiwmrare.isFirmwareUpToDate))
+
+  }, [venueApModelFirmwareList])
+
+  return isApFirmwareAvailable
+}

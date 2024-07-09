@@ -50,20 +50,26 @@ export const policySetList = {
   ]
 }
 
+const mockedUsedNavigate = jest.fn()
+jest.mock('@acx-ui/react-router-dom', () => ({
+  ...jest.requireActual('@acx-ui/react-router-dom'),
+  useNavigate: () => mockedUsedNavigate
+}))
+
 describe('AdaptivePolicyTabs', () =>{
 
   beforeEach(() => {
     mockServer.use(
-      rest.get(
-        RadiusAttributeGroupUrlsInfo.getAttributeGroups.url.split('?')[0],
+      rest.post(
+        RadiusAttributeGroupUrlsInfo.getAttributeGroupsWithQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(groupList))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicies.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPoliciesByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(adaptivePolicyList))
       ),
-      rest.get(
-        RulesManagementUrlsInfo.getPolicySets.url.split('?')[0],
+      rest.post(
+        RulesManagementUrlsInfo.getPolicySetsByQuery.url.split('?')[0],
         (req, res, ctx) => res(ctx.json(policySetList))
       )
     )
@@ -83,9 +89,14 @@ describe('AdaptivePolicyTabs', () =>{
     await screen.findByText('Adaptive Policy (0)')
     const setTab = await screen.findByText('Adaptive Policy Sets (0)')
     // eslint-disable-next-line max-len
-    const attributeTab = await screen.findByText('RADIUS Attribute Groups (' + groupList.content.length + ')')
+    const attributeTab = await screen.findByText('RADIUS Attribute Groups (' + groupList.totalCount + ')')
 
     await userEvent.click(setTab)
+    expect(mockedUsedNavigate).toHaveBeenCalledWith({
+      pathname: '/_tenantId_/t/policies/adaptivePolicySet/list',
+      hash: '',
+      search: ''
+    })
     await userEvent.click(attributeTab)
   })
 

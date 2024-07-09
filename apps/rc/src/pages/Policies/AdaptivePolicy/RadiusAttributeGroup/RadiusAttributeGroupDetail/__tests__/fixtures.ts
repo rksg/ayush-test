@@ -15,7 +15,9 @@ export const mockGroup = {
       dataType: 'INTEGER',
       operator: 'DOES_NOT_EXIST'
     }
-  ]
+  ],
+  attributeCount: 2,
+  externalAssignmentsCount: 0
 }
 
 export const templateList = {
@@ -84,25 +86,34 @@ export const policyList = {
       id: '346314c9-a3ce-40dd-ab5a-7b99002bd736',
       name: 'ap2',
       policyType: 'DPSK',
-      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471'
+      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471',
+      policySetCount: 2,
+      conditionsCount: 0,
+      policySetNames: ['ps12', 'ps2']
     },
     {
       id: 'e681f673-cb0f-4e8d-a4ae-f18e141c496d',
       name: 'ap3',
       policyType: 'RADIUS',
-      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471'
+      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471',
+      policySetCount: 0,
+      conditionsCount: 0
     },
     {
       id: '1dd6a24d-a529-401f-a580-a922c42e3a70',
       name: 'ap5',
       policyType: 'DPSK',
-      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471'
+      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471',
+      policySetCount: 0,
+      conditionsCount: 0
     },
     {
       id: '26032241-e3cb-4a28-b7a5-a95de38d0f8b',
       name: 'ap6',
       policyType: 'RADIUS',
-      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471'
+      onMatchResponse: '6189213e-3cbd-4f76-a181-08ed2449b471',
+      policySetCount: 0,
+      conditionsCount: 0
     }
   ]
 }

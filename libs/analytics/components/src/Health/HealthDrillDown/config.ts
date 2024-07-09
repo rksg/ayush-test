@@ -2,11 +2,7 @@ import { MouseEventHandler } from 'react'
 
 import { defineMessage, IntlShape, MessageDescriptor } from 'react-intl'
 
-export const titleConfig = {
-  connectionFailure: defineMessage({ defaultMessage: 'Connection Failures' }),
-  ttc: defineMessage({ defaultMessage: 'Average Time To Connect' })
-}
-export const topImpactedClientLimit = 100
+export const topImpactedClientLimit = 10
 export type Stages =
   | 'Authentication'
   | 'Association'

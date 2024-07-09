@@ -2,11 +2,8 @@ export {
   // ApiInfo,
   Filters,
   // createHttpRequest,
-  enableNewApi,
   getFilters,
-  getUrlForTest,
   isDev,
   // isDelegationMode,
-  isLocalHost,
-  isIntEnv
+  isLocalHost
 } from '@acx-ui/utils'

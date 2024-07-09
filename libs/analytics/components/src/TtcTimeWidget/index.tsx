@@ -1,7 +1,7 @@
-import { Typography } from 'antd'
-import { useIntl }    from 'react-intl'
+import { useIntl } from 'react-intl'
 
 import { GridRow, GridCol, Loader } from '@acx-ui/components'
+import { formatter }                from '@acx-ui/formatter'
 import type { AnalyticsFilter }     from '@acx-ui/utils'
 
 import { useAverageTtcQuery } from './services'
@@ -26,10 +26,7 @@ export function TtcTimeWidget ({
           </UI.Wrapper>
           <UI.Wrapper>
             <UI.LargePercent>
-              { Math.round(data || 0) }
-              <Typography.Title level={3}>
-                { $t({ defaultMessage: 'ms' }) }
-              </Typography.Title>
+              { formatter('durationFormat')(Math.round(data || 0)) }
             </UI.LargePercent>
           </UI.Wrapper>
         </GridCol>

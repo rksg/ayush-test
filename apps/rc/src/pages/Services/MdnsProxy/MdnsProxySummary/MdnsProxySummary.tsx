@@ -46,7 +46,8 @@ export function MdnsProxySummary () {
         <Row>
           <Col span={24}>
             <Subtitle level={4}>
-              { $t({ defaultMessage: 'Venues & APs ({apCount})' }, { apCount: totalApCount }) }
+              { $t({ defaultMessage: '<VenuePlural></VenuePlural> & APs ({apCount})' },
+                { apCount: totalApCount }) }
             </Subtitle>
           </Col>
           <Col span={14}>

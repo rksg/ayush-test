@@ -1,22 +1,23 @@
 
 import { useIntl } from 'react-intl'
 
-import { Loader, Table, TableProps }                         from '@acx-ui/components'
-import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
-import { useGetDhcpByEdgeIdQuery, useGetDhcpHostStatsQuery } from '@acx-ui/rc/services'
-import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }  from '@acx-ui/rc/utils'
-import { RequestPayload }                                    from '@acx-ui/types'
+import { Loader, Table, TableProps }                                                                              from '@acx-ui/components'
+import { useEdgeBySerialNumberQuery, useGetDhcpHostStatsQuery, useGetDhcpStatsQuery, useGetEdgeDhcpServiceQuery } from '@acx-ui/rc/services'
+import { DhcpHostStats, EdgeDhcpHostStatus, useTableQuery }                                                       from '@acx-ui/rc/utils'
+import { RequestPayload }                                                                                         from '@acx-ui/types'
 
+import { useIsEdgeReady } from '../useEdgeActions'
 
 interface EdgeDhcpLeaseTableProps {
   edgeId?: string
   isInfinite?: boolean
+  clusterId?: string
 }
 
 export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
 
   const { $t } = useIntl()
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isEdgeReady = useIsEdgeReady()
 
   const getDhcpHostStatsPayload = {
     filters: { edgeId: [props.edgeId] },
@@ -24,19 +25,46 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
     sortOrder: 'ASC',
     searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
   }
+  const settingsId = 'edge-dhcp-leases-table'
   const hostTableQuery = useTableQuery<DhcpHostStats, RequestPayload<unknown>, unknown>({
     useQuery: useGetDhcpHostStatsQuery,
     defaultPayload: getDhcpHostStatsPayload,
     option: { skip: !!!props.edgeId || !isEdgeReady },
     search: {
       searchTargetFields: ['hostName', 'hostIpAddr', 'hostMac']
-    }
+    },
+    pagination: { settingsId }
   })
 
-  const { dhcpPoolOptions } = useGetDhcpByEdgeIdQuery(
-    { params: { edgeId: props.edgeId } },
+  const { data: currentEdgeStatus } = useEdgeBySerialNumberQuery({
+    payload: {
+      fields: [
+        'clusterId'
+      ],
+      filters: { serialNumber: [props.edgeId] } }
+  }, { skip: Boolean(props.clusterId) })
+
+  const { dhcpId } = useGetDhcpStatsQuery(
     {
-      skip: !!!props.edgeId,
+      payload: {
+        fields: [
+          'id'
+        ],
+        filters: { edgeClusterIds: [(props.clusterId || currentEdgeStatus?.clusterId)] }
+      }
+    },
+    {
+      skip: !Boolean(props.clusterId) && !Boolean(currentEdgeStatus?.clusterId),
+      selectFromResult: ({ data }) => ({
+        dhcpId: data?.data[0]?.id
+      })
+    }
+  )
+
+  const { dhcpPoolOptions } = useGetEdgeDhcpServiceQuery(
+    { params: { id: dhcpId } },
+    {
+      skip: !Boolean(dhcpId),
       selectFromResult: ({ data }) => ({
         dhcpPoolOptions: data?.dhcpPools?.map(pool => ({
           key: pool.poolName,
@@ -121,7 +149,7 @@ export const EdgeDhcpLeaseTable = (props: EdgeDhcpLeaseTableProps) => {
   return (
     <Loader states={[hostTableQuery]}>
       <Table
-        settingsId='edge-dhcp-leases-table'
+        settingsId={settingsId}
         rowKey='hostMac'
         columns={columns}
         dataSource={hostTableQuery?.data?.data}

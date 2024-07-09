@@ -1,6 +1,7 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
+import { networkApi, serviceApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   DpskUrls,
@@ -9,20 +10,21 @@ import {
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Path }     from '@acx-ui/react-router-dom'
-import { Provider } from '@acx-ui/store'
+import { Path }            from '@acx-ui/react-router-dom'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
   screen,
   waitFor,
+  waitForElementToBeRemoved,
   within
 } from '@acx-ui/test-utils'
 import { RolesEnum }                      from '@acx-ui/types'
 import { getUserProfile, setUserProfile } from '@acx-ui/user'
 
-import { mockedDpskList, mockedDpskListWithPersona } from './__tests__/fixtures'
-import DpskTable                                     from './DpskTable'
+import { mockedDpskList } from './__tests__/fixtures'
+import DpskTable          from './DpskTable'
 
 
 const mockedUseNavigate = jest.fn()
@@ -70,6 +72,8 @@ describe('DpskTable', () => {
   const tablePath = '/:tenantId/t/' + getServiceRoutePath({ type: ServiceType.DPSK, oper: ServiceOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(serviceApi.util.resetApiState())
+    store.dispatch(networkApi.util.resetApiState())
     mockServer.use(
       rest.post(
         DpskUrls.getEnhancedDpskList.url,
@@ -89,7 +93,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const targetDpsk = mockedDpskList.data[0]
     expect(await screen.findByRole('button', { name: /Add DPSK Service/i })).toBeVisible()
     expect(await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })).toBeVisible()
@@ -103,6 +107,8 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    await screen.findByRole('row', { name: new RegExp(mockedDpskList.data[0].name) })
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -129,7 +135,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
-
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
     await userEvent.click(within(row).getByRole('radio'))
@@ -144,15 +150,7 @@ describe('DpskTable', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull())
   })
 
-  // eslint-disable-next-line max-len
-  it.skip('should not delete the selected row when it is mapped to Identity or Network', async () => {
-    mockServer.use(
-      rest.post(
-        DpskUrls.getEnhancedDpskList.url,
-        (req, res, ctx) => res(ctx.json({ ...mockedDpskListWithPersona }))
-      )
-    )
-
+  it('should not delete the selected row when it is mapped to Identity or Network', async () => {
     render(
       <Provider>
         <DpskTable />
@@ -160,15 +158,20 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
-    const targetDpsk = mockedDpskListWithPersona.data[0]
-    const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
-    await userEvent.click(within(row).getByRole('radio'))
+    const targetDpsk = mockedDpskList.data[3]
+    const targetRow = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
+    await userEvent.click(within(targetRow).getByRole('radio'))
+    await userEvent.click(await screen.findByRole('button', { name: /Delete/ }))
 
-    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+    const alertDialog = await screen.findByRole('dialog')
 
     // eslint-disable-next-line max-len
-    expect(await screen.findByText('You are unable to delete this record due to its usage in Identity,Network')).toBeVisible()
+    expect(await within(alertDialog).findByText('You are unable to delete this record due to its usage in Identity,Network')).toBeVisible()
+
+    await userEvent.click(within(alertDialog).getByRole('button', { name: /OK/ }))
+    await waitFor(() => expect(alertDialog).not.toBeVisible())
   })
 
   it('should navigate to the Edit view', async () => {
@@ -179,6 +182,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     const targetDpsk = mockedDpskList.data[0]
     const row = await screen.findByRole('row', { name: new RegExp(targetDpsk.name) })
@@ -206,6 +210,7 @@ describe('DpskTable', () => {
         route: { params, path: tablePath }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
 
     setRole(RolesEnum.DPSK_ADMIN)
 

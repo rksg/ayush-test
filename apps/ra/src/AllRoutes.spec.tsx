@@ -1,5 +1,9 @@
-import { Provider }       from '@acx-ui/store'
-import { render, screen } from '@acx-ui/test-utils'
+import { Navigate, useSearchParams } from 'react-router-dom'
+
+import { getUserProfile }                                        from '@acx-ui/analytics/utils'
+import { Provider }                                              from '@acx-ui/store'
+import { render, screen }                                        from '@acx-ui/test-utils'
+import { RaiPermissions, setRaiPermissions, raiPermissionsList } from '@acx-ui/user'
 
 import AllRoutes from './AllRoutes'
 
@@ -10,18 +14,108 @@ jest.mock('@acx-ui/analytics/components', () => {
   return Object.fromEntries(sets)
 })
 jest.mock('./pages/Dashboard', () => () => <div data-testid='Dashboard' />)
+jest.mock('./pages/ZoneDetails', () => () => <div data-testid='ZoneDetails' />)
+jest.mock('./pages/Zones', () => () => <div data-testid='ZonesList' />)
+
 jest.mock('@reports/Routes', () => () => {
   return <div data-testid='reports' />
 }, { virtual: true })
+jest.mock('@acx-ui/components', () => ({
+  ...jest.requireActual('@acx-ui/components'),
+  showToast: jest.fn()
+}))
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  Navigate: jest.fn(() => <div />),
+  useSearchParams: jest.fn(() => [new URLSearchParams()])
+}))
+jest.mock('@acx-ui/analytics/utils', () => ({
+  ...jest.requireActual('@acx-ui/analytics/utils'),
+  getUserProfile: jest.fn(),
+  updateSelectedTenant: jest.fn()
+}))
+const userProfile = getUserProfile as jest.Mock
 
 describe('AllRoutes', () => {
+  const defaultUserProfile = {
+    accountId: 'aid',
+    tenants: [],
+    invitations: [],
+    selectedTenant: {
+      id: 'aid',
+      permissions: {}
+    }
+  }
   beforeEach(() => {
+    setRaiPermissions(Object.keys(raiPermissionsList)
+      .reduce((permissions, name) => ({ ...permissions, [name]: true }), {} as RaiPermissions))
+    userProfile.mockReturnValue(defaultUserProfile)
     global.window.innerWidth = 1920
     global.window.innerHeight = 1080
   })
 
+  it('redirects analytics users to dashboard', async () => {
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/dashboard', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects report users to reports', async () => {
+    setRaiPermissions({ READ_REPORTS: true } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects it helpdesk to health', async () => {
+    setRaiPermissions({ READ_HEALTH: true } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/health', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects data studio users to data studio', async () => {
+    setRaiPermissions({ READ_DATA_STUDIO: true } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/reports', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects to profile by default', async () => {
+    setRaiPermissions({ READ_DASHBOARD: false } as RaiPermissions)
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: { pathname: '/ai/profile/settings', search: '?selectedTenants=WyJhaWQiXQ==' }
+    }, {})
+  })
+
+  it('redirects to return url', async () => {
+    const search = new URLSearchParams()
+    search.set('return', '/ai/incidents?selectedTenants=WyJhaWQiXQ==')
+    jest.mocked(useSearchParams).mockReturnValue([search, () => {}])
+    render(<AllRoutes />, { route: { path: '/ai' }, wrapper: Provider })
+    expect(Navigate).toHaveBeenCalledWith({
+      replace: true,
+      to: '/ai/incidents?selectedTenants=WyJhaWQiXQ=='
+    }, {})
+  })
+
   it('should render incidents correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/incidents' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
+  })
+  it('should render Inten AI correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/intentAI' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('AIAnalytics')).toBeVisible()
   })
@@ -45,7 +139,7 @@ describe('AllRoutes', () => {
   it('should render video call qoe correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/videoCallQoe' }, wrapper: Provider })
     expect(await screen.findByText('Logo.svg')).toBeVisible()
-    expect(await screen.findByTestId('NetworkAssurance')).toBeVisible()
+    expect(await screen.findByTestId('VideoCallQoe')).toBeVisible()
   })
   it('should render video call qoe details correctly', async () => {
     render(<AllRoutes />, { route: { path: '/ai/videoCallQoe/id' }, wrapper: Provider })
@@ -77,6 +171,13 @@ describe('AllRoutes', () => {
     expect(await screen.findByText('Logo.svg')).toBeVisible()
     expect(await screen.findByTestId('CrrmDetails')).toBeVisible()
   })
+  it('should render unknown details correctly', async () => {
+    render(<AllRoutes />, {
+      route: { path: '/ai/recommendations/crrm/unknown/*' },
+      wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('UnknownDetails')).toBeVisible()
+  })
   it('should render aiOps details correctly', async () => {
     render(<AllRoutes />, {
       route: { path: '/ai/recommendations/aiOps/test-recommendation-id' },
@@ -98,5 +199,43 @@ describe('AllRoutes', () => {
     render(<AllRoutes />, { route: { path: '/ai/dataStudio' }
       , wrapper: Provider })
     await screen.findByTestId('reports')
+  })
+  it('should render zone list correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/zones' }
+      , wrapper: Provider })
+    await screen.findByTestId('ZonesList')
+  })
+  it('should render zone details correctly', async () => {
+    render(<AllRoutes />, { route: {
+      path: '/ai/zones/systemName/zoneName/analytics' }
+    , wrapper: Provider })
+    await screen.findByTestId('ZoneDetails')
+  })
+  it('should render zone details tab correctly', async () => {
+    render(<AllRoutes />, { route: {
+      path: '/ai/zones/systemName/zoneName/analytics/incidents' }
+    , wrapper: Provider })
+    await screen.findByTestId('ZoneDetails')
+  })
+  it('should render zone details subtab correctly', async () => {
+    render(<AllRoutes />, { route: {
+      path: '/ai/zones/systemName/zoneName/analytics/incidents/overview' }
+    , wrapper: Provider })
+    await screen.findByTestId('ZoneDetails')
+  })
+  it('should render support correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/admin/support' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('AccountManagement')).toBeVisible()
+  })
+  it('should render support onboarded systems', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/admin/onboarded' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('AccountManagement')).toBeVisible()
+  })
+  it('should render profile correctly', async () => {
+    render(<AllRoutes />, { route: { path: '/ai/profile/settings' }, wrapper: Provider })
+    expect(await screen.findByText('Logo.svg')).toBeVisible()
+    expect(await screen.findByTestId('Profile')).toBeVisible()
   })
 })

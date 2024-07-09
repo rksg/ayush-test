@@ -1,7 +1,9 @@
-import _      from 'lodash'
-import moment from 'moment-timezone'
+import _           from 'lodash'
+import moment      from 'moment-timezone'
+import { useIntl } from 'react-intl'
 
-import { Filter }                                           from '@acx-ui/components'
+import { Filter, showToast }                                from '@acx-ui/components'
+import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
 import { useDownloadEventsCSVMutation }                     from '@acx-ui/rc/services'
 import { TableQuery }                                       from '@acx-ui/rc/utils'
 import { RequestPayload }                                   from '@acx-ui/types'
@@ -11,10 +13,13 @@ import { DateRangeFilter, computeRangeFilter, useTenantId } from '@acx-ui/utils'
 export function useExportCsv<T> (
   tableQuery: TableQuery<T, RequestPayload<unknown>, unknown>
 ) {
+  const { $t } = useIntl()
   const { data: userProfileData } = useUserProfileContext()
   const filters = _.get(tableQuery?.payload, 'filters', {}) as { dateFilter: DateRangeFilter }
   const [ downloadCsv ] = useDownloadEventsCSVMutation()
   const tenantId = useTenantId()!
+
+  const isExportEventsEnabled = useIsSplitOn(Features.EXPORT_EVENTS_TOGGLE)
 
   return {
     exportCsv: () => {
@@ -36,8 +41,17 @@ export function useExportCsv<T> (
         tenantId: tenantId
       }
 
+      showToast({
+        type: 'success',
+        content: $t(
+          { defaultMessage: 'The event export is being generated. ' +
+              'This is taking some time…' }
+        )
+      })
+
       return downloadCsv(payload)
     },
-    disabled: !((tableQuery.data?.data ?? []).length > 0)
+    disabled: !((tableQuery.data?.data ?? []).length > 0),
+    ffEnabled: isExportEventsEnabled
   }
 }

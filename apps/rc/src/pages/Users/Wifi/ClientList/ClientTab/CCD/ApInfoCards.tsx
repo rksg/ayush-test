@@ -1,24 +1,24 @@
-import { Fragment, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Radio, RadioChangeEvent, Space } from 'antd'
 import { useIntl }                        from 'react-intl'
 
 import { Subtitle } from '@acx-ui/components'
 
-import { ApInfo }                                          from './contents'
-import { ApInfoRadioExtendInfo, WarningTriangleSolidIcon } from './styledComponents'
+import { ApInfo }                             from './contents'
+import { ApInfoRadio, ApInfoRadioExtendInfo } from './styledComponents'
 
 export interface ApInfoCradsProps {
   apInfos: ApInfo[],
-  selectedApMac: string,
-  setSelectedApMac: (apMac: string) => void
-  ccdApMac?: string
+  selectedApIndex: number,
+  onSelectApChanged: (index: number) => void,
+  disabled?: boolean
 }
 
 export function ApInfoCards (props: ApInfoCradsProps) {
   const { $t } = useIntl()
 
-  const { apInfos, selectedApMac, setSelectedApMac, ccdApMac } = props
+  const { apInfos, selectedApIndex, onSelectApChanged, disabled = false } = props
 
   const [ apInfoList, setApInfoList ] = useState<ApInfo[]>([])
   useEffect(() => {
@@ -28,37 +28,36 @@ export function ApInfoCards (props: ApInfoCradsProps) {
   }, [apInfos])
 
   const onChange = (e: RadioChangeEvent) => {
-    setSelectedApMac(e.target.value)
+    onSelectApChanged(e.target.value)
   }
 
   return (<>
     <Subtitle level={4}>
       {$t({ defaultMessage: 'Connecting Access Point' })}
     </Subtitle>
-    <Radio.Group onChange={onChange} value={selectedApMac}>
+    <Radio.Group onChange={onChange} value={selectedApIndex}>
       <Space direction='vertical' size={'middle'}>
         {
-          apInfoList.map(item => {
+          apInfoList.map((item, index) => {
             const { name, apMac='', model='', ssid, radio } = item
 
             const radioText = `${model} (${apMac})`
             return (
-              <Radio key={apMac} value={apMac}>
-                <Space>
-                  <span>{radioText}</span>
-                  {(ccdApMac === apMac) &&
-                   <WarningTriangleSolidIcon />
-                  }
-                </Space>
-                {(selectedApMac === apMac) && <>
+              <ApInfoRadio key={index} value={index} disabled={disabled}>
+                <span>{radioText}</span>
+
+
+                {(selectedApIndex === index) && <>
                   <ApInfoRadioExtendInfo>
                     <span> {$t({ defaultMessage: 'AP MAC:' })}</span>
                     <span>{apMac}</span>
                   </ApInfoRadioExtendInfo>
+                  {name &&
                   <ApInfoRadioExtendInfo>
                     <span>{$t({ defaultMessage: 'AP Name:' })}</span>
                     <span> {name}</span>
                   </ApInfoRadioExtendInfo>
+                  }
                   {ssid &&
                   <ApInfoRadioExtendInfo>
                     <span>{$t({ defaultMessage: 'SSID:' })}</span>
@@ -72,7 +71,7 @@ export function ApInfoCards (props: ApInfoCradsProps) {
                   </ApInfoRadioExtendInfo>
                   }
                 </>}
-              </Radio>
+              </ApInfoRadio>
             )
           })
         }

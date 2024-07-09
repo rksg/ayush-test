@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Form, Radio, RadioChangeEvent, Space, Typography } from 'antd'
 import { useForm }                                          from 'antd/lib/form/Form'
@@ -7,6 +7,7 @@ import { useIntl }                                          from 'react-intl'
 import {
   Modal
 } from '@acx-ui/components'
+import { Features, useIsSplitOn }              from '@acx-ui/feature-toggle'
 import {
   useUpdateSwitchFirmwarePredownloadMutation
 } from '@acx-ui/rc/services'
@@ -36,27 +37,33 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const params = useParams()
   const [form] = useForm()
   const { visible, onSubmit, onCancel, data, isSwitch, preDownload } = props
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const [updateSwitchFirmwarePredownload] = useUpdateSwitchFirmwarePredownloadMutation()
-  const [scheduleMode, setScheduleMode] = useState(ScheduleMode.Automatically)
+  // eslint-disable-next-line max-len
+  const [scheduleMode, setScheduleMode] = useState(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
   const [valueDays, setValueDays] = useState<string[]>(['Saturday'])
   const [valueTimes, setValueTimes] = useState<string[]>(['00:00 - 02:00'])
   const [modelVisible, setModelVisible] = useState(false)
   const [disableSave, setDisableSave] = useState(true)
   const [checked, setChecked] = useState(false)
+  const isDayTimeInitializedRef = useRef(false)
 
 
   useEffect(() => {
-    if (data) {
-      // eslint-disable-next-line max-len
-      data.autoSchedule ? setScheduleMode(ScheduleMode.Automatically) : setScheduleMode(ScheduleMode.Manually)
-    }
-    if (data && data.days) {
+    if (isDayTimeInitializedRef.current || !visible) return
+
+    if (data.days) {
       setValueDays([...data.days])
     }
-    if (data && data.times) {
+    if (data.times) {
       setValueTimes([...data.times])
     }
-  }, [data])
+    if (data.autoSchedule) {
+      setScheduleMode(data.autoSchedule ? ScheduleMode.Automatically : ScheduleMode.Manually)
+    }
+
+    isDayTimeInitializedRef.current = true
+  }, [isDayTimeInitializedRef, data])
 
   useEffect(() => {
     if (preDownload) {
@@ -70,6 +77,13 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
 
   const handleModalCancel = () => {
     setModelVisible(false)
+  }
+
+  const setPreDownload = (value: boolean) => {
+    setChecked(value)
+    if (disableSave) {
+      setDisableSave(false)
+    }
   }
 
   const handleModalSubmit = (data: { valueDays: string[], valueTimes: string[] }) => {
@@ -94,7 +108,10 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
   const triggerSubmit = async () => {
     if (isSwitch) {
       try {
-        await updateSwitchFirmwarePredownload({ params, payload: checked }).unwrap()
+        await updateSwitchFirmwarePredownload({
+          params, payload: checked,
+          enableRbac: isSwitchRbacEnabled
+        }).unwrap()
       } catch (error) {
         console.log(error) // eslint-disable-line no-console
       }
@@ -149,7 +166,7 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
                   <Radio value={ScheduleMode.Automatically}>
                     {$t({ defaultMessage: 'Schedule Automatically' })}
                     { // eslint-disable-next-line max-len
-                      <div>{$t({ defaultMessage: 'Upgrade preference saved for each venue based on venue’s local time-zone' })}</div>}
+                      <div>{$t({ defaultMessage: 'Upgrade preference saved for each <venueSingular></venueSingular> based on local time-zone of <venueSingular></venueSingular>' })}</div>}
                     <UI.PreferencesSection>
                       { // eslint-disable-next-line max-len
                         <div style={{ fontWeight: 600, marginLeft: 8, paddingTop: 8 }}>{$t({ defaultMessage: 'Preferred update slot(s):' })}</div>}
@@ -161,8 +178,8 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
                     </UI.ChangeButton>
                   </Radio>
                   <Radio value={ScheduleMode.Manually}>
-                    {$t({ defaultMessage: 'Schedule Manually' })}
-                    <div>{$t({ defaultMessage: 'Manually update firmware per venue' })}</div>
+                    {$t({ defaultMessage: 'Schedule Manually' })} { /*eslint-disable-next-line max-len*/ }
+                    <div>{$t({ defaultMessage: 'Manually update firmware per <venueSingular></venueSingular>' })}</div>
                   </Radio>
                 </Space>
               </Radio.Group>
@@ -172,17 +189,16 @@ export function PreferencesDialog (props: PreferencesDialogProps) {
         {isSwitch && scheduleMode === ScheduleMode.Automatically ?
           <PreDownload
             checked={checked}
-            setChecked={setChecked}
+            setChecked={setPreDownload}
           />
           : null}
       </Modal>
-      <ChangeSlotDialog
-        visible={modelVisible}
+      {modelVisible && <ChangeSlotDialog
         onCancel={handleModalCancel}
         onSubmit={handleModalSubmit}
-        days={data.days as string[]}
-        times={data.times as string[]}
-      />
+        days={valueDays}
+        times={valueTimes}
+      />}
     </>
   )
 }

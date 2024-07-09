@@ -9,7 +9,7 @@ export const mockDhcpPoolStatsData = {
     {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '1',
-      edgeIds: ['1'],
+      edgeId: '1',
       dhcpId: '1',
       poolName: 'TestPool1',
       subnetMask: '255.255.255.0',
@@ -20,7 +20,7 @@ export const mockDhcpPoolStatsData = {
     {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '2',
-      edgeIds: ['2', '3'],
+      edgeId: '2',
       dhcpId: '2',
       poolName: 'TestPool2',
       subnetMask: '255.255.255.0',
@@ -31,7 +31,7 @@ export const mockDhcpPoolStatsData = {
     {
       tenantId: '1ecc2d7cf9d2342fdb31ae0e24958fcac',
       id: '3',
-      edgeIds: ['4'],
+      edgeId: '4',
       dhcpId: '3',
       poolName: 'TestPool3',
       subnetMask: '255.255.255.0',

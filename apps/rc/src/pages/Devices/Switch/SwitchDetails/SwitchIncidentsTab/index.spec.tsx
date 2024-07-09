@@ -1,11 +1,14 @@
 import '@testing-library/jest-dom'
 
-import { SwitchUrlsInfo }                                     from '@acx-ui/rc/utils'
-import { dataApiURL, Provider }                               from '@acx-ui/store'
-import { render, screen, mockRestApiQuery, mockGraphqlQuery } from '@acx-ui/test-utils'
-import type { AnalyticsFilter }                               from '@acx-ui/utils'
+import { rest } from 'msw'
+
+import { CommonUrlsInfo, SwitchUrlsInfo }                                 from '@acx-ui/rc/utils'
+import { dataApiURL, Provider }                                           from '@acx-ui/store'
+import { render, screen, mockRestApiQuery, mockGraphqlQuery, mockServer } from '@acx-ui/test-utils'
+import type { AnalyticsFilter }                                           from '@acx-ui/utils'
 
 import {
+  networkApGroup,
   switchDetailData
 } from '../__tests__/fixtures'
 
@@ -34,6 +37,12 @@ describe('SwitchIncidentsTab', () => {
     mockGraphqlQuery(dataApiURL, 'IncidentTableWidget', {
       data: { network: { hierarchyNode: { incidents: [] } } }
     })
+    mockServer.use(
+      rest.post(
+        CommonUrlsInfo.venueNetworkApGroup.url,
+        (req, res, ctx) => res(ctx.json(networkApGroup))
+      )
+    )
   })
 
   it('should render mocked Incident tab in devices', async () => {

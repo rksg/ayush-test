@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { HelpButton, UserButton } from '@acx-ui/analytics/components'
-import { useUserProfileContext }  from '@acx-ui/analytics/utils'
+import { HelpButton, UserButton, MelissaBot } from '@acx-ui/analytics/components'
+import { getUserProfile }                     from '@acx-ui/analytics/utils'
 import {
   Layout as LayoutComponent,
   LayoutUI
@@ -12,19 +12,20 @@ import {
   HeaderContext
 } from '@acx-ui/main/components'
 import { Outlet, useParams, TenantNavLink } from '@acx-ui/react-router-dom'
+import { hasRaiPermission }                 from '@acx-ui/user'
 
 import { ReactComponent as Logo } from '../../assets/Logo.svg'
 
-import { useMenuConfig } from './menuConfig'
+import { AccountsDrawer } from './AccountsDrawer'
+import { useMenuConfig }  from './menuConfig'
 
 function Layout () {
   const params = useParams()
-  const { data: userProfile } = useUserProfileContext()
-  const companyName = userProfile?.tenants
-    .find(tenant => tenant.id === userProfile?.accountId)?.name
+  const userProfile = getUserProfile()
   const searchFromUrl = params.searchVal || ''
   const [searchExpanded, setSearchExpanded] = useState<boolean>(searchFromUrl !== '')
   const [licenseExpanded, setLicenseExpanded] = useState<boolean>(false)
+  const canSearch = hasRaiPermission('READ_REPORTS') || hasRaiPermission('READ_HEALTH')
   return (
     <LayoutComponent
       logo={<TenantNavLink to={''} children={<Logo />} />}
@@ -33,12 +34,16 @@ function Layout () {
       rightHeaderContent={<>
         <HeaderContext.Provider value={{
           searchExpanded, licenseExpanded, setSearchExpanded, setLicenseExpanded }}>
-          <GlobalSearchBar />
+          {canSearch && <GlobalSearchBar />}
         </HeaderContext.Provider>
         <LayoutUI.Divider />
-        <LayoutUI.CompanyName>{companyName}</LayoutUI.CompanyName>
+        { userProfile.tenants.length > 1 || userProfile.invitations.length > 0
+          ? <AccountsDrawer user={userProfile} />
+          : <LayoutUI.CompanyName>{userProfile?.selectedTenant.name}</LayoutUI.CompanyName>
+        }
         <HelpButton/>
         <UserButton/>
+        <MelissaBot/>
       </>}
     />
   )

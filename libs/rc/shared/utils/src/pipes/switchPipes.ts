@@ -91,6 +91,9 @@ export function transformConfigStatus (type: ConfigStatusEnum | string) {
     case ConfigStatusEnum.NO_CONFIG_CHANGE:
       transform = $t({ defaultMessage: 'No Config Change' })
       break
+    case ConfigStatusEnum.NOTIFY_IN_PROGRESS:
+      transform = $t({ defaultMessage: 'Notify In Progress' })
+      break
     case ConfigStatusEnum.NOTIFY_SUCCESS:
       transform = $t({ defaultMessage: 'Notify Success' })
       break

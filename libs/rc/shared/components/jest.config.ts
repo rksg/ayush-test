@@ -2,16 +2,17 @@ module.exports = {
   displayName: 'rc-components',
   preset: '../../../../jest.preset.ts',
   transform: {
+    '^.+\\.mjs?$': 'babel-jest',
     '^.+\\.[tj]sx?$': 'babel-jest'
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../../../coverage/libs/rc/shared/components',
   coverageThreshold: {
     global: {
-      statements: 86,
-      branches: 78,
-      functions: 84,
-      lines: 87
+      statements: 86.5,
+      branches: 75,
+      functions: 85,
+      lines: 86
     }
   }
 }

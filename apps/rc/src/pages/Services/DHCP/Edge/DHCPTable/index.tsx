@@ -2,12 +2,11 @@
 import { useIntl } from 'react-intl'
 
 import { Button, Loader, PageHeader, showActionModal, Table, TableProps } from '@acx-ui/components'
-import { EdgeServiceStatusLight }                                         from '@acx-ui/rc/components'
+import { EdgeServiceStatusLight, useEdgeDhcpActions }                     from '@acx-ui/rc/components'
 import {
   useDeleteEdgeDhcpServicesMutation,
   useGetDhcpStatsQuery,
-  useGetEdgeListQuery,
-  usePatchEdgeDhcpServiceMutation
+  useGetEdgeListQuery
 } from '@acx-ui/rc/services'
 import {
   DhcpStats,
@@ -42,6 +41,7 @@ const EdgeDhcpTable = () => {
       'edgeAlarmSummary'
     ]
   }
+  const settingsId = 'services-edge-dhcp-table'
   const tableQuery = useTableQuery({
     useQuery: useGetDhcpStatsQuery,
     defaultPayload: getDhcpStatsPayload,
@@ -51,7 +51,8 @@ const EdgeDhcpTable = () => {
     },
     search: {
       searchTargetFields: ['serviceName']
-    }
+    },
+    pagination: { settingsId }
   })
   const edgeOptionsDefaultPayload = {
     fields: ['name', 'serialNumber'],
@@ -69,7 +70,7 @@ const EdgeDhcpTable = () => {
       }
     })
   const [deleteDhcp, { isLoading: isDeleteDhcpUpdating }] = useDeleteEdgeDhcpServicesMutation()
-  const [patchDhcp, { isLoading: isPatchDhcpUpdating }] = usePatchEdgeDhcpServiceMutation()
+  const { upgradeEdgeDhcp, isEdgeDhcpUpgrading } = useEdgeDhcpActions()
 
   const isUpdateAvailable = (data: DhcpStats) => {
     let isReadyToUpdate = false
@@ -123,7 +124,7 @@ const EdgeDhcpTable = () => {
       sorter: true
     },
     {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       align: 'center',
       key: 'venueNum',
       dataIndex: 'venueNum',
@@ -200,11 +201,8 @@ const EdgeDhcpTable = () => {
             numOfEntities: rows.length
           },
           onOk: () => {
-            rows.length === 1 ?
-              deleteDhcp({ params: { id: rows[0].id } })
-                .then(clearSelection) :
-              deleteDhcp({ payload: rows.map(item => item.id) })
-                .then(clearSelection)
+            deleteDhcp({ params: { id: rows[0].id } })
+              .then(clearSelection)
           }
         })
       }
@@ -222,9 +220,9 @@ const EdgeDhcpTable = () => {
             // eslint-disable-next-line max-len
             $t({ defaultMessage: 'Are you sure you want to update these services to the latest version immediately?' }),
           okText: $t({ defaultMessage: 'Update' }),
-          onOk: () => {
-            patchDhcp({ params: { id: rows[0].id }, payload: { action: 'UPDATE_NOW' } })
-              .then(clearSelection)
+          onOk: async () => {
+            await upgradeEdgeDhcp(rows[0].id)
+            clearSelection()
           }
         })
       }
@@ -251,10 +249,10 @@ const EdgeDhcpTable = () => {
       />
       <Loader states={[
         tableQuery,
-        { isLoading: false, isFetching: isDeleteDhcpUpdating || isPatchDhcpUpdating }
+        { isLoading: false, isFetching: isDeleteDhcpUpdating || isEdgeDhcpUpgrading }
       ]}>
         <Table
-          settingsId='services-edge-dhcp-table'
+          settingsId={settingsId}
           rowKey='id'
           columns={columns}
           rowSelection={hasAccess() && { type: 'radio' }}

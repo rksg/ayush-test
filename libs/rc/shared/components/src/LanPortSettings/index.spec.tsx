@@ -3,7 +3,8 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { Form }  from 'antd'
 
-import { Provider } from '@acx-ui/store'
+import { useIsSplitOn } from '@acx-ui/feature-toggle'
+import { Provider }     from '@acx-ui/store'
 import {
   fireEvent,
   render,
@@ -86,6 +87,9 @@ describe('LanPortSettings', () => {
     expect(screen.getByLabelText(/VLAN member/)).toHaveValue('1-4094')
     expect(screen.getByLabelText(/VLAN untag ID/)).toBeDisabled()
     expect(screen.getByLabelText(/VLAN member/)).toBeDisabled()
+    const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+    fireEvent.mouseEnter(toolips[1])
+    expect(screen.queryByTestId('tooltip-button')).toBeNull()
 
     fireEvent.mouseDown(screen.getByLabelText(/Port type/))
     await userEvent.click(screen.getAllByText('GENERAL')[1])
@@ -118,6 +122,8 @@ describe('LanPortSettings', () => {
   })
 
   it('should render correctly with trunk port untagged vlan toggle', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(true)
+
     render(<Provider>
       <Form initialValues={{ lan: lanData }}>
         <LanPortSettings
@@ -140,6 +146,10 @@ describe('LanPortSettings', () => {
 
     fireEvent.change(screen.getByLabelText(/VLAN untag ID/), { target: { value: 2 } })
     expect(screen.getByLabelText(/VLAN member/).value).toBe('1-4094')
+
+    const toolips = await screen.findAllByTestId('QuestionMarkCircleOutlined')
+    fireEvent.mouseEnter(toolips[1])
+    expect(await screen.findByTestId('tooltip-button')).not.toBeNull()
   })
 
   it('should render read-only mode correctly with trunk port untagged vlan toggle', async () => {

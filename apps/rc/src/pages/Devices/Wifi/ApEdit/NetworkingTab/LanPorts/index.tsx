@@ -10,12 +10,12 @@ import {
   Loader,
   Tabs,
   StepsFormLegacy,
-  StepsFormLegacyInstance
+  StepsFormLegacyInstance,
+  AnchorContext
 } from '@acx-ui/components'
 import { Features, useIsSplitOn }                                       from '@acx-ui/feature-toggle'
 import { ConvertPoeOutToFormData, LanPortPoeSettings, LanPortSettings } from '@acx-ui/rc/components'
 import {
-  useLazyGetVenueQuery,
   useLazyGetVenueLanPortsQuery,
   useLazyGetVenueSettingsQuery,
   useGetApLanPortsQuery,
@@ -26,7 +26,7 @@ import {
   LanPort,
   WifiApSetting,
   CapabilitiesApModel,
-  VenueExtended
+  VenueLanPorts
 } from '@acx-ui/rc/utils'
 import {
   useParams,
@@ -47,14 +47,18 @@ export function LanPorts () {
     setEditNetworkingContextData
   } = useContext(ApEditContext)
 
-  const { apData: apDetails, apCapabilities: apCaps } = useContext(ApDataContext)
+  const {
+    apData: apDetails,
+    apCapabilities: apCaps,
+    venueData } = useContext(ApDataContext)
+  const { setReadyToScroll } = useContext(AnchorContext)
+
   const supportTrunkPortUntaggedVlan = useIsSplitOn(Features.WIFI_TRUNK_PORT_UNTAGGED_VLAN_TOGGLE)
 
   const formRef = useRef<StepsFormLegacyInstance<WifiApSetting>>()
-  const { data: apLanPorts, isLoading: isApLanPortsLoading }
+  const { data: apLanPortsData, isLoading: isApLanPortsLoading }
     = useGetApLanPortsQuery({ params: { tenantId, serialNumber } })
 
-  const [getVenue] = useLazyGetVenueQuery()
   const [getVenueLanPorts] = useLazyGetVenueLanPortsQuery()
   const [getVenueSettings] = useLazyGetVenueSettingsQuery()
 
@@ -64,29 +68,35 @@ export function LanPorts () {
   const [resetApCustomization, {
     isLoading: isApLanPortsResetting }] = useResetApLanPortsMutation()
 
-
-  const [venue, setVenue] = useState({} as VenueExtended)
+  const [apLanPorts, setApLanPorts] = useState({} as WifiApSetting)
   const [venueLanPorts, setVenueLanPorts] = useState({})
   const [selectedModel, setSelectedModel] = useState({} as WifiApSetting)
   const [selectedModelCaps, setSelectedModelCaps] = useState({} as CapabilitiesApModel)
   const [selectedPortCaps, setSelectedPortCaps] = useState({} as LanPort)
   const [useVenueSettings, setUseVenueSettings] = useState(true)
-  const [initData, setInitData] = useState({} as WifiApSetting)
   const [isDhcpEnabled, setIsDhcpEnabled] = useState(false)
   const [formInitializing, setFormInitializing] = useState(true)
   const [lanData, setLanData] = useState([] as LanPort[])
   const [activeTabIndex, setActiveTabIndex] = useState(0)
+  const venueId = venueData?.id
+
   // TODO: rbac
   const isAllowUpdate = true // this.rbacService.isRoleAllowed('UpdateWifiApSetting');
   const isAllowReset = true // this.rbacService.isRoleAllowed('ResetWifiApSetting');
 
   useEffect(() => {
-    if (apDetails && apCaps && apLanPorts && !isApLanPortsLoading) {
-      const { venueId } = apDetails
-      const setData = async () => {
-        const venue = (await getVenue({
-          params: { tenantId, venueId } }, true).unwrap())
+    if (apDetails && apCaps && apLanPortsData && !isApLanPortsLoading) {
+      // eslint-disable-next-line max-len
+      const convertToFormData = (lanPortsData: WifiApSetting | VenueLanPorts, lanPortsCap: LanPort[]) => {
+        const poeOutFormData = ConvertPoeOutToFormData(lanPortsData, lanPortsCap)
 
+        return {
+          ...lanPortsData,
+          ...(poeOutFormData && { poeOut: poeOutFormData })
+        }
+      }
+
+      const setData = async () => {
         const venueLanPortsData = (await getVenueLanPorts({
           params: { tenantId, venueId }
         }, true).unwrap())?.filter(item => item.model === apDetails?.model)?.[0]
@@ -95,32 +105,24 @@ export function LanPorts () {
           params: { tenantId, venueId } }, true).unwrap())
 
         const apLanPortsCap = apCaps.lanPorts
-        const apPoeOutFormData = ConvertPoeOutToFormData(apLanPorts, apLanPortsCap)
-        const lanPorts = {
-          ...apLanPorts,
-          ...(apPoeOutFormData && { poeOut: apPoeOutFormData })
-        }
+        const lanPorts = convertToFormData(apLanPortsData, apLanPortsCap)
+        const venueLanPorts = convertToFormData(venueLanPortsData, apLanPortsCap)
 
-        const venuePoeOutFormData = ConvertPoeOutToFormData(venueLanPortsData, apLanPortsCap)
-        const venueLanPorts = {
-          ...venueLanPortsData,
-          ...(venuePoeOutFormData && { poeOut: venuePoeOutFormData })
-        }
-
-        setVenue(venue)
+        setApLanPorts(lanPorts)
         setVenueLanPorts(venueLanPorts)
-        setSelectedModel(lanPorts )
+        setSelectedModel(lanPorts)
         setSelectedModelCaps(apCaps as CapabilitiesApModel)
         setSelectedPortCaps(apLanPortsCap?.[activeTabIndex] as LanPort)
         setUseVenueSettings(lanPorts.useVenueSettings ?? true)
         setIsDhcpEnabled(venueSettings?.dhcpServiceSetting?.enabled ?? false)
         setLanData(lanPorts?.lanPorts as LanPort[])
-        setInitData(lanPorts)
         setFormInitializing(false)
+
+        setReadyToScroll?.(r => [...(new Set(r.concat('LAN-Ports')))])
       }
       setData()
     }
-  }, [apDetails, apLanPorts, apCaps])
+  }, [apDetails, venueId, apLanPortsData, apCaps])
 
   useEffect(() => {
     setSelectedModel({
@@ -163,7 +165,7 @@ export function LanPorts () {
         //const { lan, poeOut, poeMode } = values
         const { lan, poeOut } = values
         const payload: WifiApSetting = {
-          ...initData,
+          ...apLanPorts,
           lanPorts: lan,
           //...(poeMode && { poeMode: poeMode }), // ALTO AP config doesn't support PoeMode
           ...(poeOut && isObject(poeOut) &&
@@ -318,14 +320,15 @@ export function LanPorts () {
     >
       {useVenueSettings
         ? <FormattedMessage
-          defaultMessage={'Currently using LAN port settings of the venue ({venue})'}
+          defaultMessage={
+            'Currently using LAN port settings of the <venueSingular></venueSingular> ({venue})'}
           values={{
             venue: <Button type='link'
               size='small'
               style={{ verticalAlign: 'middle' }}
-              onClick={() => navigateToVenue(venue?.id)}
+              onClick={() => navigateToVenue(venueData?.id)}
             >
-              {venue?.name}
+              {venueData?.name}
             </Button>
           }} />
         : $t({ defaultMessage: 'Custom settings' })
@@ -336,7 +339,7 @@ export function LanPorts () {
         onClick={() => handleCustomize(!useVenueSettings)}
       > {useVenueSettings
           ? $t({ defaultMessage: 'Customize' })
-          : $t({ defaultMessage: 'Use Venue Settings' })
+          : $t({ defaultMessage: 'Use <VenueSingular></VenueSingular> Settings' })
         }</Button>}
     </Space>
   }

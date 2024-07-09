@@ -1,4 +1,12 @@
-import { SwitchViewModel, SwitchStatusEnum, SWITCH_TYPE, DHCP_OPTION_TYPE, SwitchDhcp } from '@acx-ui/rc/utils'
+import {
+  DHCP_OPTION_TYPE,
+  SwitchViewModel,
+  SwitchStatusEnum,
+  SWITCH_TYPE,
+  SwitchDhcp,
+  Switch
+} from '@acx-ui/rc/utils'
+import { UseQueryResult } from '@acx-ui/types'
 
 export const switchDetailData: SwitchViewModel = {
   type: 'device',
@@ -29,7 +37,8 @@ export const switchDetailData: SwitchViewModel = {
     { model: 'ICX7150-C12P', id: 'FEK3216Q05B' }
   ],
   uptime: '7 days, 7:36:21.00',
-  formStacking: false
+  formStacking: false,
+  unitId: 1
 }
 
 export const venueData = {
@@ -122,9 +131,13 @@ export const poolData: SwitchDhcp = {
   subnetAddress: '10.1.2.0',
   subnetMask: '255.255.255.0',
   dhcpOptions: [{
-    seq: 4,
+    seq: 4, // Time Server
     type: DHCP_OPTION_TYPE.IP,
     value: '1.2.3.4'
+  }, {
+    seq: 122, // CCC
+    type: DHCP_OPTION_TYPE.HEX,
+    value: 'abc'
   }]
 }
 
@@ -134,3 +147,71 @@ export const jwtToken = {
   id_token: 'id_token',
   type: 'JWT'
 }
+
+export const switchDetailsContextData = {
+  switchData: {
+    id: 'id',
+    venueId: 'venue-id',
+    name: 'Switch - FEK3230S0C5',
+    stackMembers: []
+  } as Switch,
+  switchQuery: {
+    refetch: jest.fn()
+  } as unknown as UseQueryResult<Switch>,
+  switchDetailHeader: {
+    cliApplied: false,
+    configReady: true,
+    name: 'Switch - FEK3230S0C5',
+    isStack: false,
+    switchMac: '58:fb:96:0e:bc:f8',
+    switchName: 'ICX7150-C12 Router',
+    serialNumber: 'FEK3230S0C5',
+    deviceStatus: SwitchStatusEnum.OPERATIONAL,
+    id: 'id',
+    venueId: 'venue-id',
+    stackMembers: [],
+    syncedSwitchConfig: true,
+    switchType: SWITCH_TYPE.ROUTER,
+    activeSerial: 'FEK3230S0C5',
+    unitId: 1
+  },
+  switchDetailViewModelQuery: {
+    refetch: jest.fn()
+  } as unknown as UseQueryResult<SwitchViewModel>,
+  currentSwitchOperational: true,
+  switchName: ''
+}
+
+export const networkApGroup = {
+  response: [{
+    allApGroupsRadio: 'Both',
+    apGroups: [{
+      apGroupId: '58195e050b8a4770acc320f6233ad8d9',
+      apGroupName: 'joe-test-apg',
+      id: 'f71c3dc400bb46e5a03662d48d0adb2c',
+      isDefault: false,
+      radio: 'Both',
+      radioTypes: ['5-GHz', '2.4-GHz'],
+      validationError: false,
+      validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+      validationErrorReachedMaxConnectedNetworksLimit: false,
+      validationErrorSsidAlreadyActivated: false,
+      vlanPoolId: '545c8f5dd44f45c2b47f19f8db4f53dc',
+      vlanPoolName: 'joe-vlanpool-1'
+    }, {
+      apGroupId: '75f7751cd7d34bf19cc9446f92d82ee5',
+      isDefault: true,
+      radio: 'Both',
+      validationError: false,
+      validationErrorReachedMaxConnectedCaptiveNetworksLimit: false,
+      validationErrorReachedMaxConnectedNetworksLimit: false,
+      validationErrorSsidAlreadyActivated: false
+    }],
+    dual5gEnabled: false,
+    isAllApGroups: false,
+    networkId: '3c83529e839746ae960fa8fb6d4fd387',
+    tripleBandEnabled: true,
+    venueId: '991eb992ece042a183b6945a2398ddb9'
+  }]
+}
+

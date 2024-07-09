@@ -7,8 +7,8 @@ import {
   SpeedIndicatorOutlined,
   SpeedIndicatorSolid
 } from '@acx-ui/icons'
-import { TenantType }                              from '@acx-ui/react-router-dom'
-import { fireEvent, act, render, screen, waitFor } from '@acx-ui/test-utils'
+import { TenantType }                                      from '@acx-ui/react-router-dom'
+import { fireEvent, act, render, screen, waitFor, within } from '@acx-ui/test-utils'
 
 import menuConfig   from './stories/menuConfig'
 import { LayoutUI } from './styledComponents'
@@ -78,8 +78,10 @@ describe('Layout', () => {
       content={<div>content</div>}
     />, { route })
     await screen.findByTestId('AIOutlined')
+    const menus = await screen.findAllByRole('menu')
+    expect(menus).toHaveLength(2)
     fireEvent.click(screen.getByText('Collapse'))
-    await screen.findByTestId('ArrowChevronRight')
+    await within(menus[1]).findByTestId('ArrowChevronRight')
   })
   it('should render corresponding icons', async () => {
     render(<Layout
@@ -119,7 +121,7 @@ describe('Layout', () => {
     })
     await screen.findByTestId('SpeedIndicatorSolid')
   })
-  it('should render correctly when adminItem = true', () => {
+  it('should render correctly when adminItem = true', async () => {
     const config = [
       {
         uri: '/dashboard',
@@ -142,9 +144,10 @@ describe('Layout', () => {
         wrapRoutes: false
       }
     })
+    await waitFor(() => screen.findByText('Left header'))
     expect(asFragment()).toMatchSnapshot()
   })
-  it('should render correctly when openNewTab = true', () => {
+  it('should render correctly when openNewTab = true', async () => {
     get.mockReturnValue('true')
     const config = [
       {
@@ -168,6 +171,7 @@ describe('Layout', () => {
         wrapRoutes: false
       }
     })
+    await waitFor(() => screen.findByText('Left header'))
     expect(asFragment()).toMatchSnapshot()
   })
   it('should render IframeContent when location pathname has "dataStudio"', async () => {

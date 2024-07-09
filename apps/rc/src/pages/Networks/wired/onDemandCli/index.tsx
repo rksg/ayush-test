@@ -1,11 +1,13 @@
 import { useIntl } from 'react-intl'
 
 import { Loader, showActionModal, Table, TableProps, Tooltip }    from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { useDeleteCliTemplatesMutation, useGetCliTemplatesQuery } from '@acx-ui/rc/services'
 import { SwitchCliTemplateModel, usePollingTableQuery }           from '@acx-ui/rc/utils'
 import { useParams }                                              from '@acx-ui/react-router-dom'
 import { useNavigate }                                            from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                              from '@acx-ui/user'
+import { SwitchScopes }                                           from '@acx-ui/types'
+import { filterByAccess, hasPermission }                          from '@acx-ui/user'
 
 import { Notification  } from './styledComponents'
 
@@ -15,9 +17,12 @@ export function OnDemandCliTab () {
   const navigate = useNavigate()
   const [deleteCliTemplates] = useDeleteCliTemplatesMutation()
 
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
+
   const tableQuery = usePollingTableQuery<SwitchCliTemplateModel>({
     useQuery: useGetCliTemplatesQuery,
-    defaultPayload: {}
+    defaultPayload: {},
+    enableRbac: isSwitchRbacEnabled
   })
 
   const columns: TableProps<SwitchCliTemplateModel>['columns'] = [{
@@ -53,12 +58,14 @@ export function OnDemandCliTab () {
     {
       visible: (selectedRows) => selectedRows.length === 1,
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [SwitchScopes.UPDATE],
       onClick: (selectedRows) => {
         navigate(`${selectedRows[0].id}/edit`, { replace: false })
       }
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [SwitchScopes.DELETE],
       onClick: (selectedRows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -72,7 +79,8 @@ export function OnDemandCliTab () {
           onOk: () => {
             deleteCliTemplates({
               params: { tenantId },
-              payload: selectedRows.map(r => r.id)
+              payload: selectedRows.map(r => r.id),
+              enableRbac: isSwitchRbacEnabled
             }).then(clearSelection)
           }
         })
@@ -80,18 +88,22 @@ export function OnDemandCliTab () {
     }
   ]
 
+  const isSelectionVisible = hasPermission({
+    scopes: [SwitchScopes.UPDATE, SwitchScopes.DELETE]
+  })
+
   return (
     <> <Loader states={[
       tableQuery
     ]}>
       <Notification>
         { // eslint-disable-next-line max-len
-          $t({ defaultMessage: 'Update the CLI templates to reflect the CLI changes in FastIron 09.0.10f release. After upgrading to FastIron 09.0.10f release, using CLI templates with deprecated commands would result in configuration failures. Refer to the ' })
+          $t({ defaultMessage: 'Update the CLI templates to reflect the CLI changes in FastIron 09.0.10h release. After upgrading to FastIron 09.0.10h release, using CLI templates with deprecated commands would result in configuration failures. Refer to the ' })
         }
         <a target='_blank'
           // eslint-disable-next-line max-len
-          href={'https://support.ruckuswireless.com/documents/4486-ruckus-icx-fastiron-09-0-10f-ga-release-notes'}
-          rel='noreferrer'> {$t({ defaultMessage: 'FastIron 09.0.10f release notes' })} </a>
+          href={'https://support.ruckuswireless.com/documents/4620'}
+          rel='noreferrer'> {$t({ defaultMessage: 'FastIron 09.0.10h release notes' })} </a>
         {
           $t({ defaultMessage: ' for a list of deprecated CLI commands.' })
         }
@@ -103,9 +115,10 @@ export function OnDemandCliTab () {
         onChange={tableQuery.handleTableChange}
         rowKey='id'
         rowActions={filterByAccess(rowActions)}
-        rowSelection={hasAccess() && { type: 'checkbox' }}
+        rowSelection={isSelectionVisible && { type: 'checkbox' }}
         actions={filterByAccess([{
           label: $t({ defaultMessage: 'Add CLI Template' }),
+          scopeKey: [SwitchScopes.CREATE],
           onClick: () => {
             navigate('add', { replace: false })
           }

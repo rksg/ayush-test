@@ -33,14 +33,14 @@ export function Table (props: {
   const { $t } = useIntl()
   const { kpiFilter, applyKpiFilter } = useContext(KPIFilterContext)
   const { timeRanges: [startDate, endDate] } = useContext(ConfigChangeContext)
-  const { path } = useAnalyticsFilter()
+  const { pathFilters } = useAnalyticsFilter()
   const { selected, onRowClick, pagination, setPagination, dotSelect, legend } = props
   const legendList = Object.keys(legend).filter(key => legend[key])
 
   const queryResults = useConfigChangeQuery({
-    path,
-    start: startDate.toISOString(),
-    end: endDate.toISOString()
+    ...pathFilters,
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString()
   }, { selectFromResult: queryResults => ({
     ...queryResults,
     data: filterData(queryResults.data ?? [], kpiFilter, legendList)

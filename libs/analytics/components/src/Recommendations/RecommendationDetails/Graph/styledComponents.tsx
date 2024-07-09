@@ -96,14 +96,3 @@ export const Square = styled.span<{ $color: string }>`
   height: 12px;
   justify-self: end;
 `
-
-export const Monitoring = styled.div`
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-
-  background: var(--acx-primary-white);
-  color: var(--acx-neutrals-50);
-  border: 1px solid var(--acx-neutrals-50);
-`

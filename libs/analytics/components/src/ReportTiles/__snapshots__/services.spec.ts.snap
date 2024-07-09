@@ -200,7 +200,6 @@ switchTotalTraffic
 exports[`useNetworkSummaryInfoQuery should return correct data 1`] = `
 Array [
   Object {
-    "format": [Function],
     "key": "apCount",
     "text": Object {
       "defaultMessage": Array [
@@ -215,7 +214,6 @@ Array [
     "value": 9519,
   },
   Object {
-    "format": [Function],
     "key": "clientCount",
     "text": Object {
       "defaultMessage": Array [
@@ -230,7 +228,6 @@ Array [
     "value": 813,
   },
   Object {
-    "format": [Function],
     "key": "totalTraffic",
     "text": Object {
       "defaultMessage": Array [
@@ -245,7 +242,6 @@ Array [
     "value": 3010266608026,
   },
   Object {
-    "format": [Function],
     "key": "totalApplicationCount",
     "text": Object {
       "defaultMessage": Array [
@@ -260,7 +256,6 @@ Array [
     "value": 1524.1930833375095,
   },
   Object {
-    "format": [Function],
     "key": "totalActiveWlanCount",
     "text": Object {
       "defaultMessage": Array [

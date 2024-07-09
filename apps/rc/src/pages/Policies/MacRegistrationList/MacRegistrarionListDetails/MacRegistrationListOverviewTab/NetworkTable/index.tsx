@@ -42,7 +42,7 @@ function useColumns () {
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       render: function (_, { venues }) {
@@ -61,7 +61,9 @@ const defaultPayload = {
     'nwSubType',
     'venues',
     'id'
-  ]
+  ],
+  sortField: 'name',
+  sortOrder: 'ASC'
 }
 
 export function NetworkTable (props: { networkIds?: string[] }) {

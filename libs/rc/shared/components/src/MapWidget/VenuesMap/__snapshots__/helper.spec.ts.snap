@@ -23,10 +23,10 @@ Array [
 exports[`Venues Map Helper should test getSwitchStatusDisplayName method 1`] = `
 Array [
   "In Setup Phase",
-  "Requires Attention",
+  "Alerting",
   "Operational",
   "In Setup Phase",
-  "In Setup Phase",
+  "Requires Attention",
 ]
 `;
 

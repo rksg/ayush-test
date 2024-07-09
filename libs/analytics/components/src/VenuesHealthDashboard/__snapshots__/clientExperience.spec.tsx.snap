@@ -54,7 +54,7 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 jNPjCM"
                     title="Expand"
                     type="button"
                   >
@@ -99,19 +99,23 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -140,19 +144,23 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -181,19 +189,23 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -222,19 +234,23 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -263,19 +279,23 @@ exports[`Client Experience should render for empty data: NoData 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 0%; height: 10px; background: rgb(237, 28, 36);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -360,7 +380,7 @@ exports[`Client Experience should render widget with proper data 1`] = `
                   class="ant-space-item"
                 >
                   <button
-                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 hJUrXB"
+                    class="ant-btn ant-btn-default ant-btn-icon-only styledComponents__Button-sc-13w5wfx-3 jNPjCM"
                     title="Expand"
                     type="button"
                   >
@@ -405,19 +425,23 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 73.88428515495194%; height: 10px; background: rgb(35, 171, 54);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 73.88428515495194%; height: 10px; background: rgb(35, 171, 54);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -446,19 +470,23 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 73.62284333197731%; height: 10px; background: rgb(35, 171, 54);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 73.62284333197731%; height: 10px; background: rgb(35, 171, 54);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -487,19 +515,23 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 79.54545454545455%; height: 10px; background: rgb(35, 171, 54);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 79.54545454545455%; height: 10px; background: rgb(35, 171, 54);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -528,19 +560,23 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 67.05309396485866%; height: 10px; background: rgb(35, 171, 54);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 67.05309396485866%; height: 10px; background: rgb(35, 171, 54);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -569,19 +605,23 @@ exports[`Client Experience should render widget with proper data 1`] = `
                     class="Grid__Container-sc-5irhjd-1 dRhDDA"
                   >
                     <div
-                      class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__Progress-sc-vd53zu-0 laNiWC"
+                      class="ant-progress-wrapper"
                     >
                       <div
-                        class="ant-progress-outer"
+                        class="ant-progress ant-progress-line ant-progress-status-normal ant-progress-default styledComponents__ProgressNoRef-sc-rjwkot-0 dnwolS"
                       >
                         <div
-                          class="ant-progress-inner"
-                          style="background-color: rgb(212, 212, 212);"
+                          class="ant-progress-outer"
                         >
                           <div
-                            class="ant-progress-bg"
-                            style="width: 52.083333333333336%; height: 10px; background: rgb(249, 195, 75);"
-                          />
+                            class="ant-progress-inner"
+                            style="background-color: rgb(212, 212, 212);"
+                          >
+                            <div
+                              class="ant-progress-bg"
+                              style="width: 52.083333333333336%; height: 10px; background: rgb(249, 195, 75);"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

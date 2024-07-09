@@ -29,7 +29,7 @@ import type { EChartsReactProps } from 'echarts-for-react'
 export type DonutChartData = {
   value: number,
   name: string,
-  color: string,
+  color: string
 }
 
 interface DonutChartOptionalProps {
@@ -63,6 +63,7 @@ export interface DonutChartProps extends DonutChartOptionalProps,
   dataFormatter?: (value: unknown) => string | null
   onClick?: (params: EventParams) => void
   style: EChartsReactProps['style'] & { width: number, height: number }
+  labelTextStyle?: { overflow?: 'break' | 'breakAll' | 'truncate' | 'none' , width?: number }
 }
 
 export const onChartClick = (onClick: DonutChartProps['onClick']) =>
@@ -83,7 +84,7 @@ export const tooltipFormatter = (
   const formattedTotal = dataFormatter(total)
   const formattedPercent = intl.$t(intlFormats.percentFormat, { value: percent })
   const tooltipFormat = format ?? defineMessage({
-    defaultMessage: '{name} <space><b>{formattedValue}</b></space>',
+    defaultMessage: '{name}<br></br><space><b>{formattedValue}</b></space>',
     description: 'DonutChart: default tooltip format for donut chart'
   })
 
@@ -119,6 +120,7 @@ export function DonutChart ({
   const colors = data.map(series => series.color)
   const isEmpty = data.length === 0 || (data.length === 1 && data[0].name === '')
   const isSmall = props.size === 'small'
+  const isCustomEmptyStatus = isEmpty && !!props.value
 
   if (data.length === 0) { // Adding empty data to show center label
     data.push({
@@ -144,6 +146,14 @@ export function DonutChart ({
     fontWeight: cssNumber('--acx-headline-3-font-weight')
   }
 
+  const customStyles = {
+    color: cssStr('--acx-neutrals-60'),
+    fontFamily: cssStr('--acx-neutral-brand-font'),
+    fontSize: cssNumber('--acx-subtitle-6-font-size'),
+    lineHeight: cssNumber('--acx-subtitle-5-line-height'),
+    fontWeight: cssNumber('--acx-subtitle-6-font-weight')
+  }
+
   const commonFontStyle = {
     color: cssStr('--acx-primary-black'),
     fontFamily: cssStr('--acx-neutral-brand-font')
@@ -153,12 +163,12 @@ export function DonutChart ({
     'small': {
       title: {
         ...commonFontStyle,
-        fontSize: cssNumber('--acx-subtitle-6-font-size'),
-        lineHeight: cssNumber('--acx-subtitle-6-line-height'),
+        fontSize: cssNumber('--acx-subtitle-5-font-size'),
+        lineHeight: cssNumber('--acx-subtitle-5-line-height'),
         fontWeight: cssNumber('--acx-subtitle-6-font-weight')
       },
       value: {
-        ...commonStyles
+        ...(isCustomEmptyStatus ? customStyles : commonStyles)
       }
     },
     'medium': {
@@ -243,7 +253,7 @@ export function DonutChart ({
       textVerticalAlign: 'top',
       textAlign: props.showLegend && !isEmpty ? 'center' : undefined,
       itemGap: 4,
-      textStyle: styles[props.size].title,
+      textStyle: { ...styles[props.size].title, width: 80, overflow: 'break' },
       subtextStyle: styles[props.size].value
     },
     legend: {
@@ -257,7 +267,8 @@ export function DonutChart ({
       itemWidth: 8,
       itemHeight: 8,
       textStyle: {
-        ...legendStyles
+        ...legendStyles,
+        ...props.labelTextStyle
       },
       itemStyle: {
         borderWidth: 0
@@ -307,7 +318,9 @@ export function DonutChart ({
         },
         itemStyle: {
           borderWidth: props.size === 'large' || props.size === 'x-large' ? 2 : 1,
-          borderColor: isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
+          borderColor: isCustomEmptyStatus
+            ? cssStr('--acx-neutrals-40')
+            : isEmpty ? cssStr('--acx-neutrals-25') : cssStr('--acx-primary-white')
         }
       }
     ]

@@ -4,7 +4,8 @@ import {
   getDateRangeFilter,
   resetRanges,
   getCurrentDate,
-  computeRangeFilter
+  computeRangeFilter,
+  getDatePickerValues
 } from './dateUtil'
 
 
@@ -23,11 +24,36 @@ describe('dateUtil', () => {
   describe('dateRangeForLast', () => {
     it('Should return date range for the given input', () => {
       expect(dateRangeForLast(3, 'months').toString()).toEqual(
-        'Fri Oct 01 2021 00:00:00 GMT+0000,Sat Jan 01 2022 00:00:00 GMT+0000'
+        'Fri Oct 01 2021 00:01:00 GMT+0000,Sat Jan 01 2022 00:01:00 GMT+0000'
       )
     })
   })
 
+  describe('getDatePickerValues', () => {
+    it('returns state if not custom', () => {
+      const range = DateRange.last24Hours
+      expect(getDatePickerValues({
+        range,
+        endDate: '2023-01-01T00:01:00+00:00',
+        startDate: '2022-12-31T00:01:00+00:00'
+      })).toMatchObject({
+        range,
+        endDate: '2022-01-01T00:01:00+00:00',
+        startDate: '2021-12-31T00:01:00+00:00'
+      })
+    })
+    it('returns dates if custom', () => {
+      expect(getDatePickerValues({
+        range: DateRange.custom,
+        endDate: '2023-01-01T00:01:00+00:00',
+        startDate: '2022-12-31T00:01:00+00:00'
+      })).toMatchObject({
+        range: DateRange.custom,
+        endDate: '2023-01-01T00:01:00+00:00',
+        startDate: '2022-12-31T00:01:00+00:00'
+      })
+    })
+  })
   describe('getDateRangeFilter', () => {
     it('should return correct range input', () => {
       const range = DateRange.last24Hours

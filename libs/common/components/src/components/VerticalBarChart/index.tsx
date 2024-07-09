@@ -66,7 +66,7 @@ export function useOnBarAreaClick <BarData> (
   eChartsRef: RefObject<ReactECharts>, onBarAreaClick?: (data: BarData) => void
 ) {
   useEffect(() => {
-    if (!eChartsRef?.current) return
+    if (!eChartsRef?.current || !onBarAreaClick) return
     const echartInstance = eChartsRef.current!.getEchartsInstance() as ECharts
     echartInstance.on('mousemove', 'series.bar', function () {
       echartInstance.getZr().setCursorStyle('pointer')

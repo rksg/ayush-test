@@ -1,51 +1,19 @@
-import { isNull }                                    from 'lodash'
-import { defineMessage, MessageDescriptor, useIntl } from 'react-intl'
+import { useState } from 'react'
 
-import { GridRow, GridCol, Loader } from '@acx-ui/components'
-import { formatter, intlFormats }   from '@acx-ui/formatter'
-import type { AnalyticsFilter }     from '@acx-ui/utils'
-import { noDataDisplay }            from '@acx-ui/utils'
+import { isNull }                 from 'lodash'
+import { defineMessage, useIntl } from 'react-intl'
 
-import { DrilldownSelection } from '../HealthDrillDown/config'
+import { GridRow, GridCol, Loader, StatsCardProps, StatsCard } from '@acx-ui/components'
+import { formatter, intlFormats }                              from '@acx-ui/formatter'
+import type { AnalyticsFilter }                                from '@acx-ui/utils'
+import { noDataDisplay }                                       from '@acx-ui/utils'
 
-import { useSummaryQuery }                        from './services'
-import { Wrapper, Statistic, UpArrow, DownArrow } from './styledComponents'
+import { MoreDetailsDrawer, WidgetType } from '../MoreDetails'
 
+import { useSummaryQuery } from './services'
 
-interface BoxProps {
-  type: string,
-  title: MessageDescriptor
-  value: string
-  suffix?: string
-  isOpen: boolean
-  onClick: () => void
-}
-
-export const Box = (props: BoxProps) => {
-  const { $t } = useIntl()
-  const box = <Wrapper
-    $type={props.type}
-    $isOpen={props.isOpen}
-    onClick={props.onClick}
-  >
-    <Statistic
-      $type={props.type}
-      title={$t(props.title)}
-      value={props.value}
-      suffix={props.suffix}
-    />
-    {props.isOpen
-      ? <UpArrow $type={props.type}/>
-      : <DownArrow $type={props.type}/>
-    }
-  </Wrapper>
-  return box
-}
-
-export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelection }: {
-  filters: AnalyticsFilter,
-  drilldownSelection: DrilldownSelection,
-  setDrilldownSelection: (val: DrilldownSelection) => void
+export const SummaryBoxes = ({ filters }: {
+  filters: AnalyticsFilter
 }) => {
   const intl = useIntl()
   const { $t } = intl
@@ -54,10 +22,14 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
     start: filters.startDate,
     end: filters.endDate
   }
-  const toggleConnectionFailure = () => setDrilldownSelection(
-    drilldownSelection !== 'connectionFailure' ? 'connectionFailure' : null
-  )
-  const toggleTtc = () => setDrilldownSelection(drilldownSelection !== 'ttc' ? 'ttc' : null)
+
+  const [drawerVisible, setDrawerVisible] = useState(false)
+  const [widget, setWidget] = useState<WidgetType>(null)
+
+  const moreDetails = (widget:WidgetType) => {
+    setDrawerVisible(true)
+    setWidget(widget)
+  }
 
   const queryResults = useSummaryQuery(payload, {
     selectFromResult: ({ data, ...rest }) => {
@@ -93,48 +65,62 @@ export const SummaryBoxes = ({ filters, drilldownSelection, setDrilldownSelectio
     }
   })
 
-  const mapping: BoxProps[] = [
+  const mapping: StatsCardProps[] = [
     {
-      type: 'successCount',
-      title: defineMessage({ defaultMessage: 'Successful Connections' }),
-      suffix: `/${queryResults.data.totalCount}`,
-      isOpen: drilldownSelection === 'connectionFailure',
-      onClick: toggleConnectionFailure,
-      value: queryResults.data.successCount
+      type: 'green',
+      values: [{
+        title: defineMessage({ defaultMessage: 'Successful Connections' }),
+        value: queryResults.data.successCount,
+        suffix: `/${queryResults.data.totalCount}`
+      }],
+      onClick: () => { moreDetails('successCount') }
     },
     {
-      type: 'failureCount',
-      title: defineMessage({ defaultMessage: 'Failed Connections' }),
-      suffix: `/${queryResults.data.totalCount}`,
-      isOpen: drilldownSelection === 'connectionFailure',
-      onClick: toggleConnectionFailure,
-      value: queryResults.data.failureCount
+      type: 'red',
+      values: [{
+        title: defineMessage({ defaultMessage: 'Failed Connections' }),
+        value: queryResults.data.failureCount,
+        suffix: `/${queryResults.data.totalCount}`
+      }],
+      onClick: () => { moreDetails('failureCount') }
     },
     {
-      type: 'successPercentage',
-      title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
-      isOpen: drilldownSelection === 'connectionFailure',
-      onClick: toggleConnectionFailure,
-      value: queryResults.data.successPercentage
+      type: 'yellow',
+      values: [{
+        title: defineMessage({ defaultMessage: 'Connection Success Ratio' }),
+        value: queryResults.data.successPercentage
+      }],
+      onClick: () => { moreDetails('successPercentage') }
     },
     {
-      type: 'averageTtc',
-      title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
-      isOpen: drilldownSelection === 'ttc',
-      onClick: toggleTtc,
-      value: queryResults.data.averageTtc
+      type: 'grey',
+      values: [{
+        title: defineMessage({ defaultMessage: 'Avg Time To Connect' }),
+        value: queryResults.data.averageTtc
+      }],
+      onClick: () => { moreDetails('averageTtc') }
     }
   ]
 
   return (
     <Loader states={[queryResults]}>
       <GridRow>
-        {mapping.map((box)=>
-          <GridCol key={box.type} col={{ span: 6 }}>
-            <Box {...box} />
+        {mapping.map((stat) =>
+          <GridCol key={stat.type} col={{ span: 24 / mapping.length }}>
+            <StatsCard key={`stats_${stat.type}`} {...stat} />
           </GridCol>
         )}
       </GridRow>
+      {
+        drawerVisible &&
+      <MoreDetailsDrawer
+        visible={drawerVisible}
+        setVisible={setDrawerVisible}
+        widget={widget}
+        setWidget={setWidget}
+        filters={filters}
+      />
+      }
     </Loader>
   )
 }

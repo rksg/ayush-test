@@ -1,14 +1,15 @@
 import React from 'react'
 
 import '@testing-library/jest-dom'
+import { message } from 'antd'
+
 import {
   act,
   screen,
   fireEvent,
   waitFor,
   waitForElementToBeRemoved
-} from '@testing-library/react'
-import { message } from 'antd'
+} from '@acx-ui/test-utils'
 
 import { showToast } from '.'
 

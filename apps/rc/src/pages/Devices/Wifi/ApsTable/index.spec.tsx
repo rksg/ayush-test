@@ -107,7 +107,7 @@ describe('AP List Table', () => {
   it.skip('should render extra header correctly', async () => {
     const Component = () => {
       const { headerExtra } = useApsTable()
-      return <span>{headerExtra}</span>
+      return <span>{headerExtra[0]}</span>
     }
     render(<Component/>, { wrapper: Provider, route: {} })
     expect(await screen.findByText('Add')).toBeVisible()

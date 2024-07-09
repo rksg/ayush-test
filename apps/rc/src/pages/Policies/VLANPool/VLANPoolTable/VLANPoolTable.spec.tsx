@@ -2,16 +2,19 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 import { Path }  from 'react-router-dom'
 
+import { Features, useIsSplitOn } from '@acx-ui/feature-toggle'
+import { policyApi, venueApi }    from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   getPolicyDetailsLink,
   getPolicyRoutePath,
   PolicyOperation,
   PolicyType,
+  VlanPoolRbacUrls,
   VlanPoolUrls,
   WifiUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider } from '@acx-ui/store'
+import { Provider, store } from '@acx-ui/store'
 import {
   mockServer,
   render,
@@ -67,6 +70,45 @@ const mockTableResult = {
   }]
 }
 
+const mockRbacTableResult = {
+  totalCount: 1,
+  data: [{
+    id: 'cc080e33-26a7-4d34-870f-b7f312fcfccb',
+    name: 'My Client Isolation 1',
+    vlanMembers: ['1'],
+    wifiNetworkIds: ['id1', 'id2'],
+    wifiNetworkVenueApGroups: [
+      {
+        venueId: '3',
+        isAllApGroups: false,
+        apGroupIds: [
+          'b9eb6106a4d44ac498f1aa89a8fb87d5'
+        ]
+      }
+    ]
+  }]
+}
+
+const mockRbacNetworkTableResult = {
+  totalCount: 2,
+  data: [
+    {
+      id: 'id1',
+      venueApGroups: [{
+        venueId: '1',
+        isAllApGroups: true
+      }]
+    },
+    {
+      id: 'id2',
+      venueApGroups: [{
+        venueId: '2',
+        isAllApGroups: true
+      }]
+    }
+  ]
+}
+
 const mockedUseNavigate = jest.fn()
 const mockedTenantPath: Path = {
   pathname: 't/__tenantId__',
@@ -89,6 +131,8 @@ describe('VLANPoolTable', () => {
   const tablePath = '/:tenantId/t/' + getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST })
 
   beforeEach(async () => {
+    store.dispatch(policyApi.util.resetApiState())
+    store.dispatch(venueApi.util.resetApiState())
     mockServer.use(
       rest.post(
         WifiUrlsInfo.getVlanPoolViewModelList.url,
@@ -157,11 +201,13 @@ describe('VLANPoolTable', () => {
 
     await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
 
+    const dialog = await screen.findByRole('dialog')
     expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
 
     // eslint-disable-next-line max-len
     await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
 
+    await waitFor(() => expect(dialog).not.toBeVisible())
     await waitFor(() => {
       expect(deleteFn).toHaveBeenCalled()
     })
@@ -193,4 +239,79 @@ describe('VLANPoolTable', () => {
       pathname: `${mockedTenantPath.pathname}/${editPath}`
     })
   })
+
+  it('should render table with rbac api', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    mockServer.use(
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockRbacTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockRbacNetworkTableResult))
+      )
+    )
+
+    render(
+      <Provider>
+        <VLANPoolTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const targetName = mockRbacTableResult.data[0].name
+    // eslint-disable-next-line max-len
+    expect(await screen.findByRole('button', { name: /Add VLAN Pool/i })).toBeVisible()
+    expect(await screen.findByRole('row', { name: new RegExp(targetName) })).toBeVisible()
+  })
+
+  it('should delete selected row with rbac api', async () => {
+    const deleteFn = jest.fn()
+
+    mockServer.use(
+      rest.delete(
+        VlanPoolRbacUrls.deleteVLANPoolPolicy.url,
+        (req, res, ctx) => {
+          deleteFn(req.body)
+          return res(ctx.json({ requestId: '12345' }))
+        }
+      ),
+      rest.post(
+        VlanPoolRbacUrls.getVLANPoolPolicyList.url,
+        (req, res, ctx) => res(ctx.json(mockRbacTableResult))
+      ),
+      rest.post(
+        CommonUrlsInfo.getWifiNetworksList.url,
+        (req, res, ctx) => res(ctx.json(mockRbacNetworkTableResult))
+      )
+    )
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff === Features.RBAC_SERVICE_POLICY_TOGGLE)
+    render(
+      <Provider>
+        <VLANPoolTable />
+      </Provider>, {
+        route: { params, path: tablePath }
+      }
+    )
+
+    const target = mockRbacTableResult.data[0]
+    const row = await screen.findByRole('row', { name: new RegExp(target.name) })
+    await userEvent.click(within(row).getByRole('radio'))
+
+    await userEvent.click(screen.getByRole('button', { name: /Delete/ }))
+
+    const dialog = await screen.findByRole('dialog')
+    expect(await screen.findByText('Delete "' + target.name + '"?')).toBeVisible()
+
+    // eslint-disable-next-line max-len
+    await userEvent.click(await screen.findByRole('button', { name: /Delete Policy/i }))
+
+    await waitFor(() => expect(dialog).not.toBeVisible())
+    await waitFor(() => {
+      expect(deleteFn).toHaveBeenCalled()
+    })
+  })
+
 })

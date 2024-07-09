@@ -1,5 +1,6 @@
-import { render, fireEvent, screen } from '@testing-library/react'
-import { IntlProvider }              from 'react-intl'
+import { IntlProvider } from 'react-intl'
+
+import { render, fireEvent, screen } from '@acx-ui/test-utils'
 
 import { DropdownFooter } from './dropdownFooter'
 

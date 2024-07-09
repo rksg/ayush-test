@@ -4,10 +4,6 @@ import { GridRow } from '@acx-ui/components'
 
 import { EnhancedStage } from './config'
 
-export const Title = styled.div`
-  font-size: 14px;
-  font-weight: var(--acx-body-font-weight-bold);
-`
 export const ChartContainer = styled.div<{ height : number, padding : number }>`
   padding: ${props => props.padding}px 0;
   width: 100%;
@@ -77,13 +73,9 @@ export const TableHeading = styled.span`
   font-size: 12px;
 `
 export const DrillDownRow = styled(GridRow)`
-  margin-top: 25px;
   margin-left: 0px !important;
   margin-right: 0px !important;
-  border-radius: 8px;
-  padding: 12px 16px;
-  border: 1px solid var(--acx-neutrals-20);
-  box-shadow: 0px 2px 4px rgba(51, 51, 51, 0.08);
+  padding: 0px 0px;
 `
 export const Point = styled.div.attrs((props: { $xPos: number | null }) => props)`
   background: var(--acx-primary-white);
@@ -113,9 +105,4 @@ export const PieChartTitle = styled.div`
   text-align: left;
   font-size: 12px;
   padding-bottom: 10px;
-`
-
-export const SinglePieChartWrapper = styled.div`
-  margin-top: 48px;
-  height: 100%;
 `

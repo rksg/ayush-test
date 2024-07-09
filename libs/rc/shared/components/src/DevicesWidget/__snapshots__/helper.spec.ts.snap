@@ -156,6 +156,37 @@ Array [
 ]
 `;
 
+exports[`getRwgStackedBarChartData should return correct formatted data 1`] = `
+Object {
+  "chartData": Array [
+    Object {
+      "category": "",
+      "series": Array [
+        Object {
+          "name": "Disconnected",
+          "value": 1,
+        },
+      ],
+    },
+  ],
+  "stackedColors": Array [
+    "#ED1C24",
+  ],
+}
+`;
+
+exports[`getRwgStackedBarChartData should return empty array if no data 1`] = `
+Object {
+  "chartData": Array [
+    Object {
+      "category": "",
+      "series": Array [],
+    },
+  ],
+  "stackedColors": Array [],
+}
+`;
+
 exports[`getSwitchStackedBarChartData should return correct formatted data 1`] = `
 Array [
   Object {
@@ -166,7 +197,7 @@ Array [
         "value": 5,
       },
       Object {
-        "name": "<1>Unknown",
+        "name": "<1>Alerting",
         "value": 0,
       },
       Object {
@@ -192,7 +223,7 @@ Array [
         "value": 3,
       },
       Object {
-        "name": "<1>Unknown",
+        "name": "<1>Alerting",
         "value": 0,
       },
       Object {
@@ -218,7 +249,7 @@ Array [
         "value": 0,
       },
       Object {
-        "name": "<1>Unknown",
+        "name": "<1>Alerting",
         "value": 0,
       },
       Object {

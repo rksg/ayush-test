@@ -1,7 +1,8 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader, showActionModal, Tooltip }              from '@acx-ui/components'
-import { SimpleListTooltip }                                                                    from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                                               from '@acx-ui/feature-toggle'
+import { DEFAULT_GUEST_DHCP_NAME, SimpleListTooltip }                                           from '@acx-ui/rc/components'
 import { useDeleteDHCPServiceMutation, useGetDHCPProfileListViewModelQuery, useGetVenuesQuery } from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -16,10 +17,10 @@ import {
   IpUtilsService
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
-import { DEFAULT_GUEST_DHCP_NAME } from '../DHCPForm/DHCPForm'
-import * as UI                     from '../DHCPForm/styledComponents'
+import * as UI from './styledComponents'
 
 export default function DHCPTable () {
   const { $t } = useIntl()
@@ -27,6 +28,7 @@ export default function DHCPTable () {
   const navigate = useNavigate()
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDeleteDHCPServiceMutation()
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useGetDHCPProfileListViewModelQuery,
     defaultPayload: {
@@ -43,11 +45,13 @@ export default function DHCPTable () {
     search: {
       searchString: '',
       searchTargetFields: ['name']
-    }
+    },
+    enableRbac
   })
 
   const rowActions: TableProps<DHCPSaveData>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       visible: (selectedRows) => {
         return !selectedRows.some((row)=>{
@@ -64,12 +68,13 @@ export default function DHCPTable () {
             entityValue: name
           },
           onOk: () => {
-            deleteFn({ params: { tenantId, serviceId: id } }).then(clearSelection)
+            deleteFn({ params: { tenantId, serviceId: id }, enableRbac }).then(clearSelection)
           }
         })
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       disabled: (selectedRows) => {
         return selectedRows.some((row)=>{
@@ -105,7 +110,7 @@ export default function DHCPTable () {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })}>
+          <TenantLink to={getServiceRoutePath({ type: ServiceType.DHCP, oper: ServiceOperation.CREATE })} scopeKey={[WifiScopes.CREATE]}>
             <Button type='primary'
               disabled={tableQuery.data?.totalCount
                 ? tableQuery.data?.totalCount >= DHCP_LIMIT_NUMBER
@@ -122,7 +127,8 @@ export default function DHCPTable () {
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'radio' }}
+          // eslint-disable-next-line max-len
+          rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'radio' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -224,12 +230,13 @@ function useColumns () {
         }
         placement='bottom'
         overlayClassName={UI.toolTipClassName}
-        overlayInnerStyle={{ width: 515 }}>{dhcpPools.length}</Tooltip>
+        overlayInnerStyle={{ width: 515 }}
+        dottedUnderline={true}>{dhcpPools.length}</Tooltip>
       }
     },
     {
       key: 'venues',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueCount',
       filterable: venueNameMap,
       align: 'center',

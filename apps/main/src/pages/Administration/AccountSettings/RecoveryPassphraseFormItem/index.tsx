@@ -32,7 +32,7 @@ const RecoveryPassphraseFormItem = styled((props:RecoveryPassphraseFormItemProps
   }
 
   const hasPassphrase = !_.isEmpty(recoveryPassphraseData)
-  const passphraseData = recoveryPassphraseData?.psk.match(/.{1,4}/g)?.join(' ') ?? ''
+  const passphraseData = recoveryPassphraseData?.passphrase.match(/.{1,4}/g)?.join(' ') ?? ''
 
   return (
     <>

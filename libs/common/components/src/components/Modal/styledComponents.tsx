@@ -5,13 +5,13 @@ import {
   ActionsContainer,
   Wrapper as StepsFormWrapper
 } from '../StepsForm/styledComponents'
-import { disableStickyHeaders } from '../Table/styledComponents'
 
 const withStepsFormStyle = css`
   ${StepsFormWrapper} { padding-bottom: 0; }
   ${ActionsContainer} {
     position: sticky;
     width: 100%;
+    min-width: 100%;
     &::before {
       border-bottom-left-radius: 12px;
       border-bottom-right-radius: 12px;
@@ -50,8 +50,6 @@ export const Modal = styled(AntModal)`
     .ant-tabs > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > .ant-tabs-tab {
       padding-top: 5px;
     }
-
-    ${disableStickyHeaders}
   }
   .ant-modal-footer {
     border-radius: inherit;

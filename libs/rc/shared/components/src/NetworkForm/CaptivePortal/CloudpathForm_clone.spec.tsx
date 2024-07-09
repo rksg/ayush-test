@@ -1,0 +1,116 @@
+import '@testing-library/jest-dom'
+import userEvent from '@testing-library/user-event'
+import { rest }  from 'msw'
+
+import { StepsFormLegacy }                       from '@acx-ui/components'
+import { AaaUrls, CommonUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider }                              from '@acx-ui/store'
+import { mockServer, render, screen }            from '@acx-ui/test-utils'
+import { UserUrlsInfo }                          from '@acx-ui/user'
+
+import {
+  venuesResponse,
+  venueListResponse,
+  networksResponse,
+  successResponse,
+  networkDeepResponse,
+  cloudPathDataNone,
+  mockAAAPolicyListResponse
+} from '../__tests__/fixtures'
+import { MLOContext }     from '../NetworkForm'
+import NetworkFormContext from '../NetworkFormContext'
+
+import { CloudpathForm } from './CloudpathForm'
+
+jest.mock('../NetworkMoreSettings/NetworkMoreSettingsForm', () => ({
+  ...jest.requireActual('../NetworkMoreSettings/NetworkMoreSettingsForm'),
+  __esModule: true,
+  NetworkMoreSettingsForm: () => <div data-testid='NetworkMoreSettingsFormTestId'></div>
+}))
+
+describe('CaptiveNetworkForm-Cloudpath', () => {
+  beforeEach(() => {
+    networkDeepResponse.name = 'Cloudpath network test'
+    const wisprRes={ ...networkDeepResponse, enableDhcp: true, type: 'guest',
+      guestPortal: cloudPathDataNone.guestPortal,
+      wlan: { ...networkDeepResponse.wlan, ...cloudPathDataNone.wlan } }
+    mockServer.use(
+      rest.get(UserUrlsInfo.getAllUserSettings.url,
+        (_, res, ctx) => res(ctx.json({ COMMON: '{}' }))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venuesResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.post(CommonUrlsInfo.getVMNetworksList.url,
+        (_, res, ctx) => res(ctx.json(networksResponse))),
+      rest.post(WifiUrlsInfo.addNetworkDeep.url.replace('?quickAck=true', ''),
+        (_, res, ctx) => res(ctx.json(successResponse))),
+      rest.post(CommonUrlsInfo.getVenuesList.url,
+        (_, res, ctx) => res(ctx.json(venueListResponse))),
+      rest.get(WifiUrlsInfo.getNetwork.url,
+        (_, res, ctx) => res(ctx.json(wisprRes))),
+      rest.post(AaaUrls.getAAAPolicyViewModelList.url,
+        (req, res, ctx) => res(ctx.json(mockAAAPolicyListResponse))),
+      rest.post(CommonUrlsInfo.getNetworkDeepList.url,
+        (_, res, ctx) => res(ctx.json({ response: [wisprRes] })))
+    )
+  })
+
+  const params = { networkId: 'UNKNOWN-NETWORK-ID', tenantId: 'tenant-id', action: 'edit' }
+
+  it('should test Cloudpath Captive portal network successfully', async () => {
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false, cloneMode: true, data: { ...cloudPathDataNone.wlan }
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <CloudpathForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+
+    expect(await screen.findByRole('checkbox', {
+      name: /use mac authentication during reconnection/i
+    })).toBeChecked()
+  })
+  it('should render Cloudpath Captive portal network successfully', async () => {
+    render(
+      <Provider>
+        <NetworkFormContext.Provider
+          value={{
+            editMode: false, cloneMode: false, data: { ...cloudPathDataNone.wlan }
+          }}
+        >
+          <MLOContext.Provider value={{
+            isDisableMLO: false,
+            disableMLO: jest.fn()
+          }}>
+            <StepsFormLegacy>
+              <StepsFormLegacy.StepForm>
+                <CloudpathForm />
+              </StepsFormLegacy.StepForm>
+            </StepsFormLegacy>
+          </MLOContext.Provider>
+        </NetworkFormContext.Provider>
+      </Provider>, { route: { params } })
+    expect(await screen.findByRole('checkbox', {
+      name: /use mac authentication during reconnection/i
+    })).toBeChecked()
+
+    await userEvent.type(await screen.findByRole('textbox', {
+      name: /enrollment workflow url/i
+    }), 'http://workflow.com')
+
+    await userEvent.click(await screen.findByText('Add'))
+  })
+})

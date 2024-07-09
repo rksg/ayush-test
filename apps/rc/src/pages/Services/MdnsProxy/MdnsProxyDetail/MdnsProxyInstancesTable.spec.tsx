@@ -1,13 +1,14 @@
 import { rest } from 'msw'
 
+import { apApi } from '@acx-ui/rc/services'
 import {
   CommonUrlsInfo,
   getServiceRoutePath,
   ServiceOperation,
   ServiceType
 } from '@acx-ui/rc/utils'
-import { Provider }                   from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider, store }                     from '@acx-ui/store'
+import { mockServer, render, screen, waitFor } from '@acx-ui/test-utils'
 
 import { mockedApList } from '../MdnsProxyForm/__tests__/fixtures'
 
@@ -21,6 +22,11 @@ mockServer.use(
 )
 
 describe('MdnsProxyInstancesTable', () => {
+
+  beforeEach(() => {
+    store.dispatch(apApi.util.resetApiState())
+  })
+
   const params = {
     tenantId: '15320bc221d94d2cb537fa0189fee742',
     serviceId: '4b76b1952c80401b8500b00d68106576'
@@ -37,6 +43,9 @@ describe('MdnsProxyInstancesTable', () => {
       }
     )
 
+    await waitFor(async () =>
+      expect(await screen.findByText(/Instances \(1\)/)).toBeVisible()
+    )
     // eslint-disable-next-line max-len
     const targetRow = await screen.findByRole('row', { name: new RegExp(mockedApList.data[0].name) })
     expect(targetRow).toBeInTheDocument()

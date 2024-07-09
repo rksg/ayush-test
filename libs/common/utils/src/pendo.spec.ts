@@ -4,12 +4,14 @@ jest.mock('@acx-ui/config')
 
 describe('renderPendo', () => {
   let renderPendo: (init: () => Promise<PendoParameters>) => void
+  let updatePendo: (arg0: () => PendoParameters) => void
   let get = jest.fn()
   let appendChild: jest.SpyInstance<Node, [node: Node]>
   let createTextNode: jest.SpyInstance<Text, [data: string]>
   beforeEach(() => {
     jest.resetModules()
     renderPendo = require('./pendo').renderPendo
+    updatePendo = require('./pendo').updatePendo
     get = require('@acx-ui/config').get
     appendChild = jest.spyOn(document.body, 'appendChild')
     createTextNode = jest.spyOn(document, 'createTextNode')
@@ -63,8 +65,65 @@ describe('renderPendo', () => {
       })('key1');
     `)
     /* eslint-enable max-len */
-    window.pendo = { initialize: jest.fn() }
+    window.pendo = { initialize: jest.fn(), identify: () => {} }
     await window.pendoInitalization()
     expect(window.pendo.initialize).toHaveBeenCalledWith(data)
+  })
+  it('updates when DISABLE_PENDO is false', () => {
+    get.mockImplementation((name: string) => ({
+      DISABLE_PENDO: 'false',
+      PENDO_API_KEY: 'key1'
+    })[name] as string)
+    const data = {
+      visitor: {
+        id: 'id1',
+        full_name: 'full_name1',
+        username: 'sub1',
+        email: 'email1',
+        role: 'role1',
+        region: 'region1',
+        version: 'version1',
+        support: true,
+        dogfood: false,
+        delegated: false,
+        var: false,
+        varTenantId: 'varTenantId1'
+      },
+      account: {
+        productName: 'RuckusOne',
+        id: 'id2',
+        name: 'name2'
+      }
+    }
+    window.pendo = { initialize: jest.fn(), identify: jest.fn() }
+    updatePendo(() => data as PendoParameters)
+    expect(window.pendo.identify).toHaveBeenCalledWith(data)
+  })
+  it('does not update when DISABLE_PENDO is true', () => {
+    get.mockImplementation(() => true)
+    const data = {
+      visitor: {
+        id: 'id1',
+        full_name: 'full_name1',
+        username: 'sub1',
+        email: 'email1',
+        role: 'role1',
+        region: 'region1',
+        version: 'version1',
+        support: true,
+        dogfood: false,
+        delegated: false,
+        var: false,
+        varTenantId: 'varTenantId1'
+      },
+      account: {
+        productName: 'RuckusOne',
+        id: 'id2',
+        name: 'name2'
+      }
+    }
+    updatePendo(() => data as PendoParameters)
+    window.pendo = { initialize: jest.fn(), identify: jest.fn() }
+    expect(window.pendo.identify).toHaveBeenCalledTimes(0)
   })
 })

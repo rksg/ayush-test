@@ -4,11 +4,18 @@ import { Form }                   from 'antd'
 import { useIntl, defineMessage } from 'react-intl'
 import { useNavigate }            from 'react-router-dom'
 
-import { sortProp, defaultSort, dateSort }                              from '@acx-ui/analytics/utils'
+import {
+  sortProp,
+  defaultSort,
+  dateSort,
+  getUserProfile
+}                              from '@acx-ui/analytics/utils'
 import { Loader, TableProps, Table, showActionModal, showToast, Modal } from '@acx-ui/components'
+import { get }                                                          from '@acx-ui/config'
 import { DateFormatEnum, formatter }                                    from '@acx-ui/formatter'
 import { TenantLink, useTenantLink }                                    from '@acx-ui/react-router-dom'
-import { useUserProfileContext }                                        from '@acx-ui/user'
+import { WifiScopes }                                                   from '@acx-ui/types'
+import { useUserProfileContext, filterByAccess, hasPermission }         from '@acx-ui/user'
 import { noDataDisplay }                                                from '@acx-ui/utils'
 
 import { CountContext }  from '..'
@@ -43,7 +50,8 @@ export function ServiceGuardTable () {
   const navigate = useNavigate()
   const { setCount } = useContext(CountContext)
   const serviceGuardPath = useTenantLink('/analytics/serviceValidation/')
-  const { data: userProfile } = useUserProfileContext()
+  const { data: r1UserProfile } = useUserProfileContext()
+  const { userId } = getUserProfile()
   const { deleteTest, response: deleteResponse } = useDeleteServiceGuardTestMutation()
   const { runTest, response: runResponse } = useRunServiceGuardTestMutation()
   const { cloneTest, response: cloneResponse } = useCloneServiceGuardTestMutation()
@@ -75,6 +83,7 @@ export function ServiceGuardTable () {
   const rowActions: TableProps<ServiceGuardTableRow>['rowActions'] = [
     {
       label: $t(defineMessage({ defaultMessage: 'Run now' })),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: ([{ id }], clearSelection) => {
         runTest({ id })
         clearSelection()
@@ -92,24 +101,34 @@ export function ServiceGuardTable () {
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Edit' })),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (selectedRows) => {
-        navigate(`${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`)
+        navigate({
+          ...serviceGuardPath,
+          pathname: `${serviceGuardPath.pathname}/${selectedRows[0].id}/edit`
+        })
       },
       disabled: ([selectedRow]) => {
-        return selectedRow?.userId === userProfile?.externalId
+        const id = get('IS_MLISA_SA') ? userId : r1UserProfile?.externalId
+        return selectedRow?.userId === id
           ? false
           : true
       },
-      tooltip: ([selectedRow]) => selectedRow?.userId === userProfile?.externalId
-        ? undefined
-        : $t(contents.messageMapping.EDIT_NOT_ALLOWED)
+      tooltip: ([selectedRow]) => {
+        const id = get('IS_MLISA_SA') ? userId : r1UserProfile?.externalId
+        return selectedRow?.userId === id
+          ? undefined
+          : $t(contents.messageMapping.EDIT_NOT_ALLOWED)
+      }
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Clone' })),
+      scopeKey: [WifiScopes.CREATE],
       onClick: ([{ id }]) => setClone(id)
     },
     {
       label: $t(defineMessage({ defaultMessage: 'Delete' })),
+      scopeKey: [WifiScopes.DELETE],
       onClick: ([{ name, id }], clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -234,8 +253,10 @@ export function ServiceGuardTable () {
         type='tall'
         columns={ColumnHeaders}
         dataSource={queryResults.data}
-        rowSelection={{ type: 'radio' }}
-        rowActions={rowActions}
+        rowSelection={
+          hasPermission({ permission: 'WRITE_SERVICE_VALIDATION' }) && { type: 'radio' }
+        }
+        rowActions={filterByAccess(rowActions)}
         rowKey='id'
         showSorterTooltip={false}
         columnEmptyText={noDataDisplay}

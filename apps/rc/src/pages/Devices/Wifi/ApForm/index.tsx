@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 
-import { Col, Form, Input, Row, Select, Space } from 'antd'
-import { DefaultOptionType }                    from 'antd/lib/select'
-import { isEqual, omit, pick, isEmpty, omitBy } from 'lodash'
-import { FormattedMessage, useIntl }            from 'react-intl'
+import { Col, Form, Input, Row, Select, Space }       from 'antd'
+import { DefaultOptionType }                          from 'antd/lib/select'
+import { isEqual, omit, pick, isEmpty, omitBy, find } from 'lodash'
+import { FormattedMessage, useIntl }                  from 'react-intl'
 
 import {
   Button,
@@ -15,20 +15,25 @@ import {
   showActionModal,
   StepsFormLegacy,
   StepsFormLegacyInstance,
-  Tooltip
+  Tooltip,
+  Alert
 } from '@acx-ui/components'
-import { Features, useIsSplitOn }  from '@acx-ui/feature-toggle'
-import { GoogleMapWithPreference } from '@acx-ui/rc/components'
+import { Features, useIsSplitOn }                                    from '@acx-ui/feature-toggle'
+import { defaultApGroupsFilterOptsPayload, GoogleMapWithPreference } from '@acx-ui/rc/components'
 import {
   useApListQuery,
   useAddApMutation,
   useGetApOperationalQuery,
-  useLazyApGroupListQuery,
+  useLazyApGroupListByVenueQuery,
   useLazyGetDhcpApQuery,
   useUpdateApMutation,
   useVenuesListQuery,
   useWifiCapabilitiesQuery,
-  useGetVenueVersionListQuery
+  useLazyGetVenueApEnhancedKeyQuery,
+  useLazyGetVenueApManagementVlanQuery,
+  useLazyGetApManagementVlanQuery,
+  useLazyGetApValidChannelQuery,
+  useLazyApGroupsListQuery
 } from '@acx-ui/rc/services'
 import {
   ApDeep,
@@ -49,19 +54,20 @@ import {
   WifiNetworkMessages,
   gpsToFixed,
   redirectPreviousPage,
-  validateTags, DhcpAp, DhcpApResponse
+  validateTags, DhcpAp, AFCStatus
 } from '@acx-ui/rc/utils'
 import {
   useNavigate,
   useTenantLink,
-  useParams, TenantLink,
+  useParams,
   useLocation
 } from '@acx-ui/react-router-dom'
-import { compareVersions, validationMessages } from '@acx-ui/utils'
+import { validationMessages } from '@acx-ui/utils'
 
 import { ApEditContext } from '../ApEdit/index'
 
-import * as UI from './styledComponents'
+import * as UI                      from './styledComponents'
+import { VenueFirmwareInformation } from './VenueFirmwareInformation'
 
 const defaultPayload = {
   fields: ['name', 'country', 'countryCode', 'latitude', 'longitude', 'dhcp', 'id'],
@@ -71,17 +77,19 @@ const defaultPayload = {
 }
 
 const defaultApPayload = {
-  fields: ['serialNumber', 'name', 'venueId'],
+  fields: ['serialNumber', 'name', 'venueId', 'apStatusData'],
   pageSize: 10000
 }
 
 export function ApForm () {
-  const params = useParams()
   const { $t } = useIntl()
   const isApGpsFeatureEnabled = useIsSplitOn(Features.AP_GPS)
-  const wifiEdaflag = useIsSplitOn(Features.WIFI_EDA_READY_TOGGLE)
-  const wifiEdaGatewayflag = useIsSplitOn(Features.WIFI_EDA_GATEWAY)
-  const { tenantId, action, serialNumber } = useParams()
+  const supportVenueMgmtVlan = useIsSplitOn(Features.VENUE_AP_MANAGEMENT_VLAN_TOGGLE)
+  const supportApMgmtVlan = useIsSplitOn(Features.AP_MANAGEMENT_VLAN_AP_LEVEL_TOGGLE)
+  const supportMgmtVlan = supportVenueMgmtVlan && supportApMgmtVlan
+  const supportTlsKeyEnhance = useIsSplitOn(Features.WIFI_EDA_TLS_KEY_ENHANCE_MODE_CONFIG_TOGGLE)
+  const isUseWifiRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const { tenantId, action, serialNumber='' } = useParams()
   const formRef = useRef<StepsFormLegacyInstance<ApDeep>>()
   const navigate = useNavigate()
   const basePath = useTenantLink('/devices/')
@@ -95,111 +103,105 @@ export function ApForm () {
   const { data: apDetails, isLoading: isApDetailsLoading }
     // eslint-disable-next-line max-len
     = useGetApOperationalQuery({ params: { tenantId, serialNumber: serialNumber ? serialNumber : '' } })
-  const wifiCapabilities = useWifiCapabilitiesQuery({ params: { tenantId } })
-  const { data: venueVersionList } = useGetVenueVersionListQuery({ params })
+  const wifiCapabilities = useWifiCapabilitiesQuery({
+    params: { tenantId },
+    enableRbac: isUseWifiRbacApi
+  })
 
   const [addAp] = useAddApMutation()
   const [updateAp, { isLoading: isApDetailsUpdating }] = useUpdateApMutation()
   const [getDhcpAp] = useLazyGetDhcpApQuery()
-  const [apGroupList] = useLazyApGroupListQuery()
+  // deprecated in RBAC.
+  const [apGroupList] = useLazyApGroupListByVenueQuery()
+  const [rbacApGroupList] = useLazyApGroupsListQuery()
+  const [getTargetVenueMgmtVlan] = useLazyGetVenueApManagementVlanQuery()
+  const [getApMgmtVlan] = useLazyGetApManagementVlanQuery()
+  const [getApValidChannel] = useLazyGetApValidChannelQuery()
+  const [getVenueApEnhancedKey] = useLazyGetVenueApEnhancedKeyQuery()
 
   const isEditMode = action === 'edit'
   const [selectedVenue, setSelectedVenue] = useState({} as unknown as VenueExtended)
-  const [venueFwVersion, setVenueFwVersion] = useState('-')
   const [venueOption, setVenueOption] = useState([] as DefaultOptionType[])
   const [apGroupOption, setApGroupOption] = useState([] as DefaultOptionType[])
   const [gpsModalVisible, setGpsModalVisible] = useState(false)
   const [deviceGps, setDeviceGps] = useState(null as DeviceGps | null)
-
+  const [changeMgmtVlan, setChangeMgmtVlan] = useState(false)
+  const [isVenueSameCountry, setIsVenueSameCountry] = useState(false)
   const [dhcpRoleDisabled, setDhcpRoleDisabled] = useState(false)
   const [apMeshRoleDisabled, setApMeshRoleDisabled] = useState(false)
-  const [cellularApModels, setCellularApModels] = useState([] as string[])
-  const [triApModels, setTriApModels] = useState([] as string[])
-  const location = useLocation()
+  const [afcEnabled, setAfcEnabled] = useState(false)
+  const [tlsEnhancedKeyEnabled, setTlsEnhancedKeyEnabled] = useState(false)
+  const [changeTlsEnhancedKey, setChangeTlsEnhancedKey] = useState(false)
 
+  const cellularApModels = useRef<string[]>([])
+
+  const location = useLocation()
   const venueFromNavigate = location.state as { venueId?: string }
 
 
-  const BASE_VERSION = '6.2.1'
-
   // the payload would different based on the feature flag
   const retrieveDhcpAp = (dhcpApResponse: DhcpAp) => {
-    if (wifiEdaflag || wifiEdaGatewayflag) {
-      const result = dhcpApResponse as DhcpApInfo[]
-      return result[0]
-    } else {
-      const result = dhcpApResponse as DhcpApResponse
-      return result.response?.[0]
-    }
-  }
-
-  const venueInfos = (venueFwVersion: string) => {
-    const contentInfo = <><br/><br/>{$t({
-      defaultMessage: 'If you are adding an <b>{apModels} or {lastApModel}</b> AP, ' +
-        'please update the firmware in this venue to <b>{baseVersion}</b> or greater. ' +
-        'This can be accomplished in the Administration\'s {fwManagementLink} section.' }, {
-      b: chunks => <strong>{chunks}</strong>,
-      apModels: triApModels.length > 1 ? triApModels.slice(0, -1).join(',') : 'R560',
-      lastApModel: triApModels.length > 1 ? triApModels[triApModels.length - 1] : 'R760',
-      baseVersion: BASE_VERSION,
-      fwManagementLink: (<TenantLink
-        to={'/administration/fwVersionMgmt'}>{
-          $t({ defaultMessage: 'Firmware Management' })
-        }</TenantLink>)
-    })}</>
-
-    return <span>
-      {$t({ defaultMessage: 'Venue Firmware Version: {fwVersion}' }, {
-        fwVersion: venueFwVersion
-      })}
-      {
-        checkBelowFwVersion(venueFwVersion) ? contentInfo : ''
-      }
-    </span>
-  }
-
-  const checkBelowFwVersion = (version: string) => {
-    if (version === '-') return false
-    if (isEditMode && apDetails) {
-      if (!triApModels.includes(apDetails.model)) return false
-    }
-    return compareVersions(version, BASE_VERSION) < 0
+    const result = dhcpApResponse as DhcpApInfo[]
+    return result[0]
   }
 
   useEffect(() => {
-    if (!wifiCapabilities.isLoading) {
-      setCellularApModels(wifiCapabilities?.data?.apModels
-        ?.filter(apModel => apModel.canSupportCellular)
-        .map(apModel => apModel.model) ?? [])
-      setTriApModels(wifiCapabilities?.data?.apModels
-        ?.filter(apModel => apModel.supportTriRadio)
-        .map(apModel => apModel.model) ?? [])
+    const apModels = wifiCapabilities?.data?.apModels
+    if (!wifiCapabilities?.isLoading && apModels) {
+      cellularApModels.current = apModels
+        .filter(apModel => apModel.canSupportCellular)
+        .map(apModel => apModel.model) ?? []
     }
   }, [wifiCapabilities])
 
   useEffect(() => {
     if (isEditMode && !isVenuesListLoading && !isApDetailsLoading && apDetails) {
+      const { venueId, serialNumber, meshRole, deviceGps } = apDetails
+
       const setData = async (apDetails: ApDeep) => {
         const selectVenue = getVenueById(
-          venuesList?.data as unknown as VenueExtended[], apDetails.venueId)
+          venuesList?.data as unknown as VenueExtended[], venueId)
         const venueLatLng = pick(selectVenue, ['latitude', 'longitude'])
-        const options = await getApGroupOptions(apDetails.venueId)
+        const options = await getApGroupOptions(venueId)
         const dhcpApResponse = await getDhcpAp({
-          params: { tenantId }, payload: [serialNumber] }, true).unwrap()
+          params: { tenantId },
+          payload: isUseWifiRbacApi ?
+            [{ venueId: apDetails.venueId, serialNumber }] :
+            [serialNumber],
+          enableRbac: isUseWifiRbacApi
+        }, true).unwrap()
         const dhcpAp = retrieveDhcpAp(dhcpApResponse)
 
         setSelectedVenue(selectVenue as unknown as VenueExtended)
         setApGroupOption(options as DefaultOptionType[])
-        setApMeshRoleDisabled(
-          !!apDetails?.meshRole && (apDetails?.meshRole !== APMeshRole.DISABLED))
+        setApMeshRoleDisabled(!!meshRole
+          && (meshRole !== APMeshRole.DISABLED)
+          && (meshRole !== 'DOWN'))
         setDhcpRoleDisabled(checkDhcpRoleDisabled(dhcpAp as DhcpApInfo))
-        setDeviceGps((apDetails?.deviceGps || venueLatLng) as unknown as DeviceGps)
+        setDeviceGps((deviceGps || venueLatLng) as unknown as DeviceGps)
+
         formRef?.current?.setFieldsValue({ description: '', ...apDetails })
+        // eslint-disable-next-line
+        const afcEnabled = (await getApValidChannel({ 
+          params: { venueId, serialNumber },
+          enableRbac: isUseWifiRbacApi
+        })).data?.afcEnabled
+
+        if (afcEnabled) {
+          setAfcEnabled(afcEnabled)
+        }
+        if (supportTlsKeyEnhance) {
+          // eslint-disable-next-line
+          const tlsEnhancedKeyEnabled = (await getVenueApEnhancedKey({ params: { venueId } })).data?.tlsKeyEnhancedModeEnabled
+          if (tlsEnhancedKeyEnabled) {
+            setTlsEnhancedKeyEnabled(tlsEnhancedKeyEnabled)
+          }
+        }
       }
 
       setData(apDetails)
     }
-  }, [apDetails, venuesList])
+  }, [apDetails, venuesList, isEditMode, isVenuesListLoading, isApDetailsLoading])
 
   useEffect(() => {
     if (!isVenuesListLoading) {
@@ -214,16 +216,7 @@ export function ApForm () {
         handleVenueChange(venueFromNavigate?.venueId)
       }
     }
-  }, [venuesList])
-
-  useEffect(() => {
-    if (selectedVenue.hasOwnProperty('id')) {
-      const venueInfo = venueVersionList?.data.find(venue => venue.id === selectedVenue.id)
-      setVenueFwVersion(venueInfo && venueInfo.hasOwnProperty('versions')
-        ? venueInfo.versions[0].version
-        : '-')
-    }
-  }, [selectedVenue, venueVersionList])
+  }, [venuesList, isVenuesListLoading])
 
   useEffect(() => {
     handleUpdateContext()
@@ -232,11 +225,18 @@ export function ApForm () {
   const handleAddAp = async (values: ApDeep) => {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
-      const payload = [{
-        ...omit(values, 'deviceGps'),
+      const payload = {
+        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
         ...(deviceGps && !sameAsVenue && { deviceGps: deviceGps })
-      }]
-      await addAp({ params: { tenantId: tenantId }, payload }).unwrap()
+      }
+      await addAp({
+        params: {
+          tenantId: tenantId,
+          venueId: values.venueId
+        },
+        payload: isUseWifiRbacApi ? payload : [payload],
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
       navigate(`${basePath.pathname}/wifi`, { replace: true })
     } catch (err) {
       handleError(err as CatchErrorResponse)
@@ -244,10 +244,63 @@ export function ApForm () {
   }
 
   const handleUpdateAp = async (values: ApDeep) => {
+    if (supportVenueMgmtVlan && changeMgmtVlan) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'AP Management VLAN Change' }),
+        content: (<FormattedMessage
+          defaultMessage={
+            `Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will change the AP
+            management VLAN and reboot this AP device. Incorrect
+            settings between APs and switches could result in AP access
+            loss. Are you sure you want to continue?`
+          }
+          values={{
+            b: (text: string) => <strong>{text}</strong>,
+            venueName: selectedVenue.name
+          }}/>),
+        okText: $t({ defaultMessage: 'Continue' }),
+        onOk: async () => {
+          handleUpdateTlsKey(values)
+        }
+      })
+    } else {
+      handleUpdateTlsKey(values)
+    }
+  }
+
+  const handleUpdateTlsKey = async (values: ApDeep) => {
+    if (supportTlsKeyEnhance && changeTlsEnhancedKey) {
+      showActionModal({
+        type: 'confirm',
+        width: 450,
+        title: $t({ defaultMessage: 'TLS Key Change' }),
+        content: (<FormattedMessage
+          defaultMessage={
+            `Moving to <VenueSingular></VenueSingular>: <b>{venueName}</b> will
+            alter the current key on the TLS connection and reboot this AP device.
+            Are you sure you want to continue?`
+          }
+          values={{
+            b: (text: string) => <strong>{text}</strong>,
+            venueName: selectedVenue.name
+          }}/>),
+        okText: $t({ defaultMessage: 'Continue' }),
+        onOk: async () => {
+          processUpdateAp(values)
+        }
+      })
+    } else {
+      processUpdateAp(values)
+    }
+  }
+
+  const processUpdateAp = async (values: ApDeep) => {
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
     try {
       const payload = {
-        ...omit(values, 'deviceGps'),
+        ...omit(values, 'deviceGps', (isUseWifiRbacApi ? 'venueId' : '')),
         ...(!sameAsVenue && { deviceGps: transformLatLng(values?.deviceGps as string)
           || deviceGps })
       }
@@ -256,7 +309,15 @@ export function ApForm () {
         isDirty: false,
         hasError: false
       })
-      await updateAp({ params: { tenantId, serialNumber }, payload }).unwrap()
+      await updateAp({
+        params: {
+          tenantId,
+          venueId: values.venueId,
+          serialNumber
+        },
+        payload,
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
       if (isOnlyOneTab) {
         redirectPreviousPage(navigate, previousPath, basePath)
       }
@@ -304,32 +365,55 @@ export function ApForm () {
   const getApGroupOptions = async (venueId: string) => {
     let result: { label: string; value: string | null }[] = []
     result.push({
-      label: $t({ defaultMessage: 'No group (inherit from Venue)' }),
+      label: $t({ defaultMessage: 'No group (inherit from <VenueSingular></VenueSingular>)' }),
       value: null
     })
 
-    const list = venueId ? (await apGroupList({ params: { tenantId, venueId } }, true)).data : []
-    if (venueId && list?.length) {
-      list?.filter((item) => {
+    if (isUseWifiRbacApi) {
+      const { data: apGroupOptions } = await rbacApGroupList({
+        payload: {
+          ...defaultApGroupsFilterOptsPayload,
+          fields: ['name', 'id', 'isDefault'],
+          filters: { venueId: [venueId] }
+        },
+        enableRbac: isUseWifiRbacApi
+      }).unwrap()
+
+      result = result.concat(apGroupOptions.filter(item => {
         if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
           result[0].value = item.id
         }
+
         return !item.isDefault
-      })
-        .sort((a, b) => (a.name > b.name) ? 1 : -1)
-        .forEach((item) => (
-          result.push({
-            label: item.name,
-            value: item.id
-          })
-        ))
+      }).map((v) => ({ label: v.name, value: v.id })) || [])
+
+    } else {
+      const list = venueId ? (await apGroupList({ params: { tenantId, venueId } })).data : []
+      if (venueId && list?.length) {
+        list?.filter((item) => {
+          if (isEditMode && item.id === apDetails?.apGroupId && item.isDefault) {
+            result[0].value = item.id
+          }
+          return !item.isDefault
+        })
+          .sort((a, b) => (a.name > b.name) ? 1 : -1)
+          .forEach((item) => (
+            result.push({
+              label: item.name,
+              value: item.id
+            })
+          ))
+      }
     }
+
+
     return result
   }
 
   const handleVenueChange = async (value: string) => {
     const selectVenue = getVenueById(venuesList?.data as unknown as VenueExtended[], value)
     const options = await getApGroupOptions(value)
+
     setSelectedVenue(selectVenue as unknown as VenueExtended)
     setApGroupOption(options as DefaultOptionType[])
     const sameAsVenue = isEqual(deviceGps, pick(selectedVenue, ['latitude', 'longitude']))
@@ -340,13 +424,52 @@ export function ApForm () {
     if (formRef?.current?.getFieldValue('name')) {
       formRef?.current?.validateFields(['name'])
     }
-    const venueInfo = venueVersionList?.data.find(venue => venue.id === value)
-    setVenueFwVersion(venueInfo ? venueInfo.versions[0].version : '-')
+
+    if (supportMgmtVlan) {
+      const targetVenueMgmtVlan = (await getTargetVenueMgmtVlan(
+        { params: { venueId: value } })).data
+      if (targetVenueMgmtVlan?.keepAp) {
+        setChangeMgmtVlan(false)
+      } else {
+        const apMgmtVlan = (await getApMgmtVlan(
+          { params: { venueId: apDetails?.venueId, serialNumber } })).data
+        setChangeMgmtVlan(apMgmtVlan?.vlanId !== targetVenueMgmtVlan?.vlanId)
+      }
+    }
+    if (supportTlsKeyEnhance) {
+      const targetVenueTlsKey = (await getVenueApEnhancedKey(
+        { params: { venueId: value } })).data
+      // eslint-disable-next-line max-len
+      setChangeTlsEnhancedKey(tlsEnhancedKeyEnabled !== targetVenueTlsKey?.tlsKeyEnhancedModeEnabled)
+    }
   }
 
   const onSaveCoordinates = (latLng: DeviceGps | null) => {
     setDeviceGps(latLng)
     setGpsModalVisible(false)
+  }
+
+  const displayAFCGeolocation = () : boolean => {
+    const aps = apList?.data ?? []
+
+    // Should not display under Add AP. Only display under edit mode
+    // Or afc is not enabled
+    if (!isEditMode || !afcEnabled || aps.length === 0) {
+      return false
+    }
+
+    const apInfo = find(aps, (ap) => ap.serialNumber === apDetails?.serialNumber)
+    const afcInfo = apInfo?.apStatusData?.afcInfo
+    const { geoLocation, afcStatus } = afcInfo || {}
+
+    const requiredStatus = [AFCStatus.AFC_NOT_REQUIRED, AFCStatus.WAIT_FOR_LOCATION]
+    // AFC info and Geo-location possibly does not exist.
+    // Same, and if Status is in requires status, then false.
+    if (!geoLocation || (!!afcStatus && requiredStatus.includes(afcStatus))) {
+      return false
+    }
+
+    return true
   }
 
   const handleUpdateContext = () => {
@@ -361,8 +484,6 @@ export function ApForm () {
           }
         }
       } : apDetails) as ApDeep
-
-
 
       setEditContextData && setEditContextData({
         ...editContextData,
@@ -407,7 +528,7 @@ export function ApForm () {
                 name='venueId'
                 style={{ marginBottom: '0px' }}
                 label={<>
-                  {$t({ defaultMessage: 'Venue' })}
+                  {$t({ defaultMessage: '<VenueSingular></VenueSingular>' })}
                   {(apMeshRoleDisabled || dhcpRoleDisabled) && <Tooltip.Question
                     title={
                       apMeshRoleDisabled
@@ -423,15 +544,20 @@ export function ApForm () {
                 initialValue={null}
                 rules={[{
                   required: true,
-                  message: $t({ defaultMessage: 'Please select venue' })
+                  message: $t({ defaultMessage: 'Please select <venueSingular></venueSingular>' })
                 }, {
                   validator: (_, value) => {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
                     const originalVenue = getVenueById(venues, apDetails?.venueId as string)
                     if (selectVenue?.countryCode && originalVenue?.countryCode) {
+                      // isVenueSameCountry is used for display the AFC Geo-location message
+                      // eslint-disable-next-line max-len
+                      setIsVenueSameCountry(isEqual(selectVenue.countryCode, originalVenue.countryCode))
                       return checkValues(selectVenue.countryCode, originalVenue.countryCode, true)
                     } else if (selectVenue?.country && originalVenue?.country) {
+                      // eslint-disable-next-line max-len
+                      setIsVenueSameCountry(isEqual(selectVenue?.country, originalVenue?.country))
                       return checkValues(selectVenue?.country, originalVenue?.country, true)
                     }
                     return Promise.resolve()
@@ -442,8 +568,8 @@ export function ApForm () {
                     const venues = venuesList?.data as unknown as VenueExtended[]
                     const selectVenue = getVenueById(venues, value)
                     if (!selectVenue?.dhcp?.enabled) {
-                      return checkObjectNotExists(
-                        cellularApModels, apDetails?.model, $t({ defaultMessage: 'Venue' })
+                      return checkObjectNotExists( // eslint-disable-next-line max-len
+                        cellularApModels.current, apDetails?.model, $t({ defaultMessage: '<VenueSingular></VenueSingular>' })
                       )
                     }
                     return Promise.resolve()
@@ -456,11 +582,24 @@ export function ApForm () {
                   onChange={async (value) => await handleVenueChange(value)}
                 />}
               />
-              <Form.Item
-                name='venueInfos'
-              >
-                {venueInfos(venueFwVersion)}
-              </Form.Item>
+              <VenueFirmwareInformation
+                isEditMode={isEditMode}
+                venue={selectedVenue}
+                apDetails={apDetails}
+              />
+              { displayAFCGeolocation() && isVenueSameCountry &&
+                  <Alert message={
+                    $t({ defaultMessage:
+                    // eslint-disable-next-line max-len
+                    'Moving this device to a new <venueSingular></venueSingular> will reset AFC geolocation. '+
+                    '6GHz operation will remain in low power mode ' +
+                    'until geolocation information is reestablished.'
+                    })
+                  }
+                  showIcon={true}
+                  type={'warning'}
+                  />
+              }
               <Form.Item
                 name='apGroupId'
                 label={$t({ defaultMessage: 'AP Group' })}
@@ -495,7 +634,7 @@ export function ApForm () {
                       )).map(item => item.name) ?? []
                       return checkObjectNotExists(nameList, value,
                         $t({ defaultMessage: 'AP Name' }), 'value',
-                        $t({ defaultMessage: 'in this Venue' })
+                        $t({ defaultMessage: 'in this <VenueSingular></VenueSingular>' })
                       )
                     }
                   }
@@ -569,7 +708,7 @@ export function ApForm () {
           {$t({ defaultMessage: '{latitude}, {longitude} {status}' }, {
             latitude: deviceGps?.latitude || selectedVenue?.latitude,
             longitude: deviceGps?.longitude || selectedVenue?.longitude,
-            status: sameAsVenue ? '(As venue)' : ''
+            status: sameAsVenue ? $t({ defaultMessage: '(As <venueSingular></venueSingular>)' }):''
           })}
           <Space size={0} split={<UI.Divider />} >
             <Button
@@ -589,7 +728,7 @@ export function ApForm () {
                   : null
               )}
             >
-              {$t({ defaultMessage: 'Same as Venue' })}
+              {$t({ defaultMessage: 'Same as <VenueSingular></VenueSingular>' })}
             </Button>}
           </Space>
         </Space>
@@ -647,14 +786,14 @@ function CoordinatesModal (props: {
   }
 
   const onChangeCoordinates = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const values = e.target.value?.split(',')
+    const [lat, lng] = e.target.value?.split(',')
     try {
       const isValid = await formRef?.current?.validateFields([fieldName])
       if (isValid) {
         if (window.google) {
           const latlng = new google.maps.LatLng({
-            lat: Number(values[0]),
-            lng: Number(values[1])
+            lat: Number(lat),
+            lng: Number(lng)
           })
           updateMarkerPosition(latlng)
         }
@@ -675,7 +814,7 @@ function CoordinatesModal (props: {
         width: 450,
         title: $t({ defaultMessage: 'Please confirm that...' }),
         content: $t({
-          defaultMessage: `Your GPS coordinates are outside the venue:
+          defaultMessage: `Your GPS coordinates are outside the <venueSingular></venueSingular>:
             {venueName}. Are you sure you want to place the device in this new position?`
         }, { venueName: selectedVenue.name }),
         okText: $t({ defaultMessage: 'Drop It' }),

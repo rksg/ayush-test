@@ -18,6 +18,10 @@ const devicesCountMap = {
   ap: defineMessage({
     defaultMessage: '{count} {count, plural, one {AP} other {APs}}',
     description: 'Translation strings - AP, APs'
+  }),
+  device: defineMessage({
+    defaultMessage: '{count} {count, plural, one {Device} other {Devices}}',
+    description: 'Translation strings - Device, Devices'
   })
 }
 
@@ -49,6 +53,7 @@ export class EntitlementUtil {
         return $t({ defaultMessage: 'SmartEdge' })
       case EntitlementDeviceType.APSW:
       case EntitlementDeviceType.MSP_APSW:
+      case EntitlementDeviceType.MSP_APSW_TEMP:
         return $t({ defaultMessage: 'Devices' })
       default:
         return ''
@@ -88,6 +93,7 @@ export class EntitlementUtil {
       case EntitlementNetworkDeviceType.SWITCH: type = 'switch'; break
       case EntitlementNetworkDeviceType.WIFI:
       case EntitlementNetworkDeviceType.LTE: type = 'ap'; break
+      case EntitlementNetworkDeviceType.APSW: type = 'device'; break
       default:
         return ''
     }
@@ -125,12 +131,12 @@ export class EntitlementUtil {
   public static timeLeftInDays (expirationDate: string) {
     const newDate = new Date(expirationDate)
     // expiration date should be end of UTC date
-    newDate.setUTCHours(23)
-    newDate.setUTCMinutes(59)
-    newDate.setUTCSeconds(59)
+    // newDate.setUTCHours(23)
+    // newDate.setUTCMinutes(59)
+    // newDate.setUTCSeconds(59)
 
-    const hoursLeft = moment(newDate).diff(moment(), 'hours')
-    const remainingDays = Math.round(hoursLeft / 24)
+    const hoursLeft = moment(newDate).diff(moment(), 'hours', true)
+    const remainingDays = hoursLeft < 0 ? -1 : Math.round(hoursLeft / 24)
     return remainingDays
   }
 
@@ -150,7 +156,7 @@ export class EntitlementUtil {
   public static getServiceStartDate (startDate?: string) {
     const today = startDate ? new Date(startDate) : new Date()
     const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
-    return moment(today.toString()).utc().format(dateFormat)
+    return moment(today.toISOString()).utc().format(dateFormat)
   }
 
   public static getServiceEndDate (endDate?: string | Moment) {
@@ -158,8 +164,9 @@ export class EntitlementUtil {
     // expiredDate.setHours(23);
     // expiredDate.setMinutes(59);
     // expiredDate.setSeconds(59);
+    const expiredDate = endDate ? new Date(endDate.toString()) : undefined
     const dateFormat = 'YYYY-MM-DD HH:mm:ss[Z]'
-    return moment(endDate).utc().format(dateFormat)
+    return moment(expiredDate?.toISOString()).utc().format(dateFormat)
   }
 }
 

@@ -1,7 +1,8 @@
-import { fakeIncident } from '@acx-ui/analytics/utils'
-import { Provider }     from '@acx-ui/store'
-import { render }       from '@acx-ui/test-utils'
+import { BrowserRouter } from 'react-router-dom'
 
+import { fakeIncident }   from '@acx-ui/analytics/utils'
+import { Provider }       from '@acx-ui/store'
+import { render, screen } from '@acx-ui/test-utils'
 
 import { Insights } from '.'
 
@@ -65,5 +66,70 @@ describe('Insights Component', () => {
       </Provider>
     )
     expect(asFragment()).toMatchSnapshot()
+  })
+  it('should render correctly for airtime incident', async () => {
+    const airtimeIncident = fakeIncident({
+      apCount: 3,
+      isMuted: false,
+      mutedBy: null,
+      slaThreshold: null,
+      clientCount: 0,
+      path: [
+        {
+          type: 'system',
+          name: 'Gurus-Cluster8'
+        },
+        {
+          type: 'zone',
+          name: 'R760-Mesh'
+        }
+      ],
+      endTime: '2022-08-20T02:42:00.000Z',
+      vlanCount: -1,
+      sliceType: 'zone',
+      code: 'p-airtime-rx-24g-high',
+      startTime: '2022-08-19T05:15:00.000Z',
+      metadata: {
+        avgAnomalousAirtime: 61.04027777777778,
+        rootCauseChecks: {
+          checks: [
+            { isHighDensityWifiDevices: true },
+            { isAclbRaised: true },
+            { isLargeMgmtFrameCount: false },
+            { isHighSsidCountPerRadio: false },
+            { isHighCoChannelInterference: false },
+            { isCRRMRaised: false },
+            { isChannelFlyEnabled: false },
+            { isHighLegacyWifiDevicesCount: false }
+          ],
+          params: {
+            recommendationId: '123456'
+          }
+        }
+      },
+      id: 'b6269b9b-d102-4f21-925c-70e2537b12f4',
+      impactedApCount: 2,
+      switchCount: -1,
+      currentSlaThreshold: null,
+      severity: 0.9,
+      connectedPowerDeviceCount: -1,
+      mutedAt: null,
+      impactedClientCount: 0,
+      sliceValue: 'RuckusAP'
+    })
+
+    render(
+      <BrowserRouter>
+        <Provider>
+          <Insights incident={airtimeIncident} />
+        </Provider>
+      </BrowserRouter>
+    )
+    expect(screen.getByText(
+      'Based on the root cause identified, the recommended resolution is:')).toBeVisible()
+    const link = screen.getByRole('link', {
+      name: /here/i
+    })
+    expect(link).toHaveAttribute('href', '/undefined/t/recommendations/aiOps/123456')
   })
 })

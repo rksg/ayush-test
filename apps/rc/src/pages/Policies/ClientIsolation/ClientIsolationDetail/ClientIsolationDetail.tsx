@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, SummaryCard } from '@acx-ui/components'
+import { Features, useIsSplitOn }                            from '@acx-ui/feature-toggle'
 import { useGetClientIsolationQuery }                        from '@acx-ui/rc/services'
 import {
   ClientIsolationSaveData,
@@ -11,6 +12,7 @@ import {
   getPolicyListRoutePath
 } from '@acx-ui/rc/utils'
 import { TenantLink, useParams } from '@acx-ui/react-router-dom'
+import { WifiScopes }            from '@acx-ui/types'
 import { filterByAccess }        from '@acx-ui/user'
 
 import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
@@ -19,7 +21,8 @@ import { ClientIsolationInstancesTable } from './ClientIsolationInstancesTable'
 export default function ClientIsolationDetail () {
   const { $t } = useIntl()
   const params = useParams()
-  const { data } = useGetClientIsolationQuery({ params })
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
+  const { data } = useGetClientIsolationQuery({ params, enableRbac })
   const tablePath = getPolicyRoutePath(
     { type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST })
 
@@ -43,7 +46,8 @@ export default function ClientIsolationDetail () {
             type: PolicyType.CLIENT_ISOLATION,
             oper: PolicyOperation.EDIT,
             policyId: params.policyId as string
-          })}>
+          })}
+          scopeKey={[WifiScopes.UPDATE]}>
             <Button key='configure' type='primary'>{$t({ defaultMessage: 'Configure' })}</Button>
           </TenantLink>
         ])}

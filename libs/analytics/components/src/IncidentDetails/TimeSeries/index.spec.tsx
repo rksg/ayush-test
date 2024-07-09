@@ -9,7 +9,7 @@ import {
   waitForElementToBeRemoved
 } from '@acx-ui/test-utils'
 
-import { buffer6hr }            from './__tests__/fixtures'
+import { buffer6hr, noBuffer }  from './__tests__/fixtures'
 import { TimeSeriesChartTypes } from './config'
 import { Api }                  from './services'
 
@@ -50,11 +50,12 @@ describe('Timeseries component', () => {
     }
   }
 
-  it('should render charts', async () => {
+  afterEach(() =>
     store.dispatch(Api.util.resetApiState())
-    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', {
-      data: queryResponse
-    })
+  )
+
+  it('should render charts', async () => {
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', { data: queryResponse })
     const { asFragment } = render(<BrowserRouter>
       <Provider>
         <TimeSeries
@@ -64,9 +65,27 @@ describe('Timeseries component', () => {
           buffer={buffer6hr}
         />
       </Provider>
-    </BrowserRouter>
-    )
+    </BrowserRouter>)
     await waitForElementToBeRemoved(() => screen.queryByRole('img', { name: 'loader' }))
     expect(asFragment().querySelectorAll('div[_echarts_instance_^="ec_"]')).toHaveLength(2)
+  })
+
+  it('should use impactedStart/End if provided', () => {
+    const fakeIncidentImpactedStartEnd = {
+      ...fakeIncident1,
+      impactedStart: (new Date('2023-11-25T00:00:00Z')).toISOString(),
+      impactedEnd: (new Date('2023-11-26T00:00:00Z')).toISOString()
+    }
+    mockGraphqlQuery(dataApiURL, 'IncidentTimeSeries', { data: queryResponse }, true)
+    render(<BrowserRouter>
+      <Provider>
+        <TimeSeries
+          incident={fakeIncidentImpactedStartEnd}
+          charts={charts}
+          minGranularity='PT180S'
+          buffer={noBuffer}
+        />
+      </Provider>
+    </BrowserRouter>)
   })
 })

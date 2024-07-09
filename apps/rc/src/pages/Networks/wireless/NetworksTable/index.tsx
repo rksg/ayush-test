@@ -3,17 +3,22 @@ import { useState, useEffect } from 'react'
 import { defineMessage, useIntl } from 'react-intl'
 
 import { Button }                                                 from '@acx-ui/components'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
 import { NetworkTabContext, NetworkTable, defaultNetworkPayload } from '@acx-ui/rc/components'
-import { useNetworkListQuery }                                    from '@acx-ui/rc/services'
+import { useNetworkListQuery, useNetworkTableQuery }              from '@acx-ui/rc/services'
 import { Network, usePollingTableQuery }                          from '@acx-ui/rc/utils'
 import { TenantLink }                                             from '@acx-ui/react-router-dom'
+import { WifiScopes }                                             from '@acx-ui/types'
 
 export default function useNetworksTable () {
   const { $t } = useIntl()
   const [ networkCount, setNetworkCount ] = useState(0)
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
+  const settingsId = 'network-table'
   const tableQuery = usePollingTableQuery<Network>({
-    useQuery: useNetworkListQuery,
-    defaultPayload: defaultNetworkPayload
+    useQuery: supportApCompatibleCheck ? useNetworkTableQuery : useNetworkListQuery,
+    defaultPayload: defaultNetworkPayload,
+    pagination: { settingsId }
   })
 
   useEffect(() => {
@@ -26,13 +31,14 @@ export default function useNetworksTable () {
   })
 
   const extra = [
-    <TenantLink to='/networks/wireless/add'>
+    <TenantLink to='/networks/wireless/add'
+      scopeKey={[WifiScopes.CREATE]}>
       <Button type='primary'>{ $t({ defaultMessage: 'Add Wi-Fi Network' }) }</Button>
     </TenantLink>
   ]
 
   const component = <NetworkTabContext.Provider value={{ setNetworkCount }}>
-    <NetworkTable tableQuery={tableQuery} selectable={true} />
+    <NetworkTable tableQuery={tableQuery} selectable={true} settingsId={settingsId} />
   </NetworkTabContext.Provider>
 
   return {

@@ -25,13 +25,15 @@ function isElementArray (data: JSX.Element | JSX.Element[]
   return Array.isArray(data)
 }
 
-const useTabs = () : SwitchTab[] => {
+export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
   const { $t } = useIntl()
-  const listTab = {
+  const navigate = useNavigate()
+  const basePath = useTenantLink('/devices/')
+
+  const tabs = [{
     key: SwitchTabsEnum.LIST,
     ...useSwitchesTable()
-  }
-  const wiredReportTab = {
+  }, {
     key: SwitchTabsEnum.WIRED_REPORT,
     title: $t({ defaultMessage: 'Wired Report' }),
     component: <EmbeddedReport
@@ -39,28 +41,23 @@ const useTabs = () : SwitchTab[] => {
       hideHeader={false}
     />,
     headerExtra: usePageHeaderExtra(ReportType.WIRED)
-  }
-  return [listTab, wiredReportTab]
-}
+  }] as SwitchTab[]
 
-export function SwitchList ({ tab }: { tab: SwitchTabsEnum }) {
-  const { $t } = useIntl()
-  const navigate = useNavigate()
-  const basePath = useTenantLink('/devices/')
+  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
+
   const onTabChange = (tab: string) =>
     navigate({
       ...basePath,
       pathname: `${basePath.pathname}/${tabs.find(({ key }) => key === tab)?.url || tab}`
     })
-  const tabs = useTabs()
-  const { component, headerExtra } = tabs.find(({ key }) => key === tab)!
+
   return <>
     <PageHeader
       title={$t({ defaultMessage: 'Switches' })}
       breadcrumb={[{ text: $t({ defaultMessage: 'Wired' }) }]}
       footer={
         tabs.length > 1 && <Tabs activeKey={tab} onChange={onTabChange}>
-          {tabs.map(({ key, title }) => <Tabs.TabPane tab={title} key={key} />)}
+          {tabs.map(({ title, key }) => <Tabs.TabPane key={key} tab={title} />)}
         </Tabs>
       }
       extra={filterByAccess(isElementArray(headerExtra!) ? headerExtra : [headerExtra])}

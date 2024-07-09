@@ -14,19 +14,20 @@ export enum EntitlementDeviceType {
   WIFI='WIFI',
   LTE='LTE',
   SWITCH='SWITCH',
+  APSW='APSW',
   ANALYTICS='ANALYTICS',
   MSP_WIFI='MSP_WIFI',
   MSP_SWITCH='MSP_SWITCH',
   EDGE='EDGE',
   MSP_APSW='MSP_APSW',
-  APSW='APSW'
+  MSP_APSW_TEMP='MSP_APSW_TEMP'
 }
 
 export enum EntitlementNetworkDeviceType {
   SWITCH = 'DVCNWTYPE_SWITCH',
   WIFI = 'DVCNWTYPE_WIFI',
   LTE = 'DVCNWTYPE_LTE',
-  APSW = 'APSW'
+  APSW = 'DVCNWTYPE_APSW'
 }
 
 export enum EntitlementDeviceSubType {
@@ -49,7 +50,9 @@ export const roleDisplayText = {
   [RolesEnum.ADMINISTRATOR]: defineMessage({ defaultMessage: 'Administrator' }),
   [RolesEnum.GUEST_MANAGER]: defineMessage({ defaultMessage: 'Guest Manager' }),
   [RolesEnum.READ_ONLY]: defineMessage({ defaultMessage: 'Read Only' }),
-  [RolesEnum.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' })
+  [RolesEnum.DPSK_ADMIN]: defineMessage({ defaultMessage: 'DPSK Manager' }),
+  [RolesEnum.TEMPLATES_ADMIN]: defineMessage({ defaultMessage: 'Templates Management' }),
+  [RolesEnum.REPORTS_ADMIN]: defineMessage({ defaultMessage: 'Reports Admin' })
 }
 
 // MSP Entitlement and assignment

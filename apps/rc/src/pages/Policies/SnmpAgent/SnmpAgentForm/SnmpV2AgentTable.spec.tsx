@@ -1,60 +1,49 @@
+import { useReducer } from 'react'
+
 import userEvent from '@testing-library/user-event'
-import { Form }  from 'antd'
 
-import { SnmpNotificationTypeEnum, SnmpV2Agent } from '@acx-ui/rc/utils'
-import { render, screen, within }                from '@acx-ui/test-utils'
+import { render, renderHook, screen, waitFor, within } from '@acx-ui/test-utils'
 
-import SnmpAgentV2Table from './SnmpV2AgentTable'
+import { mockSnmpV2Agents, newEmptySnmpData } from './__tests__/fixtures'
+import SnmpAgentFormContext, { mainReducer }  from './SnmpAgentFormContext'
+import SnmpAgentV2Table                       from './SnmpV2AgentTable'
 
+const renderInitState = (children: JSX.Element, initState=newEmptySnmpData) => {
+  const { result } = renderHook(() => useReducer(mainReducer, initState ))
+  const [state, dispatch] = result.current
+
+  const renderElement = <SnmpAgentFormContext.Provider value={{ state, dispatch }}>
+    {children}
+  </SnmpAgentFormContext.Provider>
+
+  return {
+    state, dispatch, renderElement
+  }
+}
 
 describe('SnmpV2AgentTable', () => {
-  const data: SnmpV2Agent[] = [
-    {
-      communityName: 'joe_cn1',
-      readPrivilege: true,
-      trapPrivilege: false
-    },
-    {
-      communityName: 'joe_cn2',
-      readPrivilege: false,
-      trapPrivilege: true,
-      notificationType: SnmpNotificationTypeEnum.Inform,
-      targetAddr: '192.168.0.120',
-      targetPort: 162
-    }
-  ]
 
-  it('should Delete SNMP V2 Agent successfully', async () => {
-    render(
-      <Form>
-        <SnmpAgentV2Table data={data} />
-      </Form>
+  it('should Edit/ Delete SNMP V2 Agent successfully', async () => {
+    const snmpData = { ...newEmptySnmpData, snmpV2Agents: mockSnmpV2Agents }
+    const { renderElement } = renderInitState(
+      <SnmpAgentV2Table />, snmpData
     )
+    render(renderElement)
 
     let rows = await screen.findAllByRole('row', { name: /joe_cn/i })
     expect(rows.length).toBe(2)
 
-    // Delete SNMPv3 Agent
-    let row = await screen.findByRole('row', { name: /joe_cn1/i })
-    await userEvent.click(await within(row).findByRole('checkbox'))
-    await userEvent.click(await screen.findByRole('button', { name: 'Delete' }))
-
-    rows = await screen.findAllByRole('row', { name: /joe_cn/i })
-    expect(rows.length).toBe(1)
-  })
-
-  it('should Edit SNMP V2 Agent successfully', async () => {
-    render(
-      <Form>
-        <SnmpAgentV2Table data={data} />
-      </Form>
-    )
-
-    let rows = await screen.findAllByRole('row', { name: /joe_cn/i })
-    expect(rows.length).toBe(2)
+    // Delete SNMPv2 Agent
+    await userEvent.click(await screen.findByText('joe_cn1'))
+    const delBtn = await screen.findByRole('button', { name: 'Delete' })
+    expect(delBtn).toBeInTheDocument()
+    await userEvent.click(delBtn)
+    await waitFor(() => {
+      expect(delBtn).not.toBeVisible()
+    })
 
     // Edit SNMPv2 Agent
-    let row = await screen.findByRole('row', { name: /joe_cn2/i })
+    const row = await screen.findByRole('row', { name: /joe_cn2/i })
     await userEvent.click(await within(row).findByRole('checkbox'))
     await userEvent.click(await screen.findByRole('button', { name: 'Edit' }))
 
@@ -63,15 +52,19 @@ describe('SnmpV2AgentTable', () => {
     await userEvent.type(
       await screen.findByRole('textbox', { name: /Community Name/i }), 'jj_cn2')
 
+    const applyBtn = await screen.findByRole('button', { name: 'Apply' })
     await userEvent.click(await screen.findByRole('button', { name: 'Apply' }))
+
+    await waitFor(() => {
+      expect(applyBtn).not.toBeInTheDocument()
+    })
   })
 
   it('should Add SNMP V2 Agent successfully', async () => {
-    render(
-      <Form>
-        <SnmpAgentV2Table data={[]} />
-      </Form>
+    const { renderElement } = renderInitState(
+      <SnmpAgentV2Table />
     )
+    render(renderElement)
 
     // Add SNMPv2 Agent
     await userEvent.click(await screen.findByRole('button', { name: 'Add SNMPv2 Agent' }))
@@ -81,5 +74,9 @@ describe('SnmpV2AgentTable', () => {
 
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Read-only' }))
     await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
+
+    await waitFor(() => {
+      expect(screen.queryByRole('button', { name: 'Add' })).not.toBeInTheDocument()
+    })
   })
 })

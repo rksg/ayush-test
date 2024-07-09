@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                        from '@acx-ui/feature-toggle'
 import { SimpleListTooltip }                             from '@acx-ui/rc/components'
 import {
   useDelSyslogPoliciesMutation,
@@ -16,13 +17,13 @@ import {
   PolicyOperation,
   SyslogPolicyListType,
   getPolicyListRoutePath,
-  getPolicyRoutePath
+  getPolicyRoutePath, flowLevelLabelMapping, facilityLabelMapping
 } from '@acx-ui/rc/utils'
 import { Path, TenantLink, useNavigate, useParams, useTenantLink } from '@acx-ui/react-router-dom'
-import { filterByAccess, hasAccess }                               from '@acx-ui/user'
+import { WifiScopes }                                              from '@acx-ui/types'
+import { filterByAccess, hasPermission }                           from '@acx-ui/user'
 
-import { facilityLabelMapping, flowLevelLabelMapping } from '../../contentsMap'
-import { PROFILE_MAX_COUNT }                           from '../constants'
+import { PROFILE_MAX_COUNT } from '../constants'
 
 const defaultPayload = {
   fields: [
@@ -47,9 +48,13 @@ export default function SyslogTable () {
   const tenantBasePath: Path = useTenantLink('')
   const [ deleteFn ] = useDelSyslogPoliciesMutation()
 
+  const settingsId = 'policies-syslog-table'
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
   const tableQuery = useTableQuery({
     useQuery: useSyslogPolicyListQuery,
-    defaultPayload
+    defaultPayload,
+    pagination: { settingsId },
+    enableRbac
   })
 
   const doDelete = (selectedRows: SyslogPolicyListType[], callback: () => void) => {
@@ -57,19 +62,23 @@ export default function SyslogTable () {
       selectedRows,
       $t({ defaultMessage: 'Policy' }),
       selectedRows[0].name,
-      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: 'Venue' }) }],
-      async () => deleteFn({ params, payload: selectedRows.map(row => row.id) }).then(callback)
+      // eslint-disable-next-line max-len
+      [{ fieldName: 'venueIds', fieldText: $t({ defaultMessage: '<VenueSingular></VenueSingular>' }) }],
+      async () =>
+        deleteFn({ params, payload: selectedRows.map(row => row.id), enableRbac }).then(callback)
     )
   }
 
   const rowActions: TableProps<SyslogPolicyListType>['rowActions'] = [
     {
+      scopeKey: [WifiScopes.DELETE],
       label: $t({ defaultMessage: 'Delete' }),
       onClick: (rows, clearSelection) => {
         doDelete(rows, clearSelection)
       }
     },
     {
+      scopeKey: [WifiScopes.UPDATE],
       label: $t({ defaultMessage: 'Edit' }),
       visible: (selectedItems => selectedItems.length === 1),
       onClick: ([{ id }]) => {
@@ -102,7 +111,7 @@ export default function SyslogTable () {
         ]}
         extra={filterByAccess([
           // eslint-disable-next-line max-len
-          <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })}>
+          <TenantLink to={getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.CREATE })} scopeKey={[WifiScopes.CREATE]}>
             <Button type='primary' disabled={tableQuery.data?.totalCount! >= PROFILE_MAX_COUNT}>
               {$t({ defaultMessage: 'Add Syslog Server' })}
             </Button>
@@ -111,14 +120,15 @@ export default function SyslogTable () {
       />
       <Loader states={[tableQuery]}>
         <Table<SyslogPolicyListType>
-          settingsId='policies-syslog-table'
+          settingsId={settingsId}
           columns={useColumns()}
           dataSource={tableQuery.data?.data}
           pagination={tableQuery.pagination}
           onChange={tableQuery.handleTableChange}
           rowKey='id'
           rowActions={filterByAccess(rowActions)}
-          rowSelection={hasAccess() && { type: 'checkbox' }}
+          // eslint-disable-next-line max-len
+          rowSelection={hasPermission({ scopes: [WifiScopes.UPDATE, WifiScopes.DELETE] }) && { type: 'checkbox' }}
           onFilterChange={tableQuery.handleFilterChange}
           enableApiFilter={true}
         />
@@ -208,7 +218,7 @@ function useColumns () {
     },
     {
       key: 'venueIds',
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: 'venueIds',
       filterable: venueNameMap,
       sorter: true,

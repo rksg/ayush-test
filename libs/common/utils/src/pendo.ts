@@ -3,6 +3,7 @@ import { get } from '@acx-ui/config'
 declare global {
   var pendo: { // eslint-disable-line no-var
     initialize(init: Record<string, Record<string, string | boolean>>): void
+    identify(init: Record<string, Record<string, string | boolean>>): void
   }
   function pendoInitalization (): Promise<void>
 }
@@ -27,6 +28,7 @@ export type PendoParameters = {
     id: string
     name: string
     isTrial?: boolean
+    sfdcId: string
   }
 }
 
@@ -49,5 +51,11 @@ export function renderPendo (pendoInitalization: () => Promise<PendoParameters> 
     /* eslint-enable max-len */
     window.pendoInitalization = async () => window.pendo.initialize(await pendoInitalization())
     document.body.appendChild(script)
+  }
+}
+export function updatePendo (getPendoConfig: () => PendoParameters) {
+  const { pendo } = window
+  if (pendo) {
+    pendo.identify(getPendoConfig())
   }
 }

@@ -1,19 +1,26 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { useIsSplitOn }       from '@acx-ui/feature-toggle'
-import { EdgeUrlsInfo }       from '@acx-ui/rc/utils'
-import { Provider  }          from '@acx-ui/store'
+import { useIsSplitOn }                                                                           from '@acx-ui/feature-toggle'
+import { edgeApi }                                                                                from '@acx-ui/rc/services'
+import { EdgeGeneralFixtures, EdgeLagFixtures, EdgePortConfigFixtures, EdgeStatus, EdgeUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store  }                                                                       from '@acx-ui/store'
 import {
   render,
   screen,
   mockServer,
-  waitForElementToBeRemoved
+  waitForElementToBeRemoved,
+  within
 } from '@acx-ui/test-utils'
 
-import { mockEdgeData as currentEdge, mockEdgePortStatus } from '../../__tests__/fixtures'
+import { EdgeDetailsDataContext } from '../EdgeDetailsDataProvider'
 
 import { EdgeOverview } from '.'
+
+const { mockEdgeData: currentEdge, mockEdgeList } = EdgeGeneralFixtures
+const { mockEdgePortStatus } = EdgePortConfigFixtures
+const { mockEdgeLagStatusList } = EdgeLagFixtures
+const { mockEdgeClusterList } = EdgeGeneralFixtures
 
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
@@ -49,6 +56,8 @@ describe('Edge Detail Overview', () => {
   { tenantId: 'tenant-id', serialNumber: 'edge-serialnum' }
 
   beforeEach(() => {
+    store.dispatch(edgeApi.util.resetApiState())
+
     jest.mocked(useIsSplitOn).mockReturnValue(true)
 
     mockServer.use(
@@ -67,6 +76,22 @@ describe('Edge Detail Overview', () => {
             ctx.json(mockEdgePortStatus)
           )
         }
+      ),
+      rest.post(
+        EdgeUrlsInfo.getEdgeLagStatusList.url,
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeLagStatusList)
+          )
+        }
+      ),
+      rest.get(
+        EdgeUrlsInfo.getEdgeCluster.url,
+        (_req, res, ctx) => {
+          return res(
+            ctx.json(mockEdgeClusterList)
+          )
+        }
       )
     )
   })
@@ -74,7 +99,14 @@ describe('Edge Detail Overview', () => {
   it('should correctly render', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -89,7 +121,14 @@ describe('Edge Detail Overview', () => {
   it('should correctly change tab', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -109,7 +148,7 @@ describe('Edge Detail Overview', () => {
     await userEvent.click(configBtn)
     expect(mockedUsedNavigate)
       .toBeCalledWith({
-        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports/ports-general',
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/ports',
         hash: '',
         search: ''
       })
@@ -118,7 +157,14 @@ describe('Edge Detail Overview', () => {
   it('should correctly dispaly active tab by router', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params: { ...params, activeSubTab: 'ports' } }
       })
@@ -135,7 +181,14 @@ describe('Edge Detail Overview', () => {
   it('should correctly change tab when click ports widget', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -159,7 +212,14 @@ describe('Edge Detail Overview', () => {
   it('should do nothing when click other widget', async () => {
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -179,7 +239,14 @@ describe('Edge Detail Overview', () => {
 
     render(
       <Provider>
-        <EdgeOverview />
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
       </Provider>, {
         route: { params }
       })
@@ -190,5 +257,38 @@ describe('Edge Detail Overview', () => {
     expect(await screen.findByRole('tab', { name: 'Ports' }))
       .toHaveAttribute('aria-selected', 'true')
     expect(screen.queryByRole('tab', { name: 'Monitor' })).toBeNull()
+  })
+
+  it('should show lags tab correctly', async () => {
+    render(
+      <Provider>
+        <EdgeDetailsDataContext.Provider
+          value={{
+            currentEdgeStatus: mockEdgeList.data[0] as EdgeStatus,
+            isEdgeStatusLoading: false
+          }}
+        >
+          <EdgeOverview />
+        </EdgeDetailsDataContext.Provider>
+      </Provider>, {
+        route: { params }
+      })
+
+    const lagTab = await screen.findByRole('tab', { name: 'LAGs' })
+    await userEvent.click(lagTab)
+    const configBtn = await screen.findByRole('button', { name: 'Configure LAG Settings' })
+    expect(configBtn).toBeVisible()
+    const portsRow = await screen.findAllByRole('row')
+    expect(portsRow.length).toBe(3)
+    const row = await screen.findByRole('row', { name: /LAG 1 LACP/i })
+    const expandBtn = await within(row).findByTestId('PlusSquareOutlined')
+    await userEvent.click(expandBtn)
+    await userEvent.click(configBtn)
+    expect(mockedUsedNavigate)
+      .toBeCalledWith({
+        pathname: '/tenant-id/t/devices/edge/edge-serialnum/edit/lags',
+        hash: '',
+        search: ''
+      })
   })
 })

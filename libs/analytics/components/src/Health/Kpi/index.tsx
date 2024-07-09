@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import { connect }  from 'echarts'
 import ReactECharts from 'echarts-for-react'
 import moment       from 'moment-timezone'
+import { useIntl }  from 'react-intl'
 
 import {
   KpiThresholdType,
@@ -13,9 +14,11 @@ import {
   kpisForTab,
   kpiConfig
 } from '@acx-ui/analytics/utils'
-import { GridCol, GridRow, Loader } from '@acx-ui/components'
-import { get }                      from '@acx-ui/config'
-import type { AnalyticsFilter }     from '@acx-ui/utils'
+import { GridCol, GridRow, Loader, Button } from '@acx-ui/components'
+import { get }                              from '@acx-ui/config'
+import { SwitchScopes, WifiScopes }         from '@acx-ui/types'
+import { hasPermission }                    from '@acx-ui/user'
+import type { AnalyticsFilter }             from '@acx-ui/utils'
 
 import { HealthPageContext } from '../HealthPageContext'
 
@@ -34,6 +37,11 @@ export const defaultThreshold: KpiThresholdType = {
   apServiceUptime: kpiConfig.apServiceUptime.histogram.initialThreshold,
   apToSZLatency: kpiConfig.apToSZLatency.histogram.initialThreshold,
   switchPoeUtilization: kpiConfig.switchPoeUtilization.histogram.initialThreshold,
+  switchMemoryUtilization: kpiConfig.switchMemoryUtilization.histogram.initialThreshold,
+  switchCpuUtilization: kpiConfig.switchCpuUtilization.histogram.initialThreshold,
+  switchStormControl: kpiConfig.switchStormControl.histogram.initialThreshold,
+  switchUplinkPortUtilization: kpiConfig.switchUplinkPortUtilization.histogram.initialThreshold,
+  switchPortUtilization: kpiConfig.switchPortUtilization.histogram.initialThreshold,
   clusterLatency: kpiConfig.clusterLatency.histogram.initialThreshold
 }
 
@@ -41,9 +49,13 @@ type KpiThresholdsQueryProps = {
   filters: AnalyticsFilter
 }
 
-export const useKpiThresholdsQuery = ({ filters }: KpiThresholdsQueryProps) => {
+export const useKpiThresholdsQuery = (
+  { filters }: KpiThresholdsQueryProps,
+  options?: { skip?: boolean }
+) => {
   const kpis = Object.keys(defaultThreshold) as (keyof KpiThresholdType)[]
-  const kpiThresholdsQueryResults = healthApi.useGetKpiThresholdsQuery({ ...filters, kpis })
+  const kpiThresholdsQueryResults =
+    healthApi.useGetKpiThresholdsQuery({ ...filters, kpis }, options)
   const thresholds = kpis.reduce((agg, kpi) => {
     agg[kpi] = kpiThresholdsQueryResults.data?.[`${kpi}Threshold`]?.value ?? defaultThreshold[kpi]
     return agg
@@ -71,7 +83,7 @@ export default function KpiSections (props: { tab: CategoryTab, filters: Analyti
   </Loader>
 }
 
-function KpiSection (props: {
+export function KpiSection (props: {
   kpis: string[]
   thresholds: KpiThresholdType
   mutationAllowed: boolean
@@ -80,6 +92,8 @@ function KpiSection (props: {
   const { kpis, filters, thresholds } = props
   const { timeWindow, setTimeWindow } = useContext(HealthPageContext)
   const [ kpiThreshold, setKpiThreshold ] = useState<KpiThresholdType>(thresholds)
+  const [ loadMore, setLoadMore ] = useState<boolean>(true)
+  const { $t } = useIntl()
   const connectChart = (chart: ReactECharts | null) => {
     if (chart) {
       const instance = chart.getEchartsInstance()
@@ -91,9 +105,12 @@ function KpiSection (props: {
     moment(filters.endDate).isSame(timeWindow[1])
   )
   useEffect(() => { connect('timeSeriesGroup') }, [])
+  useEffect(() => { setLoadMore(kpis?.length > 1) }, [kpis])
+
+  const displayKpis = loadMore ? kpis.slice(0, 1) : kpis
   return (
     <>
-      {kpis.map((kpi) => (
+      {displayKpis.map((kpi) => (
         <GridRow key={kpi+defaultZoom} $divider>
           <GridCol col={{ span: 16 }}>
             <GridRow style={{ height: '160px' }}>
@@ -127,6 +144,10 @@ function KpiSection (props: {
                 thresholds={kpiThreshold}
                 mutationAllowed={props.mutationAllowed}
                 isNetwork={!filters.filter.networkNodes}
+                disabled={!hasPermission({
+                  permission: 'WRITE_HEALTH',
+                  scopes: [WifiScopes.UPDATE, SwitchScopes.UPDATE]
+                })}
               />
             ) : (
               <BarChart
@@ -138,6 +159,17 @@ function KpiSection (props: {
           </GridCol>
         </GridRow>
       ))}
+      { loadMore &&
+      <GridRow style={{ height: '80px' }}>
+        <GridCol col={{ span: 24 }}>
+          <Button
+            type='default'
+            onClick={() => setLoadMore(false)}
+            style={{ maxWidth: 150, margin: '0 auto' }}
+          >{$t({ defaultMessage: 'View more' })}</Button>
+        </GridCol>
+      </GridRow>
+      }
     </>
   )
 }

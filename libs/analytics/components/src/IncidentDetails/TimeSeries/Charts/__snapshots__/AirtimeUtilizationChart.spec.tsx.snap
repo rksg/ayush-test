@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`airtimeUtilizationChartQuery should call corresponding api 1`] = `
+"
+            query IncidentTimeSeries(
+              $path: [HierarchyNodeInput]
+              $start: DateTime
+              $end: DateTime
+              $granularity: String
+              $code: String
+            ) {
+              network(start: $start, end: $end) {
+                hierarchyNode(path: $path) {
+                  
+    airtimeUtilizationChart: timeSeries(granularity: $granularity) {
+      time
+      airtimeBusy(filter: {code: $code})
+      airtimeRx(filter: {code: $code})
+      airtimeTx(filter: {code: $code})
+      airtimeUtilization(filter: {code: $code})
+  }
+
+                }
+              }
+            }
+          "
+`;
+
+exports[`airtimeUtilizationChartQuery should call corresponding api 2`] = `
+Object {
+  "code": "p-airtime-b-24g-high",
+  "codeMap": Array [
+    "p-airtime-b-24g-high",
+  ],
+  "end": "2023-11-09T00:00:00.000Z",
+  "granularity": "PT15M",
+  "path": Array [
+    Object {
+      "name": "vsz34",
+      "type": "system",
+    },
+    Object {
+      "name": "19-US-CA-D19-Andre-Home",
+      "type": "domain",
+    },
+    Object {
+      "name": "19-US-CA-D19-Andre-Home",
+      "type": "zone",
+    },
+  ],
+  "start": "2023-11-08T00:00:00.000Z",
+}
+`;

@@ -22,12 +22,13 @@ export const getDisabledToolTip = (isNetwork?: boolean, isMLISA?: string) =>
       defineMessage({
         defaultMessage:
         // eslint-disable-next-line max-len
-            'Cannot save threshold at organisation level. Please select a Venue or AP to set a threshold.'
+          'Cannot save threshold at organization level. Please select a <VenueSingular></VenueSingular> or any other network node to set a threshold.'
       })
       :
       defineMessage({
         defaultMessage:
-            'Cannot save threshold at network level. Please select a Zone or AP to set a threshold.'
+        // eslint-disable-next-line max-len
+          'Cannot save threshold at organization level. Please select a SZ or any other network node to set a threshold.'
       })
     :
     defineMessage({
@@ -42,7 +43,8 @@ function ThresholdConfig ({
   onReset,
   onApply,
   canSave,
-  isNetwork
+  isNetwork,
+  disabled
 }: {
   thresholdValue: number;
   percent: number;
@@ -52,6 +54,7 @@ function ThresholdConfig ({
   onApply: CallableFunction;
   canSave?: boolean;
   isNetwork?: boolean;
+  disabled?: boolean
 }) {
   const { $t } = useIntl()
   const isDisabled = !Boolean(canSave)
@@ -77,7 +80,7 @@ function ThresholdConfig ({
           {$t(thresholdDescText.metGoal)}
         </UI.HistogramBoldContent>
       </UI.HistogramGoalPercentage>
-      <UI.BtnWrapper>
+      {!disabled && <UI.BtnWrapper>
         <Button
           style={{ width: 70 }}
           size='small'
@@ -104,7 +107,7 @@ function ThresholdConfig ({
             {$t(thresholdDescText.applyBtn)}
           </Button>
         }
-      </UI.BtnWrapper>
+      </UI.BtnWrapper>}
     </UI.HistogramConfig>
   )
 }

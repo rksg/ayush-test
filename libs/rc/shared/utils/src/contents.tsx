@@ -3,21 +3,26 @@ import { defineMessage, MessageDescriptor } from 'react-intl'
 import {
   DHCPConfigTypeEnum
 } from './constants'
-import { BridgeServiceEnum } from './models'
+import { BridgeServiceEnum } from './models/BridgeServiceEnum'
 
 export enum PskWlanSecurityEnum {
   WPA2Personal = 'WPA2 (Recommended)',
   WPA3 = 'WPA3',
-  WPA23Mixed = 'WPA3/WPA2 mixed mode',
+  WPA23Mixed = 'WPA2/WPA3 mixed mode',
   WPAPersonal = 'WPA',
   WEP = 'WEP'
+}
+
+export enum AAAWlanSecurityEnum {
+  WPA2Enterprise = 'WPA2 (Recommended)',
+  WPA3 = 'WPA3'
 }
 
 export enum SecurityOptionsDescription {
   /* eslint-disable max-len */
   WPA2Personal = 'WPA2 is strong Wi-Fi security that is widely available on all mobile devices manufactured after 2006. WPA2 should be selected unless you have a specific reason to choose otherwise.',
   WPA3 = 'WPA3 is the highest level of Wi-Fi security available but is supported only by devices manufactured after 2019.',
-  WPA23Mixed = 'WPA3/WPA2 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.',
+  WPA23Mixed = 'WPA2/WPA3 mixed mode supports the high-end WPA3 which is the highest level of Wi-Fi security available and WPA2 which is still common and provides good security. Typically, mobile devices manufactured after 2006 support WPA2 and devices manufactures after 2019 support WPA3.',
   WPAPersonal = 'WPA security can be chosen if you have older devices that don\'t support WPA2. These devices were likely manufactured prior to 2006. We recommend you upgrade or replace these older devices.',
   WEP = 'Ruckus Networks does not recommend using WEP to secure your wireless network because it is insecure and can be exploited easily. RUCKUS One offers WEP to enable customers with very old devices (that are difficult or costly to replace) to continue using those devices to connect to the wireless network. If you must use WEP, DO NOT use the devices using WEP to transport sensitive information over the wireless network.',
   WPA2_DESCRIPTION_WARNING = '6GHz radios are only supported with WPA3.'
@@ -25,7 +30,7 @@ export enum SecurityOptionsDescription {
 }
 
 export enum WisprSecurityEnum {
-  NONE = 'Select...',
+  NONE = 'None',
   PSK = 'Pre-Share Key (PSK)',
   OWE = 'OWE encryption'
 }
@@ -83,6 +88,21 @@ export const SwitchMessages = {
   }),
   MEMBER_NOT_SUPPORT_STACKING_TOOLTIP: defineMessage({
     defaultMessage: 'ICX7150-C08P/C08PT does not support stacking'
+  }),
+  NONOPERATIONAL_SWITCH_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'The port can not be edited since it is on a switch that is not operational'
+  }),
+  STACKING_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a stacking port and can not be configured'
+  }),
+  LAG_MEMBER_PORT_NOT_SUPPORT_CONFIGURED: defineMessage({
+    defaultMessage: 'This is a LAG member port and can not be configured'
+  }),
+  PLEASE_CHECK_INVALID_VALUES_AND_MODIFY_VIA_CLI: defineMessage({
+    defaultMessage: 'Please check the invalid field values under the settings tab and modify it via CLI'
+  }),
+  PLEASE_CHECK_INVALID_VALUES: defineMessage({
+    defaultMessage: 'Please check the invalid field values under the settings tab'
   })
 }
 
@@ -123,14 +143,17 @@ export const WifiNetworkMessages = {
   LAN_PORTS_VLAN_UNTAG_TOOLTIP: defineMessage({
     defaultMessage: 'Enter the native VLAN ID (no VLAN tag in its Ethernet frames)'
   }),
+  LAN_PORTS_TRUNK_PORT_VLAN_UNTAG_TOOLTIP: defineMessage({
+    defaultMessage: 'Enter the native VLAN ID (no VLAN tag in its Ethernet frames). Only APs with the supported firmware version can modify the untagged VLAN from the default value of 1. Supported model family: Wi-Fi 6, Wi-Fi 6E, Wi-Fi 7'
+  }),
   LAN_PORTS_VLAN_MEMBERS_TOOLTIP: defineMessage({
     defaultMessage: 'Can be a single VLAN ID, a VLAN ID range or a combination of both, separated with commas e.g. 1,3,5-7'
   }),
   AP_VENUE_DHCP_DISABLED_TOOLTIP: defineMessage({
-    defaultMessage: 'Not allow to change Venue on DHCP AP.'
+    defaultMessage: 'Not allow to change <VenueSingular></VenueSingular> on DHCP AP.'
   }),
   AP_VENUE_MESH_DISABLED_TOOLTIP: defineMessage({
-    defaultMessage: 'Mesh AP cannot be moved to a different venue'
+    defaultMessage: 'Mesh AP cannot be moved to a different <venueSingular></venueSingular>'
   }),
   AP_NAME_TOOLTIP: defineMessage({
     defaultMessage: 'Name must be between 2 and 32 alpha-numeric characters. Backtick "`" and the "$(" combination are not allowed.'
@@ -155,7 +178,7 @@ export const VenueMessages = {
   }),
   CLI_PROFILE_NOTIFICATION: defineMessage({
     defaultMessage: `<ul>
-      <li>Once CLI profiles are applied, the venue can no longer accept regular profiles</li>
+      <li>Once CLI profiles are applied, the <venueSingular></venueSingular> can no longer accept regular profiles</li>
       <li>The selected CLI profiles cannot contain overlapping switch models</li>
     </ul>`
   }),
@@ -163,7 +186,7 @@ export const VenueMessages = {
     defaultMessage: 'SNR threshold above which detected Rogue APs will be reported in RUCKUS One. Available range is 0-100.'
   }),
   CLI_APPLIED: defineMessage({
-    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the venue.'
+    defaultMessage: 'These settings cannot be changed, since a CLI profile is applied on the <venueSingular></venueSingular>.'
   })
 }
 
@@ -181,7 +204,7 @@ export const ApErrorHandlingMessages = {
     defaultMessage: 'A configuration request is currently being executed and additional requests cannot be performed at this time.<br></br>Try again once the request has completed.'
   }),
   CELLULAR_AP_CANNOT_BE_MOVED: defineMessage({
-    defaultMessage: 'The cellular AP cannot be moved to the venue which doesn\'t enable DHCP service'
+    defaultMessage: 'The cellular AP cannot be moved to the <venueSingular></venueSingular> which doesn\'t enable DHCP service'
   }),
   ERROR_OCCURRED: defineMessage({
     defaultMessage: 'Error occurred while {action} AP'
@@ -205,19 +228,19 @@ export const EditPortMessages = {
     defaultMessage: 'The port must be a member of at least one VLAN'
   }),
   ADD_VLAN_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit VLANs'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit VLANs'
   }),
   ADD_ACL_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit ACL'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit ACL'
   }),
   ADD_LLDP_DISABLE: defineMessage({
-    defaultMessage: 'Create and apply a configuration profile to this switch\'s venue to add/edit LLDP QoS'
+    defaultMessage: 'Create and apply a configuration profile to this switch\'s <venueSingular></venueSingular> to add/edit LLDP QoS'
   }),
   VOICE_VLAN_DISABLE: defineMessage({
     defaultMessage: 'No profile VLAN or VLAN option'
   }),
   USE_VENUE_SETTINGS_DISABLE: defineMessage({
-    defaultMessage: 'Venue settings default VLAN ID is the same as one of switch VLANs'
+    defaultMessage: '<VenueSingular></VenueSingular> settings default VLAN ID is the same as one of switch VLANs'
   }),
   POE_CAPABILITY_DISABLE: defineMessage({
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since this port doesn\'t have PoE capability.'
@@ -244,6 +267,28 @@ export const MultipleEditPortMessages = {
     defaultMessage: 'Can not configure PoE configurations(PoE Enable, PoE Class, and PoE Priority) since one or more ports don\'t have PoE capability.'
   })
 }
+
+export const PortStatusMessages = {
+  SET_AS_TAGGED: defineMessage({
+    defaultMessage: 'Port set as tagged'
+  }),
+  SET_AS_UNTAGGED: defineMessage({
+    defaultMessage: 'Port set as untagged'
+  }),
+  USED_BY_LAG: defineMessage({
+    defaultMessage: 'Port is member of LAG – {lagName}'
+  }),
+  USED_UNTAGGED_VLAN: defineMessage({
+    defaultMessage: 'Port is already an untagged member of VLAN {vlanId}'
+  }),
+  USED_BY_OTHERS: defineMessage({
+    defaultMessage: 'Port used by other VLAN setting'
+  }),
+  CURRENT: defineMessage({
+    defaultMessage: 'VLANs'
+  })
+}
+
 /* eslint-enable */
 
 export enum IsolatePacketsTypeEnum {
@@ -359,5 +404,11 @@ export const EditPropertyConfigMessages = {
   DISABLE_PROPERTY_MESSAGE: defineMessage({ defaultMessage: 'This will delete all related configurations and currently connected clients will lose their connectivity to networking services.' }),
   ENABLE_PROPERTY_TOOLTIP: defineMessage({ defaultMessage: 'Switching property management OFF will delete the entire related configuration and will cause clients to lose their networking service.' }),
   BIND_IDENTITY_GROUP_TOOLTIP: defineMessage({ defaultMessage: 'Please note that once property management has been enabled, changing the identity group is not allowed.' })
+  /* eslint-enable */
+}
+
+export const PropertyUnitMessages = {
+  /* eslint-disable max-len */
+  RESEND_NOTIFICATION: defineMessage({ defaultMessage: 'The unit assignment SMS and/or Email has been sent to the unit contact.' })
   /* eslint-enable */
 }

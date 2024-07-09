@@ -206,6 +206,7 @@ export function ImportFileDrawer (props: ImportFileDrawerProps) {
   return (<UI.ImportFileDrawer {...props}
     keyboard={false}
     closable={true}
+    destroyOnClose={true}
     width={440}
     footer={<div>
       <Button

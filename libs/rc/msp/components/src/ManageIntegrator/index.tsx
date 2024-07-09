@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from 'react'
 
 import {
   Col,
-  DatePicker,
   Divider,
   Form,
   Input,
@@ -17,6 +16,7 @@ import moment      from 'moment-timezone'
 import { useIntl } from 'react-intl'
 
 import {
+  DatePicker,
   PageHeader,
   StepsFormLegacy,
   StepsFormLegacyInstance,
@@ -64,12 +64,13 @@ import {
   useTenantLink,
   useParams
 } from '@acx-ui/react-router-dom'
-import { RolesEnum }              from '@acx-ui/types'
-import { useGetUserProfileQuery } from '@acx-ui/user'
-import { AccountType  }           from '@acx-ui/utils'
+import { RolesEnum }             from '@acx-ui/types'
+import { useUserProfileContext } from '@acx-ui/user'
+import { AccountType  }          from '@acx-ui/utils'
 
-import { AssignEcDrawer }     from '../AssignEcDrawer'
-import { ManageAdminsDrawer } from '../ManageAdminsDrawer'
+import { AssignEcDrawer }            from '../AssignEcDrawer'
+import { ManageAdminsDrawer }        from '../ManageAdminsDrawer'
+import { ManageDelegateAdminDrawer } from '../ManageDelegateAdminDrawer'
 // eslint-disable-next-line import/order
 import * as UI from '../styledComponents'
 
@@ -82,8 +83,8 @@ interface AddressComponent {
 interface EcFormData {
     name: string,
     address: Address,
-    service_effective_date: string,
-    service_expiration_date: string,
+    service_effective_date: moment.Moment,
+    service_expiration_date: moment.Moment,
     admin_email: string,
     admin_firstname: string,
     admin_lastname: string,
@@ -159,6 +160,8 @@ export function ManageIntegrator () {
   const intl = useIntl()
   const isMapEnabled = useIsSplitOn(Features.G_MAP)
   const isDeviceAgnosticEnabled = useIsSplitOn(Features.DEVICE_AGNOSTIC)
+  const isAbacToggleEnabled = useIsSplitOn(Features.ABAC_POLICIES_TOGGLE)
+  const isRbacEnabled = useIsSplitOn(Features.MSP_RBAC_API)
 
   const navigate = useNavigate()
   const linkToIntegrators = useTenantLink('/integrators', 'v')
@@ -175,11 +178,12 @@ export function ManageIntegrator () {
   const [drawerAdminVisible, setDrawerAdminVisible] = useState(false)
   const [drawerAssignedEcVisible, setDrawerAssignedEcVisible] = useState(false)
   const [subscriptionStartDate, setSubscriptionStartDate] = useState<moment.Moment>()
-  const [subscriptionEndDate, setSubscriptionEndDate] = useState<moment.Moment>()
   const [address, updateAddress] = useState<Address>(isMapEnabled? {} : defaultAddress)
 
   const [formData, setFormData] = useState({} as Partial<EcFormData>)
   const [selectedEcs, setSelectedEcs] = useState([] as MspEc[])
+  const [autoAssignEcAdmin, setAssignAdmin] = useState(false)
+
   const [unlimitSelected, setUnlimitSelected] = useState(true)
 
   const [addIntegrator] = useAddCustomerMutation()
@@ -190,7 +194,7 @@ export function ManageIntegrator () {
   const isEditMode = action === 'edit'
   const tenantType = type
 
-  const { data: userProfile } = useGetUserProfileQuery({ params: useParams() })
+  const { data: userProfile } = useUserProfileContext()
   const { data: licenseSummary } = useMspAssignmentSummaryQuery({ params: useParams() })
   const { data: licenseAssignment } = useMspAssignmentHistoryQuery({ params: useParams() })
   const { data } =
@@ -198,7 +202,8 @@ export function ManageIntegrator () {
   const { data: Administrators } =
       useMspAdminListQuery({ params: useParams() }, { skip: action !== 'edit' })
   const { data: delegatedAdmins } =
-      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
+      useGetMspEcDelegatedAdminsQuery({ params: { mspEcTenantId }, enableRbac: isRbacEnabled },
+        { skip: action !== 'edit' })
   const { data: ecAdministrators } =
       useMspEcAdminListQuery({ params: { mspEcTenantId } }, { skip: action !== 'edit' })
   const ecList = useTableQuery({
@@ -243,13 +248,12 @@ export function ManageIntegrator () {
         service_effective_date: data?.service_effective_date,
         wifiLicense: wLic,
         switchLicense: sLic,
-        apswLicense: apswLic
-        // service_expiration_date: data?.service_expiration_date
+        apswLicense: apswLic,
+        service_expiration_date: moment(data?.service_expiration_date)
       })
       formRef.current?.setFieldValue(['address', 'addressLine'], data?.street_address)
 
       setSubscriptionStartDate(moment(data?.service_effective_date))
-      setSubscriptionEndDate(moment(data?.service_expiration_date))
     }
 
     if (!isEditMode) { // Add mode
@@ -268,7 +272,6 @@ export function ManageIntegrator () {
         setAdministrator(administrator)
       }
       setSubscriptionStartDate(moment())
-      setSubscriptionEndDate(moment().add(30,'days'))
     }
   }, [data, licenseSummary, licenseAssignment, userProfile, ecAdministrators])
 
@@ -311,7 +314,8 @@ export function ManageIntegrator () {
   const fieldValidator = async (value: string, remainingDevices: number) => {
     if(parseInt(value, 10) > remainingDevices || parseInt(value, 10) < 0) {
       return Promise.reject(
-        `${intl.$t({ defaultMessage: 'Invalid number' })} `
+        intl.$t({ defaultMessage: 'Number should be between 0 and {value}' },
+          { value: remainingDevices })
       )
     }
     return Promise.resolve()
@@ -343,7 +347,7 @@ export function ManageIntegrator () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDate = EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date)
 
       const delegations= [] as MspEcDelegatedAdmins[]
       mspAdmins.forEach((admin: MspAdministrator) => {
@@ -369,7 +373,9 @@ export function ManageIntegrator () {
         admin_lastname: ecFormData.admin_lastname,
         admin_role: ecFormData.admin_role,
         admin_delegations: delegations
-
+      }
+      if (autoAssignEcAdmin) {
+        customer.isManageAllEcs = autoAssignEcAdmin
       }
       if (selectedEcs?.length > 0) {
         const ecs = selectedEcs.map(ec => ec.id)
@@ -416,7 +422,8 @@ export function ManageIntegrator () {
       }
 
       const result =
-      await addIntegrator({ params: { tenantId: tenantId }, payload: customer }).unwrap()
+      await addIntegrator({ params: { tenantId: tenantId }, payload: customer,
+        enableRbac: isRbacEnabled }).unwrap()
       if (result) {
       // const ecTenantId = result.tenant_id
       }
@@ -432,7 +439,7 @@ export function ManageIntegrator () {
     try {
       const ecFormData = { ...values }
       const today = EntitlementUtil.getServiceStartDate()
-      const expirationDate = EntitlementUtil.getServiceEndDate(subscriptionEndDate)
+      const expirationDate = EntitlementUtil.getServiceEndDate(ecFormData.service_expiration_date)
 
       const customer: MspEcData = {
         tenant_type: tenantType,
@@ -490,8 +497,9 @@ export function ManageIntegrator () {
         }
         customer.licenses = assignLicense
       }
-      await updateIntegrator({ params: { mspEcTenantId: mspEcTenantId },
-        payload: customer }).unwrap()
+      await updateIntegrator({
+        params: { mspEcTenantId: mspEcTenantId },
+        payload: customer, enableRbac: isRbacEnabled }).unwrap()
       navigate(linkToIntegrators, { replace: true })
       return true
     } catch (error) {
@@ -504,8 +512,9 @@ export function ManageIntegrator () {
     setAdministrator(selected)
   }
 
-  const selectedAssignEc = (selected: MspEc[]) => {
+  const selectedAssignEc = (selected: MspEc[], assignEcAdmin?: boolean) => {
     setSelectedEcs(selected)
+    setAssignAdmin(assignEcAdmin ?? false)
   }
 
   const displayMspAdmins = ( ) => {
@@ -514,7 +523,8 @@ export function ManageIntegrator () {
     return <>
       {mspAdmins.map(admin =>
         <UI.AdminList key={admin.id}>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])})
+          {admin.email} ({roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role})
         </UI.AdminList>
       )}
     </>
@@ -560,16 +570,22 @@ export function ManageIntegrator () {
           <Paragraph>{mspEcAdmins[0].email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
-          <Paragraph>{intl.$t(roleDisplayText[mspEcAdmins[0].role])}</Paragraph>
+          <Paragraph>
+            {roleDisplayText[mspEcAdmins[0].role]
+              ? intl.$t(roleDisplayText[mspEcAdmins[0].role]) : mspEcAdmins[0].role}
+          </Paragraph>
         </Form.Item>
       </>
     }
     return <div style={{ marginTop: '5px', marginBottom: '30px' }}>
       {mspEcAdmins.map(admin =>
         <UI.AdminList>
-          {admin.email} ({intl.$t(roleDisplayText[admin.role])}
+          {admin.email} {roleDisplayText[admin.role]
+            ? intl.$t(roleDisplayText[admin.role]) : admin.role}
         </UI.AdminList>
       )}
     </div>
@@ -594,8 +610,8 @@ export function ManageIntegrator () {
     swLic ? setAvailableSwitchLicense(remainingSwitch+swLic)
       : setAvailableSwitchLicense(remainingSwitch)
 
-    const apswLicenses = entitlements.filter(p =>
-      p.remainingDevices > 0 && p.deviceType === EntitlementDeviceType.MSP_APSW)
+    const apswLicenses = entitlements.filter(p => p.remainingDevices > 0 &&
+      p.deviceType === EntitlementDeviceType.MSP_APSW && p.trial === false)
     let remainingApsw = 0
     apswLicenses.forEach( (lic: MspAssignmentSummary) => {
       remainingApsw += lic.remainingDevices
@@ -651,6 +667,7 @@ export function ManageIntegrator () {
         style={{ width: '300px' }}
         rules={[
           { required: true },
+          { max: 255 },
           { validator: (_, value) => emailRegExp(value) },
           { message: intl.$t({ defaultMessage: 'Please enter a valid email address!' }) }
         ]}
@@ -661,6 +678,8 @@ export function ManageIntegrator () {
         label={intl.$t({ defaultMessage: 'First Name' })}
         rules={[
           { required: true },
+          { min: 2 },
+          { max: 64 },
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
         children={<Input />}
@@ -671,6 +690,8 @@ export function ManageIntegrator () {
         label={intl.$t({ defaultMessage: 'Last Name' })}
         rules={[
           { required: true },
+          { min: 2 },
+          { max: 64 },
           { validator: (_, value) => whitespaceOnlyRegExp(value) }
         ]}
         children={<Input />}
@@ -678,7 +699,9 @@ export function ManageIntegrator () {
       />
       <Form.Item
         name='admin_role'
-        label={intl.$t({ defaultMessage: 'Role' })}
+        label={isAbacToggleEnabled
+          ? intl.$t({ defaultMessage: 'Privilege Group' })
+          : intl.$t({ defaultMessage: 'Role' })}
         style={{ width: '300px' }}
         rules={[{ required: true }]}
         initialValue={RolesEnum.PRIME_ADMIN}
@@ -688,7 +711,8 @@ export function ManageIntegrator () {
               Object.entries(RolesEnum).map(([label, value]) => (
                 <Option
                   key={label}
-                  value={value}>{intl.$t(roleDisplayText[value])}
+                  value={value}>
+                  {roleDisplayText[value] ? intl.$t(roleDisplayText[value]) : value}
                 </Option>
               ))
             }
@@ -699,28 +723,27 @@ export function ManageIntegrator () {
     }
   }
 
-  function expirationDateOnChange (props: unknown, expirationDate: string) {
-    setSubscriptionEndDate(moment(expirationDate))
-  }
-
   const onSelectChange = (value: string) => {
     if (value === DateSelectionEnum.CUSTOME_DATE) {
-      // setSubscriptionEndDate('')
       setCustomeDate(true)
     } else {
+      let expirationDate = moment().add(30,'days')
       if (value === DateSelectionEnum.THIRTY_DAYS) {
-        setSubscriptionEndDate(moment().add(30,'days'))
+        expirationDate = moment().add(30,'days')
       } else if (value === DateSelectionEnum.SIXTY_DAYS) {
-        setSubscriptionEndDate(moment().add(60,'days'))
+        expirationDate = moment().add(60,'days')
       } else if (value === DateSelectionEnum.NINETY_DAYS) {
-        setSubscriptionEndDate(moment().add(90,'days'))
+        expirationDate = moment().add(90,'days')
       } else if (value === DateSelectionEnum.ONE_YEAR) {
-        setSubscriptionEndDate(moment().add(1,'years'))
+        expirationDate = moment().add(1,'years')
       } else if (value === DateSelectionEnum.THREE_YEARS) {
-        setSubscriptionEndDate(moment().add(3,'years'))
+        expirationDate = moment().add(3,'years')
       } else if (value === DateSelectionEnum.FIVE_YEARS) {
-        setSubscriptionEndDate(moment().add(5,'years'))
+        expirationDate = moment().add(5,'years')
       }
+      formRef.current?.setFieldsValue({
+        service_expiration_date: expirationDate
+      })
       setCustomeDate(false)
     }
   }
@@ -735,7 +758,7 @@ export function ManageIntegrator () {
 
     const content =
     <>
-      <Subtitle level={4}>{intl.$t({ defaultMessage: 'Access Periods' })}</Subtitle>
+      <Subtitle level={4}>{intl.$t({ defaultMessage: 'Access Period' })}</Subtitle>
       <Form.Item
         name='type'
         initialValue={true}
@@ -744,7 +767,7 @@ export function ManageIntegrator () {
         <Radio.Group onChange={onChange}>
           <Space direction='vertical'>
             <Radio value={true} disabled={false}>
-              { intl.$t({ defaultMessage: 'Not Limited' }) }
+              { intl.$t({ defaultMessage: 'Not Limited (Integrator)' }) }
             </Radio>
             <UI.FieldLabelAccessPeriod width='275px'>
               <Radio style={{ marginTop: '5px' }} value={false} disabled={false}>
@@ -770,7 +793,7 @@ export function ManageIntegrator () {
                 children={<Input disabled={unlimitSelected} type='number' min={1} max={60}/>}
                 style={{ paddingRight: '20px' }}
               />
-              <label>Day(s)</label>
+              <label>{intl.$t({ defaultMessage: 'Day(s) (Installer)' })}</label>
             </UI.FieldLabelAccessPeriod>
           </Space>
         </Radio.Group>
@@ -824,12 +847,11 @@ export function ManageIntegrator () {
         <Form.Item
           name='service_expiration_date'
           label=''
+          initialValue={moment().add(30,'days')}
           children={
             <DatePicker
-              format={formatter(DateFormatEnum.DateFormat)}
+              allowClear={false}
               disabled={!customDate}
-              defaultValue={moment(formatter(DateFormatEnum.DateFormat)(subscriptionEndDate))}
-              onChange={expirationDateOnChange}
               disabledDate={(current) => {
                 return current && current < moment().endOf('day')
               }}
@@ -948,10 +970,15 @@ export function ManageIntegrator () {
           <Paragraph>{formData.admin_email}</Paragraph>
         </Form.Item>
         <Form.Item style={{ marginTop: '-22px' }}
-          label={intl.$t({ defaultMessage: 'Role' })}
+          label={isAbacToggleEnabled
+            ? intl.$t({ defaultMessage: 'Privilege Group' })
+            : intl.$t({ defaultMessage: 'Role' })}
         >
           {formData?.admin_role &&
-          <Paragraph>{intl.$t(roleDisplayText[formData.admin_role as RolesEnum])}</Paragraph>}
+          <Paragraph>
+            {roleDisplayText[formData.admin_role]
+              ? intl.$t(roleDisplayText[formData.admin_role]) : formData.admin_role}
+          </Paragraph>}
         </Form.Item>
 
         {!isDeviceAgnosticEnabled && <div>
@@ -975,7 +1002,9 @@ export function ManageIntegrator () {
         <Form.Item style={{ marginTop: '-22px' }}
           label={intl.$t({ defaultMessage: 'Service Expiration Date' })}
         >
-          <Paragraph>{formatter(DateFormatEnum.DateFormat)(subscriptionEndDate)}</Paragraph>
+          <Paragraph>
+            {formatter(DateFormatEnum.DateFormat)(formData.service_expiration_date)}
+          </Paragraph>
         </Form.Item></>
     )
   }
@@ -1013,6 +1042,8 @@ export function ManageIntegrator () {
             style={{ width: '300px' }}
             rules={[
               { required: true },
+              { min: 2 },
+              { max: 255 },
               { validator: (_, value) => whitespaceOnlyRegExp(value) }
             ]}
             validateFirst
@@ -1069,6 +1100,8 @@ export function ManageIntegrator () {
               style={{ width: '300px' }}
               rules={[
                 { required: true },
+                { min: 2 },
+                { max: 255 },
                 { validator: (_, value) => whitespaceOnlyRegExp(value) }
               ]}
               validateFirst
@@ -1149,12 +1182,18 @@ export function ManageIntegrator () {
 
       </StepsFormLegacy>
 
-      {drawerAdminVisible && <ManageAdminsDrawer
-        visible={drawerAdminVisible}
-        setVisible={setDrawerAdminVisible}
-        setSelected={selectedMspAdmins}
-        tenantId={mspEcTenantId}
-      />}
+      {drawerAdminVisible && (isAbacToggleEnabled
+        ? <ManageDelegateAdminDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+        : <ManageAdminsDrawer
+          visible={drawerAdminVisible}
+          setVisible={setDrawerAdminVisible}
+          setSelected={selectedMspAdmins}
+          tenantId={mspEcTenantId}/>
+      )}
       {drawerAssignedEcVisible && <AssignEcDrawer
         visible={drawerAssignedEcVisible}
         setVisible={setDrawerAssignedEcVisible}

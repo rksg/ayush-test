@@ -35,6 +35,29 @@ describe('getSeriesTotal',() => {
       ]
     })
   })
+  it('should return correct total series as mean value', () => {
+    const series = [{
+      key: 'series1',
+      name: 'Series 1',
+      data: [
+        [1603929600000, 1], [1604016000000, '--'], [1604102400000, 5]
+      ]
+    }, {
+      key: 'series2',
+      name: 'Series 2',
+      data: [
+        [1603929600000, 2], [1604016000000, '--'], [1604102400000, 6]
+      ]
+    }] as TimeSeriesChartData[]
+    expect(getSeriesTotal(series, 'Total', true)).toEqual({
+      key: 'total',
+      name: 'Total',
+      show: false,
+      data: [
+        [1603929600000, 1.5], [1604016000000, 0], [1604102400000, 5.5]
+      ]
+    })
+  })
 })
 
 describe('StackedAreaChart',() => {

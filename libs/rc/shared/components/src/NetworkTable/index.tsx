@@ -3,9 +3,15 @@ import { ReactNode, useEffect, useState } from 'react'
 import { useIntl, FormattedMessage } from 'react-intl'
 import { useNavigate, useParams }    from 'react-router-dom'
 
-import { showActionModal, Loader, TableProps, Table  }      from '@acx-ui/components'
-import { Features, useIsSplitOn }                           from '@acx-ui/feature-toggle'
-import { useDeleteNetworkMutation, useLazyVenuesListQuery } from '@acx-ui/rc/services'
+import { showActionModal,
+  Loader,
+  TableProps,
+  Table,
+  cssStr,
+  Tooltip
+} from '@acx-ui/components'
+import { Features, TierFeatures, useIsSplitOn, useIsTierAllowed } from '@acx-ui/feature-toggle'
+import { useDeleteNetworkMutation, useLazyVenuesListQuery }       from '@acx-ui/rc/services'
 import {
   NetworkTypeEnum,
   Network,
@@ -15,15 +21,15 @@ import {
   checkVenuesNotInSetup,
   WlanSecurityEnum
 } from '@acx-ui/rc/utils'
-import { TenantLink, useTenantLink } from '@acx-ui/react-router-dom'
-import { RequestPayload }            from '@acx-ui/types'
-import { filterByAccess }            from '@acx-ui/user'
-import { getIntl, noDataDisplay }    from '@acx-ui/utils'
+import { TenantLink, useTenantLink }  from '@acx-ui/react-router-dom'
+import { RequestPayload, WifiScopes } from '@acx-ui/types'
+import { filterByAccess }             from '@acx-ui/user'
+import { getIntl, noDataDisplay }     from '@acx-ui/utils'
 
 
 const disabledType: NetworkTypeEnum[] = []
 
-function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
+function getCols (intl: ReturnType<typeof useIntl>, supportApCompatibleCheck: boolean) {
   function getSecurityProtocol (securityProtocol: WlanSecurityEnum, oweMaster?: boolean) {
     let _securityProtocol: string = ''
     switch (securityProtocol) {
@@ -34,13 +40,13 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         _securityProtocol = intl.$t({ defaultMessage: 'WPA' })
         break
       case WlanSecurityEnum.WPA23Mixed:
-        _securityProtocol = intl.$t({ defaultMessage: 'WPA3/WPA2 mixed mode' })
+        _securityProtocol = intl.$t({ defaultMessage: 'WPA2/WPA3 mixed mode' })
         break
       case WlanSecurityEnum.OWE:
-        _securityProtocol = oweTransFlag ? intl.$t({ defaultMessage: 'OWE' }) : ''
+        _securityProtocol = intl.$t({ defaultMessage: 'OWE' })
         break
       case WlanSecurityEnum.OWETransition:
-        _securityProtocol = oweTransFlag && oweMaster === false ?
+        _securityProtocol = oweMaster === false ?
           intl.$t({ defaultMessage: 'OWE' }) : ''
         break
       case WlanSecurityEnum.WPA3:
@@ -105,7 +111,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
     },
     {
       key: 'venues',
-      title: intl.$t({ defaultMessage: 'Venues' }),
+      title: intl.$t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       dataIndex: ['venues', 'count'],
       sorter: true,
       sortDirections: ['descend', 'ascend', 'descend'],
@@ -116,7 +122,7 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
         }else{
           return (
             row?.isOnBoarded
-              ? <span>{row.venues?.count || 0}</span>
+              ? <span>{row.venues?.count || noDataDisplay}</span>
               : <TenantLink
                 to={`/networks/wireless/${row.id}/network-details/venues`}
                 children={row.venues?.count ? row.venues?.count : 0}
@@ -137,11 +143,28 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
           return row.aps
         }else{
           return (
-            row?.isOnBoarded
-              ? <span>{row.aps}</span>
-              : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
-                {row.aps}
-              </TenantLink>
+            <>
+              {row?.isOnBoarded
+                ? <span>{row.aps || noDataDisplay}</span>
+                : <TenantLink to={`/networks/wireless/${row.id}/network-details/aps`}>
+                  {row.aps}
+                </TenantLink>}
+              {supportApCompatibleCheck && row?.incompatible && row.incompatible > 0 ?
+                <Tooltip.Info isFilled
+                  title={intl.$t({
+                    defaultMessage: 'Some access points may not be compatible with ' +
+                    'certain features on this network.'
+                  })}
+                  placement='right'
+                  iconStyle={{
+                    height: '16px',
+                    width: '16px',
+                    marginBottom: '-3px',
+                    marginLeft: '4px',
+                    color: cssStr('--acx-semantics-yellow-50') }}
+                /> : []
+              }
+            </>
           )
         }
       }
@@ -151,7 +174,16 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       title: intl.$t({ defaultMessage: 'Clients' }),
       dataIndex: 'clients',
       sorter: false, // API does not seem to be working
-      align: 'center'
+      align: 'center',
+      render: function (_, row) {
+        return (
+          row?.isOnBoarded
+            ? <span>{row.clients || noDataDisplay}</span>
+            : <TenantLink to={`/networks/wireless/${row.id}/network-details/clients`}>
+              {row.clients}
+            </TenantLink>
+        )
+      }
     },
     // { TODO: Wait for Services
     //   key: 'services',
@@ -175,7 +207,6 @@ function getCols (intl: ReturnType<typeof useIntl>, oweTransFlag: boolean) {
       title: intl.$t({ defaultMessage: 'Security Protocol' }),
       dataIndex: 'securityProtocol',
       sorter: false,
-      show: false,
       render: (data, row) =>
         getSecurityProtocol(row?.securityProtocol as WlanSecurityEnum, row?.isOweMaster) ||
         noDataDisplay
@@ -231,13 +262,12 @@ export const defaultNetworkPayload = {
   pageSize: 2048
 }
 
-const rowSelection = (supportOweTransition: boolean) => {
+const rowSelection = () => {
   return {
     getCheckboxProps: (record: Network) => ({
       disabled: !!record?.isOnBoarded
         || disabledType.indexOf(record.nwSubType as NetworkTypeEnum) > -1
-        || (supportOweTransition &&
-          record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
+        || (record?.isOweMaster === false && record?.owePairNetworkId !== undefined)
     }),
     renderCell: (checked: boolean, record: Network, index: number, node: ReactNode) => {
       if (record?.isOnBoarded) {
@@ -254,40 +284,45 @@ const getDeleteMessage = (messageKey: string) => {
   const deleteMessageMap = {
     deletingGuestPass: $t({ defaultMessage: 'Deleting Guest Pass network will invalidate all its related guest passes.' }),
     deletingDPSK: $t({ defaultMessage: 'Deleting DPSK network will remove all its related DPSK User Credentials (Passphrases).' }),
-    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all venues and APs that the network is activated on.' })
+    hasAdvertisedVenues: $t({ defaultMessage: 'Note that this will affect the service on all <venuePlural></venuePlural> and APs that the network is activated on.' })
   }
   return deleteMessageMap?.[messageKey as keyof typeof deleteMessageMap]
 }
 /* eslint-enable max-len */
 
 interface NetworkTableProps {
+  settingsId?: string
   tableQuery: TableQuery<Network, RequestPayload<unknown>, unknown>,
   selectable?: boolean
 }
 
-export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
+export function NetworkTable ({
+  settingsId = 'network-table', tableQuery, selectable
+}: NetworkTableProps) {
   const isServicesEnabled = useIsSplitOn(Features.SERVICES)
   const isWpaDsae3Toggle = useIsSplitOn(Features.WIFI_EDA_WPA3_DSAE_TOGGLE)
+  const isBetaDPSK3FeatureEnabled = useIsTierAllowed(TierFeatures.BETA_DPSK3)
   const [expandOnBoaroardingNetworks, setExpandOnBoaroardingNetworks] = useState<boolean>(false)
+  const [showOnboardNetworkToggle, setShowOnboardNetworkToggle] = useState<boolean>(false)
   const [expandedRowKeys, setExpandedRowKeys] = useState<string[]>([])
-  const supportOweTransition = useIsSplitOn(Features.WIFI_EDA_OWE_TRANSITION_TOGGLE)
   const intl = useIntl()
   const { $t } = intl
   const navigate = useNavigate()
   const linkToEditNetwork = useTenantLink('/networks/wireless/')
+  const supportApCompatibleCheck = useIsSplitOn(Features.WIFI_COMPATIBILITY_CHECK_TOGGLE)
 
   useEffect(() => {
     if (tableQuery?.data?.data) {
-      const _rows: string[]=[]
+      const _rows: string[] = []
 
-      tableQuery?.data?.data.map((record: Network) => {
-        if (record?.children) _rows.push(record.id)})
+      tableQuery?.data?.data.forEach((record: Network) => {
+        if (record?.children) _rows.push(record.id)
+      })
 
-      if (expandOnBoaroardingNetworks) {
-        setExpandedRowKeys(_rows)
-      } else {
-        setExpandedRowKeys([])
-      }
+      setShowOnboardNetworkToggle(!!_rows.length)
+
+      const exRowKeys = expandOnBoaroardingNetworks ? _rows : []
+      setExpandedRowKeys(exRowKeys)
     }
 
   }, [tableQuery?.data?.data, expandOnBoaroardingNetworks])
@@ -311,20 +346,25 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
   const rowActions: TableProps<Network>['rowActions'] = [
     {
       label: $t({ defaultMessage: 'Edit' }),
+      scopeKey: [WifiScopes.UPDATE],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/edit`, { replace: false })
       },
-      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
+        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
     },
     {
       label: $t({ defaultMessage: 'Clone' }),
+      scopeKey: [WifiScopes.CREATE],
       onClick: (selectedRows) => {
         navigate(`${linkToEditNetwork.pathname}/${selectedRows[0].id}/clone`, { replace: false })
       },
-      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
+        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      scopeKey: [WifiScopes.DELETE],
       onClick: async ([selected], clearSelection) => {
         const isDeletingDPSK = isSelectedDpskNetwork([selected])
         const isDeletingGuestPass = isSelectedGuestNetwork([selected])
@@ -358,7 +398,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
             .then(clearSelection)
         })
       },
-      disabled: (selectedRows) => !isWpaDsae3Toggle && (!!selectedRows[0]?.dsaeOnboardNetwork)
+      disabled: (selectedRows) => (isBetaDPSK3FeatureEnabled
+        && !isWpaDsae3Toggle) && (!!selectedRows[0]?.dsaeOnboardNetwork)
     }
   ]
 
@@ -377,8 +418,10 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
       { isLoading: false, isFetching: isDeleteNetworkUpdating }
     ]}>
       <Table
-        settingsId='network-table'
-        columns={getCols(intl, supportOweTransition)}
+        settingsId={settingsId}
+        columns={getCols(intl,
+          supportApCompatibleCheck
+        )}
         dataSource={tableQuery.data?.data}
         pagination={tableQuery.pagination}
         onChange={tableQuery.handleTableChange}
@@ -391,8 +434,8 @@ export function NetworkTable ({ tableQuery, selectable }: NetworkTableProps) {
         expandable={expandable}
         rowActions={filterByAccess(rowActions)}
         rowSelection={selectable ? { type: 'radio',
-          ...rowSelection(supportOweTransition) } : undefined}
-        actions={isWpaDsae3Toggle ? [{
+          ...rowSelection } : undefined}
+        actions={isBetaDPSK3FeatureEnabled && isWpaDsae3Toggle && showOnboardNetworkToggle ? [{
           key: 'toggleOnboardNetworks',
           label: expandOnBoaroardingNetworks
             ? $t({ defaultMessage: 'Hide Onboard Networks' })

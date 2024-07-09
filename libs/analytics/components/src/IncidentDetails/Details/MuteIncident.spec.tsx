@@ -7,7 +7,7 @@ import { render, screen } from '@acx-ui/test-utils'
 
 import { useMuteIncidentsMutation } from '../../IncidentTable/services'
 
-import MuteIncident from './MuteIncident'
+import { MuteIncident } from './MuteIncident'
 
 const mockedUseMuteIncidentsMutation = useMuteIncidentsMutation as jest.Mock
 const mockedMuteIncident = jest.fn()

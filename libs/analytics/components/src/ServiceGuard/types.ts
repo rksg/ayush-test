@@ -22,7 +22,11 @@ export enum AuthenticationMethod {
   WPA3_PERSONAL = 'WPA3_PERSONAL',
   WPA2_WPA3_PERSONAL = 'WPA2_WPA3_PERSONAL',
   WPA2_ENTERPRISE = 'WPA2_ENTERPRISE',
-  OPEN_AUTH = 'OPEN_AUTH'
+  OPEN_AUTH = 'OPEN_AUTH',
+  WISPR_8021X = 'WISPR_8021X',
+  WISPR = 'WISPR',
+  WEB_AUTHENTICATION = 'WEB_AUTHENTICATION',
+  GUEST_ACCESS = 'GUEST_ACCESS'
 }
 
 export type APListNodes = [...NetworkPath, FilterListNode]
@@ -61,6 +65,14 @@ export enum Band {
   Band2_4 = '2.4',
   Band5 = '5',
   Band6 = '6',
+}
+
+export type Wlan = {
+  id: string
+  name: string
+  associated: boolean
+  ready: boolean
+  authMethods: AuthenticationMethod[]
 }
 
 export type ServiceGuardSpec = {

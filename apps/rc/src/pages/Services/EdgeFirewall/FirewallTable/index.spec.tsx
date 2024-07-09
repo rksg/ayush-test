@@ -1,15 +1,16 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink } from '@acx-ui/rc/utils'
-import { Provider }                                                                             from '@acx-ui/store'
-import { mockServer, render, screen, waitForElementToBeRemoved, within }                        from '@acx-ui/test-utils'
+import { edgeApi, edgeFirewallApi }                                                                                  from '@acx-ui/rc/services'
+import { EdgeFirewallUrls, EdgeUrlsInfo, ServiceOperation, ServiceType, getServiceDetailsLink, EdgeGeneralFixtures } from '@acx-ui/rc/utils'
+import { Provider, store }                                                                                           from '@acx-ui/store'
+import { fireEvent, mockServer, render, screen, waitForElementToBeRemoved, within }                                  from '@acx-ui/test-utils'
 
-import { mockEdgeList }           from '../../../Devices/Edge/__tests__/fixtures'
 import { mockedFirewallDataList } from '../__tests__/fixtures'
 
 import FirewallTable from '.'
 
+const { mockEdgeList } = EdgeGeneralFixtures
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -23,6 +24,8 @@ describe('Firewall Table', () => {
       tenantId: 'ecc2d7cf9d2342fdb31ae0e24958fcac'
     }
 
+    store.dispatch(edgeApi.util.resetApiState())
+    store.dispatch(edgeFirewallApi.util.resetApiState())
     mockServer.use(
       rest.post(
         EdgeFirewallUrls.getEdgeFirewallViewDataList.url,
@@ -52,11 +55,16 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
-    const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
-    expect(row.length).toBe(2)
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const rows = await screen.findAllByRole('row', { name: /TestFirewall/i })
+    expect(rows.length).toBe(3)
+
     // eslint-disable-next-line max-len
-    await screen.findByRole('row', { name: 'TestFirewall1 2 Inbound: 2 Outbound: 2 3 Poor No 1.0.0.100, 1.0.0.210' })
-    await screen.findByRole('row', { name: 'TestFirewall2 -- -- 0 -- No --' })
+    expect(rows[0]).toHaveTextContent(/TestFirewall1\s*2\s*Inbound:\s*2\s*Outbound:\s*2\s*3\s*Poor\s*No\s*1\.0\.0\.100,\s*1\.0\.0\.210/i)
+    expect(rows[1]).toHaveTextContent(/TestFirewall2\s*--\s*--\s*0\s*--\s*No\s*--/i)
+    expect(rows[2]).toHaveTextContent(/TestFirewall3\s*--\s*--\s*0\s*--\s*No\s*--/i)
+
     const ddosInfo = await screen.findByTestId('ddos-info-1')
     await user.hover(ddosInfo)
     await screen.findByText('All: 220')
@@ -76,6 +84,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findByRole('row', { name: /TestFirewall1/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Edit' }))
@@ -101,6 +110,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     expect(await screen.findByText('Network Control')).toBeVisible()
     expect(screen.getByRole('link', {
       name: 'My Services'
@@ -116,6 +126,7 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
     const row = await screen.findAllByRole('row', { name: /TestFirewall/i })
     await user.click(within(row[0]).getByRole('checkbox'))
     await user.click(within(row[1]).getByRole('checkbox'))
@@ -131,10 +142,12 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
-    const row = await screen.findByRole('row', { name: /TestFirewall1/i })
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const row = await screen.findByRole('row', { name: /TestFirewall2/i })
     await user.click(within(row).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
-    const dialogTitle = await screen.findByText('Delete "TestFirewall1"?')
+    const dialogTitle = await screen.findByText('Delete "TestFirewall2"?')
     await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -149,14 +162,43 @@ describe('Firewall Table', () => {
         route: { params, path: '/:tenantId/services/firewall/list' }
       }
     )
-    const row1 = await screen.findByRole('row', { name: /TestFirewall1/i })
-    const row2 = await screen.findByRole('row', { name: /TestFirewall2/i })
-    await user.click(within(row1).getByRole('checkbox'))
-    await user.click(within(row2).getByRole('checkbox'))
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+
+    const rows = await screen.findAllByRole('row')
+
+    expect(within(rows[2]).getByRole('cell', { name: /TestFirewall2/i })).toBeVisible()
+    await user.click(within(rows[2]).getByRole('checkbox'))
+    expect(within(rows[3]).getByRole('cell', { name: /TestFirewall3/i })).toBeVisible()
+    await user.click(within(rows[3]).getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     const dialogTitle = await screen.findByText('Delete "2 Firewall"?')
     await user.click(screen.getByRole('button', { name: 'Delete Firewall' }))
     await waitForElementToBeRemoved(dialogTitle)
     expect(screen.queryByRole('dialog')).toBeNull()
   })
+
+  it('should disable delete button and show tooltip', async () => {
+    const user = userEvent.setup()
+    render(
+      <Provider>
+        <FirewallTable />
+      </Provider>, {
+        route: { params, path: '/:tenantId/services/firewall/list' }
+      }
+    )
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('img', { name: 'loader' }))
+    const rows = await screen.findAllByRole('row', { name: /TestFirewall/i })
+    expect(within(rows[0]).getByRole('cell', { name: /TestFirewall1/i })).toBeVisible()
+    await user.click(within(rows[0]).getByRole('checkbox'))
+    expect(within(rows[1]).getByRole('cell', { name: /TestFirewall2/i })).toBeVisible()
+    await user.click(within(rows[1]).getByRole('checkbox'))
+
+    const deleteBtn = await screen.findByRole('button', { name: 'Delete' })
+    expect(deleteBtn).toBeDisabled()
+
+    fireEvent.mouseOver(deleteBtn)
+    expect(await screen.findByRole('tooltip'))
+      .toHaveTextContent('Please deactivate the SmartEdge Firewall Service')
+  })
+
 })

@@ -3,6 +3,7 @@ import React from 'react'
 import { useIntl } from 'react-intl'
 
 import { Button, PageHeader, showActionModal, Table, TableProps, Loader } from '@acx-ui/components'
+import { Features, useIsSplitOn }                                         from '@acx-ui/feature-toggle'
 import { useDeleteWebAuthTemplateMutation, useWebAuthTemplateListQuery }  from '@acx-ui/rc/services'
 import {
   ServiceType,
@@ -33,9 +34,11 @@ export default function NetworkSegAuthTable () {
   const navigate = useNavigate()
   const location = useLocation()
   const basePath = useTenantLink('')
+  const isSwitchRbacEnabled = useIsSplitOn(Features.SWITCH_RBAC_API)
   const tableQuery = useTableQuery({
     useQuery: useWebAuthTemplateListQuery,
-    defaultPayload: getNetworkSegAuthPayload
+    defaultPayload: getNetworkSegAuthPayload,
+    enableRbac: isSwitchRbacEnabled
   })
 
   const [
@@ -71,7 +74,7 @@ export default function NetworkSegAuthTable () {
         return switchCount || 0
       }
     }, {
-      title: $t({ defaultMessage: 'Venues' }),
+      title: $t({ defaultMessage: '<VenuePlural></VenuePlural>' }),
       key: 'venueCount',
       dataIndex: 'venueCount',
       render: (_, { venueCount }) => {
@@ -114,14 +117,15 @@ export default function NetworkSegAuthTable () {
           type: 'confirm',
           customContent: {
             action: 'DELETE',
-            entityName: $t({ defaultMessage: 'Network Segmentation Auth Page for Switch' }),
+            entityName: $t({ defaultMessage: 'Personal Identity Network Auth Page for Switch' }),
             entityValue: rows.length === 1 ? rows[0].name : undefined,
             numOfEntities: rows.length
           },
           okText: $t({ defaultMessage: 'Delete' }),
           onOk: () => {
-            deleteWebAuthTemplate({ params: { serviceId: rows[0].id } })
-              .then(clearSelection)
+            deleteWebAuthTemplate({
+              params: { serviceId: rows[0].id }, enableRbac: isSwitchRbacEnabled
+            }).then(clearSelection)
           }
         })
       }
@@ -146,7 +150,7 @@ export default function NetworkSegAuthTable () {
 
   return (<>
     <PageHeader
-      title={$t({ defaultMessage: 'Network Segmentation Auth Page for Switch ({count})' },
+      title={$t({ defaultMessage: 'Personal Identity Network Auth Page for Switch ({count})' },
         { count: tableQuery.data?.totalCount })}
       breadcrumb={[
         { text: $t({ defaultMessage: 'Network Control' }) },
@@ -157,7 +161,7 @@ export default function NetworkSegAuthTable () {
           to={getServiceRoutePath({
             type: ServiceType.WEBAUTH_SWITCH, oper: ServiceOperation.CREATE
           })}>
-          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page' })}</Button>
+          <Button type='primary'>{$t({ defaultMessage: 'Add Auth Page Template' })}</Button>
         </TenantLink>
       ])} />
     <Loader states={[tableQuery]}>

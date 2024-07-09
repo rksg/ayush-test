@@ -1,20 +1,29 @@
 import { Key } from 'react'
 
-import { APMeshRole, ApDeviceStatusEnum, CellularNetworkSelectionEnum, LteBandRegionEnum, WanConnectionEnum } from '../constants'
-import { BandBalancing }                                                                                      from '../models/BandBalancing'
-import { DenialOfServiceProtection }                                                                          from '../models/DenialOfServiceProtection'
-import { Mesh }                                                                                               from '../models/Mesh'
-import { VenueDhcpServiceSetting }                                                                            from '../models/VenueDhcpServiceSetting'
-import { VenueRadioCustomization }                                                                            from '../models/VenueRadioCustomization'
-import { VenueRogueAp }                                                                                       from '../models/VenueRogueAp'
-import { VenueSyslog }                                                                                        from '../models/VenueSyslog'
-
+import {
+  APMeshRole,
+  ApDeviceStatusEnum,
+  CellularNetworkSelectionEnum,
+  LteBandRegionEnum,
+  WanConnectionEnum
+} from '../constants'
+import {
+  ApAntennaTypeEnum,
+  BandBalancing,
+  BandModeEnum,
+  DenialOfServiceProtection,
+  Mesh,
+  VenueDhcpServiceSetting,
+  VenueRadioCustomization,
+  VenueRogueAp,
+  VenueSyslog
+} from '../models'
 
 import { ApStatusDetails, LanPort }                  from './ap'
 import { RogueCategory }                             from './policies'
 import { ConfigurationHistory, CliTemplateVariable } from './switch'
 
-import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, SwitchStatusEnum } from './index'
+import { ApVenueStatusEnum, EdgeStatusSeverityStatistic, RWGStatusEnum, SwitchStatusEnum } from './index'
 
 
 
@@ -85,8 +94,8 @@ export interface TypeWiseNetworkDevices {
 	switches: NetworkDevice[];
 	LTEAP: NetworkDevice[];
 	RogueAP: NetworkDevice[];
-	cloudpath: NetworkDevice[];
 	DP: NetworkDevice[];
+	rwg: NetworkDevice[];
 }
 
 export enum FloorplanContext {
@@ -97,7 +106,8 @@ export enum FloorplanContext {
 	switch = 'Switch',
 	lte_ap = 'LteAp',
 	rogue_ap = 'RogueAp',
-	cloudpath = 'Cloudpath'
+	cloudpath = 'Cloudpath',
+	rwg='rwg'
   }
 
 export interface APStatus {
@@ -118,14 +128,14 @@ export enum NetworkDeviceType {
 	switch = 'switches',
 	lte_ap = 'LTEAP',
 	rogue_ap = 'RogueAP',
-	cloudpath = 'cloudpath',
-	dp = 'DP'
+	dp = 'DP',
+	rwg = 'rwg'
 }
 export interface NetworkDevice {
     id?: string; // used by devices type other than AP & switch
 	name: string;
 	switchName?: string;
-	deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum;
+	deviceStatus: ApDeviceStatusEnum | SwitchStatusEnum | RWGStatusEnum;
 	networkDeviceType: NetworkDeviceType;
 	serialNumber: string;
 	floorplanId?: string;
@@ -240,6 +250,16 @@ export interface VenueLed {
 	manual?: boolean
 }
 
+export interface VenueApModelBandModeSettings {
+	model: string,
+	bandMode: BandModeEnum
+}
+
+export type VeuneApAntennaTypeSettings = {
+	model: string
+	antennaType: ApAntennaTypeEnum
+}
+
 export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
@@ -350,7 +370,7 @@ export interface AclRule {
 	destination?: string,
 	sequence: number
 	action: 'permit' | 'deny',
-	protocol: 'ip' | 'tcp' | 'udp'
+	protocol: 'ip' | 'tcp' | 'udp' | 'ipv6'
 	specificSrcNetwork?: string
 	specificDestNetwork?: string
 	sourcePort?: string | null
@@ -358,7 +378,7 @@ export interface AclRule {
 }
 
 export interface Acl {
-	aclType: 'standard' | 'extended'
+	aclType: 'standard' | 'extended' | 'IPv6'
 	id: string,
 	name: string,
 	aclRules: AclRule[]
@@ -381,8 +401,11 @@ export interface SwitchModel {
 	id: string,
 	model: string,
 	slots: SwitchModelSlot[],
-  taggedPorts?: string,
+	switchModel?: string,
+	taggedPorts?: string,
+	taggedPortsList?: string[],
 	untaggedPorts?: string,
+	untaggedPortsList?: string[],
 	voicePorts?: string
 }
 
@@ -395,12 +418,17 @@ export interface Vlan {
 	spanningTreePriority?: number,
 	spanningTreeProtocol: 'rstp' | 'stp' | 'none',
 	switchFamilyModels?: SwitchModel[]
+	switchVlanPortModels?: SwitchModel[]
 	vlanId: number,
 	vlanName?: string,
+	vlanConfigName?: string
   untaggedPorts?: string,
   taggedPorts?: string,
   title?: string,
   key?: number
+	inactiveRow?: boolean //ignore
+  inactiveTooltip?: string //ignore
+	isDeletable?: boolean //ignore
 }
 
 export interface ConfigurationProfile {
@@ -418,6 +446,7 @@ export interface ConfigurationProfile {
 	vlans?: Vlan[],
 	acls?: Acl[],
 	venues?: string[]
+	applyOnboardOnly: boolean
 }
 export interface TriBandSettings {
   enabled: boolean
@@ -461,7 +490,15 @@ export interface VenueDefaultRegulatoryChannels {
   },
   '6GChannels': {
     [key: string]: string[]
-  }
+  } | {
+    indoor: {
+      [key: string]: string[]
+    },
+    outdoor: {
+      [key: string]: string[]
+    }
+  },
+  'afcEnabled': boolean
 }
 
 export interface VenueDefaultRegulatoryChannelsForm {
@@ -688,9 +725,9 @@ export interface LocalUser {
 	syncedPasswordSwitchCount?: number
 }
 
-export interface VenueDirectedMulticast {
-  wiredEnabled: boolean,
-  wirelessEnabled: boolean,
+export type VenueDirectedMulticast = {
+  wiredEnabled: boolean
+  wirelessEnabled: boolean
   networkEnabled: boolean
 }
 
@@ -698,6 +735,7 @@ export interface VenueConfigHistoryDetailResp {
 	response: {
 		list: ConfigurationHistory[]
 	}
+	list?: ConfigurationHistory[]
 }
 
 export enum LoadBalancingMethodEnum {
@@ -723,122 +761,18 @@ export interface VenueBssColoring {
 	bssColoringEnabled: boolean
 }
 
-export interface Node {
-    type?: DeviceTypes;
-    name: string;
-    category: number | string;
-    id?: string;
-    mac?: string;
-    serial?: string;
-    serialNumber?: string;
-    states?: DeviceStates,
-    childCount?: number;
-    symbol?: string;
-    symbolOffset?: Array<number>;
-	status?: DeviceStatus;
-	label?: string;
-	cloudPort?: string;
+export interface ApEnhancedKey {
+  tlsKeyEnhancedModeEnabled: boolean
 }
 
-export interface UINode {
-	id: string,
-    label?: string,
-    config: Node,
-    depth?: number,
-    expanded?: boolean,
-	x?: number,
-	y?: number
-}
-export interface Link {
-	id?: string;
-    source: string;
-    target: string;
-	from: string;
-    to: string;
-    connectionType?: string;
-    connectionStatus?: ConnectionStatus; // this needs to be enum
-    connectionStates?: ConnectionStates; // this needs to be enum
-    poeEnabled?: boolean;
-    linkSpeed?: string;
-    poeUsed?: number;
-    poeTotal?: number;
-    connectedPort?: string;
-	angle?: number;
-}
-export interface GraphData {
-    type: string;
-    categories: Array<Object>;
-    nodes: Array<Node>;
-    edges: Array<Link>;
+export interface ApManagementVlan {
+	vlanOverrideEnabled: boolean
+	vlanId: number
+	useVenueSettings: boolean,
+	keepAp?: boolean
 }
 
-export interface TopologyData {
-	nodes: Array<Node>;
-    edges: Array<Link>;
-}
 
-export enum ConnectionStatus {
-	Good='Good',
-    Degraded='Degraded',
-    Unknown='Unknown'
-}
-
-export enum DeviceStatus {
-	Operational='Operational',
-	Disconnected='Disconnected',
-	Degraded='Degraded',
-    Unknown='Unknown'
-}
-
-export enum DeviceStates {
-	Regular='Regular',
-	Hover='Hover',
-}
-
-export enum ConnectionStates {
-	Regular='Regular',
-	Hover='Hover',
-}
-
-export enum DeviceTypes {
-	Switch='Switch',
-	SwitchStack='SwitchStack',
-	Ap='Ap',
-	ApWired='ApWired',
-	ApMeshRoot='ApMeshRoot',
-	ApMesh='ApMesh',
-	Unknown='Unknown',
-	Cloud='Cloud'
-}
-
-export interface MdnsFencingWirelessRule {
-  fencingRange: string//'SAME_AP' | 'ONE_HOP_AP'
-}
-
-export interface MdnsFencingWiredRule {
-  name: string,
-  fencingRange: string, //'SAME_AP' | 'ONE_HOP_AP',
-  closestApMac: string,
-  deviceMacAddresses: string[]
-}
-
-export interface MdnsFencingService {
-  service: string,
-  customServiceName?: string,
-  description: string,
-  wirelessEnabled: boolean,
-  wirelessRule?: MdnsFencingWirelessRule,
-  wiredEnabled: boolean,
-  wiredRules?: MdnsFencingWiredRule[],
-  customMappingEnabled: boolean,
-  customStrings?: string[],
-  rowId?: string
-}
-
-export interface VenueMdnsFencingPolicy {
-  enabled: boolean,
-  services?: MdnsFencingService[]
-}
 
 export enum ShowTopologyFloorplanOn {
 	VENUE_OVERVIEW='VENUE_OVERVIEW',
@@ -872,4 +806,38 @@ export enum SignalStrengthLevel {
   GOOD,
   LOW,
   POOR
+}
+
+export interface ApFeatureSet {
+  featureName: string,
+  requiredFw?: string,
+  supportedModelFamilies?: string[]
+}
+
+export interface ApCompatibilityFeatureResponse {
+  feature: ApFeatureSet,
+  incompatibleDevices: ApIncompatibleFeature[],
+  total: number,
+  incompatible: number
+}
+
+export interface ApCompatibilityResponse {
+  apCompatibilities: ApCompatibility[]
+}
+
+export interface ApCompatibility {
+  id: string,
+  incompatibleFeatures?: ApIncompatibleFeature[]
+  total: number,
+  incompatible: number
+}
+
+export interface ApIncompatibleFeature extends ApFeatureSet{
+  incompatibleDevices: ApIncompatibleDevice[]
+}
+
+export interface ApIncompatibleDevice {
+	firmware: string,
+	model: string,
+	count: number
 }

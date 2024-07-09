@@ -42,6 +42,10 @@ export const Warning = styled.div`
   color: var(--acx-semantics-red-50);
 `
 
+export const FirmwareDescription = styled.div`
+  padding-bottom: 4px;
+`
+
 export const LinkButton = styled(Button)`
   font-size: var(--acx-body-5-font-size);
 `

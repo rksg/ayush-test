@@ -48,6 +48,7 @@ const FirewallTable = () => {
   const { $t } = useIntl()
   const navigate = useNavigate()
   const basePath: Path = useTenantLink('')
+  const settingsId = 'services-firewall-table'
   const tableQuery = useTableQuery({
     useQuery: useGetEdgeFirewallViewDataListQuery,
     defaultPayload: {},
@@ -57,7 +58,8 @@ const FirewallTable = () => {
     },
     search: {
       searchTargetFields: ['firewallName']
-    }
+    },
+    pagination: { settingsId }
   })
   const { edgeOptions } = useGetEdgeListQuery(
     { payload: edgeOptionsDefaultPayload },
@@ -182,7 +184,7 @@ const FirewallTable = () => {
       key: 'edgeAlarmSummary',
       dataIndex: 'edgeAlarmSummary',
       align: 'center',
-      render: (data, row) =>
+      render: (__, row) =>
         (row?.edgeIds?.length)
           ? <Row justify='center'>
             <EdgeServiceStatusLight data={row.edgeAlarmSummary} />
@@ -221,6 +223,13 @@ const FirewallTable = () => {
     // }
   ]
 
+  const isDeleteBtnDisable = (selectedRows: EdgeFirewallViewData[]) => {
+    let isActivatedOnEdge = selectedRows
+      .filter(EdgeFirewallViewData => (EdgeFirewallViewData.edgeIds?.length ?? 0) > 0)
+      .length > 0
+    return isActivatedOnEdge
+  }
+
   const rowActions: TableProps<EdgeFirewallViewData>['rowActions'] = [
     {
       visible: (selectedRows) => selectedRows.length === 1,
@@ -240,6 +249,11 @@ const FirewallTable = () => {
     },
     {
       label: $t({ defaultMessage: 'Delete' }),
+      disabled: isDeleteBtnDisable,
+      tooltip: (selectedRows) => isDeleteBtnDisable(selectedRows)
+        // eslint-disable-next-line max-len
+        ? $t({ defaultMessage: 'Please deactivate the SmartEdge Firewall Service under Scope menu first' })
+        : undefined,
       onClick: (rows, clearSelection) => {
         showActionModal({
           type: 'confirm',
@@ -297,7 +311,7 @@ const FirewallTable = () => {
         ]}
       >
         <Table
-          settingsId='services-firewall-table'
+          settingsId={settingsId}
           rowKey='id'
           columns={columns}
           rowSelection={hasAccess() && { type: 'checkbox' }}

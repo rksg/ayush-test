@@ -1,10 +1,10 @@
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
-import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
-import { Provider, store }                                                from '@acx-ui/store'
-import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
+import { apApi, venueApi }                                                    from '@acx-ui/rc/services'
+import { CommonUrlsInfo, CommonRbacUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo } from '@acx-ui/rc/utils'
+import { Provider, store }                                                    from '@acx-ui/store'
+import { mockServer, render, screen, waitFor, waitForElementToBeRemoved }     from '@acx-ui/test-utils'
 
 import { ApDataContext, ApEditContext } from '../..'
 import { r760Ap, venueData }            from '../../../../__tests__/fixtures'
@@ -31,20 +31,17 @@ const mockApLedSettings = {
 const resetApLedSpy = jest.fn()
 
 describe('AP Led', () => {
+  const defaultR760ApCtxData = { apData: r760Ap, venueData }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
     resetApLedSpy.mockClear()
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
-        (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenueLedOn),
+      rest.get(CommonUrlsInfo.getVenueLedOn.url,
         (_, res, ctx) => res(ctx.json(mockVenueLed))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApLed),
+      rest.get(WifiUrlsInfo.getApLed.url,
         (_, res, ctx) => res(ctx.json(mockApLedSettings))),
       rest.delete(WifiUrlsInfo.resetApLed.url,
         (_, res, ctx)=>{
@@ -52,14 +49,21 @@ describe('AP Led', () => {
           return res(ctx.json({ requestId: '123' }))
         }),
       rest.delete(WifiUrlsInfo.updateApLed.url,
-        (_, res, ctx)=> res(ctx.json({ requestId: '123' })))
+        (_, res, ctx)=> res(ctx.json({ requestId: '123' }))),
+      // RBAC API
+      rest.get(CommonRbacUrlsInfo.getVenueLedOn.url,
+        (_, res, ctx) => res(ctx.json(mockVenueLed))),
+      rest.get(WifiRbacUrlsInfo.getApLed.url,
+        (_, res, ctx) => res(ctx.json(mockApLedSettings))),
+      rest.put(WifiRbacUrlsInfo.updateApLed.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
   it('should render correctly', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <ApLed />
         </ApDataContext.Provider>
       </Provider>, {
@@ -91,7 +95,7 @@ describe('AP Led', () => {
           },
           setEditAdvancedContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <ApLed />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -121,7 +125,7 @@ describe('AP Led', () => {
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <ApLed />
         </ApDataContext.Provider>
       </Provider>, {

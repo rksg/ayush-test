@@ -3,7 +3,8 @@ import type { Path } from 'react-router-dom'
 export interface LocationExtended extends Path {
   state: {
     from: {
-      pathname: string
+      pathname: string,
+      returnParams?: Record<string, unknown>
     }
   }
 }

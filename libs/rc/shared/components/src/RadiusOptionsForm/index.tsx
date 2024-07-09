@@ -7,7 +7,8 @@ import { CalledStationIdTypeEnum, NasIdDelimiterEnum, NasIdTypeEnum } from '@acx
 
 const NasIdTypeOptions = [
   { label: defineMessage({ defaultMessage: 'WLAN BSSID' }), value: NasIdTypeEnum.BSSID },
-  { label: defineMessage({ defaultMessage: 'Venue Name' }), value: NasIdTypeEnum.VENUE_NAME },
+  // eslint-disable-next-line max-len
+  { label: defineMessage({ defaultMessage: '<VenueSingular></VenueSingular> Name' }), value: NasIdTypeEnum.VENUE_NAME },
   { label: defineMessage({ defaultMessage: 'AP MAC' }), value: NasIdTypeEnum.AP_MAC },
   { label: defineMessage({ defaultMessage: 'User-defined' }), value: NasIdTypeEnum.USER }
 ]

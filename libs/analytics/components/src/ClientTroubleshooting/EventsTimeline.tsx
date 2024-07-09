@@ -7,9 +7,11 @@ import { flatten }                    from 'lodash'
 import moment                         from 'moment-timezone'
 import { useIntl, MessageDescriptor } from 'react-intl'
 
-import { Incident }      from '@acx-ui/analytics/utils'
-import { Tooltip }       from '@acx-ui/components'
-import { useDateFilter } from '@acx-ui/utils'
+import { Incident, overlapsRollup } from '@acx-ui/analytics/utils'
+import { Tooltip }                  from '@acx-ui/components'
+import { useDateFilter }            from '@acx-ui/utils'
+
+import { useIncidentToggles } from '../useIncidentToggles'
 
 import {
   ClientTroubleShootingConfig,
@@ -26,7 +28,7 @@ import {
 } from './config'
 import { ClientInfoData, ConnectionEvent } from './services'
 import * as UI                             from './styledComponents'
-import { TimelineChart }                   from './TimelineChart'
+import { TimelineChart, granularityText }  from './TimelineChart'
 import {
   transformEvents,
   transformConnectionQualities,
@@ -49,7 +51,7 @@ type TimeLineProps = {
   connectChart: (instance: ReactECharts) => void,
   sharedChartName: string,
   popoverRef: RefObject<HTMLDivElement>,
-  onChartReady: (instance: EChartsType) => void,
+  onChartReady: (instance: EChartsType) => void
 }
 
 type CoordDisplayEvent = DisplayEvent & {
@@ -57,9 +59,15 @@ type CoordDisplayEvent = DisplayEvent & {
   y: number
 }
 
+export const checkRollup = (value: string, startDate: string) => {
+  return overlapsRollup(startDate)
+  && (value === 'roaming' || value === 'connectionQuality')
+}
+
 export function TimeLine (props: TimeLineProps) {
   const { $t } = useIntl()
   const intl = useIntl()
+  const toggles = useIncidentToggles()
   const {
     data, filters, connectChart, sharedChartName, onChartReady,
     popoverRef, setEventState, setVisible
@@ -91,12 +99,15 @@ export function TimeLine (props: TimeLineProps) {
       [type]: !toggle
     })
   const toggleIcon = (
-    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined
+    isExpand: boolean, type: keyof TimelineData, noData?: boolean | undefined, druidRollup?: boolean
   ) => {
-    if (noData) {
+    if (noData || druidRollup) {
       return <Tooltip
-        title={$t({ defaultMessage: 'No APs Available' })}
-        placement='top'
+        title={<UI.TooltipTextWrapper>{noData
+          ? $t({ defaultMessage: 'No APs Available' })
+          : $t(granularityText)
+        }</UI.TooltipTextWrapper>}
+        placement='topLeft'
       >
         <UI.StyledDisabledPlusSquareOutline
           style={{ cursor: 'not-allowed' }}
@@ -109,15 +120,13 @@ export function TimeLine (props: TimeLineProps) {
         style={{ cursor: 'pointer' }}
         onClick={() => onExpandToggle(type, expandObj[type])}
       />
-    ) : (
-      <UI.StyledPlusSquareOutlined
-        style={{ cursor: 'pointer' }}
-        onClick={() => onExpandToggle(type, expandObj[type])}
-      />
-    )
+    ) : <UI.StyledPlusSquareOutlined
+      style={{ cursor: 'pointer' }}
+      onClick={() => onExpandToggle(type, expandObj[type])}
+    />
   }
 
-  const TimelineData = getTimelineData(events, incidents)
+  const TimelineData = getTimelineData(events, incidents, toggles)
   const roamingEventsAps = connectionDetailsByAP(data?.connectionDetailsByAp as RoamingByAP[])
   const roamingEventsTimeSeries = connectionDetailsByApChartData(
     data?.connectionDetailsByAp as RoamingByAP[]
@@ -134,29 +143,35 @@ export function TimeLine (props: TimeLineProps) {
     <Row gutter={[16, 16]} wrap={false}>
       <Col flex='200px'>
         <Row gutter={[16, 16]} style={{ rowGap: '4px' }}>
-          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <React.Fragment key={index}>
-              <Col span={3}>
-                {toggleIcon(
-                  expandObj[config?.value as keyof TimelineData],
+          {ClientTroubleShootingConfig.timeLine
+            .filter(({ isVisible }) => isVisible())
+            .map((config, index) => {
+              return <React.Fragment key={index}>
+                <Col span={3}>
+                  {toggleIcon(
+                    expandObj[config?.value as keyof TimelineData],
                   config?.value as keyof TimelineData,
                   (config?.value === TYPES.ROAMING)
-                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData)
-                }
-              </Col>
-              <Col
-                span={17}
-                style={expandObj[config?.value as keyof TimelineData] ? {} : { marginBottom: 38 }}>
-                <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
-              </Col>
-              <Col style={{ lineHeight: '25px' }} span={4}>
-                {config.showCount ? (
-                  <UI.TimelineCount>
-                    {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
-                  </UI.TimelineCount>
-                ) : null}
-              </Col>
-              {expandObj[config?.value as keyof TimelineData] &&
+                    && getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)[0].noData,
+                  checkRollup(config?.value, startDate)
+                  )}
+                </Col>
+                <Col
+                  span={17}
+                  style={expandObj[config?.value as keyof TimelineData]
+                    ? {}
+                    : { marginBottom: 38 }
+                  }>
+                  <UI.TimelineTitle>{$t(config.title)}</UI.TimelineTitle>
+                </Col>
+                <Col style={{ lineHeight: '25px' }} span={4}>
+                  {config.showCount ? (
+                    <UI.TimelineCount>
+                      {TimelineData[config.value as keyof TimelineData]?.['all'].length ?? 0}
+                    </UI.TimelineCount>
+                  ) : null}
+                </Col>
+                {expandObj[config?.value as keyof TimelineData] &&
                 (config.value === TYPES.ROAMING
                   ? getRoamingSubtitleConfig(roamingEventsAps as RoamingConfigParam)
                   : config?.subtitle
@@ -199,56 +214,59 @@ export function TimeLine (props: TimeLineProps) {
                     </Col>
                   </React.Fragment>
                 ))}
-            </React.Fragment>
-          ))}
+              </React.Fragment>
+            })}
         </Row>
       </Col>
       <Col flex='auto'>
         <Row gutter={[16, 16]} style={{ rowGap: 0 }}>
-          {ClientTroubleShootingConfig.timeLine.map((config, index) => (
-            <Col span={24} key={config.value}>
-              <TimelineChart
-                key={index}
-                index={index}
-                style={{ width: 'auto', marginBottom: 8 }}
-                data={getChartData(
-        config?.value as keyof TimelineData,
-        TimelineData.connectionEvents.all,
-        expandObj[config?.value as keyof TimelineData],
-        !Array.isArray(qualities) ? qualities.all : [],
-        Array.isArray(incidents) ? incidents : [],
-        {
-          ...roamingEventsTimeSeries,
-          [ALL]: TimelineData.roaming.all
-        } as RoamingTimeSeriesData[]
-                )}
-                showResetZoom={config?.showResetZoom}
-                chartBoundary={chartBoundary}
-                hasXaxisLabel={config?.hasXaxisLabel}
-                mapping={
-                  expandObj[config?.value as keyof TimelineData]
-                    ? config.value === TYPES.ROAMING
-                      ? config.chartMapping.concat(
-                        getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
-                      ).reverse()
-                      : config.chartMapping.slice().reverse()
-                    : [config.chartMapping[0]]
-                }
-                onDotClick={
+          {ClientTroubleShootingConfig.timeLine
+            .filter(({ isVisible }) => isVisible())
+            .map((config, index) => (
+              <Col span={24} key={config.value}>
+                <TimelineChart
+                  key={index}
+                  index={index}
+                  style={{ width: 'auto', marginBottom: 8 }}
+                  data={getChartData(
+                  config?.value as keyof TimelineData,
+                  TimelineData.connectionEvents.all,
+                  expandObj[config?.value as keyof TimelineData],
+                  !Array.isArray(qualities) ? qualities.all : [],
+                  Array.isArray(incidents) ? incidents : [],
+                  {
+                    ...roamingEventsTimeSeries,
+                    [ALL]: TimelineData.roaming.all
+                  } as RoamingTimeSeriesData[] )}
+                  showResetZoom={config?.showResetZoom}
+                  chartBoundary={chartBoundary}
+                  hasXaxisLabel={config?.hasXaxisLabel}
+                  mapping={
+                    expandObj[config?.value as keyof TimelineData]
+                      ? config.value === TYPES.ROAMING
+                        ? config.chartMapping.concat(
+                          getRoamingChartConfig(roamingEventsAps as RoamingConfigParam)
+                        ).reverse()
+                        : config.chartMapping.slice().reverse()
+                      : [config.chartMapping[0]]
+                  }
+                  onDotClick={
                   /* istanbul ignore next */
-                  (params) => {
-                  /* istanbul ignore next */
-                    setEventState(params as CoordDisplayEvent)
-                    /* istanbul ignore next */
-                    setVisible(true)
-                  }}
-                chartRef={connectChart}
-                sharedChartName={sharedChartName}
-                popoverRef={popoverRef}
-                onChartReady={onChartReady}
-              />
-            </Col>
-          ))}
+                    (params) => {
+                      /* istanbul ignore next */
+                      setEventState(params as CoordDisplayEvent)
+                      /* istanbul ignore next */
+                      setVisible(true)
+                    }}
+                  chartRef={connectChart}
+                  sharedChartName={sharedChartName}
+                  popoverRef={popoverRef}
+                  onChartReady={onChartReady}
+                  startDate={startDate}
+                  value={config?.value}
+                />
+              </Col>
+            ))}
         </Row>
       </Col>
     </Row>

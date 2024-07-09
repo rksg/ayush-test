@@ -7,10 +7,11 @@ import { useParams }                 from 'react-router-dom'
 import { v4 as uuidv4 }              from 'uuid'
 
 import { Button, Descriptions, GridCol, GridRow, Loader, showActionModal, Table, TableProps } from '@acx-ui/components'
+import { AccessConditionDrawer, RadiusAttributeGroupSelectDrawer }                            from '@acx-ui/rc/components'
 import {
   useLazyAdaptivePolicyListByQueryQuery,
   useLazyGetRadiusAttributeGroupQuery,
-  usePolicyTemplateListQuery
+  usePolicyTemplateListByQueryQuery
 } from '@acx-ui/rc/services'
 import {
   AccessCondition,
@@ -19,10 +20,7 @@ import {
   CriteriaOption, defaultSort,
   RadiusAttributeGroup, sortProp, trailingNorLeadingSpaces
 } from '@acx-ui/rc/utils'
-import { filterByAccess, hasAccess } from '@acx-ui/user'
-
-import { AccessConditionDrawer }            from './AccessConditionDrawer'
-import { RadiusAttributeGroupSelectDrawer } from './RadiusAttributeGroupSelectDrawer'
+import { filterByAccess } from '@acx-ui/user'
 
 interface AdaptivePolicySettingFormProps {
   editMode?: boolean,
@@ -52,12 +50,12 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
 
   const [getPolicyList] = useLazyAdaptivePolicyListByQueryQuery()
 
-  const { data: templateList, isLoading } = usePolicyTemplateListQuery({
+  const { data: templateList, isLoading } = usePolicyTemplateListByQueryQuery({
     payload: {
       page: '1',
       pageSize: '1000',
-      sortField: 'name',
-      sortOrder: 'desc' }
+      sort: 'name,asc'
+    }
   })
 
   const [getAttributeGroup] = useLazyGetRadiusAttributeGroupQuery()
@@ -70,7 +68,10 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
       }).then(result => radiusAttributeGroup = {
         id: result.data?.id,
         name: result.data?.name ?? '',
-        attributeAssignments: result.data?.attributeAssignments ?? []
+        attributeAssignments: result.data?.attributeAssignments ?? [],
+        attributeCount: result.data?.attributeCount ?? 0,
+        externalAssignmentsCount: result.data?.externalAssignmentsCount ?? 0,
+        externalServiceAssignments: result.data?.externalServiceAssignments ?? []
       } ).finally(() => setSelectRadiusAttributeGroup(radiusAttributeGroup))
     } else {
       setSelectRadiusAttributeGroup({} as RadiusAttributeGroup)
@@ -240,7 +241,7 @@ export function AdaptivePolicySettingForm (props: AdaptivePolicySettingFormProps
                 columns={useColumns()}
                 dataSource={evaluationRules}
                 rowActions={filterByAccess(rowActions)}
-                rowSelection={hasAccess() && { type: 'radio' }}
+                rowSelection={{ type: 'radio' }}
                 actions={filterByAccess([{
                   disabled: !templateId,
                   // eslint-disable-next-line max-len

@@ -1,7 +1,6 @@
 import React from 'react'
 
 import '@testing-library/jest-dom'
-import { act }   from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
@@ -10,14 +9,13 @@ import {
   policyApi
 } from '@acx-ui/rc/services'
 import {
-  getUrlForTest,
   CommonUrlsInfo,
   MigrationContextType,
   MigrationUrlsInfo,
   AdministrationUrlsInfo
 } from '@acx-ui/rc/utils'
-import { Provider, store }            from '@acx-ui/store'
-import { mockServer, render, screen } from '@acx-ui/test-utils'
+import { Provider, store }                 from '@acx-ui/store'
+import { act, mockServer, render, screen } from '@acx-ui/test-utils'
 
 import {
   venuelist,
@@ -80,12 +78,10 @@ describe('MigrationForm', () => {
   it('should render MigrationForm successfully', async () => {
     jest.mocked(useIsSplitOn).mockReturnValue(false)
 
-    mockServer.use(rest.post(
-      getUrlForTest(CommonUrlsInfo.getVenuesList),
+    mockServer.use(rest.post(CommonUrlsInfo.getVenuesList.url,
       (req, res, ctx) => res(ctx.json(venuelist))
     ),
-    rest.get(
-      getUrlForTest(CommonUrlsInfo.getVenue),
+    rest.get(CommonUrlsInfo.getVenue.url,
       (req, res, ctx) => res(ctx.json(venueResponse))
     ), rest.post(
       MigrationUrlsInfo.uploadZdConfig.url,

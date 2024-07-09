@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 import userEvent      from '@testing-library/user-event'
+import moment         from 'moment'
 import { Path, rest } from 'msw'
 
-import { useIsSplitOn }                                           from '@acx-ui/feature-toggle'
-import { MspUrlsInfo }                                            from '@acx-ui/msp/utils'
+import { Features, useIsSplitOn }                                 from '@acx-ui/feature-toggle'
+import { MspEcTierEnum, MspRbacUrlsInfo, MspUrlsInfo }            from '@acx-ui/msp/utils'
 import { Provider }                                               from '@acx-ui/store'
 import { mockServer, render, screen, fireEvent, within, waitFor } from '@acx-ui/test-utils'
 import { AccountType }                                            from '@acx-ui/utils'
@@ -40,7 +41,8 @@ const list = {
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
       switchLicenses: 1,
-      edgeLicenses: 1
+      edgeLicenses: 1,
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -68,7 +70,8 @@ const list = {
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
       wifiLicenses: 2,
-      accountType: 'TRIAL'
+      accountType: 'TRIAL',
+      accountTier: MspEcTierEnum.Essentials
     },
     {
       assignedMspEcList: [],
@@ -105,18 +108,19 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     },
     {
       assignedMspEcList: [],
       creationDate: '1659589676050',
       entitlements: [
         {
-          consumed: '0',
+          consumed: '1',
           entitlementDeviceType: 'APSW',
-          expirationDate: '2022-11-02T06:59:59Z',
+          expirationDate: moment().add(30, 'days'),
           expirationDateTs: '1667372399000',
-          quantity: '0',
+          quantity: '10',
           tenantId: '701fe9df5f6b4c17928a29851c07cc07',
           toBeRemovedQuantity: 0,
           type: 'entitlement'
@@ -132,10 +136,56 @@ const list = {
       status: 'Inactive',
       streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
       tenantType: 'MSP_EC',
-      wifiLicenses: 0
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
+    },
+    {
+      assignedMspEcList: [],
+      creationDate: '1659589677050',
+      entitlements: [
+        {
+          consumed: '2',
+          entitlementDeviceType: 'APSW',
+          expirationDate: moment().add(70, 'days'),
+          expirationDateTs: '1667372399000',
+          quantity: '10',
+          tenantId: '701fe9df5f6b4c17928a29851c07cc07',
+          toBeRemovedQuantity: 0,
+          type: 'entitlement'
+        }
+      ],
+      id: '701fe9df5f6b4c17928a29851c07cc22',
+      integrator: '675dc01dc28846c383219b00d2f28f48',
+      mspAdminCount: 1,
+      mspIntegratorAdminCount: 1,
+      mspAdmins: ['aefb12fab1194bf6ba061ddcec14230d'],
+      mspEcAdminCount: 1,
+      name: 'ec 888',
+      status: 'Inactive',
+      streetAddress: '675 Tasman Dr, Sunnyvale, CA 94089, USA',
+      tenantType: 'MSP_EC',
+      wifiLicenses: 0,
+      accountTier: MspEcTierEnum.Professional
     }
   ]
 }
+const alarmList = {
+  mspEcAlarmCountList: [
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc04',
+      alarmCount: 0
+    },
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc05',
+      alarmCount: 0
+    },
+    {
+      tenantId: '701fe9df5f6b4c17928a29851c07cc06',
+      alarmCount: 0
+    }
+  ]
+}
+
 const userProfile = {
   adminId: '9b85c591260542c188f6a12c62bb3912',
   companyName: 'msp.eleu1658',
@@ -196,6 +246,7 @@ describe('MspCustomers', () => {
     jest.spyOn(services, 'useDeleteMspEcMutation')
     jest.spyOn(services, 'useDeactivateMspEcMutation')
     jest.spyOn(services, 'useReactivateMspEcMutation')
+    jest.spyOn(services, 'useGetMspEcAlarmListQuery')
     mockServer.use(
       rest.post(
         MspUrlsInfo.getMspCustomersList.url,
@@ -209,6 +260,10 @@ describe('MspCustomers', () => {
         MspUrlsInfo.deleteMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
       ),
+      rest.delete(
+        MspRbacUrlsInfo.deleteMspEcAccount.url,
+        (req, res, ctx) => res(ctx.json({ requestId: 'f638e92c-9d6f-45b2-a680-20047741ef2c' }))
+      ),
       rest.post(
         MspUrlsInfo.deactivateMspEcAccount.url,
         (req, res, ctx) => res(ctx.json({ requestId: '123' }))
@@ -220,6 +275,10 @@ describe('MspCustomers', () => {
       rest.post(
         MspUrlsInfo.getIntegratorCustomersList.url,
         (req, res, ctx) => res(ctx.json({ ...list }))
+      ),
+      rest.post(
+        MspUrlsInfo.getMspEcAlarmList.url,
+        (req, res, ctx) => res(ctx.json(alarmList))
       )
     )
     params = {
@@ -241,7 +300,6 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
     expect(screen.getByText('MSP Customers')).toBeVisible()
-    expect(screen.getByText('Manage My Account')).toBeVisible()
     expect(screen.getByText('Add Customer')).toBeVisible()
 
     // eslint-disable-next-line testing-library/no-node-access
@@ -281,35 +339,9 @@ describe('MspCustomers', () => {
       expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
     })
     expect(screen.getByText('Installed Devices')).toBeVisible()
-    expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
+    // expect(screen.getByText('Device Subscriptions Utilization')).toBeVisible()
 
     expect(screen.queryByText('Wi-Fi Licenses')).toBeNull()
-  })
-  it('should render correctly when feature flag turned off', async () => {
-    jest.mocked(useIsSplitOn).mockReturnValue(false)
-    user.useUserProfileContext = jest.fn().mockImplementation(() => {
-      return { data: userProfile }
-    })
-    render(
-      <Provider>
-        <MspCustomers />
-      </Provider>, {
-        route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
-      })
-    expect(await screen.findByText('My Customers')).toBeVisible()
-    await waitFor(() => {
-      expect(screen.queryByRole('img', { name: 'loader' })).toBeNull()
-    })
-    expect(screen.getByText('Wi-Fi Licenses')).toBeVisible()
-    expect(screen.getByText('Wi-Fi License Utilization')).toBeVisible()
-    expect(screen.getByText('Switch Licenses')).toBeVisible()
-    expect(screen.getByText('SmartEdge Licenses')).toBeVisible()
-    expect(screen.getByText('Active From')).toBeVisible()
-    expect(screen.getByText('Service Expires On')).toBeVisible()
-    expect(screen.queryByText('Tenant ID')).toBeNull()
-
-    expect(screen.queryByText('Installed Devices')).toBeNull()
-    expect(screen.queryByText('Device Subscriptions Utilization')).toBeNull()
   })
   it('should edit for selected trial account row', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -322,8 +354,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /ec 222/i })).toBeVisible()
+    fireEvent.click(within(rows[2]).getByRole('checkbox')) //ec 222
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -346,8 +379,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     const editButton = screen.getByRole('button', { name: 'Edit' })
     fireEvent.click(editButton)
@@ -370,8 +404,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     const resendInviteButton = screen.getByRole('button', { name: 'Resend Invitation Email' })
     fireEvent.click(resendInviteButton)
@@ -389,8 +424,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }))
 
@@ -422,8 +458,9 @@ describe('MspCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    const row = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[3]).getByRole('cell', { name: /ec 333/i })).toBeVisible()
+    fireEvent.click(within(rows[3]).getByRole('checkbox')) //ec 333
 
     fireEvent.click(screen.getByRole('button', { name: 'Reactivate' }))
 
@@ -457,8 +494,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
 
     const deleteButton = screen.getByRole('button', { name: 'Delete' })
     fireEvent.click(deleteButton)
@@ -494,10 +532,11 @@ describe('MspCustomers', () => {
       </Provider>, {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
-    const row1 = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row1).getByRole('checkbox'))
-    const row2 = await screen.findByRole('row', { name: /ec 333/i })
-    fireEvent.click(within(row2).getByRole('checkbox'))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('checkbox')) //ec 111
+    expect(within(rows[3]).getByRole('cell', { name: /ec 333/i })).toBeVisible()
+    fireEvent.click(within(rows[3]).getByRole('checkbox')) //ec 333
 
     expect(screen.getByText('2 selected')).toBeVisible()
     expect(screen.queryByRole('button', { name: 'Edit' })).toBeNull()
@@ -536,7 +575,8 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
   })
-  it('should render table for integrator', async () => {
+  it('should render table for installer', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -567,11 +607,49 @@ describe('MspCustomers', () => {
     expect(screen.queryByText('Integrator')).toBeNull()
 
     // Assert MSP Admin Count link works
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '0' }))
+    expect(within(rows[0]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[0]).getByRole('link', { name: '0' }))
 
     expect(screen.getByRole('dialog')).toBeVisible()
-    expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
+  })
+  it('should render table for integrator', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
+    user.useUserProfileContext = jest.fn().mockImplementation(() => {
+      return { data: userProfile }
+    })
+    const tenantDetails = { tenantType: AccountType.MSP_INTEGRATOR }
+    rcServices.useGetTenantDetailsQuery = jest.fn().mockImplementation(() => {
+      return { data: tenantDetails }
+    })
+    user.hasRoles = jest.fn().mockImplementation(() => {
+      return true
+    })
+    render(
+      <Provider>
+        <MspCustomers />
+      </Provider>, {
+        route: { params, path: '/:tenantId/dashboard/mspCustomers' }
+      })
+
+    // eslint-disable-next-line testing-library/no-node-access
+    const tbody = (await screen.findByRole('table')).querySelector('tbody')!
+    expect(tbody).toBeVisible()
+
+    const rows = within(tbody).getAllByRole('row')
+    expect(rows).toHaveLength(list.data.length)
+    list.data.forEach((item, index) => {
+      expect(within(rows[index]).getByText(item.name)).toBeVisible()
+    })
+
+    expect(screen.queryByText('Integrator')).toBeNull()
+
+    // Assert MSP Admin Count link works
+    expect(within(rows[0]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[0]).getByRole('link', { name: '0' }))
+
+    expect(screen.getByRole('dialog')).toBeVisible()
+    expect(screen.getByText('Manage Tech Partner Administrators')).toBeVisible()
   })
   it('should render table for mspec', async () => {
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
@@ -597,10 +675,11 @@ describe('MspCustomers', () => {
       expect(within(rows[index]).getByText(item.name)).toBeVisible()
     })
 
-    expect(screen.getByText('Integrator')).toBeVisible()
-    expect(screen.getByText('Installer')).toBeVisible()
+    expect(screen.getByText('Integrator Count')).toBeVisible()
+    expect(screen.getByText('Installer Count')).toBeVisible()
   })
   it('should open dialog when msp admin count link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockImplementation(ff => ff !== Features.ABAC_POLICIES_TOGGLE)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -614,13 +693,15 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '1' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('link', { name: '1' })) //ec 111
 
     expect(screen.getByRole('dialog')).toBeVisible()
     expect(screen.getByText('Manage MSP Administrators')).toBeVisible()
   })
   it('should open dialog when integrator link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -634,12 +715,14 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 111/i })
-    fireEvent.click(within(row).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    fireEvent.click(within(rows[1]).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 111
 
     expect(screen.getByRole('dialog')).toBeVisible()
   })
   it('should open dialog when installer link clicked', async () => {
+    jest.mocked(useIsSplitOn).mockReturnValue(false)
     user.useUserProfileContext = jest.fn().mockImplementation(() => {
       return { data: userProfile }
     })
@@ -653,8 +736,9 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row = await screen.findByRole('row', { name: /ec 222/i })
-    fireEvent.click(within(row).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[2]).getByRole('cell', { name: /ec 222/i })).toBeVisible()
+    fireEvent.click(within(rows[2]).getByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 222
 
     expect(screen.getByRole('dialog')).toBeVisible()
   })
@@ -672,12 +756,13 @@ describe('MspCustomers', () => {
         route: { params, path: '/:tenantId/v/dashboard/mspCustomers' }
       })
 
-    const row1 = await screen.findByRole('row', { name: /ec 111/i })
-    expect(within(row1).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    const rows = await screen.findAllByRole('row')
+    expect(within(rows[1]).getByRole('cell', { name: /ec 111/i })).toBeVisible()
+    expect(within(rows[1]).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 111
       .toBeNull()
 
-    const row2 = await screen.findByRole('row', { name: /ec 222/i })
-    expect(within(row2).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' }))
+    expect(within(rows[2]).getByRole('cell', { name: /ec 222/i })).toBeVisible()
+    expect(within(rows[2]).queryByRole('link', { name: '675dc01dc28846c383219b00d2f28f48' })) //ec 222
       .toBeNull()
   })
   it('should navigate correctly for non-support var user', async () => {

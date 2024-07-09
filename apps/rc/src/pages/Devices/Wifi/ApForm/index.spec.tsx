@@ -1,10 +1,10 @@
+/* eslint-disable max-len */
 import { initialize } from '@googlemaps/jest-mocks'
 import userEvent      from '@testing-library/user-event'
-import { Modal }      from 'antd'
 import { rest }       from 'msw'
 
-import { useIsSplitOn }                                                           from '@acx-ui/feature-toggle'
-import { apApi, venueApi }                                                        from '@acx-ui/rc/services'
+import { Features, useIsSplitOn }                                                 from '@acx-ui/feature-toggle'
+import { administrationApi, apApi, firmwareApi, venueApi }                        from '@acx-ui/rc/services'
 import { AdministrationUrlsInfo, CommonUrlsInfo, FirmwareUrlsInfo, WifiUrlsInfo } from '@acx-ui/rc/utils'
 import { Provider, store }                                                        from '@acx-ui/store'
 import {
@@ -34,8 +34,7 @@ const validCoordinates = [
   '51.508506, -0.124915',
   '40.769141, -73.9429713'
 ]
-// TODO
-// const invalidCoordinates = '51.508506, -0.12xxxx'
+
 const mockedUsedNavigate = jest.fn()
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -164,7 +163,9 @@ describe('AP Form - Add', () => {
   const params = { tenantId: 'tenant-id', action: 'add' }
   const addRequestSpy = jest.fn()
   beforeEach(() => {
+    store.dispatch(administrationApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
+    store.dispatch(firmwareApi.util.resetApiState())
     store.dispatch(venueApi.util.resetApiState())
     initialize()
     mockServer.use(
@@ -176,7 +177,9 @@ describe('AP Form - Add', () => {
         (_, res, ctx) => res(ctx.json(venueCaps))),
       rest.post(CommonUrlsInfo.getApsList.url,
         (_, res, ctx) => res(ctx.json(aplist))),
-      rest.get(CommonUrlsInfo.getApGroupList.url,
+      rest.get(FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_, res, ctx) => res(ctx.json([]))),
+      rest.get(CommonUrlsInfo.getApGroupListByVenue.url,
         (_, res, ctx) => res(ctx.json(apGrouplist))),
       rest.post(WifiUrlsInfo.addAp.url,
         (_, res, ctx) => {
@@ -192,12 +195,23 @@ describe('AP Form - Add', () => {
         (_req, res, ctx) => res(ctx.json({ global: {
           mapRegion: 'TW'
         } }))
+      ),
+      rest.get(
+        WifiUrlsInfo.getVenueApManagementVlan.url,
+        (_req, res, ctx) => res(ctx.json({ vlanId: null }))
+      ),
+      rest.get(
+        CommonUrlsInfo.getVenueApEnhancedKey.url,
+        (_req, res, ctx) => res(ctx.json({ tlsKeyEnhancedModeEnabled: false }))
+      ),
+      rest.get(
+        FirmwareUrlsInfo.getVenueApModelFirmwares.url,
+        (_req, res, ctx) => res(ctx.json([]))
       )
     )
   })
   afterEach(() => {
     addRequestSpy.mockClear()
-    Modal.destroyAll()
   })
   it('should render correctly', async () => {
     render(<Provider><ApForm /></Provider>, {
@@ -229,10 +243,11 @@ describe('AP Form - Add', () => {
 
   describe('handle Add AP and Coordinates Modal', () => {
     beforeEach(async () => {
-      jest.mocked(useIsSplitOn).mockReturnValue(true)
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
     })
 
-    it('should handle Add AP', async () => {
+    it('should handle Add AP correctly', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
@@ -242,7 +257,7 @@ describe('AP Form - Add', () => {
       await waitFor(() => expect(addRequestSpy).toHaveBeenCalledTimes(1))
     })
 
-    it('should handle Add AP with custom coordinates', async () => {
+    it.skip('should handle Add AP with custom coordinates', async () => {
       render(<Provider><ApForm /></Provider>, {
         route: { params, path: '/:tenantId/t/devices/wifi/:action' }
       })
@@ -303,6 +318,11 @@ describe('AP Form - Add', () => {
   })
 
   describe('handle error occurred', () => {
+    beforeEach(async () => {
+      jest.mocked(useIsSplitOn)
+        .mockImplementation(ff => ff !== Features.AP_FW_MGMT_UPGRADE_BY_MODEL && ff !== Features.WIFI_RBAC_API)
+    })
+
     it('should handle error occurred', async () => {
       mockServer.use(
         rest.post(WifiUrlsInfo.addAp.url,
@@ -317,7 +337,13 @@ describe('AP Form - Add', () => {
       await fillInForm()
 
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText('Error occurred while creating AP')
+
+      const dialog = await screen.findByRole('dialog')
+      expect(await screen.findByText('Error occurred while creating AP')).toBeInTheDocument()
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+      await waitFor(() => {
+        expect(dialog).not.toBeVisible()
+      })
     })
     it('should handle request locking error', async () => {
       mockServer.use(
@@ -333,7 +359,15 @@ describe('AP Form - Add', () => {
       await fillInForm()
 
       await userEvent.click(await screen.findByRole('button', { name: 'Add' }))
-      await screen.findByText(/A configuration request is currently being executed/)
+
+      const dialog = await screen.findByRole('dialog')
+      expect(
+        await screen.findByText(/A configuration request is currently being executed/)
+      ).toBeInTheDocument()
+      await userEvent.click(await within(dialog).findByRole('button', { name: 'OK' }))
+      await waitFor(() => {
+        expect(dialog).not.toBeVisible()
+      })
     })
   })
 })

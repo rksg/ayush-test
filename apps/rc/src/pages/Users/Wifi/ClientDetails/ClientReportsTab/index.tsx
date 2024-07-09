@@ -1,9 +1,6 @@
 import { useParams } from 'react-router-dom'
 
-import { EmbeddedReport } from '@acx-ui/reports/components'
-import {
-  ReportType
-} from '@acx-ui/reports/components'
+import { EmbeddedReport, ReportType } from '@acx-ui/reports/components'
 
 export function ClientReportsTab () {
   const param = useParams()

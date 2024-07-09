@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event'
 import { rest }  from 'msw'
 
 import { apApi, venueApi }                                                from '@acx-ui/rc/services'
-import { CommonUrlsInfo, WifiUrlsInfo, getUrlForTest }                    from '@acx-ui/rc/utils'
+import { CommonUrlsInfo, WifiUrlsInfo, WifiRbacUrlsInfo }                 from '@acx-ui/rc/utils'
 import { Provider, store }                                                from '@acx-ui/store'
 import { mockServer, render, screen, waitFor, waitForElementToBeRemoved } from '@acx-ui/test-utils'
 
@@ -29,27 +29,31 @@ const mockApBssColoringSettings = {
 
 
 describe('AP BSS Coloring', () => {
+  const defaultR760ApCtxData = { apData: r760Ap, venueData }
+
   beforeEach(() => {
     store.dispatch(venueApi.util.resetApiState())
     store.dispatch(apApi.util.resetApiState())
 
     mockServer.use(
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenue),
-        (_, res, ctx) => res(ctx.json(venueData))),
-      rest.get(
-        getUrlForTest(CommonUrlsInfo.getVenueBssColoring),
+      rest.get(CommonUrlsInfo.getVenueBssColoring.url,
         (_, res, ctx) => res(ctx.json(mockVenueBssColoringSettings))),
-      rest.get(
-        getUrlForTest(WifiUrlsInfo.getApBssColoring),
-        (_, res, ctx) => res(ctx.json(mockApBssColoringSettings)))
+      rest.get(WifiUrlsInfo.getApBssColoring.url,
+        (_, res, ctx) => res(ctx.json(mockApBssColoringSettings))),
+      // RBAC API
+      rest.get(WifiRbacUrlsInfo.getVenueBssColoring.url,
+        (_, res, ctx) => res(ctx.json(mockVenueBssColoringSettings))),
+      rest.get(WifiRbacUrlsInfo.getApBssColoring.url,
+        (_, res, ctx) => res(ctx.json(mockApBssColoringSettings))),
+      rest.put(WifiRbacUrlsInfo.updateApBssColoring.url,
+        (_, res, ctx) => res(ctx.json({})))
     )
   })
 
   it('should render correctly', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <BssColoring />
         </ApDataContext.Provider>
       </Provider>, {
@@ -57,7 +61,7 @@ describe('AP BSS Coloring', () => {
       })
 
     await waitForElementToBeRemoved(() => screen.queryByLabelText('loader'))
-    await waitFor(() => screen.findByText('Enable BSS Coloring'))
+    await screen.findByText('Enable BSS Coloring')
 
     expect(await screen.findByRole('button', { name: /Customize/ })).toBeVisible()
     expect(await screen.findByTestId('ApBssColoring-text')).toBeVisible()
@@ -81,7 +85,7 @@ describe('AP BSS Coloring', () => {
           },
           setEditAdvancedContextData: jest.fn()
         }}>
-          <ApDataContext.Provider value={{ apData: r760Ap }}>
+          <ApDataContext.Provider value={defaultR760ApCtxData}>
             <BssColoring />
           </ApDataContext.Provider>
         </ApEditContext.Provider>
@@ -114,7 +118,7 @@ describe('AP BSS Coloring', () => {
   it('should handle turn On/Off switch buttons changed with use venue settings', async () => {
     render(
       <Provider>
-        <ApDataContext.Provider value={{ apData: r760Ap }}>
+        <ApDataContext.Provider value={defaultR760ApCtxData}>
           <BssColoring />
         </ApDataContext.Provider>
       </Provider>, {

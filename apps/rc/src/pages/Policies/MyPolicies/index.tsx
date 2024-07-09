@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl'
 
 import { Button, GridCol, GridRow, PageHeader, RadioCard, RadioCardCategory } from '@acx-ui/components'
 import { Features, useIsSplitOn, useIsTierAllowed }                           from '@acx-ui/feature-toggle'
+import { useIsEdgeReady }                                                     from '@acx-ui/rc/components'
 import {
   useGetEnhancedAccessControlProfileListQuery,
   useGetAAAPolicyViewModelListQuery,
@@ -9,39 +10,34 @@ import {
   useEnhancedRoguePoliciesQuery,
   useGetApSnmpViewModelQuery,
   useGetEnhancedClientIsolationListQuery,
+  useGetIdentityProviderListQuery,
   useSyslogPolicyListQuery,
   useMacRegListsQuery,
   useGetTunnelProfileViewDataListQuery,
   useGetConnectionMeteringListQuery,
-  useAdaptivePolicyListQuery
+  useAdaptivePolicyListByQueryQuery,
+  useGetCertificateTemplatesQuery,
+  useGetWifiOperatorListQuery,
+  useGetLbsServerProfileListQuery
 } from '@acx-ui/rc/services'
 import {
   getPolicyRoutePath,
   getSelectPolicyRoutePath,
   PolicyType,
-  PolicyOperation
+  PolicyOperation,
+  policyTypeLabelMapping, policyTypeDescMapping,
+  ServicePolicyCardData,
+  isServicePolicyCardEnabled,
+  servicePolicyCardDataToScopeKeys
 } from '@acx-ui/rc/utils'
 import {
-  Path,
   TenantLink,
   useNavigate,
   useParams,
   useTenantLink
 } from '@acx-ui/react-router-dom'
-import { filterByAccess } from '@acx-ui/user'
-
-import {
-  policyTypeDescMapping,
-  policyTypeLabelMapping
-} from '../contentsMap'
-
-interface CardDataProps {
-  type: PolicyType
-  categories: RadioCardCategory[]
-  totalCount?: number
-  listViewPath: Path
-  disabled?: boolean
-}
+import { EdgeScopes, WifiScopes }   from '@acx-ui/types'
+import { filterByAccess, hasScope } from '@acx-ui/user'
 
 const defaultPayload = {
   fields: ['id']
@@ -51,7 +47,9 @@ export default function MyPolicies () {
   const { $t } = useIntl()
   const navigate = useNavigate()
 
-  const policies: CardDataProps[] = useCardData()
+  const policies: ServicePolicyCardData<PolicyType>[] = useCardData()
+
+  const allPoliciesScopeKeysForCreate = servicePolicyCardDataToScopeKeys(policies, 'create')
 
   return (
     <>
@@ -59,13 +57,13 @@ export default function MyPolicies () {
         title={$t({ defaultMessage: 'Policies & Profiles' })}
         breadcrumb={[{ text: $t({ defaultMessage: 'Network Control' }) }]}
         extra={filterByAccess([
-          <TenantLink to={getSelectPolicyRoutePath(true)}>
+          <TenantLink to={getSelectPolicyRoutePath(true)} scopeKey={allPoliciesScopeKeysForCreate}>
             <Button type='primary'>{$t({ defaultMessage: 'Add Policy or Profile' })}</Button>
           </TenantLink>
         ])}
       />
       <GridRow>
-        {policies.filter(policy => !policy.disabled).map((policy, index) => {
+        {policies.filter(p => isServicePolicyCardEnabled(p, 'read')).map((policy, index) => {
           return (
             <GridCol key={policy.type} col={{ span: 6 }}>
               <RadioCard
@@ -81,7 +79,7 @@ export default function MyPolicies () {
                 description={$t(policyTypeDescMapping[policy.type])}
                 categories={policy.categories}
                 onClick={() => {
-                  navigate(policy.listViewPath)
+                  policy.listViewPath && navigate(policy.listViewPath)
                 }}
               />
             </GridCol>
@@ -92,19 +90,23 @@ export default function MyPolicies () {
   )
 }
 
-function useCardData (): CardDataProps[] {
+function useCardData (): ServicePolicyCardData<PolicyType>[] {
   const params = useParams()
-  const supportApSnmp = useIsSplitOn(Features.AP_SNMP)
-  const isEdgeEnabled = useIsTierAllowed(Features.EDGES)
+  const supportHotspot20R1 = useIsSplitOn(Features.WIFI_FR_HOTSPOT20_R1_TOGGLE)
+  const supportLbs = useIsSplitOn(Features.WIFI_EDA_LBS_TOGGLE)
+  const isEdgeEnabled = useIsEdgeReady()
   const isConnectionMeteringEnabled = useIsSplitOn(Features.CONNECTION_METERING)
   const cloudpathBetaEnabled = useIsTierAllowed(Features.CLOUDPATH_BETA)
-  const isEdgeReady = useIsSplitOn(Features.EDGES_TOGGLE)
+  const isCertificateTemplateEnabled = useIsSplitOn(Features.CERTIFICATE_TEMPLATE)
+  const isUseRbacApi = useIsSplitOn(Features.WIFI_RBAC_API)
+  const enableRbac = useIsSplitOn(Features.RBAC_SERVICE_POLICY_TOGGLE)
 
   return [
     {
       type: PolicyType.AAA,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetAAAPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      totalCount: useGetAAAPolicyViewModelListQuery({ params, payload: {}, enableRbac }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.AAA, oper: PolicyOperation.LIST }))
     },
@@ -121,10 +123,30 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.CLIENT_ISOLATION,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetEnhancedClientIsolationListQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CLIENT_ISOLATION, oper: PolicyOperation.LIST }))
+    },
+    {
+      type: PolicyType.WIFI_OPERATOR,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetWifiOperatorListQuery({
+        params, payload: defaultPayload
+      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.WIFI_OPERATOR, oper: PolicyOperation.LIST })),
+      disabled: !supportHotspot20R1
+    },
+    {
+      type: PolicyType.IDENTITY_PROVIDER,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetIdentityProviderListQuery({
+        params, payload: { tenantId: params.tenantId }
+      }, { skip: !supportHotspot20R1 }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.IDENTITY_PROVIDER, oper: PolicyOperation.LIST })),
+      disabled: !supportHotspot20R1
     },
     {
       type: PolicyType.MAC_REGISTRATION_LIST,
@@ -139,7 +161,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.ROGUE_AP_DETECTION,
       categories: [RadioCardCategory.WIFI],
       totalCount: useEnhancedRoguePoliciesQuery({
-        params, payload: defaultPayload
+        params, payload: defaultPayload, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ROGUE_AP_DETECTION, oper: PolicyOperation.LIST }))
@@ -148,7 +170,7 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SYSLOG,
       categories: [RadioCardCategory.WIFI],
       totalCount: useSyslogPolicyListQuery({
-        params, payload: { }
+        params, payload: { }, enableRbac
       }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SYSLOG, oper: PolicyOperation.LIST }))
@@ -156,7 +178,9 @@ function useCardData (): CardDataProps[] {
     {
       type: PolicyType.VLAN_POOL,
       categories: [RadioCardCategory.WIFI],
-      totalCount: useGetVLANPoolPolicyViewModelListQuery({ params, payload: { } }).data?.totalCount,
+      totalCount: useGetVLANPoolPolicyViewModelListQuery(
+        { params, payload: { } , enableRbac }
+      ).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.VLAN_POOL, oper: PolicyOperation.LIST }))
     },
@@ -164,21 +188,20 @@ function useCardData (): CardDataProps[] {
       type: PolicyType.SNMP_AGENT,
       categories: [RadioCardCategory.WIFI],
       totalCount: useGetApSnmpViewModelQuery({
-        params, payload: { ...defaultPayload }
-      }, { skip: !supportApSnmp }).data?.totalCount,
+        params, payload: defaultPayload, enableRbac: isUseRbacApi
+      }).data?.totalCount,
       // eslint-disable-next-line max-len
-      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST })),
-      disabled: !supportApSnmp
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.SNMP_AGENT, oper: PolicyOperation.LIST }))
     },
     {
       type: PolicyType.TUNNEL_PROFILE,
       categories: [RadioCardCategory.WIFI, RadioCardCategory.EDGE],
       totalCount: useGetTunnelProfileViewDataListQuery({
         params, payload: { ...defaultPayload }
-      }, { skip: !isEdgeEnabled || !isEdgeReady }).data?.totalCount,
+      }, { skip: !isEdgeEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.TUNNEL_PROFILE, oper: PolicyOperation.LIST })),
-      disabled: !isEdgeEnabled || !isEdgeReady
+      disabled: !isEdgeEnabled
     },
     {
       type: PolicyType.CONNECTION_METERING,
@@ -188,16 +211,36 @@ function useCardData (): CardDataProps[] {
       }, { skip: !isConnectionMeteringEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CONNECTION_METERING, oper: PolicyOperation.LIST })),
-      disabled: !isConnectionMeteringEnabled
+      disabled: !isConnectionMeteringEnabled ||
+        !hasScope([WifiScopes.READ, EdgeScopes.READ])
     },
     {
       type: PolicyType.ADAPTIVE_POLICY,
       categories: [RadioCardCategory.WIFI],
       // eslint-disable-next-line max-len
-      totalCount: useAdaptivePolicyListQuery({ params, payload: {} }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
+      totalCount: useAdaptivePolicyListByQueryQuery({ params: { excludeContent: 'true', ...params }, payload: {} }, { skip: !cloudpathBetaEnabled }).data?.totalCount,
       // eslint-disable-next-line max-len
       listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.ADAPTIVE_POLICY, oper: PolicyOperation.LIST })),
       disabled: !cloudpathBetaEnabled
+    },
+    {
+      type: PolicyType.LBS_SERVER_PROFILE,
+      categories: [RadioCardCategory.WIFI],
+      totalCount: useGetLbsServerProfileListQuery({
+        params, payload: defaultPayload
+      }, { skip: !supportLbs }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.LBS_SERVER_PROFILE, oper: PolicyOperation.LIST })),
+      disabled: !supportLbs
+    },
+    {
+      type: PolicyType.CERTIFICATE_TEMPLATE,
+      categories: [RadioCardCategory.WIFI],
+      // eslint-disable-next-line max-len
+      totalCount: useGetCertificateTemplatesQuery({ params, payload: {} }, { skip: !isCertificateTemplateEnabled }).data?.totalCount,
+      // eslint-disable-next-line max-len
+      listViewPath: useTenantLink(getPolicyRoutePath({ type: PolicyType.CERTIFICATE, oper: PolicyOperation.LIST })),
+      disabled: !isCertificateTemplateEnabled
     }
   ]
 }

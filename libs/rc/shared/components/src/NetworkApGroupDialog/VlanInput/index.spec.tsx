@@ -80,6 +80,7 @@ describe('VlanInput', () => {
     render(<Provider><VlanInput
       apgroup={networkVenue_apgroup.apGroups[0]}
       wlan={network.wlan}
+      vlanPoolSelectOptions={vlanPoolList}
       onChange={callbackFn}
     /></Provider>, { route: { params } })
 
