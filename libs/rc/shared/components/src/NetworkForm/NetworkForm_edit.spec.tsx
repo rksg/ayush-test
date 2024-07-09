@@ -35,8 +35,7 @@ import {
   apGroupsResponse,
   externalProviders,
   vlanList,
-  mockRbacVlanList,
-  networkDeepResponse
+  mockRbacVlanList
 } from './__tests__/fixtures'
 import { NetworkForm } from './NetworkForm'
 
@@ -231,7 +230,7 @@ describe('NetworkForm', () => {
       ),
       // RBAC API
       rest.get(WifiRbacUrlsInfo.getNetwork.url,
-        (_, res, ctx) => res(ctx.json(networkDeepResponse))
+        (_, res, ctx) => res(ctx.json(networkResponse))
       ),
       rest.post(CommonRbacUrlsInfo.getWifiNetworksList.url,
         (_, res, ctx) => res(ctx.json({ data: WifiNetworkFixtures.mockedRbacWifiNetworkList }))
