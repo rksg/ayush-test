@@ -1,3 +1,4 @@
+import moment                        from 'moment'
 import { useIntl, FormattedMessage } from 'react-intl'
 
 import { useAnalyticsFilter, categoryTabs, CategoryTab } from '@acx-ui/analytics/utils'
@@ -17,6 +18,9 @@ const WiredTab = (props: { filters?: AnalyticsFilter, path?: string, noSwitches?
   const { filters: widgetFilters, noSwitches } = props
   const { filters } = useAnalyticsFilter()
   const healthPageFilters = widgetFilters ? widgetFilters : filters
+
+  healthPageFilters.startDate = moment(healthPageFilters.startDate).tz('UTC').format()
+  healthPageFilters.endDate = moment(healthPageFilters.endDate).tz('UTC').format()
 
   const params = useParams()
   const selectedTab = params['categoryTab'] ?? categoryTabs[0].value
